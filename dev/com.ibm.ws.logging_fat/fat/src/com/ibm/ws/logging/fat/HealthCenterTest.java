@@ -42,14 +42,7 @@ public class HealthCenterTest {
         Log.info(HealthCenterTest.class, "beforeClass", "CARL_DEBUG: JavaInfo String for com.ibm.ws.logging.healthcenter server: " + ji.toString());
         JavaInfo ji2 = JavaInfo.forCurrentVM();
         Log.info(HealthCenterTest.class, "beforeClass", "CARL_DEBUG: JavaInfo String for currentVM server: " + ji2.toString());
-
-        Log.info(HealthCenterTest.class, "beforeClass",
-                 "CARL_DEBUG: HealthCenter class available? " + JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
-//        Assume.assumeTrue(JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
-
-        if (!server.isStarted())
-            server.startServer();
-
+        Log.info(HealthCenterTest.class, "beforeClass", "CARL_DEBUG: HealthCenter class available? " + JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
     }
 
     @AfterClass
@@ -61,6 +54,11 @@ public class HealthCenterTest {
 
     @Test
     public void testHealthCenterInfo() throws Exception {
+        Assert.assertTrue("CARL_DEBUG Class not avail...", JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
+
+        if (!server.isStarted())
+            server.startServer();
+
         Assert.assertFalse("Expected healthcenter INFO message",
                            server.findStringsInLogs("INFO:.*Health Center agent started on port",
                                                     server.getConsoleLogFile()).isEmpty());
@@ -70,6 +68,11 @@ public class HealthCenterTest {
 
     @Test
     public void testConsoleLogLevelOff() throws Exception {
+        Assert.assertTrue("CARL_DEBUG Class not avail...", JavaInfo.isSystemClassAvailable("com.ibm.java.diagnostics.healthcenter.agent.mbean.HealthCenter"));
+
+        if (!server.isStarted())
+            server.startServer();
+
         HttpUtils.findStringInReadyUrl(server, "/logger-servlet", "Hello world!");
         List<String> messages = server.findStringsInLogs("Hello world!", server.getConsoleLogFile());
         Assert.assertTrue("Did not expect to find servlet Logger message: " + messages, messages.isEmpty());
