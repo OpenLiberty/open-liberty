@@ -515,3 +515,11 @@ CWWKD1119.keyword.prevents.count.useraction=Substitua a consulta por outra que n
 CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: O m\u00e9todo {0} da interface do reposit\u00f3rio {1} especifica uma consulta que inclui a palavra-chave {2}, que \u00e9 incompat\u00edvel com a pagina\u00e7\u00e3o baseada em cursor. As consultas para pagina\u00e7\u00e3o baseada em cursor devem terminar com uma cl\u00e1usula WHERE e n\u00e3o devem incluir subconsultas. A consulta \u00e9: {3}.
 CWWKD1120.cursor.keyword.mismatch.explanation=Palavras-chave como GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT e UNION n\u00e3o s\u00e3o compat\u00edveis com a pagina\u00e7\u00e3o baseada em cursor.
 CWWKD1120.cursor.keyword.mismatch.useraction=Reescreva a consulta para incluir apenas as cl\u00e1usulas: SELECT, FROM e WHERE.
+
+CWWKD1121.record.lacks.id=CWWKD1121E: O registro {0} n\u00e3o pode ser usado como uma entidade porque n\u00e3o possui um identificador exclusivo. Um dos componentes do registro ( {1} ) deve ser nomeado id, ter um nome que termine com _id, Id ou ID, ou ser do tipo java.util.UUID.
+CWWKD1121.record.lacks.id.explanation=As entidades devem ter um atributo identificador \u00fanico.
+CWWKD1121.record.lacks.id.useraction=Adicione ou renomeie um componente de registro para seguir uma das conven\u00e7\u00f5es estabelecidas para atribuir um identificador exclusivo.
+
+CWWKD1122.entity.lacks.id=CWWKD1122E: A classe ` {0} ` n\u00e3o pode ser usada como uma entidade porque n\u00e3o possui um identificador exclusivo. Para atribuir um identificador exclusivo, certifique-se de que o recurso {1} esteja habilitado e adicione a anota\u00e7\u00e3o @ jakarta.persistence.Entity \u00e0 classe da entidade e adicione a anota\u00e7\u00e3o @ jakarta.persistence.Id a no m\u00e1ximo um campo ou m\u00e9todo getter da classe da entidade. Como alternativa, use um arquivo META-INF/orm.xml para definir a entidade e seu identificador exclusivo.
+CWWKD1122.entity.lacks.id.explanation=As entidades devem ter um atributo identificador \u00fanico.
+CWWKD1122.entity.lacks.id.useraction=Habilite o recurso Jakarta Persistence e siga o modelo de entidade Jakarta Persistence para atribuir um identificador exclusivo.

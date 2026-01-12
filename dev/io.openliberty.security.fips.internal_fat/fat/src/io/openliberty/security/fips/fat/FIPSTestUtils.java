@@ -15,7 +15,15 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.topology.impl.LibertyClient;
 import componenttest.topology.impl.LibertyServer;
 
-import java.util.HashMap;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.Assert.assertNotNull;
 
@@ -30,20 +38,9 @@ public class FIPSTestUtils {
     public static final String ENABLE_FIPS140_3_ENV_VAR = "ENABLE_FIPS140_3";
     public static final String SEMERU_FIPS_PROVIDER = "OpenJCEPlusFIPS";
     public static final String IBM_FIPS_PROVIDER = "IBMJCEPlusFIPS";
+    public static final String LIBERTY_BASE_FIPS_PROFILE_FILENAME = "FIPS140-3-Liberty.properties";
     public static final String LIBERTY_APPLICATION_FIPS_PROFILE_FILENAME = "FIPS140-3-Liberty-Application.properties";
     public static final String STANDALONE_FIPS_PROFILE_FILENAME = "semeruFips140_3CustomProfile.properties";
-
-    public static HashMap<Integer,Integer> supportedVersions = new HashMap<>();
-
-    /**
-     * From 25.0.0.0 and onwards, the base version has our base level of FIPS support
-     * This only stores where a particular level of a base version is required
-     */
-    static {
-        supportedVersions.put(11,29);
-        supportedVersions.put(17,17);
-        supportedVersions.put(21,9);
-    }
 
     /**
      * IBM SDK 8 and Semeru Runtimes >=11 support FIPS, Any other Vendor and Version combination is not supported
@@ -51,7 +48,6 @@ public class FIPSTestUtils {
      *
      * If JAVA_HOME for a server is updated via setting JAVA_HOME in a .env file, then the systems JAVA_HOME is what will be picked up
      *
-     * Once 11, 17 and 21 are no longer supported then just major version can
      *
      * There is a Semeru JDK 8 that does not support fips, so ensure that if running is skipped
      *
@@ -60,27 +56,44 @@ public class FIPSTestUtils {
      */
     public static boolean validFIPS140_3Environment(JavaInfo javaInfo){
         boolean validEnv = true;
-        if(javaInfo.vendor() != JavaInfo.Vendor.IBM && javaInfo.vendor() != JavaInfo.Vendor.OPENJ9){
-            validEnv = false;
-            Log.warning(FIPSTestUtils.class, "Java Vendor not supported with FIPS, tests will be skipped");
-        } else if (javaInfo.majorVersion()==8){
-            if (javaInfo.runtimeName().toLowerCase().contains("semeru")) {
-                validEnv = false;
-                Log.warning(FIPSTestUtils.class, "Semeru JDK 8 not supported with FIPS, tests will be skipped");
-            } else if (javaInfo.microVersion()<8 || (javaInfo.microVersion()==8 && javaInfo.fixpack()<30)){
-                validEnv = false;
-                Log.warning(FIPSTestUtils.class, "IBM SDK 8.0.8.30 or newer is required for FIPS support");
-            }
-        } else if(javaInfo.majorVersion()<25){
-            // Java 25 onwards meet our requirements for <Major>.0.0. so no need to calculate their microversion
-            Integer microVersion = supportedVersions.get(javaInfo.majorVersion());
-            if(microVersion!=null && javaInfo.microVersion()<microVersion) {
-                validEnv = false;
-                Log.warning(FIPSTestUtils.class, "Invalid Version combination Major: " + javaInfo.majorVersion() + " MicroVersion: " + javaInfo.microVersion() + ". Check supported versions.");
-            } else if (microVersion==null){
-                // In case someone tries Semeru 24
-                validEnv = false;
-                Log.warning(FIPSTestUtils.class, "Major version not supported with FIPS");
+        // s390 for Linux is not supported with FIPS mode, so until it is, we should skip the platform, once Java FIPS support is available for s390x we can remove this check
+        if (System.getProperty("os.arch").contains("s390")){
+           validEnv = false;
+           Log.warning(FIPSTestUtils.class, "s390 architecture is not currently supported for either z/OS or Linux");
+        } else {
+            if (javaInfo.majorVersion() == 8) {
+                String dir = javaInfo.javaHome();
+                if (!dir.endsWith("jre")) {
+                    dir = dir + "/jre";
+                }
+                Set<String> dirs = Stream.of(new File(dir))
+                        .filter(file -> !file.isDirectory())
+                        .map(File::getName)
+                        .collect(Collectors.toSet());
+                if (!dirs.contains("fips140-3")) {
+                    validEnv = false;
+                    Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");
+                }
+            } else if (javaInfo.majorVersion() < 25) {
+                String javaSecurityPath = javaInfo.javaHome() + "/conf/security/java.security";
+                Path path = Paths.get(javaSecurityPath);
+
+                try (BufferedReader reader = Files.newBufferedReader(path)) {
+                    String line;
+                    boolean fipsCompatible = false;
+                    while ((line = reader.readLine()) != null) {
+                        if (line.contains("OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced")) {
+                            fipsCompatible = true;
+                        }
+                    }
+                    if (!fipsCompatible) {
+                        validEnv = fipsCompatible;
+                        Log.warning(FIPSTestUtils.class, "Java install is not FIPS compatible");
+                    }
+                } catch (IOException e) {
+                    validEnv = false;
+                    Log.warning(FIPSTestUtils.class, "unable to read java.security file, skipping the tests");
+                }
             }
         }
         return validEnv;

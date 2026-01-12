@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec40/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: Se ha detectado un almac\u00e9n de identidades configurado mediante una anotaci\u00f3n ` @InMemoryIdentityStoreDefinition ` dentro de esta aplicaci\u00f3n. No utilice esta definici\u00f3n en un entorno de producci\u00f3n.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=Yakarta declara que utilizar\u00e1 @InMemoryIdentityStoreDefinition dentro de la aplicaci\u00f3n \u00fanicamente con fines de desarrollo, pruebas y depuraci\u00f3n.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=Antes de que su aplicaci\u00f3n entre en producci\u00f3n, elimine el almac\u00e9n de identidades de desarrollo ( @InMemoryIdentityStoreDefinition ) y sustit\u00fayalo por un almac\u00e9n de identidades compatible con la producci\u00f3n, como LDAP o una base de datos.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: La variable de entorno ` {0} ` est\u00e1 vac\u00eda o no est\u00e1 definida. Cualquier validaci\u00f3n posterior de solicitudes de autenticaci\u00f3n que utilice el identificador de llamada asociado fallar\u00e1.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=Se utiliz\u00f3 una variable de entorno como valor de un campo de contrase\u00f1a en la anotaci\u00f3n @Credential, pero esta variable no est\u00e1 definida externamente o est\u00e1 definida como una cadena vac\u00eda.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Aseg\u00farate de configurar la variable de entorno a la que se hace referencia en la anotaci\u00f3n, que normalmente se especifica en server.env.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: La credencial proporcionada al objeto IdentityStore no es una UsernamePasswordCredential y no se puede validar.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=La credencial proporcionada al objeto IdentityStore no es una clase UsernamePasswordCredential y no se puede validar.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=Revise el tipo de credencial que se ha pasado al objeto IdentityStore mediante la implementaci\u00f3n de HttpAuthMechanism.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: La expresi\u00f3n del lenguaje de expresi\u00f3n (EL) para el atributo \u00ab {0} \u00bb de la anotaci\u00f3n del almac\u00e9n de identidades no se puede resolver en un valor v\u00e1lido. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. En su lugar, se utiliza el valor predeterminado del atributo \u00ab {1} \u00bb.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=La causa del error es una discrepancia del tipo entre el resultado de EL y el valor del atributo esperado. Por ejemplo, si el tipo de atributo esperado es String, el resultado EL debe ser String.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Aseg\u00farese de que las expresiones EL sean v\u00e1lidas y de que los beans de referencia que se utilizan en la expresi\u00f3n se puedan resolver, y que el tipo de resultado se corresponda con el atributo.
+

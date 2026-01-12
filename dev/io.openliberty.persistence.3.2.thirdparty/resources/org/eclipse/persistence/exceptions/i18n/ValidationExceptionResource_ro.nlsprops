@@ -187,8 +187,6 @@
 
 7111=Nu pute\u0163i ob\u0163ine o HistoricalSession de la o UnitOfWork, o alt\u0103 HistoricalSession, o ServerSession sau o ServerSessionBroker.  Pute\u0163i achizi\u0163iona una de la o sesiune obi\u015fnuit, o ClientSession sau o ClientSessionBroker.
 
-7112=A\u0163i specificat c\u0103 EclipseLink utilizeaz\u0103 caracteristca : {0}, dar aceast\u0103 caracteristic\u0103 nu este disponibil\u0103 \u00een versiunea JDK ce ruleaz\u0103 momentan :{1}.
-
 7113={0} nu suport\u0103 apelare cu returnare.
 
 7114=\u00cen prezent nu sunt suportate date izolate \u00eentr-un broker de sesiune e client. Sesiunea numit\u0103 {0} con\u0163ine descriptori ce reprezint date izolate.

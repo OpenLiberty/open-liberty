@@ -9,9 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 
+import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,11 +27,15 @@ import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.ImageContent;
 import io.openliberty.mcp.content.Role;
 import io.openliberty.mcp.content.TextContent;
+import io.openliberty.mcp.meta.Meta;
+import io.openliberty.mcp.meta.MetaKey;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
+import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.adapter.JsonbAdapter;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbTransient;
@@ -440,4 +446,61 @@ public class BasicTools {
         employeeList.add(person.get());
         return employeeList;
     }
+
+    @Tool(name = "addPersonToListToolResponse", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+                   description = "Returns list of person object") ToolResponse addPersonToListToolResponse(@ToolArg(name = "employeeList",
+                                                                                                                    description = "List of people") List<Person> employeeList,
+                                                                                                           @ToolArg(name = "person",
+                                                                                                                    description = "Person object") Optional<Person> person) {
+        Person personInstance = person.get();
+        employeeList.add(personInstance);
+        Jsonb jsonb = JsonbBuilder.create();
+        Map<MetaKey, Object> _meta = new HashMap<>();
+        _meta.put(MetaKey.from("timestamp"), 1762860699);
+        _meta.put(MetaKey.from("api.ibmtest.org/location"), "Hursley");
+        _meta.put(MetaKey.from("api.libertytest.org/person"), personInstance);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+    }
+
+    @Tool(name = "addPersonToListToolResponseWithMetaRequest", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+                   description = "Returns list of person object") ToolResponse addPersonToListToolResponseWithMetaRequest(@ToolArg(name = "employeeList",
+                                                                                                                                   description = "List of people") List<Person> employeeList,
+                                                                                                                          @ToolArg(name = "person",
+                                                                                                                                   description = "Person object") Optional<Person> person,
+                                                                                                                          Meta meta) {
+        Person personInstance = person.get();
+        employeeList.add(personInstance);
+        Jsonb jsonb = JsonbBuilder.create();
+        JsonObject jo = meta.asJsonObject();
+
+        Map<MetaKey, Object> _meta = new HashMap<>();
+        jo.forEach((key, value) -> {
+            MetaKey metaKey = MetaKey.from(key);
+            meta.getValue(metaKey);
+            _meta.put(metaKey, value);
+        });
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+    }
+
+    @Tool(name = "simpleMetaRequest", title = "return string made from args and metadata", description = "return string made from args and metadata", structuredContent = false)
+    public String addPersonToListToolResponseWithSimpleMetaRequest(@ToolArg(name = "name", description = "name of person") String name,
+                                                                   Meta meta) {
+        Jsonb jsonb = JsonbBuilder.create();
+
+        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
+        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"));
+        String result = "Hello " + name + " you have called this tool from " + location + " at timestamp " + timestamp.toString();
+        return result;
+    }
+
+    @Tool(name = "get-user-jp",
+          title = "ユーザー情報取得", // Retrieve user information
+          description = "指定されたユーザー ID の名前とロールを取得します。") // Retrieve the name and role of the specified user ID
+    public String getUserJp(@ToolArg(name = "userid",
+                                     description = "対象ユーザーのユーザーID。") String userId) { // The user ID of the target user
+        return "ID: " + userId + ", Name: 仮名, role: user";
+    }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import io.openliberty.microprofile.health31.fat.ConfigAdminHealthCheckTest;
 import io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupFastTest;
 import io.openliberty.microprofile.health31.fat.DefaultOverallStartupStatusUpAppStartupTest;
+import io.openliberty.microprofile.health31.fat.FailedApplicationStartTest;
 import io.openliberty.microprofile.health31.fat.SlowAppStartupHealthCheckFastTest;
 import io.openliberty.microprofile.health31.fat.SlowAppStartupHealthCheckTest;
 
@@ -28,7 +29,8 @@ import io.openliberty.microprofile.health31.fat.SlowAppStartupHealthCheckTest;
                 DefaultOverallStartupStatusUpAppStartupFastTest.class,
                 SlowAppStartupHealthCheckTest.class,
                 SlowAppStartupHealthCheckFastTest.class,
-                ConfigAdminHealthCheckTest.class
+                ConfigAdminHealthCheckTest.class,
+                FailedApplicationStartTest.class
 })
 
 public class FATSuite {

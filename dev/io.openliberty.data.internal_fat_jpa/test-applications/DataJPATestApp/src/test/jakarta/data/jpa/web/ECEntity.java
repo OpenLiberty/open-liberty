@@ -12,6 +12,7 @@ package test.jakarta.data.jpa.web;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import jakarta.persistence.ElementCollection;
@@ -33,7 +34,7 @@ public class ECEntity {
     ArrayList<Long> longList = new ArrayList<>();
 
     @ElementCollection(fetch = FetchType.EAGER)
-    ArrayList<Long> longListEC = new ArrayList<>();
+    List<Long> longListEC = new ArrayList<>();
 
     Set<String> stringSet = new HashSet<>();
 
@@ -52,7 +53,7 @@ public class ECEntity {
         return longList;
     }
 
-    public ArrayList<Long> getLongListEC() {
+    public List<Long> getLongListEC() {
         return longListEC;
     }
 
@@ -76,7 +77,7 @@ public class ECEntity {
         this.longList = longList;
     }
 
-    public void setLongListEC(ArrayList<Long> longListEC) {
+    public void setLongListEC(List<Long> longListEC) {
         this.longListEC = longListEC;
     }
 

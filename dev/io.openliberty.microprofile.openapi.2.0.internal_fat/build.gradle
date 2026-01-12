@@ -13,5 +13,5 @@
 addRequiredLibraries.dependsOn addJakartaTransformer
 
 dependencies {
-  requiredLibs project(path: ':io.openliberty.org.eclipse.microprofile', configuration: 'openapi20')
+  requiredLibs project(path: ':io.openliberty.org.eclipse.microprofile', configuration: 'openapi20'), project(':com.ibm.ws.org.apache.commons.lang3')
 }

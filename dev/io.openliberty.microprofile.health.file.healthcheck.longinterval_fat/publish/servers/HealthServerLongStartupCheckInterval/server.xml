@@ -11,7 +11,7 @@
     
     <mpHealth startupCheckInterval="30s" checkInterval="5s" />
     	
-	<logging traceSpecification="*=info:HEALTH=all"/>
+	<logging traceSpecification="*=info:HEALTH=all" isoDateFormat="true"/>
 	
     <webContainer deferServletLoad="false"/>
 

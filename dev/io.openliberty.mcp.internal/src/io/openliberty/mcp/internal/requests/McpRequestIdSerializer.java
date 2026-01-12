@@ -9,23 +9,32 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
+import io.openliberty.mcp.request.RequestId;
+import jakarta.json.bind.JsonbException;
 import jakarta.json.bind.serializer.JsonbSerializer;
 import jakarta.json.bind.serializer.SerializationContext;
 import jakarta.json.stream.JsonGenerator;
 
 /**
- * Instructions for how Jsonb should serialize {@link McpRequestId} types into JSON
+ * Instructions for how Jsonb should serialize {@link RequestId} types into JSON
  */
-public class McpRequestIdSerializer implements JsonbSerializer<McpRequestId> {
+public class McpRequestIdSerializer implements JsonbSerializer<RequestId> {
 
     @Override
-    public void serialize(McpRequestId id, JsonGenerator generator, SerializationContext ctx) {
-        if (id.getStrVal() != null && !id.getStrVal().isEmpty())
-            generator.write(id.getStrVal());
-        else if (id.getNumVal() != null)
-            generator.write(id.getNumVal());
-        else
-            generator.writeNull();
-    }
+    public void serialize(RequestId id, JsonGenerator generator, SerializationContext ctx) {
+        Object val = id.value();
 
+        if (val == null || (val instanceof String str && str.isEmpty())) {
+            generator.writeNull();
+            return;
+        }
+
+        if (val instanceof String str) {
+            generator.write(str);
+        } else if (val instanceof Number num) {
+            ctx.serialize(num, generator);
+        } else {
+            throw new JsonbException("Unsupported ID type for serialization: " + val.getClass().getName());
+        }
+    }
 }

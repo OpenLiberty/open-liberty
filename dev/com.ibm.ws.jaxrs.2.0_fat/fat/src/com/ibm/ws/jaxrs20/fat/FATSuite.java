@@ -37,6 +37,7 @@ import componenttest.rules.repeater.RepeatTests;
                 ContextTest.class,
                 CustomSecurityContextTest.class,
                 DepartmentTest.class,
+                EjbInjectionTest.class,
                 ExceptionMappersTest.class,
                 ExceptionMappingWithOTTest.class,
                 ExceptionsSubresourcesTest.class,

@@ -628,6 +628,46 @@
     </dependency>
     <dependency>
       <groupId>io.netty</groupId>
+      <artifactId>netty-transport-classes-epoll</artifactId>
+      <version>4.2.7.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-classes-kqueue</artifactId>
+      <version>4.2.7.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>4.2.7.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>jar</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-epoll</artifactId>
+      <version>jar</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-kqueue</artifactId>
+      <version>4.2.7.Final</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-kqueue</artifactId>
+      <version>jar</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-transport-native-kqueue</artifactId>
+      <version>jar</version>
+    </dependency>
+    <dependency>
+      <groupId>io.netty</groupId>
       <artifactId>netty-transport-native-unix-common</artifactId>
       <version>4.2.7.Final</version>
     </dependency>
@@ -3394,12 +3434,12 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>4.0.8</version>
+      <version>4.0.9</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.core</artifactId>
-      <version>5.0.0-B11</version>
+      <version>5.0.0-B13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3414,12 +3454,12 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>4.0.8</version>
+      <version>4.0.9</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.jpql</artifactId>
-      <version>5.0.0-B11</version>
+      <version>5.0.0-B13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3434,12 +3474,12 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>4.0.8</version>
+      <version>4.0.9</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa.modelgen.processor</artifactId>
-      <version>5.0.0-B11</version>
+      <version>5.0.0-B13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -3454,22 +3494,22 @@
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>4.0.8</version>
+      <version>4.0.9</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.jpa</artifactId>
-      <version>5.0.0-B11</version>
+      <version>5.0.0-B13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>4.0.8</version>
+      <version>4.0.9</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
       <artifactId>org.eclipse.persistence.json</artifactId>
-      <version>5.0.0-B11</version>
+      <version>5.0.0-B13</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.platform</groupId>

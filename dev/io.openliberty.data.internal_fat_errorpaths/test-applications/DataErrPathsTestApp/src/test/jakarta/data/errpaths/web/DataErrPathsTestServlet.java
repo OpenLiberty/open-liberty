@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -40,6 +40,12 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
 import jakarta.data.page.PageRequest.Mode;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 import jakarta.inject.Inject;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
@@ -1538,6 +1544,73 @@ public class DataErrPathsTestServlet extends FATServlet {
     }
 
     /**
+     * Verify an appropriate error is raised when Insert and Find annotate
+     * the same repository method.
+     */
+    @Test
+    public void testMixInsertAndFind() {
+        Voter v = new Voter(22446688, "Vera", //
+                        LocalDate.of(1972, Month.JANUARY, 7), //
+                        "244 Soldiers Field Dr SW, Rochester, MN 55902");
+
+        try {
+            v = voters.addAndRetrieve(v);
+            fail("Repository method annotated both Insert and Find" +
+                 " should be invalid. Instead found: " + v);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1002E:") ||
+                !x.getMessage().contains(Find.class.getName()) ||
+                !x.getMessage().contains(Insert.class.getName()))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when Save and Delete annotate
+     * the same repository method.
+     */
+    @Test
+    public void testMixSaveAndDelete() {
+        Voter v = voters.findById(987665432).orElseThrow();
+        v.birthday = LocalDate.of(1988, Month.JANUARY, 8);
+
+        try {
+            voters.saveAndRemove(v);
+            fail("Repository method annotated both Save and Remove" +
+                 " should be invalid.");
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1002E:") ||
+                !x.getMessage().contains(Save.class.getName()) ||
+                !x.getMessage().contains(Delete.class.getName()))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised when Update and Query annotate
+     * the same repository method.
+     */
+    @Test
+    public void testMixUpdateAndQuery() {
+        Voter v = voters.findById(987665432).orElseThrow();
+        v.birthday = LocalDate.of(1981, Month.JANUARY, 5);
+
+        try {
+            Optional<Voter> found = voters.updateAndRetrieve(v.ssn, v);
+            fail("Repository method annotated both Update and Query" +
+                 " should be invalid. Instead found: " + found);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1002E:") ||
+                !x.getMessage().contains(Query.class.getName()) ||
+                !x.getMessage().contains(Update.class.getName()))
+                throw x;
+        }
+    }
+
+    /**
      * Verify an error is raised for a repository find method that defines two
      * Limit parameters.
      */
@@ -2318,6 +2391,42 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1015E") ||
                 !x.getMessage().contains("addOrUpdate"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an appropriate error is raised upon attempt to access totals from
+     * a Page that was requested without totals.
+     */
+    @Test
+    public void testTotalsWhenRequestedWithoutTotals() {
+        Order<Voter> order = Order.by(_Voter.birthday.asc(),
+                                      _Voter.name.asc());
+        PageRequest pageReq = PageRequest.ofSize(12).withoutTotal();
+        String address = "4051 E River Rd NE, Rochester, MN 55906";
+
+        Page<Voter> page = voters.atAddress(address, pageReq, order);
+
+        try {
+            long total = page.totalElements();
+            fail("Should not be able to retrieve totalElements when the page is" +
+                 " requested without totals. Found: " + total);
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1042E:") ||
+                !x.getMessage().contains("requestTotal"))
+                throw x;
+        }
+
+        try {
+            long total = page.totalPages();
+            fail("Should not be able to retrieve totalPages when the page is" +
+                 " requested without totals. Found: " + total);
+        } catch (IllegalStateException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1042E:") ||
+                !x.getMessage().contains("requestTotal"))
                 throw x;
         }
     }

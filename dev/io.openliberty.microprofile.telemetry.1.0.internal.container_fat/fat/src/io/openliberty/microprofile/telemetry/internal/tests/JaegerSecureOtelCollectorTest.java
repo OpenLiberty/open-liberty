@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,21 +54,22 @@ public class JaegerSecureOtelCollectorTest extends JaegerBaseTest {
 
     private static KeyPairs jaegerClientKeyPairs = new KeyPairs(server);
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer(otelCollectorKeyPairs.getCertificate(),otelCollectorKeyPairs.getKey(), jaegerClientKeyPairs.getCertificate(), jaegerClientKeyPairs.getKey())
-                                                                                                                     .withLogConsumer(new SimpleLogConsumer(JaegerSecureOtelCollectorTest.class,
-                                                                                                                                                            "jaeger"))
-                                                                                                                     .withNetwork(network)
-                                                                                                                     .withNetworkAliases("jaeger-all-in-one");
+    public static JaegerContainer jaegerContainer = new JaegerContainer(otelCollectorKeyPairs.getCertificate(), otelCollectorKeyPairs.getKey(), jaegerClientKeyPairs
+                                                                                                                                                                    .getCertificate(),
+                                                                        jaegerClientKeyPairs.getKey())
+                                                                                                      .withLogConsumer(new SimpleLogConsumer(JaegerSecureOtelCollectorTest.class,
+                                                                                                                                             "jaeger"))
+                                                                                                      .withNetwork(network)
+                                                                                                      .withNetworkAliases("jaeger-all-in-one");
 
     public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-jaeger-secure.yaml"),
                                                                                              otelCollectorKeyPairs.getCertificate(), otelCollectorKeyPairs.getKey())
-                                                                                                                                          .withNetwork(network)
-                                                                                                                                          .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
-                                                                                                                                                                                 "otelCol"))
-                                                                                                                                          .withNetworkAliases("otel-collector-jaeger");
+                                                                                                                                                                    .withNetwork(network)
+                                                                                                                                                                    .withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
+                                                                                                                                                                                                           "otelCol"))
+                                                                                                                                                                    .withNetworkAliases("otel-collector-jaeger");
 
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
-
 
     @ClassRule
     public static RuleChain chain = RuleChain
@@ -88,6 +89,7 @@ public class JaegerSecureOtelCollectorTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_CERTIFICATE, otelCollectorKeyPairs.certificateFilePath());
 
         // Construct the test application

@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=A k\u00f6vetkez\u0151 argumentumok ker\u00fcltek \u00e1t
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=A m\u00f3dszer a k\u00f6vetkez\u0151 argumentumokat v\u00e1rta, de azok nem ker\u00fcltek megad\u00e1sra: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: Az {0} MCP eszk\u00f6z m\u00f3dszer\u00e9nek {1} argumentuma nem t\u00e1mogatott \u00f6sszetev\u0151ket tartalmaz, p\u00e9ld\u00e1ul TypeVariable, Wildcard, GenericArrayType.
+CWMCM0018E.generic.arguments.explanation=Az MCP eszk\u00f6z argumentumai megadva vannak, de nem t\u00e1mogatottak. 
+CWMCM0018E.generic.arguments.useraction=Adjon meg olyan argumentumokat, amelyek nem tartalmaznak \u00e1ltal\u00e1nos komponenseket.

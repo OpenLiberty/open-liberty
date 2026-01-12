@@ -187,8 +187,6 @@
 
 7111=Relaci HistoricalSession nelze z\u00edskat z rozhran\u00ed UnitOfWork, jin\u00e9 relace HistoricalSession, relace ServerSession nebo relace ServerSessionBroker. M\u016f\u017eete ji z\u00edskat z b\u011b\u017en\u00e9 relace, relace ClientSession nebo relace ClientSessionBroker.
 
-7112=Uvedli jste, \u017ee produkt EclipseLink pou\u017e\u00edv\u00e1 funkci: {0}, tato funkce v\u0161ak nen\u00ed dostupn\u00e1 v aktu\u00e1ln\u011b spu\u0161t\u011bn\u00e9 verzi JDK:{1}.
-
 7113={0} nepodporuje vol\u00e1n\u00ed s n\u00e1vratem.
 
 7114=Izolovan\u00e1 data nejsou aktu\u00e1ln\u011b podporov\u00e1na v r\u00e1mci zprost\u0159edkovatele relac\u00ed klienta. Relace s n\u00e1zvem {0} obsahuje deskriptory p\u0159edstavuj\u00edc\u00ed izolovan\u00e1 data.

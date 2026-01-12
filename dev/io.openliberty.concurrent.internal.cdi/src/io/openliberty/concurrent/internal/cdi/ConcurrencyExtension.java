@@ -114,8 +114,14 @@ public class ConcurrencyExtension implements Extension {
                 event.addBean(new ManagedScheduledExecutorBean(extSvc.defaultManagedScheduledExecutorFactory, DEFAULT_QUALIFIER_SET));
 
             if (!cdi.select(ManagedThreadFactory.class, DEFAULT_QUALIFIER_ARRAY).isResolvable()) {
-                event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
-                producedDefaultMTF = true;
+                try {
+                    event.addBean(new ManagedThreadFactoryBean(cmd, extSvc, DEFAULT_QUALIFIER_SET));
+                    producedDefaultMTF = true;
+                } catch (IllegalStateException e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "A default managed thread factory was not created for this component", cmd);
+                    }
+                }
             }
 
             // Look for beans from the module and the application.

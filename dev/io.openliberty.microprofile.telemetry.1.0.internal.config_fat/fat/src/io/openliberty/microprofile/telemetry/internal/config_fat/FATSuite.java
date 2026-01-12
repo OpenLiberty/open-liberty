@@ -21,6 +21,8 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @RunWith(Suite.class)
 @MinimumJavaLevel(javaLevel = 11)
 @SuiteClasses({
+
+                TelemetryAttributesTest.class,
                 TelemetryConfigEnvTest.class,
                 TelemetryConfigServerVarTest.class,
                 TelemetryConfigSystemPropTest.class,

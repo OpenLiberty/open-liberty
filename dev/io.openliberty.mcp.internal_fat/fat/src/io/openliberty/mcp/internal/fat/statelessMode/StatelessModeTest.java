@@ -10,7 +10,12 @@
 package io.openliberty.mcp.internal.fat.statelessMode;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.NEGATIVE_TIMEOUT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.CoreMatchers.containsString;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
@@ -49,10 +54,6 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
  */
 @RunWith(FATRunner.class)
 public class StatelessModeTest extends FATServletClient {
-
-    private static final String ACCEPT_HEADER = "application/json, text/event-stream";
-    private static final String MCP_PROTOCOL_HEADER = "MCP-Protocol-Version";
-    private static final String MCP_PROTOCOL_VERSION = "2025-06-18";
 
     @Server("mcp-stateless-server")
     public static LibertyServer server;
@@ -105,8 +106,8 @@ public class StatelessModeTest extends FATServletClient {
                         """;
 
         HttpRequest httpRequest = new HttpRequest(server, ENDPOINT)
-                                                                   .requestProp("Accept", ACCEPT_HEADER)
-                                                                   .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                                   .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                   .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                                    .jsonBody(request)
                                                                    .method("POST")
                                                                    .expectCode(200);
@@ -136,8 +137,8 @@ public class StatelessModeTest extends FATServletClient {
                         """;
 
         String response = new HttpRequest(server, ENDPOINT)
-                                                           .requestProp("Accept", ACCEPT_HEADER)
-                                                           .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                           .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                           .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                            .jsonBody(request)
                                                            .method("POST")
                                                            .run(String.class);
@@ -166,8 +167,8 @@ public class StatelessModeTest extends FATServletClient {
                                     }
                                 """;
                 return new HttpRequest(server, ENDPOINT)
-                                                        .requestProp("Accept", ACCEPT_HEADER)
-                                                        .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                        .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                        .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                         .jsonBody(request)
                                                         .method("POST")
                                                         .expectCode(200)
@@ -182,8 +183,8 @@ public class StatelessModeTest extends FATServletClient {
         toolStatus.awaitStarted(LATCH_NAME);
 
         new HttpRequest(server, ENDPOINT)
-                                         .requestProp("Accept", ACCEPT_HEADER)
-                                         .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                         .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                         .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                          .jsonBody("""
                                                                {
                                                                "jsonrpc": "2.0",
@@ -234,8 +235,8 @@ public class StatelessModeTest extends FATServletClient {
                                 }
                                 """;
                 return new HttpRequest(server, ENDPOINT)
-                                                        .requestProp("Accept", ACCEPT_HEADER)
-                                                        .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                        .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                        .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                         .jsonBody(request)
                                                         .method("POST")
                                                         .expectCode(200)
@@ -250,8 +251,8 @@ public class StatelessModeTest extends FATServletClient {
         toolStatus.awaitStarted(LATCH_NAME);
 
         new HttpRequest(server, ENDPOINT)
-                                         .requestProp("Accept", ACCEPT_HEADER)
-                                         .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                         .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                         .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                          .jsonBody("""
                                                                {
                                                                "jsonrpc": "2.0",
@@ -295,8 +296,8 @@ public class StatelessModeTest extends FATServletClient {
                         """;
 
         String response = new HttpRequest(server, ENDPOINT)
-                                                           .requestProp("Accept", ACCEPT_HEADER)
-                                                           .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                           .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                           .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                            .jsonBody(request)
                                                            .method("POST")
                                                            .expectCode(202)
@@ -308,8 +309,8 @@ public class StatelessModeTest extends FATServletClient {
     @Test
     public void testSessionDeleteReturns404InStatelessMode() throws Exception {
         String response = new HttpRequest(server, ENDPOINT)
-                                                           .requestProp("Accept", ACCEPT_HEADER)
-                                                           .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                           .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                           .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                            .method("DELETE")
                                                            .expectCode(404)
                                                            .run(String.class);
@@ -336,9 +337,9 @@ public class StatelessModeTest extends FATServletClient {
                         """;
 
         String response = new HttpRequest(server, ENDPOINT)
-                                                           .requestProp("Accept", ACCEPT_HEADER)
-                                                           .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
-                                                           .requestProp("Mcp-Session-Id", "dummy-session-id")
+                                                           .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                           .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+                                                           .requestProp(MCP_SESSION_ID, "dummy-session-id")
                                                            .jsonBody(payload)
                                                            .method("POST")
                                                            .expectCode(404)
@@ -372,8 +373,8 @@ public class StatelessModeTest extends FATServletClient {
                                 """;
 
                 return new HttpRequest(server, ENDPOINT)
-                                                        .requestProp("Accept", ACCEPT_HEADER)
-                                                        .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                        .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                        .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                         .jsonBody(firstPayload)
                                                         .method("POST")
                                                         .expectCode(200)
@@ -406,8 +407,8 @@ public class StatelessModeTest extends FATServletClient {
 
         // Send second request
         Future<String> secondFuture = executor.submit(() -> new HttpRequest(server, ENDPOINT)
-                                                                                             .requestProp("Accept", ACCEPT_HEADER)
-                                                                                             .requestProp(MCP_PROTOCOL_HEADER, MCP_PROTOCOL_VERSION)
+                                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                                             .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                                                              .jsonBody(secondPayload)
                                                                                              .method("POST")
                                                                                              .expectCode(200)

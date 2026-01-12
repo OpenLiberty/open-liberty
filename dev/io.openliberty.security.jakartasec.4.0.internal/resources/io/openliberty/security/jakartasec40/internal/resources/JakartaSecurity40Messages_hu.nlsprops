@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec40/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: Az alkalmaz\u00e1son bel\u00fcl egy @InMemoryIdentityStoreDefinition annot\u00e1ci\u00f3val konfigur\u00e1lt identit\u00e1st\u00e1rat \u00e9szlelt\u00fcnk. Ne haszn\u00e1lja ezt a defin\u00edci\u00f3t termel\u00e9si k\u00f6rnyezetben.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=Jakarta kijelenti, hogy az alkalmaz\u00e1son bel\u00fcl a fejleszt\u00e9s, tesztel\u00e9s \u00e9s hibakeres\u00e9s c\u00e9lj\u00e1b\u00f3l kiz\u00e1r\u00f3lag a @InMemoryIdentityStoreDefinition webhelyet haszn\u00e1lja.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=Miel\u0151tt az alkalmaz\u00e1s termel\u00e9sbe ker\u00fclne, t\u00e1vol\u00edtsa el az @InMemoryIdentityStoreDefinition f\u00e1jlt, \u00e9s cser\u00e9lje ki egy t\u00e1mogatott, termel\u00e9sre alkalmas identit\u00e1st\u00e1rol\u00f3ra, p\u00e9ld\u00e1ul LDAP-re vagy adatb\u00e1zisra.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: Az ` {0} ` k\u00f6rnyezeti v\u00e1ltoz\u00f3 \u00fcres vagy nincs be\u00e1ll\u00edtva. A kapcsol\u00f3d\u00f3 h\u00edv\u00f3t haszn\u00e1l\u00f3 minden k\u00e9s\u0151bbi hiteles\u00edt\u00e9si k\u00e9relem \u00e9rv\u00e9nytelen lesz.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=A @Credential annot\u00e1ci\u00f3 jelsz\u00f3mez\u0151j\u00e9nek \u00e9rt\u00e9kek\u00e9nt egy k\u00f6rnyezeti v\u00e1ltoz\u00f3t haszn\u00e1ltak, de ez a v\u00e1ltoz\u00f3 k\u00fcls\u0151leg nincs be\u00e1ll\u00edtva, vagy \u00fcres karakterl\u00e1ncra van be\u00e1ll\u00edtva.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy be\u00e1ll\u00edtotta a megjegyz\u00e9sben hivatkozott k\u00f6rnyezeti v\u00e1ltoz\u00f3t, amelyet \u00e1ltal\u00e1ban a server.env f\u00e1jlban adnak meg.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: Az IdentityStore objektumnak biztos\u00edtott azonos\u00edt\u00f3 nem egy UsernamePasswordCredential oszt\u00e1ly, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=Az IdentityStore objektumnak biztos\u00edtott azonos\u00edt\u00f3 nem egy UsernamePasswordCredential oszt\u00e1ly, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=Vizsg\u00e1lja fel\u00fcl az IdentityStore sz\u00e1m\u00e1ra a HttpAuthMechanism megval\u00f3s\u00edt\u00e1s \u00e1ltal \u00e1tadott hiteles\u00edt\u00e9si adatok t\u00edpus\u00e1t.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: Az identit\u00e1st\u00e1rol\u00f3 megjegyz\u00e9s \u201e {0} \u201d attrib\u00fatum\u00e1nak kifejez\u00e9snyelvi (EL) kifejez\u00e9se nem oldhat\u00f3 fel \u00e9rv\u00e9nyes \u00e9rt\u00e9kre. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. Ehelyett a \u201e {1} \u201d alap\u00e9rtelmezett attrib\u00fatum\u00e9rt\u00e9ke ker\u00fcl felhaszn\u00e1l\u00e1sra.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=A hiba oka, hogy az EL eredm\u00e9ny \u00e9s a v\u00e1rt attrib\u00fatum\u00e9rt\u00e9k t\u00edpusa elt\u00e9r\u0151. P\u00e9ld\u00e1ul, ha a v\u00e1rt attrib\u00fatumt\u00edpus String, akkor az EL eredm\u00e9ny\u00e9nek Stringnek kell lennie.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Gondoskodj\u00e9k r\u00f3la, hogy a feljegyz\u00e9s \u00e9rv\u00e9nyes konfigur\u00e1ci\u00f3s \u00e9rt\u00e9ket tartalmazzon. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9sek \u00e9rv\u00e9nyesek, a kifejez\u00e9sben haszn\u00e1lt hivatkozok bean-ek feloldhat\u00f3k, \u00e9s hogy az eredm\u00e9ny t\u00edpusa megfelel az attrib\u00fatumnak.
+

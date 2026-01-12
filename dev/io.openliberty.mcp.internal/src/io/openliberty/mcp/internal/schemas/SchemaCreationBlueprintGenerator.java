@@ -18,7 +18,6 @@ import java.lang.reflect.TypeVariable;
 import java.lang.reflect.WildcardType;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -79,7 +78,8 @@ public class SchemaCreationBlueprintGenerator {
             } else if (Collection.class.isAssignableFrom((Class<?>) pt.getRawType())) {
                 return generateParameterizedCollectionSchemaCreationBlueprint(type);
             } else {
-                ClassSchemaCreationBlueprint schemaCreationContext = generateParameterizedClassSchemaCreationBlueprint(pt);
+                // Parameterised class generic
+                ClassSchemaCreationBlueprint schemaCreationContext = generateClassSchemaCreationBlueprint(type);
                 return schemaCreationContext;
             }
 
@@ -99,31 +99,16 @@ public class SchemaCreationBlueprintGenerator {
     }
 
     public static ClassSchemaCreationBlueprint generateClassSchemaCreationBlueprint(Type type) {
-        Class<?> cls = (Class<?>) type;
+        Class<?> cls;
+        if (type instanceof ParameterizedType pt) {
+            cls = (Class<?>) pt.getRawType();
+        } else {
+            cls = (Class<?>) type;
+        }
         List<JsonProperty> properties = JsonProperty.extract(cls);
         return new ClassSchemaCreationBlueprint(cls,
                                                 getInputFields(properties),
                                                 getOutputFields(properties));
-    }
-
-    public static ClassSchemaCreationBlueprint generateParameterizedClassSchemaCreationBlueprint(Type type) {
-        if (type instanceof ParameterizedType pt) {
-            Class<?> cls = (Class<?>) pt.getRawType();
-            Map<TypeVariable<?>, Type> genericMap = new HashMap<>();
-            TypeVariable<?>[] typeVariables = cls.getTypeParameters();
-            Type[] actualTypes = pt.getActualTypeArguments();
-
-            for (int i = 0; i < typeVariables.length; i++) {
-                genericMap.put(typeVariables[i], actualTypes[i]);
-            }
-            List<JsonProperty> properties = JsonProperty.extract(cls);
-
-            return new ClassSchemaCreationBlueprint((Class<?>) pt.getRawType(),
-                                                    getInputFields(properties, genericMap),
-                                                    getOutputFields(properties, genericMap));
-        }
-        return null;
-
     }
 
     public static TypeVariableSchemaCreationBlueprint generateTypeVariableSchemaCreationBlueprint(Type type) {
@@ -220,24 +205,10 @@ public class SchemaCreationBlueprintGenerator {
                          .collect(Collectors.toList());
     }
 
-    private static List<FieldInfo> getInputFields(List<JsonProperty> properties, Map<TypeVariable<?>, Type> genericMap) {
-        return properties.stream()
-                         .filter(p -> p.isInput())
-                         .map(p -> new FieldInfo(p.getInputName(), genericMap.get(p.getInputType()), p.getInputAnnotations(), SchemaDirection.INPUT))
-                         .collect(Collectors.toList());
-    }
-
     private static List<FieldInfo> getOutputFields(List<JsonProperty> properties) {
         return properties.stream()
                          .filter(p -> p.isOutput())
                          .map(p -> new FieldInfo(p.getOutputName(), p.getOutputType(), p.getOutputAnnotations(), SchemaDirection.OUTPUT))
-                         .collect(Collectors.toList());
-    }
-
-    private static List<FieldInfo> getOutputFields(List<JsonProperty> properties, Map<TypeVariable<?>, Type> genericMap) {
-        return properties.stream()
-                         .filter(p -> p.isOutput())
-                         .map(p -> new FieldInfo(p.getOutputName(), genericMap.get(p.getOutputType()), p.getOutputAnnotations(), SchemaDirection.OUTPUT))
                          .collect(Collectors.toList());
     }
 

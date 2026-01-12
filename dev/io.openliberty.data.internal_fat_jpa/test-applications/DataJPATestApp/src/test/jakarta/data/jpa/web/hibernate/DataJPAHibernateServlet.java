@@ -13,7 +13,14 @@
 package test.jakarta.data.jpa.web.hibernate;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.annotation.Resource;
 import jakarta.data.Order;
 import jakarta.data.Sort;
 import jakarta.data.page.CursoredPage;
@@ -21,9 +28,11 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.inject.Inject;
 import jakarta.persistence.CacheRetrieveMode;
+import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.LockModeType;
+import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.PersistenceUnit;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.transaction.Status;
@@ -47,6 +56,12 @@ import test.jakarta.data.jpa.web.Business;
 @SuppressWarnings("serial")
 @WebServlet("/DataJPAEclipseLinkServlet")
 public class DataJPAHibernateServlet extends FATServlet {
+
+    @PersistenceContext(unitName = "HibernatePersistenceUnit")
+    EntityManager cmEntityManger;
+
+    @Resource
+    UserTransaction transaction;
 
     @Inject
     Companies companies;
@@ -144,6 +159,114 @@ public class DataJPAHibernateServlet extends FATServlet {
                                                         pageReq);
 
         assertEquals(10, page1.totalElements());
+    }
+
+    /**
+     * Reproduces a migration issue (33205) from EclipseLink to Hibernate
+     * where Hibernate does not tolerate an ElementCollection of type
+     * java.util.ArrayList, which EclipseLink does tolerate.
+     */
+    @Test
+    public void testEntityWithArrayListAttribute() throws Exception {
+        EntityManagerFactory emf = InitialContext
+                        .doLookup("java:comp/env/persistence/HibernatePersistenceUnitRef");
+        UserTransaction tx = InitialContext
+                        .doLookup("java:comp/UserTransaction");
+
+        EntityWithArrayList entity = new EntityWithArrayList();
+        entity.setId("TestEntityWithArrayListAttribute");
+        entity.setLongList(new ArrayList<>(List.of(1L, 2L, 3L)));
+
+        EntityManager em = null;
+
+        tx.begin();
+        try {
+            em = emf.createEntityManager();
+            em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+            assertEquals(true, em.isJoinedToTransaction());
+
+            em.persist(entity);
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+            em.clear();
+            em.close();
+        }
+
+        em = emf.createEntityManager();
+        try {
+            entity = em.find(EntityWithArrayList.class,
+                             "TestEntityWithArrayListAttribute");
+        } finally {
+            em.close();
+        }
+
+        assertEquals(List.of(1L, 2L, 3L),
+                     entity.getLongList());
+    }
+
+    /**
+     * Reproduces a migration issue (33290) from EclipseLink to Hibernate
+     * where Hibernate does not tolerate multiple ElementCollections
+     * when usinga load graph, which EclipseLink does tolerate.
+     * To reproduce 33290, uncomment ElementCollection on the
+     * EntityWithTwoElementCollections class.
+     */
+    @Test
+    public void testEntityWithTwoElementCollections() throws Exception {
+        EntityManagerFactory emf = InitialContext
+                        .doLookup("java:comp/env/persistence/HibernatePersistenceUnitRef");
+        UserTransaction tx = InitialContext
+                        .doLookup("java:comp/UserTransaction");
+
+        EntityWithTwoElementCollections entity = new EntityWithTwoElementCollections();
+        entity.setId(2);
+        entity.setLazyList1(List.of("elements", "of", "first", "list"));
+        entity.setLazyList2(List.of("the", "second", "list"));
+
+        EntityManager em = null;
+        EntityGraph<EntityWithTwoElementCollections> graph = null;
+
+        tx.begin();
+        try {
+            em = emf.createEntityManager();
+            em.setCacheRetrieveMode(CacheRetrieveMode.BYPASS);
+            assertEquals(true, em.isJoinedToTransaction());
+
+            graph = em.createEntityGraph(EntityWithTwoElementCollections.class);
+            graph.addAttributeNode("lazyList1");
+            graph.addAttributeNode("lazyList2");
+
+            em.persist(entity);
+        } finally {
+            if (tx.getStatus() == Status.STATUS_ACTIVE)
+                tx.commit();
+            else
+                tx.rollback();
+            em.clear();
+            em.close();
+        }
+
+        em = emf.createEntityManager();
+        try {
+            String jpql = "SELECT e FROM EntityWithTwoElementCollections e WHERE e.id=?1";
+            jakarta.persistence.Query query = em.createQuery(jpql);
+            query.setHint("jakarta.persistence.loadgraph", graph);
+            query.setParameter(1, 2);
+            List<?> results = query.getResultList();
+            assertEquals(1, results.size());
+            entity = (EntityWithTwoElementCollections) results.get(0);
+        } finally {
+            em.close();
+        }
+
+        assertEquals(List.of("elements", "of", "first", "list"),
+                     entity.getLazyList1());
+
+        assertEquals(List.of("the", "second", "list"),
+                     entity.getLazyList2());
     }
 
     /**
@@ -326,4 +449,166 @@ public class DataJPAHibernateServlet extends FATServlet {
         assertEquals("merged", entity.value);
     }
 
+    @Test
+    public void testMergeDetachedEntityAppManaged() throws Exception {
+        EntityManagerFactory emf = InitialContext
+                        .doLookup("java:comp/env/persistence/HibernatePersistenceUnitRef");
+        UserTransaction tx = InitialContext
+                        .doLookup("java:comp/UserTransaction");
+
+        SimpleEntity original = new SimpleEntity();
+        original.id = 100;
+        original.value = "new";
+
+        EntityManager em = emf.createEntityManager();
+        assertNotNull(em);
+
+        tx.begin();
+        try {
+            em.joinTransaction();
+            assertTrue("Entity manager should have been joined to transaction",
+                       em.isJoinedToTransaction());
+
+            em.persist(original);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            fail("Transaction rollback");
+        }
+
+        // The original entity is now detached
+        // The original entity should have been persisted to the database.
+
+        //Another part of the application modifies the original entity
+        original.value = "modified";
+
+        // Now we want to persist this change to the database
+        // so we have to re-attach the detached entity.
+
+        SimpleEntity merged = null;
+
+        tx.begin();
+        try {
+            em.joinTransaction();
+            assertTrue("Entity manager should have been joined to transaction",
+                       em.isJoinedToTransaction());
+
+            merged = em.merge(original);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            fail("Transaction rollback");
+        }
+
+        // Check make sure the merged entity shows the update.
+        assertNotNull(merged);
+        assertEquals("modified", merged.value);
+
+        // The merged entity is now detached
+        // The merged entity should have been updated after commit
+
+        // Use an isolated entity manager to find the entity in the database
+        // to avoid caching in the persistent context
+
+        SimpleEntity found = null;
+
+        tx.begin();
+        try (EntityManager isolated = emf.createEntityManager()) {
+            assertTrue("Entity manager should have been joined to transaction",
+                       isolated.isJoinedToTransaction());
+
+            found = isolated.find(SimpleEntity.class, 100);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            fail("Transaction rollback");
+        }
+
+        // Check to make sure
+        // - The entity exists in the database
+        // - The entity was updated in the database
+        assertNotNull(found);
+
+        //TODO enable once https://hibernate.atlassian.net/browse/HHH-19995 is fixed
+//        assertEquals("modified", found.value); //Fail: expected:<[modified]> but was:<[new]>
+    }
+
+    @Test
+    public void testMergeDetachedEntityContainerManaged() throws Exception {
+        EntityManagerFactory emf = InitialContext
+                        .doLookup("java:comp/env/persistence/HibernatePersistenceUnitRef");
+
+        SimpleEntity original = new SimpleEntity();
+        original.id = 101;
+        original.value = "new";
+
+        assertNotNull(cmEntityManger);
+
+        transaction.begin();
+        try {
+            assertTrue("Entity manager should have been joined to transaction",
+                       cmEntityManger.isJoinedToTransaction());
+
+            cmEntityManger.persist(original);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            fail("Transaction rollback");
+        }
+
+        // The original entity is now detached
+        // The original entity should have been persisted to the database.
+
+        //Another part of the application modifies the original entity
+        original.value = "modified";
+
+        // Now we want to persist this change to the database
+        // so we have to re-attach the detached entity.
+
+        SimpleEntity merged = null;
+
+        transaction.begin();
+        try {
+            assertTrue("Entity manager should have been joined to transaction",
+                       cmEntityManger.isJoinedToTransaction());
+
+            merged = cmEntityManger.merge(original);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            fail("Transaction rollback");
+        }
+
+        // Check make sure the merged entity shows the update.
+        assertNotNull(merged);
+        assertEquals("modified", merged.value);
+
+        // The merged entity is now detached
+        // The merged entity should have been updated after commit
+
+        // Use an isolated entity manager to find the entity in the database
+        // to avoid caching in the persistent context
+
+        SimpleEntity found = null;
+
+        transaction.begin();
+        try (EntityManager isolated = emf.createEntityManager()) {
+            assertTrue("Entity manager should have been joined to transaction",
+                       isolated.isJoinedToTransaction());
+
+            found = isolated.find(SimpleEntity.class, 101);
+            transaction.commit();
+        } catch (Exception e) {
+            transaction.rollback();
+            fail("Transaction rollback");
+        }
+
+        // Check to make sure
+        // - The entity exists in the database
+        // - The entity was updated in the database
+        assertNotNull(found);
+
+        //TODO enable once https://hibernate.atlassian.net/browse/HHH-19995 is fixed
+//        assertEquals("modified", found.value); //Fail: expected:<[modified]> but was:<[new]>
+    }
 }

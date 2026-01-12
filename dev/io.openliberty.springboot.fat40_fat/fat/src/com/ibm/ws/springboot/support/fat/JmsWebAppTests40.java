@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
+
+import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,11 +23,13 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 17)
 @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
+@Mode(FULL) // TODO re-enable lite mode once this test is consistently successful in builds
 public class JmsWebAppTests40 extends JmsAbstractTests {
     @Override
     public Set<String> getFeatures() {

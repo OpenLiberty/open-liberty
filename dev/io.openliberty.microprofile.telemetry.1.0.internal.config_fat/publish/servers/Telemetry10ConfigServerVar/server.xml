@@ -10,6 +10,9 @@
 	 
 	<variable name="otel.service.name" value="overrideDone"/>
 	<variable name="otel.sdk.disabled" value="false"/>
+	<variable name="otel.logs.exporter" value="none"/>
+	<variable name="otel.metrics.exporter" value="none"/>
+	<variable name="otel.traces.exporter" value="none"/>
 
 	<application id="TelemetryApp" name="TelemetryApp" type="war" location="TelemetryApp.war">
     	<classloader apiTypeVisibility="+third-party"/>

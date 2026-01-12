@@ -36,7 +36,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryAction
 @RunWith(FATRunner.class)
 public class TelemetryConfigNullTest extends FATServletClient {
 
-    public static final String SERVER_NAME = "Telemetry10ConfigEnv";
+    public static final String SERVER_NAME = "Telemetry10ConfigNull";
     public static final String APP_NAME = "TelemetryApp";
 
     @Server(SERVER_NAME)
@@ -60,6 +60,9 @@ public class TelemetryConfigNullTest extends FATServletClient {
         // This is not ideal and is a current limitation, but we still want to test the scenario to ensure we don't throw an exception when processing config
         server.addEnvVar("otel_service_name", "overrideDone");
         server.addEnvVar("otel_sdk_disabled", "false");
+        server.addEnvVar("otel_traces_exporter", "none");
+        server.addEnvVar("otel_logs_exporter", "none");
+        server.addEnvVar("otel_metrics_exporter", "none");
         server.startServer();
     }
 

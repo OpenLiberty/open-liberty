@@ -141,7 +141,7 @@ public class ConcurrencyExtensionMetadata implements CDIExtensionMetadata, CDIEx
                         qualifiersToResourceFactory.put(qualifierNames, resourceFactory);
 
         if (conflict != null) {
-            Set<String> names = Set.of(resourceFactory.getName(), conflict.getName());
+            List<String> names = List.of(resourceFactory.getName(), conflict.getName());
 
             Tr.error(tc, "CWWKC1412.qualifier.conflict",
                      jeeName,

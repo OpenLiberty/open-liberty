@@ -515,3 +515,11 @@ CWWKD1119.keyword.prevents.count.useraction=Zamie\u0144 zapytanie na takie, kt\u
 CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Metoda {0} interfejsu repozytorium {1} okre\u015bla zapytanie zawieraj\u0105ce s\u0142owo kluczowe {2}, kt\u00f3re jest niekompatybilne z paginacj\u0105 opart\u0105 na kursorze. Zapytania dla paginacji opartej na kursorze musz\u0105 ko\u0144czy\u0107 si\u0119 klauzul\u0105 WHERE i nie mog\u0105 zawiera\u0107 podzapyta\u0144. Zapytanie brzmi: {3}.
 CWWKD1120.cursor.keyword.mismatch.explanation=S\u0142owa kluczowe takie jak GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT i UNION nie s\u0105 kompatybilne z paginacj\u0105 opart\u0105 na kursorach.
 CWWKD1120.cursor.keyword.mismatch.useraction=Przepisz zapytanie tak, aby zawiera\u0142o tylko klauzule: SELECT, FROM i WHERE.
+
+CWWKD1121.record.lacks.id=CWWKD1121E: Rekord \u201e {0} \u201d nie mo\u017ce by\u0107 u\u017cywany jako jednostka, poniewa\u017c nie posiada unikalnego identyfikatora. Jeden z element\u00f3w rekordu ( {1} ) musi mie\u0107 nazw\u0119 id, ko\u0144cz\u0105c\u0105 si\u0119 na _id, Id lub ID, lub by\u0107 typu java.util.UUID.
+CWWKD1121.record.lacks.id.explanation=Podmioty musz\u0105 posiada\u0107 unikalny atrybut identyfikacyjny.
+CWWKD1121.record.lacks.id.useraction=Dodaj lub zmie\u0144 nazw\u0119 komponentu rekordu, aby zachowa\u0107 zgodno\u015b\u0107 z jedn\u0105 z okre\u015blonych konwencji przypisywania unikalnych identyfikator\u00f3w.
+
+CWWKD1122.entity.lacks.id=CWWKD1122E: Klasa {0} nie mo\u017ce by\u0107 u\u017cywana jako encja, poniewa\u017c nie posiada unikalnego identyfikatora. Aby przypisa\u0107 unikalny identyfikator, upewnij si\u0119, \u017ce funkcja \u201e {1} \u201d jest w\u0142\u0105czona, dodaj adnotacj\u0119 @ jakarta.persistence.Entity do klasy encji i dodaj adnotacj\u0119 @ jakarta.persistence.Id do maksymalnie jednego pola lub metody pobieraj\u0105cej klasy encji. Alternatywnie mo\u017cna u\u017cy\u0107 pliku META-INF/orm.xml, aby zdefiniowa\u0107 jednostk\u0119 i jej unikalny identyfikator.
+CWWKD1122.entity.lacks.id.explanation=Podmioty musz\u0105 posiada\u0107 unikalny atrybut identyfikacyjny.
+CWWKD1122.entity.lacks.id.useraction=W\u0142\u0105cz funkcj\u0119 Jakarta Persistence i post\u0119puj zgodnie z modelem encji Jakarta Persistence, aby przypisa\u0107 unikalny identyfikator.

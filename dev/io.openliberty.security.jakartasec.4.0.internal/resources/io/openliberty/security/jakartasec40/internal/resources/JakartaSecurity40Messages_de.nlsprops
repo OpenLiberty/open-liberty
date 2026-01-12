@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec40/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: In dieser Anwendung wurde ein Identit\u00e4tsspeicher erkannt, der mithilfe einer Anmerkung \u201e @InMemoryIdentityStoreDefinition \u201c konfiguriert wurde. Verwenden Sie diese Definition nicht in einer Produktionsumgebung.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=Jakarta gibt an, dass \u201e @InMemoryIdentityStoreDefinition \u201c innerhalb der Anwendung ausschlie\u00dflich zu Entwicklungs-, Test- und Debugging-Zwecken verwendet werden darf.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=Bevor Ihre Anwendung in Produktion geht, entfernen Sie den \u201e @InMemoryIdentityStoreDefinition \u201c und ersetzen Sie ihn durch einen unterst\u00fctzten Identit\u00e4tsspeicher in Produktionsqualit\u00e4t, wie z. B. LDAP oder eine Datenbank.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: Die Umgebungsvariable \u201e {0} \u201c ist leer oder nicht gesetzt. Alle nachfolgenden Authentifizierungsanfragen, die den zugeh\u00f6rigen Aufrufer verwenden, schlagen fehl.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=Eine Umgebungsvariable wurde als Wert f\u00fcr ein Passwortfeld in der Anmerkung @Credential verwendet, aber diese Variable ist nicht extern festgelegt oder auf eine leere Zeichenfolge gesetzt.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Stellen Sie sicher, dass Sie die in der Anmerkung angegebene Umgebungsvariable festlegen, die normalerweise unter \u201e server.env \u201c angegeben ist.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: Der Berechtigungsnachweis, der dem IdentityStore-Objekt bereitgestellt wird, ist kein UsernamePasswordCredential und kann nicht validiert werden.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=Der Berechtigungsnachweis, der dem IdentityStore-Objekt bereitgestellt wird, geh\u00f6rt nicht zur Klasse UsernamePasswordCredential und kann nicht validiert werden.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=\u00dcberpr\u00fcfen Sie den Typ des Berechtigungsnachweises, der von der HttpAuthMechanism-Implementierung an das IdentityStore-Objekt \u00fcbergeben wird.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: Der Ausdruck der Ausdruckssprache (EL) f\u00fcr das Attribut \u201e {0} \u201d der Identit\u00e4tspeicher-Anmerkung kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Stattdessen wird der Standardattributwert von \u201e {1} \u201c verwendet.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=Dieser Fehler ist auf eine Typendiskrepanz zwischen dem EL-Ergebnis und dem erwarteten Attributwert zur\u00fcckzuf\u00fchren. Wenn beispielsweise der erwartete Attributtyp String ist, muss das EL-Ergebnis String sein.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Stellen Sie sicher, dass die Annotation einen g\u00fcltigen Konfigurationswert enth\u00e4lt. Stellen Sie sicher, dass die EL-Ausdr\u00fccke g\u00fcltig sind, dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufl\u00f6sbar sind und dass der Typ des Ergebnisses dem Attribut entspricht.
+

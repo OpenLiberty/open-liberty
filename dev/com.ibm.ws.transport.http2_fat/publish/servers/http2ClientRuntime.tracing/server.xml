@@ -12,6 +12,10 @@
     <keyStore id="defaultKeyStore" password="Liberty" type="PKCS12" location="${shared.resource.dir}/security/key.p12" />
 
     <javaPermission className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+    <!-- Java 2 Security issue using Netty's Unpooled to create proper settings frames for the H2 client
+    Access denied ("java.io.FilePermission "/open-liberty/dev/com.ibm.ws.transport.http2_fat/build/libs/autoFVT/build/tmp" "read")
+    No idea of the actual base path to the tmp directory that is attempted to be created -->
+    <javaPermission className="java.io.FilePermission" name="/-" actions="read"/>
     
     <!-- FAT framework expects to start with the usual port  -->
     <httpEndpoint id="defaultHttpEndpoint"

@@ -31,13 +31,10 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.BaggageServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.ConfigServlet;
-import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.MetricsDisabledServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.OpenTelemetryBeanServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.SpanCurrentServlet;
 import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpanExtension;
@@ -45,7 +42,7 @@ import io.openliberty.microprofile.telemetry.internal_fat.apps.telemetry.WithSpa
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 
 /**
- * A test that does not have apiTypeVisibility="+third-party"  in the server xml but uses the OpenTelemetry APIS
+ * A test that does not have apiTypeVisibility="+third-party" in the server xml but uses the OpenTelemetry APIS
  */
 @RunWith(FATRunner.class)
 public class TelemetryStableAPIsTest extends FATServletClient {
@@ -58,8 +55,7 @@ public class TelemetryStableAPIsTest extends FATServletClient {
                     @TestServlet(servlet = OpenTelemetryBeanServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = BaggageServlet.class, contextRoot = APP_NAME),
                     @TestServlet(servlet = SpanCurrentServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = ConfigServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = WithSpanServlet.class, contextRoot = APP_NAME)
     })
     public static LibertyServer server;
 
@@ -74,8 +70,7 @@ public class TelemetryStableAPIsTest extends FATServletClient {
                                     BaggageServlet.class,
                                     SpanCurrentServlet.class,
                                     WithSpanServlet.class,
-                                    WithSpanExtension.class,
-                                    ConfigServlet.class)
+                                    WithSpanExtension.class)
                         .addAsServiceProvider(Extension.class, WithSpanExtension.class);
 
         if (TelemetryActions.mpTelemetryEE7IsActive()) {
@@ -86,9 +81,9 @@ public class TelemetryStableAPIsTest extends FATServletClient {
         CDIArchiveHelper.addBeansXML(app, CDIVersion.CDI11);
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
-        //Set for testing purposes. The properties in the server.xml should override these variables.
-        server.addEnvVar("OTEL_SERVICE_NAME", "overrideThisEnvVar");
-        server.addEnvVar("OTEL_SDK_DISABLED", "true");
+        server.addEnvVar("otel_traces_exporter", "none");
+        server.addEnvVar("otel_logs_exporter", "none");
+        server.addEnvVar("otel_metrics_exporter", "none");
         server.startServer();
     }
 

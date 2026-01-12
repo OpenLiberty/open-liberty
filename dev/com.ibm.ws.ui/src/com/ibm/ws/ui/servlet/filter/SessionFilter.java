@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,8 @@ import javax.servlet.http.HttpSession;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import java.util.UUID;
+import javax.servlet.http.Cookie;
 /**
  *
  */
@@ -35,6 +37,7 @@ public class SessionFilter implements Filter {
     private FilterConfig filterConfig;
     private static final TraceComponent tc = Tr.register(SessionFilter.class);
     private static final String LOGIN_ERROR_PAGE = "/adminCenter/login.jsp?no_access";
+    private static final String COOKIE_NAME = "csrfToken";
 
     /**
      * @see javax.servlet.Filter#init(javax.servlet.FilterConfig)
@@ -52,6 +55,18 @@ public class SessionFilter implements Filter {
         this.filterConfig = null;
     }
 
+    public String getCsrfTokenFromCookie(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                if (COOKIE_NAME.equals(cookie.getName())) {
+                    return cookie.getValue();
+                }
+            }
+        }
+        return null; // Return null if the cookie is not found
+    }
+
     /**
      * Filters out specific requests and takes the appropriate action for each
      * 
@@ -64,6 +79,20 @@ public class SessionFilter implements Filter {
         if (tc.isEntryEnabled()) {
             Tr.entry(tc, methodName);
         }
+        HttpServletRequest httpRequest = (HttpServletRequest) req;
+        HttpServletResponse httpResponse = (HttpServletResponse) resp;
+
+        String token = getCsrfTokenFromCookie(httpRequest);
+        if(token == null){
+            token = UUID.randomUUID().toString();
+            Cookie cookie = new Cookie(COOKIE_NAME, token);
+            cookie.setPath("/");
+            cookie.setHttpOnly(false); // client-side JS needs to read it
+            cookie.setSecure(httpRequest.isSecure());
+            // optional: cookie.setMaxAge(...);
+            httpResponse.addCookie(cookie);
+        }
+            
 
         if (req instanceof HttpServletRequest && resp instanceof HttpServletResponse) {
 

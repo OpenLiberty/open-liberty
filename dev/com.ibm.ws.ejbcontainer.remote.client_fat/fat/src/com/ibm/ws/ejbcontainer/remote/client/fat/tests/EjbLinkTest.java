@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -115,6 +115,7 @@ public class EjbLinkTest extends FATServletClient {
         // verify the appSecurity-2.0 feature is ready
         assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
         assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+        assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
         server.setMarkToEndOfLog();
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)
@@ -141,7 +142,7 @@ public class EjbLinkTest extends FATServletClient {
 
     @AfterClass
     public static void afterClass() throws Exception {
-        server.stopServer("CWWKG0033W", "CNTR0019E", "CWNEN0030E", "CWWKO0221E");
+        server.stopServer("CWWKG0033W", "CNTR0019E", "CWNEN0030E", "CWWKO0221E", "CWWKS9582E");
     }
 
     private void check() throws Exception {

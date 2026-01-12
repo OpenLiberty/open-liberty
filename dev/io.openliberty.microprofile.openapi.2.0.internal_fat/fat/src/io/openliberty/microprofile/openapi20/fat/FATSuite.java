@@ -26,6 +26,7 @@ import io.openliberty.microprofile.openapi20.fat.deployments.MergeConfigTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.MergeWithServletTest;
 import io.openliberty.microprofile.openapi20.fat.deployments.StartupWarningMessagesTest;
+import io.openliberty.microprofile.openapi20.fat.deployments.ZOSConnectExtensionTest;
 import io.openliberty.microprofile.openapi20.fat.shutdown.ShutdownTest;
 import io.openliberty.microprofile.openapi20.fat.version.OpenAPIVersionTest;
 
@@ -41,7 +42,8 @@ import io.openliberty.microprofile.openapi20.fat.version.OpenAPIVersionTest;
     MergeWithServletTest.class,
     OpenAPIVersionTest.class,
     ShutdownTest.class,
-    StartupWarningMessagesTest.class
+    StartupWarningMessagesTest.class,
+    ZOSConnectExtensionTest.class
 })
 public class FATSuite {
     public static RepeatTests repeatDefault(String serverName) {

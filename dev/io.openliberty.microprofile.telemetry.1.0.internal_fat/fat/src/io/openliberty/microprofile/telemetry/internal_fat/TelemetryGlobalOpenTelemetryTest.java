@@ -51,7 +51,7 @@ public class TelemetryGlobalOpenTelemetryTest extends FATServletClient {
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClasses(TelemetryGlobalOpenTelemetryServlet.class)
-                        .addAsResource(new StringAsset("otel.sdk.disabled=false"),
+                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=none\notel.logs.exporter=none\notel.metrics.exporter=none"),
                                        "META-INF/microprofile-config.properties");
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.startServer();

@@ -56,6 +56,8 @@ public class LibertyMetricsTest extends BaseTestClass {
 
 	@BeforeClass
 	public static void beforeClass() throws Exception {
+		
+		server.addEnvVar("OTEL_METRIC_EXPORT_INTERVAL", "5000");
 		server.addEnvVar("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT",
 				"http://" + container.getHost() + ":" + container.getMappedPort(4317));
 		server.startServer();
@@ -91,6 +93,9 @@ public class LibertyMetricsTest extends BaseTestClass {
 		String requestTimingStatsNotification = server.waitForStringInTrace("javax\\.management\\.MBeanServerNotification\\[source=JMImplementation:type=MBeanServerDelegate\\]\\[type=JMX\\.mbean\\.registered\\]\\[message=\\]\\[mbeanName=WebSphere:type=RequestTimingStats,name=Default Executor\\]");
 		requestTimingStatsNotification = (requestTimingStatsNotification != null) ? "Found trace: " + requestTimingStatsNotification.trim() : "Could not find RequestTimingStats MBean Registration notification.";
 		Log.info(c, "waitForStringInTrace", requestTimingStatsNotification);
+
+		// Wait for any metrics to pop up first.
+		matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {".*"});
 
 	    // Allow time for the collector to receive and expose metrics
 	    matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {

@@ -9,6 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.deploymentErrorApps;
 
+import java.util.List;
+
+import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -36,5 +39,15 @@ public class ToolArgValidationTest {
     @Tool(name = "argNameisBlankVariant")
     public String argNameisBlankVariant(@ToolArg(name = "") String arg1, @ToolArg(name = "") String arg2) {
         return arg1;
+    }
+
+    @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
+    public @Schema(description = "Returns list of  object") <T> List<T> addGenericToGenericArray(@ToolArg(name = "generic list 1",
+                                                                                                          description = "List of generics 1") T[] list1,
+                                                                                                 @ToolArg(name = "generic list 2",
+                                                                                                          description = "List of generics 1 ") List<List<T>>[] list2,
+                                                                                                 @ToolArg(name = "generic", description = "Generic object") T item,
+                                                                                                 @ToolArg(name = "concrete", description = "Concrete object") List<String> item2) {
+        return null;
     }
 }

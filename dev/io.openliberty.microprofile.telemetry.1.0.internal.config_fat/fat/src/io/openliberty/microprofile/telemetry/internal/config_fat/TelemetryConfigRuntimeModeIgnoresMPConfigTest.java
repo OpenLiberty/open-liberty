@@ -60,6 +60,8 @@ public class TelemetryConfigRuntimeModeIgnoresMPConfigTest extends FATServletCli
 
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
         server.addEnvVar("OTEL_TRACES_EXPORTER", "logging");
+        server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
+        server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
 
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClasses(LoggingServlet.class)

@@ -6,6 +6,9 @@
 	<classpathentry kind="src" path="test-applications/concurrentCDI4App/src"/>
 	<classpathentry kind="src" path="test-applications/concurrentCDIWeb/src"/>
 	<classpathentry kind="src" path="test-applications/concurrentCDI4WebApp/src"/>
+	<classpathentry kind="src" path="test-applications/concurrentCDIEJBStandalone/src"/>
+	<classpathentry kind="src" path="test-applications/concurrentCDIShared/src"/>
+	<classpathentry kind="src" path="test-resourceadapaters/concurrentCDIRAR/src"/>
 	<classpathentry kind="con" path="aQute.bnd.classpath.container"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8">
 		<attributes>

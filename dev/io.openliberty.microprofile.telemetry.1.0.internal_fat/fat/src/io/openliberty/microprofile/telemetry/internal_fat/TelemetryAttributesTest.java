@@ -57,6 +57,9 @@ public class TelemetryAttributesTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
+        server.addEnvVar("OTEL_TRACES_EXPORTER", "none");
+        server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
+        server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
         server.startServer();
     }
 

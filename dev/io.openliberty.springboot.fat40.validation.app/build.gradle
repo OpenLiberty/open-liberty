@@ -10,7 +10,7 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '4.0.0-RC2'
+  id 'org.springframework.boot' version '4.0.0'
   id 'war'
   id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -27,7 +27,9 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
   implementation('org.springframework.boot:spring-boot-starter-web')
-  providedRuntime('org.springframework.boot:spring-boot-tomcat-runtime')
+  providedRuntime('org.springframework.boot:spring-boot-starter-tomcat-runtime') {
+    exclude group: 'jakarta.annotation', module: 'jakarta.annotation-api'
+  }
   implementation ('org.springframework.boot:spring-boot-starter-validation') {
     exclude group: 'org.hibernate.validator', module: 'hibernate-validator'
   }

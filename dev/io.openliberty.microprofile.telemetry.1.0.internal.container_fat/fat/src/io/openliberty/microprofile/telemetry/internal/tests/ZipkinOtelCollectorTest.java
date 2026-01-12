@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import static org.hamcrest.Matchers.equalToIgnoringCase;
 import static org.hamcrest.Matchers.hasProperty;
 import static org.hamcrest.Matchers.hasSize;
 import static org.junit.Assert.assertThat;
-import com.ibm.websphere.simplicity.log.Log;
 
 import java.io.File;
 import java.util.List;
@@ -43,6 +42,7 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
@@ -105,6 +105,7 @@ public class ZipkinOtelCollectorTest {
 
         // Configure exporter → collector (gRPC)
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, otelCollectorContainer.getOtlpGrpcUrl());
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
         // Some older agents only honor the per-signal endpoint:

@@ -261,9 +261,10 @@ public class ResteasyCdiExtension implements Extension {
         for (Type type : bean.getTypes()) {
             if ((type instanceof Class<?>) && ((Class<?>) type).isInterface()) {
                 Class<?> clazz = (Class<?>) type;
-                if (Utils.isJaxrsAnnotatedClass(clazz)) {
+                final Class<?> beanClass = bean.getBeanClass();
+                if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) { // Liberty Change
                     sessionBeanInterface.put(bean.getBeanClass(), type);
-                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, bean.getBeanClass()));
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass)); // Liberty Change
                     return;
                 }
             }

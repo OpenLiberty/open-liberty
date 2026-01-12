@@ -10,7 +10,7 @@
  ********************************************************************************/
 
 plugins {
-  id 'org.springframework.boot' version '4.0.0-RC2'
+  id 'org.springframework.boot' version '4.0.0'
   id 'war'
   id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -31,5 +31,5 @@ dependencies {
   implementation('org.springframework.integration:spring-integration-jms')
   implementation('org.springframework.boot:spring-boot-starter-jdbc')
   providedCompile('jakarta.jms:jakarta.jms-api:3.1.0')
-  providedRuntime('org.springframework.boot:spring-boot-tomcat-runtime')
+  providedRuntime('org.springframework.boot:spring-boot-starter-tomcat-runtime')
 }

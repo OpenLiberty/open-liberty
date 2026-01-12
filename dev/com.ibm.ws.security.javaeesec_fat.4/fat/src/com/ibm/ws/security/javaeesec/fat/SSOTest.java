@@ -91,6 +91,11 @@ public class SSOTest extends JavaEESecTestBase {
         basicUrl = urlHttps + "/JavaEESec/MultipleISBasicAuthServlet";
         formContextRoot = urlHttps + "/FormPostRedirect";
         formUrl = formContextRoot + "/FormPostServlet";
+
+        /*
+         * Wait for the SSL endpoint to start.
+         */
+        myServer.waitForSSLStart();
     }
 
     @AfterClass

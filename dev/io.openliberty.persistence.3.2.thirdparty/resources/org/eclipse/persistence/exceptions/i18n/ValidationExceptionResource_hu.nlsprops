@@ -187,8 +187,6 @@
 
 7111=Nem szerezhet be egy HistoricalSession objektumot egy UnitOfWork, egy m\u00e1sik HistoricalSession, egy ServerSession, vagy egy ServerSessionBroker objektumb\u00f3l.  Egy norm\u00e1l munkamenetb\u0151l, egy ClientSession, vagy egy ClientSessionBroker objektumb\u00f3l szerezheti be azt.
 
-7112=Azt adta meg, hogy az EclipseLink haszn\u00e1lja a(z) {0} szolg\u00e1ltat\u00e1st, azonban ez a szolg\u00e1ltat\u00e1s nem \u00e9rhet\u0151 el a jelenleg fut\u00f3 JDK v\u00e1ltozatban: {1}.
-
 7113={0} nem t\u00e1mogatja a h\u00edv\u00e1st visszaad\u00e1ssal.
 
 7114=Az elk\u00fcl\u00f6n\u00edtett adatok jelenleg nem t\u00e1mogatottak egy Client Session Brokeren bel\u00fcl. A(z) {0} nev\u0171 munkamenet elk\u00fcl\u00f6n\u00edtett adatokat \u00e1br\u00e1zol\u00f3 le\u00edr\u00f3kat tartalmaz.

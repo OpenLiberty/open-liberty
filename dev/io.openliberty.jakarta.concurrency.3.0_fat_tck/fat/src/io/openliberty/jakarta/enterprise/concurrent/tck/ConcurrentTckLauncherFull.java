@@ -70,6 +70,7 @@ public class ConcurrentTckLauncherFull {
         server.stopServer(
                           "WLTC0032W", //Transaction rollback warning.
                           "WLTC0033W", //Transaction rollback warning.
+                          "CWWKC1101E.*InterruptedException", // task cancelled while running
                           "CWWKS0901E" //Quickstart security
         );
     }

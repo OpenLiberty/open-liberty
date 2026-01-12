@@ -515,3 +515,11 @@ CWWKD1119.keyword.prevents.count.useraction=Sostituire la query con una che non 
 CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: Il metodo {0} dell''interfaccia del repository {1} specifica una query che include la parola chiave {2}, incompatibile con la paginazione a cursore. Le query per la paginazione a cursore devono terminare con una clausola WHERE e non devono includere sottoquery. L''interrogazione \u00e8: {3}.
 CWWKD1120.cursor.keyword.mismatch.explanation=Parole chiave come GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT e UNION non sono compatibili con la paginazione a cursore.
 CWWKD1120.cursor.keyword.mismatch.useraction=Riscrivere la query per includere solo le clausole: SELECT, FROM e WHERE.
+
+CWWKD1121.record.lacks.id=CWWKD1121E: Il record dell'' {0} e non pu\u00f2 essere utilizzato come entit\u00e0 perch\u00e9 privo di un identificatore univoco. Uno dei componenti del record ( {1} ) deve essere denominato id, avere un nome che termina con _id, Id o ID, oppure essere di tipo java.util.UUID.
+CWWKD1121.record.lacks.id.explanation=Le entit\u00e0 devono avere un attributo identificativo univoco.
+CWWKD1121.record.lacks.id.useraction=Aggiungere o rinominare un componente del record seguendo una delle convenzioni indicate per l'assegnazione di un identificatore univoco.
+
+CWWKD1122.entity.lacks.id=CWWKD1122E: La classe {0} non pu\u00f2 essere utilizzata come entit\u00e0 perch\u00e9 priva di un identificatore univoco. Per assegnare un identificatore univoco, assicurarsi che la funzione {1} sia abilitata, aggiungere l''annotazione @ jakarta.persistence.Entity alla classe dell''entit\u00e0 e aggiungere l''annotazione @ jakarta.persistence.Id a un massimo di un campo o metodo getter della classe dell''entit\u00e0. In alternativa, utilizzare un file META-INF/orm.xml per definire l''entit\u00e0 e il suo identificatore univoco.
+CWWKD1122.entity.lacks.id.explanation=Le entit\u00e0 devono avere un attributo identificativo univoco.
+CWWKD1122.entity.lacks.id.useraction=Abilita la funzione Jakarta Persistence e segui il modello di entit\u00e0 Jakarta Persistence per assegnare un identificatore univoco.

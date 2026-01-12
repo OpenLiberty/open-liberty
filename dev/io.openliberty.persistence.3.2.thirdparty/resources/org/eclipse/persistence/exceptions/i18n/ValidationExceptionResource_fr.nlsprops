@@ -187,8 +187,6 @@
 
 7111=Vous ne pouvez pas acqu\u00e9rir un \u00e9l\u00e9ment HistoricalSession depuis une unit\u00e9 d''oeuvre, une autre session HistoricalSession, ServerSession ou ServerSessionBroker.  Vous pouvez en acqu\u00e9rir un depuis une session r\u00e9guli\u00e8re, une session ClientSession ou une session ClientSessionBroker.
 
-7112=Vous avez sp\u00e9cifi\u00e9 que EclipseLink utilise la fonction : {0}, mais cette fonction n''est pas disponible dans la version JDK actuelle :{1}.
-
 7113={0} ne prend pas en charge l''appel avec retour.
 
 7114=Des donn\u00e9es isol\u00e9es ne sont actuellement pas prises en charge dans un courtier de session de client. La session nomm\u00e9e {0} contient des descripteurs repr\u00e9sentant des donn\u00e9es isol\u00e9es.

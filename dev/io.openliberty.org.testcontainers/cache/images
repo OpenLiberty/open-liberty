@@ -3,7 +3,7 @@
 wasliberty-aws-docker-remote/docker/library/alpine:3
 wasliberty-aws-docker-remote/docker/library/alpine:3.17
 wasliberty-aws-docker-remote/docker/library/couchdb:3
-wasliberty-aws-docker-remote/docker/library/mongo:6.0.6
+wasliberty-aws-docker-remote/docker/library/mongo:6.0
 wasliberty-aws-docker-remote/docker/library/postgres:17
 wasliberty-aws-docker-remote/docker/library/postgres:17-alpine
 wasliberty-aws-docker-remote/docker/library/python:3.11.6

@@ -512,7 +512,8 @@ public class ShrinkHelper {
     public static ResourceAdapterArchive buildDefaultRar(String rarName, String... packages) throws Exception {
         ResourceAdapterArchive rar = ShrinkWrap.create(ResourceAdapterArchive.class, rarName + ".rar")
                         .addAsLibrary(ShrinkHelper.buildJavaArchive(rarName, packages));
-        ShrinkHelper.addDirectory(rar, "test-resourceadapters/" + rarName + "/resources/");
+        if (new File("test-resourceadapters/" + rarName + "/resources/").exists())
+            ShrinkHelper.addDirectory(rar, "test-resourceadapters/" + rarName + "/resources/");
         return rar;
     }
 

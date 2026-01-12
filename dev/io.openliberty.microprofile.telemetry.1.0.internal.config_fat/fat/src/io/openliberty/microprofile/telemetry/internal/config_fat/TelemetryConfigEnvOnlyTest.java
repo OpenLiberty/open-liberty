@@ -58,6 +58,9 @@ public class TelemetryConfigEnvOnlyTest extends FATServletClient {
         // This tests that we do pick up config properties which are _only_ defined in the environment, using a format which MP Config only accepts for environment variables.
         server.addEnvVar("otel_service_name", "overrideDone");
         server.addEnvVar("otel_sdk_disabled", "false");
+        server.addEnvVar("otel_traces_exporter", "none");
+        server.addEnvVar("otel_metrics_exporter", "none");
+        server.addEnvVar("otel_logs_exporter", "none");
         server.startServer();
     }
 

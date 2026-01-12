@@ -67,6 +67,7 @@ import concurrent.cdi.ejb.anno.ClearingAppContext;
 import concurrent.cdi.ejb.anno.IgnoringTransactionContext;
 import concurrent.cdi.ejb.anno.PropagatingAppContext;
 import concurrent.cdi.ejb.anno.PropagatingLocationContext;
+import concurrent.ejb.shared.SharedInvoker;
 
 @ContextServiceDefinition(name = "java:app/concurrent/with-app-context",
                           qualifiers = WithAppContext.class,
@@ -131,6 +132,9 @@ public class ConcurrentCDIServlet extends FATServlet {
 
     @EJB
     Invoker ejb;
+
+    @EJB(lookup = "java:global/concurrentCDIEJBStandalone/StandaloneBean")
+    SharedInvoker standaloneBean;
 
     @Inject
     ContextService defaultContextSvc;
@@ -731,6 +735,23 @@ public class ConcurrentCDIServlet extends FATServlet {
         Runnable task = getTCCLTask(future);
 
         appBean.runTaskUsingDefaultManagedThreadFactory(task);
+
+        String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
+        assertEquals("SUCCESS", result);
+    }
+
+    /**
+     * Inject an instance of the default ManagedThreadFactory resource into a standalone bean
+     * and verify the Thread Context ClassLoader is scoped to the application.
+     */
+    @Test
+    public void testInjectManagedThreadFactoryDefaultTCCLStandaloneBean() throws Exception {
+        assertNotNull(standaloneBean);
+
+        CompletableFuture<String> future = new CompletableFuture<>();
+        Runnable task = getTCCLTask(future);
+
+        standaloneBean.runTaskUsingDefaultManagedThreadFactory(task);
 
         String result = future.get(TIMEOUT_NS, TimeUnit.NANOSECONDS);
         assertEquals("SUCCESS", result);

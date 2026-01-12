@@ -16,7 +16,8 @@ src: \
 	test-applications/DelayedHealthCheckAppFast/src, \
 	test-applications/ConfigAdminDropinsCheckApp/src, \
 	test-applications/FailsToStartHealthCheckApp/src, \
-	test-applications/ConfigAdminXmlCheckApp/src
+	test-applications/ConfigAdminXmlCheckApp/src, \
+	test-applications/StartedThenFailsApp/src
 
 fat.project: true
 

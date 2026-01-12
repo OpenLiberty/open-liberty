@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=The following arguments were passed but were not found i
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=The following arguments were expected by the method but were not provided: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: The {1} argument of the {0} MCP tool method contains unsupported components such as TypeVariable, Wildcard, GenericArrayType.
+CWMCM0018E.generic.arguments.explanation=MCP Tool arguments were provided but they are not supported. 
+CWMCM0018E.generic.arguments.useraction=Provide arguments that do not have generic components.

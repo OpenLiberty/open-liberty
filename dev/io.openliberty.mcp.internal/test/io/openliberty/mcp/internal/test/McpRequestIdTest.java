@@ -22,34 +22,40 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import io.openliberty.mcp.internal.requests.McpRequest;
-import io.openliberty.mcp.internal.requests.McpRequestId;
+import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
+import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
+import io.openliberty.mcp.request.RequestId;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 
 /**
- * Unit tests for the overidden .equals method for {@link McpRequestId}
+ * Unit tests for the overidden .equals method for {@link RequestId}
  */
 public class McpRequestIdTest {
     private static Jsonb jsonb;
 
     @BeforeClass
     public static void setup() {
-        jsonb = JsonbBuilder.create();
+        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
+                                                   .withDeserializers(new McpRequestIdDeserializer());
+
+        jsonb = JsonbBuilder.create(jsonbConfig);
     }
 
     @Test
     public void testRequestIdStringsAreEqual() {
-        McpRequestId reqId1 = new McpRequestId("Dog");
-        McpRequestId reqId2 = new McpRequestId("Dog");
+        RequestId reqId1 = new RequestId("Dog");
+        RequestId reqId2 = new RequestId("Dog");
         assertTrue(reqId1.equals(reqId2));
     }
 
     @Test
     public void testRequestIdStringsAreNotEqual() {
-        McpRequestId reqId1 = new McpRequestId("Dog");
-        McpRequestId reqId2 = new McpRequestId("Cat");
+        RequestId reqId1 = new RequestId("Dog");
+        RequestId reqId2 = new RequestId("Cat");
         assertFalse(reqId1.equals(reqId2));
     }
 
@@ -57,8 +63,8 @@ public class McpRequestIdTest {
     public void testRequestIdNumbersAreEqual() {
         BigDecimal num1 = new BigDecimal(5);
         BigDecimal num2 = new BigDecimal(5.0f);
-        McpRequestId req1 = new McpRequestId(num1);
-        McpRequestId req2 = new McpRequestId(num2);
+        RequestId req1 = new RequestId(num1);
+        RequestId req2 = new RequestId(num2);
         assertTrue(req1.equals(req2));
     }
 
@@ -66,51 +72,57 @@ public class McpRequestIdTest {
     public void testRequestIdNumbersAreNotEqual() {
         BigDecimal num1 = new BigDecimal(5);
         BigDecimal num2 = new BigDecimal(7);
-        McpRequestId req1 = new McpRequestId(num1);
-        McpRequestId req2 = new McpRequestId(num2);
+        RequestId req1 = new RequestId(num1);
+        RequestId req2 = new RequestId(num2);
         assertFalse(req1.equals(req2));
     }
 
     @Test
     public void testRequestIdStringDoesNotEqualNumber() {
-        McpRequestId reqIdInt = new McpRequestId(new BigDecimal(1));
-        McpRequestId reqIdString = new McpRequestId("1");
+        RequestId reqIdInt = new RequestId(new BigDecimal(1));
+        RequestId reqIdString = new RequestId("1");
         assertFalse(reqIdString.equals(reqIdInt));
     }
 
     @Test
     public void testRequestIdNumberSerialization() {
-        McpRequestId id = new McpRequestId(new BigDecimal(2));
-        JsonObject params = Json.createObjectBuilder().build(); //empty params object
+        RequestId id = new RequestId(new BigDecimal(2));
+        JsonObject params = Json.createObjectBuilder().build();
         McpRequest req = new McpRequest("2.0", id, "tools/call", params);
+
         String actualJson = jsonb.toJson(req);
         String expectedJson = """
-                        {"getRequestMethod":"TOOLS_CALL","id":2,"jsonrpc":"2.0","method":"tools/call","params":{}}
+                          {"id":2,"jsonrpc":"2.0","method":"tools/call","params":{}}
                         """;
+
         JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 
     @Test
     public void testRequestIdStringSerialization() {
-        McpRequestId id = new McpRequestId("2");
-        JsonObject params = Json.createObjectBuilder().build(); //empty params object
+        RequestId id = new RequestId("2");
+        JsonObject params = Json.createObjectBuilder().build();
         McpRequest req = new McpRequest("2.0", id, "tools/call", params);
+
         String actualJson = jsonb.toJson(req);
         String expectedJson = """
-                        {"getRequestMethod":"TOOLS_CALL","id":"2","jsonrpc":"2.0","method":"tools/call","params":{}}
+                          {"id":"2","jsonrpc":"2.0","method":"tools/call","params":{}}
                         """;
+
         JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 
     @Test
     public void testNullRequestIdSerialization() {
-        McpRequestId id = new McpRequestId("");
-        JsonObject params = Json.createObjectBuilder().build(); //empty params object
+        RequestId id = new RequestId("");
+        JsonObject params = Json.createObjectBuilder().build();
         McpRequest req = new McpRequest("2.0", id, "tools/call", params);
+
         String actualJson = jsonb.toJson(req);
         String expectedJson = """
-                        {"getRequestMethod":"TOOLS_CALL","id":null,"jsonrpc":"2.0","method":"tools/call","params":{}}
+                            {"id":null ,"jsonrpc":"2.0","method":"tools/call","params":{}}
                         """;
+
         JSONAssert.assertEquals(expectedJson, actualJson, true);
     }
 
@@ -122,11 +134,10 @@ public class McpRequestIdTest {
                           "id": "2",
                           "method": "tools/call",
                           "params": {}
-                          }
                         }
                         """);
-        McpRequest actualRequest = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(actualRequest.id().getStrVal(), equalTo("2"));
+        McpRequest actualRequest = McpRequest.createValidMCPRequest(reader);
+        assertThat(actualRequest.id().value(), equalTo("2"));
     }
 
     @Test
@@ -137,23 +148,22 @@ public class McpRequestIdTest {
                           "id": 2,
                           "method": "tools/call",
                           "params": {}
-                          }
                         }
                         """);
-        McpRequest actualRequest = jsonb.fromJson(reader, McpRequest.class);
-        assertThat(actualRequest.id().getNumVal(), equalTo(new BigDecimal(2)));
+        McpRequest actualRequest = McpRequest.createValidMCPRequest(reader);
+        assertThat(actualRequest.id().value(), equalTo(new BigDecimal(2)));
     }
 
     @Test
     public void testRequestIdStringToString() {
-        McpRequestId reqId = new McpRequestId("Dog");
+        RequestId reqId = new RequestId("Dog");
         assertThat(reqId.toString(), equalTo("Dog"));
     }
 
     @Test
     public void testRequestIdNumberToString() {
         BigDecimal num = new BigDecimal(5);
-        McpRequestId reqId = new McpRequestId(num);
+        RequestId reqId = new RequestId(num);
         assertThat(reqId.toString(), equalTo("5"));
 
     }

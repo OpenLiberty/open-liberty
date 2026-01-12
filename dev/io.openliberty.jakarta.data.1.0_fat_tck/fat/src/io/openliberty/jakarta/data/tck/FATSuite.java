@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,8 +45,9 @@ import componenttest.topology.impl.JavaInfo;
 })
 public class FATSuite extends TestContainerSuite {
 
-    private static final DockerImageName mongoDBImage = DockerImageName.parse("public.ecr.aws/docker/library/mongo:6.0.6")
-                    .asCompatibleSubstituteFor("mongo:6.0.6");
+    private static final DockerImageName mongoDBImage = DockerImageName //
+                    .parse("public.ecr.aws/docker/library/mongo:6.0")
+                    .asCompatibleSubstituteFor("mongo:6.0");
 
     @ClassRule
     public static JdbcDatabaseContainer<?> relationalDatabase = DatabaseContainerFactory.create();
@@ -109,13 +110,9 @@ public class FATSuite extends TestContainerSuite {
             case Oracle:
                 return ""; // All tests passing on Oracle
             case Postgres:
-                //TODO testInsertEntityThatAlreadyExists PostgreSQL throws org.postgresql.util.PSQLException which is not a subclass of SQLIntegrityConstraintViolationException
-                exclude.add("ee.jakarta.tck.data.standalone.persistence.PersistenceEntityTests");
-                break;
+                return ""; // All tests passing on PostgreSQL
             case SQLServer:
-                //TODO testInsertEntityThatAlreadyExists SQLServer throws com.microsoft.sqlserver.jdbc.SQLServerException which is not a subclass of SQLIntegrityConstraintViolationException
-                exclude.add("ee.jakarta.tck.data.standalone.persistence.PersistenceEntityTests");
-                break;
+                return ""; // All tests passing on Microsoft SQL Server
             default:
                 break;
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2025 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.webcontainer.servlet_31_fat.cdi12testv2upgrade.war.cdi.upgrad
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
@@ -261,9 +262,10 @@ public class CDITestHttpUpgradeHandler implements HttpUpgradeHandler {
 
         logBeanActivity(methodName, "Exit");
 
-        logInfo(methodName, "null out readListener [" + readListener + "] , writeListener [" + writeListener + "]");
-        readListener = null;
-        writeListener = null;
+        // Thread-safe atomic nulling of listeners
+        CDITestReadListener rl = readListener.getAndSet(null);
+        CDITestWriteListener wl = writeListener.getAndSet(null);
+        logInfo(methodName, "null out readListener [" + rl + "] , writeListener [" + wl + "]");
 
         logExit(methodName);
     }
@@ -276,7 +278,7 @@ public class CDITestHttpUpgradeHandler implements HttpUpgradeHandler {
 
     // Set during initialization of the upgrade handler.
 
-    private CDITestReadListener readListener;
+    private final AtomicReference<CDITestReadListener> readListener = new AtomicReference<>();
 
     private void setReadListener(WebConnection webConnection, List<String> queue) throws IOException {
         String methodName = "setReadListener";
@@ -285,8 +287,9 @@ public class CDITestHttpUpgradeHandler implements HttpUpgradeHandler {
         logBeanActivity(methodName, "Entry");
 
         try {
-            readListener = new CDITestReadListener(this, webConnection, queue); // throws IOException
-            logInfo(methodName, "Read Listener [ " + readListener + " ]");
+            CDITestReadListener listener = new CDITestReadListener(this, webConnection, queue); // throws IOException
+            readListener.set(listener);
+            logInfo(methodName, "Read Listener [ " + listener + " ]");
         } catch (IOException e) {
             logException(methodName, e);
             throw e;
@@ -301,7 +304,7 @@ public class CDITestHttpUpgradeHandler implements HttpUpgradeHandler {
 
     // Set by the read listener after all data has been read.
 
-    private CDITestWriteListener writeListener;
+    private final AtomicReference<CDITestWriteListener> writeListener = new AtomicReference<>();
 
     protected void setWriteListener(WebConnection webConnection, List<String> queue) throws IOException {
         String methodName = "setWriteListener";
@@ -310,8 +313,9 @@ public class CDITestHttpUpgradeHandler implements HttpUpgradeHandler {
         logBeanActivity(methodName, "Entry");
 
         try {
-            writeListener = new CDITestWriteListener(this, webConnection, queue); // throws IOException
-            logInfo(methodName, "Write Listener [ " + writeListener + " ]");
+            CDITestWriteListener listener = new CDITestWriteListener(this, webConnection, queue); // throws IOException
+            writeListener.set(listener);
+            logInfo(methodName, "Write Listener [ " + listener + " ]");
         } catch (IOException e) {
             logException(methodName, e);
             throw e;

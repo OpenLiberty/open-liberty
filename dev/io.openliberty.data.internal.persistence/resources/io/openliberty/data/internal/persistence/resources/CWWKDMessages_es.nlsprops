@@ -515,3 +515,11 @@ CWWKD1119.keyword.prevents.count.useraction=Sustituya la consulta por otra que n
 CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: El m\u00e9todo {0} de la interfaz del repositorio {1} especifica una consulta que incluye la palabra clave {2}, que es incompatible con la paginaci\u00f3n basada en cursor. Las consultas para la paginaci\u00f3n basada en el cursor deben terminar con una cl\u00e1usula WHERE y no deben incluir subconsultas. La consulta es: {3}.
 CWWKD1120.cursor.keyword.mismatch.explanation=Las palabras clave como GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT y UNION no son compatibles con la paginaci\u00f3n basada en cursor.
 CWWKD1120.cursor.keyword.mismatch.useraction=Reescribe la consulta para incluir s\u00f3lo las cl\u00e1usulas SELECT, FROM y WHERE.
+
+CWWKD1121.record.lacks.id=CWWKD1121E: El registro \u00ab {0} \u00bb no se puede utilizar como entidad porque carece de un identificador \u00fanico. Uno de los componentes del registro ( {1} ) debe llamarse id, tener un nombre que termine en _id, Id o ID, o ser del tipo java.util.UUID.
+CWWKD1121.record.lacks.id.explanation=Las entidades deben tener un atributo identificador \u00fanico.
+CWWKD1121.record.lacks.id.useraction=A\u00f1ada o cambie el nombre de un componente de registro para seguir una de las convenciones establecidas para asignar un identificador \u00fanico.
+
+CWWKD1122.entity.lacks.id=CWWKD1122E: La clase {0} no se puede utilizar como entidad porque carece de un identificador \u00fanico. Para asignar un identificador \u00fanico, aseg\u00farese de que la funci\u00f3n {1} est\u00e9 habilitada y a\u00f1ada la anotaci\u00f3n @ jakarta.persistence.Entity a la clase de entidad y a\u00f1ada la anotaci\u00f3n @ jakarta.persistence.Id a como m\u00e1ximo un campo o m\u00e9todo getter de la clase de entidad. Como alternativa, utilice un archivo META-INF/orm.xml para definir la entidad y su identificador \u00fanico.
+CWWKD1122.entity.lacks.id.explanation=Las entidades deben tener un atributo identificador \u00fanico.
+CWWKD1122.entity.lacks.id.useraction=Habilite la funci\u00f3n Jakarta Persistence y siga el modelo de entidad Jakarta Persistence para asignar un identificador \u00fanico.

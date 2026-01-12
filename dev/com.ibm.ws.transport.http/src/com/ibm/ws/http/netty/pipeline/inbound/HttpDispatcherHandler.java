@@ -38,6 +38,7 @@ import com.ibm.wsspi.http.HttpInputStream;
 import com.ibm.wsspi.http.channel.error.HttpError;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageProvider;
 import com.ibm.wsspi.http.channel.error.HttpErrorPageService;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 

@@ -33,4 +33,5 @@ Export-Package: \
 	com.ibm.ws.logging;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.jakarta.interceptor.2.1;version=latest,\
-	io.openliberty.jakarta.jsonb.3.0;version=latest
+	io.openliberty.jakarta.jsonb.3.0;version=latest,\
+	io.openliberty.jakarta.jsonp.2.1;version=latest

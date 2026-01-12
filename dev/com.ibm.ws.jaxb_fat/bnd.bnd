@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2018 IBM Corporation and others.
+# Copyright (c) 2018, 2025 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ bVersion=1.0
 src: \
 	fat/src,\
 	test-applications/jaxbApp/src,\
+	test-applications/jaxbRIApp/src,\
 	test-applications/thirdPartyJaxbApp/src
 
 fat.project: true
@@ -35,4 +36,5 @@ tested.features: \
 	com.sun.activation:jakarta.activation;version=2.0.0,\
     com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
     io.openliberty.jakarta.activation.2.0;version=latest,\
-	com.ibm.websphere.javaee.servlet.3.1;version=latest
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	com.ibm.ws.jaxb.tools;version=latest

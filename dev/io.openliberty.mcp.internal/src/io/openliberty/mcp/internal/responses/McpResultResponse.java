@@ -12,7 +12,7 @@ package io.openliberty.mcp.internal.responses;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.internal.requests.McpRequestId;
+import io.openliberty.mcp.request.RequestId;
 
 /**
  *
@@ -26,12 +26,18 @@ public class McpResultResponse extends McpResponse {
      */
     private Object result;
 
-    public McpResultResponse(McpRequestId id, Object result) {
+    public McpResultResponse(RequestId id, Object result) {
         super("2.0", id);
-        if (id.getStrVal() != null && id.getStrVal().isBlank())
-            throw new IllegalArgumentException("id must not be empty");
-        if (result == null)
+        Object rawId = id.value();
+
+        // Validate ID is NOT an empty string (numbers are always fine)
+        if (rawId instanceof String s && s.isBlank()) {
+            throw new IllegalArgumentException("id must not be an empty string");
+        }
+
+        if (result == null) {
             throw new IllegalArgumentException("Result field must be present");
+        }
         this.result = result;
     }
 

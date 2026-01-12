@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -292,13 +292,18 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(tc, "checking " + cause.getClass().getName() + " with message " + cause.getMessage());
 
-                if (cause instanceof SQLException c &&
-                    emb.isConnectionError(c))
-                    x = new DataConnectionException(original);
+                String sqlState = null;
+                if (cause instanceof SQLException c) {
+                    sqlState = c.getSQLState();
+                    if (emb.isConnectionError(c))
+                        x = new DataConnectionException(original);
+                }
                 if (x == null)
                     if (cause instanceof SQLSyntaxErrorException)
                         x = new MappingException(original);
-                    else if (cause instanceof SQLIntegrityConstraintViolationException)
+                    else if (cause instanceof SQLIntegrityConstraintViolationException ||
+                    // workaround for PostgreSQL (23505) & Microsoft SQL Server (23000)
+                             sqlState != null && sqlState.startsWith("23"))
                         x = new EntityExistsException(original);
             }
             if (x == null) {

@@ -62,7 +62,11 @@ public class TelemetryDisabledProvidersTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
-        server.addEnvVar("OTEL_JAVA_DISABLED_RESOURCE_PROVIDERS", OS_RESOURCE_PROVIDER + "," + PROCESS_RESOURCE_PROVIDER + "," + PROCESS_RUNTIME_RESOURCE_PROVIDER + "," + HOST_RESOURCE_PROVIDER);
+        server.addEnvVar("OTEL_TRACES_EXPORTER", "none");
+        server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
+        server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
+        server.addEnvVar("OTEL_JAVA_DISABLED_RESOURCE_PROVIDERS",
+                         OS_RESOURCE_PROVIDER + "," + PROCESS_RESOURCE_PROVIDER + "," + PROCESS_RUNTIME_RESOURCE_PROVIDER + "," + HOST_RESOURCE_PROVIDER);
         server.startServer();
     }
 

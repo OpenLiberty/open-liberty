@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,7 +39,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
@@ -51,11 +50,11 @@ import io.openliberty.microprofile.telemetry.internal.utils.jaeger.JaegerQueryCl
 import io.openliberty.microprofile.telemetry.internal_fat.shared.TelemetryActions;
 import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.trace.SpanKind;
-import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
-
 // In MpTelemetry-2.1 SemanticAttributes moved to their relative classes
 import io.opentelemetry.semconv.HttpAttributes;
 import io.opentelemetry.semconv.UrlAttributes;
+import io.opentelemetry.semconv.trace.attributes.SemanticAttributes;
+
 /**
  * Tests propagating traces between liberty servers running mpOpenTracing-3.0 and mpTelemetry, feeding traces to the same trace server.
  * Spans are exported to Jaeger
@@ -81,7 +80,7 @@ public class CrossFeatureJaegerTest {
 
     private static KeyPairs keyPairs = new KeyPairs(telemetryServer);
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(), keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerBaseTest.class,
                                                                                                                                                             "jaeger"));
 
     @ClassRule
@@ -98,6 +97,7 @@ public class CrossFeatureJaegerTest {
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         telemetryServer.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
+        telemetryServer.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
         telemetryServer.addEnvVar("OTEL_PROPAGATORS", "tracecontext, baggage, jaeger"); // Include the jaeger propagation headers
         telemetryServer.addEnvVar("IO_OPENLIBERTY_MICROPROFILE_TELEMETRY_INTERNAL_APPS_CROSSFEATURE_TELEMETRY_CROSSFEATURECLIENT_MP_REST_URL", getUrl(opentracingServer));
 

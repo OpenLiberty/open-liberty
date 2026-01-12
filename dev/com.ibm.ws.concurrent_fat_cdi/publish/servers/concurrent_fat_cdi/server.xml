@@ -19,17 +19,30 @@
         <feature>componenttest-2.0</feature>
         <feature>enterpriseBeansLite-4.0</feature>
         <feature>jndi-1.0</feature>
+        <feature>connectors-2.1</feature>
     </featureManager>
 
     <include location="../fatTestPorts.xml"/>
 
     <application location="concurrentCDIApp.ear">
-        <classloader commonLibraryRef="location-context"/>
+        <classloader commonLibraryRef="location-context,concurrentCDIShared"/>
     </application>
+    
+    <ejbApplication location="concurrentCDIEJBStandalone.jar">
+        <classloader commonLibraryRef="concurrentCDIShared"/>
+    </ejbApplication>
+    
+    <resourceAdapter location="${server.config.dir}connectors/concurrentCDIRAR.rar" autoStart="true">
+    </resourceAdapter>
 
     <!-- fake third-party context provider -->
     <library id="location-context">
         <file name="${server.config.dir}/lib/location-context.jar"/>
+    </library>
+    
+    <!-- Shared interface for standalone EJB -->
+    <library id="concurrentCDIShared">
+        <file name="${server.config.dir}/lib/concurrentCDIShared.jar"/>
     </library>
 
     <managedExecutorService jndiName="concurrent/sampleExecutor">

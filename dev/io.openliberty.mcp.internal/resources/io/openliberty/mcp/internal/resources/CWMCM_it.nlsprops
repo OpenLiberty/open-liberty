@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=I seguenti argomenti sono stati passati ma non sono stat
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=Il metodo richiedeva i seguenti argomenti, che per\u00f2 non sono stati forniti: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: L'argomento {1} del metodo dello strumento MCP {0} contiene componenti non supportati, quali TypeVariable, Wildcard, GenericArrayType.
+CWMCM0018E.generic.arguments.explanation=Sono stati forniti argomenti MCP Tool, ma non sono supportati. 
+CWMCM0018E.generic.arguments.useraction=Fornire argomenti che non contengano componenti generici.

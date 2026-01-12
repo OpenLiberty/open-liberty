@@ -187,8 +187,6 @@
 
 7111=Nie mo\u017cna uzyska\u0107 sesji historycznej z jednostki pracy, innej sesji historycznej, sesji serwera lub brokera sesji serwera.  Mo\u017cna uzyska\u0107 jedn\u0105 z sesji regularnych, sesj\u0119 klienta lub sesj\u0119 brokera klienta.
 
-7112=Okre\u015blono projekt EclipseLink, kt\u00f3ry korzysta z funkcji {0}, ale ta funkcja nie jest dost\u0119pna w obecnie dzia\u0142aj\u0105cej wersji pakietu JDK {1}.
-
 7113={0} nie obs\u0142uguje wywo\u0142a\u0144 z powrotem.
 
 7114=Dane izolowane nie s\u0105 obecnie obs\u0142ugiwane w obr\u0119bie brokera sesji klienta. Sesja o nazwie {0} zawiera deskryptory reprezentuj\u0105ce izolowane dane.

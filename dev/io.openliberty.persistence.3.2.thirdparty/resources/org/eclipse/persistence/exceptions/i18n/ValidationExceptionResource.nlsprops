@@ -187,8 +187,6 @@
 
 7111=You may not acquire a HistoricalSession from a UnitOfWork, another HistoricalSession, a ServerSession, or a ServerSessionBroker.  You may acquire one from a regular session, a ClientSession, or a ClientSessionBroker.
 
-7112=You have specified that EclipseLink uses the feature : {0}, but this feature is not available in the currently running JDK version :{1}.
-
 7113={0} does not support call with returning.
 
 7114=Isolated data is not currently supported within a client session broker. Session named {0} contains descriptors representing isolated data.

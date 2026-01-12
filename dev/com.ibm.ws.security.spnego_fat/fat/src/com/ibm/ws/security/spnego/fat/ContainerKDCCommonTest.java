@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,7 +16,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.text.DateFormat;
@@ -209,13 +214,14 @@ public class ContainerKDCCommonTest {
      * @throws InterruptedException
      */
     private static void createSpnegoToken(String thisMethod, String user, String password) throws Exception, InterruptedException {
+        boolean retriedWithEbcdic = false;
         for (int i = 1; i <= 3; i++) {
             try {
                 spnegoTokenForTestClass = createToken(user, password, TARGET_SERVER, null, null, configFile, krb5Helper, true, Krb5Helper.SPNEGO_MECH_OID, null);
                 break;
             } catch (LoginException e) {
+                Log.info(c, thisMethod, "Login still failed after " + i + " attempts");
                 if (i == 3) {
-                    Log.info(c, thisMethod, "Login still failed after " + i + " attempts");
                     String errorMsg = "Exception was caught while trying to create a SPNEGO token. Due to LoginException: " + e.getMessage();
                     Log.error(c, thisMethod, e, errorMsg);
                     e.printStackTrace();
@@ -223,12 +229,72 @@ public class ContainerKDCCommonTest {
                 }
                 Thread.sleep(2000);
             } catch (Exception e2) {
+                // Check if this is a KrbException with status code 0 on z/OS
+                if (!retriedWithEbcdic && isZOS() && isKrbExceptionWithStatusCode0(e2)) {
+                    Log.info(c, thisMethod, "Caught KrbException with status code 0 on z/OS. Attempting to convert krb5 config to EBCDIC and retry.");
+                    try {
+                        convertKrb5ConfigToEbcdic(configFile);
+                        retriedWithEbcdic = true;
+                        // Retry the token creation after conversion
+                        continue;
+                    } catch (IOException ioEx) {
+                        Log.error(c, thisMethod, ioEx, "Failed to convert krb5 config file to EBCDIC: " + ioEx.getMessage());
+                        // Fall through to throw the original exception
+                    }
+                }
                 String errorMsg = "Exception was caught while trying to create a SPNEGO token. Ensuing tests requiring use of this token might fail. " + e2.getMessage();
                 Log.error(c, thisMethod, e2, errorMsg);
                 e2.printStackTrace();
                 throw (new Exception(errorMsg, e2));
             }
         }
+    }
+
+    /**
+     * Check if the current OS is z/OS
+     */
+    private static boolean isZOS() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.toLowerCase().contains("z/os");
+    }
+
+    /**
+     * Check if the exception is a com.ibm.security.krb5.KrbException with status code 0
+     */
+    private static boolean isKrbExceptionWithStatusCode0(Exception e) {
+        Throwable cause = e;
+        while (cause != null) {
+            String className = cause.getClass().getName();
+            if ("com.ibm.security.krb5.KrbException".equals(className)) {
+                String message = cause.getMessage();
+                // Check if the message contains "status code: 0"
+                if (message != null && message.contains("status code: 0")) {
+                    return true;
+                }
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
+
+    /**
+     * Convert the krb5 config file from ASCII to EBCDIC (IBM1047) charset
+     */
+    private static void convertKrb5ConfigToEbcdic(String krb5ConfigPath) throws IOException {
+        String method = "convertKrb5ConfigToEbcdic";
+        Log.info(c, method, "Converting krb5 config file to EBCDIC: " + krb5ConfigPath);
+        
+        Path configPath = Paths.get(krb5ConfigPath);
+        
+        // Read the file content as ASCII
+        String content = new String(Files.readAllBytes(configPath), Charset.forName("US-ASCII"));
+        
+        // Write the content back using EBCDIC charset
+        try (OutputStreamWriter writer = new OutputStreamWriter(new FileOutputStream(configPath.toFile()), Charset.forName("IBM1047"))) {
+            writer.write(content);
+        }
+        
+        Log.info(c, method, "Successfully converted krb5 config file to EBCDIC");
     }
 
     public static String createToken(String username, String password, String targetServer, String realm, String kdcHostName, String krb5ConfPath,

@@ -101,6 +101,10 @@ public class TelemetryUserFeatureTest extends FATServletClient {
 
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
 
+        server.addEnvVar("OTEL_TRACES_EXPORTER", "none");
+        server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
+        server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
+
         server.startServer();
     }
 

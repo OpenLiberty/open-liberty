@@ -140,6 +140,13 @@ public class JAXRS21ClientTestServlet extends FATServlet {
         }
     
         client.close();
+
+        // Wait for threads to expire 
+        try {
+                Thread.sleep(10000);
+        } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+        }
         
         // Get final thread count 
         // If there's a leak, threads will still be high

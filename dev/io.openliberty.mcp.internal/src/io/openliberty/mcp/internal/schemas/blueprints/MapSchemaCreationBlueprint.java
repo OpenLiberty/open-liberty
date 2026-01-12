@@ -37,7 +37,6 @@ public record MapSchemaCreationBlueprint(Type baseType, Type keyType, Type value
     /** {@inheritDoc} */
     @Override
     public JsonObjectBuilder toJsonSchemaObject(SchemaGenerationContext ctx, String description) {
-
         JsonObjectBuilder valueSchemaBuilder = SchemaGenerator.generateSubSchema(valueType, ctx, SchemaAnnotation.EMPTY);
         SchemaCreationBlueprint keyScb = ctx.getBlueprintRegistry().getSchemaCreationBlueprint(keyType);
 

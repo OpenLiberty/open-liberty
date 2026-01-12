@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=Se pasaron los siguientes argumentos, pero no se encontr
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=El m\u00e9todo esperaba los siguientes argumentos, pero no se proporcionaron: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: El argumento {1} del m\u00e9todo de la herramienta MCP {0} contiene componentes no compatibles, como TypeVariable, Wildcard, GenericArrayType.
+CWMCM0018E.generic.arguments.explanation=Se proporcionaron argumentos de la herramienta MCP, pero no son compatibles. 
+CWMCM0018E.generic.arguments.useraction=Proporcione argumentos que no tengan componentes gen\u00e9ricos.

@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=Byly p\u0159ed\u00e1ny n\u00e1sleduj\u00edc\u00ed argume
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=Metoda o\u010dek\u00e1vala n\u00e1sleduj\u00edc\u00ed argumenty, ale nebyly poskytnuty: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: Argument \u201e {1} \u201c metody n\u00e1stroje MCP \u201e {0} \u201c obsahuje nepodporovan\u00e9 komponenty, jako jsou \u201e TypeVariable, Wildcard\u201c a \u201e GenericArrayType \u201c.
+CWMCM0018E.generic.arguments.explanation=Byly poskytnuty argumenty n\u00e1stroje MCP, ale nejsou podporov\u00e1ny. 
+CWMCM0018E.generic.arguments.useraction=Poskytn\u011bte argumenty, kter\u00e9 neobsahuj\u00ed obecn\u00e9 komponenty.

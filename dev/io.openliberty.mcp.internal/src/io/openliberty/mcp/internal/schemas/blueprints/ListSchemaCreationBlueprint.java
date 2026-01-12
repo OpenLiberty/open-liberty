@@ -27,9 +27,7 @@ public record ListSchemaCreationBlueprint(Type baseType, Type itemType) implemen
     /** {@inheritDoc} */
     @Override
     public JsonObjectBuilder toJsonSchemaObject(SchemaGenerationContext ctx, String description) {
-
         JsonObjectBuilder itemsSubSchemaBuilder = SchemaGenerator.generateSubSchema(itemType, ctx, SchemaAnnotation.EMPTY);
-
         JsonObjectBuilder schemaBuilder = Json.createObjectBuilder()
                                               .add(TYPE, ARRAY)
                                               .add(ITEMS, itemsSubSchemaBuilder.build());

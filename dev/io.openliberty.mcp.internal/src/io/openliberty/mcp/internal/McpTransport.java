@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -22,16 +23,20 @@ import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpRequest;
-import io.openliberty.mcp.internal.requests.McpRequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
+import io.openliberty.mcp.internal.sessions.McpSession;
+import io.openliberty.mcp.internal.sessions.McpSessionId;
+import io.openliberty.mcp.internal.sessions.McpSessionStore;
+import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
@@ -54,7 +59,6 @@ public class McpTransport {
     private McpRequest mcpRequest;
     private Writer writer;
     private McpProtocolVersion version;
-    private String sessionId;
     private McpSession sessionInfo;
     private static final AtomicInteger TIMEOUT_SECONDS = new AtomicInteger(30); //Make this configurable
 
@@ -62,14 +66,16 @@ public class McpTransport {
         this.req = req;
         this.res = res;
         this.jsonb = jsonb;
-        writer = res.getWriter();
+        req.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        res.setCharacterEncoding(StandardCharsets.UTF_8.name());
+        writer = res.getWriter(); // Writer must be acquired after setting response character encoding
     }
 
     /**
      * Initialises McpTransport
      * Checks if the request is valid so we know if further processing can be done
      *
-     * @return true if initialisation is successful, false otherwise.
+     * @param sessionStore the session store
      * @throws IOException if an I/O exception occurs.
      */
     @FFDCIgnore(NoSuchElementException.class)
@@ -167,7 +173,7 @@ public class McpTransport {
      * <p>
      * Intended only for sending the Session ID header with initialize response
      */
-    void setResponseHeader(String name, String value) {
+    void setResponseHeader(String name, @Sensitive String value) {
         res.setHeader(name, value);
     }
 
@@ -187,7 +193,7 @@ public class McpTransport {
      *
      * @return the session ID string, or {@code null} if none is available
      */
-    public String getSessionId() {
+    public McpSessionId getSessionId() {
         return sessionInfo == null ? null : sessionInfo.getSessionId();
     }
 
@@ -243,7 +249,7 @@ public class McpTransport {
      * @param e The JSONRPCException to be included in the error response.
      */
     public void sendJsonRpcException(JSONRPCException e) {
-        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new McpRequestId("") : mcpRequest.id(), e);
+        McpResponse mcpResponse = new McpErrorResponse(mcpRequest == null ? new RequestId("") : mcpRequest.id(), e);
         res.setContentType("application/json");
         jsonb.toJson(mcpResponse, writer);
     }
@@ -298,5 +304,24 @@ public class McpTransport {
             }
             return null;
         });
+    }
+
+    /**
+     * Check if user is in role
+     */
+    public boolean isUserInRole(String role) {
+        return req.isUserInRole(role);
+    }
+
+    /**
+     * Check if user has any of the roles in the List
+     */
+    public boolean isUserInRole(List<String> roleList) {
+        for (String role : roleList) {
+            if (isUserInRole(role)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

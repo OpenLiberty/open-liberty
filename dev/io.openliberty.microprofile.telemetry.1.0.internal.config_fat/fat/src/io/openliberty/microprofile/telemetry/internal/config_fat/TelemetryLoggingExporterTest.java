@@ -49,7 +49,7 @@ public class TelemetryLoggingExporterTest extends FATServletClient {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addClasses(LoggingServlet.class)
                         //Use logging exporter
-                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=logging"),
+                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=logging\notel.logs.exporter=none\notel.metrics.exporter=none"),
                                        "META-INF/microprofile-config.properties");
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);

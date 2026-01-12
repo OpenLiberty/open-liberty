@@ -11,6 +11,7 @@ package io.openliberty.mcp.internal.test;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ToolMetadata;
@@ -23,6 +24,17 @@ public class ToolMetadataTestUtility {
     public static ToolMetadata createFrom(Tool annotation, Map<String, ToolMetadata.ArgumentMetadata> arguments, List<ToolMetadata.SpecialArgumentMetadata> specialArguments) {
         // used for unit Tests that pre-populate argumentData and create Tools within the tests
         String title = annotation.title().isEmpty() ? null : annotation.title();
-        return new ToolMetadata(annotation, null, null, arguments, specialArguments, annotation.name(), title, annotation.description(), null, false, null, null);
+        return new ToolMetadata(annotation.name(),
+                                title,
+                                annotation.description(),
+                                arguments,
+                                ToolMetadata.readAnnotations(annotation.annotations()),
+                                false,
+                                null,
+                                null,
+                                t -> null,
+                                null,
+                                Optional.empty(),
+                                null);
     }
 }

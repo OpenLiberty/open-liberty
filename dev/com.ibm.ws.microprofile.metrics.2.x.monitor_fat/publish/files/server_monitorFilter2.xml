@@ -8,6 +8,8 @@
     </featureManager>
 
     <monitor  filter="WebContainer,Session"/>
+    
+    <httpSession useSeparateSessionInvalidatorThreadPool="false" delayInvalidationAlarmDuringServerStartup="90"/>
 
     <include location="../fatTestPorts.xml"/>
     <include location="serverJDBCConfig.xml"/>

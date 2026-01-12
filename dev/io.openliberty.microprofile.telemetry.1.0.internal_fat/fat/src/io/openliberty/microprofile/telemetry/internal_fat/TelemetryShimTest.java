@@ -29,8 +29,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.RepeatTestFilter;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -64,14 +62,14 @@ public class TelemetryShimTest extends FATServletClient {
             shimFile = "lib/shim129";
         } else if (FATSuite.getTelemetryVersionUnderTest().equals("2.1")) { //MpTelemetry version 2.1
             shimFile = "lib/shim148";
-        }  else { //MpTelemetry version 2.0
+        } else { //MpTelemetry version 2.0
             shimFile = "lib/shim139";
         }
 
         WebArchive exporterTestWar = ShrinkWrap.create(WebArchive.class, SHIM_APP_NAME + ".war")
-            .addClass(OpenTracingShimServlet.class)
-            .addClass(TracedBean.class)
-            .addAsLibraries(new File(shimFile).listFiles());
+                        .addClass(OpenTracingShimServlet.class)
+                        .addClass(TracedBean.class)
+                        .addAsLibraries(new File(shimFile).listFiles());
         ShrinkHelper.exportAppToServer(server, exporterTestWar, SERVER_ONLY);
 
         server.startServer();

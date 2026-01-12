@@ -118,7 +118,9 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                         isForward ? queryInfo.jpqlAfterCursor : //
                                         queryInfo.jpqlBeforeCursor;
 
-        jakarta.persistence.Query query = em.createQuery(jpql);
+        @SuppressWarnings("unchecked")
+        TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql,
+                                                             Object.class);
         queryInfo.setParameters(query, args);
 
         if (cursor.isPresent())
@@ -127,7 +129,6 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
         query.setFirstResult(firstResult);
         query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1)); // extra position is for knowing whether to expect another page
 
-        @SuppressWarnings("unchecked")
         List<T> resultList = query.getResultList();
         results = resultList;
 

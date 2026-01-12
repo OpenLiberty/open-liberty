@@ -46,9 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: El objeto DatabaseIdentityStor
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Se ha devuelto una lista parcial de los grupos para el interlocutor en lugar de una lista completa de los grupos debido a un error en la consulta.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Revise el error proporcionado y realice las correcciones oportunas en la consulta para que se devuelva la lista completa de los grupos para el interlocutor. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: La credencial proporcionada al objeto IdentityStore no es una UsernamePasswordCredential y no se puede validar.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=La credencial proporcionada al objeto IdentityStore no es una clase UsernamePasswordCredential y no se puede validar.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=Revise el tipo de credencial que se ha pasado al objeto IdentityStore mediante la implementaci\u00f3n de HttpAuthMechanism.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: La credencial proporcionada al objeto IdentityStore no es ni UsernamePasswordCredential ni CallerOnlyCredential y no se puede validar.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=La credencial proporcionada al objeto IdentityStore no es ni una clase UsernamePasswordCredential ni una CallerOnlyCredential y no se puede validar.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Revise el tipo de credencial pasada al objeto IdentityStore por la implementaci\u00f3n HttpAuthenticationMechanism.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: El algoritmo hash no se ha encontrado para la clase {0}.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=No se ha encontrado el algoritmo hash listado en el elemento hashAlgorithm en la anotaci\u00f3n DatabaseIdentityStoreDefinition.

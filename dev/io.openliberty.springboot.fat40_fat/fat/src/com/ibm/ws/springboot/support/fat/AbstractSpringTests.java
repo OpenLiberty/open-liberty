@@ -46,12 +46,11 @@ import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
 import com.ibm.websphere.simplicity.config.WebApplication;
 
-import componenttest.containers.TestContainerSuite;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-public abstract class AbstractSpringTests extends TestContainerSuite {
+public abstract class AbstractSpringTests {
 
     @Rule
     public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("SpringBootTests");
@@ -75,7 +74,7 @@ public abstract class AbstractSpringTests extends TestContainerSuite {
     public static final String SPRING_BOOT_40_NO_CONTEXTROOT_WAR = "io.openliberty.springboot.fat40.http.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_40_WITH_CONTEXTROOT_WAR = "io.openliberty.springboot.fat40.http.contextroot.app-0.0.1-SNAPSHOT.war";
     public static final String SPRING_BOOT_40_APP_AOP = "io.openliberty.springboot.fat40.aop.app-0.0.1-SNAPSHOT.war";
-    
+
     // Various spring configuration property fragments.
     public static final String ID_VIRTUAL_HOST = "springBootVirtualHost-";
     public static final String ID_HTTP_ENDPOINT = "springBootHttpEndpoint-";

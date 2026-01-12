@@ -516,3 +516,11 @@ CWWKD1119.keyword.prevents.count.useraction=Remplacez la requ\u00eate par une au
 CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: La m\u00e9thode {0} de l''interface du r\u00e9f\u00e9rentiel {1} sp\u00e9cifie une requ\u00eate qui inclut le mot-cl\u00e9 {2}, ce qui est incompatible avec la pagination bas\u00e9e sur le curseur. Les requ\u00eates pour la pagination par curseur doivent se terminer par une clause WHERE et ne doivent pas inclure de sous-requ\u00eates. La requ\u00eate est la suivante : {3}.
 CWWKD1120.cursor.keyword.mismatch.explanation=Les mots-cl\u00e9s tels que GROUP BY, HAVING, ORDER BY, EXCEPT, INTERSECT et UNION ne sont pas compatibles avec la pagination bas\u00e9e sur le curseur.
 CWWKD1120.cursor.keyword.mismatch.useraction=R\u00e9\u00e9crivez la requ\u00eate pour n'inclure que les clauses : SELECT, FROM et WHERE.
+
+CWWKD1121.record.lacks.id=CWWKD1121E: L''enregistrement {0} ne peut pas \u00eatre utilis\u00e9 en tant qu''entit\u00e9 car il ne dispose pas d''un identifiant unique. L''un des composants de l''enregistrement ( {1} ) doit \u00eatre nomm\u00e9 id, avoir un nom se terminant par _id, Id ou ID, ou \u00eatre de type java.util.UUID.
+CWWKD1121.record.lacks.id.explanation=Les entit\u00e9s doivent disposer d'un attribut d'identifiant unique.
+CWWKD1121.record.lacks.id.useraction=Ajoutez ou renommez un composant d'enregistrement afin de respecter l'une des conventions \u00e9nonc\u00e9es pour l'attribution d'un identifiant unique.
+
+CWWKD1122.entity.lacks.id=CWWKD1122E: La classe {0} ne peut pas \u00eatre utilis\u00e9e en tant qu''entit\u00e9 car elle ne dispose pas d''identifiant unique. Pour attribuer un identifiant unique, assurez-vous que la fonctionnalit\u00e9 {1} est activ\u00e9e, ajoutez l''annotation @ jakarta.persistence.Entity \u00e0 la classe d''entit\u00e9 et ajoutez l''annotation @ jakarta.persistence.Id \u00e0 au maximum un champ ou une m\u00e9thode getter de la classe d''entit\u00e9. Vous pouvez \u00e9galement utiliser un fichier META-INF/orm.xml pour d\u00e9finir l''entit\u00e9 et son identifiant unique.
+CWWKD1122.entity.lacks.id.explanation=Les entit\u00e9s doivent disposer d'un attribut d'identifiant unique.
+CWWKD1122.entity.lacks.id.useraction=Activez la fonctionnalit\u00e9 Jakarta Persistence et suivez le mod\u00e8le d'entit\u00e9 Jakarta Persistence pour attribuer un identifiant unique.

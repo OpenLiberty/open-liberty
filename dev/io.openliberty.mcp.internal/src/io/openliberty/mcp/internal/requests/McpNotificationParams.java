@@ -9,20 +9,21 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
+import io.openliberty.mcp.request.RequestId;
 import jakarta.json.bind.annotation.JsonbNillable;
 
 @JsonbNillable(value = false)
 public class McpNotificationParams {
 
     //Cancelled Notification params
-    private McpRequestId requestId;
+    private RequestId requestId;
     private String reason;
 
-    public McpRequestId getRequestId() {
+    public RequestId getRequestId() {
         return requestId;
     }
 
-    public void setRequestId(McpRequestId requestId) {
+    public void setRequestId(RequestId requestId) {
         this.requestId = requestId;
     }
 

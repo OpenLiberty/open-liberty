@@ -100,14 +100,15 @@ public class PageImpl<T> implements Page<T> {
         this.pageRequest = pageRequest;
         this.args = args;
 
-        jakarta.persistence.Query query = em.createQuery(queryInfo.jpql);
+        @SuppressWarnings("unchecked")
+        TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql,
+                                                             Object.class);
         queryInfo.setParameters(query, args);
 
         int maxPageSize = pageRequest.size();
         query.setFirstResult(queryInfo.computeOffset(pageRequest));
         query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE ? 0 : 1));
 
-        @SuppressWarnings("unchecked")
         List<T> resultList = query.getResultList();
         results = resultList;
 

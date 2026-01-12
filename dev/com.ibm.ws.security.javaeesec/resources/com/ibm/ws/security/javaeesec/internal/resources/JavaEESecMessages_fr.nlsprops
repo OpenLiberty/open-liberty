@@ -46,10 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: L''objet DatabaseIdentityStore
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Une liste partielle des groupes pour l'appelant est renvoy\u00e9e \u00e0 la place de la liste compl\u00e8te en raison d'une erreur dans la requ\u00eate.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Consultez l'erreur fournie et apportez les corrections n\u00e9cessaires \u00e0 la requ\u00eate afin que la liste compl\u00e8te des groupes pour l'appelant puisse \u00eatre renvoy\u00e9e.
 
-
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Les donn\u00e9es d'identification fournies dans l'objet IdentityStore ne correspondent pas \u00e0 UsernamePasswordCredential et ne peuvent pas \u00eatre valid\u00e9es.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=Les donn\u00e9es d'identification fournies \u00e0 l'objet IdentityStore ne correspondent pas \u00e0 une classe UsernamePasswordCredential et ne peuvent pas \u00eatre valid\u00e9es.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=V\u00e9rifiez le type des donn\u00e9es d'identification transmises dans l'objet IdentityStore par l'impl\u00e9mentation HttpAuthMechanism.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Les informations d'identification fournies \u00e0 l'objet IdentityStore ne sont ni UsernamePasswordCredential ni CallerOnlyCredential et ne peuvent pas \u00eatre valid\u00e9es.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Les informations d'identification fournies \u00e0 l'objet IdentityStore ne sont ni une classe UsernamePasswordCredential ni une classe CallerOnlyCredential et ne peuvent donc pas \u00eatre valid\u00e9es.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=V\u00e9rifiez le type d'informations d'identification transmises \u00e0 l'objet IdentityStore par l'impl\u00e9mentation HttpAuthenticationMechanism.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Le bean d''algorithme de hachage est introuvable pour la classe {0}.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=L'algorithme de hachage r\u00e9pertori\u00e9 dans l'\u00e9l\u00e9ment hashAlgorithm dans l'annotation DatabaseIdentityStoreDefinition est introuvable.

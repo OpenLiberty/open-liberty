@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public class AsyncErrTest extends FATServletClient {
     public static LibertyServer server;
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE10_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE9_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE10_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer")).andWith(FeatureReplacementAction.EE11_FEATURES().forServers("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer"));
 
     protected void runTest(String servlet, String testName) throws Exception {
         FATServletClient.runTest(server, servlet, testName);
@@ -56,7 +56,7 @@ public class AsyncErrTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        eeVersion = JakartaEEAction.isEE10OrLaterActive() ? "_EE10" : JakartaEEAction.isEE9Active() ? "_EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "_EE8" : "";
+        eeVersion = JakartaEEAction.isEE11OrLaterActive() ? "_EE11" : JakartaEEAction.isEE10Active() ? "_EE10" : JakartaEEAction.isEE9Active() ? "_EE9" : RepeatTestFilter.isRepeatActionActive(EE8FeatureReplacementAction.ID) ? "_EE8" : "";
 
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.ejbcontainer.session.async.fat.AsyncErrServer");
 

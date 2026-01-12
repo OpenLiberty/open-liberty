@@ -4,11 +4,8 @@
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
     http://www.eclipse.org/legal/epl-2.0/
-    
+
     SPDX-License-Identifier: EPL-2.0
-   
-    Contributors:
-        IBM Corporation - initial API and implementation
  -->
 <server description="Basic gRPC TLS server">
     <featureManager>
@@ -16,15 +13,15 @@
         <feature>grpcClient-1.0</feature>
         <feature>transportSecurity-1.0</feature>
     </featureManager>
-    
+
     <grpcClient host="*" sslRef="CustomSSLSettings" />
-    
+
     <include location="../fatTestPorts.xml" />
 
     <javaPermission className="java.security.AllPermission"
         name="*" actions="*" />
 
-    <sslDefault sslRef="CustomSSLSettings" /> 
+    <sslDefault sslRef="CustomSSLSettings" />
     <!--  TLSv1.2 or higher required by Netty client -->
     <ssl
         id="CustomSSLSettings"

@@ -46,9 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: DatabaseIdentityStore non \u00
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A causa di un errore nella query viene restituito un elenco parziale dei gruppi per il chiamante invece di un elenco completo di gruppi.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Esaminare l'errore fornito e apportare le correzioni alla query in modo che venga restituito l'elenco completo dei gruppi per il chiamante. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: La credenziale fornita all'oggetto IdentityStore non \u00e8 una UsernamePasswordCredential e non pu\u00f2 essere convalidata.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=La credenziale fornita all'oggetto IdentityStore non \u00e8 una classe UsernamePasswordCredential e non pu\u00f2 essere convalidata.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=Esaminare il tipo di credenziale trasmesso all'oggetto IdentityStore dall'implementazione HttpAuthMechanism.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: La credenziale fornita all'oggetto IdentityStore non \u00e8 n\u00e9 un UsernamePasswordCredential n\u00e9 un CallerOnlyCredential e non pu\u00f2 essere convalidata.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=La credenziale fornita all'oggetto IdentityStore non \u00e8 n\u00e9 una classe UsernamePasswordCredential n\u00e9 una CallerOnlyCredential e non pu\u00f2 essere convalidata.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Esamina il tipo di credenziale passato all'oggetto IdentityStore dall'implementazione HttpAuthenticationMechanism.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Bean algoritmo hash non trovato per la classe {0}.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=L'algoritmo hash elencato nell'elemento hashAlgorithm nell'annotazione DatabaseIdentityStoreDefinition non \u00e8 stato trovato.

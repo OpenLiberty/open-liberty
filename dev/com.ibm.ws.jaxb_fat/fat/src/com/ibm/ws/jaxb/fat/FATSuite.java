@@ -25,6 +25,7 @@ import componenttest.rules.repeater.RepeatTests;
 @SuiteClasses({
                 LibertyJAXBTest.class,
                 LibertyJAXBSpecTest.class,
+                LibertyJAXBRITest.class,
                 ThirdPartyJAXBFromJDKTest.class,
                 ThirdPartyJAXBFromAppTest.class,
                 JAXBToolsTest.class

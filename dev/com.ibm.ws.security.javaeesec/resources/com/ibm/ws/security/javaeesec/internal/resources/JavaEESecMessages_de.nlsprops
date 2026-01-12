@@ -37,6 +37,7 @@ JAVAEESEC_WARNING_IDSTORE_CONFIG.useraction=Stellen Sie sicher, dass die Annotat
 JAVAEESEC_ERROR_BAD_HASH_PARAM=CWWKS1917E: Ein hashAlgorithm-Parameter, der f\u00fcr den Hashalgorithmus {0} angegeben wurde, hat das falsche Format. Der empfangene Parameter ist {1}. Das erforderliche Format ist Name=Wert.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.explanation=Eine Liste mit hashAlgorithm-Parametern hat das falsche Format und kann daher nicht syntaktisch analysiert werden.
 JAVAEESEC_ERROR_BAD_HASH_PARAM.useraction=Korrigieren Sie das hashAlgorithmParameters-Element in der DatabaseIdentityStore-Annotation. 
+
 JAVAEESEC_ERROR_GEN_DB=CWWKS1918E: Die Berechtigungsnachweise f\u00fcr den Caller {0} k\u00f6nnen nicht validiert werden. Das DatabaseIdentityStore-Objekt kann die Abfrage ''{1}'' nicht ausf\u00fchren. Fehler: {2}
 JAVAEESEC_ERROR_GEN_DB.explanation=Die Suche nach dem Caller ist mit einem Fehler fehlgeschlagen.
 JAVAEESEC_ERROR_GEN_DB.useraction=Sehen Sie sich die Fehlernachricht an und nehmen Sie anhand der Fehlernachricht die entsprechenden Korrekturen an der Suche vor.
@@ -45,13 +46,14 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Das DatabaseIdentityStore-Obje
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Aufgrund eines Fehlers in der Abfrage wird anstelle einer vollst\u00e4ndigen Liste eine Teilliste von Gruppen f\u00fcr den Caller zur\u00fcckgegeben.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Sehen Sie sich die Fehlernachricht an und nehmen Sie die entsprechenden \u00c4nderungen an der Abfrage vor, damit eine vollst\u00e4ndige Liste von Gruppen f\u00fcr den Caller zur\u00fcckgegeben wird. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Der Berechtigungsnachweis, der dem IdentityStore-Objekt bereitgestellt wird, ist kein UsernamePasswordCredential und kann nicht validiert werden.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=Der Berechtigungsnachweis, der dem IdentityStore-Objekt bereitgestellt wird, geh\u00f6rt nicht zur Klasse UsernamePasswordCredential und kann nicht validiert werden.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=\u00dcberpr\u00fcfen Sie den Typ des Berechtigungsnachweises, der von der HttpAuthMechanism-Implementierung an das IdentityStore-Objekt \u00fcbergeben wird.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Die dem Objekt \u201e IdentityStore \u201c bereitgestellte Anmeldeinformation ist weder \u201e UsernamePasswordCredential \u201c noch \u201e CallerOnlyCredential \u201c und kann nicht validiert werden.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Die dem Objekt \u201e IdentityStore \u201c bereitgestellte Anmeldeinformation ist weder eine Klasse \u201e UsernamePasswordCredential \u201c noch eine \u201e CallerOnlyCredential \u201c und kann nicht validiert werden.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=\u00dcberpr\u00fcfen Sie den Typ der Anmeldeinformationen, die von der Implementierung \u201e HttpAuthenticationMechanism \u201c an das Objekt \u201e IdentityStore \u201c \u00fcbergeben wurden.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Die Hashalgorithmusbean wurde f\u00fcr die Klasse {0} nicht gefunden.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Der \u00fcber das hashAlgorithm-Element in der DatabaseIdentityStoreDefinition-Annotation aufgelistete Hashalgorithmus wurde nicht gefunden.
 JAVAEESEC_ERROR_HASH_NOTFOUND.useraction=F\u00fcgen Sie den angepassten Hashalgorithmus als Bean hinzu, die f\u00fcr die Anwendung verf\u00fcgbar ist.
+
 JAVAEESEC_WARNING_NO_PWD=CWWKS1923W: Die Abfrage ''{1}'' hat kein Kennwort f\u00fcr den {0}-Caller f\u00fcr den DatabaseIdentityStore zur\u00fcckgegeben.
 JAVAEESEC_WARNING_NO_PWD.explanation=Die Abfrage hat kein Kennwort f\u00fcr die angegebene Caller-Abfrage zur\u00fcckgegeben.
 JAVAEESEC_WARNING_NO_PWD.useraction=Wenn ein Kennwort erwartet wurde, \u00fcberpr\u00fcfen Sie die Caller-Abfrage und die Datenbankinhalte.

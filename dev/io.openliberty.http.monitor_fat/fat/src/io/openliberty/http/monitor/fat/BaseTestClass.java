@@ -511,14 +511,17 @@ public abstract class BaseTestClass {
     }
 
     /**
-     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses the default of 20 seconds.
+     * Waits one second before checking the condition. Will wait 1 second for every retry amount. Uses a default of 55 seconds.
      * In scenario where export times out, there appears to be an average of 15s before the export is re-attempted.
+     * A 20 second wait covers most cases (single failure), sometimes export fails twice in a row. Less often three times in a row.
+     * Three failures should equate to roughly 45 seconds, we'll add a 10 second extra buffer for 55 seconds to wait out 3 failures.
      *
      * @param condition condition being evaluated
      * @throws InterruptedException
      */
     protected void assertTrueRetryWithTimeout(Supplier<Boolean> condition) throws InterruptedException {
-        assertTrueRetryWithTimeout(condition, 20);
+        final int FIFTY_FIVE_SECONDS = 55; // see this method's javadoc for why we set it to 55.
+        assertTrueRetryWithTimeout(condition, FIFTY_FIVE_SECONDS);
     }
 
     /**

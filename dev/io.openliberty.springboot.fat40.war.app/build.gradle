@@ -13,7 +13,7 @@
 
 // https://plugins.gradle.org/plugin/org.springframework.boot
 plugins {
-  id 'org.springframework.boot' version '4.0.0-RC2'
+  id 'org.springframework.boot' version '4.0.0'
   id 'war'
   id 'io.spring.dependency-management' version '1.1.7'
 }
@@ -29,5 +29,5 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
   implementation('org.springframework.boot:spring-boot-starter-web')
-  providedCompile('org.springframework.boot:spring-boot-starter-tomcat')
+  providedRuntime('org.springframework.boot:spring-boot-starter-tomcat-runtime')
 }

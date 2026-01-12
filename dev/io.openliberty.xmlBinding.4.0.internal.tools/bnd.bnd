@@ -87,7 +87,8 @@ Include-Resource: \
   @\${repo;com.sun.xml.bind.external:relaxng-datatype;3.0.1}!/!(META-INF/maven/*|module-info.class), \
   @\${repo;com.sun.xml.bind.external:rngom;3.0.1}!/!(META-INF/maven/*|module-info.class), \
   @\${repo;com.sun.istack:istack-commons-runtime;4.0.1}!/!(META-INF/maven/*|module-info.class), \
-  @\${repo;com.sun.istack:istack-commons-tools;4.0.1}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;com.sun.istack:istack-commons-tools;4.0.1}!/!(META-INF/maven/*|module-info.class), \
+  org/glassfish/jaxb/runtime/v2/model/impl=${bin}/org/glassfish/jaxb/runtime/v2/model/impl
 
 Private-Package:\
   com.sun.istack.*, \
@@ -115,4 +116,5 @@ instrument.disabled: true
     com.sun.xml.bind.external:rngom;version=3.0.1, \
     com.sun.istack:istack-commons-runtime;version=4.0.1, \
     com.sun.istack:istack-commons-tools;version=4.0.1, \
-    com.ibm.ws.org.apache.ant;strategy=exact;version=latest
+    com.ibm.ws.org.apache.ant;strategy=exact;version=latest, \
+    io.openliberty.jakarta.activation.2.0

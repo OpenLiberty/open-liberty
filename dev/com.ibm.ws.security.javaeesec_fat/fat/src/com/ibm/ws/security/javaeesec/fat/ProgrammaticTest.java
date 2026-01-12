@@ -65,6 +65,11 @@ public class ProgrammaticTest extends JavaEESecTestBase {
 
         urlBase = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
         urlHttps = "https://" + myServer.getHostname() + ":" + myServer.getHttpDefaultSecurePort();
+
+        /*
+         * Wait for the SSL endpoint to start.
+         */
+        myServer.waitForSSLStart();
     }
 
     @AfterClass

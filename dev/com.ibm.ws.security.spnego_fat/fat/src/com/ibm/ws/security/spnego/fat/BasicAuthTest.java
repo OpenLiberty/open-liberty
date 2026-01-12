@@ -155,8 +155,7 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
     public void testSpnegoUsingRawKerberosTokenSuccessful() throws Exception {
         setDefaultSpnegoServerConfig();
         String targetSpn = "HTTP/" + TARGET_SERVER;
-        String krb5Config = myServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
-        Subject subject = krb5Helper.kerberosLogin(myServer, this.krbUser1, this.krbUser1Pwd, krb5Config);
+        Subject subject = krb5Helper.kerberosLogin(myServer, this.krbUser1, this.krbUser1Pwd, configFile);
         String token = krb5Helper.createToken(subject, this.krbUser1, targetSpn, true, 5, 6, 7, 8, Krb5Helper.KRB5_MECH_OID);
         Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + token, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
         Log.info(c, name.getMethodName(), "Accessing SPNEGO servlet using raw Kerberos token");
@@ -244,12 +243,11 @@ public class BasicAuthTest extends ContainerKDCCommonTest {
         try {
             String userName = InitClass.FIRST_USER;
             String targetSpn = "HTTP/" + TARGET_SERVER;
-            String krb5Config = myServer.getServerRoot() + SPNEGOConstants.SERVER_KRB5_CONFIG_FILE;
             String misMatchUserName = InitClass.SECOND_USER;
             String misMatchUserPassword = InitClass.SECOND_USER_PWD;
 
             //testHelper.reconfigureServer("spnegoServer.xml", name.getMethodName(), SPNEGOConstants.RESTART_SERVER);
-            Subject subject = krb5Helper.kerberosLogin(myServer, misMatchUserName, misMatchUserPassword, krb5Config);
+            Subject subject = krb5Helper.kerberosLogin(myServer, misMatchUserName, misMatchUserPassword, configFile);
             String spnegoToken = krb5Helper.createToken(subject, userName, targetSpn, false, Krb5Helper.SPNEGO_MECH_OID);
             Map<String, String> headers = testHelper.setTestHeaders("Negotiate " + spnegoToken, SPNEGOConstants.FIREFOX, TARGET_SERVER, null);
             unsuccessfulSpnegoServletCall(headers);

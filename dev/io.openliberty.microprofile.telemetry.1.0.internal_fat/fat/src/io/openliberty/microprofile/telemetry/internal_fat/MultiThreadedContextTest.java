@@ -11,7 +11,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -25,8 +24,6 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -63,10 +60,10 @@ public class MultiThreadedContextTest extends FATServletClient {
         ShrinkHelper.exportAppToServer(server, apiTestWar, SERVER_ONLY);
         server.startServer();
     }
-    
+
     @ClassRule
     public static RepeatTests r = TelemetryActions.allMPRepeats(SERVER_NAME);
-    
+
     @AfterClass
     public static void teardown() throws Exception {
         server.stopServer();

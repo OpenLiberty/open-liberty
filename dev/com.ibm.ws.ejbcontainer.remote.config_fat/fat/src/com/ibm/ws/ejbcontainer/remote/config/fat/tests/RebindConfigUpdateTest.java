@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.ejbcontainer.remote.config.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,7 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestWatcher;
@@ -74,6 +76,8 @@ public class RebindConfigUpdateTest extends FATServletClient {
     private static final Class<?> c = RebindConfigUpdateTest.class;
     private static HashSet<String> apps = new HashSet<String>();
     private static String servlet = "ConfigTestsWeb/RebindConfigUpdateServlet";
+
+    private String[] expected_ssl_exceptions = null;
 
     private static int ALL_LOCAL_BINDINGS = 15;
     private static int ALL_REMOTE_BINDINGS = 12;
@@ -147,12 +151,13 @@ public class RebindConfigUpdateTest extends FATServletClient {
                 server.stopServer();
             }
             if (server_ssl != null && server_ssl.isStarted()) {
-                server_ssl.stopServer();
+                server_ssl.stopServer(expected_ssl_exceptions);
             }
         } finally {
             // Restore the original server configuration
             server.restoreServerConfiguration();
             server_ssl.restoreServerConfiguration();
+            expected_ssl_exceptions = null;
         }
     }
 
@@ -289,7 +294,8 @@ public class RebindConfigUpdateTest extends FATServletClient {
      *
      * Note: For this scenario, the application should be restarted after each configuration change.
      */
-    // @Test - issue with yoko ORB
+    @Test
+    @Ignore("ORB restart not supported on Liberty - issue with yoko ORB") //TODO
     @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
     public void testRebindWhenEjbRemoteRemovedAdded() throws Exception {
         server.startServer();
@@ -312,7 +318,8 @@ public class RebindConfigUpdateTest extends FATServletClient {
      *
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
-    // @Test
+    @Test
+    @Ignore("ORB restart not supported on Liberty") //TODO
     public void testRebindAfterEjbContainerUpdated() throws Exception {
         server.startServer();
         verifyBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
@@ -331,7 +338,8 @@ public class RebindConfigUpdateTest extends FATServletClient {
      *
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
-    // @Test
+    @Test
+    @Ignore("ORB restart not supported on Liberty") //TODO
     public void testRebindAfterOrbUpdated() throws Exception {
         server.startServer();
         verifyBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
@@ -350,11 +358,17 @@ public class RebindConfigUpdateTest extends FATServletClient {
      *
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
-    // @Test
+    @Test
+    @Ignore("ORB restart not supported on Liberty") //TODO
     @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
     public void testRebindAfterOrbLateStart() throws Exception {
         List<Element> removed = removeQuickStartConfig();
         server_ssl.startServer();
+        assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
+        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+        assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
+        expected_ssl_exceptions = new String[] { "CWWKS9582E", "CWWKS9660E" }; // No user registry
+
         verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, 0);
         FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbLateStart_Initial");
 
@@ -370,10 +384,16 @@ public class RebindConfigUpdateTest extends FATServletClient {
      *
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
-    // @Test
+    @Test
+    @Ignore("ORB restart not supported on Liberty") //TODO
     @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
     public void testRebindAfterOrbStoppedStarted() throws Exception {
         server_ssl.startServer();
+        assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
+        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+        assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
+        expected_ssl_exceptions = new String[] { "CWWKS9582E" }; // ORB did not start in 10 seconds
+
         verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
         FATServletClient.runTest(server_ssl, servlet, "testRebindAfterOrbStoppedStarted_Initial");
 

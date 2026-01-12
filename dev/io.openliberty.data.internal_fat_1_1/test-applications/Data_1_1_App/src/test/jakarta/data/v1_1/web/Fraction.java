@@ -67,12 +67,10 @@ public class Fraction {
 
     @Embeddable
     public static record Digits(
-                    // TODO switch to false once #29460 is fixed
-                    @Column(nullable = true, table = "Fraction") //
+                    @Column(nullable = false, table = "Fraction") //
                     String nonrepeating,
 
-                    // TODO switch to false once #29460 is fixed
-                    @Column(nullable = true, table = "Fraction") //
+                    @Column(nullable = false, table = "Fraction") //
                     String repeating) {
 
         static Digits of(long[] digitValues, int nonRepeating, int total) {
@@ -202,9 +200,6 @@ public class Fraction {
             throw new IllegalArgumentException(numerator + " / " + denominator +
                                                " has too many fractional digits: " +
                                                Arrays.toString(digits) + "...");
-
-        // TODO remove once #29460 is fixed
-        f.digits = null;
 
         return f;
     }

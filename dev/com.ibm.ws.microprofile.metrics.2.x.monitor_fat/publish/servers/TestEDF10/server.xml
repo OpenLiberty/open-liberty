@@ -10,7 +10,7 @@
     <monitor  filter="ThreadPool,WebContainer,Session,ConnectionPool"/>
     
     <httpSession useSeparateSessionInvalidatorThreadPool="false"
-                 delayInvalidationAlarmDuringServerStartup="60"/>
+                 delayInvalidationAlarmDuringServerStartup="90"/>
 
     <include location="../fatTestPorts.xml"/>
     <include location="serverJDBCConfig.xml"/>

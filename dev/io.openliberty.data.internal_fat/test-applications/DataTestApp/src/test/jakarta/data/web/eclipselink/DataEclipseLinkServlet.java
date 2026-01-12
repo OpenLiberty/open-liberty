@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,13 @@
  *******************************************************************************/
 package test.jakarta.data.web.eclipselink;
 
-import static componenttest.annotation.SkipIfSysProp.DB_Postgres;
-import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static jakarta.data.repository.By.ID;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
-import static test.jakarta.data.web.Assertions.assertIterableEquals;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -52,7 +50,6 @@ import jakarta.servlet.annotation.WebServlet;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 import test.jakarta.data.web.Receipt;
 import test.jakarta.data.web.eclipselink.Animal.ScientificName;
@@ -139,8 +136,8 @@ public class DataEclipseLinkServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteRecords() {
-        assertIterableEquals(Collections.EMPTY_SET,
-                             receipts.discardFor("C1510-13-999"));
+        assertEquals(Collections.EMPTY_LIST,
+                     new ArrayList<>(receipts.discardFor("C1510-13-999")));
 
         receipts.save(new Receipt(909L, "C1510-13-999", 9.09f));
         receipts.save(new Receipt(900L, "C1510-13-900", 9.00f));
@@ -212,38 +209,37 @@ public class DataEclipseLinkServlet extends FATServlet {
         assertEquals("niger", foxSquirrel.id().species());
         assertEquals(1, foxSquirrel.version());
 
-        // TODO enable once #29460 is fixed
-        //assertEquals(List.of("Sciurus carolinensis",
-        //                     "Sciurus niger"),
-        //             animals.ofGenus("Sciurus")
-        //                             .map(n -> n.genus() + ' ' + n.species())
-        //                             .collect(Collectors.toList()));
+        assertEquals(List.of("Sciurus carolinensis",
+                             "Sciurus niger"),
+                     animals.ofGenus("Sciurus")
+                                     .map(n -> n.genus() + ' ' + n.species())
+                                     .collect(Collectors.toList()));
 
-        //ScientificName grayFoxId = new ScientificName("Urocyon", "cinereoargenteus");
-        //grayFox = animals.findById(grayFoxId).orElseThrow();
-        //assertEquals("gray fox", grayFox.commonName());
-        //assertEquals("Urocyon", grayFox.id().genus());
-        //assertEquals("cinereoargenteus", grayFox.id().species());
+        ScientificName grayFoxId = new ScientificName("Urocyon", "cinereoargenteus");
+        grayFox = animals.findById(grayFoxId).orElseThrow();
+        assertEquals("gray fox", grayFox.commonName());
+        assertEquals("Urocyon", grayFox.id().genus());
+        assertEquals("cinereoargenteus", grayFox.id().species());
 
-        //ScientificName graySquirrelId = new ScientificName("Sciurus", "carolinensis");
-        //graySquirrel = animals.findById(graySquirrelId).orElseThrow();
-        //assertEquals("gray squirrel", graySquirrel.commonName());
-        //assertEquals("Sciurus", graySquirrel.id().genus());
-        //assertEquals("carolinensis", graySquirrel.id().species());
+        ScientificName graySquirrelId = new ScientificName("Sciurus", "carolinensis");
+        graySquirrel = animals.findById(graySquirrelId).orElseThrow();
+        assertEquals("gray squirrel", graySquirrel.commonName());
+        assertEquals("Sciurus", graySquirrel.id().genus());
+        assertEquals("carolinensis", graySquirrel.id().species());
 
-        //foxSquirrel = foxSquirrel.withCommonName("FOX SQUIRREL");
-        //foxSquirrel = animals.save(foxSquirrel);
-        //assertEquals("FOX SQUIRREL", foxSquirrel.commonName());
-        //assertEquals("Sciurus", foxSquirrel.id().genus());
-        //assertEquals("niger", foxSquirrel.id().species());
-        //assertEquals(2, foxSquirrel.version());
+        foxSquirrel = foxSquirrel.withCommonName("FOX SQUIRREL");
+        foxSquirrel = animals.save(foxSquirrel);
+        assertEquals("FOX SQUIRREL", foxSquirrel.commonName());
+        assertEquals("Sciurus", foxSquirrel.id().genus());
+        assertEquals("niger", foxSquirrel.id().species());
+        assertEquals(2, foxSquirrel.version());
 
-        //foxSquirrel = foxSquirrel.withCommonName("fox squirrel");
-        //foxSquirrel = animals.update(foxSquirrel);
-        //assertEquals("fox squirrel", foxSquirrel.commonName());
-        //assertEquals("Sciurus", foxSquirrel.id().genus());
-        //assertEquals("niger", foxSquirrel.id().species());
-        //assertEquals(3, foxSquirrel.version());
+        foxSquirrel = foxSquirrel.withCommonName("fox squirrel");
+        foxSquirrel = animals.update(foxSquirrel);
+        assertEquals("fox squirrel", foxSquirrel.commonName());
+        assertEquals("Sciurus", foxSquirrel.id().genus());
+        assertEquals("niger", foxSquirrel.id().species());
+        assertEquals(3, foxSquirrel.version());
 
         animals.deleteById(new ScientificName("Sciurus", "niger"));
 
@@ -253,8 +249,7 @@ public class DataEclipseLinkServlet extends FATServlet {
 
         assertEquals(false, animals.existsById(redSquirrel.id()));
 
-        //found = animals.findAll().toList(); TODO replace next line
-        found = List.of(redFox, grayFox, graySquirrel);
+        found = animals.findAll().toList();
         assertEquals(found.toString(), 3, found.size());
         animals.deleteAll(found);
     }
@@ -312,25 +307,25 @@ public class DataEclipseLinkServlet extends FATServlet {
         Receipt receipt = receipts.findById(200L).orElseThrow();
         assertEquals(202.40f, receipt.total(), 0.001f);
 
-        assertIterableEquals(List.of("C0013-00-031:300",
-                                     "C0022-00-022:200",
-                                     "C0045-00-054:500"),
-                             receipts.findByPurchaseIdIn(List.of(200L, 300L, 500L))
-                                             .map(r -> r.customer() + ":" +
-                                                       r.purchaseId())
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("C0013-00-031:300",
+                             "C0022-00-022:200",
+                             "C0045-00-054:500"),
+                     receipts.findByPurchaseIdIn(List.of(200L, 300L, 500L))
+                                     .map(r -> r.customer() + ":" +
+                                               r.purchaseId())
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         receipts.deleteByPurchaseIdIn(List.of(200L, 500L));
 
-        assertIterableEquals(List.of("C0013-00-031:100",
-                                     "C0013-00-031:300",
-                                     "C0045-00-054:400"),
-                             receipts.findAll()
-                                             .map(r -> r.customer() + ":" +
-                                                       r.purchaseId())
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("C0013-00-031:100",
+                             "C0013-00-031:300",
+                             "C0045-00-054:400"),
+                     receipts.findAll()
+                                     .map(r -> r.customer() + ":" +
+                                               r.purchaseId())
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         receipts.deleteById(100L);
 
@@ -358,10 +353,6 @@ public class DataEclipseLinkServlet extends FATServlet {
      * Tests all CrudRepository methods (apart from those inherited from
      * BasicRepository) with a record as the entity.
      */
-    @SkipIfSysProp({
-                     DB_Postgres, //Failing on Postgres due to eclipselink issue:  https://github.com/OpenLiberty/open-liberty/issues/28380
-                     DB_SQLServer //Failing on SQLServer due to eclipselink issue: https://github.com/OpenLiberty/open-liberty/issues/28737
-    })
     @Test
     public void testRecordCrudRepositoryMethods() {
         receipts.deleteByTotalLessThan(1000000.0f);

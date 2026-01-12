@@ -51,6 +51,7 @@
 </script>
 
 <%
+    String csrfCookie = null;
     Cookie[] cookies = request.getCookies();
     response.setContentType("text/html");
     if (cookies != null) {
@@ -61,6 +62,16 @@
                 cookie.setValue(null);
                 cookie.setPath("/");
                 response.addCookie(cookie);
+                break;
+            }
+        }
+    }
+
+    Cookie[] csrfCookies = request.getCookies();
+    if (cookies != null) {
+        for (Cookie cookie : csrfCookies) {
+            if ("csrfToken".equals(cookie.getName())) {
+                csrfCookie = cookie.getValue();
                 break;
             }
         }
@@ -82,6 +93,7 @@
     response.setHeader("X-Frame-Options", "SAMEORIGIN");
     response.setHeader("Content-Security-Policy", "default-src 'self' 'unsafe-inline' 'unsafe-eval'; form-action 'self'; frame-ancestors 'self'");
     response.setHeader("Strict-Transport-Security", "max-age=99999999");
+    response.setHeader("X-XSRF-TOKEN", csrfCookie);
 
     String hasBidi = "";       // used to initialize dojo
     String userId = request.getRemoteUser();     // passed to widgets
@@ -164,6 +176,26 @@ BIDI_PREFS_STRING = '<%=line%>';
 %>
 
 <script src="404/404.js"></script>
+<script>
+    const HEADER_TOKEN ='<%= response.getHeader("X-XSRF-TOKEN") %>';
+    function getCookie(name) {
+        return document.cookie
+            .split(";")
+            .map(c => c.trim())
+            .find(c => c.startsWith(name + "="))
+            ?.split("=")[1];
+    }
+    function isValidCsrf(token) {
+        return typeof token === "string" && token.length > 20 && token === HEADER_TOKEN;
+    }
+    window.addEventListener("hashchange", () => {
+        const token = getCookie("csrfToken");
+        if (!isValidCsrf(token)) {
+            window.location.href = "/adminCenter/login.jsp";
+            return;
+        }
+    });
+</script>
 
 <script type="text/javascript">
     var languageLocale = getLanguageCode();

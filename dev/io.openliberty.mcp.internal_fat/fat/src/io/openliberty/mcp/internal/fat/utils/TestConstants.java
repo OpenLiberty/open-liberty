@@ -15,4 +15,14 @@ public class TestConstants {
 
     public static final Duration POSITIVE_TIMEOUT = Duration.ofMillis(10_000);
     public static final Duration NEGATIVE_TIMEOUT = Duration.ofMillis(500);
+
+    // HTTP header names
+    public static final String ACCEPT = "Accept";
+    public static final String MCP_PROTOCOL_VERSION = "MCP-Protocol-Version";
+    public static final String MCP_SESSION_ID = "Mcp-Session-Id";
+
+    // Header values
+    public static final String VALUE_ACCEPT_DEFAULT = "application/json, text/event-stream";
+    public static final String VALUE_APPLICATION_JSON = "application/json";
+    public static final String VALUE_MCP_PROTOCOL_VERSION = "2025-06-18";
 }

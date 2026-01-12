@@ -95,6 +95,9 @@ public class TelemetryUserFeatureAppScopedTest extends FATServletClient {
 
         // Enable otel sdk here. Use server.env so we test an app instance
         PropertiesAsset appConfig = new PropertiesAsset()
+                        .addProperty("otel.metrics.exporter", "none")
+                        .addProperty("otel.logs.exporter", "none")
+                        .addProperty("otel.traces.exporter", "none")
                         .addProperty("otel.sdk.disabled", "false");
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
                         .addPackage(UserFeatureServlet.class.getPackage())

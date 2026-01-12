@@ -49,6 +49,14 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     }
 
     /**
+     * Invalid method. Insert and Find cannot annotate the same repository
+     * method.
+     */
+    @Insert
+    @Find
+    Voter addAndRetrieve(Voter v);
+
+    /**
      * Invalid method. A method with a life cycle annotation must have exactly
      * 1 parameter.
      */
@@ -505,6 +513,14 @@ public interface Voters extends BasicRepository<Voter, Integer> {
                            String city, // extra, unused parameter
                            String stateCode); // extra, unused parameter
 
+    /**
+     * Invalid method. Save and Delete cannot annotate the same repository
+     * method.
+     */
+    @Save
+    @Delete
+    void saveAndRemove(Voter v);
+
     @Find
     Page<Voter> selectAll(PageRequest req,
                           Sort<?>... sorts);
@@ -593,6 +609,10 @@ public interface Voters extends BasicRepository<Voter, Integer> {
     CursoredPage<Voter> unionOfAddresses(String address1,
                                          String address2,
                                          PageRequest pageReq);
+
+    @Update
+    @Query("FROM Voter WHERE ssn = ?1")
+    Optional<Voter> updateAndRetrieve(int ssn, Voter v);
 
     /**
      * This invalid method has a query that requires a single positional parameter,

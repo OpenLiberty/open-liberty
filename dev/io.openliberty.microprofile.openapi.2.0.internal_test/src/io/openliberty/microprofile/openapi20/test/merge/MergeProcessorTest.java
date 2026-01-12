@@ -18,7 +18,10 @@ import static org.hamcrest.Matchers.hasKey;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.nullValue;
 import static org.hamcrest.Matchers.stringContainsInOrder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -312,6 +315,92 @@ public class MergeProcessorTest {
         assertThat(resultProvider.getApplicationPath(), is("/test1"));
 
         assertModelsEqual(model1.getModel(), result);
+    }
+
+    /**
+     * Test the special case extension x-ibm-zcon-roles-allowed merges correctly.
+     */
+    @Test
+    public void testClashingZConRolesAllowdExtension() {
+
+        final String TESTED_EXTENSION = "x-ibm-zcon-roles-allowed";
+
+        OpenAPIProvider model1 = loadModel("zos-clashing-extension-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("zos-clashing-extension-2.yaml", "/test2");
+
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2));
+        OpenAPI result = resultProvider.getModel();
+
+        assertEquals("Bobs", result.getPaths().getPathItem("/test1/testA").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+        assertEquals("Robs", result.getPaths().getPathItem("/test1/testB").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+
+        assertEquals("Alices", result.getPaths().getPathItem("/test2/testA").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+        assertEquals("Eves", result.getPaths().getPathItem("/test2/testB").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+
+        //Finally assert that there is no mention of the zcon extension on the top level
+        //On Smallrye OpenAPI 4.0.9 getExtensions will return null if there are no extensions
+        //(BaseExtensibleModel will return null if stream.allMatch(<predicate>) is true, which is always is for an empty stream
+        assertFalse(result.getExtensions() != null && result.getExtensions().containsKey(TESTED_EXTENSION));
+    }
+
+    /**
+     * Test the special case extension x-ibm-zcon-roles-allowed merges correctly, including a third app that does not use the extension.
+     */
+    @Test
+    public void testClashingZConRolesAllowdExtensionThreeApps() {
+
+        final String TESTED_EXTENSION = "x-ibm-zcon-roles-allowed";
+
+        OpenAPIProvider model1 = loadModel("zos-clashing-extension-1.yaml", "/test1");
+        OpenAPIProvider model2 = loadModel("zos-clashing-extension-2.yaml", "/test2");
+        OpenAPIProvider model3 = loadModel("zos-clashing-extension-3.yaml", "/test3");
+
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model2, model3));
+        OpenAPI result = resultProvider.getModel();
+
+        assertEquals("Bobs", result.getPaths().getPathItem("/test1/testA").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+        assertEquals("Robs", result.getPaths().getPathItem("/test1/testB").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+
+        assertEquals("Alices", result.getPaths().getPathItem("/test2/testA").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+        assertEquals("Eves", result.getPaths().getPathItem("/test2/testB").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+
+        assertFalse(result.getPaths().getPathItem("/test3/testA") == null); //A bit neater than seeing if the next part NPEs.
+        assertFalse(result.getPaths().getPathItem("/test3/testB") == null); //and we are explicitly testing if it merged in.
+        assertTrue(result.getPaths().getPathItem("/test3/testA").getGET().getExtensions() == null);
+        assertFalse(result.getPaths().getPathItem("/test3/testB").getGET().getExtensions().containsKey(TESTED_EXTENSION));
+
+        //Finally assert that there is no mention of the zcon extension on the top level
+        //On Smallrye OpenAPI 4.0.9 getExtensions will return null if there are no extensions
+        //(BaseExtensibleModel will return null if stream.allMatch(<predicate>) is true, which is always is for an empty stream
+        assertFalse(result.getExtensions() != null && result.getExtensions().containsKey(TESTED_EXTENSION));
+    }
+
+    /**
+     * Test the special case extension x-ibm-zcon-roles-allowed merges correctly, when only one app uses the extension.
+     */
+    @Test
+    public void testClashingZConRolesAllowdOneAppPlusOne() {
+
+        final String TESTED_EXTENSION = "x-ibm-zcon-roles-allowed";
+
+        OpenAPIProvider model1 = loadModel("zos-clashing-extension-1.yaml", "/test1");
+        OpenAPIProvider model3 = loadModel("zos-clashing-extension-3.yaml", "/test3");
+
+        OpenAPIProvider resultProvider = mergeProcessor.mergeDocuments(Arrays.asList(model1, model3));
+        OpenAPI result = resultProvider.getModel();
+
+        assertEquals("Bobs", result.getPaths().getPathItem("/test1/testA").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+        assertEquals("Robs", result.getPaths().getPathItem("/test1/testB").getGET().getExtensions().get(TESTED_EXTENSION).toString());
+
+        assertFalse(result.getPaths().getPathItem("/test3/testA") == null); //A bit neater than seeing if the next part NPEs.
+        assertFalse(result.getPaths().getPathItem("/test3/testB") == null); //and we are explicitly testing if it merged in.
+        assertTrue(result.getPaths().getPathItem("/test3/testA").getGET().getExtensions() == null);
+        assertFalse(result.getPaths().getPathItem("/test3/testB").getGET().getExtensions().containsKey(TESTED_EXTENSION));
+
+        //Finally assert that there is no mention of the zcon extension on the top level
+        //On Smallrye OpenAPI 4.0.9 getExtensions will return null if there are no extensions
+        //(BaseExtensibleModel will return null if stream.allMatch(<predicate>) is true, which is always is for an empty stream
+        assertFalse(result.getExtensions() != null && result.getExtensions().containsKey(TESTED_EXTENSION));
     }
 
     private OpenAPI loadModel(String modelResource) {

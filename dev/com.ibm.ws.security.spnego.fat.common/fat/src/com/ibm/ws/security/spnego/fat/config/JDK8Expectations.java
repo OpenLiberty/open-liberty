@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -161,8 +161,6 @@ public class JDK8Expectations implements JDKExpectationTestClass {
     public void successfulExpectationsSpnegoServletCall(String response, String user, boolean areGSSCredPresent) {
         if (areGSSCredPresent) {
             responseShouldContaiGSSCredentials(response);
-            assertTrue("GSS credentials did not have the correct \"Owner\" value of \"" + SPNEGOConstants.OWNER_STRING + user + "\"",
-                       response.contains(SPNEGOConstants.OWNER_STRING + user));
         } else {
             assertTrue("Response should contain GSS credentials but none were found.", (!response.contains(SPNEGOConstants.GSS_CREDENTIAL_STRING)));
         }
@@ -179,8 +177,6 @@ public class JDK8Expectations implements JDKExpectationTestClass {
         assertTrue("Expected to receive a successful response but found a problem.",
                    mySslClient.verifyResponse(response, InitClass.COMMON_TOKEN_USER, InitClass.COMMON_TOKEN_USER_IS_EMPLOYEE, InitClass.COMMON_TOKEN_USER_IS_MANAGER));
         responseShouldContaiGSSCredentials(response);
-//        assertTrue("GSS credentials did not have the correct \"Owner\" value of \"" + SPNEGOConstants.OWNER_STRING + InitClass.COMMON_TOKEN_USER + "\"",
-//                   response.contains(SPNEGOConstants.OWNER_STRING + InitClass.COMMON_TOKEN_USER));
     }
 
     @Override

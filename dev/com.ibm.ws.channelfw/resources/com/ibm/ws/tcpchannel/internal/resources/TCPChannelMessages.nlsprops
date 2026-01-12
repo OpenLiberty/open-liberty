@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: TCP Channel {0} initialization did not succeed.  The sock
 BIND_ERROR.explanation=The socket bind operation did not succeed. A common cause is that the port number is already in use.  Check the Exception Message text in the error message for more information.
 BIND_ERROR.useraction=Check that the TCP Channel has been configured to use the correct port number.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: TCP Channel {0} has exceeded the maximum number of open connections {1}.
-MAX_CONNS_EXCEEDED.explanation=The specified TCP Channel has exceeded the maximum number of open connections and is refusing some connections.
+MAX_CONNS_EXCEEDED=CWWKO0222W: TCP Channel {0} exceeds the maximum number of open connections {1}.
+MAX_CONNS_EXCEEDED.explanation=The specified TCP Channel exceeds the maximum number of open connections and is refusing some connections. This message is issued no more than one time every 10 minutes while the condition continues.
 MAX_CONNS_EXCEEDED.useraction=If more connections are required, update the maximum number of connections allowed.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: TCP Channel {0} could not obtain thread from thread pool {1}.

@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec40/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: Um armazenamento de identidade configurado usando uma anota\u00e7\u00e3o @InMemoryIdentityStoreDefinition foi detectado neste aplicativo. N\u00e3o utilize esta defini\u00e7\u00e3o em um ambiente de produ\u00e7\u00e3o.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=A Jakarta declara que utilizar\u00e1 @InMemoryIdentityStoreDefinition no aplicativo apenas para fins de desenvolvimento, teste e depura\u00e7\u00e3o.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=Antes de sua aplica\u00e7\u00e3o entrar em produ\u00e7\u00e3o, remova o @InMemoryIdentityStoreDefinition e substitua-o por um armazenamento de identidades compat\u00edvel com produ\u00e7\u00e3o, como LDAP ou banco de dados.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: A vari\u00e1vel de ambiente ` {0} ` est\u00e1 vazia ou n\u00e3o definida. Quaisquer valida\u00e7\u00f5es de solicita\u00e7\u00e3o de autentica\u00e7\u00e3o subsequentes que utilizem o chamador associado ir\u00e3o falhar.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=Uma vari\u00e1vel de ambiente foi usada como valor de um campo de senha na anota\u00e7\u00e3o @Credential, mas essa vari\u00e1vel n\u00e3o est\u00e1 definida externamente ou est\u00e1 definida como uma string vazia.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Certifique-se de definir a vari\u00e1vel de ambiente referenciada na anota\u00e7\u00e3o, normalmente especificada em server.env.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: A credencial fornecida para o objeto IdentityStore n\u00e3o \u00e9 uma UsernamePasswordCredential e n\u00e3o pode ser validada.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=A credencial fornecida para o objeto IdentityStore n\u00e3o \u00e9 uma classe UsernamePasswordCredential e n\u00e3o pode ser validada.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=Revise o tipo de credencial transmitida para o objeto IdentityStore pela implementa\u00e7\u00e3o HttpAuthMechanism.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: A express\u00e3o da Linguagem de Express\u00e3o (EL) para o atributo \u201c {0} \u201d da anota\u00e7\u00e3o do armazenamento de identidade n\u00e3o pode ser resolvida para um valor v\u00e1lido. Certifique-se de que a express\u00e3o EL e o resultado sejam v\u00e1lidos e assegure-se de que os beans referenciados utilizados na express\u00e3o possam ser resolvidos. O valor padr\u00e3o do atributo \u201c {1} \u201d \u00e9 usado em seu lugar.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=A causa do erro \u00e9 uma incompatibilidade de tipo entre o resultado EL e o valor de atributo esperado. Por exemplo, se o tipo de atributo esperado for String, o resultado EL deve ser String.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Certifique-se de que a anota\u00e7\u00e3o contenha um valor de configura\u00e7\u00e3o v\u00e1lido. Certifique-se de que as express\u00f5es EL sejam v\u00e1lidas, de que os beans referenciados utilizados na express\u00e3o possam ser resolvidos e de que o tipo do resultado corresponda ao atributo.
+

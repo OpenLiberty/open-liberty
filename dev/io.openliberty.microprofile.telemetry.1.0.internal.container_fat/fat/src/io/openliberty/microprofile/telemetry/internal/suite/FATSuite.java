@@ -31,14 +31,15 @@ import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtelCollectorT
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtlpTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtlpTest;
+import io.openliberty.microprofile.telemetry.internal.tests.JvmMetricsOtelCollectorTest;
+import io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest;
 import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JvmMetricsOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollectorTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+
                 AlwaysPassesTest.class, //Must keep this test to run something in the Java 6 builds.
                 AgentTest.class,
                 Agent129Test.class,

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2021 IBM Corporation and others.
+ * Copyright (c) 2005, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.tcpchannel.internal;
 
@@ -214,6 +211,13 @@ public class SocketRWChannelSelector extends ChannelSelector implements Runnable
                 if (bTrace && tc.isEventEnabled()) {
                     SocketChannel channel = ioSocket != null ? ioSocket.getChannel() : null;
                     Tr.event(this, tc, "Ignoring due to null vc on " + ((channel != null) ? channel.toString() : "<UNKNOWN>"));
+                }
+                continue;
+            }
+
+            if (ioSocket == null || ioSocket.getChannel() == null) {
+                if (bTrace && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Ignoring due to null ioSocket or channel");
                 }
                 continue;
             }

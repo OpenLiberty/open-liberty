@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -74,10 +75,16 @@ public class MergeProcessorImpl implements MergeProcessor {
 
     private static final Info MERGED_INFO;
 
+    private static final Set<String> EXTENSIONS_NOT_CHEKCED_FOR_DUPLICATES = new HashSet<>();
+
     static {
         MERGED_INFO = OASFactory.createInfo();
         MERGED_INFO.setTitle(Constants.MERGED_OPENAPI_DOC_TITLE);
         MERGED_INFO.setVersion(Constants.DEFAULT_OPENAPI_DOC_VERSION);
+
+        //if there are merge conflicts in x-ibm-zcon-roles-allowed they will be handled in the second pass
+        // Documentation for x-ibm-zcon-roles-allowed is at https://www.ibm.com/docs/en/zos-connect/3.0.0?topic=authorization-how-define-roles
+        EXTENSIONS_NOT_CHEKCED_FOR_DUPLICATES.add("x-ibm-zcon-roles-allowed");
     }
 
     @Reference
@@ -197,6 +204,7 @@ public class MergeProcessorImpl implements MergeProcessor {
                 }
             }
 
+            boolean zConRolesIdentical = isZConRolesAllowedIdentical(inProgressModels);
             boolean securityIdentical = isSecurityIdentical(inProgressModels);
             boolean infoIdentical = isInfoIdentical(inProgressModels);
             boolean externalDocsIdentical = isExternalDocsIdentical(inProgressModels);
@@ -237,6 +245,10 @@ public class MergeProcessorImpl implements MergeProcessor {
 
                 if (!serversIdentical) {
                     moveServersUnderPaths(inProgress.model);
+                }
+
+                if (!zConRolesIdentical) {
+                    moveZConRolesAllow(inProgress.model);
                 }
 
                 if (inProgress.documentNameProcessor.hasRenames()) {
@@ -341,6 +353,11 @@ public class MergeProcessorImpl implements MergeProcessor {
                 OpenAPIProvider otherProvider = entry.getKey();
                 Map<String, Object> otherExtensions = entry.getValue();
                 for (Entry<String, Object> extensionEntry : extensions.entrySet()) {
+
+                    if (EXTENSIONS_NOT_CHEKCED_FOR_DUPLICATES.contains(extensionEntry.getKey())) {
+                        continue;
+                    }
+
                     String key = extensionEntry.getKey();
                     Object value = extensionEntry.getValue();
                     Object otherValue = otherExtensions.get(key);
@@ -436,6 +453,48 @@ public class MergeProcessorImpl implements MergeProcessor {
             }
 
             document.setSecurity(null);
+        }
+
+        //See https://www.ibm.com/docs/en/zos-connect/3.0.0?topic=authorization-how-define-roles for details on x-ibm-zcon-roles-allowed
+        //Like security, it can be defined on the top level or on specific operations
+        private void moveZConRolesAllow(OpenAPI document) {
+
+            final String MAP_KEY = "x-ibm-zcon-roles-allowed";
+
+            Map<String, Object> oldExtensions = document.getExtensions();
+            if (oldExtensions == null || oldExtensions.isEmpty() || !oldExtensions.containsKey(MAP_KEY)) {
+                return;
+            }
+
+            Map<String, Object> extensions = new HashMap<>(document.getExtensions());
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Moving ibm-zcon-roles-allowed from the top level to under paths");
+            }
+
+            Paths paths = document.getPaths();
+            if (paths == null) {
+                return;
+            }
+
+            for (PathItem item : notNull(paths.getPathItems()).values()) {
+                for (Operation op : notNull(item.getOperations()).values()) {
+                    if (op.getExtensions() == null) {
+                        //Hopefully OpenAPI can handle the same map being passed in
+                        //to multiple operations, but why risk it?
+                        Map<String, Object> zConMap = new HashMap<>();
+                        zConMap.put(MAP_KEY, extensions.get(MAP_KEY));
+                        op.setExtensions(zConMap);
+                    } else {
+                        Map<String, Object> localExtenionsMap = new HashMap<>(op.getExtensions());
+                        localExtenionsMap.putIfAbsent(MAP_KEY, extensions.get(MAP_KEY)); //A more specific setting will override the default
+                        op.setExtensions(localExtenionsMap);
+                    }
+                }
+            }
+
+            extensions.remove(MAP_KEY);
+            document.setExtensions(extensions);
         }
     }
 
@@ -616,6 +675,12 @@ public class MergeProcessorImpl implements MergeProcessor {
 
     private static boolean serverEndsWithContextRoot(Server server, String contextRoot) {
         return server.getUrl().endsWith(contextRoot) || server.getUrl().endsWith(contextRoot + "/");
+    }
+
+    private static boolean isZConRolesAllowedIdentical(List<InProgressModel> models) {
+        List<Object> zconExtensions = models.stream().map(d -> d.model.getExtensions())
+                                            .filter(Objects::nonNull).map(e -> e.get("x-ibm-zcon-roles-allowed")).filter(Objects::nonNull).collect(toList());
+        return zconExtensions.isEmpty() || (models.size() == zconExtensions.size() && allEqual(zconExtensions, ModelEquality::equals));
     }
 
     private static boolean isSecurityIdentical(List<InProgressModel> models) {

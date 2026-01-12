@@ -23,6 +23,7 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.RecvByteBufAllocator;
 
+import io.netty.util.UncheckedBooleanSupplier;
 /**
  * This class is a custom {@link RecvByteBufAllocator} that wraps an existing allocator to intercept buffer
  * allocations in order to log when a read operation is requested.
@@ -49,8 +50,9 @@ import io.netty.channel.RecvByteBufAllocator;
      */
     @Override
     @SuppressWarnings("deprecation")
-    public Handle newHandle() {
-        return new LoggingHandle(delegate.newHandle());
+    public ExtendedHandle newHandle() {
+        Handle handle = delegate.newHandle();
+        return new LoggingHandle((ExtendedHandle) handle);
     }
 
     /**
@@ -61,12 +63,12 @@ import io.netty.channel.RecvByteBufAllocator;
      * meantime, the deprecation warnings are supressed.
      */
     @SuppressWarnings("deprecation")
-    public class LoggingHandle implements Handle{
-        private final Handle delegateHandle;
+    public class LoggingHandle implements ExtendedHandle {
+        private final ExtendedHandle delegateHandle;
         private ChannelHandlerContext context;
 
         @SuppressWarnings("deprecation")
-        LoggingHandle(Handle handle){
+        LoggingHandle(ExtendedHandle handle){
             this.delegateHandle = handle;
         }
 
@@ -153,5 +155,12 @@ import io.netty.channel.RecvByteBufAllocator;
         public int attemptedBytesRead(){
             return delegateHandle.attemptedBytesRead();
         }
+
+        @Override
+        @SuppressWarnings("deprecation") // is SuppressWarnings needed?
+        public boolean continueReading(UncheckedBooleanSupplier maybeMoreDataSupplier) {
+            return delegateHandle.continueReading(maybeMoreDataSupplier);
+        }
+
     } 
 }

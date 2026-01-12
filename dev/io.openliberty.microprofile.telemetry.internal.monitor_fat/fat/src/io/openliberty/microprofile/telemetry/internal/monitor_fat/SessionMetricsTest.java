@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,7 @@ public class SessionMetricsTest extends BaseTestClass {
         ShrinkHelper.exportDropinAppToServer(server, testWAR,
                                      DeployOptions.SERVER_ONLY);
 		
+		server.addEnvVar("OTEL_METRIC_EXPORT_INTERVAL", "5000");
 		server.addEnvVar("OTEL_EXPORTER_OTLP_METRICS_ENDPOINT",
 				"http://" + container.getHost() + ":" + container.getMappedPort(4317));        
         
@@ -103,6 +104,9 @@ public class SessionMetricsTest extends BaseTestClass {
 		sessionStatsNotification = (sessionStatsNotification != null) ? "Found trace: " + sessionStatsNotification.trim() : "Could not find SessionStats MBean Registration notification.";
 		Log.info(c, "waitForStringInTrace", sessionStatsNotification);
 
+		// Wait for any metrics to pop up first.
+		matchStringsWithRetries(() -> getContainerCollectorMetrics(container), new String[] {".*"});
+
 		// Allow time for the collector to receive and expose metrics
 		matchStringsWithRetries(() -> getContainerCollectorMetrics(container),
                 new String[] { "io_openliberty_session_created_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
@@ -110,7 +114,6 @@ public class SessionMetricsTest extends BaseTestClass {
                         "io_openliberty_session_active\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
                         "io_openliberty_session_invalidated_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*",
                         "io_openliberty_session_invalidated_by_timeout_total\\{instance=\"[a-zA-Z0-9-]*\",io_openliberty_app_name=\"default_host/testSessionApp\",job=\"unknown_service\"\\}.*" });
-
 	}
 	
 

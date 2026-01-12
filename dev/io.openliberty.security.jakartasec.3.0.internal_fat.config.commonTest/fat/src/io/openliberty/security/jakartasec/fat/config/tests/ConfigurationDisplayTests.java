@@ -92,7 +92,7 @@ public class ConfigurationDisplayTests extends CommonAnnotatedSecurityTests {
         rpHttpsBase = "https://localhost:" + rpServer.getBvtSecurePort();
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
-
+        rpServer.waitForStringInLog("CWWKS4105I.*",60000);
     }
 
     /**

@@ -1,0 +1,11 @@
+
+<server>
+    <featureManager>
+    	<feature>jaxb-2.2</feature>
+        <feature>servlet-3.1</feature>
+        <feature>componenttest-1.0</feature>
+        <!-- Various features get added dynamically during the test -->
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+</server>

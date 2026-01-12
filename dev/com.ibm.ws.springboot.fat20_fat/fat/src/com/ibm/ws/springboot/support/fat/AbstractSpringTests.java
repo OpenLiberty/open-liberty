@@ -45,12 +45,11 @@ import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
 import com.ibm.websphere.simplicity.config.WebApplication;
 
-import componenttest.containers.TestContainerSuite;
 import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
-public abstract class AbstractSpringTests extends TestContainerSuite {
+public abstract class AbstractSpringTests {
 
     @Rule
     public TestName testName = new TestName();

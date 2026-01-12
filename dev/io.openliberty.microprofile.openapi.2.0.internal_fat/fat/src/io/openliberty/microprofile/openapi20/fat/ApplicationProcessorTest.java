@@ -55,6 +55,8 @@ import io.openliberty.microprofile.openapi20.fat.utils.OpenAPITestUtil;
  * - Scenarios involving context root, host/port, servers
  * - Make a pure JAX-RS app with the ApplicationPath annotation and ensure that the annotations are scanned and a document is generated
  * - Complete flow: model, static, annotation, filter in order
+ * 
+ * Most of these are tested in com.ibm.ws.microprofile.openapi_fat
  */
 @RunWith(FATRunner.class)
 public class ApplicationProcessorTest extends FATServletClient {

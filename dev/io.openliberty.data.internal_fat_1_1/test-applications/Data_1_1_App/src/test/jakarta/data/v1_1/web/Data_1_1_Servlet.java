@@ -13,8 +13,12 @@
 package test.jakarta.data.v1_1.web;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -46,6 +50,9 @@ import componenttest.app.FATServlet;
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class Data_1_1_Servlet extends FATServlet {
+
+    @Inject
+    Advertisements ads;
 
     @Inject
     Fractions fractions;
@@ -90,6 +97,201 @@ public class Data_1_1_Servlet extends FATServlet {
                       true)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    @Test
+    public void testInheritanceFromAbstractEntity() {
+        ads.removeBySponsorIn(List.of("Open Liberty",
+                                      "Eclipse Foundation",
+                                      "IBM"));
+
+        LocalDate today = LocalDate.now();
+
+        Advertisement ad1 = ads
+                        .add(Billboard.create(1,
+                                              "IBM",
+                                              today.plusDays(4),
+                                              today.plusDays(8),
+                                              "3605 Highway 52 North, Rochester, MN 55901"));
+        assertEquals(ad1.toString(),
+                     true,
+                     ad1 instanceof Billboard);
+
+        Advertisement ad2 = ads
+                        .add(Billboard.create(2,
+                                              "Open Liberty",
+                                              today.plusDays(2),
+                                              today.plusDays(3),
+                                              "3605 Highway 52 North, Rochester, MN 55901"));
+        assertEquals(ad2.toString(),
+                     true,
+                     ad2 instanceof Billboard);
+
+        Advertisement ad3 = ads
+                        .add(Billboard.create(3,
+                                              "Open Liberty",
+                                              today.plusDays(9),
+                                              today.plusDays(12),
+                                              // test case later switches this to
+                                              // 111 Broadway Ave S, Rochester, MN 55904
+                                              "3605 Highway 52 North, Rochester, MN 55901"));
+        assertEquals(ad3.toString(),
+                     true,
+                     ad3 instanceof Billboard);
+
+        Advertisement ad4 = ads
+                        .add(Commercial.create(4,
+                                               "Eclipse Foundation",
+                                               "NBC",
+                                               40,
+                                               LocalDateTime.of(today,
+                                                                LocalTime.of(16, 44, 4))));
+        assertEquals(ad4.toString(),
+                     true,
+                     ad4 instanceof Commercial);
+
+        Advertisement ad5 = ads
+                        .add(Billboard.create(5,
+                                              "Eclipse Foundation",
+                                              today.plusDays(15),
+                                              today.plusDays(25),
+                                              "3605 Highway 52 North, Rochester, MN 55901"));
+        assertEquals(ad5.toString(),
+                     true,
+                     ad5 instanceof Billboard);
+
+        Advertisement ad6 = ads
+                        .add(Commercial.create(6,
+                                               "Open Liberty",
+                                               "ABC",
+                                               60,
+                                               // test case later switches to
+                                               // today @19:20:21
+                                               LocalDateTime.of(today,
+                                                                LocalTime.of(18, 6, 0))));
+        assertEquals(ad6.toString(),
+                     true,
+                     ad6 instanceof Commercial);
+
+        // @Find method
+
+        List<Advertisement> list = ads.sponsoredBy("Eclipse Foundation");
+        assertEquals(list.toString(),
+                     2,
+                     list.size());
+
+        Advertisement ad;
+        Commercial c;
+        Billboard b;
+
+        assertNotNull(ad = list.get(0));
+        assertEquals(4,
+                     ad.id);
+        assertEquals("Eclipse Foundation",
+                     ad.sponsor);
+        assertEquals(ad.toString(),
+                     true,
+                     ad instanceof Commercial);
+        c = (Commercial) ad;
+        assertEquals("NBC",
+                     c.network);
+        assertEquals(40,
+                     c.numSeconds);
+        assertEquals(LocalDateTime.of(today,
+                                      LocalTime.of(16, 44, 4)),
+                     c.showAt);
+
+        assertNotNull(ad = list.get(1));
+        assertEquals(5,
+                     ad.id);
+        assertEquals("Eclipse Foundation",
+                     ad.sponsor);
+        assertEquals(ad.toString(),
+                     true,
+                     ad instanceof Billboard);
+        b = (Billboard) ad;
+        assertEquals(today.plusDays(15),
+                     b.firstDay);
+        assertEquals(today.plusDays(25),
+                     b.lastDay);
+        assertEquals("3605 Highway 52 North, Rochester, MN 55901",
+                     b.location);
+
+        // @Update method
+
+        Billboard b3 = (Billboard) ad3;
+        b3.location = "111 Broadway Ave S, Rochester, MN 55904";
+        ads.redeploy(b3);
+
+        // UPDATE query
+
+        assertEquals(true,
+                     ads.changeTimeShown(6,
+                                         LocalDateTime.of(today,
+                                                          LocalTime.of(19, 20, 21))));
+
+        // @Find again to confirm updates
+
+        list = ads.sponsoredBy("Open Liberty");
+        assertEquals(list.toString(),
+                     3,
+                     list.size());
+
+        assertNotNull(ad = list.get(0));
+        assertEquals(2,
+                     ad.id);
+        assertEquals("Open Liberty",
+                     ad.sponsor);
+        assertEquals(ad.toString(),
+                     true,
+                     ad instanceof Billboard);
+        b = (Billboard) ad;
+        assertEquals(today.plusDays(2),
+                     b.firstDay);
+        assertEquals(today.plusDays(3),
+                     b.lastDay);
+        assertEquals("3605 Highway 52 North, Rochester, MN 55901",
+                     b.location);
+
+        assertNotNull(ad = list.get(1));
+        assertEquals(3,
+                     ad.id);
+        assertEquals("Open Liberty",
+                     ad.sponsor);
+        assertEquals(ad.toString(),
+                     true,
+                     ad instanceof Billboard);
+        b = (Billboard) ad;
+        assertEquals(today.plusDays(9),
+                     b.firstDay);
+        assertEquals(today.plusDays(12),
+                     b.lastDay);
+        assertEquals("111 Broadway Ave S, Rochester, MN 55904", // changed
+                     b.location);
+
+        assertNotNull(ad = list.get(2));
+        assertEquals(6,
+                     ad.id);
+        assertEquals("Open Liberty",
+                     ad.sponsor);
+        assertEquals(ad.toString(),
+                     true,
+                     ad instanceof Commercial);
+        c = (Commercial) ad;
+        assertEquals("ABC",
+                     c.network);
+        assertEquals(60,
+                     c.numSeconds);
+        assertEquals(LocalDateTime.of(today,
+                                      LocalTime.of(19, 20, 21)), // changed
+                     c.showAt);
+
+        // delete method:
+
+        assertEquals(6L,
+                     ads.removeBySponsorIn(List.of("Open Liberty",
+                                                   "Eclipse Foundation",
+                                                   "IBM")));
     }
 
     /**

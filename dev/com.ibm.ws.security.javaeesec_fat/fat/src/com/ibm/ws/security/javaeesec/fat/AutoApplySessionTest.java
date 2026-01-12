@@ -78,7 +78,7 @@ public class AutoApplySessionTest extends JavaEESecTestBase {
         /*
          * Wait for the SSL endpoint to start.
          */
-        myServer.waitForStringInLog("CWWKO0219I");
+        myServer.waitForSSLStart();
     }
 
     @AfterClass

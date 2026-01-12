@@ -20,7 +20,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 import static test.jakarta.data.jpa.web.Assertions.assertArrayEquals;
-import static test.jakarta.data.jpa.web.Assertions.assertIterableEquals;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -868,9 +867,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testElementCollection() throws Exception {
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33205")) {
-            return; //TODO remove skip when fixed in Hibernate or Liberty
-        }
 
         ECEntity e1 = new ECEntity();
         e1.setId("EC1");
@@ -1195,17 +1191,18 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Green Bay", list.get(0).name);
         assertEquals("Wisconsin", list.get(0).stateName);
         assertEquals(107395, list.get(0).population);
-        assertIterableEquals(Set.of(920), list.get(0).areaCodes);
+        assertEquals(Set.of(920), list.get(0).areaCodes);
 
         assertEquals("Milwaukee", list.get(1).name);
         assertEquals("Wisconsin", list.get(1).stateName);
         assertEquals(577222, list.get(1).population);
-        assertIterableEquals(Set.of(414), list.get(1).areaCodes);
+        assertEquals(Set.of(414), list.get(1).areaCodes);
 
         assertEquals("Superior", list.get(2).name);
         assertEquals("Wisconsin", list.get(2).stateName);
         assertEquals(26751, list.get(2).population);
-        assertIterableEquals(List.of(534, 715), new TreeSet<Integer>(list.get(2).areaCodes));
+        assertEquals(new TreeSet<>(List.of(534, 715)),
+                     new TreeSet<>(list.get(2).areaCodes));
 
         Set<String> cityNames = new TreeSet<>();
         cityNames.add("Sioux Falls");
@@ -1374,10 +1371,10 @@ public class DataJPATestServlet extends FATServlet {
                                           .thenComparing(Comparator.<ShippingAddress, String> comparing(o -> o.streetAddress.streetName))
                                           .thenComparing(Comparator.<ShippingAddress, Integer> comparing(o -> o.zipCode)));
 
-        assertIterableEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
-                             Stream.of(shippingAddresses.findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(150, 250))
-                                             .map(a -> a.houseNumber + " " + a.streetName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("200 1st Ave SW", "151 4th St SE", "201 4th St SE"),
+                     Stream.of(shippingAddresses.findByStreetAddress_houseNumberBetweenOrderByStreetAddress_streetNameAscStreetAddress_houseNumber(150, 250))
+                                     .map(a -> a.houseNumber + " " + a.streetName)
+                                     .collect(Collectors.toList()));
 
         assertEquals(4, shippingAddresses.removeAll());
     }
@@ -1426,14 +1423,14 @@ public class DataJPATestServlet extends FATServlet {
         if (!isHibernate())
             return; // TODO enable once EclipseLink #33293 is fixed
 
-        assertIterableEquals(List.of("AccountId:66320100:410224",
-                                     "AccountId:77512000:705030",
-                                     "AccountId:88191200:410224"),
-                             taxpayers.findAccountsBySSN(234002340L)
-                                             .stream()
-                                             .map(AccountId::toString)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("AccountId:66320100:410224",
+                             "AccountId:77512000:705030",
+                             "AccountId:88191200:410224"),
+                     taxpayers.findAccountsBySSN(234002340L)
+                                     .stream()
+                                     .map(AccountId::toString)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         List<Set<AccountId>> list;
         try {
@@ -1466,10 +1463,10 @@ public class DataJPATestServlet extends FATServlet {
 
         // TODO enable once issue #32204 is fixed in EclipseLink
         if (false)
-            assertIterableEquals(List.of(345003450L, 678006780L),
-                                 taxpayers.findByBankAccountsContains(AccountId.of(26122300, 410224))
-                                                 .map(t -> t.ssn)
-                                                 .collect(Collectors.toList()));
+            assertEquals(List.of(345003450L, 678006780L),
+                         taxpayers.findByBankAccountsContains(AccountId.of(26122300, 410224))
+                                         .map(t -> t.ssn)
+                                         .collect(Collectors.toList()));
 
         assertEquals(List.of(123001230L,
                              234002340L,
@@ -1489,11 +1486,11 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testEmbeddableDepth1() {
-        assertIterableEquals(List.of("Olmsted Medical", "Mayo Clinic", "Home Federal Savings Bank", "Custom Alarm"),
-                             businesses.findByLocationLatitudeBetweenOrderByLocationLongitudeDesc(44.0f, 44.03f)
-                                             .stream()
-                                             .map(b -> b.name)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Olmsted Medical", "Mayo Clinic", "Home Federal Savings Bank", "Custom Alarm"),
+                     businesses.findByLocationLatitudeBetweenOrderByLocationLongitudeDesc(44.0f, 44.03f)
+                                     .stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -1510,40 +1507,40 @@ public class DataJPATestServlet extends FATServlet {
 
         page = businesses.findByLocationAddressZipIn(zipCodes, PageRequest.ofSize(4).withoutTotal());
 
-        assertIterableEquals(List.of(345, 1421, 1016, 1600),
-                             page
-                                             .stream()
-                                             .map(b -> b.location.address.houseNum)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(345, 1421, 1016, 1600),
+                     page
+                                     .stream()
+                                     .map(b -> b.location.address.houseNum)
+                                     .collect(Collectors.toList()));
 
         page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
-        assertIterableEquals(List.of(2800, 2960, 3100, 3428),
-                             page
-                                             .stream()
-                                             .map(b -> b.location.address.houseNum)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(2800, 2960, 3100, 3428),
+                     page
+                                     .stream()
+                                     .map(b -> b.location.address.houseNum)
+                                     .collect(Collectors.toList()));
 
         assertEquals(2L, page.pageRequest().page());
         assertEquals(4, page.pageRequest().size());
 
         page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
-        assertIterableEquals(List.of(5201, 1661, 3706, 200),
-                             page
-                                             .stream()
-                                             .map(b -> b.location.address.houseNum)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(5201, 1661, 3706, 200),
+                     page
+                                     .stream()
+                                     .map(b -> b.location.address.houseNum)
+                                     .collect(Collectors.toList()));
 
         assertEquals(3, page.pageRequest().page());
 
         page = businesses.findByLocationAddressZipIn(zipCodes, page.nextPageRequest());
 
-        assertIterableEquals(List.of(1402, 3008),
-                             page
-                                             .stream()
-                                             .map(b -> b.location.address.houseNum)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(1402, 3008),
+                     page
+                                     .stream()
+                                     .map(b -> b.location.address.houseNum)
+                                     .collect(Collectors.toList()));
 
         assertEquals(2, page.numberOfElements());
         assertEquals(4, page.pageRequest().page());
@@ -1551,11 +1548,11 @@ public class DataJPATestServlet extends FATServlet {
 
         page = businesses.findByLocationAddressZipIn(zipCodes, page.previousPageRequest());
 
-        assertIterableEquals(List.of(5201, 1661, 3706, 200),
-                             page
-                                             .stream()
-                                             .map(b -> b.location.address.houseNum)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(5201, 1661, 3706, 200),
+                     page
+                                     .stream()
+                                     .map(b -> b.location.address.houseNum)
+                                     .collect(Collectors.toList()));
 
         assertEquals(3, page.pageRequest().page());
     }
@@ -1568,10 +1565,10 @@ public class DataJPATestServlet extends FATServlet {
     public void testEmbeddableDepth3() {
         Business[] found = businesses.findByLocation_Address_Street_NameIgnoreCaseEndsWithOrderByLocation_Address_Street_DirectionIgnoreCaseAscNameAsc(" AVE");
 
-        assertIterableEquals(List.of("Silver Lake Foods", "Crenlo", "Geotek"),
-                             Stream.of(found)
-                                             .map(b -> b.name)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Silver Lake Foods", "Crenlo", "Geotek"),
+                     Stream.of(found)
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -1580,16 +1577,16 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testEmbeddableIntermixNamePatterns() {
 
-        assertIterableEquals(List.of("HALCON", "Geotek"),
-                             businesses.in("Stewartville", "MN")
-                                             .map(b -> b.name)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("HALCON", "Geotek"),
+                     businesses.in("Stewartville", "MN")
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Custom Alarm", "Mayo Clinic", "Reichel Foods"),
-                             businesses.onSouthSideOf("Rochester", "MN", "SW")
-                                             .stream()
-                                             .map(b -> b.name)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Custom Alarm", "Mayo Clinic", "Reichel Foods"),
+                     businesses.onSouthSideOf("Rochester", "MN", "SW")
+                                     .stream()
+                                     .map(b -> b.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -1629,35 +1626,29 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(3, segments.countByPointAXLessThan(1));
 
-        // TODO enable for EclipseLink once #29460 is fixed
-        if (isHibernate()) {
-            assertEquals(List.of(s5.id, s6.id, s3.id, s4.id, s2.id),
-                         segments.endingSouthOf(175)
-                                         .map(s -> s.id)
-                                         .collect(Collectors.toList()));
+        assertEquals(List.of(s5.id, s6.id, s3.id, s4.id, s2.id),
+                     segments.endingSouthOf(175)
+                                     .map(s -> s.id)
+                                     .collect(Collectors.toList()));
 
-            assertEquals(List.of(-20, 0, 24),
-                         segments.longerThan(200, Sort.asc("pointA.x"))
-                                         .stream()
-                                         .map(s -> s.pointA.x())
-                                         .collect(Collectors.toList()));
+        assertEquals(List.of(-20, 0, 24),
+                     segments.longerThan(200, Sort.asc("pointA.x"))
+                                     .stream()
+                                     .map(s -> s.pointA.x())
+                                     .collect(Collectors.toList()));
 
-            s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
-            s3.pointA = new Point(0, 0);
-            s3 = segments.addOrModify(s3);
+        s3.pointB = new Point(s3.pointB.x() - s3.pointA.x(), s3.pointB.y() - s3.pointA.y());
+        s3.pointA = new Point(0, 0);
+        s3 = segments.addOrModify(s3);
 
-            // removes s1 and s3
-            assertEquals(2L, segments.removeStartingAt(0, 0));
+        // removes s1 and s3
+        assertEquals(2L, segments.removeStartingAt(0, 0));
 
-            Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
-            assertEquals(120, s2pointB.x());
-            assertEquals(171, s2pointB.y());
-            assertEquals(4L,
-                         segments.erase());
-        } else {
-            assertEquals(6L,
-                         segments.erase());
-        }
+        Point s2pointB = segments.terminalPoint(s2.id).orElseThrow();
+        assertEquals(120, s2pointB.x());
+        assertEquals(171, s2pointB.y());
+        assertEquals(4L,
+                     segments.erase());
     }
 
     /**
@@ -1669,17 +1660,17 @@ public class DataJPATestServlet extends FATServlet {
 
         tran.begin();
         try {
-            assertIterableEquals(List.of("NW 19th St",
-                                         "NW 37th St",
-                                         "NW 4th Ave",
-                                         "NW Civic Center Dr",
-                                         "NW Lakeridge Pl",
-                                         "NW Members Parkway",
-                                         "W Highway 14"),
-                                 businesses.findByLocationAddressZip(ZipCode.of(55901))
-                                                 .map(loc -> loc.address.street.direction +
-                                                             " " + loc.address.street.name)
-                                                 .collect(Collectors.toList()));
+            assertEquals(List.of("NW 19th St",
+                                 "NW 37th St",
+                                 "NW 4th Ave",
+                                 "NW Civic Center Dr",
+                                 "NW Lakeridge Pl",
+                                 "NW Members Parkway",
+                                 "W Highway 14"),
+                         businesses.findByLocationAddressZip(ZipCode.of(55901))
+                                         .map(loc -> loc.address.street.direction +
+                                                     " " + loc.address.street.name)
+                                         .collect(Collectors.toList()));
         } finally {
             if (tran.getStatus() == Status.STATUS_ACTIVE)
                 tran.commit();
@@ -1694,16 +1685,16 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testEmbeddableTypeAsResultDepth3() {
 
-        assertIterableEquals(List.of("N Broadway Ave",
-                                     "NE Wellner Dr",
-                                     "SE 9th St",
-                                     "SW 1st St",
-                                     "SW Enterprise Dr",
-                                     "SW Greenview Dr"),
-                             businesses.findByLocationAddressZipNotAndLocationAddressCity(ZipCode.of(55901),
-                                                                                          "Rochester")
-                                             .map(street -> street.direction + " " + street.name)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("N Broadway Ave",
+                             "NE Wellner Dr",
+                             "SE 9th St",
+                             "SW 1st St",
+                             "SW Enterprise Dr",
+                             "SW Greenview Dr"),
+                     businesses.findByLocationAddressZipNotAndLocationAddressCity(ZipCode.of(55901),
+                                                                                  "Rochester")
+                                     .map(street -> street.direction + " " + street.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -1726,46 +1717,46 @@ public class DataJPATestServlet extends FATServlet {
                            new Account(1004470, 30372, "Mayo Credit Union", true, 423.15, "Eric TestEmbeddedId"),
                            new Account(1008200, 30372, "Mayo Credit Union", true, 103.04, "Evan TestEmbeddedId"));
 
-        assertIterableEquals(List.of("Emma TestEmbeddedId", "Eric TestEmbeddedId", "Erin TestEmbeddedId"),
-                             accounts.findByAccountIdAccountNum(1004470)
-                                             .map(a -> a.owner)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Emma TestEmbeddedId", "Eric TestEmbeddedId", "Erin TestEmbeddedId"),
+                     accounts.findByAccountIdAccountNum(1004470)
+                                     .map(a -> a.owner)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Edward TestEmbeddedId", "Elizabeth TestEmbeddedId", "Ellen TestEmbeddedId", "Erin TestEmbeddedId"),
-                             accounts.findByAccountIdRoutingNum(70081)
-                                             .map(a -> a.owner)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Edward TestEmbeddedId", "Elizabeth TestEmbeddedId", "Ellen TestEmbeddedId", "Erin TestEmbeddedId"),
+                     accounts.findByAccountIdRoutingNum(70081)
+                                     .map(a -> a.owner)
+                                     .collect(Collectors.toList()));
 
         assertEquals("Emma TestEmbeddedId", accounts.findByAccountId(AccountId.of(1004470, 22158)).owner);
 
         assertEquals("Erin TestEmbeddedId", accounts.findById(AccountId.of(1004470, 70081)).owner);
 
-        assertIterableEquals(List.of("Home Federal Savings Bank", "Mayo Credit Union"),
-                             accounts.findByAccountIdNotAndOwner(AccountId.of(1007590, 70081), "Elizabeth TestEmbeddedId")
-                                             .map(a -> a.bankName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Home Federal Savings Bank", "Mayo Credit Union"),
+                     accounts.findByAccountIdNotAndOwner(AccountId.of(1007590, 70081), "Elizabeth TestEmbeddedId")
+                                     .map(a -> a.bankName)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("AccountId:1004470:22158",
-                                     "AccountId:1004470:30372",
-                                     "AccountId:1004470:70081",
-                                     "AccountId:1005380:70081",
-                                     "AccountId:1006380:22158",
-                                     "AccountId:1006380:70081",
-                                     "AccountId:1007590:70081",
-                                     "AccountId:1008200:30372",
-                                     "AccountId:1008410:22158",
-                                     "AccountId:1009130:30372"),
-                             accounts.findByAccountIdNotNull()
-                                             .map(a -> a.accountId.toString())
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("AccountId:1004470:22158",
+                             "AccountId:1004470:30372",
+                             "AccountId:1004470:70081",
+                             "AccountId:1005380:70081",
+                             "AccountId:1006380:22158",
+                             "AccountId:1006380:70081",
+                             "AccountId:1007590:70081",
+                             "AccountId:1008200:30372",
+                             "AccountId:1008410:22158",
+                             "AccountId:1009130:30372"),
+                     accounts.findByAccountIdNotNull()
+                                     .map(a -> a.accountId.toString())
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("AccountId:1004470:70081",
-                                     "AccountId:1005380:70081",
-                                     "AccountId:1006380:70081",
-                                     "AccountId:1007590:70081"),
-                             accounts.findByBankName("Think Bank")
-                                             .map(AccountId::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("AccountId:1004470:70081",
+                             "AccountId:1005380:70081",
+                             "AccountId:1006380:70081",
+                             "AccountId:1007590:70081"),
+                     accounts.findByBankName("Think Bank")
+                                     .map(AccountId::toString)
+                                     .collect(Collectors.toList()));
 
         assertEquals(Collections.EMPTY_LIST, accounts.findByAccountIdEmpty());
 
@@ -2212,14 +2203,13 @@ public class DataJPATestServlet extends FATServlet {
                                          " ORDER BY this.pointB.y ASC, this.id ASC");
             query.setParameter("yExclusiveMax", 200);
 
-            // TODO enable once #29460 is fixed
-            //@SuppressWarnings("unchecked")
-            //Stream<Segment> results = query.getResultStream();
+            @SuppressWarnings("unchecked")
+            Stream<Segment> results = query.getResultStream();
 
-            //assertEquals(List.of(s5.id, s6.id),
-            //             results
-            //                             .map(s -> s.id)
-            //                             .collect(Collectors.toList()));
+            assertEquals(List.of(s5.id, s6.id),
+                         results
+                                         .map(s -> s.id)
+                                         .collect(Collectors.toList()));
         } finally {
             if (tran.getStatus() == Status.STATUS_ACTIVE)
                 tran.commit();
@@ -2778,21 +2768,46 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClass() {
 
-        assertIterableEquals(List.of("Minnesota", "New York"),
-                             cities.findByName("Rochester")
-                                             .map(c -> c.stateName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Minnesota", "New York"),
+                     cities.findByName("Rochester")
+                                     .map(c -> c.stateName)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Kansas City", "Springfield"),
-                             cities.findByStateName("Missouri")
-                                             .map(c -> c.name)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City", "Springfield"),
+                     cities.findByStateName("Missouri")
+                                     .map(c -> c.name)
+                                     .collect(Collectors.toList()));
 
         // TODO enable once EclipseLink #29073 is fixed
-        // JPA doesn't allow querying by IdClass. This would need to be interpreted as (c.name=?1 AND c.state=?2)
-        // The current error is confusing: You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
-        // for parameter 1 with expected type of class java.lang.String from query string SELECT o FROM City o WHERE (o.state=?1)
-        //cities.findById(CityId.of("Rochester", "Minnesota"));
+        // EclipseLink tries to allow querying by IdClass, but generates wrong SQL.
+        // This would need to be interpreted as (c.name=?1 AND c.stateName=?2)
+        //
+        // At one point, this was failing with:
+        // You have attempted to set a value of type class test.jakarta.data.jpa.web.CityId
+        // for parameter 1 with expected type of class java.lang.String from query string
+        // SELECT o FROM City o WHERE (o.stateName=?1)
+        // in which case EclipseLink was wrongly only using one part (stateName) of the id class
+        // in the SQL it generates, but then attempting to send the id class CityId value as
+        // the stateName, which does not match because CityId is not a String.
+        //
+        // However, now it is failing due to no result found
+        // Jakarta Data uses this JPQL: SELECT o FROM City o WHERE (id(o)=?1)
+        // Note that id(o) is a function that obtains the id of the entity,
+        // which in this case is an instance of CityId.
+        // EclipseLink wrongly generates the SQL:
+        // SELECT STATENAME, NAME, AREACODES, CHANGECOUNT, POPULATION FROM City WHERE (NAME = ?)
+        // and invokes toString on the CityId instance, supplying it as the NAME value
+        // rather than generating a query,
+        // ... WHERE (NAME = ? AND STATENAME = ?)
+        // and supplying the name and stateName values from the CityId instance.
+        //
+        //City city = cities.findById(CityId.of("Rochester", "Minnesota"))
+        //                .orElseThrow();
+
+        //assertEquals("Rochester", city.name);
+        //assertEquals("Minnesota", city.stateName);
+        //assertEquals(Set.of(507), city.areaCodes);
+        //assertEquals(121395, city.population);
     }
 
     /**
@@ -2822,11 +2837,11 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassFindByComponentOfIdClass() {
 
-        assertIterableEquals(List.of("Rochester Minnesota",
-                                     "Rochester New York"),
-                             cities.withNameOf("Rochester")
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Rochester Minnesota",
+                             "Rochester New York"),
+                     cities.withNameOf("Rochester")
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -2869,17 +2884,17 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassOrderByAnnotationReverseDirection() {
 
-        assertIterableEquals(List.of("Springfield Oregon",
-                                     "Springfield Ohio",
-                                     "Springfield Missouri",
-                                     "Springfield Illinois",
-                                     "Rochester New York",
-                                     "Rochester Minnesota",
-                                     "Kansas City Missouri",
-                                     "Kansas City Kansas"),
-                             cities.findByStateNameNot("Massachusetts")
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Oregon",
+                             "Springfield Ohio",
+                             "Springfield Missouri",
+                             "Springfield Illinois",
+                             "Rochester New York",
+                             "Rochester Minnesota",
+                             "Kansas City Missouri",
+                             "Kansas City Kansas"),
+                     cities.findByStateNameNot("Massachusetts")
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -2894,23 +2909,23 @@ public class DataJPATestServlet extends FATServlet {
                         .afterCursor(Cursor.forKey(CityId.of("Rochester", "Minnesota")));
 
         CursoredPage<City> slice1 = cities.findByStateNameNotEndsWith("o", pagination);
-        assertIterableEquals(List.of("Rochester New York",
-                                     "Springfield Illinois",
-                                     "Springfield Massachusetts"),
-                             slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Rochester New York",
+                             "Springfield Illinois",
+                             "Springfield Massachusetts"),
+                     slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         CursoredPage<City> slice2 = cities.findByStateNameNotEndsWith("o", slice1.nextPageRequest());
-        assertIterableEquals(List.of("Springfield Missouri",
-                                     "Springfield Oregon"),
-                             slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Missouri",
+                             "Springfield Oregon"),
+                     slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, slice2.hasNext());
 
         CursoredPage<City> slice0 = cities.findByStateNameNotEndsWith("o", slice1.previousPageRequest());
-        assertIterableEquals(List.of("Kansas City Kansas",
-                                     "Kansas City Missouri",
-                                     "Rochester Minnesota"),
-                             slice0.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City Kansas",
+                             "Kansas City Missouri",
+                             "Rochester Minnesota"),
+                     slice0.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, slice0.hasPrevious());
     }
@@ -2924,19 +2939,19 @@ public class DataJPATestServlet extends FATServlet {
         PageRequest pagination = PageRequest.ofSize(5).withoutTotal();
 
         CursoredPage<City> slice1 = cities.findByStateNameNotNull(pagination, Order.by());
-        assertIterableEquals(List.of("Kansas City Kansas",
-                                     "Kansas City Missouri",
-                                     "Rochester Minnesota",
-                                     "Rochester New York",
-                                     "Springfield Illinois"),
-                             slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City Kansas",
+                             "Kansas City Missouri",
+                             "Rochester Minnesota",
+                             "Rochester New York",
+                             "Springfield Illinois"),
+                     slice1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         CursoredPage<City> slice2 = cities.findByStateNameNotNull(slice1.nextPageRequest(), Order.by());
-        assertIterableEquals(List.of("Springfield Massachusetts",
-                                     "Springfield Missouri",
-                                     "Springfield Ohio",
-                                     "Springfield Oregon"),
-                             slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Massachusetts",
+                             "Springfield Missouri",
+                             "Springfield Ohio",
+                             "Springfield Oregon"),
+                     slice2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, slice2.hasNext());
 
@@ -2944,17 +2959,17 @@ public class DataJPATestServlet extends FATServlet {
         pagination = pagination.size(3).beforeCursor(springfieldMO);
 
         CursoredPage<City> beforeSpringfieldMO = cities.findByStateNameNotNull(pagination, Order.by());
-        assertIterableEquals(List.of("Rochester New York",
-                                     "Springfield Illinois",
-                                     "Springfield Massachusetts"),
-                             beforeSpringfieldMO.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Rochester New York",
+                             "Springfield Illinois",
+                             "Springfield Massachusetts"),
+                     beforeSpringfieldMO.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         CursoredPage<City> beforeRochesterNY = cities.findByStateNameNotNull(beforeSpringfieldMO.previousPageRequest(),
                                                                              Order.by());
-        assertIterableEquals(List.of("Kansas City Kansas",
-                                     "Kansas City Missouri",
-                                     "Rochester Minnesota"),
-                             beforeRochesterNY.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City Kansas",
+                             "Kansas City Missouri",
+                             "Rochester Minnesota"),
+                     beforeRochesterNY.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, beforeRochesterNY.hasPrevious());
     }
@@ -2971,30 +2986,30 @@ public class DataJPATestServlet extends FATServlet {
                         .afterCursor(Cursor.forKey(CityId.of("Springfield", "Tennessee")));
 
         CursoredPage<City> page1 = cities.findByStateNameNotStartsWith("Ma", pagination);
-        assertIterableEquals(List.of("Springfield Oregon",
-                                     "Springfield Ohio",
-                                     "Springfield Missouri"),
-                             page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Oregon",
+                             "Springfield Ohio",
+                             "Springfield Missouri"),
+                     page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         CursoredPage<City> page2 = cities.findByStateNameNotStartsWith("Ma", page1.nextPageRequest());
-        assertIterableEquals(List.of("Springfield Illinois",
-                                     "Rochester New York",
-                                     "Rochester Minnesota"),
-                             page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Illinois",
+                             "Rochester New York",
+                             "Rochester Minnesota"),
+                     page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         CursoredPage<City> page3 = cities.findByStateNameNotStartsWith("Ma", page2.nextPageRequest());
-        assertIterableEquals(List.of("Kansas City Missouri",
-                                     "Kansas City Kansas"),
-                             page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City Missouri",
+                             "Kansas City Kansas"),
+                     page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, page3.hasNext());
 
         assertEquals(true, page3.hasPrevious());
         page2 = cities.findByStateNameNotStartsWith("Ma", page3.previousPageRequest());
-        assertIterableEquals(List.of("Springfield Illinois",
-                                     "Rochester New York",
-                                     "Rochester Minnesota"),
-                             page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Illinois",
+                             "Rochester New York",
+                             "Rochester Minnesota"),
+                     page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
     }
 
     /**
@@ -3008,18 +3023,18 @@ public class DataJPATestServlet extends FATServlet {
         PageRequest pagination = PageRequest.ofSize(5);
 
         CursoredPage<City> page1 = cities.findByStateNameGreaterThan("Iowa", pagination, asc);
-        assertIterableEquals(List.of("Kansas City Kansas",
-                                     "Kansas City Missouri",
-                                     "Rochester Minnesota",
-                                     "Rochester New York",
-                                     "Springfield Massachusetts"),
-                             page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City Kansas",
+                             "Kansas City Missouri",
+                             "Rochester Minnesota",
+                             "Rochester New York",
+                             "Springfield Massachusetts"),
+                     page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         CursoredPage<City> page2 = cities.findByStateNameGreaterThan("Iowa", page1.nextPageRequest(), asc);
-        assertIterableEquals(List.of("Springfield Missouri",
-                                     "Springfield Ohio",
-                                     "Springfield Oregon"),
-                             page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Missouri",
+                             "Springfield Ohio",
+                             "Springfield Oregon"),
+                     page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, page2.hasNext());
 
@@ -3027,22 +3042,22 @@ public class DataJPATestServlet extends FATServlet {
         Order<City> desc = Order.by(Sort.descIgnoreCase(ID));
         pagination = PageRequest.ofSize(4);
         page1 = cities.findByStateNameGreaterThan("Idaho", pagination, desc);
-        assertIterableEquals(List.of("Springfield Oregon",
-                                     "Springfield Ohio",
-                                     "Springfield Missouri",
-                                     "Springfield Massachusetts"),
-                             page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Oregon",
+                             "Springfield Ohio",
+                             "Springfield Missouri",
+                             "Springfield Massachusetts"),
+                     page1.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         page2 = cities.findByStateNameGreaterThan("Idaho", page1.nextPageRequest(), desc);
-        assertIterableEquals(List.of("Springfield Illinois",
-                                     "Rochester New York",
-                                     "Rochester Minnesota",
-                                     "Kansas City Missouri"),
-                             page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Illinois",
+                             "Rochester New York",
+                             "Rochester Minnesota",
+                             "Kansas City Missouri"),
+                     page2.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         CursoredPage<City> page3 = cities.findByStateNameGreaterThan("Idaho", page2.nextPageRequest(), desc);
-        assertIterableEquals(List.of("Kansas City Kansas"),
-                             page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
+        assertEquals(List.of("Kansas City Kansas"),
+                     page3.stream().map(c -> c.name + ' ' + c.stateName).collect(Collectors.toList()));
 
         assertEquals(false, page3.hasNext());
     }
@@ -3053,16 +3068,16 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testIdClassOrderBySorts() {
 
-        assertIterableEquals(List.of("Springfield Missouri",
-                                     "Springfield Massachusetts",
-                                     "Springfield Illinois",
-                                     "Rochester New York",
-                                     "Rochester Minnesota",
-                                     "Kansas City Missouri",
-                                     "Kansas City Kansas"),
-                             cities.findByStateNameLessThan("Ohio", Sort.desc(ID))
-                                             .map(c -> c.name + ' ' + c.stateName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Springfield Missouri",
+                             "Springfield Massachusetts",
+                             "Springfield Illinois",
+                             "Rochester New York",
+                             "Rochester Minnesota",
+                             "Kansas City Missouri",
+                             "Kansas City Kansas"),
+                     cities.findByStateNameLessThan("Ohio", Sort.desc(ID))
+                                     .map(c -> c.name + ' ' + c.stateName)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3077,22 +3092,22 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Missouri", cityId.getStateName());
 
         // Stream result
-        assertIterableEquals(List.of("Springfield, Oregon",
-                                     "Springfield, Ohio",
-                                     "Springfield, Missouri",
-                                     "Springfield, Massachusetts",
-                                     "Springfield, Illinois"),
-                             cities.findByNameStartsWith("Spring")
-                                             .map(CityId::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Springfield, Oregon",
+                             "Springfield, Ohio",
+                             "Springfield, Missouri",
+                             "Springfield, Massachusetts",
+                             "Springfield, Illinois"),
+                     cities.findByNameStartsWith("Spring")
+                                     .map(CityId::toString)
+                                     .collect(Collectors.toList()));
 
         // array result
-        assertIterableEquals(List.of("Springfield, Illinois",
-                                     "Kansas City, Kansas",
-                                     "Springfield, Massachusetts"),
-                             Stream.of(cities.findByStateNameEndsWith("s"))
-                                             .map(CityId::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Springfield, Illinois",
+                             "Kansas City, Kansas",
+                             "Springfield, Massachusetts"),
+                     Stream.of(cities.findByStateNameEndsWith("s"))
+                                     .map(CityId::toString)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3123,21 +3138,21 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals("Irene", employees.findByBadgeNumber(2636).firstName);
 
-        assertIterableEquals(List.of((short) 4948, (short) 5310, (short) 8171),
-                             employees.findByFirstNameLike("I_a%")
-                                             .map(emp -> emp.badge.number)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of((short) 4948, (short) 5310, (short) 8171),
+                     employees.findByFirstNameLike("I_a%")
+                                     .map(emp -> emp.badge.number)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of((short) 8171, (short) 5310, (short) 4948, (short) 2636),
-                             employees.findByFirstNameStartsWithOrderByEmpNumDesc("I")
-                                             .stream()
-                                             .map(emp -> emp.badge.number)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of((short) 8171, (short) 5310, (short) 4948, (short) 2636),
+                     employees.findByFirstNameStartsWithOrderByEmpNumDesc("I")
+                                     .stream()
+                                     .map(emp -> emp.badge.number)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Badge#2636 Level A", "Badge#4948 Level A", "Badge#5310 Level C", "Badge#8171 Level B"),
-                             employees.findByLastName("testIdThatIsNotTheUniqueIdentifier")
-                                             .map(Badge::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Badge#2636 Level A", "Badge#4948 Level A", "Badge#5310 Level C", "Badge#8171 Level B"),
+                     employees.findByLastName("testIdThatIsNotTheUniqueIdentifier")
+                                     .map(Badge::toString)
+                                     .collect(Collectors.toList()));
 
         // Use @OrderBy to sort by the id attribute which is not a unique identifier:
         assertEquals(List.of("Irene", "Isaac", "Isabella", "Ivan"),
@@ -3379,23 +3394,23 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testManyToManyCustomJoinQuery() {
 
-        assertIterableEquals(List.of("4th Ave SE",
-                                     "4th Ave SE",
-                                     "4th Ave SE",
-                                     "2nd Ave NE",
-                                     "2nd Ave NE",
-                                     "1st Ave SW"),
-                             customers.withLocationType(DeliveryLocation.Type.HOME)
-                                             .map(Street::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("4th Ave SE",
+                             "4th Ave SE",
+                             "4th Ave SE",
+                             "2nd Ave NE",
+                             "2nd Ave NE",
+                             "1st Ave SW"),
+                     customers.withLocationType(DeliveryLocation.Type.HOME)
+                                     .map(Street::toString)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("37th St NW",
-                                     "37th St NW",
-                                     "37th St NW",
-                                     "37th St NW"),
-                             customers.withLocationType(DeliveryLocation.Type.BUSINESS)
-                                             .map(Street::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("37th St NW",
+                             "37th St NW",
+                             "37th St NW",
+                             "37th St NW"),
+                     customers.withLocationType(DeliveryLocation.Type.BUSINESS)
+                                     .map(Street::toString)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3470,13 +3485,13 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testManyToOneIdClass() {
 
-        assertIterableEquals(List.of("Discrooger card #2000921022220002",
-                                     "MonsterCard card #3000921032220002",
-                                     "Feesa card #4000921042220002",
-                                     "Feesa card #6000921062220002"),
-                             creditCards.findBySecurityCode(222)
-                                             .map(CardId::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Discrooger card #2000921022220002",
+                             "MonsterCard card #3000921032220002",
+                             "Feesa card #4000921042220002",
+                             "Feesa card #6000921062220002"),
+                     creditCards.findBySecurityCode(222)
+                                     .map(CardId::toString)
+                                     .collect(Collectors.toList()));
 
     }
 
@@ -3488,12 +3503,12 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testManyToOneM11M() {
 
-        assertIterableEquals(List.of(5000921051110001L, 5000921052220002L,
-                                     1000921011110001L, 1000921011120002L, 1000921011130003L,
-                                     2000921021110001L, 2000921022220002L),
-                             creditCards.findByDebtorEmailIgnoreCaseStartsWith("ma")
-                                             .map(card -> card.number)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(5000921051110001L, 5000921052220002L,
+                             1000921011110001L, 1000921011120002L, 1000921011130003L,
+                             2000921021110001L, 2000921022220002L),
+                     creditCards.findByDebtorEmailIgnoreCaseStartsWith("ma")
+                                     .map(card -> card.number)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3506,23 +3521,23 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testManyToOneMM11() {
 
-        assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
-                                     "Matthew@tests.openliberty.io",
-                                     "Maximilian@tests.openliberty.io",
-                                     "Megan@tests.openliberty.io"),
-                             creditCards.findByIssuer(Issuer.MonsterCard)
-                                             .map(cc -> cc.debtor)
-                                             .map(c -> c.email)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
+                             "Matthew@tests.openliberty.io",
+                             "Maximilian@tests.openliberty.io",
+                             "Megan@tests.openliberty.io"),
+                     creditCards.findByIssuer(Issuer.MonsterCard)
+                                     .map(cc -> cc.debtor)
+                                     .map(c -> c.email)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
-                                     "Matthew@tests.openliberty.io",
-                                     "Megan@tests.openliberty.io",
-                                     "Monica@tests.openliberty.io"),
-                             creditCards.findByIssuer(Issuer.Feesa)
-                                             .map(cc -> cc.debtor)
-                                             .map(c -> c.email)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
+                             "Matthew@tests.openliberty.io",
+                             "Megan@tests.openliberty.io",
+                             "Monica@tests.openliberty.io"),
+                     creditCards.findByIssuer(Issuer.Feesa)
+                                     .map(cc -> cc.debtor)
+                                     .map(c -> c.email)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3533,9 +3548,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testManyToOneMM11D() {
-        assertIterableEquals(List.of("Monica@tests.openliberty.io",
-                                     "martin@tests.openliberty.io"),
-                             creditCards.findByExpiresOnBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)));
+        assertEquals(List.of("Monica@tests.openliberty.io",
+                             "martin@tests.openliberty.io"),
+                     creditCards.findByExpiresOnBetween(LocalDate.of(2026, 1, 1), LocalDate.of(2026, 12, 31)));
     }
 
     /**
@@ -3624,8 +3639,8 @@ public class DataJPATestServlet extends FATServlet {
         t8.rate = 0.0194f;
         tariffs.save(t8);
 
-        assertIterableEquals(List.of("Copper", "Lumber"),
-                             tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
+        assertEquals(List.of("Copper", "Lumber"),
+                     tariffs.findByLeviedAgainst("Canada").map(o -> o.leviedOn).sorted().collect(Collectors.toList()));
 
         // Iterator with offset pagination:
         Iterator<Tariff> it = tariffs.findByLeviedAgainstLessThanOrderByKeyDesc("M", PageRequest.ofSize(3));
@@ -3697,17 +3712,17 @@ public class DataJPATestServlet extends FATServlet {
 
         // List return type for Pagination only represents a single page, not all pages.
         // page 1:
-        assertIterableEquals(List.of("China", "Germany", "India", "Japan"),
-                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofSize(4))
-                                             .stream()
-                                             .map(o -> o.leviedAgainst)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("China", "Germany", "India", "Japan"),
+                     tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofSize(4))
+                                     .stream()
+                                     .map(o -> o.leviedAgainst)
+                                     .collect(Collectors.toList()));
         // page 2:
-        assertIterableEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
-                             tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofPage(2).size(4))
-                                             .stream()
-                                             .map(o -> o.leviedAgainst)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Canada", "Bangladesh", "Mexico", "Canada"),
+                     tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofPage(2).size(4))
+                                     .stream()
+                                     .map(o -> o.leviedAgainst)
+                                     .collect(Collectors.toList()));
 
         // Random access to paginated list:
         List<Tariff> list = tariffs.findByLeviedByOrderByKey("USA", PageRequest.ofPage(1));
@@ -3795,11 +3810,11 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testOneToManyCustomJoinQuery() {
 
-        assertIterableEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
-                                     "Matthew@tests.openliberty.io",
-                                     "Maximilian@tests.openliberty.io",
-                                     "Megan@tests.openliberty.io"),
-                             customers.withCardIssuer(Issuer.MonsterCard));
+        assertEquals(List.of("MICHELLE@TESTS.OPENLIBERTY.IO",
+                             "Matthew@tests.openliberty.io",
+                             "Maximilian@tests.openliberty.io",
+                             "Megan@tests.openliberty.io"),
+                     customers.withCardIssuer(Issuer.MonsterCard));
     }
 
     /**
@@ -3875,31 +3890,31 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals("Oliver TestOneToOne", d.fullName);
 
         // Query by and order by attributes of the entity to which OneToOne maps:
-        assertIterableEquals(List.of("Owen TestOneToOne", "Ozzy TestOneToOne", "Oliver TestOneToOne"),
-                             drivers.findByLicenseExpiresOnBetween(LocalDate.of(2024, 5, 1), LocalDate.of(2026, 5, 1))
-                                             .map(driver -> driver.fullName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Owen TestOneToOne", "Ozzy TestOneToOne", "Oliver TestOneToOne"),
+                     drivers.findByLicenseExpiresOnBetween(LocalDate.of(2024, 5, 1), LocalDate.of(2026, 5, 1))
+                                     .map(driver -> driver.fullName)
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Olivia TestOneToOne", "Owen TestOneToOne"),
-                             drivers.findByLicenseStateNameOrderByLicenseExpiresOnDesc("Minnesota")
-                                             .map(driver -> driver.fullName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Olivia TestOneToOne", "Owen TestOneToOne"),
+                     drivers.findByLicenseStateNameOrderByLicenseExpiresOnDesc("Minnesota")
+                                     .map(driver -> driver.fullName)
+                                     .collect(Collectors.toList()));
 
         // Query that returns a collection of the entity type to which OneToOne maps:
-        assertIterableEquals(List.of("Minnesota T121-100-100-100", "Minnesota T121-300-300-300",
-                                     "Wisconsin T121-500-500-500", "Wisconsin T121-200-200-200",
-                                     "Iowa T121-400-400-400"),
-                             drivers.findByDriver_fullNameEndsWith(" TestOneToOne")
-                                             .map(license -> license.stateName + " " + license.licenseNum)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Minnesota T121-100-100-100", "Minnesota T121-300-300-300",
+                             "Wisconsin T121-500-500-500", "Wisconsin T121-200-200-200",
+                             "Iowa T121-400-400-400"),
+                     drivers.findByDriver_fullNameEndsWith(" TestOneToOne")
+                                     .map(license -> license.stateName + " " + license.licenseNum)
+                                     .collect(Collectors.toList()));
 
         // Order by attributes of the entity to which OneToOne maps, using various formats for referring to the attributes:
-        assertIterableEquals(List.of("Oscar TestOneToOne", // Iowa
-                                     "Owen TestOneToOne", "Olivia TestOneToOne", // Minnesota
-                                     "Ozzy TestOneToOne", "Oliver TestOneToOne"), // Wisconsin
-                             drivers.findByLicenseNotNull()
-                                             .map(driver -> driver.fullName)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Oscar TestOneToOne", // Iowa
+                             "Owen TestOneToOne", "Olivia TestOneToOne", // Minnesota
+                             "Ozzy TestOneToOne", "Oliver TestOneToOne"), // Wisconsin
+                     drivers.findByLicenseNotNull()
+                                     .map(driver -> driver.fullName)
+                                     .collect(Collectors.toList()));
 
         drivers.setInfo(new Driver("Oscar TestOneToOne", //
                         100404000, //
@@ -4564,11 +4579,11 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(162847, c.population);
         assertEquals(Arrays.toString(olmstedZipCodes), Arrays.toString(c.zipcodes));
 
-        assertIterableEquals(List.of("Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Rochester", "Stewartville"),
-                             c.cities.stream()
-                                             .map(city -> city.name)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Byron", "Chatfield", "Dover", "Eyota", "Oronoco", "Pine Island", "Rochester", "Stewartville"),
+                     c.cities.stream()
+                                     .map(city -> city.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         // Derby, Oracle, SQLServer  does not support comparisons of BLOB (IMAGE sqlserver) values
         // Derby JDBC Jar Name : derby.jar
@@ -4586,68 +4601,68 @@ public class DataJPATestServlet extends FATServlet {
         List<Set<CityId>> cityLists = counties.findCitiesByNameStartsWith("W");
         assertEquals(cityLists.toString(), 2, cityLists.size());
 
-        assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
-                             cityLists.get(0)
-                                             .stream()
-                                             .map(city -> city.name)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
+                     cityLists.get(0)
+                                     .stream()
+                                     .map(city -> city.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton",
-                                     "Utica", "Winona"),
-                             cityLists.get(1)
-                                             .stream()
-                                             .map(city -> city.name)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Altura", "Dakota", "Elba", "Goodview", "La Crescent", "Lewiston", "Minneiska", "Minnesota City", "Rollingstone", "St. Charles", "Stockton",
+                             "Utica", "Winona"),
+                     cityLists.get(1)
+                                     .stream()
+                                     .map(city -> city.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         // find multiple entities
         List<County> found = counties.findByPopulationLessThanEqual(25000);
         assertEquals(found.toString(), 2, found.size());
 
-        assertIterableEquals(List.of("Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Preston", "Rushford", "Rushford Village",
-                                     "Spring Valley", "Whalen", "Wykoff"),
-                             found.get(0).cities.stream()
-                                             .map(city -> city.name)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Canton", "Chatfield", "Fountain", "Harmony", "Lanesboro", "Mabel", "Ostrander", "Peterson", "Preston", "Rushford", "Rushford Village",
+                             "Spring Valley", "Whalen", "Wykoff"),
+                     found.get(0).cities.stream()
+                                     .map(city -> city.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
-        assertIterableEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
-                             found.get(1).cities.stream()
-                                             .map(city -> city.name)
-                                             .sorted()
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of("Bellechester", "Elgin", "Hammond", "Kellogg", "Lake City", "Mazeppa", "Millville", "Minneiska", "Plainview", "Wabasha", "Zumbro Falls"),
+                     found.get(1).cities.stream()
+                                     .map(city -> city.name)
+                                     .sorted()
+                                     .collect(Collectors.toList()));
 
         // find single array
         assertEquals(Arrays.toString(fillmoreZipCodes),
                      Arrays.toString(counties.findZipCodesByNameContains("llmor")));
 
         // stream of array attribute
-        assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
-                             counties.findZipCodesByNameEndsWith("a")
-                                             .map(Arrays::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                     counties.findZipCodesByNameEndsWith("a")
+                                     .map(Arrays::toString)
+                                     .collect(Collectors.toList()));
 
         // list of array attribute
-        assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(olmstedZipCodes)),
-                             counties.findZipCodesByNameNotStartsWith("W")
-                                             .stream()
-                                             .map(Arrays::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(olmstedZipCodes)),
+                     counties.findZipCodesByNameNotStartsWith("W")
+                                     .stream()
+                                     .map(Arrays::toString)
+                                     .collect(Collectors.toList()));
 
         // page of array attribute
-        assertIterableEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
-                             counties.findZipCodesByNameStartsWith("W", PageRequest.ofSize(10))
-                                             .stream()
-                                             .map(Arrays::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                     counties.findZipCodesByNameStartsWith("W", PageRequest.ofSize(10))
+                                     .stream()
+                                     .map(Arrays::toString)
+                                     .collect(Collectors.toList()));
 
         // optional iterator of array attribute
         Iterator<int[]> it = counties.findZipCodesByPopulationLessThanEqual(50000);
-        assertIterableEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
-                             StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false)
-                                             .map(Arrays::toString)
-                                             .collect(Collectors.toList()));
+        assertEquals(List.of(Arrays.toString(fillmoreZipCodes), Arrays.toString(wabashaZipCodes), Arrays.toString(winonaZipCodes)),
+                     StreamSupport.stream(Spliterators.spliteratorUnknownSize(it, Spliterator.ORDERED), false)
+                                     .map(Arrays::toString)
+                                     .collect(Collectors.toList()));
 
         // optional for single array with none found
         counties.findZipCodesByName("Dodge") //

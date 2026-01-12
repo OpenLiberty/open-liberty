@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,8 +44,10 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
 
     private static KeyPairs jaegerClientKeyPairs = new KeyPairs(server);
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer(otelCollectorKeyPairs.getCertificate(),otelCollectorKeyPairs.getKey(), jaegerClientKeyPairs.getCertificate(), jaegerClientKeyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerSecureOtlpTest.class,
-                                                                                                                                 "jaeger"));
+    public static JaegerContainer jaegerContainer = new JaegerContainer(otelCollectorKeyPairs.getCertificate(), otelCollectorKeyPairs.getKey(), jaegerClientKeyPairs
+                                                                                                                                                                    .getCertificate(),
+                                                                        jaegerClientKeyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerSecureOtlpTest.class,
+                                                                                                                                             "jaeger"));
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
     @ClassRule
@@ -63,7 +65,7 @@ public class JaegerSecureOtlpTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
-
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_CERTIFICATE, otelCollectorKeyPairs.certificateFilePath());
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")

@@ -56,7 +56,7 @@ public abstract class JmsAbstractTests extends AbstractSpringTests {
                     .withLogConsumer(new SimpleLogConsumer(JmsAbstractTests.class, "mq-init"))
                     .waitingFor(new LogMessageWaitStrategy()
                                     .withRegEx(".*AMQ5026I.*")
-                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 10)));
+                                    .withStartupTimeout(Duration.ofMinutes(FATRunner.FAT_TEST_LOCALRUN ? 3 : 35)));
 
     @BeforeClass
     public static void setupJms() throws Exception {

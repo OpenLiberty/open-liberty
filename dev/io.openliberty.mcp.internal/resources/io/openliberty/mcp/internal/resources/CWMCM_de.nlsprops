@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=Die folgenden Argumente wurden \u00fcbergeben, wurden je
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=Die folgenden Argumente wurden von der Methode erwartet, wurden jedoch nicht bereitgestellt: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: Das Argument \u201e {1} \u201c der Methode \u201e {0} \u201c des MCP-Tools enth\u00e4lt nicht unterst\u00fctzte Komponenten wie \u201e TypeVariable, Wildcard\u201c und \u201e GenericArrayType \u201c.
+CWMCM0018E.generic.arguments.explanation=MCP-Tool-Argumente wurden angegeben, werden jedoch nicht unterst\u00fctzt. 
+CWMCM0018E.generic.arguments.useraction=Geben Sie Argumente an, die keine generischen Komponenten enthalten.

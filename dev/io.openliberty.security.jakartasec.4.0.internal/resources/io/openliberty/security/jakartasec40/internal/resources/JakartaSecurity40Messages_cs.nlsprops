@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec40/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: V t\u00e9to aplikaci byl detekov\u00e1n \u00falo\u017ei\u0161t\u011b identit nakonfigurovan\u00e9 pomoc\u00ed anotace @InMemoryIdentityStoreDefinition. Tuto definici nepou\u017e\u00edvejte v produk\u010dn\u00edm prost\u0159ed\u00ed.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=Jakarta uv\u00e1d\u00ed, \u017ee soubor @InMemoryIdentityStoreDefinition bude pou\u017e\u00edv\u00e1n v aplikaci pouze pro \u00fa\u010dely v\u00fdvoje, testov\u00e1n\u00ed a odlad\u011bn\u00ed.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=Ne\u017e va\u0161e aplikace p\u0159ejde do produk\u010dn\u00edho provozu, odstra\u0148te identifika\u010dn\u00ed \u00falo\u017ei\u0161t\u011b @InMemoryIdentityStoreDefinition a nahra\u010fte jej podporovan\u00fdm identifika\u010dn\u00edm \u00falo\u017ei\u0161t\u011bm vhodn\u00fdm pro produk\u010dn\u00ed provoz, jako je LDAP nebo datab\u00e1ze.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: Prom\u011bnn\u00e1 prost\u0159ed\u00ed ` {0} ` je pr\u00e1zdn\u00e1 nebo nen\u00ed nastavena. Jak\u00e9koli n\u00e1sledn\u00e9 ov\u011b\u0159en\u00ed \u017e\u00e1dosti o autentizaci, kter\u00e9 pou\u017e\u00edv\u00e1 p\u0159idru\u017een\u00e9ho volaj\u00edc\u00edho, sel\u017ee.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=Jako hodnota pole hesla v anotaci @Credential byla pou\u017eita prom\u011bnn\u00e1 prost\u0159ed\u00ed, ale tato prom\u011bnn\u00e1 nen\u00ed nastavena extern\u011b nebo je nastavena na pr\u00e1zdn\u00fd \u0159et\u011bzec.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Ujist\u011bte se, \u017ee jste nastavili prom\u011bnnou prost\u0159ed\u00ed uvedenou v pozn\u00e1mce, kter\u00e1 je obvykle specifikov\u00e1na v souboru server.env.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro objekt IdentityStore nen\u00ed t\u0159\u00eddou UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro objekt IdentityStore nen\u00ed t\u0159\u00eddou UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=P\u0159ezkoumejte typ pov\u011b\u0159en\u00ed p\u0159edan\u00e9ho do objektu IdentityStore pomoc\u00ed implementace HttpAuthMechanism.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: V\u00fdraz jazyka EL (Expression Language) pro atribut \u201e {0} \u201c anotace \u00falo\u017ei\u0161t\u011b identit nelze p\u0159ev\u00e9st na platnou hodnotu. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. M\u00edsto toho se pou\u017eije v\u00fdchoz\u00ed hodnota atributu \u201e {1} \u201c.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=P\u0159\u00ed\u010dinou t\u00e9to chyby je neshoda typu mezi v\u00fdsledkem EL a o\u010dek\u00e1vanou hodnotou atributu. Nap\u0159\u00edklad pokud je o\u010dek\u00e1van\u00fd typ atributu String, v\u00fdsledek EL mus\u00ed b\u00fdt String.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Ujist\u011bte se, \u017ee anotace obsahuje platnou konfigura\u010dn\u00ed hodnotu. Ujist\u011bte se, \u017ee v\u00fdrazy EL jsou platn\u00e9, \u017ee jak\u00e9koli odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9 a \u017ee typ v\u00fdsledku odpov\u00edd\u00e1 atributu.
+

@@ -187,8 +187,6 @@
 
 7111=Sie k\u00f6nnen eine HistoricalSession nicht von einer UnitOfWork, einer anderen HistoricalSession, einer ServerSession oder einem ServerSessionBroker abrufen. Sie k\u00f6nnen sie von einer regul\u00e4ren Sitzung, einer ClientSession oder einem ClientSessionBroker abrufen.
 
-7112=Sie haben angegeben, dass EclipseLink das Feature {0} verwendet, aber dieses Feature ist in der aktuell aktiven JDK-Version nicht verf\u00fcgbar: {1}.
-
 7113={0} unterst\u00fctzt keinen Aufruf mit R\u00fcckgabe.
 
 7114=Isolierte Daten werden derzeit in einem Clientsitzungsbroker nicht unterst\u00fctzt. Die Sitzung mit dem Namen {0} enth\u00e4lt Deskriptoren, die isolierte Daten darstellen.

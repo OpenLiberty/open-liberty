@@ -56,16 +56,18 @@ public record ClassSchemaCreationBlueprint(Class<?> baseType, List<FieldInfo> in
         JsonObjectBuilder properties = Json.createObjectBuilder();
         JsonArrayBuilder required = Json.createArrayBuilder();
         List<FieldInfo> fields = ctx.getDirection() == INPUT ? inputFields() : outputFields();
+
         for (FieldInfo fi : fields) {
             SchemaAnnotation childSchemaAnn = SchemaAnnotation.read(fi.annotations());
+            SchemaCreationBlueprint scb = ctx.getBlueprintRegistry().getSchemaCreationBlueprint(fi.type());
 
             JsonObjectBuilder subSchemaObjectBuilder = SchemaGenerator.generateSubSchema(fi.type(), ctx, childSchemaAnn);
             properties.add(fi.name(), subSchemaObjectBuilder.build());
 
-            SchemaCreationBlueprint scb = ctx.getBlueprintRegistry().getSchemaCreationBlueprint(fi.type());
             if (scb.isRequired()) {
                 required.add(fi.name());
             }
+
         }
 
         String schemaDescription = referenceDescription;

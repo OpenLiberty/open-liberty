@@ -1690,7 +1690,7 @@ public class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "exists");
 
-        jakarta.persistence.Query query = em.createQuery(jpql);
+        TypedQuery<?> query = em.createQuery(jpql, Object.class);
         query.setMaxResults(1);
         setParameters(query, args);
 
@@ -1903,7 +1903,7 @@ public class QueryInfo {
                          jpql,
                          entityInfo.entityClass.getName());
 
-            jakarta.persistence.Query query = em.createQuery(jpql);
+            TypedQuery<?> query = em.createQuery(jpql, Object.class);
             setParameters(query, args);
 
             if (type == FIND_AND_DELETE)
@@ -2244,7 +2244,7 @@ public class QueryInfo {
         if (TraceComponent.isAnyTracingEnabled() && jpql != this.jpql)
             Tr.debug(this, tc, "JPQL adjusted for NULL id or version", jpql);
 
-        jakarta.persistence.Query query = em.createQuery(jpql);
+        TypedQuery<?> query = em.createQuery(jpql, Object.class);
         query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
 
         if (entityInfo.idClassAttributeAccessors == null) {

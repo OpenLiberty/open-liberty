@@ -57,7 +57,8 @@ Export-Package: \
 Include-Resource: \
   @\${repo;com.sun.xml.bind:jaxb-impl;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class), \
   @\${repo;com.sun.xml.bind:jaxb-xjc;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class), \
-  @\${repo;com.sun.xml.bind:jaxb-jxc;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class)
+  @\${repo;com.sun.xml.bind:jaxb-jxc;2.3.9;EXACT}!/!(META-INF/maven/*|module-info.class), \
+  com/sun/xml/bind/v2/model/impl=${bin}/com/sun/xml/bind/v2/model/impl
 
 Private-Package:\
   com.ibm.ws.jaxb.tools.*

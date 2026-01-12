@@ -64,7 +64,7 @@ public class UDPUtils {
         BootstrapExtended bs = new BootstrapExtended();
         bs.applyConfiguration(config);
         bs.group(framework.getChildGroup());
-        bs.channel(NioDatagramChannel.class);
+        bs.channel(framework.getDatagramClass());
         return bs;
     }
 

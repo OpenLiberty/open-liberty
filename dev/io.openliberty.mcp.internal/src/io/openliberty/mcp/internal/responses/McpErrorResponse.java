@@ -13,7 +13,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.internal.requests.McpRequestId;
+import io.openliberty.mcp.request.RequestId;
 
 /**
  *
@@ -27,14 +27,14 @@ public class McpErrorResponse extends McpResponse {
     private Error error;
     private static final TraceComponent tc = Tr.register(McpErrorResponse.class);
 
-    public McpErrorResponse(McpRequestId id, JSONRPCException e) {
+    public McpErrorResponse(RequestId id, JSONRPCException e) {
         super("2.0", id);
         String message = Tr.formatMessage(tc, e.getErrorCode().getMessage());
         this.error = new Error(e.getErrorCode().getCode(), message, e.getData());
 
     }
 
-    public McpErrorResponse(McpRequestId id, Error e) {
+    public McpErrorResponse(RequestId id, Error e) {
         super("2.0", id);
         String message = Tr.formatMessage(tc, e.message());
         this.error = new Error(e.code(), message, e.data());

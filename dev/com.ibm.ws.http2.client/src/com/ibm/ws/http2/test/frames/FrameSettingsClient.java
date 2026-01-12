@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.http2.test.frames;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Base64;
 
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -27,6 +29,25 @@ public class FrameSettingsClient extends com.ibm.ws.http.channel.h2internal.fram
     private final WsByteBuffer frameBuilt;
 
     private final ByteBuf frame;
+
+    static {
+        // We discovered an issue with the adaptive allocator using Unsafe being unavailable
+        // and throwing exceptions which do not allow the tests to proceed due to Java 2 Security.
+        // Because of this, while this is fixed we will use the pooled allocator as before to
+        // ensure proper testing
+        if (System.getSecurityManager() == null) {
+            System.setProperty("io.netty.allocator.type", "pooled");
+        }
+        else {
+            AccessController.doPrivileged(new PrivilegedAction<Void>() {
+                @Override
+                public Void run() {
+                    System.setProperty("io.netty.allocator.type", "pooled");
+                    return null;
+                }
+            });
+        }
+    }
 
     /**
      *

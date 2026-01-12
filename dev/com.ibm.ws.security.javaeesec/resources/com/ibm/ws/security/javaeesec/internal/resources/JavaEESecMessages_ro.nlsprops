@@ -46,9 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: DatabaseIdentityStore a e\u015
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Este returnat\u0103 o list\u0103 par\u0163ial\u0103 de grupuri pentru apelant \u00een locul unei liste complete de grupuri din cauza unei erori \u00een interogare.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Examina\u0163i eroarea furnizat\u0103 \u015fi face\u0163i corec\u0163ii la interogare astfel \u00eenc\u00e2t s\u0103 poat\u0103 fi returnat\u0103 lista complet\u0103 de grupuri pentru apelant. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Acreditarea furnizat\u0103 obiectului IdentityStore nu este o UsernamePasswordCredential \u015fi nu poate fi validat\u0103.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=Acreditarea furnizat\u0103 obiectului IdentityStore nu este o clas\u0103 UsernamePasswordCredential \u015fi nu poate fi validat\u0103.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=Examina\u0163i tipul de acreditare transmis \u00een obiectul IdentityStore de implementarea HttpAuthMechanism.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Creden\u021bialele furnizate obiectului IdentityStore nu sunt nici UsernamePasswordCredential, nici CallerOnlyCredential \u0219i nu pot fi validate.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Creden\u021bialul furnizat obiectului IdentityStore nu este nici o clas\u0103 UsernamePasswordCredential, nici un CallerOnlyCredential \u0219i nu poate fi validat.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Verifica\u021bi tipul de acreditare transmis obiectului \u201e IdentityStore \u201d (Acreditare valid\u0103) de c\u0103tre implementarea \u201e HttpAuthenticationMechanism \u201d (Aplicare de autentificare).
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Nu a fost g\u0103sit bean-ul de algoritmi hash pentru clasa {0}.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Nu a fost g\u0103sit algoritmul hash listat \u00een elementul hashAlgorithm element pe adnotarea DatabaseIdentityStoreDefinition.

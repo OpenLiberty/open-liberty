@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2025 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -96,6 +96,7 @@ public class CDITestWriteListener implements WriteListener {
         logInfo(methodName, "this [" + this + "]");
 
         logBeanActivity(methodName, "Entry");
+        logInfo(methodName, "appendBeanData [WP]");
         appendBeanData("WP"); // 'W' for "WriteListener"; 'P' for "Possible"
 
         boolean nextIsNumbers = false;
@@ -162,6 +163,7 @@ public class CDITestWriteListener implements WriteListener {
         logEntry(methodName);
 
         logBeanActivity(methodName, "Entry");
+        logInfo(methodName, "appendBeanData [WE]");
         appendBeanData("WE"); // 'W' for "WriteListener"; 'E' for "Error"
 
         try {

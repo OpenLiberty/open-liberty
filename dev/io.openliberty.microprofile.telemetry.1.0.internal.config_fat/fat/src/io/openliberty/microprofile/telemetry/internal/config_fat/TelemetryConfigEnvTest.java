@@ -58,6 +58,9 @@ public class TelemetryConfigEnvTest extends FATServletClient {
         //These variables take priority
         server.addEnvVar("OTEL_SERVICE_NAME", "overrideDone");
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
+        server.addEnvVar("otel_traces_exporter", "none");
+        server.addEnvVar("otel_metrics_exporter", "none");
+        server.addEnvVar("otel_logs_exporter", "none");
         server.startServer();
     }
 

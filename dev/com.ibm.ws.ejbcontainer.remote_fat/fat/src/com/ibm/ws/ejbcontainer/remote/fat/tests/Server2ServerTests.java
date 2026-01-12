@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.remote.fat.tests;
+
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
@@ -120,18 +122,37 @@ public class Server2ServerTests extends AbstractTest {
 
         // Finally, start servers
         remoteServer.startServer();
+        if (isSecureActive) {
+            // verify the appSecurity-2.0 feature is ready
+            assertNotNull("Security service did not report it was ready", remoteServer.waitForStringInLogUsingMark("CWWKS0008I"));
+            assertNotNull("LTPA configuration did not report it was ready", remoteServer.waitForStringInLogUsingMark("CWWKS4105I"));
+            assertNotNull("ORB did not report it was ready", remoteServer.waitForStringInLogUsingMark("CWWKI0001I"));
+        }
+
         clientServer.useSecondaryHTTPPort();
         clientServer.startServer();
+        if (isSecureActive) {
+            // verify the appSecurity-2.0 feature is ready
+            assertNotNull("Security service did not report it was ready", clientServer.waitForStringInLogUsingMark("CWWKS0008I"));
+            assertNotNull("LTPA configuration did not report it was ready", clientServer.waitForStringInLogUsingMark("CWWKS4105I"));
+            assertNotNull("ORB did not report it was ready", clientServer.waitForStringInLogUsingMark("CWWKI0001I"));
+        }
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         if (isSecureActive) {
-            secureClientServer.stopServer();
-            secureRemoteServer.stopServer("CNTR0019E");
+            try {
+                secureClientServer.stopServer("CWWKS9582E");
+            } finally {
+                secureRemoteServer.stopServer("CNTR0019E", "CWWKS9582E");
+            }
         } else {
-            unsecureClientServer.stopServer();
-            unsecureRemoteServer.stopServer("CNTR0019E");
+            try {
+                unsecureClientServer.stopServer();
+            } finally {
+                unsecureRemoteServer.stopServer("CNTR0019E");
+            }
         }
         isSecureActive = false;
     }

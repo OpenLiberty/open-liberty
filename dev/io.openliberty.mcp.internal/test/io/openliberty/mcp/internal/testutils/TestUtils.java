@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.testutils;
 
+import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -41,6 +42,25 @@ public class TestUtils {
     }
 
     /**
+     * finds and mocks method of tool method
+     *
+     * @param cls
+     * @param name
+     * @return the matching {@link MockAnnotatedMethod}
+     */
+    public static Method findActualMethod(Class<?> cls, String name) {
+        List<Method> tools = Arrays.stream(cls.getDeclaredMethods())
+                                   .filter(m -> m.isAnnotationPresent(Tool.class))
+                                   .filter(m -> m.getName().equals(name))
+                                   .collect(Collectors.toList());
+        if (tools.size() != 1) {
+            throw new RuntimeException("Found " + tools.size() + " tools with name " + name);
+        }
+
+        return tools.get(0);
+    }
+
+    /**
      * finds and mocks ToolMetadata of tool method
      *
      * @param cls
@@ -50,7 +70,7 @@ public class TestUtils {
     public static ToolMetadata findTool(Class<?> cls, String name) {
         List<ToolMetadata> tools = Arrays.stream(cls.getDeclaredMethods())
                                          .filter(m -> m.isAnnotationPresent(Tool.class))
-                                         .map(m -> ToolMetadata.createFrom(m.getAnnotation(Tool.class), null, new MockAnnotatedMethod<>(m)))
+                                         .map(m -> ToolMetadata.createFrom(m.getAnnotation(Tool.class), null, new MockAnnotatedMethod<>(m), null, null))
                                          .filter(m -> m.name().equals(name))
                                          .collect(Collectors.toList());
         if (tools.size() != 1) {

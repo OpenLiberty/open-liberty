@@ -31,7 +31,8 @@ import io.openliberty.transport.http_fat.accesslists.AccessListsTests;
                 TcpOptionsDefaultTests.class,
                 ContentTypeResponseHeaderTests.class,
                 AccessLogRolloverTest.class,
-                MaxMessageSizeLimitTests.class
+                MaxMessageSizeLimitTests.class,
+                Expect100ContinueTest.class
 })
 
 public class FATSuite {

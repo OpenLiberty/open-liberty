@@ -19,7 +19,6 @@ import io.openliberty.mcp.messaging.Cancellation;
  */
 public class CancellationImpl implements Cancellation {
 
-    private ExecutionRequestId requestId;
     private volatile Optional<String> reason = null;
 
     /**
@@ -27,17 +26,10 @@ public class CancellationImpl implements Cancellation {
      */
     @Override
     public Result check() {
-        if (requestId == null) {
-            return new Result(false, Optional.empty());
-        }
         if (reason == null) {
             return new Result(false, Optional.empty());
         }
         return new Result(true, reason);
-    }
-
-    public void setRequestId(ExecutionRequestId requestId) {
-        this.requestId = requestId;
     }
 
     /**

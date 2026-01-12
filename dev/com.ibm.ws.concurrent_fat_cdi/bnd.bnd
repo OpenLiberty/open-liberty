@@ -19,7 +19,10 @@ src:\
     test-applications/concurrentCDI3App/src,\
     test-applications/concurrentCDI4App/src,\
     test-applications/concurrentCDI4WebApp/src,\
-    test-applications/concurrentCDIWeb/src
+    test-applications/concurrentCDIEJBStandalone/src,\
+    test-applications/concurrentCDIShared/src,\
+    test-applications/concurrentCDIWeb/src,\
+    test-resourceadapaters/concurrentCDIRAR/src
 
 fat.project: true
 
@@ -32,6 +35,7 @@ fat.project: true
     io.openliberty.jakarta.annotation.2.1;version=latest,\
     io.openliberty.jakarta.cdi.4.1;version=latest,\
     io.openliberty.jakarta.concurrency.3.1;version=latest,\
+    io.openliberty.jakarta.connectors.2.1;version=latest,\
     io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
     io.openliberty.jakarta.interceptor.2.1;version=latest,\
     io.openliberty.jakarta.servlet.6.1;version=latest,\

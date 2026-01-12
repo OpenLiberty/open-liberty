@@ -15,7 +15,6 @@ package io.openliberty.microprofile.telemetry.internal_fat;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
-import org.jboss.shrinkwrap.api.asset.StringAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -57,8 +56,6 @@ public class TelemetryRuntimeInstanceTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsResource(new StringAsset("otel.traces.exporter=in-memory\notel.bsp.schedule.delay=100"),
-                                       "META-INF/microprofile-config.properties")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class, RuntimeInstanceServlet.class)
                         .addPackage(TestSpans.class.getPackage())
                         .addPackage(AbstractSpanMatcher.class.getPackage())
@@ -66,6 +63,9 @@ public class TelemetryRuntimeInstanceTest extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, app, SERVER_ONLY);
         server.addEnvVar("OTEL_SDK_DISABLED", "false");
+        server.addEnvVar("OTEL_LOGS_EXPORTER", "none");
+        server.addEnvVar("OTEL_METRICS_EXPORTER", "none");
+        server.addEnvVar("OTEL_TRACES_EXPORTER", "none");
         server.startServer();
     }
 

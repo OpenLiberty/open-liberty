@@ -415,7 +415,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
         lock.writeLock().lock();
         try {
             String state = getApplicationMBean(appName);
-            if (state.equals("STARTING")) {
+            /*
+             * Application can be stopped due to failure whilst starting. This would result in a "STARTING" state.
+             * Or it could already be started (thanks to deferServletLoad defaulting to true), but when the module is trying
+             * to complete it's initialization, it still fails.
+             */
+            if (state != null && (state.equals("STARTING") || state.equals("INSTALLED"))) {
                 appStateMap.replace(appName, ApplicationState.INSTALLED);
             } else {
                 appStateMap.remove(appName);

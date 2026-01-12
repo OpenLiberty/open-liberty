@@ -614,7 +614,7 @@ task zipProjectFVT {
             fileset(dir: "${distributionsDir}", includes: "${autoFVTFileName}")
             globmapper(from: 'autoFVT*.zip', to: "${bucketName}/build/lib/autoFVT.zip")
           }
-          zipfileset(dir: "${distributionsDir}", prefix: "${bucketName}/", includes: 'hasSubBuckets.txt')
+          zipfileset(dir: "${distributionsDir}", prefix: "${bucketName}/build/", includes: 'hasSubBuckets.txt')
         }
         file("${distributionsDir}/hasSubBuckets.txt").delete()
       }

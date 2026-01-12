@@ -1,0 +1,36 @@
+###############################################################################
+# Copyright (c) 2025 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec40/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: W tej aplikacji wykryto magazyn to\u017csamo\u015bci skonfigurowany przy u\u017cyciu adnotacji @InMemoryIdentityStoreDefinition. Nie nale\u017cy stosowa\u0107 tej definicji w \u015brodowisku produkcyjnym.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=Jakarta o\u015bwiadcza, \u017ce b\u0119dzie u\u017cywa\u0107 @InMemoryIdentityStoreDefinition w aplikacji wy\u0142\u0105cznie do cel\u00f3w zwi\u0105zanych z rozwojem, testowaniem i debugowaniem.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=Przed wprowadzeniem aplikacji do produkcji nale\u017cy usun\u0105\u0107 magazyn to\u017csamo\u015bci @InMemoryIdentityStoreDefinition i zast\u0105pi\u0107 go obs\u0142ugiwanym magazynem to\u017csamo\u015bci klasy produkcyjnej, takim jak LDAP lub baza danych.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: Zmienna \u015brodowiskowa ` {0} ` jest pusta lub nie zosta\u0142a ustawiona. Wszelkie kolejne weryfikacje \u017c\u0105da\u0144 uwierzytelniaj\u0105cych, kt\u00f3re wykorzystuj\u0105 powi\u0105zanego dzwoni\u0105cego, zako\u0144cz\u0105 si\u0119 niepowodzeniem.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=Jako warto\u015b\u0107 pola has\u0142a w adnotacji @Credential u\u017cyto zmiennej \u015brodowiskowej, ale ta zmienna nie jest ustawiona zewn\u0119trznie lub jest ustawiona na pusty ci\u0105g znak\u00f3w.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Upewnij si\u0119, \u017ce ustawi\u0142e\u015b zmienn\u0105 \u015brodowiskow\u0105, do kt\u00f3rej odwo\u0142uje si\u0119 adnotacja, zazwyczaj okre\u015blon\u0105 w pliku server.env.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: Po\u015bwiadczenie dostarczone do obiektu IdentityStore nie jest certyfikatem UsernamePasswordCredential i nie mo\u017cna go zweryfikowa\u0107.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=Po\u015bwiadczenie dostarczone do obiektu IdentityStore nie jest klas\u0105 UsernamePasswordCredential i nie mo\u017ce zosta\u0107 zweryfikowane.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=Sprawd\u017a typ po\u015bwiadczenia przekazanego do obiektu IdentityStore przez implementacj\u0119 HttpAuthMechanism.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: Wyra\u017cenie j\u0119zyka Expression Language (EL) dla atrybutu \u201e {0} \u201d adnotacji magazynu to\u017csamo\u015bci nie mo\u017ce zosta\u0107 przekszta\u0142cone w prawid\u0142ow\u0105 warto\u015b\u0107. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. Zamiast tego u\u017cywana jest domy\u015blna warto\u015b\u0107 atrybutu \u201e {1} \u201d.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=Przyczyn\u0105 b\u0142\u0119du jest niezgodno\u015b\u0107 typ\u00f3w wyniku EL i oczekiwanej warto\u015bci atrybutu. Na przyk\u0142ad, je\u015bli oczekiwanym typem atrybutu jest String, wynik EL musi by\u0107 typu String.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Upewnij si\u0119, \u017ce adnotacja zawiera poprawn\u0105 warto\u015b\u0107 konfiguracyjn\u0105. Upewnij si\u0119, \u017ce wyra\u017cenia EL s\u0105 poprawne, \u017ce s\u0105 rozpoznawalne wszystkie przywo\u0142ywane komponenty bean u\u017cywane w wyra\u017ceniu i \u017ce typ wyniku odpowiada atrybutowi.
+

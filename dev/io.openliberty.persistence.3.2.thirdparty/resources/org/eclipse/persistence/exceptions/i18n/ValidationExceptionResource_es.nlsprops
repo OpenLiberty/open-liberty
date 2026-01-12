@@ -187,8 +187,6 @@
 
 7111=No puede adquirir una HistoricalSession de una UnitOfWork, otra HistoricalSession, una ServerSession o un ServerSessionBroker.  Puede adquirir una de una sesi\u00f3n regular, una ClientSession o un ClientSessionBroker.
 
-7112=Ha especificado que EclipseLink utilice la caracter\u00edstica: {0}, pero esta caracter\u00edstica no est\u00e1 disponible en la versi\u00f3n de JDK actualmente en ejecuci\u00f3n: {1}.
-
 7113={0} no da soporte a la llamada con devoluci\u00f3n.
 
 7114=Los datos aislados no est\u00e1n soportados actualmente en un intermediario de sesiones de cliente. La sesi\u00f3n denominada {0} contiene descriptores que representan datos aislados.

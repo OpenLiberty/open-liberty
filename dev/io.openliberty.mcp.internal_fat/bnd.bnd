@@ -18,11 +18,11 @@ src: \
 
 fat.project: true
 
-
 tested.features: \
+    appSecurity-6.0,\
     cdi-4.1,\
-    servlet-6.1, \
-    concurrent-3.1
+    concurrent-3.1,\
+    servlet-6.1
 
 -buildpath: \
 	io.openliberty.jakarta.cdi.4.0;version=latest,\

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,13 +42,11 @@ public class JaegerOtlpTest extends JaegerBaseTest {
 
     public static RepeatTests repeat = TelemetryActions.latestTelemetryRepeats(SERVER_NAME);
 
-
-
     public static JaegerQueryClient client;
 
     private static KeyPairs keyPairs = new KeyPairs(server);
 
-    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(),keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerOtlpTest.class,
+    public static JaegerContainer jaegerContainer = new JaegerContainer(keyPairs.getCertificate(), keyPairs.getKey()).withLogConsumer(new SimpleLogConsumer(JaegerOtlpTest.class,
                                                                                                                                                             "jaeger"));
 
     @ClassRule
@@ -64,6 +62,7 @@ public class JaegerOtlpTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
 
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")

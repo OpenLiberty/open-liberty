@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=Przekazano nast\u0119puj\u0105ce argumenty, ale nie znal
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=Metoda oczekiwa\u0142a nast\u0119puj\u0105cych argument\u00f3w, ale nie zosta\u0142y one podane: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: Argument \u201e {1} \u201d metody narz\u0119dzia MCP \u201e {0} \u201d zawiera nieobs\u0142ugiwane elementy, takie jak symbol wieloznaczny \u201e TypeVariable, \u201d oraz \u201e GenericArrayType \u201d.
+CWMCM0018E.generic.arguments.explanation=Podano argumenty narz\u0119dzia MCP, ale nie s\u0105 one obs\u0142ugiwane. 
+CWMCM0018E.generic.arguments.useraction=Podaj argumenty, kt\u00f3re nie zawieraj\u0105 element\u00f3w og\u00f3lnych.

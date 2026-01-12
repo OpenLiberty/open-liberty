@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=\u4ee5\u4e0b\u53c3\u6578\u5df2\u50b3\u905e\uff0c\u4f46\u
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=\u6b64\u65b9\u6cd5\u9810\u671f\u63a5\u6536\u4ee5\u4e0b\u53c3\u6578\uff0c\u4f46\u672a\u7372\u63d0\u4f9b\uff1a {0}
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: {0} MCP \u5de5\u5177\u65b9\u6cd5\u7684 {1} \u53c3\u6578\u5305\u542b\u4e0d\u53d7\u652f\u63f4\u7684\u5143\u4ef6\uff0c\u4f8b\u5982 TypeVariable, \u901a\u914d\u7b26\u3001 GenericArrayType\u3002
+CWMCM0018E.generic.arguments.explanation=\u5df2\u63d0\u4f9b MCP \u5de5\u5177\u53c3\u6578\uff0c\u4f46\u8a72\u53c3\u6578\u4e0d\u53d7\u652f\u63f4\u3002 
+CWMCM0018E.generic.arguments.useraction=\u63d0\u4f9b\u4e0d\u542b\u6cdb\u578b\u7d44\u4ef6\u7684\u53c3\u6578\u3002

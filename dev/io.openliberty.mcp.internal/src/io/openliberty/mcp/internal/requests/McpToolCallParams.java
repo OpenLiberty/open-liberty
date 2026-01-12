@@ -9,8 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -21,14 +21,13 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.ArgumentMetadata;
-import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import jakarta.enterprise.inject.spi.Bean;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.annotation.JsonbProperty;
 
 /**
  *
@@ -47,7 +46,11 @@ public class McpToolCallParams {
     }
 
     private JsonObject arguments;
-    private Object[] parsedArguments;
+
+    @JsonbProperty("_meta")
+    private JsonObject meta;
+
+    private Map<String, Object> parsedArguments;
 
     public String getName() {
         return name;
@@ -63,11 +66,7 @@ public class McpToolCallParams {
         this.arguments = arguments;
     }
 
-    public Method getMethod() {
-        return metadata.method().getJavaMember();
-    }
-
-    public Object[] getArguments(Jsonb jsonb) {
+    public Map<String, Object> getArguments(Jsonb jsonb) {
         if (this.arguments == null) {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of(Tr.formatMessage(tc, "jsonrpc.missing.params")));
         }
@@ -77,27 +76,32 @@ public class McpToolCallParams {
         return parsedArguments;
     }
 
-    private Object[] parseArguments(JsonObject arguments2, Jsonb jsonb) {
-        JsonObject argsObject = arguments2.asJsonObject();
-        Map<String, ArgumentMetadata> arguments = metadata.arguments();
-        List<SpecialArgumentMetadata> specialArguments = metadata.specialArguments();
-        Object[] results = new Object[arguments.size() + specialArguments.size()];
+    public JsonObject getMeta() {
+        return meta;
+    }
+
+    public void setMeta(JsonObject meta) {
+        this.meta = meta;
+    }
+
+    private Map<String, Object> parseArguments(JsonObject arguments, Jsonb jsonb) {
+        Map<String, ArgumentMetadata> metadatas = metadata.arguments();
+        Map<String, Object> result = new HashMap<>();
 
         HashSet<String> argsProcessed = new HashSet<>();
-        for (var entry : argsObject.entrySet()) {
+        for (var entry : arguments.entrySet()) {
             String argName = entry.getKey();
             JsonValue argValue = entry.getValue();
-            ArgumentMetadata argMetadata = metadata.arguments().get(argName);
+            ArgumentMetadata argMetadata = metadatas.get(argName);
             if (argMetadata != null) {
                 String json = jsonb.toJson(argValue);
-                results[argMetadata.index()] = jsonb.fromJson(json, argMetadata.type());
+                result.put(argName, jsonb.fromJson(json, argMetadata.type()));
             }
             argsProcessed.add(argName);
         }
+        validateProcessedArgs(argsProcessed, metadatas.keySet());
 
-        validateProcessedArgs(argsProcessed, arguments.keySet());
-
-        return results;
+        return result;
     }
 
     private void validateProcessedArgs(Set<String> processedArgs, Set<String> expectedArgs) {
@@ -122,7 +126,4 @@ public class McpToolCallParams {
         return !data.isEmpty() ? data : null;
     }
 
-    public Bean<?> getBean() {
-        return metadata.bean();
-    }
 }

@@ -84,6 +84,11 @@ public class FormHttpAuthenticationMechanismTest extends JavaEESecTestBase {
         myServer.startServer(true);
         urlHttp = "http://" + myServer.getHostname() + ":" + myServer.getHttpDefaultPort();
         urlHttps = "https://" + myServer.getHostname() + ":" + myServer.getHttpDefaultSecurePort();
+
+        /*
+         * Wait for the SSL endpoint to start.
+         */
+        myServer.waitForSSLStart();
     }
 
     @AfterClass

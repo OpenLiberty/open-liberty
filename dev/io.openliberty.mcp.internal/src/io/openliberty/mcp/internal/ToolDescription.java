@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import io.openliberty.mcp.annotations.Tool;
+import io.openliberty.mcp.internal.tools.ToolManager.ToolAnnotations;
 import jakarta.json.JsonObject;
 
 public class ToolDescription {
@@ -50,7 +50,7 @@ public class ToolDescription {
         this.title = toolMetadata.title();
         this.description = toolMetadata.description();
 
-        Tool.Annotations ann = toolMetadata.annotation().annotations();
+        ToolAnnotations ann = toolMetadata.annotations();
         if (isDefaultAnnotation(ann)) {
             this.annotations = null;
         } else {
@@ -69,7 +69,7 @@ public class ToolDescription {
      * Helper Method for default Annotation
      */
 
-    private boolean isDefaultAnnotation(Tool.Annotations ann) {
+    private boolean isDefaultAnnotation(ToolAnnotations ann) {
         return ann.readOnlyHint() == false
                && ann.destructiveHint() == true
                && ann.idempotentHint() == false

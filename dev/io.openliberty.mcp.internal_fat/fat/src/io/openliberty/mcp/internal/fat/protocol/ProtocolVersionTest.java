@@ -10,6 +10,11 @@
 package io.openliberty.mcp.internal.fat.protocol;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.ACCEPT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.MCP_SESSION_ID;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
+import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_APPLICATION_JSON;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
@@ -31,13 +36,13 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 /**
  *
  */
 @RunWith(FATRunner.class)
 public class ProtocolVersionTest {
-    private static final String ACCEPT_HEADER = "application/json, text/event-stream";
 
     @Rule
     public McpClient client = new McpClient(server, "/protocolVersionTest");
@@ -75,8 +80,9 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        HttpRequest httpRequest = new HttpRequest(server, "/protocolVersionTest/mcp").requestProp("Accept", ACCEPT_HEADER)
-                                                                                     .requestProp("Mcp-Session-Id", client.getSessionId())
+        HttpRequest httpRequest = new HttpRequest(server, "/protocolVersionTest/mcp")
+                                                                                     .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                                     .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                                      .jsonBody(request)
                                                                                      .method("POST")
                                                                                      .expectCode(200);
@@ -100,7 +106,7 @@ public class ProtocolVersionTest {
         JSONAssert.assertEquals(expectedResponse, response, true);
 
         String contentType = httpRequest.getResponseHeader("Content-Type");
-        assertThat(contentType, containsString(McpClient.APPLICATION_JSON));
+        assertThat(contentType, containsString(VALUE_APPLICATION_JSON));
     }
 
     @Test
@@ -121,7 +127,8 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        HttpRequest httpRequest = new HttpRequest(server, "/protocolVersionTest/mcp").requestProp("Accept", ACCEPT_HEADER)
+        HttpRequest httpRequest = new HttpRequest(server, "/protocolVersionTest/mcp")
+                                                                                     .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
                                                                                      .jsonBody(request)
                                                                                      .method("POST")
                                                                                      .expectCode(200);
@@ -132,7 +139,7 @@ public class ProtocolVersionTest {
         assertTrue("Expected serverInfo field in response", response.contains("\"serverInfo\""));
 
         String contentType = httpRequest.getResponseHeader("Content-Type");
-        assertThat(contentType, containsString(McpClient.APPLICATION_JSON));
+        assertThat(contentType, containsString(TestConstants.VALUE_APPLICATION_JSON));
     }
 
     @Test
@@ -151,9 +158,10 @@ public class ProtocolVersionTest {
                         }
                         """;
 
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp").requestProp("Accept", ACCEPT_HEADER)
-                                                                             .requestProp("MCP-Protocol-Version", "2022-02-02")
-                                                                             .requestProp("Mcp-Session-Id", client.getSessionId())
+        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
+                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2022-02-02")
+                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
                                                                              .jsonBody(request)
                                                                              .method("POST")
                                                                              .expectCode(400)

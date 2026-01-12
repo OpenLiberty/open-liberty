@@ -12,18 +12,20 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.jakarta.expressionLanguage.4.0; singleton:=true
 Bundle-Description: Jakarta Expression Language, version 4.0
+Implementation-Version: 10.0.27
+Api-Version = 4.0.0
 
 Export-Package: \
- jakarta.el;thread-context=true; version="4.0.0"
+ jakarta.el;thread-context=true; version=${Api-Version}
 
  Provide-Capability: \
    osgi.contract;\
        osgi.contract=JavaEL;\
-       version:Version=4.0.0;\
+       version:Version=${Api-Version};\
        uses:="jakarta.el"
 
 -includeresource: \
-    @\${repo;org.apache.tomcat:tomcat-el-api;10.0.27;EXACT}!/!(META-INF/maven/*|module-info.class),\
+    @\${repo;org.apache.tomcat:tomcat-el-api;${Implementation-Version};EXACT}!/!(META-INF/maven/*|module-info.class),\
     jakarta=resources/jakarta
 
 instrument.disabled: true
@@ -31,4 +33,4 @@ instrument.disabled: true
 publish.wlp.jar.suffix: dev/api/spec
 
 -buildpath: \
-  org.apache.tomcat:tomcat-el-api;strategy=exact;version=10.0.27
+  org.apache.tomcat:tomcat-el-api;strategy=exact;version=${Implementation-Version}

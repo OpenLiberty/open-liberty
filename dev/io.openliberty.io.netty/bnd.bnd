@@ -42,6 +42,18 @@ Import-Package: \
   !sun.*,\
   *
 
+-includeresource: \
+  @\${repo;io.netty:netty-transport-native-epoll:jar:linux-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
+  @\${repo;io.netty:netty-transport-native-epoll:jar:linux-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
+  @\${repo;io.netty:netty-transport-native-kqueue:jar:osx-x86_64;${nettyVersion};EXACT}!/(META-INF/native/*),\
+  @\${repo;io.netty:netty-transport-native-kqueue:jar:osx-aarch_64;${nettyVersion};EXACT}!/(META-INF/native/*)
+
+Bundle-NativeCode: \
+  META-INF/native/libnetty_transport_native_epoll_aarch_64.so; osname=Linux; processor=aarch64,\
+  META-INF/native/libnetty_transport_native_epoll_x86_64.so; osname=Linux; processor=x86_64,\
+  META-INF/native/libnetty_transport_native_kqueue_aarch_64.jnilib; osname=MacOSX; processor=aarch_64,\
+  META-INF/native/libnetty_transport_native_kqueue_x86_64.jnilib; osname=MacOSX; processor=x86_64,\
+  *
 
 Export-Package: \
   !io.netty.handler.ssl.*,\
@@ -64,5 +76,9 @@ instrument.disabled: true
   io.netty:netty-handler-proxy;version=${nettyVersion},\
   io.netty:netty-resolver;version=${nettyVersion},\
   io.netty:netty-transport;version=${nettyVersion},\
-  io.netty:netty-transport-native-unix-common;version=${nettyVersion}
+  io.netty:netty-transport-native-unix-common;version=${nettyVersion},\
+  io.netty:netty-transport-classes-epoll;version=${nettyVersion},\
+  io.netty:netty-transport-native-epoll;version=${nettyVersion},\
+  io.netty:netty-transport-classes-kqueue;version=${nettyVersion},\
+  io.netty:netty-transport-native-kqueue;version=${nettyVersion}
   

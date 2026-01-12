@@ -8,6 +8,10 @@
     </featureManager>
 
     <monitor  filter="ThreadPool,WebContainer,Session,ConnectionPool"/>
+    
+    <!-- This server tests a Sessions App, hence we do not need to delay the invalid session. -->
+    <!-- httpSession useSeparateSessionInvalidatorThreadPool="false"
+                 delayInvalidationAlarmDuringServerStartup="60"/-->
 
     <include location="../fatTestPorts.xml"/>
     <include location="serverJDBCConfig.xml"/>

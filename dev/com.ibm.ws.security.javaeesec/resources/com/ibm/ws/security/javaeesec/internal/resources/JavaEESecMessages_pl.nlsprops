@@ -46,10 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Wykonanie zapytania {1} przez 
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Z powodu b\u0142\u0119du w zapytaniu zamiast kompletnej listy grup zosta\u0142a zwr\u00f3cona cz\u0119\u015bciowa lista grup dla programu wywo\u0142uj\u0105cego.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Przejrzyj podany b\u0142\u0105d i wprowad\u017a poprawki w zapytaniu, aby umo\u017cliwi\u0107 zwr\u00f3cenie kompletnej listy grup dla programu wywo\u0142uj\u0105cego.
 
-
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Referencje udost\u0119pnione dla obiektu IdentityStore nie s\u0105 referencjami UsernamePasswordCredential i nie mo\u017cna sprawdzi\u0107 ich poprawno\u015bci.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=Referencje udost\u0119pnione dla obiektu IdentityStore nie s\u0105 klas\u0105 UsernamePasswordCredential i nie mo\u017cna sprawdzi\u0107 ich poprawno\u015bci.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=Sprawd\u017a typ referencji przekazanych do obiektu IdentityStore przez implementacj\u0119 HttpAuthMechanism.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Po\u015bwiadczenie dostarczone do obiektu IdentityStore nie jest ani certyfikatem UsernamePasswordCredential, ani certyfikatem CallerOnlyCredential i nie mo\u017cna go zweryfikowa\u0107.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Po\u015bwiadczenie dostarczone do obiektu IdentityStore nie jest ani klas\u0105 UsernamePasswordCredential, ani CallerOnlyCredential i nie mo\u017ce zosta\u0107 zweryfikowane.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Sprawd\u017a typ po\u015bwiadczenia przekazanego do obiektu IdentityStore przez implementacj\u0119 HttpAuthenticationMechanism.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Nie znaleziono komponentu bean algorytmu mieszaj\u0105cego dla klasy {0}.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Nie znaleziono algorytmu mieszaj\u0105cego wymienionego w elemencie hashAlgorithm w adnotacji DatabaseIdentityStoreDefinition.

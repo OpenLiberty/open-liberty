@@ -14,6 +14,7 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import componenttest.annotation.AllowedFFDC;
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
@@ -50,13 +51,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assume.assumeThat;
 
 
-/**
- * Due to nature of these tests, If you are having to provide a default.env file ahead of these tests being run
- * e.g. supply JAVA_HOME, include the beta_flag for the server
- * You must include `# enable_variable_expansion' for the tests to work correctly
- *
- * The commands have the beta flag currently added for them. but for other scenarios the beta flag might be required
- */
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
 @SkipIfSysProp({SkipIfSysProp.OS_ZOS, SkipIfSysProp.OS_IBMI, SkipIfSysProp.OS_ISERIES})
@@ -104,15 +98,12 @@ public class FIPS1403SecurityUtilityTests {
         }
         if (ji.majorVersion() > 8) {
             expectedProvider = SEMERU_FIPS_PROVIDER;
-            // temporarily enable Beta for Semeru
-            server.addEnvVar("JVM_ARGS","-Dcom.ibm.ws.beta.edition=true");
         } else {
             expectedProvider = IBM_FIPS_PROVIDER;
         }
 
         installRoot = server.getInstallRoot();
         env = new Properties();
-        env.put("JVM_ARGS","-Dcom.ibm.ws.beta.edition=true");
         machine = server.getMachine();
         // Save configuration at this point, so each test can restore to this point so that we don't pollute each test
         server.saveServerConfiguration();
@@ -298,8 +289,8 @@ public class FIPS1403SecurityUtilityTests {
 
     @Test
     @AllowedFFDC({ "java.lang.RuntimeException" })
+    @MinimumJavaLevel(javaLevel = 11)
     public void fips140_3NoSuchAlgorithmExceptionTest() throws Exception {
-
         // Enable FIPS at server level without referencing the custom profile
         ProgramOutput po = runSecurityUtilityCommand(new String[] {SEC_CONF_FIPS_COMMAND, OPT_SERVER + "=" + SERVER_NAME});
         assertEquals("securityUtility configureFIPS did not result in expected return code.",0, po.getReturnCode());

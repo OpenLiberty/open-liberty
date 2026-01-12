@@ -58,7 +58,7 @@ public class TelemetryServiceNameTest extends FATServletClient {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
-                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=in-memory\notel.bsp.schedule.delay=100"),
+                        .addAsResource(new StringAsset("otel.sdk.disabled=false\notel.traces.exporter=in-memory\notel.logs.exporter=none\notel.metrics.exporter=none\notel.bsp.schedule.delay=100"),
                                        "META-INF/microprofile-config.properties")
                         .addClasses(InMemorySpanExporter.class, InMemorySpanExporterProvider.class, ServiceNameServlet.class)
                         .addPackage(TestSpans.class.getPackage())

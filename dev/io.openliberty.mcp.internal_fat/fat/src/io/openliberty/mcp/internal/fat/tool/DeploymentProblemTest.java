@@ -44,7 +44,8 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0004E", // Duplicate toold
                           "CWMCM0005E", // There are one or more MCP validation errors.
                           "CWMCM0006E", // Duplicate special arguments.
-                          "CWMCM0007E" // Invalid Special arguments.
+                          "CWMCM0007E", // Invalid Special arguments.
+                          "CWMCM0018E" //  Arguments contain generics.
         );
     }
 
@@ -89,5 +90,12 @@ public class DeploymentProblemTest extends FATServletClient {
         String expectedErrorHeader = "The (.+?) MCP Tool has a parameter of type (.+?) which is not a recognized special argument type and does not have a `@ToolArg` annotation.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidSpecialArgsErrorTest.invalidSpecialArgumentTool");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Special Args: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testGenericArgsTestCase() throws Exception {
+        String expectedErrorHeader = "The (.+?) argument of the (.+?) MCP tool method contains unsupported components such as TypeVariable, Wildcard, GenericArrayType.";
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.addGenericToGenericArray");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Generic Args: ", expectedErrorHeader, expectedErrorList, server);
     }
 }

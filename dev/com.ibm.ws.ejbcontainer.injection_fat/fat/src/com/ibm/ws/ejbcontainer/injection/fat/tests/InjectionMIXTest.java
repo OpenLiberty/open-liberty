@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2023 IBM Corporation and others.
+ * Copyright (c) 2006, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.injection.fat.tests;
+
+import static org.junit.Assert.assertNotNull;
 
 import java.io.File;
 import java.util.Set;
@@ -47,6 +49,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -101,12 +104,19 @@ public class InjectionMIXTest {
         ShrinkHelper.exportToServer(server, "connectors", AdapterForEJBRar, DeployOptions.SERVER_ONLY);
 
         server.startServer();
+
+        if (RepeatTestFilter.getRepeatActionsAsString().endsWith("CDIENABLED")) {
+            // verify the appSecurity-2.0 feature is ready
+            assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
+            assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+            assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
+        }
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         try {
-            server.stopServer("J2CA8501E", "CNTR0168W", "CNTR0338W", "CWNEN0013W", "CNTR0020E");
+            server.stopServer("J2CA8501E", "CNTR0168W", "CNTR0338W", "CWNEN0013W", "CNTR0020E", "CWWKS9582E");
         } finally {
             // Remove the appSecurity feature that was added by the CDI repeat actions
             if (RepeatWithCDI.isActive() || RepeatWithEE9CDI.isActive()) {

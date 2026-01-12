@@ -77,6 +77,8 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
      * @param cmd        component metadata from the thread upon which the CDI extension runs.
      * @param extSvc     OSGi service for the Concurrency extension.
      * @param qualifiers qualifiers for the bean.
+     *
+     * @throws IllegalStateException if a default ManagedThreadFactory cannot be created for this component
      */
     ManagedThreadFactoryBean(ComponentMetaData cmd, ConcurrencyExtensionMetadata extSvc, Set<Annotation> qualifiers) {
         this.factory = extSvc.defaultManagedThreadFactoryFactory;
@@ -94,10 +96,30 @@ public class ManagedThreadFactoryBean implements Bean<ManagedThreadFactory>, Pas
                 return found;
             }
 
-            return null; // Should be unreachable
-            //TODO add NLS message
-        }).orElseThrow(() -> new IllegalStateException("Could not find the classloader for the application " + cmd.getJ2EEName()
-                                                       + " during the creation of the default managed thread factory bean."));
+            // If no WEB classloader, then check if EJB Classloader exists
+            found = service.getClassLoader("EJBModule:" + cmd.getJ2EEName().getApplication() + "#" + cmd.getJ2EEName().getModule());
+            if (Objects.nonNull(found)) {
+                return found;
+            }
+
+            // OSGi applications are not bean archives and therefore are not considered here.
+
+            // NOTE: this does not work, getModule() returns a constant `ResourceAdapterModule`
+            //       to get the correct classloader we would need the actual module name (i.e. `example.rar`)
+//            found = service.getClassLoader(":" + cmd.getJ2EEName().getApplication() + "#" + cmd.getJ2EEName().getModule());
+//            if (Objects.nonNull(found)) {
+//                return found;
+//            }
+
+            // A RAR application can optionally be a bean archive, but nothing in the CDI or
+            // Concurrency spec says we need to support that so let this fail.
+            return null;
+        }).orElseThrow(() -> {
+            // Internal exception, no translation necessary
+            return new IllegalStateException("Could not construct a default instance of a "
+                                             + "ManagedThreadFactory for the application "
+                                             + cmd.getJ2EEName());
+        });
 
         // The Concurrency extension could be running under any module/component of the application.
         ApplicationMetaData amd = cmd.getModuleMetaData().getApplicationMetaData();

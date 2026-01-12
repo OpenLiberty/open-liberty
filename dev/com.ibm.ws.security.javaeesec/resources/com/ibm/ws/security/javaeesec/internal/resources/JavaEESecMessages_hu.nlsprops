@@ -46,9 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: A DatabaseIdentityStore nem tu
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=A h\u00edv\u00f3 csoportjainak csak egy r\u00e9szletes list\u00e1ja \u00e9rkezett vissza a csoportok teljes list\u00e1ja helyett a lek\u00e9rdez\u00e9sben tal\u00e1lhat\u00f3 hiba miatt.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=Tekintse \u00e1t a biztos\u00edtott hib\u00e1t, \u00e9s v\u00e9gezze el a lek\u00e9rdez\u00e9s jav\u00edt\u00e1s\u00e1t, hogy a h\u00edv\u00f3 csoportjainak teljes list\u00e1ja visszaadhat\u00f3 legyen. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Az IdentityStore objektumnak biztos\u00edtott azonos\u00edt\u00f3 nem egy UsernamePasswordCredential oszt\u00e1ly, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=Az IdentityStore objektumnak biztos\u00edtott azonos\u00edt\u00f3 nem egy UsernamePasswordCredential oszt\u00e1ly, \u00e9s nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=Vizsg\u00e1lja fel\u00fcl az IdentityStore sz\u00e1m\u00e1ra a HttpAuthMechanism megval\u00f3s\u00edt\u00e1s \u00e1ltal \u00e1tadott hiteles\u00edt\u00e9si adatok t\u00edpus\u00e1t.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Az IdentityStore objektumhoz megadott hiteles\u00edt\u0151 adat nem UsernamePasswordCredential \u00e9s nem is CallerOnlyCredential, ez\u00e9rt nem lehet \u00e9rv\u00e9nyes\u00edteni.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Az IdentityStore objektumhoz megadott hiteles\u00edt\u0151 adat nem UsernamePasswordCredential oszt\u00e1ly, sem CallerOnlyCredential, ez\u00e9rt nem lehet \u00e9rv\u00e9nyes\u00edteni.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Ellen\u0151rizze a HttpAuthenticationMechanism implement\u00e1ci\u00f3 \u00e1ltal az IdentityStore objektumba \u00e1tadott hiteles\u00edt\u0151 adatok t\u00edpus\u00e1t.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: A kivonatol\u00e1si algoritmus komponens nem tal\u00e1lhat\u00f3 a {0} oszt\u00e1ly eset\u00e9n.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=A DatabaseIdentityStoreDefinition feljegyz\u00e9s hashAlgorithm elem\u00e9ben felsorolt kivonatol\u00e1si algoritmus nem tal\u00e1lhat\u00f3.

@@ -45,7 +45,7 @@ otel/opentelemetry-collector:0.74.0
 public.ecr.aws/docker/library/alpine:3
 public.ecr.aws/docker/library/alpine:3.17
 public.ecr.aws/docker/library/couchdb:3
-public.ecr.aws/docker/library/mongo:6.0.6
+public.ecr.aws/docker/library/mongo:6.0
 public.ecr.aws/docker/library/postgres:17
 public.ecr.aws/docker/library/postgres:17-alpine
 public.ecr.aws/docker/library/python:3.11.6

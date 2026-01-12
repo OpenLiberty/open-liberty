@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -297,6 +297,7 @@ public class BaseTraceService implements TrService {
     private static long lastTimeBasedCleanupTime = 0;
     private static long lastSizeBasedCleanupTime = 0;
     private final static AtomicBoolean throttleWarningPrinted = new AtomicBoolean(false);
+    private final static AtomicBoolean throttleMaxMessagesPerWindowUpdated = new AtomicBoolean(false);
 
     /** Flags for suppressing traceback output to the console */
     private static class StackTraceFlags {
@@ -314,9 +315,6 @@ public class BaseTraceService implements TrService {
 
     protected final static int BYTE_ARRAY_OUTPUT_BUFFER_THRESHOLD = ThreadLocalByteArrayOutputStream.getByteArrayOutputThreshold();
     public static boolean isStackTraceSingleEntryEnabled = false;
-
-    private static volatile Boolean isBetaEdition = null;
-    private static final AtomicBoolean betaCheckInitializing = new AtomicBoolean(false);
 
     /**
      * Called from Tr.getDelegate when BaseTraceService delegate is created
@@ -363,31 +361,6 @@ public class BaseTraceService implements TrService {
                 }
             }
         });
-    }
-
-    public static Boolean betaFenceCheck() {
-        if (isBetaEdition != null)
-            return isBetaEdition;
-
-        //To prevent a StackOverflow error, we need to ensure only one thread runs the beta check block, otherwise the tr.info will be stuck in an infinite loop.
-        if (betaCheckInitializing.compareAndSet(false, true)) {
-            try {
-                if (isBetaEdition == null) {
-                    if (Boolean.getBoolean("com.ibm.ws.beta.edition")) {
-                        Tr.info(tc, "BETA: A beta method has been invoked for the class BaseTraceService for the first time.");
-                        isBetaEdition = true;
-                    } else {
-                        isBetaEdition = false;
-                    }
-
-                }
-
-                return isBetaEdition;
-            } finally {
-                betaCheckInitializing.set(false);
-            }
-        }
-        return isBetaEdition != null ? isBetaEdition : false;
     }
 
     /**
@@ -509,6 +482,8 @@ public class BaseTraceService implements TrService {
 
         if (throttleMaxMessagesPerWindow <= 0)
             throttleMaxMessagesPerWindow = 0;
+
+        throttleMaxMessagesPerWindowUpdated.set(true);
 
         throttleMapSize = trConfig.getThrottleMapSize();
 
@@ -1217,7 +1192,7 @@ public class BaseTraceService implements TrService {
                 return;
 
             //throttleMaxMessagesPerWindow must be a positive integer to be active. Setting to 0 disables log throttling.
-            if (throttleMaxMessagesPerWindow > 0 && betaFenceCheck()) {
+            if (throttleMaxMessagesPerWindowUpdated.get() && throttleMaxMessagesPerWindow > 0) {
                 if (routedMessage != null) {
                     LogSource logSource = new LogSource();
                     LogTraceData parsedMessage = logSource.parse(routedMessage);
@@ -1326,7 +1301,7 @@ public class BaseTraceService implements TrService {
 
             if (state != null) {
                 boolean shouldSupress = state.increment();
-                if (shouldSupress) {
+                if (shouldSupress && throttleMaxMessagesPerWindow > 0) {
                     //Print a warning once when throttling first occurs.
                     if (!throttleWarningPrinted.get()) {
                         throttleWarningPrinted.set(true);
@@ -2598,7 +2573,7 @@ public class BaseTraceService implements TrService {
      * Helper method to check if logs should be throttled or not.
      */
     private static boolean shouldPrint(String s) {
-        if (throttleMaxMessagesPerWindow <= 0 || !betaFenceCheck())
+        if (throttleMaxMessagesPerWindow <= 0)
             return true;
 
         return LogResult.LOG == logLine(s);

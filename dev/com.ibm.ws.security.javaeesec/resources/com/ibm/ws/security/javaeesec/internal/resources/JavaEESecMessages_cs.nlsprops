@@ -46,9 +46,9 @@ JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS=CWWKS1919W: Objektu DatabaseIdentityStore 
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.explanation=Je vr\u00e1cen d\u00edl\u010d\u00ed seznam skupin pro volaj\u00edc\u00edho nam\u00edsto \u00fapln\u00e9ho seznamu skupin, proto\u017ee do\u0161lo k chyb\u011b v dotazu.
 JAVAEESEC_WARNING_EXCEPTION_ON_GROUPS.useraction=P\u0159ezkoumejte poskytnutou chybu a prove\u010fte opravy na dotaz tak, aby mohl b\u00fdt vr\u00e1cen \u00fapln\u00fd seznam skupin pro volaj\u00edc\u00edho. 
 
-JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro objekt IdentityStore nen\u00ed t\u0159\u00eddou UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
-JAVAEESEC_ERROR_WRONG_CRED.explanation=Pov\u011b\u0159en\u00ed poskytnut\u00e9 pro objekt IdentityStore nen\u00ed t\u0159\u00eddou UsernamePasswordCredential a nelze jej ov\u011b\u0159it.
-JAVAEESEC_ERROR_WRONG_CRED.useraction=P\u0159ezkoumejte typ pov\u011b\u0159en\u00ed p\u0159edan\u00e9ho do objektu IdentityStore pomoc\u00ed implementace HttpAuthMechanism.
+JAVAEESEC_ERROR_WRONG_CRED=CWWKS1920E: Ov\u011b\u0159ovac\u00ed \u00fadaje poskytnut\u00e9 objektu IdentityStore nejsou ani UsernamePasswordCredential ani CallerOnlyCredential a nelze je ov\u011b\u0159it.
+JAVAEESEC_ERROR_WRONG_CRED.explanation=Pov\u011b\u0159en\u00ed poskytnut\u00e9 objektu IdentityStore nen\u00ed ani t\u0159\u00eddou UsernamePasswordCredential, ani CallerOnlyCredential a nelze jej ov\u011b\u0159it.
+JAVAEESEC_ERROR_WRONG_CRED.useraction=Zkontrolujte typ pov\u011b\u0159en\u00ed p\u0159edan\u00e9ho do objektu IdentityStore implementac\u00ed HttpAuthenticationMechanism.
 
 JAVAEESEC_ERROR_HASH_NOTFOUND=CWWKS1922E: Objekt typu hash algorithm bean nebyl pro t\u0159\u00eddu {0} nalezen.
 JAVAEESEC_ERROR_HASH_NOTFOUND.explanation=Ha\u0161ovac\u00ed algoritmus uveden\u00fd v prvku hashAlgorithm v anotaci DatabaseIdentityStoreDefinition nebyl nalezen.

@@ -151,3 +151,11 @@ jsonrpc.extra.arguments=Urm\u0103toarele argumente au fost transmise, dar nu au 
 # Used as part of a response to a client
 # {0} = list of arguments
 jsonrpc.missing.arguments=Urm\u0103toarele argumente erau a\u0219teptate de metod\u0103, dar nu au fost furnizate: {0}.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool
+# {1} = Parameter name
+CWMCM0018E.generic.arguments=CWMCM0018E: Argumentul \u201e {1} \u201d al metodei \u201e {0} \u201d din instrumentul MCP con\u021bine componente neacceptate, cum ar fi \u201e TypeVariable, Wildcard\u201d \u0219i \u201e GenericArrayType \u201d.
+CWMCM0018E.generic.arguments.explanation=Au fost furnizate argumente pentru instrumentul MCP, dar acestea nu sunt acceptate. 
+CWMCM0018E.generic.arguments.useraction=Furniza\u021bi argumente care nu con\u021bin componente generice.

@@ -10,7 +10,9 @@
 
 package io.openliberty.security.fips.fat.tests.fips1403.server;
 
+import com.ibm.websphere.simplicity.Machine;
 import com.ibm.websphere.simplicity.OperatingSystem;
+import com.ibm.websphere.simplicity.ProgramOutput;
 import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
@@ -29,11 +31,16 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipFile;
 
 import static io.openliberty.security.fips.fat.FIPSTestUtils.*;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.not;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assume.assumeThat;
 
 @RunWith(FATRunner.class)
@@ -60,8 +67,6 @@ public class FIPS1403ServerTest {
         }
         if (ji.majorVersion() > 8) {
             expectedProvider = "OpenJCEPlusFIPS";
-            // temporarily enable Beta for Semeru
-            server.addEnvVar("JVM_ARGS","-Dcom.ibm.ws.beta.edition=true");
         } else {
             expectedProvider = "IBMJCEPlusFIPS";
         }
@@ -164,6 +169,57 @@ public class FIPS1403ServerTest {
         Files.write(path, serverEnv.getBytes(StandardCharsets.UTF_8));
         server.startServer();
         checkServerLogForFipsEnablementMessage(server, expectedProvider);
+    }
+
+    @Test
+    public void fips140_3PacakageTest() throws Exception {
+        Machine machine = server.getMachine();
+        String[] parameters = new String[]{"package", server.getServerName()};
+        ProgramOutput po = machine.execute(server.getInstallRoot()+"/bin/server", parameters);
+        Log.info(FIPS1403ServerTest.class, "fips140_3PacakageTest", "Executed securityUtility configureFIPS command: "+ po.getCommand());
+        Log.info(FIPS1403ServerTest.class, "fips140_3PacakageTest", "Result: "+ po.getStdout());
+        Log.info(FIPS1403ServerTest.class, "fips140_3PacakageTest", "Error: "+ po.getStderr());
+        assertEquals("Package command failed with a non-zero return code", 0, po.getReturnCode());
+        String zipName = server.getServerName()+".zip";
+        Path zipPath = Paths.get(server.getServerRoot()+"/"+zipName);
+        boolean foundFipsSecurityFile = false;
+        try (ZipFile zipFile = new ZipFile(zipPath.toFile())) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements() && !foundFipsSecurityFile) {
+                ZipEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if(name.endsWith(LIBERTY_BASE_FIPS_PROFILE_FILENAME)){
+                    foundFipsSecurityFile = true;
+                }
+            }
+        }
+        assertTrue("Did not locate the base Liberty Profile in the zip file", foundFipsSecurityFile);
+    }
+
+    @Test
+    public void fips140_3MinifiedPackageTest() throws Exception{
+        assumeThat(Files.exists(Paths.get(server.getInstallRoot() + "/lib/extract")), is(true));
+        Machine machine = server.getMachine();
+        String[] parameters = new String[]{"package", server.getServerName(), "--include=minify"};
+        ProgramOutput po = machine.execute(server.getInstallRoot()+"/bin/server", parameters);
+        Log.info(FIPS1403ServerTest.class, "serverEnvFipsTest", "Executed securityUtility configureFIPS command: "+ po.getCommand());
+        Log.info(FIPS1403ServerTest.class, "serverEnvFipsTest", "Result: "+ po.getStdout());
+        Log.info(FIPS1403ServerTest.class, "serverEnvFipsTest", "Error: "+ po.getStderr());
+        assertEquals("Package command failed with a non-zero return code", 0, po.getReturnCode());
+        String zipName = server.getServerName()+".zip";
+        Path zipPath = Paths.get(server.getServerRoot()+"/"+zipName);
+        boolean foundFipsSecurityFile = false;
+        try (ZipFile zipFile = new ZipFile(zipPath.toFile())) {
+            Enumeration<? extends ZipEntry> entries = zipFile.entries();
+            while (entries.hasMoreElements() && !foundFipsSecurityFile) {
+                ZipEntry entry = entries.nextElement();
+                String name = entry.getName();
+                if(name.endsWith(LIBERTY_BASE_FIPS_PROFILE_FILENAME)){
+                    foundFipsSecurityFile = true;
+                }
+            }
+        }
+        assertTrue("Did not locate the base Liberty Profile in the zip file", foundFipsSecurityFile);
     }
 
 

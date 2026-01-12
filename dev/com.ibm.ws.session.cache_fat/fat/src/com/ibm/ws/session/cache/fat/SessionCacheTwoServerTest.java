@@ -1,15 +1,13 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+
 package com.ibm.ws.session.cache.fat;
 
 import static org.junit.Assert.assertNotSame;
@@ -236,8 +234,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     public void testModifyWithoutPut() throws Exception {
         List<String> session = new ArrayList<>();
         if (session != null) {
-            appA.sessionPut("testModifyWithoutPut-key", new StringBuffer("MyValue"), session, true);
-        Thread.sleep(500);
+            appA.sessionPut("testModifyWithoutPut-key&sync=true", new StringBuffer("MyValue"), session, true);
+            Thread.sleep(500);
             try {
                 appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
                 // appA should not see the update because it does not get written to the persistent store without a putAttribute per writeContents=ONLY_SET_ATTRIBUTES
@@ -331,7 +329,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         if (session != null) {
             appA.sessionPut("testMaxInactiveInterval-key", 55901, session, true);
-        Thread.sleep(500);
+            Thread.sleep(500);
             appB.sessionGet("testMaxInactiveInterval-key", 55901, session);
             appA.invokeServlet("setMaxInactiveInterval", session); //set max inactive interval to 1 second
 
