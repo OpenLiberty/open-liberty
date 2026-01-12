@@ -1,3 +1,4 @@
+
 /*******************************************************************************
  * Copyright (c) 2014, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
@@ -59,11 +60,9 @@ public class HealthCenterTest {
         if (!server.isStarted())
             server.startServer();
 
-        Assert.assertFalse("Expected healthcenter INFO message",
-                           server.findStringsInLogs("INFO:.*Health Center agent started on port",
-                                                    server.getConsoleLogFile()).isEmpty());
+        Assert.assertFalse("Expected healthcenter INFO message", server.findStringsInLogs("INFO:.*Health Center agent started on port", server.getConsoleLogFile()).isEmpty());
         Log.info(HealthCenterTest.class, "testHealthCenterInfo", "CARL_DEBUG: FAIL ON PURPOSE.");
-        Assert.assertTrue(false);
+        Assert.fail();
     }
 
     @Test
