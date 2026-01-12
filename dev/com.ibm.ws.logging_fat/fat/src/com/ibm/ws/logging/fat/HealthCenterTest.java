@@ -62,7 +62,8 @@ public class HealthCenterTest {
 
         Assert.assertFalse("Expected healthcenter INFO message", server.findStringsInLogs("INFO:.*Health Center agent started on port", server.getConsoleLogFile()).isEmpty());
         Log.info(HealthCenterTest.class, "testHealthCenterInfo", "CARL_DEBUG: FAIL ON PURPOSE.");
-        Assert.fail();
+
+        Assert.fail("CARL_DEBUG: FAIL ON PURPOSE.");
     }
 
     @Test
