@@ -128,7 +128,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         // Do bundle first resource loading
         URL result = this.findResource(resName);
         // second check the system loader
-        return result == null ? getSystemResource(resName) : result;
+        return result;
     }
 
     /**
@@ -159,7 +159,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     @Trivial
     public Enumeration<URL> getResources(String resName) throws IOException {
         // First check for the bundles' resources then check the system loader
-        return findResources(resName).add(getSystemResources(resName));
+        return findResources(resName);
     }
 
     @Override
@@ -214,9 +214,6 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         Class<?> result = Delegation.loadClass(className, bLoader);
         if (result != null) {
             return result;
-        }
-        if (config.getDelegateToSystem()) {
-            return findSystemClass(className);
         }
         if (exception) {
             throw new ClassNotFoundException(className);
