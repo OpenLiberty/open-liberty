@@ -23,7 +23,6 @@ https://github.com/OpenLiberty/open-liberty/issues/23990
 "Test Jandex 3.0"
 https://github.com/OpenLiberty/open-liberty/issues/21592
 
-
 Part 1: Source references:
 
 Liberty sparse reader:
@@ -67,11 +66,16 @@ Part 3: Change Notes
 //
 // Jandex 3.1 'IndexReaderV2.java':
 //   https://github.com/smallrye/jandex/blob/3.1/core/src/main/java/org/jboss/jandex/IndexReaderV2.java
+//
+// Jandex 3.2.3 'IndexReaderV2.java':
+//   https://github.com/smallrye/jandex/blame/3.2.3/core/src/main/java/org/jboss/jandex/IndexReaderV2.java
 
 // The code is the 2.4 with added comments showing differences between the 2.4 source and the 3.1 source.
 // The commends are annotated with [A] (minor adjustments), [R] small refactoring changes, and [M] major
 // changes.  The [A] and [R] changes should have no impact to the sparse reader.  The [M] changes will need
 // to be handled.
+//
+// Additional changes for index version 12, from the 3.2.3 jandex source, are attached.
 //
 // There are a few general cases:
 // -- Trivial updates, for example, changing MAX_VERSION.
@@ -114,8 +118,78 @@ Part 3: Change Notes
 // [M9] -- added read of 'memberClasses' to 'readClassEntry';
 // -- This new data might be ignored; the anno data doesn't record this.
 
+// [M10 V3.2.3] -- Increased 'MAX_VERSION' to 12.
+// -- Needed
+// [M11 V3.2.3] -- Added 'memberClassNames' to 'TYPE_VARIABLE_REFERENCE';
+// -- This new data might be ignored; the anno data doesn't directly store this.
+// [M12 V3.2.3] -- Added 'permittedSubclasses' to 'readClassEntry'.
+// -- This new data might be ignored; the anno data doesn't directly store this.
+
 *** NOTE In the source, below, "m"|"M" + "aster" was replaced with "overall"
          and "Overall".  That was done to pass prohibited word checks only.
+
+===
+
+*** Jandex 3.2.3 - 3.1 specific changes:
+
+//    static final int MAX_VERSION = 12; // [M10 V3.2.3]
+
+readTypeEntry'
+
+...
+
+            case TYPE_VARIABLE_REFERENCE: {
+                String identifier = stringTable[stream.readPackedU32()];
+                int position = stream.readPackedU32();
+//              DotName className = null; // [M11 V3.2.3]
+//              if (version >= 12) { // [M11 V3.2.3]
+//                  className = nameTable[stream.readPackedU32()]; // [M11 V3.2.3]
+//              } // [M11 V3.2.3]
+                AnnotationInstance[] annotations = readAnnotations(stream, null);
+                TypeVariableReference reference = new TypeVariableReference(identifier, null, annotations);
+//              TypeVariableReference reference = new TypeVariableReference(identifier, null, annotations, className); // [M11 V3.2.3]
+                references.put(reference, position);
+                return reference;
+            }
+
+'readClassEntry':
+
+...
+
+        Set<DotName> memberClasses = null;
+        if (version >= 11) {
+            int memberClassesCount = stream.readPackedU32();
+            if (memberClassesCount > 0) {
+                memberClasses = new HashSet<>(memberClassesCount);
+                for (int i = 0; i < memberClassesCount; i++) {
+                    memberClasses.add(nameTable[stream.readPackedU32()]);
+                }
+            }
+        }
+
+//      Set<DotName> permittedSubclasses = null; // [M12 V3.2.3]
+//      if (version >= 12) { // [M12 V3.2.3]
+//          int permittedSubclassesCount = stream.readPackedU32(); // [M12 V3.2.3]
+//          if (permittedSubclassesCount > 0) { // [M12 V3.2.3]
+//              permittedSubclasses = new HashSet<>(permittedSubclassesCount); // [M12 V3.2.3]
+//              for (int i = 0; i < permittedSubclassesCount; i++) { // [M12 V3.2.3]
+//                  permittedSubclasses.add(nameTable[stream.readPackedU32()]); // [M12 V3.2.3]
+//              } // [M12 V3.2.3]
+//          } // [M12 V3.2.3]
+//      } // [M12 V3.2.3]
+
+...
+
+        if (memberClasses != null) {
+            clazz.setMemberClasses(memberClasses);
+        }
+//      if (permittedSubclasses != null) { // [M12 V3.2.3]
+//          clazz.setPermittedSubclasses(permittedSubclasses); // [M12 V3.2.3]
+//      } // [M12 V3.2.3]
+
+===
+
+*** Jandex 3.1 - 2.4 specific changes
 
 /*
  * JBoss, Home of Professional Open Source.
