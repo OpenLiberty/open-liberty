@@ -138,9 +138,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
 
     private static void verifyNeedRead(ChannelHandlerContext context, FlowState state) {
         
-            System.out.printf("verifyNeedRead: consumed=%s inflight=%s keepAlive=%s closed=%s active=%s",
-                     state.requestConsumed, state.responseInFlight, state.keepAliveAllowed, state.closedOrUpgraded, context.channel().isActive());
-        
         if(state.closedOrUpgraded || !context.channel().isActive()) return;
 
         if(state.requestConsumed && !state.responseInFlight && state.keepAliveAllowed) {

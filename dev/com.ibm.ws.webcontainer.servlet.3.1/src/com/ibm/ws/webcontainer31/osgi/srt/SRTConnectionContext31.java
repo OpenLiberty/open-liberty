@@ -190,10 +190,7 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                         tcm.pushContextData();
 
                         try {
-                            //call application handler init
-                            System.out.println("DEBUG: before handler.init"); 
                             handler.init(upgradedCon);
-                            System.out.println("DEBUG: if this, then exception was swallowed");
                         } finally {
                             tcm.popContextData();
                         }
@@ -201,7 +198,6 @@ public class SRTConnectionContext31 extends com.ibm.ws.webcontainer.osgi.srt.SRT
                 }
                 catch (Throwable th)
                 {
-                    System.out.println("DEBUG start of throwable");
                     com.ibm.wsspi.webcontainer.util.FFDCWrapper.processException(th, "com.ibm.ws.webcontainer.srt31.SRTConnectionContext.finishConnection", "87", this);
                     // System.out.println("DEBUG: servlet throwable caught, store fatal flag...");
                     // IResponse31Impl irImpl = (IResponse31Impl) _response.getIResponse();

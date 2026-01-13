@@ -179,7 +179,6 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
      */
     @Override
     public void clear() {
-        System.out.println("DEBUG HttpOputStream#clear was called");
         if (null != this.output) {
             for (int i = 0; i < this.output.length; i++) {
                 if (null != this.output[i]) {
@@ -572,7 +571,6 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
 
-                    System.out.println("DEBUG: skipping finishResponseMessage?: " + is101);
                     if (is101) {
                         this.isc.finishResponseMessage(null); // <— CHANGED: don’t skip for 101
                         awaitUpgradePipelineInstalled();
@@ -786,13 +784,6 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
     @Override
     public void setWebC_headersWritten(boolean headersWritten) {
-        StackTraceElement[] elements = Thread.currentThread().getStackTrace();
-        // Start from index 1 to skip the printCurrentStackTrace method itself
-        for (int i = 1; i < elements.length; i++) {
-            StackTraceElement s = elements[i];
-            System.out.println("\tat " + s.getClassName() + "." + s.getMethodName() +
-                               "(" + s.getFileName() + ":" + s.getLineNumber() + ")");
-        }
         this.WCheadersWritten = headersWritten;
     }
 

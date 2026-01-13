@@ -105,10 +105,8 @@ public class SRTUpgradeOutputStream31 extends ServletOutputStream
         if(appWLObject == null){            
 
             Tr.error(tc, "writelistener.is.null");
-            //TODO: this is being swallowed, look for another alternative
-            System.out.println("DEBUG: upgrade output signal fatal");  
+            //TODO: this is being swallowed, look for another alternative 
             _outHelper.get_vc().getStateMap().put(TransportConstants.UPGRADED_FATAL_ERROR, "true");
-            System.out.println("DEBUG statemap is: "+ _outHelper.get_vc().getStateMap());
             throw new NullPointerException(Tr.formatMessage(tc, "writelistener.is.null"));
         } 
         if(_outHelper.isOutputStream_closed() || _outHelper.isOutputStream_close_initiated_but_not_Flush_ready()){

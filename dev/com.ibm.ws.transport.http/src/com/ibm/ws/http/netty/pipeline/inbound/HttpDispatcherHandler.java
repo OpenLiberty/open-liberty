@@ -315,7 +315,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         final HttpRequestImpl req = (HttpRequestImpl) link.getRequest();
         final HttpInputStreamImpl body = req.getBody();
-        System.out.println("DEBUG: Should have the VC and able to store Input stream");
         String streamId = request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
         try {
             if (this.link.getVirtualConnection() != null) {
@@ -333,11 +332,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 if (streamId != null) {
                     v.getStateMap().put(NettyHttpConstants.VC_HTTP2_STREAM_ID, streamId);
                 }
-
-                System.out.println("DEBUG: map is now: " + v.getStateMap());
             }
             else{
-                System.out.println("DEBUG: vc was null, not expected");
+                //System.out.println("DEBUG: vc was null, not expected");
             }
         } catch (Throwable t) {
             // be defensive; don't let VC issues kill the request setup
@@ -773,8 +770,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                         ChannelHandlerContext u = ctx.pipeline().context(NettyServletUpgradeHandler.class);
                         if (u != null)
                             flushParkedToUpgrade(u);
-                    } catch (Exception e) {
-                        System.out.println("Exception in flushedParkToUpgrade: " + e);
+                    } catch (Exception ignore) {
+                        //System.out.println("Exception in flushedParkToUpgrade: " + e);
                     } finally {
                         postFlipDrainerInstalled.set(false);
                     }

@@ -103,7 +103,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private HttpInputStreamImpl input() throws IOException {
     
         HttpInputStreamImpl in = null;
-        System.out.println("DEBUG: input() vc is: " + vc);
 
         if (vc != null) {
             Object candidate = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
@@ -616,28 +615,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private boolean hasUpgradeHandler() {
         return nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null;
     }
-
-    // private boolean isUpgraded() {
-    //     if(nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null){
-    //         System.out.println("DEBUG: isupgraded() true");
-    //         return true;
-    //     }
-    //     if (vc != null) {
-    //         Object flag = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_CONNECTION);
-    //         if ("true".equalsIgnoreCase(String.valueOf(flag))) {
-    //             System.out.println("DEBUG vc upgrade flag true");
-    //             return true;
-    //         }
-    //     }
-    //     if (vc != null) {
-    //         Object flag = vc.getStateMap().get(com.ibm.ws.transport.access.TransportConstants.UPGRADED_LISTENER);
-    //         if ("true".equalsIgnoreCase(String.valueOf(flag))) {
-    //             System.out.println("DEBUG vc upgrade flag true");
-    //             return true;
-    //         }
-    //     }
-    //     return false;
-    // }
 
     private NettyServletUpgradeHandler ensureUpgradeHandler() {
         NettyServletUpgradeHandler h = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
