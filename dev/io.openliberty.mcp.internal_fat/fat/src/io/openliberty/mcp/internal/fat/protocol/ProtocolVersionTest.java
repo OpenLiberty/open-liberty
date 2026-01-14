@@ -117,7 +117,7 @@ public class ProtocolVersionTest {
                           "id": 1,
                           "method": "initialize",
                          "params": {
-                            "protocolVersion": "2025-06-18",
+                            "protocolVersion": "2025-11-25",
                             "clientInfo": {
                               "name": "test-client",
                               "version": "0.1"
@@ -170,7 +170,7 @@ public class ProtocolVersionTest {
         assertThat("Expected error message about invalid protocol version",
                    response, containsString("CWMCM0013E: An unsupported MCP-Protocol-Version header was provided."));
         assertThat("Expected error message to contain expected version",
-                   response, containsString("Supported values: 2025-06-18, 2025-03-26"));
+                   response, containsString("Supported values: 2025-11-25, 2025-06-18, 2025-03-26"));
     }
 
 }

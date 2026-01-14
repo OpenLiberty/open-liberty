@@ -20,6 +20,7 @@ import jakarta.json.bind.annotation.JsonbTypeAdapter;
  */
 @JsonbTypeAdapter(McpProtocolVersionAdapter.class)
 public enum McpProtocolVersion {
+    V_2025_11_25("2025-11-25"),
     V_2025_06_18("2025-06-18"),
     V_2025_03_26("2025-03-26");
 

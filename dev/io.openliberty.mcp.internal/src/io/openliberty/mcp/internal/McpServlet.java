@@ -307,7 +307,7 @@ public class McpServlet extends HttpServlet {
         } catch (NoSuchElementException e) {
             // Client requested version not supported
             // Respond with our preferred version
-            version = McpProtocolVersion.V_2025_06_18;
+            version = McpProtocolVersion.V_2025_11_25;
         }
         // TODO store client capabilities
         // TODO store client info
