@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -395,13 +395,35 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             }
         }
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "About to begin quiesce of executor service threads.");
+        // Listener quiesce started above. Give it up to 2 seconds to complete, before thread pool quiesce.
+        // Listener quiesce should normally complete quickly (less than 1 second.)
+        // Thread pool quiesce immediately sets the state to STOPPING.  If new work comes in (via listeners),
+        // that new work is accepted but is not tracked, not quiesced, and might will likely be abruptly terminated.
+        // So we need to give listeners a chance to complete before we quiesce the thread pool.
+        long startTimeNanos = System.nanoTime();
+        int listenersTimeoutSeconds = 2;
+        boolean listenersComplete = quiesceListenerFutures.isComplete(startTimeNanos, listenersTimeoutSeconds);
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Quiesce listeners " + (listenersComplete ? "completed" : "did not complete") +
+                     " within  " + listenersTimeoutSeconds + " seconds");
+        }
 
         // Notify the executor service that we are quiescing
-
-        long startTime = System.currentTimeMillis();
-        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime, quiesceTimeout)) {
+        // Thread pool quiesce gets all remaining time (28 seconds if listeners timed out at 2s)
+        long listenersElapsedSeconds = (System.nanoTime() - startTimeNanos) / 1_000_000_000L;
+        int remainingTimeSeconds = (int) Math.max(0, quiesceTimeout - listenersElapsedSeconds);
+        boolean threadPoolComplete = tq.quiesceThreads(remainingTimeSeconds);
+        
+        // If listeners didn't complete earlier, give listener quiesce the rest of the timeout
+        if (!listenersComplete) {
+            listenersComplete = quiesceListenerFutures.isComplete(startTimeNanos, quiesceTimeout);
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "After thread pool quiesce, listeners are " +
+                         (listenersComplete ? "complete" : "still running"));
+            }
+        }
+        
+        if (threadPoolComplete && listenersComplete) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
@@ -474,17 +496,16 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
          * @return
          */
         @FFDCIgnore(TimeoutException.class)
-        boolean isComplete(long startTime, int quiesceTimeout) {
-            // We will wait quiesceTimeout seconds past the start time for tasks to complete
-            // Configured in the <executor> element of server.xml.  Default 30 seconds.
-            long endTime = startTime + quiesceTimeout * 1000;
+        boolean isComplete(long startTimeNanos, int quiesceTimeoutSeconds) {
+            // We will wait quiesceTimeoutSeconds past the start time for tasks to complete
+            long endTimeNanos = startTimeNanos + quiesceTimeoutSeconds * 1_000_000_000L;
 
             for (Future<?> f : quiesceListenerFutures) {
-                long waitTime = endTime - System.currentTimeMillis();
-                if (waitTime < 0)
+                long waitTimeNanos = endTimeNanos - System.nanoTime();
+                if (waitTimeNanos <= 0)
                     return false;
                 try {
-                    f.get(waitTime, TimeUnit.MILLISECONDS);
+                    f.get(waitTimeNanos, TimeUnit.NANOSECONDS);
                 } catch (TimeoutException e) {
                     return false;
                 } catch (Exception e) {

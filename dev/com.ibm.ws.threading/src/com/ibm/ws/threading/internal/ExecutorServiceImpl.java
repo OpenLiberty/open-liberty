@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2025 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -619,14 +619,24 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * @see com.ibm.ws.threading.ThreadQuiesce#quiesceThreads()
      */
     @Override
-    @FFDCIgnore(TimeoutException.class)
     public boolean quiesceThreads() {
+        return quiesceThreads(quiesceTimeout);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.threading.ThreadQuiesce#quiesceThreads(long)
+     */
+    @Override
+    @FFDCIgnore(TimeoutException.class)
+    public boolean quiesceThreads(int timeoutSeconds) {
         this.serverStopping = true;
 
         try {
             // Wait for all pre-quiesce work to complete.
             phaser.arriveAndDeregister();
-            phaser.awaitAdvanceInterruptibly(0, quiesceTimeout, TimeUnit.SECONDS);
+            phaser.awaitAdvanceInterruptibly(0, timeoutSeconds, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             //FFDC and fail quiesce notification
             return false;

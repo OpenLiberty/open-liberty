@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,14 @@ package com.ibm.ws.threading;
 public interface ThreadQuiesce {
 
     boolean quiesceThreads();
+
+    /**
+     * Quiesce threads with a specific timeout.
+     *
+     * @param timeoutSeconds Maximum time to wait for threads to complete, in seconds
+     * @return true if all threads completed within the timeout, false otherwise
+     */
+    boolean quiesceThreads(int timeoutSeconds);
 
     int getActiveThreads();
 
