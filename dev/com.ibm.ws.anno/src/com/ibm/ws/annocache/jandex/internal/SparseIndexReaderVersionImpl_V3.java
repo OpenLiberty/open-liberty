@@ -103,7 +103,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     //   wildfly/jandex@32cdeb0
     //   (None of this new data is extracted by the sparse reader)
 
-    public static final int MIN_VERSION = 6;
+    public static final int MIN_VERSION = 11;
     public static final int MAX_VERSION = 12;
 
     public static boolean accept(int version) {
@@ -674,6 +674,9 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
             case 8: { //TYPE_VARIABLE_REFERENCE
                 input.seekPackedU32(); //We don't bother reading the name table
                 input.seekPackedU32();
+                if (version >= 12) {
+                    input.seekPackedU32(); //className = nameTable[stream.readPackedU32()]; // [M11 V3.2.3]                    
+                }
                 readAnnotations();
                 return SparseDotName.PLACEHOLDER;
             }
@@ -917,6 +920,14 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
             // hasEnclosingMethod = ((enclosureBits & 1) == 1);
             if ( enclosureBits == 1 ) {
                 readPastEnclosingMethod();
+            }
+        }
+        
+        if (version >= 12) {
+            int permittedSubclassesCount = input.readPackedU32();
+            while (permittedSubclassesCount > 0) {
+                permittedSubclassesCount--;
+                input.readPackedU32();
             }
         }
         
