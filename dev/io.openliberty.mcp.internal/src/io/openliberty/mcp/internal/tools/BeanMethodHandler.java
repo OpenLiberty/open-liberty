@@ -114,6 +114,7 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
     }
 
     protected ToolResponse createSuccessfulResponse(Object result, ToolArguments toolArgs) {
+        ToolArgumentsImpl toolArgumentsImpl = (ToolArgumentsImpl) toolArgs;
         // Map method response to a ToolResponse
         if (result instanceof ToolResponse response) {
             return response;
@@ -126,9 +127,9 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
         } else if (result instanceof String s) {
             return ToolResponse.success(s);
         } else if (method.isStructuredContent()) {
-            return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(result))), result, null);
+            Object structuredContent = toolArgumentsImpl.supportsStructuredContent() ? result : null;
+            return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(result))), structuredContent, null);
         } else {
-            ToolArgumentsImpl toolArgumentsImpl = (ToolArgumentsImpl) toolArgs;
             return encodeResult(result, toolArgumentsImpl.encoderRegistry());
         }
     }

@@ -215,7 +215,7 @@ public class McpServlet extends HttpServlet {
                                        McpToolCallParams params)
                     throws IllegalAccessException, IllegalArgumentException {
 
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params);
+        ToolArguments toolArgs = createToolArguments(mcpRequest, params, transport);
         if (requestId != null) {
             requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }
@@ -235,7 +235,7 @@ public class McpServlet extends HttpServlet {
                                                     McpRequest mcpRequest,
                                                     McpToolCallParams params)
                     throws IllegalAccessException, IllegalArgumentException {
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params);
+        ToolArguments toolArgs = createToolArguments(mcpRequest, params, transport);
 
         if (requestId != null) {
             requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
@@ -251,19 +251,21 @@ public class McpServlet extends HttpServlet {
     /**
      * @return
      */
-    private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params) {
+    private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params, McpTransport transport) {
         Map<String, Object> args = params.getArguments(jsonb);
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
         RequestId requestId = request.id();
+        boolean supportsStructuredContent = transport.getProtocolVersion().supportsStructuredContent();
 
-        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId);
+        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId, supportsStructuredContent);
     }
 
     public record ToolArgumentsImpl(Map<String, Object> args,
                                     Cancellation cancellation,
                                     Meta meta,
                                     EncoderRegistry encoderRegistry,
-                                    RequestId requestId) implements ToolArguments {}
+                                    RequestId requestId,
+                                    boolean supportsStructuredContent) implements ToolArguments {}
 
     private void cleanup(ExecutionRequestId requestId) {
         if (requestId != null && requestTracker.isOngoingRequest(requestId)) {

@@ -48,6 +48,10 @@ public class ToolDescription {
     }
 
     public ToolDescription(ToolMetadata toolMetadata) {
+        this(toolMetadata, true);
+    }
+
+    public ToolDescription(ToolMetadata toolMetadata, boolean includeOutputSchema) {
         this.name = toolMetadata.name();
         this.title = toolMetadata.title();
         this.description = toolMetadata.description();
@@ -61,7 +65,7 @@ public class ToolDescription {
                                       .orElse(null);
 
         this.inputSchema = toolMetadata.inputSchema();
-        this.outputSchema = toolMetadata.outputSchema();
+        this.outputSchema = includeOutputSchema ? toolMetadata.outputSchema() : null;
     }
 
     public record AnnotationsDescription(
