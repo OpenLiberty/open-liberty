@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,25 @@ public class LTPAConstants {
      */
     protected static final String EXPIRATION = "expiration";
 
+    /**
+     * Used to identity the LTPA last used time.
+     */
+
+    /**
+     * Used to identify the refresh LTPA token threshold time.
+     */
+    protected static final String REFRESH_THRESHOLD = "refreshThreshold";
+
+    /**
+     * Used to identify the LTPA token inactivity timeout.
+     */
+    protected static final String INACTIVITY_TIMEOUT = "inactivityTimeout";
+
+    /**
+     * Used to identify whether dynamic expiration validation is enabled.
+     */
+    protected static final String DYNAMIC_EXPIRATION_VALIDATION = "dynamicExpirationValidation";
+    
     /**
      * Used to identify the primary LTPA shared key.
      */
@@ -43,4 +62,5 @@ public class LTPAConstants {
      * Used to identify the unique identifier of a user.
      */
     protected static final String UNIQUE_ID = "unique_id";
+
 }
