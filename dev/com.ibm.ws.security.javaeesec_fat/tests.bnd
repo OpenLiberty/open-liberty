@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+Bundle-SymbolicName: com.ibm.ws.security.javaeesec_fat
+
+-privatepackage: \
+  com.ibm.ws.security.javaeesec.fat, \
+  com.ibm.ws.security.javaeesec.fat_helper, \
+  com.ibm.ws.security.javaeesec.fat_singleIS, \
+  com.ibm.ws.security.pwdhash.bean.test, \
+  com.ibm.ws.security.pwdhash.test, \
+  web.ejb.jar.bean, \
+  web.jar, \
+  web.jar.base, \
+  web.jar.mechanisms, \
+  web.war, \
+  web.war.basic, \
+  web.war.database.deferred, \
+  web.war.database.immediate, \
+  web.war.db, \
+  web.war.db2, \
+  web.war.db.multiple, \
+  web.war.ejb.annotated.db, \
+  web.war.ejb.annotated.servlet, \
+  web.war.ejb.annotated.servlet.realm1, \
+  web.war.ejb.annotated.servlet.realm2, \
+  web.war.ejb.annotated.servlet2, \
+  web.war.ejb.annotatedbasic, \
+  web.war.ejb.annotatedbasic.dbauth, \
+  web.war.ejb.annotatedbasic.deferred, \
+  web.war.ejb.annotatedbasic.ds, \
+  web.war.ejb.is.servlet, \
+  web.war.ejb.is.servlet2, \
+  web.war.ejb.servlet.sec, \
+  web.war.hash.db, \
+  web.war.hash.db.bean, \
+  web.war.jaxrs.securitycontext
