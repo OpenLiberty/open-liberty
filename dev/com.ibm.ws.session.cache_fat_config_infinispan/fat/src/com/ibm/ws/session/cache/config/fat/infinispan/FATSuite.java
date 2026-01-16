@@ -54,9 +54,12 @@ public class FATSuite {
         HttpURLConnection con = HttpUtils.getHttpConnection(server, path + '?' + FATServletClient.TEST_METHOD + '=' + testMethod);
         Log.info(FATSuite.class, "run", "HTTP GET: " + con.getURL());
 
-        if (session != null)
-            for (String cookie : session)
+        if (session != null) {
+            Log.info(FATSuite.class, "run", "Session cookies: " + session);
+            for (String cookie : session) {
                 con.addRequestProperty("Cookie", cookie);
+            }
+        }
 
         con.connect();
         try {

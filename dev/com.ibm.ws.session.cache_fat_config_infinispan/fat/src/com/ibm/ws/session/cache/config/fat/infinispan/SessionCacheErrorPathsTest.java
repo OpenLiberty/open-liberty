@@ -288,6 +288,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
             session = new ArrayList<>();
             run("testSetAttribute&attribute=testLibraryWithoutJCacheProvider2&value=LWJCP2", session);
 
+            
             // value should be written to the cache
             run("testCacheContains&attribute=testLibraryWithoutJCacheProvider2&value=LWJCP2", session);
 
