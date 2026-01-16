@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,8 @@ import com.ibm.wsspi.security.ltpa.TokenFactory;
 public class LTPAToken2Factory implements TokenFactory {
     private static final TraceComponent tc = Tr.register(LTPAToken2Factory.class);
     private long expirationInMinutes;
+    private long lastUsedInMinutes;
+    private long refreshLifeTimeInMinutes;
     private byte[] primarySharedKey;
     private LTPAPublicKey primaryPublicKey;
     private LTPAPrivateKey primaryPrivateKey;
@@ -43,6 +45,9 @@ public class LTPAToken2Factory implements TokenFactory {
     @Override
     public void initialize(@Sensitive Map tokenFactoryMap) {
         expirationInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.EXPIRATION);
+        //lastUsedInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.LAST_USED);
+        refreshLifeTimeInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.REFRESH_LIFE_TIME);
+
         primarySharedKey = (byte[]) tokenFactoryMap.get(LTPAConstants.PRIMARY_SECRET_KEY);
         primaryPublicKey = (LTPAPublicKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PUBLIC_KEY);
         primaryPrivateKey = (LTPAPrivateKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PRIVATE_KEY);
@@ -95,7 +100,7 @@ public class LTPAToken2Factory implements TokenFactory {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "validateTokenBytes with primary keys (success)");
                     }
-                    return validatedToken;
+                    return (Token) validatedToken.clone();
                 }
             } catch (Exception e) {
                 //If the token is expired then we do not want to continue processing validation keys below
@@ -135,7 +140,7 @@ public class LTPAToken2Factory implements TokenFactory {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "validateTokenBytes with validationKeys (success)");
                                 }
-                                return validatedToken;
+                                return (Token) validatedToken.clone();
                             }
                         } catch (Exception e) {
                             if (e instanceof com.ibm.websphere.security.auth.TokenExpiredException) {

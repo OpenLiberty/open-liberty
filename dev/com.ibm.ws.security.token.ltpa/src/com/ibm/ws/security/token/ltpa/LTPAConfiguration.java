@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,7 +37,9 @@ public interface LTPAConfiguration {
      * The token expiration.
      */
     public static final String CFG_KEY_TOKEN_EXPIRATION = "expiration";
-
+       
+    
+    public static final String CFG_KEY_TOKEN_REFRESH_LIFE_TIME = "refreshLifeTime";
     /**
      * The token keys file's monitor interval.
      */
@@ -99,6 +101,11 @@ public interface LTPAConfiguration {
     long getTokenExpiration();
 
     /**
+     * @return refresh life time
+     */
+    long getRefreshLifeTime();
+
+    /**
      * @return authFiler reference
      */
     String getAuthFilterRef();
@@ -127,5 +134,5 @@ public interface LTPAConfiguration {
      * @return validation Keys
      */
     List<Properties> getValidationKeys();
-    
+
 }

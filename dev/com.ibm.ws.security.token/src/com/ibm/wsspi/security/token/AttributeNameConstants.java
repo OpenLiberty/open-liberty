@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2011 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,7 +15,7 @@ package com.ibm.wsspi.security.token;
 /**
  * This class is used for constants that support the security attribute
  * propagation feature.
- * 
+ *
  * @ibm-spi
  */
 public class AttributeNameConstants {
@@ -71,13 +71,17 @@ public class AttributeNameConstants {
      */
     public static final String WSCREDENTIAL_CACHE_KEY = "com.ibm.wsspi.security.cred.cacheKey"; // the cache lookup key
 
-    // One-way hash of Subject uniqueIDs gathered from implementations of 
+    // One-way hash of Subject uniqueIDs gathered from implementations of
     // com.ibm.wsspi.security.token.Token objects.  If all tokens return null,
     // the accessID is used as the uniqueID and is one-way hashed.
     public static final String WSTOKEN_UNIQUEID = "hashed_uid";
 
     // The expiration time of the token, added to the signed part of the token.
     public static final String WSTOKEN_EXPIRATION = "expire";
+    // The last time used of the token, added to the signed part of the token.
+    public static final String WSTOKEN_LAST_USED = "lastUsed";
+    // The refresh life time of the token, added to the signed part of the token.
+    public static final String WSTOKEN_REFRESH_LIFE_TIME = "refreshLifeTime";
 
     // PropagationToken attributes
     // append each new caller at the end with | delimiter
@@ -85,7 +89,7 @@ public class AttributeNameConstants {
     // append each cell:directory:server at the end with | delimiter
     public static final String WSPROP_HOSTS = "com.ibm.wsspi.security.propagation.hosts";
 
-    // PropagationToken lookup key 
+    // PropagationToken lookup key
     public static final String WSPROPTOKEN_KEY_V1 = "com.ibm.ws.security.token.PropagationTokenImpl:1";
 
     // PropagationToken default name

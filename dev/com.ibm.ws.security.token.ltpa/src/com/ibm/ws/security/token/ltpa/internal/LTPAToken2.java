@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,6 +58,8 @@ public class LTPAToken2 implements Token, Serializable {
     private byte[] encryptedBytes = null;
     private UserData userData;
     private long expirationInMilliseconds;
+    private long lastUsedInMilliseconds;
+    private long refreshLifeTimeInMilliseconds;
     private final byte[] sharedKey;
     private final LTPAPrivateKey privateKey;
     private final LTPAPublicKey publicKey;
@@ -92,6 +94,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
+        this.lastUsedInMilliseconds = 0;
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
@@ -115,10 +118,12 @@ public class LTPAToken2 implements Token, Serializable {
         this.privateKey = privateKey;
         this.publicKey = publicKey;
         this.expirationInMilliseconds = 0;
+        this.lastUsedInMilliseconds = 0;
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
         this.expirationDifferenceAllowed = expDiffAllowed;
         decrypt();
         isValid();
+        setLastUsed();
         if (attributes != null) {
             //Reset signature, encryptedBytes and remove attributes
             this.signature = null;
@@ -144,6 +149,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = new UserData(accessID);
         setExpiration(expirationInMinutes);
+        setLastUsed();
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
     }
 
@@ -157,6 +163,9 @@ public class LTPAToken2 implements Token, Serializable {
      * @param userdata            The UserData
      */
     protected LTPAToken2(long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, UserData userdata) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.entry(this, tc, "<UTLE> LTPAToken2 call by the clone() method, userData: " + userdata);
+        } 
         this.signature = null;
         this.encryptedBytes = null;
         this.sharedKey = sharedKey.clone();
@@ -164,7 +173,11 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.userData = userdata;
         setExpiration(expirationInMinutes);
+        setLastUsed();
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.exit(this, tc, "<UTLE>LTPAToken2 call by the clone() method,  userData: " + this.userData);
+        } 
     }
 
     /**
@@ -175,11 +188,6 @@ public class LTPAToken2 implements Token, Serializable {
     private final void encrypt() throws Exception {
         String signStr = Base64Coder.toString(Base64Coder.base64Encode(signature));
         String ud = userData.toString();
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "encrypt: userData" + ud);
-        }
-
         byte[] accessID = Base64Coder.getBytes(ud);
         StringBuilder sb = new StringBuilder(DELIM);
         sb.append(getExpiration()).append(DELIM).append(signStr);
@@ -223,6 +231,7 @@ public class LTPAToken2 implements Token, Serializable {
             String tokenString = toSimpleString(tokenData);
             String[] fields = LTPATokenizer.parseToken(tokenString);
             String[] expirationArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_EXPIRATION);
+            
             if (expirationArray != null && expirationArray[expirationArray.length - 1] != null) {
                 // the new expiration value inside the signature for LTPAToken2
                 expirationInMilliseconds = Long.parseLong(expirationArray[expirationArray.length - 1]);
@@ -249,6 +258,17 @@ public class LTPAToken2 implements Token, Serializable {
                 // the old expiration value outside of the signature for LTPAToken
                 expirationInMilliseconds = Long.parseLong(fields[1]);
             }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "expiration: "+ new Date(expirationInMilliseconds));
+            }
+            String[] lastUsedArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_LAST_USED);
+            if (lastUsedArray != null && lastUsedArray[lastUsedArray.length - 1] != null) {
+                lastUsedInMilliseconds = Long.parseLong(lastUsedArray[lastUsedArray.length - 1]);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(this, tc, "lastUsed: "+ new Date(lastUsedInMilliseconds));
+                }
+            }
+            //setLastUsed();
             // the signature will always be the last field, but the fields array length may be 2 or 3.
             byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[fields.length - 1]));
             setSignature(signature);
@@ -343,21 +363,32 @@ public class LTPAToken2 implements Token, Serializable {
      * @throws TokenExpiredException
      */
     public final void validateExpiration() throws TokenExpiredException {
-        Date d = new Date();
+        Date lastUsedD = new Date(getLastUsed());
         Date expD = new Date(getExpiration());
-        boolean expired = d.after(expD);
+        long currentTimeMillis = System.currentTimeMillis();
+        long idleMillis = currentTimeMillis - lastUsedInMilliseconds;
+        long idleTimeInMillis = lastUsedInMilliseconds + idleMillis;
+        Date idleD = new Date(idleTimeInMillis);
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Current time = " + d + ", expiration time = " + expD);
+            Tr.debug(this, tc, "last used time = " + lastUsedInMilliseconds + " idle time (mls) = " + idleMillis + " current time + "+ currentTimeMillis + " expiration time = " + expirationInMilliseconds);
+            Tr.debug(this, tc, "last used date = " + lastUsedD +  " idle date = " + idleD + " expiration date = " + expD);
         }
+        boolean expired = idleTimeInMillis > expirationInMilliseconds;
+        boolean refreshAble = currentTimeMillis > refreshLifeTimeInMilliseconds;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "expired = "+ expired); 
+            Tr.debug(this, tc, "refreshAble = " + refreshAble);
+        }
+        //boolean expired = idleD.after(expD);
         if (expired) {
-            String msg = "The token has expired: current time = \"" + d + "\", expire time = \"" + expD + "\"";
+            String msg = "The token has expired: last used time = \"" + lastUsedD + "\", idle time = \"" + idleD + "\", expire time = \"" + expD + "\"" ;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, msg);
             }
             throw new TokenExpiredException(expirationInMilliseconds, msg);
         }
     }
-
     /** {@inheritDoc} */
     @Override
     @FFDCIgnore(Exception.class)
@@ -377,6 +408,12 @@ public class LTPAToken2 implements Token, Serializable {
     @Override
     public final long getExpiration() {
         return expirationInMilliseconds;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final long getLastUsed() {
+        return lastUsedInMilliseconds;
     }
 
     /** {@inheritDoc} */
@@ -417,8 +454,16 @@ public class LTPAToken2 implements Token, Serializable {
      */
     @Override
     public final Object clone() {
-        UserData userdata = (UserData) userData.clone();
-        return new LTPAToken2(getExpiration(), sharedKey, privateKey, publicKey, userdata);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.entry(this, tc, "<UTLE> clone(): userData: " + userData);
+        } 
+        setLastUsed();
+        UserData ud = (UserData) userData.clone();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.debug(this, tc, "<UTLE> clone(): ud: " + ud);
+        } 
+        
+        return new LTPAToken2(getExpiration(), sharedKey, privateKey, publicKey, ud);
     }
 
     /**
@@ -456,11 +501,47 @@ public class LTPAToken2 implements Token, Serializable {
      * @param expirationInMinutes the expiration limit of the LTPA2 token in minutes
      */
     private final void setExpiration(long expirationInMinutes) {
+        //TODO: UTLE - need the caller to pass in the refreshLifeTimeInMilliseconds
+        // if expiration time after the refreshLifeTime, then set the expiration to refreshLifeTime
+
+        /*
+         * Date expD = new Date(getExpiration());
+         * Date refreshLifeTimeD = new Date(refreshLifeTimeInMilliseconds);
+         *
+         * if (expD.after(refreshLifeTimeD)) {
+         * expirationInMilliseconds = refreshLifeTimeInMilliseconds;
+         * } else {
+         * expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
+         * }
+         */
         expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
         signature = null;
         if (userData != null) {
             encryptedBytes = null;
             userData.addAttribute("expire", Long.toString(expirationInMilliseconds));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Date expiredD = new Date(expirationInMilliseconds);
+                Tr.exit(this, tc, "<UTLE> expired: " + expiredD);
+            }
+        } else {
+            encryptedBytes = null;
+        }
+    }
+
+    /**
+     * Set last used to the current time
+     */
+    private final void setLastUsed(){
+        lastUsedInMilliseconds = System.currentTimeMillis();
+        signature = null;
+        if (userData != null) {
+            encryptedBytes = null;
+            userData.removeAttributes("lastUsed");
+            userData.addAttribute("lastUsed", Long.toString(lastUsedInMilliseconds));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Date lastUsedD = new Date(lastUsedInMilliseconds);
+                Tr.exit(this, tc, "<UTLE> lastUsed:  " + lastUsedD);
+            }
         } else {
             encryptedBytes = null;
         }
