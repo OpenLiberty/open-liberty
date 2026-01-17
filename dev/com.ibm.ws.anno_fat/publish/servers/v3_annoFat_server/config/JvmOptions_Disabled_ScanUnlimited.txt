@@ -1,0 +1,3 @@
+-Danno.beta=true
+-Danno.cache.disabled=true
+-Dcom.ibm.ws.anno.scan.threads=-1
