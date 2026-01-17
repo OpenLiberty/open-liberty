@@ -16,6 +16,11 @@ bVersion=1.1
 
 Bundle-SymbolicName: com.ibm.ws.anno; singleton:=true
 
+#This will probably have to go, and the tests that depend on them moved to a new 
+#project, but double check because it will save a lot of mess if they do not 
+javac.source: 17
+javac.target: 17
+
 Private-Package: \
 	com.ibm.ws.anno.*, \
 	com.ibm.ws.annocache.*
