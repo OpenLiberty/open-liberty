@@ -16,14 +16,25 @@ import java.util.logging.Logger;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import com.ibm.ws.fat.util.SharedServer;
+import com.ibm.ws.tests.anno.JandexV1RepeatAction;
+import com.ibm.ws.tests.anno.JandexV3RepeatAction;
 
+import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.RepeatTests;
+
+@RunWith(FATRunner.class)
 public class JandexAppFalseAppMgrTrueTest extends JandexAppTest {
     private static final Logger LOG = Logger.getLogger(JandexAppFalseAppMgrTrueTest.class.getName());
 
     public static SharedServer SHARED_SERVER = new SharedServer("annoFat_server", false);
+    
+    @ClassRule
+    public static RepeatTests r = RepeatTests.with(new JandexV1RepeatAction()).andWith(new JandexV3RepeatAction());
 
     @Override
     protected SharedServer getSharedServer() {
