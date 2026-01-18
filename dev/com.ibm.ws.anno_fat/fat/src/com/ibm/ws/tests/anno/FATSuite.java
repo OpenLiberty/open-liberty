@@ -27,18 +27,13 @@ import com.ibm.ws.tests.anno.caching.MetadataIncompleteTest;
 import com.ibm.ws.tests.anno.caching.extrascan.AnnotationScanInJarTestModeAll;
 import com.ibm.ws.tests.anno.caching.extrascan.AnnotationScanInJarTestModeEarLib;
 import com.ibm.ws.tests.anno.caching.extrascan.AnnotationScanInJarTestModeManifestClassPath;
+import com.ibm.ws.tests.anno.caching.unused.BigAppTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppDefaultAppMgrDefaultTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppDefaultAppMgrTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppFalseAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppFalseAppMgrTrueTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrFalseTest;
 import com.ibm.ws.tests.anno.jandex.JandexAppTrueAppMgrTrueTest;
-import com.ibm.ws.tests.anno.jandex_v3.V3_JandexAppDefaultAppMgrDefaultTest;
-import com.ibm.ws.tests.anno.jandex_v3.V3_JandexAppDefaultAppMgrTrueTest;
-import com.ibm.ws.tests.anno.jandex_v3.V3_JandexAppFalseAppMgrFalseTest;
-import com.ibm.ws.tests.anno.jandex_v3.V3_JandexAppFalseAppMgrTrueTest;
-import com.ibm.ws.tests.anno.jandex_v3.V3_JandexAppTrueAppMgrFalseTest;
-import com.ibm.ws.tests.anno.jandex_v3.V3_JandexAppTrueAppMgrTrueTest;
 
 /**
  * Servlet 4.0 Tests
@@ -69,13 +64,6 @@ import com.ibm.ws.tests.anno.jandex_v3.V3_JandexAppTrueAppMgrTrueTest;
     JandexAppFalseAppMgrTrueTest.class,
     JandexAppTrueAppMgrFalseTest.class,
     JandexAppTrueAppMgrTrueTest.class,
-    
-    V3_JandexAppDefaultAppMgrDefaultTest.class,
-    V3_JandexAppDefaultAppMgrTrueTest.class,
-    V3_JandexAppFalseAppMgrFalseTest.class,
-    V3_JandexAppFalseAppMgrTrueTest.class,
-    V3_JandexAppTrueAppMgrFalseTest.class,
-    V3_JandexAppTrueAppMgrTrueTest.class,
 
     // Annotation caching tests
     CacheEnablementTest.class,

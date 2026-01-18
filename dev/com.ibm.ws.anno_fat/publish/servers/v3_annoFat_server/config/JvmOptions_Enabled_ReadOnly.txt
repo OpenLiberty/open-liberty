@@ -1,2 +1,0 @@
--Danno.beta=true
--Danno.cache.readOnly=true

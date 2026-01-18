@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package testservlet40_v3.war.servlets;
+package testservlet40.war.servlets;
 
 import java.io.IOException;
 

@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package testservlet40_v3.jar.util;
+package testservlet40.jar.util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

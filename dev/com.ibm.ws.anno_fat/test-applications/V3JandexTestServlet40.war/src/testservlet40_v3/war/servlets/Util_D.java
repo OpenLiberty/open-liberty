@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package testservlet40_v3.war.servlets;
+package testservlet40.war.servlets;
 
 /**
  * Simple utility class: Present to force the jar over the write limit, which defaults to 16.

@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package testservlet40_v3.jar.servlets;
+package testservlet40.jar.servlets;
 
 import java.util.Set;
 

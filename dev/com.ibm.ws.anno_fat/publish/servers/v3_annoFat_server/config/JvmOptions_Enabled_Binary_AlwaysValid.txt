@@ -1,3 +1,0 @@
--Danno.beta=true
--Danno.cache.binaryFormat=true
--Danno.cache.alwaysValid=true
