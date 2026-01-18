@@ -19,6 +19,12 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
@@ -30,6 +36,11 @@ import componenttest.topology.utils.FileUtils;
  * Common test class for Jandex enablement.
  */
 public abstract class JandexAppTest extends LoggingTest {
+	
+	private final static String JAR_NAME = "TestServlet40.jar";
+	private final static String WAR_NAME = "TestServlet40.war";
+	private final static String EAR_NAME = "TestServlet40.ear";
+	
     /**
      * Answer the server used by this test.
      * 
@@ -58,15 +69,24 @@ public abstract class JandexAppTest extends LoggingTest {
     	}
 
         logger.info("setUp: Add TestServlet40 to the server applications folder");
-        AppPackagingHelper.addEarToServerApps(
-            sharedServer.getLibertyServer(),
-            "TestServlet40.ear", // earName
-            true, // addEarResources
-            "TestServlet40.war", // warName
-            true, // addWarResources
-            "TestServlet40.jar", // jarName
-            true, // addJarResources
-            "testservlet40.war.servlets", "testservlet40.jar.servlets"); // packageNames
+        
+        
+        
+        JavaArchive testServlet40Jar = ShrinkWrap.create(JavaArchive.class, JAR_NAME)
+        		.addPackage(testservlet40.jar.servlets.ServletContainerInitializerImpl.class.getPackage())
+        		.addPackage(testservlet40.jar.util.Util_0.class.getPackage());
+        ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources");
+        
+        WebArchive testServlet40War = ShrinkWrap.create(WebArchive.class, WAR_NAME)
+        		.addPackage(testservlet40.war.servlets.MyServlet.class.getPackage())
+        		.addAsLibrary(testServlet40Jar);        		
+        ShrinkHelper.addDirectory(testServlet40War, "test-applications/" + WAR_NAME + "/resources");
+        
+        EnterpriseArchive testServlet40Ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME)
+        		.addAsModule(testServlet40War);
+        ShrinkHelper.addDirectory(testServlet40Ear, "test-applications/" + EAR_NAME + "/resources");
+        
+        ShrinkHelper.exportToServer(sharedServer.getLibertyServer(), "apps", testServlet40Ear);
 
         logger.info("setUp: Added TestServlet40 to the server applications folder");
 
