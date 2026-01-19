@@ -62,7 +62,7 @@ public class InvalidToolNameTest {
         return arg;
     }
 
-    @Tool(name = "ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty_ibmopenlibertyibmopenliberty")
+    @Tool(name = "openlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenlibertyopenlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenliberty")
     public String invalidTool5(@ToolArg(name = "arg") String arg) {
         return arg;
     }

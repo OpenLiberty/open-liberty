@@ -125,33 +125,10 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testInvalidToolNamesWithinvalidLengthandCharactersTestCase() throws Exception {
-        String expectedErrorHeader = Pattern.quote("MCP tool method io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5 has the name ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty ibmopenlibertyibmopenlibertyibmopenlibertyibmopenliberty_ibmopenlibertyibmopenliberty which is invalid as it does not follow the following MCP naming conventions: Tool names should be between 1 and 128 characters in length (inclusive).,The following should be the only allowed characters: uppercase and lowercase ASCII letters (A-Z, a-z), digits (0-9), underscore (_), hyphen (-), and dot (.). Tool names should not contain spaces, commas, or other special characters.");
+        String expectedErrorHeader = Pattern.quote("MCP tool method io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5 has the name openlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenlibertyopenlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenliberty which is invalid as it does not follow the following MCP naming conventions: Tool names should be between 1 and 128 characters in length (inclusive).,The following should be the only allowed characters: uppercase and lowercase ASCII letters (A-Z, a-z), digits (0-9), underscore (_), hyphen (-), and dot (.). Tool names should not contain spaces, commas, or other special characters.");
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Generic Args: ", expectedErrorHeader, expectedErrorList, server);
     }
-//
-//    @Test
-//    public void testInvalidToolNamesWithinvalidCharctersTestCase() throws Exception {
-//        String expectedErrorHeader = "MCP tool method named (.+?) is an invalid name as it does not follow the following MCP naming conventions: (.+?)";
-//        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool1",
-//                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool2",
-//                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool3");
-//        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Tool Name: ", expectedErrorHeader, expectedErrorList, server);
-//    }
-//
-//    @Test
-//    public void testInvalidToolNamesWithinvalidLengthTestCase() throws Exception {
-//        String expectedErrorHeader = "MCP tool method named (.*?) is an invalid name as it does not follow the following MCP naming conventions: (.+?)";
-//        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4");
-//        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Tool name: ", expectedErrorHeader, expectedErrorList, server);
-//    }
-//
-//    @Test
-//    public void testInvalidToolNamesWithinvalidLengthandCharactersTestCase() throws Exception {
-//        String expectedErrorHeader = "MCP tool method named (.+?) is an invalid name as it does not follow the following MCP naming conventions: (.+?)";
-//        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5");
-//        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid Tool name: ", expectedErrorHeader, expectedErrorList, server);
-//    }
 
     @Test
     public void testToolArgDefaultValueWithoutTypeConverter() throws Exception {

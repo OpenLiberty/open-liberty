@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -73,6 +74,8 @@ public class McpCdiExtension implements Extension {
 
         return JsonbBuilder.create(jsonbConfig);
     }
+
+    private static final Pattern TOOL_NAME_CHARACTER_PATTERN = Pattern.compile("[\\w.-]+");
 
     void registerTools(@Observes ProcessManagedBean<?> pmb, BeanManager beanManager) {
         AnnotatedType<?> type = pmb.getAnnotatedBeanClass();
@@ -206,21 +209,22 @@ public class McpCdiExtension implements Extension {
     private boolean reportOnInvalidToolNames(AfterDeploymentValidation afterDeploymentValidation) {
         boolean error = false;
         for (ToolMetadata tool : tools.getAllTools()) {
-            List<String> errors = new ArrayList<>();
             String toolName = tool.name();
             if (toolName.length() == 0 || toolName.length() > 128) {
-                errors.add("Tool names should be between 1 and 128 characters in length (inclusive).");
-            }
-            if (!toolName.matches("[\\d\\w.-]+")) {
-                errors.add("The following should be the only allowed characters: uppercase and lowercase ASCII letters (A-Z, a-z), digits (0-9), underscore (_), hyphen (-), and dot (.). Tool names should not contain spaces, commas, or other special characters.");
-            }
-            if (!errors.isEmpty()) {
                 error = true;
-                Tr.error(tc, "CWMCM0022E.invalid.tool.name", tool.getToolQualifiedName(), toolName, String.join(",", errors));
+                Tr.error(tc, "CWMCM0022E.invalid.length.tool.name", tool.getToolQualifiedName());
+            }
+            if (!TOOL_NAME_CHARACTER_PATTERN.matcher(toolName).matches()) {
+                error = true;
+                Tr.error(tc, "CWMCM0023E.invalid.character.tool.name", tool.getToolQualifiedName(), toolName);
             }
         }
         return error;
 
+    }
+
+    public static Pattern getRegexMatcher() {
+        return TOOL_NAME_CHARACTER_PATTERN;
     }
 
     private boolean reportOnDuplicateSpecialArguments(AfterDeploymentValidation afterDeploymentValidation) {
