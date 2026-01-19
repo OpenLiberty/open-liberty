@@ -286,6 +286,7 @@ public class McpServlet extends HttpServlet {
             return;
         }
 
+        boolean supportsStructuredContent = transport.getProtocolVersion().supportsStructuredContent();
         McpToolListParams params = transport.getParams(McpToolListParams.class);
         String cursor = params != null ? params.getCursor() : null;
 
@@ -304,7 +305,9 @@ public class McpServlet extends HttpServlet {
 
         List<ToolDescription> response = authorisedTools.stream()
                                                         .limit(PAGE_SIZE)
-                                                        .map(ToolDescription::new)
+                                                        .map(toolMetadata -> {
+                                                            return new ToolDescription(toolMetadata, supportsStructuredContent);
+                                                        })
                                                         .toList();
 
         String nextCursor = theresMore ? authorisedTools.get(PAGE_SIZE - 1).name() : null;

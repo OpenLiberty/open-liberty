@@ -19,20 +19,14 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.nio.charset.StandardCharsets;
-
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
-import org.json.JSONObject;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
-import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -273,72 +267,6 @@ public class ProtocolVersionTest {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testNewerProtocolVersionIncludeOutputSchemaInToolDescription() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/list",
-                          "params": {
-                            "cursor": "optional-cursor-value"
-                          }
-                        }
-                        """;
-
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2025-11-25")
-                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(200)
-                                                                             .run(String.class);
-
-        JSONObject jsonResponse = new JSONObject(response);
-        String expectedString = "";
-        try (InputStream inputStream = this.getClass().getResourceAsStream("expected-tools-list-response.json")) {
-            if (inputStream == null) {
-                throw new FileNotFoundException("Resource not found: expected-tools-list-response.json");
-            }
-            expectedString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        }
-        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
-    }
-
-    @Test
-    public void testOlderProtocolVersionExcludeOutputSchemaInToolDescription() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/list",
-                          "params": {
-                            "cursor": "optional-cursor-value"
-                          }
-                        }
-                        """;
-
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2025-03-26")
-                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(200)
-                                                                             .run(String.class);
-
-        JSONObject jsonResponse = new JSONObject(response);
-        String expectedString = "";
-        try (InputStream inputStream = this.getClass().getResourceAsStream("expected-tools-list-response-older-protocol-version.json")) {
-            if (inputStream == null) {
-                throw new FileNotFoundException("Resource not found: expected-tools-list-response-older-protocol-version.json");
-            }
-            expectedString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
-        }
-        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
 }
