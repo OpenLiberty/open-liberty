@@ -1,6 +1,6 @@
 package testservlet40.jar.jandex_v3;
 
-public abstract sealed public class SealedClass permits SealedClass_SubclassA, SealedClass_SubclassB, SealedClass_SubclassC {
+public abstract sealed class SealedClass permits SealedClass_SubclassA, SealedClass_SubclassB, SealedClass_SubclassC {
 	
 	public abstract String getMsg();
 }
