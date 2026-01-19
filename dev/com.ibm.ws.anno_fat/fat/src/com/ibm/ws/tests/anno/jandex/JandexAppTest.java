@@ -28,8 +28,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
-import com.ibm.ws.tests.anno.util.AppPackagingHelper;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.utils.FileUtils;
 
 /**
@@ -70,11 +70,16 @@ public abstract class JandexAppTest extends LoggingTest {
 
         logger.info("setUp: Add TestServlet40 to the server applications folder");
         
-        
+        int jandexVersion = RepeatTestFilter.getMostRecentRepeatAction().getID().contains("v1") ? 1 : 3;        
         
         JavaArchive testServlet40Jar = ShrinkWrap.create(JavaArchive.class, JAR_NAME)
         		.addPackage(testservlet40.jar.servlets.ServletContainerInitializerImpl.class.getPackage())
         		.addPackage(testservlet40.jar.util.Util_0.class.getPackage());
+        
+        if (jandexVersion >= 3) {
+        	testServlet40Jar.addPackage(testservlet40.jar.jandex_v3.SealedClass.class.getPackage());
+        }
+        
         ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources");
         
         WebArchive testServlet40War = ShrinkWrap.create(WebArchive.class, WAR_NAME)
