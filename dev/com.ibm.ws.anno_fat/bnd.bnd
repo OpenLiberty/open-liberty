@@ -13,6 +13,8 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
+javac.source: 17
+
 src: \
     fat/src, \
     test-applications/TestServlet40.war/src, \

@@ -76,10 +76,6 @@ public abstract class JandexAppTest extends LoggingTest {
         		.addPackage(testservlet40.jar.servlets.ServletContainerInitializerImpl.class.getPackage())
         		.addPackage(testservlet40.jar.util.Util_0.class.getPackage());
         
-        if (jandexVersion >= 3) {
-        	testServlet40Jar.addPackage(testservlet40.jar.jandex_v3.SealedClass.class.getPackage());
-        }
-        
         ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources");
         
         WebArchive testServlet40War = ShrinkWrap.create(WebArchive.class, WAR_NAME)
@@ -90,6 +86,16 @@ public abstract class JandexAppTest extends LoggingTest {
         EnterpriseArchive testServlet40Ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME)
         		.addAsModule(testServlet40War);
         ShrinkHelper.addDirectory(testServlet40Ear, "test-applications/" + EAR_NAME + "/resources");
+        
+        if (jandexVersion >= 3) {
+        	testServlet40Jar.addPackage(testservlet40.jar.jandex_v3.MemberClass.class.getPackage());
+        	
+            ShrinkHelper.addDirectory(testServlet40War, "test-applications/" + WAR_NAME + "/resources_v3");
+            ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources_v3");
+        } else {
+        	ShrinkHelper.addDirectory(testServlet40War, "test-applications/" + WAR_NAME + "/resources_v2");
+            ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources_v2");
+        }        
         
         ShrinkHelper.exportToServer(sharedServer.getLibertyServer(), "apps", testServlet40Ear);
 

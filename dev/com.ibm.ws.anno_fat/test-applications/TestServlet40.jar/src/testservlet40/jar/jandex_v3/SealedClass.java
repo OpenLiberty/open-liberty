@@ -27,13 +27,13 @@ sealed class SealedClass_SubclassB extends SealedClass permits SealedClass_Subcl
 	}
 }
 
-final class SealedClass_SubclassB2 extends SealedClass {
+final class SealedClass_SubclassB2 extends SealedClass_SubclassB {
 	public String getMsg() {
 		return "B2";
 	}
 }
 
-non-sealed class SealedClass_SubclassBC extends SealedClass {
+non-sealed class SealedClass_SubclassC extends SealedClass {
 	public String getMsg() {
 		return "C";
 	}
