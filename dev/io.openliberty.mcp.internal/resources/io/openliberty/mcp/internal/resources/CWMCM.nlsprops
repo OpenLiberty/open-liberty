@@ -205,17 +205,17 @@ CWMCM0022E.invalid.cursor.value.useraction=Ensure that the cursor value is provi
 
 # Used for server logging
 # do not translate MCP
-# {0} = The qualified name of the tool
-# {1} = The name of the tool
-CWMCM0023E.invalid.length.tool.name=CWMCM0023E: The MCP tool method {0} has the name {1} which is invalid. Tool names must be between 1 and 128 characters in length inclusive.
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: The {0} name of the {1} MCP tool method is invalid. Tool names must be between 1 and 128 characters in length inclusive.
 CWMCM0023E.invalid.length.tool.name.explanation=The tool name dosent follow the MCP specification of names being between 1 and 128 characters inclusive.
 CWMCM0023E.invalid.length.tool.name.useraction=Ensure tool names between 1 and 128 characters inclusive.
 
 # Used for server logging
 # do not translate MCP
-# {0} = The qualified name of the tool
-# {1} = The name of the tool
-CWMCM0024E.invalid.character.tool.name=CWMCM0024E: The MCP tool method {0} has the name {1} which is invalid. Tool names must only contain ASCII letters, digits, underscores or hyphens.
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: The {0} name of the {1} MCP tool method is invalid. Tool names must only contain ASCII letters, digits, underscores or hyphens.
 CWMCM0024E.invalid.character.tool.name.explanation=The tool name dosent follow the MCP specification of names only containing ASCII letters, digits, underscores, hyphens and not any other special character.
 CWMCM0024E.invalid.character.tool.name.useraction=Ensure tool names contain only ASCII letters, digits, underscores or hyphens.
 
