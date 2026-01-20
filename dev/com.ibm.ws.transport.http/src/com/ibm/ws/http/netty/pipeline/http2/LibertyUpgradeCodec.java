@@ -19,7 +19,6 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
-import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
