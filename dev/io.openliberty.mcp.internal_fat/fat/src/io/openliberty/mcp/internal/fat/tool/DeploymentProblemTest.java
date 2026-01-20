@@ -110,7 +110,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
         for (Map.Entry<String, String> entry : Map.of("invalidTool1", "invalid tool", "invalidTool2", "invalidtool2!", "invalidTool3", "invalid,tool3").entrySet()) {
             String qualifiedName = "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest." + entry.getKey();
-            String expectedErrorHeader = Pattern.quote("The " + qualifiedName + "  name of the " + entry.getValue()
+            String expectedErrorHeader = Pattern.quote("The " + qualifiedName + " name of the " + entry.getValue()
                                                        + " MCP tool method is invalid. Tool names must only contain ASCII letters, digits, underscores or hyphens.");
             List<String> expectedErrorList = List.of(qualifiedName);
             ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid tool name: ", expectedErrorHeader, expectedErrorList, server);
@@ -119,7 +119,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testInvalidToolNamesWithinvalidLengthZeroTestCase() throws Exception {
-        String expectedErrorHeader = Pattern.quote("The  name of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4 tool method is invalid. Tool names must be between 1 and 128 characters in length inclusive.");
+        String expectedErrorHeader = Pattern.quote("The  name of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4 MCP tool method is invalid. Tool names must be between 1 and 128 characters in length inclusive.");
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid tool name: ", expectedErrorHeader, expectedErrorList, server);
     }

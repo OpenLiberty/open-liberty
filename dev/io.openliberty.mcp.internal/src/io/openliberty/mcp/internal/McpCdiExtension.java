@@ -212,11 +212,11 @@ public class McpCdiExtension implements Extension {
             String toolName = tool.name();
             if (toolName.length() == 0 || toolName.length() > 128) {
                 error = true;
-                Tr.error(tc, "CWMCM0023E.invalid.length.tool.name", tool.getToolQualifiedName(), toolName);
+                Tr.error(tc, "CWMCM0023E.invalid.length.tool.name", toolName, tool.getToolQualifiedName());
             }
             if (!TOOL_NAME_CHARACTER_PATTERN.matcher(toolName).matches()) {
                 error = true;
-                Tr.error(tc, "CWMCM0024E.invalid.character.tool.name", tool.getToolQualifiedName(), toolName);
+                Tr.error(tc, "CWMCM0024E.invalid.character.tool.name", toolName, tool.getToolQualifiedName());
             }
         }
         return error;
