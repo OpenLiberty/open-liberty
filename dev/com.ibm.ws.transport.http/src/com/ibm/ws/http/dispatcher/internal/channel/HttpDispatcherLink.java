@@ -296,7 +296,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
 
     public void nettyClose(VirtualConnection conn, Exception e) {
-        Thread.currentThread().dumpStack();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
