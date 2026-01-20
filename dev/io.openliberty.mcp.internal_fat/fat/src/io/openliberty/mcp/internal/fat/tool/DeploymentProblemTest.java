@@ -110,7 +110,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
         for (Map.Entry<String, String> entry : Map.of("invalidTool1", "invalid tool", "invalidTool2", "invalidtool2!", "invalidTool3", "invalid,tool3").entrySet()) {
             String qualifiedName = "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest." + entry.getKey();
-            String expectedErrorHeader = Pattern.quote("The " + qualifiedName + " name of the " + entry.getValue()
+            String expectedErrorHeader = Pattern.quote("The " + entry.getValue() + " name of the " + qualifiedName
                                                        + " MCP tool method is invalid. Tool names must only contain ASCII letters, digits, underscores or hyphens.");
             List<String> expectedErrorList = List.of(qualifiedName);
             ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid tool name: ", expectedErrorHeader, expectedErrorList, server);
