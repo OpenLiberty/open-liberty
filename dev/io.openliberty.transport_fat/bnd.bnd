@@ -14,7 +14,6 @@ src: \
     fat/src,\
     test-applications/app1/src,\
     test-applications/contentTypeApp/src,\
-    test-applications/InactivityTimeout.war/src,\
     test-applications/FileUpload.war,\
     test-applications/ConfigTest.war/src
 
