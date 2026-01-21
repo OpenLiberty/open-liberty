@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -172,101 +172,4 @@ public class ProtocolVersionTest {
         assertThat("Expected error message to contain expected version",
                    response, containsString("Supported values: 2025-11-25, 2025-06-18, 2025-03-26"));
     }
-
-    @Test
-    public void testOlderProtocolVersionsExcludeOutputSchema() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testListObjectResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2025-03-26")
-                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(200)
-                                                                             .run(String.class);
-
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testNewerProtocolVersionsIncludeOutputSchema() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testListObjectResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = new HttpRequest(server, "/protocolVersionTest/mcp")
-                                                                             .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
-                                                                             .requestProp(MCP_PROTOCOL_VERSION, "2025-11-25")
-                                                                             .requestProp(MCP_SESSION_ID, client.getSessionId())
-                                                                             .jsonBody(request)
-                                                                             .method("POST")
-                                                                             .expectCode(200)
-                                                                             .run(String.class);
-
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
-                              }
-                            ],
-                            "structuredContent": [
-                              {
-                                "country": "France",
-                                "isCapital": true,
-                                "name": "Paris",
-                                "population": 8000
-                              },
-                              {
-                                "country": "England",
-                                "isCapital": false,
-                                "name": "Manchester",
-                                "population": 15000
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
 }

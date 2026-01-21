@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.fat.tool.protocolVersionApp;
 import java.util.List;
 
 import io.openliberty.mcp.annotations.Tool;
+import io.openliberty.mcp.tools.ToolResponse;
+import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -25,6 +27,32 @@ public class ProtocolVersionTestTools {
         City city1 = new City("Paris", "France", 8000, true);
         City city2 = new City("Manchester", "England", 15000, false);
         return List.of(city1, city2);
+    }
+
+    public record MyResponseObject(String content) {};
+
+    /********************************************************************************************
+     * Encode MyResponseObject as a response with just structured content and no regular content
+     *
+     ********************************************************************************************/
+
+    public static class MyResponseObjectEncoder implements ToolResponseEncoder<MyResponseObject> {
+
+        @Override
+        public boolean supports(Class<?> runtimeType) {
+            return MyResponseObject.class.isAssignableFrom(runtimeType);
+        }
+
+        @Override
+        public ToolResponse encode(MyResponseObject value) {
+            return new ToolResponse(false, null, value, null);
+        }
+
+    }
+
+    @Tool(name = "testToolResponseNoContent")
+    public MyResponseObject testToolResponseNoContent() {
+        return new MyResponseObject("Hello World");
     }
 
 }

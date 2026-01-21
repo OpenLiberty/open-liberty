@@ -22,6 +22,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
+import io.openliberty.mcp.content.Content;
+import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
 import io.openliberty.mcp.internal.config.McpConfiguration;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
@@ -215,7 +217,7 @@ public class McpServlet extends HttpServlet {
                                        McpToolCallParams params)
                     throws IllegalAccessException, IllegalArgumentException {
 
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params, transport);
+        ToolArguments toolArgs = createToolArguments(mcpRequest, params);
         if (requestId != null) {
             requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }
@@ -224,7 +226,8 @@ public class McpServlet extends HttpServlet {
             var handler = params.getMetadata().handler();
 
             ToolResponse response = handler.apply(toolArgs);
-            transport.sendResponse(response);
+            ToolResponse finalResponse = removeStructuredContentIfNotSupported(response, transport);
+            transport.sendResponse(finalResponse);
         } finally {
             cleanup(requestId);
         }
@@ -235,7 +238,7 @@ public class McpServlet extends HttpServlet {
                                                     McpRequest mcpRequest,
                                                     McpToolCallParams params)
                     throws IllegalAccessException, IllegalArgumentException {
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params, transport);
+        ToolArguments toolArgs = createToolArguments(mcpRequest, params);
 
         if (requestId != null) {
             requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
@@ -243,29 +246,42 @@ public class McpServlet extends HttpServlet {
 
         var handler = params.getMetadata().asyncHandler();
 
-        CompletionStage<ToolResponse> response = handler.apply(toolArgs);
+        CompletionStage<ToolResponse> response = handler.apply(toolArgs)
+                                                        .thenApply(r -> removeStructuredContentIfNotSupported(r, transport));
         transport.sendResultAsync(response)
                  .whenComplete((result, throwable) -> cleanup(requestId));
+    }
+
+    private ToolResponse removeStructuredContentIfNotSupported(ToolResponse response, McpTransport transport) {
+        if (transport.getProtocolVersion().supportsStructuredContent()) {
+            return response;
+        }
+
+        if (response.structuredContent() == null) {
+            return response;
+        }
+
+        List<? extends Content> responseContent = response.content() != null ? response.content() : List.of(new TextContent(jsonb.toJson(response.structuredContent())));
+
+        return new ToolResponse(response.isError(), responseContent, null, response._meta());
     }
 
     /**
      * @return
      */
-    private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params, McpTransport transport) {
+    private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params) {
         Map<String, Object> args = params.getArguments(jsonb);
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
         RequestId requestId = request.id();
-        boolean supportsStructuredContent = transport.getProtocolVersion().supportsStructuredContent();
 
-        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId, supportsStructuredContent);
+        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId);
     }
 
     public record ToolArgumentsImpl(Map<String, Object> args,
                                     Cancellation cancellation,
                                     Meta meta,
                                     EncoderRegistry encoderRegistry,
-                                    RequestId requestId,
-                                    boolean supportsStructuredContent) implements ToolArguments {}
+                                    RequestId requestId) implements ToolArguments {}
 
     private void cleanup(ExecutionRequestId requestId) {
         if (requestId != null && requestTracker.isOngoingRequest(requestId)) {

@@ -24,7 +24,7 @@ import io.openliberty.mcp.internal.fat.lifecycle.tests.AsyncToolLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
-import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionToolDescriptionTest;
+import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
 import io.openliberty.mcp.internal.fat.security.AdminsRoleAllowedTests;
 import io.openliberty.mcp.internal.fat.security.AdminsRoleAllowedTestsStateless;
@@ -76,7 +76,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
                 ProtocolVersionTest.class,
-                ProtocolVersionToolDescriptionTest.class,
+                ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
                 StatelessModeTest.class,
                 ToolErrorHandlingTest.class,

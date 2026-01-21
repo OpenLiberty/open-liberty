@@ -47,6 +47,9 @@ public class ToolDescription {
         return annotations;
     }
 
+    /**
+     * Only for testing
+     */
     public ToolDescription(ToolMetadata toolMetadata) {
         this(toolMetadata, true);
     }
