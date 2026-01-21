@@ -498,6 +498,7 @@ serverEnv()
 ##
 ## serverEnvAndJVMOptions: Read server.env files and set environment variables.
 ##                         Read jvm.options file into ${JVM_OPTIONS_QUOTED}
+##                         Set JAVA_VERSION_MAJOR from ${JPMS_MODULE_FILE_LOCATION}/../../release file, if found
 serverEnvAndJVMOptions()
 {
   serverEnv
@@ -727,7 +728,7 @@ mergeJVMOptions()
         case $option in
           \#*)
               ;;
-          *)
+            *)
               escapeForEval "${option}"
               option="${escapeForEvalResult}"
               SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} ${option}"
@@ -735,6 +736,7 @@ mergeJVMOptions()
         esac
       fi
     done
+
     IFS=$saveIFS
   fi
 }

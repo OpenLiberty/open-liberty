@@ -408,6 +408,7 @@ clientEnv()
 ##
 ## clientEnvAndJVMOptions: Read client.env files and set environment variables.
 ##                         Read client.jvm.options file into ${JVM_OPTIONS_QUOTED}
+##                         Set JAVA_VERSION_MAJOR from ${JAVA_HOME}/release file, if found
 clientEnvAndJVMOptions()
 {
   clientEnv
@@ -436,9 +437,30 @@ clientEnvAndJVMOptions()
     JPMS_MODULE_FILE_LOCATION="${JAVA_HOME}/lib/modules"
   fi
 
-  # If we are running on Java 9, apply Liberty's built-in java 9 options  
+  # If we are running on Java 9 or higher, apply one of Liberty's built-in java options files  
   if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
-    mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+  
+    # If there is a 'release' file under JAVA_HOME, examine it to see if JAVA_VERSION is set.  If so, determine which version of Java we will be using.
+    if [ -f "$(dirname $(dirname ${JPMS_MODULE_FILE_LOCATION})..)/release" ]; then
+      JAVA_VERSION_MAJOR=$(readNativeFile "$(dirname $(dirname ${JPMS_MODULE_FILE_LOCATION})..)/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION\s*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
+    fi
+        
+    if [ -n "${JAVA_VERSION_MAJOR}" ]; then
+      if [ ${JAVA_VERSION_MAJOR} -ge 24 ]; then
+        mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java24.options"
+      else
+        mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+      fi
+    else
+      mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+    fi
+    
+    # In Java 24+, JNI usage must be explicitly granted when starting the JVM - https://openjdk.org/jeps/472 (needed for z/OS)
+    if [ -n "${JAVA_VERSION_MAJOR}" ] && [ "${uname}" = "OS/390" ]; then
+        if [ ${JAVA_VERSION_MAJOR} -ge 24 ] && [[ -n "${JVM_OPTIONS_QUOTED##*--enable-native-access=ALL-UNNAMED*}" ]]; then
+            JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+        fi
+    fi
   fi
 
   enableFIPS140_3

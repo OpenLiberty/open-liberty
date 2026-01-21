@@ -297,9 +297,30 @@ goto:eof
     call:mergeJVMOptions "%WLP_INSTALL_DIR%\etc\client.jvm.options"
   )
   
-  @REM If we are running on Java 9, apply Liberty's built-in java 9 options
+  @REM If we are running on Java 9 or higher, apply one of Liberty's built-in java options files
   if exist "%JAVA_HOME%\lib\modules" (
-    call:mergeJVMOptions "%WLP_INSTALL_DIR%\lib\platform\java\java9.options"
+    @REM If there is a 'release' file under JAVA_HOME, examine it to see if JAVA_VERSION is set.  If so, determine which version of Java will be used
+    if exist "%JAVA_HOME%\release" (
+      for /f "usebackq eol=# delims== tokens=1,*" %%i in ("%JAVA_HOME%\release") do (
+        if "%%i" == "JAVA_VERSION" (
+          for /f "tokens=1 delims=." %%a in ("%%~j") do (
+            set JAVA_VERSION_MAJOR=%%a
+          )
+        )
+      )
+    )
+
+    @REM If JAVA_VERSION_MAJOR was determined, then use it to decide which Java options file to use
+    @REM if JAVA_VERSION_MAJOR was not determined, default to java9.options
+    if "!JAVA_VERSION_MAJOR!"=="" (
+      call:mergeJVMOptions "%WLP_INSTALL_DIR%\lib\platform\java\java9.options"
+    ) else (
+      if !JAVA_VERSION_MAJOR! GEQ 24 (
+        call:mergeJVMOptions "%WLP_INSTALL_DIR%\lib\platform\java\java24.options"
+      ) else (
+        call:mergeJVMOptions "%WLP_INSTALL_DIR%\lib\platform\java\java9.options"
+      )
+    )
   )
   
   set JVM_OPTIONS=!JVM_OPTIONS!%JVM_TEMP_OPTIONS%
