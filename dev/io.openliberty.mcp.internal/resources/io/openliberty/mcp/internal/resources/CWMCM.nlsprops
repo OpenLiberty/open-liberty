@@ -207,15 +207,15 @@ CWMCM0022E.invalid.cursor.value.useraction=Ensure that the cursor value is provi
 # do not translate MCP
 # {0} = The name of the tool 
 # {1} = The qualified name of the tool
-CWMCM0023E.invalid.length.tool.name=CWMCM0023E: The {0} name of the {1} MCP tool method is invalid. Tool names must be between 1 and 128 characters in length inclusive.
-CWMCM0023E.invalid.length.tool.name.explanation=The tool name dosent follow the MCP specification of names being between 1 and 128 characters inclusive.
-CWMCM0023E.invalid.length.tool.name.useraction=Ensure tool names between 1 and 128 characters inclusive.
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: The {0} tool name for the {1} MCP tool method is not valid. Tool names must be between 1 and 128 characters in length, inclusive.
+CWMCM0023E.invalid.length.tool.name.explanation=The tool name doesn't follow the MCP specification for names. Names must be between 1 and 128 characters in length, inclusive.
+CWMCM0023E.invalid.length.tool.name.useraction=Make sure that tool names are between 1 and 128 characters, inclusive.
 
 # Used for server logging
 # do not translate MCP
 # {0} = The name of the tool 
 # {1} = The qualified name of the tool
-CWMCM0024E.invalid.character.tool.name=CWMCM0024E: The {0} name of the {1} MCP tool method is invalid. Tool names must only contain ASCII letters, digits, underscores or hyphens.
-CWMCM0024E.invalid.character.tool.name.explanation=The tool name dosent follow the MCP specification of names only containing ASCII letters, digits, underscores, hyphens and not any other special character.
-CWMCM0024E.invalid.character.tool.name.useraction=Ensure tool names contain only ASCII letters, digits, underscores or hyphens.
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: The {0} tool name for the {1} MCP tool method is not valid. Tool names must contain only ASCII letters, digits, underscores, or hyphens.
+CWMCM0024E.invalid.character.tool.name.explanation=The tool name doesn't follow the MCP specification for names. Names can contain only ASCII letters, digits, underscores, hyphens, and not any other special character.
+CWMCM0024E.invalid.character.tool.name.useraction=Make sure that tool names contain only ASCII letters, digits, underscores, or hyphens.
 
