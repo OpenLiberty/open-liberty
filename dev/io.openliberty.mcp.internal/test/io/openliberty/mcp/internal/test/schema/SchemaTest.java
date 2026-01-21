@@ -1015,69 +1015,42 @@ public class SchemaTest {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addPersonToList");
         Type returnType = toolMethod.getJavaMember().getGenericReturnType();
         String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
-
         String expectedResponseString = """
                             {
+                            "type": "object",
                             "$defs": {
-                                "Address": {
-                                    "properties": {
-                                        "number": {
-                                            "type": "integer"
-                                        },
-                                        "street": {
-                                            "description": "A street object to represent complex streets",
-                                            "properties": {
-                                                "streetName": {
-                                                    "type": "string"
-                                                },
-                                                "roadType": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "streetName"
-                                            ],
-                                            "type": "object"
-                                        },
-                                        "postcode": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "number",
-                                        "street",
-                                        "postcode"
-                                    ],
-                                    "type": "object"
-                                },
                                 "Person": {
-                                    "description": "A person object contains address, company objects",
+                                    "type": "object",
                                     "properties": {
+                                        "fullname": {
+                                            "type": "string"
+                                        },
                                         "address": {
                                             "$ref": "#/$defs/Address"
                                         },
                                         "company": {
+                                            "type": "object",
                                             "properties": {
-                                                "address": {
-                                                    "$ref": "#/$defs/Address"
-                                                },
                                                 "name": {
                                                     "type": "string"
                                                 },
+                                                "address": {
+                                                    "$ref": "#/$defs/Address"
+                                                },
                                                 "employees": {
-                                                    "description": "A list of employees (person object)",
+                                                    "type": "array",
                                                     "items": {
                                                         "$ref": "#/$defs/Person"
                                                     },
-                                                    "type": "array"
+                                                    "description": "A list of employees (person object)"
                                                 },
                                                 "employeeRegistry": {
                                                     "properties": {
-                                                        "value": {
-                                                            "$ref": "#/$defs/Person"
-                                                        },
                                                         "key": {
                                                             "type": "integer"
+                                                        },
+                                                        "value": {
+                                                            "$ref": "#/$defs/Person"
                                                         }
                                                     },
                                                     "required": [],
@@ -1089,11 +1062,7 @@ public class SchemaTest {
                                                 "address",
                                                 "employees",
                                                 "employeeRegistry"
-                                            ],
-                                            "type": "object"
-                                        },
-                                        "fullname": {
-                                            "type": "string"
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -1101,14 +1070,49 @@ public class SchemaTest {
                                         "address",
                                         "company"
                                     ],
-                                    "type": "object"
+                                    "description": "A person object contains address, company objects"
+                                },
+                                "Address": {
+                                    "type": "object",
+                                    "properties": {
+                                        "number": {
+                                            "type": "integer"
+                                        },
+                                        "street": {
+                                            "properties": {
+                                                "streetName": {
+                                                    "type": "string"
+                                                },
+                                                "roadType": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "streetName"
+                                            ],
+                                            "type": "object",
+                                            "description": "A street object to represent complex streets"
+                                        },
+                                        "postcode": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "number",
+                                        "street",
+                                        "postcode"
+                                    ]
                                 }
                             },
                             "description": "Returns list of person object",
-                            "items": {
-                                "$ref": "#/$defs/Person"
-                            },
-                            "type": "array"
+                            "properties": {
+                                "persons": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/$defs/Person"
+                                    }
+                                }
+                            }
                         }
                                                     """;
         JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
@@ -2165,9 +2169,8 @@ public class SchemaTest {
 
         Type returnType = toolMethod.getJavaMember().getGenericReturnType();
         String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
-
         String expectedResponseString = """
-                            {"type":"array","items":{"type":"integer"}}
+                        {"type":"object","properties":{"returnArray":{"type":"array","items":{"type":"integer"}}}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
     }
@@ -2237,14 +2240,19 @@ public class SchemaTest {
         String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
         String expectedResponseString = """
                                           {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string"
+                                            "type": "object",
+                                            "description": "Returns list of  object",
+                                            "properties": {
+                                                "returnArray": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    }
                                                 }
-                                            },
-                                            "description": "Returns list of  object"
+                                            }
                                         }
 
                         """;
