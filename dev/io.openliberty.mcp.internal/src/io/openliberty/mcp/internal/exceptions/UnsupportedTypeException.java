@@ -11,6 +11,10 @@ package io.openliberty.mcp.internal.exceptions;
 
 import java.lang.reflect.Type;
 
+/**
+ * Thrown when return type is not an object and structured content is set to true as it depends on the root type of the output schema.
+ *
+ */
 public class UnsupportedTypeException extends RuntimeException {
     /**
      * The unsupported type;
