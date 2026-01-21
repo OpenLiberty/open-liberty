@@ -12,81 +12,136 @@
         IBM Corporation - initial API and implementation
  -->
 <metatype:MetaData xmlns:metatype="http://www.osgi.org/xmlns/metatype/v1.1.0"
-    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0" localization="OSGI-INF/l10n/metatype">
+    xmlns:ibm="http://www.ibm.com/xmlns/appservers/osgi/metatype/v1.0.0"
+    localization="OSGI-INF/l10n/metatype">
 
-    <OCD description="internal use only" name="internal" id="com.ibm.ws.transport.iiop.spi.SubsystemFactory">
-        <AD name="internal" description="internal use only" id="type" required="true" type="String" default="" />
+    <OCD description="internal use only" name="internal"
+        id="com.ibm.ws.transport.iiop.spi.SubsystemFactory">
+        <AD name="internal" description="internal use only" id="type"
+            required="true" type="String" default="" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.transport.iiop.spi.SubsystemFactory">
         <Object ocdref="com.ibm.ws.transport.iiop.spi.SubsystemFactory" />
     </Designate>
 
-    <OCD description="%orbWrapper.desc" name="%orbWrapper.name" id="com.ibm.ws.transport.iiop.internal.ORBWrapper"
+    <OCD description="%orbWrapper.desc" name="%orbWrapper.name"
+        id="com.ibm.ws.transport.iiop.internal.ORBWrapper"
         ibm:alias="orb">
 
-        <AD name="%orbWrapper.nameService" description="%orbWrapper.nameService.desc" id="nameService"
+        <AD name="%orbWrapper.nameService"
+            description="%orbWrapper.nameService.desc" id="nameService"
             required="false" type="String" default="corbaname::localhost:2809" />
 
-        <AD name="%orbWrapper.orbSSLInitTimeout" description="%orbWrapper.orbSSLInitTimeout.desc"
+        <AD name="%orbWrapper.orbSSLInitTimeout"
+            description="%orbWrapper.orbSSLInitTimeout.desc"
             id="orbSSLInitTimeout" required="false" type="String" default="10" />
 
-        <AD id="iiopEndpoint" name="%orbWrapper.iiopEndpoint" description="%orbWrapper.iiopEndpoint.desc"
+        <AD id="iiopEndpoint" name="%orbWrapper.iiopEndpoint"
+            description="%orbWrapper.iiopEndpoint.desc"
             cardinality="100" required="false" type="String" ibm:type="pid"
-            ibm:reference="com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl" default="defaultIiopEndpoint" />
+            ibm:reference="com.ibm.ws.transport.iiop.internal.IIOPEndpointImpl"
+            default="defaultIiopEndpoint" />
 
-        <AD id="IiopEndpoint.target" name="internal" description="internal use only" required="false" type="String"
+        <AD id="IiopEndpoint.target" name="internal"
+            description="internal use only" required="false" type="String"
             default="${servicePidOrFilter(iiopEndpoint)}" />
 
-        <AD name="internal" description="internal use only" id="clientPolicy" required="false" type="String"
-            cardinality="100" ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.AbstractClientPolicy"
+        <AD name="internal" description="internal use only" id="clientPolicy"
+            required="false" type="String"
+            cardinality="100" ibm:type="pid"
+            ibm:reference="com.ibm.ws.transport.iiop.AbstractClientPolicy"
             ibm:flat="true" />
 
-        <AD name="internal" description="internal use only" id="serverPolicy" required="false" type="String"
-            cardinality="100" ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.AbstractServerPolicy"
+        <AD name="internal" description="internal use only" id="serverPolicy"
+            required="false" type="String"
+            cardinality="100" ibm:type="pid"
+            ibm:reference="com.ibm.ws.transport.iiop.AbstractServerPolicy"
             ibm:flat="true" />
 
         <!-- since we only have one at the moment, hardcode the type -->
-        <AD name="internal" description="internal use only" id="adapterActivator" required="true" type="String"
+        <AD name="internal" description="internal use only"
+            id="adapterActivator" required="true" type="String"
             cardinality="1" ibm:type="pid"
             ibm:reference="com.ibm.ws.transport.iiop.internal.NamingServiceAdapterActivator"
             default="defaultNamingServiceAdapterActivator" />
 
-        <AD name="internal" description="internal use only" id="AdapterActivatorOp.target" required="false"
-            type="String" ibm:final="true" default="(service.pid=${adapterActivator})" />
+        <AD name="internal" description="internal use only"
+            id="AdapterActivatorOp.target" required="false"
+            type="String" ibm:final="true"
+            default="(service.pid=${adapterActivator})" />
 
-        <AD id="AdapterActivatorOp.cardinality.minimum" name="internal" description="internal use only" type="String"
+        <AD id="AdapterActivatorOp.cardinality.minimum" name="internal"
+            description="internal use only" type="String"
             required="true" default="${count(adapterActivator)}" />
 
-        <AD name="internal" description="internal use only" id="subsystemFactory" required="true" type="String"
-            cardinality="100" ibm:type="pid" ibm:reference="com.ibm.ws.transport.iiop.spi.SubsystemFactory" default="*"
+        <AD name="internal" description="internal use only"
+            id="subsystemFactory" required="true" type="String"
+            cardinality="100" ibm:type="pid"
+            ibm:reference="com.ibm.ws.transport.iiop.spi.SubsystemFactory"
+            default="*"
             ibm:final="true" />
 
-        <AD id="SubsystemFactory.cardinality.minimum" name="internal" description="internal use only" type="String"
+        <AD id="SubsystemFactory.cardinality.minimum" name="internal"
+            description="internal use only" type="String"
             required="true" default="${count(subsystemFactory)}" />
 
         <!-- Config processing populates this attribute with a list of config PIDs whose ibm:objectClass matches this ibm:service -->
-        <AD id="orbConfiguratorDeclarations" name="internal" description="internal use only" type="String"
+        <AD id="orbConfiguratorDeclarations" name="internal"
+            description="internal use only" type="String"
             cardinality="1000000" ibm:type="pid" ibm:final="true"
-            ibm:service="com.ibm.ws.transport.iiop.spi.OrbConfigurator" default="*" />
+            ibm:service="com.ibm.ws.transport.iiop.spi.OrbConfigurator"
+            default="*" />
 
         <!-- Config processing sets the number of services to expect equal to the number declared (see AD above) -->
-        <AD id="OrbConfigurator.cardinality.minimum" name="internal" description="internal use only" type="String"
+        <AD id="OrbConfigurator.cardinality.minimum" name="internal"
+            description="internal use only" type="String"
             ibm:final="true" default="${count(orbConfiguratorDeclarations)}" />
 
-        <AD id="OrbConfigurator.target" name="internal" description="internal use only" type="String"
-            ibm:final="true" default="${servicePidOrFilter(orbConfiguratorDeclarations)}" />
+        <AD id="OrbConfigurator.target" name="internal"
+            description="internal use only" type="String"
+            ibm:final="true"
+            default="${servicePidOrFilter(orbConfiguratorDeclarations)}" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.transport.iiop.internal.ORBWrapper">
         <Object ocdref="com.ibm.ws.transport.iiop.internal.ORBWrapper" />
     </Designate>
 
-    <OCD description="internal use only" name="internal" id="com.ibm.ws.transport.iiop.AbstractClientPolicy">
-        <AD name="internal" description="internal use only" id="id" required="false" type="String" />
+    <OCD description="internal use only" name="internal"
+        id="com.ibm.ws.transport.iiop.AbstractClientPolicy">
+        <AD name="internal" description="internal use only" id="id"
+            required="false" type="String" />
     </OCD>
 
     <Designate factoryPid="com.ibm.ws.transport.iiop.AbstractClientPolicy">
         <Object ocdref="com.ibm.ws.transport.iiop.AbstractClientPolicy" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.transport.iiop.internal.NamingServiceOrbConfigurator"
+        ibm:alias="namingServiceOrbConfigurator"
+        name="internal"
+        description="internal use only"
+        ibm:objectClass="com.ibm.ws.transport.iiop.spi.OrbConfigurator" />
+    <Designate factoryPid="com.ibm.ws.transport.iiop.internal.NamingServiceOrbConfigurator">
+        <Object ocdref="com.ibm.ws.transport.iiop.internal.NamingServiceOrbConfigurator" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.transport.iiop.yoko.DefaultSocketFactoryOrbConfigurator"
+        ibm:alias="defaultSocketFactoryOrbConfigurator"
+        name="internal"
+        description="internal use only"
+        ibm:objectClass="com.ibm.ws.transport.iiop.spi.OrbConfigurator" />
+    <Designate factoryPid="com.ibm.ws.transport.iiop.yoko.DefaultSocketFactoryOrbConfigurator">
+        <Object ocdref="com.ibm.ws.transport.iiop.yoko.DefaultSocketFactoryOrbConfigurator" />
+    </Designate>
+
+    <OCD id="com.ibm.ws.transport.iiop.yoko.DispatchOrbConfigurator"
+        ibm:alias="dispatchOrbConfigurator"
+        name="internal"
+        description="internal use only"
+        ibm:objectClass="com.ibm.ws.transport.iiop.spi.OrbConfigurator" />
+    <Designate factoryPid="com.ibm.ws.transport.iiop.yoko.DispatchOrbConfigurator">
+        <Object ocdref="com.ibm.ws.transport.iiop.yoko.DispatchOrbConfigurator" />
     </Designate>
 </metatype:MetaData>
