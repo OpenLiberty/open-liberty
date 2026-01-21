@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import test.corba.web.war.IORTestServlet;
+import test.corba.web.war.InterceptorTestServlet;
 
 import org.jboss.shrinkwrap.api.Archive;
 import org.junit.AfterClass;
@@ -26,9 +27,9 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 @RunWith(FATRunner.class)
-public class IORTest extends FATServletClient {
-    @Server("bowlingball")
-    @TestServlet(servlet = IORTestServlet.class, contextRoot = "test.corba.web")
+public class InterceptorTest extends FATServletClient {
+    @Server("bouncyball")
+    @TestServlet(servlet = InterceptorTestServlet.class, contextRoot = "test.corba.web")
     public static LibertyServer server;
 
     @BeforeClass

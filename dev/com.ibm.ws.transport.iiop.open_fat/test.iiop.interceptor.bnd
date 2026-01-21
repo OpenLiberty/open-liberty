@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023 IBM Corporation and others.
+# Copyright 2023,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -34,4 +34,4 @@ IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
 Include-Resource: OSGI-INF=test-bundles/test.iiop.interceptor/OSGI-INF
 
--dsannotations: test.iiop.interceptor.TestSubsystemFactory
+-dsannotations: test.iiop.interceptor.TestOrbConfigurator
