@@ -211,7 +211,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         this.input = input;
         this.version = version;
 
-        System.out.println("Version [ " + version + " ]");
+        //System.out.println("Version [ " + version + " ]");
 
         // Set this to an expected maximum number of class annotations.
         // The list will be enlarged if a class has more than the preset
@@ -275,10 +275,10 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         input.seekPackedU32(); // annotationSize
         input.seekPackedU32(); // implementorSize
         input.seekPackedU32(); // subclassesSize
-        if (version >= 11) {
+        if (version >= 11) { //Redundant if statement, kept to make comparisons with upstream easier
             input.seekPackedU32(); // subinterfaces
         }
-        if (version >= 10) {
+        if (version >= 10) { //Redundant if statement, kept to make comparisons with upstream easier
             usersLength = input.readPackedU32();
         }
 
@@ -293,13 +293,13 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
         readTypeTable();
         readTypeListTable();
-        if (version >= 10) {
+        if (version >= 10) {//Redundant if statement, kept to make comparisons with upstream easier
             readUsersTable(usersLength);
         }
 
         readMethodTable();
         readFieldTable();
-        if (version >= 10) {
+        if (version >= 10) {//Redundant if statement, kept to make comparisons with upstream easier
             readRecordComponentTable();
         }
 
@@ -312,7 +312,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private void readByteTable() throws IOException {
         int numEntries = input.readPackedU32() + 1;
-        System.out.println("Byte table [ " + numEntries + " ]");
+        //System.out.println("Byte table [ " + numEntries + " ]");
         byte[][] useByteTable = new byte[numEntries][];
 
         // Element 0 is forced to null.  Note that that allows
@@ -324,7 +324,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
             int numBytes = input.readPackedU32();
             useByteTable[entryNo] = new byte[numBytes];
             input.readFully(useByteTable[entryNo], 0, numBytes);
-            System.out.println("  Byte entry [ " + entryNo + " ] [ " + numBytes + " ]");
+            //System.out.println("  Byte entry [ " + entryNo + " ] [ " + numBytes + " ]");
         }
 
         this.byteTable = useByteTable;
@@ -333,7 +333,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private void readStringTable() throws IOException {
         int numEntries = input.readPackedU32() + 1;
-        System.out.println("String table [ " + numEntries + " ]");
+        //System.out.println("String table [ " + numEntries + " ]");
         String[] useStringTable = new String[numEntries];
 
         // Element 0 is forced to null.  Note that that allows
@@ -343,7 +343,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
         for ( int entryNo = 1; entryNo < numEntries; entryNo++ ) {
             useStringTable[entryNo] = input.readUTF();
-            System.out.println("  String entry [ " + entryNo + " ] [ " + useStringTable[entryNo] + " ]");            
+            //System.out.println("  String entry [ " + entryNo + " ] [ " + useStringTable[entryNo] + " ]");            
         }
 
         this.stringTable = useStringTable;
@@ -352,7 +352,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     //This only includes the if (version >= 11) block, and not its else block
     private void readNameTable() throws IOException {
         int numEntries = input.readPackedU32() + 1;
-        System.out.println("DotName table [ " + numEntries + " ]");
+        //System.out.println("DotName table [ " + numEntries + " ]");
         SparseDotName[] useNameTable = new SparseDotName[numEntries];
 
         // Element 0 is forced to null.  Note that that allows
@@ -361,21 +361,25 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         useNameTable[0] = null;
 
         for ( int nameNo = 1; nameNo < numEntries; nameNo++ ) {
-            int prefixOffset = input.readPackedU32();
+            if (version >= 11) { //Redundant if statement, kept to make comparisons with upstream easier
+                int prefixOffset = input.readPackedU32();
 
-            // [packedDepth] == [depthBits][innerClassBit]
-            boolean isInnerClass = (prefixOffset & 1) == 1;
-            prefixOffset >>= 1;
+                // [packedDepth] == [depthBits][innerClassBit]
+                boolean isInnerClass = (prefixOffset & 1) == 1;
+                prefixOffset >>= 1;
 
-            int prefixPosition = prefixOffset == 0 ? 0 : nameNo - prefixOffset;
-            SparseDotName prefix = useNameTable[prefixPosition];
+                int prefixPosition = prefixOffset == 0 ? 0 : nameNo - prefixOffset;
+                SparseDotName prefix = useNameTable[prefixPosition];
 
-            String tail = stringTable[input.readPackedU32()];       
+                String tail = stringTable[input.readPackedU32()];       
 
-            SparseDotName name = new SparseDotName(prefix, tail, !SparseDotName.SIMPLE, isInnerClass);
-            useNameTable[nameNo] = name;
+                SparseDotName name = new SparseDotName(prefix, tail, !SparseDotName.SIMPLE, isInnerClass);
+                useNameTable[nameNo] = name;
 
-            System.out.println("  String entry [ " + nameNo + " ] [ " + name + " ]");
+                //System.out.println("  String entry [ " + nameNo + " ] [ " + name + " ]");
+            } else {
+                //omitted
+            }
         }
 
         this.nameTable = useNameTable;
@@ -385,7 +389,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private void readAnnotations() throws IOException {
         int numAnno = input.readPackedU32();
-        System.out.println("Annotations [ " + numAnno + " ]");
+        //System.out.println("Annotations [ " + numAnno + " ]");
         if ( numAnno == 0 ) {
             return;
         }
@@ -437,7 +441,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private boolean readClassAnnotations(SparseDotName targetName, List<SparseDotName> annoClassNames) throws IOException {
         int numAnno = input.readPackedU32();
-        System.out.println("Class annotations [ " + numAnno + " ]");
+        //System.out.println("Class annotations [ " + numAnno + " ]");
         if ( numAnno == 0 ) {
             return false;
         }
@@ -463,7 +467,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 //            }
 
             SparseDotName annoClassName = annoClassNameTable[annoOffset];
-            System.out.println("Anno [ " + annotationNo + " ] [ " + annoClassName + " ]");
+            //System.out.println("Anno [ " + annotationNo + " ] [ " + annoClassName + " ]");
 
             if ( annoClassName.isPlaceholder() ) {
                 continue;
@@ -501,12 +505,12 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
         SparseDotName annoClassName = annoClassNameTable[annoOffset];
         if ( annoClassName != null ) {
-            System.out.println("Annotation class name [ " + annoClassName + " ] Offset [ " + annoOffset + " ]");
+            //System.out.println("Annotation class name [ " + annoClassName + " ] Offset [ " + annoOffset + " ]");
             return annoOffset;
         }
 
         annoClassName = nameTable[input.readPackedU32()];
-        System.out.println("Annotation class name [ " + annoClassName + " ]");
+        //System.out.println("Annotation class name [ " + annoClassName + " ]");
 
         byte targetType = readAnnotationTarget();
         movePastAnnotationValues();
@@ -528,10 +532,10 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         annoClassNameTable[annoOffset] = annoClassName;
         annoTypeTable[annoOffset] = targetType;
 
-        System.out.println(
-             "Annotation [ " + annoOffset + " ]" +
-             " [ " + annoClassName + " ]" +
-             " [ " + AnnoTarget.select(targetType) + " ]");
+        //System.out.println(
+        //     "Annotation [ " + annoOffset + " ]" +
+        //     " [ " + annoClassName + " ]" +
+        //     " [ " + AnnoTarget.select(targetType) + " ]");
 
         return annoOffset;
     }
@@ -543,7 +547,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         // lastTag = tag;
 
         byte tag = input.readByte();
-        System.out.println("Anno Target Tag [ " + tag + " ]");
+        //System.out.println("Anno Target Tag [ " + tag + " ]");
 
         int seekCount = AnnoTarget.values()[tag].seekCount;
 
@@ -558,14 +562,14 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
             input.seekPackedU32();
         }
 
-        System.out.println("Anno Target [ " + AnnoTarget.select(tag) + " ]");
+        //System.out.println("Anno Target [ " + AnnoTarget.select(tag) + " ]");
 
         return tag;
     }
 
     private void movePastAnnotationValues() throws IOException {
         int numValues = input.readPackedU32();
-        System.out.println("Skip values [ " + numValues + " ]");
+        //System.out.println("Skip values [ " + numValues + " ]");
 
         for ( int valueNo = 0; valueNo < numValues; valueNo++ ) {
             movePastAnnotationValue();
@@ -576,7 +580,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         input.seekPackedU32(); // name
 
         byte valueType = input.readByte();
-        System.out.println("Value [ " + AnnoValue.select(valueType) + " ]");
+        //System.out.println("Value [ " + AnnoValue.select(valueType) + " ]");
 
         if ( valueType == AnnoValue.ARRAY.tag ) {
             movePastAnnotationValues();
@@ -772,7 +776,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     private SparseAnnotationHolder readMethod() throws IOException {
         SparseDotName methodName = getSimpleName( input.readPackedU32() );
 
-        System.out.println("Reading method [ " + methodName + " ]");
+        //System.out.println("Reading method [ " + methodName + " ]");
 
         input.seekPackedU32(); // flags // Skip unused method data.
         input.seekPackedU32(); // type parameters
@@ -785,7 +789,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         // Annotation default values are written to the index starting with index format version 7.
         //   JANDEX-46 Add support for default annotation attribute
         //   wildfly/jandex@c208ff5#diff-a696ceb786df083f5910564662f55bc9
-        if ( version >= 7 ) {
+        if ( version >= 7 ) {//Redundant if statement, kept to make comparisons with upstream easier
             boolean hasDefaultValue = ( input.readByte() > 0 );
             if ( hasDefaultValue ) {
                 movePastAnnotationValue(); // default value
@@ -796,7 +800,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         //   Support method parameters
         //   wildfly/jandex@452bbd4#diff-a696ceb786df083f5910564662f55bc9
 
-        if ( version >= 8 ) {
+        if ( version >= 8 ) {//Redundant if statement, kept to make comparisons with upstream easier
             int numParms = input.readPackedU32(); 
             for ( int parmNo = 0; parmNo < numParms; parmNo++ ) {
                 input.seekPackedU32(); // parm bytes
@@ -847,13 +851,13 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private Map<SparseDotName, SparseClassInfo> readClassTable() throws IOException {
         int numClasses = input.readPackedU32();
-        System.out.println("Class table [ " + numClasses + " ]");
+        //System.out.println("Class table [ " + numClasses + " ]");
         Map<SparseDotName, SparseClassInfo> classes =
             new HashMap<SparseDotName, SparseClassInfo>(numClasses);
 
         for ( int classNo = 0; classNo < numClasses; classNo++ ) {
             SparseClassInfo classInfo = readClass();
-            System.out.println("Class [ " + classNo + " ] [ " + classInfo.name() + " ]");
+            //System.out.println("Class [ " + classNo + " ] [ " + classInfo.name() + " ]");
             classes.put(classInfo.name(), classInfo);
         }
 
@@ -869,7 +873,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     //called readClassEntry in upstream
     private SparseClassInfo readClass() throws IOException {
         SparseDotName className = nameTable[input.readPackedU32()];
-        System.out.println("Next class name [ " + className + " ]");
+        //System.out.println("Next class name [ " + className + " ]");
 
         short flags = (short) input.readPackedU32();
         input.readBoolean(); //skip past hasNoArgsConstructor
@@ -886,7 +890,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         //   Fix JANDEX-49: Rregression introduced by 6da4d88, which was incomplete [updates version from 8 to 9]
         //   wildfly/jandex@ce4dd9a#diff-a696ceb786df083f5910564662f55bc9
 
-        if ( version >= 9 ) {
+        if ( version >= 9 ) {//Redundant if statement, kept to make comparisons with upstream easier
             // Starting with v9, both the enclosing class and the enclosing
             // method are optional.  The enclosure bits are a two bit field.
             // But, the method bit cannot be set unless the class bit is set.
@@ -896,7 +900,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
             // class information.
 
             int enclosureBits = input.readUnsignedByte();
-            System.out.println("Class name [ " + className + " ] Enclosure bits [ " + enclosureBits + " ]");
+            //System.out.println("Class name [ " + className + " ] Enclosure bits [ " + enclosureBits + " ]");
 
             if ( enclosureBits > 0 ) {
                 readPastEnclosingClass();
@@ -914,7 +918,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
             readPastEnclosingClass();
 
             int enclosureBits = input.readUnsignedByte();
-            System.out.println("Class name [ " + className + " ] Enclosure bits [ " + enclosureBits + " ]");
+            //System.out.println("Class name [ " + className + " ] Enclosure bits [ " + enclosureBits + " ]");
 
             // Should be set as just bit 1, but the Wyldfly code tests this way.
             // hasEnclosingMethod = ((enclosureBits & 1) == 1);
@@ -933,26 +937,26 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
         
         //int memberClassesCount = stream.readPackedU32();
         int memberClasses = input.readPackedU32();
-        System.out.println("Member Classes: [ " + memberClasses + " ]");
+        //System.out.println("Member Classes: [ " + memberClasses + " ]");
         while (memberClasses > 0) {
             memberClasses--;
             input.readPackedU32();
         }
 
         int numAnnotations = input.readPackedU32();
-        System.out.println("Next class annotations [ " + numAnnotations + " ]");
+        //System.out.println("Next class annotations [ " + numAnnotations + " ]");
 
         readFields(classInfo);
-        if (version >= 10) {
+        if (version >= 10) {//Redundant if statement, kept to make comparisons with upstream easier
             input.seekPackedU32(); // field position array byte table index
         }
         
         readMethods(classInfo);
-        if (version >= 10) {
+        if (version >= 10) {//Redundant if statement, kept to make comparisons with upstream easier
             input.seekPackedU32(); // method position array byte table index
         }
         
-        if (version >= 10) {
+        if (version >= 10) {//Redundant if statement, kept to make comparisons with upstream easier
             readRecordComponents();
             input.seekPackedU32(); // record component position array byte table index
         }
@@ -997,7 +1001,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private void readFields(SparseClassInfo classInfo) throws IOException {
         int numFields = input.readPackedU32();
-        System.out.println("Next fields [ " + numFields + " ]");
+        //System.out.println("Next fields [ " + numFields + " ]");
         if ( numFields == 0 ) {
             return;
         }
@@ -1031,7 +1035,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
 
     private void readMethods(SparseClassInfo classInfo) throws IOException {
         int numMethods = input.readPackedU32();
-        System.out.println("Next methods [ " + numMethods + " ]");
+        //System.out.println("Next methods [ " + numMethods + " ]");
         if ( numMethods == 0 ) {
             return;
         }
@@ -1065,7 +1069,7 @@ public final class SparseIndexReaderVersionImpl_V3 implements SparseIndexReaderV
     
     private void readRecordComponents() throws IOException {
         int numRecordComponents = input.readPackedU32();
-        System.out.println("Next record components [ " + numRecordComponents + " ]");
+        //System.out.println("Next record components [ " + numRecordComponents + " ]");
         for (int i = 0; i < numRecordComponents; i++) {
             input.seekPackedU32(); // record component index
         }
