@@ -172,4 +172,5 @@ public class ProtocolVersionTest {
         assertThat("Expected error message to contain expected version",
                    response, containsString("Supported values: 2025-11-25, 2025-06-18, 2025-03-26"));
     }
+
 }
