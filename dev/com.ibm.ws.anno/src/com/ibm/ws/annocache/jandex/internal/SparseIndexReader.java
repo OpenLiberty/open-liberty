@@ -46,6 +46,8 @@ public final class SparseIndexReader {
             return new SparseIndexReaderVersionImpl_V1(input, version);
         } else if ( SparseIndexReaderVersionImpl_V2.accept(version) ) {
             return new SparseIndexReaderVersionImpl_V2(input, version);
+        } else if ( SparseIndexReaderVersionImpl_V3.accept(version) ) {
+            return new SparseIndexReaderVersionImpl_V3(input, version);
         } else {
             return null;
         }
