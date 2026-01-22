@@ -21,7 +21,7 @@ public class LTPAConstants {
 
     protected static final String LAST_USED = "lastUsed";
 
-    protected static final String REFRESH_LIFE_TIME = "refreshLifeTime";
+    protected static final String REFRESH_LIFE_TIME = "refreshLifetime";
     /**
      * Used to identify the primary LTPA shared key.
      */

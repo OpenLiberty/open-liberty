@@ -26,7 +26,7 @@
         <AD id="expiration"  name="%expiration" description="%expiration.desc"
             required="false" type="String" ibm:type="duration(m)"
             default="120m" />
-        <AD id="refreshLifeTime"  name="%refreshLifeTime" description="%refreshLifeTime.desc"
+        <AD id="refreshLifetime"  name="%refreshLifetime" description="%refreshLifetime.desc"
         	required="false" type="String" ibm:type="duration(m)" />
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
             required="false" type="String" ibm:type="duration" 
