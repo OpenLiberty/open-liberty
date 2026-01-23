@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,6 +19,10 @@ Bundle-SymbolicName: com.ibm.ws.anno; singleton:=true
 Private-Package: \
 	com.ibm.ws.anno.*, \
 	com.ibm.ws.annocache.*
+
+Import-Package: \
+        org.jboss.jandex; version="[2.4,4)", \
+        *
 
 Export-Package: \
 	com.ibm.wsspi.anno.service;provide:=true, \
