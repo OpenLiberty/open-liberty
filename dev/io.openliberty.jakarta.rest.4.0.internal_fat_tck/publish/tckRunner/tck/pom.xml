@@ -48,7 +48,7 @@
         <awaitility.version>4.1.0</awaitility.version>
         <hamcrest.version>2.2</hamcrest.version>
         <jsonassert.version>1.5.0</jsonassert.version>
-        <assertj.version>3.20.1</assertj.version>
+        <assertj.version>3.27.7</assertj.version>
         <!-- TODO: OpenLiberty server -->
         <liberty.runtime.version>24.0.0.8</liberty.runtime.version>
         <liberty-maven-plugin.version>3.10.3</liberty-maven-plugin.version>
