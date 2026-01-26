@@ -82,9 +82,19 @@ public class StoreConsumerServletClientTests extends FATServletClient {
         storeServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not received", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
 
+        // Error CWWKS4000E shows up intermittently due to LTPA slowness
+        // Add CWWKS4105I: LTPA configuration is ready check to avoid this
+        assertNotNull("CWWKS4105I LTPA configuration message not found.",
+                      storeServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
+
         producerServer.useSecondaryHTTPPort(); // sets httpSecondaryPort and httpSecondarySecurePort
         producerServer.startServer(c.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not received", producerServer.waitForStringInLog("CWWKO0219I.*ssl"));
+
+        // Error CWWKS4000E shows up intermittently due to LTPA slowness
+        // Add CWWKS4105I: LTPA configuration is ready check to avoid this
+        assertNotNull("CWWKS4105I LTPA configuration message not found.",
+                      producerServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
         consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
