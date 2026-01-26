@@ -23,6 +23,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest;
+import io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest;
 
 /**
  *
@@ -36,6 +37,7 @@ public class DeploymentProblemTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         ExpectedAppFailureValidator.deployAppToAssertFailure(server, "ExpectedAppFailureTest", DuplicateToolErrorTest.class.getPackage());
+        ExpectedAppFailureValidator.deployAppToAssertFailure(server, "ExpectedAppFailureTest", InvalidToolReturnsTest.class.getPackage());
     }
 
     @AfterClass
@@ -51,7 +53,8 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0018E", //  Arguments contain generics.
                           "CWMCM0020E", //  Invalid default value for argument type.
                           "CWMCM0023E", // Invalid tool name length
-                          "CWMCM0024E" // Invalid tool name character
+                          "CWMCM0024E", // Invalid tool name character
+                          "CWMCM0025E" //  Invalid return type.
         );
     }
 
@@ -152,5 +155,15 @@ public class DeploymentProblemTest extends FATServletClient {
         String expectedErrorHeader = "CWMCM0017E: The input argument of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet MCP tool method does not have a converter to change its default value into an object of type java.util.Optional<java.lang.String>.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg No Converter for DefaultValue: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testInvalidListReturn() throws Exception {
+        String expectedErrorHeader = "CWMCM0025E: The return type (.+?) of the (.+?) MCP tool method must be an object ";
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.asyncListObjectTool",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testArrayResponse",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testListStringResponse",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.addPersonToListToolResponseSchemaBasedReturnType");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid return type: ", expectedErrorHeader, expectedErrorList, server);
     }
 }

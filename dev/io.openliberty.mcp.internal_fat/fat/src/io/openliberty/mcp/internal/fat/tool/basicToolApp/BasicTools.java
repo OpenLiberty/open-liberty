@@ -310,26 +310,6 @@ public class BasicTools {
         return input;
     }
 
-    @Tool(name = "testListObjectResponse", title = "City List",
-          description = "A tool to return a list of cities", structuredContent = true)
-    public List<City> testListObjectResponse() {
-        City city1 = new City("Paris", "France", 8000, true);
-        City city2 = new City("Manchester", "England", 15000, false);
-        return List.of(city1, city2);
-    }
-
-    @Tool(name = "testListStringResponse", title = "String List",
-          description = "A tool to return a list of strings", structuredContent = true)
-    public List<String> testListStringResponse() {
-        return List.of("red", "blue", "yellow");
-    }
-
-    @Tool(name = "testArrayResponse", title = "Array of ints",
-          description = "A tool to return an array of ints", structuredContent = true)
-    public int[] testArrayResponse() {
-        return new int[] { 1, 2, 3, 4, 5 };
-    }
-
     @Tool(name = "testStringStructuredContentResponse", title = "Structured Content String Response",
           description = "A tool to return a string with structuredContent set. The tool should ignore this and not return a structuredContent field when the response is string.",
           structuredContent = true)
@@ -472,17 +452,19 @@ public class BasicTools {
         return true;
     }
 
+    public record ListWrapper(List<Person> returnList) {}
+
     @Tool(name = "addPersonToList", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
     @Schema(description = "Returns list of person object")
-    public List<Person> addPersonToList(
-                                        @ToolArg(name = "employeeList", description = "List of people") List<Person> employeeList,
-                                        @ToolArg(name = "person", description = "Person object") Optional<Person> person) {
+    public ListWrapper addPersonToList(
+                                       @ToolArg(name = "employeeList", description = "List of people") List<Person> employeeList,
+                                       @ToolArg(name = "person", description = "Person object") Optional<Person> person) {
         employeeList.add(person.get());
-        return employeeList;
+        return new ListWrapper(employeeList);
     }
 
     @Tool(name = "addPersonToListToolResponse", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
-    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"object\", \"properties\":{ \"returnList\":{ \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } } }, \"description\": \"Returns list of person object\", \"required\": [\"returnList\"] }",
                    description = "Returns list of person object") ToolResponse addPersonToListToolResponse(@ToolArg(name = "employeeList",
                                                                                                                     description = "List of people") List<Person> employeeList,
                                                                                                            @ToolArg(name = "person",
@@ -494,12 +476,13 @@ public class BasicTools {
         _meta.put(MetaKey.from("timestamp"), 1762860699);
         _meta.put(MetaKey.from("api.ibmtest.org/location"), "Hursley");
         _meta.put(MetaKey.from("api.libertytest.org/person"), personInstance);
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+        ListWrapper returnObj = new ListWrapper(employeeList);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(returnObj))), returnObj, _meta);
 
     }
 
     @Tool(name = "addPersonToListToolResponseWithMetaRequest", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
-    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"object\", \"properties\":{ \"returnList\":{ \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } } }, \"description\": \"Returns list of person object\", \"required\": [\"returnList\"]}",
                    description = "Returns list of person object") ToolResponse addPersonToListToolResponseWithMetaRequest(@ToolArg(name = "employeeList",
                                                                                                                                    description = "List of people") List<Person> employeeList,
                                                                                                                           @ToolArg(name = "person",
@@ -516,7 +499,8 @@ public class BasicTools {
             meta.getValue(metaKey);
             _meta.put(metaKey, value);
         });
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+        ListWrapper returnObj = new ListWrapper(employeeList);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(returnObj))), returnObj, _meta);
     }
 
     @Tool(name = "simpleMetaRequest", title = "return string made from args and metadata", description = "return string made from args and metadata", structuredContent = false)

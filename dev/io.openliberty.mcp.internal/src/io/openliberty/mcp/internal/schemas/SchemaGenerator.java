@@ -147,7 +147,7 @@ public class SchemaGenerator {
 
         JsonObjectBuilder outputSchema = generateSubSchema(returnType, ctx, schemaAnnotation);
         addDefs(outputSchema, ctx);
-        return convertToMCPFormat(outputSchema, toolOutputType);
+        return outputSchema.build();
     }
 
     public static JsonObject convertToMCPFormat(JsonObjectBuilder outputSchema, Type toolOutputType) {

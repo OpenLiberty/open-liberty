@@ -21,11 +21,11 @@ import io.openliberty.mcp.annotations.ToolArg;
 public class ParentGenericTool<T> {
 
     @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing", structuredContent = true)
-    public @Schema(description = "Returns list of  object") List<T>[] addGenericToGenericArray(@ToolArg(name = "generic list 1",
-                                                                                                        description = "List of generics 1") T[] list1,
-                                                                                               @ToolArg(name = "generic list 2",
-                                                                                                        description = "List of generics 1 ") List<T>[] list2,
-                                                                                               @ToolArg(name = "generic", description = "Generic object") T item) {
-        return list2;
+    public @Schema(description = "Returns list of  object") ListWrapper<T> addGenericToGenericArray(@ToolArg(name = "generic list 1",
+                                                                                                             description = "List of generics 1") T[] list1,
+                                                                                                    @ToolArg(name = "generic list 2",
+                                                                                                             description = "List of generics 1 ") List<T>[] list2,
+                                                                                                    @ToolArg(name = "generic", description = "Generic object") T item) {
+        return new ListWrapper<>(list2);
     }
 }

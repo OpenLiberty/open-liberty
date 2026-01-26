@@ -693,74 +693,6 @@
                                     },
                                     {
                                         "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "country": {
-                                                        "type": "string"
-                                                    },
-                                                    "isCapital": {
-                                                        "type": "boolean"
-                                                    },
-                                                    "name": {
-                                                        "type": "string"
-                                                    },
-                                                    "population": {
-                                                        "type": "integer"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "name",
-                                                    "country",
-                                                    "population",
-                                                    "isCapital"
-                                                ]
-                                            }
-                                        },
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {},
-                                            "required": []
-                                        },
-                                        "name": "testListObjectResponse",
-                                        "description": "A tool to return a list of cities",
-                                        "title": "City List"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {},
-                                            "required": []
-                                        },
-                                        "name": "testListStringResponse",
-                                        "description": "A tool to return a list of strings",
-                                        "title": "String List"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {},
-                                            "required": []
-                                        },
-                                        "name": "testArrayResponse",
-                                        "description": "A tool to return an array of ints",
-                                        "title": "Array of ints"
-                                    },
-                                    {
-                                        "outputSchema": {
                                             "type": "object",
                                             "properties": {
                                                 "country": {
@@ -1183,11 +1115,17 @@
                                                     ]
                                                 }
                                             },
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/$defs/Person"
-                                            },
-                                            "description": "Returns list of person object"
+											"type": "object",
+											"properties":{
+												"returnList":{
+													"type": "array",
+		                                            "items": {
+		                                                "$ref": "#/$defs/Person"
+		                                            }
+												}
+											},
+                                            "description": "Returns list of person object",
+											"required": [ "returnList"]
                                         },
                                         "inputSchema": {
                                             "$defs": {
@@ -1384,11 +1322,17 @@
                                                     ]
                                                 }
                                             },
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/$defs/Person"
-                                            },
-                                            "description": "Returns list of person object"
+											"type": "object",
+											"properties":{
+												"returnList":{
+													"type": "array",
+		                                            "items": {
+		                                                "$ref": "#/$defs/Person"
+		                                            }
+												}
+											},
+                                            "description": "Returns list of person object",
+											"required": [ "returnList"]
                                         },
                                         "inputSchema": {
                                             "$defs": {
@@ -1585,11 +1529,17 @@
                                                     ]
                                                 }
                                             },
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/$defs/Person"
-                                            },
-                                            "description": "Returns list of person object"
+                                            "type": "object",
+											"properties":{
+												"returnList":{
+													"type": "array",
+		                                            "items": {
+		                                                "$ref": "#/$defs/Person"
+		                                            }
+												}
+											},
+                                            "description": "Returns list of person object"											,
+											"required": [ "returnList"]
                                         },
                                         "inputSchema": {
                                             "$defs": {

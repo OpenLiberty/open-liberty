@@ -115,14 +115,21 @@ public class GenericToolTest extends FATServletClient {
                                         },
                                         "name": "addGenericToGenericArray",
                                         "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "description": "Returns list of  object"
+                                            "type": "object",
+                                            "properties":{
+                                                "returnList":{
+                                                    "type": "array",
+                                                    "items": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "string"
+                                                    }
+                                                   }
+                                               }
+                                            }
+                                            ,
+                                            "description": "Returns list of  object",
+                                            "required":["returnList"]
                                         },
                                         "title": "adds generic to generic Array"
                                     }
@@ -161,12 +168,13 @@ public class GenericToolTest extends FATServletClient {
                             "result": {
                                 "content": [
                                     {
-                                        "text": "[[\\\"Hello\\\",\\\"World\\\"],[\\\"IBM\\\",\\\"Liberty\\\"]]",
+                                        "text": "{\\\"returnList\\\":[[\\\"Hello\\\",\\\"World\\\"],[\\\"IBM\\\",\\\"Liberty\\\"]]}",
                                         "type": "text"
                                     }
                                 ],
                                 "isError": false,
-                                "structuredContent": [
+                                "structuredContent": {
+                                "returnList":[
                                     [
                                         "Hello",
                                         "World"
@@ -175,7 +183,7 @@ public class GenericToolTest extends FATServletClient {
                                         "IBM",
                                         "Liberty"
                                     ]
-                                ]
+                                ]}
                             }
                         }
                                                                                     """;

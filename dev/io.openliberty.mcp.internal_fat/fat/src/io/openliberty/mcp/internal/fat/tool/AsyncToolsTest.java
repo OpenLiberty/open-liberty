@@ -206,55 +206,6 @@ public class AsyncToolsTest extends FATServletClient {
     }
 
     @Test
-    public void testAsyncToolReturningListOfObjects() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncListObjectTool",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
-                              }
-                            ],
-                            "structuredContent": [
-                              {
-                                "country": "France",
-                                "isCapital": true,
-                                "name": "Paris",
-                                "population": 8000
-                              },
-                              {
-                                "country": "England",
-                                "isCapital": false,
-                                "name": "Manchester",
-                                "population": 15000
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
     public void testAsyncToolReturningSingleObject() throws Exception {
         String request = """
                           {
