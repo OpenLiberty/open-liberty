@@ -194,7 +194,6 @@ CWMCM0022E.invalid.cursor.value.useraction=Ensure that the cursor value is provi
 
 # Used for server logging
 # do not translate MCP
-<<<<<<< HEAD
 # {0} = The name of the tool 
 # {1} = The qualified name of the tool
 CWMCM0023E.invalid.length.tool.name=CWMCM0023E: The {0} tool name for the {1} MCP tool method is not valid. Tool names must be between 1 and 128 characters in length, inclusive.
@@ -215,7 +214,8 @@ argument.conversion.failed=The {0} argument cannot be converted to the {1} type.
 extra.arguments=The following arguments were passed but were not found in the method: {0}.
 missing.arguments=The following arguments were expected by the method but were not provided: {0}.
 
-#Used as part of a response to a client
+# Used as part of a response to a client
+# Used for server logging
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: The return type {0} of the {1} MCP tool method must be an object 
