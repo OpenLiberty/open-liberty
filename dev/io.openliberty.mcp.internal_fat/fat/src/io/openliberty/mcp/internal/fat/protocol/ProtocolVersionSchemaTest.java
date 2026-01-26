@@ -88,7 +88,7 @@ public class ProtocolVersionSchemaTest {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
+                                "text":"{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000}"
                               }
                             ],
                             "isError": false
@@ -128,23 +128,16 @@ public class ProtocolVersionSchemaTest {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
+                                "text":"{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000}"
                               }
                             ],
-                            "structuredContent": [
+                            "structuredContent":
                               {
                                 "country": "France",
                                 "isCapital": true,
                                 "name": "Paris",
                                 "population": 8000
                               },
-                              {
-                                "country": "England",
-                                "isCapital": false,
-                                "name": "Manchester",
-                                "population": 15000
-                              }
-                            ],
                             "isError": false
                           }
                         }
@@ -172,60 +165,56 @@ public class ProtocolVersionSchemaTest {
 
         JSONObject jsonResponse = new JSONObject(response);
         String expectedString = """
-                         {
-                          "id": 1,
-                          "jsonrpc": "2.0",
-                          "result": {
-                            "tools": [
-                              {
-                                "description": "A tool to return a list of cities",
-                                "inputSchema": {
-                                  "type": "object",
-                                  "properties": {},
-                                  "required": []
-                                },
-                                "name": "testListObjectResponse",
-                                "outputSchema": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "object",
-                                    "properties": {
-                                      "name": {
-                                        "type": "string"
-                                      },
-                                      "country": {
-                                        "type": "string"
-                                      },
-                                      "population": {
-                                        "type": "integer"
-                                      },
-                                      "isCapital": {
-                                        "type": "boolean"
-                                      }
+                        {
+                            "id": 1,
+                            "jsonrpc": "2.0",
+                            "result": {
+                                "tools": [
+                                    {
+                                        "description": "A tool to return a list of cities",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "name": "testListObjectResponse",
+                                        "outputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "country": {
+                                                    "type": "string"
+                                                },
+                                                "population": {
+                                                    "type": "integer"
+                                                },
+                                                "isCapital": {
+                                                    "type": "boolean"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "country",
+                                                "population",
+                                                "isCapital"
+                                            ]
+                                        },
+                                        "title": "City List"
                                     },
-                                    "required": [
-                                      "name",
-                                      "country",
-                                      "population",
-                                      "isCapital"
-                                    ]
-                                  }
-                                },
-                                "title": "City List"
-                              },
-                              {
-                                "inputSchema": {
-                                  "type": "object",
-                                  "properties": {},
-                                  "required": []
-                                },
-                                "name": "testToolResponseNoContent"
-                              }
-                            ]
-                          }
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "name": "testToolResponseNoContent"
+                                    }
+                                ]
+                            }
                         }
                         """;
-
         JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 

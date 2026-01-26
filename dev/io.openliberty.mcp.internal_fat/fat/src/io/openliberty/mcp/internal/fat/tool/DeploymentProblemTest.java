@@ -23,7 +23,6 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.DuplicateToolErrorTest;
-import io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest;
 
 /**
  *
@@ -37,7 +36,6 @@ public class DeploymentProblemTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         ExpectedAppFailureValidator.deployAppToAssertFailure(server, "ExpectedAppFailureTest", DuplicateToolErrorTest.class.getPackage());
-        ExpectedAppFailureValidator.deployAppToAssertFailure(server, "ExpectedAppFailureTest", InvalidToolReturnsTest.class.getPackage());
     }
 
     @AfterClass

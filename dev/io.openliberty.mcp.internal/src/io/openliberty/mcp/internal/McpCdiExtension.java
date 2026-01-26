@@ -278,6 +278,7 @@ public class McpCdiExtension implements Extension {
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method, BeanManager beanManager) {
         try {
             ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
+            System.out.println(toolmd.name());
             duplicateToolsMap.computeIfAbsent(toolmd.name(), key -> new LinkedList<>()).add(toolmd.getToolQualifiedName());
             tools.addTool(toolmd);
             if (TraceComponent.isAnyTracingEnabled()) {

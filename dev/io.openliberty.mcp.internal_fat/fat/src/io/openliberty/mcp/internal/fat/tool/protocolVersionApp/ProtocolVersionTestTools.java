@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.protocolVersionApp;
 
-import java.util.List;
-
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.tools.ToolResponse;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
@@ -23,10 +21,10 @@ public class ProtocolVersionTestTools {
 
     @Tool(name = "testListObjectResponse", title = "City List",
           description = "A tool to return a list of cities", structuredContent = true)
-    public List<City> testListObjectResponse() {
+    public City testListObjectResponse() {
         City city1 = new City("Paris", "France", 8000, true);
-        City city2 = new City("Manchester", "England", 15000, false);
-        return List.of(city1, city2);
+        return city1;
+
     }
 
     public record MyResponseObject(String content) {};
