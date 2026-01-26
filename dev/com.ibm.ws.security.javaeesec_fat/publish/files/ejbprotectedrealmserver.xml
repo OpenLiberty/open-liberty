@@ -4,6 +4,7 @@
 		<feature>appSecurity-3.0</feature>
 		<feature>ejbLite-3.2</feature>
 		<feature>jsf-2.3</feature>
+        <feature>jsp-2.3</feature>
 		<feature>el-3.0</feature>
 		<feature>jdbc-4.1</feature>
 		<feature>componenttest-1.0</feature>

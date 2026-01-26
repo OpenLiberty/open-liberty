@@ -82,7 +82,8 @@ src: \
 	org.apache.httpcomponents:httpclient;strategy=exact;version=4.1.2,\
 	org.apache.httpcomponents:httpcore;strategy=exact;version=4.1.2,\
 	com.ibm.ws.com.unboundid;version=latest,\
-	com.unboundid:unboundid-ldapsdk;version=7.0.3
+	com.unboundid:unboundid-ldapsdk;version=7.0.3,\
+    io.openliberty.security.javaeesec.internal
 	
 # Copy in FIPS keys
 ltpa.fips.enabled: true

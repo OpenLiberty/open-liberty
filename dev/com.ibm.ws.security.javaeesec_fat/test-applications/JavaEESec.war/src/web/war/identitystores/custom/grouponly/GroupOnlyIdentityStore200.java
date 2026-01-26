@@ -17,16 +17,12 @@ import java.util.HashSet;
 import java.util.EnumSet;
 import java.util.logging.Logger;
 
-import javax.annotation.PostConstruct;
 import javax.enterprise.context.ApplicationScoped;
 import javax.inject.Named;
 import javax.security.enterprise.credential.BasicAuthenticationCredential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
-import javax.security.enterprise.identitystore.IdentityStorePermission;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 @Named("GroupOnlyIdentityStore200")
 @ApplicationScoped

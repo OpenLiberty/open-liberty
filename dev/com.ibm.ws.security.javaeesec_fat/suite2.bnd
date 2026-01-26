@@ -11,7 +11,6 @@
 
 suite.name=com.ibm.ws.security.javaeesec.fat.suite2.FATSuite\
 
-
 tested.features: \
     expressionLanguage-4.0,\
     mpconfig-1.4,\
@@ -26,4 +25,16 @@ tested.features: \
     enterprisebeanslite-4.0,\
     faces-3.0,\
     restfulwsclient-3.0,\
-    restfulws-3.0
+    restfulws-3.0,\
+    expressionlanguage-5.0,\
+    appsecurity-5.0,\
+    jsonp-2.1,\
+    cdi-4.0,\
+    servlet-6.0,\
+    expressionlanguage-6.0,\
+    faces-4.1,\
+    appsecurity-6.0,\
+    jsonp-2.1,\
+    cdi-4.1,\
+    servlet-6.1,\
+    faces-4.0

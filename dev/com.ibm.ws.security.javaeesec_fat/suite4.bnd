@@ -25,4 +25,22 @@ tested.features: \
     enterprisebeanslite-4.0,\
     faces-3.0,\
     restfulwsclient-3.0,\
-    restfulws-3.0
+    restfulws-3.0,\
+    expressionlanguage-5.0,\
+    appsecurity-5.0,\
+    jsonp-2.1,\
+    cdi-4.0,\
+    servlet-6.0,\
+    faces-4.0,\
+    restfulwsclient-3.1,\
+    restfulws-3.1,\
+    pages-3.1,\
+    expressionlanguage-6.0,\
+    appsecurity-6.0,\
+    jsonp-2.1,\
+    cdi-4.1,\
+    servlet-6.1,\
+    restfulwsclient-4.0,\
+    restfulws-4.0,\
+    pages-4.0,\
+    faces-4.1
