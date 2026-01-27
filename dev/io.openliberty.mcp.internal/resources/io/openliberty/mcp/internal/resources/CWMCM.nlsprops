@@ -214,11 +214,9 @@ argument.conversion.failed=The {0} argument cannot be converted to the {1} type.
 extra.arguments=The following arguments were passed but were not found in the method: {0}.
 missing.arguments=The following arguments were expected by the method but were not provided: {0}.
 
-# Used as part of a response to a client
 # Used for server logging
 # {0} = Parameter name
 # {1} = The qualified name of the tool
-CWMCM0025E.unsupported.output=CWMCM0025E: The return type {0} of the {1} MCP tool method must be an object 
+CWMCM0025E.unsupported.output=CWMCM0025E: The return type {0} of the {1} MCP tool method must be an object.
 CWMCM0025E.unsupported.output.explanation=MCP Tool return type was provided but they are not supported. 
-CWMCM0025E.unsupported.output.useraction=Provide a return type that is an object
-
+CWMCM0025E.unsupported.output.useraction=Provide a return type that is an object.

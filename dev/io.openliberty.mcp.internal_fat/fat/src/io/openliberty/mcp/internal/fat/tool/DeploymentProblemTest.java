@@ -157,7 +157,7 @@ public class DeploymentProblemTest extends FATServletClient {
 
     @Test
     public void testInvalidListReturn() throws Exception {
-        String expectedErrorHeader = "CWMCM0025E: The return type (.+?) of the (.+?) MCP tool method must be an object ";
+        String expectedErrorHeader = "CWMCM0025E: The return type (.+?) of the (.+?) MCP tool method must be an object.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.asyncListObjectTool",
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testArrayResponse",
                                                  "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testListStringResponse",
