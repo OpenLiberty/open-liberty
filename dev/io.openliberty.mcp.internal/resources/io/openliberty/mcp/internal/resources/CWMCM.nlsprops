@@ -217,6 +217,6 @@ missing.arguments=The following arguments were expected by the method but were n
 # Used for server logging
 # {0} = Parameter name
 # {1} = The qualified name of the tool
-CWMCM0025E.unsupported.output=CWMCM0025E: The return type {0} of the {1} MCP tool method must be an object.
-CWMCM0025E.unsupported.output.explanation=MCP Tool return type was provided but they are not supported. 
+CWMCM0025E.unsupported.output=CWMCM0025E: The {0} return type of the {1} MCP tool method must be an object.
+CWMCM0025E.unsupported.output.explanation=The provided MCP tool return type is not supported.
 CWMCM0025E.unsupported.output.useraction=Provide a return type that is an object.
