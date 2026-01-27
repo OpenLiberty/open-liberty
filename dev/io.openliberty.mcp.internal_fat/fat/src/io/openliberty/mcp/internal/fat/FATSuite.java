@@ -46,6 +46,7 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
+import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
@@ -67,6 +68,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 CancellationTest.class,
                 DeploymentProblemTest.class,
                 EncoderTest.class,
+                ExceptionLoggingTest.class,
                 HttpTest.class,
                 GenericToolTest.class,
                 InactiveCdiTest.class,
