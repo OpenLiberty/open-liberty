@@ -58,6 +58,13 @@ public interface Token extends java.lang.Cloneable {
     public long getLastUsed();
 
     /**
+     * Should refresh token or not.
+     *
+     * @return boolean
+     */
+    public boolean shouldRefreshToken();
+
+    /**
      * Gets the version of the token as an short.
      *
      * @return short

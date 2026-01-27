@@ -38,6 +38,8 @@ public interface LTPAConfiguration {
      */
     public static final String CFG_KEY_TOKEN_EXPIRATION = "expiration";
 
+    public static final String CFG_KEY_TOKEN_REFRESH_THRESHOLD = "refreshThreshold";
+
     public static final String CFG_KEY_TOKEN_REFRESH_LIFE_TIME = "refreshLifetime";
     /**
      * The token keys file's monitor interval.
@@ -103,6 +105,11 @@ public interface LTPAConfiguration {
      * @return refresh life time
      */
     long getRefreshLifetime();
+
+    /**
+     * @return refresh threshold percentage for remains of token timeout
+     */
+    int getRefreshThreshold();
 
     /**
      * @return authFiler reference

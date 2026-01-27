@@ -34,6 +34,7 @@ public class LTPAToken2Factory implements TokenFactory {
     private long expirationInMinutes;
     private long lastUsedInMinutes;
     private long refreshLifetimeInMinutes;
+    private int refreshThreshold;
     private byte[] primarySharedKey;
     private LTPAPublicKey primaryPublicKey;
     private LTPAPrivateKey primaryPrivateKey;
@@ -45,6 +46,7 @@ public class LTPAToken2Factory implements TokenFactory {
     @Override
     public void initialize(@Sensitive Map tokenFactoryMap) {
         expirationInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.EXPIRATION);
+        refreshThreshold = (int) tokenFactoryMap.get(LTPAConstants.REFRESH_THRESHOLD);
         refreshLifetimeInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.REFRESH_LIFE_TIME);
         primarySharedKey = (byte[]) tokenFactoryMap.get(LTPAConstants.PRIMARY_SECRET_KEY);
         primaryPublicKey = (LTPAPublicKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PUBLIC_KEY);
@@ -61,7 +63,7 @@ public class LTPAToken2Factory implements TokenFactory {
     @Override
     public Token createToken(Map tokenData) throws TokenCreationFailedException {
         String userUniqueId = getUniqueId(tokenData);
-        return new LTPAToken2(userUniqueId, expirationInMinutes, primarySharedKey, primaryPrivateKey, primaryPublicKey, refreshLifetimeInMinutes);
+        return new LTPAToken2(userUniqueId, expirationInMinutes, primarySharedKey, primaryPrivateKey, primaryPublicKey, refreshLifetimeInMinutes, refreshThreshold);
     }
 
     private String getUniqueId(Map tokenData) throws TokenCreationFailedException {
@@ -93,13 +95,55 @@ public class LTPAToken2Factory implements TokenFactory {
             }
 
             try {
-                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, refreshLifetimeInMinutes, removeAttributes);
+                // Start timing
+                long startTime = System.nanoTime();
+                Token returnToken = null;
+
+                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, removeAttributes);
                 if (validatedToken != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "validateTokenBytes with primary keys (success)");
                     }
-                    return (Token) validatedToken.clone();
+                    if (validatedToken.shouldRefreshToken()) {
+                        Tr.debug(tc, "<UTLE> clone the token");
+                        returnToken = (Token) validatedToken.clone();
+                        //return (Token) validatedToken.clone();
+
+                        // End timing
+                        long endTime = System.nanoTime();
+
+                        // Calculate duration in milliseconds
+                        long durationMs = (endTime - startTime) / 1_000_000;
+                        // Or in seconds (with decimals)
+                        double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() with clone took milliseconds: " + durationMs + " ms");
+                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() with clone took seconds: ", durationSeconds);
+                        }
+
+                    } else {
+                        returnToken = validatedToken;
+                        //return validatedToken;
+
+                        // End timing
+                        long endTime = System.nanoTime();
+
+                        // Calculate duration in milliseconds
+                        long durationMs = (endTime - startTime) / 1_000_000;
+                        // Or in seconds (with decimals)
+                        double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
+
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() took milliseconds: " + durationMs + " ms");
+                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() took seconds: ", durationSeconds);
+                        }
+
+                    }
                 }
+
+                return returnToken;
+
             } catch (Exception e) {
                 //If the token is expired then we do not want to continue processing validation keys below
                 if (e instanceof com.ibm.websphere.security.auth.TokenExpiredException) {
@@ -133,12 +177,16 @@ public class LTPAToken2Factory implements TokenFactory {
                     }
                     if (sharedKeyForValidation != null && ltpaPrivateKeyForValidation != null && ltpaPublicKeyForValidation != null) {
                         try {
-                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, refreshLifetimeInMinutes, removeAttributes);
+                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, removeAttributes);
                             if (validatedToken != null) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "validateTokenBytes with validationKeys (success)");
                                 }
-                                return (Token) validatedToken.clone();
+
+                                if (validatedToken.shouldRefreshToken())
+                                    return (Token) validatedToken.clone();
+                                else
+                                    return validatedToken;
                             }
                         } catch (Exception e) {
                             if (e instanceof com.ibm.websphere.security.auth.TokenExpiredException) {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2023 IBM Corporation and others.
+    Copyright (c) 2011, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@
         <AD id="expiration"  name="%expiration" description="%expiration.desc"
             required="false" type="String" ibm:type="duration(m)"
             default="120m" />
+        <AD id="refreshThreshold"  name="%refreshThreshold" description="%refreshThreshold.desc"
+            required="false" type="Integer" min="1" max="100" default="20" />
         <AD id="refreshLifetime"  name="%refreshLifetime" description="%refreshLifetime.desc"
         	required="false" type="String" ibm:type="duration(m)" />
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
