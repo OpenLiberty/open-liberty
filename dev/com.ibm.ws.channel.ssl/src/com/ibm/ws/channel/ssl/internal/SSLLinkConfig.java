@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2009 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,12 +13,14 @@
 package com.ibm.ws.channel.ssl.internal;
 
 import java.util.Properties;
+import java.util.regex.Pattern;
 
 import javax.net.ssl.SSLEngine;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ssl.Constants;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 /**
  * Configuration used on the individual SSL connections. This may or may not
@@ -31,6 +33,9 @@ public class SSLLinkConfig {
     private static final TraceComponent tc = Tr.register(SSLLinkConfig.class,
                                                          SSLChannelConstants.SSL_TRACE_NAME,
                                                          SSLChannelConstants.SSL_BUNDLE);
+
+    /** Compiled regex pattern for splitting cipher strings */
+    private static final Pattern CIPHER_SPLIT_PATTERN = Pattern.compile("[,\\s]+");
 
     /** Configuration reference */
     private Properties myConfig = null;
@@ -83,56 +88,78 @@ public class SSLLinkConfig {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "getEnabledCipherSuites");
         }
-        String ciphers[] = null;
 
-        // First check the properties object for the ciphers.
-        Object ciphersObject = this.myConfig.get(Constants.SSLPROP_ENABLED_CIPHERS);
-        if (null == ciphersObject) {
-            // Did not find the enabled ciphers. Need to determine them here.
-            String securityLevel = this.myConfig.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-            if (null == securityLevel) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Defaulting to HIGH security level");
-                }
-                securityLevel = Constants.SECURITY_LEVEL_HIGH;
-            }
-            // Found the security level.
-            ciphers = Constants.adjustSupportedCiphersToSecurityLevel(
-                                                                      sslEngine.getSupportedCipherSuites(), securityLevel);
-        } else {
-            // Found enabled cipher suites. Now we need to put them in the right kind of object.
-            if (ciphersObject instanceof String) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "enabledCipherSuites is a String: " + ciphersObject);
-                }
-                // Quickly break the string up into an array based on space delimiters.
-                ciphers = ((String) ciphersObject).split("\\s+");
-            } else if (ciphersObject instanceof String[]) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "enabledCipherSuites is a String array");
-                }
-                ciphers = (String[]) ciphersObject;
-            } else {
+        try {
+            String cipherString = normalizeCipherString(
+                this.myConfig.get(Constants.SSLPROP_ENABLED_CIPHERS)
+            );
+
+            String[] ciphers = resolveCiphers(sslEngine, cipherString);
+
+            if (ciphers == null || ciphers.length == 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Invalid object for enabledCipherSuites: " + ciphersObject);
+                    Tr.event(tc, "Unable to find any enabled ciphers");
                 }
+                return new String[0];
+            }
+
+            return ciphers;
+        } finally {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
+                Tr.exit(tc, "getEnabledCipherSuites");
             }
         }
-        // check for when we're returning 0 ciphers as the connection will not
-        // work and will be throwing errors later on
-        if (null == ciphers || 0 == ciphers.length) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(tc, "Unable to find any enabled ciphers");
-            }
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
-            Tr.exit(tc, "getEnabledCipherSuites");
-        }
-
-        return ciphers;
     }
 
+    /**
+     * Normalize cipher configuration object to a string representation.
+     *
+     * @param ciphersObject the cipher configuration (String, String[], or null)
+     * @return normalized cipher string, or null if input is null
+     */
+    private String normalizeCipherString(Object ciphersObject) {
+        if (ciphersObject instanceof String[]) {
+            return String.join(" ", (String[]) ciphersObject);
+        }
+        if (ciphersObject instanceof String) {
+            return (String) ciphersObject;
+        }
+        return null;
+    }
+
+    /**
+     * Resolve the cipher suites based on beta.
+     *
+     * @param sslEngine the SSL engine to get supported ciphers from
+     * @param cipherString the configured cipher string (may be null)
+     * @return array of resolved cipher suite names
+     */
+    private String[] resolveCiphers(SSLEngine sslEngine, String cipherString) {
+        if (ProductInfo.getBetaEdition()) {
+            // Beta: always go through adjustSupportedCiphers
+            return Constants.adjustSupportedCiphers(
+                sslEngine.getSupportedCipherSuites(),
+                cipherString
+            );
+        }
+
+        if (cipherString != null) {
+            // Non-beta: user provided value
+            return CIPHER_SPLIT_PATTERN.split(cipherString);
+        }
+
+        // No custom ciphers - fallback to security level
+        String securityLevel = this.myConfig.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
+        if (securityLevel == null) {
+            Tr.debug(tc, "Defaulting to HIGH security level");
+            securityLevel = Constants.SECURITY_LEVEL_HIGH;
+        }
+
+        return Constants.adjustSupportedCiphersToSecurityLevel(
+            sslEngine.getSupportedCipherSuites(),
+            securityLevel
+        );
+    }
     /**
      * Get the SSL protocol for this connection and check to see it correct for setting on a SSLEngine
      * and put the protocol in the correct format.

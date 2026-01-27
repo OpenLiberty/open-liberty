@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1178,12 +1178,24 @@ autoFVT.doLast {
    /*
     * Copy applications to the SSLnonIBMCipherTest server.
     */
-   copy { 
+   copy {
       from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
       into new File(autoFvtDir, 'publish/servers/SSLnonIBMCipherTest/dropins')
    }
-   copy { 
+   copy {
       from new File(project.buildDir, 'test-application/BasicCalculator.ear')
       into new File(autoFvtDir, 'publish/servers/SSLnonIBMCipherTest/apps')
-   }  
+   }
+
+   /*
+    * Copy applications to the SSLHandshakeTest server.
+    */
+   copy {
+      from new File(project(':com.ibm.ws.security.fat.common').buildDir, 'test-application/testmarker.war')
+      into new File(autoFvtDir, 'publish/servers/SSLHandshakeTest/dropins')
+   }
+   copy {
+      from new File(project.buildDir, 'test-application/BasicCalculator.ear')
+      into new File(autoFvtDir, 'publish/servers/SSLHandshakeTest/apps')
+   }
 }

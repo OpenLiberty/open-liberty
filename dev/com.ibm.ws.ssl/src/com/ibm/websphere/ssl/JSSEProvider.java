@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2005 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,8 @@ public interface JSSEProvider {
 
     /**
      * Query all encryption ciphers for the specified security level supported by
-     * this provider.
+     * this provider. This function will no longer be used as we will be ignoring 
+     * the security level and defaulting to the effective JDK list if used.
      * 
      * @param isClient
      * @param securityLevel

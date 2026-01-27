@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.TrustManagerFactory;
 import javax.net.ssl.X509KeyManager;
 import javax.net.ssl.X509TrustManager;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -210,11 +211,17 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     /*
      * @see com.ibm.websphere.ssl.JSSEProvider#getCiphersForSecurityLevel(boolean,
      * java.lang.String)
+     * We will be ignoring security level and will default to the effective JDK cipher list.
      */
     @Override
     public String[] getCiphersForSecurityLevel(boolean isClient, String securityLevel) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        if (ProductInfo.getBetaEdition()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "getCiphersForSecurityLevel: Security Level is no longer in use and will be ignored. Will be defaulting to the effective JDK cipher list.", new Object[] { Boolean.valueOf(isClient), securityLevel });
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "getCiphersForSecurityLevel: ", new Object[] { Boolean.valueOf(isClient), securityLevel });
+        }
 
         String[] supportedCiphers = null;
 
@@ -225,8 +232,12 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
             SSLServerSocketFactory factory = (SSLServerSocketFactory) SSLServerSocketFactory.getDefault();
             supportedCiphers = factory.getSupportedCipherSuites();
         }
-
+    if(ProductInfo.getBetaEdition()){ 
+        return Constants.adjustSupportedCiphers(supportedCiphers, null);
+    }
+    else{
         return Constants.adjustSupportedCiphersToSecurityLevel(supportedCiphers, securityLevel);
+        }
     }
 
     /*

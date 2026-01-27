@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.Properties;
 
 import javax.net.ssl.SSLSocket;
 import javax.net.ssl.SSLSocketFactory;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 
 import com.ibm.ejs.ras.Tr;
 import com.ibm.ejs.ras.TraceComponent;
@@ -56,6 +57,11 @@ public class LibertySSLSocketFactoryWrapper extends SSLSocketFactory {
 
     @Override
     public String[] getSupportedCipherSuites() {
+        if (ProductInfo.getBetaEdition()) {
+            String enabledCiphers = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
+            if (tc.isDebugEnabled()) Tr.debug(tc, "enabledCiphers from properties is " + enabledCiphers);
+            return Constants.adjustSupportedCiphers(delegate.getSupportedCipherSuites(), enabledCiphers);
+        } else {
         String securityLevel = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
         if (tc.isDebugEnabled())
             Tr.debug(tc, "securityLevel from properties is " + securityLevel);
@@ -63,6 +69,7 @@ public class LibertySSLSocketFactoryWrapper extends SSLSocketFactory {
             securityLevel = "HIGH";
 
         return Constants.adjustSupportedCiphersToSecurityLevel(delegate.getSupportedCipherSuites(), securityLevel);
+        }
     }
 
     @Override

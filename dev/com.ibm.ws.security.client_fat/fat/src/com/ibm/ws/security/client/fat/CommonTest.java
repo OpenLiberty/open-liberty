@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -672,6 +672,14 @@ public class CommonTest {
             try {
                 Log.info(c, thisMethod, "Copying: " + copyFromFile + " to " + clientFileLoc);
                 LibertyFileManager.copyFileIntoLiberty(testClient.getMachine(), clientFileLoc, "client.xml", copyFromFile);
+                
+                // Also copy client_base.xml if it exists (for configs that use includes)
+                String baseConfigPath = new File(copyFromFile).getParent() + File.separator + "client_base.xml";
+                File baseConfigFile = new File(baseConfigPath);
+                if (baseConfigFile.exists()) {
+                    Log.info(c, thisMethod, "Copying base config: " + baseConfigPath + " to " + clientFileLoc);
+                    LibertyFileManager.copyFileIntoLiberty(testClient.getMachine(), clientFileLoc, "client_base.xml", baseConfigPath);
+                }
             } catch (Exception ex) {
                 ex.printStackTrace(System.out);
                 throw ex;
@@ -918,6 +926,8 @@ public class CommonTest {
                 case "NonSecureServerTest":
                 case "SSLCipherTest":
                 case "SSLnonIBMCipherTest":
+                case "SSLHandshakeTest":
+                case "SSLHandshakeTestNonIBM":
                     apps = new String[] { "apps/BasicCalculator.ear", "dropins/testmarker.war" };
                     break;
                 case "javacolonServerInjection":
