@@ -27,6 +27,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.CountDownLatch;
@@ -3412,17 +3413,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             sendNettyFinalContent();
         }
         if (isNettyUpgrade101()) {
-            awaitUpgradePipelineInstalledForNetty();
+            triggerNettyUpgradeEvent();
         }
         setMessageSent();
-        // Queue next read request for pipelining
-        // if (nettyContext.pipeline().get(LibertyHttpRequestHandler.class) == null) {
-        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //         Tr.debug(this, tc, "Could not verify pipelined request because of null handler on channel: " + nettyContext.channel() + " Is this HTTP2?");
-        //     }
-        // } else {
-        //     nettyContext.pipeline().get(LibertyHttpRequestHandler.class).processNextRequest();
-        // }
     }
 
     /**
@@ -6449,42 +6442,61 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         return AsciiString.containsIgnoreCase(conn, "upgrade");
     }
 
-    private void awaitUpgradePipelineInstalledForNetty() {
+    private void triggerNettyUpgradeEvent() {
         if (nettyContext == null) {
             return;
         }
-
-        CompletableFuture<Void> promise =
-                nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
-        if (promise == null) {
-            promise = new CompletableFuture<>();
-            nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
-        }
+        CompletableFuture<Void> promise = getUpgradeReadyPromise();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "awaitUpgradePipelineInstalledForNetty: ch="
-                        + nettyContext.channel().id().asShortText()
-                        + " promise@" + System.identityHashCode(promise));
+            Tr.debug(tc, "triggerNettyUpgradeEvent: firing 101 Event");
         }
 
-        // Fire the same user event HttpDispatcherHandler.onUpgradeCommitted expects
-        nettyContext.executor().execute(() ->
-            nettyContext.pipeline().fireUserEventTriggered(
-                HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
-
-        try {
-            // Give the dispatcher a short window to flip the pipeline
-            promise.get(750, TimeUnit.MILLISECONDS);
-        } catch (TimeoutException te) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "awaitUpgradePipelineInstalledForNetty: timed out waiting for pipeline switch; proceeding");
-            }
-        } catch (Exception e) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "awaitUpgradePipelineInstalledForNetty: failure while waiting; proceeding " + e);
-            }
-            Thread.currentThread().interrupt();
+        if(nettyContext.executor().inEventLoop()) {
+            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+        } else {
+            nettyContext.executor().execute(() ->
+                nettyContext.pipeline().fireUserEventTriggered(
+                    HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));
         }
+
+        //TODO: discuss what if we want to set a task to timeout installing the upgrade handler
+        // and log the promise as failed
+        // final ScheduledFuture<?> upgradeInstallTimeout = nettyContext.executor().schedule(() -> {
+        //     if(!promise.isDone()){
+        //         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //             Tr.debug(tc, "triggerNettyUpgradeEvent: timed out waiting for upgrade handler installation");
+        //         }
+        //         promise.completeExceptionally(new IOException("Upgrade failed: Upgrade handler not installed"));
+        //     }
+        // }, 1000, TimeUnit.MILLISECONDS);
+        // promise.whenComplete((v, t) -> upgradeInstallTimeout.cancel(false));
     }
+    
+    /**
+     * Prepares the channel upgrade promise. This promise is completed by the 
+     * {@link HttpDispatcherHandler} after the pipeline handlers are changed to handle 
+     * the upgraded connection.
+     * 
+     * @return the channel upgrade promise
+     */
+    private CompletableFuture<Void> getUpgradeReadyPromise() {
+        CompletableFuture<Void> promise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+        if (promise != null) {
+            return promise;
+        }
 
+        promise = new CompletableFuture<>();
+        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+        
+        //If channel closes before the upgrade handler is installed, fail this promise
+        final CompletableFuture<Void> finalPromise = promise;
+        nettyContext.channel().closeFuture().addListener(f -> {
+            if (!finalPromise.isDone()) {
+                finalPromise.completeExceptionally(new IllegalStateException("Channel closed before upgrade handler was installed"));
+            }
+        });
+
+        return promise;
+    }
 }

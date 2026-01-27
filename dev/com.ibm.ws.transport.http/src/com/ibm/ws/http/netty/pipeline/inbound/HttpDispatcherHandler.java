@@ -14,7 +14,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -29,7 +28,6 @@ import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.message.BodyQueue;
-import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
@@ -43,14 +41,12 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.buffer.ByteBufUtil;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
-import  io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
@@ -77,7 +73,6 @@ import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 
-import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 
 /**
  * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
@@ -494,23 +489,22 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             HttpDispatcher.getExecutorService().execute(pending);
         }
 
-        // if (!ctx.channel().config().isAutoRead()) {
-        //     ctx.channel().read();
-        // }
         if (!ctx.channel().config().isAutoRead()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "onUpgradeCommitted: enabling autoRead for upgraded connection "
-                             + ctx.channel().id());
+                Tr.debug(tc, "onUpgradeCommitted: enabling autoRead for upgraded connection");
             }
             ctx.channel().config().setAutoRead(true);
             ctx.channel().read(); 
         }
         try {
-            CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).getAndSet(null);
+            CompletableFuture<Void> promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
             if (promise != null && !promise.isDone()) {
                 promise.complete(null);
             }
         } catch (Throwable ignore) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "onUpgradeCommitted: callback not called due to promise exception.");
+            }
         }
 
         upgradingNow = false;
@@ -518,11 +512,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception {
-
-        int n = 0;
         ByteBuf raw;
         while ((raw = earlyUpgradeBytes.poll()) != null) {
-            n++;
             raw.release();
         }
 
@@ -663,18 +654,28 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     @Override
-    public void channelInactive(ChannelHandlerContext ctx) throws Exception {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "channelInactive cid=" + ctx.channel().id().asShortText());
+    public void channelInactive(ChannelHandlerContext context) throws Exception {
+        upgradingNow = false;
+
+        //If there was an upgrade promise, we need to fail it.
+        CompletableFuture<Void> promise = context.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).getAndSet(null);
+        if (promise != null && !promise.isDone()) {
+            promise.completeExceptionally(new IllegalStateException("Upgrade promise failed due to channel being closed."));
         }
-        int n = 0;
-        ByteBuf raw;
-        while ((raw = earlyUpgradeBytes.poll()) != null) {
-            n++;
-            raw.release();
+        
+        postFlipDrainerInstalled.set(false);
+        // Rease any buffered upgraded bytes on close
+        ByteBuf upgradeBytes;
+        while((upgradeBytes = earlyUpgradeBytes.poll()) != null) {
+            upgradeBytes.release();
         }
-        clearPerRequestAttrs(ctx);
-        super.channelInactive(ctx);
+        // Release any buffered content
+        HttpContent content;
+        while((content = earlyContents.poll()) != null) {
+            content.release();
+        }
+        clearPerRequestAttrs(context);
+        super.channelInactive(context);
     }
 
     //TODO -> Pipeline utils candidate
@@ -741,6 +742,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private void deliverToUpgradeOrPark(ChannelHandlerContext ctx, ByteBuf buf) {
+
         ChannelHandlerContext upgCtx = ctx.pipeline().context(NettyServletUpgradeHandler.class);
         if (upgCtx != null) {
             final NettyServletUpgradeHandler upgrade = (NettyServletUpgradeHandler) upgCtx.handler();
@@ -767,6 +769,9 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             waiter.whenComplete((v, t) -> {
                 ctx.executor().execute(() -> {
                     try {
+                        if(!ctx.channel().isActive()){
+                            return; //Channel inactive will release the buffers
+                        }
                         ChannelHandlerContext u = ctx.pipeline().context(NettyServletUpgradeHandler.class);
                         if (u != null)
                             flushParkedToUpgrade(u);

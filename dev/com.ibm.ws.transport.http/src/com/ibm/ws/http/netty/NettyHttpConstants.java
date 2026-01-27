@@ -41,16 +41,16 @@ public class NettyHttpConstants {
     public static final AttributeKey<Boolean> THROW_FFDC = AttributeKey.valueOf("throwFFDC");
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
+
+    //AUTOREAD WORK
     public static final AttributeKey<HttpInputStreamImpl> HTTP_INPUT_STREAM = AttributeKey.valueOf("httpInputStream");
     public static final AttributeKey<Runnable> ASYNC_READ_CALLBACK = AttributeKey.valueOf("asyncReadCallback");
     public static final AttributeKey<Boolean> UPGRADED = AttributeKey.valueOf("httpUpgraded");
-    public static final AttributeKey<HttpOutputStreamObserver> UPGRADE_OBSERVER = AttributeKey.valueOf("upgradeObserver");
     public static final AttributeKey<HttpChannelConfig> HTTP_CONFIG = AttributeKey.valueOf("httpConfig");
-    public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE =
-        AttributeKey.valueOf("upgrade.ready.promise");
-    public static final String VC_HTTP_INPUT_STREAM = "netty.http.inputStream";
-    public static final String VC_HTTP2_STREAM_ID = "netty.http2.streamId";
-
+    public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE = AttributeKey.valueOf("upgradeReadyPromise");
+    public static final String VC_HTTP_INPUT_STREAM = "nettyInputStream";
+    public static final String VC_HTTP2_STREAM_ID = "http2StreamId";
+    
     public enum ProtocolName {
         HTTP1("HTTP1"),
         HTTP2("HTTP2"),
