@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,11 +23,13 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
+import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
@@ -59,11 +63,13 @@ public class McpCdiExtension implements Extension {
 
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
 
-    private final List<Bean<?>> encoderBeans = new ArrayList<>();
+    private static final List<Bean<?>> encoderBeans = new ArrayList<>();
+    private static final Map<Bean<?>, Type> converterBeans = new HashMap<>();
     private EncoderRegistry encoderRegistry;
     private ConcurrentHashMap<String, ArrayList<String>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
+    private ConverterRegistry customConvertersRegistry = new ConverterRegistry();
     private Jsonb jsonb = createJsonb();
     private ToolRegistry tools = new ToolRegistry(schemas, jsonb);
     private ModuleContext moduleContext;
@@ -104,8 +110,27 @@ public class McpCdiExtension implements Extension {
         }
     }
 
+    void discoverConverterBeans(@Observes ProcessManagedBean<?> processManagedBean) {
+        Class<?> javaClass = processManagedBean.getAnnotatedBeanClass().getJavaClass();
+        if (DefaultValueConverter.class.isAssignableFrom(javaClass)) {
+            converterBeans.put(processManagedBean.getBean(), getConverterType(javaClass));
+        }
+    }
+
+    Type getConverterType(Class<?> javaClass) {
+        for (Type genericInterface : javaClass.getGenericInterfaces()) {
+            if (genericInterface instanceof ParameterizedType pt) {
+                if (pt.getRawType() == DefaultValueConverter.class) {
+                    return pt.getActualTypeArguments()[0];
+                }
+            }
+        }
+        throw new IllegalStateException(Tr.formatMessage(tc, "CWMCM0025E.converter.type.extraction.failed", javaClass.getName()));
+    }
+
     void afterDeploymentValidation(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager manager) {
         registerEncoders(manager);
+        registerCustomConverters(manager);
 
         boolean error = reportOnInvalidToolNames(afterDeploymentValidation) |
                         reportOnDuplicateTools(afterDeploymentValidation) |
@@ -140,6 +165,17 @@ public class McpCdiExtension implements Extension {
 
         encoderRegistry.registerEncoders(toolResponseEncoders, contentEncoders);
 
+        context.release();
+    }
+
+    void registerCustomConverters(BeanManager beanManager) {
+        CreationalContext<?> context = beanManager.createCreationalContext(null);
+        for (Map.Entry<Bean<?>, Type> entry : converterBeans.entrySet()) {
+            Bean<?> bean = entry.getKey();
+            Type converterType = entry.getValue();
+            DefaultValueConverter<?> converter = (DefaultValueConverter<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
+            customConvertersRegistry.addConverter(converterType, converter);
+        }
         context.release();
     }
 
@@ -284,6 +320,10 @@ public class McpCdiExtension implements Extension {
 
     public ToolRegistry getToolRegistry() {
         return tools;
+    }
+
+    public ConverterRegistry getConverterRegistry() {
+        return customConvertersRegistry;
     }
 
     public SchemaRegistry getSchemaRegistry() {

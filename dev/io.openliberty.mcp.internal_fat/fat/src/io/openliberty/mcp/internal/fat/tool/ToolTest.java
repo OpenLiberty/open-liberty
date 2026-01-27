@@ -830,6 +830,39 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testToolCallWithToolArgCustomTypeDefaultValue() throws Exception {
+        String request = """
+                          {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgCustomTypeDefaultValue",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id": 2,
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":8000}"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testToolCallWithTwoToolArgsWithOneDefaultValue() throws Exception {
         String request = """
                           {

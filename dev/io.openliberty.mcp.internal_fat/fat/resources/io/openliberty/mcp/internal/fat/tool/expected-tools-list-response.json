@@ -881,6 +881,29 @@
                                         "description": "Test tool defaults to default value when argument not provided",
                                         "title": "ToolArg Int Default Value"
                                         },
+                                        {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "city": {
+                                                    "description": "City object value",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "country": { "type": "string" },
+                                                        "isCapital": { "type": "boolean" },
+                                                        "name": { "type": "string" },
+                                                        "population": { "type": "integer" }
+                                                      },
+                                                      "required": ["name", "country", "population", "isCapital"]
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgCustomTypeDefaultValue",
+                                        "description": "Test tool defaults to default value when argument not provided",
+                                        "title": "ToolArg Custom Type Default Value"
+                                        },
                                       {
                                         "inputSchema": {
                                             "type": "object",

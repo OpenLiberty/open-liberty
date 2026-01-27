@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.Tool.Annotations;
@@ -325,6 +326,28 @@ public class BasicTools {
 
     public record City(String name, String country, int population, boolean isCapital) {};
 
+    @ApplicationScoped
+    public static class CityConverter implements DefaultValueConverter<City> {
+
+        /**
+         * Converts a default value string in the format "Name::Country::Population::IsCapital" to a {@link City} object
+         * Example string: "Manchester::England::8000::false"
+         */
+        @Override
+        public City convert(String defaultValue) {
+            String[] fields = defaultValue.split("::");
+            if (fields.length != 4) {
+                throw new IllegalArgumentException();
+            }
+            String name = fields[0];
+            String country = fields[1];
+            int population = Integer.parseInt(fields[2]);
+            boolean isCapital = Boolean.parseBoolean(fields[3]);
+            return new City(name, country, population, isCapital);
+        }
+
+    }
+
     // Test ToolArg.required is always true by default, check that it works when it is set to true
     @Tool(name = "testToolArgIsNotRequired", title = "ToolArgNotRequired", description = "ToolArgNotRequired")
     public boolean testToolArgNotRequired(@ToolArg(name = "value", description = "boolean value", required = false) boolean value) {
@@ -365,6 +388,12 @@ public class BasicTools {
     @Tool(name = "testToolArgIntDefaultValue", title = "ToolArg Int Default Value", description = "Test tool defaults to default value when argument not provided")
     public int testToolArgIntDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "2025") int year) {
         return year;
+    }
+
+    @Tool(name = "testToolArgCustomTypeDefaultValue", title = "ToolArg Custom Type Default Value", description = "Test tool defaults to default value when argument not provided")
+    public City testToolArgCustomTypeDefaultValue(@ToolArg(name = "city", description = "City object value", required = false,
+                                                           defaultValue = "Manchester::England::8000::false") City city) {
+        return city;
     }
 
     @Tool(name = "testMultipleToolArgsOneDefaultValue", title = "testMultipleToolArgsOneDefaultValue", description = "MultipleToolArgsOneDefaultValue")
