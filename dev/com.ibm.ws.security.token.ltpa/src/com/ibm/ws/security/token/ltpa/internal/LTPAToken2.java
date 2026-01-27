@@ -57,12 +57,11 @@ public class LTPAToken2 implements Token, Serializable {
     private byte signature[];
     private byte[] encryptedBytes = null;
     private UserData userData;
-    private long expirationInMinutes;
+    private final long expirationInMinutes;
     private long expirationInMilliseconds;
     private long lastUsedInMilliseconds;
 
-    private final int refreshThreshold;
-    //private double thresholdPercentage;
+    private final int refreshThreshold; //Token time remaining threshold
     private boolean triggleRefresh = false;
 
     private final long refreshLifetimeInMinutes;
@@ -88,15 +87,16 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param tokenBytes       The byte representation of the LTPA2 token
-     * @param sharedKey        The LTPA shared key
-     * @param privateKey       The LTPA private key
-     * @param publicKey        The LTPA public key
-     * @param refreshLifetime  TODO
-     * @param refreshThreshold TODO
+     * @param tokenBytes          The byte representation of the LTPA2 token
+     * @param sharedKey           The LTPA shared key
+     * @param privateKey          The LTPA private key
+     * @param publicKey           The LTPA public key
+     * @param refreshLifetime     The LTPA token max lifetime
+     * @param refreshThreshold    The LTPA token lifetime remaining threshold
+     * @param expirationInMinutes The LTPA token expiration in minutes
      */
     public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed,
-                      long refreshLifetime, int refreshThreshold) throws InvalidTokenException {
+                      long refreshLifetime, int refreshThreshold, long expirationInMinutes) throws InvalidTokenException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
         this.encryptedBytes = tokenBytes.clone();
@@ -105,6 +105,7 @@ public class LTPAToken2 implements Token, Serializable {
         this.publicKey = publicKey;
         this.refreshLifetimeInMinutes = refreshLifetime;
         this.refreshThreshold = refreshThreshold;
+        this.expirationInMinutes = expirationInMinutes;
         this.expirationInMilliseconds = 0;
         this.lastUsedInMilliseconds = 0;
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
@@ -115,22 +116,24 @@ public class LTPAToken2 implements Token, Serializable {
     /**
      * An LTPA2 token constructor.
      *
-     * @param tokenBytes       The byte representation of the LTPA2 token
-     * @param sharedKey        The LTPA shared key
-     * @param privateKey       The LTPA private key
-     * @param publicKey        The LTPA public key
-     * @param refreshLifetime  TODO
-     * @param refreshThreshold TODO
-     * @param attributes       The list of attributes will be removed from the LTPA2 token
+     * @param tokenBytes          The byte representation of the LTPA2 token
+     * @param sharedKey           The LTPA shared key
+     * @param privateKey          The LTPA private key
+     * @param publicKey           The LTPA public key
+     * @param refreshLifetime     The LTPA token max lifetime
+     * @param refreshThreshold    The LTPA token lifetime remaining threshold
+     * @param expirationInMinutes The LTPA token expiration in minutes
+     * @param attributes          The list of attributes will be removed from the LTPA2 token
      */
     public LTPAToken2(byte[] tokenBytes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long expDiffAllowed,
-                      long refreshLifetime, int refreshThreshold, String... attributes) throws InvalidTokenException, TokenExpiredException {
+                      long refreshLifetime, int refreshThreshold, long expirationInMinutes, String... attributes) throws InvalidTokenException, TokenExpiredException {
         checkTokenBytes(tokenBytes);
         this.signature = null;
         this.encryptedBytes = tokenBytes.clone();
         this.sharedKey = sharedKey.clone();
         this.privateKey = privateKey;
         this.publicKey = publicKey;
+        this.expirationInMinutes = expirationInMinutes;
         this.expirationInMilliseconds = 0;
         this.lastUsedInMilliseconds = 0;
         this.refreshLifetimeInMinutes = refreshLifetime;
@@ -184,13 +187,14 @@ public class LTPAToken2 implements Token, Serializable {
      * @param privateKey          The LTPA private key
      * @param publicKey           The LTPA public key
      * @param userdata            The UserData
-     * @param refreshLifetime     TODO
-     * @param refreshThreshold    TODO
+     * @param refreshLifetime     The LTPA token max lifetime
+     * @param refreshThreshold    The LTPA token lifetime remaining threshold
      */
     protected LTPAToken2(long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, UserData userdata, long refreshLifetime,
                          int refreshThreshold) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.entry(this, tc, "<UTLE> LTPAToken2 call by the clone() method, userData: " + userdata);
+            Tr.entry(this, tc, "call by the clone() method, userData: " + userdata);
+            Tr.debug(this, tc, "expire: " + new Date(expirationInMinutes * 60 * 1000));
         }
         this.signature = null;
         this.encryptedBytes = null;
@@ -206,7 +210,7 @@ public class LTPAToken2 implements Token, Serializable {
         setLastUsed();
         this.cipher = CryptoUtils.AES_CBC_CIPHER;
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.exit(this, tc, "<UTLE>LTPAToken2 call by the clone() method,  userData: " + this.userData);
+            Tr.exit(this, tc, "call by the clone() method,  userData: " + this.userData);
         }
     }
 
@@ -289,16 +293,15 @@ public class LTPAToken2 implements Token, Serializable {
                 expirationInMilliseconds = Long.parseLong(fields[1]);
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(this, tc, "expiration: " + new Date(expirationInMilliseconds));
+                Tr.debug(this, tc, "token expire: " + expirationInMilliseconds + " time: " + new Date(expirationInMilliseconds));
             }
             String[] lastUsedArray = userData.getAttributes(AttributeNameConstants.WSTOKEN_LAST_USED);
             if (lastUsedArray != null && lastUsedArray[lastUsedArray.length - 1] != null) {
                 lastUsedInMilliseconds = Long.parseLong(lastUsedArray[lastUsedArray.length - 1]);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "lastUsed: " + new Date(lastUsedInMilliseconds));
+                    Tr.debug(this, tc, "token lastUsed: " + lastUsedInMilliseconds + " time: " + new Date(lastUsedInMilliseconds));
                 }
             }
-            //setLastUsed();
             // the signature will always be the last field, but the fields array length may be 2 or 3.
             byte[] signature = Base64Coder.base64Decode(Base64Coder.getBytes(fields[fields.length - 1]));
             setSignature(signature);
@@ -388,7 +391,7 @@ public class LTPAToken2 implements Token, Serializable {
     }
 
     /**
-     * Checks if the token has expired.
+     * Checks if the token has expired with the lastUsed and max refresh lifetime
      *
      * @throws TokenExpiredException
      */
@@ -426,14 +429,15 @@ public class LTPAToken2 implements Token, Serializable {
      * }
      */
     public final void validateExpiration() throws TokenExpiredException {
-        Date d = new Date();
+        Date currentD = new Date();
         Date expD = new Date(getExpiration());
-        boolean expired = d.after(expD);
+        boolean expired = currentD.after(expD);
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "Current time = " + d + ", expiration time = " + expD);
+            Tr.debug(this, tc, "current time    = " + currentD);
+            Tr.debug(this, tc, "expiration time = " + expD);
         }
         if (expired) {
-            String msg = "The token has expired: current time = \"" + d + "\", expire time = \"" + expD + "\"";
+            String msg = "The token has expired: current time = \"" + currentD + "\", expire time = \"" + expD + "\"";
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, msg);
             }
@@ -451,14 +455,13 @@ public class LTPAToken2 implements Token, Serializable {
         long expireTime = getExpiration();
         long currentTime = System.currentTimeMillis();
         double timeRemaining = expireTime - currentTime;
-//        double expirationInMils = expirationInMinutes * 60 * 1000;
-        double expirationInMils = 4 * 60 * 1000; //hard code expiration 4 mins - need to pass in expirationInMinutes for all new LTPAToken2()
+        double expirationInMils = expirationInMinutes * 60 * 1000;
         double remainPercentage = timeRemaining / expirationInMils;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "<UTLE> expire time: " + new Date(expireTime) + " expiration: " + expirationInMils / 1000 + " secons and remaining: "
+            Tr.debug(this, tc, "expire time: " + new Date(expireTime) + " expiration: " + expirationInMils / 1000 + " secons and remaining: "
                                + (timeRemaining / 1000 + " seconds"));
-            Tr.debug(this, tc, "<UTLE> remaining percentage: " + remainPercentage + " remaining threshold percentage: " + getRefreshThresholdPercentage());
+            Tr.debug(this, tc, "remaining percentage: " + remainPercentage + " remaining threshold percentage: " + getRefreshThresholdPercentage());
         }
         if (remainPercentage <= getRefreshThresholdPercentage()) {
             triggleRefresh = true;
@@ -544,16 +547,11 @@ public class LTPAToken2 implements Token, Serializable {
     @Override
     public final Object clone() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.entry(this, tc, "<UTLE> clone(): userData: " + userData);
+            Tr.entry(this, tc, "userData: " + userData);
         }
         userData.removeAttributes("expire");
         userData.removeAttributes("lastUsed");
-        //setExpiration(ex);
-        //setLastUsed();
         UserData ud = (UserData) userData.clone();
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.debug(this, tc, "<UTLE> clone(): ud: " + ud);
-        }
 
         return new LTPAToken2(expirationInMinutes, sharedKey, privateKey, publicKey, ud, refreshLifetimeInMinutes, refreshThreshold);
     }
@@ -593,27 +591,22 @@ public class LTPAToken2 implements Token, Serializable {
      * @param expirationInMinutes the expiration limit of the LTPA2 token in minutes
      */
     private final void setExpiration(long expirationInMinutes) {
-        //TODO: UTLE - need the caller to pass in the refreshLifetimeInMilliseconds
-        // if expiration time after the refreshLifetime, then set the expiration to refreshLifetime
 
-        /*
-         * Date expD = new Date(getExpiration());
-         * Date refreshLifetimeD = new Date(refreshLifetimeInMilliseconds);
-         *
-         * if (expD.after(refreshLifetimeD)) {
-         * expirationInMilliseconds = refreshLifetimeInMilliseconds;
-         * } else {
-         * expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
-         * }
-         */
         expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
+
+//        if (expirationInMilliseconds > refreshLifetimeInMilliseconds) {
+//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                Tr.debug(this, tc, "expiration time is after the refresh lifetime, set expiration time equals to refresh lifetime ");
+//            }
+//            expirationInMilliseconds = refreshLifetimeInMilliseconds;
+//        }
         signature = null;
         if (userData != null) {
             encryptedBytes = null;
             userData.addAttribute("expire", Long.toString(expirationInMilliseconds));
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Date expiredD = new Date(expirationInMilliseconds);
-                Tr.exit(this, tc, "<UTLE> expired: " + expiredD);
+                Tr.exit(this, tc, "useData expire: " + expirationInMilliseconds + " expire: " + expiredD);
             }
         } else {
             encryptedBytes = null;
@@ -628,11 +621,10 @@ public class LTPAToken2 implements Token, Serializable {
         signature = null;
         if (userData != null) {
             encryptedBytes = null;
-            //userData.removeAttributes("lastUsed");
             userData.addAttribute("lastUsed", Long.toString(lastUsedInMilliseconds));
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Date lastUsedD = new Date(lastUsedInMilliseconds);
-                Tr.exit(this, tc, "<UTLE> lastUsed:  " + lastUsedD);
+                Tr.exit(this, tc, "useData lastUsed:  " + lastUsedInMilliseconds + " lastUsed: " + lastUsedD);
             }
         } else {
             encryptedBytes = null;

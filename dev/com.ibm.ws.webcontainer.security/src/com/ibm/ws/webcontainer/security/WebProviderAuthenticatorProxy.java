@@ -366,8 +366,8 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "<UTLE><request> HandleSSO took milliseconds: " + durationMs + " ms");
-            Tr.debug(tc, "<UTLE><request> HandleSSO took seconds: ", durationSeconds);
+            Tr.debug(tc, "<request> handleSSO() took milliseconds: " + durationMs + " ms");
+            Tr.debug(tc, "<request> handleSSO() took seconds: ", durationSeconds);
         }
 
         return authResult;

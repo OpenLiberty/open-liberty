@@ -95,17 +95,18 @@ public class LTPAToken2Factory implements TokenFactory {
             }
 
             try {
+
                 // Start timing
                 long startTime = System.nanoTime();
+
                 Token returnToken = null;
 
-                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, removeAttributes);
+                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, expirationInMinutes, removeAttributes);
                 if (validatedToken != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "validateTokenBytes with primary keys (success)");
                     }
                     if (validatedToken.shouldRefreshToken()) {
-                        Tr.debug(tc, "<UTLE> clone the token");
                         returnToken = (Token) validatedToken.clone();
                         //return (Token) validatedToken.clone();
 
@@ -118,8 +119,8 @@ public class LTPAToken2Factory implements TokenFactory {
                         double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
 
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() with clone took milliseconds: " + durationMs + " ms");
-                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() with clone took seconds: ", durationSeconds);
+                            Tr.debug(tc, "<request> new LTPAToken2() with clone took milliseconds: " + durationMs + " ms");
+                            Tr.debug(tc, "<request> new LTPAToken2() with clone took seconds: ", durationSeconds);
                         }
 
                     } else {
@@ -177,7 +178,7 @@ public class LTPAToken2Factory implements TokenFactory {
                     }
                     if (sharedKeyForValidation != null && ltpaPrivateKeyForValidation != null && ltpaPublicKeyForValidation != null) {
                         try {
-                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, removeAttributes);
+                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, expirationInMinutes, removeAttributes);
                             if (validatedToken != null) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "validateTokenBytes with validationKeys (success)");
