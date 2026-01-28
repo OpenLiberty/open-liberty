@@ -30,6 +30,7 @@ import io.openliberty.mcp.internal.ToolMetadata.ToolMethodArgument;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.schemas.SchemaDirection;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.MockAnnotatedMethod;
 import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.annotation.JsonbProperty;
@@ -176,12 +177,14 @@ public class SchemaTest {
         return true;
     }
 
+    public record ListWrapper<T>(List<T> returnList) {};
+
     @Tool(name = "addPersonToList", title = "adds person to employee list", description = "adds person to employee list, returns nothing")
-    public @Schema(description = "Returns list of person object") List<Person> addPersonToList(@ToolArg(name = "employeeList",
-                                                                                                        description = "List of people") List<Person> employeeList,
-                                                                                               @ToolArg(name = "person", description = "Person object") Person person) {
+    public @Schema(description = "Returns list of person object") ListWrapper<Person> addPersonToList(@ToolArg(name = "employeeList",
+                                                                                                               description = "List of people") List<Person> employeeList,
+                                                                                                      @ToolArg(name = "person", description = "Person object") Person person) {
         employeeList.add(person);
-        return employeeList;
+        return new ListWrapper<>(employeeList);
         //comment
     }
 
@@ -1009,114 +1012,116 @@ public class SchemaTest {
         JSONAssert.assertEquals(expectedResponseString, toolInputSchema, JSONCompareMode.NON_EXTENSIBLE);
     }
 
-//    @Test
-//    public void testPersonAddtoListToolOutputSchema() throws NoSuchMethodException, SecurityException {
-//        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addPersonToList");
-//        Type returnType = toolMethod.getJavaMember().getGenericReturnType();
-//        String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
-//        System.out.println(response);
-//        String expectedResponseString = """
-//                            {
-//                            "type": "object",
-//                            "$defs": {
-//                                "Person": {
-//                                    "type": "object",
-//                                    "properties": {
-//                                        "fullname": {
-//                                            "type": "string"
-//                                        },
-//                                        "address": {
-//                                            "$ref": "#/$defs/Address"
-//                                        },
-//                                        "company": {
-//                                            "type": "object",
-//                                            "properties": {
-//                                                "name": {
-//                                                    "type": "string"
-//                                                },
-//                                                "address": {
-//                                                    "$ref": "#/$defs/Address"
-//                                                },
-//                                                "employees": {
-//                                                    "type": "array",
-//                                                    "items": {
-//                                                        "$ref": "#/$defs/Person"
-//                                                    },
-//                                                    "description": "A list of employees (person object)"
-//                                                },
-//                                                "employeeRegistry": {
-//                                                    "properties": {
-//                                                        "key": {
-//                                                            "type": "integer"
-//                                                        },
-//                                                        "value": {
-//                                                            "$ref": "#/$defs/Person"
-//                                                        }
-//                                                    },
-//                                                    "required": [],
-//                                                    "type": "object"
-//                                                }
-//                                            },
-//                                            "required": [
-//                                                "name",
-//                                                "address",
-//                                                "employees",
-//                                                "employeeRegistry"
-//                                            ]
-//                                        }
-//                                    },
-//                                    "required": [
-//                                        "fullname",
-//                                        "address",
-//                                        "company"
-//                                    ],
-//                                    "description": "A person object contains address, company objects"
-//                                },
-//                                "Address": {
-//                                    "type": "object",
-//                                    "properties": {
-//                                        "number": {
-//                                            "type": "integer"
-//                                        },
-//                                        "street": {
-//                                            "properties": {
-//                                                "streetName": {
-//                                                    "type": "string"
-//                                                },
-//                                                "roadType": {
-//                                                    "type": "string"
-//                                                }
-//                                            },
-//                                            "required": [
-//                                                "streetName"
-//                                            ],
-//                                            "type": "object",
-//                                            "description": "A street object to represent complex streets"
-//                                        },
-//                                        "postcode": {
-//                                            "type": "string"
-//                                        }
-//                                    },
-//                                    "required": [
-//                                        "number",
-//                                        "street",
-//                                        "postcode"
-//                                    ]
-//                                }
-//                            },
-//                            "description": "Returns list of person object",
-//                            "properties": {
-//                                "persons": {
-//                                    "type": "array",
-//                                    "items": {
-//                                        "$ref": "#/$defs/Person"
-//                                    }
-//                                }
-//                            }
-//                        }
-//                                                    """;
-//        JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
-//    }
+    @Test
+    public void testPersonAddtoListToolOutputSchema() throws NoSuchMethodException, SecurityException {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addPersonToList");
+        Type returnType = toolMethod.getJavaMember().getGenericReturnType();
+        String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
+        String expectedResponseString = """
+                            {
+                            "type": "object",
+                            "properties": {
+                                "returnList": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/$defs/Person"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "returnList"
+                            ],
+                            "description": "Returns list of person object",
+                            "$defs": {
+                                "Person": {
+                                    "type": "object",
+                                    "properties": {
+                                        "fullname": {
+                                            "type": "string"
+                                        },
+                                        "address": {
+                                            "$ref": "#/$defs/Address"
+                                        },
+                                        "company": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "address": {
+                                                    "$ref": "#/$defs/Address"
+                                                },
+                                                "employees": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "$ref": "#/$defs/Person"
+                                                    },
+                                                    "description": "A list of employees (person object)"
+                                                },
+                                                "employeeRegistry": {
+                                                    "properties": {
+                                                        "key": {
+                                                            "type": "integer"
+                                                        },
+                                                        "value": {
+                                                            "$ref": "#/$defs/Person"
+                                                        }
+                                                    },
+                                                    "required": [],
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "address",
+                                                "employees",
+                                                "employeeRegistry"
+                                            ]
+                                        }
+                                    },
+                                    "required": [
+                                        "fullname",
+                                        "address",
+                                        "company"
+                                    ],
+                                    "description": "A person object contains address, company objects"
+                                },
+                                "Address": {
+                                    "type": "object",
+                                    "properties": {
+                                        "number": {
+                                            "type": "integer"
+                                        },
+                                        "street": {
+                                            "properties": {
+                                                "streetName": {
+                                                    "type": "string"
+                                                },
+                                                "roadType": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "streetName"
+                                            ],
+                                            "type": "object",
+                                            "description": "A street object to represent complex streets"
+                                        },
+                                        "postcode": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "number",
+                                        "street",
+                                        "postcode"
+                                    ]
+                                }
+                            }
+                        }
+                                                    """;
+        JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
 
     public enum TestEnum {
         VALUE1,
@@ -2157,31 +2162,35 @@ public class SchemaTest {
         JSONAssert.assertEquals(expectedResponseString, toolInputSchema, JSONCompareMode.NON_EXTENSIBLE);
     }
 
-//    @Tool(name = "primitiveArrayTest", title = "Test Content Response", description = "tests Content Response")
-//    public int[] primitiveArrayTest(@ToolArg(name = "name", description = "name") String name) {
-//        return null;
-//        //comment
-//    }
-//
-//    @Test
-//    public void testPrimitiveArray() {
-//        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "primitiveArrayTest");
-//
-//        Type returnType = toolMethod.getJavaMember().getGenericReturnType();
-//        String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
-//        String expectedResponseString = """
-//                        {"type":"object","properties":{"returnArray":{"type":"array","items":{"type":"integer"}}}}
-//                        """;
-//        JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
-//    }
+    public record ArrayWrapper<T>(T[] returnList) {};
+
+    @Tool(name = "primitiveArrayTest", title = "Test Content Response", description = "tests Content Response")
+    public ArrayWrapper<Integer> primitiveArrayTest(@ToolArg(name = "name", description = "name") String name) {
+        return null;
+        //comment
+    }
+
+    @Test
+    public void testPrimitiveArray() {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "primitiveArrayTest");
+
+        Type returnType = toolMethod.getJavaMember().getGenericReturnType();
+        String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
+        String expectedResponseString = """
+                        {"type":"object","properties":{"returnList":{"type":"array","items":{"type":"integer"}}},"required":["returnList"]}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    public record ListArrayWrapper<T>(List<T>[] returnList) {};
 
     @Tool(name = "addGenericToGenericArrayGenericConcrete", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
-    public @Schema(description = "Returns list of  object") <T> List<T>[] addGenericToGenericArrayGenericConcrete(@ToolArg(name = "generic list 1",
-                                                                                                                           description = "List of generics 1") T[] list1,
-                                                                                                                  @ToolArg(name = "generic list 2",
-                                                                                                                           description = "List of generics 1 ") List<T>[] list2,
-                                                                                                                  @ToolArg(name = "generic",
-                                                                                                                           description = "Generic object") T item) {
+    public @Schema(description = "Returns list of  object") <T> ListArrayWrapper<T> addGenericToGenericArrayGenericConcrete(@ToolArg(name = "generic list 1",
+                                                                                                                                     description = "List of generics 1") T[] list1,
+                                                                                                                            @ToolArg(name = "generic list 2",
+                                                                                                                                     description = "List of generics 1 ") List<T>[] list2,
+                                                                                                                            @ToolArg(name = "generic",
+                                                                                                                                     description = "Generic object") T item) {
         return null;
     }
 
@@ -2228,35 +2237,38 @@ public class SchemaTest {
         JSONAssert.assertEquals(expectedResponseString, toolInputSchema, JSONCompareMode.NON_EXTENSIBLE);
     }
 
-//    @Test
-//    public void testGenericWithConcreteMapOutput() {
-//        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericToGenericArrayGenericConcrete");
-//        Map<TypeVariable<?>, Type> genericMap = new HashMap<>();
-//        genericMap.put((TypeVariable<?>) toolMethod.getJavaMember().getParameters()[2].getParameterizedType(), String.class);
-//        Type returnType = toolMethod.getJavaMember().getGenericReturnType();
-//        if (TypeUtility.hasGenericParams(returnType)) {
-//            returnType = TypeUtility.createResolvedType(returnType, genericMap);
-//        }
-//        String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
-//        String expectedResponseString = """
-//                                          {
-//                                            "type": "object",
-//                                            "description": "Returns list of  object",
-//                                            "properties": {
-//                                                "returnArray": {
-//                                                    "type": "array",
-//                                                    "items": {
-//                                                        "type": "array",
-//                                                        "items": {
-//                                                            "type": "string"
-//                                                        }
-//                                                    }
-//                                                }
-//                                            }
-//                                        }
-//
-//                        """;
-//        JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
-//    }
+    @Test
+    public void testGenericWithConcreteMapOutput() {
+        MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addGenericToGenericArrayGenericConcrete");
+        Map<TypeVariable<?>, Type> genericMap = new HashMap<>();
+        genericMap.put((TypeVariable<?>) toolMethod.getJavaMember().getParameters()[2].getParameterizedType(), String.class);
+        Type returnType = toolMethod.getJavaMember().getGenericReturnType();
+        if (TypeUtility.hasGenericParams(returnType)) {
+            returnType = TypeUtility.createResolvedType(returnType, genericMap);
+        }
+        String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
+        String expectedResponseString = """
+                                          {
+                                            "type": "object",
+                                            "properties": {
+                                                "returnList": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    }
+                                                }
+                                            },
+                                            "required": [
+                                                "returnList"
+                                            ],
+                                            "description": "Returns list of  object"
+                                        }
+
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
+    }
 
 }
