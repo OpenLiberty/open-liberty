@@ -12,8 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.http.internal;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
@@ -66,6 +68,22 @@ public class DefaultWelcomePage implements WelcomePage {
         versionJs.append("\"\r\n");
         versionJs.append("}");
         return new ByteArrayInputStream(versionJs.toString().getBytes(StandardCharsets.UTF_8));
+    } else if ("/index.html".equals(url)) {
+      InputStream in = safeOpen("/OSGI-INF/welcome/index.html");
+      if (in != null) {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(in, StandardCharsets.UTF_8))) {
+          StringBuilder builder = new StringBuilder();
+          String line;
+          while ((line = reader.readLine()) != null) {
+            builder.append(line.replace("{VERSION}", version != null ? version : ""));
+            builder.append("\r\n");
+          }
+          return new ByteArrayInputStream(builder.toString().getBytes(StandardCharsets.UTF_8));
+        } catch (IOException ioe) {
+          // Do nothing, return null, will result in 404.
+        }
+      }
+      return null;
     } else {
       return safeOpen("/OSGI-INF/welcome" + url);
     }
