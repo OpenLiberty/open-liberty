@@ -98,6 +98,11 @@ public class SSOAuthenticator implements WebAuthenticator {
         AuthenticationResult authResult = handleSSO(req, res);
         if (authResult != null && authResult.getStatus() == AuthResult.SUCCESS) {
             ssoCookieHelper.addJwtSsoCookiesToResponse(authResult.getSubject(), req, res, null);
+            //TODO - new flag when to add the refresh cookie.
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "<UTLE> add SSO Cookies to the response");
+            }
+            ssoCookieHelper.addSSOCookiesToResponse(authResult.getSubject(), req, res, null);
         }
         return authResult;
     }
