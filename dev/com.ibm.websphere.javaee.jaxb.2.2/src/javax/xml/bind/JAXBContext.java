@@ -26,6 +26,9 @@
 package javax.xml.bind;
 
 import java.io.IOException;
+import java.security.AccessController;
+import java.security.PrivilegedActionException;
+import java.security.PrivilegedExceptionAction;
 import java.util.Collections;
 import java.util.Map;
 
@@ -66,10 +69,22 @@ public abstract class JAXBContext {
 
     public static JAXBContext newInstance(Class[] classesToBeBound, Map<String, ?> properties) throws JAXBException {
         for (Class cl : classesToBeBound) {
-            if (cl == null)
+            if (cl == null) {
                 throw new IllegalArgumentException();
+            }
         }
-        return ContextFinder.find(classesToBeBound, properties);
+        // Liberty Change Start: Add doPriv
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
+                @Override
+                public JAXBContext run() throws JAXBException {
+                    return ContextFinder.find(classesToBeBound, properties);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (JAXBException) e.getException();
+        }
+        // Liberty Change End
     }
 
     public static JAXBContext newInstance(String contextPath) throws JAXBException {
@@ -81,6 +96,17 @@ public abstract class JAXBContext {
     }
 
     public static JAXBContext newInstance(String contextPath, ClassLoader classLoader, Map<String, ?> properties) throws JAXBException {
-        return ContextFinder.find(contextPath, classLoader, properties);
+        // Liberty Change Start: Add doPriv
+        try {
+            return AccessController.doPrivileged(new PrivilegedExceptionAction<JAXBContext>() {
+                @Override
+                public JAXBContext run() throws JAXBException {
+                    return ContextFinder.find(contextPath, classLoader, properties);
+                }
+            });
+        } catch (PrivilegedActionException e) {
+            throw (JAXBException) e.getException();
+        }
+        // Liberty Change End
     }
 }
