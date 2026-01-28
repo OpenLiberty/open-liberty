@@ -16,8 +16,8 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
-import io.openliberty.mcp.internal.requests.DefaultValueConverter;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 
@@ -70,6 +70,9 @@ public class ToolValidation {
         if (argMetadata.defaultValue() != null && !argMetadata.defaultValue().isEmpty()) {
             Type typeWrapperClass = TypeUtility.box(argMetadata.type());
             DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(typeWrapperClass);
+            // Check for user-provided custom converter if one doesn't exist for the type in the {@link BuiltinDefaultValueConverters} map
+            if (converter == null)
+                converter = ConverterRegistry.getConverter(argMetadata.type()).orElse(null);
             if (converter != null) {
                 try {
                     converter.convert(argMetadata.defaultValue());

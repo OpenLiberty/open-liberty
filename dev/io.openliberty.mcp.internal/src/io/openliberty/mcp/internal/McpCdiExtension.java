@@ -29,7 +29,6 @@ import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
-import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
@@ -125,7 +124,13 @@ public class McpCdiExtension implements Extension {
                 }
             }
         }
-        throw new IllegalStateException(Tr.formatMessage(tc, "CWMCM0025E.converter.type.extraction.failed", javaClass.getName()));
+
+        // recursively look up inherited classes to find the one that implements the DefaultValueConverter interface
+        Class<?> superClass = javaClass.getSuperclass();
+        if (superClass != null) {
+            return getConverterType(superClass);
+        }
+        throw new IllegalStateException(Tr.formatMessage(tc, "CWMCM0033E.converter.type.extraction.failed", javaClass.getName()));
     }
 
     void afterDeploymentValidation(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager manager) {

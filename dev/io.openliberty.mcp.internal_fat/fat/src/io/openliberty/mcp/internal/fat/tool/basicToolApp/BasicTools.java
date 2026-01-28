@@ -324,7 +324,30 @@ public class BasicTools {
         return new City(name, "England", 8000, false);
     }
 
-    public record City(String name, String country, int population, boolean isCapital) {};
+    public static record City(String name, String country, int population, boolean isCapital) {};
+
+    public static record House(int number, String street) {};
+
+    public static class HouseConverter implements DefaultValueConverter<House> {
+
+        /**
+         * Converts a default value string in the format "Number::Street" to a {@link House} object
+         * Example string: "5::London Road"
+         */
+        @Override
+        public House convert(String defaultValue) {
+            String[] fields = defaultValue.split("::");
+            if (fields.length != 2) {
+                throw new IllegalArgumentException();
+            }
+            int number = Integer.parseInt(fields[0]);
+            String street = fields[1];
+            return new House(number, street);
+        }
+    }
+
+    @ApplicationScoped
+    public static class InheritedConverter extends HouseConverter {}
 
     @ApplicationScoped
     public static class CityConverter implements DefaultValueConverter<City> {
@@ -394,6 +417,13 @@ public class BasicTools {
     public City testToolArgCustomTypeDefaultValue(@ToolArg(name = "city", description = "City object value", required = false,
                                                            defaultValue = "Manchester::England::8000::false") City city) {
         return city;
+    }
+
+    @Tool(name = "testToolArgCustomTypeDefaultValueWithInheritedConverter", title = "Create a House",
+          description = "Test tool defaults to default value when argument not provided")
+    public House testObjectWithInheritedConverterResponse(@ToolArg(name = "house", description = "House object value", required = false,
+                                                                   defaultValue = "5::London Road") House house) {
+        return house;
     }
 
     @Tool(name = "testMultipleToolArgsOneDefaultValue", title = "testMultipleToolArgsOneDefaultValue", description = "MultipleToolArgsOneDefaultValue")

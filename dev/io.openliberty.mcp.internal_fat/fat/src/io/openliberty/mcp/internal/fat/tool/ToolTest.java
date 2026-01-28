@@ -24,6 +24,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
+import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
@@ -38,7 +39,6 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
-import org.junit.runners.model.Statement;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -52,7 +52,6 @@ import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
@@ -853,6 +852,38 @@ public class ToolTest extends FATServletClient {
                               {
                                 "type":"text",
                                 "text":"{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":8000}"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    public void testToolCallWithToolArgCustomTypeDefaultValueAndInheritedConverter() throws Exception {
+        String request = """
+                          {
+                          "id": 2,
+                          "jsonrpc": "2.0",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgCustomTypeDefaultValueWithInheritedConverter",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id": 2,
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\\"number\\\":5,\\\"street\\\":\\\"London Road\\\"}"
                               }
                             ],
                             "isError": false

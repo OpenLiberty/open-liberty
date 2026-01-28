@@ -904,6 +904,27 @@
                                         "description": "Test tool defaults to default value when argument not provided",
                                         "title": "ToolArg Custom Type Default Value"
                                         },
+                                        {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "house": {
+                                                    "description": "House object value",
+                                                    "type": "object",
+                                                    "properties": {
+                                                        "number": { "type": "integer" },
+                                                        "street": { "type": "string" }
+                                                      },
+                                                      "required": ["number", "street"]
+                                                }
+                                            },
+                                            "required": []
+                                        },
+
+                                        "name": "testToolArgCustomTypeDefaultValueWithInheritedConverter",
+                                        "description": "Test tool defaults to default value when argument not provided",
+                                        "title": "Create a House"
+                                        },
                                       {
                                         "inputSchema": {
                                             "type": "object",

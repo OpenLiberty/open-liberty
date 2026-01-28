@@ -275,6 +275,6 @@ CWMCM0033A.forbidden.error.useraction=Make sure that an authorized user is calli
 # Used for server logging
 # do not translate MCP
 # {0} = The custom converter class
-CWMCM0025E.converter.type.extraction.failed=CWMCM0025E: Could not extract the type argument from the custom converter class: {0}.
-CWMCM0025E.converter.type.extraction.failed.explanation=The custom converter class does not properly implement the DefaultValueConverter interface with a concrete type argument. The type argument is required to determine what type the converter converts a string value to.
-CWMCM0025E.converter.type.extraction.failed.useraction=Ensure the class directly implements DefaultValueConverter<T> with a concrete type argument. For example, 'public class MyCustomClassConverter implements DefaultValueConverter<MyCustomClass>'.
+CWMCM0033E.converter.type.extraction.failed=CWMCM0033E: Could not extract the type argument from the custom converter class: {0}.
+CWMCM0033E.converter.type.extraction.failed.explanation=The custom converter class does not properly implement the DefaultValueConverter interface with a concrete type argument. The type argument is required to determine what type the converter converts a string value to.
+CWMCM0033E.converter.type.extraction.failed.useraction=Ensure the class directly implements DefaultValueConverter<T> with a concrete type argument. For example, 'public class MyCustomClassConverter implements DefaultValueConverter<MyCustomClass>'.
