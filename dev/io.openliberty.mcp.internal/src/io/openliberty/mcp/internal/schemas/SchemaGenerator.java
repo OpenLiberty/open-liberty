@@ -150,37 +150,6 @@ public class SchemaGenerator {
         return outputSchema.build();
     }
 
-    public static JsonObject convertToMCPFormat(JsonObjectBuilder outputSchema, Type toolOutputType) {
-        JsonObject outputSchemaObj = outputSchema.build();
-        if (outputSchemaObj.containsKey("type") && outputSchemaObj.getString("type").equals("array")) {
-            outputSchema.add("type", "object");
-            if (outputSchemaObj.containsKey("$defs")) {
-                outputSchema.add("$defs", outputSchemaObj.getJsonObject("$defs"));
-            }
-            if (outputSchemaObj.containsKey("description")) {
-                outputSchema.add("description", outputSchemaObj.getJsonString("description"));
-            }
-            JsonObjectBuilder returnClassArray = Json.createObjectBuilder();
-            returnClassArray.add("type", "array");
-            returnClassArray.add("items", outputSchemaObj.getJsonObject("items"));
-            JsonObjectBuilder returnClass = Json.createObjectBuilder();
-            returnClass.add(getPluralName(toolOutputType), returnClassArray.build());
-            outputSchema.add("properties", returnClass);
-            outputSchemaObj = outputSchema.build();
-        }
-
-        return outputSchemaObj;
-    }
-
-    public static String getPluralName(Type type) {
-        if (type instanceof ParameterizedType pt) {
-            if (pt.getActualTypeArguments()[0] instanceof Class<?> clz) {
-                return clz.getSimpleName().toLowerCase() + "s";
-            }
-        }
-        return "returnArray";
-    }
-
     public record TypeKey(Type type, Map<TypeVariable<?>, Type> typeVariableMappings) {
         public static TypeKey from(Type type, SchemaGenerationContext sgc) {
             if (type instanceof ParameterizedType pType) {
