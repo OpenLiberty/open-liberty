@@ -10,6 +10,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
+# This bundle provides the The Apache Geronimo JAXB 2.2 Specification. 
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
@@ -37,7 +38,8 @@ Include-Resource:\
  @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/org/apache/geronimo/osgi/locator/*, \
  @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/ContextFinder.class, \
  @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext.class, \
- @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext$1.class
+ @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext$1.class,\
+ javax.xml.bind=${bin}/javax/xml/bind
 
 instrument.disabled: true
 
