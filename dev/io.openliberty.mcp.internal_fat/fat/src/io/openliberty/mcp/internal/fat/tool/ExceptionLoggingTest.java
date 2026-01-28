@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class ExceptionLoggingTest extends FATServletClient {
 
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
+        assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/exceptionLoggingTest/mcp"
 
     }
 
@@ -76,17 +76,14 @@ public class ExceptionLoggingTest extends FATServletClient {
                           }
                         }
                         """;
-        String response = client.callMCP(request);
+        client.callMCP(request);
         List<String> expectedErrorHeaders = List.of("Caused by: java.lang.RuntimeException: Root Exception", "Caused by: java.lang.Exception: Exception at level 0",
                                                     "Caused by: java.lang.Exception: Exception at level 1", "Caused by: java.lang.Exception: Exception at level 2",
                                                     "CWMCM0010E: The exceptionTool tool method threw an unexpected exception. The exception is java.lang.Exception: Exception at level 3");
-        expectedErrorHeaders.forEach(exc -> {
-            try {
-                assertTrue("Expected header not found: " + exc, !server.findStringsInLogs(exc).isEmpty());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        });
+
+        for (String exc : expectedErrorHeaders) {
+            assertTrue("Expected header not found: " + exc, !server.findStringsInLogs(exc).isEmpty());
+        }
 
     }
 }
