@@ -164,6 +164,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private FullHttpRequest nettyRequest;
     private ConnectionLink nettyConnectionLink;
 
+    //To track if the connection is destroyed by another thread and to prevent the connection objects in endup in a invalid state - OLGH33931
+    private volatile boolean destroyed = false;
+
     /**
      * Constructor.
      *
@@ -495,6 +498,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
+        destroyed = true; // SA - To track destroying connection objects
         super.destroy();
         this.isc = null;
         this.remoteAddress = null;
@@ -1376,6 +1380,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public void finish(Exception e) {
+
+        if (destroyed || this.isc == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "finish() called on destroyed connection, returning early");
+            }
+            return; // SA - Trying to Returning early to Prevent calling closeStreams() on destroyed ISC
+        }
 
         final HttpInboundServiceContextImpl finalSc = this.isc;
         Exception error = e;
