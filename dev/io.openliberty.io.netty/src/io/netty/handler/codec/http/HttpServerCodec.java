@@ -1,5 +1,6 @@
 /*
  * Copyright 2012 The Netty Project
+ * Copyright (c) 2024, 2025 IBM Corporation and others
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
