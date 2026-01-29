@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution,  and is available at
@@ -3085,7 +3085,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         Http2Connection connection = handler.connection();
 
         int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
-        int currentStreamId = nettyRequest.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+        int parsedStreamId = 0;
+        try {
+            parsedStreamId = Integer.parseInt(nettyRequest.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text()));
+        } catch (NumberFormatException e) {
+            // Ignore this exception since the currentStreamId will be left the same
+        }
+
+        final int currentStreamId = parsedStreamId;
 
         Http2Headers headers = new DefaultHttp2Headers().clear();
         String scheme = "https";
