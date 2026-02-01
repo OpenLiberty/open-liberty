@@ -112,7 +112,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
                         """;
 
         toolStatus.awaitStarted(latchName);
-        client.callMCPNotificationWithBasicAuth(server, "/asyncToolCancellationTest", cancellationRequestNotification, "BobTheAdmin", "testpassword");
+        client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
 
         String response = future.get(10, TimeUnit.SECONDS);
 

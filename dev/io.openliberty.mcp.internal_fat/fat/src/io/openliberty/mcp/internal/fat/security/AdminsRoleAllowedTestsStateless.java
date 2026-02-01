@@ -41,7 +41,7 @@ public class AdminsRoleAllowedTestsStateless extends AbstractRolesAllowed {
     Logger logger = Logger.getLogger(AdminsRoleAllowedTestsStateless.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/adminsRoleToolsStateless", StateMode.STATELESS);
+    public McpClient client = new McpClient(server, "/securityTests", StateMode.STATELESS);
 
     /** {@inheritDoc} */
     @Override
@@ -51,8 +51,8 @@ public class AdminsRoleAllowedTestsStateless extends AbstractRolesAllowed {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "adminsRoleToolsStateless.war").addClass(AdminsRoleTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "securityTests.war").addClass(AdminsRoleTools.class);
+        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
         server.startServer();
         assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
         // Wait for LTPA configuration to be ready

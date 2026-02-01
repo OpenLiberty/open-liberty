@@ -1,4 +1,4 @@
-<server description="Stateless Liberty server">
+<server description="Configurable Mcp Path Liberty server">
 
   <featureManager>
     <feature>servlet-6.0</feature>    
@@ -6,8 +6,8 @@
     <feature>mcpServer-1.0</feature>
   </featureManager>
   
-  <application location="statelessModeTest.war">
-  	<mcpServer stateless="true"/>
+  <application location="configurableMcpPathTests.war">
+  	<mcpServer path="/custom-mcp"/>
   </application>
 
   <include location="../fatTestPorts.xml" />

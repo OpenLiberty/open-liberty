@@ -4,19 +4,32 @@
                    xmlns:ibmui="http://www.ibm.com/xmlns/appservers/osgi/metatype/ui/v1.0.0"
                    localization="OSGI-INF/l10n/metatype">
 
-<Designate pid="io.openliberty.mcp.internal.config.McpConfiguration">
-    <Object ocdref="io.openliberty.mcp.internal.config.McpConfiguration" />
+<Designate factoryPid="io.openliberty.mcp.internal.config.McpConfigurationComponent">
+    <Object ocdref="io.openliberty.mcp.internal.config.McpConfigurationComponent" />
 </Designate>
 
 <OCD name="%mcpServer.name" description="%mcpServer.description" 
-        id="io.openliberty.mcp.internal.config.McpConfiguration" ibm:alias="mcpServer">
+     id="io.openliberty.mcp.internal.config.McpConfigurationComponent" 
+     ibm:childAlias="mcpServer"
+     ibm:parentPid="com.ibm.ws.app.manager"
+     ibm:supportHiddenExtensions="true">
     <AD name="%stateless.name" 
-    description="%stateless.description"
-    id="stateless" 
-    required="false" 
-    type="Boolean" 
-    default="false"/>
-
+        description="%stateless.description"
+    	id="stateless" 
+    	required="false" 
+    	type="Boolean" 
+    	default="false"/>
+    <AD name="%moduleName.name" 
+	    description="%moduleName.description"
+	    id="moduleName" 
+	    required="false" 
+	    type="String"/>
+	<AD name="%path.name" 
+	    description="%path.description"
+	    id="path" 
+	    required="false" 
+	    type="String" 
+	    default="/mcp"/>
 </OCD>
 
 </metatype:MetaData>

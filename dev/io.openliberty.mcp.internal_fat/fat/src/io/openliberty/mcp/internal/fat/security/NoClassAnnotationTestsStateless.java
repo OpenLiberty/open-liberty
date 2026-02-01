@@ -41,7 +41,7 @@ public class NoClassAnnotationTestsStateless extends AbstractNoClassAnnotation {
     Logger logger = Logger.getLogger(NoClassAnnotationTestsStateless.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/noClassAnnotationToolsStateless", StateMode.STATELESS);
+    public McpClient client = new McpClient(server, "/securityTests", StateMode.STATELESS);
 
     /** {@inheritDoc} */
     @Override
@@ -51,8 +51,8 @@ public class NoClassAnnotationTestsStateless extends AbstractNoClassAnnotation {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "noClassAnnotationToolsStateless.war").addClass(NoClassAnnotationTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "securityTests.war").addClass(NoClassAnnotationTools.class);
+        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
         server.startServer();
         assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
         // Wait for LTPA configuration to be ready

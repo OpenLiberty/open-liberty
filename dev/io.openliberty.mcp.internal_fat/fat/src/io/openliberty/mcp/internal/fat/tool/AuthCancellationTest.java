@@ -117,8 +117,7 @@ public class AuthCancellationTest extends FATServletClient {
 
         toolStatus.awaitStarted(LATCH_NAME);
 
-        client.callMCPNotificationWithBasicAuthForbiddenErrorExpected(server, "/cancellationTest", cancellationRequestNotification, "testuser",
-                                                                      "testpassword");
+        client.callMCPNotificationWithBasicAuthForbiddenErrorExpected(cancellationRequestNotification, "testuser", "testpassword");
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"If this String is returned, then the tool was not cancelled","type":"text"}],"isError":false}}
@@ -171,7 +170,7 @@ public class AuthCancellationTest extends FATServletClient {
         // Call AwaitToolServlet to wait for the tool to start running. Adds path param "numId" to specify which countdown latch to use
         toolStatus.awaitStarted(LATCH_NAME);
 
-        client.callMCPNotificationWithBasicAuth(server, "/cancellationTest", cancellationRequestNotification, "BobTheAdmin", "testpassword");
+        client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}

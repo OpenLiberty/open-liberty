@@ -22,16 +22,24 @@ import jakarta.servlet.http.HttpServletResponse;
 
 public class McpForwardFilter implements Filter {
 
+    private final String path;
+
+    public McpForwardFilter(String path) {
+        this.path = path;
+    }
+
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
                     throws IOException, ServletException {
         HttpServletRequest req = (HttpServletRequest) request;
         HttpServletResponse resp = (HttpServletResponse) response;
 
-        if ("/mcp/".equals(req.getPathInfo())) {
-            RequestDispatcher dispatcher = req.getRequestDispatcher("/mcp");
+        if ((path + "/").equals(req.getPathInfo())) {
+            RequestDispatcher dispatcher = req.getRequestDispatcher(path);
             dispatcher.forward(req, resp);
-            return;
+        } else {
+            chain.doFilter(req, resp);
         }
+        return;
     }
 }

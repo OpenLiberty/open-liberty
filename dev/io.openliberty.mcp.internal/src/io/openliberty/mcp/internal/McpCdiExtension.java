@@ -27,6 +27,7 @@ import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
+import io.openliberty.mcp.internal.moduleScope.ModuleContext;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
@@ -34,8 +35,11 @@ import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.BeforeDestroyed;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.event.Observes;
+import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
 import jakarta.enterprise.inject.spi.AfterDeploymentValidation;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedType;
@@ -62,12 +66,24 @@ public class McpCdiExtension implements Extension {
     private SchemaRegistry schemas = new SchemaRegistry();
     private Jsonb jsonb = createJsonb();
     private ToolRegistry tools = new ToolRegistry(schemas, jsonb);
+    private ModuleContext moduleContext;
 
     private static Jsonb createJsonb() {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
                                                    .withDeserializers(new McpRequestIdDeserializer());
 
         return JsonbBuilder.create(jsonbConfig);
+    }
+
+    void addModuleContext(@Observes AfterBeanDiscovery abd) {
+        moduleContext = new ModuleContext();
+        abd.addContext(moduleContext);
+    }
+
+    void endModuleContext(@Observes @BeforeDestroyed(ApplicationScoped.class) Object event) {
+        if (moduleContext != null) {
+            moduleContext.shutdown();
+        }
     }
 
     void registerTools(@Observes ProcessManagedBean<?> pmb, BeanManager beanManager) {
