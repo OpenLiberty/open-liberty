@@ -35,9 +35,6 @@ Bundle-Activator: org.apache.geronimo.osgi.locator.Activator
 Include-Resource:\
  @\${repo;jaxb-api;2.2.12.b140109_1041;EXACT}!/!META-INF/maven/*, \
  @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/org/apache/geronimo/osgi/locator/*, \
- @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/ContextFinder.class, \
- @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext.class, \
- @\${repo;org.apache.geronimo.specs:geronimo-jaxb_2.2_spec;1.0.1}!/javax/xml/bind/JAXBContext$1.class, \
   javax/xml/bind=${bin}/javax/xml/bind
 
 instrument.disabled: true
