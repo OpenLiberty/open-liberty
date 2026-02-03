@@ -10,6 +10,8 @@
         <feature>mpRestClient-3.0</feature>
     </featureManager>
 
+    <applicationManager startTimeout="180s"/>
+
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 
     <application id="JaxPropagation" name="JaxPropagation" type="war" location="JaxPropagation.war">
