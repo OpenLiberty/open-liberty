@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal;
 
 import java.lang.reflect.Type;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -71,7 +72,8 @@ public class McpCdiExtension implements Extension {
 
     private static Jsonb createJsonb() {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
-                                                   .withDeserializers(new McpRequestIdDeserializer());
+                                                   .withDeserializers(new McpRequestIdDeserializer())
+                                                   .withEncoding(StandardCharsets.UTF_8.name());
 
         return JsonbBuilder.create(jsonbConfig);
     }

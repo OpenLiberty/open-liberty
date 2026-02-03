@@ -2686,4 +2686,39 @@ public class ToolTest extends FATServletClient {
         JSONAssert.assertEquals(expected, response, JSONCompareMode.STRICT);
     }
 
+    @Test
+    public void testStructuredContentResponseWithNonLatinCharacters() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testNonLatinStringStructuredContent",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"[\\\"赤\\\",\\\"緑\\\",\\\"青\\\"]"
+                              }
+                            ],
+                            "structuredContent": ["赤","緑","青"],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
 }

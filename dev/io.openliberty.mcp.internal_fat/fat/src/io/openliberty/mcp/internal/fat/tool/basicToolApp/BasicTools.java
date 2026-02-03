@@ -522,6 +522,13 @@ public class BasicTools {
         return "ID: " + userId + ", Name: 仮名, role: user";
     }
 
+    @Tool(name = "testNonLatinStringStructuredContent", title = "Not Latin String Structured Content Response",
+          description = "A tool to return a string with structuredContent set. The response should successully return non-latin characters",
+          structuredContent = true)
+    public List<String> testNonLatinStringStructuredContent() {
+        return List.of("赤", "緑", "青");
+    }
+
     @Tool(name = "noArgsRequest", title = "call tool without propviding arguments in params", description = "return string made from args and metadata", structuredContent = false)
     public String noArgsRequest(Meta meta) {
         Jsonb jsonb = JsonbBuilder.create();

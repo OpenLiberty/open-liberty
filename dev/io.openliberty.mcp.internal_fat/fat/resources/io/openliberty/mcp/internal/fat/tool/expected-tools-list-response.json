@@ -1685,6 +1685,22 @@
                                       }
                                     },
                                     {
+                                      "outputSchema": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        },
+                                        "name": "testNonLatinStringStructuredContent",
+                                        "description": "A tool to return a string with structuredContent set. The response should successully return non-latin characters",
+                                        "title": "Not Latin String Structured Content Response"
+                                    },
+                                    {
                                         "name": "noArgsRequest",
                                         "description": "return string made from args and metadata",
                                         "title": "call tool without propviding arguments in params",
