@@ -398,7 +398,20 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public StatusCodes getStatusCode() {
-        return StatusCodes.getByOrdinal(getStatusCodeAsInt());
+        StatusCodes val = null;
+        try {
+            val = StatusCodes.getByOrdinal(getStatusCodeAsInt());
+        } catch (IndexOutOfBoundsException e) {
+            // no FFDC required
+            // nothing to do, just make the undefined value below
+        }
+
+        // this could be null because the ordinal lookup returned an empty
+        // status code, or because it was out of bounds
+        if (null == val) {
+            val = StatusCodes.makeUndefinedValue(getStatusCodeAsInt());
+        }
+        return val;
     }
 
     @Override
