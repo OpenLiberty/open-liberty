@@ -2325,6 +2325,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "sendHeaders: Adding close connection header due to keep alive disabled or exceeded number of maximum persistent requests");
             }
             getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
+            setPersistent(false);
+        }
+        // If status code is an error code, then we need to set the close value for persistence
+        else if (getResponse().getStatusCode().isErrorCode()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Error status code disabling persistence.");
+            }
+            getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
+            setPersistent(false);
         }
         if (HttpUtil.isContentLengthSet(response)) {
             this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));

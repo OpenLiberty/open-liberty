@@ -1,6 +1,6 @@
 /*
  * Copyright 2012 The Netty Project
- * Copyright (c) 2024, 2025 IBM Corporation and others
+ * Copyright (c) 2024, 2026 IBM Corporation and others
  *
  * The Netty Project licenses this file to you under the Apache License,
  * version 2.0 (the "License"); you may not use this file except in compliance
@@ -157,9 +157,7 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
      * Creates a new instance with the specified decoder configuration.
      */
     public HttpServerCodec(HttpDecoderConfig config) {
-        // Liberty specific change for using Liberty httpOptions while also using
-        // Vert.x decoding logic.
-        init(new VertxHttpRequestDecoder(config), new HttpServerResponseEncoder());
+        init(new HttpServerRequestDecoder(config), new HttpServerResponseEncoder());
     }
 
     /**
@@ -171,7 +169,11 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
         ctx.pipeline().remove(this);
     }
 
-    private final class HttpServerRequestDecoder extends HttpRequestDecoder {
+    /**
+     * Liberty specific change for using Liberty httpOptions while also using
+     * Vert.x decoding logic for HTTP requests.
+     */
+    private final class HttpServerRequestDecoder extends VertxHttpRequestDecoder {
         HttpServerRequestDecoder(HttpDecoderConfig config) {
             super(config);
         }
