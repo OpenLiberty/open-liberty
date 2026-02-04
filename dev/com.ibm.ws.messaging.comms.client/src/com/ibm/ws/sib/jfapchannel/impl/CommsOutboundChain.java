@@ -118,6 +118,9 @@ public class CommsOutboundChain implements ApplicationPrereq {
 
         useNettyTransport = ProductInfo.getBetaEdition() && MetatypeUtils.parseBoolean(OUTBOUND_CHAIN_CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
 
+        // Force Netty to be used
+        useNettyTransport = true;
+
         String id = (String) properties.get("id");
         chainName = id;
         tcpChannelName = id + "_JfapTcp";

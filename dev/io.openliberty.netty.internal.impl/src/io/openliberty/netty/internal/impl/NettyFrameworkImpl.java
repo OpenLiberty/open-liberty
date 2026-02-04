@@ -118,10 +118,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> config) {
-        if (!ProductInfo.getBetaEdition()) {
-            // Do nothing if beta isn't enabled
-            return;
-        }
+        // if (!ProductInfo.getBetaEdition()) {
+        //     // Do nothing if beta isn't enabled
+        //     return;
+        // }
         // Netty specific configurations for performance
         if (System.getSecurityManager() == null) {
             setNettySystemProperties();
@@ -363,10 +363,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
 
     @Deactivate
     protected void deactivate(ComponentContext context, Map<String, Object> properties) {
-        if (!ProductInfo.getBetaEdition()) {
-            // Do nothing if beta isn't enabled
-            return;
-        }
+        // if (!ProductInfo.getBetaEdition()) {
+        //     // Do nothing if beta isn't enabled
+        //     return;
+        // }
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Deactivate called", new Object[] { context, properties });
         }
@@ -464,10 +464,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
     @Override
     public void serverStopping() {
 
-        if (!ProductInfo.getBetaEdition()) {
-            // Do nothing if beta isn't enabled
-            return;
-        }
+        // if (!ProductInfo.getBetaEdition()) {
+        //     // Do nothing if beta isn't enabled
+        //     return;
+        // }
         QuiesceState.startQuiesce();
         if (isActive) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
@@ -548,10 +548,10 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      */
     @Reference(service = ServerStarted.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.OPTIONAL, policyOption = ReferencePolicyOption.GREEDY)
     protected void setServerStarted(ServiceReference<ServerStarted> ref) {
-        if (!ProductInfo.getBetaEdition()) {
-            // Do nothing if beta isn't enabled
-            return;
-        }
+        // if (!ProductInfo.getBetaEdition()) {
+        //     // Do nothing if beta isn't enabled
+        //     return;
+        // }
         // set will be called when the ServerStarted service has been registered (by the
         // FeatureManager as of 9/2015). This is a signal that
         // the server is fully started, but before the "smarter planet" message has been
@@ -625,12 +625,12 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
      * @throws Exception
      */
     public FutureTask<ChannelFuture> runWhenServerStarted(Callable<ChannelFuture> callable) throws Exception {
-        if (!ProductInfo.getBetaEdition()) {
-            // Do nothing if beta isn't enabled
-            FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
-            future.cancel(false);
-            return future;
-        }
+        // if (!ProductInfo.getBetaEdition()) {
+        //     // Do nothing if beta isn't enabled
+        //     FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
+        //     future.cancel(false);
+        //     return future;
+        // }
         synchronized (syncStarted) {
             FutureTask<ChannelFuture> future = new FutureTask<ChannelFuture>(callable);
             if (!serverCompletelyStarted.get()) {

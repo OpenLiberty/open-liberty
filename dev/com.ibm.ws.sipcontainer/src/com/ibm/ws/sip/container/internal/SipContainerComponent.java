@@ -183,6 +183,8 @@ public class SipContainerComponent {
 		PropertiesStore.getInstance().getProperties().updateProperties(properties);
 		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
 			"sipContainer", USE_NETTY, properties.get(USE_NETTY), true);
+		// Force Netty to be used
+		useNetty = true;
 		if (c_logger.isTraceDebugEnabled() && useNetty) {
 			c_logger.traceDebug("SipContainerComponent modified: useNetty=true");
 		}

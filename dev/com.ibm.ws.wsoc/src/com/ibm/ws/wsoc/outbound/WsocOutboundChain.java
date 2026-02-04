@@ -116,6 +116,9 @@ public class WsocOutboundChain {
         useNettyTransport = ProductInfo.getBetaEdition() &&
                             MetatypeUtils.parseBoolean(WS_CHAIN_NAME, NettyConstants.USE_NETTY, properties.get(NettyConstants.USE_NETTY), true);
 
+        // Force Netty to be used
+        useNettyTransport = true;
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "activate, Netty bundle: " + nettyBundle);
         }

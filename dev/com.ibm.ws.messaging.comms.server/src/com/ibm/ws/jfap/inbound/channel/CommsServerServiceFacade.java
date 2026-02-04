@@ -126,7 +126,9 @@ public class CommsServerServiceFacade implements Singleton {
         //Go ahead and Register JFAPChannel with Channel Framework by providing JFAPServerInboundChannelFactory
         chfw.getFramework().registerFactory("JFAPChannel", JFAPServerInboundChannelFactory.class);
 
-        useNettyTransport = ProductInfo.getBetaEdition() && parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
+        // useNettyTransport = ProductInfo.getBetaEdition() && parseBoolean(CONFIG_ALIAS, "useNettyTransport", properties.get("useNettyTransport"), true);
+        // Force Netty to be used
+        useNettyTransport = true;
         Object cid = properties.get(ComponentConstants.COMPONENT_ID);
         String endpointName = (String) properties.get("id");
         if (endpointName == null)

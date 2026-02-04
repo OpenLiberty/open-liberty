@@ -89,6 +89,8 @@ public class DomainResolverImpl implements DomainResolver, SipStackDomainResolve
 		PropertiesStore.getInstance().getProperties().updateProperties(properties);
 		useNetty = (!ProductInfo.getBetaEdition())?false:MetatypeUtils.parseBoolean(
 			"domainResolver", USE_NETTY, properties.get(USE_NETTY), true);
+		// Force Netty to be used
+		useNetty = true;
 		if (c_logger.isTraceDebugEnabled() && useNetty) {
 			c_logger.traceDebug("DomainResolverImpl activate: useNetty=true");
 		}

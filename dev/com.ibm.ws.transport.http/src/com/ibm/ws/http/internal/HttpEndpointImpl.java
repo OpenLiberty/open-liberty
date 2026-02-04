@@ -307,6 +307,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         useNetty = ProductInfo.getBetaEdition() &&
                    MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
 
+        // Force Netty to be used
+        useNetty = true;
+
 
         initializeChains();
 
@@ -452,6 +455,9 @@ public class HttpEndpointImpl implements RuntimeUpdateListener, PauseableCompone
         
         boolean newUseNetty = ProductInfo.getBetaEdition() &&
                         MetatypeUtils.parseBoolean(config, NettyConstants.USE_NETTY, config.get(NettyConstants.USE_NETTY), true);
+
+        // Force Netty to be used
+        newUseNetty = true;
         
         if(newUseNetty != useNetty) {
             switchChains(newUseNetty);
