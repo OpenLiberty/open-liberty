@@ -15,8 +15,6 @@ import io.netty.handler.codec.http.*;
 import io.netty.util.AsciiString;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.http.impl.headers.HeadersMultiMap;
-import io.vertx.core.impl.SysProps;
-import io.vertx.core.internal.http.HttpHeadersInternal;
 
 import java.nio.charset.StandardCharsets;
 
@@ -52,7 +50,7 @@ public class VertxHttpRequestDecoder extends HttpRequestDecoder {
   public VertxHttpRequestDecoder(HttpDecoderConfig config) {
     super(config);
 
-    boolean internToLowerCase = SysProps.INTERN_COMMON_HTTP_REQUEST_HEADERS_TO_LOWER_CASE.getBoolean();
+    boolean internToLowerCase = true;
 
     // Get headers from super class
     _Host = internToLowerCase ? HttpHeaderNames.HOST : intern("Host");
