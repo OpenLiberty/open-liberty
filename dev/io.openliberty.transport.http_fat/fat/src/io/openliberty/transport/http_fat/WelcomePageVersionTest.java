@@ -28,6 +28,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 
@@ -35,6 +37,7 @@ import componenttest.topology.impl.LibertyServer;
  * Test to verify that the Open Liberty welcome page displays the runtime version
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class WelcomePageVersionTest {
     private static final Class<?> c = WelcomePageVersionTest.class;
     private static final Logger LOG = Logger.getLogger(c.getName());
@@ -66,10 +69,9 @@ public class WelcomePageVersionTest {
     public void testWelcomePageDisplaysVersion() throws Exception {
         LOG.info("Testing welcome page displays runtime version");
         
-        // Get the actual server version from openliberty.properties
-        String actualVersion = getServerVersion();
+        String actualVersion = server.getOpenLibertyVersion();
         assertNotNull("Server version should not be null", actualVersion);
-        LOG.info("Server version from openliberty.properties: " + actualVersion);
+        LOG.info("Server version: " + actualVersion);
         
         String welcomePageContent = getWelcomePageContent();
 
@@ -89,18 +91,6 @@ public class WelcomePageVersionTest {
                    welcomePageContent.matches("(?s).*<h2[^>]*>.*" + Pattern.quote(actualVersion) + ".*</h2>.*"));
         
         LOG.info("Successfully verified welcome page displays runtime version: " + actualVersion);
-    }
-    
-    /**
-     * Get the server version from openliberty.properties file
-     */
-    private String getServerVersion() throws Exception {
-        Properties props = server.getOpenLibertyProperties();
-        String version = props.getProperty("com.ibm.websphere.productVersion");
-        if (version == null || version.isEmpty()) {
-            throw new Exception("Unable to retrieve server version from openliberty.properties");
-        }
-        return version;
     }
 
     /**
