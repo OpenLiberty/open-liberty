@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,6 +23,7 @@ import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSameSiteIncompatibleClientsTests;
+import com.ibm.ws.fat.wc.tests.WCTestEncodedX590;
 import com.ibm.ws.fat.wc.tests.WebSphereServletEventListenerTest;
 import com.ibm.ws.fat.wc.tests.WebSphereSpiHttpRequestURLTest;
 
@@ -56,7 +57,8 @@ import componenttest.rules.repeater.RepeatTests;
                 WCPartitionedCookieAttributeSecurityTest.class,
                 WCSameSiteIncompatibleClientsTests.class,
                 WebSphereServletEventListenerTest.class,
-                WebSphereSpiHttpRequestURLTest.class
+                WebSphereSpiHttpRequestURLTest.class,
+                WCTestEncodedX590.class
 })
 
 public class FATSuite {

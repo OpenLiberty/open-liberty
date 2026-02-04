@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -43,7 +43,6 @@ import com.ibm.ws.fat.wc.tests.WCServletContainerInitializerFilterServletNameMap
 import com.ibm.ws.fat.wc.tests.WCServletContextUnsupportedOperationExceptionTest;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingDefault;
 import com.ibm.ws.fat.wc.tests.WCServletPathForDefaultMappingFalse;
-import com.ibm.ws.fat.wc.tests.WCTestEncodedX590;
 import com.ibm.ws.fat.wc.tests.WCTrailersTest;
 
 import componenttest.rules.repeater.EmptyAction;
@@ -96,7 +95,6 @@ import componenttest.rules.repeater.RepeatTests;
                 WCSCIHandlesTypesTest.class,
                 WCServerMiscTest.class,
                 WCServerPropertyTest.class,
-                WCTestEncodedX590.class,
                 WCServletContextUnsupportedOperationExceptionTest.class
 
 })
