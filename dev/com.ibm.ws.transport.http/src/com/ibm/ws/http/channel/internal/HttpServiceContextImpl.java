@@ -3412,9 +3412,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
             sendNettyFinalContent();
         }
-        if (isNettyUpgrade101()) {
-            triggerNettyUpgradeEvent();
-        }
+        // if (isNettyUpgrade101()) {
+        //     triggerNettyUpgradeEvent();
+        // }
         setMessageSent();
     }
 
@@ -3812,7 +3812,42 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
      *
      */
     private void sendNettyHeaders() {
-        this.nettyContext.channel().eventLoop().execute(() -> nettyContext.channel().writeAndFlush(nettyResponse));
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture future = nettyContext.channel().writeAndFlush(nettyResponse);
+            if (nettyResponse.status().code() == HttpResponseStatus.SWITCHING_PROTOCOLS.code()) {
+                String connection = nettyResponse.headers().get(HttpHeaderNames.CONNECTION);
+                String upgrade = nettyResponse.headers().get(HttpHeaderNames.UPGRADE);
+                boolean isUpgrade = (connection != null && connection.toLowerCase().contains("upgrade")) &&
+                        (upgrade != null && !upgrade.isEmpty());
+                        
+                if(isUpgrade) {
+                    Object upgPromise = nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
+                    if(!(upgPromise instanceof CompletableFuture<?>)) {
+                        CompletableFuture<Void> promise = new CompletableFuture<>();
+                        nettyContext.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
+                    }
+
+                    Tr.debug(tc,"UPGRADE LOG -> sendNettyHeaders detected 101, attaching event to listener");
+
+                    future.addListener(f -> {
+                        if(f.isSuccess()){
+                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush success, firing event. Autoread = " 
+                                + nettyContext.channel().config().isAutoRead() + ", pipeline = " + nettyContext.pipeline().names() );
+                            
+                            nettyContext.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+                        } else {
+                            Tr.debug(tc,"UPGRADE LOG -> 101 writeAndFlush failed: " + String.valueOf(f.cause()));
+                        }
+                        
+                    });
+                
+                } else {
+                    Tr.debug(tc," UPGRADE LOG -> status 101 but missing headers: Connection=" + connection + " Upgrade = " +upgrade);
+                }
+            }
+        });
+
+        
     }
 
     /**

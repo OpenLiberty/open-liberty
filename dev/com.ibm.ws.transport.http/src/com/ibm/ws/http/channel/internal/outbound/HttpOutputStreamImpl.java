@@ -495,7 +495,9 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
 
             
             this.isc.sendResponseHeaders();
+            Tr.debug(tc, "HttpOutputStreamImpl, checking isUpgrade101: " + is101);
             if (is101) {
+                Tr.debug(tc,"is101 true; calling awaitUpgradedPipelineInstalled");
                 // Now tell the dispatcher to flip and wait briefly so the upgrade handler is in place.
                 awaitUpgradePipelineInstalled(); // fires UPGRADE_101_COMMITTED_EVENT and waits up to ~750ms
             }
@@ -571,6 +573,7 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
                 if (!hasFinished) { //if we've already called finishResponseMessage - don't call again
                     // on a closed stream, use the final write api
 
+                    Tr.debug(tc,"HttpOutputStreamImpl flushBuffers(); is 101: " + is101);
                     if (is101) {
                         this.isc.finishResponseMessage(null); // <— CHANGED: don’t skip for 101
                         awaitUpgradePipelineInstalled();
@@ -860,10 +863,10 @@ public class HttpOutputStreamImpl extends HttpOutputStreamConnectWeb {
             promise = new CompletableFuture<>();
             ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).set(promise);
         }
-        System.out.println("UG-PROMISE set    ch=" + ctx.channel().id().asShortText() +
-                           " p@" + System.identityHashCode(promise));
 
-     
+        Tr.debug(tc,"awaitUpgradePipelineInstalled() should fire 101 event now");
+
+        //TODO -> find a way to make it thrown upon writeAndFlush of 101
         ctx.executor().execute(() ->
             ctx.pipeline().fireUserEventTriggered(
                 com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT));

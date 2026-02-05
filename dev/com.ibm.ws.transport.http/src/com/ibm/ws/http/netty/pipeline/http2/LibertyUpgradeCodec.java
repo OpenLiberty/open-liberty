@@ -91,7 +91,7 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                 public void upgradeTo(ChannelHandlerContext ctx, io.netty.handler.codec.http.FullHttpRequest request) {
                     ctx.channel().attr(NettyHttpConstants.PROTOCOL).set("HTTP2");
                     ctx.pipeline().get(TimeoutHandler.class).markProtocol(ctx.pipeline(), NettyHttpConstants.ProtocolName.HTTP2);
-                    
+
                     // Call upgrade
                     super.upgradeTo(ctx, request);
                     // Set as stream 1 as defined in RFC
