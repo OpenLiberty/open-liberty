@@ -43,7 +43,7 @@ import multiple.ham.custom.hams.CustomHAMTwo;
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
-public class MultipleHAMTests {
+public class MultipleHAMCustomTests {
 
     public static final String SERVER_NAME = "jakartaSec40Server";
     public static final String APP_NAME = "CustomHAMApp";

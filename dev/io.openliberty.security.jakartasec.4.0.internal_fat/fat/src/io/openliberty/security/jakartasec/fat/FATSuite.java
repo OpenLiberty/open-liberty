@@ -20,12 +20,12 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import io.openliberty.security.jakartasec.fat.tests.InMemoryIdentityStoreTests;
 import io.openliberty.security.jakartasec.fat.tests.MultipleHAMDuplicateTests;
 import io.openliberty.security.jakartasec.fat.tests.MultipleHAMInbuiltTests;
-import io.openliberty.security.jakartasec.fat.tests.MultipleHAMTests;
+import io.openliberty.security.jakartasec.fat.tests.MultipleHAMCustomTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
-                MultipleHAMTests.class,
+                MultipleHAMCustomTests.class,
                 MultipleHAMDuplicateTests.class,
                 MultipleHAMInbuiltTests.class,
                 InMemoryIdentityStoreTests.class
