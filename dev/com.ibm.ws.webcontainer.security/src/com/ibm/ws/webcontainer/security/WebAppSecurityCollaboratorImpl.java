@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1218,10 +1218,15 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
      */
     private boolean setUnauthenticatedSubjectIfNeeded(Subject invokedSubject, Subject receivedSubject) {
         if ((invokedSubject == null) && (receivedSubject == null)) {
-            // create the unauthenticated subject and set as the invocation subject
-            SubjectManager sm = new SubjectManager();
-            sm.setInvocationSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
-            return true;
+            // Check if service is available before using it (may be null during shutdown)
+            if (unauthenticatedSubjectService != null) {
+                SubjectManager sm = new SubjectManager();
+                sm.setInvocationSubject(unauthenticatedSubjectService.getUnauthenticatedSubject());
+                return true;
+            }
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "UnauthenticatedSubjectService unavailable, skipping unauthenticated subject setup");
+            }
         }
         return false;
     }
