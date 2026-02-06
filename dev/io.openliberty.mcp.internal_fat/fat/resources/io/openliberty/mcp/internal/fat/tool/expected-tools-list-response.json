@@ -1685,11 +1685,28 @@
                                       }
                                     },
                                     {
-                                      "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
+                                    "outputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "country": {
+                                                    "type": "string"
+                                                },
+                                                "isCapital": {
+                                                    "type": "boolean"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "population": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "country",
+                                                "population",
+                                                "isCapital"
+                                            ]
                                         },
                                         "inputSchema": {
                                             "type": "object",

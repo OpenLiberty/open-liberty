@@ -2701,6 +2701,7 @@ public class ToolTest extends FATServletClient {
                         """;
 
         String response = client.callMCP(request);
+
         // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
         String expectedResponseString = """
                         {
@@ -2710,10 +2711,15 @@ public class ToolTest extends FATServletClient {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"[\\\"赤\\\",\\\"緑\\\",\\\"青\\\"]"
+                                "text":"{\\\"country\\\":\\\"日本\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"東京\\\",\\\"population\\\":14000000}"
                               }
                             ],
-                            "structuredContent": ["赤","緑","青"],
+                            "structuredContent": {
+                              "country": "日本",
+                              "isCapital": true,
+                              "name": "東京",
+                              "population": 14000000
+                            },
                             "isError": false
                           }
                         }
