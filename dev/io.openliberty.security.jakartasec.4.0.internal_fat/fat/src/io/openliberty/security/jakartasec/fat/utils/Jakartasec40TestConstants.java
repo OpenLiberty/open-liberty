@@ -44,4 +44,12 @@ public class Jakartasec40TestConstants {
 
     // XOR, but bad encoding
     public static final String PASSWORD_XOR_INVALID = "{xor}LLTxlkwjljsdforbg=";
+
+    /**
+     * Multiple HAMs
+     */
+    public static final String HAM_ORDER_FOUND_MESSAGE = "Order of HttpAuthenticationMechanisms found";
+    public static final String INBUILT_HAM_PRIORITY_ORDER_MESSAGE = "FormAuthenticationMechanism, BasicHttpAuthenticationMechanism";
+    public static final String CUSTOM_HAM_PRIORITY_ORDER_MESSAGE = "CustomHAMThree Priority = 300, CustomHAMTwo Priority = 200, CustomHAMOne Priority = 100";
+
 }

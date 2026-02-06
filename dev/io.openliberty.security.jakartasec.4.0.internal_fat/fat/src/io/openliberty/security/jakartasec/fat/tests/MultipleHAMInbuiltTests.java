@@ -33,6 +33,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants;
 import multiple.ham.common.MultipleHAMProtectedResource;
 
 /**
@@ -88,15 +89,12 @@ public class MultipleHAMInbuiltTests {
         int responseCode = conn.getResponseCode();
         assertEquals("Expected status code 200 but got " + responseCode, 200, responseCode);
 
-        String startOfMessage = "Order of HttpAuthenticationMechanisms found";
-        String prioritizationOrder = "FormAuthenticationMechanism, BasicHttpAuthenticationMechanism";
-
         // Check that warning appears
         assertNotNull("Warning message should appear in log",
-                      server.waitForStringInTraceUsingMark(startOfMessage));
+                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_ORDER_FOUND_MESSAGE));
         // Check that warning appears
         assertNotNull("Warning message should appear in log",
-                      server.waitForStringInTraceUsingMark(prioritizationOrder));
+                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.INBUILT_HAM_PRIORITY_ORDER_MESSAGE));
     }
 
     @AfterClass
