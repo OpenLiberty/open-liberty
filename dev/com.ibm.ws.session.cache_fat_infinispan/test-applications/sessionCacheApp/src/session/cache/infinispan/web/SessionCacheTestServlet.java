@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017,2025 IBM Corporation and others.
+ * Copyright (c) 2017,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -110,7 +110,11 @@ public class SessionCacheTestServlet extends FATServlet {
      * Obtains the session id for the current session and writes it to the servlet response
      */
     public void getSessionId(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String sessionId = request.getSession().getId();
+        HttpSession session = request.getSession();
+        if (session == null) {
+            throw new IllegalStateException("Session is null - this should not happen with getSession(true)");
+        }
+        String sessionId = session.getId();
         System.out.println("session id is " + sessionId);
         response.getWriter().write("session id: [" + sessionId + "]");
     }
