@@ -18,11 +18,13 @@ import java.time.Instant;
 public class McpSession {
 
     private final McpSessionId sessionId;
+    private final String userId;
     private final Instant created;
     private Instant lastAccessed;
 
-    public McpSession(String sessionId) {
+    public McpSession(String sessionId, String userId) {
         this.sessionId = new McpSessionId(sessionId);
+        this.userId = userId;
         this.created = Instant.now();
         this.lastAccessed = this.created;
     }
@@ -37,6 +39,10 @@ public class McpSession {
 
     public McpSessionId getSessionId() {
         return sessionId;
+    }
+
+    public String getUserId() {
+        return userId;
     }
 
     public Instant getCreatedAt() {

@@ -50,6 +50,7 @@ public class McpRequestTracker {
     }
 
     public void registerOngoingRequest(ExecutionRequestId requestId, CancellationImpl cancellation) {
+        System.out.print(requestId);
         CancellationImpl previous = ongoingRequests.putIfAbsent(requestId, cancellation);
         if (previous != null) {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,

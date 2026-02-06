@@ -46,14 +46,14 @@ public class McpSessionStore {
      *
      * @return the newly generated session ID
      */
-    public String createSession() {
+    public String createSession(String userId) {
 
         if (isStateless()) {
             return null;
         }
 
         String sessionId = UUID.randomUUID().toString();
-        sessions.put(sessionId, new McpSession(sessionId));
+        sessions.put(sessionId, new McpSession(sessionId, userId));
         return sessionId;
     }
 
@@ -103,6 +103,13 @@ public class McpSessionStore {
     public void cleanupOldSessions() {
         Instant now = Instant.now();
         sessions.entrySet().removeIf(entry -> Duration.between(entry.getValue().getLastAccessed(), now).compareTo(SESSION_TIMEOUT) > 0);
+    }
+
+    /**
+     * @return the sessions
+     */
+    public ConcurrentMap<String, McpSession> getSessions() {
+        return sessions;
     }
 
 }

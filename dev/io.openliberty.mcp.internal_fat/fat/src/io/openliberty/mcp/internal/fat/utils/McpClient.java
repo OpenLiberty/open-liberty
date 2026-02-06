@@ -21,6 +21,8 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
+import java.net.http.HttpRequest;
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.rules.ExternalResource;
@@ -28,7 +30,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import componenttest.topology.impl.LibertyServer;
-import componenttest.topology.utils.HttpRequest;
+import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 
 /**
  * A client for testing the MCP server, which takes care of setting up a session, passing
@@ -55,7 +57,13 @@ public class McpClient extends ExternalResource {
     private final StateMode mode;
 
     private boolean sessionDeleted = false;
-    private String sessionId;
+
+    protected String sessionId;
+    protected LibertyServer server;
+    protected String path;
+    protected String username;
+    protected String password;
+    protected StateMode mode = StateMode.STATEFUL;
 
     public static enum StateMode {
         // STATEFUL - Uses sessions and session IDs to maintain state across requests
@@ -82,6 +90,14 @@ public class McpClient extends ExternalResource {
         this.server = server;
         this.path = path.startsWith("/") ? path : "/" + path;
         this.mode = mode;
+    }
+
+    public McpClient(LibertyServer server, String path, String username, String password) {
+        super();
+        this.server = server;
+        this.path = path;
+        this.username = username;
+        this.password = password;
     }
 
     /** {@inheritDoc} */
@@ -204,7 +220,6 @@ public class McpClient extends ExternalResource {
             }
             request.requestProp(MCP_SESSION_ID, sessionId);
         }
-
         return request.run(String.class);
     }
 
@@ -254,6 +269,29 @@ public class McpClient extends ExternalResource {
         final HttpRequest request = new HttpRequest(server, path + "/mcp").expectCode(202);
         String response = setupAndRunRequest(request, jsonRequestBody);
         assertNull("Notification request received a response", response);
+    }
+
+    public String callMCPNotificationWithBasicAuth(LibertyServer server,
+                                                   String path,
+                                                   String jsonRequestBody,
+                                                   String user, String password)
+                    throws Exception {
+
+        final HttpRequest request = new HttpRequest(server, path + "/mcp").expectCode(202).basicAuth(user, password);;
+        String response = setupAndRunRequest(request, jsonRequestBody);
+        assertNull("Notification request received a response", response);
+        return response;
+    }
+
+    public String callMCPNotificationWithBasicAuthForbiddenErrorExpected(LibertyServer server,
+                                                                         String path,
+                                                                         String jsonRequestBody,
+                                                                         String user, String password)
+                    throws Exception {
+
+        final HttpRequest request = new HttpRequest(server, path + "/mcp").expectCode(403).basicAuth(user, password);;
+        String response = setupAndRunRequest(request, jsonRequestBody);
+        return response;
     }
 
     /**

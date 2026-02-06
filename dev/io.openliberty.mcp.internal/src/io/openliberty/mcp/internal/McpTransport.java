@@ -94,6 +94,9 @@ public class McpTransport {
         }
         this.mcpRequest = toRequest();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
+        req.getHeaderNames().asIterator().forEachRemaining(e -> {
+        });
+
         if (sessionIdHeader == null) {
             this.sessionInfo = null;
             return;
@@ -235,10 +238,22 @@ public class McpTransport {
      * @param e the exception that was caught
      * @throws IOException
      */
+    public String createError(Throwable e) throws IOException {
+        String excpetionMessage = Tr.formatMessage(tc, "CWMCM0014E.unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
+        Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
+        return excpetionMessage;
+
+    }
+
     public void sendError(Throwable e) throws IOException {
         String excpetionMessage = Tr.formatMessage(tc, "unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
         Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
         res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, excpetionMessage);
+    }
+
+    public void sendAuthError(Throwable e) throws IOException {
+        Tr.error(tc, "CWMCM0025E.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
+        res.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
     }
 
     /**
@@ -323,5 +338,9 @@ public class McpTransport {
             }
         }
         return false;
+    }
+
+    public String getUser() {
+        return req.getUserPrincipal() != null ? req.getUserPrincipal().getName() : null;
     }
 }

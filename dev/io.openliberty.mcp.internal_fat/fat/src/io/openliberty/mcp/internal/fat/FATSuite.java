@@ -43,6 +43,7 @@ import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolsErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
+import io.openliberty.mcp.internal.fat.tool.AuthCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
@@ -65,6 +66,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 AsyncToolCancellationTest.class,
                 AsyncToolsErrorHandlingTest.class,
                 AsyncToolLifecycleTest.class,
+                AuthCancellationTest.class,
                 BeanLifecycleTest.class,
                 CancellationTest.class,
                 DeploymentProblemTest.class,

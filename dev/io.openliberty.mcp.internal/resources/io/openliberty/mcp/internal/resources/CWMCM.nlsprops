@@ -208,11 +208,21 @@ CWMCM0024E.invalid.character.tool.name=CWMCM0024E: The {0} tool name for the {1}
 CWMCM0024E.invalid.character.tool.name.explanation=The tool name doesn't follow the MCP specification for names. Names can contain only ASCII letters, digits, underscores, hyphens, and not any other special character.
 CWMCM0024E.invalid.character.tool.name.useraction=Make sure that tool names contain only ASCII letters, digits, underscores, or hyphens.
 
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0025E.forbidden.error=CWMCM0025E: Forbidden request. Method={0} RequestURI={1} RequestQuery={2}, Exception: {3}
+CWMCM0025E.forbidden.error.explanation=A request was made but the user is not authormized to make it.
+CWMCM0025E.forbidden.error.useraction=Ensure an authorised user is calling the request.
+
 #Used as part of a response to a client
 # do not translate MCP
 argument.conversion.failed=The {0} argument cannot be converted to the {1} type.
 extra.arguments=The following arguments were passed but were not found in the method: {0}.
 missing.arguments=The following arguments were expected by the method but were not provided: {0}.
+<<<<<<< HEAD
 
 # Used for server logging
 # {0} = Parameter name
@@ -271,3 +281,6 @@ CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Create a custom con
 CWMCM0032E.duplicate.argument.name=CWMCM0032E: Cannot add a second argument with the {1} name to the {0} MCP tool.
 CWMCM0032E.duplicate.argument.name.explanation=Each argument of an MCP tool must have a different name.
 CWMCM0032E.duplicate.argument.name.useraction=Give each tool argument a different name.
+
+unauthorized.cancellation=The tool cannot be cancelled as the calling user {0} is not authorized.
+

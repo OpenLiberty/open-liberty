@@ -20,6 +20,7 @@ import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.messaging.Cancellation;
 import io.openliberty.mcp.messaging.Cancellation.OperationCancellationException;
+import jakarta.annotation.security.PermitAll;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -34,6 +35,8 @@ public class CancellationTools {
     @Inject
     private ToolStatus toolStatus;
 
+//    @RolesAllowed("AllUsers")
+    @PermitAll
     @Tool(name = "cancellationTool", title = "Cancellable tool", description = "A tool that waits to be cancelled")
     public String cancellationTool(Cancellation cancellation, @ToolArg(name = "latchName", description = "name of countdown latch to use for test") String latchName)
                     throws InterruptedException {
