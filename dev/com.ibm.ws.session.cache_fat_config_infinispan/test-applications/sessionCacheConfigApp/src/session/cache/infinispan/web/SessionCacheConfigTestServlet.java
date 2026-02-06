@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2018,2025 IBM Corporation and others.
+ * Copyright (c) 2018,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -106,8 +106,10 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-        bytes = cache.get(key);
+        Cache<String, byte[]> cache = null;
+        if (cacheManager != null) // cacheManager can be null if cache initialization fails (e.g., invalid URI)
+            cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        bytes = cache != null ? cache.get(key) : null;
 
         Object value = toObject(bytes);
 
@@ -187,8 +189,10 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-        bytes = cache.get(key);
+        Cache<String, byte[]> cache = null;
+        if (cacheManager != null) // cacheManager can be null if cache initialization fails (e.g., invalid URI)
+            cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        bytes = cache != null ? cache.get(key) : null;
 
         assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
                    "Bytes expected: " + Arrays.toString(expectedBytes) + EOLN +
@@ -207,8 +211,10 @@ public class SessionCacheConfigTestServlet extends FATServlet {
 
         byte[] bytes;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
-        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature
+        Cache<String, byte[]> cache = null;
+        if (cacheManager != null) // cacheManager can be null if cache initialization fails (e.g., invalid URI)
+            cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        if (cache == null) // cache can be null if test case disables the sessionCache-1.0 feature or cacheManager is null
             bytes = null;
         else
             bytes = cache.get(key);
@@ -228,7 +234,9 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         System.out.println("as a byte array, this is: " + Arrays.toString(expectedBytes));
 
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = null;
+        if (cacheManager != null) // cacheManager can be null if cache initialization fails (e.g., invalid URI)
+            cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
         byte[] bytes = cache.get(key);
 
         assertTrue("Expected cache entry " + key + " to have value " + expectedValue + ", not " + toObject(bytes) + ". " + EOLN +
@@ -410,9 +418,11 @@ public class SessionCacheConfigTestServlet extends FATServlet {
         boolean found = false;
         byte[] bytes = null;
         CacheManager cacheManager = getCacheManager();
-        Cache<String, byte[]> cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
+        Cache<String, byte[]> cache = null;
+        if (cacheManager != null) // cacheManager can be null if cache initialization fails (e.g., invalid URI)
+            cache = cacheManager.getCache("com.ibm.ws.session.attr.default_host%2FsessionCacheConfigApp", String.class, byte[].class);
         for (long start = System.nanoTime(); !found && System.nanoTime() - start < TIMEOUT_NS; TimeUnit.MILLISECONDS.sleep(500)) {
-            bytes = cache.get(key);
+            bytes = cache != null ? cache.get(key) : null;
             found = Arrays.equals(expectedBytes, bytes);
         }
 
