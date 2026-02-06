@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -84,7 +84,9 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         serverA.startServer();
 
-        TimeUnit.SECONDS.sleep(10);
+        // Increase wait time for Windows platforms which are slower
+        int initialWaitTime = isWindows() ? 20 : 10;
+        TimeUnit.SECONDS.sleep(initialWaitTime);
 
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
         // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
@@ -95,7 +97,9 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         serverB.startServer();
 
-        TimeUnit.SECONDS.sleep(10);
+        // Increase wait time for Windows platforms to allow cluster formation
+        int clusterWaitTime = isWindows() ? 20 : 10;
+        TimeUnit.SECONDS.sleep(clusterWaitTime);
     }
 
     @AfterClass
@@ -130,6 +134,11 @@ public class SessionCacheTwoServerTest extends FATServletClient {
             return true;
         }
         return false;
+    }
+
+    private static final boolean isWindows() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.toLowerCase().contains("windows");
     }
 
     /**
