@@ -60,9 +60,7 @@ public class LocaleTest extends FATServletClient {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer("CWMCM0010E", //The JSON-RPC request is not valid JSON.
-                          "CWMCM0011E" // The JSON-RPC request was invalid.
-        );
+        server.stopServer("CWMCM0010E"); //The JSON-RPC request is not valid JSON.
     }
 
     @Test
@@ -87,7 +85,7 @@ public class LocaleTest extends FATServletClient {
 
         // Expect error response to use message from Japanese nlsprops file.
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"CWMCM0011E: ツールの実行中に内部サーバーエラーが発生しました。"}], "isError": true}}
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"ツールの実行中に内部サーバーエラーが発生しました。"}], "isError": true}}
                         """;
         JSONAssert.assertEquals("The response should have the correct Japanese error message with UTF-8 encoding",
                                 expectedResponseString, response, true);
