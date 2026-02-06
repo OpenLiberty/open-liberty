@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,10 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         serverB.setJvmOptions(options);
 
         serverA.startServer();
-        TimeUnit.SECONDS.sleep(10);
+        
+        // Increase wait time for Windows platforms which are slower
+        int initialWaitTime = isWindows() ? 20 : 10;
+        TimeUnit.SECONDS.sleep(initialWaitTime);
 
         // Warm up serverA
         List<String> sessionA = new ArrayList<>();
@@ -99,7 +102,10 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invalidateSession(sessionA);
 
         serverB.startServer();
-        TimeUnit.SECONDS.sleep(10);
+        
+        // Increase wait time for Windows platforms to allow cluster formation
+        int clusterWaitTime = isWindows() ? 20 : 10;
+        TimeUnit.SECONDS.sleep(clusterWaitTime);
 
         // Warm up serverB
         List<String> sessionB = new ArrayList<>();
@@ -138,6 +144,11 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     private static boolean isZOS() {
         String osName = System.getProperty("os.name");
         return osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS");
+    }
+
+    private static boolean isWindows() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.toLowerCase().contains("windows");
     }
 
     @Test
