@@ -726,10 +726,11 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                             Tr.debug(tc, "stream.decompress: produced=%d", out != null ? out.remaining() : 0);
                         }
                     }catch(DataFormatException dfe){
-                        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-                            Tr.debug(tc, "Exception during streaming decompress", dfe);
+                        FFDCFilter.processException(dfe, getClass().getName(), "1");
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Received exception during decompress; " + dfe);
                         }
-                        throw new IOException("Invalid compressed request body", dfe);
+                        throw new IOException(dfe.getMessage());
                     }
                 }
                 if(out !=null && out.hasRemaining()){

@@ -104,13 +104,16 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     public void channelInactive(ChannelHandlerContext context) throws Exception {
         FlowState state = state(context);
         state.setReadPending(false);
+        state.setReadAgain(false);
         state.setStopReading(true);
         super.channelInactive(context);
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext context, Throwable cause) throws Exception {
-        state(context).setReadPending(false);
+        FlowState state = state(context);
+        state.setReadPending(false);
+        state.setReadAgain(false);
         super.exceptionCaught(context, cause);
     }
 
@@ -165,12 +168,17 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     @Override
     public void channelReadComplete(ChannelHandlerContext context) throws Exception {
         FlowState state = state(context);
+        super.channelReadComplete(context);
+
+        Tr.debug(tc, "[FLOW-PROOF] READ_COMPLETE_CLEAR_PENDING ch=" + context.channel().id()
+            + " readAgain=" + state.isReadAgain());
+        
         state.setReadPending(false);
         if(state.isReadAgain()){
             state.setReadAgain(false);
-            requestRead(context);
+            context.executor().execute(()->requestRead(context));
         }
-        super.channelReadComplete(context);
+        
     }
 
     /**
@@ -227,6 +235,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
         if (event instanceof ChannelInputShutdownEvent || event instanceof ChannelInputShutdownReadComplete) {
             FlowState state = state(context);
+            state.setReadPending(false);
+            state.setReadAgain(false);
             state.setStopReading(true);
             state.setKeepAliveAllowed(false);
         }
@@ -263,8 +273,16 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         final boolean needReadForNextRequest = state.isRequestConsumed() && !state.isResponseInFlight()
                                     && state.isKeepAliveAllowed();
 
+        final boolean needRead = needReadForBody || needReadForNextRequest;
 
-        if(!needReadForBody && !needReadForNextRequest){
+
+        if(!needRead){
+            Tr.debug(tc, "[FLOW-PROOF] NO_READ_NEEDED ch=" + context.channel().id()
+                + " bodyWanted=" + state.isBodyReadWanted()
+                + " reqConsumed=" + state.isRequestConsumed()
+                + " respInFlight=" + state.isResponseInFlight()
+                + " keepAlive=" + state.isKeepAliveAllowed()
+                + " readPending=" + state.isReadPending());
             return;
         }
 
@@ -272,10 +290,21 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
 
         if(state.isReadPending()){
             state.setReadAgain(true);
+            Tr.debug(tc, "[FLOW-PROOF] READ_SUPPRESSED_PENDING ch=" + context.channel().id()
+                + " bodyWanted=" + state.isBodyReadWanted()
+                + " reqConsumed=" + state.isRequestConsumed()
+                + " respInFlight=" + state.isResponseInFlight()
+                + " keepAlive=" + state.isKeepAliveAllowed()
+                + " readPending=" + state.isReadPending());
             return;
         }
 
         state.setReadPending(true);
+        Tr.debug(tc, "[FLOW-PROOF] ISSUING_READ ch=" + context.channel().id()
+            + " bodyWanted=" + state.isBodyReadWanted()
+            + " reqConsumed=" + state.isRequestConsumed()
+            + " respInFlight=" + state.isResponseInFlight()
+            + " keepAlive=" + state.isKeepAliveAllowed());
         context.read();
     }
 
