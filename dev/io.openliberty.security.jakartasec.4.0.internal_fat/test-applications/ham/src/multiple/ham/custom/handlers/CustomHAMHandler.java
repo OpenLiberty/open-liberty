@@ -53,8 +53,6 @@ public class CustomHAMHandler implements HttpAuthenticationMechanismHandler {
     @Inject
     @Tester
     private HttpAuthenticationMechanism testerHAM;
-    //@Inject @Default
-    //private HttpAuthenticationMechanism defaultHAM;
 
     public CustomHAMHandler() {
     }
@@ -91,6 +89,8 @@ public class CustomHAMHandler implements HttpAuthenticationMechanismHandler {
         if (authMech == null) {
             System.err.println("No HttpAuthenticationMechanism available");
             return AuthenticationStatus.SEND_FAILURE;
+        } else {
+            System.out.println("######## found Highest Priority HttpAuthenticationMechanism: " + getSimpleName(authMech));
         }
 
         // Use privileged action for security sensitive operations
@@ -108,6 +108,13 @@ public class CustomHAMHandler implements HttpAuthenticationMechanismHandler {
         };
 
         return AccessController.doPrivileged(action);
+    }
+
+    private String getSimpleName(Object anyObject) {
+        if (anyObject == null) {
+            return "null";
+        }
+        return anyObject.getClass().getSimpleName().split("\\$")[0];
     }
 
 }

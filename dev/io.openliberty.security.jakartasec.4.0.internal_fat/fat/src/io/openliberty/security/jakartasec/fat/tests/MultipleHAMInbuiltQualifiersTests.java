@@ -13,6 +13,7 @@
 package io.openliberty.security.jakartasec.fat.tests;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -32,6 +33,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants;
 import multiple.ham.common.MultipleHAMProtectedResource;
 import multiple.ham.custom.handlers.CustomHAMHandler;
 import multiple.ham.inbuilt.MultipleHAMQualifiersApplication;
@@ -67,16 +69,12 @@ public class MultipleHAMInbuiltQualifiersTests {
     }
 
     /*
-     * Assert that we find the following message in trace.log:
-     *
-     * Order of HttpAuthenticationMechanisms found (the first one will be used if its prioritization is unique -
-     *
-     * @Priority for application HAMs and HAM type - Oidc/CustomForm/Form/Basic - for in-built HAMs):
-     * FormAuthenticationMechanism, BasicHttpAuthenticationMechanism
+     * Assert that we find the custom output messages in trace.log
+     * indicating that all qualifier HAMs have been injected successfully in the Custom HAM Handler
      *
      */
     @Test
-    public void testMultipleHAMInbuiltPrioritization() throws Exception {
+    public void testQualifiersInjectionCustomOutput() throws Exception {
 
         // Mark the trace before making HTTP connection
         server.setTraceMarkToEndOfDefaultTrace();
@@ -89,12 +87,42 @@ public class MultipleHAMInbuiltQualifiersTests {
         int responseCode = conn.getResponseCode();
         assertEquals("Expected status code 200 but got " + responseCode, 200, responseCode);
 
-//        // Check that warning appears
-//        assertNotNull("Warning message should appear in log",
-//                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_ORDER_FOUND_MESSAGE));
-//        // Check that warning appears
-//        assertNotNull("Warning message should appear in log",
-//                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.INBUILT_HAM_PRIORITY_ORDER_MESSAGE));
+        // Check the injection of adminHAM as inbuilt basic HAM
+        assertNotNull("Output message for adminHAM injection as BasicHAM",
+                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_BASIC_ADMIN_QUALIFIER_MESSAGE));
+        // Check the injection of userHAM as inbuilt basic HAM
+        assertNotNull("Output message for userHAM injection as BasicHAM",
+                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_BASIC_USER_QUALIFIER_MESSAGE));
+        // Check the injection of operatorHAM as inbuilt CustomForm HAM
+        assertNotNull("Output message for operatorHAM injection as CustomFormHAM",
+                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_CUSTOM_FORM_OPERATOR_QUALIFIER_MESSAGE));
+        // Check the injection of testerHAM as inbuilt Form HAM
+        assertNotNull("Output message for testerHAM injection as FormHAM",
+                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_FORM_TESTER_QUALIFIER_MESSAGE));
+    }
+
+    /*
+     * Assert that the custom HAM prioritization is printed as it is defined on the custom handler.
+     * Since we explicitly prioritized the Admin qualifier on BasicHAM, that should be the expected output.
+     *
+     */
+    @Test
+    public void testCustomHAMQualifierPriorityOutput() throws Exception {
+
+        // Mark the trace before making HTTP connection
+        server.setTraceMarkToEndOfDefaultTrace();
+
+        URL urlObj = new URL(url);
+        HttpURLConnection conn = (HttpURLConnection) urlObj.openConnection();
+
+        conn.setRequestMethod("GET");
+        conn.setDoInput(true);
+        int responseCode = conn.getResponseCode();
+        assertEquals("Expected status code 200 but got " + responseCode, 200, responseCode);
+
+        // Check the injection of adminHAM as inbuilt basic HAM
+        assertNotNull("Output message for custom prioritization on inbuilt HAMs with qualifiers",
+                      server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_CUSTOM_HANDLER_PRIORITY_MESSAGE));
     }
 
     @AfterClass
