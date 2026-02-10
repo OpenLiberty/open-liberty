@@ -119,8 +119,6 @@ public class MultipleHAMInbuiltQualifiersTests {
         conn.setDoInput(true);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected status code 200 but got " + responseCode, 200, responseCode);
-
-        // Check the injection of adminHAM as inbuilt basic HAM
         assertNotNull("Output message for custom prioritization on inbuilt HAMs with qualifiers",
                       server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_CUSTOM_HANDLER_PRIORITY_MESSAGE));
     }
