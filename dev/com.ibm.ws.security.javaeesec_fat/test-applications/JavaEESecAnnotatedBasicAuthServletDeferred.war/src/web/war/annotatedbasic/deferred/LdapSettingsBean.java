@@ -86,24 +86,34 @@ public class LdapSettingsBean {
     }
 
     /**
-     * Check if the properties file has been modified and reload if necessary.
+     * Refresh configuration from file.
+     * This method reloads the properties file to support dynamic configuration updates during testing.
      */
-    private void checkAndReloadIfModified() {
+    private void refreshConfiguration() throws IOException {
+        lock.writeLock().lock();
         try {
-            java.io.File file = new java.io.File(PROPS_FILE);
-            long currentModified = file.lastModified();
-            
-            if (currentModified != lastModified) {
-                System.out.println(CLASS_NAME + ".checkAndReloadIfModified() detected file change, reloading...");
-                loadConfiguration();
+            props = new Properties();
+            FileReader fr = null;
+            try {
+                java.io.File file = new java.io.File(PROPS_FILE);
+                fr = new FileReader(file);
+                props.load(fr);
+                lastModified = file.lastModified();
+            } finally {
+                if (fr != null) {
+                    fr.close();
+                }
             }
-        } catch (IOException e) {
-            System.err.println(CLASS_NAME + ".checkAndReloadIfModified() failed: " + e.getMessage());
+        } finally {
+            lock.writeLock().unlock();
         }
     }
 
     /**
      * Get property value with read lock protection.
+     * Refreshes configuration on every access to support dynamic test updates.
+     * The @PostConstruct initialization ensures properties are loaded before
+     * any getters are called during CDI initialization, preventing z/OS hangs.
      */
     private String getProperty(String prop) {
         if (!initialized) {
@@ -111,8 +121,16 @@ public class LdapSettingsBean {
             return null;
         }
         
-        // Check for file modifications before reading
-        checkAndReloadIfModified();
+        // Refresh configuration on every access to support dynamic test configuration updates
+        // This is safe because @PostConstruct ensures initialization completes before
+        // any property getters are called, avoiding z/OS CDI initialization issues
+        try {
+            refreshConfiguration();
+        } catch (IOException e) {
+            System.err.println(CLASS_NAME + ".getProperty() failed to refresh configuration: " + e.getMessage());
+            e.printStackTrace();
+            // Continue with existing properties rather than failing
+        }
         
         lock.readLock().lock();
         try {
