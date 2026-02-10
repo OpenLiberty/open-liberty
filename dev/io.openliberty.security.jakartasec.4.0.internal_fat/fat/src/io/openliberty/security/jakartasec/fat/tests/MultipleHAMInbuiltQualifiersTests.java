@@ -34,6 +34,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import multiple.ham.common.MultipleHAMProtectedResource;
 import multiple.ham.custom.handlers.CustomHAMHandler;
+import multiple.ham.inbuilt.MultipleHAMQualifiersApplication;
 
 /**
  * Tests appSecurity-6.0
@@ -55,7 +56,7 @@ public class MultipleHAMInbuiltQualifiersTests {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive multipleHamApp = ShrinkWrap.create(WebArchive.class,
-                                                      APP_NAME + ".war").addPackage("multiple.ham.inbuilt.qualifiers").addPackage("multiple.ham.common.qualifiers").addClass(MultipleHAMProtectedResource.class).addClass(CustomHAMHandler.class);
+                                                      APP_NAME + ".war").addClass(MultipleHAMQualifiersApplication.class).addPackage("multiple.ham.common.qualifiers").addClass(MultipleHAMProtectedResource.class).addClass(CustomHAMHandler.class);
 
         // The URL is not expected to be modified during this test scope
         url = "http://localhost:" + server.getHttpDefaultPort() + CONTEXT_ROOT + RESOURCE_PATH;
