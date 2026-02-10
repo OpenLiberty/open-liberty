@@ -105,6 +105,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     public void nettyConfigureStreaming(BodyQueue queue, ChannelHandlerContext context, String contentEncoding, long contentLength, boolean chunked){
         
         this.context = context;
+        this.autoRead = (context != null) && context.channel().config().isAutoRead();
         
         this.contentEncoding = (contentEncoding == null) ? null: contentEncoding.toLowerCase();
         this.decompressor = new HttpContentDecompressor();
@@ -726,11 +727,13 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                             Tr.debug(tc, "stream.decompress: produced=%d", out != null ? out.remaining() : 0);
                         }
                     }catch(DataFormatException dfe){
-                        FFDCFilter.processException(dfe, getClass().getName(), "1");
+                        IllegalHttpBodyException exception = new IllegalHttpBodyException(dfe.getMessage());
+                        exception.initCause(dfe);
+                        FFDCFilter.processException(exception, getClass().getName(), "1");
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Received exception during decompress; " + dfe);
                         }
-                        throw new IOException(dfe.getMessage());
+                        throw exception;
                     }
                 }
                 if(out !=null && out.hasRemaining()){
