@@ -10,7 +10,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package multiple.ham.qualifiers;
+package multiple.ham.common.qualifiers;
 
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
@@ -26,5 +26,5 @@ import jakarta.inject.Qualifier;
 @Qualifier
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD, FIELD, PARAMETER })
-public @interface Admin {
+public @interface Tester {
 }

@@ -18,9 +18,10 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import io.openliberty.security.jakartasec.fat.tests.InMemoryIdentityStoreTests;
-import io.openliberty.security.jakartasec.fat.tests.MultipleHAMDuplicateTests;
-import io.openliberty.security.jakartasec.fat.tests.MultipleHAMInbuiltTests;
 import io.openliberty.security.jakartasec.fat.tests.MultipleHAMCustomTests;
+import io.openliberty.security.jakartasec.fat.tests.MultipleHAMDuplicateTests;
+import io.openliberty.security.jakartasec.fat.tests.MultipleHAMInbuiltQualifiersTests;
+import io.openliberty.security.jakartasec.fat.tests.MultipleHAMInbuiltTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -28,6 +29,7 @@ import io.openliberty.security.jakartasec.fat.tests.MultipleHAMCustomTests;
                 MultipleHAMCustomTests.class,
                 MultipleHAMDuplicateTests.class,
                 MultipleHAMInbuiltTests.class,
+                MultipleHAMInbuiltQualifiersTests.class,
                 InMemoryIdentityStoreTests.class
 })
 public class FATSuite {

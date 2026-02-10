@@ -10,7 +10,7 @@
  * Contributors:
  * IBM Corporation - initial API and implementation
  *******************************************************************************/
-package multiple.ham.inbuilt;
+package multiple.ham.inbuilt.qualifiers;
 
 import jakarta.security.enterprise.authentication.mechanism.http.BasicAuthenticationMechanismDefinition;
 import jakarta.security.enterprise.authentication.mechanism.http.CustomFormAuthenticationMechanismDefinition;
@@ -18,14 +18,14 @@ import jakarta.security.enterprise.authentication.mechanism.http.FormAuthenticat
 import jakarta.security.enterprise.authentication.mechanism.http.LoginToContinue;
 import jakarta.ws.rs.ApplicationPath;
 import jakarta.ws.rs.core.Application;
-import multiple.ham.qualifiers.Admin;
-import multiple.ham.qualifiers.Operator;
-import multiple.ham.qualifiers.Tester;
-import multiple.ham.qualifiers.User;
+import multiple.ham.common.qualifiers.Admin;
+import multiple.ham.common.qualifiers.Operator;
+import multiple.ham.common.qualifiers.Tester;
+import multiple.ham.common.qualifiers.User;
 
 /**
  * JAX-RS Application class with three in-built HAMs with qualifiers; Form, CustomForm and Basic
- * This is used for testing built-in HAM prioritization.
+ * This is used for testing built-in HAMs with qualifiers.
  */
 @BasicAuthenticationMechanismDefinition(realmName = "admin-realm", qualifiers = { Admin.class })
 @BasicAuthenticationMechanismDefinition(realmName = "user-realm", qualifiers = { User.class })
