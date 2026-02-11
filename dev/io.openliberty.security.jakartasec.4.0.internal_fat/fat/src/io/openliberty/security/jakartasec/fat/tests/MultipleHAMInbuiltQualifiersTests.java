@@ -88,16 +88,16 @@ public class MultipleHAMInbuiltQualifiersTests {
         assertEquals("Expected status code 200 but got " + responseCode, 200, responseCode);
 
         // Check the injection of adminHAM as inbuilt basic HAM
-        assertNotNull("Output message for adminHAM injection as BasicHAM",
+        assertNotNull("Output message for adminHAM injection as BasicHA not found",
                       server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_BASIC_ADMIN_QUALIFIER_MESSAGE));
         // Check the injection of userHAM as inbuilt basic HAM
-        assertNotNull("Output message for userHAM injection as BasicHAM",
+        assertNotNull("Output message for userHAM injection as BasicHAM not found",
                       server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_BASIC_USER_QUALIFIER_MESSAGE));
         // Check the injection of operatorHAM as inbuilt CustomForm HAM
-        assertNotNull("Output message for operatorHAM injection as CustomFormHAM",
+        assertNotNull("Output message for operatorHAM injection as CustomFormHAM not found",
                       server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_CUSTOM_FORM_OPERATOR_QUALIFIER_MESSAGE));
         // Check the injection of testerHAM as inbuilt Form HAM
-        assertNotNull("Output message for testerHAM injection as FormHAM",
+        assertNotNull("Output message for testerHAM injection as FormHAM not found",
                       server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_FORM_TESTER_QUALIFIER_MESSAGE));
     }
 
@@ -119,7 +119,7 @@ public class MultipleHAMInbuiltQualifiersTests {
         conn.setDoInput(true);
         int responseCode = conn.getResponseCode();
         assertEquals("Expected status code 200 but got " + responseCode, 200, responseCode);
-        assertNotNull("Output message for custom prioritization on inbuilt HAMs with qualifiers",
+        assertNotNull("Output message for custom prioritization on inbuilt HAMs with qualifiers not found",
                       server.waitForStringInTraceUsingMark(Jakartasec40TestConstants.HAM_CUSTOM_HANDLER_PRIORITY_MESSAGE));
     }
 
