@@ -20,12 +20,12 @@ import io.openliberty.security.jakartasec.fat.tests.MultipleHAMInbuiltQualifiers
 
 @RunWith(Suite.class)
 @SuiteClasses({
-//                AlwaysPassesTest.class,
-//                MultipleHAMCustomTests.class,
-//                MultipleHAMDuplicateTests.class,
-//                MultipleHAMInbuiltTests.class,
+                AlwaysPassesTest.class,
+                MultipleHAMCustomTests.class,
+                MultipleHAMDuplicateTests.class,
+                MultipleHAMInbuiltTests.class,
                 MultipleHAMInbuiltQualifiersTests.class,
-//                InMemoryIdentityStoreTests.class
+                InMemoryIdentityStoreTests.class
 })
 public class FATSuite {
 }
