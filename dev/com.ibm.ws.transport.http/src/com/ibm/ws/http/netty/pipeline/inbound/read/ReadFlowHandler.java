@@ -208,6 +208,12 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                 if(noBodyExpected){
                     promise.addListener(f -> {
                         state.setResponseInFlight(false);
+
+                        if(state.isPeerInputShutdown()){
+                            context.close();
+                            return;
+                        }
+
                         verifyNeedRead(context, state);
                     });
                 }
@@ -217,6 +223,12 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         if (message instanceof LastHttpContent) {
             promise.addListener(f -> {
                 state.setResponseInFlight(false);
+
+                if(state.isPeerInputShutdown()){
+                    context.close();
+                    return;
+                }
+
                 verifyNeedRead(context, state);
             });
         }
@@ -235,10 +247,22 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
         if (event instanceof ChannelInputShutdownEvent || event instanceof ChannelInputShutdownReadComplete) {
             FlowState state = state(context);
+            state.setPeerInputShutdown(true);
+
             state.setReadPending(false);
             state.setReadAgain(false);
             state.setStopReading(true);
             state.setKeepAliveAllowed(false);
+
+            if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                Tr.debug(tc, "Peer input shutdown: requestConsumed=" + state.isRequestConsumed() +
+                                " , responseInFlight=" + state.isResponseInFlight() + " , channel="+ context.channel());
+            }
+
+            if(state.isRequestConsumed() && !state.isResponseInFlight()){
+                context.close();
+                return;
+            }
         }
         super.userEventTriggered(context, event);
     }

@@ -131,10 +131,14 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
             if (isReadingAsync && queuedBytes.get() >= minBytesToRead) {
                 isReadingAsync = false;
-                if (callback != null) {
+                final TCPReadCompletedCallback cb = callback; 
+                callback = null;
+                Tr.debug(tc, "[UPGRADE-ASYNC] async threshold met; firing callback. bytes=" + queuedBytes.get() + 
+                    " minBytesToRead=" + minBytesToRead);
+                if (cb != null) {
                     HttpDispatcher.getExecutorService().execute(() -> {
                         try {
-                            callback.complete(vc, readContext);
+                            cb.complete(vc, readContext);
                         } catch (Exception ignore) {
                         }
                     });
@@ -200,6 +204,14 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         } finally {
             readLock.unlock();
         }
+    }
+
+    public void requestReadIfNeeded(){
+        requestRead();
+    }
+
+    public boolean isReadPending(){
+        return readPending.get();
     }
 
     private void requestRead(){
@@ -379,6 +391,12 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     public void queueAsyncRead(long minBytesToRead) {
         this.minBytesToRead = (int) Math.max(1L, minBytesToRead);
         this.isReadingAsync = true;
+
+        Tr.debug(tc, "[UPGRADE-ASYNC] queueAsyncRead : " + 
+            "minBytesToRead = " + minBytesToRead + ", " +
+            "queuedBytes = " + queuedBytes.get() + ", " +
+            "autoRead = " + channel.config().isAutoRead() + ", " +
+            "readPending = " + readPending.get() );
 
         requestRead();
 

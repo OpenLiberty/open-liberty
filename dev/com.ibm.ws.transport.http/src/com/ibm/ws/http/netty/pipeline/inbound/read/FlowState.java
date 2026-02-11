@@ -22,6 +22,7 @@ public class FlowState {
     private volatile boolean bodyReadWanted;
     private volatile boolean headRequest;
     private volatile boolean keepAliveAllowed;
+    private volatile boolean peerInputShutdown;
     private volatile boolean readAgain;
     private volatile boolean readPending;
     private volatile boolean requestConsumed;
@@ -35,6 +36,7 @@ public class FlowState {
         this.bodyReadWanted = false;
         this.headRequest = false;
         this.keepAliveAllowed = true;
+        this.peerInputShutdown = false;
         this.readAgain = false;
         this.readPending = false;
         this.requestConsumed = true;
@@ -59,6 +61,14 @@ public class FlowState {
      */
     public boolean isKeepAliveAllowed() {
         return keepAliveAllowed;
+    }
+
+    /**
+     * @return true if the peer has signaled that it is closed and no longer writing data. This is
+     * used to determine if the connection sould be closed after the current response is fully processed.
+     */
+    public boolean isPeerInputShutdown() {
+        return peerInputShutdown;
     }
 
     public boolean isReadAgain(){
@@ -103,6 +113,10 @@ public class FlowState {
 
     public void setKeepAliveAllowed(boolean keepAliveAllowed) {
         this.keepAliveAllowed = keepAliveAllowed;
+    }
+
+    public void setPeerInputShutdown(boolean peerInputShutdown) {
+        this.peerInputShutdown = peerInputShutdown;
     }
 
     public void setReadAgain(boolean readAgain){

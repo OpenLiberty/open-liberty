@@ -451,7 +451,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         final long need = Math.max(1L, numBytes); 
-        requestRead();
+        //requestRead();
 
         final io.netty.util.concurrent.EventExecutor el = nettyChannel.eventLoop();
         final java.util.concurrent.atomic.AtomicReference<io.netty.util.concurrent.ScheduledFuture<?>> toRef = new java.util.concurrent.atomic.AtomicReference<>(null);
@@ -501,8 +501,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             }
         };
 
-        if (callback != null)
-            h.setReadListener(wrapped); 
+        h.setReadListener((callback!=null) ? wrapped : null);
+    
+        // if (callback != null)
+        //     h.setReadListener(wrapped); 
 
 
         // if (h.containsQueuedData() && h.queuedDataSize() >= need) {
@@ -522,7 +524,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         // }
 
         h.queueAsyncRead(need);
-        requestRead();
+        //requestRead();
 
         final int t = normalizeTimeout(timeout);
         if (t != NO_TIMEOUT) {
@@ -778,7 +780,15 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private void requestRead(){
         ChannelHandlerContext context = readFlowContext();
         if (context != null){
+            Tr.debug(tc, "[READGATE] requestRead via ReadFlowHandler");
             ReadFlowHandler.requestRead(context);
+            return;
+        }
+
+        NettyServletUpgradeHandler upgradeHandler = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
+        if(upgradeHandler != null){
+            Tr.debug(tc, "[READGATE] requestRead via NettyServletUpgradeHandler");
+            upgradeHandler.requestReadIfNeeded();
             return;
         }
 
