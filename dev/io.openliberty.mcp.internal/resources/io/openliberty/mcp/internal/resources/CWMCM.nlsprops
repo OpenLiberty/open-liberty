@@ -222,7 +222,6 @@ CWMCM0025E.forbidden.error.useraction=Ensure an authorised user is calling the r
 argument.conversion.failed=The {0} argument cannot be converted to the {1} type.
 extra.arguments=The following arguments were passed but were not found in the method: {0}.
 missing.arguments=The following arguments were expected by the method but were not provided: {0}.
-<<<<<<< HEAD
 
 # Used for server logging
 # {0} = Parameter name
