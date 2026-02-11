@@ -160,7 +160,10 @@
         <AD id="loggedOutCookieCacheService.cardinality.minimum" type="String"  default="${count(loggedOutCookieCacheRef)}" 
             ibm:final="true" name="internal" description="internal use only"/>
             
-    </OCD>
+        <AD id="overrideHAMProcessing" name="%overrideHAMProcessing" description="%overrideHAMProcessing.desc" required="false"
+            type="Boolean" default="false"/>
+
+      </OCD>
     <Designate pid="com.ibm.ws.webcontainer.security.WebAppSecurityCollaboratorImpl">
         <Object ocdref="com.ibm.ws.webcontainer.security.metatype"/>
     </Designate>

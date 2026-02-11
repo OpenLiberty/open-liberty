@@ -805,6 +805,35 @@ public class WebAppSecurityCollaboratorImplTest {
     }
 
     /**
+     * Test method for verifying overrideHAMProcessing configuration is properly loaded
+     * into the collaborator via the configuration flow from the server.xml properties.
+     *
+     * NOTE: Ideally, we would test WebAppSecurityCollaboratorImpl.performSecurityChecks(), but
+     * that would require the method to be made public or protected and registering a real JASPIC
+     * service (which is complex).
+     */
+    @Test
+    public void testOverrideHAMProcessingConfiguration_LoadedCorrectly() {
+        // test with skipJaspi enabled
+        configProps.put(WebAppSecurityConfigImpl.CFG_KEY_OVERRIDE_HAM_PROCESSING, true);
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
+        assertTrue("When skipJaspi is configured as true, isSkipJaspi() should return true",
+                   secColl.webAppSecConfig.isOverrideHAMProcessing());
+
+        // test with skipJaspi disabled
+        configProps.put(WebAppSecurityConfigImpl.CFG_KEY_OVERRIDE_HAM_PROCESSING, false);
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
+        assertFalse("When skipJaspi is configured as false, isSkipJaspi() should return false",
+                    secColl.webAppSecConfig.isOverrideHAMProcessing());
+
+        // test default behaviour (not set)
+        configProps.remove(WebAppSecurityConfigImpl.CFG_KEY_OVERRIDE_HAM_PROCESSING);
+        setupCollaborator(new WebAppSecurityCollaboratorImplTestDouble(), cc, configProps);
+        assertFalse("When skipJaspi is not configured, isSkipJaspi() should return false by default",
+                    secColl.webAppSecConfig.isOverrideHAMProcessing());
+    }
+
+    /**
      * Test method for {@link com.ibm.ws.webcontainer.security.internal.WebAppSecurityCollaboratorImpl#authorize(com.ibm.ws.webcontainer.security.internal.AuthenticationResult,
      * java.lang.String, java.lang.String, javax.security.auth.Subject, java.util.List<String>)} .
      */

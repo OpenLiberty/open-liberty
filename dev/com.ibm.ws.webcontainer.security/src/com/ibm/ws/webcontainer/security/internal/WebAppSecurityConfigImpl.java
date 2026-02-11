@@ -73,6 +73,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_PARTITIONED_COOKIE = "partitionedCookie";
     public static final String CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH = "useContextRootForSSOCookiePath";
     public static final String CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS = "postParamMaxRequestBodySize";
+    public static final String CFG_KEY_OVERRIDE_HAM_PROCESSING = "overrideHAMProcessing";
 
     // New attributes must update getChangedProperties method
     private final Boolean logoutOnHttpSessionExpire;
@@ -107,6 +108,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private Boolean partitionedCookie = null; // in BETA, mark as final once GA'ed
     private final Boolean useContextRootForSSOCookiePath;
     private final Long postParamMaxRequestBodySize;
+    private final Boolean overrideHAMProcessing;
 
     protected final AtomicServiceReference<WsLocationAdmin> locationAdminRef;
     protected final AtomicServiceReference<SecurityService> securityServiceRef;
@@ -149,6 +151,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_PARTITIONED_COOKIE, "partitionedCookie");
             put(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH, "useContextRootForSSOCookiePath");
             put(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS, "postParamMaxRequestBodySize");
+            put(CFG_KEY_OVERRIDE_HAM_PROCESSING, "overrideHAMProcessing");
         }
     };
 
@@ -194,9 +197,10 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         sameSiteCookie = (String) newProperties.get(CFG_KEY_SAME_SITE_COOKIE);
         useContextRootForSSOCookiePath = (Boolean) newProperties.get(CFG_KEY_USE_CONTEXT_ROOT_FOR_SSO_COOKIE_PATH);
         postParamMaxRequestBodySize = (Long) newProperties.get(CFG_KEY_MAX_CONTENT_LENGTH_TO_SAVE_POST_PARAMETERS);
+        overrideHAMProcessing = (Boolean) newProperties.get(CFG_KEY_OVERRIDE_HAM_PROCESSING);
 
         String partValue = (String) newProperties.get(CFG_KEY_PARTITIONED_COOKIE);
-        if ("true".equalsIgnoreCase(partValue)||"false".equalsIgnoreCase(partValue)) {
+        if ("true".equalsIgnoreCase(partValue) || "false".equalsIgnoreCase(partValue)) {
             // we want partitionedCookie to be null unless the value is true or false
             // defer is the default value which mean that the channel config determines the partitioned value
             // if the value is true / false then this config was explicltly set by the user
@@ -615,8 +619,8 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
 
     @Override
     public boolean isPartitionedCookie() {
-        if (partitionedCookie!=null && partitionedCookie==Boolean.TRUE) {
-          return true;
+        if (partitionedCookie != null && partitionedCookie == Boolean.TRUE) {
+            return true;
         }
         return false;
     }
@@ -631,17 +635,21 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         return postParamMaxRequestBodySize.longValue();
     }
 
+    @Override
+    public boolean isOverrideHAMProcessing() {
+        return overrideHAMProcessing != null ? overrideHAMProcessing.booleanValue() : false;
+    }
+
     // This method is for config users that need to know if an admin has provided a true/false or no value for a
     // boolean config attribute.  The current infrastructure does not properly support this
     public static Boolean getBooleanValue(String attribute, String strValue) {
-      Boolean retVal = null;
-      if (strValue!=null && strValue.length()>0) {
-        //only values that config gives us are true/false/defer
-        if ("true".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue)) {
-          retVal = Boolean.valueOf(strValue);
-        } 
-      }
-      return(retVal);
+        Boolean retVal = null;
+        if (strValue != null && strValue.length() > 0) {
+            //only values that config gives us are true/false/defer
+            if ("true".equalsIgnoreCase(strValue) || "false".equalsIgnoreCase(strValue)) {
+                retVal = Boolean.valueOf(strValue);
+            }
+        }
+        return (retVal);
     }
-
 }

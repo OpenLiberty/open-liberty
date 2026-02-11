@@ -17,6 +17,7 @@ import java.security.AccessController;
 import java.security.Principal;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -242,10 +243,25 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         interceptorServiceRef.removeReference(id, ref);
     }
 
+    private void outputStackTraceToDebug() {
+        Tr.debug(tc, "=============== BEGIN STACK TRACE ================");
+        String stackTrace = Arrays.toString(Thread.currentThread().getStackTrace()).replace(',', '\n');
+        Tr.debug(tc, stackTrace);
+        Tr.debug(tc, "================ END STACK TRACE =================");
+
+    }
+
     public void setWebAuthenticator(ServiceReference<WebAuthenticator> ref) {
+        outputStackTraceToDebug();
         String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
         webAuthenticatorRef.putReference(cn, ref);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "setWebAuthenticator, adding key component name [" + cn + "].");
+        }
         if (cn.equals(JASPI_SERVICE_COMPONENT_NAME)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "setWebAuthenticator, enabling JASPI service for component name [" + JASPI_SERVICE_COMPONENT_NAME + "].");
+            }
             isJaspiEnabled = true;
         }
     }
@@ -253,7 +269,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
     public void unsetWebAuthenticator(ServiceReference<WebAuthenticator> ref) {
         String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
         webAuthenticatorRef.removeReference(cn, ref);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "unsetWebAuthenticator, removing key component name [" + cn + "].");
+        }
         if (cn.equals(JASPI_SERVICE_COMPONENT_NAME)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "setWebAuthenticator, disabling JASPI service for component name [" + JASPI_SERVICE_COMPONENT_NAME + "].");
+            }
             isJaspiEnabled = false;
         }
     }
@@ -667,6 +689,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     private void performSecurityChecks(HttpServletRequest req, HttpServletResponse resp, Subject receivedSubject,
                                        WebSecurityContext webSecurityContext, SecurityMetadata securityMetadata) throws SecurityViolationException, IOException {
+        outputStackTraceToDebug();
         String uriName = new URLHandler(webAppSecConfig).getServletURI(req);
 
         savedSubject = receivedSubject;
@@ -736,6 +759,12 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             }
             boolean isUnprotected = false;
             if (authResult == null || (authResult.getStatus() != AuthResult.SUCCESS && webAppSecConfig.allowFailOver())) {
+                // at this point, if we have specified we want to override HAM processing, then
+                //   return null here so that the parent method can drop down into
+                //   "normal processing" for authentication from server.xml
+                if (webAppSecConfig.isOverrideHAMProcessing() == true) {
+                    return null;
+                }
                 // if client cert is not processed or failed and allowFailOver is configured.
                 // set unprotected flag if the target url is not protected or assigned to everyone role.
                 isUnprotected = (unprotectedResource(webRequest) == PERMIT_REPLY);
@@ -1415,13 +1444,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     protected String getApplicationName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        WebModuleMetaData wmmd = ((WebModuleMetaData) cmd.getModuleMetaData());
         return wmmd.getConfiguration().getApplicationName();
     }
 
     protected String getModuleName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        WebModuleMetaData wmmd = ((WebModuleMetaData) cmd.getModuleMetaData());
         return wmmd.getConfiguration().getModuleName();
     }
 
@@ -1431,7 +1460,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     protected void setSecurityMetadata(SecurityMetadata secMetadata) {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        WebModuleMetaData wmmd = ((WebModuleMetaData) cmd.getModuleMetaData());
         wmmd.setSecurityMetaData(secMetadata);
     }
 
@@ -1552,7 +1581,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         WebAppConfig wac = null;
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd instanceof WebComponentMetaData) { // Only get the header for web modules, i.e. not for EJB
-            WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+            WebModuleMetaData wmmd = ((WebModuleMetaData) cmd.getModuleMetaData());
             wac = wmmd.getConfiguration();
             if (!(wac instanceof com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration)) {
                 wac = null;

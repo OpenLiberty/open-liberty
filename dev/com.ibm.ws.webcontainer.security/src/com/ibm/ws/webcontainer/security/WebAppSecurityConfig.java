@@ -67,6 +67,8 @@ public interface WebAppSecurityConfig {
 
     boolean isUseAuthenticationDataForUnprotectedResourceEnabled();
 
+    boolean isOverrideHAMProcessing();
+
     /**
      * Calculates the delta between this WebAppSecurityConfig and the provided
      * WebAppSecurityConfig. The values returned are the values from this Object.

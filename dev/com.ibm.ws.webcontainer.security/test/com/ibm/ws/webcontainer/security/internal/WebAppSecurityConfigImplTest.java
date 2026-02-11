@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -403,6 +403,35 @@ public class WebAppSecurityConfigImplTest {
     }
 
     @Test
+    public void getChangedProperties_overrideHAMProcessing() {
+        driveSingleAttributeTest("overrideHAMProcessing",
+                                 Boolean.FALSE, Boolean.TRUE);
+    }
+
+    @Test
+    public void testIsOverrideHAMProcessing_NotSet() {
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
+        assertEquals("False should be returned since the value is not set.", false, webCfg.isOverrideHAMProcessing());
+    }
+
+    @Test
+    public void testIsOverrideHAMProcessing_SetToTrue() {
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put("overrideHAMProcessing", Boolean.TRUE);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
+        assertEquals("Value should be true when overrideHAMProcessing is set to true.", true, webCfg.isOverrideHAMProcessing());
+    }
+
+    @Test
+    public void testIsOverrideHAMProcessing_SetToFalse() {
+        Map<String, Object> cfg = new HashMap<String, Object>();
+        cfg.put("overrideHAMProcessing", Boolean.FALSE);
+        WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
+        assertEquals("Value should be false when overrideHAMProcessing set to false.", false, webCfg.isOverrideHAMProcessing());
+    }
+
+    @Test
     public void testSetSsoCookieName_autoGenSsoCookieName_true_defaultSsoCookieName() {
         Map<String, Object> cfg = new HashMap<String, Object>();
         mockCookie(cfg, true);
@@ -425,7 +454,7 @@ public class WebAppSecurityConfigImplTest {
     public void testGetLoginErrorURL_NotSet() {
         Map<String, Object> cfg = new HashMap<String, Object>();
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertNull("Null should be get since the value is not set.", webCfg.getLoginErrorURL());
+        assertNull("Null should be returned since the value is not set.", webCfg.getLoginErrorURL());
     }
 
     @Test
@@ -434,14 +463,14 @@ public class WebAppSecurityConfigImplTest {
         Map<String, Object> cfg = new HashMap<String, Object>();
         cfg.put("loginErrorURL", ERROR_URL);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertEquals("Vallid value should be returned.", ERROR_URL, webCfg.getLoginErrorURL());
+        assertEquals("Valid value should be returned.", ERROR_URL, webCfg.getLoginErrorURL());
     }
 
     @Test
     public void testGetLoginFormContextRoot_NotSet() {
         Map<String, Object> cfg = new HashMap<String, Object>();
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertNull("Null should be get since the value is not set.", webCfg.getLoginFormContextRoot());
+        assertNull("Null should be returned since the value is not set.", webCfg.getLoginFormContextRoot());
     }
 
     @Test
@@ -450,14 +479,14 @@ public class WebAppSecurityConfigImplTest {
         Map<String, Object> cfg = new HashMap<String, Object>();
         cfg.put("contextRootForFormAuthenticationMechanism", CONTEXT_ROOT);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertEquals("Vallid value should be returned.", CONTEXT_ROOT, webCfg.getLoginFormContextRoot());
+        assertEquals("Valid value should be returned.", CONTEXT_ROOT, webCfg.getLoginFormContextRoot());
     }
 
     @Test
     public void testGetBasicAuthRealmName_NotSet() {
         Map<String, Object> cfg = new HashMap<String, Object>();
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertNull("Null should be get since the value is not set.", webCfg.getBasicAuthRealmName());
+        assertNull("Null should be returned since the value is not set.", webCfg.getBasicAuthRealmName());
     }
 
     @Test
@@ -466,15 +495,15 @@ public class WebAppSecurityConfigImplTest {
         Map<String, Object> cfg = new HashMap<String, Object>();
         cfg.put("basicAuthenticationMechanismRealmName", REALM_NAME);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertEquals("Vallid value should be returned.", REALM_NAME, webCfg.getBasicAuthRealmName());
+        assertEquals("Valid value should be returned.", REALM_NAME, webCfg.getBasicAuthRealmName());
     }
 
     @Test
     public void testPartitioned_notSet() {
         Map<String, Object> cfg = new HashMap<String, Object>();
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertNull("Partitioned value should be null, but is ["+webCfg.getPartitionedCookie()+"]", webCfg.getPartitionedCookie());
-        assertEquals("isPartitioned value should be false, but is ["+webCfg.isPartitionedCookie()+"]", false, webCfg.isPartitionedCookie());
+        assertNull("Partitioned value should be null, but is [" + webCfg.getPartitionedCookie() + "]", webCfg.getPartitionedCookie());
+        assertEquals("isPartitioned value should be false, but is [" + webCfg.isPartitionedCookie() + "]", false, webCfg.isPartitionedCookie());
     }
 
     //defer is same as not set
@@ -483,10 +512,10 @@ public class WebAppSecurityConfigImplTest {
         final String PART_NAME = "partitionedCookie";
         final String PART_VALUE = "Defer";
         Map<String, Object> cfg = new HashMap<String, Object>();
-        cfg.put(PART_NAME,PART_VALUE);
+        cfg.put(PART_NAME, PART_VALUE);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertNull("Partitioned value should be null, but is ["+webCfg.getPartitionedCookie()+"]", webCfg.getPartitionedCookie());
-        assertEquals("isPartitioned value should be false, but is ["+webCfg.isPartitionedCookie()+"]", false, webCfg.isPartitionedCookie());
+        assertNull("Partitioned value should be null, but is [" + webCfg.getPartitionedCookie() + "]", webCfg.getPartitionedCookie());
+        assertEquals("isPartitioned value should be false, but is [" + webCfg.isPartitionedCookie() + "]", false, webCfg.isPartitionedCookie());
     }
 
     @Test
@@ -494,10 +523,10 @@ public class WebAppSecurityConfigImplTest {
         final String PART_NAME = "partitionedCookie";
         final String PART_VALUE = "true";
         Map<String, Object> cfg = new HashMap<String, Object>();
-        cfg.put(PART_NAME,PART_VALUE);
+        cfg.put(PART_NAME, PART_VALUE);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertEquals("Partitioned value should be TRUE, but is ["+webCfg.getPartitionedCookie()+"]", Boolean.TRUE, webCfg.getPartitionedCookie());
-        assertTrue("isPartitioned value should be true, but is ["+webCfg.isPartitionedCookie()+"]", webCfg.isPartitionedCookie());
+        assertEquals("Partitioned value should be TRUE, but is [" + webCfg.getPartitionedCookie() + "]", Boolean.TRUE, webCfg.getPartitionedCookie());
+        assertTrue("isPartitioned value should be true, but is [" + webCfg.isPartitionedCookie() + "]", webCfg.isPartitionedCookie());
     }
 
     @Test
@@ -505,10 +534,10 @@ public class WebAppSecurityConfigImplTest {
         final String PART_NAME = "partitionedCookie";
         final String PART_VALUE = "false";
         Map<String, Object> cfg = new HashMap<String, Object>();
-        cfg.put(PART_NAME,PART_VALUE);
+        cfg.put(PART_NAME, PART_VALUE);
         WebAppSecurityConfig webCfg = new WebAppSecurityConfigImpl(cfg, locationAdminRef, securityServiceRef, null, null);
-        assertEquals("Partitioned value should be FALSE, but is ["+webCfg.getPartitionedCookie()+"]", Boolean.FALSE, webCfg.getPartitionedCookie());
-        assertEquals("isPartitioned value should be false, but is ["+webCfg.isPartitionedCookie()+"]", false, webCfg.isPartitionedCookie());
+        assertEquals("Partitioned value should be FALSE, but is [" + webCfg.getPartitionedCookie() + "]", Boolean.FALSE, webCfg.getPartitionedCookie());
+        assertEquals("isPartitioned value should be false, but is [" + webCfg.isPartitionedCookie() + "]", false, webCfg.isPartitionedCookie());
     }
 
     /**
