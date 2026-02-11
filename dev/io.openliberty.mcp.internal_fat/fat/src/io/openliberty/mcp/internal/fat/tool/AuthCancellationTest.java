@@ -16,6 +16,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -80,8 +81,7 @@ public class AuthCancellationTest extends FATServletClient {
 
     @Test
     public void testCancellationToolFailWithMismatchUserWithSession() throws Exception {
-
-        final String LATCH_NAME = "strId";
+        final String LATCH_NAME = "numId1";
 
         Callable<String> threadCallingToolA = () -> {
             try {
@@ -93,7 +93,7 @@ public class AuthCancellationTest extends FATServletClient {
                                   "params": {
                                     "name": "cancellationTool",
                                     "arguments": {
-                                      "latchName": "strId"
+                                      "latchName": "numId1"
                                     }
                                   }
                                 }
@@ -104,7 +104,6 @@ public class AuthCancellationTest extends FATServletClient {
                 throw new RuntimeException(e);
             }
         };
-
         Future<String> futureA = executor.submit(threadCallingToolA);
 
         String cancellationRequestNotification = """
@@ -117,6 +116,7 @@ public class AuthCancellationTest extends FATServletClient {
                           }
                         }
                         """;
+
         toolStatus.awaitStarted(LATCH_NAME);
 
         client.callMCPNotificationWithBasicAuthForbiddenErrorExpected(server, "/cancellationTest", cancellationRequestNotification, "testuser",
@@ -135,8 +135,7 @@ public class AuthCancellationTest extends FATServletClient {
 
     @Test
     public void testCancellationToolWithAuthorizedUserWithSession() throws Exception {
-
-        final String LATCH_NAME = "strId";
+        final String LATCH_NAME = "numId2";
 
         Callable<String> threadCallingToolA = () -> {
             try {
@@ -148,7 +147,7 @@ public class AuthCancellationTest extends FATServletClient {
                                   "params": {
                                     "name": "cancellationTool",
                                     "arguments": {
-                                      "latchName": "strId"
+                                      "latchName": "numId2"
                                     }
                                   }
                                 }
@@ -159,7 +158,6 @@ public class AuthCancellationTest extends FATServletClient {
                 throw new RuntimeException(e);
             }
         };
-
         Future<String> futureA = executor.submit(threadCallingToolA);
 
         String cancellationRequestNotification = """
@@ -172,15 +170,16 @@ public class AuthCancellationTest extends FATServletClient {
                           }
                         }
                         """;
+        // Call AwaitToolServlet to wait for the tool to start running. Adds path param "numId" to specify which countdown latch to use
         toolStatus.awaitStarted(LATCH_NAME);
 
         client.callMCPNotificationWithBasicAuth(server, "/cancellationTest", cancellationRequestNotification, "BobTheAdmin", "testpassword");
 
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
                                         """;
 
-        String responseA = futureA.get();
+        String responseA = futureA.get(10, TimeUnit.SECONDS);
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
     }

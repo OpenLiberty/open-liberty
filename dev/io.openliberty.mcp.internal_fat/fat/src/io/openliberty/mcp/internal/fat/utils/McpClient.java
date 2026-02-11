@@ -21,8 +21,6 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
 
-import java.net.http.HttpRequest;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.junit.rules.ExternalResource;
@@ -30,7 +28,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import componenttest.topology.impl.LibertyServer;
-import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
+import componenttest.topology.utils.HttpRequest;
 
 /**
  * A client for testing the MCP server, which takes care of setting up a session, passing
@@ -51,10 +49,6 @@ import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
  * }</pre>
  */
 public class McpClient extends ExternalResource {
-
-    private final LibertyServer server;
-    private final String path;
-    private final StateMode mode;
 
     private boolean sessionDeleted = false;
 
