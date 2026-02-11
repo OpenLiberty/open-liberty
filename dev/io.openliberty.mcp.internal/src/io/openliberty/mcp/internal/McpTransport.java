@@ -252,7 +252,7 @@ public class McpTransport {
     }
 
     public void sendAuthError(Throwable e) throws IOException {
-        Tr.error(tc, "CWMCM0025E.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
+        Tr.error(tc, "CWMCM0033E.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
         res.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
     }
 
