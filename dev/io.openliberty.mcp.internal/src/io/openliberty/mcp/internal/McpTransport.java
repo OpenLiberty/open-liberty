@@ -232,19 +232,6 @@ public class McpTransport {
         res.setStatus(HttpServletResponse.SC_ACCEPTED);
     }
 
-    /**
-     * sends custom error message response back to client depending on the error
-     *
-     * @param e the exception that was caught
-     * @throws IOException
-     */
-    public String createError(Throwable e) throws IOException {
-        String excpetionMessage = Tr.formatMessage(tc, "CWMCM0014E.unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
-        Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
-        return excpetionMessage;
-
-    }
-
     public void sendError(Throwable e) throws IOException {
         String excpetionMessage = Tr.formatMessage(tc, "unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
         Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
