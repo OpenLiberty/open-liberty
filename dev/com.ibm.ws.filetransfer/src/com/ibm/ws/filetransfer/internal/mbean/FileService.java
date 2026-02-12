@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -84,6 +84,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
     private List<String> ReadList;
     private List<String> WriteList;
+    private List<String> BlockList;
 
     public FileService() throws NotCompliantMBeanException {
         super(FileServiceMXBean.class, true);
@@ -214,6 +215,18 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
                 }
             }
             Tr.debug(this, tc, "writeList: " + sb.toString());
+
+            //Log the blockList
+            sb = sb.delete(0, sb.length());
+            if (BlockList.isEmpty()) {
+                sb.append("empty");
+            } else {
+                for (String blockLocation : BlockList) {
+                    sb.append(blockLocation);
+                    sb.append("   ");
+                }
+            }
+            Tr.debug(this, tc, "blockList: " + sb.toString());
 
         } //END DEBUG
 
