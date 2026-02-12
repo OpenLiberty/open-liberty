@@ -208,7 +208,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             if (WriteList.isEmpty()) {
                 sb.append("empty");
             } else {
-                for (String writeLocation : ReadList) {
+                for (String writeLocation : WriteList) {
                     sb.append(writeLocation);
                     sb.append("   ");
                 }
