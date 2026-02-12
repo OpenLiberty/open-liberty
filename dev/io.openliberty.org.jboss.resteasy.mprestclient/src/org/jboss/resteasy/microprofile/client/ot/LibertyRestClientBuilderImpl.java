@@ -42,10 +42,7 @@ import org.jboss.resteasy.cdi.CdiInjectorFactory;
 import org.jboss.resteasy.client.jaxrs.ResteasyClient;
 import org.jboss.resteasy.client.jaxrs.ResteasyClientBuilder;
 import org.jboss.resteasy.client.jaxrs.engines.URLConnectionClientEngineBuilder;
-import org.jboss.resteasy.client.jaxrs.engines.ManualClosingApacheHttpClient43Engine;
 import org.jboss.resteasy.client.jaxrs.internal.LocalResteasyProviderFactory;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
 import org.jboss.resteasy.microprofile.client.ConfigurationWrapper;
 import org.jboss.resteasy.microprofile.client.DefaultMediaTypeFilter;
 import org.jboss.resteasy.microprofile.client.DefaultResponseExceptionMapper;
@@ -430,13 +427,8 @@ public class LibertyRestClientBuilderImpl implements RestClientBuilder {
         //Liberty Change Start
         // Disable automatic retries in Apache HttpClient to prevent TCK timeout failures
         // This ensures that connection/read timeouts are respected without retry inflation
-        if (!useURLConnection()) {
-            CloseableHttpClient httpClient = HttpClientBuilder.create()
-                    .disableAutomaticRetries()
-                    .build();
-            ManualClosingApacheHttpClient43Engine engine = new ManualClosingApacheHttpClient43Engine(httpClient);
-            resteasyClientBuilder.httpEngine(engine);
-        }
+        // The LibertyClientHttpEngineBuilder43 will handle this flag and configure Apache HttpClient accordingly
+        resteasyClientBuilder.disableAutomaticRetries();
         //Liberty Change End
 
         if (useURLConnection()) {
