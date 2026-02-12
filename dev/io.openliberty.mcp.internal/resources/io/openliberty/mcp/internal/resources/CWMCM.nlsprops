@@ -213,7 +213,7 @@ CWMCM0024E.invalid.character.tool.name.useraction=Make sure that tool names cont
 argument.conversion.failed=The {0} argument cannot be converted to the {1} type.
 extra.arguments=The following arguments were passed but were not found in the method: {0}.
 missing.arguments=The following arguments were expected by the method but were not provided: {0}.
-unauthorized.cancellation=The tool cannot be cancelled as the calling user {0} is not authorized.
+unauthorized.cancellation=The tool cannot be cancelled as the {0} calling user is not authorized.
 
 # Used for server logging
 # {0} = Parameter name
@@ -279,8 +279,5 @@ CWMCM0032E.duplicate.argument.name.useraction=Give each tool argument a differen
 # {2} = RequestQuery
 # {3} = ExceptionMessage
 CWMCM0033E.forbidden.error=CWMCM0033E: Forbidden request. Method={0} RequestURI={1} RequestQuery={2}, Exception: {3}
-CWMCM0033E.forbidden.error.explanation=A request was made but the user is not authormized to make it.
-CWMCM0033E.forbidden.error.useraction=Ensure an authorised user is calling the request.
-
-
-
+CWMCM0033E.forbidden.error.explanation=A request was made but the user is not authorized to make it.
+CWMCM0033E.forbidden.error.useraction=Ensure an authorized user is calling the request.

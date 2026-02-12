@@ -128,7 +128,7 @@ public class AuthCancellationTest extends FATServletClient {
         String responseA = futureA.get();
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
-        assertTrue(!server.findStringsInLogs("Exception: The tool cannot be cancelled as the calling user testuser is not authorized.").isEmpty());
+        assertTrue(!server.findStringsInLogs("Exception: The tool cannot be cancelled as the testuser calling user is not authorized.").isEmpty());
 
     }
 

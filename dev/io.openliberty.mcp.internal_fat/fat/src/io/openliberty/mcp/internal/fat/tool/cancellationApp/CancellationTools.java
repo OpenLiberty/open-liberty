@@ -35,7 +35,6 @@ public class CancellationTools {
     @Inject
     private ToolStatus toolStatus;
 
-//    @RolesAllowed("AllUsers")
     @PermitAll
     @Tool(name = "cancellationTool", title = "Cancellable tool", description = "A tool that waits to be cancelled")
     public String cancellationTool(Cancellation cancellation, @ToolArg(name = "latchName", description = "name of countdown latch to use for test") String latchName)

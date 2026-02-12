@@ -233,9 +233,9 @@ public class McpTransport {
     }
 
     public void sendError(Throwable e) throws IOException {
-        String excpetionMessage = Tr.formatMessage(tc, "unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
+        String exceptionMessage = Tr.formatMessage(tc, "unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
         Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
-        res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, excpetionMessage);
+        res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exceptionMessage);
     }
 
     public void sendAuthError(Throwable e) throws IOException {
