@@ -81,6 +81,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
     private static final String READ_LIST_CONFIGURATION = "readDir";
     private static final String WRITE_LIST_CONFIGURATION = "writeDir";
     private static final String BLOCK_LIST_CONFIGURATION = "blockDir";
+    private static final String DISABLE_BLOCK_LIST_CONFIGURATION = "disableBlockDir";
     private static final String EMPTY_PATH_STRING = "";
 
     private List<String> ReadList;
@@ -192,7 +193,11 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         //block lists
         Object blockListConfig = properties.get(BLOCK_LIST_CONFIGURATION);
-        if (blockListConfig instanceof String[]) {
+        Object disableBlockListConfig = properties.get(DISABLE_BLOCK_LIST_CONFIGURATION);
+        if (disableBlockListConfig instanceof Boolean && (Boolean)disableBlockListConfig) {
+            // Disable block list by setting to emtpy.
+            BlockList = Collections.EMPTY_LIST;
+        } else if (blockListConfig instanceof String[]) {
             BlockList = normalizePaths((String[]) blockListConfig);
         } else {
             //Default is to block ${server.output.dir}/resources/security
