@@ -195,8 +195,21 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
         if (blockListConfig instanceof String[]) {
             BlockList = normalizePaths((String[]) blockListConfig);
         } else {
-            //Default is an empty list
-            BlockList = Collections.EMPTY_LIST;
+            //Default is to block ${server.output.dir}/resources/security
+            BlockList = new ArrayList<String>();
+
+            WsLocationAdmin wsLocation = getWsLocationAdmin();
+
+            if (wsLocation == null) {
+                //in this case, we really cannot proceed without the location admin, so throw error.
+                throw new IOException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                   TraceConstants.MESSAGE_BUNDLE,
+                                                                   "OSGI_SERVICE_ERROR",
+                                                                   new Object[] { "WsLocationAdmin" },
+                                                                   "CWWKX7911E: OSGi service is not available."));
+            }
+
+            ReadList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
         }
 
         //START DEBUG
