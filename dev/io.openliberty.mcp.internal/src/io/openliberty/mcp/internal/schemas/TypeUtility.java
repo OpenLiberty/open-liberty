@@ -111,6 +111,21 @@ public class TypeUtility {
     }
 
     /**
+     * Given a Type which implements {@code interfaceClass<T>}, find the parameterized type {@code T}.
+     * <p>
+     * If {@code baseType} extends a class {@code exampleClass<MyType>} that implements {@code interfaceClass<T>} , then {@code MyType} would be returned.
+     *
+     * @param interfaceClass the interface to find the parameterized type for
+     * @param baseType the type that implements or is assignable from {@code interfaceClass}
+     * @return the parameter type of {@code interfaceClass}
+     */
+    public static Type getInterfaceParameteriedType(Type baseType, Class<?> interfaceClass) {
+        List<Type> route = getRouteToType(baseType, interfaceClass);
+        Type[] resolvedParameters = resolveTypeArguments(route);
+        return resolvedParameters[0];
+    }
+
+    /**
      * Get the actual values for the type variables of the first type in {@code typeList}, after translating them through every type in {@code typeList}
      * <p>
      * E.g. if {@code typeList} contains {@code [Collection<T>, List<T>, ArrayList<String>]} then this method will return {@code [String]}.

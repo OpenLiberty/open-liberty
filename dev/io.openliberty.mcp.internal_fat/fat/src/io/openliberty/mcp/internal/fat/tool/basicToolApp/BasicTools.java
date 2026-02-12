@@ -328,8 +328,14 @@ public class BasicTools {
 
     public static record House(int number, String street) {};
 
-    public static class HouseConverter implements DefaultValueConverter<House> {
+    public static abstract class AbstractConverter<T> implements DefaultValueConverter<T> {
 
+        @Override
+        public abstract T convert(String defaultValue);
+    }
+
+    @ApplicationScoped
+    public static class HouseConverter extends AbstractConverter<House> {
         /**
          * Converts a default value string in the format "Number::Street" to a {@link House} object
          * Example string: "5::London Road"
@@ -345,9 +351,6 @@ public class BasicTools {
             return new House(number, street);
         }
     }
-
-    @ApplicationScoped
-    public static class InheritedConverter extends HouseConverter {}
 
     @ApplicationScoped
     public static class CityConverter implements DefaultValueConverter<City> {

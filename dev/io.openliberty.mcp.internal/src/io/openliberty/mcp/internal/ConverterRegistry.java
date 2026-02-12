@@ -10,8 +10,10 @@
 package io.openliberty.mcp.internal;
 
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -23,7 +25,7 @@ import jakarta.enterprise.inject.spi.CDI;
 public class ConverterRegistry {
 
     private static ConverterRegistry staticInstance = null;
-    private static Map<Type, DefaultValueConverter<?>> customConverters = new HashMap<>();
+    private static Map<Type, List<DefaultValueConverter<?>>> converters = new HashMap<>();
 
     public static ConverterRegistry get() {
         if (staticInstance != null) {
@@ -42,15 +44,16 @@ public class ConverterRegistry {
     }
 
     public static Optional<DefaultValueConverter<?>> getConverter(Type type) {
-        return Optional.ofNullable(customConverters.get(type));
+        List<DefaultValueConverter<?>> convertersForType = converters.get(type);
+        return Optional.ofNullable(convertersForType != null ? convertersForType.get(0) : null);
     }
 
     public void addConverter(Type type, DefaultValueConverter<?> converter) {
-        customConverters.put(type, converter);
+        converters.computeIfAbsent(type, k -> new ArrayList<>()).add(converter);
     }
 
-    public Collection<DefaultValueConverter<?>> getAllCustomConverters() {
-        return customConverters.values();
+    public static Collection<List<DefaultValueConverter<?>>> getAllCustomConverters() {
+        return converters.values();
     }
 
 }

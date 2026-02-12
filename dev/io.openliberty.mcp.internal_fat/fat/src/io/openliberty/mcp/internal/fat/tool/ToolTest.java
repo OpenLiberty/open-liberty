@@ -24,7 +24,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.net.http.HttpRequest;
 import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
@@ -39,6 +38,7 @@ import org.junit.Test;
 import org.junit.rules.TestRule;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
+import org.junit.runners.model.Statement;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
@@ -52,6 +52,7 @@ import componenttest.custom.junit.runner.TestModeFilter;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 

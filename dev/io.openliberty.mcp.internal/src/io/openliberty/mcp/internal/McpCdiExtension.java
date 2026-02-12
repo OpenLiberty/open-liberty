@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,9 +30,11 @@ import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
+import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
@@ -68,7 +69,7 @@ public class McpCdiExtension implements Extension {
     private ConcurrentHashMap<String, ArrayList<String>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
-    private ConverterRegistry customConvertersRegistry = new ConverterRegistry();
+    private ConverterRegistry converterRegistry = new ConverterRegistry();
     private Jsonb jsonb = createJsonb();
     private ToolRegistry tools = new ToolRegistry(schemas, jsonb);
     private ModuleContext moduleContext;
@@ -112,25 +113,8 @@ public class McpCdiExtension implements Extension {
     void discoverConverterBeans(@Observes ProcessManagedBean<?> processManagedBean) {
         Class<?> javaClass = processManagedBean.getAnnotatedBeanClass().getJavaClass();
         if (DefaultValueConverter.class.isAssignableFrom(javaClass)) {
-            converterBeans.put(processManagedBean.getBean(), getConverterType(javaClass));
+            converterBeans.put(processManagedBean.getBean(), TypeUtility.getInterfaceParameteriedType(javaClass, DefaultValueConverter.class));
         }
-    }
-
-    Type getConverterType(Class<?> javaClass) {
-        for (Type genericInterface : javaClass.getGenericInterfaces()) {
-            if (genericInterface instanceof ParameterizedType pt) {
-                if (pt.getRawType() == DefaultValueConverter.class) {
-                    return pt.getActualTypeArguments()[0];
-                }
-            }
-        }
-
-        // recursively look up inherited classes to find the one that implements the DefaultValueConverter interface
-        Class<?> superClass = javaClass.getSuperclass();
-        if (superClass != null) {
-            return getConverterType(superClass);
-        }
-        throw new IllegalStateException(Tr.formatMessage(tc, "CWMCM0033E.converter.type.extraction.failed", javaClass.getName()));
     }
 
     void afterDeploymentValidation(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager manager) {
@@ -175,11 +159,16 @@ public class McpCdiExtension implements Extension {
 
     void registerCustomConverters(BeanManager beanManager) {
         CreationalContext<?> context = beanManager.createCreationalContext(null);
+        // Populate converters registry with converters for wrapper types and strings
+        for (Map.Entry<Type, DefaultValueConverter<?>> entry : BuiltinDefaultValueConverters.CONVERTERS.entrySet()) {
+            converterRegistry.addConverter(entry.getKey(), entry.getValue());
+        }
+        // Populate converters registry with provided customer converters
         for (Map.Entry<Bean<?>, Type> entry : converterBeans.entrySet()) {
             Bean<?> bean = entry.getKey();
             Type converterType = entry.getValue();
             DefaultValueConverter<?> converter = (DefaultValueConverter<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
-            customConvertersRegistry.addConverter(converterType, converter);
+            converterRegistry.addConverter(converterType, converter);
         }
         context.release();
     }
@@ -328,7 +317,7 @@ public class McpCdiExtension implements Extension {
     }
 
     public ConverterRegistry getConverterRegistry() {
-        return customConvertersRegistry;
+        return converterRegistry;
     }
 
     public SchemaRegistry getSchemaRegistry() {

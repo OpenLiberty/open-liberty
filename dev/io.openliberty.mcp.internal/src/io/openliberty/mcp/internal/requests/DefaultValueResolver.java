@@ -98,11 +98,7 @@ public class DefaultValueResolver {
 
     private static Object convertDefaultValue(String toolName, String defaultValue, String argName, Type type) {
         Type boxedType = TypeUtility.box(type);
-        DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(boxedType);
-        // Check for user-provided custom converter if one doesn't exist for the type in the {@link BuiltinDefaultValueConverters} map
-        if (converter == null)
-            converter = ConverterRegistry.getConverter(type).get();
-
+        DefaultValueConverter<?> converter = ConverterRegistry.getConverter(boxedType).get();
         if (converter == null) {
             throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter",
                                                                 toolName,

@@ -15,8 +15,10 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.io.StringReader;
+import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -26,6 +28,7 @@ import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.Literals;
 import io.openliberty.mcp.internal.ToolRegistry;
+import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
@@ -74,6 +77,9 @@ public class ToolArgDefaultValueConverterTest {
         ToolRegistry.set(registry);
 
         ConverterRegistry converterRegistry = new ConverterRegistry();
+        for (Map.Entry<Type, DefaultValueConverter<?>> entry : BuiltinDefaultValueConverters.CONVERTERS.entrySet()) {
+            converterRegistry.addConverter(entry.getKey(), entry.getValue());
+        }
         converterRegistry.addConverter(City.class, new CityConverter());
         ConverterRegistry.set(converterRegistry);
 
