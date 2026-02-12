@@ -68,9 +68,8 @@ public class AuthCancellationTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         server.stopServer(
-                          "CWMCM0010E", //  Tool method threw an unexpected exception
-                          "CWMCM0011E", // An internal server error occurred
-                          "CWMCM0025E" // Forbidden request
+                          "CWMCM0010E", //Internal server error
+                          "CWMCM0033E" // Forbidden request
         );
     }
 
