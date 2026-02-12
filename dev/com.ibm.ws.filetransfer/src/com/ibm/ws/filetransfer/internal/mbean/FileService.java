@@ -80,6 +80,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
     //Constants
     private static final String READ_LIST_CONFIGURATION = "readDir";
     private static final String WRITE_LIST_CONFIGURATION = "writeDir";
+    private static final String BLOCK_LIST_CONFIGURATION = "blockDir";
     private static final String EMPTY_PATH_STRING = "";
 
     private List<String> ReadList;
@@ -189,6 +190,15 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             WriteList = Collections.EMPTY_LIST;
         }
 
+        //block lists
+        Object blockListConfig = properties.get(BLOCK_LIST_CONFIGURATION);
+        if (blockListConfig instanceof String[]) {
+            BlockList = normalizePaths((String[]) blockListConfig);
+        } else {
+            //Default is an empty list
+            BlockList = Collections.EMPTY_LIST;
+        }
+
         //START DEBUG
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             StringBuffer sb = new StringBuffer();
@@ -244,6 +254,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_READ_LIST, ReadList.toArray(new String[ReadList.size()]));
         publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_WRITE_LIST, WriteList.toArray(new String[WriteList.size()]));
+        publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_BLOCK_LIST, BlockList.toArray(new String[BlockList.size()]));
     }
 
     @Reference(name = KEY_LOCATION_ADMIN, service = WsLocationAdmin.class)
@@ -298,6 +309,12 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
     /** {@inheritDoc} */
     @Override
+    public List<String> getBlockList() {
+        return BlockList;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public MetaData getMetaData(String path, String requestOptions) {
 
         if (path == null || EMPTY_PATH_STRING.equals(path)) {
@@ -307,8 +324,9 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         path = normalizePath(path);
 
-        if (!FileServiceUtil.isPathContained(getReadList(), path)
-            && !FileServiceUtil.isPathContained(getWriteList(), path)) {
+        if (FileServiceUtil.isPathContained(getBlockList(),path) 
+            || (!FileServiceUtil.isPathContained(getReadList(), path)
+            && !FileServiceUtil.isPathContained(getWriteList(), path))) {
             logAccessDenied(path);
             return null;
         }
@@ -372,6 +390,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             logInvalidPath(directory);
             return null;
         }
+        // TODO add check for block list
         if (!FileServiceUtil.isPathContained(getReadList(), directory) && !FileServiceUtil.isPathContained(getWriteList(), directory)) {
             logAccessDenied(directory);
             return null;
@@ -411,6 +430,8 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
     public boolean createArchive(String sourcePath, String targetPath) {
 
         boolean rc = true;
+
+        // TODO add checks for block list
 
         // Validate source path
         String normalizedSourcePath = normalizePath(sourcePath);
@@ -454,6 +475,8 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
     public boolean expandArchive(String sourcePath, String targetPath) {
 
         boolean rc = true;
+
+        // TODO add checks for block list
 
         // Validate source path
         String normalizedSourcePath = normalizePath(sourcePath);
