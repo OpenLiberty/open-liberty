@@ -81,7 +81,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
     private static final String READ_LIST_CONFIGURATION = "readDir";
     private static final String WRITE_LIST_CONFIGURATION = "writeDir";
     private static final String BLOCK_LIST_CONFIGURATION = "blockDir";
-    private static final String DISABLE_BLOCK_LIST_CONFIGURATION = "disableBlockDir";
+    private static final String DISABLE_BLOCK_LIST_CONFIGURATION = "disableBlockList";
     private static final String EMPTY_PATH_STRING = "";
 
     private List<String> ReadList;
@@ -214,7 +214,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
                                                                    "CWWKX7911E: OSGi service is not available."));
             }
 
-            ReadList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
         }
 
         //START DEBUG
