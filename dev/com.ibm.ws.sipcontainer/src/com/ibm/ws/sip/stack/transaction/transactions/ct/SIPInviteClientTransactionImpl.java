@@ -196,7 +196,8 @@ public class SIPInviteClientTransactionImpl
 						if( SIPTransactionHelper.isProvionalResponse(sipResponse.getStatusCode() ) )
 						{
 							setState( STATE_PROCEEDING);
-							notCalling();
+							//notCalling();
+							cancelTimerA();
 							sendResponseToUA( sipResponse );
 						}
 						else if( SIPTransactionHelper.isOKFinalResponse( sipResponse.getStatusCode() ) )
@@ -395,7 +396,7 @@ public class SIPInviteClientTransactionImpl
 				"Timer B fired on transaction " + toString());
 		}
 		updateSipTimersInvocationsPMICounter();
-		if (getState() == STATE_CALLING) {
+		if ((getState() == STATE_CALLING) || (getState() == STATE_PROCEEDING)) {
 			notifyTransactionTimeoutToUA();
 			destroyTransaction();
 		}
@@ -644,6 +645,16 @@ public class SIPInviteClientTransactionImpl
 			m_timerB.cancel();
 		}
 	}
+
+	private void cancelTimerA() {
+                // timer A and timer B are only relevant in the "calling" state
+                c_logger.traceDebug("Tibor says cancelling timerA");
+		if (m_timerA != null) {
+                        m_timerA.cancel();
+                }
+        }
+
+
 
 	/** return the most recent response */
 	public Response getMostRecentResponse()
