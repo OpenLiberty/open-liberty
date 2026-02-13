@@ -493,7 +493,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         // Validate source path
         String normalizedSourcePath = normalizePath(sourcePath);
-        if (FileServiceUtil.isPathContained(getBlockList, normalizedSourcePath) || !(FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath) || FileServiceUtil.isPathContained(getWriteList(), normalizedSourcePath))) {
+        if (FileServiceUtil.isPathContained(getBlockList(), normalizedSourcePath) || !(FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath) || FileServiceUtil.isPathContained(getWriteList(), normalizedSourcePath))) {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "ARCHIVE_EXPAND_SOURCE_DENIED_WARNING", sourcePath);
             }
@@ -502,7 +502,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         // Validate target path
         String normalizedTargetPath = normalizePath(targetPath);
-        if (FileServiceUtil.isPathContained(getBlockList, normalizedTargetPath) || !FileServiceUtil.isPathContained(getWriteList(), normalizedTargetPath)) {
+        if (FileServiceUtil.isPathContained(getBlockList(), normalizedTargetPath) || !FileServiceUtil.isPathContained(getWriteList(), normalizedTargetPath)) {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "ARCHIVE_EXPAND_TARGET_DENIED_WARNING", targetPath);
             }
