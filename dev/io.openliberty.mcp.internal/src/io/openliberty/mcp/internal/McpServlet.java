@@ -11,9 +11,11 @@ package io.openliberty.mcp.internal;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.security.Principal;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
@@ -409,7 +411,7 @@ public class McpServlet extends HttpServlet {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Client initializing: " + params.getClientInfo(), params.getCapabilities());
         }
-        String userId = transport.getUser();
+        Principal userId = transport.getUser();
 
         String sessionId = sessionStore.createSession(userId);
 
@@ -438,15 +440,14 @@ public class McpServlet extends HttpServlet {
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
         RequestId mcpReqId = notificationParams.getRequestId();
         McpSessionId sessionId = transport.getSessionId();
-        String userId = transport.getUser();
+        Principal userId = transport.getUser();
 
         if (sessionId == null) {
             transport.sendEmptyResponse();
             return;
         } else {
-            if (sessionStore.getSession(sessionId.value()) == null
-                || (sessionStore.getSession(sessionId.value()) != null && sessionStore.getSession(sessionId.value()).getUserId() != null
-                    && !sessionStore.getSession(sessionId.value()).getUserId().equals(userId))) {
+            var session = sessionStore.getSession(sessionId.value());
+            if (session == null || !Objects.equals(session.getUserId(), userId)) {
                 transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation", userId)));
                 return;
             }
@@ -471,7 +472,7 @@ public class McpServlet extends HttpServlet {
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
         McpSessionId sessionId = transport.getSessionId();
-        String userId = transport.getUser();
+        Principal userId = transport.getUser();
         if (sessionId != null) {
             return new ExecutionRequestId(
                                           transport.getMcpRequest().id(),

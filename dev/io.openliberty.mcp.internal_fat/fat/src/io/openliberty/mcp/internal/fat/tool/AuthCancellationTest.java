@@ -34,8 +34,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
-import io.openliberty.mcp.internal.fat.utils.AuthorizedMcpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -47,7 +47,7 @@ public class AuthCancellationTest extends FATServletClient {
     private static ExecutorService executor;
 
     @Rule
-    public McpClient client = new AuthorizedMcpClient(server, "/cancellationTest", "BobTheAdmin", "testpassword");
+    public McpClient client = new McpClient(server, "/cancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");
@@ -128,7 +128,7 @@ public class AuthCancellationTest extends FATServletClient {
         String responseA = futureA.get();
         JSONAssert.assertEquals(expectedResponseString, responseA, true);
 
-        assertTrue(!server.findStringsInLogs("Exception: The tool cannot be cancelled as the testuser calling user is not authorized.").isEmpty());
+        assertTrue(!server.findStringsInLogs("Exception: The tool cannot be cancelled as the calling user is not authorized.").isEmpty());
 
     }
 

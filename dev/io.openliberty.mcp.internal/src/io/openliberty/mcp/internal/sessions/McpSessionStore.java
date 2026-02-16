@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.sessions;
 
+import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -42,11 +43,11 @@ public class McpSessionStore {
     }
 
     /**
-     * Creates a new MCP session with a unique session ID and stores it.
+     * Creates a new MCP session with a unique session ID and stores it mapping to a userId which can also be null if not authentication was used to create the session.
      *
      * @return the newly generated session ID
      */
-    public String createSession(String userId) {
+    public String createSession(Principal userId) {
 
         if (isStateless()) {
             return null;
@@ -104,12 +105,4 @@ public class McpSessionStore {
         Instant now = Instant.now();
         sessions.entrySet().removeIf(entry -> Duration.between(entry.getValue().getLastAccessed(), now).compareTo(SESSION_TIMEOUT) > 0);
     }
-
-    /**
-     * @return the sessions
-     */
-    public ConcurrentMap<String, McpSession> getSessions() {
-        return sessions;
-    }
-
 }

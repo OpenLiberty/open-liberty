@@ -34,8 +34,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
-import io.openliberty.mcp.internal.fat.utils.AuthorizedMcpClient;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.McpClient.StateMode;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -48,7 +48,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
     private static final String EXPECTED_ERROR = "OperationCancellationException";
 
     @Rule
-    public McpClient client = new AuthorizedMcpClient(server, "/asyncToolCancellationTest", "BobTheAdmin", "testpassword");
+    public McpClient client = new McpClient(server, "/asyncToolCancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/asyncToolCancellationTest");

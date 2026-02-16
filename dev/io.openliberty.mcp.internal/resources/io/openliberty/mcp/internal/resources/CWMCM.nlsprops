@@ -213,7 +213,7 @@ CWMCM0024E.invalid.character.tool.name.useraction=Make sure that tool names cont
 argument.conversion.failed=The {0} argument cannot be converted to the {1} type.
 extra.arguments=The following arguments were passed but were not found in the method: {0}.
 missing.arguments=The following arguments were expected by the method but were not provided: {0}.
-unauthorized.cancellation=The tool cannot be cancelled as the {0} calling user is not authorized.
+unauthorized.cancellation=The tool cannot be cancelled as the calling user is not authorized.
 
 # Used for server logging
 # {0} = Parameter name

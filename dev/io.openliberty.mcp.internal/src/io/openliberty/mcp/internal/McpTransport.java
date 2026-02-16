@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -94,8 +95,6 @@ public class McpTransport {
         }
         this.mcpRequest = toRequest();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
-        req.getHeaderNames().asIterator().forEachRemaining(e -> {
-        });
 
         if (sessionIdHeader == null) {
             this.sessionInfo = null;
@@ -232,14 +231,26 @@ public class McpTransport {
         res.setStatus(HttpServletResponse.SC_ACCEPTED);
     }
 
+    /**
+     * sends custom error message response back to client depending on the error with 500 HTTPS error code
+     *
+     * @param e the exception that was caught
+     * @throws IOException
+     */
     public void sendError(Throwable e) throws IOException {
         String exceptionMessage = Tr.formatMessage(tc, "unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
         Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
         res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exceptionMessage);
     }
 
+    /**
+     * sends custom error message response back to client depending on the error with 403 HTTPS error code
+     *
+     * @param e the exception that was caught
+     * @throws IOException
+     */
     public void sendAuthError(Throwable e) throws IOException {
-        Tr.error(tc, "CWMCM0033E.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
+        Tr.audit(tc, "CWMCM0033E.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
         res.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
     }
 
@@ -327,7 +338,11 @@ public class McpTransport {
         return false;
     }
 
-    public String getUser() {
-        return req.getUserPrincipal() != null ? req.getUserPrincipal().getName() : null;
+    /**
+     *
+     * @return the user principle injected after authorisation
+     */
+    public Principal getUser() {
+        return req.getUserPrincipal() != null ? req.getUserPrincipal() : null;
     }
 }

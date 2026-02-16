@@ -9,15 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
+import java.security.Principal;
+
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.request.RequestId;
 
-public record ExecutionRequestId(RequestId id, McpSessionId sessionId, String userId) {
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-        return "ExecutionRequestId [id=" + id.value() + ", sessionId=" + sessionId.value() + ", userId=" + userId + "]";
-    }
-
-}
+public record ExecutionRequestId(RequestId id, McpSessionId sessionId, Principal userId) {}

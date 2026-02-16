@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.sessions;
 
+import java.security.Principal;
 import java.time.Instant;
 
 /**
@@ -18,11 +19,11 @@ import java.time.Instant;
 public class McpSession {
 
     private final McpSessionId sessionId;
-    private final String userId;
+    private final Principal userId;
     private final Instant created;
     private Instant lastAccessed;
 
-    public McpSession(String sessionId, String userId) {
+    public McpSession(String sessionId, Principal userId) {
         this.sessionId = new McpSessionId(sessionId);
         this.userId = userId;
         this.created = Instant.now();
@@ -41,7 +42,7 @@ public class McpSession {
         return sessionId;
     }
 
-    public String getUserId() {
+    public Principal getUserId() {
         return userId;
     }
 
