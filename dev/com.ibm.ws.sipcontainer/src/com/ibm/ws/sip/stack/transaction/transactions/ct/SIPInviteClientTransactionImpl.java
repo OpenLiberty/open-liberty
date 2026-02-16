@@ -53,7 +53,12 @@ public class SIPInviteClientTransactionImpl
 	private TimerB m_timerB;
 	
 	/**
-	 * Timer D reflects the amount of time that the server transaction can remain in the "Completed" 
+	 * second timer B for all transport types , controls transaction timeouts
+	 */
+	private TimerB m_timerB2;
+	
+	/**
+	 * Timer D reflects the amount of time that the server transaction can remain in the "Completed"
 	 * state when unreliable transports are used
 	 */
 	private TimerD m_timerD;
@@ -63,6 +68,9 @@ public class SIPInviteClientTransactionImpl
 	
 	/** value of timer B for this transaction, in milliseconds */
 	private final int m_timerBvalue;
+	
+	/** value of timer B2 for this transaction, in milliseconds */
+	private final int m_timerB2value;
 	
 	/**
 	 * the last response that was receives ( could be provisionning like RINGING )
@@ -98,11 +106,12 @@ public class SIPInviteClientTransactionImpl
 	
 	public SIPInviteClientTransactionImpl(SIPTransactionStack transactionStack,
 		SipProvider provider,
-		Request req, BranchMethodKey key, long transactionId) 
+		Request req, BranchMethodKey key, long transactionId)
 	{
 		super(transactionStack, provider, req, key, transactionId);
 		m_timerAvalue = getTimerA(req);
 		m_timerBvalue = getTimerB(req);
+		m_timerB2value = getTimerB(req); // Initialize timer B2 with same value as timer B
 		SIPNonInviteClientTransactionImpl.getTimerT2(req); // just remove this header if it exists
 
 		try {
@@ -140,13 +149,24 @@ public class SIPInviteClientTransactionImpl
 					case STATE_BEFORE_STATE_MACHINE_PROCESSE:					
 							setState(STATE_CALLING);
 							sendRequestToTransport(sipRequest);
+							//set timer A
+							//we will cancel this timer upon
+                            //receiving a provisional response
 							if (!isTransportReliable()) {
 								m_timerA = new TimerA(this, getCallId());
 								addTimerTask(m_timerA, m_timerAvalue);								
 							}
-							
+							//set timer B
+							//we will cancel this timer upon
+							//receiving a provisional response
 							m_timerB = new TimerB(this, getCallId());
 							addTimerTask(m_timerB, m_timerBvalue);
+							
+							//set a second timer B
+							//we will cancel this timer upon
+							//receiving a final response
+							m_timerB2 = new TimerB(this, getCallId());
+							addTimerTask(m_timerB2, m_timerB2value);
 							break;
 		
 					case STATE_CALLING:					
@@ -210,6 +230,7 @@ public class SIPInviteClientTransactionImpl
 							setFinalResponse(sipResponse);
 							sendAutomaticAckRequest();
 							notCalling();
+							cancelTimerB2();
 							setCompletedState();
 							sendResponseToUA( sipResponse );				
 						}												
@@ -259,7 +280,7 @@ public class SIPInviteClientTransactionImpl
 	{
 		if( isTransportReliable() )
 		{
-			//timer is 0 - go stait to terminate
+			//timer is 0 - go straight to terminate
 			destroyTransaction();
 		}
 		else
@@ -400,6 +421,21 @@ public class SIPInviteClientTransactionImpl
 			destroyTransaction();
 		}
 	}
+	
+	/**
+	 * called when TimerB2 fires
+	 */
+	void timerB2fired() {
+		if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug(this, "timerB2fired",
+				"Timer B2 fired on transaction " + toString());
+		}
+		updateSipTimersInvocationsPMICounter();
+		if (getState() == STATE_PROCEEDING) {
+			notifyTransactionTimeoutToUA();
+			destroyTransaction();
+		}
+	}
 
 	/**
 	 * called when TimerD fires
@@ -464,6 +500,7 @@ public class SIPInviteClientTransactionImpl
 					//timer B
 					if (m_ct != null) {
 						m_ct.timerBfired();
+						m_ct.timerB2fired();
 					}
 				}
 				
@@ -611,7 +648,7 @@ public class SIPInviteClientTransactionImpl
 	}
 	 
 	/** destroy the transaction */
-	public synchronized void destroyTransaction() 
+	public synchronized void destroyTransaction()
 	{
 		setState( STATE_TERMINATED );
 		
@@ -624,16 +661,20 @@ public class SIPInviteClientTransactionImpl
 		{
 			m_timerB.cancel();
 		}
+		if( m_timerB2!=null)
+		{
+			m_timerB2.cancel();
+		}
 		if( m_timerD!=null)
 		{
 			m_timerD.cancel();
 		}
 		
-		startAPITimer();		
+		startAPITimer();
 	}
 	
 	/**
-	 * called when this transaction is no longer in the "calling" state 
+	 * called when this transaction is no longer in the "calling" state
 	 */
 	private void notCalling() {
 		// timer A and timer B are only relevant in the "calling" state
@@ -643,7 +684,20 @@ public class SIPInviteClientTransactionImpl
 		if (m_timerB != null) {
 			m_timerB.cancel();
 		}
+		
 	}
+
+
+	/**
+    * called when this transaction is no longer in the "calling" state
+    */
+    private void cancelTimerB2() {
+                if (m_timerB2 != null) {
+                        m_timerB2.cancel();
+                }
+
+        }
+
 
 	/** return the most recent response */
 	public Response getMostRecentResponse()
