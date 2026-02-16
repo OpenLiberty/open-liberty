@@ -448,7 +448,7 @@ public class McpServlet extends HttpServlet {
         } else {
             var session = sessionStore.getSession(sessionId.value());
             if (session == null || !Objects.equals(session.getUserId(), userId)) {
-                transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation", userId)));
+                transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")));
                 return;
             }
         }

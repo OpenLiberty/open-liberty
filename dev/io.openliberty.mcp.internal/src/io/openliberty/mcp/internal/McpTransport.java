@@ -250,7 +250,7 @@ public class McpTransport {
      * @throws IOException
      */
     public void sendAuthError(Throwable e) throws IOException {
-        Tr.audit(tc, "CWMCM0033E.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
+        Tr.audit(tc, "CWMCM0033A.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
         res.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
     }
 
@@ -340,9 +340,9 @@ public class McpTransport {
 
     /**
      *
-     * @return the user principle injected after authorisation
+     * @return the user principle injected after authorisation (can be null if authorisation failed)
      */
     public Principal getUser() {
-        return req.getUserPrincipal() != null ? req.getUserPrincipal() : null;
+        return req.getUserPrincipal();
     }
 }

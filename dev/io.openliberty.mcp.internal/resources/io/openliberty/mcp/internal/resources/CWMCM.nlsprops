@@ -278,6 +278,6 @@ CWMCM0032E.duplicate.argument.name.useraction=Give each tool argument a differen
 # {1} = RequestURI
 # {2} = RequestQuery
 # {3} = ExceptionMessage
-CWMCM0033E.forbidden.error=CWMCM0033E: Forbidden request. Method={0} RequestURI={1} RequestQuery={2}, Exception: {3}
-CWMCM0033E.forbidden.error.explanation=A request was made but the user is not authorized to make it.
-CWMCM0033E.forbidden.error.useraction=Ensure an authorized user is calling the request.
+CWMCM0033A.forbidden.error=CWMCM0033A: Forbidden request. Method={0} RequestURI={1} RequestQuery={2}, Exception: {3}
+CWMCM0033A.forbidden.error.explanation=A request was made but the user is not authorized to make it.
+CWMCM0033A.forbidden.error.useraction=Ensure an authorized user is calling the request.
