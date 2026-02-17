@@ -652,6 +652,15 @@ public class GenericEndpointImpl {
 					this);
 		}
 		sslOptions = config;
+		// If the endpoint has already started, we need to queue another start
+		// so that the ssl endpoint is properly started as well. If the config
+		// is unchanged, this will leave the endpoints as is when doing the chain start
+		if (endpointStarted && getEndpointOptions() != null) {
+			applyNewConfiguration(getEndpointOptions());
+		}
+		else if (c_logger.isTraceDebugEnabled()) {
+			c_logger.traceDebug("Set SSL options without starting chain. EndpointStarted ? " + endpointStarted + ", Endpoint Options: " + getEndpointOptions());
+		}
 	}
 
 	@Trivial
