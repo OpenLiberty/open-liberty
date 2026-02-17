@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2024 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,7 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
 
     private final AtomicServiceReference<InjectionEngine> injectionEngineSRRef = new AtomicServiceReference<InjectionEngine>("injectionEngine");
     
-    private final AtomicServiceReference<ManagedObjectService> managedObjectServiceSRRef = new AtomicServiceReference<ManagedObjectService>("managedObjectService");
+    private volatile ManagedObjectService managedObjectService = null;
 
     @SuppressWarnings("serial")
     private final OneTimeUseArrayList backgroundWebAppStartFutures = new OneTimeUseArrayList();
@@ -297,7 +297,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         this.sessionHelperSRRef.activate(context);
         this.cacheManagerSRRef.activate(context);
         this.injectionEngineSRRef.activate(context);
-        this.managedObjectServiceSRRef.activate(context);
         this.servletContainerInitializers.activate(context);
         this.transferContextServiceRef.activate(context);
         
@@ -416,7 +415,6 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
         this.sessionHelperSRRef.deactivate(componentContext);
         this.cacheManagerSRRef.deactivate(componentContext);
         this.injectionEngineSRRef.deactivate(componentContext);
-        this.managedObjectServiceSRRef.deactivate(context);
         this.servletContainerInitializers.deactivate(componentContext);
         this.transferContextServiceRef.deactivate(componentContext);
         this.webMBeanRuntimeServiceRef.deactivate(componentContext);
@@ -649,17 +647,18 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
     }
     
     @Reference(name = "managedObjectService",
-                    service = ManagedObjectService.class,
                     policy = ReferencePolicy.DYNAMIC,
                     policyOption = ReferencePolicyOption.GREEDY)
-    protected void setManagedObjectService(ServiceReference<ManagedObjectService> ref) {
-        this.managedObjectServiceSRRef.setReference(ref);
+    protected void setManagedObjectService(ManagedObjectService mos) {
+        this.managedObjectService = mos;
     }
 
-    protected void unsetManagedObjectService(ServiceReference<ManagedObjectService> ref) {
-        this.managedObjectServiceSRRef.unsetReference(ref);
+    protected void unsetManagedObjectService(ManagedObjectService mos) {
+        // No need to unset.  This is a dynamic greedy service, but it is mandatory.
+        // The component will get deactivated if nothing is available to provide the MOS.
+        // Unsetting the variable only can lead to unnecessary NPEs.
+        // This method is here only to satisfy BND
     }
-
     /** Required static reference: called before activate */
     @Reference
     protected void setVirtualHostMgr(DynamicVirtualHostManager vhostMgr) {
@@ -902,9 +901,13 @@ public class WebContainer extends com.ibm.ws.webcontainer.WebContainer implement
             throw new IllegalStateException("The web container has been deactivated");
         }
         ReferenceContext referenceContext = injectionEngineSRRef.getServiceWithException().getCommonReferenceContext(webAppConfig.getMetaData());
-        ManagedObjectService managedObjectService = managedObjectServiceSRRef.getServiceWithException();
         
-        WebApp webApp = webAppFactory.createWebApp(webAppConfig, moduleInfo.getClassLoader(), referenceContext, metaDataService, j2eeNameFactory, managedObjectService);
+        ManagedObjectService current = this.managedObjectService;
+        if (current == null) {
+            // this should never happen because MOS is mandatory
+            throw new IllegalStateException("No ManagedObjectService has been set.");
+        }
+        WebApp webApp = webAppFactory.createWebApp(webAppConfig, moduleInfo.getClassLoader(), referenceContext, metaDataService, j2eeNameFactory, current);
         webApp.setName(webAppConfig.getModuleName());
         webApp.setModuleContainer(moduleInfo.getContainer());
         webApp.setOrderedLibPaths(webAppConfig.getOrderedLibPaths());
