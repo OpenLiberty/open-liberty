@@ -203,6 +203,13 @@ public class SIPStackConfiguration
 	 * true if MessageContext pooling debug enabled
 	 */
 	private boolean m_messageContextPoolingDebug;
+
+	/**
+	 * true if use TimerB2 enabled
+	 */
+	private boolean m_useTimerB2;
+
+
 	
 	/**
 	 * Set of header names to be parsed as address headers (like To/From/Contact).
@@ -224,7 +231,8 @@ public class SIPStackConfiguration
 	{
 		m_uaDispachingThreads = ApplicationProperties.getProperties().
 			getInt(StackProperties.AGENT_KEY_DISPACHING_THREAD_NUMBER );
-		
+		m_useTimerB2 = ApplicationProperties.getProperties().
+			getBoolean( StackProperties.USE_TIMER_B2);
 		//log properties
 		m_logInMessages = ApplicationProperties.getProperties().
 			getBoolean( StackProperties.TRACE_IN_MESSAGES);

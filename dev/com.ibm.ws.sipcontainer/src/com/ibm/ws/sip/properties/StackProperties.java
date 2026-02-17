@@ -26,6 +26,14 @@ public class StackProperties {
 	private static final transient LogMgr c_logger = Log
 			.get(StackProperties.class);
 	
+	/** 
+	 * Use TimerB2 to cancel Client INVITE
+	 * if state is Proceeding
+	 */
+	public final static String USE_TIMER_B2 = "useTimerB2";
+	public final static boolean USE_TIMER_B2_DEFAULT = false; 
+
+
 	/**
 	* cache constants maybe overridden by some properties file
 	* in tWas="IP_CACHE_INIT_SIZE"
@@ -666,7 +674,7 @@ public class StackProperties {
     	
     	properties.setInt(IP_CACHE_INIT_SIZE, IP_CACHE_INIT_SIZE_DEFAULT,CustPropSource.DEFAULT);
     	properties.setInt(IP_CACHE_MAX_SIZE, IP_CACHE_MAX_SIZE_DEFAULT, CustPropSource.DEFAULT);
-    	
+    	properties.setBoolean(USE_TIMER_B2, USE_TIMER_B2_DEFAULT, CustPropSource.DEFAULT);
     	properties.setInt(AGENT_KEY_DISPACHING_THREAD_NUMBER, AGENT_KEY_DISPACHING_THREAD_NUMBER_DEFAULT,CustPropSource.DEFAULT);
     	properties.setBoolean(TRACE_IN_MESSAGES, TRACE_IN_MESSAGES_DEFAULT, CustPropSource.DEFAULT);
     	properties.setBoolean(TRACE_OUT_MESSAGES, TRACE_OUT_MESSAGES_DEFAULT, CustPropSource.DEFAULT);
