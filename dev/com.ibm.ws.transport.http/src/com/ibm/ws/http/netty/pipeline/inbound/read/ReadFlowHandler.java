@@ -139,7 +139,17 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
         FlowState state = state(context);
+
+        if(state.isResponseInFlight()){
+            System.out.println("FLOW_VIOLATION: new HttpRequest while responseInFlight= true" 
+                + " channel=" + context.channel() 
+                + " keepAlive=" + state.isKeepAliveAllowed() 
+                + " readPending = " + state.isReadPending()
+                + " stopped= " + state.stoppedReading(); 
+        }
+
         if(message instanceof HttpRequest){
+            state.setResponseInFlight(true);
             HttpRequest request = (HttpRequest) message;
             state.setHeadRequest(request.method() == HttpMethod.HEAD);
             state.setBodyReadWanted(false);
@@ -193,6 +203,8 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         FlowState state = state(context);
 
         if (message instanceof HttpResponse) {
+            state.setResponseInFlight(true);
+        
             HttpResponse response = (HttpResponse) message;
             int code = response.status().code();
             boolean informational = (code >= 100 && code < 200 && code != 101);

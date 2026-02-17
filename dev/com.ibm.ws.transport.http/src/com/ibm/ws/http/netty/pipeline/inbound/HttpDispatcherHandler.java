@@ -47,6 +47,8 @@ import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.channel.socket.ChannelInputShutdownEvent;
+import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
@@ -74,6 +76,8 @@ import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
+
+
 
 
 /**
@@ -146,6 +150,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             //} 
             return;
         }
+        // else if(evt instanceof ChannelInputShutdownEvent || evt instanceof ChannelInputShutdownReadComplete) {
+        //     Tr.debug(tc, "[USER-EVENT-SHUTDOWN-SYSOUT] userEventTriggered, closing context due to shutdown on connection");
+        //     ctx.close();
+        // }
         super.userEventTriggered(ctx, evt);
     }
 
@@ -506,14 +514,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 HttpDispatcher.getExecutorService().execute(pending);
             }
 
-            if (!ctx.channel().config().isAutoRead()) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "onUpgradeCommitted: enabling autoRead for upgraded connection");
-                    //Tr.debug(tc,"onUpgradeCommitted: enabling autoRead for upgraded connection");
-                }
-                ctx.channel().config().setAutoRead(true);
-                Tr.debug(tc,"[UPGRADE-SYSOUT] onUpgradeCommitted setAutoRead(true) DONE autoRead(now)="
-                + ctx.channel().config().isAutoRead());  
+            // if (!ctx.channel().config().isAutoRead()) {
+            //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            //         Tr.debug(tc, "onUpgradeCommitted: enabling autoRead for upgraded connection");
+            //         //Tr.debug(tc,"onUpgradeCommitted: enabling autoRead for upgraded connection");
+            //     }
+            //     ctx.channel().config().setAutoRead(true);
+            //     Tr.debug(tc,"[UPGRADE-SYSOUT] onUpgradeCommitted setAutoRead(true) DONE autoRead(now)="
+            //     + ctx.channel().config().isAutoRead());  
+            // }
+            if(ctx.channel().config().isAutoRead()){
+                Tr.debug(tc, "[UPGRADE-SYSOUT] onupgradeCommitted, ensuring autoread disabled");
+                ctx.channel().config().setAutoRead(false);
             }
         } finally{
             try {
