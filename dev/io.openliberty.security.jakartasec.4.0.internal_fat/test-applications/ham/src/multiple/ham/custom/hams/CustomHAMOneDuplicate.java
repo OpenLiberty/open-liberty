@@ -28,7 +28,6 @@ public class CustomHAMOneDuplicate implements HttpAuthenticationMechanism {
 
     @Override
     public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
-        // fetch identity store handler, create a user password credential and call identity store handler validate()
         return null;
     }
 
