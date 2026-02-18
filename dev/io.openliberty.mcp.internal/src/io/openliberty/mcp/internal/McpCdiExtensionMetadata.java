@@ -35,6 +35,7 @@ public class McpCdiExtensionMetadata implements CDIExtensionMetadata {
                       McpSessionStore.class,
                       JsonTextContentEncoder.class,
                       EncoderRegistry.class,
+                      ConverterRegistry.class,
                       McpCdiProducers.class,
                       McpConfigProducer.class);
     }

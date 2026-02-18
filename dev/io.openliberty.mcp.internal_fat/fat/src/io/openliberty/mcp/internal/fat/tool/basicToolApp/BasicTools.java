@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.Tool.Annotations;
@@ -326,54 +325,6 @@ public class BasicTools {
 
     public static record City(String name, String country, int population, boolean isCapital) {};
 
-    public static record House(int number, String street) {};
-
-    public static abstract class AbstractConverter<T> implements DefaultValueConverter<T> {
-
-        @Override
-        public abstract T convert(String defaultValue);
-    }
-
-    @ApplicationScoped
-    public static class HouseConverter extends AbstractConverter<House> {
-        /**
-         * Converts a default value string in the format "Number::Street" to a {@link House} object
-         * Example string: "5::London Road"
-         */
-        @Override
-        public House convert(String defaultValue) {
-            String[] fields = defaultValue.split("::");
-            if (fields.length != 2) {
-                throw new IllegalArgumentException();
-            }
-            int number = Integer.parseInt(fields[0]);
-            String street = fields[1];
-            return new House(number, street);
-        }
-    }
-
-    @ApplicationScoped
-    public static class CityConverter implements DefaultValueConverter<City> {
-
-        /**
-         * Converts a default value string in the format "Name::Country::Population::IsCapital" to a {@link City} object
-         * Example string: "Manchester::England::8000::false"
-         */
-        @Override
-        public City convert(String defaultValue) {
-            String[] fields = defaultValue.split("::");
-            if (fields.length != 4) {
-                throw new IllegalArgumentException();
-            }
-            String name = fields[0];
-            String country = fields[1];
-            int population = Integer.parseInt(fields[2]);
-            boolean isCapital = Boolean.parseBoolean(fields[3]);
-            return new City(name, country, population, isCapital);
-        }
-
-    }
-
     // Test ToolArg.required is always true by default, check that it works when it is set to true
     @Tool(name = "testToolArgIsNotRequired", title = "ToolArgNotRequired", description = "ToolArgNotRequired")
     public boolean testToolArgNotRequired(@ToolArg(name = "value", description = "boolean value", required = false) boolean value) {
@@ -404,35 +355,6 @@ public class BasicTools {
     @Tool(name = "testToolArgObjectNotRequired", title = "ToolArgObjectNotRequired", description = "ToolArgNotRequired")
     public City testToolArgObjectNotRequired(@ToolArg(name = "value", description = "City object value", required = false) City value) {
         return value;
-    }
-
-    @Tool(name = "testToolArgStringDefaultValue", title = "ToolArg String Default Value", description = "Test tool defaults to default value when argument not provided")
-    public String testToolArgStringDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet) {
-        return planet;
-    }
-
-    @Tool(name = "testToolArgIntDefaultValue", title = "ToolArg Int Default Value", description = "Test tool defaults to default value when argument not provided")
-    public int testToolArgIntDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "2025") int year) {
-        return year;
-    }
-
-    @Tool(name = "testToolArgCustomTypeDefaultValue", title = "ToolArg Custom Type Default Value", description = "Test tool defaults to default value when argument not provided")
-    public City testToolArgCustomTypeDefaultValue(@ToolArg(name = "city", description = "City object value", required = false,
-                                                           defaultValue = "Manchester::England::8000::false") City city) {
-        return city;
-    }
-
-    @Tool(name = "testToolArgCustomTypeDefaultValueWithInheritedConverter", title = "Create a House",
-          description = "Test tool defaults to default value when argument not provided")
-    public House testObjectWithInheritedConverterResponse(@ToolArg(name = "house", description = "House object value", required = false,
-                                                                   defaultValue = "5::London Road") House house) {
-        return house;
-    }
-
-    @Tool(name = "testMultipleToolArgsOneDefaultValue", title = "testMultipleToolArgsOneDefaultValue", description = "MultipleToolArgsOneDefaultValue")
-    public String testMultipleToolArgsOneDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet,
-                                                      @ToolArg(name = "year", description = "current year") int year) {
-        return "Planet " + planet + " was created in the year " + year;
     }
 
     /////////////////////////////////////////////

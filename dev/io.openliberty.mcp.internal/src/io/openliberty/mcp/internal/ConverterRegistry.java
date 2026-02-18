@@ -11,27 +11,44 @@ package io.openliberty.mcp.internal;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
+import jakarta.annotation.PreDestroy;
+import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.CDI;
 
 @ApplicationScoped
 public class ConverterRegistry {
 
+    private static final int DEFAULT_CONVERTER_PRIORITY = 0;
     private static ConverterRegistry staticInstance = null;
-    private static Map<Type, List<DefaultValueConverter<?>>> converters = new HashMap<>();
 
+    private Map<Type, List<DefaultValueConverter<?>>> convertersMap;
+    private CreationalContext<?> context;
+
+    public void registerConverters(Map<Type, List<DefaultValueConverter<?>>> convertersMap, CreationalContext<?> context) {
+        this.convertersMap = convertersMap;
+        this.context = context;
+        sortConverters();
+    }
+
+    /**
+     * Get the CDI bean for ConverterRegistry,
+     * unless a static instance is set in order to have a ConverterRegistry to use for unit testing
+     *
+     * @return the application scoped ConverterRegistry
+     */
     public static ConverterRegistry get() {
         if (staticInstance != null) {
             return staticInstance;
         }
-        return CDI.current().select(McpCdiExtension.class).get().getConverterRegistry();
+        return CDI.current().select(ConverterRegistry.class).get();
     }
 
     /**
@@ -43,17 +60,33 @@ public class ConverterRegistry {
         staticInstance = converterRegistry;
     }
 
-    public static Optional<DefaultValueConverter<?>> getConverter(Type type) {
-        List<DefaultValueConverter<?>> convertersForType = converters.get(type);
+    /**
+     * Sort the registered converters for a type by priority (highest first, descending)
+     */
+    private void sortConverters() {
+        for (List<DefaultValueConverter<?>> convertersList : convertersMap.values()) {
+            convertersList.sort(Comparator.<DefaultValueConverter<?>> comparingInt(converter -> getPriority(converter)).reversed());
+        }
+    }
+
+    private int getPriority(Object converter) {
+        Priority priority = converter.getClass().getAnnotation(Priority.class);
+        return priority != null ? priority.value() : DEFAULT_CONVERTER_PRIORITY;
+    }
+
+    public Optional<DefaultValueConverter<?>> getConverter(Type type) {
+        List<DefaultValueConverter<?>> convertersForType = convertersMap.get(type);
         return Optional.ofNullable(convertersForType != null ? convertersForType.get(0) : null);
     }
 
     public void addConverter(Type type, DefaultValueConverter<?> converter) {
-        converters.computeIfAbsent(type, k -> new ArrayList<>()).add(converter);
+        convertersMap.computeIfAbsent(type, k -> new ArrayList<>()).add(converter);
     }
 
-    public static Collection<List<DefaultValueConverter<?>>> getAllCustomConverters() {
-        return converters.values();
+    @PreDestroy
+    public void cleanup() {
+        // Destroy any @Dependent beans
+        context.release();
     }
 
 }

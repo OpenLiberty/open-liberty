@@ -33,12 +33,13 @@ import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpInitializeParams.ClientInfo;
-import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
+import io.openliberty.mcp.internal.testutils.TestUtils;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -92,7 +93,7 @@ public class MessageParsingTest {
         assertThat(request.id().value(), equalTo(new BigDecimal(2)));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.TOOLS_CALL));
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertEquals(Map.of("input", "Hello"), toolCallRequest.getArguments(jsonb));
+        assertEquals(Map.of("input", "Hello"), toolCallRequest.getArguments(jsonb, TestUtils.getTestConverterRegistry()));
     }
 
     @Test
@@ -340,7 +341,7 @@ public class MessageParsingTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
 
-        assertEquals(Map.of("num1", 111, "num2", 222), toolCallRequest.getArguments(jsonb));
+        assertEquals(Map.of("num1", 111, "num2", 222), toolCallRequest.getArguments(jsonb, TestUtils.getTestConverterRegistry()));
     }
 
     @Test
@@ -360,7 +361,7 @@ public class MessageParsingTest {
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertEquals(Map.of("input", true), toolCallRequest.getArguments(jsonb));
+        assertEquals(Map.of("input", true), toolCallRequest.getArguments(jsonb, TestUtils.getTestConverterRegistry()));
     }
 
 }

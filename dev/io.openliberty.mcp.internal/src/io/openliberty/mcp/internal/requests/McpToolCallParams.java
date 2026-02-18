@@ -21,10 +21,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import jakarta.json.JsonObject;
@@ -70,13 +69,13 @@ public class McpToolCallParams {
         this.arguments = arguments;
     }
 
-    public Map<String, Object> getArguments(Jsonb jsonb) {
+    public Map<String, Object> getArguments(Jsonb jsonb, ConverterRegistry converterRegistry) {
         if (parsedArguments != null) {
             return parsedArguments;
         }
 
         JsonObject safeArguments = (this.arguments != null) ? this.arguments : JsonValue.EMPTY_JSON_OBJECT;
-        parsedArguments = parseArguments(safeArguments, jsonb);
+        parsedArguments = parseArguments(safeArguments, jsonb, converterRegistry);
         return parsedArguments;
     }
 
@@ -89,7 +88,7 @@ public class McpToolCallParams {
     }
 
     @FFDCIgnore(NumberFormatException.class)
-    private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb) {
+    private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb, ConverterRegistry converterRegistry) {
 
         List<ToolArgument> metadatas = metadata.arguments();
         Map<String, Object> result = new HashMap<>();
@@ -113,7 +112,7 @@ public class McpToolCallParams {
                 }
             } else if (!argMetadata.required()) {
                 //Argument is optional and not provided, resolve the default value
-                result.put(argName, DefaultValueResolver.resolveDefaultValue(name, argMetadata));
+                result.put(argName, DefaultValueResolver.resolveDefaultValue(name, argMetadata, converterRegistry));
             } else {
                 // Required argument was not provided in the request
                 hasMissingArgs = true;

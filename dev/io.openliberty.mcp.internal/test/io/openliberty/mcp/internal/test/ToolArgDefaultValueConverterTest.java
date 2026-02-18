@@ -15,25 +15,22 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 
 import java.io.StringReader;
-import java.lang.reflect.Type;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.Literals;
 import io.openliberty.mcp.internal.ToolRegistry;
-import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolManager.ToolInfo;
 import jakarta.json.bind.Jsonb;
@@ -76,12 +73,7 @@ public class ToolArgDefaultValueConverterTest {
         ToolRegistry registry = new ToolRegistry(null, jsonb);
         ToolRegistry.set(registry);
 
-        ConverterRegistry converterRegistry = new ConverterRegistry();
-        for (Map.Entry<Type, DefaultValueConverter<?>> entry : BuiltinDefaultValueConverters.CONVERTERS.entrySet()) {
-            converterRegistry.addConverter(entry.getKey(), entry.getValue());
-        }
-        converterRegistry.addConverter(City.class, new CityConverter());
-        ConverterRegistry.set(converterRegistry);
+        TestUtils.getTestConverterRegistry().addConverter(City.class, new CityConverter());
 
         Tool defaultValueIntArgTestTool = Literals.tool("defaultValueInt", "Default Value Int", "ToolArg with a default value of a integer type");
         List<ToolArgument> defaultValIntToolArgs = List.of(new ToolArgument("year", "Integer value", false, Integer.class, "2025"));
@@ -135,7 +127,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "year");
         String toolName = toolCallRequest.getMetadata().name();
-        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata), equalTo(2025));
+        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()), equalTo(2025));
     }
 
     @Test
@@ -155,7 +147,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "planet");
         String toolName = toolCallRequest.getMetadata().name();
-        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata), equalTo("Jupiter"));
+        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()), equalTo("Jupiter"));
     }
 
     @Test
@@ -175,7 +167,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "initial");
         String toolName = toolCallRequest.getMetadata().name();
-        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata), equalTo('H'));
+        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()), equalTo('H'));
     }
 
     @Test
@@ -195,7 +187,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "initial");
         String toolName = toolCallRequest.getMetadata().name();
-        assertThrows(() -> DefaultValueResolver.resolveDefaultValue(toolName, argMetadata),
+        assertThrows(() -> DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()),
                      exception()
                                 .ofType(IllegalArgumentException.class)
                                 .messageIncludes("CWMCM0020E: The default value of the initial argument of the defaultValueInvalidChar MCP tool cannot be converted to the class java.lang.Character type. The value is HH. The error is java.lang.IllegalArgumentException: CWMCM0021E: A character default value must be exactly one character, but was HH."));
@@ -218,7 +210,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "count");
         String toolName = toolCallRequest.getMetadata().name();
-        assertThrows(() -> DefaultValueResolver.resolveDefaultValue(toolName, argMetadata),
+        assertThrows(() -> DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()),
                      exception()
                                 .ofType(IllegalArgumentException.class)
                                 .messageIncludes("CWMCM0020E: The default value of the count argument of the defaultValueInvalidLong MCP tool cannot be converted to the class java.lang.Long type. The value is notANumber. The error is java.lang.NumberFormatException: For input string: \"notANumber\""));
@@ -241,7 +233,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         String toolName = toolCallRequest.getMetadata().name();
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "bool");
-        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata), equalTo(true));
+        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()), equalTo(true));
     }
 
     @Test
@@ -261,7 +253,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         String toolName = toolCallRequest.getMetadata().name();
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "city");
-        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata),
+        assertThat(DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()),
                    equalTo(new City("Manchester", "England", 8000, false)));
     }
 
@@ -282,7 +274,7 @@ public class ToolArgDefaultValueConverterTest {
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
         ToolArgument argMetadata = getArgument(toolCallRequest.getMetadata(), "person");
         String toolName = toolCallRequest.getMetadata().name();
-        assertThrows(() -> DefaultValueResolver.resolveDefaultValue(toolName, argMetadata),
+        assertThrows(() -> DefaultValueResolver.resolveDefaultValue(toolName, argMetadata, TestUtils.getTestConverterRegistry()),
                      exception()
                                 .ofType(IllegalArgumentException.class));
     }

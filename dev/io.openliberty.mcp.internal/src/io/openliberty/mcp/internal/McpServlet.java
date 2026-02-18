@@ -92,6 +92,9 @@ public class McpServlet extends HttpServlet {
     @Inject
     EncoderRegistry encoderRegistry;
 
+    @Inject
+    ConverterRegistry converterRegistry;
+
     private Jsonb jsonb;
 
     @Override
@@ -303,7 +306,7 @@ public class McpServlet extends HttpServlet {
      * @return
      */
     private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params) {
-        Map<String, Object> args = params.getArguments(jsonb);
+        Map<String, Object> args = params.getArguments(jsonb, converterRegistry);
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
         RequestId requestId = request.id();
 

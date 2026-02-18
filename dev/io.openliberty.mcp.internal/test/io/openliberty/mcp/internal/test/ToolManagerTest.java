@@ -38,10 +38,12 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import io.openliberty.mcp.tools.ToolManager;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
@@ -67,6 +69,7 @@ public class ToolManagerTest {
         schemaRegistry = new SchemaRegistry();
         jsonb = JsonbBuilder.create();
         toolManager = new ToolRegistry(schemaRegistry, jsonb);
+        ConverterRegistry.set(TestUtils.getTestConverterRegistry());
     }
 
     @Test

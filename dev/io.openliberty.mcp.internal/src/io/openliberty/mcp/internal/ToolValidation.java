@@ -56,7 +56,7 @@ public class ToolValidation {
 
     public record ToolArgumentValidationError(ToolArgumentErrorType type, Throwable exception) {};
 
-    public static Collection<ToolArgumentValidationError> validateToolArgument(ToolArgument argMetadata) {
+    public static Collection<ToolArgumentValidationError> validateToolArgument(ToolArgument argMetadata, ConverterRegistry converterRegistry) {
         List<ToolArgumentValidationError> results = new ArrayList<>();
         // Check name
         if (argMetadata.name().isBlank()) {
@@ -68,7 +68,7 @@ public class ToolValidation {
         // Check default value
         if (argMetadata.defaultValue() != null && !argMetadata.defaultValue().isEmpty()) {
             Type boxedType = TypeUtility.box(argMetadata.type());
-            DefaultValueConverter<?> converter = ConverterRegistry.getConverter(boxedType).orElse(null);
+            DefaultValueConverter<?> converter = converterRegistry.getConverter(boxedType).orElse(null);
             if (converter != null) {
                 try {
                     converter.convert(argMetadata.defaultValue());

@@ -135,6 +135,7 @@ public class ToolRegistry implements ToolManager {
         private Function<ToolArguments, ToolResponse> handler;
         private Function<ToolArguments, CompletionStage<ToolResponse>> asyncHandler;
         private Optional<ToolAnnotations> toolAnnotations = Optional.empty();
+        private ConverterRegistry converterRegistry;
 
         public ToolDefinitionImpl(String name) {
             this.name = name;
@@ -193,7 +194,11 @@ public class ToolRegistry implements ToolManager {
                 String message = Tr.formatMessage(tc, "CWMCM0032E.duplicate.argument.name", this.name, arg.name());
                 throw new IllegalArgumentException(message);
             }
-            for (var error : ToolValidation.validateToolArgument(arg)) {
+            if (converterRegistry == null) {
+                // get ConverterRegistry CDI bean
+                converterRegistry = ConverterRegistry.get();
+            }
+            for (var error : ToolValidation.validateToolArgument(arg, converterRegistry)) {
                 switch (error.type()) {
                     case NAME_BLANK -> {
                         String message = Tr.formatMessage(tc, "CWMCM0030E.blank.arguments", this.name);
