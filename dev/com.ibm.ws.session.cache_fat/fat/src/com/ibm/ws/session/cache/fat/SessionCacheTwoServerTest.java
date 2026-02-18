@@ -224,6 +224,39 @@ public class SessionCacheTwoServerTest extends FATServletClient {
     }
 
     /**
+     * Helper method to wait for session replication between servers.
+     * Uses retry pattern with exponential backoff instead of fixed sleep.
+     *
+     * @param key the session key to check
+     * @param expectedValue the expected value
+     * @param session the session list
+     * @param targetApp the app to check (typically appB after writing to appA)
+     * @param maxWaitMs maximum time to wait in milliseconds
+     * @throws Exception if session is not replicated within timeout
+     */
+    private void waitForSessionReplication(String key, Object expectedValue, List<String> session,
+                                          SessionCacheApp targetApp, long maxWaitMs) throws Exception {
+        long startTime = System.currentTimeMillis();
+        long waitTime = 100; // Start with 100ms
+        Exception lastException = null;
+        
+        while (System.currentTimeMillis() - startTime < maxWaitMs) {
+            try {
+                targetApp.sessionGet(key, expectedValue, session);
+                return; // Success!
+            } catch (Exception e) {
+                lastException = e;
+                Thread.sleep(waitTime);
+                waitTime = Math.min(waitTime * 2, 1000); // Exponential backoff, max 1 second
+            }
+        }
+        
+        // If we get here, replication failed
+        throw new AssertionError("Session replication timeout after " + maxWaitMs + "ms. Last error: " +
+                                (lastException != null ? lastException.getMessage() : "unknown"), lastException);
+    }
+
+    /**
      * Test httpSessionCache's writeContents configuration.
      * App B on server B uses the default of ONLY_SET_ATTRIBUTES, which means that an update made locally to an attribute
      * without performing a putAttribute will not be written to the persistent store even though it remains in the local cache.
@@ -235,7 +268,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         if (session != null) {
             appA.sessionPut("testModifyWithoutPut-key&sync=true", new StringBuffer("MyValue"), session, true);
-            Thread.sleep(500);
+            // Wait for session to replicate to server B with retry logic (up to 5 seconds)
+            waitForSessionReplication("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyValue"), session, appB, 5000);
             try {
                 appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
                 // appA should not see the update because it does not get written to the persistent store without a putAttribute per writeContents=ONLY_SET_ATTRIBUTES
@@ -329,8 +363,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         if (session != null) {
             appA.sessionPut("testMaxInactiveInterval-key", 55901, session, true);
-            Thread.sleep(500);
-            appB.sessionGet("testMaxInactiveInterval-key", 55901, session);
+            // Wait for session to replicate to server B with retry logic (up to 5 seconds)
+            waitForSessionReplication("testMaxInactiveInterval-key", 55901, session, appB, 5000);
             appA.invokeServlet("setMaxInactiveInterval", session); //set max inactive interval to 1 second
 
             for (int attempt = 0; attempt < 5; attempt++) {
