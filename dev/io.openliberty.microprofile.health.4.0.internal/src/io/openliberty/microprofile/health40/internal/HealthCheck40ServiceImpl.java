@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -38,9 +39,11 @@ import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.config.xml.ServerConfigRawAttributesService;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 
@@ -55,6 +58,19 @@ import io.openliberty.microprofile.health40.services.HealthCheck40Executor;
 @Component(service = HealthCheck40Service.class, property = { "service.vendor=IBM" }, configurationPid = "io.openliberty.microprofile.health", configurationPolicy = ConfigurationPolicy.OPTIONAL, immediate = true)
 
 public class HealthCheck40ServiceImpl implements HealthCheck40Service {
+
+    private ServerConfigRawAttributesService serverConfigRawAttribute;
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY)
+    protected void setServerConfigRawAttribute(ServerConfigRawAttributesService serverConfigRawAttribute) {
+        this.serverConfigRawAttribute = serverConfigRawAttribute;
+    }
+
+    protected void unsetServerConfigRawAttribute(ServerConfigRawAttributesService serverConfigRawAttribute) {
+        if (serverConfigRawAttribute == this.serverConfigRawAttribute) {
+            this.serverConfigRawAttribute = null;
+        }
+    }
 
     private static final TraceComponent tc = Tr.register(HealthCheck40ServiceImpl.class);
 
@@ -252,21 +268,40 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
         Map<String, Object> properties = (Map<String, Object>) componentContext.getProperties();
 
-        String serverCheckIntervalConfig;
-        if ((serverCheckIntervalConfig = (String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_CHECK_INTERVAL)) != null) {
-            processCheckIntervalConfig(serverCheckIntervalConfig);
+        String rawServerCheckIntervalConfig = null;
+        String rawServerStartupCheckIntervalConfig = null;
+
+        /*
+         * Retrieve raw value from server.xml.
+         * We only really care about the raw values.
+         */
+        Map<String, Object> mymap = serverConfigRawAttribute.getRawAttributesFromElement("mpHealth");
+        if (!mymap.isEmpty()) {
+            rawServerCheckIntervalConfig = (mymap.get("checkInterval") == null) ? null : String.valueOf(mymap.get("checkInterval"));
+            rawServerStartupCheckIntervalConfig = (mymap.get("startupCheckInterval") == null) ? null : String.valueOf(mymap.get("startupCheckInterval"));
+        }
+
+        /*
+         * Resolve checkInterval
+         */
+        if (rawServerCheckIntervalConfig != null) {
+            processCheckIntervalConfig(rawServerCheckIntervalConfig);
         } else {
             processCheckIntervalConfig(System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_CHECK_INTERVAL));
         }
 
-        //resolve startupCheckInterval config
-        String serverStartupCheckIntervalConfig;
-        if ((serverStartupCheckIntervalConfig = (String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_STARTUP_CHECK_INTERVAL)) != null) {
-            processStartupCheckIntervalConfig(serverStartupCheckIntervalConfig);
+        /*
+         * resolve startupCheckInterval config
+         */
+        if (rawServerStartupCheckIntervalConfig != null) {
+            processStartupCheckIntervalConfig(rawServerStartupCheckIntervalConfig);
         } else {
             processStartupCheckIntervalConfig(System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_STARTUP_CHECK_INTERVAL));
         }
 
+        /*
+         * Validate if system is even capable (i.e. i/o perm check).
+         */
         if (isFileHealthCheckingEnabled()) {
             //Validate system for File Health Checks (i.e., File I/O)
             try {
@@ -288,35 +323,14 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      */
     protected void processCheckIntervalConfig(String configValue) {
         if (configValue != null && !configValue.trim().isEmpty()) {
-
             int prevCheckIntervalConfigMilliseconds = checkIntervalMilliseconds;
-            configValue = configValue.trim();
-            if (configValue.matches("^\\d+(ms|s)?$")) {
-                if (configValue.endsWith("ms")) {
-                    checkIntervalMilliseconds = Integer.parseInt(configValue.substring(0, configValue.length() - 2));
-                } else if (configValue.endsWith("s")) {
-                    checkIntervalMilliseconds = Integer.parseInt(configValue.substring(0, configValue.length() - 1)) * 1000;
-                } else {
-                    checkIntervalMilliseconds = Integer.parseInt(configValue) * 1000; //convert to seconds; that is default time unit.
-                }
-            } else {
-                Tr.warning(tc, "check.interval.config.invalid.CWMMH01010W", configValue);
-                //Default of 10 seconds.
-                checkIntervalMilliseconds = HealthCheckConstants.DEFAULT_CHECK_INTERVAL_MILLI;
-            }
+
+            checkIntervalMilliseconds = MetatypeUtils.evaluateDurationCheckInterval(configValue, TimeUnit.MILLISECONDS);
+            System.out.println("my check val interval in ms is " + checkIntervalMilliseconds);
 
             String updateValueMessage = String.format("The checkInterval is read in as [%s] and is resolved to be [%d] milliseconds", configValue,
                                                       checkIntervalMilliseconds);
-            /*
-             * Check if value has been updated
-             * If so, we must stop the existing Timers and start new ones based on the new config (as long as the config isn't 0).
-             * Zero/0 means disable!
-             *
-             * If prevConfigIntervalMilliseconds is < 0 that means this is the first read in of the config and we don't need to run the below logic.
-             * (We can either be starting the server (with the config) or updating the server.xml during runtime with the fileUpdateInterval config for the first time)
-             * Updating during runtime isn't really something you should do, but we must support dynamic server updates.
-             *
-             */
+
             if ((!(prevCheckIntervalConfigMilliseconds < 0) && (prevCheckIntervalConfigMilliseconds != checkIntervalMilliseconds))) {
 
                 updateValueMessage = "The configuration has been updated. " + updateValueMessage;
@@ -354,20 +368,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         if (configValue != null && !configValue.trim().isEmpty()) {
 
             configValue = configValue.trim();
-            if (configValue.matches("^\\d+(ms|s)?$")) {
-                if (configValue.endsWith("ms")) {
-                    startupCheckIntervalMilliseconds = Integer.parseInt(configValue.substring(0, configValue.length() - 2));
-                } else if (configValue.endsWith("s")) {
-                    startupCheckIntervalMilliseconds = Integer.parseInt(configValue.substring(0, configValue.length() - 1)) * 1000;
-                } else {
-                    startupCheckIntervalMilliseconds = Integer.parseInt(configValue); //Parse as-is , default time-unit is ms.
-                }
-            } else {
-                Tr.warning(tc, "startup.check.interval.config.invalid.CWMMH01011W", configValue);
-
-                //Default of 100ms.
-                startupCheckIntervalMilliseconds = HealthCheckConstants.DEFAULT_STARTUP_CHECK_INTERVAL_MILLI;
-            }
+            System.out.println("inc startupCheckVal " + configValue);
+            startupCheckIntervalMilliseconds = MetatypeUtils.evaluateDurationStartupCheckInterval(configValue, TimeUnit.MILLISECONDS);
+            System.out.println("my STARTUP check val interval in ms is " + startupCheckIntervalMilliseconds);
 
             /*
              * If this is part of a config update, no need to stop timers.
@@ -381,6 +384,9 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, updateValueMessage);
             }
+        } else if (configValue == null) {
+            //nothing defined - deafult to 100ms
+            startupCheckIntervalMilliseconds = HealthCheckConstants.DEFAULT_STARTUP_CHECK_INTERVAL_MILLI;
         }
     }
 
@@ -390,13 +396,22 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
          * During server.xml update, never check for server env.
          */
 
+        String rawServerCheckIntervalConfig = null;
+        String rawServerStartupCheckIntervalConfig = null;
+
+        Map<String, Object> mymap = serverConfigRawAttribute.getRawAttributesFromElement("mpHealth");
+        if (!mymap.isEmpty()) {
+            rawServerCheckIntervalConfig = String.valueOf(mymap.get("checkInterval"));
+            rawServerStartupCheckIntervalConfig = String.valueOf(mymap.get("startupCheckInterval"));
+        }
+
         /*
          * If system was not valid for health check, skip on checking configuration update. We've already indicated that this system is
          * not fit for file-based health checks.
          */
         if (isValidSystemForFileHealthCheck) {
-            processCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_CHECK_INTERVAL));
-            processStartupCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_STARTUP_CHECK_INTERVAL));
+            processCheckIntervalConfig(rawServerCheckIntervalConfig);
+            processStartupCheckIntervalConfig(rawServerStartupCheckIntervalConfig);
         }
 
     }
