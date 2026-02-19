@@ -31,7 +31,7 @@ public class StackProperties {
 	 * if state is Proceeding
 	 */
 	public final static String USE_TIMER_B2 = "useTimerB2";
-	public final static boolean USE_TIMER_B2_DEFAULT = false; 
+	public final static boolean USE_TIMER_B2_DEFAULT = true; 
 
 
 	/**

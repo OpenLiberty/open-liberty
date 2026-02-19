@@ -76,6 +76,8 @@ public class SIPInviteClientTransactionImpl
 	 * the last response that was receives ( could be provisionning like RINGING )
 	 */
 	private Response  m_lastResponse;
+
+	private boolean m_useTimerB2;
 	
 	/**
 	 * This parameter should contain the "IBM-Destination" header from original
@@ -109,6 +111,12 @@ public class SIPInviteClientTransactionImpl
 		Request req, BranchMethodKey key, long transactionId)
 	{
 		super(transactionStack, provider, req, key, transactionId);
+		//m_useTimerB2 = getUseTimerB2();
+
+
+		//SIPStackConfiguration config = SIPTransactionStack.instance().getConfiguration();
+		m_useTimerB2 = transactionStack.instance().getConfiguration().getUseTimerB2();
+		c_logger.traceDebug(this, "SIPINviteClientTransactionIMpl", "EYE: m_useTimerB2 is " + m_useTimerB2);
 		m_timerAvalue = getTimerA(req);
 		m_timerBvalue = getTimerB(req);
 		m_timerB2value = getTimerB(req); // Initialize timer B2 with same value as timer B
@@ -135,7 +143,7 @@ public class SIPInviteClientTransactionImpl
 	
 	
 	/**
-	 * prosses the request in a state machine as stated in RFC 17.2.2
+	 * process the request in a state machine as stated in RFC 17.2.2
 	 */
 	public synchronized void processRequest(Request sipRequest)
 		throws SipParseException
@@ -149,24 +157,19 @@ public class SIPInviteClientTransactionImpl
 					case STATE_BEFORE_STATE_MACHINE_PROCESSE:					
 							setState(STATE_CALLING);
 							sendRequestToTransport(sipRequest);
-							//set timer A
-							//we will cancel this timer upon
-                            //receiving a provisional response
 							if (!isTransportReliable()) {
 								m_timerA = new TimerA(this, getCallId());
 								addTimerTask(m_timerA, m_timerAvalue);								
 							}
-							//set timer B
-							//we will cancel this timer upon
-							//receiving a provisional response
+							
 							m_timerB = new TimerB(this, getCallId());
 							addTimerTask(m_timerB, m_timerBvalue);
-							
-							//set a second timer B
-							//we will cancel this timer upon
-							//receiving a final response
-							m_timerB2 = new TimerB(this, getCallId());
-							addTimerTask(m_timerB2, m_timerB2value);
+							if (m_useTimerB2) {
+								c_logger.traceDebug(this,"SIPInviteClientTransactionImpl","EYE: setting TimerB2");
+								m_timerB2 = new TimerB(this, getCallId());
+								addTimerTask(m_timerB2, m_timerB2value);
+							}
+
 							break;
 		
 					case STATE_CALLING:					
@@ -202,7 +205,7 @@ public class SIPInviteClientTransactionImpl
 	}
 
 	/**
-	 * prosses the response in a state machine as stated in RFC 17.2.2
+	 * process the response in a state machine as stated in RFC 17.2.2
 	 * 
 	 */
 	public synchronized void processResponse(Response sipResponse) 
@@ -280,7 +283,7 @@ public class SIPInviteClientTransactionImpl
 	{
 		if( isTransportReliable() )
 		{
-			//timer is 0 - go straight to terminate
+			//timer is 0 - go stait to terminate
 			destroyTransaction();
 		}
 		else
@@ -687,16 +690,14 @@ public class SIPInviteClientTransactionImpl
 		
 	}
 
-
-	/**
-    * called when this transaction is no longer in the "calling" state
-    */
-    private void cancelTimerB2() {
+	private void cancelTimerB2() {
                 if (m_timerB2 != null) {
                         m_timerB2.cancel();
                 }
 
         }
+
+
 
 
 	/** return the most recent response */

@@ -85,6 +85,7 @@ public class SIPStackConfiguration
 	 * @see #strictOutboundLocalPort()
 	 */
 	private boolean m_strictOutboundLocalPort;
+
 	
 	/** timeout in milliseconds for creating outbound connections */
 	private int m_connectTimeout;
@@ -514,6 +515,12 @@ public class SIPStackConfiguration
 		}
 		
 		m_removeEmptyCommaSeparatedHeaders = ApplicationProperties.getProperties().getBoolean(StackProperties.REMOVE_EMPTY_COMMA_SEPARATED_HEADERS);
+	}
+	
+
+
+	public boolean getUseTimerB2() {
+		return m_useTimerB2;
 	}
 	
 	/** number of UA dispatching threads */
