@@ -636,10 +636,21 @@ private ICollaboratorHelper collabHelper;
                 //end PI31447
                 
                 String queryString = httpRequest.getQueryString(); //PM88028
-
+				
                 if (!requestString.endsWith("/")) {
                     if (isInclude == false) {
-                        String tmpURL = requestString + "/"; // append a slash for redirect purposes.
+						                    // Build the redirect URL - use relative URL if configured
+						String tmpURL;
+						if (WCCustomProperties.REDIRECT_TO_RELATIVE_URL) {
+							// Use relative URL (request URI only)
+							tmpURL = req.getRequestURI();
+							System.out.println("DEBUG DefaultExtensionProcessor: Using RELATIVE URL, tmpURL: " + tmpURL);
+						} else {
+							// Use absolute URL (original behavior)
+							tmpURL = requestString;
+							System.out.println("DEBUG DefaultExtensionProcessor: Using ABSOLUTE URL, tmpURL: " + tmpURL);
+						}
+
 //                        String qString;
 //                        if ((qString = req.getQueryString()) != null) { // if query string exists; add it.
 //                            tmpURL += "?" + qString;

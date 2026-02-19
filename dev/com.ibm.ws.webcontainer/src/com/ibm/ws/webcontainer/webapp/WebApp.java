@@ -4893,7 +4893,17 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                 // PK79143 Start
                 // dispatchContext.sendRedirect (((HttpServletRequest)
                 // req).getRequestURL() + "/");
-                ((HttpServletResponse) res).sendRedirect(((HttpServletRequest) req).getRequestURL() + "/");
+                	String redirectURL;
+                    if (WCCustomProperties.REDIRECT_TO_RELATIVE_URL) {
+                        // Use relative URL (request URI only)
+                        redirectURL = req.getRequestURI() + "/";
+                        System.out.println("DEBUG Webapp: Using RELATIVE URL, tmpURL: " + redirectURL);
+                    } else {
+                        // Use absolute URL (original behavior)
+                        redirectURL = contextPath + "/";
+                        System.out.println("DEBUG WebApp: Using ABSOLUTE URL, tmpURL: " + redirectURL);
+                    }
+                ((HttpServletResponse) res).sendRedirect(redirectURL);
                 // PK79143 End
 
                 if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled() && logger.isLoggable(Level.FINE))
