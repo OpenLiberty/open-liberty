@@ -100,6 +100,9 @@ public class DataTestServlet extends FATServlet {
     Apartments apartments;
 
     @Inject
+    ApartmentsSpecific apartmentsSpecific;
+
+    @Inject
     EmptyRepository emptyRepo;
 
     @Inject
@@ -906,15 +909,11 @@ public class DataTestServlet extends FATServlet {
                                      .floatValue(),
                      0.01f);
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate
-        } else {
-            assertEquals(31,
-                         primes.numberAsInt(31));
+        assertEquals(31,
+                     primes.numberAsInt(31));
 
-            assertEquals(29,
-                         primes.numberAsInteger(29L).orElseThrow().intValue());
-        }
+        assertEquals(29,
+                     primes.numberAsInteger(29L).orElseThrow().intValue());
 
         assertEquals(23L,
                      primes.numberAsLong(23));
@@ -922,12 +921,8 @@ public class DataTestServlet extends FATServlet {
         assertEquals(19L,
                      primes.numberAsLongWrapper(19).orElseThrow().longValue());
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate
-        } else {
-            assertEquals((short) 4013,
-                         primes.numberAsShort(4013));
-        }
+        assertEquals((short) 4013,
+                     primes.numberAsShort(4013));
 
         assertEquals((short) 4007,
                      primes.numberAsShortWrapper(4007).orElseThrow().shortValue());
@@ -1391,6 +1386,10 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testDeleteIgnoresFirstKeywork() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
+
         packages.deleteAll(); //cleanup before test
 
         packages.save(new Package(10001, 10.0f, 13.0f, 4.0f, "testDeleteIgnoresFirstKeywork#10001"));
@@ -1412,6 +1411,10 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testDeleteQueryByParameters() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
+
         houses.dropAll();
 
         House h1 = new House();
@@ -1987,6 +1990,10 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDelete() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
+
         packages.save(new Package(40001, 41.0f, 14.0f, 4.0f, "testFindAndDelete#40001"));
         packages.save(new Package(40004, 44.0f, 40.4f, 4.4f, "testFindAndDelete#40004"));
         packages.save(new Package(40012, 42.0f, 12.0f, 2.0f, "testFindAndDelete#4001x"));
@@ -2047,6 +2054,10 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteAnnotated() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
+
         packages.save(new Package(50001, 51.0f, 31.0f, 21.0f, "testFindAndDeleteAnnotated#50001"));
         packages.save(new Package(50002, 52.0f, 32.0f, 22.0f, "testFindAndDeleteAnnotated#50002"));
 
@@ -2077,6 +2088,10 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteMultipleAnnotated() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
+
         packages.save(new Package(60001, 61.0f, 41.0f, 26.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60002, 62.0f, 42.0f, 25.0f, "testFindAndDeleteMultipleAnnotated"));
         packages.save(new Package(60003, 59.0f, 39.0f, 24.0f, "testFindAndDeleteMultipleAnnotated"));
@@ -2127,6 +2142,10 @@ public class DataTestServlet extends FATServlet {
     public void testFindAndDeleteReturnsEntities() throws Exception {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
 
         packages.deleteAll();
 
@@ -2179,6 +2198,10 @@ public class DataTestServlet extends FATServlet {
     public void testFindAndDeleteReturnsObjects() {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
+
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
 
         packages.deleteAll();
 
@@ -2568,11 +2591,7 @@ public class DataTestServlet extends FATServlet {
         prod3.price = 16.99f;
         prod3 = multi.create(prod3);
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate or Liberty
-        } else {
-            assertEquals(3L, multi.countEverything());
-        }
+        assertEquals(3L, multi.countEverything());
 
         assertEquals(1L, multi.discount("TestFromClauseIdentifiesEntity-Product-3", 0.30f));
         assertEquals(3L, multi.discount("TestFromClauseIdentifiesEntity-Product-_", 0.20f));
@@ -2583,11 +2602,8 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(3L, multi.destroy("TestFromClauseIdentifiesEntity-%"));
 
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            //TODO remove skip when fixed in Hibernate or Liberty
-        } else {
-            assertEquals(0L, multi.countEverything());
-        }
+        assertEquals(0L, multi.countEverything());
+
     }
 
     /**
@@ -4146,9 +4162,26 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(true, multi.remove(added.get(2)));
 
-        assertEquals(true, multi.deleteById(908070605l).isPresent());
-        assertEquals(true, multi.deleteById(807060504l).isPresent());
-        assertEquals(false, multi.deleteById(706050403l).isPresent());
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+            assertEquals(true, multi.remove(p1));
+            assertEquals(true, multi.remove(p2));
+            try {
+                assertEquals(false, multi.remove(p3));
+            } catch (OptimisticLockingFailureException e) {
+                //TODO we currently throw an exception when trying to delete an entity that does not exist.
+                //     however, shouldn't we just return false?
+            }
+        } else {
+            assertEquals(true, multi.deleteById(908070605l).isPresent());
+            assertEquals(true, multi.deleteById(807060504l).isPresent());
+            assertEquals(false, multi.deleteById(706050403l).isPresent());
+        }
+
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            packages.deleteAll();
+            return; // TODO remove once fixed in Hibernate - Cannot modify with pessimistic lock
+        }
 
         prod.name = "Test-Multiple-Entities-In-A-Repository-Product";
         assertEquals(1, multi.modify(prod));
@@ -4402,7 +4435,11 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testPersistentFieldNamesAndDelimiters() {
-        apartments.removeAll();
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            apartmentsSpecific.removeAll(); // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        } else {
+            apartments.removeAll();
+        }
 
         Apartment a101 = new Apartment();
         a101.occupant = new Occupant();
@@ -6314,6 +6351,10 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testUpdateWithVersionedEntityParameter() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot update with pessimistic lock
+        }
+
         Product prod1 = new Product();
         prod1.pk = UUID.nameUUIDFromBytes("UPD-VER-EP-1".getBytes());
         prod1.name = "testUpdateWithVersionedEntityParameter Product 1";

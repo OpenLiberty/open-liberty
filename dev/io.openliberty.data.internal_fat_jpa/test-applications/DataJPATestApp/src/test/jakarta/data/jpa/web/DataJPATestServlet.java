@@ -200,6 +200,26 @@ public class DataJPATestServlet extends FATServlet {
         return isHibernate();
     }
 
+    /**
+     * Temporary method to allow skipping tests for tests that
+     * fail due to incompatibilities between our Jakarta Data provider
+     * and Hibernate's Jakarta Persistence provider on a specific database.
+     *
+     * @param driver - driver name prefix (i.e. derby)
+     * @param issues - the issues that describe why the test must be skipped on Hibernate
+     * @return boolean - true if we need to skip the test, false otherwise.
+     */
+    public static boolean skipForHibernateByDatabase(String driver, String... issues) {
+        boolean isHibernateAndDatabase = isHibernate() && System.getenv("DB_DRIVER").contains(driver);
+
+        if (isHibernateAndDatabase) {
+            System.out.println("Skipping test because database is " + System.getenv("DB_DRIVER") + " and " + Arrays.asList(issues));
+        }
+
+        return isHibernateAndDatabase;
+
+    }
+
     @Override
     public void init(ServletConfig config) throws ServletException {
         // Some read-only data that is prepopulated for tests:
@@ -1166,6 +1186,10 @@ public class DataJPATestServlet extends FATServlet {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
+
         cities.save(new City("Milwaukee", "Wisconsin", 577222, Set.of(414)));
         cities.save(new City("Green Bay", "Wisconsin", 107395, Set.of(920)));
         cities.save(new City("Superior", "Wisconsin", 26751, Set.of(534, 715)));
@@ -1290,7 +1314,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteReturningIdClassList(HttpServletRequest request, HttpServletResponse response) {
-
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
         cities.save(new City("Davenport", "Iowa", 101724, Set.of(563)));
         cities.save(new City("Sioux City", "Iowa", 85797, Set.of(712)));
         cities.save(new City("Iowa City", "Iowa", 74828, Set.of(319)));
@@ -2401,7 +2427,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testFindAndDeleteInTransaction() throws Exception {
-
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
         cities.save(new City("Grand Forks", "North Dakota", 59845, Set.of(701)));
         cities.save(new City("Bismarck", "North Dakota", 77772, Set.of(701)));
         cities.save(new City("Fargo", "North Dakota", 136285, Set.of(701)));
@@ -3818,6 +3846,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testMultipleThreadsVersionedUpdate() throws Exception {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot update with pessimistic lock
+        }
         orders.deleteAll();
 
         PurchaseOrder o = new PurchaseOrder();
@@ -3916,6 +3947,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testOneToOne() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
 
         drivers.deleteByFullNameEndsWith(" TestOneToOne");
 
@@ -4219,7 +4253,11 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testSaveInTransaction() throws Exception {
-        cities.deleteByStateName("Montana");
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            cities.deleteVoidByStateName("Montana");; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        } else {
+            cities.deleteByStateName("Montana");
+        }
 
         tran.begin();
         try {
@@ -4244,7 +4282,11 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(117116, city.getPopulation());
         assertEquals(Set.of(406), city.getAreaCodes());
 
-        cities.deleteByStateName("Montana");
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            cities.deleteVoidByStateName("Montana");; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        } else {
+            cities.deleteByStateName("Montana");
+        }
     }
 
     /**
@@ -4833,15 +4875,16 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUpdateEntityWithIdClassAndVersion() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot update with pessimistic lock
+        }
 
         CityId mnId = CityId.of("Rochester", "Minnesota");
         CityId nyId = CityId.of("Rochester", "New York");
 
         long mnVer;
         long nyVer;
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            // TODO once fixed in Hibernate, update the JPQL query to use VERSION(THIS)
-            // instead of lower case VERSION(this)
+        if (isHibernate()) {
             mnVer = cities.currentVersion(mnId);
             nyVer = cities.currentVersion(nyId);
         } else {
@@ -4886,7 +4929,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUpdateInTransaction() throws Exception {
-
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot update with pessimistic lock
+        }
         Mobile m1 = mobilePhones.insert(Mobile.of(OS.ANDROID,
                                                   List.of("settings",
                                                           "messages",
@@ -5156,6 +5201,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testVersionedDelete() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot delete with pessimistic lock
+        }
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -5268,6 +5316,9 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testVersionedUpdate() {
+        if (skipForHibernateByDatabase("derby", "https://github.com/OpenLiberty/open-liberty/issues/33535")) {
+            return; // TODO remove once fixed in Hibernate - Cannot update with pessimistic lock
+        }
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
