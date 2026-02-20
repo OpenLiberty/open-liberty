@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -117,7 +117,7 @@ public class ProtocolVersionTest {
                           "id": 1,
                           "method": "initialize",
                          "params": {
-                            "protocolVersion": "2025-06-18",
+                            "protocolVersion": "2025-11-25",
                             "clientInfo": {
                               "name": "test-client",
                               "version": "0.1"
@@ -168,9 +168,9 @@ public class ProtocolVersionTest {
                                                                              .run(String.class);
 
         assertThat("Expected error message about invalid protocol version",
-                   response, containsString("CWMCM0013E: An unsupported MCP-Protocol-Version header was provided."));
+                   response, containsString("An unsupported MCP-Protocol-Version header was provided."));
         assertThat("Expected error message to contain expected version",
-                   response, containsString("Supported values: 2025-06-18, 2025-03-26"));
+                   response, containsString("Supported values: 2025-11-25, 2025-06-18, 2025-03-26"));
     }
 
 }

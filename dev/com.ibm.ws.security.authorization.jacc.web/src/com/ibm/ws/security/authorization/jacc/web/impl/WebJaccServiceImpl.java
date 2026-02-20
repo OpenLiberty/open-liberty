@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -177,6 +177,10 @@ public class WebJaccServiceImpl implements WebJaccService {
             webPC = pcf.getPolicyConfiguration(contextId, true);
         } catch (PolicyContextException pce) {
             Tr.error(tc, "JACC_WEB_GET_POLICYCONFIGURATION_FAILURE", new Object[] { contextId, pce });
+            return;
+        }
+
+        if (webPC == null) {
             return;
         }
 
@@ -790,4 +794,22 @@ public class WebJaccServiceImpl implements WebJaccService {
         return uriName;
     }
 
+    @Override
+    public void setPolicyContextID(String applicationName, String moduleName) {
+        JaccService jaccService = jaccServiceRef.getService();
+        if (jaccService != null) {
+            String contextID = jaccService.getContextId(applicationName, moduleName);
+            PolicyContext.setContextID(contextID);
+        }
+    }
+
+    @Override
+    public boolean isPolicyConfigured() {
+        JaccService jaccService = jaccServiceRef.getService();
+        if (jaccService == null) {
+            return false;
+        }
+        PolicyProxy policyProxy = jaccService.getPolicyProxy();
+        return policyProxy == null ? false : policyProxy.isPolicyConfigured();
+    }
 }

@@ -588,14 +588,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                          Util.txStatusToString(status));
                             provider.tranMgr.commit();
                         }
-
-                        // TODO Is this necessary after a transaction?
-                        if (em != null && queryType.detachEntities) {
-                            // TODO 1.1 only detach if a stateless repository
-                            if (trace && tc.isDebugEnabled())
-                                Tr.debug(this, tc, "clear");
-                            em.clear();
-                        }
                     } else {
                         if (Status.STATUS_ACTIVE == provider.tranMgr.getStatus()) {
                             if (failed) {

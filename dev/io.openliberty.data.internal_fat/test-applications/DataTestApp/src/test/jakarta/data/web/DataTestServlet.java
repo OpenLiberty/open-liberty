@@ -658,27 +658,34 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testComputationInOrderArgOfMethodThatReturnsCursoredPage() {
+        // SQLServer: java long (id) is stored as bigint on hibernate and number(19) eclipselink
+        // Oracle:    java long (id) is stored as number(19) hibernate and eclipselink
+        // When these databases perform division on fields number(19) the result includes a fractional component
+        // Avoid using division operations on long fields
 
-        // prime  bits   sumOfbits numeral  p/s  p-2s
-        // ------ ------ --------- -------- ---- ----
-        //  3     000011     2     iii        1   -1
-        //  5     000101     2     v          2    1
-        //  7     000111     3     vii        2    1
-        // 11     001011     3     XI         3    5
-        // 13     001101     3     XIII       4    7
-        // 23     010111     4     XXIII      5   15
-        // 19     010011     3     XIX        6   13
-        // 31     011111     5     XXXI       6   21
-        // 29     011101     4     XXIX       7   21
-        // 17     010001     2     XVII       8   13
-        // 47     101111     5     XLVII      9   37
-        // 43     101011     4     XLIII     10   35
-        // 37     100101     3     XXXVII    12   31
-        // 41     101001     3     XLI       13   35
+        //| prime | bits   | sumOfBits | Numeral | p%s | p-2s |
+        //|-------|--------|-----------|---------|-----|------|
+        //|     3 | 000011 |         2 | III     |   1 |   -1 |
+        //|     5 | 000101 |         2 | V       |   1 |    1 |
+        //|     7 | 000111 |         3 | VII     |   1 |    1 |
+        //|    13 | 001101 |         3 | XIII    |   1 |    7 |
+        //|    17 | 010001 |         2 | XVII    |   1 |   13 |
+        //|    19 | 010011 |         3 | XIX     |   1 |   13 |
+        //|    29 | 011101 |         4 | XXIX    |   1 |   21 |
+        //|    31 | 011111 |         5 | XXXI    |   1 |   21 |
+        //|    37 | 100101 |         3 | XXXVII  |   1 |   31 |
+        //|    11 | 001011 |         3 | XI      |   2 |    5 |
+        //|    41 | 101001 |         3 | XLI     |   2 |   35 |
+        //|    47 | 101111 |         5 | XLVII   |   2 |   37 |
+        //|    23 | 010111 |         4 | XXIII   |   3 |   15 |
+        //|    43 | 101011 |         4 | XLIII   |   3 |   35 |
 
-        Order<Prime> order = Order.by(Sort.asc("numberId / sumOfBits"),
-                                      Sort.asc("numberId - 2 * sumOfBits"),
-                                      Sort.asc(ID));
+        // 3  5  7  13  17  19  29  31  27  11  41  47  23  43
+        // |________page 1_______| |________page 2___________|
+        //    |________page 3________|
+        final Order<Prime> order = Order.by(Sort.asc("MOD(numberId, sumOfBits)"),
+                                            Sort.asc("numberId - 2 * sumOfBits"),
+                                            Sort.asc(ID));
 
         PageRequest page1Req = PageRequest.ofSize(7);
 
@@ -690,14 +697,14 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(2, page1.totalPages());
 
-        assertEquals(List.of(3L, 5L, 7L, 11L, 13L, 23L, 19L),
+        assertEquals(List.of(3L, 5L, 7L, 13L, 17L, 19L, 29L),
                      page1.stream()
                                      .map(p -> p.numberId)
                                      .toList());
 
         Prime last = page1.content().get(page1.numberOfElements() - 1);
 
-        Cursor cursorNext = Cursor.forKey(last.numberId / last.sumOfBits,
+        Cursor cursorNext = Cursor.forKey(last.numberId % last.sumOfBits,
                                           last.numberId - 2 * last.sumOfBits,
                                           last.numberId);
 
@@ -711,30 +718,30 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(14, page2.totalElements());
 
-        assertEquals(List.of(31L, 29L, 17L, 47L, 43L, 37L, 41L),
+        assertEquals(List.of(31L, 37L, 11L, 41L, 47L, 23L, 43L),
                      page2.stream()
                                      .map(p -> p.numberId)
                                      .toList());
 
         assertEquals(false, page2.hasNext());
 
-        Prime prime29 = page2.content().get(1);
-        assertEquals(29L, prime29.numberId);
-        Cursor cursor29 = Cursor.forKey(prime29.numberId / prime29.sumOfBits,
-                                        prime29.numberId - 2 * prime29.sumOfBits,
-                                        prime29.numberId);
+        Prime prime37 = page2.content().get(1);
+        assertEquals(37L, prime37.numberId);
+        Cursor cursor37 = Cursor.forKey(prime37.numberId % prime37.sumOfBits,
+                                        prime37.numberId - 2 * prime37.sumOfBits,
+                                        prime37.numberId);
 
-        PageRequest before29Req = PageRequest.ofPage(2).size(7).beforeCursor(cursor29);
+        PageRequest before37Req = PageRequest.ofPage(2).size(7).beforeCursor(cursor37);
 
         Page<Prime> page = primes //
                         .findByNumberIdBetweenAndEvenFalse(1,
                                                            50,
-                                                           before29Req,
+                                                           before37Req,
                                                            order);
 
         assertEquals(14, page.totalElements());
 
-        assertEquals(List.of(5L, 7L, 11L, 13L, 23L, 19L, 31L),
+        assertEquals(List.of(5L, 7L, 13L, 17L, 19L, 29L, 31L),
                      page.stream()
                                      .map(p -> p.numberId)
                                      .toList());

@@ -14,7 +14,7 @@ import java.util.Optional;
 /**
  * Data objects for describing MCP Capabilities
  *
- * @see <a href="https://modelcontextprotocol.io/specification/2025-06-18/basic/lifecycle#capability-negotiation">Capbility Negotiation</a>
+ * @see <a href="https://modelcontextprotocol.io/specification/2025-11-25/basic/lifecycle#capability-negotiation">Capbility Negotiation</a>
  */
 public class Capabilities {
 
@@ -25,6 +25,8 @@ public class Capabilities {
     public static record Sampling() implements ClientCapability {};
 
     public static record Elicitation() implements ClientCapability {};
+
+    public static record ClientTasks() implements ClientCapability {};
 
     public static interface ServerCapability {};
 
@@ -38,6 +40,8 @@ public class Capabilities {
 
     public static record Completions() implements ServerCapability {};
 
+    public static record ServerTasks() implements ServerCapability {};
+
     /**
      * Describes the capabilities of a client.
      * <p>
@@ -45,7 +49,8 @@ public class Capabilities {
      */
     public static record ClientCapabilities(Optional<Roots> roots,
                                             Optional<Sampling> sampling,
-                                            Optional<Elicitation> elicitation) {
+                                            Optional<Elicitation> elicitation,
+                                            Optional<ClientTasks> tasks) {
 
         /**
          * Constructs a capabilities object for a client from a list of capabilities
@@ -57,6 +62,7 @@ public class Capabilities {
             Optional<Roots> roots = Optional.empty();
             Optional<Sampling> sampling = Optional.empty();
             Optional<Elicitation> elicitation = Optional.empty();
+            Optional<ClientTasks> tasks = Optional.empty();
 
             for (ClientCapability cap : caps) {
                 if (cap instanceof Roots r) {
@@ -65,10 +71,12 @@ public class Capabilities {
                     sampling = Optional.of(s);
                 } else if (cap instanceof Elicitation e) {
                     elicitation = Optional.of(e);
+                } else if (cap instanceof ClientTasks ct) {
+                    tasks = Optional.of(ct);
                 }
             }
 
-            return new ClientCapabilities(roots, sampling, elicitation);
+            return new ClientCapabilities(roots, sampling, elicitation, tasks);
         }
     };
 
@@ -81,7 +89,8 @@ public class Capabilities {
                                             Optional<Resources> resources,
                                             Optional<Tools> tools,
                                             Optional<Logging> logging,
-                                            Optional<Completions> completions) {
+                                            Optional<Completions> completions,
+                                            Optional<ServerTasks> tasks) {
 
         /**
          * Constructs a capabilities object for a server from a list of capabilities
@@ -95,6 +104,7 @@ public class Capabilities {
             Optional<Tools> tools = Optional.empty();
             Optional<Logging> logging = Optional.empty();
             Optional<Completions> completions = Optional.empty();
+            Optional<ServerTasks> tasks = Optional.empty();
 
             for (ServerCapability cap : caps) {
                 if (cap instanceof Prompts p) {
@@ -107,10 +117,12 @@ public class Capabilities {
                     logging = Optional.of(l);
                 } else if (cap instanceof Completions c) {
                     completions = Optional.of(c);
+                } else if (cap instanceof ServerTasks st) {
+                    tasks = Optional.of(st);
                 }
             }
 
-            return new ServerCapabilities(prompts, resources, tools, logging, completions);
+            return new ServerCapabilities(prompts, resources, tools, logging, completions, tasks);
         }
     };
 }

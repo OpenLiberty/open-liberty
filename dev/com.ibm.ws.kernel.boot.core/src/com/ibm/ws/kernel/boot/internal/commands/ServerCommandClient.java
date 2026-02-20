@@ -105,6 +105,8 @@ public class ServerCommandClient extends ServerCommand {
         try {
             ServerCommandID commandID = createServerCommand(command);
             if (commandID.getPort() > 0) {
+                // Use InetAddress.getByName(null) to get loopback address
+                // The JVM will honor java.net.preferIPv4Stack property if set
                 channel = SelectorProvider.provider().openSocketChannel();
                 channel.connect(new InetSocketAddress(InetAddress.getByName(null), commandID.getPort()));
 

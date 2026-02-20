@@ -33,12 +33,12 @@ import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpInitializeParams.ClientInfo;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolArgument;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -56,7 +56,7 @@ public class MessageParsingTest {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
                                                    .withDeserializers(new McpRequestIdDeserializer());
         jsonb = JsonbBuilder.create(jsonbConfig);
-        ToolRegistry registry = new ToolRegistry();
+        ToolRegistry registry = new ToolRegistry(null, jsonb);
         ToolRegistry.set(registry);
 
         Tool testTool = Literals.tool("echo", "Echo", "Echos the input");

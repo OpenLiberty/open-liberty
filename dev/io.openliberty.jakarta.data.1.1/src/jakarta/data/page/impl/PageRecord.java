@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,16 @@ public record PageRecord<T>(PageRequest pageRequest,
                 long totalElements,
                 boolean moreResults)
                 implements Page<T> {
+
+    public PageRecord(PageRequest pageRequest,
+                      List<T> content,
+                      long totalElements,
+                      boolean moreResults) {
+        this.content = List.copyOf(content);
+        this.moreResults = moreResults;
+        this.pageRequest = pageRequest;
+        this.totalElements = totalElements;
+    }
 
     public PageRecord(PageRequest req,
                       List<T> content,

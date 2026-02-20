@@ -28,8 +28,8 @@ import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolArgument;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolInfo;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
+import io.openliberty.mcp.tools.ToolManager.ToolInfo;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 import jakarta.json.bind.JsonbConfig;
@@ -44,7 +44,7 @@ public class ToolArgDefaultValueConverterTest {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
                                                    .withDeserializers(new McpRequestIdDeserializer());
         jsonb = JsonbBuilder.create(jsonbConfig);
-        ToolRegistry registry = new ToolRegistry();
+        ToolRegistry registry = new ToolRegistry(null, jsonb);
         ToolRegistry.set(registry);
 
         Tool defaultValueIntArgTestTool = Literals.tool("defaultValueInt", "Default Value Int", "ToolArg with a default value of a integer type");

@@ -7,12 +7,11 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
+package com.ibm.ws.netty.channel;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
-import java.lang.Runnable;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
 import org.junit.Assert;
@@ -23,12 +22,11 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.SocketChannelConfig;
 import io.netty.channel.socket.nio.NioSocketChannel;
-
 import io.openliberty.http.netty.channel.ReadOnlySocket;
 
 /**
  * Tests the {@link ReadOnlySocket} APIs. All supported API calls are tested
- * against a mocked {@link NioSocketChannel}. Since the socket object is meant 
+ * against a mocked {@link NioSocketChannel}. Since the socket object is meant
  * to be read-only, all APIs that mutate the socket are expected to return a
  * {@link UnsupportedOperationException}
  */
@@ -43,7 +41,6 @@ public class ReadOnlySocketTests {
 
     private ReadOnlySocket socket;
     private ReadOnlySocket nonNioSocket;
-
 
     @Before
     public void setUp() {
@@ -62,18 +59,18 @@ public class ReadOnlySocketTests {
         nonNioSocket = new ReadOnlySocket(nonNioChannel);
     }
 
-    @Test 
-    public void testReadOnlySocketAPIs(){
+    @Test
+    public void testReadOnlySocketAPIs() {
         testSupportedAPIs();
-        testUnsupportedAPIs();  
+        testUnsupportedAPIs();
     }
 
     /**
      * Runs all supported APIs and verifies expected values against the test objects.
      */
-    private void testSupportedAPIs(){
-        Assert.assertTrue(remote.getAddress().equals(socket.getInetAddress())); 
-        
+    private void testSupportedAPIs() {
+        Assert.assertTrue(remote.getAddress().equals(socket.getInetAddress()));
+
         when(config.getOption(ChannelOption.SO_KEEPALIVE)).thenReturn(true);
         Assert.assertTrue(socket.getKeepAlive());
         when(config.getOption(ChannelOption.SO_KEEPALIVE)).thenReturn(false);
@@ -113,7 +110,7 @@ public class ReadOnlySocketTests {
 
         when(config.getOption(ChannelOption.IP_TOS)).thenReturn(5);
         Assert.assertEquals(socket.getTrafficClass(), 5);
-  
+
         Assert.assertTrue(socket.isBound());
 
         when(channel.isOpen()).thenReturn(false);
@@ -141,7 +138,7 @@ public class ReadOnlySocketTests {
      * Runs all unsupported APIs. This method will fail the test if any of the methods
      * does not throw the expected {@link UnsupportedOperationException}
      */
-    private void testUnsupportedAPIs(){
+    private void testUnsupportedAPIs() {
         assertUnsupported(() -> socket.bind(local));
         assertUnsupported(() -> socket.close());
         assertUnsupported(() -> socket.connect(local));
@@ -155,7 +152,7 @@ public class ReadOnlySocketTests {
         assertUnsupported(() -> socket.sendUrgentData(2));
         assertUnsupported(() -> socket.setKeepAlive(true));
         assertUnsupported(() -> socket.setOOBInline(true));
-        assertUnsupported(() -> socket.setPerformancePreferences(3,4,5));
+        assertUnsupported(() -> socket.setPerformancePreferences(3, 4, 5));
         assertUnsupported(() -> socket.setReceiveBufferSize(6));
         assertUnsupported(() -> socket.setReuseAddress(true));
         assertUnsupported(() -> socket.setSendBufferSize(7));
@@ -171,10 +168,10 @@ public class ReadOnlySocketTests {
      * Utility test method that fails the test if an {@link UnsupportedOperationException}
      * is not thrown.
      */
-    private void assertUnsupported(Runnable runnable){
-        try{
+    private void assertUnsupported(Runnable runnable) {
+        try {
             runnable.run();
-        } catch(UnsupportedOperationException e){
+        } catch (UnsupportedOperationException e) {
             return;
         }
         Assert.fail("Method did not throw expected UnsupportedOperationException");

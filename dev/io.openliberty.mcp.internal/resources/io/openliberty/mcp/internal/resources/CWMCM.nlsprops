@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=Either add a name to the @ToolA
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: There are multiple MCP tool methods named {0}. The methods are {1}.
 CWMCM0004E.duplicate.tools.explanation=One or more MCP Tool names occurred multiple times. The server expects one name per tool for uniqueness.
 CWMCM0004E.duplicate.tools.useraction=Only provide a unique name for each MCP Tool.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=Check whether you have the correct class
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: A request with the {0} ID is in progress.
-CWMCM0008E.invalid.request.params.explanation=A request with the same ID is in progress. Requests from the same client must have unique IDs.
-CWMCM0008E.invalid.request.params.useraction=Use a unique ID for every request.
+invalid.request.params=A request with the {0} ID is in progress.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: GET requests are not supported.
-CWMCM0009I.get.disallowed.explanation=A GET request was sent but this functionality is not supported.
-CWMCM0009I.get.disallowed.useraction=No action is required.
+# do not translate GET
+get.disallowed=GET requests are not supported.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=The tool method threw an u
 CWMCM0010E.internal.server.error.detailed.useraction=Review the server message.log and FFDC logs to identify the problem.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: An internal server error occurred while running the tool.
-CWMCM0011E.internal.server.error.explanation=The server was not able to complete the tool call request.
-CWMCM0011E.internal.server.error.useraction=Check that the request is correct. More information about the failure might be in the server messages.log.
+internal.server.error=An internal server error occurred while running the tool.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: An error occurred when releasing the CD
 CWMCM0012E.bean.release.fail.explanation=When calling a tool method, an instance of the CDI bean that declares the method is acquired before calling the method and released afterwards. An error occurred when releasing the bean instance.
 CWMCM0012E.bean.release.fail.useraction=Review the server message.log and FFDC logs to identify the problem.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: An unsupported MCP-Protocol-Version header was provided. Supported values: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=The protocol version in the MCP-Protocol-Version header is not supported by the server.
-CWMCM0013E.unsupported.mcp.http.version.useraction=Use a supported protocol version.
+unsupported.mcp.http.version=An unsupported MCP-Protocol-Version header was provided. Supported values: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: Unexpected Server Error. Method={0} RequestURI={1} RequestQuery={2}
-CWMCM0014E.unexpected.server.error.explanation=An unexpected server error occurred while processing the request. The request cannot be completed.
-CWMCM0014E.unexpected.server.error.useraction=No action is required.
+unexpected.server.error=Unexpected Server Error. Method={0} RequestURI={1} RequestQuery={2}
 
 # Used for server logging
 # {0} = Method
@@ -141,17 +132,6 @@ jsonrpc.exception.validation.empty.string.id=The id field is invalid. The id mus
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=The id type is not an acceptable type. The id must be a string or integer.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=The request does not have any arguments in parameters.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=The following arguments were passed but were not found in the method: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=The following arguments were expected by the method but were not provided: {0}.
-
 # Used for server logging
 # do not translate MCP
 # {0} = The  qualified name of the tool
@@ -179,7 +159,7 @@ CWMCM0019E.error.encoding.element.useraction=Review the server message.log and F
 
 # Used for server logging
 # do not translate MCP
-# {0} = The  qualified name of the tool
+# {0} = The qualified name of the tool method, or the tool name
 # {1} = corresponding argument name
 # {2} = corresponding argument type
 # {3} = corresponding default value
@@ -194,3 +174,100 @@ CWMCM0020E.defaultvalue.conversion.error.useraction=Ensure that the default valu
 CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: A character default value must be exactly one character, but was {0}
 CWMCM0021E.defaultvalue.character.invalid.length.explanation=A default value for a Character type argument was provided, but it does not contain exactly one character. Character arguments must have a single character string.
 CWMCM0021E.defaultvalue.character.invalid.length.useraction=Ensure that the default value for an argument with a Character type is a string with exactly one character.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: The "{0}" cursor value is invalid.
+CWMCM0022E.invalid.cursor.value.explanation=A cursor value was provided as a parameter to the tool/list command, but the value is invalid.
+CWMCM0022E.invalid.cursor.value.useraction=Make sure that the cursor value is provided exactly as it was returned from the previous tool/list call.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: The {0} tool name for the {1} MCP tool method is not valid. Tool names must be between 1 and 128 characters in length, inclusive.
+CWMCM0023E.invalid.length.tool.name.explanation=The tool name does not follow the MCP specification for names. Names must be between 1 and 128 characters in length, inclusive.
+CWMCM0023E.invalid.length.tool.name.useraction=Make sure that tool names are between 1 and 128 characters, inclusive.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: The {0} tool name for the {1} MCP tool method is not valid. Tool names must contain only ASCII letters, digits, underscores, or hyphens.
+CWMCM0024E.invalid.character.tool.name.explanation=The tool name doesn't follow the MCP specification for names. Names can contain only ASCII letters, digits, underscores, hyphens, and not any other special character.
+CWMCM0024E.invalid.character.tool.name.useraction=Make sure that tool names contain only ASCII letters, digits, underscores, or hyphens.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=The {0} argument cannot be converted to the {1} type.
+extra.arguments=The following arguments were passed but were not found in the method: {0}.
+missing.arguments=The method expected the following arguments but did not receive them: {0}.
+unauthorized.cancellation=The tool cannot be cancelled as the calling user is not authorized.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: The {0} return type of the {1} MCP tool method must be an object.
+CWMCM0025E.unsupported.output.explanation=The provided MCP tool return type is not supported.
+CWMCM0025E.unsupported.output.useraction=Provide a return type that is an object.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: An MCP tool with the name {0} already exists.
+CWMCM0026E.duplicate.tool.name.explanation=Each tool must have a unique name. You cannot register a new tool that has the same name as an existing tool.
+CWMCM0026E.duplicate.tool.name.useraction=Provide a unique name for each MCP tool.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: Either the setHandler method or the setAsyncHandler method must be called for the {0} MCP tool.
+CWMCM0027E.provide.one.handler.explanation=When you register a new tool by using ToolManager, you must provide either a synchronous handler by calling the setHandler method, or an asynchronous handler by calling the setAsyncHandler method. Do not provide both.
+CWMCM0027E.provide.one.handler.useraction=Call either the ToolDefinition.setHandler method or the ToolDefinition.setAsyncHandler method when you register a tool by using ToolManager.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: The {0} MCP tool name is not valid. Tool names must contain only ASCII letters, digits, underscores, or hyphens.
+CWMCM0028E.invalid.character.tool.name.explanation=The tool name doesn't follow the MCP specification for names. Names can contain only ASCII letters, digits, underscores, hyphens, and not any other special character.
+CWMCM0028E.invalid.character.tool.name.useraction=Make sure that tool names contain only ASCII letters, digits, underscores, or hyphens.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: The {0} MCP tool name is not valid. Tool names must be between 1 and 128 characters in length, inclusive.
+CWMCM0029E.invalid.length.tool.name.explanation=The tool name doesn't follow the MCP specification for names. Names must be between 1 and 128 characters in length, inclusive.
+CWMCM0029E.invalid.length.tool.name.useraction=Make sure that tool names are between 1 and 128 characters, inclusive.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: Cannot add an argument with a blank name to the {0} MCP tool.
+CWMCM0030E.blank.arguments.explanation=Every MCP tool argument must have a non-blank name. 
+CWMCM0030E.blank.arguments.useraction=Provide non-empty names for all tool arguments.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: The {1} argument of the {0} MCP tool does not have a converter to change its default value into an object of type {2}.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=One or more arguments have default values without a matching converter to convert the default value to the argument's type.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Create a custom converter implementation for the tool argument's type.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: Cannot add a second argument with the {1} name to the {0} MCP tool.
+CWMCM0032E.duplicate.argument.name.explanation=Each argument of an MCP tool must have a different name.
+CWMCM0032E.duplicate.argument.name.useraction=Give each tool argument a different name.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Forbidden request. Method={0} RequestURI={1} RequestQuery={2}, Exception: {3}
+CWMCM0033A.forbidden.error.explanation=A request was made but the user is not authorized to make it.
+CWMCM0033A.forbidden.error.useraction=Make sure that an authorized user is calling the request.

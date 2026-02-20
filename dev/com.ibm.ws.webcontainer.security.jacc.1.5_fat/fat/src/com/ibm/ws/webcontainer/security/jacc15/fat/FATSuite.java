@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -90,16 +91,45 @@ public class FATSuite extends CommonLocalLDAPServerSuite {
                                                           "usr:jaccTestProvider-3.0"
     };
 
+    private static final Set<String> EE11_SPEC_FEATURES;
+    private static final String[] EE11_SPEC_FEATURES_ARRAY = {
+                                                               "usr:authzTestProvider-3.0"
+    };
+
     static {
         EE78_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE78_FEATURES_ARRAY)));
         EE9_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
         EE10_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));
         EE11_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_FEATURES_ARRAY)));
+        EE11_SPEC_FEATURES = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE11_SPEC_FEATURES_ARRAY)));
     }
 
     /*
      * Run EE9 tests in LITE mode if Java 8, EE10 tests in LITE mode if >= Java 11, EE11 tests in LITE mode if >= Java 17 and run all tests in FULL mode.
      */
+    /*@formatter:off*/
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().removeFeatures(EE78_FEATURES).addFeatures(EE9_FEATURES).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)).andWith(new JakartaEE10Action().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).addFeatures(EE10_FEATURES).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)).andWith(FeatureReplacementAction.EE11_FEATURES().removeFeatures(EE78_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).addFeatures(EE11_FEATURES));
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            .andWith(new JakartaEE9Action()
+                     .removeFeatures(EE78_FEATURES)
+                     .addFeatures(EE9_FEATURES)
+                     .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+            .andWith(new JakartaEE10Action()
+                     .removeFeatures(EE78_FEATURES)
+                     .removeFeatures(EE9_FEATURES)
+                     .addFeatures(EE10_FEATURES)
+                     .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+            .andWith(FeatureReplacementAction.EE11_FEATURES()
+                     .removeFeatures(EE78_FEATURES)
+                     .removeFeatures(EE9_FEATURES)
+                     .removeFeatures(EE10_FEATURES)
+                     .addFeatures(EE11_FEATURES))
+            .andWith(FeatureReplacementAction.EE11_FEATURES()
+                     .removeFeatures(EE78_FEATURES)
+                     .removeFeatures(EE9_FEATURES)
+                     .removeFeatures(EE10_FEATURES)
+                     .removeFeatures(EE11_FEATURES)
+                     .addFeatures(EE11_SPEC_FEATURES)
+                     .withID(JakartaEEAction.EE11_ACTION_ID + "_spec"));
+    /*@formatter:on*/
 }

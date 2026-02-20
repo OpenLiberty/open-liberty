@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,8 +16,9 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolArguments;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolDefinition;
+import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
+import io.openliberty.mcp.tools.ToolManager.ToolArguments;
+import io.openliberty.mcp.tools.ToolManager.ToolDefinition;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -38,7 +39,7 @@ public class SyncBeanMethodHandler extends BeanMethodHandler<ToolResponse> {
     }
 
     @Override
-    @FFDCIgnore({ JSONRPCException.class, InvocationTargetException.class, IllegalAccessException.class, IllegalArgumentException.class })
+    @FFDCIgnore({ McpResponseException.class, InvocationTargetException.class, IllegalAccessException.class, IllegalArgumentException.class })
     public ToolResponse apply(ToolArguments toolArgs) {
         Object[] argsArray = constructArgsArray(toolArgs);
         CreationalContext<Object> cc = bm.createCreationalContext(null);
@@ -59,14 +60,14 @@ public class SyncBeanMethodHandler extends BeanMethodHandler<ToolResponse> {
             }
             return createSuccessfulResponse(result, toolArgs);
 
-        } catch (JSONRPCException e) {
+        } catch (McpResponseException e) {
             throw e;
         } catch (InvocationTargetException e) {
             Throwable t = e.getCause();
             if (isBusinessException(t)) {
-                return createBusinessErrorResponse(e.getCause());
+                return ToolResponses.createBusinessErrorResponse(e.getCause());
             } else {
-                return createNonBusinessErrorResponse(t);
+                return ToolResponses.createNonBusinessErrorResponse(t, method.name());
             }
         }
     }

@@ -292,7 +292,8 @@ public class DataJPATestServlet extends FATServlet {
         demographics.write(new DemographicInfo(2002, 4, 30, 112700000, 2582340471146.16, 3402336886067.70));
 
         // TODO remove this workaround for intermittent issue triggered by test ordering once 28078 is fixed
-        testLiteralDouble();
+        if (!isHibernate())
+            testLiteralDouble();
         // To quickly try reproducing the issue, remove the above line and add the following line to tearDown,
         // runTest(server, "DataJPATestApp", "testLiteralDouble");
     }
@@ -1469,7 +1470,7 @@ public class DataJPATestServlet extends FATServlet {
         }
 
         // TODO enable once issue #32204 is fixed in EclipseLink
-        if (false)
+        if (isHibernate())
             assertEquals(List.of(345003450L, 678006780L),
                          taxpayers.findByBankAccountsContains(AccountId.of(26122300, 410224))
                                          .map(t -> t.ssn)
@@ -3386,8 +3387,12 @@ public class DataJPATestServlet extends FATServlet {
      * Use a repository method with a Query that hard codes a literal for a double value in E notation,
      * as is done in an example within the spec.
      */
-    // enable once 28078 is fixed @Test
+    @Test
     public void testLiteralDouble() {
+        // TODO enable for EclipseLink once 28078 is fixed
+        if (!isHibernate())
+            return;
+
         // Clear out data before test
         accounts.deleteByOwnerEndsWith("TestLiteralDouble");
 
@@ -3535,6 +3540,10 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testManyToOneIdClass() {
 
+        if (!isHibernate()) {
+            // TODO enable once EclipseLink 29073 is fixed
+            return;
+        }
         assertEquals(List.of("Discrooger card #2000921022220002",
                              "MonsterCard card #3000921032220002",
                              "Feesa card #4000921042220002",
@@ -4249,22 +4258,9 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testSelectIdClass() {
 
-        List<String> found;
-        if (isHibernate()) {
-            // Hibernate correctly returns a stream of IdClass
-            @SuppressWarnings("unchecked")
-            Stream<CityId> stream = (Stream<CityId>) (Stream<?>) cities.ids();
-            found = stream
-                            .map(id -> id.getStateName() + ":" + id.name)
-                            .collect(Collectors.toList());
-        } else {
-            // TODO replace the following with the above once #29073 is fixed
-            // and correct the repository method return type to match
-            // EclipseLink incorrectly returns a stream of Object[]
-            found = cities.ids()
-                            .map(id -> id[0] + ":" + id[1])
-                            .collect(Collectors.toList());
-        }
+        List<String> found = cities.ids()
+                        .map(id -> id.getStateName() + ":" + id.name)
+                        .collect(Collectors.toList());
 
         assertEquals(List.of("Illinois:Springfield",
                              "Kansas:Kansas City",
@@ -4830,21 +4826,11 @@ public class DataJPATestServlet extends FATServlet {
         CityId mnId = CityId.of("Rochester", "Minnesota");
         CityId nyId = CityId.of("Rochester", "New York");
 
-        long mnVer;
-        long nyVer;
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            // TODO once fixed in Hibernate, update the JPQL query to use VERSION(THIS)
-            // instead of lower case VERSION(this)
-            mnVer = cities.currentVersion(mnId);
-            nyVer = cities.currentVersion(nyId);
-        } else {
-            mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
-            nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
-
-            // TODO enable once EclipseLink #29073 is fixed, and maybe remove the above
-            //mnVer = cities.currentVersion(mnId);
-            //nyVer = cities.currentVersion(nyId);
-
+        // TODO once 33182 is fixed in Hibernate, update the JPQL query to use VERSION(THIS)
+        // instead of lower case VERSION(this)
+        long mnVer = cities.currentVersion(mnId);
+        long nyVer = cities.currentVersion(nyId);
+        if (!isHibernate()) {
             // TODO allow this test to run once 28589 is fixed
             // and verify that EclipseLink does not corrupt the area code value
             // for the following subsequent tests:

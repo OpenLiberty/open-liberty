@@ -30,8 +30,10 @@ dependencies {
                'org.skyscreamer:jsonassert:2.0-rc1'
   noParamNamesCompileOnly project(':io.openliberty.mcp'),
                               project(path: ':io.openliberty.jakarta', configuration: 'cdi40')
-  implementation sourceSets.noParamNames.output
+  implementation sourceSets.noParamNames.output  
 }
+
+addRequiredLibraries.dependsOn copyTestContainers
 
 /* Added to allow method parmaters to be available for MCP Tool Server*/ 
 // Allow us to test getting the name of a tool argument directly from the Java 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,9 +12,9 @@
  *******************************************************************************/
 
 /**
- * @version 1.0.16
+ * @version 1.1.0
  */
-@org.osgi.annotation.versioning.Version("1.0.16")
+@org.osgi.annotation.versioning.Version("1.1.0")
 @TraceOptions(traceGroup = TraceConstants.TRACE_GROUP, messageBundle = TraceConstants.MESSAGE_BUNDLE)
 package com.ibm.ws.security.wim.registry.util;
 

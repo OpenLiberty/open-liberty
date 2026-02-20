@@ -15,7 +15,7 @@ import java.util.Optional;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ToolMetadata;
-import io.openliberty.mcp.internal.tools.ToolManager;
+import io.openliberty.mcp.tools.ToolManager;
 
 /**
  * Used for testing where the ArgumentMetadata is already created and not derived from an application

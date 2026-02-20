@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -95,8 +95,17 @@ public interface WebJaccService {
                                    HttpServletRequest req,
                                    Subject subject);
 
+    public void setPolicyContextID(String applicationName, String moduleName);
+
     /**
      * Reset the policyContext Handler as per JACC specification
      */
     public void resetPolicyContextHandlerInfo();
+
+    /**
+     * Determines if a Policy is configured.  In EE 11, we create the WebJaccService always even if there
+     * isn't a PolicyFactory defined because it can be added dynamically by applications in their web.xml
+     * or using the PolicyFactory.setPolicyFactory() method.
+     */
+    public boolean isPolicyConfigured();
 }

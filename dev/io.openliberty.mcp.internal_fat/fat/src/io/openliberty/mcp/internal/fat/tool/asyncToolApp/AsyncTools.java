@@ -102,15 +102,6 @@ public class AsyncTools {
 
     public record City(String name, String country, int population, boolean isCapital) {};
 
-    @Tool(name = "asyncListObjectTool", title = "Async asyncListObjectTool", description = "A tool to return a list of cities asynchronously", structuredContent = true)
-    public CompletionStage<List<City>> asyncListObjectTool() {
-        return executor.supplyAsync(() -> {
-            City city1 = new City("Paris", "France", 8000, true);
-            City city2 = new City("Manchester", "England", 15000, false);
-            return List.of(city1, city2);
-        });
-    }
-
     @Tool(name = "asyncObjectTool", title = "Async asyncObjectTool", description = "A tool to return an object of cities asynchronously", structuredContent = true)
     public CompletionStage<City> asyncObjectTool(@ToolArg(name = "name", description = "name of your city") String name) {
         return executor.supplyAsync(() -> {

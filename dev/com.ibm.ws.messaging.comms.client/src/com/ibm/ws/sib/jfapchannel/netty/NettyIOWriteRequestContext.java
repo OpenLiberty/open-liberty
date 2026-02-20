@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,22 +68,37 @@ public class NettyIOWriteRequestContext extends NettyIOBaseContext implements IO
 		
 		if(chan.isActive()) {
 			
-			ChannelFuture future = chan.writeAndFlush(buffer, chan.newPromise().addListener(f -> {
-				if (f.isDone() && f.isSuccess()) {
-					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Succesful write for "+chan);
-					completionCallback.complete(getNetworkConnectionInstance(chan), me);
-				} else {
-					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "Unsuccesful write", new Object[]{chan, f.cause()});
-					completionCallback.error(getNetworkConnectionInstance(chan), me, new IOException(f.cause()));
-					if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "Unsuccesful write");
-				}
-			}));
+			if (chan.eventLoop().inEventLoop()) {
+				ChannelFuture future = chan.writeAndFlush(buffer, chan.newPromise().addListener(f -> {
+					if (f.isDone() && f.isSuccess()) {
+						if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Succesful write for "+chan);
+						completionCallback.complete(getNetworkConnectionInstance(chan), me);
+					} else {
+						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "Unsuccesful write", new Object[]{chan, f.cause()});
+						completionCallback.error(getNetworkConnectionInstance(chan), me, new IOException(f.cause()));
+						if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "Unsuccesful write");
+					}
+				}));
 
-			if(future.isDone()) {
-				retConn = getNetworkConnectionInstance(chan); 
+				if(future.isDone()) {
+					retConn = getNetworkConnectionInstance(chan); 
+				}
+			} else { // not in event loop, so let's force it to prevent packet reordering issues / threading problems
+				chan.eventLoop().execute(() -> {
+					chan.writeAndFlush(buffer, chan.newPromise().addListener(f -> {
+						if (f.isDone() && f.isSuccess()) {
+							if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "Succesful write for "+chan);
+							completionCallback.complete(getNetworkConnectionInstance(chan), me);
+						} else {
+							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "Unsuccesful write", new Object[]{chan, f.cause()});
+							completionCallback.error(getNetworkConnectionInstance(chan), me, new IOException(f.cause()));
+							if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "Unsuccesful write");
+						}
+					}));
+				});
 			}
 			
-		}else {
+		} else {
 			completionCallback.error(getNetworkConnectionInstance(chan), me, new IOException("Write was attempted on a channel that is not active!! " + chan));
 		}
 

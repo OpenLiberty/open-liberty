@@ -15,6 +15,8 @@ import java.util.List;
 
 import io.openliberty.mcp.internal.McpCdiExtension;
 import io.openliberty.mcp.internal.ToolMetadata.ToolMethodArgument;
+import io.openliberty.mcp.internal.schemas.SchemaGenerator.AnnotatedToolArgument;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.json.JsonObject;
@@ -72,13 +74,34 @@ public class SchemaRegistry {
      */
     public JsonObject getToolInputSchema(List<ToolMethodArgument> arguments) {
         SchemaKey key = new ToolInputKey(arguments);
-        return schemaCache.computeIfAbsent(key, k -> SchemaGenerator.generateToolInputSchema(arguments, blueprintRegistry));
+        return schemaCache.computeIfAbsent(key, k -> {
+            var annotatedArguments = arguments.stream()
+                                              .map(a -> new AnnotatedToolArgument(a.argument(), a.parameter().getJavaParameter()))
+                                              .toList();
+            return SchemaGenerator.generateToolInputSchema(annotatedArguments, blueprintRegistry);
+        });
+    }
+
+    /**
+     * Gets the input JSON schema for a programatically registered tool
+     *
+     * @param arguments the tool arguments
+     * @return the json schema
+     */
+    public JsonObject getProgrammaticToolInputSchema(List<ToolArgument> arguments) {
+        SchemaKey key = new ProgrammaticToolInputKey(arguments);
+        return schemaCache.computeIfAbsent(key, k -> {
+            var annotatedArguments = arguments.stream()
+                                              .map(a -> new AnnotatedToolArgument(a))
+                                              .toList();
+            return SchemaGenerator.generateToolInputSchema(annotatedArguments, blueprintRegistry);
+        });
     }
 
     /**
      * Gets the output JSON schema for a tool
      *
-     * @param toolMethod the tool to get the schema for
+     * @param toolMethod the tool to get the schema for, or {@code null} for a tool without a method
      * @param toolOutputType the unwrapped and resolved return type of the method.
      * @return the json schema
      */
@@ -95,6 +118,8 @@ public class SchemaRegistry {
     public record ClassKey(Class<?> cls, SchemaDirection direction) implements SchemaKey {};
 
     public record ToolInputKey(List<ToolMethodArgument> arguments) implements SchemaKey {};
+
+    public record ProgrammaticToolInputKey(List<ToolArgument> arguments) implements SchemaKey {};
 
     public record ToolOutputKey(AnnotatedMethod<?> tool, Type toolOutputType) implements SchemaKey {};
 

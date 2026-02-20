@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -58,8 +58,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         server.stopServer(
-                          "CWMCM0010E", //  Tool method threw an unexpected exception
-                          "CWMCM0011E" // An internal server error occurred
+                          "CWMCM0010E" //  Tool method threw an unexpected exception
         );
     }
 
@@ -126,7 +125,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                             "content": [
                               {
                                 "type": "text",
-                                "text": "CWMCM0011E: An internal server error occurred while running the tool."
+                                "text": "An internal server error occurred while running the tool."
                               }
                             ]
                           }
@@ -271,7 +270,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                 "content": [
                                   {
                                     "type": "text",
-                                    "text": "CWMCM0011E: An internal server error occurred while running the tool."
+                                    "text": "An internal server error occurred while running the tool."
                                   }
                                 ]
                               }
@@ -316,7 +315,6 @@ public class ToolErrorHandlingTest extends FATServletClient {
 
     @Test
     public void testCheckedExceptionTool_Unwrapped() throws Exception {
-        server.setMarkToEndOfLog();
 
         String request = """
                         {
@@ -344,7 +342,7 @@ public class ToolErrorHandlingTest extends FATServletClient {
                             "content": [
                               {
                                 "type": "text",
-                                "text": "CWMCM0011E: An internal server error occurred while running the tool."
+                                "text": "An internal server error occurred while running the tool."
                               }
                             ]
                           }
@@ -357,15 +355,128 @@ public class ToolErrorHandlingTest extends FATServletClient {
     }
 
     @Test
+    public void testUnexpectedArgumentSupplied() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "input": "Hi",
+                              "count": 2,
+                              "extra": "unexpected"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "result": {
+                            "isError": true,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "The following arguments were passed but were not found in the method: [extra]."
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
+    public void testMissingRequiredArgument() throws Exception {
+
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 103,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "count": 2
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 103,
+                          "result": {
+                            "isError": true,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "The method expected the following arguments but did not receive them: [input]."
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
+    public void testArgumentTypeMismatch() throws Exception {
+
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 104,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "inputValidationTool",
+                            "arguments": {
+                              "input": "hello",
+                              "count": "oops"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 104,
+                          "result": {
+                            "isError": true,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "The count argument cannot be converted to the java.lang.Integer type."
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    @Test
     public void testToolList() throws Exception {
         String request = """
                         {
                           "jsonrpc": "2.0",
                           "id": 1,
-                          "method": "tools/list",
-                          "params": {
-                            "cursor": "optional-cursor-value"
-                          }
+                          "method": "tools/list"
                         }
                         """;
 
@@ -511,6 +622,24 @@ public class ToolErrorHandlingTest extends FATServletClient {
                                            "description": "Throws IOException but not listed",
                                            "title": "Unwrapped Checked"
                                        },
+                                       {
+                                          "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                              "input": {
+                                                "type": "string"
+                                              },
+                                              "count": {
+                                                "type": "integer"
+                                              }
+                                            },
+                                            "required": [
+                                              "input"
+                                            ]
+                                          },
+                                          "name": "inputValidationTool",
+                                          "title": "Input Validation Tool"
+                                        }
                                      ]
                                     },
                                     "id":1,

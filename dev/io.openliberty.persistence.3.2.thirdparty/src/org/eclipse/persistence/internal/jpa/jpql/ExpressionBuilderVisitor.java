@@ -38,8 +38,8 @@ import org.eclipse.persistence.expressions.ExpressionMath;
 import org.eclipse.persistence.internal.expressions.ConstantExpression;
 import org.eclipse.persistence.internal.expressions.DateConstantExpression;
 import org.eclipse.persistence.internal.expressions.MapEntryExpression;
-import org.eclipse.persistence.internal.helper.DatabaseField;
 import org.eclipse.persistence.internal.expressions.ParameterExpression;
+import org.eclipse.persistence.internal.helper.DatabaseField;
 import org.eclipse.persistence.internal.queries.ReportItem;
 import org.eclipse.persistence.jpa.jpql.ExpressionTools;
 import org.eclipse.persistence.jpa.jpql.JPQLQueryDeclaration.Type;
@@ -749,8 +749,8 @@ final class ExpressionBuilderVisitor extends JPQLFunctionsAbstractBuilder implem
             IdExpression idExpression = (IdExpression) expression.getLeftExpression();
             Collection<StateFieldPathExpression> stateFieldPaths = idExpression.getStateFieldPathExpressions();
 
-            // If composite key (multiple fields), create AND/OR expression for each field
-            if (stateFieldPaths.size() > 1) {
+            //If composite key (multiple fields), create AND/OR expression for each field
+            if (stateFieldPaths != null && stateFieldPaths.size() > 1) {
                 queryExpression = buildCompositeKeyComparison(
                     stateFieldPaths, rightExpression, comparaison, visitor);
                 type[0] = Boolean.class;
@@ -763,8 +763,8 @@ final class ExpressionBuilderVisitor extends JPQLFunctionsAbstractBuilder implem
             IdExpression idExpression = (IdExpression) expression.getRightExpression();
             Collection<StateFieldPathExpression> stateFieldPaths = idExpression.getStateFieldPathExpressions();
 
-            // If composite key (multiple fields), create AND/OR expression for each field
-            if (stateFieldPaths.size() > 1) {
+             // If composite key (multiple fields), create AND/OR expression for each field
+            if (stateFieldPaths != null && stateFieldPaths.size() > 1) {
                 queryExpression = buildCompositeKeyComparison(
                     stateFieldPaths, leftExpression, comparaison, visitor);
                 type[0] = Boolean.class;
@@ -795,7 +795,7 @@ final class ExpressionBuilderVisitor extends JPQLFunctionsAbstractBuilder implem
         else if (comparaison == ComparisonExpression.GREATER_THAN) {
             queryExpression = leftExpression.greaterThan(rightExpression);
         }
-        // <=
+        // >=
         else if (comparaison == ComparisonExpression.GREATER_THAN_OR_EQUAL) {
             queryExpression = leftExpression.greaterThanEqual(rightExpression);
         }
@@ -816,6 +816,7 @@ final class ExpressionBuilderVisitor extends JPQLFunctionsAbstractBuilder implem
      * @param operator The comparison operator (=, !=, etc.)
      * @param visitor The visitor for building sub-expressions
      * @return The combined expression for all key fields
+     * @throws IllegalArgumentException if the operator is not supported for composite keys
      */
     private Expression buildCompositeKeyComparison(
             Collection<StateFieldPathExpression> stateFieldPaths,
@@ -823,12 +824,28 @@ final class ExpressionBuilderVisitor extends JPQLFunctionsAbstractBuilder implem
             String operator,
             ComparisonExpressionVisitor visitor) {
 
+        // Validate inputs
+        if (stateFieldPaths == null || stateFieldPaths.isEmpty()) {
+            throw new IllegalArgumentException("ID() expression has no fields for composite key comparison");
+        }
+
+        // Validate operator support for composite keys
+        if (!operator.equals(ComparisonExpression.EQUAL) &&
+            !operator.equals(ComparisonExpression.DIFFERENT) &&
+            !operator.equals(ComparisonExpression.NOT_EQUAL)) {
+            throw new IllegalArgumentException(
+                "Comparison operator '" + operator + "' is not supported for composite keys. " +
+                "Only EQUAL (=) and NOT_EQUAL (!=, <>) operators are supported when using ID() with composite keys.");
+        }
+
         Expression result = null;
 
-        // Check if parameter expression is a ParameterExpression
-        boolean isParameter = parameterExpression instanceof ParameterExpression;
-
         for (StateFieldPathExpression fieldPath : stateFieldPaths) {
+            // Validate field path
+            if (fieldPath == null || fieldPath.pathSize() == 0) {
+                throw new IllegalArgumentException("Invalid field path in ID() expression");
+            }
+
             // Build expression for this field: e.g., c.name
             fieldPath.accept(visitor);
             Expression fieldExpression = queryExpression;
@@ -844,7 +861,7 @@ final class ExpressionBuilderVisitor extends JPQLFunctionsAbstractBuilder implem
             DatabaseField dbField = new DatabaseField(fieldName);
             ParameterExpression paramFieldExpression = new ParameterExpression(dbField);
             
-            // Set the base expression to the original parameter so it knows where to get the CityId object from
+            // Set the base expression to the original parameter so it knows where to get the composite key object from
             if (parameterExpression instanceof ParameterExpression) {
                 paramFieldExpression.setBaseExpression(parameterExpression);
             }
@@ -858,13 +875,8 @@ final class ExpressionBuilderVisitor extends JPQLFunctionsAbstractBuilder implem
             if (operator.equals(ComparisonExpression.EQUAL)) {
                 fieldComparison = fieldExpression.equal(paramFieldExpression);
             }
-            else if (operator.equals(ComparisonExpression.DIFFERENT) ||
-                     operator.equals(ComparisonExpression.NOT_EQUAL)) {
+            else { //NOT_EQUAL or DIFFERENT
                 fieldComparison = fieldExpression.notEqual(paramFieldExpression);
-            }
-            else {
-                throw new IllegalArgumentException(
-                    "Comparison operator " + operator + " is not supported for composite keys");
             }
 
             // Combine with previous comparisons

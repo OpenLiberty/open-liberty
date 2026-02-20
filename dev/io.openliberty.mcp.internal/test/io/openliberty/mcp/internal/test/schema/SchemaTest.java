@@ -177,12 +177,14 @@ public class SchemaTest {
         return true;
     }
 
+    public record ListWrapper<T>(List<T> returnList) {};
+
     @Tool(name = "addPersonToList", title = "adds person to employee list", description = "adds person to employee list, returns nothing")
-    public @Schema(description = "Returns list of person object") List<Person> addPersonToList(@ToolArg(name = "employeeList",
-                                                                                                        description = "List of people") List<Person> employeeList,
-                                                                                               @ToolArg(name = "person", description = "Person object") Person person) {
+    public @Schema(description = "Returns list of person object") ListWrapper<Person> addPersonToList(@ToolArg(name = "employeeList",
+                                                                                                               description = "List of people") List<Person> employeeList,
+                                                                                                      @ToolArg(name = "person", description = "Person object") Person person) {
         employeeList.add(person);
-        return employeeList;
+        return new ListWrapper<>(employeeList);
         //comment
     }
 
@@ -1015,69 +1017,54 @@ public class SchemaTest {
         MockAnnotatedMethod<Object> toolMethod = TestUtils.findMethod(SchemaTest.class, "addPersonToList");
         Type returnType = toolMethod.getJavaMember().getGenericReturnType();
         String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
-
         String expectedResponseString = """
                             {
+                            "type": "object",
+                            "properties": {
+                                "returnList": {
+                                    "type": "array",
+                                    "items": {
+                                        "$ref": "#/$defs/Person"
+                                    }
+                                }
+                            },
+                            "required": [
+                                "returnList"
+                            ],
+                            "description": "Returns list of person object",
                             "$defs": {
-                                "Address": {
-                                    "properties": {
-                                        "number": {
-                                            "type": "integer"
-                                        },
-                                        "street": {
-                                            "description": "A street object to represent complex streets",
-                                            "properties": {
-                                                "streetName": {
-                                                    "type": "string"
-                                                },
-                                                "roadType": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "streetName"
-                                            ],
-                                            "type": "object"
-                                        },
-                                        "postcode": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "required": [
-                                        "number",
-                                        "street",
-                                        "postcode"
-                                    ],
-                                    "type": "object"
-                                },
                                 "Person": {
-                                    "description": "A person object contains address, company objects",
+                                    "type": "object",
                                     "properties": {
+                                        "fullname": {
+                                            "type": "string"
+                                        },
                                         "address": {
                                             "$ref": "#/$defs/Address"
                                         },
                                         "company": {
+                                            "type": "object",
                                             "properties": {
-                                                "address": {
-                                                    "$ref": "#/$defs/Address"
-                                                },
                                                 "name": {
                                                     "type": "string"
                                                 },
+                                                "address": {
+                                                    "$ref": "#/$defs/Address"
+                                                },
                                                 "employees": {
-                                                    "description": "A list of employees (person object)",
+                                                    "type": "array",
                                                     "items": {
                                                         "$ref": "#/$defs/Person"
                                                     },
-                                                    "type": "array"
+                                                    "description": "A list of employees (person object)"
                                                 },
                                                 "employeeRegistry": {
                                                     "properties": {
-                                                        "value": {
-                                                            "$ref": "#/$defs/Person"
-                                                        },
                                                         "key": {
                                                             "type": "integer"
+                                                        },
+                                                        "value": {
+                                                            "$ref": "#/$defs/Person"
                                                         }
                                                     },
                                                     "required": [],
@@ -1089,11 +1076,7 @@ public class SchemaTest {
                                                 "address",
                                                 "employees",
                                                 "employeeRegistry"
-                                            ],
-                                            "type": "object"
-                                        },
-                                        "fullname": {
-                                            "type": "string"
+                                            ]
                                         }
                                     },
                                     "required": [
@@ -1101,14 +1084,40 @@ public class SchemaTest {
                                         "address",
                                         "company"
                                     ],
-                                    "type": "object"
+                                    "description": "A person object contains address, company objects"
+                                },
+                                "Address": {
+                                    "type": "object",
+                                    "properties": {
+                                        "number": {
+                                            "type": "integer"
+                                        },
+                                        "street": {
+                                            "properties": {
+                                                "streetName": {
+                                                    "type": "string"
+                                                },
+                                                "roadType": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "streetName"
+                                            ],
+                                            "type": "object",
+                                            "description": "A street object to represent complex streets"
+                                        },
+                                        "postcode": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "number",
+                                        "street",
+                                        "postcode"
+                                    ]
                                 }
-                            },
-                            "description": "Returns list of person object",
-                            "items": {
-                                "$ref": "#/$defs/Person"
-                            },
-                            "type": "array"
+                            }
                         }
                                                     """;
         JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
@@ -2153,8 +2162,10 @@ public class SchemaTest {
         JSONAssert.assertEquals(expectedResponseString, toolInputSchema, JSONCompareMode.NON_EXTENSIBLE);
     }
 
+    public record ArrayWrapper<T>(T[] returnList) {};
+
     @Tool(name = "primitiveArrayTest", title = "Test Content Response", description = "tests Content Response")
-    public int[] primitiveArrayTest(@ToolArg(name = "name", description = "name") String name) {
+    public ArrayWrapper<Integer> primitiveArrayTest(@ToolArg(name = "name", description = "name") String name) {
         return null;
         //comment
     }
@@ -2165,20 +2176,21 @@ public class SchemaTest {
 
         Type returnType = toolMethod.getJavaMember().getGenericReturnType();
         String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
-
         String expectedResponseString = """
-                            {"type":"array","items":{"type":"integer"}}
+                        {"type":"object","properties":{"returnList":{"type":"array","items":{"type":"integer"}}},"required":["returnList"]}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);
     }
 
+    public record ListArrayWrapper<T>(List<T>[] returnList) {};
+
     @Tool(name = "addGenericToGenericArrayGenericConcrete", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
-    public @Schema(description = "Returns list of  object") <T> List<T>[] addGenericToGenericArrayGenericConcrete(@ToolArg(name = "generic list 1",
-                                                                                                                           description = "List of generics 1") T[] list1,
-                                                                                                                  @ToolArg(name = "generic list 2",
-                                                                                                                           description = "List of generics 1 ") List<T>[] list2,
-                                                                                                                  @ToolArg(name = "generic",
-                                                                                                                           description = "Generic object") T item) {
+    public @Schema(description = "Returns list of  object") <T> ListArrayWrapper<T> addGenericToGenericArrayGenericConcrete(@ToolArg(name = "generic list 1",
+                                                                                                                                     description = "List of generics 1") T[] list1,
+                                                                                                                            @ToolArg(name = "generic list 2",
+                                                                                                                                     description = "List of generics 1 ") List<T>[] list2,
+                                                                                                                            @ToolArg(name = "generic",
+                                                                                                                                     description = "Generic object") T item) {
         return null;
     }
 
@@ -2237,13 +2249,21 @@ public class SchemaTest {
         String response = registry.getToolOutputSchema(toolMethod, returnType).toString();
         String expectedResponseString = """
                                           {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "array",
-                                                "items": {
-                                                    "type": "string"
+                                            "type": "object",
+                                            "properties": {
+                                                "returnList": {
+                                                    "type": "array",
+                                                    "items": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "type": "string"
+                                                        }
+                                                    }
                                                 }
                                             },
+                                            "required": [
+                                                "returnList"
+                                            ],
                                             "description": "Returns list of  object"
                                         }
 

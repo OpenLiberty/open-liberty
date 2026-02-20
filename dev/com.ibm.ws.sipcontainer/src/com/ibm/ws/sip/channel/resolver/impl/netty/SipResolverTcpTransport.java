@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,13 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
+import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
 
 import io.netty.bootstrap.Bootstrap;
 import io.netty.buffer.*;
@@ -25,6 +28,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.netty.handler.timeout.ReadTimeoutHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
+import io.netty.util.ReferenceCountUtil;
 import io.openliberty.netty.internal.*;
 import io.openliberty.netty.internal.exception.NettyException;
 
@@ -665,6 +669,14 @@ class SipResolverTcpTransport implements SipResolverTransport {
 
     private class SipResolverTcpTransportHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
+        private boolean processingMessage = false;
+        private static final int DEFAULT_MAX_QUEUE = 50;
+        private final LinkedBlockingQueue<ByteBuf> messageQueue;
+
+        public SipResolverTcpTransportHandler() {
+            this.messageQueue = new LinkedBlockingQueue<ByteBuf>(DEFAULT_MAX_QUEUE);
+        }
+
         /** Called when a new connection is established */
         @Override
         public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -679,6 +691,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
             if (c_logger.isTraceEntryExitEnabled()) {
                 c_logger.traceEntry(this, "channelInactive remote disconnected: " + ctx.channel().remoteAddress());
             }
+            emptyMessageQueue();
             m_channel = null;
         }
 
@@ -687,9 +700,27 @@ class SipResolverTcpTransport implements SipResolverTransport {
             if (c_logger.isTraceEntryExitEnabled()) {
                 c_logger.traceEntry(this, "exceptionCaught: " + e.getMessage());
             }
-            readError((Exception) e);
-            // tell the channel to close; the netty framework will be notified
-            ctx.close();
+            emptyMessageQueue();
+            // Run this out of the eventloop
+            ExecutorService executor = GenericEndpointImpl.getExecutorService();
+            if (ctx.channel().eventLoop().inEventLoop() && executor != null)
+                executor.execute(() -> {
+                    try {
+                        readError((Exception)e);
+                    } catch (Exception e2) {
+                        // Ignore exception because this is already after the exception handling finished
+                    } finally {
+                        ctx.close();
+                    }
+                });
+            else {
+                if(executor == null && c_logger.isTraceDebugEnabled()) {
+                    c_logger.traceDebug("exceptionCaught found null executor, running error logic in Netty thread.");
+                }
+                readError((Exception) e);
+                // tell the channel to close; the netty framework will be notified
+                ctx.close();
+            }
         }
 
         @Override
@@ -697,9 +728,74 @@ class SipResolverTcpTransport implements SipResolverTransport {
             if (c_logger.isTraceEntryExitEnabled()) {
                 c_logger.traceEntry(this, "channelRead0 message length: " + msg.readableBytes());
             }
-            ByteBuf b = (ByteBuf) msg;
-            readComplete(ctx, b.retain());
+            messageQueue.offer(ReferenceCountUtil.retain(msg));
+            if (processingMessage) {
+                if (messageQueue.remainingCapacity() == 0) {
+                    if (c_logger.isTraceDebugEnabled()) {
+                        c_logger.traceDebug("Queue reached capacity. Reads are paused.");
+                    }
+                    pauseReading(ctx);
+                }
+            } else {
+                processingMessage = true;
+                processNextMessage(ctx);
+            }
         }
+
+        // This is designed so that the logic besides what runs in the Liberty executor pool
+        // needs to run on the event loop, otherwise there could be race conditions that show up.
+        private void processNextMessage(final ChannelHandlerContext ctx){
+            ByteBuf msg = messageQueue.poll();
+            // Continue reading again if isn't autoread and we have space to queue more messages
+            if(!ctx.channel().config().isAutoRead() && messageQueue.remainingCapacity() > DEFAULT_MAX_QUEUE/2){
+                resumeReading(ctx);
+            }
+            if (msg == null) {
+                processingMessage = false;
+                return;
+            }
+            if (GenericEndpointImpl.getExecutorService() == null) {
+                // We should not process messages in the event loop of Netty so throw exception here
+                ctx.fireExceptionCaught(new NettyException("Null executor service while processing message!"));
+            }
+            GenericEndpointImpl.getExecutorService().execute(() -> {
+                try {
+                    try {
+                        readComplete(ctx, ReferenceCountUtil.retain(msg));
+                    } catch(Exception e) {
+                        // An exception was caught reading the message. Fire exceptionCaught and
+                        // return so that we do not keep processing messages but close properly.
+                        ctx.fireExceptionCaught(e);
+                        return;
+                    }
+                } finally {
+                    ReferenceCountUtil.release(msg);
+                }
+                ctx.channel().eventLoop().execute(() -> processNextMessage(ctx));
+            });
+        }
+
+        private void emptyMessageQueue() {
+            ByteBuf msg;
+            while ((msg = messageQueue.poll()) != null) {
+                ReferenceCountUtil.safeRelease(msg);
+            }
+        }
+
+        private void pauseReading(ChannelHandlerContext context) {
+            ChannelConfig config = context.channel().config();
+            if (config.isAutoRead()) {
+                config.setAutoRead(false);
+            }
+        }
+
+        private void resumeReading(ChannelHandlerContext context) {
+            ChannelConfig config = context.channel().config();
+            if (!config.isAutoRead()) {
+                config.setAutoRead(true);
+            }
+        }
+
     }
 
     /**

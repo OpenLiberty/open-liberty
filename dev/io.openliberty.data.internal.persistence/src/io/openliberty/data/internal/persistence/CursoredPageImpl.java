@@ -166,22 +166,23 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
      *                            are added due to repository special parameters.
      * @throws Exception if an error occurs
      */
-    @SuppressWarnings("unchecked")
     private void addParametersForCursor(Cursor cursor,
                                         @Sensitive Map<Object, Object> addedJPQLParams) //
                     throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
+        int cursorSize = cursor.size();
+
         // Expand ID(THIS) for composite IdClass into separate attributes
-        List<Object> cursorValues;
         SortedMap<String, Member> idClassAttributeAccessors = //
                         queryInfo.entityInfo.idClassAttributeAccessors;
-        if (idClassAttributeAccessors == null) {
-            cursorValues = (List<Object>) cursor.elements();
-        } else {
-            cursorValues = new ArrayList<>(cursor.size() + 3);
-            for (Object value : cursor.elements()) {
+        if (idClassAttributeAccessors != null) {
+            boolean foundIdClass = false;
+            ArrayList<Object> cursorValues = new ArrayList<>(cursorSize + 3);
+            for (int c = 0; c < cursorSize; c++) {
+                Object value = cursor.get(c);
                 if (queryInfo.entityInfo.idType.isInstance(value)) {
+                    foundIdClass = true;
                     for (Member accessor : idClassAttributeAccessors.values()) {
                         Object v = accessor instanceof Field //
                                         ? ((Field) accessor).get(value) //
@@ -192,9 +193,12 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                     cursorValues.add(value);
                 }
             }
+            if (foundIdClass) {
+                cursor = Cursor.forKey(cursorValues.toArray());
+                cursorSize = cursor.size();
+            }
         }
 
-        int cursorSize = cursorValues.size();
         if (queryInfo.sorts.size() != cursorSize)
             cursorSizeMismatchError(cursor);
 
@@ -207,7 +211,7 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
             Object key = paramNames == null //
                             ? paramNum // positional parameters
                             : paramNames[paramNum - 1]; // named parameters
-            addedJPQLParams.put(key, cursorValues.get(c));
+            addedJPQLParams.put(key, cursor.get(c));
 
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "added parameter " + key + " for cursor");

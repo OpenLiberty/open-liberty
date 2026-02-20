@@ -44,4 +44,21 @@ public class Jakartasec40TestConstants {
 
     // XOR, but bad encoding
     public static final String PASSWORD_XOR_INVALID = "{xor}LLTxlkwjljsdforbg=";
+
+    /**
+     * Multiple HAMs
+     */
+    public static final String HAM_ORDER_FOUND_MESSAGE = "Order of HttpAuthenticationMechanisms found";
+    public static final String INBUILT_HAM_PRIORITY_ORDER_MESSAGE = "FormAuthenticationMechanism, BasicHttpAuthenticationMechanism";
+    public static final String CUSTOM_HAM_PRIORITY_ORDER_MESSAGE = "CustomHAMThree Priority = 300, CustomHAMTwo Priority = 200, CustomHAMOne Priority = 100";
+    public static final String CUSTOM_WITH_INBUILT_PRIORITY_ORDER_MESSAGE = "CustomHAMOne Priority = 100, BasicHttpAuthenticationMechanism";
+
+    /**
+     * Multiple HAMs with qualifiers
+     */
+    public static final String HAM_BASIC_ADMIN_QUALIFIER_MESSAGE = "found adminHAM of \\[com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism";
+    public static final String HAM_BASIC_USER_QUALIFIER_MESSAGE = "found userHAM of \\[com.ibm.ws.security.javaeesec.cdi.beans.BasicHttpAuthenticationMechanism";
+    public static final String HAM_CUSTOM_FORM_OPERATOR_QUALIFIER_MESSAGE = "found operatorHAM of \\[com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism";
+    public static final String HAM_FORM_TESTER_QUALIFIER_MESSAGE = "found testerHAM of \\[com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism";
+    public static final String HAM_CUSTOM_HANDLER_PRIORITY_MESSAGE = "found Highest Priority HttpAuthenticationMechanism: BasicHttpAuthenticationMechanism";
 }

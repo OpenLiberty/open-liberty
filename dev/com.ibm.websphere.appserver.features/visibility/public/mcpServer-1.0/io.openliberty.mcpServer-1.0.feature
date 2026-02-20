@@ -7,6 +7,7 @@ IBM-API-Package: \
  io.openliberty.mcp.annotations; type="ibm-api", \
  io.openliberty.mcp.content; type="ibm-api", \
  io.openliberty.mcp.encoders; type="ibm-api", \
+ io.openliberty.mcp.features; type="ibm-api", \
  io.openliberty.mcp.messaging; type="ibm-api", \
  io.openliberty.mcp.meta; type="ibm-api", \
  io.openliberty.mcp.request; type="ibm-api", \

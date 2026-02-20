@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,6 +63,17 @@ public class JaccPolicyProxy implements Policy {
 
     public JaccPolicyProxy(String contextId) {
         this.contextID = contextId;
+    }
+
+    @Override
+    public boolean implies(Permission p, Subject subject) {
+        // If there is no policy configuration, the application doesn't
+        // have any security constraints.  In that case return true.
+        WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+        if (pc == null) {
+            return true;
+        }
+        return Policy.super.implies(p, subject);
     }
 
     @Override

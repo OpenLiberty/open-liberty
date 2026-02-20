@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -139,7 +139,7 @@ public class AsyncToolsTest extends FATServletClient {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"CWMCM0011E: An internal server error occurred while running the tool."}], "isError": true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
@@ -165,7 +165,7 @@ public class AsyncToolsTest extends FATServletClient {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"CWMCM0011E: An internal server error occurred while running the tool."}], "isError": true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
@@ -187,59 +187,17 @@ public class AsyncToolsTest extends FATServletClient {
 
         String response = client.callMCP(request);
         String expectedResponseString = """
-                        {"error":{"code":-32602,
-                        "data":[
-                            "The request does not have any arguments in parameters."
-                            ],
-                        "message":"Invalid params"},
-                        "id":"2",
-                        "jsonrpc":"2.0"}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testAsyncToolReturningListOfObjects() throws Exception {
-        String request = """
-                          {
+                        {
                           "jsonrpc": "2.0",
                           "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "asyncListObjectTool",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
                           "result": {
+                            "isError": true,
                             "content": [
                               {
-                                "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
+                                "type": "text",
+                                "text": "The method expected the following arguments but did not receive them: [input]."
                               }
-                            ],
-                            "structuredContent": [
-                              {
-                                "country": "France",
-                                "isCapital": true,
-                                "name": "Paris",
-                                "population": 8000
-                              },
-                              {
-                                "country": "England",
-                                "isCapital": false,
-                                "name": "Manchester",
-                                "population": 15000
-                              }
-                            ],
-                            "isError": false
+                            ]
                           }
                         }
                         """;

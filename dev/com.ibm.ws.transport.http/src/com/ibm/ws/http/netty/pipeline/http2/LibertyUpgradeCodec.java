@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -156,27 +156,31 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         DefaultHttp2Connection connection = new DefaultHttp2Connection(true);
         // Netty accepts integer for max length so we would need to adapt for this
         int maxContentlength = httpConfig.getMessageSizeLimit() >= Integer.MAX_VALUE ? Integer.MAX_VALUE : (int) httpConfig.getMessageSizeLimit();
-        InboundHttp2ToHttpAdapterBuilder builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).validateHttpHeaders(false);
-        if (maxContentlength > 0)
-            builder.maxContentLength(maxContentlength);
         Http2Settings initialSettings = new Http2Settings().maxConcurrentStreams(httpConfig.getH2MaxConcurrentStreams()).maxFrameSize(httpConfig.getH2MaxFrameSize());
-        // TODO Need to appropriately build and parse configs
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
         int frameWindowSize = httpConfig.getH2ResetFramesWindow() / 1000; // Frame window divided by 1000 because our httpOption is in ms precision but Netty's is in seconds
-        builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(Integer.MAX_VALUE).validateHttpHeaders(false);
-        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(new LibertyInboundHttp2ToHttpAdapter(connection, Integer.MAX_VALUE, false, false, channel)).connection(connection).initialSettings(initialSettings).encoderIgnoreMaxHeaderListSize(true).decoderEnforceMaxRstFramesPerWindow(httpConfig.getH2MaxResetFrames(), frameWindowSize).encoderEnforceMaxRstFramesPerWindow(httpConfig.getH2MaxResetFrames(), frameWindowSize).limitFieldSize(httpConfig.getLimitOfFieldSize()).limitNumHeaders(httpConfig.getLimitOnNumberOfHeaders()).maxHeaderBlockSize(httpConfig.getH2MaxHeaderBlockSize()).build();
+        InboundHttp2ToHttpAdapterBuilder builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(Integer.MAX_VALUE).validateHttpHeaders(false);
+        if (maxContentlength >= 0)
+            builder.maxContentLength(maxContentlength);
+        else
+            maxContentlength = Integer.MAX_VALUE;
+        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, maxContentlength, false, false, channel);
+        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(listener).connection(connection).initialSettings(initialSettings).encoderIgnoreMaxHeaderListSize(true).decoderEnforceMaxRstFramesPerWindow(httpConfig.getH2MaxResetFrames(), frameWindowSize).encoderEnforceMaxRstFramesPerWindow(httpConfig.getH2MaxResetFrames(), frameWindowSize).limitFieldSize(httpConfig.getLimitOfFieldSize()).limitNumHeaders(httpConfig.getLimitOnNumberOfHeaders()).maxHeaderBlockSize(httpConfig.getH2MaxHeaderBlockSize()).build();
         if (!httpConfig.getH2LimitWindowUpdateFrames()) {
-            ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(0.99999f);
-            try {
-                ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(connection.connectionStream(), 0.9999f);
-            } catch (Http2Exception e) {
-                e.printStackTrace();
-            }
+            // Execute this in event loop due to assertions
+            channel.eventLoop().execute(() -> {
+                ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(0.99999f);
+                try {
+                    ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).windowUpdateRatio(connection.connectionStream(), 0.9999f);
+                } catch (Http2Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isErrorEnabled()) {
+                        Tr.error(tc, "Encountered error while attempting to update window ratio: " + e.getMessage() + ". Continuing with default window update ratio.", e);
+                    }
+                }
+            });
         }
-
         return handler;
-
     }
 
 }

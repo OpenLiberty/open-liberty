@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,10 @@ import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.rules.ExternalResource;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
@@ -46,12 +49,15 @@ import componenttest.topology.utils.HttpRequest;
  * }</pre>
  */
 public class McpClient extends ExternalResource {
-
+    
+	private final LibertyServer server;
+    private final String path;
+    private final StateMode mode;
+    private final String username;
+    private final String password;
+    
     private boolean sessionDeleted = false;
     private String sessionId;
-    private LibertyServer server;
-    private String path;
-    private StateMode mode = StateMode.STATEFUL;
 
     public static enum StateMode {
         // STATEFUL - Uses sessions and session IDs to maintain state across requests
@@ -65,16 +71,33 @@ public class McpClient extends ExternalResource {
      * @param path the base endpoint path for MCP. The full request path will be {@code path + "/mcp"}.
      */
     public McpClient(LibertyServer server, String path) {
-        super();
-        this.server = server;
-        this.path = path;
+        this(server, path, StateMode.STATEFUL, null, null);
     }
 
+    /**
+     * @param server the {@link LibertyServer} instance used to send requests
+     * @param path the base endpoint path for MCP. The full request path will be {@code path + "/mcp"}.
+     * @param mode whether to expect the server to be in stateful or stateless mode
+     */
     public McpClient(LibertyServer server, String path, StateMode mode) {
+        this(server, path, mode, null, null);
+
+    }
+
+    /**
+     * @param server the {@link LibertyServer} instance used to send requests
+     * @param path the base endpoint path for MCP. The full request path will be {@code path + "/mcp"}.
+     * @param mode whether to expect the server to be in stateful or stateless mode
+     * @param username for basic auth
+     * @param password for basic auth
+     */
+    public McpClient(LibertyServer server, String path, StateMode mode, String username, String password) {
         super();
         this.server = server;
-        this.path = path;
+        this.path = path.startsWith("/") ? path : "/" + path;
         this.mode = mode;
+        this.username = username;
+        this.password = password;
     }
 
     /** {@inheritDoc} */
@@ -86,7 +109,7 @@ public class McpClient extends ExternalResource {
                           "id": "1",
                           "method": "initialize",
                           "params": {
-                            "protocolVersion": "2025-06-18",
+                            "protocolVersion": "2025-11-25",
                             "capabilities": {
                               "roots": {
                                 "listChanged": true
@@ -108,6 +131,9 @@ public class McpClient extends ExternalResource {
                                                                         .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
                                                                         .jsonBody(request)
                                                                         .method("POST");
+        if (username != null && password != null) {
+            httpRequest.basicAuth(username, password);
+        }
         String response = httpRequest.run(String.class);
 
         String expectedResponse = """
@@ -115,15 +141,16 @@ public class McpClient extends ExternalResource {
                           "jsonrpc": "2.0",
                           "id": "1",
                           "result": {
-                            "protocolVersion": "2025-06-18",
+                            "protocolVersion": "2025-11-25",
                           }
                         }
                         """;
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.LENIENT);
 
-        if (mode.equals(StateMode.STATEFUL)) {
-            sessionId = httpRequest.getResponseHeader(MCP_SESSION_ID);
-            assertNotNull(sessionId);
+        sessionId = httpRequest.getResponseHeader(MCP_SESSION_ID);
+        switch (mode) {
+            case STATEFUL -> assertNotNull(sessionId);
+            case STATELESS -> assertNull(sessionId);
         }
 
         String contentType = httpRequest.getResponseHeader("Content-Type");
@@ -191,9 +218,11 @@ public class McpClient extends ExternalResource {
                .method("POST");
 
         if (mode.equals(StateMode.STATEFUL)) {
+            if (sessionId == null) {
+                throw new IllegalStateException("In stateful mode but don't have a sessionId, did you forget to use @Rule?");
+            }
             request.requestProp(MCP_SESSION_ID, sessionId);
         }
-
         return request.run(String.class);
     }
 
@@ -244,4 +273,89 @@ public class McpClient extends ExternalResource {
         String response = setupAndRunRequest(request, jsonRequestBody);
         assertNull("Notification request received a response", response);
     }
+
+    public String callMCPNotificationWithBasicAuth(LibertyServer server,
+                                                   String path,
+                                                   String jsonRequestBody,
+                                                   String user, String password)
+                    throws Exception {
+
+        final HttpRequest request = new HttpRequest(server, path + "/mcp").expectCode(202).basicAuth(user, password);
+        String response = setupAndRunRequest(request, jsonRequestBody);
+        assertNull("Notification request received a response", response);
+        return response;
+    }
+
+    public String callMCPNotificationWithBasicAuthForbiddenErrorExpected(LibertyServer server,
+                                                                         String path,
+                                                                         String jsonRequestBody,
+                                                                         String user, String password)
+                    throws Exception {
+
+        final HttpRequest request = new HttpRequest(server, path + "/mcp").expectCode(403).basicAuth(user, password);;
+        String response = setupAndRunRequest(request, jsonRequestBody);
+        return response;
+    }
+
+    /**
+     * Returns the list of all tools. Takes the multiple paginated responses and combines them into a single
+     * tools list response.
+     */
+    public String listAllTools() throws Exception {
+
+        JSONArray allTools = new JSONArray();
+        String cursor = null;
+        String lastResponse = null;
+        int requestId = 1;
+
+        do {
+            String request;
+            if (cursor == null) {
+                request = String.format("""
+                                {
+                                   "jsonrpc": "2.0",
+                                   "id": %d,
+                                   "method": "tools/list"
+                                 }
+                                """, requestId++);
+            } else {
+                request = String.format("""
+                                {
+                                   "jsonrpc": "2.0",
+                                   "id": %d,
+                                   "method": "tools/list",
+                                   "params": {
+                                     "cursor": "%s"
+                                   }
+                                 }
+                                """, requestId++, cursor);
+            }
+
+            lastResponse = callMCP(request);
+
+            JSONObject jsonResponse = new JSONObject(lastResponse);
+            JSONObject result = jsonResponse.getJSONObject("result");
+
+            JSONArray tools = result.getJSONArray("tools");
+            for (int i = 0; i < tools.length(); i++) {
+                allTools.put(tools.get(i));
+            }
+
+            cursor = result.optString("nextCursor", null);
+            if (cursor != null) {
+                assertTrue(!cursor.isEmpty());
+            }
+        } while (cursor != null);
+
+        JSONObject combinedResult = new JSONObject();
+        combinedResult.put("tools", allTools);
+
+        JSONObject combinedResponse = new JSONObject();
+        combinedResponse.put("jsonrpc", "2.0");
+        combinedResponse.put("id", 1);
+        combinedResponse.put("result", combinedResult);
+
+        return combinedResponse.toString();
+    }
+
 }

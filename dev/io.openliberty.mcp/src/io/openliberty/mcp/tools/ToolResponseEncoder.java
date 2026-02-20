@@ -1,6 +1,6 @@
 /*******************************************************************************
  * Copyright (c) contributors to https://github.com/quarkiverse/quarkus-mcp-server
- * Copyright (c) 2025 IBM Corporation and others
+ * Copyright (c) 2025, 2026 IBM Corporation and others
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.tools;
 
+import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.messaging.Encoder;
 import jakarta.annotation.Priority;

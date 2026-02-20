@@ -19,6 +19,7 @@ src: \
 	test-applications/testClassPath2.war/src, \
 	test-applications/testClassPath3.war/src, \
 	test-applications/testLibFileSet.war/src, \
+	test-applications/testPlatformDelegation.war/src, \
 	test-applications/testNativeLibrary.war/src, \
 	test-applications/testParentLastLibraryFeature.war/src, \
 	test-applications/testParentLibraryInconsistent.war/src, \

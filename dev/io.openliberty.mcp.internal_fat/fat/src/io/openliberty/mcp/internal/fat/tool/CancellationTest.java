@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,8 +67,7 @@ public class CancellationTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         server.stopServer(
-                          "CWMCM0010E", //  Tool method threw an unexpected exception
-                          "CWMCM0011E" // An internal server error occurred
+                          "CWMCM0010E" //Internal server error
         );
     }
 
@@ -122,7 +121,7 @@ public class CancellationTest extends FATServletClient {
         String response = future.get(10, TimeUnit.SECONDS);
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"CWMCM0011E: An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
@@ -178,7 +177,7 @@ public class CancellationTest extends FATServletClient {
         String response = future.get(10, TimeUnit.SECONDS);
 
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"text":"CWMCM0011E: An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
@@ -205,4 +204,5 @@ public class CancellationTest extends FATServletClient {
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
+
 }

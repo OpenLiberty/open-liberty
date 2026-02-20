@@ -219,7 +219,7 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 		// needs to run on the event loop, otherwise there could be race conditions that show up.
 		private void processNextMessage(final ChannelHandlerContext ctx) {
 			SipMessageByteBuffer msg = messageQueue.poll();
-			if(!ctx.channel().config().isAutoRead() && messageQueue.remainingCapacity() > 0){
+			if(!ctx.channel().config().isAutoRead() && messageQueue.remainingCapacity() > DEFAULT_MAX_QUEUE/2){
 				resumeReading(ctx);
 			}
 			if (msg == null) {

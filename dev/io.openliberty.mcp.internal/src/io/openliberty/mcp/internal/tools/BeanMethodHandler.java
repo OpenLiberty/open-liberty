@@ -30,9 +30,9 @@ import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolCallException;
+import io.openliberty.mcp.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.tools.ToolResponse;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.spi.CreationalContext;
@@ -183,19 +183,6 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
             encodedElements.add(content);
         }
         return ToolResponse.success(encodedElements);
-    }
-
-    protected ToolResponse createBusinessErrorResponse(Throwable t) {
-        String msg = t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName();
-        return ToolResponse.error(msg);
-    }
-
-    protected ToolResponse createNonBusinessErrorResponse(Throwable t) {
-        Tr.error(tc,
-                 "CWMCM0010E.internal.server.error.detailed",
-                 method.name(),
-                 t);
-        return ToolResponse.error(Tr.formatMessage(tc, "CWMCM0011E.internal.server.error"));
     }
 
     protected boolean isBusinessException(Throwable t) {

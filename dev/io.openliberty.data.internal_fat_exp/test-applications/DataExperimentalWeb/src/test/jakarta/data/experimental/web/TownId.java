@@ -22,6 +22,10 @@ public class TownId implements Serializable {
 
     public String stateName;
 
+    public TownId() {
+
+    }
+
     public TownId(String name, String state) {
         this.name = name;
         this.stateName = state;

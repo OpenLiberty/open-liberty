@@ -18,7 +18,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.schemas.TypeUtility;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolArgument;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 
 /**
  * Resolves an argument default value for a tool method parameter

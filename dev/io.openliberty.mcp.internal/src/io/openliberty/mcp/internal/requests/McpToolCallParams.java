@@ -20,17 +20,18 @@ import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
-import io.openliberty.mcp.internal.tools.ToolManager.ToolArgument;
+import io.openliberty.mcp.tools.ToolCallException;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import jakarta.json.JsonObject;
 import jakarta.json.JsonValue;
 import jakarta.json.bind.Jsonb;
+import jakarta.json.bind.JsonbException;
 import jakarta.json.bind.annotation.JsonbProperty;
 
 /**
@@ -71,15 +72,12 @@ public class McpToolCallParams {
     }
 
     public Map<String, Object> getArguments(Jsonb jsonb) {
-        if (!this.metadata.arguments().isEmpty() && this.arguments == null) {
-            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of(Tr.formatMessage(tc, "jsonrpc.missing.params")));
+        if (parsedArguments != null) {
+            return parsedArguments;
         }
-        if (!this.metadata.arguments().isEmpty() && parsedArguments == null) {
-            parsedArguments = parseArguments(arguments, jsonb);
-        }
-        if (this.metadata.arguments().isEmpty()) {
-            parsedArguments = new HashMap<>();
-        }
+
+        JsonObject safeArguments = (this.arguments != null) ? this.arguments : JsonValue.EMPTY_JSON_OBJECT;
+        parsedArguments = parseArguments(safeArguments, jsonb);
         return parsedArguments;
     }
 
@@ -91,7 +89,9 @@ public class McpToolCallParams {
         this.meta = meta;
     }
 
+    @FFDCIgnore(NumberFormatException.class)
     private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb) {
+
         List<ToolArgument> metadatas = metadata.arguments();
         Map<String, Object> result = new HashMap<>();
 
@@ -103,8 +103,15 @@ public class McpToolCallParams {
             JsonValue argValue = requestArguments.get(argName);
             if (argValue != null) {
                 String argValueJson = jsonb.toJson(argValue);
-                result.put(argName, jsonb.fromJson(argValueJson, argMetadata.type()));
-                requestArgumentsProcessed++;
+                try {
+                    result.put(argName, jsonb.fromJson(argValueJson, argMetadata.type()));
+                    requestArgumentsProcessed++;
+                } catch (JsonbException | NumberFormatException e) {
+                    throw new ToolCallException(
+                                                Tr.formatMessage(tc, "argument.conversion.failed",
+                                                                 argName, argMetadata.type().getTypeName(), argValueJson),
+                                                e);
+                }
             } else if (!argMetadata.required()) {
                 //Argument is optional and not provided, resolve the default value
                 result.put(argName, DefaultValueResolver.resolveDefaultValue(argMetadata));
@@ -123,8 +130,9 @@ public class McpToolCallParams {
             Set<String> allowedArgs = metadatas.stream()
                                                .map(arg -> arg.name())
                                                .collect(Collectors.toSet());
-            List<String> data = generateArgumentMismatchData(requestArguments.keySet(), allowedArgs, requiredArgs);
-            throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, data);
+            String data = generateArgumentMismatchMessage(requestArguments.keySet(), allowedArgs, requiredArgs);
+
+            throw new ToolCallException(data);
         }
         return result;
     }
@@ -162,19 +170,37 @@ public class McpToolCallParams {
         throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", toolMetadata.name(), argMetadata.name(), argMetadata.type()));
     }
 
-    private List<String> generateArgumentMismatchData(Set<String> receivedArguments, Set<String> allowedArguments, Set<String> requiredArguments) {
+    /**
+     * Builds user-facing error message describing invalid tool arguments.
+     *
+     * <p>The message reports:
+     * <ul>
+     * <li>Arguments that were provided but are not supported</li>
+     * <li>Required arguments that were not provided</li>
+     * </ul>
+     *
+     * @param receivedArguments arguments supplied in the request
+     * @param allowedArguments arguments supported by the tool
+     * @param requiredArguments arguments required by the tool
+     * @return a combined error message for extra and/or missing arguments
+     */
+    private String generateArgumentMismatchMessage(Set<String> receivedArguments, Set<String> allowedArguments, Set<String> requiredArguments) {
+
         Set<String> missingArguments = new HashSet<>(requiredArguments);
         missingArguments.removeAll(receivedArguments);
+
         Set<String> extraArguments = new HashSet<>(receivedArguments);
         extraArguments.removeAll(allowedArguments);
-        ArrayList<String> data = new ArrayList<>();
+
+        List<String> messages = new ArrayList<>();
         if (!extraArguments.isEmpty()) {
-            data.add(Tr.formatMessage(tc, "jsonrpc.extra.arguments", extraArguments));
+            messages.add(Tr.formatMessage(tc, "extra.arguments", extraArguments));
         }
+
         if (!missingArguments.isEmpty()) {
-            data.add(Tr.formatMessage(tc, "jsonrpc.missing.arguments", missingArguments));
+            messages.add(Tr.formatMessage(tc, "missing.arguments", missingArguments));
         }
-        return !data.isEmpty() ? data : null;
+        return String.join(" ", messages);
     }
 
 }

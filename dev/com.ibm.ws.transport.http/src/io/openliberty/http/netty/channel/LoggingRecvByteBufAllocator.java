@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufAllocator;
+import io.netty.channel.Channel;
 import io.netty.channel.ChannelConfig;
 import io.netty.channel.ChannelHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -33,14 +34,18 @@ import io.netty.util.UncheckedBooleanSupplier;
     private static final TraceComponent tc = Tr.register(LoggingRecvByteBufAllocator.class, "TCPChannel", "Netty");
 
     private final RecvByteBufAllocator delegate;
+    private final Channel channel;
 
     /**
      * Constructor that wraps an existing allocator to add logging in {@code allocate(...)}
      * 
      * @param delegate
      */
-    public LoggingRecvByteBufAllocator(RecvByteBufAllocator delegate){
+    public LoggingRecvByteBufAllocator(RecvByteBufAllocator delegate, Channel channel){
+        Objects.requireNonNull(delegate, "RecvByteBufAllocator must not be null");
+        Objects.requireNonNull(channel, "Channel must not be null");
         this.delegate = delegate;
+        this.channel = channel;
     }
 
     /**
@@ -73,16 +78,6 @@ import io.netty.util.UncheckedBooleanSupplier;
         }
 
         /**
-         * Sets the context for logging addresses. This is expected
-         * to be called from the pipeline to ensure the handle can see addresses.
-         *
-         * @param context the channel handler context
-         */
-        public void setChannelHandlerContext(ChannelHandlerContext context){
-            this.context = context;
-        }
-
-        /**
          * Logs the read request, then delegates allocation.
          *
          * @param allocator the {@link ByteBufAllocator}
@@ -91,13 +86,11 @@ import io.netty.util.UncheckedBooleanSupplier;
         @Override
         @SuppressWarnings("deprecation")
         public ByteBuf allocate(ByteBufAllocator allocator) {
-            if (context != null) {
-                SocketAddress localAddress = context.channel().localAddress();
-                SocketAddress remoteAddress = context.channel().remoteAddress();
+            SocketAddress localAddress = channel.localAddress();
+            SocketAddress remoteAddress = channel.remoteAddress();
 
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(context.channel(), tc, "read (async) requested for local: " + localAddress + " remote: " + remoteAddress);
-                }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(channel, tc, "read (async) requested for local: " + localAddress + " remote: " + remoteAddress);
             }
             return delegateHandle.allocate(allocator);
         }

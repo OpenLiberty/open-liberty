@@ -206,7 +206,7 @@ public class AsyncToolsErrorHandlingTest extends FATServletClient {
                             "content": [
                               {
                                 "type": "text",
-                                "text": "CWMCM0011E: An internal server error occurred while running the tool."
+                                "text": "An internal server error occurred while running the tool."
                               }
                             ],
                             "isError": true

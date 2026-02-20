@@ -512,32 +512,37 @@ serverEnv()
   fi
 }
 
+## Initialize base JVM options that are always needed
+## Avoids HeadlessException on all platforms and Liberty JVMs appearing as applications and stealing focus on Mac.
+## Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
+## need -Dcom.ibm.tools.attach.enable=yes for java 11 on z/OS
+## Note: z/OS native access flag will be added later after Java version is determined
 ##
-## serverEnvAndJVMOptions: Read server.env files and set environment variables.
-##                         Read jvm.options file into ${JVM_OPTIONS_QUOTED}
-##                         Set JAVA_VERSION_MAJOR from ${JPMS_MODULE_FILE_LOCATION}/../../release file, if found
-serverEnvAndJVMOptions()
+initializeBaseJVMOptions()
 {
-  serverEnv
-
-  # Avoids HeadlessException on all platforms and Liberty JVMs appearing as applications and stealing focus on Mac.
-  # Declare allowAttachSelf=true so that the VM will permit a late self attach if localConnector-1.0 is enabled
-  # need -Dcom.ibm.tools.attach.enable=yes for java 11 on z/OS
-  # Note: z/OS native access flag will be added later after Java version is determined
   if [ "${uname}" = OS/390 ]; then
     JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true -Dcom.ibm.tools.attach.enable=yes"
   else
     JVM_OPTIONS_QUOTED="-Djava.awt.headless=true -Djdk.attach.allowAttachSelf=true"
   fi
   SERVER_JVM_OPTIONS_QUOTED=${JVM_OPTIONS_QUOTED}
+}
 
+
+## Load all jvm.options files in precedence order
+## Once a given jvm option is set, it will be overridden if a duplicate
+## is seen later. They will both be written in to the options parameter
+## but the last one written will take precedence.  If none are read
+## the script will try to read the jvm.options in etc
+##
+loadJVMOptionsFiles()
+{
   rc=0
-
-  # The order of merging the jvm.option files sets the precedence.
-  # Once a given jvm option is set, it will be overridden if a duplicate
-  # is seen later. They will both be written in to the options parameter
-  # but the last one written will take precedence.  If none are read
-  # the script will try to read the jvm.options in etc
+  
+  # Ensure base options are initialized
+  if [ -z "$SERVER_JVM_OPTIONS_QUOTED" ]; then
+    initializeBaseJVMOptions
+  fi
 
   TEMP_SAVED_OPTIONS=$SERVER_JVM_OPTIONS_QUOTED
   mergeJVMOptions "${WLP_USER_DIR}/shared/jvm.options"
@@ -567,12 +572,23 @@ serverEnvAndJVMOptions()
   if [ $READ_ETC -eq 1 ]; then
     SERVER_JVM_OPTIONS_QUOTED=$TEMP_SAVED_OPTIONS
     mergeJVMOptions "${WLP_INSTALL_DIR}/etc/jvm.options"
+    if [ $rc -ne 0 ]; then
+      return $rc
+    fi
   fi
+  
+  return $rc
+}
 
-  # Try to find and set JAVA_HOME.  Need JAVA_HOME to determine if we are running Java 9+.  Possibly other reasons.
-  if [ -z "${JAVA_HOME}" ]; then
 
-    # JAVA_HOME not set.  Locate java using the PATH.
+## Detect and validate JAVA_HOME if not already set.
+## Need JAVA_HOME to determine if we are running Java 9+.  Possibly other reasons.
+##
+detectJavaHome()
+{
+  [ -n "${JAVA_HOME}" ] && return 0
+  
+   # JAVA_HOME not set.  Locate java using the PATH.
     JAVA_PATH=$(command -v java)
     if [ -n "${JAVA_PATH}" ] ; then
 
@@ -600,53 +616,72 @@ serverEnvAndJVMOptions()
      fi
 
     fi  # if JAVA_HOME is not set and java is not in the PATH, then we cannot find Java.
-  fi
+}
 
-  # If there is a lib/modules directory under JAVA_HOME, then it is at least Java 9.   Ensure a java options file gets loaded.
-  if [ -n "${JAVA_HOME}" ]; then
-    JPMS_MODULE_FILE_LOCATION=${JAVA_HOME}/lib/modules
+## Load Java version-specific options (java9.options, java24.options)
+##
+loadJavaVersionSpecificOptions()
+{
+  [ -z "${JAVA_HOME}" ] && return 0
+  
+  JPMS_MODULE_FILE_LOCATION=${JAVA_HOME}/lib/modules
   
   # If there is a 'release' file under JAVA_HOME, examine it to see if JAVA_VERSION is set.  If so, determine which version of Java we will be using.
-    if [ -f "${JAVA_HOME}/release" ]; then
-        JAVA_VERSION_MAJOR=$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION\s*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
-    fi
-  
-    if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
-        if [ -n "${JAVA_VERSION_MAJOR}" ]; then
-            if [ ${JAVA_VERSION_MAJOR} -ge 24 ] 2>/dev/null; then
-                mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java24.options"
-            else
-                mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
-            fi
-        else
-                mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
-        fi
-    fi
-    
-    # In Java 24+, JNI usage must be explicitly granted when starting the JVM - https://openjdk.org/jeps/472 (needed for z/OS)
-    if [ -n "${JAVA_VERSION_MAJOR}" ] && [ "${uname}" = "OS/390" ]; then
-        # Only add flag if version comparison succeeds (suppress errors for invalid values)
-        if [ "${JAVA_VERSION_MAJOR}" -ge 24 ] 2>/dev/null; then
-            # Check if the flag is not already present in SERVER_JVM_OPTIONS_QUOTED or JVM_OPTIONS_QUOTED
-            case "${SERVER_JVM_OPTIONS_QUOTED}" in
-                *--enable-native-access=ALL-UNNAMED*) ;;
-                *)
-                    SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
-                    ;;
-            esac
-            case "${JVM_OPTIONS_QUOTED}" in
-                *--enable-native-access=ALL-UNNAMED*) ;;
-                *)
-                    JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
-                    ;;
-            esac
-        fi
-    fi
+  if [ -f "${JAVA_HOME}/release" ]; then
+      JAVA_VERSION_MAJOR=$(readNativeFile "${JAVA_HOME}/release" '[A-Za-z0-9]' | LC_ALL=C tr -d '\r' | grep ^JAVA_VERSION\s*= | tr -d '"' | awk -F= '{print $2}' | awk -F. '{if ($1 > 1) {print $1} else {print $2}}')
   fi
+  
+  if [ -f "${JPMS_MODULE_FILE_LOCATION}" ]; then
+      if [ -n "${JAVA_VERSION_MAJOR}" ]; then
+          if [ ${JAVA_VERSION_MAJOR} -ge 24 ] 2>/dev/null; then
+              mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java24.options"
+          else
+              mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+          fi
+      else
+          mergeJVMOptions "${WLP_INSTALL_DIR}/lib/platform/java/java9.options"
+      fi
+  fi
+}
 
+## Add platform-specific JVM flags
+##
+addPlatformSpecificJvmFlags()
+{
+  # In Java 24+, JNI usage must be explicitly granted when starting the JVM - https://openjdk.org/jeps/472 (needed for z/OS)
+  if [ -n "${JAVA_VERSION_MAJOR}" ] && [ "${uname}" = "OS/390" ]; then
+      # Only add flag if version comparison succeeds (suppress errors for invalid values)
+      if [ "${JAVA_VERSION_MAJOR}" -ge 24 ] 2>/dev/null; then
+          # Check if the flag is not already present in SERVER_JVM_OPTIONS_QUOTED or JVM_OPTIONS_QUOTED
+          case "${SERVER_JVM_OPTIONS_QUOTED}" in
+              *--enable-native-access=ALL-UNNAMED*) ;;
+              *)
+                  SERVER_JVM_OPTIONS_QUOTED="${SERVER_JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+                  ;;
+          esac
+          case "${JVM_OPTIONS_QUOTED}" in
+              *--enable-native-access=ALL-UNNAMED*) ;;
+              *)
+                  JVM_OPTIONS_QUOTED="${JVM_OPTIONS_QUOTED} '--enable-native-access=ALL-UNNAMED'"
+                  ;;
+          esac
+      fi
+  fi
+}
+
+## serverEnvAndJVMOptions: Read server.env files and set environment variables.
+##                         Read jvm.options file into ${JVM_OPTIONS_QUOTED}
+##                         Set JAVA_VERSION_MAJOR from ${JPMS_MODULE_FILE_LOCATION}/../../release file, if found
+serverEnvAndJVMOptions()
+{
+  serverEnv
+  initializeBaseJVMOptions
+  loadJVMOptionsFiles || return $?
+  detectJavaHome
+  loadJavaVersionSpecificOptions
+  addPlatformSpecificJvmFlags
   enableFIPS140_3
-
-  return $rc
+  return 0
 }
 
 # Resolve symbolic links in a path iteratively
@@ -1021,7 +1056,27 @@ javaCmd()
 
   # Set all the parameters for the java command.  We use eval so that each line
   # in jvm.options is treated as a distinct argument.
-  eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
+  # For client JVMs (not server launch), add IPv4 preference if set, in order to match server's IP stack
+  if [ -z "${JAVA_CMD_LOG}" ]; then
+  
+    # This is a client JVM invocation - load server options and extract IPv4 preference if not already done
+    if [ -z "$SERVER_JVM_OPTIONS_QUOTED" ]; then
+      loadJVMOptionsFiles
+    fi
+    
+    if [ -z "$SERVER_PREFER_IPV4" ]; then
+      extractPreferIPv4Stack
+    fi
+    
+    # Build the complete Java command line arguments and store them in the shell's positional parameters ($1, $2, $3, etc.).
+    # Add IPv4 preference. SERVER_PREFER_IPV4 should either be empty or set to something containing no spaces.
+    eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} $SERVER_PREFER_IPV4 -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
+    
+  else
+    # Build the complete Java command line arguments and store them in the shell's positional parameters ($1, $2, $3, etc.).
+    # This is for a server JVM invocation.
+    eval "set -- ${JAVA_AGENT_QUOTED} ${JVM_OPTIONS_QUOTED} ${JAVA_DEBUG} ${JVM_ARGS} -jar ${WLP_INSTALL_DIR_QUOTED}/bin/tools/ws-server.jar ""$REMAINING_ARGS"
+  fi
   ARGS="$@"
 
   if [ $ACTION = "checkpoint" ]; then
@@ -1166,7 +1221,57 @@ serverCmdOS400()
   fi
 }
 
+## extractPreferIPv4Stack:
+##   Extracts the java.net.preferIPv4Stack value from SERVER_JVM_OPTIONS_QUOTED
+##   and sets SERVER_PREFER_IPV4 so it can be passed to the server command client JVM.
 ##
+##   NOTE:
+##     preferIPv4Stack is explicitly propagated because a mismatch between
+##     client and server IP stacks (IPv4 vs IPv6) can cause silent command
+##     timeouts when using the server script.
+##
+##   Supported formats in jvm.options:
+##     -Djava.net.preferIPv4Stack=true    -Djava.net.preferIPv4Stack="true"
+##     -Djava.net.preferIPv4Stack=false   -Djava.net.preferIPv4Stack="false"
+##
+##   Note: Spaces around '=' are NOT supported in jvm.options (It's invalid Java syntax).
+##
+extractPreferIPv4Stack()
+{
+  SERVER_PREFER_IPV4=""
+
+  case $SERVER_JVM_OPTIONS_QUOTED in
+     *-Djava.net.preferIPv4Stack=*)
+        # Remove everything up to and including the property name and '='
+        # The remaining string begins with the value, but may include additional JVM options after it.
+        after_equals=${SERVER_JVM_OPTIONS_QUOTED#*-Djava.net.preferIPv4Stack=}
+
+        # Extract value - handle common cases efficiently.
+        # The full option string is wrapped in quotes by escapeForEval, so the value
+        # is expected to end with a closing single quote.
+        case $after_equals in
+           true\'*)
+             # -Djava.net.preferIPv4Stack=true
+             value=true
+             ;;
+          false\'*)
+             # -Djava.net.preferIPv4Stack=false
+             value=false
+             ;;
+          *)
+             # Handle quoted values: -Djava.net.preferIPv4Stack="true"
+             value=$after_equals
+             value=${value#\"}        # Remove leading double quote if present
+             value=${value%%\'*}      # Extract up to first single quote
+             value=${value%%\"*}      # Extract up to first double quote
+             ;;
+        esac
+
+        SERVER_PREFER_IPV4="-Djava.net.preferIPv4Stack=$value"
+        ;;
+  esac
+}
+
 ## serverCmd: Launch a server process.
 ##
 ##   backgroundLogFile
@@ -1220,6 +1325,7 @@ serverCmd()
   fi
 
   if $os400lib; then
+    # Start the server
     serverCmdOS400 "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
     rc=$?
 
@@ -1230,13 +1336,13 @@ serverCmd()
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
       PID=`cat "${X_PID_FILE}"`
 
-      # Verify/wait for the process to start
+      # Verify/wait for the server process to start
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
       rc=$?
     fi
 
   elif [ "${uname}" = OS/390 ] && [ -n "${WLP_ZOS_PROCEDURE}" ] && [ -e "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" ]; then
-      # Start the STC procedure
+      # Start the STC procedure. (Start the server)
       if [ -n "${WLP_ZOS_JOBNAME}" ]; then
         "${WLP_INSTALL_DIR}/lib/native/zos/s390x/bbgzcsl" "${WLP_ZOS_PROCEDURE}" "${SERVER_NAME}" "${X_PID_FILE}" "${WLP_ZOS_JOBNAME}" "$@"
       else
@@ -1250,8 +1356,8 @@ serverCmd()
       OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
       if [ $rc = 0 ]; then
-        # Verify/wait for the process to start
-        PID=`cat "${X_PID_FILE}"`
+        # Verify/wait for the server process to start
+        PID=$(cat "${X_PID_FILE}")
         javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
         rc=$?
 
@@ -1301,6 +1407,7 @@ serverCmd()
     X_CMD="${JAVA_CMD} ${ARGS}"
     export X_CMD
 
+    # Start the server
     javaCmd "${SERVER_CMD_BACKGROUND_LOG}" "${SERVER_NAME}" "$@"
     rc=$?
 
@@ -1311,7 +1418,7 @@ serverCmd()
     OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
     if [ -n "${SERVER_CMD_BACKGROUND_LOG}" ]; then
-      # Verify/wait for the process to start
+      # Verify/wait for the server process to start
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start "$@"
       rc=$?
       # write the pid file if return is OK or UNKNOWN
@@ -1423,6 +1530,8 @@ criuRestore()
   then
     mkdirs "${X_PID_DIR}"
     rmIfExist "${X_PID_FILE}"
+
+    # start server (Restore server)
     $CRIU_RESTORE_PATH restore --skip-file-rwx-check --cpu-cap=none --file-locks --tcp-established --images-dir=${SERVER_OUTPUT_DIR}/workarea/checkpoint/image \
       --shell-job --verbosity=${CRIU_LOG_LEVEL} --log-file ${CUR_X_LOG_DIR}/checkpoint/restore.log ${CRIU_EXTRA_ARGS} \
       --pidfile ${X_PID_FILE} \
@@ -1435,7 +1544,7 @@ criuRestore()
       IBM_JAVA_OPTIONS=${SAVE_IBM_JAVA_OPTIONS}
       OPENJ9_JAVA_OPTIONS=${SAVE_OPENJ9_JAVA_OPTIONS}
 
-      # Verify/wait for the process to start
+      # Verify/wait for the server process to start
       javaCmd '' "${SERVER_NAME}" --pid="${PID}" --status:start
       rc=$?
       # write the pid file if return is OK or UNKNOWN

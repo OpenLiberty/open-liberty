@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -104,12 +104,9 @@ public class ToolTest extends FATServletClient {
     public static void teardown() throws Exception {
         server.stopServer(
                           "CWMCM0010E", //The JSON-RPC request is not valid JSON.
-                          "CWMCM0011E", // The JSON-RPC request was invalid.
                           "CWMCM0012E", // The requested JSON-RPC method is not found.
-                          "CWMCM0013E", // JSON-RPC PC request contained invalid parameters.
-                          "CWMCM0014E", // An Internal Server Error occurred whilst processing the JSON-RPC request.
                           "CWMCM0010E", //  Tool method threw an unexpected exception
-                          "CWMCM0011E" // An internal server error occurred
+                          "CWMCM0022E" // Invalid Cursor provided
         );
     }
 
@@ -285,7 +282,7 @@ public class ToolTest extends FATServletClient {
     @Test
     public void testEchoWithInvalidParamsException() throws Exception {
         String request = """
-                          {
+                        {
                           "jsonrpc": "2.0",
                           "id": "2",
                           "method": "tools/call",
@@ -295,46 +292,59 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
         String expectedResponseString = """
-                        {"error":{"code":-32602,
-                        "data":[
-                            "The request does not have any arguments in parameters."
-                            ],
-                        "message":"Invalid params"},
-                        "id":"2",
-                        "jsonrpc":"2.0"}
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "result": {
+                            "isError": true,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "The method expected the following arguments but did not receive them: [input]."
+                              }
+                            ]
+                          }
+                        }
                         """;
+
+        String response = client.callMCP(request);
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
     @Test
     public void testEchoWithInvalidParamsArgumentMismatchException() throws Exception {
         String request = """
-                          {
+                        {
                           "jsonrpc": "2.0",
                           "id": "2",
                           "method": "tools/call",
                           "params": {
                             "name": "echo",
                             "arguments": {
-                                "other": "Hello"
+                              "other": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String expectedResponseString = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "result": {
+                            "isError": true,
+                            "content": [
+                              {
+                                "type": "text",
+                                    "text": "The following arguments were passed but were not found in the method: [other]. The method expected the following arguments but did not receive them: [input]."
                               }
+                            ]
                           }
                         }
                         """;
 
         String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"error":{"code":-32602,
-                        "data":[
-                            "The following arguments were passed but were not found in the method: [other].",
-                            "The following arguments were expected by the method but were not provided: [input]."
-                            ],
-                        "message": "Invalid params"},
-                        "id":"2",
-                        "jsonrpc":"2.0"}
-                        """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
@@ -844,18 +854,8 @@ public class ToolTest extends FATServletClient {
 
     @Test
     public void testToolList() throws Exception {
-        String request = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/list",
-                          "params": {
-                            "cursor": "optional-cursor-value"
-                          }
-                        }
-                        """;
 
-        String response = client.callMCP(request);
+        String response = client.listAllTools();
         JSONObject jsonResponse = new JSONObject(response);
         String expectedString = "";
         try (InputStream inputStream = this.getClass().getResourceAsStream("expected-tools-list-response.json")) {
@@ -867,9 +867,34 @@ public class ToolTest extends FATServletClient {
         JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
     }
 
-    /**
-     *
-     */
+    @Test
+    public void testToolListInvalidCursor() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "tools/list",
+                          "params": {
+                            "cursor": "optional-cursor-value"
+                          }
+                        }
+                        """;
+        String response = client.callMCP(request);
+
+        String expectedResponseString = """
+                        {
+                            "id": 1,
+                            "jsonrpc": "2.0",
+                            "error": {
+                                "code": -32602,
+                                "data": "CWMCM0022E: The \\"optional-cursor-value\\" cursor value is invalid.",
+                                "message": "Invalid params"
+                            }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
 
     @Test
     public void testEchoMethodCallError() throws Exception {
@@ -892,7 +917,7 @@ public class ToolTest extends FATServletClient {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"CWMCM0011E: An internal server error occurred while running the tool."}], "isError": true}}
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
         assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
@@ -1383,123 +1408,6 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
-    public void testReturningArray() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testArrayResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[1,2,3,4,5]"
-                              }
-                            ],
-                            "structuredContent": [1,2,3,4,5],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testReturningStringList() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testListStringResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[\\\"red\\\",\\\"blue\\\",\\\"yellow\\\"]"
-                              }
-                            ],
-                            "structuredContent": ["red","blue","yellow"],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testReturningListOfObjects() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testListObjectResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
-                              }
-                            ],
-                            "structuredContent": [
-                              {
-                                "country": "France",
-                                "isCapital": true,
-                                "name": "Paris",
-                                "population": 8000
-                              },
-                              {
-                                "country": "England",
-                                "isCapital": false,
-                                "name": "Manchester",
-                                "population": 15000
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
     public void testStringNotReturnedAsStructuredContent() throws Exception {
         String request = """
                           {
@@ -1981,10 +1889,10 @@ public class ToolTest extends FATServletClient {
         JSONObject jsonResponse = new JSONObject(response);
         // Strict Mode tests
         String expectedResponseString = """
-                                                                {
+                            {
                             "result": {
                                 "isError": false,
-                                "structuredContent": [
+                                "structuredContent": { "returnList": [
                                     {
                                         "address": {
                                             "number": 2,
@@ -2053,10 +1961,10 @@ public class ToolTest extends FATServletClient {
                                         },
                                         "fullname": "John Smith"
                                     }
-                                ],
+                                ]},
                                 "content": [
                                     {
-                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
                                         "type": "text"
                                     }
                                 ]
@@ -2197,7 +2105,7 @@ public class ToolTest extends FATServletClient {
                                                                 {
                             "result": {
                                 "isError": false,
-                                "structuredContent": [
+                                "structuredContent": { "returnList": [
                                     {
                                         "address": {
                                             "number": 2,
@@ -2266,10 +2174,10 @@ public class ToolTest extends FATServletClient {
                                         },
                                         "fullname": "John Smith"
                                     }
-                                ],
+                                ]},
                                 "content": [
                                     {
-                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
                                         "type": "text"
                                     }
                                 ],
@@ -2462,7 +2370,7 @@ public class ToolTest extends FATServletClient {
                                                                 {
                             "result": {
                                 "isError": false,
-                                "structuredContent": [
+                                "structuredContent": { "returnList": [
                                     {
                                         "address": {
                                             "number": 2,
@@ -2531,10 +2439,10 @@ public class ToolTest extends FATServletClient {
                                         },
                                         "fullname": "John Smith"
                                     }
-                                ],
+                                ]},
                                 "content": [
                                     {
-                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
                                         "type": "text"
                                     }
                                 ],
@@ -2776,6 +2684,47 @@ public class ToolTest extends FATServletClient {
                         """;
 
         JSONAssert.assertEquals(expected, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testStructuredContentResponseWithNonLatinCharacters() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testNonLatinStringStructuredContent",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\\"country\\\":\\\"日本\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"東京\\\",\\\"population\\\":14000000}"
+                              }
+                            ],
+                            "structuredContent": {
+                              "country": "日本",
+                              "isCapital": true,
+                              "name": "東京",
+                              "population": 14000000
+                            },
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
 }

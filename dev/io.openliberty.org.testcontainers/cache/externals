@@ -46,6 +46,7 @@ public.ecr.aws/docker/library/alpine:3
 public.ecr.aws/docker/library/alpine:3.17
 public.ecr.aws/docker/library/couchdb:3
 public.ecr.aws/docker/library/mongo:8.0
+public.ecr.aws/docker/library/node:20-alpine
 public.ecr.aws/docker/library/postgres:17
 public.ecr.aws/docker/library/postgres:17-alpine
 public.ecr.aws/docker/library/python:3.11.6

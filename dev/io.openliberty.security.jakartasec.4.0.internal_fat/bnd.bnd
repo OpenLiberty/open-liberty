@@ -49,4 +49,5 @@ javac.target: 17
 	net.sourceforge.htmlunit:htmlunit;version='2.44.0',\
 	jakarta.servlet-api,\
 	com.ibm.ws.componenttest.2.0;version=latest,\
-	io.openliberty.jakarta.restfulWS.4.0
+	io.openliberty.jakarta.restfulWS.4.0,\
+	io.openliberty.jakarta.servlet.6.1

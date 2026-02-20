@@ -1,18 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.server.transport.http2;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 import java.util.logging.Logger;
 
@@ -24,6 +23,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.topology.impl.LibertyServer;
+import componenttest.topology.utils.FATServletClient;
+
 
 /**
  * ShrinkWrap helper methods, modified from WCApplicationHelper.
@@ -122,4 +123,16 @@ public class H2FATApplicationHelper {
         }
 
     }
+
+    public static void preTestNettyCheck(LibertyServer runtimeServer, LibertyServer serverUnderTest) throws Exception {
+        // Go through Logs and check if Netty is being used for the serverUnderTest
+        runtimeServer.waitForStringInLog("CWWKO0219I.*");
+        String endpoint = serverUnderTest.waitForStringInLog("CWWKO0219I.*port " + serverUnderTest.getHttpSecondaryPort() + ".");
+        LOG.info("preTestNettyCheck : Netty enabled? " + ((endpoint == null) ? "false" : endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils")));
+        if(endpoint != null && endpoint.contains("io.openliberty.netty.internal.tcp.TCPUtils"))
+            FATServletClient.runTest(runtimeServer,
+                                     Http2FullModeTests.defaultServletPath + serverUnderTest.getHostname() + "&port=" + serverUnderTest.getHttpSecondaryPort() + "&testdir=" + Utils.TEST_DIR,
+                                     "setUsingNetty");
+    }
+
 }

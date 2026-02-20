@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,20 @@ public record CursoredPageRecord<T>(
                 PageRequest nextPageRequest,
                 PageRequest previousPageRequest)
                 implements CursoredPage<T> {
+
+    public CursoredPageRecord(List<T> content,
+                              List<Cursor> cursors,
+                              long totalElements,
+                              PageRequest pageRequest,
+                              PageRequest nextPageRequest,
+                              PageRequest previousPageRequest) {
+        this.content = List.copyOf(content);
+        this.cursors = List.copyOf(cursors);
+        this.nextPageRequest = nextPageRequest;
+        this.pageRequest = pageRequest;
+        this.previousPageRequest = previousPageRequest;
+        this.totalElements = totalElements;
+    }
 
     public CursoredPageRecord(List<T> content,
                               List<PageRequest.Cursor> cursors,

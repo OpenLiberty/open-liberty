@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,9 @@ package com.ibm.ws.security.registry.internal;
 import java.rmi.RemoteException;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
+import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.security.CertificateMapFailedException;
@@ -290,4 +292,37 @@ public class UserRegistryWrapper implements com.ibm.websphere.security.UserRegis
     public WSCredential createCredential(String userSecurityName) throws NotImplementedException, EntryNotFoundException, CustomRegistryException, RemoteException {
         throw new NotImplementedException("The createCredential method is not available");
     }
+
+    @Override
+    public Map<String, Object> getAttributesForUser(String userSecurityName, Set<String> attributeNames) throws EntryNotFoundException, CustomRegistryException, NotImplementedException {
+        try {
+            return wrappedUr.getAttributesForUser(userSecurityName, attributeNames);
+        } catch (RegistryException e) {
+            throw new CustomRegistryException(e.getMessage(), e);
+        } catch (com.ibm.ws.security.registry.EntryNotFoundException e) {
+            throw new EntryNotFoundException(e.getMessage(), e);
+        } catch (com.ibm.ws.security.registry.NotImplementedException e) {
+            throw new NotImplementedException(e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public Result getUsersByAttribute(String attributeName, String value, int limit) throws CustomRegistryException, NotImplementedException {
+        try {
+            SearchResult ret = wrappedUr.getUsersByAttribute(attributeName, value, limit);
+            Result result = new Result();
+            result.setList(ret.getList());
+            if (ret.hasMore()) {
+                result.setHasMore();
+            }
+            return result;
+
+        } catch (RegistryException e) {
+            throw new CustomRegistryException(e.getMessage(), e);
+        } catch (com.ibm.ws.security.registry.NotImplementedException e) {
+            throw new NotImplementedException(e.getMessage(), e);
+        }
+    }
+
 }

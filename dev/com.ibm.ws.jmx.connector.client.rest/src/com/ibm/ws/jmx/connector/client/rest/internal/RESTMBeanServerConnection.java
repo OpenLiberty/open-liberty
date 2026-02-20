@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2017 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -744,7 +744,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                     return converter.readPOJO(connection.getInputStream());
                 } catch (ClassNotFoundException cnf) {
                     // Not a REST connector bug per se; not need to log this case
-                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION), cnf);
+                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION, cnf.getMessage()), cnf);
                 } catch (Exception e) {
                     throw getResponseErrorException(sourceMethod, e, attributeURL);
                 } finally {
@@ -830,7 +830,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                     return converter.readAttributeList(connection.getInputStream());
                 } catch (ClassNotFoundException cnf) {
                     // Not a REST connector bug per se; not need to log this case
-                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION), cnf);
+                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION, cnf.getMessage()), cnf);
                 } catch (Exception e) {
                     throw getResponseErrorException(sourceMethod, e, attributesURL);
                 } finally {
@@ -1041,7 +1041,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                     return converter.readAttributeList(connection.getInputStream());
                 } catch (ClassNotFoundException cnf) {
                     // Not a REST connector bug per se; not need to log this case
-                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION), cnf);
+                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION, cnf.getMessage()), cnf);
                 } catch (Exception e) {
                     throw getResponseErrorException(sourceMethod, e, attributesURL);
                 } finally {
@@ -1169,7 +1169,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                     return converter.readPOJO(connection.getInputStream());
                 } catch (ClassNotFoundException cnf) {
                     // Not a REST connector bug per se; not need to log this case
-                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION), cnf);
+                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION, cnf.getMessage()), cnf);
                 } catch (Exception e) {
                     throw getResponseErrorException(sourceMethod, e, invokeURL);
                 } finally {
@@ -1438,7 +1438,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
 
                 } catch (ClassNotFoundException cnf) {
                     // Not a REST connector bug per se; not need to log this case
-                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION), cnf);
+                    throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION, cnf.getMessage()), cnf);
                 } catch (Exception e) {
                     throw getResponseErrorException(sourceMethod, e, mbeanURL);
                 } finally {
@@ -2399,7 +2399,7 @@ class RESTMBeanServerConnection implements MBeanServerConnection {
                                 break;
                             } catch (ClassNotFoundException cnf) {
                                 // Not a REST connector bug per se; not need to log this case
-                                throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION), cnf);
+                                throw new IOException(RESTClientMessagesUtil.getMessage(RESTClientMessagesUtil.SERVER_RESULT_EXCEPTION, cnf.getMessage()), cnf);
                             } catch (Exception e) {
                                 logger.logp(Level.FINE, logger.getName(), sourceMethod, e.getMessage(), e);
                                 throw getResponseErrorException(sourceMethod, e, targetURL);

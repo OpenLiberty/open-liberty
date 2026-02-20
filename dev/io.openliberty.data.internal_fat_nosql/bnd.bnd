@@ -15,7 +15,8 @@ bVersion=1.0
 
 src: \
   fat/src,\
-  test-applications/DataNoSQLApp/src
+  test-applications/DataNoSQLApp/src,\
+  test-applications/DataNoSQLIntegrationApp/src
 
 javac.source: 17
 javac.target: 17
@@ -32,9 +33,11 @@ fat.test.container.images: public.ecr.aws/docker/library/mongo:8.0
 	io.openliberty.jakarta.data.1.0,\
 	io.openliberty.jakarta.interceptor.2.1,\
 	io.openliberty.jakarta.nosql.1.0,\
+	io.openliberty.jakarta.persistence.3.1,\
 	io.openliberty.jakarta.servlet.6.0,\
 	io.openliberty.jakarta.transaction.2.0,\
 	io.openliberty.org.eclipse.microprofile.config.3.0,\
 	io.openliberty.org.testcontainers;version=latest,\
 	org.eclipse.jnosql.communication:jnosql-communication-semistructured;version=1.1.12,\
-	org.eclipse.jnosql.mapping:jnosql-mapping-semistructured;version=1.1.12
+	org.eclipse.jnosql.mapping:jnosql-mapping-semistructured;version=1.1.12,\
+	org.eclipse.jnosql.mapping:jnosql-mapping-document;version=1.1.12

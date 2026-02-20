@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 import org.junit.AfterClass;
@@ -48,7 +49,10 @@ public class DeploymentProblemTest extends FATServletClient {
                           "CWMCM0007E", // Invalid Special arguments.
                           "CWMCM0017E", //  Default value has no type converter.
                           "CWMCM0018E", //  Arguments contain generics.
-                          "CWMCM0020E" //  Invalid default value for argument type.
+                          "CWMCM0020E", //  Invalid default value for argument type.
+                          "CWMCM0023E", // Invalid tool name length
+                          "CWMCM0024E", // Invalid tool name character
+                          "CWMCM0025E" //  Invalid return type.
         );
     }
 
@@ -103,23 +107,61 @@ public class DeploymentProblemTest extends FATServletClient {
     }
 
     @Test
+    public void testInvalidToolNamesWithinvalidCharctersTestCase() throws Exception {
+
+        for (Map.Entry<String, String> entry : Map.of("invalidTool1", "invalid tool", "invalidTool2", "invalidtool2!", "invalidTool3", "invalid,tool3").entrySet()) {
+            String qualifiedName = "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest." + entry.getKey();
+            String expectedErrorHeader = Pattern.quote("The " + entry.getValue() + " tool name for the " + qualifiedName
+                                                       + " MCP tool method is not valid. Tool names must contain only ASCII letters, digits, underscores, or hyphens.");
+            List<String> expectedErrorList = List.of(qualifiedName);
+            ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid tool name: ", expectedErrorHeader, expectedErrorList, server);
+        }
+    }
+
+    @Test
+    public void testInvalidToolNamesWithinvalidLengthZeroTestCase() throws Exception {
+        String expectedErrorHeader = Pattern.quote("The  tool name for the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4 MCP tool method is not valid. Tool names must be between 1 and 128 characters in length, inclusive.");
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool4");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid tool name: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testInvalidToolNamesWithinvalidLengthAndCharactersTestCase() throws Exception {
+        String expectedLengthErrorHeader = Pattern.quote("The openlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenlibertyopenlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenliberty tool name for the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5 MCP tool method is not valid. Tool names must be between 1 and 128 characters in length, inclusive.");
+        String expectedCharacterErrorHeader = Pattern.quote("The openlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenlibertyopenlibertyopenliberty openlibertyopenliberty_openlibertyopenlibertyopenliberty tool name for the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5 MCP tool method is not valid. Tool names must contain only ASCII letters, digits, underscores, or hyphens.");
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolNameTest.invalidTool5");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid tool name: ", expectedLengthErrorHeader, expectedErrorList, server);
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid tool name: ", expectedCharacterErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
     public void testToolArgDefaultValueWithoutTypeConverter() throws Exception {
-        String expectedErrorHeader = Pattern.quote("CWMCM0017E: The city argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
+        String expectedErrorHeader = Pattern.quote("CWMCM0017E: The city argument of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter MCP tool method does not have a converter to change its default value into an object of type class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest$City.");
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgDefaultValueWithoutTypeConverter");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg DefaultValue Without Converter: ", expectedErrorHeader, expectedErrorList, server);
     }
 
     @Test
     public void testToolArgInvalidDefaultValueForType() throws Exception {
-        String expectedErrorHeader = "CWMCM0020E: The default value of the year argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue MCP tool cannot be converted to the int type. The value is TwentyTwentyFive. The error is java.lang.NumberFormatException: For input string: \"TwentyTwentyFive\"";
+        String expectedErrorHeader = "CWMCM0020E: The default value of the year argument of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue MCP tool cannot be converted to the int type. The value is TwentyTwentyFive. The error is java.lang.NumberFormatException: For input string: \"TwentyTwentyFive\"";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.testToolArgInvalidNumberDefaultValue");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg Invalid DefaultValue for Argument Type: ", expectedErrorHeader, expectedErrorList, server);
     }
 
     @Test
     public void testToolArgWithOptionalValueAndDefaultValue() throws Exception {
-        String expectedErrorHeader = "CWMCM0017E: The input argument of the class io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet MCP tool method does not have a converter to change its default value into an object of type java.util.Optional<java.lang.String>.";
+        String expectedErrorHeader = "CWMCM0017E: The input argument of the io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet MCP tool method does not have a converter to change its default value into an object of type java.util.Optional<java.lang.String>.";
         List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.ToolArgValidationTest.toolArgWithOptionalValueAndDefaultValueSet");
         ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("ToolArg No Converter for DefaultValue: ", expectedErrorHeader, expectedErrorList, server);
+    }
+
+    @Test
+    public void testInvalidListReturn() throws Exception {
+        String expectedErrorHeader = "CWMCM0025E: The (.+?) return type of the (.+?) MCP tool method must be an object.";
+        List<String> expectedErrorList = List.of("io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.asyncListObjectTool",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testArrayResponse",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.testListStringResponse",
+                                                 "io.openliberty.mcp.internal.fat.tool.deploymentErrorApps.InvalidToolReturnsTest.addPersonToListToolResponseSchemaBasedReturnType");
+        ExpectedAppFailureValidator.findAndAssertExpectedErrorsInLogs("Invalid return type: ", expectedErrorHeader, expectedErrorList, server);
     }
 }

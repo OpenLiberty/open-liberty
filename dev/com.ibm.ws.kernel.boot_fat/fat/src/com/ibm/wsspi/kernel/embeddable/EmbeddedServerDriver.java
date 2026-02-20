@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,12 +12,22 @@
  *******************************************************************************/
 package com.ibm.wsspi.kernel.embeddable;
 
+import static java.util.Arrays.asList;
+
+import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Scanner;
 import java.util.concurrent.CountDownLatch;
@@ -25,6 +35,7 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.regex.Pattern;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -48,6 +59,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     private CountDownLatch startedEventOccurred;
     private CountDownLatch stoppedEventOccurred;
     private CountDownLatch failedEventOccurred;
+    private Object[] args;
 
     private String serverName = null;
     private String userDir = null;
@@ -77,7 +89,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         this.props3.setProperty("com.ibm.websphere.productInstall", "wlp/usr/servers/com.ibm.wsspi.kernel.embeddable.add.product.extension.multiple.fat/producttest");
     }
 
-    public void init(String CURRENT_METHOD_NAME) throws UnsupportedEncodingException {
+    public void init(String CURRENT_METHOD_NAME, Object... args) throws UnsupportedEncodingException {
         this.CURRENT_METHOD_NAME = CURRENT_METHOD_NAME;
 
         Log.info(c, "init", "Setting up for " + this.CURRENT_METHOD_NAME);
@@ -86,6 +98,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         startedEventOccurred = new CountDownLatch(1);
         stoppedEventOccurred = new CountDownLatch(1);
         failedEventOccurred = new CountDownLatch(1);
+        this.args = args;
 
         failures = new ArrayList<AssertionFailedError>();
 
@@ -114,7 +127,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     }
 
     public void tearDown() {
-        Log.info(c, "init", "Cleaning up after " + this.CURRENT_METHOD_NAME);
+        Log.info(c, "tearDown", "Cleaning up after " + this.CURRENT_METHOD_NAME);
 
         if (server != null) {
             Future<Result> stopFuture = server.stop();
@@ -182,6 +195,173 @@ public class EmbeddedServerDriver implements ServerEventListener {
         }
     }
 
+    public void testBootstrapAccessPlatform() {
+        doGatewayParentAccess("PLATFORM", null,
+                              succeedClasses(String.class.getName()),
+                              failClasses("componenttest.topology.impl.LibertyServer", "junit.framework.Assert", "junit.runner.TestRunListener"),
+
+                              succeedResources(),
+                              failResources("/componenttest/topology/impl/LibertyServer.class", "/junit/framework/Assert.class"));
+    }
+
+    public void testBootstrapAccessSystemNoPackages() {
+        doGatewayParentAccess("SYSTEM", "",
+                              succeedClasses(String.class.getName()),
+                              failClasses("componenttest.topology.impl.LibertyServer", "junit.framework.Assert", "junit.runner.TestRunListener"),
+
+                              succeedResources(),
+                              failResources("/componenttest/topology/impl/LibertyServer.class", "/junit/framework/Assert.class", "/junit/runner/TestRunListener.class"));
+    }
+
+    public void testBootstrapAccessSystemMultiPackage() {
+        doGatewayParentAccess("SYSTEM", "junit.framework,componenttest.topology.impl",
+                              succeedClasses(String.class.getName(), "componenttest.topology.impl.LibertyServer"),
+                              failClasses("junit.runner.TestRunListener"),
+
+                              succeedResources("/componenttest/topology/impl/LibertyServer.class", "/junit/framework/Assert.class"),
+                              failResources("/junit/runner/TestRunListener.class"));
+    }
+
+    public void testBootstrapAccessDefault() {
+        String m = "testBootstrapAccessDefault";
+        // This scenario cannot load the test servlet because javax.servlet is on the classpath.
+        // This is a negative test verifying the default behavior is still broken
+        runBootStrapAccessTest(null, null, (out) -> {
+            try {
+                URL url = new URL("http://" + args[0] + ":" + args[1] + "/simpleApp/bootstrapAccess");
+                HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                try (InputStream in = con.getInputStream()) {
+
+                } catch (IOException e) {
+                    // ignore we expect the request to fail anyway
+                }
+                int rc = con.getResponseCode();
+                Log.info(c, m, "HTTP response: " + rc);
+                if (rc == HttpURLConnection.HTTP_OK) {
+                    failures.add(new AssertionFailedError("Wrong response code: " + rc));
+                }
+            } catch (IOException e) {
+                failures.add(new AssertionFailedError("Exception occurred: " + m + " - " + e));
+            }
+        });
+    }
+
+    private List<String> failClasses(String... classNames) {
+        return asList(classNames);
+    }
+
+    private List<String> succeedClasses(String... classNames) {
+        return asList(classNames);
+    }
+
+    private List<String> failResources(String... resourceNames) {
+        return asList(resourceNames);
+    }
+
+    private List<String> succeedResources(String... resourceNames) {
+        return asList(resourceNames);
+    }
+
+    private void doGatewayParentAccess(String parent, String parentPackages,
+                                       List<String> expectClassSuccess,
+                                       List<String> expectClassFailure,
+                                       List<String> expectResourceSuccess,
+                                       List<String> expectResourceFailure) {
+        runBootStrapAccessTest(parent, parentPackages, (out) -> {
+            checkAppClassAndResourceAccess(expectClassSuccess, expectClassFailure, expectResourceSuccess, expectResourceFailure);
+        });
+    }
+
+    private void checkAppClassAndResourceAccess(List<String> expectClassSuccess,
+                                                List<String> expectClassFailure,
+                                                List<String> expectResourceSuccess,
+                                                List<String> expectResourceFailure) {
+
+        for (String className : expectClassSuccess) {
+            checkBootstrapAccess("/simpleApp/bootstrapAccess?classname=" + className + "&expectFailure=" + false);
+        }
+
+        for (String className : expectClassFailure) {
+            checkBootstrapAccess("/simpleApp/bootstrapAccess?classname=" + className + "&expectFailure=" + true);
+        }
+
+        for (String resourceName : expectResourceSuccess) {
+            checkBootstrapAccess("/simpleApp/bootstrapAccess?resourcename=" + resourceName + "&expectFailure=" + false);
+        }
+
+        for (String resourceName : expectResourceFailure) {
+            checkBootstrapAccess("/simpleApp/bootstrapAccess?resosurcename=" + resourceName + "&expectFailure=" + true);
+        }
+    }
+
+    private void runBootStrapAccessTest(String parent, String parentPackages, Consumer<ByteArrayOutputStream> test) {
+        PrintStream originalSysOut = System.out;
+        try {
+            System.setProperty("com.ibm.ws.beta.edition", "true");
+            ByteArrayOutputStream baos = configParentAccessAndStartServer(parent, parentPackages);
+            test.accept(baos);
+        } catch (IOException e) {
+            Assert.assertEquals("Unexpected exception", null, e);
+        } finally {
+            System.getProperties().remove("com.ibm.ws.beta.edition");
+            System.setOut(originalSysOut);
+            stopRunningServer();
+        }
+    }
+
+    private ByteArrayOutputStream configParentAccessAndStartServer(String parent, String parentPackages) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(baos, true, "UTF-8"));
+        Map<String, String> bootProps = new HashMap<>();
+        if (parent != null) {
+            bootProps.put("io.openliberty.classloading.app.parent", parent);
+        }
+        if (parentPackages != null) {
+            bootProps.put("io.openliberty.classloading.app.parent.packages", parentPackages);
+        }
+
+        coldStartServer(bootProps);
+        verifyServerEvent("\"STARTING\" ServerEvent should have fired", startingEventOccurred);
+        verifyServerEvent("\"STARTED\" ServerEvent should have fired", startedEventOccurred);
+
+        String serverConsoleOutput = new String(baos.toByteArray(), "UTF-8");
+        Log.info(c, "doGatewayParentAccess", "consoleOutput = " + serverConsoleOutput);
+        try {
+            Pattern p = Pattern.compile(".*CWWKZ0001I:.*simpleApp.*", Pattern.DOTALL);
+            Assert.assertTrue("No indication that application started", p.matcher(serverConsoleOutput).matches());
+        } catch (Throwable t) {
+            failures.add(new AssertionFailedError("Exception occurred while searching for app started message in logs - " + t));
+            Log.error(c, CURRENT_METHOD_NAME, t);
+        }
+        return baos;
+    }
+
+    private void checkBootstrapAccess(String requestPath) {
+        final String m = "checkBootstrapAccess";
+        try {
+            URL url = new URL("http://" + args[0] + ":" + args[1] + requestPath);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            InputStream in = con.getInputStream();
+            try {
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+
+                for (String line; (line = reader.readLine()) != null;) {
+                    Log.info(c, m, "Output: " + line);
+                }
+            } finally {
+                try {
+                    in.close();
+                } catch (IOException e) {
+                    Log.error(c, m, e);
+                }
+            }
+            Log.info(c, m, "HTTP response: " + con.getResponseCode());
+        } catch (IOException e) {
+            failures.add(new AssertionFailedError("Exception occurred: " + m + " - " + e));
+        }
+
+    }
+
     public void testAddProductExtension() {
         PrintStream originalSysOut = System.out;
         try {
@@ -239,7 +419,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
     /**
      * Determine if the input product extension exists in the input string.
      *
-     * @param inputString string to search.
+     * @param inputString      string to search.
      * @param productExtension product extension to search for.
      * @return true if input product extension is found in the input string.
      */
@@ -559,7 +739,11 @@ public class EmbeddedServerDriver implements ServerEventListener {
     }
 
     private void coldStartServer() {
-        Future<Result> startFuture = server.start(new String[] { "--clean" });
+        coldStartServer(null);
+    }
+
+    private void coldStartServer(Map<String, String> props) {
+        Future<Result> startFuture = props == null ? server.start(new String[] { "--clean" }) : server.start(props, new String[] { "--clean" });
 
         try {
             result = startFuture.get(SERVER_START_TIMEOUT, SERVER_START_TIMEOUT_UNIT);

@@ -135,7 +135,8 @@ Include-Resource: \
   org/eclipse/persistence/internal/descriptors=${bin}/org/eclipse/persistence/internal/descriptors,\
   org/eclipse/persistence/internal/jpa/jpql=${bin}/org/eclipse/persistence/internal/jpa/jpql,\
   org/eclipse/persistence/mappings=${bin}/org/eclipse/persistence/mappings,\
-  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database
+  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database,\
+  org/eclipse/persistence/queries=${bin}/org/eclipse/persistence/queries
 
 
 publish.wlp.jar.suffix: dev/api/third-party

@@ -51,5 +51,6 @@ task addJNoSQL(type: Copy) {
 
 addRequiredLibraries {
   dependsOn addJNoSQL
+  dependsOn addDerbyJava17Plus
   dependsOn copyTestContainers
 }

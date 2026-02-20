@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,7 @@ import org.osgi.framework.wiring.FrameworkWiring;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.JVMPackages;
 import com.ibm.ws.dynamic.bundle.BundleFactory;
 import com.ibm.ws.dynamic.bundle.DynamicBundleException;
 import com.ibm.ws.kernel.feature.ApiRegion;
@@ -49,6 +50,7 @@ import com.ibm.wsspi.kernel.service.utils.FrameworkState;
  * 
  */
 class GatewayBundleFactory {
+
     private static final TraceComponent tc = Tr.register(GatewayBundleFactory.class);
     private static final String BUNDLE_LOCATION_PREFIX = "WSClassLoadingService@";
     private static final String REGION_PREFIX = "liberty.gateway";
@@ -63,12 +65,14 @@ class GatewayBundleFactory {
     private final FrameworkWiring frameworkWiring;
     private final RegionDigraph digraph;
     final Map<Bundle, Set<GatewayClassLoader>> classloaders;
+    final JVMPackages jvmPackages;
 
-    GatewayBundleFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders) {
+    GatewayBundleFactory(BundleContext bundleContext, RegionDigraph digraph, Map<Bundle, Set<GatewayClassLoader>> classloaders, JVMPackages jvmPackages) {
         this.bundleContext = bundleContext;
         this.frameworkWiring = bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION).adapt(FrameworkWiring.class);
         this.digraph = digraph;
         this.classloaders = classloaders;
+        this.jvmPackages = jvmPackages;
     }
 
     private void setStartLevel(Bundle b) {
@@ -119,7 +123,7 @@ class GatewayBundleFactory {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "The state of started bundle {0} is {1}", b, b.getState());
             }
-            return GatewayClassLoader.createGatewayClassLoader(classloaders, gwConfig, bundleLoader, resourceProviders);
+            return GatewayClassLoader.createGatewayClassLoader(classloaders, gwConfig, bundleLoader, resourceProviders, jvmPackages);
         } finally {
             ThreadIdentityManager.reset(token);
         }

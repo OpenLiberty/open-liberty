@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -95,6 +95,10 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
      */
     private static final String REAUTHENTICATION_SUPPORT = "reauthentication-support";
     private static final String TRANSACTION_SUPPORT = "transaction-support";
+
+    private static final String THREADIDENTITY_NOTALLOWED = "NOTALLOWED";
+    private static final String THREADIDENTITY_REQUIRED = "REQUIRED";
+    private static final String THREADIDENTITY_ALLOWED = "ALLOWED";
 
     /**
      * Reference to the resource adapter bootstrap context.
@@ -345,6 +349,9 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
     @FFDCIgnore(NoSuchMethodException.class)
     public int[] getThreadIdentitySecurityAndRRSSupport(String identifier) {
         int rrsTransactional = 0;
+        int threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
+        int threadSecurity = 0;
+
         try {
             if (Boolean.TRUE.equals(mcf.getClass().getMethod("getRRSTransactional").invoke(mcf)))
                 rrsTransactional = 1;
@@ -353,7 +360,29 @@ public class ConnectionFactoryService extends AbstractConnectionFactoryService i
             FFDCFilter.processException(x, getClass().getName(), "327", new Object[] { mcf.getClass() });
         }
 
-        return new int[] { 0, 0, rrsTransactional };
+        try {
+            String returnValue = (String) (mcf.getClass().getMethod("getThreadIdentitySupport").invoke(mcf));
+            if (returnValue.equals(THREADIDENTITY_NOTALLOWED)) {
+                threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_NOT_ALLOWED;
+            } else if (returnValue.equals(THREADIDENTITY_REQUIRED)) {
+                threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_REQUIRED;
+            } else if (returnValue.equals(THREADIDENTITY_ALLOWED)) {
+                threadIdentitySupport = AbstractConnectionFactoryService.THREAD_IDENTITY_ALLOWED;
+            }
+        } catch (NoSuchMethodException x) {
+        } catch (Exception x) {
+            FFDCFilter.processException(x, getClass().getName(), "374", new Object[] { mcf.getClass() });
+        }
+
+        try {
+            if (Boolean.TRUE.equals(mcf.getClass().getMethod("getThreadSecurity").invoke(mcf)))
+                threadSecurity = 1;
+        } catch (NoSuchMethodException x) {
+        } catch (Exception x) {
+            FFDCFilter.processException(x, getClass().getName(), "382", new Object[] { mcf.getClass() });
+        }
+
+        return new int[] { threadIdentitySupport, threadSecurity, rrsTransactional, AbstractConnectionFactoryService.SERVICE_CONECTORS_TYPE };
     }
 
     /**

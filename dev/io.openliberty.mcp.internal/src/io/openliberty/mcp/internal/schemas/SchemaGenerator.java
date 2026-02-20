@@ -19,8 +19,8 @@ import static io.openliberty.mcp.internal.schemas.JsonConstants.TYPE_OBJECT;
 import static io.openliberty.mcp.internal.schemas.SchemaDirection.INPUT;
 import static io.openliberty.mcp.internal.schemas.SchemaDirection.OUTPUT;
 
+import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
@@ -34,7 +34,6 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import io.openliberty.mcp.internal.ToolMetadata.ToolMethodArgument;
 import io.openliberty.mcp.internal.schemas.SchemaCreationBlueprintGenerator.FieldInfo;
 import io.openliberty.mcp.internal.schemas.blueprints.ClassSchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.ListSchemaCreationBlueprint;
@@ -43,6 +42,7 @@ import io.openliberty.mcp.internal.schemas.blueprints.OptionalSchemaCreationBlue
 import io.openliberty.mcp.internal.schemas.blueprints.SchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.TypeVariableSchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.WildcardSchemaCreationBlueprint;
+import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.json.Json;
@@ -54,6 +54,19 @@ import jakarta.json.JsonObjectBuilder;
  *
  */
 public class SchemaGenerator {
+
+    /**
+     * A tool argument and its associated Schema annotation
+     */
+    public record AnnotatedToolArgument(ToolArgument argument, SchemaAnnotation schemaAnnotation) {
+        AnnotatedToolArgument(ToolArgument argument, AnnotatedElement element) {
+            this(argument, SchemaAnnotation.read(element));
+        }
+
+        AnnotatedToolArgument(ToolArgument argument) {
+            this(argument, SchemaAnnotation.EMPTY);
+        }
+    }
 
     /**
      * <p>If Schema annotation is present then that will be returned if not then a blueprint will be generated for all properties that jsonb would serialise for both
@@ -84,24 +97,23 @@ public class SchemaGenerator {
     /**
      * Generate the input schema for a tool
      *
-     * @param arguments the tool method arguments
+     * @param arguments the tool arguments and their associated schema annotation
      * @param blueprintRegistry the blueprint registry to use
      * @return the schema as a json object
      */
-    public static JsonObject generateToolInputSchema(List<ToolMethodArgument> arguments, SchemaCreationBlueprintRegistry blueprintRegistry) {
+    public static JsonObject generateToolInputSchema(List<AnnotatedToolArgument> arguments, SchemaCreationBlueprintRegistry blueprintRegistry) {
         // create base schema components
         JsonObjectBuilder properties = Json.createObjectBuilder();
         JsonArrayBuilder required = Json.createArrayBuilder();
         SchemaGenerationContext ctx = new SchemaGenerationContext(blueprintRegistry, INPUT);
         // for each parameter
-        for (ToolMethodArgument argument : arguments) {
+        for (AnnotatedToolArgument argument : arguments) {
             calculateClassFrequency(argument.argument().type(), SchemaDirection.INPUT, ctx);
         }
 
-        for (ToolMethodArgument argument : arguments) {
+        for (AnnotatedToolArgument argument : arguments) {
             String argumentName = argument.argument().name();
-            Parameter parameter = argument.parameter().getJavaParameter();
-            SchemaAnnotation annotation = SchemaAnnotation.read(parameter);
+            SchemaAnnotation annotation = argument.schemaAnnotation();
 
             JsonObjectBuilder parameterSchemaBuilder = generateSubSchema(argument.argument().type(), ctx, annotation);
 
@@ -113,7 +125,7 @@ public class SchemaGenerator {
             properties.add(argumentName, parameterSchemaBuilder.build());
             // - add it as required (if it is)
             if (argument.argument().required()) {
-                required.add(argumentName);
+                required.add(argument.argument().name());
             }
         }
 
@@ -128,7 +140,7 @@ public class SchemaGenerator {
     /**
      * Generate the output schema for a tool
      *
-     * @param toolMethod the tool method to generate a schema for
+     * @param toolMethod the tool method to generate a schema for, or {@code null} for a tool without a method
      * @param toolOutputType the resolved output type of the tool, same as {@code toolMethod} for sync tools, unwrapped for async tools
      * @param blueprintRegistry the blueprint registry to use
      * @return the schema as a json object
@@ -137,17 +149,21 @@ public class SchemaGenerator {
                                                       SchemaCreationBlueprintRegistry blueprintRegistry) {
 
         Type returnType = toolOutputType;
-        Method method = toolMethod.getJavaMember();
-        SchemaAnnotation schemaAnnotation = SchemaAnnotation.read(method);
+        SchemaAnnotation schemaAnnotation;
+        if (toolMethod != null) {
+            Method method = toolMethod.getJavaMember();
+            schemaAnnotation = SchemaAnnotation.read(method);
+        } else {
+            schemaAnnotation = SchemaAnnotation.EMPTY;
+        }
 
         SchemaGenerationContext ctx = new SchemaGenerationContext(blueprintRegistry, OUTPUT);
-        if (!method.getReturnType().isAssignableFrom(ToolResponse.class)) {
+        if (!(toolOutputType instanceof Class<?> c) || !c.isAssignableFrom(ToolResponse.class)) {
             calculateClassFrequency(returnType, SchemaDirection.OUTPUT, ctx);
         }
 
         JsonObjectBuilder outputSchema = generateSubSchema(returnType, ctx, schemaAnnotation);
         addDefs(outputSchema, ctx);
-
         return outputSchema.build();
     }
 

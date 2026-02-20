@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -310,5 +310,15 @@ public class EJBJaccServiceImpl implements EJBJaccService {
             }
         }
         return methodSignatureList.toArray(new String[methodSignatureList.size()]);
+    }
+
+    @Override
+    public boolean isPolicyConfigured() {
+        JaccService jaccService = jaccServiceRef.getService();
+        if (jaccService == null) {
+            return false;
+        }
+        PolicyProxy policyProxy = jaccService.getPolicyProxy();
+        return policyProxy == null ? false : policyProxy.isPolicyConfigured();
     }
 }

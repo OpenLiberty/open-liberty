@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,7 +54,6 @@ import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
 import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.ReferenceCountUtil;
-import io.openliberty.http.netty.channel.AllocatorContextSetter;
 import io.openliberty.http.netty.channel.LoggingRecvByteBufAllocator;
 import io.openliberty.http.netty.channel.TransportHandler;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
@@ -120,10 +119,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
 
         FixedRecvByteBufAllocator channelAllocator = new FixedRecvByteBufAllocator(httpConfig.getIncomingBodyBufferSize());
-        LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator);
+        LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator, channel);
         channel.config().setRecvByteBufAllocator(loggingAllocator);
-
-        pipeline.addLast("AllocatorContextSetter", AllocatorContextSetter.INSTANCE);
 
         pipeline.addLast("writeTimeoutHandler", new WriteTimeoutHandler(httpConfig.getWriteTimeout(), TimeUnit.MILLISECONDS));
 

@@ -15,6 +15,8 @@ package com.ibm.ws.security.registry;
 import java.rmi.RemoteException;
 import java.security.cert.X509Certificate;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Defines read-only API contract for UserRegistry implementations.
@@ -281,5 +283,46 @@ public interface UserRegistry {
      * @exception IllegalArgumentException if userSecurityName is <code>null</code> or empty
      **/
     List<String> getGroupsForUser(String userSecurityName) throws EntryNotFoundException, RegistryException;
+
+    /**
+     * Returns the attributes for <i>userSecurityName</i>.
+     *
+     * @param userSecurityName the name of the user.
+     * @param attributeNames
+     * @return a Map of attributes for the user.
+     *         <code>null</code> is not returned.
+     * @exception EntryNotFoundException   if userSecurityName does not exist or is not unique.
+     * @exception RegistryException        if there is any UserRegistry specific problem
+     * @exception IllegalArgumentException if userSecurityName is <code>null</code> or empty
+     **/
+    @Deprecated
+    default Map<String, Object> getAttributesForUser(String userSecurityName, Set<String> attributeNames) throws EntryNotFoundException, RegistryException, NotImplementedException {
+        throw new NotImplementedException("Reading user attributes is not supported.");
+    }
+
+    /**
+     * Gets a list of users that match an <i>attributeName</i> with specified
+     * <i>value</i> in the UserRegistry.
+     * The maximum number of users returned is defined by the <i>limit</i>
+     * argument. This is very useful in situations where there are thousands of
+     * users in the UserRegistry and getting all of them at once is not
+     * practical.
+     *
+     * @param attributeName the attributeName to match.
+     * @param value         the value of the attributeName to match.
+     * @param limit         the maximum number of users that should be returned.
+     *                          A value of 0 implies get all the users.
+     *                          Specifying a negative value returns an empty SearchResult.
+     * @return a <i>SearchResult</i> object that contains the list of users
+     *         requested and a flag to indicate if more users exist.
+     *         <code>null</code> is not returned.
+     * @exception RegistryException        if there is any UserRegistry specific problem
+     * @exception IllegalArgumentException if attributeName is <code>null</code> or empty
+     * @exception IllegalArgumentException if value is <code>null</code> or empty
+     **/
+    @Deprecated
+    default SearchResult getUsersByAttribute(String attributeName, String value, int limit) throws RegistryException, NotImplementedException {
+        throw new NotImplementedException("Reading user from attributes is not supported.");
+    }
 
 }

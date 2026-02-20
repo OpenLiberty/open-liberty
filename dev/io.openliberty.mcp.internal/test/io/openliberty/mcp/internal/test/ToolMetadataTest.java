@@ -31,6 +31,7 @@ import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.ToolMetadata;
+import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.TestUtils;
@@ -79,11 +80,10 @@ public class ToolMetadataTest {
         return null;
     }
 
-    @Test
+    @Test(expected = UnsupportedTypeException.class)
     public void testAsyncToolWithOutputSchema() {
         ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "asyncToolWithOutputSchema");
-        assertTrue(metadata.returnsCompletionStage());
-        assertNotNull(metadata.outputSchema());
+
     }
 
     @Tool(structuredContent = true)

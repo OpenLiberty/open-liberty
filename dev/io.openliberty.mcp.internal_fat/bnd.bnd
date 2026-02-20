@@ -28,6 +28,7 @@ tested.features: \
     servlet-6.1
 
 -buildpath: \
+	com.ibm.ws.componenttest.2.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.mcp;version=latest,\
@@ -38,5 +39,9 @@ tested.features: \
 	com.ibm.ws.logging.core,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
+	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
 	io.openliberty.jakarta.annotation.2.1,\
-	io.openliberty.jakarta.concurrency.3.0
+	io.openliberty.jakarta.concurrency.3.0,\
+	io.openliberty.org.testcontainers;version=latest
+	
+fat.test.container.images=public.ecr.aws/docker/library/node:20-alpine

@@ -5,4 +5,4 @@ Bundle-SymbolicName: MySimpleGlobalHandler
 Bundle-Version: 1.0.0
 Manifest-Version: 1.0
 Export-Package: io.openliberty.jaxrs.fat.globalhandler.simple.userbundle
-Import-Package: com.ibm.wsspi.webservices.handler,org.osgi.framework
+Import-Package: com.ibm.wsspi.webservices.handler,org.osgi.framework,javax.ws.rs.client

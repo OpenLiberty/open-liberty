@@ -28,7 +28,8 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 DataContainerNoSQLTest.class,
-                DataNoSQLTest.class
+                DataNoSQLTest.class,
+                DataNoSQLIntegrationTest.class
 })
 public class FATSuite extends TestContainerSuite {
 

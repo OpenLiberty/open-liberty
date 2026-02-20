@@ -249,17 +249,23 @@ public class ParameterExpression extends BaseExpression {
             if (descriptor == null) {
                 // Handle @IdClass composite key objects
                 // When descriptor is null, the value might be an @IdClass object (not an entity)
-                // We need to extract the field value using reflection
+                // We need to extract the field value using the proper privileged access
                 if (getLocalBase() != null && getLocalBase().isQueryKeyExpression()) {
-                    // Try to extract the field value from the @IdClass object using reflection
+                    // Try to extract the field value from the @IdClass object using PrivilegedAccessHelper
                     try {
-                        // Get the field value using the field name
-                        java.lang.reflect.Field field = value.getClass().getDeclaredField(this.field.getName());
-                        field.setAccessible(true);
-                        value = field.get(value);
+                        // Get the field value using the field name  with proper security handling
+                        java.lang.reflect.Field field = org.eclipse.persistence.internal.security.PrivilegedAccessHelper.getDeclaredField(
+                            value.getClass(),
+                            this.field.getName(),
+                            true  //shouldSetAccessible
+                        );
+                        value = org.eclipse.persistence.internal.security.PrivilegedAccessHelper.getValueFromField(field, value);
                         return value;
-                    } catch (Exception e) {
-                        // If reflection fails, fall through to validation
+                    } catch (NoSuchFieldException | IllegalAccessException e) {
+                        // Log the error with context for debugging
+                        session.logThrowable(org.eclipse.persistence.logging.SessionLog.FINER,
+                                           org.eclipse.persistence.logging.SessionLog.QUERY, e);
+                        // Fall through to validation if reflection fails
                     }
                 }
 
