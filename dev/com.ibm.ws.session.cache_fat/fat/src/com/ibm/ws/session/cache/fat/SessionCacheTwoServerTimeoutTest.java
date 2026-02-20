@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -88,7 +88,10 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         // z/OS and OS/390 often need extra time
         Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "OS name = " + osName);
-        TimeUnit.SECONDS.sleep(10);
+        
+        // Increase wait time for Windows platforms which are slower
+        int initialWaitTime = isWindows() ? 20 : 10;
+        TimeUnit.SECONDS.sleep(initialWaitTime);
 
         // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests. Invoking this before starting
@@ -100,8 +103,9 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         serverB.startServer();
 
-        // Wait 10 seconds
-        TimeUnit.SECONDS.sleep(10);
+        // Increase wait time for Windows platforms to allow cluster formation
+        int clusterWaitTime = isWindows() ? 20 : 10;
+        TimeUnit.SECONDS.sleep(clusterWaitTime);
 
         // Use HTTP session on serverB before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests.
@@ -207,6 +211,11 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         Log.info(SessionCacheTwoServerTimeoutTest.class, "testCacheInvalidationTwoServer",
                  serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
         appB.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
+    }
+
+    private static boolean isWindows() {
+        String osName = System.getProperty("os.name");
+        return osName != null && osName.toLowerCase().contains("windows");
         appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }
 
