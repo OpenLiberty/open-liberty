@@ -566,6 +566,18 @@ public abstract class AnnotationsImpl implements Annotations {
         this.useJandex = useJandex;
     }
 
+    private boolean jandexUseExtendedPath;
+    
+    @Override
+    public boolean getJandexUseExtendedPath() {
+        return jandexUseExtendedPath;
+    }
+
+    @Override
+    public void setJandexUseExtendedPath(boolean jandexUseExtendedPath) {
+        this.jandexUseExtendedPath = jandexUseExtendedPath;
+    }    
+    
     protected ClassSource_Options createOptions() {
         ClassSource_Factory classSourceFactory = getClassSourceFactory();
         if ( classSourceFactory == null ) {
@@ -579,8 +591,20 @@ public abstract class AnnotationsImpl implements Annotations {
             // TODO: *Maybe*, NLS enable this.
             //       The override is an unpublished system property.  This message should
             //       never appear except during internal testing.
-            Tr.info(tc, "Application jandex setting [ " + getUseJandex() + " ] overridden by property setting [ " + options.getUseJandex() + " ]");
+            Tr.info(tc, "Application jandex setting [ " + getUseJandex() + " ]" +
+                        " overridden by property setting [ " + options.getUseJandex() + " ]");
         }
+
+        if ( !options.getIsSetJandexUseExtendedPath() ) {
+            options.setJandexUseExtendedPath( getJandexUseExtendedPath() );
+        } else {
+            // TODO: *Maybe*, NLS enable this.
+            //       The override is an unpublished system property.  This message should
+            //       never appear except during internal testing.
+            Tr.info(tc, "Application jandex extend path enablement [ " + getJandexUseExtendedPath() + " ]" +
+                        " overridden by property setting [ " + options.getJandexUseExtendedPath() + " ]");
+        }        
+
         return options;
     }
 

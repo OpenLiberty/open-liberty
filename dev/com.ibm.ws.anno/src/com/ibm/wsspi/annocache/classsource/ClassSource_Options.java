@@ -39,7 +39,7 @@ public interface ClassSource_Options extends com.ibm.wsspi.anno.classsource.Clas
 
     void setUseJandex(boolean useJandex);
     void unsetUseJandex();
-
+    
     //
 
     String JANDEX_PATH_DEFAULT_VALUE = "META-INF/jandex.idx";
@@ -53,6 +53,19 @@ public interface ClassSource_Options extends com.ibm.wsspi.anno.classsource.Clas
     void setJandexPath(String jandexPath);
     void unsetJandexPath();
 
+    //
+    
+    boolean JANDEX_USE_EXTENDED_PATH_DEFAULT_VALUE = false;
+    String JANDEX_USE_EXTENDED_PATH_PROPERTY_NAME = "com.ibm.ws.jandex.use.extended.path";
+
+    String getJandexUseExtendedPathDefault();
+
+    boolean getIsSetJandexUseExtendedPath();
+    boolean getJandexUseExtendedPath();
+
+    void setJandexUseExtendedPath(boolean jandexUseExtendedPath);
+    void unsetJandexUseExtendedPath();    
+    
     //
 
     int SCAN_THREADS_UNBOUNDED = -1;

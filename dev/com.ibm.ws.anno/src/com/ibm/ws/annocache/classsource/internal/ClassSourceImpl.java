@@ -330,6 +330,16 @@ public abstract class ClassSourceImpl implements ClassSource {
         return getOptions().getJandexPath();
     }
 
+    /**
+     * <p>Tell if the extended jandex path is to be used.</p>
+     *
+     * @return Whether the extended jandex path is to be used.
+     */
+    @Trivial
+    public boolean getJandexUseExtendedPath() {
+        return getOptions().getJandexUseExtendedPath();
+    }
+    
     // Sparse Jandex Index Methods ...
 
     private static final int NS_IN_MS = 1000000;

@@ -396,7 +396,9 @@ public class TargetsScannerBaseImpl {
                     "Location {0}: Classes {1}: Scan type {2}",
                     new Object[] { nextClassSource.getCanonicalName(), nextClassCount, scanType });
                 logger.logp(Level.FINER, CLASS_NAME, methodName,
-			        "Jandex Path: {0}", nextClassSource.getOptions().getJandexPath());
+                        "Jandex Path: {0}", nextClassSource.getOptions().getJandexPath());
+                logger.logp(Level.FINER, CLASS_NAME, methodName,
+                        "Jandex Extended Path: {0}", nextClassSource.getOptions().getJandexUseExtendedPath());                
             }
         }
 

@@ -356,6 +356,21 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
         return getAppInfo().getUseJandex();
     }
 
+    /**
+     * Override: Retrieve the 'useJandexExtendedPath' setting from
+     * the application information.
+     * 
+     * @return True or false telling if jandex indexes are to
+     *    be read from the extended location.
+     */
+    @Override
+    public boolean getJandexUseExtendedPath() {
+        return true;
+
+        // TODO: Temporarily forced to true. 
+        // return getAppInfo().getUseJandexExtendedPath();
+    }
+    
     private ModuleClassesContainerInfo getModuleClassesContainerInfo() {
         Container container = getContainer();
 
