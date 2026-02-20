@@ -310,18 +310,6 @@ public class McpClient extends ExternalResource {
         return response;
     }
 
-    public String callMCPNotificationWithBasicAuth(LibertyServer server,
-                                                   String path,
-                                                   String jsonRequestBody,
-                                                   String user, String password)
-                    throws Exception {
-
-        final HttpRequest request = new HttpRequest(server, path + "/mcp").expectCode(202).basicAuth(user, password);
-        String response = setupAndRunRequest(request, jsonRequestBody);
-        assertNull("Notification request received a response", response);
-        return response;
-    }
-
     /**
      * Sends an MCP request with Basic Authentication credentials and asserts
      * that the server responds with the expected HTTP status code.
@@ -336,11 +324,7 @@ public class McpClient extends ExternalResource {
                                        String password,
                                        int expectedCode)
                     throws Exception {
-
-        HttpRequest request = new HttpRequest(server, path + "/mcp")
-                                                                    .expectCode(expectedCode)
-                                                                    .basicAuth(user, password);
-
+        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(expectedCode).basicAuth(user, password);
         setupAndRunRequest(request, jsonRequestBody);
     }
 
@@ -357,10 +341,7 @@ public class McpClient extends ExternalResource {
     public void callMCPExpectingStatus(String jsonRequestBody,
                                        int expectedCode)
                     throws Exception {
-
-        HttpRequest request = new HttpRequest(server, path + "/mcp")
-                                                                    .expectCode(expectedCode);
-
+        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(expectedCode);
         setupAndRunRequest(request, jsonRequestBody);
     }
 
