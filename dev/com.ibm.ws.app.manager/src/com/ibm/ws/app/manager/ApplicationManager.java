@@ -40,6 +40,7 @@ public class ApplicationManager {
 
     private boolean expandApps;
     private boolean useJandex;
+    private boolean useJandexExtendedPath;
     private long startTimeout;
     private long stopTimeout;
     private String expandLocation;
@@ -135,7 +136,9 @@ public class ApplicationManager {
 
         Boolean useJandexValue = getProperty(properties, "useJandex", false);
         setUseJandex(useJandexValue == null ? false : useJandexValue);
-        //System.setProperty("com.ibm.ws.jandex.enable", useJandexValue.toString()); // Temporary -- REMOVE THIS LATER ////
+
+        Boolean useJandexUnderClassValue = getProperty(properties, "useJandexUnderClass", false);
+        setUseJandexExtendedPath(useJandexUnderClassValue == null ? false : useJandexUnderClassValue);
 
         long startTimeoutValue = getProperty(properties, "startTimeout", 30L);
         setStartTimeout(startTimeoutValue);
@@ -218,6 +221,10 @@ public class ApplicationManager {
         this.useJandex = b;
     }
 
+    private void setUseJandexExtendedPath(boolean b) {
+        this.useJandexExtendedPath = b;
+    }
+
     /**
      * @return
      */
@@ -270,5 +277,9 @@ public class ApplicationManager {
             this.lastUpdated = updated;
             this.size = size;
         }
+    }
+
+    public boolean getUseJandexExtendedPath() {
+        return useJandexExtendedPath;
     }
 }

@@ -84,6 +84,11 @@ public class ApplicationInstallInfo implements ApplicationInformation<Object>, A
         return _config.getUseJandex();
     }
 
+    @Override
+    public boolean getUseJandexExtendedPath() {
+        return _config.getUseJandexExtendedPath();
+    }
+
     /** {@inheritDoc} */
     @Override
     public String getAnnotationScanLibrary() {

@@ -200,6 +200,20 @@ public final class ApplicationConfig {
         return _applicationManager.getUseJandex();
     }
 
+    public boolean getUseJandexExtendedPath() {
+        // First try to get the value from the application configuration
+        // which overrides the value on the application manager configuration.
+        if (_config != null) {
+            Object result = _config.get(AppManagerConstants.USE_JANDEX_EXTENDED_PATH);
+            if (result instanceof Boolean) {
+                return (Boolean) result;
+            }
+        }
+
+        // If that fails, try to get the value from the application manager
+        return _applicationManager.getUseJandexExtendedPath();
+    }
+
     public String[] getStartAfter() {
         String[] resultPids = null;
         if (_config != null) {
