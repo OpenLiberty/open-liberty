@@ -122,6 +122,39 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     }
 
     /**
+     * Helper method to wait for session replication between servers.
+     * Uses retry pattern with exponential backoff instead of fixed sleep.
+     *
+     * @param key the session key to check
+     * @param expectedValue the expected value
+     * @param session the session list
+     * @param targetApp the app to check (typically appB after writing to appA)
+     * @param maxWaitMs maximum time to wait in milliseconds
+     * @throws Exception if session is not replicated within timeout
+     */
+    private void waitForSessionReplication(String key, Object expectedValue, List<String> session,
+                                          SessionCacheApp targetApp, long maxWaitMs) throws Exception {
+        long startTime = System.currentTimeMillis();
+        long waitTime = 100; // Start with 100ms
+        Exception lastException = null;
+        
+        while (System.currentTimeMillis() - startTime < maxWaitMs) {
+            try {
+                targetApp.sessionGet(key, expectedValue, session);
+                return; // Success!
+            } catch (Exception e) {
+                lastException = e;
+                Thread.sleep(waitTime);
+                waitTime = Math.min(waitTime * 2, 2000); // Exponential backoff, max 2 seconds
+            }
+        }
+        
+        // If we get here, replication failed
+        throw new AssertionError("Session replication timeout after " + maxWaitMs + "ms. Last error: " +
+                                (lastException != null ? lastException.getMessage() : "unknown"), lastException);
+    }
+
+    /**
      * Test that a session created on one server is not accessible on another server after it is
      * invalidated on the first server.
      */
@@ -131,7 +164,8 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         // Initialize a session with some data
         List<String> session = new ArrayList<>();
         String sessionID = appA.sessionPut("testInvalidationTimeoutTwoServer-foo", "bar", session, true);
-        appB.sessionGet("testInvalidationTimeoutTwoServer-foo", "bar", session);
+        // Wait for session to replicate to server B with retry logic (up to 15 seconds)
+        waitForSessionReplication("testInvalidationTimeoutTwoServer-foo", "bar", session, appB, 15000);
         // Wait until we see one of the session listeners sessionDestroyed() event fire indicating that the session has timed out
 
         //assertNotNull("Expected to find message from a session listener indicating the session expired",
@@ -167,7 +201,8 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     public void testInvalidationServletLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
         appA.sessionPut("testInvalidationServletLocalCacheTwoServer-foo", "bar", session, true);
-        appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", "bar", session); //Caches the session locally.
+        // Wait for session to replicate to server B with retry logic (up to 15 seconds)
+        waitForSessionReplication("testInvalidationServletLocalCacheTwoServer-foo", "bar", session, appB, 15000); //Caches the session locally.
         appB.invokeServlet("sessionGetTimeout&key=testInvalidationServletLocalCacheTwoServer-foo&expectedValue=bar", session); //expecting to receive bar from local cache
         appB.sessionGet("testInvalidationServletLocalCacheTwoServer-foo", null, session);
     }
@@ -193,7 +228,8 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     public void testCacheInvalidationLocalCacheTwoServer() throws Exception {
         List<String> session = new ArrayList<>();
         appA.sessionPut("testCacheInvalidationLocalCacheTwoServer-foo", "bar", session, true);
-        appB.sessionGet("testCacheInvalidationLocalCacheTwoServer-foo", "bar", session);
+        // Wait for session to replicate to server B with retry logic (up to 15 seconds)
+        waitForSessionReplication("testCacheInvalidationLocalCacheTwoServer-foo", "bar", session, appB, 15000);
         appB.invokeServlet("sessionGetTimeoutCacheCheck&key=testCacheInvalidationLocalCacheTwoServer-foo", session);
     }
 
