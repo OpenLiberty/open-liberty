@@ -37,7 +37,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     //
 
     private static final boolean HAS_JANDEX_PATH_OVERRIDE =
-        AnnotationCacheServiceImpl_Logging.hasProperty(JANDEX_PATH_PROPERTY_NAME);
+            AnnotationCacheServiceImpl_Logging.hasProperty(JANDEX_PATH_PROPERTY_NAME);
 
     @Trivial
     public static boolean getHasJandexPathOverride() {
@@ -54,8 +54,16 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     public static String getJandexPathOverride() {
         return JANDEX_PATH_OVERRIDE;
     }
-
+    
     //
+
+    private static final boolean HAS_JANDEX_USE_EXTENDED_PATH_OVERRIDE =
+        AnnotationCacheServiceImpl_Logging.hasProperty(JANDEX_USE_EXTENDED_PATH_PROPERTY_NAME);
+
+    @Trivial
+    public static boolean getHasJandexUseExtendedPathOverride() {
+        return HAS_JANDEX_USE_EXTENDED_PATH_OVERRIDE;
+    }
 
     private static final Boolean USE_JANDEX_EXTENDED_PATH_OVERRIDE;
 
@@ -63,15 +71,15 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
         String override = AnnotationCacheServiceImpl_Logging.getProperty(
             AnnotationCacheServiceImpl_Logging.ANNO_LOGGER,
             CLASS_NAME, "<static init>",
-            USE_JANDEX_EXTENDED_PATH_PROPERTY_NAME, null);
+            JANDEX_USE_EXTENDED_PATH_PROPERTY_NAME, null);
         USE_JANDEX_EXTENDED_PATH_OVERRIDE = ( override == null ? null : Boolean.valueOf(override) );
     }
 
     @Trivial
-    public static Boolean getUseJandexExtendedPathOverride() {
+    public static Boolean getJandexUseExtendedPathOverride() {
         return USE_JANDEX_EXTENDED_PATH_OVERRIDE;
     }
-    
+
     //
 
     private static final boolean HAS_SCAN_THREADS_OVERRIDE =
@@ -107,12 +115,12 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
             this.jandexPath = JANDEX_PATH_DEFAULT_VALUE;
         }
         
-        if ( getHasJandexExtendedPathOverride() ) {
-            this.isSetJandexExtendedPath = true;
-            this.useJandexExtendedPath = getUseJandexExtendedPathOverride();
+        if ( getHasJandexUseExtendedPathOverride() ) {
+            this.isSetJandexUseExtendedPath = true;
+            this.jandexUseExtendedPath = getJandexUseExtendedPathOverride();
         } else {
-            this.isSetJandexPath = false;
-            this.jandexPath = JANDEX_PATH_DEFAULT_VALUE;
+            this.isSetJandexUseExtendedPath = false;
+            this.jandexUseExtendedPath = JANDEX_USE_EXTENDED_PATH_DEFAULT_VALUE;
         }        
         
         if ( getHasScanThreadsOverride() ) {
@@ -132,6 +140,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
             "(" +
                 " UseJandex " + useJandex + " - " + USE_JANDEX_OVERRIDE + ", " +
                 " JandexPath " + ('"' + jandexPath + '"' + (isSetJandexPath ? "[Set]" : "[Unset]")) + ", " +
+                " UseExtendedPath " + jandexUseExtendedPath + " - " + USE_JANDEX_EXTENDED_PATH_OVERRIDE + ", " +
                 " ScanThreads " + (Integer.toString(scanThreads)+ (isSetScanThreads ? "[Set]" : "[Unset]")) +
             ")";
     }
@@ -232,7 +241,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
 
     @Override
     public void setJandexUseExtendedPath(boolean jandexUseExtendedPath) {
-        this.jandexuseExtendedPath = jandexUseExtendedPath;
+        this.jandexUseExtendedPath = jandexUseExtendedPath;
         this.isSetJandexUseExtendedPath = true;
     }
 

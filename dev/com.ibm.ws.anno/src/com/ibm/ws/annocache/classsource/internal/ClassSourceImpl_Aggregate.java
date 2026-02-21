@@ -1022,6 +1022,7 @@ public class ClassSourceImpl_Aggregate implements ClassSource_Aggregate {
                  other.cacheReadTime, other.cacheWriteTime);
         }
 
+        @Override
         public TimingDataImpl clone() {
             return new TimingDataImpl(this);
         }

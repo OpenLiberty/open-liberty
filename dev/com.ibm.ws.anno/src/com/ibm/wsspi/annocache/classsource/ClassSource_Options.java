@@ -58,7 +58,7 @@ public interface ClassSource_Options extends com.ibm.wsspi.anno.classsource.Clas
     boolean JANDEX_USE_EXTENDED_PATH_DEFAULT_VALUE = false;
     String JANDEX_USE_EXTENDED_PATH_PROPERTY_NAME = "com.ibm.ws.jandex.use.extended.path";
 
-    String getJandexUseExtendedPathDefault();
+    boolean getJandexUseExtendedPathDefault();
 
     boolean getIsSetJandexUseExtendedPath();
     boolean getJandexUseExtendedPath();

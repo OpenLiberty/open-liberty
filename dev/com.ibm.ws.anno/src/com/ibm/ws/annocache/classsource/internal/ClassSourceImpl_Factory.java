@@ -46,7 +46,6 @@ import com.ibm.wsspi.annocache.classsource.ClassSource_Exception;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Factory;
 import com.ibm.wsspi.annocache.classsource.ClassSource_MappedSimple;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Options;
-import com.ibm.wsspi.annocache.service.AnnotationCacheService_Service;
 import com.ibm.wsspi.annocache.util.Util_Factory;
 import com.ibm.wsspi.annocache.util.Util_InternMap;
 import com.ibm.wsspi.annocache.util.Util_RelativePath;

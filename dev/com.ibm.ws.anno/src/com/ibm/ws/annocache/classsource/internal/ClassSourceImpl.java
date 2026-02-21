@@ -73,6 +73,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      *         and with the second value.
      */
     @Trivial
+    @Override    
     public String resourceAppend(String head, String tail) {
         int headLength = head.length();
         if ( headLength == 0 ) {
@@ -94,6 +95,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      *         false.
      */
     @Trivial
+    @Override    
     public boolean isDirectoryResource(String resourceName) {
         return resourceName.endsWith(ClassSource.RESOURCE_SEPARATOR_STRING);
     }
@@ -107,6 +109,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return True if the resource is a class resource. Otherwise, false.
      */
     @Trivial
+    @Override
     public boolean isClassResource(String resourceName) {
         return resourceName.endsWith(CLASS_EXTENSION);
     }
@@ -122,6 +125,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The class name for the resource.
      */
     @Trivial
+    @Override
     public String getClassNameFromResourceName(String resourceName) {
         int endingOffset = resourceName.length() - ClassSource.CLASS_EXTENSION.length();
         String className = resourceName.substring(0, endingOffset);
@@ -141,6 +145,7 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The resource for the class name.
      */
     @Trivial
+    @Override    
     public String getResourceNameFromClassName(String className) {
         return ClassSourceImpl.resourceNameFromClassName(className);
     }
@@ -313,31 +318,78 @@ public abstract class ClassSourceImpl implements ClassSource {
         return getParentSource().getOptions();
     }
 
-    @Trivial
+    /**
+     * Tell if jandex is to be used.  This is enabled
+     * through options.
+     * 
+     * If no jandex indexes are available, processing will
+     * default to usual annotation scans.  When jandex
+     * indexes are available (and are successfully read), the
+     * index data is used in preference to performing a new
+     * annotations scan.
+     * 
+     * @return True or false telling if jandex indexes,
+     *     when available, are to be used.
+     */
     public boolean getUseJandex() {
         return getOptions().getUseJandex();
     }
 
     /**
-     * <p>Answer the path to JANDEX index files.</p>
-     *
-     * <p>The default implementation answers <code>"META-INF/jandex.ndx"</code>.</p>
-     *
-     * @return The relative path to JANDEX index files.
+     * Answer the path to the jandex index.
+     * 
+     * Default to use the raw jandex index path.
+     * 
+     * @return The path to the jandex index.
      */
-    @Trivial
     public String getJandexIndexPath() {
-        return getOptions().getJandexPath();
+        return getJandexRawIndexPath();
     }
 
     /**
-     * <p>Tell if the extended jandex path is to be used.</p>
+     * Answer the raw jandex index path.
      *
-     * @return Whether the extended jandex path is to be used.
-     */
-    @Trivial
+     * Default to answer the jandex index path provided
+     * by the class source options.
+     * 
+     * This provides direct access to the options value
+     * when {@link #getJandexIndexPath()} modifies that value.
+     *
+     * @return The unmodified jandex index path.
+     */    
+    public String getJandexRawIndexPath() {
+        return getOptions().getJandexPath();
+    }
+    
+    /**
+     * Tell if the jandex extended path is to be used.
+     * 
+     * This default implementation always answers false.
+     * 
+     * This API is provided to enable the mapped container
+     * class source to provide extended jandex paths.
+     * 
+     * @return True or false telling if the jandex extended
+     *     path is to be used.  This implementation always
+     *     answers false. 
+     */    
     public boolean getJandexUseExtendedPath() {
-        return getOptions().getJandexUseExtendedPath();
+        return false;
+    }
+
+    /**
+     * Answer the jandex extended path.
+     * 
+     * This default implementation always answers null.
+     * 
+     * This API is provided to enable the mapped container class
+     * source to provide an extended jandex index path.
+     * 
+     * @return The jandex extended path.  This implementation
+     *     always answers null. 
+     */
+    public String getJandexExtendedPath() {
+        return null;
     }
     
     // Sparse Jandex Index Methods ...
@@ -445,8 +497,8 @@ public abstract class ClassSourceImpl implements ClassSource {
     protected boolean i_maybeAdd(String i_resourceName, Set<String> i_seedClassNamesSet) {
         String methodName = "i_maybeAdd";
 
-        boolean didAdd;
-        if ( didAdd = !i_seedClassNamesSet.contains(i_resourceName) ) {
+        boolean alreadyPresent = i_seedClassNamesSet.contains(i_resourceName);
+        if ( !alreadyPresent ) {
             i_seedClassNamesSet.add(i_resourceName);
         }
 
@@ -456,12 +508,13 @@ public abstract class ClassSourceImpl implements ClassSource {
         // rather bloats the trace.
 
         if ( logger.isLoggable(Level.FINER) ) {
+            String caseText = ( alreadyPresent ? "already present" : "added" );
             logger.logp(Level.FINER, CLASS_NAME, methodName,
                 "[ {0} ] Resource [ {1} ]: [ {2} ]",
-                new Object[] { getHashText(), i_resourceName, Boolean.valueOf(didAdd) });
+                new Object[] { getHashText(), i_resourceName, caseText });
         }
 
-        return didAdd;
+        return alreadyPresent;
     }
 
     //
@@ -685,6 +738,7 @@ public abstract class ClassSourceImpl implements ClassSource {
 
             // Unused
 
+            @Override            
             public boolean supportsJandex() {
                 return false; // Unused
             }
@@ -755,56 +809,107 @@ public abstract class ClassSourceImpl implements ClassSource {
         String methodName = "getJandexIndex";
 
         long startTime = System.nanoTime();
-        Index jandexIndex = basicGetJandexIndex();
+        
+        String jandexPath = getJandexIndexPath();
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, "Default path [ " + jandexPath + " ]");
+        }                
+        Index jandexIndex = basicGetJandexIndex(jandexPath);
+
+        if ( jandexIndex == null ) {
+            if ( getJandexUseExtendedPath() ) {
+                jandexPath = getJandexExtendedPath();                
+                if ( logger.isLoggable(Level.FINER) ) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Extended path [ " + jandexPath + " ]");
+                }                        
+                jandexIndex = basicGetJandexIndex(jandexPath);
+            } else {
+                if ( logger.isLoggable(Level.FINER) ) {
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Extended path not enabled");
+                }                        
+            }
+        }
+
         long readTime = System.nanoTime() - startTime;
+        int numClasses;
+        
         if ( jandexIndex != null ) {
             setProcessTime(readTime);
-            setProcessCount(jandexIndex.getKnownClasses().size());
-
-            // System.out.println("Jandex read [ " + readTime + " ]");
+            setProcessCount( numClasses = jandexIndex.getKnownClasses().size() );
+        } else {
+            numClasses = 0;
         }
 
-        boolean doLog = logger.isLoggable(Level.FINER);
-        boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
-        if ( doLog || doJandexLog ) {
-            String msg;
-            if ( jandexIndex != null ) {
-                msg = MessageFormat.format("[ {0} ] Index [ {1} ] found [ {2} (ms) ]",
-                    getHashText(), getJandexIndexPath(), Long.valueOf(readTime / NS_IN_MS));
-            } else {
-                msg = MessageFormat.format("[ {0} ] Index [ {1} ] not found",
-                    getHashText(), getJandexIndexPath());
-            }
-            if ( doLog ) {
-                logger.logp(Level.FINER, CLASS_NAME, methodName, msg);
-            }
-            if ( doJandexLog ) {
-                jandexLogger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
-            }
-        }
-
+        logJandex( methodName,
+                jandexPath,
+                (jandexIndex != null), readTime,
+                numClasses );
+        
         return jandexIndex;
     }
 
-    /**
-     * <p>Answer the JANDEX index for this class source.  Answer null if none
-     * is available.</p>
-     *
-     * @return The JANDEX index for this class source.  This default implementation
-     *     always answers null.
-     */
+    protected void logJandex(
+            String methodName,
+            String indexPath,
+            boolean didRead, long readTime, int numClasses) {
+
+        boolean doLog = logger.isLoggable(Level.FINER);
+        boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
+        if ( !doLog && !doJandexLog ) {
+            return;
+        }
+        
+        String msg;
+        if ( didRead ) {
+            long readTimeMs = readTime / NS_IN_MS;
+            msg = "[ " + getHashText() + " ]" +
+                  " read [ " + indexPath + " ] in [ " + readTimeMs + " (ms) ]" +
+                  " classes [ " + numClasses + " ]";
+        } else {
+            msg = "[ " + getHashText() + " ] failed to read [ " + indexPath + " ]";
+        }
+
+        if ( doLog ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, msg);
+        }
+        if ( doJandexLog ) {
+            jandexLogger.logp(Level.FINER, CLASS_NAME, methodName, msg);
+        }        
+    }
+    
     protected Index basicGetJandexIndex() {
         return null;
     }
 
     /**
-     * <p>Tell if a Jandex index is available.</p>
+     * <p>Answer the JANDEX index for this class source as read from a
+     * specified path.  Answer null if a JANDEX index cannot be read
+     * from the specified location.</p>
      *
-     * @return Whether a Jandex index is available.  This implementation always
-     *     answers false.
+     * <p>The index may be absent or may be unreadable.  An index may be
+     * unreadable because the index format version is not supported,
+     * or because the index data is not valid.</p>
+     * 
+     * @param A target path.  This is parameterized to enable cases when
+     *     multiple jandex paths are to be used.
+     *
+     * @return The JANDEX index for this class source.  This default
+     *     implementation always answers null.
      */
-    @Trivial
-    protected boolean basicHasJandexIndex() {
+    protected Index basicGetJandexIndex(String useJandexPath) {
+        return null;
+    }
+
+    /**
+     * <p>Tell if a Jandex index resource is available at a specified path.</p>
+     *
+     * <p>This tests whether the resource is available, not whether the index
+     * is readable.</p>
+     * 
+     * @return True or false telling if a JANDEX index is available at the
+     *     specified path. This implementation always answers false.
+     */
+    protected boolean basicHasJandexIndex(String useJandexPath) {
         return false;
     }
 
@@ -889,8 +994,6 @@ public abstract class ClassSourceImpl implements ClassSource {
      *     processed using cache data.
      */
     protected boolean processUsingJandex(ClassSource_Streamer streamer) {
-        String methodName = "processUsingJandex";
-
         if ( streamer == null ) {
             return false;
         }
@@ -904,25 +1007,46 @@ public abstract class ClassSourceImpl implements ClassSource {
             }
 
         } else {
-            boolean doLog = logger.isLoggable(Level.FINER);
-            boolean doJandexLog = jandexLogger.isLoggable(Level.FINER);
-            if ( doLog || doJandexLog ) {
-                if ( basicHasJandexIndex() ) {
-                    String msg = MessageFormat.format(
-                        "[ {0} ] Jandex disabled; Jandex index [ {1} ] found",
-                        getHashText(), getJandexIndexPath());
-                    if ( doLog ) {
-                        logger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
-                    }
-                    if ( doJandexLog ) {
-                        jandexLogger.logp(Level.FINER, CLASS_NAME,  methodName, msg);
-                    }
+            if ( logger.isLoggable(Level.FINER) ||
+                 jandexLogger.isLoggable(Level.FINER) ) {
+
+                checkUnusedJandex( getJandexIndexPath() );
+
+                if ( getJandexUseExtendedPath() ) {
+                    checkUnusedJandex( getJandexExtendedPath() );
                 }
             }
+
             return false;
         }
     }
 
+    /**
+     * Emit a diagnostic message if jandex was disabled and
+     * a jandex index was located.
+     * 
+     * @param jandexPath A path where a jandex index is sometimes
+     *     present.
+     */
+    protected void checkUnusedJandex(String jandexPath) {
+        String methodName = "unusedJandex";
+        
+        if ( !basicHasJandexIndex(jandexPath) ) {
+            return;
+        }
+            
+        String msg =
+            "[ " + getHashText() + " ]" +
+            " Jandex disabled; Found index [ " + jandexPath + " ]";
+        
+        if ( logger.isLoggable(Level.FINER) ) {
+            logger.logp(Level.FINER, CLASS_NAME, methodName, msg);
+        }
+        if ( jandexLogger.isLoggable(Level.FINER) ) {
+            jandexLogger.logp(Level.FINER, CLASS_NAME, methodName, msg);            
+        }
+    }
+    
     @Trivial
     protected boolean processJandexFull(ClassSource_Streamer streamer) {
         String methodName = "processJandexFull";

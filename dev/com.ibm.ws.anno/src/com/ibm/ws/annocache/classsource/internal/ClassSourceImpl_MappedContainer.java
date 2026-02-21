@@ -431,17 +431,27 @@ public class ClassSourceImpl_MappedContainer
     //
 
     @Override
-    protected boolean basicHasJandexIndex() {
-        return ( getRootContainer().getEntry( getJandexIndexPath() ) != null );
+    public String getJandexExtendedPath() {
+        return getJandexRawIndexPath();
+    }
+    
+    @Override
+    public boolean getJandexUseExtendedPath() {
+        return getOptions().getJandexUseExtendedPath();
+    }
+
+    //
+    
+    @Override
+    protected boolean basicHasJandexIndex(String jandexPath) {
+        return ( getRootContainer().getEntry(jandexPath) != null );
     }
 
     @SuppressWarnings("deprecation")
     @Override
     @Trivial
-    protected Index basicGetJandexIndex() {
+    protected Index basicGetJandexIndex(String useJandexIndexPath) {
         String methodName = "basicGetJandexIndex";
-
-        String useJandexIndexPath = getJandexIndexPath();
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName, "[ {0} ] Looking for JANDEX [ {1} ] in [ {2} ]",
@@ -549,7 +559,7 @@ public class ClassSourceImpl_MappedContainer
             closeRootResourceStream(null,  useJandexIndexPath, jandexStream);
         }
     }
-
+    
     //
 
     public InputStream openRootResourceStream(String className, String resourceName, int bufferSize)

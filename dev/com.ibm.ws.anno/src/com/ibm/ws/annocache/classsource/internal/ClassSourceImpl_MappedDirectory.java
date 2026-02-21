@@ -248,8 +248,8 @@ public class ClassSourceImpl_MappedDirectory
     //
 
     @Override    
-    protected boolean basicHasJandexIndex() {
-        String useJandexPath = outconvert( getJandexIndexPath() );
+    protected boolean basicHasJandexIndex(String useJandexPath) {
+        useJandexPath = outconvert(useJandexPath);
         String fullJandexPath = getRootPath(useJandexPath); // Does NOT use the prefix.
 
         File jandexIndexFile = new File(fullJandexPath);
@@ -268,10 +268,11 @@ public class ClassSourceImpl_MappedDirectory
      *
      * @return The JANDEX index for this directory class source.
      */
-    protected Index basicGetJandexIndex() {
+    @Override
+    protected Index basicGetJandexIndex(String useJandexPath) {
         String methodName = "basicGetJandexIndex";
 
-        String useJandexPath = outconvert( getJandexIndexPath() );
+        useJandexPath = outconvert(useJandexPath);
         String fullJandexPath = getRootPath(useJandexPath); // Does NOT use the prefix.
 
         File jandexFile = new File(fullJandexPath);
