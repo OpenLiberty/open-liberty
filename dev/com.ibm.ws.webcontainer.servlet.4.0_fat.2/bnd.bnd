@@ -19,6 +19,8 @@ src: \
     test-applications/SameSiteSecurityTest.war/src,\
     test-applications/PartitionedTest.war/src,\
     test-applications/IncompatibleClientTest.war/src,\
+    test-applications/WebFragment.jar/src,\
+    test-applications/WebFragmentDefinitionWebXmlMapping.war/src,\
     test-applications/WebSphereServletEvent.war/src,\
     test-applications/WebSphereSpiHttpRequestURL.war/src
 
