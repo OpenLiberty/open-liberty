@@ -252,7 +252,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
         }
         /*
-         * If createUpdateInterval is set (not -1) , but fileUpdateInterval is not set. Issue warning.
+         * If startupCheckInterval is set (not -1) , but checkInterval is not set. Issue warning.
          */
         else if (!isFileHealthCheckingEnabled() && (startupCheckIntervalMilliseconds != HealthCheckConstants.CONFIG_NOT_SET)) {
             Tr.warning(tc, "startup.check.interval.config.only.set.CWMMH01012W");
@@ -326,7 +326,6 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             int prevCheckIntervalConfigMilliseconds = checkIntervalMilliseconds;
 
             checkIntervalMilliseconds = MetatypeUtils.evaluateDurationCheckInterval(configValue, TimeUnit.MILLISECONDS);
-            System.out.println("my check val interval in ms is " + checkIntervalMilliseconds);
 
             String updateValueMessage = String.format("The checkInterval is read in as [%s] and is resolved to be [%d] milliseconds", configValue,
                                                       checkIntervalMilliseconds);
@@ -368,9 +367,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         if (configValue != null && !configValue.trim().isEmpty()) {
 
             configValue = configValue.trim();
-            System.out.println("inc startupCheckVal " + configValue);
             startupCheckIntervalMilliseconds = MetatypeUtils.evaluateDurationStartupCheckInterval(configValue, TimeUnit.MILLISECONDS);
-            System.out.println("my STARTUP check val interval in ms is " + startupCheckIntervalMilliseconds);
 
             /*
              * If this is part of a config update, no need to stop timers.
@@ -384,9 +381,6 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, updateValueMessage);
             }
-        } else if (configValue == null) {
-            //nothing defined - deafult to 100ms
-            startupCheckIntervalMilliseconds = HealthCheckConstants.DEFAULT_STARTUP_CHECK_INTERVAL_MILLI;
         }
     }
 
@@ -428,7 +422,6 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
          * For an instantOn scenario, re-process config including for env var
          */
         if (!CheckpointPhase.getPhase().equals(CheckpointPhase.INACTIVE)) {
-            System.out.println("debug: reprocess");
             processConfig();
         }
 
