@@ -91,8 +91,8 @@ public class WebAndWebFragmentServletMappingTests {
      * Expect : 200 (response is from the web-fragment servlet definition)
      */
     @Test
-    public void test1_webMapping_definition_in_webFragment_200() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test1_webMapping_definition_in_webFragment_200 ");
+    public void test1_webXMLMapping_definition_in_webFragmentXML_200() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test1_webXMLMapping_definition_in_webFragmentXML_200 ");
         sendRequest("MappingServletInWebXML_DefinitonInWebFragXML", 200);
     }
 
@@ -102,8 +102,8 @@ public class WebAndWebFragmentServletMappingTests {
      * Expect : 404
      */
     @Test
-    public void test2_webMapping_overrides_webFragMapping_404() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test2_webMapping_overrides_webFragMapping_404");
+    public void test2_webXMLMapping_overrides_webFragMappingXML_404() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test2_webXMLMapping_overrides_webFragMappingXML_404");
         sendRequest("MappingServletInWebFragmentXML", 404);
     }
 
@@ -112,8 +112,8 @@ public class WebAndWebFragmentServletMappingTests {
      * Expect : 200
      */
     @Test
-    public void test3_webMappingAndDefinition_200() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test3_webMappingAndDefinition_200");
+    public void test3_webXMLMappingAndDefinition_200() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test3_webXMLMappingAndDefinition_200");
         sendRequest("DeclaredServletInWebXML", 200);
     }
 
@@ -123,8 +123,8 @@ public class WebAndWebFragmentServletMappingTests {
      * Expect : 404
      */
     @Test
-    public void test4_webMapping_overrides_annotationMapping_404() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test4_webMapping_overrides_annotationMapping_404");
+    public void test4_webXMLMapping_overrides_annotationMapping_404() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test4_webXMLMapping_overrides_annotationMapping_404");
         sendRequest("AugmentedServletIgnore", 404);
     }
 
@@ -133,8 +133,8 @@ public class WebAndWebFragmentServletMappingTests {
      * Expect : 200
      */
     @Test
-    public void test5_webMapping_keep_200() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test5_webMapping_keep_200");
+    public void test5_webXMLMapping_keep_200() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test5_webXMLMapping_keep_200");
         sendRequest("AugmentedServletKeepMapping", 200);
     }
 
@@ -144,8 +144,8 @@ public class WebAndWebFragmentServletMappingTests {
      * Expect : 404
      */
     @Test
-    public void test6_annotatedMapping_in_webfragment_404() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test6_annotatedMapping_in_webfragment_404");
+    public void test6_annotatedMapping_in_webFragment_404() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test6_annotatedMapping_in_webFragment_404");
         sendRequest("AnnotatedServletInWebFragment", 404);
     }
 
@@ -154,8 +154,8 @@ public class WebAndWebFragmentServletMappingTests {
      * Expect : 200
      */
     @Test
-    public void test7_webFragment_overrides_annotationMapping_200() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test7_webFragment_overrides_annotationMapping_200");
+    public void test7_webFragmentXMLMapping_overrides_annotationMapping_200() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test7_webFragmentXMLMapping_overrides_annotationMapping_200");
         sendRequest("MappingServletInWebFragmentXML_Override_Annotation", 200);
     }
 
