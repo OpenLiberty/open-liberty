@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,17 +89,18 @@ import com.ibm.wsspi.application.lifecycle.ApplicationRecycleContext;
 import com.ibm.wsspi.application.lifecycle.ApplicationRecycleCoordinator;
 import com.ibm.wsspi.artifact.factory.ArtifactContainerFactory;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
+import com.ibm.wsspi.kernel.service.utils.ApplicationQuiesceService;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.logging.Introspector;
 
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
-@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class },
+@Component(service = { ManagedServiceFactory.class, Introspector.class, RuntimeUpdateListener.class, ApplicationRecycleCoordinator.class, ApplicationQuiesceService.class },
            immediate = true,
            configurationPolicy = ConfigurationPolicy.IGNORE,
            property = { Constants.SERVICE_VENDOR + "=" + "IBM",
                         Constants.SERVICE_PID + "=" + AppManagerConstants.APPLICATIONS_PID })
-public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator {
+public class ApplicationConfigurator implements ManagedServiceFactory, Introspector, RuntimeUpdateListener, ApplicationRecycleCoordinator, ApplicationQuiesceService {
     private static final TraceComponent _tc = Tr.register(ApplicationConfigurator.class);
 
     /**
@@ -2053,5 +2054,20 @@ public class ApplicationConfigurator implements ManagedServiceFactory, Introspec
         if (!_checkpointPhase.restored()) {
             _restoreMessages.add(message);
         }
+    }
+
+    // ApplicationQuiesceService implementation
+    // There are a couple of options here. We will call getlSlowlyStoppingApps().
+    // The name of the call, getSlowlyStoppingApps may be a bit misleading, but
+    // it actually initiates the stop, waits for apps to stop with a timeout,
+    // and returns the PIDs of apps that didn't stop in time
+    // An alternative option is to call readyForAppsToStop() which initiates
+    // application shutdown without waiting for completion.
+    // Applications will stop asynchronously during the normal shutdown sequence.
+    @Override
+    public void stopApplications() {
+        // Using getSlowlyStoppingApps() which waits for apps to fully stop
+        // before returning, ensuring contextDestroyed() completes before quiesce.
+        ApplicationStateCoordinator.getSlowlyStoppingApps();
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,7 @@ import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.ws.threading.listeners.CompletionListener;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
+import com.ibm.wsspi.kernel.service.utils.ApplicationQuiesceService;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
@@ -94,6 +95,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
     private LibertyProcess libertyProcess;
 
     private ExecutorService executorService;
+    
+    private ApplicationQuiesceService applicationQuiesceService;
 
     @Activate
     protected void activate(BundleContext ctx) {
@@ -155,6 +158,18 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
     @Reference(policy = ReferencePolicy.STATIC)
     protected void setProcess(LibertyProcess process) {
         this.libertyProcess = process;
+    }
+    
+    @Reference(service = ApplicationQuiesceService.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.DYNAMIC,
+               policyOption = ReferencePolicyOption.GREEDY)
+    protected void setApplicationQuiesceService(ApplicationQuiesceService service) {
+        this.applicationQuiesceService = service;
+    }
+    
+    protected void unsetApplicationQuiesceService(ApplicationQuiesceService service) {
+        this.applicationQuiesceService = null;
     }
 
     protected void cleanupNotifications() {
@@ -346,6 +361,10 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
         else
             Tr.audit(tc, "client.quiesce.begin", quiesceTimeout);
 
+        // Stop applications BEFORE calling ServerQuiesceListeners to avoid race conditions
+        // where executors/listeners shut down before applications can stop gracefully.
+        stopApplicationsBeforeQuiesce();
+
         // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
             executorService.execute(new Runnable() {
@@ -454,6 +473,23 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             }
         }
 
+    }
+	
+    /**
+     * Stop applications before quiesce begins.
+     */
+    private void stopApplicationsBeforeQuiesce() {
+        ApplicationQuiesceService service = this.applicationQuiesceService;
+        if (service != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Stopping applications before quiesce");
+            }
+            service.stopApplications();
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ApplicationQuiesceService not available - applications will stop during normal quiesce");
+            }
+        }
     }
 
     private class FutureCollection {
