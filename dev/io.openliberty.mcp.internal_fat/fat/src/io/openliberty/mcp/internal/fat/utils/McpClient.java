@@ -57,7 +57,7 @@ public class McpClient extends ExternalResource {
     private final String password;
 
     private static final String DEFAULT_MCP_PATH = "/mcp";
-    private String path;
+    private final String path;
     private boolean sessionDeleted = false;
     private String sessionId;
 
@@ -111,19 +111,15 @@ public class McpClient extends ExternalResource {
     public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode, String username, String password) {
         super();
         this.server = server;
-        this.contextRoot = contextRoot;
-        this.path = path;
+        this.contextRoot = contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
+        this.path = path.startsWith("/") ? path : "/" + path;
         this.mode = mode;
         this.username = username;
         this.password = password;
     }
 
     private String getMcpPath() {
-        String fullMcpPath = contextRoot + path;
-        if (!fullMcpPath.startsWith("/")) {
-            fullMcpPath = "/" + fullMcpPath;
-        }
-        return fullMcpPath;
+        return contextRoot + path;
     }
 
     /** {@inheritDoc} */

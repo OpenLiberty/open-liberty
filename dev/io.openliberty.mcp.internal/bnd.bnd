@@ -56,8 +56,6 @@ Bundle-Localization: \
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.javaee.dd;version=latest,\
-	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.ws.app.manager;version=latest
 
 -testpath: \

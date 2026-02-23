@@ -11,14 +11,13 @@ package io.openliberty.mcp.internal.config;
 
 import static io.openliberty.mcp.internal.config.McpServerConfigProps.DEFAULT_CONFIG;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.stream.Collectors;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -51,7 +50,7 @@ public class McpServerApplicationTracker {
      * Map from mcpServer PID to its corresponding McpConfigurationComponent
      * Must hold lock on {@code this} to access.
      */
-    private final Map<String, McpConfigurationComponent> mcpServerPidToMcpConfig = new HashMap<>();
+    private final Map<String, McpConfigurationComponent> mcpServerPidToMcpConfigComponent = new HashMap<>();
 
     /**
      * A record of the application name and the list of mcpServerPids that application references
@@ -79,7 +78,7 @@ public class McpServerApplicationTracker {
     @Deactivate
     protected void deactivate() {
         synchronized (this) {
-            mcpServerPidToMcpConfig.clear();
+            mcpServerPidToMcpConfigComponent.clear();
             appPidToAppEntry.clear();
             appNameToMcpConfigProps.clear();
         }
@@ -90,7 +89,7 @@ public class McpServerApplicationTracker {
                policyOption = ReferencePolicyOption.GREEDY)
     protected void addMcpConfiguration(McpConfigurationComponent config) {
         synchronized (this) {
-            mcpServerPidToMcpConfig.put(config.getServicePid(), config);
+            mcpServerPidToMcpConfigComponent.put(config.getServicePid(), config);
             updateAppsUsingMcpConfig(config.getServicePid());
         }
     }
@@ -104,12 +103,8 @@ public class McpServerApplicationTracker {
     protected void removeMcpConfiguration(McpConfigurationComponent config) {
         String mcpServerPid = config.getServicePid();
         synchronized (this) {
-            mcpServerPidToMcpConfig.remove(mcpServerPid);
-            for (AppEntry appEntry : appPidToAppEntry.values()) {
-                if (appEntry.mcpServerPids.contains(mcpServerPid)) {
-                    removeMcpConfigPropsFromApp(appEntry.appName, mcpServerPid);
-                }
-            }
+            mcpServerPidToMcpConfigComponent.remove(mcpServerPid);
+            updateAppsUsingMcpConfig(mcpServerPid);
         }
     }
 
@@ -154,16 +149,12 @@ public class McpServerApplicationTracker {
         }
         synchronized (this) {
             AppEntry oldEntry = appPidToAppEntry.get(appPid);
-            if (oldEntry != null) {
-                for (String mcpServerPid : oldEntry.mcpServerPids) {
-                    removeMcpConfigPropsFromApp(oldEntry.appName, mcpServerPid);
-                }
+            if (oldEntry != null && !oldEntry.appName().equals(appName)) {
+                appNameToMcpConfigProps.remove(oldEntry.appName());
             }
             List<String> mcpServerPidList = (mcpServerPids != null && mcpServerPids.length > 0) ? Arrays.asList(mcpServerPids) : Collections.emptyList();
             appPidToAppEntry.put(appPid, new AppEntry(appName, mcpServerPidList));
-            if (!mcpServerPidList.isEmpty()) {
-                updateAppMcpConfigProps(appPid);
-            }
+            updateAppMcpConfigProps(appPid);
         }
     }
 
@@ -180,9 +171,7 @@ public class McpServerApplicationTracker {
         synchronized (this) {
             AppEntry appEntry = appPidToAppEntry.remove(appPid);
             if (appEntry != null) {
-                for (String mcpServerPid : appEntry.mcpServerPids) {
-                    removeMcpConfigPropsFromApp(appEntry.appName, mcpServerPid);
-                }
+                appNameToMcpConfigProps.remove(appEntry.appName());
             }
         }
     }
@@ -201,12 +190,14 @@ public class McpServerApplicationTracker {
     }
 
     /**
-     * Given an application's PID, looks up its AppEntry, iterates the appEntry's mcpServerPids, looks up
-     * each `McpConfigurationComponent`from `mcpServerPidToMcpConfig` map, extracts the `McpServerConfigProps`.
-     * We then build a new list of `McpServerConfigProps` by copying all existing entries except ones
-     * with a matching `servicePid` (to remove duplicates) then append the new entry. We then add the new
-     * immutable list to the map `appNameToMcpConfigProps`
+     * Given an application's PID, looks up its AppEntry, and build a complete list of resolved
+     * {@link McpServerConfigProps} by streaming the {@link mcpServerPids}, map each to its {@link McpConfigurationComponent},
+     * filter out nulls, then map to {@link McpServerConfigProps}, filter out nulls and collect the resulting
+     * list.
+     * If the resulting list is empty the appEntry is removed from {@link appNameToMcpConfigProps}, otherwise the new
+     * list replaces the previous entry
      *
+     * Must hold lock on {@code this} to access.
      */
     private void updateAppMcpConfigProps(String appPid) {
 
@@ -215,39 +206,15 @@ public class McpServerApplicationTracker {
             return;
         }
         String appName = appEntry.appName();
-        List<String> mcpServerPidList = appEntry.mcpServerPids();
 
-        for (String mcpServerPid : mcpServerPidList) {
-            McpConfigurationComponent mcpConfig = mcpServerPidToMcpConfig.get(mcpServerPid);
-            if (mcpConfig != null) {
-                McpServerConfigProps props = mcpConfig.getConfigProps();
-                if (props != null) {
-                    String servicePid = props.servicePid();
-                    List<McpServerConfigProps> currentPropsList = appNameToMcpConfigProps.getOrDefault(appName, Collections.emptyList());
-                    List<McpServerConfigProps> newPropsList = currentPropsList.stream()
-                                                                              .filter(prop -> !servicePid.equals(prop.servicePid()))
-                                                                              .collect(Collectors.toCollection(ArrayList::new));
-                    newPropsList.add(props);
-                    appNameToMcpConfigProps.put(appName, Collections.unmodifiableList(newPropsList));
-                }
-            }
-        }
-    }
+        List<McpServerConfigProps> newPropsList = appEntry.mcpServerPids().stream()
+                                                          .map(mcpServerPid -> mcpServerPidToMcpConfigComponent.get(mcpServerPid))
+                                                          .filter(Objects::nonNull)
+                                                          .map(mcpConfigComponent -> mcpConfigComponent.getConfigProps())
+                                                          .filter(Objects::nonNull)
+                                                          .distinct()
+                                                          .toList();
 
-    /**
-     * Given an application's name and the config's mcpServerPid, we can get the current list of `McpServerConfigProps`
-     * from `appNameToMcpConfigProps`. We then filter out the ones we want to remove and if the resulting list is empty,
-     * remove the application's entry from `appNameToMcpConfigProps` entirely, otherwise create an immutable
-     * list and publish it.
-     */
-    private void removeMcpConfigPropsFromApp(String appName, String servicePid) {
-        List<McpServerConfigProps> currentPropsList = appNameToMcpConfigProps.get(appName);
-        if (currentPropsList == null) {
-            return;
-        }
-        List<McpServerConfigProps> newPropsList = currentPropsList.stream()
-                                                                  .filter(prop -> !servicePid.equals(prop.servicePid()))
-                                                                  .toList();
         if (newPropsList.isEmpty()) {
             appNameToMcpConfigProps.remove(appName);
         } else {

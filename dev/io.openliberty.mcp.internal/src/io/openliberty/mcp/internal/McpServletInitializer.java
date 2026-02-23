@@ -56,8 +56,9 @@ public class McpServletInitializer implements ServletContainerInitializer {
             // Register introspector context listener
             context.addListener(new McpIntrospectorContextListener(registry));
 
-            String appName = getApplicationName(context);
-            String moduleName = getModuleName(context);
+            ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            String appName = getApplicationName(componentMetaData);
+            String moduleName = getModuleName(componentMetaData);
 
             McpServerConfigProps configProps = null;
 
@@ -97,16 +98,14 @@ public class McpServletInitializer implements ServletContainerInitializer {
         Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
     }
 
-    private String getApplicationName(ServletContext context) {
-        ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+    private String getApplicationName(ComponentMetaData componentMetaData) {
         if (componentMetaData != null) {
             return componentMetaData.getJ2EEName().getApplication();
         }
         return null;
     }
 
-    private String getModuleName(ServletContext context) {
-        ComponentMetaData componentMetaData = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+    private String getModuleName(ComponentMetaData componentMetaData) {
         if (componentMetaData != null) {
             return componentMetaData.getJ2EEName().getModule();
         }

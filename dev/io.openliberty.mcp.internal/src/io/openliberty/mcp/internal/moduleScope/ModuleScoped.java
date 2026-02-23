@@ -21,7 +21,11 @@ import java.lang.annotation.Target;
 import jakarta.enterprise.context.NormalScope;
 
 /**
- *
+ * Specifies that a bean is module scoped.
+ * <p>
+ * The module context is initialized when the application starts and destroyed before the application context is destroyed.
+ * <p>
+ * The current module is determined by calling {@code ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData().getModuleMetaData()}
  */
 @Inherited
 @NormalScope
