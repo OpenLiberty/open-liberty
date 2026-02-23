@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -248,9 +248,9 @@ public class ClassSourceImpl_MappedDirectory
     //
 
     @Override    
-    protected boolean basicHasJandexIndex(String useJandexPath) {
-        useJandexPath = outconvert(useJandexPath);
-        String fullJandexPath = getRootPath(useJandexPath); // Does NOT use the prefix.
+    protected boolean hasJandexIndex(String jandexPath) {
+        jandexPath = outconvert(jandexPath);
+        String fullJandexPath = getRootPath(jandexPath); // Does NOT use the prefix.
 
         File jandexIndexFile = new File(fullJandexPath);
         if ( !UtilImpl_FileUtils.exists(jandexIndexFile) ) {
@@ -269,11 +269,11 @@ public class ClassSourceImpl_MappedDirectory
      * @return The JANDEX index for this directory class source.
      */
     @Override
-    protected Index basicGetJandexIndex(String useJandexPath) {
-        String methodName = "basicGetJandexIndex";
+    protected Index getJandexIndex(String jandexPath) {
+        String methodName = "getJandexIndex";
 
-        useJandexPath = outconvert(useJandexPath);
-        String fullJandexPath = getRootPath(useJandexPath); // Does NOT use the prefix.
+        jandexPath = outconvert(jandexPath);
+        String fullJandexPath = getRootPath(jandexPath); // Does NOT use the prefix.
 
         File jandexFile = new File(fullJandexPath);
         if ( !UtilImpl_FileUtils.exists(jandexFile) ) {
@@ -303,11 +303,11 @@ public class ClassSourceImpl_MappedDirectory
     }
 
     @Override
-    protected SparseIndex basicGetSparseJandexIndex() {
-        String methodName = "basicGetSparseJandexIndex";
+    protected SparseIndex getSparseJandexIndex(String jandexPath) {
+        String methodName = "getSparseJandexIndex";
 
-        String useJandexPath = outconvert( getJandexIndexPath() );
-        String fullJandexPath = getRootPath(useJandexPath); // Does NOT use the prefix.
+        jandexPath = outconvert(jandexPath);
+        String fullJandexPath = getRootPath(jandexPath); // Does NOT use the prefix.
 
         File jandexFile = new File(fullJandexPath);
         if ( !UtilImpl_FileUtils.exists(jandexFile) ) {
