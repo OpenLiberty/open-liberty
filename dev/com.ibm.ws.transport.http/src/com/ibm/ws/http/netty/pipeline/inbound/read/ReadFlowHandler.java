@@ -140,12 +140,12 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
         FlowState state = state(context);
 
-        if(state.isResponseInFlight()){
+        if(message instanceof HttpRequest && state.isResponseInFlight()){
             System.out.println("FLOW_VIOLATION: new HttpRequest while responseInFlight= true" 
                 + " channel=" + context.channel() 
                 + " keepAlive=" + state.isKeepAliveAllowed() 
                 + " readPending = " + state.isReadPending()
-                + " stopped= " + state.stoppedReading(); 
+                + " stopped= " + state.stoppedReading()); 
         }
 
         if(message instanceof HttpRequest){
