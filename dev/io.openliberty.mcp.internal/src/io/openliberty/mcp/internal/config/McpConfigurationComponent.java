@@ -75,7 +75,4 @@ public class McpConfigurationComponent {
         return servicePid;
     }
 
-    public boolean isStateless() {
-        return config.stateless();
-    }
 }
