@@ -453,17 +453,19 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
         else if (myChannel.getStop0Called() == false) {
-            if (connectionCountDecremneted.compareAndSet(false, true)) {
-                try {
-                    super.close(conn, e);
-                } finally {
+
+            try {
+                super.close(conn, e);
+            } finally {
+                if (connectionCountDecremneted.compareAndSet(false, true)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "close, decrement active connection count");
                     }
                     this.myChannel.decrementActiveConns();
                 }
-                closeCompleted.compareAndSet(false, true);
+
             }
+            closeCompleted.compareAndSet(false, true);
 
         }
 
