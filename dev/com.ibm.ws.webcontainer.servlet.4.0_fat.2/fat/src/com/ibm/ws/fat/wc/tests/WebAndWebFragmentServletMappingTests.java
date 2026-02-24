@@ -88,74 +88,78 @@ public class WebAndWebFragmentServletMappingTests {
 
     /**
      * Test web.xml mapping but servlet definition is in web-fragment
+     * Request to web.xml mapping.
      * Expect : 200 (response is from the web-fragment servlet definition)
      */
     @Test
-    public void test1_webXMLMapping_definition_in_webFragmentXML_200() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test1_webXMLMapping_definition_in_webFragmentXML_200 ");
+    public void test1_request_webXMLMapping_no_definition_200() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test1_request_webXMLMapping_no_definition_200 ");
         sendRequest("MappingServletInWebXML_DefinitonInWebFragXML", 200);
     }
 
     /**
      * Test web-fragment.xml definition and mapping.
-     * Its mapping is overridden by the web.xml mapping of the same servlet-name
+     * Request to web-fragment.xml mapping which is overridden by the web.xml mapping for same servlet-name
      * Expect : 404
      */
     @Test
-    public void test2_webXMLMapping_overrides_webFragMappingXML_404() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test2_webXMLMapping_overrides_webFragMappingXML_404");
+    public void test2_request_webFragMappingXML_404() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test2_request_webFragMappingXML_404");
         sendRequest("MappingServletInWebFragmentXML", 404);
     }
 
     /**
      * Test definition and mapping in web.xml
+     * Request to web.xml mapping
      * Expect : 200
      */
     @Test
-    public void test3_webXMLMappingAndDefinition_200() throws Exception {
+    public void test3_request_webXMLMappingAndDefinition_200() throws Exception {
         LOG.info(">>>>>>>>>> Testing test3_webXMLMappingAndDefinition_200");
         sendRequest("DeclaredServletInWebXML", 200);
     }
 
     /**
      * Test @WebServlet mapping, for same servlet-name in web.xml but with different mapping.
-     * This mapping is overwritten by the web.xml mapping
+     * Request to annotation mapping which is overridden by the web.xml mapping.
      * Expect : 404
      */
     @Test
-    public void test4_webXMLMapping_overrides_annotationMapping_404() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test4_webXMLMapping_overrides_annotationMapping_404");
+    public void test4_request_annotationMapping_404() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test4_request_annotationMapping_404");
         sendRequest("AugmentedServletIgnore", 404);
     }
 
     /**
      * Test mapping in web.xml for a servlet which also has @WebServlet with a different mapping
+     * Request to web.xml mapping.
      * Expect : 200
      */
     @Test
-    public void test5_webXMLMapping_keep_200() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test5_webXMLMapping_keep_200");
+    public void test5_request_webXMLMapping_keep_200() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test5_request_webXMLMapping_keep_200");
         sendRequest("AugmentedServletKeepMapping", 200);
     }
 
     /**
      * Test definition and mapping from @WebServlet in web-fragment.jar
-     * It is overridden by the web-fragment.xml for same servlet-name
+     * Request to annotation mapping which is overridden by the web-fragment.xml mapping
      * Expect : 404
      */
     @Test
-    public void test6_annotatedMapping_in_webFragment_404() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test6_annotatedMapping_in_webFragment_404");
+    public void test6_request_annotatedMapping_in_webFragment_404() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test6_request_annotatedMapping_in_webFragment_404");
         sendRequest("AnnotatedServletInWebFragment", 404);
     }
 
     /**
      * Test definition and mapping in web-fragment.xml overrides the annotated mapping
+     * Request to web-fragment.xml mapping.
      * Expect : 200
      */
     @Test
-    public void test7_webFragmentXMLMapping_overrides_annotationMapping_200() throws Exception {
-        LOG.info(">>>>>>>>>> Testing test7_webFragmentXMLMapping_overrides_annotationMapping_200");
+    public void test7_request_webFragmentXMLMapping_200() throws Exception {
+        LOG.info(">>>>>>>>>> Testing test7_request_webFragmentXMLMapping_200");
         sendRequest("MappingServletInWebFragmentXML_Override_Annotation", 200);
     }
 
