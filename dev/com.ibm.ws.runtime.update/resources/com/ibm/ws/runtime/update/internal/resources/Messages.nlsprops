@@ -64,5 +64,5 @@ quiesce.waiting.on.threads.explanation=One or more threads that were active befo
 quiesce.waiting.on.threads.useraction=No action is required.
 
 applications.not.stopped=CWWKE1108W: {0} applications did not stop before the application stop timeout expired.
-applications.not.stopped.explanation=One or more applications did not stop before the application stop timeout expired. The server will continue with shutdown.
+applications.not.stopped.explanation=One or more applications did not stop before the application stop timeout expired. The server continues shutting down.
 applications.not.stopped.useraction=No action is required. If applications consistently fail to stop in time, consider increasing the application stop timeout by setting the 'stopTimeout' attribute in the 'applicationManager' element in server.xml.
