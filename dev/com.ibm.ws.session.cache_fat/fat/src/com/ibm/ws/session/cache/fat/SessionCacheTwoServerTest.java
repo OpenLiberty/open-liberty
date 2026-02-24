@@ -238,14 +238,14 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                                           SessionCacheApp targetApp, long maxWaitMs) throws Exception {
         long startTime = System.currentTimeMillis();
         long waitTime = 100; // Start with 100ms
-        Exception lastException = null;
+        Throwable lastException = null;
         
         while (System.currentTimeMillis() - startTime < maxWaitMs) {
             try {
                 targetApp.sessionGet(key, expectedValue, session);
                 return; // Success!
-            } catch (Exception e) {
-                lastException = e;
+            } catch (Throwable t) {
+                lastException = t;
                 Thread.sleep(waitTime);
                 waitTime = Math.min(waitTime * 2, 2000); // Exponential backoff, max 2 seconds
             }
