@@ -47,13 +47,15 @@ public class McpServerApplicationTracker {
     private boolean isTracingAndDebugEnabled = TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled();
 
     /**
-     * Map from mcpServer PID to its corresponding McpConfigurationComponent
+     * Map from mcpServer PID to its corresponding McpConfigurationComponent. When an application arrives referencing mcpServer PIDs,
+     * we are able to look up the actual configComponent object with this map.
      * Must hold lock on {@code this} to access.
      */
     private final Map<String, McpConfigurationComponent> mcpServerPidToMcpConfigComponent = new HashMap<>();
 
     /**
-     * A record of the application name and the list of mcpServerPids that application references
+     * A record of the application name and the list of mcpServerPids that application references. Keeps these 2 pieces of
+     * per-app data co-located and impossible to get out of sync
      */
     private record AppEntry(String appName, List<String> mcpServerPids) {};
 
