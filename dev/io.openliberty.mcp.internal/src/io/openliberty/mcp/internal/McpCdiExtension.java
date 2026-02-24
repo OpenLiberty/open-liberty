@@ -55,7 +55,7 @@ public class McpCdiExtension implements Extension {
 
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
 
-    private static final List<Bean<?>> encoderBeans = new ArrayList<>();
+    private final List<Bean<?>> encoderBeans = new ArrayList<>();
     private EncoderRegistry encoderRegistry;
     private ConcurrentHashMap<String, ArrayList<String>> duplicateToolsMap = new ConcurrentHashMap<>();
 
