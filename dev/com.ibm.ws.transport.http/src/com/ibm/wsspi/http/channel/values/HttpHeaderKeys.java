@@ -22,6 +22,8 @@ import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.KeyMatcher;
 
+import io.netty.util.AsciiString;
+
 /**
  * Class representing a single HTTP header name.
  */
@@ -251,7 +253,8 @@ public class HttpHeaderKeys extends HeaderKeys {
     private HttpHeaderKeys(String name) {
         super(name, generateNextOrdinal());
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
+            // Cache as an ascii string for performance in Netty
+            AsciiString.cached(name);
             allKeys.add(this);
             myMatcher.add(this);
         }
@@ -269,7 +272,8 @@ public class HttpHeaderKeys extends HeaderKeys {
         setUndefined(undefined);
 
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
+            // Cache as an ascii string for performance in Netty
+            AsciiString.cached(name);
             allKeys.add(this);
             myMatcher.add(this);
         }
@@ -288,7 +292,8 @@ public class HttpHeaderKeys extends HeaderKeys {
         super.setShouldLogValue(shouldLog);
         super.setUseFilters(shouldFilter);
         if (NEXT_ORDINAL.get() <= ORD_MAX) {
-
+            // Cache as an ascii string for performance in Netty
+            AsciiString.cached(name);
             allKeys.add(this);
             myMatcher.add(this);
         }

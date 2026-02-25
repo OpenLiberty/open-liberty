@@ -26,6 +26,7 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpHeaderValues;
+import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
@@ -265,9 +266,8 @@ public class TimeoutHandler extends ChannelDuplexHandler{
                 return true;
             }
             if(message instanceof HttpRequest){
-                HttpRequest req = (HttpRequest) message;
-                boolean hasBody = HttpUtil.isTransferEncodingChunked(req) || HttpUtil.isContentLengthSet(req);
-                return !hasBody;
+                // Check if head which does not have request body
+                return ((HttpRequest)message).method().equals(HttpMethod.HEAD);
             }
             if(message instanceof LastHttpContent){
                 return true;
