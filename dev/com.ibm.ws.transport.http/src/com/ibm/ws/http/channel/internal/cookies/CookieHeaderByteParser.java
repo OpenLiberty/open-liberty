@@ -322,11 +322,21 @@ public class CookieHeaderByteParser {
             hasDollarSign = true;
             // skip past the leading $ symbol
             start++;
-        } else if ('"' == data[start] && '"' == data[stop]) {
+        } 
+        
+        /* EE11 cookie name cannot have double quotes.
+         *  The previous comment 
+         *  "// quotes around the values, strip them off"
+         *  is mislead.  This should be the (values of) cookie's name, not cookie's value
+         *  
+         *  Example: "badDouble_InName"=NO or bad"Double_InName=NO are not valid cookie name in both Cookie and Set-Cookie
+         */
+        else if (!isEE11OrAbove && '"' == data[start] && '"' == data[stop]) {
             // quotes around the values, strip them off
             start++;
             stop--;
         }
+
         int len = stop - start + 1;
         if (0 >= len) {
             // invalid data
