@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,8 @@
  * This package is intended to encapsulate the public API and SPI related
  * to file transfer. Do not add non-public interfaces to this package.
  * 
- * @version 1.1
+ * @version 1.2
  */
-@org.osgi.annotation.versioning.Version("1.1")
+@org.osgi.annotation.versioning.Version("1.2")
 package com.ibm.websphere.filetransfer;
 
