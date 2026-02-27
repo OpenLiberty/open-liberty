@@ -211,12 +211,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         Log.info(SessionCacheTwoServerTimeoutTest.class, "testCacheInvalidationTwoServer",
                  serverA.waitForStringInLog("notified of sessionDestroyed for " + sessionID, 5 * 60 * 1000));
         appB.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
+        appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }
 
     private static boolean isWindows() {
         String osName = System.getProperty("os.name");
         return osName != null && osName.toLowerCase().contains("windows");
-        appA.invokeServlet("cacheCheck&key=testCacheInvalidationTwoServer-foo&sid=" + sessionID, session);
     }
 
 }
