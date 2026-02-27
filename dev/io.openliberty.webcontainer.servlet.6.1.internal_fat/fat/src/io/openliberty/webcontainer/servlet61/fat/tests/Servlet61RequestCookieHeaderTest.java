@@ -95,7 +95,6 @@ public class Servlet61RequestCookieHeaderTest {
     /**
      * Test COOKIE header with mix comma and semicolon delimiters.
      * Original Cookie: $Version=1, name1=value1; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColonName=endSemiColonValue
-     * Processed (remove comma) Cookie:  $Version=1; middleSemiColonName=middleSemiColonValue; endSemiColonName=endSemiColonValue
      *
      * All Cookie comma pair are discard.
      */
@@ -122,11 +121,12 @@ public class Servlet61RequestCookieHeaderTest {
 
     /**
      * Test Request Cookie header with quote
-     * Original Cookie: $Version=1; badDouble\"InName=NO; testSingleQuote'In_Name=YES; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; middleSemiColonName=middleSemiColonValue_YES, quotedName2=\"quotedValue2\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"
-     * Processed (remove comma) Cookie: $Version=1; badDouble"InName=NO; testSingleQuote'In_Name=YES; test_MixQuotes_InValue_Name="Mix_Double'And'Single_Quotes_Name_YES"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; middleSemiColonName=middleSemiColonValue_YES; test_DoubleQuote_InValue_Name="DoubleInValue_YES" Key: Cookie Ordinal: 14 undefined: false
+     * Original Cookie: "$Version=1; badDouble\"InName=NO; test_SingleQuote'In_Name=YES; \"badDouble2_InName\"=NO; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES, quotedName2=\"To_Be_Removed_Pair_NO\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"; badDouble\"ENDInName=NO");
+     *
+     * Invalid cookie name (with quotes) is at begin, middle, and end position in the Cookie list
      *
      * Cookie Name:
-     *  No - Double quote
+     *  No - Any double quote
      *  Yes - Single quote
      *
      * Cookie Value:
@@ -141,7 +141,7 @@ public class Servlet61RequestCookieHeaderTest {
         HttpGet getMethod = new HttpGet(url);
         String EXPECTED_TEXT = "Result [PASS]";
 
-        getMethod.addHeader("Cookie", "$Version=1; badDouble\"InName=NO; test_SingleQuote'In_Name=YES; \"badDouble2_InName\"=NO; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES, quotedName2=\"To_Be_Removed_Pair_NO\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"");
+        getMethod.addHeader("Cookie", "$Version=1; badDouble\"InName=INVALID; test_SingleQuote'In_Name=YES; \"badDouble2_InName\"=INVALID; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES, quotedAndComma_Name=\"Comma_pair_INVALID\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"; badDouble\"ENDInName=NO");
 
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             try (CloseableHttpResponse response = client.execute(getMethod)) {
@@ -151,5 +151,13 @@ public class Servlet61RequestCookieHeaderTest {
                 assertTrue("The response does not contain Result [PASS]. TestResult header [" + headerValue + "]", headerValue.contains(EXPECTED_TEXT));
             }
         }
+    }
+
+    //@Test add this to Servlet 6.0 FAT as well
+    /*
+     * Expires attribute allows comma. Test to make sure it works accordingly
+     */
+    public void test_SetCookie_Expires_Attribute() throws Exception {
+
     }
 }

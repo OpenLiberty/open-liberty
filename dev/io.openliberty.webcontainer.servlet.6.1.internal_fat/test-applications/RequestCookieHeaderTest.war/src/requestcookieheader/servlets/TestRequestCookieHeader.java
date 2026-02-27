@@ -4,18 +4,17 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package requestcookieheader.servlets;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -53,17 +52,17 @@ public class TestRequestCookieHeader extends HttpServlet {
             test_Cookie_All_Comma_Delimiter(request,  response);
         }
         else if (testName.equalsIgnoreCase("test_Cookie_Mix_Comma_Semicolon_Delimiter")) {
-            test_Cookie_Mix_Comma_Semicolon_Delimiter(request, response); 
+            test_Cookie_Mix_Comma_Semicolon_Delimiter(request, response);
         }
         else if (testName.equalsIgnoreCase("test_Cookie_Quoted_Value")) {
-            test_Cookie_Quoted_Value(request, response); 
+            test_Cookie_Quoted_Value(request, response);
         }
     }
 
     /*
      * Request with header:
      * Cookie: $Version=1, commaName1=commaValue1, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue
-     * 
+     *
      * All comma cookie parts are discard; thus cookie is null
      *
      */
@@ -73,18 +72,18 @@ public class TestRequestCookieHeader extends HttpServlet {
 
         Cookie[] cookies = request.getCookies();
         if (cookies == null){
-            LOG.info("No Cookie is found. Test PASS");
+            LOG.info("No Cookie is found. " + PASS_TEXT);
             sBuilderResponse.append("No Cookie is found. " + PASS_TEXT);
         }
         else {
-            LOG.info("Cookie is found but not expected. Test FAIL");
-            sBuilderResponse.append("Cookie is found but not expected. " + FAIL_TEXT); 
+            LOG.info("Cookie is found but not expected. " + FAIL_TEXT);
+            sBuilderResponse.append("Cookie is found but not expected. " + FAIL_TEXT);
         }
-       
+
         //Client check this header.
-        response.setHeader("TestResult", sBuilderResponse.toString());   
+        response.setHeader("TestResult", sBuilderResponse.toString());
     }
-    
+
     /*
      * Request with header:
      * Original Cookie: [$Version=1, name1=value1; test_NoQuote_Name=NoQuoteValue_YES=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColonName=endSemiColonValue]
@@ -96,7 +95,7 @@ public class TestRequestCookieHeader extends HttpServlet {
         LOG.info(">>>>> Test test_Cookie_Mix_Comma_Semicolon_Delimiter");
         StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Mix_Comma_Semicolon_Delimiter ======");
 
-        ArrayList<String> expectedCookieList = new ArrayList<>(Arrays.asList("middleSemiColonName=middleSemiColonValue","endSemiColonName=endSemiColonValue"));        
+        ArrayList<String> expectedCookieList = new ArrayList<>(Arrays.asList("middleSemiColonName=middleSemiColonValue","endSemiColonName=endSemiColonValue"));
         int cookieCounter = 0;
         int expectedNumCookies = expectedCookieList.size();
         String cookiePair = null;
@@ -113,9 +112,9 @@ public class TestRequestCookieHeader extends HttpServlet {
         } else {
             LOG.info("No cookies found");
         }
-        
-        LOG.info("Expected pairs [" + expectedNumCookies+"] Found [" + cookieCounter + "] . Remaining in expected cookie list [" + expectedCookieList.size() + "]" );
-        
+
+        LOG.info("Expected pairs [" + expectedNumCookies+"] ; found [" + cookieCounter + "] . Remaining [" + expectedCookieList.size() + "] in cookie list; Expecting 0" );
+
         if (expectedCookieList.size() > 0) {
             LOG.info("Remaining item :");
             for (String item : expectedCookieList) {
@@ -124,21 +123,22 @@ public class TestRequestCookieHeader extends HttpServlet {
         }
 
         if (cookieCounter != expectedNumCookies || expectedCookieList.size() != 0) {
-            String message = "Cookie pairs NOT match. Expect [" + expectedNumCookies + "] but found [" + cookieCounter + "]. Or Remaining in cooke list is not 0 [" + expectedCookieList.size() + "]";
-            LOG.info(message + ". TEST FAIL");
-            sBuilderResponse.append(message + FAIL_TEXT); 
+            String message = "Cookie pairs NOT match: Expecting [" + expectedNumCookies + "] but found [" + cookieCounter + "]. Or Cookie list remaining [" + expectedCookieList.size() + "] but expecting 0";
+            LOG.info(message + " " + FAIL_TEXT);
+            sBuilderResponse.append(message + FAIL_TEXT);
         }
         else {
+            LOG.info(PASS_TEXT);
             sBuilderResponse.append(PASS_TEXT);
         }
         //Client check this header.
-        response.setHeader("TestResult", sBuilderResponse.toString());   
+        response.setHeader("TestResult", sBuilderResponse.toString());
     }
-    
+
     /**
      * Test Request Cookie header with quote
      * Original Cookie: $Version=1; badDouble\"InName=NO; test_SingleQuote'In_Name=YES; \"badDouble2_InName\"=NO; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES, quotedName2=\"To_Be_Removed_Pair_NO\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\""
-     * 
+     *
      * Processed (removed comma) Cookie: $Version=1; badDouble"InName=NO; testSingleQuote'In_Name=YES; test_MixQuotes_InValue_Name="Mix_Double'And'Single_Quotes_Name_YES"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES=middleSemiColonValue_YES; test_DoubleQuote_InValue_Name="DoubleInValue_YES" Key: Cookie Ordinal: 14 undefined: false
      *
      * Cookie and Set-Cookie Name:
@@ -159,7 +159,7 @@ public class TestRequestCookieHeader extends HttpServlet {
         expectedCookieList.add("test_SingleQuote_InValue_Name='Single_Quote_Value_YES'");
         expectedCookieList.add("test_NoQuote_Name=NoQuoteValue_YES");
         expectedCookieList.add("test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"");
-        
+
         int cookieCounter = 0;
         int expectedNumCookies = expectedCookieList.size();
         String cookiePair = null;
@@ -176,9 +176,9 @@ public class TestRequestCookieHeader extends HttpServlet {
         } else {
             LOG.info("No cookies found. TEST FAIL");
         }
-        
-        LOG.info("Expected pairs [" + expectedNumCookies+"] Found [" + cookieCounter + "] . Remaining in expected cookie list [" + expectedCookieList.size() + "]" );
-        
+
+        LOG.info("Expected pairs [" + expectedNumCookies+"] ; found [" + cookieCounter + "] . Remaining [" + expectedCookieList.size() + "] in cookie list; Expecting 0" );
+
         if (expectedCookieList.size() > 0) {
             LOG.info("Remaining item :");
             for (String item : expectedCookieList) {
@@ -187,14 +187,15 @@ public class TestRequestCookieHeader extends HttpServlet {
         }
 
         if (cookieCounter != expectedNumCookies || expectedCookieList.size() != 0) {
-            String message = "Cookie pairs NOT match. Expect [" + expectedNumCookies + "] but found [" + cookieCounter + "]. Or Remaining in cooke list is not 0 [" + expectedCookieList.size() + "]";
-            LOG.info(message + ". TEST FAIL");
-            sBuilderResponse.append(message + FAIL_TEXT); 
+            String message = "Cookie pairs NOT match: Expecting [" + expectedNumCookies + "] but found [" + cookieCounter + "]. Or Cookie list remaining [" + expectedCookieList.size() + "] but expecting 0";
+            LOG.info(message + " " + FAIL_TEXT);
+            sBuilderResponse.append(message + FAIL_TEXT);
         }
         else {
+            LOG.info(PASS_TEXT);
             sBuilderResponse.append(PASS_TEXT);
         }
         //Client check this header.
-        response.setHeader("TestResult", sBuilderResponse.toString());   
+        response.setHeader("TestResult", sBuilderResponse.toString());
     }
 }

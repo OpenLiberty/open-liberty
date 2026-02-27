@@ -9,7 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.cookies;
 
-import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -44,11 +43,12 @@ public class CookieHeaderByteParser {
 
     //Servlet 6.0
     private boolean useEE10Cookies;
+    private boolean isRequestCookie = false;
 
     /*
      * Servlet 6.1 (EE11)
      * Request Cookie:
-     * 1. semicolon (;) is the only delimiter. Comma part (, commaName=commaValue) is discarded
+     * 1. semicolon (;) is the only delimiter. Comma part (, commaName=commaValue) is ignored 
      *    cookie-string = cookie-pair *( ";" SP cookie-pair )
      * 2. surrounding quotes are part of cookie's value
      * 
@@ -59,7 +59,6 @@ public class CookieHeaderByteParser {
      * 4. surrounding quotes are part of cookie's value
      */
     private boolean isEE11;
-    private boolean isEE11OrAbove;
     private boolean hasDollarSign = false;
 
     /**
@@ -99,25 +98,15 @@ public class CookieHeaderByteParser {
 
         //Servlet 6.1
         this.isEE11 = HttpDispatcher.isEE11();
-        isEE11OrAbove = isEE11; // (isEE11 | isEEFuture)
         String cName = null;
         String cValue = null;
         hasDollarSign = false;
-        boolean isRequestCookie = cookieHeader.getName().equalsIgnoreCase("Cookie") ? true : false; //Cookie: request; Set-Cookie: response
+        this.isRequestCookie = cookieHeader.getName().equalsIgnoreCase("Cookie") ? true : false; //Cookie: request; Set-Cookie: response
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "parse ENTRY [" + GenericUtils.nullOutPasswords(headerValue, (byte) '&') + "] " + cookieHeader);
-            Tr.debug(tc, "Request Cookie [" + isRequestCookie + "] , EE11 [" + isEE11OrAbove + "]");
-        }
-        
-        if (isRequestCookie && isEE11OrAbove && hasComma(headerValue)) {
-           byte[] temp = removeCommaInCookie(headerValue);
-           headerValue = new byte[temp.length];
-           System.arraycopy(temp, 0, headerValue, 0, temp.length);
-           
-           if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-               Tr.debug(tc, "parse processed ee11 cookie [" + GenericUtils.nullOutPasswords(headerValue, (byte) '&') + "] " + cookieHeader);
-           }
+           // Tr.debug(tc, "Request Cookie [" + isRequestCookie + "] , EE11 [" + isEE11 + "] , cookie length [" + headerValue.length + "]");
+            Tr.debug(tc, (isRequestCookie ? "Request Cookie" : "Response Set-Cookie") + ", EE11 [" + isEE11 + "] , cookie length [" + headerValue.length + "]");
         }
 
         // keep looping through pulling individual cookies or cookie attributes
@@ -125,7 +114,11 @@ public class CookieHeaderByteParser {
         while (this.bytePosition < headerValue.length) {
             // parse out the cookie name or type, then get the value
             token = matchAndParse(headerValue, cookieHeader);
-            parseValue(headerValue, token);
+            
+            //Skip if this.name is null (when the cookie name has invalid double quotes character (EE11).)
+            if (token != null || this.name != null) {
+                parseValue(headerValue, token);
+            }
 
             cName = GenericUtils.getEnglishString(this.name);
             cValue = GenericUtils.getEnglishString(this.value);
@@ -170,10 +163,12 @@ public class CookieHeaderByteParser {
                 // parsed name may not exist yet
                 if (null != this.name && 0 != this.name.length) {
                     /*
-                     * Request Cookie is processed the same in all versions 6.0 and above
-                     * Output Response Set-Cookie is processed differently
+                     * Request Cookie is processed the same in all versions up to 6.0
+                     * Request Cookie 6.1 ignores , delimiter in cookie-pair
+                     * 
+                     * Response Set-Cookie is processed differently
                      */
-                    if (isRequestCookie || !isEE11OrAbove) { // All Incoming requests or Servlet 6.0 responses
+                    if (this.isRequestCookie || !isEE11) { // All Incoming requests <= 6.0 or Servlet 6.0 responses
                         // Create an instance of the cookie
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Creating cookie, version " + version);
@@ -264,14 +259,14 @@ public class CookieHeaderByteParser {
      *         header, otherwise it returns null
      */
     private CookieData matchAndParse(byte[] data, HeaderKeys hdr) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "matchAndParse ENTRY" + " HeaderKeys [" + hdr + "]");
-        }
-
         int pos = this.bytePosition;
         int start = -1;
         int stop = -1;
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, " matchAndParse ENTRY" + " HeaderKeys [" + hdr + "] ; position: " + pos);
+        }
+        
         for (; pos < data.length; pos++) {
             byte b = data[pos];
 
@@ -281,8 +276,8 @@ public class CookieHeaderByteParser {
             }
 
             // In case of headers like MyNullCookie;
-            // Set-Cookie is comma separated
-            if (';' == b || ',' == b) {
+            // Set-Cookie is comma separated (pre EE11)
+            if (';' == b) {
                 if (-1 == start) {
                     // just ignore this empty bit (ie. ";;version=1")
                     continue;
@@ -291,6 +286,31 @@ public class CookieHeaderByteParser {
                 // will notice the missing value (by seeing semi-colon first)
                 pos--;
                 break;
+            }
+
+            if (',' == b) {
+                if (this.isEE11 && this.isRequestCookie) {
+                    // EE11 request Cookie: comma is invalid, skip this cookie-pair until the next ; or end of string
+                    for (pos++; pos < data.length; pos++) {
+                        if (';' == data[pos]) {
+                            // Found semicolon, position after it and return null to skip this (comma cookie-pair)
+                            this.bytePosition = pos + 1;
+                            return null;
+                        }
+                    }
+                    // Reached end of data without finding semicolon
+                    this.bytePosition = data.length;
+                    return null;
+                }
+                if (!this.isEE11) {
+                    // pre-EE11: comma acts as delimiter
+                    if (-1 == start) {
+                        // just ignore this empty bit
+                        continue;
+                    }
+                    pos--;
+                    break;
+                }
             }
 
             // ignore white space
@@ -322,21 +342,31 @@ public class CookieHeaderByteParser {
             hasDollarSign = true;
             // skip past the leading $ symbol
             start++;
+        }  
+        else if (this.isEE11 && this.isRequestCookie) {
+            // EE11: cookie names must not contain double-quote characters anywhere
+            for (int i = start; i <= stop; i++) {
+                if ('"' == data[i]) {
+                    //skip pass the =value to the next ; or end of data.
+                    int skip = this.bytePosition; // bytePosition is already past the '='
+                    while (skip < data.length && ';' != data[skip]) {
+                        skip++;
+                    }
+                    // Position past the semicolon so the main loop starts at the next cookie pair
+                    this.bytePosition = (skip < data.length) ? skip + 1 : data.length;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.exit(tc, " matchAndParse EXIT Cookie name contains double-quote. Skipping parseValue to the next ; at [" + bytePosition + "]");
+                    }
+                    return null;
+                }
+            }
         } 
-        
-        /* EE11 cookie name cannot have double quotes.
-         *  The previous comment 
-         *  "// quotes around the values, strip them off"
-         *  is mislead.  This should be the (values of) cookie's name, not cookie's value
-         *  
-         *  Example: "badDouble_InName"=NO or bad"Double_InName=NO are not valid cookie name in both Cookie and Set-Cookie
-         */
-        else if (!isEE11OrAbove && '"' == data[start] && '"' == data[stop]) {
-            // quotes around the values, strip them off
+        else if ('"' == data[start] && '"' == data[stop]) {
+            // For response Set-Cookie or pre-EE11: quotes around the name, strip them off
             start++;
             stop--;
         }
-
+        
         int len = stop - start + 1;
         if (0 >= len) {
             // invalid data
@@ -345,7 +375,7 @@ public class CookieHeaderByteParser {
         CookieData token = CookieData.match(data, start, len);
         if (null != token && null != hdr) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "matchAndParse , token name [" + token.getName() + "] , foundDollar [" + foundDollar + "]");
+                Tr.debug(tc, " matchAndParse , token name [" + token.getName() + "] , foundDollar [" + foundDollar + "]");
             }
 
             /*
@@ -360,18 +390,18 @@ public class CookieHeaderByteParser {
                     String cName = token.getName();
                     if (cName.equalsIgnoreCase("version")) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "matchAndParse", " dollar version ");
+                            Tr.debug(tc, " matchAndParse", " dollar version ");
                         }
 
                         if (!token.validForHeader(hdr, foundDollar)) {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
+                                Tr.debug(tc, " Token not valid for header, " + hdr + " " + token);
                             }
                             token = null;
                         }
                     } else { // $ANY is a new cookie
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "matchAndParse", " dollar " + cName + " , token [" + token + "]");
+                            Tr.debug(tc, " matchAndParse", " dollar " + cName + " , token [" + token + "]");
                         }
                         token = null;
                     }
@@ -381,7 +411,7 @@ public class CookieHeaderByteParser {
                          // name
                     if (!token.validForHeader(hdr, foundDollar)) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
+                            Tr.debug(tc, " Token not valid for header, " + hdr + " " + token);
                         }
                         token = null;
                     }
@@ -392,7 +422,7 @@ public class CookieHeaderByteParser {
                 // name
                 if (!token.validForHeader(hdr, foundDollar)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Token not valid for header, " + hdr + " " + token);
+                        Tr.debug(tc, " Token not valid for header, " + hdr + " " + token);
                     }
                     token = null;
                 }
@@ -401,7 +431,7 @@ public class CookieHeaderByteParser {
 
         if (null == token) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "matchAndParse, token is null ; foundDollar [" + foundDollar + "]");
+                Tr.debug(tc, " matchAndParse, token is null ; foundDollar [" + foundDollar + "]");
             }
 
             // New cookie name found
@@ -412,12 +442,12 @@ public class CookieHeaderByteParser {
             this.name = new byte[len];
             System.arraycopy(data, start, this.name, 0, len);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "matchAndParse, name: " + GenericUtils.getEnglishString(this.name));
+                Tr.debug(tc, " matchAndParse, cookie name: [" + GenericUtils.getEnglishString(this.name) + "]");
             }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "matchAndParse EXIT" + " token [" + token + "]");
+            Tr.exit(tc, " matchAndParse EXIT" + " token [" + token + "]");
         }
 
         return token;
@@ -434,8 +464,12 @@ public class CookieHeaderByteParser {
     private void parseValue(byte[] data, CookieData token) {
         int start = -1;
         int stop = -1;
-        int pos = this.bytePosition;
+        int pos = this.bytePosition; //start position value should be after =
         int num_quotes = 0;
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.entry(tc, " parseValue ENTRY , position: " + pos);
+        }
 
         // cycle through each byte until we hit a delimiter or end of data
         for (; pos < data.length; pos++) {
@@ -451,17 +485,52 @@ public class CookieHeaderByteParser {
                 num_quotes++;
             }
 
-            // Commas should not be treated as delimiters when they are
-            // part of the Expires attribute
+            // Commas should not be treated as delimiters when they are part of the Set-Cookie Expires attribute
             if (',' == b) {
-                // Port="80,8080" is valid
-                if (CookieData.cookiePort.equals(token)) {
-                    if (2 <= num_quotes) {
-                        // this comma is after the quoted port string
+                if (this.isEE11) {
+                    if (this.isRequestCookie) {
+                        // Request Cookie: comma ends the current value (capture value up to here).
+                        // Then skip the comma-separated cookie-pair until the next semicolon or end of data.
+                        // The value captured so far (up to stop) will be used; advance bytePosition past the skipped pair.
+                        for (pos++; pos < data.length; pos++) {
+                            if (';' == data[pos]) {
+                                // Found semicolon; position after it so the main loop continues parsing
+                                this.bytePosition = pos + 1;
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, " parseValue, skip to next ; at position [" + pos + "] . Back to matchAndParse for the next pair");
+                                }
+                                break;
+                            }
+                        }
+                        if (pos >= data.length) {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, " parseValue, reached end of data.");
+                            }
+                            this.bytePosition = data.length;
+                        }
+                        // Break out of the value-parsing loop; value captured up to 'stop' will be used below
+                        break;
+                    } else {
+                        // Response Set-Cookie: comma allowed only within Expires and Port attributes
+                        if (!CookieData.cookieExpires.equals(token) && !CookieData.cookiePort.equals(token)) {
+                            break;
+                        }
+                        // For Port, check if still within quotes
+                        if (CookieData.cookiePort.equals(token) && 2 <= num_quotes) {
+                            // this comma is after the quoted port string
+                            break;
+                        }
+                    }
+                } else { // pre-EE11
+                    // Port="80,8080" is valid
+                    if (CookieData.cookiePort.equals(token)) {
+                        if (2 <= num_quotes) {
+                            // this comma is after the quoted port string
+                            break;
+                        }
+                    } else if (!CookieData.cookieExpires.equals(token)) {
                         break;
                     }
-                } else if (!CookieData.cookieExpires.equals(token)) {
-                    break;
                 }
             }
 
@@ -489,7 +558,7 @@ public class CookieHeaderByteParser {
 
         // filter out any surrounding quotes
         // Servlet 6.1 - surrounding quotes are part of cookie value
-        if (!isEE11OrAbove && '"' == data[start] && '"' == data[stop]) {
+        if (!isEE11 && '"' == data[start] && '"' == data[stop]) {
             start++;
             stop--;
         }
@@ -501,43 +570,9 @@ public class CookieHeaderByteParser {
             if (0 < len) {
                 System.arraycopy(data, start, this.value, 0, len);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, " parseValue, value: [" + GenericUtils.nullOutPasswords(this.value, (byte) '&') + "]");
+                    Tr.exit(tc, " parseValue EXIT, cookie value: [" + GenericUtils.nullOutPasswords(this.value, (byte) '&') + "]");
                 }
             }
         }
-    }
-    
-    /*
-     * EE11 RFC 6265 Request Cookie uses only semicolon as delimiter; comma not allow
-     * Set-Cookie can still have comma like Expires but these are not returned in request Cookie
-     */
-    private byte[] removeCommaInCookie(byte[] cookies) {
-        byte[] temp = new byte[cookies.length];
-        int writePos = 0;
-        boolean skipUntilSemicolon = false;
-
-        for (byte b : cookies) {
-            if (b == ',') {
-                skipUntilSemicolon = true;
-            } else if (b == ';') {
-                skipUntilSemicolon = false;
-                temp[writePos++] = b;
-            } else if (!skipUntilSemicolon) {
-                temp[writePos++] = b;
-            }
-        }
-
-        return Arrays.copyOf(temp, writePos);
-    }
-    
-    private boolean hasComma(byte[] cookies) {
-        boolean hasComma = false;
-        for (int i = 0; i < cookies.length; i++) {
-            if (cookies[i] == ',') {
-                hasComma = true;
-                break;
-            }
-        }
-        return hasComma;
     }
 }
