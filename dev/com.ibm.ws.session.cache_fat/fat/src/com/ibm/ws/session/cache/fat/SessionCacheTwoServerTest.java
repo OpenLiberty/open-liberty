@@ -356,11 +356,11 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                 }
             }
             fail("The session was not invalidated after 5 attempts.  This is likely due to a slow machine.");
+        }
     }
 
     private static boolean isWindows() {
         String osName = System.getProperty("os.name");
         return osName != null && osName.toLowerCase().contains("windows");
-        }
     }
 }
