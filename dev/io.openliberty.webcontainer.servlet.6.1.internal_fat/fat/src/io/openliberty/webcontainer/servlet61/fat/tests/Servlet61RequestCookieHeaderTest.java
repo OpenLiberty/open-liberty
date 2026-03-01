@@ -17,6 +17,7 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.Header;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -31,7 +32,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 /**
- * Test Request Cookie header according to RFC 6265:
+ * Test RFC 6265 Request Cookie header:
  * 1. semicolon is the only delimiter; comma is discarded
  * 2. quotes are part of cookie value
  *
@@ -65,36 +66,25 @@ public class Servlet61RequestCookieHeaderTest {
 
     /**
      * Test COOKIE header with All comma delimiter.
-     * Cookie: $Version=1, name1=value1, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue
+     *  $Version=1, name1=value1, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue";
      *
-     * All Cookie are discard since comma is used for all
-     * Main data are in the response's headers
+     * All Cookie are discard since comma is used for all. getCookie() return null
      */
     @Test
     public void test_Cookie_All_Comma_Delimiter() throws Exception {
         LOG.info(">>>>> test_Cookie_All_Comma_Delimiter <<<<<<");
 
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=test_Cookie_All_Comma_Delimiter";
-        LOG.info("Sending Request [" + url + "]");
-        HttpGet getMethod = new HttpGet(url);
-        String EXPECTED_TEXT = "Result [PASS]";
+        String testName = "test_Cookie_All_Comma_Delimiter";
+        String cookieHeader = "$Version=1, name1=value1, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue";
 
-        //Cookie is null since all comma parts are discarded
-        getMethod.addHeader("Cookie", "$Version=1, name1=value1, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue");
 
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (CloseableHttpResponse response = client.execute(getMethod)) {
-                String headerValue = response.getHeader("TestResult").getValue();
-                LOG.info(" TestResult : " + headerValue);
-
-                assertTrue("The response does not contain Result [PASS]. TestResult header [" + headerValue + "]", headerValue.contains(EXPECTED_TEXT));
-            }
-        }
+        sendRequest(testName, cookieHeader);
     }
 
     /**
      * Test COOKIE header with mix comma and semicolon delimiters.
-     * Original Cookie: $Version=1, name1=value1; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColonName=endSemiColonValue
+     * Cookie:
+     *  $Version=1, name1=value1; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColonName=endSemiColonValue
      *
      * All Cookie comma pair are discard.
      */
@@ -102,31 +92,22 @@ public class Servlet61RequestCookieHeaderTest {
     public void test_Cookie_Mix_Comma_Semicolon_Delimiter() throws Exception {
         LOG.info(">>>>> test_Cookie_Mix_Comma_Semicolon_Delimiter <<<<<<");
 
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=test_Cookie_Mix_Comma_Semicolon_Delimiter";
-        LOG.info("Sending Request [" + url + "]");
-        HttpGet getMethod = new HttpGet(url);
-        String EXPECTED_TEXT = "Result [PASS]";
+        String testName = "test_Cookie_Mix_Comma_Semicolon_Delimiter";
+        String cookieHeader = "$Version=1, comma_Name1=Invalid; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColon_Name=endSemiColonValue, comma_Name2=Invalid";
 
-        getMethod.addHeader("Cookie", "$Version=1, name1=value1; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColonName=endSemiColonValue");
-
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (CloseableHttpResponse response = client.execute(getMethod)) {
-                String headerValue = response.getHeader("TestResult").getValue();
-                LOG.info(" TestResult : " + headerValue);
-
-                assertTrue("The response does not contain Result [PASS]. TestResult header [" + headerValue + "]", headerValue.contains(EXPECTED_TEXT));
-            }
-        }
+        sendRequest(testName, cookieHeader);
     }
 
     /**
      * Test Request Cookie header with quote
-     * Original Cookie: "$Version=1; badDouble\"InName=NO; test_SingleQuote'In_Name=YES; \"badDouble2_InName\"=NO; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES, quotedName2=\"To_Be_Removed_Pair_NO\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"; badDouble\"ENDInName=NO");
      *
-     * Invalid cookie name (with quotes) is at begin, middle, and end position in the Cookie list
+     * Cookie:
+     *  "$Version=1; badDouble\"InName=InValid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
+
+     * Invalid cookie name (with double quotes) is at begin, middle, and end position in the Cookie list:
      *
      * Cookie Name:
-     *  No - Any double quote
+     *  No - Double quote anywhere
      *  Yes - Single quote
      *
      * Cookie Value:
@@ -136,28 +117,84 @@ public class Servlet61RequestCookieHeaderTest {
     public void test_Cookie_Quoted_Value() throws Exception {
         LOG.info(">>>>> test_Cookie_Quoted_Value <<<<<<");
 
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=test_Cookie_Quoted_Value";
+        String testName = "test_Cookie_Quoted_Value";
+        String cookieHeader = "$Version=1; badDouble\"InName=InValid, comma_Name=Double\"InValue_Invalid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
+
+        sendRequest(testName, cookieHeader);
+    }
+
+    /*
+     * Test Response Set-Cookie: Servlet generates several Set-Cookie headers
+     *
+     * 1. the comma in the Response Set-Cookie ; Expires attribute.
+     * 2. Quotes in both name and value
+     *
+     * Any Set-Cookie contains "InValid" fails this test.
+     * Check for ; Expires in one Set-Cookie "manualSetCookie_Valid_Name"
+     */
+    @Test
+    public void test_Request_Set_Cookie_Name_Expires_Attribute() throws Exception {
+        LOG.info(">>>>> test_Request_Set_Cookie_Name_Expires_Attribute <<<<<<");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=test_Request_Set_Cookie_Name_Expires_Attribute";
         LOG.info("Sending Request [" + url + "]");
         HttpGet getMethod = new HttpGet(url);
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            String value = null;
+            final String EXPIRES = "; Expires=Sat, 01 Mar 2036"; //do not include time
+            final String OTHER_ATT = "; HttpOnly";
+            int validCookieCounter = 0;
+
+            try (CloseableHttpResponse response = client.execute(getMethod)) {
+                Header[] headers = response.getHeaders();
+                for (Header header : headers) {
+                    if (header.getName().equals("Set-Cookie")){
+                        LOG.info(header.toString());
+
+                        value = header.getValue();
+                        if (value.contains("InValid")) {
+                            assertTrue("Response Set-Cookie has InValid string [" + value + "]", false);
+                        }
+
+                        /*
+                         * This Set-Cookie was set as
+                         * String manualSetCookie2 = "cookie2_Quote'Name=Value_Valid, cookie2_Comma_Pair=Invalid; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
+                         *
+                         * Verify the comma skipping and ;Expires are parsed correctly.
+                         */
+                        if (value.contains("cookie2_Quote'Name=Value_Valid")) {
+                            assertTrue("Response Set-Cookie [cookie2_Quote'Name=Value_Valid] does not contain [" + EXPIRES + "] AND [" + OTHER_ATT + "]", value.contains(EXPIRES) && value.contains(OTHER_ATT));
+                        }
+                        validCookieCounter++;
+                    }
+                }
+
+                //2nd check - Expect 5 valid Set-Cookie
+                assertTrue("Response Set-Cookie: Expected 5 valid Set-Cookie, but found [" + validCookieCounter + "]", validCookieCounter == 5);
+            }
+        }
+    }
+
+    /*
+     * application servlet will verify the cookies and response PASS or FAIL.
+     */
+    private void sendRequest(String urlPattern, String cookieHeader) throws Exception {
         String EXPECTED_TEXT = "Result [PASS]";
 
-        getMethod.addHeader("Cookie", "$Version=1; badDouble\"InName=INVALID; test_SingleQuote'In_Name=YES; \"badDouble2_InName\"=INVALID; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES, quotedAndComma_Name=\"Comma_pair_INVALID\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"; badDouble\"ENDInName=NO");
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=" + urlPattern;
+
+        LOG.info("Sending Request [" + url + "]");
+        LOG.info("Request Cookie [" + cookieHeader + "]");
+
+        HttpGet getMethod = new HttpGet(url);
+        getMethod.addHeader("Cookie", cookieHeader);
 
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
             try (CloseableHttpResponse response = client.execute(getMethod)) {
                 String headerValue = response.getHeader("TestResult").getValue();
                 LOG.info(" TestResult : " + headerValue);
-
                 assertTrue("The response does not contain Result [PASS]. TestResult header [" + headerValue + "]", headerValue.contains(EXPECTED_TEXT));
             }
         }
-    }
-
-    //@Test add this to Servlet 6.0 FAT as well
-    /*
-     * Expires attribute allows comma. Test to make sure it works accordingly
-     */
-    public void test_SetCookie_Expires_Attribute() throws Exception {
-
     }
 }

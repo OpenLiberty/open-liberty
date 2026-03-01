@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import jakarta.servlet.ServletException;
+import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -57,6 +58,9 @@ public class TestRequestCookieHeader extends HttpServlet {
         else if (testName.equalsIgnoreCase("test_Cookie_Quoted_Value")) {
             test_Cookie_Quoted_Value(request, response);
         }
+        else if (testName.equalsIgnoreCase("test_Request_Set_Cookie_Name_Expires_Attribute")) {
+            test_Request_Set_Cookie_Name_Expires_Attribute(request, response);
+        }
     }
 
     /*
@@ -85,9 +89,8 @@ public class TestRequestCookieHeader extends HttpServlet {
     }
 
     /*
-     * Request with header:
-     * Original Cookie: [$Version=1, name1=value1; test_NoQuote_Name=NoQuoteValue_YES=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColonName=endSemiColonValue]
-     * Processed (removed comma)  [$Version=1; test_NoQuote_Name=NoQuoteValue_YES=middleSemiColonValue; endSemiColonName=endSemiColonValue]
+     * Request Cookie:
+     *  $Version=1, comma_Name1=Invalid; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColon_Name=endSemiColonValue, comma_Name2=Invalid";
      *
      * Version is not a cookie pair; thus not included in the request.getCookies();
      */
@@ -95,7 +98,7 @@ public class TestRequestCookieHeader extends HttpServlet {
         LOG.info(">>>>> Test test_Cookie_Mix_Comma_Semicolon_Delimiter");
         StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Mix_Comma_Semicolon_Delimiter ======");
 
-        ArrayList<String> expectedCookieList = new ArrayList<>(Arrays.asList("middleSemiColonName=middleSemiColonValue","endSemiColonName=endSemiColonValue"));
+        ArrayList<String> expectedCookieList = new ArrayList<>(Arrays.asList("middleSemiColonName=middleSemiColonValue","endSemiColon_Name=endSemiColonValue"));
         int cookieCounter = 0;
         int expectedNumCookies = expectedCookieList.size();
         String cookiePair = null;
@@ -137,9 +140,11 @@ public class TestRequestCookieHeader extends HttpServlet {
 
     /**
      * Test Request Cookie header with quote
-     * Original Cookie: $Version=1; badDouble\"InName=NO; test_SingleQuote'In_Name=YES; \"badDouble2_InName\"=NO; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES, quotedName2=\"To_Be_Removed_Pair_NO\"; test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\""
      *
-     * Processed (removed comma) Cookie: $Version=1; badDouble"InName=NO; testSingleQuote'In_Name=YES; test_MixQuotes_InValue_Name="Mix_Double'And'Single_Quotes_Name_YES"; test_SingleQuote_InValue_Name='Single_Quote_Value_YES'; test_NoQuote_Name=NoQuoteValue_YES=middleSemiColonValue_YES; test_DoubleQuote_InValue_Name="DoubleInValue_YES" Key: Cookie Ordinal: 14 undefined: false
+     * Cookie:
+     *  "$Version=1; badDouble\"InName=INVALID; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=INVALID; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
+     *
+
      *
      * Cookie and Set-Cookie Name:
      *  No - Double quote
@@ -151,14 +156,13 @@ public class TestRequestCookieHeader extends HttpServlet {
     private void test_Cookie_Quoted_Value(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOG.info(">>>>> Test test_Cookie_Quoted_Value");
         StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Quoted_Value ======");
-
         ArrayList<String> expectedCookieList = new ArrayList<>();
-        //use add() to make element more readable...easier to add more
-        expectedCookieList.add("test_SingleQuote'In_Name=YES");
-        expectedCookieList.add("test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_YES\"");
-        expectedCookieList.add("test_SingleQuote_InValue_Name='Single_Quote_Value_YES'");
-        expectedCookieList.add("test_NoQuote_Name=NoQuoteValue_YES");
-        expectedCookieList.add("test_DoubleQuote_InValue_Name=\"DoubleInValue_YES\"");
+
+        expectedCookieList.add("test_SingleQuote'In_Name=Valid");
+        expectedCookieList.add("test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"");
+        expectedCookieList.add("test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'");
+        expectedCookieList.add("test_NoQuote_Name=NoQuoteValue_Valid");
+        expectedCookieList.add("test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"");
 
         int cookieCounter = 0;
         int expectedNumCookies = expectedCookieList.size();
@@ -197,5 +201,41 @@ public class TestRequestCookieHeader extends HttpServlet {
         }
         //Client check this header.
         response.setHeader("TestResult", sBuilderResponse.toString());
+    }
+
+    /*
+     * Client check any Set-Cookie that contains "InValid" > test fails
+     */
+    private void test_Request_Set_Cookie_Name_Expires_Attribute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOG.info(">>>>> Test test_Request_Set_Cookie_Name_Expires_Attribute");
+
+        ServletOutputStream sos = response.getOutputStream();
+        sos.println("Response from TestRequestCookieHeader.test_Request_Set_Cookie_Name_Expires_Attribute");
+
+        Cookie testCookie = new Cookie("cookieviaMaxAge", "cookieValue");
+        testCookie.setMaxAge(3600);     //will add ; Expires attribute
+        response.addCookie(testCookie);
+
+        String manualSetCookie = "manualSetCookie_Valid_Name=cookieValue; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
+        response.addHeader("Set-Cookie", manualSetCookie);
+
+        // , cookie2_Comma_Pair=Invalid is discarded
+        String manualSetCookie2 = "cookie2_Quote'Name=Value_Valid, cookie2_Comma_Pair=Invalid; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
+        response.addHeader("Set-Cookie", manualSetCookie2);
+
+        //quote in Value
+        String manualSetCookie3 = "cookie3_Quotes_InValue_Name=Quote's\"_Valid";
+        response.addHeader("Set-Cookie", manualSetCookie3);
+
+        String manualSetCookie4= "cookie4_2Quotes_InValue_Name=\"Quote_Valid\"";
+        response.addHeader("Set-Cookie", manualSetCookie4);
+
+        //single double
+        String manualSetCookie_InValid_1 = "manualSetCookie_InValid_1\"_Name=InValid; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
+        response.addHeader("Set-Cookie", manualSetCookie_InValid_1);
+
+        //2 double quotes
+        String manualSetCookie_InValid_2 = "\"manualSetCookie_InValid_2\"_Name=InValid; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
+        response.addHeader("Set-Cookie", manualSetCookie_InValid_2);
     }
 }

@@ -51,12 +51,15 @@ public class CookieHeaderByteParser {
      * 1. semicolon (;) is the only delimiter. Comma part (, commaName=commaValue) is ignored 
      *    cookie-string = cookie-pair *( ";" SP cookie-pair )
      * 2. surrounding quotes are part of cookie's value
+     * 3. Cookie name cannot have any double quotes
+     * 4. Cookie name can have single quote
      * 
      * Response Set-Cookie: 
      * 1. response addHeader/setHeader will not split the Set-Cookie header for arbitrary attributes
      * 2. setAttribute with empty value - only show attribute name itself; example : setAttribute("JustName", "") or setAttribute("JustName", "=") > JustName;
      * 3. setAttribute with null value - will remove that attribute
      * 4. surrounding quotes are part of cookie's value
+     * 5. Comma is not a delimiter. Only semicolon
      */
     private boolean isEE11;
     private boolean hasDollarSign = false;
@@ -105,7 +108,6 @@ public class CookieHeaderByteParser {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "parse ENTRY [" + GenericUtils.nullOutPasswords(headerValue, (byte) '&') + "] " + cookieHeader);
-           // Tr.debug(tc, "Request Cookie [" + isRequestCookie + "] , EE11 [" + isEE11 + "] , cookie length [" + headerValue.length + "]");
             Tr.debug(tc, (isRequestCookie ? "Request Cookie" : "Response Set-Cookie") + ", EE11 [" + isEE11 + "] , cookie length [" + headerValue.length + "]");
         }
 
@@ -256,7 +258,11 @@ public class CookieHeaderByteParser {
      *                 The header-value byte array passed down by parse
      * @param hdr
      * @return The appropriate CookieData type if a match is found for the
-     *         header, otherwise it returns null
+     *         header, otherwise it returns null.
+     *         
+     *         The parsed name is up to, but exclude, the '=' before parseValue().
+     *         In EE11, double quote name will skip the parseValue() until the 
+     *         next semicolon or end of data; then matchAndParse() again for next pair
      */
     private CookieData matchAndParse(byte[] data, HeaderKeys hdr) {
         int pos = this.bytePosition;
@@ -264,7 +270,7 @@ public class CookieHeaderByteParser {
         int stop = -1;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.entry(tc, " matchAndParse ENTRY" + " HeaderKeys [" + hdr + "] ; position: " + pos);
+            Tr.entry(tc, " matchAndParse ENTRY" + " HeaderKeys [" + hdr + "] , start index: " + pos);
         }
         
         for (; pos < data.length; pos++) {
@@ -289,7 +295,8 @@ public class CookieHeaderByteParser {
             }
 
             if (',' == b) {
-                if (this.isEE11 && this.isRequestCookie) {
+//                if (this.isEE11 && this.isRequestCookie) {
+                if (this.isEE11) {
                     // EE11 request Cookie: comma is invalid, skip this cookie-pair until the next ; or end of string
                     for (pos++; pos < data.length; pos++) {
                         if (';' == data[pos]) {
@@ -343,8 +350,8 @@ public class CookieHeaderByteParser {
             // skip past the leading $ symbol
             start++;
         }  
-        else if (this.isEE11 && this.isRequestCookie) {
-            // EE11: cookie names must not contain double-quote characters anywhere
+        else if (this.isEE11) {
+            // EE11: cookie names must not contain double-quote characters anywhere - Both Cookie and Set-Cookie
             for (int i = start; i <= stop; i++) {
                 if ('"' == data[i]) {
                     //skip pass the =value to the next ; or end of data.
@@ -460,6 +467,10 @@ public class CookieHeaderByteParser {
      *                  The value byte array passed down by parse method
      * @param token
      *                  The type of the CookieData attribute
+     *                  
+     * Upon return, parsed value is up to, but exclude, the semicolon. > matchAndParse() for next pair
+     *          For EE11, in case of comma ends, value is up to, but exclude the comma ends,
+     *          then skip to the next semicolon or end of data. > matchAndParse() for next pair
      */
     private void parseValue(byte[] data, CookieData token) {
         int start = -1;
@@ -468,7 +479,7 @@ public class CookieHeaderByteParser {
         int num_quotes = 0;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.entry(tc, " parseValue ENTRY , position: " + pos);
+            Tr.entry(tc, " parseValue ENTRY , start index: " + pos);
         }
 
         // cycle through each byte until we hit a delimiter or end of data
@@ -489,15 +500,15 @@ public class CookieHeaderByteParser {
             if (',' == b) {
                 if (this.isEE11) {
                     if (this.isRequestCookie) {
-                        // Request Cookie: comma ends the current value (capture value up to here).
-                        // Then skip the comma-separated cookie-pair until the next semicolon or end of data.
+                        // Request Cookie: comma ends in the current value (capture value up to the end comma).
+                        // Skip the comma-separated cookie-pair until the next semicolon or end of data.
                         // The value captured so far (up to stop) will be used; advance bytePosition past the skipped pair.
                         for (pos++; pos < data.length; pos++) {
                             if (';' == data[pos]) {
                                 // Found semicolon; position after it so the main loop continues parsing
                                 this.bytePosition = pos + 1;
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, " parseValue, skip to next ; at position [" + pos + "] . Back to matchAndParse for the next pair");
+                                    Tr.debug(tc, " parseValue, has comma ends. Skip the next pair until next ; at index: " + pos + " . Back to matchAndParse for the next pair");
                                 }
                                 break;
                             }
@@ -508,11 +519,27 @@ public class CookieHeaderByteParser {
                             }
                             this.bytePosition = data.length;
                         }
-                        // Break out of the value-parsing loop; value captured up to 'stop' will be used below
+                        // Break out of the value-parsing loop; value captured up to 'stop' (i.e all value before the comma end) will be used below
                         break;
                     } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, " parseValue, response Set-Cookie");
+                        }
                         // Response Set-Cookie: comma allowed only within Expires and Port attributes
                         if (!CookieData.cookieExpires.equals(token) && !CookieData.cookiePort.equals(token)) {
+                            // Comma is a delimiter here — skip to next semicolon
+                            for (pos++; pos < data.length; pos++) {
+                                if (';' == data[pos]) {
+                                    this.bytePosition = pos + 1;
+                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                        Tr.debug(tc, " parseValue, Set-Cookie, has comma ends but not Expires. Skip to next ; at index: " + pos + "");
+                                    }
+                                    break;
+                                }
+                            }
+                            if (pos >= data.length) {
+                                this.bytePosition = data.length;
+                            }
                             break;
                         }
                         // For Port, check if still within quotes
