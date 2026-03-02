@@ -10,6 +10,7 @@
 package requestcookieheader.servlets;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import jakarta.servlet.ServletContext;
@@ -35,6 +36,9 @@ public class TestRequestCookieHeader extends HttpServlet {
     private static final String CLASS_NAME = TestRequestCookieHeader.class.getName();
     private static final Logger LOG = Logger.getLogger(CLASS_NAME);
 
+    final String PASS_TEXT = "Result [PASS]";
+    final String FAIL_TEXT = "Result [FAIL]";
+
     String servletVersion;
 
     public TestRequestCookieHeader() {
@@ -56,6 +60,8 @@ public class TestRequestCookieHeader extends HttpServlet {
             testMaxAgeZero(request, response);
         } else if (testName.equalsIgnoreCase("test_Cookie_Other")) {
             test_Cookie_Other(request, response);
+        } else if (testName.equalsIgnoreCase("test_Cookie_Quoted_Value")) {
+            test_Cookie_Quoted_Value(request, response);
         }
     }
 
@@ -157,8 +163,6 @@ public class TestRequestCookieHeader extends HttpServlet {
         String name = null;
         String value = null;
         int counter = 0;
-        final String PASS_TEXT = "Result [PASS]";
-        final String FAIL_TEXT = "Result [FAIL]";
 
         Cookie[] cookies = request.getCookies();
 
@@ -203,6 +207,83 @@ public class TestRequestCookieHeader extends HttpServlet {
             }
         }
 
+        response.setHeader("TestResult", sBuilderResponse.toString());
+    }
+
+    /*
+     * Request Cookie with quotes:
+     *
+     * "$Version=1; DQuote\"InName=INVALID; SQuote'In_Name=Keep_SQuote ; Mix_SQuote'And\"_DQuote_In_Name=INVALID; \"WRAP_DQuote_InName\"=Keep_But_Removed_All_DQuote; \"Two_DQuote_AnyWhere\"_InName=INVALID; Mix_Quotes_InValue_Name=Keep_All_DQuote\"And'SQuote_Name; WRAP_SQuote_InValue_Name='Keep_All_SQuote'; WRAP_DQuote_InValue_Name=\"Keep_But_Removed_All_DQuote\""
+     */
+    private void test_Cookie_Quoted_Value(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOG.info(">>>>> Test test_Cookie_Quoted_Value. Servlet Version " + servletVersion);
+        StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Quoted_Value ======");
+        ArrayList<String> expectedCookieList = null;
+
+        /*
+         * Servlet 6.0:
+         *      Name: Only Wrapped DQuote is valid, but quotes are not part of the name; Anywhere else is invalid
+         * 
+         *      Value: DQuote can be anywhere but not part of value
+         */
+        ArrayList<String> expectedCookieListServlet60 = new ArrayList<>();
+        expectedCookieListServlet60.add("SQuote'In_Name=Keep_SQuote");
+        expectedCookieListServlet60.add("WRAP_DQuote_InName=Keep_But_Removed_All_DQuote");      //DQuote in Name is not allowed in 6.1+
+        expectedCookieListServlet60.add("Mix_Quotes_InValue_Name=Keep_All_DQuote\"And'SQuote_Name");
+        expectedCookieListServlet60.add("WRAP_SQuote_InValue_Name='Keep_All_SQuote'");
+        expectedCookieListServlet60.add("WRAP_DQuote_InValue_Name=Keep_But_Removed_All_DQuote");
+       
+        /*
+         * Servlet 6.1:
+         *      Name: No DQuote anywhere in name
+         *      
+         *      Value: all quotes are part of value
+         */
+        ArrayList<String> expectedCookieListServlet61 = new ArrayList<>();
+        expectedCookieListServlet61.add("SQuote'In_Name=Keep_SQuote");
+        expectedCookieListServlet61.add("Mix_Quotes_InValue_Name=Keep_All_DQuote\"And'SQuote_Name");
+        expectedCookieListServlet61.add("WRAP_SQuote_InValue_Name='Keep_All_SQuote'");
+        expectedCookieListServlet61.add("WRAP_DQuote_InValue_Name=\"Keep_But_Removed_All_DQuote\"");
+
+
+        expectedCookieList = servletVersion.equals("6.0") ? (new ArrayList<>(expectedCookieListServlet60)) : (new ArrayList<>(expectedCookieListServlet61)); 
+
+        int cookieCounter = 0;
+        int expectedNumCookies = expectedCookieList.size();
+        String cookiePair = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookiePair = cookie.getName() + "=" + cookie.getValue();
+                LOG.info("Cookie pair [" + cookiePair + "]");
+
+                expectedCookieList.remove(cookiePair);
+                cookieCounter++;
+            }
+        } else {
+            LOG.info("No cookies found. TEST FAIL");
+        }
+
+        LOG.info("Expected pairs [" + expectedNumCookies + "] ; found [" + cookieCounter + "] . Remaining [" + expectedCookieList.size() + "] in cookie list; Expecting 0");
+
+        if (expectedCookieList.size() > 0) {
+            LOG.info("Remaining item :");
+            for (String item : expectedCookieList) {
+                LOG.info(item);
+            }
+        }
+
+        if (cookieCounter != expectedNumCookies || expectedCookieList.size() != 0) {
+            String message = "Cookie pairs NOT match: Expecting [" + expectedNumCookies + "] but found [" + cookieCounter + "]. Or Cookie list remaining ["
+                             + expectedCookieList.size() + "] but expecting 0";
+            LOG.info(message + " " + FAIL_TEXT);
+            sBuilderResponse.append(message + FAIL_TEXT);
+        } else {
+            LOG.info(PASS_TEXT);
+            sBuilderResponse.append(PASS_TEXT);
+        }
+        //Client check this header.
         response.setHeader("TestResult", sBuilderResponse.toString());
     }
 }

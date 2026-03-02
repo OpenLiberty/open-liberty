@@ -56,9 +56,6 @@ public class TestRequestCookieHeader extends HttpServlet {
         else if (testName.equalsIgnoreCase("test_Cookie_Mix_Comma_Semicolon_Delimiter")) {
             test_Cookie_Mix_Comma_Semicolon_Delimiter(request, response);
         }
-        else if (testName.equalsIgnoreCase("test_Cookie_Quoted_Value")) {
-            test_Cookie_Quoted_Value(request, response);
-        }
         else if (testName.equalsIgnoreCase("test_Response_Set_Cookie_Name_Expires_Attribute")) {
             test_Response_Set_Cookie_Name_Expires_Attribute(request, response);
         }
@@ -120,67 +117,6 @@ public class TestRequestCookieHeader extends HttpServlet {
             }
         } else {
             LOG.info("No cookies found");
-        }
-
-        LOG.info("Expected pairs [" + expectedNumCookies+"] ; found [" + cookieCounter + "] . Remaining [" + expectedCookieList.size() + "] in cookie list; Expecting 0" );
-
-        if (expectedCookieList.size() > 0) {
-            LOG.info("Remaining item :");
-            for (String item : expectedCookieList) {
-                LOG.info(item);
-            }
-        }
-
-        if (cookieCounter != expectedNumCookies || expectedCookieList.size() != 0) {
-            String message = "Cookie pairs NOT match: Expecting [" + expectedNumCookies + "] but found [" + cookieCounter + "]. Or Cookie list remaining [" + expectedCookieList.size() + "] but expecting 0";
-            LOG.info(message + " " + FAIL_TEXT);
-            sBuilderResponse.append(message + FAIL_TEXT);
-        }
-        else {
-            LOG.info(PASS_TEXT);
-            sBuilderResponse.append(PASS_TEXT);
-        }
-        //Client check this header.
-        response.setHeader("TestResult", sBuilderResponse.toString());
-    }
-
-    /**
-     * Test Request Cookie header with quote
-     * "$Version=1; badDouble\"InName=InValid, comma_Name=Double\"InValue_Invalid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
-     *
-     * Cookie and Set-Cookie Name:
-     *  No - Double quote
-     *  Yes - Single quote
-     *
-     * Cookie Value:
-     *  Yes - Double and Single
-     */
-    private void test_Cookie_Quoted_Value(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LOG.info(">>>>> Test test_Cookie_Quoted_Value");
-        StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Quoted_Value ======");
-        ArrayList<String> expectedCookieList = new ArrayList<>();
-
-        expectedCookieList.add("test_SingleQuote'In_Name=Valid");
-        expectedCookieList.add("test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"");
-        expectedCookieList.add("test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'");
-        expectedCookieList.add("test_NoQuote_Name=NoQuoteValue_Valid");
-        expectedCookieList.add("test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"");
-
-        int cookieCounter = 0;
-        int expectedNumCookies = expectedCookieList.size();
-        String cookiePair = null;
-
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                cookiePair = cookie.getName() + "=" + cookie.getValue();
-                LOG.info("Cookie pair [" + cookiePair + "]");
-
-                expectedCookieList.remove(cookiePair);
-                cookieCounter++;
-            }
-        } else {
-            LOG.info("No cookies found. TEST FAIL");
         }
 
         LOG.info("Expected pairs [" + expectedNumCookies+"] ; found [" + cookieCounter + "] . Remaining [" + expectedCookieList.size() + "] in cookie list; Expecting 0" );

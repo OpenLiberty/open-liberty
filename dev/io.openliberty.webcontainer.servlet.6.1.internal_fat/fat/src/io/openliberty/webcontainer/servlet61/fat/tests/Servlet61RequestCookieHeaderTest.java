@@ -37,6 +37,8 @@ import componenttest.topology.impl.LibertyServer;
  * 2. quotes are part of cookie value
  *
  * request URL: /Test61RequestCookieHeader?testName=xyz
+ *
+ * Quoted tests are in 60 bucket
  */
 @RunWith(FATRunner.class)
 @Mode(TestMode.FULL)
@@ -98,36 +100,11 @@ public class Servlet61RequestCookieHeaderTest {
         sendRequest(testName, cookieHeader);
     }
 
-    /**
-     * Test Request Cookie header with quote
-     *
-     * Cookie:
-     * "$Version=1; badDouble\"InName=InValid, comma_Name=Double\"InValue_Invalid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
-     *
-     * Invalid cookie names (with double quotes) are at begin, middle, and end position in the Cookie header.
-     *
-     * Cookie Name:
-     *  No - Double quote anywhere
-     *  Yes - Single quote
-     *
-     * Cookie Value:
-     *  Yes - Double and Single
-     */
-    @Test
-    public void test_Cookie_Quoted_Value() throws Exception {
-        LOG.info(">>>>> test_Cookie_Quoted_Value <<<<<<");
-
-        String testName = "test_Cookie_Quoted_Value";
-        String cookieHeader = "$Version=1; badDouble\"InName=InValid, comma_Name=Double\"InValue_Invalid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
-
-        sendRequest(testName, cookieHeader);
-    }
-
     /*
-     * Test Response Set-Cookie: Servlet generates several Set-Cookie headers
+     * Test Response Set-Cookie: application generates several Set-Cookie headers
      *
      * 1. the comma in the Response Set-Cookie ; Expires attribute.
-     * 2. Quotes in both name and value
+     * 2. several Set-Cookie header with quotes in both name and value
      *
      * Any Set-Cookie contains "InValid" fails this test.
      * Check for ; Expires in one Set-Cookie "manualSetCookie_Valid_Name"

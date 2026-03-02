@@ -148,6 +148,16 @@ public class Servlet60RequestCookieHeaderTest {
         sendRequest(testName, cookieHeader);
     }
 
+    @Test
+    public void test_Cookie_Quoted_Value() throws Exception {
+        LOG.info(">>>>> test_Cookie_Quoted_Value <<<<<<");
+
+        String testName = "test_Cookie_Quoted_Value";
+        String cookieHeader = "$Version=1; DQuote\"InName=INVALID; SQuote'In_Name=Keep_SQuote ; Mix_SQuote'And\"_DQuote_In_Name=INVALID; \"WRAP_DQuote_InName\"=Keep_But_Removed_All_DQuote; \"Two_DQuote_AnyWhere\"_InName=INVALID; Mix_Quotes_InValue_Name=Keep_All_DQuote\"And'SQuote_Name; WRAP_SQuote_InValue_Name='Keep_All_SQuote'; WRAP_DQuote_InValue_Name=\"Keep_But_Removed_All_DQuote\"";
+
+        sendRequest(testName, cookieHeader);
+    }
+
     /*
      * application servlet will verify the cookies and response PASS or FAIL.
      */
