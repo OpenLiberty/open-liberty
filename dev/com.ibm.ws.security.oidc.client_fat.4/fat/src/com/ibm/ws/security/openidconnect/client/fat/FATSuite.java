@@ -43,6 +43,6 @@ public class FATSuite {
      * This was done to increase coverage of EE9 and EE10 while not adding a large amount of of test runtime.
      */
     @ClassRule
-    public static RepeatTests repeat = LargeProjectRepeatActions.createEE9OrEE10Repeats();
+    public static RepeatTests repeat = LargeProjectRepeatActions.createEERepeats();
 
 }
