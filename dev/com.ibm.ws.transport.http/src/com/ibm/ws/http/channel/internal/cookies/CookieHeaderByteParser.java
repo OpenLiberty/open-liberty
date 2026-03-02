@@ -295,7 +295,6 @@ public class CookieHeaderByteParser {
             }
 
             if (',' == b) {
-//                if (this.isEE11 && this.isRequestCookie) {
                 if (this.isEE11) {
                     // EE11 request Cookie: comma is invalid, skip this cookie-pair until the next ; or end of data 
                     for (pos++; pos < data.length; pos++) {
@@ -482,13 +481,13 @@ public class CookieHeaderByteParser {
      *                  The type of the CookieData attribute
      *                  
      * Upon return, parsed value is up to, but exclude, the semicolon. > matchAndParse() for next pair
-     *          For EE11, in case of comma ends, value is up to, but exclude the comma ends,
-     *          then skip to the next semicolon or end of data. > matchAndParse() for next pair
+     *          For EE11, in case of comma ends, the value is parsed up to, but excluding the comma ends;
+     *          then skipping to the next semicolon or end of data. > matchAndParse() for next pair
      */
     private void parseValue(byte[] data, CookieData token) {
         int start = -1;
         int stop = -1;
-        int pos = this.bytePosition; //start position value should be after =
+        int pos = this.bytePosition; //start position value is after =
         int num_quotes = 0;
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

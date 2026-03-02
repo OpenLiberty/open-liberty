@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -126,6 +126,47 @@ public class Servlet60RequestCookieHeaderTest {
                 }
 
                 assertTrue("The Set-Cookie response header does not contain attribute [Expires]. TestResult header [" + headerValue + "]", headerValue.contains("Expires"));
+            }
+        }
+    }
+
+    /*
+     * Test others cases:
+     * =noNameWithValue
+     * nameWithEmptyValue=""
+     * nameWithoutAnyValue=
+     * nameOnly
+     * endingSemiName=NoPairAfterSemi;
+     */
+    @Test
+    public void test_Cookie_Other() throws Exception {
+        LOG.info(">>>>> test_Cookie_Other <<<<<<");
+
+        String testName = "test_Cookie_Other";
+        String cookieHeader = "$Version=1; =noNameWithValue; nameWithEmptyValue=\"\"; nameWithoutAnyValue=; nameOnly; endingSemiName=NoPairAfterSemi;";
+
+        sendRequest(testName, cookieHeader);
+    }
+
+    /*
+     * application servlet will verify the cookies and response PASS or FAIL.
+     */
+    private void sendRequest(String urlPattern, String cookieHeader) throws Exception {
+        String EXPECTED_TEXT = "Result [PASS]";
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=" + urlPattern;
+
+        LOG.info("Sending Request [" + url + "]");
+        LOG.info("Request Cookie [" + cookieHeader + "]");
+
+        HttpGet getMethod = new HttpGet(url);
+        getMethod.addHeader("Cookie", cookieHeader);
+
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            try (CloseableHttpResponse response = client.execute(getMethod)) {
+                String headerValue = response.getHeader("TestResult").getValue();
+                LOG.info(" TestResult : " + headerValue);
+                assertTrue("The response does not contain Result [PASS]. TestResult header [" + headerValue + "]", headerValue.contains(EXPECTED_TEXT));
             }
         }
     }

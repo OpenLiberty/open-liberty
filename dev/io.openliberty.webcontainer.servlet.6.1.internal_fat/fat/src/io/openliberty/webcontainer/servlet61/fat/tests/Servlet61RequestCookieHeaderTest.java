@@ -84,7 +84,7 @@ public class Servlet61RequestCookieHeaderTest {
     /**
      * Test COOKIE header with mix comma and semicolon delimiters.
      * Cookie:
-     *  $Version=1, name1=value1; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColonName=endSemiColonValue
+     * "$Version=1, comma_Name1=Invalid; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColon_Name=endSemiColonValue, comma_Name2=Invalid";
      *
      * All Cookie comma pair are discard.
      */
@@ -102,9 +102,9 @@ public class Servlet61RequestCookieHeaderTest {
      * Test Request Cookie header with quote
      *
      * Cookie:
-     *  "$Version=1; badDouble\"InName=InValid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
-
-     * Invalid cookie name (with double quotes) is at begin, middle, and end position in the Cookie list:
+     * "$Version=1; badDouble\"InName=InValid, comma_Name=Double\"InValue_Invalid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
+     *
+     * Invalid cookie names (with double quotes) are at begin, middle, and end position in the Cookie header.
      *
      * Cookie Name:
      *  No - Double quote anywhere
@@ -124,24 +124,6 @@ public class Servlet61RequestCookieHeaderTest {
     }
 
     /*
-     * Test others cases:
-     *  =noNameWithValue
-     *  nameWithEmptyValue=""
-     *  nameWithoutAnyValue=
-     *  nameOnly
-     *  endingSemiName=NoPairAfterSemi;
-     */
-    @Test
-    public void test_Cookie_Other() throws Exception {
-        LOG.info(">>>>> test_Cookie_Other <<<<<<");
-
-        String testName = "test_Cookie_Other";
-        String cookieHeader = "$Version=1; =noNameWithValue; nameWithEmptyValue=\"\"; nameWithoutAnyValue=; nameOnly; endingSemiName=NoPairAfterSemi;";
-
-        sendRequest(testName, cookieHeader);
-    }
-
-    /*
      * Test Response Set-Cookie: Servlet generates several Set-Cookie headers
      *
      * 1. the comma in the Response Set-Cookie ; Expires attribute.
@@ -151,10 +133,10 @@ public class Servlet61RequestCookieHeaderTest {
      * Check for ; Expires in one Set-Cookie "manualSetCookie_Valid_Name"
      */
     @Test
-    public void test_Request_Set_Cookie_Name_Expires_Attribute() throws Exception {
-        LOG.info(">>>>> test_Request_Set_Cookie_Name_Expires_Attribute <<<<<<");
+    public void test_Response_Set_Cookie_Name_Expires_Attribute() throws Exception {
+        LOG.info(">>>>> test_Response_Set_Cookie_Name_Expires_Attribute <<<<<<");
 
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=test_Request_Set_Cookie_Name_Expires_Attribute";
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=test_Response_Set_Cookie_Name_Expires_Attribute";
         LOG.info("Sending Request [" + url + "]");
         HttpGet getMethod = new HttpGet(url);
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
@@ -175,10 +157,8 @@ public class Servlet61RequestCookieHeaderTest {
                         }
 
                         /*
-                         * This Set-Cookie was set as
-                         * String manualSetCookie2 = "cookie2_Quote'Name=Value_Valid, cookie2_Comma_Pair=Invalid; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
-                         *
-                         * Verify the comma skipping and ;Expires are parsed correctly.
+                         * This Set-Cookie is sent  "cookie2_Quote'Name=Value_Valid, cookie2_Comma_Pair=Invalid; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
+                         * Verify the comma skipping for [cookie2_Comma_Pair=Invalid] pair and ;Expires are parsed correctly.
                          */
                         if (value.contains("cookie2_Quote'Name=Value_Valid")) {
                             assertTrue("Response Set-Cookie [cookie2_Quote'Name=Value_Valid] does not contain [" + EXPIRES + "] AND [" + OTHER_ATT + "]", value.contains(EXPIRES) && value.contains(OTHER_ATT));

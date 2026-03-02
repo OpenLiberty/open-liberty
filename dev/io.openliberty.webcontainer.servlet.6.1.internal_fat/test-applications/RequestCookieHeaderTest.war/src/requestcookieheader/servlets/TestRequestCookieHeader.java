@@ -26,7 +26,8 @@ import jakarta.servlet.http.HttpServletResponse;
  * Test Request Cookie header according to RFC 6265:
  *
  * 1. Semicolon is the only delimiter. Command is discarded
- * 2. Quotes are part of the cookie value
+ * 2. Cookie value can have single and double quotes as part of value
+ * 3. Cookie name cannot have double quotes
  *
  * request URL: /Test61RequestCookieHeader
  */
@@ -58,11 +59,8 @@ public class TestRequestCookieHeader extends HttpServlet {
         else if (testName.equalsIgnoreCase("test_Cookie_Quoted_Value")) {
             test_Cookie_Quoted_Value(request, response);
         }
-        else if (testName.equalsIgnoreCase("test_Request_Set_Cookie_Name_Expires_Attribute")) {
-            test_Request_Set_Cookie_Name_Expires_Attribute(request, response);
-        }
-        else if (testName.equalsIgnoreCase("test_Cookie_Other")) {
-            test_Cookie_Other(request, response);
+        else if (testName.equalsIgnoreCase("test_Response_Set_Cookie_Name_Expires_Attribute")) {
+            test_Response_Set_Cookie_Name_Expires_Attribute(request, response);
         }
     }
 
@@ -148,11 +146,7 @@ public class TestRequestCookieHeader extends HttpServlet {
 
     /**
      * Test Request Cookie header with quote
-     *
-     * Cookie:
-     *  "$Version=1; badDouble\"InName=INVALID; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=INVALID; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
-     *
-
+     * "$Version=1; badDouble\"InName=InValid, comma_Name=Double\"InValue_Invalid; test_SingleQuote'In_Name=Valid; \"badDouble2_InName\"=InValid; test_MixQuotes_InValue_Name=\"Mix_Double'And'Single_Quotes_Name_Valid\"; test_SingleQuote_InValue_Name='Single_Quote_Value_Valid'; test_NoQuote_Name=NoQuoteValue_Valid; test_2DoubleQuote_InValue_Name=\"DoubleInValue_Valid\"; badDouble\"ENDInName=InValid";
      *
      * Cookie and Set-Cookie Name:
      *  No - Double quote
@@ -212,10 +206,13 @@ public class TestRequestCookieHeader extends HttpServlet {
     }
 
     /*
-     * Client check any Set-Cookie that contains "InValid" > test fails
+     * Response Set-Cookie:
+     *  Test quotes in name and value
+     *  Test comma ends pair (which is discarded)
+     *  Test comma is kept in Expires attribute
      */
-    private void test_Request_Set_Cookie_Name_Expires_Attribute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LOG.info(">>>>> Test test_Request_Set_Cookie_Name_Expires_Attribute");
+    private void test_Response_Set_Cookie_Name_Expires_Attribute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOG.info(">>>>> Test test_Response_Set_Cookie_Name_Expires_Attribute");
 
         ServletOutputStream sos = response.getOutputStream();
         sos.println("Response from TestRequestCookieHeader.test_Request_Set_Cookie_Name_Expires_Attribute");
@@ -231,75 +228,20 @@ public class TestRequestCookieHeader extends HttpServlet {
         String manualSetCookie2 = "cookie2_Quote'Name=Value_Valid, cookie2_Comma_Pair=Invalid; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
         response.addHeader("Set-Cookie", manualSetCookie2);
 
-        //quote in Value
+        //mix quotes in Value
         String manualSetCookie3 = "cookie3_Quotes_InValue_Name=Quote's\"_Valid";
         response.addHeader("Set-Cookie", manualSetCookie3);
 
+        //double quoted value
         String manualSetCookie4= "cookie4_2Quotes_InValue_Name=\"Quote_Valid\"";
         response.addHeader("Set-Cookie", manualSetCookie4);
 
-        //single double
+        //single double in name
         String manualSetCookie_InValid_1 = "manualSetCookie_InValid_1\"_Name=InValid; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
         response.addHeader("Set-Cookie", manualSetCookie_InValid_1);
 
-        //2 double quotes
+        //2 double quotes in name
         String manualSetCookie_InValid_2 = "\"manualSetCookie_InValid_2\"_Name=InValid; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
         response.addHeader("Set-Cookie", manualSetCookie_InValid_2);
-    }
-
-    //"$Version=1; =noNameWithValue; nameWithEmptyValue=\"\"; nameWithoutAnyValue=; nameOnly; endingSemiName=NoPairAfterSemi;"
-    // Check each cookie manually; set testFail = true
-    private void test_Cookie_Other(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LOG.info(">>>>> Test test_Cookie_Other");
-        StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Other ======");
-        boolean testFail = false;
-        String name = null;
-        String value = null;
-        int counter = 0;
-
-        Cookie[] cookies = request.getCookies();
-        if (cookies == null){
-            LOG.info("No Cookie is found. " + FAIL_TEXT);
-            sBuilderResponse.append("No Cookie is found. " + FAIL_TEXT);
-        }
-        else {
-            LOG.info("Cookies : ");
-            for (Cookie cookie : cookies) {
-                //Display anyway for debugging
-                LOG.info("Cookie name[" + (name = cookie.getName()) + "] , value [" + (value = cookie.getValue()) +"]");
-                if (name.equalsIgnoreCase("nameWithEmptyValue")){
-                    testFail = (value.equals("\"\"") ? false : true);  // value can have ""
-                }
-                else if (name.equalsIgnoreCase("nameWithoutAnyValue")) {
-                    testFail = ((value.isEmpty()) ? false : true);
-                }
-                else if (name.equalsIgnoreCase("nameOnly")) {
-                    testFail = ((value.isEmpty()) ? false : true);
-                }
-                else if (name.equalsIgnoreCase("endingSemiName")) {
-                    testFail = ((value.equalsIgnoreCase("NoPairAfterSemi")) ? false : true);
-                }
-
-                counter++;
-
-                if (testFail) {
-                    String message = "Test Cookie name ["+ name + "] , value [" + value + "] " + FAIL_TEXT;
-                    LOG.info(message);
-                    sBuilderResponse.append(message);
-                    break;
-                }
-            }
-
-            if (counter != 4) {
-                sBuilderResponse.append("Expecting 4 Cookies ; but found ["+ counter + "] " + FAIL_TEXT);
-            }
-            else {
-                LOG.info(PASS_TEXT);
-                sBuilderResponse.append(PASS_TEXT);
-            }
-        }
-
-        //Client check this header.
-        response.setHeader("TestResult", sBuilderResponse.toString());
     }
 }
