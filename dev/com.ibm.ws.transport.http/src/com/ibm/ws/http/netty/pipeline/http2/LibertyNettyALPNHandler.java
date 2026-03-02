@@ -23,6 +23,7 @@ import io.netty.channel.ChannelOption;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
+import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.ssl.ApplicationProtocolNames;
 import io.netty.handler.ssl.ApplicationProtocolNegotiationHandler;
 import io.netty.util.Timeout;
@@ -99,6 +100,11 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
 
             }   
             ctx.pipeline().addBefore(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.CRLF_VALIDATION_HANDLER, CRLFValidationHandler.INSTANCE);
+            
+            if(ctx.pipeline().get(FlowControlHandler.class) == null){
+                ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
+            }
+            
             ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             // Turn on half closure for H1
             ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
