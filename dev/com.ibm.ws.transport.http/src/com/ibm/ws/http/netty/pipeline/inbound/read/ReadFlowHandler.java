@@ -12,6 +12,7 @@ import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
+import io.netty.handler.flow.FlowControlHandler;
 import io.netty.util.AttributeKey;
 
 import com.ibm.websphere.ras.Tr;
@@ -138,7 +139,17 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
      */
     @Override
     public void channelRead(ChannelHandlerContext context, Object message) throws Exception {
+
         FlowState state = state(context);
+        boolean hasFlowControl = (context.pipeline().get(FlowControlHandler.class) != null);
+
+        if (hasFlowControl && state.isReadPending()){
+            state.setReadPending(false);
+            if (state.isReadAgain()){
+                state.setReadAgain(false);
+                requestRead(context);
+            }
+        }
 
         if(message instanceof HttpRequest && state.isResponseInFlight()){
             System.out.println("FLOW_VIOLATION: new HttpRequest while responseInFlight= true" 
@@ -182,6 +193,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
 
         Tr.debug(tc, "[FLOW-PROOF] READ_COMPLETE_CLEAR_PENDING ch=" + context.channel().id()
             + " readAgain=" + state.isReadAgain());
+
+        if (context.pipeline().get(FlowControlHandler.class) != null){
+            return;
+        }
         
         state.setReadPending(false);
         if(state.isReadAgain()){

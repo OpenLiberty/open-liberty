@@ -43,6 +43,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -94,6 +95,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     public static final String HTTP_REQUEST_HANDLER_NAME = "LIBERTY_REQUEST_HANDLER";
     public static final String HTTP2_CLEARTEXT_UPGRADE_HANDLER_NAME = "H2C_UPGRADE_HANDLER";
     public static final String CRLF_VALIDATION_HANDLER = "CRLFValidationHandler";
+    public static final String FLOW_CONTROL_HANDLER_NAME = "flowControlHandler";
 
     public static final long maxContentLength = Long.MAX_VALUE;
 
@@ -261,6 +263,11 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 ctx.channel().config().setAutoRead(false);
 
                 pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                
+                if(pipeline.get(FlowControlHandler.class) == null){
+                    pipeline.addBefore(HTTP_KEEP_ALIVE_HANDLER_NAME, FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
+                }
+
                 if(pipeline.get(ReadFlowHandler.class) == null){
                     pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
@@ -303,7 +310,15 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
     private void addPreDispatcherHandlers(ChannelPipeline pipeline, boolean isHttp2) {
 
         if (!isHttp2) {
-            pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            
+            if(pipeline.get(FlowControlHandler.class) == null){
+                pipeline.addAfter(NETTY_HTTP_SERVER_CODEC, FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
+            }
+
+            if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
+                pipeline.addAfter(FLOW_CONTROL_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+            }
+            
             if(pipeline.get(ReadFlowHandler.class) == null) {
                 pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
             }

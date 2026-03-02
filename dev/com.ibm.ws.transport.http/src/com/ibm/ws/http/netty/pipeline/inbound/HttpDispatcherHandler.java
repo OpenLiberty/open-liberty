@@ -49,6 +49,7 @@ import io.netty.channel.ChannelPipeline;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
+import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
@@ -59,6 +60,7 @@ import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpServerCodec;
+import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
@@ -451,7 +453,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             removeIfPresent(p, TimeoutHandler.class);
             removeIfPresent(p, WriteTimeoutHandler.class);
             removeIfPresent(p, ReadFlowHandler.class);
-            removeIfPresent(p, "httpKeepAlive");
+            removeIfPresent(p, FlowControlHandler.class);
+            removeIfPresent(p, HttpServerKeepAliveHandler.class);
 
             // Ensure the upgrade handler is present directly before HTTP_DISPATCHER
             NettyServletUpgradeHandler upgrade = p.get(NettyServletUpgradeHandler.class);
