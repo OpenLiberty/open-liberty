@@ -124,6 +124,24 @@ public class Servlet61RequestCookieHeaderTest {
     }
 
     /*
+     * Test others cases:
+     *  =noNameWithValue
+     *  nameWithEmptyValue=""
+     *  nameWithoutAnyValue=
+     *  nameOnly
+     *  endingSemiName=NoPairAfterSemi;
+     */
+    @Test
+    public void test_Cookie_Other() throws Exception {
+        LOG.info(">>>>> test_Cookie_Other <<<<<<");
+
+        String testName = "test_Cookie_Other";
+        String cookieHeader = "$Version=1; =noNameWithValue; nameWithEmptyValue=\"\"; nameWithoutAnyValue=; nameOnly; endingSemiName=NoPairAfterSemi;";
+
+        sendRequest(testName, cookieHeader);
+    }
+
+    /*
      * Test Response Set-Cookie: Servlet generates several Set-Cookie headers
      *
      * 1. the comma in the Response Set-Cookie ; Expires attribute.

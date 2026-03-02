@@ -297,10 +297,10 @@ public class CookieHeaderByteParser {
             if (',' == b) {
 //                if (this.isEE11 && this.isRequestCookie) {
                 if (this.isEE11) {
-                    // EE11 request Cookie: comma is invalid, skip this cookie-pair until the next ; or end of string
+                    // EE11 request Cookie: comma is invalid, skip this cookie-pair until the next ; or end of data 
                     for (pos++; pos < data.length; pos++) {
                         if (';' == data[pos]) {
-                            // Found semicolon, position after it and return null to skip this (comma cookie-pair)
+                            // Found semicolon, position after it and return null to skip this (, cookie-pair)
                             this.bytePosition = pos + 1;
                             return null;
                         }
@@ -333,7 +333,20 @@ public class CookieHeaderByteParser {
         this.bytePosition = pos + 1;
 
         if (-1 == start) {
-            // nothing was found
+            /*
+             * case =value; delimiter = is found but start is still -1;
+             * skip to next semicolon or end of data
+             */
+            if (pos < data.length && '=' == data[pos]) {
+                int skip = this.bytePosition; // already past '='
+                while (skip < data.length && ';' != data[skip]) {
+                    skip++;
+                }
+                this.bytePosition = (skip < data.length) ? skip + 1 : data.length;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "matchAndParse: empty cookie name before '=', skipping pair");
+                }
+            }
             return null;
         }
         if (-1 == stop) {

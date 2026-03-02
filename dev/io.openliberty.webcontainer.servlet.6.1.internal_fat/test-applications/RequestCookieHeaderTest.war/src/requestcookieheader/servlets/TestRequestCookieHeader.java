@@ -61,6 +61,9 @@ public class TestRequestCookieHeader extends HttpServlet {
         else if (testName.equalsIgnoreCase("test_Request_Set_Cookie_Name_Expires_Attribute")) {
             test_Request_Set_Cookie_Name_Expires_Attribute(request, response);
         }
+        else if (testName.equalsIgnoreCase("test_Cookie_Other")) {
+            test_Cookie_Other(request, response);
+        }
     }
 
     /*
@@ -81,6 +84,11 @@ public class TestRequestCookieHeader extends HttpServlet {
         }
         else {
             LOG.info("Cookie is found but not expected. " + FAIL_TEXT);
+            for (Cookie cookie : cookies) {
+                //Display anyway for debugging
+                LOG.info("Cookie name [" +cookie.getName() + "] , value [" + cookie.getValue() + "]");
+            }
+
             sBuilderResponse.append("Cookie is found but not expected. " + FAIL_TEXT);
         }
 
@@ -237,5 +245,61 @@ public class TestRequestCookieHeader extends HttpServlet {
         //2 double quotes
         String manualSetCookie_InValid_2 = "\"manualSetCookie_InValid_2\"_Name=InValid; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
         response.addHeader("Set-Cookie", manualSetCookie_InValid_2);
+    }
+
+    //"$Version=1; =noNameWithValue; nameWithEmptyValue=\"\"; nameWithoutAnyValue=; nameOnly; endingSemiName=NoPairAfterSemi;"
+    // Check each cookie manually; set testFail = true
+    private void test_Cookie_Other(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOG.info(">>>>> Test test_Cookie_Other");
+        StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Other ======");
+        boolean testFail = false;
+        String name = null;
+        String value = null;
+        int counter = 0;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null){
+            LOG.info("No Cookie is found. " + FAIL_TEXT);
+            sBuilderResponse.append("No Cookie is found. " + FAIL_TEXT);
+        }
+        else {
+            LOG.info("Cookies : ");
+            for (Cookie cookie : cookies) {
+                //Display anyway for debugging
+                LOG.info("Cookie name[" + (name = cookie.getName()) + "] , value [" + (value = cookie.getValue()) +"]");
+                if (name.equalsIgnoreCase("nameWithEmptyValue")){
+                    testFail = (value.equals("\"\"") ? false : true);  // value can have ""
+                }
+                else if (name.equalsIgnoreCase("nameWithoutAnyValue")) {
+                    testFail = ((value.isEmpty()) ? false : true);
+                }
+                else if (name.equalsIgnoreCase("nameOnly")) {
+                    testFail = ((value.isEmpty()) ? false : true);
+                }
+                else if (name.equalsIgnoreCase("endingSemiName")) {
+                    testFail = ((value.equalsIgnoreCase("NoPairAfterSemi")) ? false : true);
+                }
+
+                counter++;
+
+                if (testFail) {
+                    String message = "Test Cookie name ["+ name + "] , value [" + value + "] " + FAIL_TEXT;
+                    LOG.info(message);
+                    sBuilderResponse.append(message);
+                    break;
+                }
+            }
+
+            if (counter != 4) {
+                sBuilderResponse.append("Expecting 4 Cookies ; but found ["+ counter + "] " + FAIL_TEXT);
+            }
+            else {
+                LOG.info(PASS_TEXT);
+                sBuilderResponse.append(PASS_TEXT);
+            }
+        }
+
+        //Client check this header.
+        response.setHeader("TestResult", sBuilderResponse.toString());
     }
 }
