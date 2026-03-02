@@ -97,8 +97,8 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         channel.attr(NettyHttpConstants.IS_OUTBOUND_KEY).set(false);
         channel.attr(NettyHttpConstants.ENDPOINT_PID).set(chain.getEndpointPID());
 
-        FixedRecvByteBufAllocator channelAllocator = new FixedRecvByteBufAllocator(httpConfig.getIncomingBodyBufferSize());
-        LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channelAllocator, channel);
+        // FixedRecvByteBufAllocator channelAllocator = new FixedRecvByteBufAllocator(httpConfig.getIncomingBodyBufferSize());
+        LoggingRecvByteBufAllocator loggingAllocator = new LoggingRecvByteBufAllocator(channel.config().getRecvByteBufAllocator(), channel);
         channel.config().setRecvByteBufAllocator(loggingAllocator);
 
         pipeline.addLast(WRITE_TIMEOUT_HANDER_NAME, new WriteTimeoutHandler(httpConfig.getWriteTimeout(), TimeUnit.MILLISECONDS));

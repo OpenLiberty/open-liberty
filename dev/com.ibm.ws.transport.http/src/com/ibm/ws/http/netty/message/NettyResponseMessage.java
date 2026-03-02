@@ -73,7 +73,7 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
         this.context = isc;
         this.nettyResponse = response;
         this.headers = nettyResponse.headers();
-        this.trailers = new DefaultHttpHeaders().clear();
+        this.trailers = new DefaultHttpHeaders();
         this.nettyTrailerWrapper = new NettyTrailers(this.trailers);
 
         if (request.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
