@@ -22,6 +22,7 @@ import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.mcp.internal.fat.conformance.tests.ConformanceTests;
 import io.openliberty.mcp.internal.fat.introspector.IntrospectorMultiAppTest;
+import io.openliberty.mcp.internal.fat.isolation.MultiAppIsolationTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.AsyncToolLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
@@ -85,6 +86,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
 //                LocaleTest.class, // Commented out test until message translation is updated
                 LifecycleTest.class,
                 McpUrlPathTest.class,
+                MultiAppIsolationTest.class,
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
                 ProtocolVersionTest.class,
