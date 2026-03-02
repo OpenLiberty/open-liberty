@@ -17,10 +17,10 @@ import static io.openliberty.mcp.internal.fat.utils.TestConstants.NEGATIVE_TIMEO
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_ACCEPT_DEFAULT;
 import static io.openliberty.mcp.internal.fat.utils.TestConstants.VALUE_MCP_PROTOCOL_VERSION;
 import static org.hamcrest.CoreMatchers.containsString;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertThat;
 import static org.junit.Assert.assertTrue;
+import static org.skyscreamer.jsonassert.JSONCompareMode.STRICT;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
@@ -95,15 +95,37 @@ public class StatelessModeTest extends FATServletClient {
                         {
                           "jsonrpc": "2.0",
                           "id": 1,
-                          "method": "tools/call",
+                          "method": "initialize",
                           "params": {
-                            "name": "echo",
-                            "arguments": {
-                              "input": "Hello"
+                            "protocolVersion": "2025-11-25",
+                            "capabilities": {
+                              "roots": {
+                                "listChanged": true
+                              },
+                              "sampling": {},
+                              "elicitation": {
+                                "form": {},
+                                "url": {}
+                              },
+                              "tasks": {
+                                "requests": {
+                                  "elicitation": {
+                                    "create": {}
+                                  },
+                                  "sampling": {
+                                    "createMessage": {}
+                                  }
+                                }
+                              }
+                            },
+                            "clientInfo": {
+                              "name": "TestClient",
+                              "title": "Test client",
+                              "version": "1.0.0",
+                              "description": "A test MCP client, for testing"
                             }
                           }
-                        }
-                        """;
+                        }""";
 
         HttpRequest httpRequest = new HttpRequest(server, ENDPOINT)
                                                                    .requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
@@ -112,9 +134,29 @@ public class StatelessModeTest extends FATServletClient {
                                                                    .method("POST")
                                                                    .expectCode(200);
 
+        String expectedResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "result": {
+                            "protocolVersion": "2025-11-25",
+                            "capabilities": {
+                              "tools": {
+                                "listChanged": false
+                              }
+                            },
+                            "serverInfo": {
+                              "name": "test-server",
+                              "title": "Test Server",
+                              "version": "0.1"
+                            }
+                          }
+                        }
+                        """;
+
         String response = httpRequest.run(String.class);
 
-        assertFalse("Expected no session ID in response body", response.contains("Mcp-Session-Id"));
+        JSONAssert.assertEquals(expectedResponse, response, STRICT);
 
         String sessionIdHeader = httpRequest.getResponseHeader("Mcp-Session-Id");
         assertNull("Expected no session ID header in stateless mode", sessionIdHeader);
