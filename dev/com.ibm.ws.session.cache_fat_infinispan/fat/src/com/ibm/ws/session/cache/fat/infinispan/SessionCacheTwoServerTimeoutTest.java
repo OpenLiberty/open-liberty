@@ -91,10 +91,6 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         serverB.setJvmOptions(options);
 
         serverA.startServer();
-        
-        // Increase wait time for Windows platforms which are slower
-        int initialWaitTime = isWindows() ? 20 : 10;
-        TimeUnit.SECONDS.sleep(initialWaitTime);
 
         // Warm up serverA
         List<String> sessionA = new ArrayList<>();
@@ -102,10 +98,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invalidateSession(sessionA);
 
         serverB.startServer();
-        
-        // Increase wait time for Windows platforms to allow cluster formation
-        int clusterWaitTime = isWindows() ? 20 : 10;
-        TimeUnit.SECONDS.sleep(clusterWaitTime);
+
+        // Wait for Infinispan/JGroups to form a 2-node cluster. This message appears in serverA's log
+        // when serverB joins. Using a log-based wait instead of a fixed sleep makes this
+        // reliable across machines with varying startup times (especially Windows under load).
+        assertNotNull("Infinispan 2-node cluster did not form within 60 seconds",
+                      serverA.waitForStringInLog("ISPN000094.*2\\]", 60000));
 
         // Warm up serverB
         List<String> sessionB = new ArrayList<>();
@@ -144,11 +142,6 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
     private static boolean isZOS() {
         String osName = System.getProperty("os.name");
         return osName.contains("OS/390") || osName.contains("z/OS") || osName.contains("zOS");
-    }
-
-    private static boolean isWindows() {
-        String osName = System.getProperty("os.name");
-        return osName != null && osName.toLowerCase().contains("windows");
     }
 
     @Test

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.session.cache.fat.infinispan;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
@@ -84,10 +85,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         serverA.startServer();
 
-        // Increase wait time for Windows platforms which are slower
-        int initialWaitTime = isWindows() ? 20 : 10;
-        TimeUnit.SECONDS.sleep(initialWaitTime);
-
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
         // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
         // cluster and not join to the cluster created on serverA.
@@ -97,9 +94,11 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         serverB.startServer();
 
-        // Increase wait time for Windows platforms to allow cluster formation
-        int clusterWaitTime = isWindows() ? 20 : 10;
-        TimeUnit.SECONDS.sleep(clusterWaitTime);
+        // Wait for Infinispan/JGroups to form a 2-node cluster. This message appears in serverA's log
+        // when serverB joins. Using a log-based wait instead of a fixed sleep makes this
+        // reliable across machines with varying startup times (especially Windows under load).
+        assertNotNull("Infinispan 2-node cluster did not form within 60 seconds",
+                      serverA.waitForStringInLog("ISPN000094.*2\\]", 60000));
     }
 
     @AfterClass
@@ -136,10 +135,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         return false;
     }
 
-    private static final boolean isWindows() {
-        String osName = System.getProperty("os.name");
-        return osName != null && osName.toLowerCase().contains("windows");
-    }
 
     /**
      * Test lifecycle of cache for http sessions by putting data into a server,

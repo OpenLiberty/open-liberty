@@ -10,6 +10,7 @@
 
 package com.ibm.ws.session.cache.fat;
 
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 import static org.junit.Assume.assumeTrue;
@@ -83,10 +84,6 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         serverA.startServer();
 
-        // Increase wait time for Windows platforms which are slower
-        int initialWaitTime = isWindows() ? 20 : 10;
-        TimeUnit.SECONDS.sleep(initialWaitTime);
-
         // Since we initialize the JCache provider lazily, use an HTTP session on serverA before starting serverB,
         // so that the JCache provider has fully initialized on serverA. Otherwise, serverB might start up its own
         // cluster and not join to the cluster created on serverA.
@@ -96,9 +93,11 @@ public class SessionCacheTwoServerTest extends FATServletClient {
 
         serverB.startServer();
 
-        // Increase wait time for Windows platforms to allow cluster formation
-        int clusterWaitTime = isWindows() ? 20 : 10;
-        TimeUnit.SECONDS.sleep(clusterWaitTime);
+        // Wait for Hazelcast to form a 2-node cluster. This message appears in serverA's log
+        // when serverB joins. Using a log-based wait instead of a fixed sleep makes this
+        // reliable across machines with varying startup times (especially Windows under load).
+        assertNotNull("Hazelcast 2-node cluster did not form within 60 seconds",
+                      serverA.waitForStringInLog("Members \\{size:2", 60000));
     }
 
     @AfterClass
@@ -359,8 +358,4 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         }
     }
 
-    private static boolean isWindows() {
-        String osName = System.getProperty("os.name");
-        return osName != null && osName.toLowerCase().contains("windows");
-    }
 }
