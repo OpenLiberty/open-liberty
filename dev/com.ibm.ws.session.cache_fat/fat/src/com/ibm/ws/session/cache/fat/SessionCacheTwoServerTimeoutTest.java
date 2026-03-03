@@ -113,9 +113,10 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         // Wait for Hazelcast cluster to form with 2 members before running tests
         // This ensures session replication infrastructure is ready
+        // Using 120 second timeout for slow SOE platforms (IBM i, Windows)
         Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Waiting for Hazelcast 2-member cluster formation...");
-        serverA.waitForStringInLog("Members \\{size:2");
-        serverB.waitForStringInLog("Members \\{size:2");
+        serverA.waitForStringInLog("Members \\{size:2", 120000);
+        serverB.waitForStringInLog("Members \\{size:2", 120000);
         Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Hazelcast 2-member cluster confirmed on both servers.");
     }
 
