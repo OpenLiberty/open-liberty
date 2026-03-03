@@ -110,6 +110,13 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         List<String> sessionB = new ArrayList<>();
         appB.sessionPut("init-app-B", "B", sessionB, true);
         appB.invalidateSession(sessionB);
+
+        // Wait for Hazelcast cluster to form with 2 members before running tests
+        // This ensures session replication infrastructure is ready
+        Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Waiting for Hazelcast 2-member cluster formation...");
+        serverA.waitForStringInLog("Members \\{size:2");
+        serverB.waitForStringInLog("Members \\{size:2");
+        Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Hazelcast 2-member cluster confirmed on both servers.");
     }
 
     @AfterClass
