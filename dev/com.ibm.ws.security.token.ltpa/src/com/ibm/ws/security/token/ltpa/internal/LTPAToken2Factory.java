@@ -34,7 +34,7 @@ public class LTPAToken2Factory implements TokenFactory {
     private long expirationInMinutes;
     private long lastUsedInMinutes;
     private long refreshLifetimeInMinutes;
-    private int refreshThreshold;
+    private long refreshThresholdInMinutes;
     private byte[] primarySharedKey;
     private LTPAPublicKey primaryPublicKey;
     private LTPAPrivateKey primaryPrivateKey;
@@ -46,7 +46,7 @@ public class LTPAToken2Factory implements TokenFactory {
     @Override
     public void initialize(@Sensitive Map tokenFactoryMap) {
         expirationInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.EXPIRATION);
-        refreshThreshold = (int) tokenFactoryMap.get(LTPAConstants.REFRESH_THRESHOLD);
+        refreshThresholdInMinutes = (long) tokenFactoryMap.get(LTPAConstants.REFRESH_THRESHOLD);
         refreshLifetimeInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.REFRESH_LIFE_TIME);
         primarySharedKey = (byte[]) tokenFactoryMap.get(LTPAConstants.PRIMARY_SECRET_KEY);
         primaryPublicKey = (LTPAPublicKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PUBLIC_KEY);
@@ -63,7 +63,7 @@ public class LTPAToken2Factory implements TokenFactory {
     @Override
     public Token createToken(Map tokenData) throws TokenCreationFailedException {
         String userUniqueId = getUniqueId(tokenData);
-        return new LTPAToken2(userUniqueId, expirationInMinutes, primarySharedKey, primaryPrivateKey, primaryPublicKey, refreshLifetimeInMinutes, refreshThreshold);
+        return new LTPAToken2(userUniqueId, expirationInMinutes, primarySharedKey, primaryPrivateKey, primaryPublicKey, refreshLifetimeInMinutes, refreshThresholdInMinutes);
     }
 
     private String getUniqueId(Map tokenData) throws TokenCreationFailedException {
@@ -101,7 +101,7 @@ public class LTPAToken2Factory implements TokenFactory {
 
                 Token returnToken = null;
 
-                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, expirationInMinutes, removeAttributes);
+                validatedToken = new LTPAToken2(tokenBytes, primarySharedKey, primaryPrivateKey, primaryPublicKey, expDiffAllowed, refreshLifetimeInMinutes, refreshThresholdInMinutes, expirationInMinutes, removeAttributes);
                 if (validatedToken != null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "validateTokenBytes with primary keys (success)");
@@ -178,7 +178,7 @@ public class LTPAToken2Factory implements TokenFactory {
                     }
                     if (sharedKeyForValidation != null && ltpaPrivateKeyForValidation != null && ltpaPublicKeyForValidation != null) {
                         try {
-                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, refreshLifetimeInMinutes, refreshThreshold, expirationInMinutes, removeAttributes);
+                            validatedToken = new LTPAToken2(tokenBytes, sharedKeyForValidation, ltpaPrivateKeyForValidation, ltpaPublicKeyForValidation, expDiffAllowed, refreshLifetimeInMinutes, refreshThresholdInMinutes, expirationInMinutes, removeAttributes);
                             if (validatedToken != null) {
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                                     Tr.debug(tc, "validateTokenBytes with validationKeys (success)");

@@ -109,7 +109,7 @@ public interface LTPAConfiguration {
     /**
      * @return refresh threshold percentage for remains of token timeout
      */
-    int getRefreshThreshold();
+    long getRefreshThreshold();
 
     /**
      * @return authFiler reference

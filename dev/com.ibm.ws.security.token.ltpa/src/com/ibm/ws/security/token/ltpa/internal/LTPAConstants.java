@@ -25,7 +25,7 @@ public class LTPAConstants {
     protected static final String LAST_USED = "lastUsed";
 
     /**
-     * Used to identify the refresh LTPA token threshold.
+     * Used to identify the refresh LTPA token threshold time.
      */
     protected static final String REFRESH_THRESHOLD = "refreshThreshold";
 

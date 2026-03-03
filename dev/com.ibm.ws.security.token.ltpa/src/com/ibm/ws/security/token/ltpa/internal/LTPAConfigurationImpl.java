@@ -88,7 +88,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     @Sensitive
     private String primaryKeyPassword;
     private long keyTokenExpiration;
-    private int refreshThreshold;
+    private long refreshThreshold;
     private long refreshLifetime;
     private long monitorInterval;
     private LTPAFileMonitor ltpaFileMonitor;
@@ -195,7 +195,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         primaryKeyPassword = sps == null ? null : new String(sps.getChars());
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
         refreshLifetime = (long) props.get(CFG_KEY_TOKEN_REFRESH_LIFE_TIME);
-        refreshThreshold = (int) props.get(CFG_KEY_TOKEN_REFRESH_THRESHOLD);
+        refreshThreshold = (long) props.get(CFG_KEY_TOKEN_REFRESH_THRESHOLD);
         //TODO: UTLE
         //if refreshLifetime is smaller than expiration, should we issue an error?
 
@@ -775,7 +775,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /** {@inheritDoc} */
     @Override
-    public int getRefreshThreshold() {
+    public long getRefreshThreshold() {
         return refreshThreshold;
     }
 
