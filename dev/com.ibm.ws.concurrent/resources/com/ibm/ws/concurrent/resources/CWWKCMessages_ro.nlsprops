@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: Viitorul furnizat la metodele ManagedT
 CWWKC1120.future.get.rejected.explanation=Metodele ManagedTaskListener taskSubmitted \u015fi taskStarting ruleaz\u0103 pe firul de execu\u0163ie care va lansa sau porni taskul. Prin urmare, Viitorul furnizat la aceste metode nu trebuie folosit pentru a a\u015ftepta taskul.
 CWWKC1120.future.get.rejected.useraction=Actualiza\u0163i aplica\u0163ia pentru a evita invocarea ob\u0163inerii pe Viitorul care este furnizat la taskSubmitted \u015fi taskStarting.
 
-CWWKC1121.virtual.invalid=CWWKC1121E: Adnotarea {0} sau elementul descriptor de implementare {1} care are numele {0} specific\u0103 virtual=true, dar firele virtuale nu sunt disponibile \u00eenainte de Java 21. Nivelul Java folosit este: {1} .
+CWWKC1121.virtual.invalid=CWWKC1121E: Adnotarea \u201e {0} \u201d sau elementul descriptor de implementare \u201e {1} \u201d cu numele \u201e {2} \u201d specific\u0103 \u201evirtual=true\u201d, dar thread-urile virtuale nu sunt disponibile \u00eenainte de Java 21. Nivelul Java utilizat este: {3}.
 CWWKC1121.virtual.invalid.explanation=Firele virtuale nu sunt disponibile \u00een versiunea Java care este utilizat\u0103.
 CWWKC1121.virtual.invalid.useraction=Actualiza\u021bi la o versiune Java mai nou\u0103, care accept\u0103 fire virtuale.
 
-CWWKC1122.mod.unavail=CWWKC1122E: Aplica\u021bia {0} sau modulul s\u0103u {1} nu sunt disponibile.
+CWWKC1122.mod.unavail=CWWKC1122E: Aplica\u021bia {0} sau modulul s\u0103u {1} nu este disponibil. ManagedThreadFactory boabele definite \u00een aplica\u021bie sau modul nu pot fi ob\u021binute.
 CWWKC1122.mod.unavail.explanation=Aplica\u021bia \u0219i modulul care definesc configura\u021bia ManagedThreadFactory trebuie s\u0103 fie disponibile pentru a ob\u021bine o instan\u021b\u0103 ManagedThreadFactory .
 CWWKC1122.mod.unavail.useraction=Asigura\u021bi-v\u0103 c\u0103 aplica\u021bia este pornit\u0103 \u0219i c\u0103 aceasta include modulul care define\u0219te configura\u021bia ManagedThreadFactory .
 

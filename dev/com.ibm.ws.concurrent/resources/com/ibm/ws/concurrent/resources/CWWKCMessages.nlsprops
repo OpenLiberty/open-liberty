@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -85,16 +85,17 @@ CWWKC1120.future.get.rejected.explanation=The ManagedTaskListener taskSubmitted 
 CWWKC1120.future.get.rejected.useraction=Update the application to avoid invoking get on the Future that is supplied to taskSubmitted and taskStarting.
 
 CWWKC1121.virtual.invalid=CWWKC1121E: The {0} annotation or {1} deployment \
- descriptor element that has the {0} name specifies virtual=true, \
- but virtual threads are not available prior to Java 21. \
- The Java level used is: {1}.
+ descriptor element with the name {2} specifies virtual=true, \
+ but virtual threads are not available before Java 21. \
+ The Java level used is: {3}.
 CWWKC1121.virtual.invalid.explanation=Virtual threads are not available in the \
  Java version that is used.
 CWWKC1121.virtual.invalid.useraction=Update to a newer Java version that supports \
  virtual threads.
 
 CWWKC1122.mod.unavail=CWWKC1122E: The {0} application or its {1} module is not \
- available.
+ available. ManagedThreadFactory beans that are defined in the application or module \
+ cannot be obtained.
 CWWKC1122.mod.unavail.explanation=The application and module that define the \
  ManagedThreadFactory configuration must be available to obtain a \
  ManagedThreadFactory instance.

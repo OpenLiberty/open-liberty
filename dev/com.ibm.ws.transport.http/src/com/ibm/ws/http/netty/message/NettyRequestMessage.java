@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -888,7 +888,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             @Override
             public void run() {
                 try {
-                    ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
+                    ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpDispatcherHandler.NAME)).channelRead(nettyContext,
                                                                                                                                                       newRequest);
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

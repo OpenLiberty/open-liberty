@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=Dodaj nazw\u0119 do @ToolArg ad
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: Istnieje wiele metod narz\u0119dzia MCP o nazwie {0}. Metody s\u0105 {1} nast\u0119puj\u0105ce.
 CWMCM0004E.duplicate.tools.explanation=Jedna lub wi\u0119cej nazw narz\u0119dzi MCP pojawi\u0142a si\u0119 wielokrotnie. Serwer oczekuje jednej nazwy na narz\u0119dzie w celu zapewnienia unikalno\u015bci.
 CWMCM0004E.duplicate.tools.useraction=Podaj tylko unikaln\u0105 nazw\u0119 dla ka\u017cdego narz\u0119dzia MCP.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=Sprawd\u017a, czy zaimportowano w\u0142a
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: \u017b\u0105danie o {0} identyfikatorze jest w trakcie realizacji.
-CWMCM0008E.invalid.request.params.explanation=\u017b\u0105danie o tym samym identyfikatorze jest w trakcie realizacji. \u017b\u0105dania od tego samego klienta musz\u0105 mie\u0107 unikalne identyfikatory.
-CWMCM0008E.invalid.request.params.useraction=U\u017cywaj unikalnego identyfikatora dla ka\u017cdego \u017c\u0105dania.
+invalid.request.params=\u017b\u0105danie o identyfikatorze {0} jest w trakcie realizacji.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: \u017b\u0105dania GET nie s\u0105 obs\u0142ugiwane.
-CWMCM0009I.get.disallowed.explanation=Wys\u0142ano \u017c\u0105danie GET, ale ta funkcja nie jest obs\u0142ugiwana.
-CWMCM0009I.get.disallowed.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+# do not translate GET
+get.disallowed=\u017b\u0105dania GET nie s\u0105 obs\u0142ugiwane.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=Metoda narz\u0119dzia wyge
 CWMCM0010E.internal.server.error.detailed.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: Podczas uruchamiania narz\u0119dzia wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
-CWMCM0011E.internal.server.error.explanation=Serwer nie by\u0142 w stanie zrealizowa\u0107 \u017c\u0105dania wywo\u0142ania narz\u0119dzia.
-CWMCM0011E.internal.server.error.useraction=Sprawd\u017a, czy \u017c\u0105danie jest poprawne. Wi\u0119cej informacji na temat awarii mo\u017ce znajdowa\u0107 si\u0119 na serwerze messages.log.
+internal.server.error=Podczas uruchamiania narz\u0119dzia wyst\u0105pi\u0142 wewn\u0119trzny b\u0142\u0105d serwera.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: Wyst\u0105pi\u0142 b\u0142\u0105d podcz
 CWMCM0012E.bean.release.fail.explanation=Podczas wywo\u0142ywania metody narz\u0119dziowej instancja fasoli CDI, kt\u00f3ra deklaruje t\u0119 metod\u0119, jest pobierana przed wywo\u0142aniem metody, a nast\u0119pnie zwalniana. Wyst\u0105pi\u0142 b\u0142\u0105d podczas zwalniania instancji fasoli.
 CWMCM0012E.bean.release.fail.useraction=Przejrzyj dziennik serwera message.log oraz dzienniki FFDC, aby zidentyfikowa\u0107 problem.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Podano nieobs\u0142ugiwany nag\u0142\u00f3wek MCP-Protocol-Version. Obs\u0142ugiwane warto\u015bci: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=Wersja protoko\u0142u w nag\u0142\u00f3wku MCP-Protocol-Version nie jest obs\u0142ugiwana przez serwer.
-CWMCM0013E.unsupported.mcp.http.version.useraction=U\u017cyj obs\u0142ugiwanej wersji protoko\u0142u.
+unsupported.mcp.http.version=Podano nieobs\u0142ugiwany nag\u0142\u00f3wek MCP-Protocol-Version. Obs\u0142ugiwane warto\u015bci: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: Nieoczekiwany b\u0142\u0105d serwera. Metoda= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=Podczas przetwarzania \u017c\u0105dania wyst\u0105pi\u0142 nieoczekiwany b\u0142\u0105d serwera. Nie mo\u017cna zrealizowa\u0107 \u017c\u0105dania.
-CWMCM0014E.unexpected.server.error.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+unexpected.server.error=Nieoczekiwany b\u0142\u0105d serwera. Metoda= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,17 +132,6 @@ jsonrpc.exception.validation.empty.string.id=Pole id jest nieprawid\u0142owe. Id
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=Typ id nie jest typem akceptowalnym. Identyfikator musi by\u0107 ci\u0105giem znak\u00f3w lub liczb\u0105 ca\u0142kowit\u0105.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=\u017b\u0105danie nie zawiera \u017cadnych argument\u00f3w w parametrach.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=Przekazano nast\u0119puj\u0105ce argumenty, ale nie znaleziono ich w metodzie: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=Metoda oczekiwa\u0142a nast\u0119puj\u0105cych argument\u00f3w, ale nie zosta\u0142y one podane: {0}.
-
 # Used for server logging
 # do not translate MCP
 # {0} = The  qualified name of the tool
@@ -179,7 +159,7 @@ CWMCM0019E.error.encoding.element.useraction=Przejrzyj dziennik serwera message.
 
 # Used for server logging
 # do not translate MCP
-# {0} = The  qualified name of the tool
+# {0} = The qualified name of the tool method, or the tool name
 # {1} = corresponding argument name
 # {2} = corresponding argument type
 # {3} = corresponding default value
@@ -194,3 +174,100 @@ CWMCM0020E.defaultvalue.conversion.error.useraction=Upewnij si\u0119, \u017ce wa
 CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: Warto\u015b\u0107 domy\u015blna znaku musi by\u0107 dok\u0142adnie jednym znakiem, ale by\u0142a {0}
 CWMCM0021E.defaultvalue.character.invalid.length.explanation=Podano warto\u015b\u0107 domy\u015bln\u0105 dla argumentu typu znakowego, ale nie zawiera on dok\u0142adnie jednego znaku. Argumenty znakowe musz\u0105 zawiera\u0107 pojedynczy ci\u0105g znak\u00f3w.
 CWMCM0021E.defaultvalue.character.invalid.length.useraction=Upewnij si\u0119, \u017ce domy\u015bln\u0105 warto\u015bci\u0105 argumentu typu znakowego jest ci\u0105g znak\u00f3w zawieraj\u0105cy dok\u0142adnie jeden znak.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: Warto\u015b\u0107 kursora "{0}" jest nieprawid\u0142owa.
+CWMCM0022E.invalid.cursor.value.explanation=Warto\u015b\u0107 kursora zosta\u0142a podana jako parametr polecenia narz\u0119dzia/listy, ale warto\u015b\u0107 ta jest nieprawid\u0142owa.
+CWMCM0022E.invalid.cursor.value.useraction=Upewnij si\u0119, \u017ce warto\u015b\u0107 kursora jest podana dok\u0142adnie tak, jak zosta\u0142a zwr\u00f3cona przez poprzednie wywo\u0142anie narz\u0119dzia/listy.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: Nazwa narz\u0119dzia \u201e {0} \u201d dla metody narz\u0119dzia MCP \u201e {1} \u201d jest nieprawid\u0142owa. Nazwy narz\u0119dzi musz\u0105 mie\u0107 d\u0142ugo\u015b\u0107 od 1 do 128 znak\u00f3w w\u0142\u0105cznie.
+CWMCM0023E.invalid.length.tool.name.explanation=Nazwa narz\u0119dzia nie jest zgodna ze specyfikacj\u0105 MCP dotycz\u0105c\u0105 nazw. Nazwy musz\u0105 mie\u0107 d\u0142ugo\u015b\u0107 od 1 do 128 znak\u00f3w w\u0142\u0105cznie.
+CWMCM0023E.invalid.length.tool.name.useraction=Upewnij si\u0119, \u017ce nazwy narz\u0119dzi maj\u0105 od 1 do 128 znak\u00f3w w\u0142\u0105cznie.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: Nazwa narz\u0119dzia \u201e {0} \u201d dla metody narz\u0119dzia MCP \u201e {1} \u201d jest nieprawid\u0142owa. Nazwy narz\u0119dzi mog\u0105 zawiera\u0107 wy\u0142\u0105cznie litery ASCII, cyfry, znaki podkre\u015blenia lub \u0142\u0105czniki.
+CWMCM0024E.invalid.character.tool.name.explanation=Nazwa narz\u0119dzia nie jest zgodna ze specyfikacj\u0105 MCP dotycz\u0105c\u0105 nazw. Nazwy mog\u0105 zawiera\u0107 wy\u0142\u0105cznie litery ASCII, cyfry, znaki podkre\u015blenia i \u0142\u0105czniki, a nie \u017cadne inne znaki specjalne.
+CWMCM0024E.invalid.character.tool.name.useraction=Upewnij si\u0119, \u017ce nazwy narz\u0119dzi zawieraj\u0105 wy\u0142\u0105cznie litery ASCII, cyfry, znaki podkre\u015blenia lub \u0142\u0105czniki.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=Argument typu \u201e {0} \u201d nie mo\u017ce zosta\u0107 przekonwertowany na typ \u201e {1} \u201d.
+extra.arguments=Przekazano nast\u0119puj\u0105ce argumenty, ale nie znaleziono ich w metodzie: {0}.
+missing.arguments=Metoda oczekiwa\u0142a nast\u0119puj\u0105cych argument\u00f3w, ale ich nie otrzyma\u0142a: {0}.
+unauthorized.cancellation=Nie mo\u017cna anulowa\u0107 dzia\u0142ania narz\u0119dzia, poniewa\u017c u\u017cytkownik wywo\u0142uj\u0105cy nie ma uprawnie\u0144.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: Typ zwracany przez metod\u0119 narz\u0119dzia MCP \u201e {1} \u201d (Ustawianie w\u0142a\u015bciwo\u015bci) musi by\u0107 obiektem. {0}
+CWMCM0025E.unsupported.output.explanation=Podany typ zwracany narz\u0119dzia MCP nie jest obs\u0142ugiwany.
+CWMCM0025E.unsupported.output.useraction=Podaj typ zwracanej warto\u015bci, kt\u00f3ry jest obiektem.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: Narz\u0119dzie MCP o nazwie \u201e {0} \u201d ju\u017c istnieje.
+CWMCM0026E.duplicate.tool.name.explanation=Ka\u017cde narz\u0119dzie musi mie\u0107 unikaln\u0105 nazw\u0119. Nie mo\u017cna zarejestrowa\u0107 nowego narz\u0119dzia o tej samej nazwie, co istniej\u0105ce narz\u0119dzie.
+CWMCM0026E.duplicate.tool.name.useraction=Nadaj unikaln\u0105 nazw\u0119 ka\u017cdemu narz\u0119dziu MCP.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: W przypadku narz\u0119dzia MCP {0} nale\u017cy wywo\u0142a\u0107 metod\u0119 setHandler lub setAsyncHandler.
+CWMCM0027E.provide.one.handler.explanation=Podczas rejestrowania nowego narz\u0119dzia za pomoc\u0105 metody ` ToolManager, ` nale\u017cy poda\u0107 albo synchroniczny program obs\u0142ugi, wywo\u0142uj\u0105c metod\u0119 ` setHandler `, albo asynchroniczny program obs\u0142ugi, wywo\u0142uj\u0105c metod\u0119 ` setAsyncHandler `. Nie podawaj obu.
+CWMCM0027E.provide.one.handler.useraction=Podczas rejestrowania narz\u0119dzia za pomoc\u0105 us\u0142ugi ToolManager nale\u017cy wywo\u0142a\u0107 metod\u0119 ToolDefinition.setHandler lub ToolDefinition.setAsyncHandler.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} Nazwa narz\u0119dzia MCP jest nieprawid\u0142owa. Nazwy narz\u0119dzi mog\u0105 zawiera\u0107 wy\u0142\u0105cznie litery ASCII, cyfry, znaki podkre\u015blenia lub \u0142\u0105czniki.
+CWMCM0028E.invalid.character.tool.name.explanation=Nazwa narz\u0119dzia nie jest zgodna ze specyfikacj\u0105 MCP dotycz\u0105c\u0105 nazw. Nazwy mog\u0105 zawiera\u0107 wy\u0142\u0105cznie litery ASCII, cyfry, znaki podkre\u015blenia i \u0142\u0105czniki, a nie \u017cadne inne znaki specjalne.
+CWMCM0028E.invalid.character.tool.name.useraction=Upewnij si\u0119, \u017ce nazwy narz\u0119dzi zawieraj\u0105 wy\u0142\u0105cznie litery ASCII, cyfry, znaki podkre\u015blenia lub \u0142\u0105czniki.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} Nazwa narz\u0119dzia MCP jest nieprawid\u0142owa. Nazwy narz\u0119dzi musz\u0105 mie\u0107 d\u0142ugo\u015b\u0107 od 1 do 128 znak\u00f3w w\u0142\u0105cznie.
+CWMCM0029E.invalid.length.tool.name.explanation=Nazwa narz\u0119dzia nie jest zgodna ze specyfikacj\u0105 MCP dotycz\u0105c\u0105 nazw. Nazwy musz\u0105 mie\u0107 d\u0142ugo\u015b\u0107 od 1 do 128 znak\u00f3w w\u0142\u0105cznie.
+CWMCM0029E.invalid.length.tool.name.useraction=Upewnij si\u0119, \u017ce nazwy narz\u0119dzi maj\u0105 od 1 do 128 znak\u00f3w w\u0142\u0105cznie.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: Nie mo\u017cna doda\u0107 argumentu o pustej nazwie do narz\u0119dzia MCP \u201e {0} \u201d.
+CWMCM0030E.blank.arguments.explanation=Ka\u017cdy argument narz\u0119dzia MCP musi mie\u0107 nazw\u0119 nieb\u0119d\u0105c\u0105 pust\u0105. 
+CWMCM0030E.blank.arguments.useraction=Podaj niepuste nazwy dla wszystkich argument\u00f3w narz\u0119dzia.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: Argument \u201e {1} \u201d narz\u0119dzia MCP \u201e {0} \u201d nie posiada konwertera umo\u017cliwiaj\u0105cego zmian\u0119 jego warto\u015bci domy\u015blnej na obiekt typu \u201e {2} \u201d.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=Jeden lub wi\u0119cej argument\u00f3w ma warto\u015bci domy\u015blne bez pasuj\u0105cego konwertera, kt\u00f3ry konwertowa\u0142by warto\u015b\u0107 domy\u015bln\u0105 na typ argumentu.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Utw\u00f3rz niestandardow\u0105 implementacj\u0119 konwertera dla typu argumentu narz\u0119dzia.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: Nie mo\u017cna doda\u0107 drugiego argumentu o nazwie \u201e {1} \u201d do narz\u0119dzia MCP \u201e {0} \u201d.
+CWMCM0032E.duplicate.argument.name.explanation=Ka\u017cdy argument narz\u0119dzia MCP musi mie\u0107 inn\u0105 nazw\u0119.
+CWMCM0032E.duplicate.argument.name.useraction=Nadaj ka\u017cdemu argumentowi narz\u0119dzia inn\u0105 nazw\u0119.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Niedozwolone \u017c\u0105danie. Metoda= {0} RequestURI={1 } RequestQuery={2 }, Wyj\u0105tek: {3}
+CWMCM0033A.forbidden.error.explanation=Wys\u0142ano \u017c\u0105danie, ale u\u017cytkownik nie ma uprawnie\u0144 do jego wys\u0142ania.
+CWMCM0033A.forbidden.error.useraction=Upewnij si\u0119, \u017ce \u017c\u0105danie pochodzi od autoryzowanego u\u017cytkownika.

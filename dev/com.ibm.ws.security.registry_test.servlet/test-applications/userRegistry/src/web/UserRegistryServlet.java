@@ -228,7 +228,7 @@ public class UserRegistryServlet extends HttpServlet {
                 response = convertFromMap(ur.getAttributesForUser(
                         userSecurityName,
                         Arrays.stream(attributeNames.split(",")).collect(Collectors.toSet())
-                )).replaceAll("\n", "");
+                )).replaceAll(System.getProperty("line.separator"), "");
             } else if ("getUsersByAttribute".equals(method)) {
                 String attributeName = req.getParameter("attributeName");
                 String value = req.getParameter("value");

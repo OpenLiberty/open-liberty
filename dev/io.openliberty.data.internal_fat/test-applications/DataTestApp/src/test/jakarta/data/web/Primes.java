@@ -68,6 +68,13 @@ public interface Primes {
     @Query("SELECT ID(this) WHERE ID(this) < ?1 ORDER BY ID(this) DESC")
     List<Long> below(long exclusiveMax);
 
+    @Query("FROM Prime WHERE (numberId < ?1) OR (numberId BETWEEN ?2 AND ?3)")
+    CursoredPage<Prime> belowOrWithin(long firstExclusiveMax,
+                                      long rangeMin,
+                                      long rangeMax,
+                                      PageRequest req,
+                                      Order<Prime> sorts);
+
     @Query("SELECT binaryDigits WHERE numberId <= :max")
     @OrderBy(ID)
     LongStream binaryDigitsAsDecimal(long max);
@@ -510,6 +517,10 @@ public interface Primes {
 
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);
+
+    @Query("FROM Prime WHERE (numberId < :exclusiveMaximum)")
+    @OrderBy(value = ID, descending = true)
+    Page<Prime> under(long exclusiveMaximum, PageRequest pagination);
 
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)

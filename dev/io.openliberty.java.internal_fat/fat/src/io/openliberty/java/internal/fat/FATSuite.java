@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,6 +32,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 Java23Test.class,
                 Java24Test.class,
                 Java25Test.class,
+                Java26Test.class,
                 JavaIllegalAccessTest.class,
                 Java24WarningTest.class,
                 AlwaysPassesTest.class

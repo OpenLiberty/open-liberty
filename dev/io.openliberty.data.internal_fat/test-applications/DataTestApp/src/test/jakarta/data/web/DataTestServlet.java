@@ -4396,6 +4396,44 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that supplies a Query for cusror pagination,
+     * where the query's WHERE clause already includes an open parenthesis at
+     * the beginning and a close parenthesis at the end, but these alone are
+     * not sufficient to allow the appending of conditions for cursor pagination
+     * because of additional parenthesis and and OR condition within the WHERE
+     * clause. Retrieval of a page based on the cursor will only behave correctly
+     * if additional parentheses have been inserted by the Jakarta Data provider.
+     */
+    @Test
+    public void testParenthesesInsertionForCursorPagination() {
+        PageRequest pageReq = PageRequest
+                        .ofPage(2)
+                        .size(5)
+                        .afterCursor(Cursor.forKey("s", 7));
+
+        Order<Prime> firstLetterOfNameThenNumber = //
+                        Order.by(Sort.asc("LEFT(name, 1)"),
+                                 Sort.asc(ID));
+
+        Page<Prime> page2 = primes.belowOrWithin(10L,
+                                                 30L,
+                                                 50L,
+                                                 pageReq,
+                                                 firstLetterOfNameThenNumber);
+
+        // If parentheses are not inserted around the WHERE clause by the
+        // Jakarta Data provider, then the following will have some extra
+        // results:
+        assertEquals(List.of("two",
+                             "three",
+                             "thirty-one",
+                             "thirty-seven"),
+                     page2.stream()
+                                     .map(p -> p.name)
+                                     .toList());
+    }
+
+    /**
      * Tests entity attribute names from embeddables and MappedSuperclass that
      * can have delimiters. Includes tests for name collisions with attributes from an
      * embeddable or superinteface. This test uses unannotated entities.
@@ -5858,6 +5896,26 @@ public class DataTestServlet extends FATServlet {
         assertEquals(List.of(2, 1), page2.content());
 
         assertEquals(false, page2.hasNext());
+    }
+
+    /**
+     * Use a repository method annotated with a Query that omits the SELECT
+     * and ORDER BY clauses and returns a Page, which requires the computation
+     * of total elements across all pages. Ensure the correct total is returned.
+     */
+    @Test
+    public void testTotalCountsForQueryWithoutSelect() {
+        PageRequest page1Request = PageRequest.ofSize(5).withTotal();
+
+        Page<Prime> page1 = primes.under(40, page1Request);
+
+        assertEquals(12L, page1.totalElements());
+        assertEquals(3L, page1.totalPages());
+
+        assertEquals(List.of(37L, 31L, 29L, 23L, 19L),
+                     page1.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,7 @@ public class Restrict {
     public static <T> Restriction<T> //
                     all(List<? extends Restriction<? super T>> restrictions) {
 
-        return new CompositeRestrictionRecord<T>( //
+        return new CompositeRestrictionRecord<>( //
                         CompositeRestriction.Type.ALL, //
                         List.copyOf(restrictions));
     }
@@ -43,7 +43,7 @@ public class Restrict {
     public static <T> Restriction<T> //
                     any(List<? extends Restriction<? super T>> restrictions) {
 
-        return new CompositeRestrictionRecord<T>( //
+        return new CompositeRestrictionRecord<>( //
                         CompositeRestriction.Type.ANY, //
                         List.copyOf(restrictions));
     }

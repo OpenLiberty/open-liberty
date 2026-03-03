@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -92,13 +92,26 @@ public class Test_Base_State {
 
     //
 
+    String betaPropInitialValue;
+    
     @Before
     public void setUpBase() throws Exception {
+        betaPropInitialValue = System.getProperty("com.ibm.ws.beta.edition");
+        System.setProperty("com.ibm.ws.beta.edition", "true");
         setUpSuite( getBaseCase() ); // 'setUpSuite' throws Exception
+    }
+    
+    private void resetSysetmProperty(String value) {
+        if (value == null) {
+            System.clearProperty("com.ibm.ws.beta.edition");
+        } else {
+            System.setProperty("com.ibm.ws.beta.edition", value);
+        }
     }
 
     @After
     public void tearDown() throws Exception {
+        resetSysetmProperty(betaPropInitialValue);
         tearDownSuiteStores();
     }
 

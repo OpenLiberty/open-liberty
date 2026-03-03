@@ -1,5 +1,5 @@
 <%--
-    Copyright (c) 2014, 2025 IBM Corporation and others.
+    Copyright (c) 2014, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -11,6 +11,88 @@
         IBM Corporation - initial API and implementation
  --%>
 <%@ page session="false" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%
+    String productInfo = "";
+    boolean isOpenLiberty = false;
+    
+    try {
+        // Try to read from properties files
+        // Check all properties files and use the one that's NOT io.openliberty if multiple exist
+        String installRoot = System.getProperty("wlp.install.dir");
+        if (installRoot != null) {
+            java.io.File versionsDir = new java.io.File(installRoot, "lib/versions");
+            
+            if (versionsDir.exists() && versionsDir.isDirectory()) {
+                java.io.File[] allFiles = versionsDir.listFiles();
+                
+                String openLibertyName = "";
+                String otherProductName = "";
+                
+                // Check all properties files
+                if (allFiles != null && allFiles.length > 0) {
+                    for (int i = 0; i < allFiles.length; i++) {
+                        java.io.File propsFile = allFiles[i];
+                        String fileName = propsFile.getName();
+                        
+                        // Only process .properties files, skip service.fingerprint
+                        if (fileName.endsWith(".properties") && !fileName.equals("service.fingerprint")) {
+                            java.util.Properties props = new java.util.Properties();
+                            java.io.FileInputStream fis = null;
+                            try {
+                                fis = new java.io.FileInputStream(propsFile);
+                                props.load(fis);
+                                
+                                String productId = props.getProperty("com.ibm.websphere.productId", "");
+                                String name = props.getProperty("com.ibm.websphere.productName", "");
+                                
+                                if (name != null && !name.isEmpty()) {
+                                    // If this is Open Liberty, save it separately
+                                    if ("io.openliberty".equals(productId)) {
+                                        openLibertyName = name;
+                                    } else {
+                                        // This is WebSphere or another product - prioritize it
+                                        otherProductName = name;
+                                    }
+                                }
+                            } finally {
+                                if (fis != null) {
+                                    try { fis.close(); } catch (Exception e) {}
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Use WebSphere/other product name if available, otherwise use Open Liberty
+                    if (otherProductName != null && !otherProductName.isEmpty()) {
+                        productInfo = otherProductName;
+                        isOpenLiberty = false;
+                    } else if (openLibertyName != null && !openLibertyName.isEmpty()) {
+                        productInfo = openLibertyName;
+                        isOpenLiberty = true;
+                    }
+                }
+            }
+        }
+        
+        // Fallback to default if we couldn't get the product name
+        if (productInfo == null || productInfo.isEmpty()) {
+            productInfo = "Liberty";
+        }
+        
+        // Escape for JavaScript string
+        if (productInfo != null && !productInfo.isEmpty()) {
+            productInfo = productInfo.replace("\\", "\\\\")
+                                     .replace("\"", "\\\"")
+                                     .replace("'", "\\'")
+                                     .replace("\n", "\\n")
+                                     .replace("\r", "\\r");
+        }
+    } catch (Exception ex) {
+        // If we can't get the product info, use default
+        productInfo = "Liberty";
+        ex.printStackTrace(); // Log the error for debugging
+    }
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -21,8 +103,8 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
   <meta name="apple-touch-fullscreen" content="yes" />
 
-  <link href="login/images/favicon.ico" rel="icon" />
-  <link href="login/images/favicon.ico" rel="shortcut icon" />
+  <link href="<%= isOpenLiberty ? "login/images/runtime-fav-icon.svg" : "login/images/favicon.ico" %>" rel="icon" />
+  <link href="<%= isOpenLiberty ? "login/images/runtime-fav-icon.svg" : "login/images/favicon.ico" %>" rel="shortcut icon" />
   <link href="login/images/apple-touch-icon.png" rel="apple-touch-icon" />
   <link href="login/login.css" rel="stylesheet"></link>
 
@@ -74,7 +156,9 @@
   <script src="404/404.js"></script>
   <script type="text/javascript">
     var userLocale = getLanguageCode();
-
+    
+    // Product info from server
+    var productInfoData = "<%= productInfo %>";
     var dojoConfig = {
       locale: userLocale
     };
@@ -96,7 +180,7 @@
   <div class="bg-fill-color"></div>
   <section id="login">
     <div class="login-panel" role="main">
-      <img class="liberty-logo" src="login/images/WAS-Liberty-Logo-White.png" alt="">
+      <img class="liberty-logo" src="<%= isOpenLiberty ? "login/images/runtime-icon.svg" : "login/images/WAS-Liberty-Logo-White.png" %>" alt="">
       <header class="login-header">
         <h1 id="loginTitle">Liberty Admin Center</h1>
       </header>

@@ -271,7 +271,7 @@ io.smallrye.reactive:mutiny:2.7.0
 io.smallrye.reactive:smallrye-reactive-converter-api:3.0.1
 io.smallrye.reactive:smallrye-reactive-messaging-api:4.16.0
 io.smallrye.reactive:smallrye-reactive-messaging-provider:4.16.0
-io.smallrye:jandex:3.2.3
+io.smallrye:jandex:3.5.3
 io.smallrye:smallrye-graphql-api:1.0.26
 io.smallrye:smallrye-graphql-cdi:1.0.26
 io.smallrye:smallrye-graphql-client-api:1.0.26
@@ -481,7 +481,7 @@ org.apache.directory.server:apacheds-service:2.0.0-M15
 org.apache.directory.server:kerberos-client:2.0.0-M24
 org.apache.felix:org.apache.felix.http.api:2.2.0
 org.apache.felix:org.apache.felix.http.base:2.2.0
-org.apache.felix:org.apache.felix.scr:2.2.10
+org.apache.felix:org.apache.felix.scr:2.2.14
 org.apache.felix:org.osgi.service.obr:1.0.2
 org.apache.geronimo.specs:geronimo-jaxb_2.2_spec:1.0.1
 org.apache.httpcomponents.client5:httpclient5:5.0.2
@@ -553,7 +553,7 @@ org.apache.ws.xmlschema:xmlschema-core:2.0.3
 org.apache.xbean:xbean-asm8-shaded:4.17
 org.aspectj:aspectjrt:1.9.24
 org.asynchttpclient:async-http-client:2.12.3
-org.bitbucket.b_c:jose4j:0.9.5
+org.bitbucket.b_c:jose4j:0.9.6
 org.bouncycastle:bcpg-jdk18on:1.82
 org.bouncycastle:bcpkix-jdk18on:1.82
 org.bouncycastle:bcprov-jdk18on:1.78.1

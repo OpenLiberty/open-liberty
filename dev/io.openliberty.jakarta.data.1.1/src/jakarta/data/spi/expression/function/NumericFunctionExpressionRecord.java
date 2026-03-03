@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,11 +19,13 @@ import jakarta.data.messages.Messages;
 
 record NumericFunctionExpressionRecord<T, N extends Number & Comparable<N>>(
                 String name,
+                Class<? extends N> returnType,
                 List<ComparableExpression<? super T, ?>> arguments)
                 implements NumericFunctionExpression<T, N> {
 
     NumericFunctionExpressionRecord {
         Messages.requireNonNull(name, "name");
+        Messages.requireNonNull(name, "returnType");
     }
 
     @Override
@@ -40,5 +42,10 @@ record NumericFunctionExpressionRecord<T, N extends Number & Comparable<N>>(
         s.append(')');
 
         return s.toString();
+    }
+
+    @Override
+    public Class<? extends N> type() {
+        return returnType;
     }
 }

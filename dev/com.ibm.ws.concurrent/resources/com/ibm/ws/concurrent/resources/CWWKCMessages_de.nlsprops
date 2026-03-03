@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: Die an die ManagedTaskListener-Methode
 CWWKC1120.future.get.rejected.explanation=Die ManagedTaskListener-Methoden taskSubmitted und taskStarting werden in dem Thread ausgef\u00fchrt, der die Task \u00fcbergibt bzw. startet. Deshalb darf die an diese Methoden \u00fcbergebene Klasse Future nicht zum Warten auf die Task verwendet werden.
 CWWKC1120.future.get.rejected.useraction=Aktualisieren Sie die Anwendung so, dass der Aufruf von Get f\u00fcr die an taskSubmitted und taskStarting \u00fcbergebene Klasse Future vermieden wird.
 
-CWWKC1121.virtual.invalid=CWWKC1121E: Die {0} Annotation oder das {1} Deployment Descriptor Element, das den {0} Namen hat, gibt virtual=true an, aber virtuelle Threads sind vor Java 21 nicht verf\u00fcgbar. Die verwendete Java-Ebene ist: {1}.
+CWWKC1121.virtual.invalid=CWWKC1121E: Die Anmerkung \u201e {0} \u201c oder das Bereitstellungsdeskriptorelement \u201e {1} \u201c mit dem Namen \u201e {2} \u201c gibt \u201evirtual=true\u201c an, aber virtuelle Threads sind vor Java 21 nicht verf\u00fcgbar. Die verwendete Java-Version lautet: {3}.
 CWWKC1121.virtual.invalid.explanation=Virtuelle Threads sind in der verwendeten Java-Version nicht verf\u00fcgbar.
 CWWKC1121.virtual.invalid.useraction=Aktualisieren Sie auf eine neuere Java-Version, die virtuelle Threads unterst\u00fctzt.
 
-CWWKC1122.mod.unavail=CWWKC1122E: Die {0} Anwendung oder ihr {1} Modul ist nicht verf\u00fcgbar.
+CWWKC1122.mod.unavail=CWWKC1122E: Die Anwendung \u201e {0} \u201c oder ihr Modul \u201e {1} \u201c ist nicht verf\u00fcgbar. ManagedThreadFactory Beans, die in der Anwendung oder dem Modul definiert sind, k\u00f6nnen nicht abgerufen werden.
 CWWKC1122.mod.unavail.explanation=Die Anwendung und das Modul, die die ManagedThreadFactory definieren, m\u00fcssen verf\u00fcgbar sein, um eine ManagedThreadFactory zu erhalten.
 CWWKC1122.mod.unavail.useraction=Vergewissern Sie sich, dass die Anwendung gestartet ist und dass die Anwendung das Modul enth\u00e4lt, das die ManagedThreadFactory definiert.
 

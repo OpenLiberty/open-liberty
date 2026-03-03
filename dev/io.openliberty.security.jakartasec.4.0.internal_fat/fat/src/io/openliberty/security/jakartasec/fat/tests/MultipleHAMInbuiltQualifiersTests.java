@@ -29,6 +29,7 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants;
 import multiple.ham.common.MultipleHAMProtectedResource;
+import multiple.ham.custom.handlers.BaseHAMHandler;
 import multiple.ham.custom.handlers.CustomHAMHandler;
 import multiple.ham.inbuilt.MultipleHAMQualifiersApplication;
 
@@ -64,7 +65,7 @@ public class MultipleHAMInbuiltQualifiersTests extends BaseJakartaSecurity40Test
     public static void setUp() throws Exception {
         MultipleHAMInbuiltQualifiersTests instance = new MultipleHAMInbuiltQualifiersTests();
         WebArchive multipleHamApp = ShrinkWrap.create(WebArchive.class,
-                                                      APP_NAME + ".war").addClass(MultipleHAMQualifiersApplication.class).addPackage("multiple.ham.common.qualifiers").addClass(MultipleHAMProtectedResource.class).addClass(CustomHAMHandler.class);
+                                                      APP_NAME + ".war").addClass(MultipleHAMQualifiersApplication.class).addPackage("multiple.ham.common.qualifiers").addClass(MultipleHAMProtectedResource.class).addClass(BaseHAMHandler.class).addClass(CustomHAMHandler.class);
 
         // The URL is not expected to be modified during this test scope
         url = "http://localhost:" + server.getHttpDefaultPort() + CONTEXT_ROOT + RESOURCE_PATH;

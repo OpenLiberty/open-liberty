@@ -5,6 +5,7 @@
 	<classpathentry kind="src" path="test-applications/testClassPath2.war/src"/>
 	<classpathentry kind="src" path="test-applications/testClassPath3.war/src"/>
 	<classpathentry kind="src" path="test-applications/testLibFileSet.war/src"/>
+	<classpathentry kind="src" path="test-applications/testPlatformDelegation.war/src"/>
 	<classpathentry kind="src" path="test-applications/testNativeLibrary.war/src"/>
 	<classpathentry kind="src" path="test-applications/testParentLastLibraryFeature.war/src"/>
 	<classpathentry kind="src" path="test-applications/testParentLibraryInconsistent.war/src"/>

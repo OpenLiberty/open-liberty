@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013,2025 IBM Corporation and others.
+ * Copyright (c) 2013,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ import com.ibm.ws.concurrent.cdi.MTFBeanResourceInfo;
 import com.ibm.ws.container.service.metadata.extended.DeferredMetaDataFactory;
 import com.ibm.ws.container.service.metadata.extended.IdentifiableComponentMetaData;
 import com.ibm.ws.container.service.metadata.extended.MetaDataIdentifierService;
+import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.runtime.metadata.ModuleMetaData;
@@ -543,7 +544,8 @@ public class ManagedThreadFactoryService implements ResourceFactory, Application
                                            "CWWKC1121.virtual.invalid",
                                            "ManagedThreadFactoryDefinition",
                                            "managed-thread-factory",
-                                           name));
+                                           name,
+                                           JavaInfo.majorVersion()));
         }
     }
 }

@@ -71,7 +71,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     @Override
     public void insert(Subject subject, String userid, @Sensitive String password) {
         try {
-            CacheObject cacheObject = cache.createCacheObject(subject);
+            CacheObject cacheObject = new CacheObject(subject);
             CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject, userid, password);
             commonInsert(cacheContext, cacheObject);
         } catch (Exception e) {
@@ -86,7 +86,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     @Override
     public void insert(Subject subject, X509Certificate[] certChain) {
         try {
-            CacheObject cacheObject = cache.createCacheObject(subject);
+            CacheObject cacheObject = new CacheObject(subject);
             CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject, certChain);
             commonInsert(cacheContext, cacheObject);
         } catch (Exception e) {
@@ -103,7 +103,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     @Override
     public void insert(Subject subject) {
         try {
-            CacheObject cacheObject = cache.createCacheObject(subject);
+            CacheObject cacheObject = new CacheObject(subject);
             CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject);
             commonInsert(cacheContext, cacheObject);
         } catch (Exception e) {
@@ -190,7 +190,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         if (cacheKey instanceof byte[]) {
             cacheKey = new ByteArray((byte[]) cacheKey);
         }
-        return (CacheObject) cache.get(cacheKey);
+        return cache.get(cacheKey);
     }
 
     protected void activate(ComponentContext componentContext, Map<String, Object> newProperties) {

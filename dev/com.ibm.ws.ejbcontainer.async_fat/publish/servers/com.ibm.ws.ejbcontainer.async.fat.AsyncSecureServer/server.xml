@@ -1,4 +1,4 @@
-<server>
+<server quiesceTimeout="90s">
     <featureManager>
         <feature>servlet-3.1</feature>
         <feature>ejbLite-3.2</feature>

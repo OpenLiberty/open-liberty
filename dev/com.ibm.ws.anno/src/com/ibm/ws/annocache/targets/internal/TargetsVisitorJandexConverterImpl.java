@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -165,7 +165,7 @@ public class TargetsVisitorJandexConverterImpl {
 
             classesTable.jandex_i_setModifiers(i_packageName, modifiers);
 
-            for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotations().entrySet() ) {
+            for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotationsMap().entrySet() ) {
                 String annotationClassName = annoEntry.getKey().toString();
                 String i_annotationClassName = internClassName(annotationClassName);
 
@@ -232,7 +232,7 @@ public class TargetsVisitorJandexConverterImpl {
         // Jandex places all annotations of a class in a single table which is held
         // by the class information.
 
-        for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotations().entrySet() ) {
+        for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : classInfo.annotationsMap().entrySet() ) {
             String annotationClassName = annoEntry.getKey().toString();
             String i_annotationClassName = internClassName(annotationClassName);
 

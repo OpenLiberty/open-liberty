@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -113,6 +113,11 @@ public class NextTimeoutPersistentTest extends FATServletClient {
             // persistent.internal.InvokerTask run starts for a persistent timer during server shutdown,
             // but EJB timer service throws exception due to server stopping.
 
+            // CWWKE1102W: The quiesce operation did not complete.
+            //
+            // ignore this warning as it is often due to limited resource; if there is really a
+            // problem with server quiesce then a subsequent more meaningful warning will be logged
+
             if (server != null && server.isStarted()) {
                 server.stopServer("CNTR0092W",
                                   "DSRA0304E",
@@ -120,7 +125,8 @@ public class NextTimeoutPersistentTest extends FATServletClient {
                                   "DSRA0230E.*TRANSACTION_FAIL",
                                   "J2CA0027E",
                                   "CWWKC1501W.*server is stopping",
-                                  "CWWKC1503W.*server is stopping");
+                                  "CWWKC1503W.*server is stopping",
+                                  "CWWKE1102W");
             }
         }
     }

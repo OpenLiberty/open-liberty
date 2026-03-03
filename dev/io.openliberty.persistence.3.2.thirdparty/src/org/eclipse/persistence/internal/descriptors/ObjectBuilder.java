@@ -766,16 +766,21 @@ public class ObjectBuilder extends CoreObjectBuilder<AbstractRecord, AbstractSes
         }
         Map<String, TypeValue> typeValueMap = new LinkedHashMap<>();
         // Set class at construction time for record classes
-        ReadObjectQuery query = new ReadObjectQuery(clazz);
-        query.setSession(session);
         for (RecordComponent component : clazz.getRecordComponents()) {
             typeValueMap.put(component.getName(), new TypeValue(component.getType()));
         }
         for (DatabaseMapping mapping: mappings) {
             Object value = null;
-            if (mapping instanceof DirectToFieldMapping) {
-                value = mapping.valueFromRow(databaseRow, null, query, true);
-            } if (mapping instanceof AggregateObjectMapping aggregateObjectMapping) {
+            if (mapping instanceof DirectToFieldMapping directMapping) {
+                value = databaseRow.get(directMapping.getField());
+                if (value != null) {
+                    if (directMapping.getConverter() != null) {
+                        value = directMapping.getConverter().convertDataValueToObjectValue(value, session);
+                    } else if (directMapping.getAttributeClassification() != null) {
+                        value = session.getDatasourcePlatform().convertObject(value, directMapping.getAttributeClassification());
+                    }
+                }
+            } else if (mapping instanceof AggregateObjectMapping aggregateObjectMapping) {
                 ClassDescriptor descriptor = session.getClassDescriptor(aggregateObjectMapping.getReferenceClass());
                 //Handle nested records
                 if (aggregateObjectMapping.getReferenceClass().isRecord()) {

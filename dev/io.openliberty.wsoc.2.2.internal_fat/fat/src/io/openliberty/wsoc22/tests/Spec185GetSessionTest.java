@@ -1,6 +1,6 @@
 
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -124,8 +124,8 @@ public class Spec185GetSessionTest {
 
         String msgSession = LS.waitForStringInLog("MSG SESSION: ", LS.getConsoleLogFile());
         String resultSession = LS.waitForStringInLog("RESULT SESSION: ", LS.getConsoleLogFile());
-        assertNotNull("The following String was not found in the log: ", msgSession);
-        assertNotNull("The following String was not found in the log: ", resultSession);
+        assertNotNull("The String [MSG SESSION: ] was not found in the log", msgSession);
+        assertNotNull("The String [RESULT_SESSION: ] was not found in the log", resultSession);
         LOG.info(msgSession);
         LOG.info(resultSession);
         assertTrue("The Session ID's were not the same.", msgSession.substring(msgSession.indexOf(": ")).equals(resultSession.substring(resultSession.indexOf(": "))));

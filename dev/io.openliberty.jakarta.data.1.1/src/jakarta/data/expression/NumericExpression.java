@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,9 @@ public interface NumericExpression<T, N extends Number & Comparable<N>> //
                 extends ComparableExpression<T, N> {
 
     default NumericExpression<T, N> abs() {
-        return NumericFunctionExpression.of(NumericFunctionExpression.ABS, this);
+        return NumericFunctionExpression.of(NumericFunctionExpression.ABS,
+                                            type(),
+                                            this);
     }
 
     default NumericExpression<T, BigDecimal> asBigDecimal() {
@@ -80,6 +82,7 @@ public interface NumericExpression<T, N extends Number & Comparable<N>> //
 
     default NumericExpression<T, N> negated() {
         return NumericFunctionExpression.of(NumericFunctionExpression.NEG,
+                                            type(),
                                             this);
     }
 

@@ -16,6 +16,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -119,12 +120,12 @@ public class Data_1_0 implements DataVersionCompatibility {
                                           String o_,
                                           String attrName,
                                           AttributeConstraint constraint,
-                                          int qp,
+                                          int prevNumJPQLParams,
                                           boolean isCollection,
                                           Annotation[] annos) {
         if (attrName.charAt(attrName.length() - 1) != ')')
             q.append(o_);
-        return q.append(attrName).append("=?").append(qp);
+        return q.append(attrName).append("=?").append(prevNumJPQLParams + 1);
     }
 
     @Override
@@ -134,13 +135,22 @@ public class Data_1_0 implements DataVersionCompatibility {
     }
 
     @Override
-    @Trivial
+    public int generateConstraint(StringBuilder q,
+                                  String entityVar_,
+                                  Object constraint,
+                                  int jpqlParamCount,
+                                  Set<String> jpqlParamNames,
+                                  Map<Object, Object> jpqlParams) {
+        throw new UnsupportedOperationException("jakarta.data.constraint.Constraint");
+    }
+
+    @Override
     public int generateRestrictions(StringBuilder q,
                                     String entityVar_,
                                     Object restriction,
                                     int jpqlParamCount,
                                     Set<String> jpqlParamNames,
-                                    Map<Object, Object> qrParams) {
+                                    Map<Object, Object> jpqlParams) {
         throw new UnsupportedOperationException("jakarta.data.restrict.Restriction");
     }
 
@@ -148,6 +158,14 @@ public class Data_1_0 implements DataVersionCompatibility {
     @Trivial
     public Annotation getCountAnnotation(Method method) {
         return null;
+    }
+
+    @Override
+    @Trivial
+    public Map<Integer, Object> getDeferredConstraints(boolean alwaysDefer,
+                                                       int maxIndex,
+                                                       Object[] methodParams) {
+        return Collections.emptyMap();
     }
 
     @Override
@@ -182,10 +200,10 @@ public class Data_1_0 implements DataVersionCompatibility {
                                   String[] attrNames,
                                   AttributeConstraint[] constraints,
                                   char[] updateOps,
-                                  int qpNext) {
+                                  int prevNumJPQLParams) {
         // In Data 1.0, all constraints are the equality condition
         constraints[p] = AttributeConstraint.Equal;
-        return qpNext + 1;
+        return prevNumJPQLParams + 1;
     }
 
     @Override

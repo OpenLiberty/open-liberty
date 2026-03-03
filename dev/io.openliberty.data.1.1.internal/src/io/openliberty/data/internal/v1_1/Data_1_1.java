@@ -17,10 +17,12 @@ import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
 
@@ -141,6 +143,11 @@ public class Data_1_1 implements DataVersionCompatibility {
                            Save.class);
 
     /**
+     * Empty size 0 array that indicates no Constraint values.
+     */
+    private static final Object[] NO_VALUES = new Object[0];
+
+    /**
      * Annotations that represent operations that are allowed for methods of a
      * stateful repository.
      */
@@ -209,7 +216,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                                           String o_,
                                           String attrName,
                                           AttributeConstraint constraint,
-                                          int qp,
+                                          int prevNumJPQLParams,
                                           boolean isCollection,
                                           Annotation[] annos) {
         StringBuilder attributeExpr = new StringBuilder();
@@ -272,30 +279,30 @@ public class Data_1_1 implements DataVersionCompatibility {
             case LessThan:
             case LessThanEqual:
                 q.append(attributeExpr).append(constraint.operator());
-                appendParam(q, ignoreCase, qp);
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1);
                 break;
             case Between:
                 q.append(attributeExpr).append(constraint.operator());
-                appendParam(q, ignoreCase, qp);
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1);
                 q.append(" AND ");
-                appendParam(q, ignoreCase, qp + 1);
+                appendParam(q, ignoreCase, prevNumJPQLParams + 2);
                 break;
             case In:
                 if (ignoreCase)
                     throw new UnsupportedOperationException(); // should be unreachable
                 q.append(attributeExpr).append(constraint.operator());
-                appendParam(q, ignoreCase, qp);
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1);
                 break;
             // TODO 1.1: escape characters and custom wildcards
             case Like:
                 q.append(attributeExpr).append(constraint.operator());
-                appendParam(q, ignoreCase, qp);
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1);
                 break;
             case LikeEscaped:
                 q.append(attributeExpr).append(constraint.operator());
-                appendParam(q, ignoreCase, qp);
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1);
                 q.append(" ESCAPE ");
-                appendParam(q, false, qp + 1);
+                appendParam(q, false, prevNumJPQLParams + 2);
                 break;
             case Null:
                 q.append(attributeExpr).append(constraint.operator());
@@ -303,20 +310,20 @@ public class Data_1_1 implements DataVersionCompatibility {
             case Contains:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT('%', ");
-                appendParam(q, ignoreCase, qp).append(", '%')");
+                                .append(" LIKE ('%' || ");
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1).append(" || '%')");
                 break;
             case EndsWith:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT('%', ");
-                appendParam(q, ignoreCase, qp).append(')');
+                                .append(" LIKE ('%' || ");
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1).append(')');
                 break;
             case StartsWith:
                 q.append(attributeExpr) //
                                 .append(negated ? " NOT" : "") //
-                                .append(" LIKE CONCAT(");
-                appendParam(q, ignoreCase, qp).append(", '%')");
+                                .append(" LIKE (");
+                appendParam(q, ignoreCase, prevNumJPQLParams + 1).append(" || '%')");
                 break;
             // TODO operation for collection containing?
             //case ???:
@@ -354,29 +361,31 @@ public class Data_1_1 implements DataVersionCompatibility {
     /**
      * Appends JPQL to the partially built query to represent a Constraint.
      *
-     * @param q              partially built query ending with the WHERE clause.
+     * @param q              partially built query to which to append JPQL
+     *                           representing the Constraint.
      * @param entityVar_     entity identifier variable name and . character.
      * @param constraint     the Constraint for which to generate JPQL.
-     * @param jpqlParamCount number of named or positional parameters in the
-     *                           partially built query.
-     * @param jpqlParamNames names of named parameters in the partially bulit
+     * @param jpqlParamCount number of named or positional parameters identified
+     *                           up to this point for the JPQL.
+     * @param jpqlParamNames names of named parameters in the partially built
      *                           query. Empty if the query uses positional
      *                           parameeters or has none. If using named parameters,
      *                           this method should add any that are generated.
-     * @param xprParams      list for this method to populate with the name of
+     * @param jpqlParams     list for this method to populate with the name of
      *                           named parameters or index of positional parameters,
-     *                           mapped to value, for values (if any) obtained from
-     *                           the Expression.
+     *                           mapped to value, for each value obtained from the
+     *                           processed Restriction(s).
      * @return the new count of named or positional parameters, including any that
-     *         were generated for the Restriction(s).
+     *         were generated for the Constraint.
      */
+    @Override
     // TODO @Trivial // avoid tracing values found in Expression.toString()
-    private int generateConstraint(StringBuilder q,
-                                   String entityVar_,
-                                   Constraint<?> constraint,
-                                   int jpqlParamCount,
-                                   Set<String> jpqlParamNames,
-                                   Map<Object, Object> xprParams) {
+    public int generateConstraint(StringBuilder q,
+                                  String entityVar_,
+                                  Object constraint,
+                                  int jpqlParamCount,
+                                  Set<String> jpqlParamNames,
+                                  Map<Object, Object> jpqlParams) {
 
         boolean positionalParams = jpqlParamNames.isEmpty();
 
@@ -457,7 +466,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                                                 exp1,
                                                 jpqlParamCount,
                                                 jpqlParamNames,
-                                                xprParams);
+                                                jpqlParams);
 
             if (exp2 != null) {
                 if (c == AttributeConstraint.LikeEscaped ||
@@ -475,7 +484,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                                                     exp2,
                                                     jpqlParamCount,
                                                     jpqlParamNames,
-                                                    xprParams);
+                                                    jpqlParams);
             }
         } else if (exps != null) { // IN or NOT IN
             q.append('(');
@@ -488,7 +497,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                                                     exps.get(i),
                                                     jpqlParamCount,
                                                     jpqlParamNames,
-                                                    xprParams);
+                                                    jpqlParams);
             }
             q.append(')');
         }
@@ -514,7 +523,7 @@ public class Data_1_1 implements DataVersionCompatibility {
      *                           mapped to value, for values (if any) obtained from
      *                           the Expression.
      * @return the new count of named or positional parameters, including any that
-     *         were generated for the Restriction(s).
+     *         were generated for the Expression.
      */
     // TODO @Trivial // avoid tracing values found in Expression.toString()
     private int generateExpression(StringBuilder q,
@@ -550,6 +559,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                     q.append(name.toUpperCase()).append('(');
                     break;
                 case TextFunctionExpression.CONCAT:
+                    q.append('(');
                     break;
                 case NumericFunctionExpression.NEG:
                     q.append('-');
@@ -591,6 +601,7 @@ public class Data_1_1 implements DataVersionCompatibility {
             switch (name) {
                 case NumericFunctionExpression.ABS:
                 case NumericFunctionExpression.LENGTH:
+                case TextFunctionExpression.CONCAT:
                 case TextFunctionExpression.LEFT:
                 case TextFunctionExpression.RIGHT:
                 case TextFunctionExpression.LOWER:
@@ -724,6 +735,38 @@ public class Data_1_1 implements DataVersionCompatibility {
     }
 
     @Override
+    @Trivial // to avoid tracing values supplied to repository methods
+    public Map<Integer, Object> getDeferredConstraints(boolean alwaysDefer,
+                                                       int maxIndex,
+                                                       Object[] methodParams) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "getDeferredConstraints",
+                     alwaysDefer,
+                     maxIndex,
+                     Stream.of(methodParams) //
+                                     .map(o -> o == null ? null : o.getClass().getName()) //
+                                     .toList());
+
+        Map<Integer, Object> deferred = null;
+
+        for (int i = 0; i <= maxIndex; i++)
+            if (methodParams[i] instanceof Constraint c &&
+                (alwaysDefer || hasNonLiteralExpression(c))) {
+                if (deferred == null)
+                    deferred = new HashMap<>();
+                deferred.put(i, c);
+            }
+
+        if (deferred == null)
+            deferred = Collections.emptyMap();
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "getDeferredConstraints", deferred.keySet());
+        return deferred;
+    }
+
+    @Override
     @Trivial
     public Class<?> getEntityClass(Find find) {
         return find.value();
@@ -780,6 +823,37 @@ public class Data_1_1 implements DataVersionCompatibility {
         return returnValue;
     }
 
+    /**
+     * Determine if the constraint applies to one or more values that are
+     * expressions other than literal expressions.
+     *
+     * @param constraint instance of Constraint supplied to a repository method.
+     * @return true if the constraint applies to any non-literal expressions.
+     */
+    @Trivial
+    private boolean hasNonLiteralExpression(Constraint constraint) {
+        return switch (constraint) {
+            case AtLeast c -> !(c.bound() instanceof Literal);
+            case AtMost c -> !(c.bound() instanceof Literal);
+            case Between c -> !(c.lowerBound() instanceof Literal) ||
+                              !(c.upperBound() instanceof Literal);
+            case EqualTo c -> !(c.expression() instanceof Literal);
+            case GreaterThan c -> !(c.bound() instanceof Literal);
+            case In c -> c.expressions().stream().anyMatch(e -> !(e instanceof Literal));
+            case LessThan c -> !(c.bound() instanceof Literal);
+            case Like c -> !(c.pattern() instanceof Literal);
+            case NotBetween c -> !(c.lowerBound() instanceof Literal) ||
+                                 !(c.upperBound() instanceof Literal);
+            case NotEqualTo c -> !(c.expression() instanceof Literal);
+            case NotIn c -> c.expressions().stream().anyMatch(e -> !(e instanceof Literal));
+            case NotLike c -> !(c.pattern() instanceof Literal);
+            case NotNull c -> false;
+            case Null c -> false;
+            default -> throw new UnsupportedOperationException("Constraint: " +
+                                                               constraint.getClass().getName());
+        };
+    }
+
     @Override
     public int inspectMethodParam(int p,
                                   Class<?> paramType,
@@ -787,8 +861,8 @@ public class Data_1_1 implements DataVersionCompatibility {
                                   String[] attrNames,
                                   AttributeConstraint[] constraints,
                                   char[] updateOps,
-                                  int qpNext) {
-        int qpOriginal = qpNext;
+                                  int prevNumJPQLParams) {
+        int numJPQLParams = prevNumJPQLParams;
 
         for (Annotation anno : paramAnnos)
             if (anno instanceof Is) {
@@ -796,49 +870,43 @@ public class Data_1_1 implements DataVersionCompatibility {
             } else if (anno instanceof Assign) {
                 attrNames[p] = ((Assign) anno).value();
                 updateOps[p] = '=';
-                qpNext++;
+                numJPQLParams++;
             } else if (anno instanceof Add) {
                 attrNames[p] = ((Add) anno).value();
                 updateOps[p] = '+';
-                qpNext++;
+                numJPQLParams++;
             } else if (anno instanceof Multiply) {
                 attrNames[p] = ((Multiply) anno).value();
                 updateOps[p] = '*';
-                qpNext++;
+                numJPQLParams++;
             } else if (anno instanceof Divide) {
                 attrNames[p] = ((Divide) anno).value();
                 updateOps[p] = '/';
-                qpNext++;
+                numJPQLParams++;
             } else if (anno instanceof SubtractFrom) {
                 attrNames[p] = ((SubtractFrom) anno).value();
                 updateOps[p] = '-';
-                qpNext++;
+                numJPQLParams++;
             }
 
         if (constraints[p] == null && Constraint.class.isAssignableFrom(paramType)) {
             constraints[p] = toAttributeConstraint(null, paramType);
         }
 
-        if (qpNext == qpOriginal) {
+        if (numJPQLParams == prevNumJPQLParams) {
             if (constraints[p] == null)
                 constraints[p] = AttributeConstraint.Equal;
 
             // no annotation indicating a constraint or update
-            if (false) { // TODO 1.1 check if paramType is a Constraint
-                // qpNext increment will vary by Constraint subtype
-                // TODO 1.1: if Constraint.class and generated upfront,
-                // qpNext = PARAM_CONSTRAINT_DEFERRED;
-            } else {
-                qpNext += constraints[p].numMethodParams();
-            }
-        } else if (qpNext - qpOriginal > 1) {
+            numJPQLParams += constraints[p].numMethodParams();
+        } else if (numJPQLParams - prevNumJPQLParams > 1) {
             // TODO possibly allow a redundant Constraint that matches the Is annotation.
-            qpNext = PARAM_ANNOS_CONFLICT;
+            numJPQLParams = PARAM_ANNOS_CONFLICT;
         } else if (false) { // TODO 1.1 check if paramType is a Constraint
-            qpNext = PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT;
+            numJPQLParams = PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT;
         }
 
-        return qpNext;
+        return numJPQLParams;
     }
 
     @Override
@@ -1014,7 +1082,7 @@ public class Data_1_1 implements DataVersionCompatibility {
             values = new Object[] { c.pattern(), c.escape() };
         else if (constraintOrValue instanceof NotNull ||
                  constraintOrValue instanceof Null)
-            values = new Object[0];
+            values = NO_VALUES;
         else if (constraintOrValue instanceof Constraint)
             throw new UnsupportedOperationException("Constraint: " +
                                                     constraintOrValue.getClass().getName());
@@ -1022,11 +1090,12 @@ public class Data_1_1 implements DataVersionCompatibility {
             return null;
 
         for (int i = 0; i < values.length; i++)
-            if (values[i] instanceof Literal)
-                values[i] = ((Literal) values[i]).value();
+            if (values[i] instanceof Literal literal)
+                values[i] = literal.value();
             else if (values[i] instanceof Character)
                 ; // the escape character for Like and NotLike
             else
+                // non-Literal constraint - should be unreachable
                 throw new UnsupportedOperationException(values[i].getClass().getName());
 
         if (isList)

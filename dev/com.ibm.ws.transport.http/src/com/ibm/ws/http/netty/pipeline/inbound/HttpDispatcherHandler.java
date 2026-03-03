@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -55,6 +55,8 @@ import io.openliberty.http.netty.timeout.exception.TimeoutException;
 public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpRequest> {
 
     private static final TraceComponent tc = Tr.register(HttpDispatcherHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    public static final String NAME = "httpDispatcherHandler";
 
     HttpChannelConfig config;
     private ChannelHandlerContext context;

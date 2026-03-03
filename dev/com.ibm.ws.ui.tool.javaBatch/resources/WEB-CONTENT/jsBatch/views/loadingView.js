@@ -37,7 +37,7 @@ function(
   function init() {
     var standby = new Standby({
       target : ID.LOADING_VIEW_STANDBY,
-      image : 'imagesShared/search-loading-T.gif',
+      image : 'imagesShared/search-loading-T.svg',
       color : '#FFFFFF'// the gif has a white background, so don't use default
       });
     standby.startup();

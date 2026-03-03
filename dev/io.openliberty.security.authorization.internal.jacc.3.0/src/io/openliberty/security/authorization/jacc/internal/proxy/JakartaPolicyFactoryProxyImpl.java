@@ -71,4 +71,9 @@ public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
             }
         }
     }
+
+    @Override
+    public boolean isPolicyConfigured() {
+        return PolicyFactory.getPolicyFactory() != null;
+    }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -81,8 +81,9 @@ public class NpTimerConfigRetryTest extends FATServletClient {
         // CNTR0020E: EJB threw an unexpected (non-declared) exception
         // CNTR0179W: Non-persistent timer maximum number of retries x was reached.
         // CNTR0333W: EJB timer ... started later than expected.
+        // CWWKE1102W: ignore the initial quiesce timeout warning
         if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0020E", "CNTR0179W", "CNTR0333W");
+            server.stopServer("CNTR0020E", "CNTR0179W", "CNTR0333W", "CWWKE1102W");
         }
     }
 

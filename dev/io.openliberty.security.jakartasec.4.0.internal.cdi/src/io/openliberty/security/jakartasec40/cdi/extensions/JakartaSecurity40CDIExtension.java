@@ -215,21 +215,21 @@ public class JakartaSecurity40CDIExtension implements Extension {
 
     /**
      * Process a single HAM definition annotation, and add it to our internal
-     * hamDefinitions tracker if it has custom annotations.
+     * hamDefinitions tracker if it has qualifiers.
      */
     private <T> void processHAMDefinition(Class<?> hamImplClass, Annotation annotation,
                                           Class<? extends Annotation> annotationType,
                                           Class<?> annotatedClass, AnnotatedType<T> annotatedType) {
         List<Class<?>> qualifiers = getQualifierClassesFromAnnotation(annotation, annotationType);
 
-        // only add to hamDefinitions if it has custom qualifiers, no qualifiers or
-        //   only the default qualifier will get added by other extension classes
-        if (hasCustomQualifiers(qualifiers)) {
+        // only add to hamDefinitions if it has qualifiers (if no explicit qualifier,
+        //   then the Jakarta default one will have been set on the definition automatically)
+        if (hasQualifiers(qualifiers)) {
             Properties props = extractHAMProperties(hamImplClass, annotation, annotationType);
 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Processing HAM type [" + hamImplClass.getSimpleName()
-                             + "] with custom qualifiers [" + qualifiers.toString()
+                             + "] with qualifiers [" + qualifiers.toString()
                              + "] and props [" + props.toString() + "].");
             }
 
@@ -247,9 +247,9 @@ public class JakartaSecurity40CDIExtension implements Extension {
         } else {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Processing HAM type [" + hamImplClass.getSimpleName()
-                             + "] with default/no qualifiers - will be handled by standard CDI");
+                             + "] with no qualifiers - will be handled by standard CDI");
             }
-            // HAMs without custom qualifiers are handled in other extensions
+            // HAMs without qualifiers are handled in other extensions
         }
     }
 
@@ -335,15 +335,10 @@ public class JakartaSecurity40CDIExtension implements Extension {
     }
 
     /**
-     * Does a list of qualifier classes have a custom
-     * qualifier (i.e. "Admin" or "User") which isn't the default one
-     * (which will be processed by the other extension processing)
+     * Does a list of HAM classes have a qualifier (i.e. "Admin" or "User")?
      */
-    private boolean hasCustomQualifiers(List<Class<?>> qualifiers) {
-        if (qualifiers == null || qualifiers.isEmpty()) {
-            return false;
-        }
-        return qualifiers.stream().anyMatch(q -> !isDefaultQualifier(q));
+    private boolean hasQualifiers(List<Class<?>> qualifiers) {
+        return qualifiers != null && !qualifiers.isEmpty();
     }
 
     /**
@@ -361,7 +356,6 @@ public class JakartaSecurity40CDIExtension implements Extension {
      * Create a custom qualifier annotation instance from a qualifier class.
      */
     private Annotation createQualifierAnnotation(Class<?> qualifierClass) {
-        String qualifierName = qualifierClass.getName();
 
         // For custom application-defined qualifiers
         return new AnnotationLiteral() {
@@ -404,7 +398,7 @@ public class JakartaSecurity40CDIExtension implements Extension {
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()));
-            Tr.debug(tc, "Number of custom qualified HAM definitions: " + hamDefinitions.size());
+            Tr.debug(tc, "Number of qualified HAM definitions: " + hamDefinitions.size());
         }
 
         try {
@@ -467,11 +461,14 @@ public class JakartaSecurity40CDIExtension implements Extension {
     /**
      * Verify the configuration after all the beans have been discovered.
      *
-     * - if qualified HAMs exist, then ensure there is a custom ham handler (spec requirement)
+     * - if explicitly qualified HAMs exist, then ensure there is a custom
+     * ham handler (spec requirement)
      **/
     private void verifyConfiguration() throws DeploymentException {
 
-        boolean hasCustomQualifiedHAMs = !hamDefinitions.isEmpty();
+        // only custom qualified HAM defs require a custom handler
+        boolean hasCustomQualifiedHAMs = hamDefinitions.stream().anyMatch(hamDef -> hamDef.qualifiers.stream().anyMatch(q -> !isDefaultQualifier(q)));
+
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Have custom qualified HAMs is [" + hasCustomQualifiedHAMs + "].");
             Tr.debug(tc, "Have a custom HAM handler [" + httpAuthenticationMechanismHandlerRegistered + "].");

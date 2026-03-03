@@ -12,8 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache;
 
-import javax.security.auth.Subject;
-
 import com.ibm.ws.security.authentication.cache.CacheObject;
 
 /**
@@ -34,7 +32,7 @@ public interface AuthCache {
      * @param key The key to look for the value for.
      * @return The value mapped to the specified key, or null if no mapping exists.
      */
-    public Object get(Object key);
+    public CacheObject get(Object key);
 
     /**
      * Remove the value for the specified from the cache.
@@ -55,9 +53,4 @@ public interface AuthCache {
      * Stop the eviction task, if any.
      */
     public void stopEvictionTask();
-
-    /**
-     * Creates a cache implementation specific CacheObject for the provided Subject
-     */
-    public CacheObject createCacheObject(Subject subject);
 }

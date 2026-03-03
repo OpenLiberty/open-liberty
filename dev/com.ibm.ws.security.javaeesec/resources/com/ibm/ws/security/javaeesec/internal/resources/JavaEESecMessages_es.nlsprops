@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Aseg\u00farese de que al menos un objet
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: No se ha podido crear el objeto HttpAuthenticationMechanism para el m\u00f3dulo {0} en la aplicaci\u00f3n {1}.
 JAVAEESEC_ERROR_NO_HAM.explanation=La raz\u00f3n por la que no se ha creado el objeto HttpAuthenticationMechanism var\u00eda. Los mensajes de error del objeto HttpAuthenticationMechanism proporcionan informaci\u00f3n sobre por qu\u00e9 no se puede crear el objeto HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.useraction=Consulte los mensajes de error del objeto HttpAuthenticationMechanism y realice correcciones seg\u00fan lo especificado en los mensajes de error.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: No se ha encontrado el objeto de implementaci\u00f3n \u00ab HttpAuthenticationMechanismService \u00bb para el m\u00f3dulo \u00ab {0} \u00bb en la aplicaci\u00f3n \u00ab {1} \u00bb como paquete OSGi.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=No se ha encontrado el objeto de implementaci\u00f3n HttpAuthenticationMechanismService porque falta uno de los paquetes dependientes que contiene esta implementaci\u00f3n en el archivo de manifiesto de caracter\u00edsticas.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Aseg\u00farate de que el manifiesto de la funci\u00f3n haga referencia a un paquete que contenga una implementaci\u00f3n de la interfaz HttpAuthenticationMechanismService.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: La expresi\u00f3n de Expression Language (EL) del atributo ''{0}'' de la anotaci\u00f3n del almac\u00e9n de identidades no se puede resolver en un valor v\u00e1lido. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. En su lugar se utilizar\u00e1 el valor de atributo predeterminado de ''{1}''.

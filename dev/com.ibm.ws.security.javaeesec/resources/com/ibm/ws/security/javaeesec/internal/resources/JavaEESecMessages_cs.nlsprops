@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Ujist\u011bte se, \u017ee alespo\u0148 
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Objekt HttpAuthenticationMechanism pro modul {0} v aplikaci {1} nelze vytvo\u0159it.
 JAVAEESEC_ERROR_NO_HAM.explanation=P\u0159\u00ed\u010dina, pro\u010d nelze vytvo\u0159it objekt HttpAuthenticationMechanism, se li\u0161\u00ed. Chybov\u00e9 zpr\u00e1vy pro objekt HttpAuthenticationMechanism poskytuj\u00ed informace o tom, pro\u010d nelze vytvo\u0159it objekt HttpAuthenticationMechanizm.
 JAVAEESEC_ERROR_NO_HAM.useraction=Prozkoumejte v\u0161echny chybov\u00e9 zpr\u00e1vy z objektu HttpAuthenticationMechanism a prove\u010fte opravy zalo\u017een\u00e9 na chybov\u00fdch zpr\u00e1v\u00e1ch.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: Implementa\u010dn\u00ed objekt HttpAuthenticationMechanismService pro modul {0} v aplikaci {1} nebyl nalezen jako bal\u00ed\u010dek OSGi.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=Objekt implementace HttpAuthenticationMechanismService nebyl nalezen, proto\u017ee jeden ze z\u00e1visl\u00fdch bal\u00ed\u010dk\u016f, kter\u00fd obsahuje tuto implementaci, chyb\u00ed v souboru manifestu funkc\u00ed.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Zajist\u011bte, aby manifest funkce odkazoval na bal\u00ed\u010dek, kter\u00fd obsahuje implementaci rozhran\u00ed HttpAuthenticationMechanismService.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: V\u00fdraz EL (Expression Language) pro atribut ''{0}'' anotace \u00falo\u017ei\u0161t\u011b identit nelze interpretovat na platnou hodnotu. Ujist\u011bte se, \u017ee v\u00fdraz EL a v\u00fdsledek jsou platn\u00e9 a ujist\u011bte se, \u017ee v\u0161echny odkazovan\u00e9 objekty typu bean pou\u017eit\u00e9 ve v\u00fdrazu jsou rozpoznateln\u00e9. M\u00edsto toho je pou\u017eita v\u00fdchoz\u00ed hodnota atributu ''{1}''.

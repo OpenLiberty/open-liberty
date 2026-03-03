@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.request.timing.monitor.fat;
 
@@ -69,6 +66,7 @@ public class RequestTimingMbeanTest {
 
     @ClassRule
     public static RepeatTests r = EERepeatActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                         EERepeatActions.EE11,
                                                          EERepeatActions.EE10,
                                                          EERepeatActions.EE9,
                                                          EERepeatActions.EE7);
@@ -545,7 +543,7 @@ public class RequestTimingMbeanTest {
      * allow a test to finish
      *
      * @param countToWaitFor
-     *            Value looked for in CountDownLatch
+     *                           Value looked for in CountDownLatch
      * @throws Exception
      */
     private void waitInServletForCountDownLatch(int countToWaitFor) throws Exception {
@@ -619,13 +617,13 @@ public class RequestTimingMbeanTest {
      * test
      *
      * @param th
-     *            -- array of threads
+     *                            -- array of threads
      * @param numReqs
-     *            -- number of requests is the number of threads needed
+     *                            -- number of requests is the number of threads needed
      * @param servletTestName
-     *            -- Used for request to servlet
+     *                            -- Used for request to servlet
      * @param testMethodName
-     *            -- Used for printing to logs
+     *                            -- Used for printing to logs
      */
     private void createRequestThreads(Thread[] th, int numReqs) {
         // Send N servlet requests to server, last request used to terminate

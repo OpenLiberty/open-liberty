@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -95,6 +95,9 @@ public class ConsumerImpl implements Consumer {
     public int getNumCars(long personId) {
         EntityManager em = _activePu.createEntityManager();
         try {
+            em.getEntityManagerFactory().getCache().evict(Person.class, personId);
+            // Clear the persistence context to ensure a clean state after cache eviction
+            em.clear();
             Person p = em.find(Person.class, personId);
             if (p == null) {
                 throw new RuntimeException("null person.id=" + personId);

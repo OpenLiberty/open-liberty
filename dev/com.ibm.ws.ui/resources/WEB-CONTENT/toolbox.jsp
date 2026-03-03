@@ -1,5 +1,5 @@
 <%--
-    Copyright (c) 2014, 2025, 2026 IBM Corporation and others.
+    Copyright (c) 2014, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -18,7 +18,63 @@
 <%@ page import="java.io.InputStreamReader"%>
 <%@ page import="java.io.OutputStreamWriter"%>
 <%@ page import="java.net.*"%>
-
+<%
+    // GET PRODUCT NAME - Detect if this is Open Liberty or WebSphere
+    boolean isOpenLiberty = false;
+    
+    try {
+        // Try to read from properties files
+        String installRoot = System.getProperty("wlp.install.dir");
+        if (installRoot != null) {
+            java.io.File versionsDir = new java.io.File(installRoot, "lib/versions");
+            
+            if (versionsDir.exists() && versionsDir.isDirectory()) {
+                java.io.File[] allFiles = versionsDir.listFiles();
+                
+                boolean foundOpenLiberty = false;
+                boolean foundOtherProduct = false;
+                
+                // Check all properties files
+                if (allFiles != null && allFiles.length > 0) {
+                    for (int i = 0; i < allFiles.length; i++) {
+                        java.io.File propsFile = allFiles[i];
+                        String fileName = propsFile.getName();
+                        
+                        // Only process .properties files, skip service.fingerprint
+                        if (fileName.endsWith(".properties") && !fileName.equals("service.fingerprint")) {
+                            java.util.Properties props = new java.util.Properties();
+                            java.io.FileInputStream fis = null;
+                            try {
+                                fis = new java.io.FileInputStream(propsFile);
+                                props.load(fis);
+                                
+                                String productId = props.getProperty("com.ibm.websphere.productId", "");
+                                
+                                // Check if this is Open Liberty
+                                if ("io.openliberty".equals(productId)) {
+                                    foundOpenLiberty = true;
+                                } else if (productId != null && !productId.isEmpty()) {
+                                    // Found another product (WebSphere)
+                                    foundOtherProduct = true;
+                                }
+                            } finally {
+                                if (fis != null) {
+                                    try { fis.close(); } catch (Exception e) {}
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Only set isOpenLiberty to true if we found Open Liberty and no other product
+                    isOpenLiberty = foundOpenLiberty && !foundOtherProduct;
+                }
+            }
+        }
+    } catch (Exception ex) {
+        // If we can't determine, default to false (WebSphere)
+        isOpenLiberty = false;
+    }
+%>
 <!DOCTYPE html>
 <html style="height: 100%; width: 100%; margin: 0px; padding: 0px;">
 <head>
@@ -27,8 +83,8 @@
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
 
-<link href="login/images/favicon.ico" rel="icon" />
-<link href="login/images/favicon.ico" rel="shortcut icon" />
+<link href="<%= isOpenLiberty ? "login/images/runtime-fav-icon.svg" : "login/images/favicon.ico" %>" rel="icon" />
+<link href="<%= isOpenLiberty ? "login/images/runtime-fav-icon.svg" : "login/images/favicon.ico" %>" rel="shortcut icon" />
 <link href="login/images/apple-touch-icon.png" rel="apple-touch-icon" />
 <link rel="stylesheet" href="dojo/resources/dojo.css" />
 <link rel="stylesheet" href="dijit/themes/dijit.css" />
@@ -119,15 +175,15 @@
     if ( request.getCookies() != null ) {
 	    for (int i = 0; i < request.getCookies().length; i++){
 	        cm.getCookieStore().add(new URI(request.getRequestURI()), new HttpCookie(request.getCookies()[i].getName(),request.getCookies()[i].getValue()));
-	    }
+        }
     }
     StringBuffer sb = new StringBuffer();
     for (Iterator iter = cm.getCookieStore().getCookies().iterator(); iter.hasNext(); ){
-        if (sb.length() == 0){
-            sb.append(iter.next());
-        } else {
-            sb.append("," + iter.next());
+        HttpCookie cookie = (HttpCookie) iter.next();
+        if (sb.length() > 0){
+            sb.append("; ");
         }
+        sb.append(cookie.getName()).append("=").append(cookie.getValue());
     }
     URL serverURL = null;
     try {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2020 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ import java.util.List;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -97,7 +98,20 @@ public class JSONFieldsTest {
 
     @After
     public void cleanUp() throws Exception {
+        if (serverInUse == server_xml) {
+            Log.info(c, "cleanUp", "Skip shutdown for server_xml, will shutdown at end of test.");
+            return;
+        }
         if (serverInUse != null && serverInUse.isStarted()) {
+            serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
+                                   "CWWKG0081E", "CWWKG0083W");
+        }
+    }
+
+    @AfterClass
+    public static void testCleanUp() throws Exception {
+        // Only stopping server_xml, all other servers should be stopped already by cleanUp() after each test method.
+        if (server_xml != null && server_xml.isStarted()) {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
                                    "CWWKG0081E", "CWWKG0083W");
         }
@@ -146,7 +160,7 @@ public class JSONFieldsTest {
     }
 
     /*
-     * This test sets the "jsonFields" attribute in the server.xml and verifies the property in the messages.log file.
+     * This test sets the "jsonFields" attribute in the server.xml and verifies the property in the messages.log file
      */
     @Test
     public void testMessageFieldNamesXML() throws Exception {

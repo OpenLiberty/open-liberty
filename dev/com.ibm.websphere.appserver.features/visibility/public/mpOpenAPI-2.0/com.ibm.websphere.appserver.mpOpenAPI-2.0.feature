@@ -40,7 +40,8 @@ IBM-API-Package: \
   io.openliberty.servlet.internal-4.0, \
   com.ibm.websphere.appserver.jaxrs-2.1, \
   io.openliberty.mpCompatible-4.0, \
-  com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-2.0
+  com.ibm.websphere.appserver.org.eclipse.microprofile.openapi-2.0, \
+  io.openliberty.jandex.internal-2.0
 -bundles=\
     io.openliberty.io.smallrye.openapi.core, \
     io.openliberty.io.smallrye.openapi.jaxrs, \

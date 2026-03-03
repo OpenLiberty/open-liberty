@@ -14,6 +14,7 @@ package test.jakarta.data.v1_1.web;
 
 import java.math.BigDecimal;
 
+import jakarta.data.metamodel.BooleanAttribute;
 import jakarta.data.metamodel.ComparableAttribute;
 import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.metamodel.NumericAttribute;
@@ -66,8 +67,8 @@ public interface _Fraction {
     NumericAttribute<Fraction, Integer> numerator = //
                     NumericAttribute.of(Fraction.class, NUMERATOR, int.class);
 
-    ComparableAttribute<Fraction, Boolean> reduced = //
-                    ComparableAttribute.of(Fraction.class, REDUCED, boolean.class);
+    BooleanAttribute<Fraction> reduced = //
+                    BooleanAttribute.of(Fraction.class, REDUCED, boolean.class);
 
     NumericAttribute<Fraction, BigDecimal> truncated = //
                     NumericAttribute.of(Fraction.class, TRUNCATED, BigDecimal.class);

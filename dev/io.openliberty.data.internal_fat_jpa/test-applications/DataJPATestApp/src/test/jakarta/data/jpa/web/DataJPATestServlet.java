@@ -4254,24 +4254,9 @@ public class DataJPATestServlet extends FATServlet {
     @Test
     public void testSelectIdClass() {
 
-        List<String> found;
-        if (isHibernate()) {
-            // Hibernate correctly returns a stream of IdClass
-            @SuppressWarnings("unchecked")
-            Stream<CityId> stream = (Stream<CityId>) (Stream<?>) cities.ids();
-            found = stream
-                            .map(id -> id.getStateName() + ":" + id.name)
-                            .collect(Collectors.toList());
-        } else {
-            // TODO replace the following with the above once #29073 is fixed
-            // and correct the repository method return type to match
-            // EclipseLink incorrectly returns a stream of Object[]
-            @SuppressWarnings("unchecked")
-            Stream<CityId> stream = (Stream<CityId>) (Stream<?>) cities.ids();
-            found = stream
-                            .map(id -> id.getStateName() + ":" + id.name)
-                            .collect(Collectors.toList());
-        }
+        List<String> found = cities.ids()
+                        .map(id -> id.getStateName() + ":" + id.name)
+                        .collect(Collectors.toList());
 
         assertEquals(List.of("Illinois:Springfield",
                              "Kansas:Kansas City",
@@ -4837,21 +4822,11 @@ public class DataJPATestServlet extends FATServlet {
         CityId mnId = CityId.of("Rochester", "Minnesota");
         CityId nyId = CityId.of("Rochester", "New York");
 
-        long mnVer;
-        long nyVer;
-        if (skipForHibernate("https://github.com/OpenLiberty/open-liberty/issues/33182")) {
-            // TODO once fixed in Hibernate, update the JPQL query to use VERSION(THIS)
-            // instead of lower case VERSION(this)
-            mnVer = cities.currentVersion(mnId);
-            nyVer = cities.currentVersion(nyId);
-        } else {
-            mnVer = cities.currentVersion(mnId.name, mnId.getStateName());
-            nyVer = cities.currentVersion(nyId.name, nyId.getStateName());
-
-            // TODO enable once EclipseLink #29073 is fixed, and maybe remove the above
-            //mnVer = cities.currentVersion(mnId);
-            //nyVer = cities.currentVersion(nyId);
-
+        // TODO once 33182 is fixed in Hibernate, update the JPQL query to use VERSION(THIS)
+        // instead of lower case VERSION(this)
+        long mnVer = cities.currentVersion(mnId);
+        long nyVer = cities.currentVersion(nyId);
+        if (!isHibernate()) {
             // TODO allow this test to run once 28589 is fixed
             // and verify that EclipseLink does not corrupt the area code value
             // for the following subsequent tests:

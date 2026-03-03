@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,7 +44,6 @@ import com.ibm.wsspi.classloading.GatewayConfiguration;
  */
 class ClassLoaderFactory extends GatewayBundleFactory {
     static final TraceComponent tc = Tr.register(ClassLoaderFactory.class);
-
     interface PostCreateAction {
         void invoke(AppClassLoader acl);
     }
@@ -68,7 +67,7 @@ class ClassLoaderFactory extends GatewayBundleFactory {
                        CanonicalStore<ClassLoaderIdentity, AppClassLoader> store,
                        CompositeResourceProvider resourceProviders, ClassRedefiner redefiner, ClassGenerator generator,
                        GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
-        super(bundleContext, digraph, classloaders);
+        super(bundleContext, digraph, classloaders, globalConfig.jvmPackages());
         this.store = store;
         this.resourceProviders = resourceProviders;
         this.redefiner = redefiner;
@@ -164,7 +163,7 @@ class ClassLoaderFactory extends GatewayBundleFactory {
                 setParent(createGatewayBundleClassLoader(gwConfig, config, resourceProviders));
             } else {
                 // DEAL WITH BUNDLE ADD-ON CLASSLOADER (parent is gateway to external bundle)
-                setParent(GatewayClassLoader.createGatewayClassLoader(classloaders, gwConfig, externalBundleLoader, resourceProviders));
+                setParent(GatewayClassLoader.createGatewayClassLoader(classloaders, gwConfig, externalBundleLoader, resourceProviders, jvmPackages));
             }
         } else if (this.parentClassLoader == null) {
             // DEAL WITH CHILD CLASSLOADER (if parent not already cached)

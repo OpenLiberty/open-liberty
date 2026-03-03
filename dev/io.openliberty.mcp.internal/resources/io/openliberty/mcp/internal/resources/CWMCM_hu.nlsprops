@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=Adjon hozz\u00e1 egy nevet a @T
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: T\u00f6bb MCP eszk\u00f6z m\u00f3dszer l\u00e9tezik, amelyek neve {0}. A m\u00f3dszerek a k\u00f6vetkez\u0151k {1}.
 CWMCM0004E.duplicate.tools.explanation=Egy vagy t\u00f6bb MCP eszk\u00f6z neve t\u00f6bbsz\u00f6r is el\u0151fordult. A szerver az egyedis\u00e9g \u00e9rdek\u00e9ben egy nevet v\u00e1r el minden eszk\u00f6zh\u00f6z.
 CWMCM0004E.duplicate.tools.useraction=Minden MCP eszk\u00f6znek csak egyedi nevet adjon meg.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=Ellen\u0151rizze, hogy az argumentumhoz 
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: Az {0} azonos\u00edt\u00f3val rendelkez\u0151 k\u00e9relem feldolgoz\u00e1s alatt \u00e1ll.
-CWMCM0008E.invalid.request.params.explanation=Ugyanazon azonos\u00edt\u00f3val rendelkez\u0151 k\u00e9relem feldolgoz\u00e1s alatt \u00e1ll. Az ugyanazon \u00fcgyf\u00e9lt\u0151l \u00e9rkez\u0151 k\u00e9r\u00e9seknek egyedi azonos\u00edt\u00f3val kell rendelkezni\u00fck.
-CWMCM0008E.invalid.request.params.useraction=Minden k\u00e9r\u00e9shez egyedi azonos\u00edt\u00f3t haszn\u00e1ljon.
+invalid.request.params=Az {0} azonos\u00edt\u00f3val rendelkez\u0151 k\u00e9relem feldolgoz\u00e1s alatt \u00e1ll.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: A GET k\u00e9r\u00e9sek nem t\u00e1mogatottak.
-CWMCM0009I.get.disallowed.explanation=GET k\u00e9r\u00e9s ker\u00fclt elk\u00fcld\u00e9sre, de ez a funkci\u00f3 nem t\u00e1mogatott.
-CWMCM0009I.get.disallowed.useraction=Nincs teend\u0151.
+# do not translate GET
+get.disallowed=A GET k\u00e9r\u00e9sek nem t\u00e1mogatottak.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=Az eszk\u00f6z m\u00f3dsze
 CWMCM0010E.internal.server.error.detailed.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: Az eszk\u00f6z futtat\u00e1sa k\u00f6zben bels\u0151 szerverhiba t\u00f6rt\u00e9nt.
-CWMCM0011E.internal.server.error.explanation=A szerver nem tudta teljes\u00edteni az eszk\u00f6zh\u00edv\u00e1s k\u00e9r\u00e9s\u00e9t.
-CWMCM0011E.internal.server.error.useraction=Ellen\u0151rizze, hogy a k\u00e9r\u00e9s helyes-e. Tov\u00e1bbi inform\u00e1ci\u00f3k a hib\u00e1r\u00f3l a szerveren messages.log tal\u00e1lhat\u00f3k.
+internal.server.error=Az eszk\u00f6z futtat\u00e1sa k\u00f6zben bels\u0151 szerverhiba t\u00f6rt\u00e9nt.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: Hiba t\u00f6rt\u00e9nt a CDI bean felsz
 CWMCM0012E.bean.release.fail.explanation=Egy eszk\u00f6zm\u00f3dszer megh\u00edv\u00e1sakor a m\u00f3dszert deklar\u00e1l\u00f3 CDI bean p\u00e9ld\u00e1nya a m\u00f3dszer megh\u00edv\u00e1sa el\u0151tt ker\u00fcl lek\u00e9r\u00e9sre, majd a m\u00f3dszer megh\u00edv\u00e1sa ut\u00e1n felszabad\u00edt\u00e1sra ker\u00fcl. Hiba t\u00f6rt\u00e9nt a bean p\u00e9ld\u00e1ny felszabad\u00edt\u00e1sakor.
 CWMCM0012E.bean.release.fail.useraction=A kiszolg\u00e1l\u00f3 message.log f\u00e1jlj\u00e1t \u00e9s FFDC napl\u00f3it \u00e1ttekintve azonos\u00edtsa be a probl\u00e9m\u00e1t.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Nem t\u00e1mogatott MCP-Protocol-Version fejl\u00e9cet adtak meg. T\u00e1mogatott \u00e9rt\u00e9kek: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=A szerver nem t\u00e1mogatja az MCP-Protocol-Version fejl\u00e9cben szerepl\u0151 protokollverzi\u00f3t.
-CWMCM0013E.unsupported.mcp.http.version.useraction=Haszn\u00e1ljon t\u00e1mogatott protokoll verzi\u00f3t.
+unsupported.mcp.http.version=Nem t\u00e1mogatott MCP-Protocol-Version fejl\u00e9cet adtak meg. T\u00e1mogatott \u00e9rt\u00e9kek: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: V\u00e1ratlan szerverhiba. M\u00f3dszer= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=A k\u00e9r\u00e9s feldolgoz\u00e1sa k\u00f6zben v\u00e1ratlan szerverhiba t\u00f6rt\u00e9nt. A k\u00e9r\u00e9s nem teljes\u00edthet\u0151.
-CWMCM0014E.unexpected.server.error.useraction=Nincs teend\u0151.
+unexpected.server.error=V\u00e1ratlan szerverhiba. M\u00f3dszer= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,17 +132,6 @@ jsonrpc.exception.validation.empty.string.id=Az id mez\u0151 \u00e9rv\u00e9nytel
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=Az id t\u00edpus nem elfogadhat\u00f3 t\u00edpus. Az azonos\u00edt\u00f3nak karakterl\u00e1ncnak vagy eg\u00e9sz sz\u00e1mnak kell lennie.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=A k\u00e9r\u00e9snek nincsenek param\u00e9terekben megadott argumentumai.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=A k\u00f6vetkez\u0151 argumentumok ker\u00fcltek \u00e1tad\u00e1sra, de nem tal\u00e1lt\u00e1k meg \u0151ket a m\u00f3dszerben: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=A m\u00f3dszer a k\u00f6vetkez\u0151 argumentumokat v\u00e1rta, de azok nem ker\u00fcltek megad\u00e1sra: {0}.
-
 # Used for server logging
 # do not translate MCP
 # {0} = The  qualified name of the tool
@@ -179,7 +159,7 @@ CWMCM0019E.error.encoding.element.useraction=A kiszolg\u00e1l\u00f3 message.log 
 
 # Used for server logging
 # do not translate MCP
-# {0} = The  qualified name of the tool
+# {0} = The qualified name of the tool method, or the tool name
 # {1} = corresponding argument name
 # {2} = corresponding argument type
 # {3} = corresponding default value
@@ -194,3 +174,100 @@ CWMCM0020E.defaultvalue.conversion.error.useraction=Gy\u0151z\u0151dj\u00f6n meg
 CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: A karakter alap\u00e9rtelmezett \u00e9rt\u00e9k\u00e9nek pontosan egy karakternek kell lennie, de {0} volt
 CWMCM0021E.defaultvalue.character.invalid.length.explanation=A Character t\u00edpus\u00fa argumentum alap\u00e9rtelmezett \u00e9rt\u00e9ke megadva van, de nem tartalmaz pontosan egy karaktert. A karakterargumentumoknak egyetlen karakterl\u00e1ncot kell tartalmazniuk.
 CWMCM0021E.defaultvalue.character.invalid.length.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a Character t\u00edpus\u00fa argumentum alap\u00e9rtelmezett \u00e9rt\u00e9ke pontosan egy karakterb\u0151l \u00e1ll\u00f3 karakterl\u00e1nc.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: Az "{0}" kurzor \u00e9rt\u00e9ke \u00e9rv\u00e9nytelen.
+CWMCM0022E.invalid.cursor.value.explanation=A kurzor \u00e9rt\u00e9ke param\u00e9terk\u00e9nt megadva lett a tool/list parancshoz, de az \u00e9rt\u00e9k \u00e9rv\u00e9nytelen.
+CWMCM0022E.invalid.cursor.value.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a kurzor \u00e9rt\u00e9ke pontosan megegyezik az el\u0151z\u0151 eszk\u00f6z/lista h\u00edv\u00e1sb\u00f3l visszakapott \u00e9rt\u00e9kkel.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: Az {1} MCP eszk\u00f6z m\u00f3dszer\u00e9nek {0} eszk\u00f6z neve nem \u00e9rv\u00e9nyes. Az eszk\u00f6znevek hossza 1 \u00e9s 128 karakter k\u00f6z\u00f6tt lehet.
+CWMCM0023E.invalid.length.tool.name.explanation=Az eszk\u00f6z neve nem felel meg az MCP n\u00e9vspecifik\u00e1ci\u00f3nak. A nevek hossza 1 \u00e9s 128 karakter k\u00f6z\u00f6tt lehet.
+CWMCM0023E.invalid.length.tool.name.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az eszk\u00f6znevek 1 \u00e9s 128 karakter k\u00f6z\u00f6ttiek.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: Az {1} MCP eszk\u00f6z m\u00f3dszer\u00e9nek {0} eszk\u00f6z neve nem \u00e9rv\u00e9nyes. Az eszk\u00f6znevek csak ASCII bet\u0171ket, sz\u00e1mokat, al\u00e1h\u00faz\u00e1sjeleket vagy k\u00f6t\u0151jeleket tartalmazhatnak.
+CWMCM0024E.invalid.character.tool.name.explanation=Az eszk\u00f6z neve nem felel meg az MCP n\u00e9vspecifik\u00e1ci\u00f3nak. A nevek csak ASCII bet\u0171ket, sz\u00e1mokat, al\u00e1h\u00faz\u00e1sjeleket \u00e9s k\u00f6t\u0151jeleket tartalmazhatnak, m\u00e1s speci\u00e1lis karaktereket nem.
+CWMCM0024E.invalid.character.tool.name.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az eszk\u00f6znevek csak ASCII bet\u0171ket, sz\u00e1mokat, al\u00e1h\u00faz\u00e1sjeleket vagy k\u00f6t\u0151jeleket tartalmaznak.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=Az {0} argumentum nem konvert\u00e1lhat\u00f3 {1} t\u00edpusra.
+extra.arguments=A k\u00f6vetkez\u0151 argumentumok \u00e1tad\u00e1sra ker\u00fcltek, de nem tal\u00e1lt\u00e1k meg \u0151ket a m\u00f3dszerben: {0}.
+missing.arguments=A m\u00f3dszer a k\u00f6vetkez\u0151 argumentumokat v\u00e1rta, de nem kapta meg \u0151ket: {0}.
+unauthorized.cancellation=Az eszk\u00f6z nem t\u00f6r\u00f6lhet\u0151, mivel a h\u00edv\u00f3 felhaszn\u00e1l\u00f3 nem rendelkezik jogosults\u00e1ggal.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: Az {1} MCP eszk\u00f6z m\u00f3dszer\u00e9nek {0} visszat\u00e9r\u00e9si t\u00edpus\u00e1nak objektumnak kell lennie.
+CWMCM0025E.unsupported.output.explanation=A megadott MCP eszk\u00f6z visszat\u00e9r\u00e9si t\u00edpusa nem t\u00e1mogatott.
+CWMCM0025E.unsupported.output.useraction=Adjon meg egy objektum t\u00edpus\u00fa visszat\u00e9r\u00e9si t\u00edpust.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: M\u00e1r l\u00e9tezik egy MCP eszk\u00f6z, amelynek neve {0}.
+CWMCM0026E.duplicate.tool.name.explanation=Minden eszk\u00f6znek egyedi n\u00e9vvel kell rendelkeznie. Nem regisztr\u00e1lhat olyan \u00faj eszk\u00f6zt, amelynek neve megegyezik egy m\u00e1r l\u00e9tez\u0151 eszk\u00f6z nev\u00e9vel.
+CWMCM0026E.duplicate.tool.name.useraction=Adjon meg egy egyedi nevet minden MCP eszk\u00f6zh\u00f6z.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: Az {0} MCP eszk\u00f6zh\u00f6z az setHandler vagy az setAsyncHandler met\u00f3dust kell megh\u00edvni.
+CWMCM0027E.provide.one.handler.explanation=Amikor \u00faj eszk\u00f6zt regisztr\u00e1l a ToolManager, haszn\u00e1lat\u00e1val, meg kell adnia egy szinkron kezel\u0151t az setHandler met\u00f3dus h\u00edv\u00e1s\u00e1val, vagy egy aszinkron kezel\u0151t az setAsyncHandler met\u00f3dus h\u00edv\u00e1s\u00e1val. Ne adja meg mindkett\u0151t.
+CWMCM0027E.provide.one.handler.useraction=Az ToolDefinition.setHandler vagy az ToolDefinition.setAsyncHandler met\u00f3dust h\u00edvja meg, amikor az ToolManager seg\u00edts\u00e9g\u00e9vel regisztr\u00e1l egy eszk\u00f6zt.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} Az MCP eszk\u00f6z neve nem \u00e9rv\u00e9nyes. Az eszk\u00f6znevek csak ASCII bet\u0171ket, sz\u00e1mokat, al\u00e1h\u00faz\u00e1sjeleket vagy k\u00f6t\u0151jeleket tartalmazhatnak.
+CWMCM0028E.invalid.character.tool.name.explanation=Az eszk\u00f6z neve nem felel meg az MCP n\u00e9vspecifik\u00e1ci\u00f3nak. A nevek csak ASCII bet\u0171ket, sz\u00e1mokat, al\u00e1h\u00faz\u00e1sjeleket \u00e9s k\u00f6t\u0151jeleket tartalmazhatnak, m\u00e1s speci\u00e1lis karaktereket nem.
+CWMCM0028E.invalid.character.tool.name.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az eszk\u00f6znevek csak ASCII bet\u0171ket, sz\u00e1mokat, al\u00e1h\u00faz\u00e1sjeleket vagy k\u00f6t\u0151jeleket tartalmaznak.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} Az MCP eszk\u00f6z neve nem \u00e9rv\u00e9nyes. Az eszk\u00f6znevek hossza 1 \u00e9s 128 karakter k\u00f6z\u00f6tt lehet.
+CWMCM0029E.invalid.length.tool.name.explanation=Az eszk\u00f6z neve nem felel meg az MCP n\u00e9vspecifik\u00e1ci\u00f3nak. A nevek hossza 1 \u00e9s 128 karakter k\u00f6z\u00f6tt lehet.
+CWMCM0029E.invalid.length.tool.name.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az eszk\u00f6znevek 1 \u00e9s 128 karakter k\u00f6z\u00f6ttiek.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: Nem lehet \u00fcres nev\u0171 argumentumot hozz\u00e1adni az {0} MCP eszk\u00f6zh\u00f6z.
+CWMCM0030E.blank.arguments.explanation=Minden MCP eszk\u00f6z argumentum\u00e1nak nem \u00fcres nevet kell tartalmaznia. 
+CWMCM0030E.blank.arguments.useraction=Adjon meg nem \u00fcres neveket az \u00f6sszes eszk\u00f6zargumentumhoz.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: Az {0} MCP eszk\u00f6z {1} argumentum\u00e1nak nincs konvertere, amely az alap\u00e9rtelmezett \u00e9rt\u00e9k\u00e9t {2} t\u00edpus\u00fa objektumm\u00e1 alak\u00edtan\u00e1.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=Egy vagy t\u00f6bb argumentumnak vannak alap\u00e9rtelmezett \u00e9rt\u00e9kei, amelyekhez nincs megfelel\u0151 konverter, amely az alap\u00e9rtelmezett \u00e9rt\u00e9ket az argumentum t\u00edpus\u00e1ra konvert\u00e1ln\u00e1.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Hozzon l\u00e9tre egy egy\u00e9ni konverter implement\u00e1ci\u00f3t a szersz\u00e1m argumentum t\u00edpus\u00e1hoz.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: Nem lehet hozz\u00e1adni egy m\u00e1sodik argumentumot az {1} n\u00e9vvel az {0} MCP eszk\u00f6zh\u00f6z.
+CWMCM0032E.duplicate.argument.name.explanation=Az MCP eszk\u00f6z minden argumentum\u00e1nak k\u00fcl\u00f6nb\u00f6z\u0151 nevet kell kapnia.
+CWMCM0032E.duplicate.argument.name.useraction=Adjon minden eszk\u00f6zargumentumnak k\u00fcl\u00f6nb\u00f6z\u0151 nevet.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Tiltott k\u00e9r\u00e9s. M\u00f3dszer= {0} RequestURI={1 } RequestQuery={2 }, Kiv\u00e9tel: {3}
+CWMCM0033A.forbidden.error.explanation=K\u00e9r\u00e9s \u00e9rkezett, de a felhaszn\u00e1l\u00f3 nem rendelkezik a k\u00e9r\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges jogosults\u00e1ggal.
+CWMCM0033A.forbidden.error.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a k\u00e9r\u00e9st egy felhatalmazott felhaszn\u00e1l\u00f3 kezdem\u00e9nyezi.

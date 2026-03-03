@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal.cdi/resources/io/openliberty/security/jakartasec/cdi/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2610-2620
+
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER=CWWKS2610E: \uc815\uaddc\ud654\ub41c \ub124\uc784\uc2a4\ud398\uc774\uc2a4( HttpAuthenticationMechanisms )\ub97c \uc0ac\uc6a9\ud558\ub294 \uc0ac\uc6a9\uc790 \uc815\uc758 \ud578\ub4e4\ub7ec\uac00 \ub204\ub77d\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.explanation=\uc790\uaca9\uc744 \uac16\ucd98 HttpAuthenticationMechanisms \uac00 \uc9c0\uc815\ub41c \uacbd\uc6b0, \uae30\ubcf8 HttpAuthenticationMechanismHandler \ub294 \uc0ac\uc6a9\ud560 HAM\uc744 \uacb0\uc815\ud560 \uc218 \uc5c6\uc73c\ubbc0\ub85c HttpAuthenticationMechanismHandler \uc758 \uc0ac\uc6a9\uc790 \uc815\uc758 \uad6c\ud604\uc744 \uc81c\uacf5\ud574\uc57c \ud569\ub2c8\ub2e4.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.useraction=\uc0ac\uc6a9\uc790 \uc815\uc758 \ub85c\uc9c1\uc744 \uc0ac\uc6a9\ud558\uc5ec \uace0\uc720\ud55c HttpAuthenticationMechanism \uc744 \uc120\ud0dd\ud558\ub294 HttpAuthenticationMechanismHandler \ub97c \uad6c\ud604\ud558\uc2ed\uc2dc\uc624.
+
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST=CWWKS2611E: {0} \uc815\uc758\uc5d0 \ub300\ud55c \uc8fc\uc11d \ucc98\ub9ac\uac00 \ubaa9\ub85d \ub0b4\uc5d0\uc11c \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.explanation=HttpAuthenticationMechanism \uc815\uc758 \ubaa9\ub85d\uc744 \ucc98\ub9ac\ud558\ub294 \ub3d9\uc548 \uc8fc\uc11d \uac12\uc744 \ucd94\ucd9c\ud560 \ub54c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.useraction=\uc608\uc678\uc758 \uc6d0\uc778\uc744 \uc870\uc0ac\ud558\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES=CWWKS2612E: {0} \uc720\ud615\uc758 \uc18d\uc131 \ucc98\ub9ac\uc5d0 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.explanation=\ud2b9\uc815 HttpAuthenticationMechanism \uc8fc\uc11d\uc744 \ucc98\ub9ac\ud558\ub294 \ub3d9\uc548 \uc18d\uc131 \uac12\uc744 \ucd94\ucd9c\ud558\ub294 \uacfc\uc815\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.useraction=\uc608\uc678\uc758 \uc6d0\uc778\uc744 \uc870\uc0ac\ud558\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.
+
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS=CWWKS2613E: {1} \ud55c\uc815\uc790 \ud074\ub798\uc2a4\uc5d0 \ub300\ud574 {0} \uc0ac\uc6a9\uc790 \uc815\uc758 \ud55c\uc815\uc790 \uc5b4\ub178\ud14c\uc774\uc158\uc744 \uc0dd\uc131\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.explanation=\uc790\uaca9\uc744 \uac16\ucd98 HttpAuthenticationMechanism, \uc744 \uc0dd\uc131\ud558\ub294 \ub3d9\uc548 \uc0ac\uc6a9\uc790 \uc815\uc758 \uc790\uaca9 \ubd80\uc5ec \uc5b4\ub178\ud14c\uc774\uc158\uc744 \uc0dd\uc131\ud560 \ub54c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.useraction=\uc608\uc678\uc758 \uc6d0\uc778\uc744 \uc870\uc0ac\ud558\uace0 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 \uad6c\uc131\uc744 \uc815\uc815\ud558\uc2ed\uc2dc\uc624.

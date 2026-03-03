@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=F\u00fcgen Sie entweder einen N
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: Es gibt mehrere MCP-Tool-Methoden mit dem Namen {0}. Die Methoden sind {1}.
 CWMCM0004E.duplicate.tools.explanation=Ein oder mehrere MCP-Tool-Namen sind mehrfach aufgetreten. Der Server erwartet einen Namen pro Tool, um die Eindeutigkeit zu gew\u00e4hrleisten.
 CWMCM0004E.duplicate.tools.useraction=Geben Sie nur einen eindeutigen Namen f\u00fcr jedes MCP-Tool an.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=\u00dcberpr\u00fcfen Sie, ob Sie die ric
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: Eine Anfrage mit der {0} ID ist in Bearbeitung.
-CWMCM0008E.invalid.request.params.explanation=Eine Anfrage mit derselben ID ist bereits in Bearbeitung. Anfragen desselben Kunden m\u00fcssen eindeutige IDs haben.
-CWMCM0008E.invalid.request.params.useraction=Verwenden Sie f\u00fcr jede Anfrage eine eindeutige ID.
+invalid.request.params=Eine Anfrage mit der ID \u201e {0} \u201c wird derzeit bearbeitet.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: GET-Anfragen werden nicht unterst\u00fctzt.
-CWMCM0009I.get.disallowed.explanation=Eine GET-Anfrage wurde gesendet, aber diese Funktion wird nicht unterst\u00fctzt.
-CWMCM0009I.get.disallowed.useraction=Es ist keine Aktion erforderlich.
+# do not translate GET
+get.disallowed=GET-Anfragen werden nicht unterst\u00fctzt.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=Die Tool-Methode hat eine 
 CWMCM0010E.internal.server.error.detailed.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: Beim Ausf\u00fchren des Tools ist ein interner Serverfehler aufgetreten.
-CWMCM0011E.internal.server.error.explanation=Der Server konnte die Toolaufruf-Anforderung nicht ausf\u00fchren.
-CWMCM0011E.internal.server.error.useraction=\u00dcberpr\u00fcfen Sie, ob die Anfrage korrekt ist. Weitere Informationen zum Fehler finden Sie m\u00f6glicherweise auf dem Server messages.log.
+internal.server.error=Beim Ausf\u00fchren des Tools ist ein interner Serverfehler aufgetreten.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: Beim Freigeben der CDI-Bean nach dem Au
 CWMCM0012E.bean.release.fail.explanation=Beim Aufruf einer Tool-Methode wird eine Instanz des CDI-Beans, der die Methode deklariert, vor dem Aufruf der Methode abgerufen und anschlie\u00dfend wieder freigegeben. Beim Freigeben der Bean-Instanz ist ein Fehler aufgetreten.
 CWMCM0012E.bean.release.fail.useraction=Ermitteln Sie das Problem anhand der Protokolldatei f\u00fcr die Servernachrichten (message.log) und der FFDC-Protokolldateien.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Es wurde ein nicht unterst\u00fctzter MCP-Protocol-Version-Header bereitgestellt. Unterst\u00fctzte Werte: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=Die Protokollversion im Header \u201eMCP-Protocol-Version\u201c wird vom Server nicht unterst\u00fctzt.
-CWMCM0013E.unsupported.mcp.http.version.useraction=Verwenden Sie eine unterst\u00fctzte Protokollversion.
+unsupported.mcp.http.version=Es wurde ein nicht unterst\u00fctzter MCP-Protocol-Version-Header bereitgestellt. Unterst\u00fctzte Werte: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: Unerwarteter Serverfehler. Methode= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=Bei der Bearbeitung der Anfrage ist ein unerwarteter Serverfehler aufgetreten. Die Anforderung kann nicht ausgef\u00fchrt werden.
-CWMCM0014E.unexpected.server.error.useraction=Es ist keine Aktion erforderlich.
+unexpected.server.error=Unerwarteter Serverfehler. Methode= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,17 +132,6 @@ jsonrpc.exception.validation.empty.string.id=Das Feld \u201eid\u201c ist ung\u00
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=Der Typ \u201eid\u201c ist kein zul\u00e4ssiger Typ. Die ID muss eine Zeichenfolge oder eine Ganzzahl sein.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=Die Anfrage enth\u00e4lt keine Argumente in den Parametern.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=Die folgenden Argumente wurden \u00fcbergeben, wurden jedoch in der Methode nicht gefunden: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=Die folgenden Argumente wurden von der Methode erwartet, wurden jedoch nicht bereitgestellt: {0}.
-
 # Used for server logging
 # do not translate MCP
 # {0} = The  qualified name of the tool
@@ -179,7 +159,7 @@ CWMCM0019E.error.encoding.element.useraction=Ermitteln Sie das Problem anhand de
 
 # Used for server logging
 # do not translate MCP
-# {0} = The  qualified name of the tool
+# {0} = The qualified name of the tool method, or the tool name
 # {1} = corresponding argument name
 # {2} = corresponding argument type
 # {3} = corresponding default value
@@ -194,3 +174,100 @@ CWMCM0020E.defaultvalue.conversion.error.useraction=Stellen Sie sicher, dass der
 CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: Ein Zeichen-Standardwert muss genau ein Zeichen sein, war jedoch {0}
 CWMCM0021E.defaultvalue.character.invalid.length.explanation=Es wurde ein Standardwert f\u00fcr ein Argument vom Typ \u201eZeichen\u201c angegeben, dieser enth\u00e4lt jedoch nicht genau ein Zeichen. Zeichenargumente m\u00fcssen eine einzelne Zeichenfolge enthalten.
 CWMCM0021E.defaultvalue.character.invalid.length.useraction=Stellen Sie sicher, dass der Standardwert f\u00fcr ein Argument vom Typ \u201eZeichen\u201c eine Zeichenfolge mit genau einem Zeichen ist.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: Der Cursorwert \u201e "{0}" \u201c ist ung\u00fcltig.
+CWMCM0022E.invalid.cursor.value.explanation=Ein Cursorwert wurde als Parameter f\u00fcr den Befehl \u201etool/list\u201c angegeben, aber der Wert ist ung\u00fcltig.
+CWMCM0022E.invalid.cursor.value.useraction=Stellen Sie sicher, dass der Cursorwert genau so angegeben wird, wie er vom vorherigen Tool-/Listenaufruf zur\u00fcckgegeben wurde.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: Der Name des Tools \u201e {0} \u201c f\u00fcr die MCP-Tool-Methode \u201e {1} \u201c ist ung\u00fcltig. Werkzeugnamen m\u00fcssen zwischen 1 und 128 Zeichen lang sein.
+CWMCM0023E.invalid.length.tool.name.explanation=Der Name des Tools entspricht nicht der MCP-Spezifikation f\u00fcr Namen. Namen m\u00fcssen zwischen 1 und 128 Zeichen lang sein.
+CWMCM0023E.invalid.length.tool.name.useraction=Stellen Sie sicher, dass die Namen der Werkzeuge zwischen 1 und 128 Zeichen lang sind.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: Der Name des Tools \u201e {0} \u201c f\u00fcr die MCP-Tool-Methode \u201e {1} \u201c ist ung\u00fcltig. Werkzeugnamen d\u00fcrfen nur ASCII-Buchstaben, Ziffern, Unterstriche oder Bindestriche enthalten.
+CWMCM0024E.invalid.character.tool.name.explanation=Der Name des Tools entspricht nicht der MCP-Spezifikation f\u00fcr Namen. Namen d\u00fcrfen nur ASCII-Buchstaben, Ziffern, Unterstriche und Bindestriche enthalten, keine anderen Sonderzeichen.
+CWMCM0024E.invalid.character.tool.name.useraction=Stellen Sie sicher, dass die Namen der Werkzeuge nur ASCII-Buchstaben, Ziffern, Unterstriche oder Bindestriche enthalten.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=Das Argument \u201e {0} \u201c kann nicht in den Typ \u201e {1} \u201c konvertiert werden.
+extra.arguments=Die folgenden Argumente wurden \u00fcbergeben, wurden jedoch in der Methode nicht gefunden: {0}.
+missing.arguments=Die Methode erwartete die folgenden Argumente, hat diese jedoch nicht erhalten: {0}.
+unauthorized.cancellation=Das Tool kann nicht abgebrochen werden, da der aufrufende Benutzer nicht autorisiert ist.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: Der R\u00fcckgabetyp \u201e {0} \u201c der MCP-Tool-Methode \u201e {1} \u201c muss ein Objekt sein.
+CWMCM0025E.unsupported.output.explanation=Der angegebene R\u00fcckgabetyp des MCP-Tools wird nicht unterst\u00fctzt.
+CWMCM0025E.unsupported.output.useraction=Geben Sie einen R\u00fcckgabetyp an, der ein Objekt ist.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: Ein MCP-Tool mit dem Namen \u201e {0} \u201c existiert bereits.
+CWMCM0026E.duplicate.tool.name.explanation=Jedes Werkzeug muss einen eindeutigen Namen haben. Sie k\u00f6nnen kein neues Werkzeug registrieren, das denselben Namen wie ein bereits vorhandenes Werkzeug hat.
+CWMCM0026E.duplicate.tool.name.useraction=Geben Sie jedem MCP-Tool einen eindeutigen Namen.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: F\u00fcr das MCP-Tool \u201e {0} \u201c muss entweder die Methode \u201e setHandler \u201c oder die Methode \u201e setAsyncHandler \u201c aufgerufen werden.
+CWMCM0027E.provide.one.handler.explanation=Wenn Sie ein neues Tool \u00fcber \u201e ToolManager, \u201c registrieren, m\u00fcssen Sie entweder einen synchronen Handler durch Aufruf der Methode \u201e setHandler \u201c oder einen asynchronen Handler durch Aufruf der Methode \u201e setAsyncHandler \u201c bereitstellen. Geben Sie nicht beides an.
+CWMCM0027E.provide.one.handler.useraction=Rufen Sie entweder die Methode \u201e ToolDefinition.setHandler \u201c oder die Methode \u201e ToolDefinition.setAsyncHandler \u201c auf, wenn Sie ein Tool mit \u201e ToolManager \u201c registrieren.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} Der Name des MCP-Tools ist ung\u00fcltig. Werkzeugnamen d\u00fcrfen nur ASCII-Buchstaben, Ziffern, Unterstriche oder Bindestriche enthalten.
+CWMCM0028E.invalid.character.tool.name.explanation=Der Name des Tools entspricht nicht der MCP-Spezifikation f\u00fcr Namen. Namen d\u00fcrfen nur ASCII-Buchstaben, Ziffern, Unterstriche und Bindestriche enthalten, keine anderen Sonderzeichen.
+CWMCM0028E.invalid.character.tool.name.useraction=Stellen Sie sicher, dass die Namen der Werkzeuge nur ASCII-Buchstaben, Ziffern, Unterstriche oder Bindestriche enthalten.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} Der Name des MCP-Tools ist ung\u00fcltig. Werkzeugnamen m\u00fcssen zwischen 1 und 128 Zeichen lang sein.
+CWMCM0029E.invalid.length.tool.name.explanation=Der Name des Tools entspricht nicht der MCP-Spezifikation f\u00fcr Namen. Namen m\u00fcssen zwischen 1 und 128 Zeichen lang sein.
+CWMCM0029E.invalid.length.tool.name.useraction=Stellen Sie sicher, dass die Namen der Werkzeuge zwischen 1 und 128 Zeichen lang sind.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: Es kann kein Argument mit einem leeren Namen zum MCP-Tool \u201e {0} \u201c hinzugef\u00fcgt werden.
+CWMCM0030E.blank.arguments.explanation=Jedes MCP-Tool-Argument muss einen Namen haben, der nicht leer ist. 
+CWMCM0030E.blank.arguments.useraction=Geben Sie f\u00fcr alle Werkzeugargumente nicht leere Namen an.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: Das Argument \u201e {1} \u201d des MCP-Tools \u201e {0} \u201d verf\u00fcgt nicht \u00fcber einen Konverter, um seinen Standardwert in ein Objekt vom Typ \u201e {2} \u201d umzuwandeln.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=Ein oder mehrere Argumente haben Standardwerte ohne einen passenden Konverter, um den Standardwert in den Typ des Arguments zu konvertieren.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Erstellen Sie eine benutzerdefinierte Konverterimplementierung f\u00fcr den Typ des Werkzeugarguments.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: Es kann kein zweites Argument mit dem Namen \u201e {1} \u201c zum MCP-Tool \u201e {0} \u201c hinzugef\u00fcgt werden.
+CWMCM0032E.duplicate.argument.name.explanation=Jedes Argument eines MCP-Tools muss einen anderen Namen haben.
+CWMCM0032E.duplicate.argument.name.useraction=Geben Sie jedem Tool-Argument einen anderen Namen.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Unzul\u00e4ssige Anfrage. Methode= {0} RequestURI={1 } RequestQuery={2 }, Ausnahme: {3}
+CWMCM0033A.forbidden.error.explanation=Eine Anfrage wurde gestellt, aber der Benutzer ist nicht dazu berechtigt.
+CWMCM0033A.forbidden.error.useraction=Stellen Sie sicher, dass ein autorisierter Benutzer die Anfrage stellt.

@@ -53,9 +53,6 @@ public interface Cities {
     @Query("SELECT VERSION(this) WHERE ID(this) = ?1")
     long currentVersion(CityId id);
 
-    @Query("SELECT VERSION(THIS) WHERE name = ?1 AND stateName = ?2")
-    long currentVersion(String city, String state);
-
     @Delete
     void delete(City city); // copied from BasicRepository
 
@@ -119,9 +116,7 @@ public interface Cities {
     @Query("SELECT " + ID)
     @OrderBy("stateName")
     @OrderBy("name")
-    // TODO once #29073 is fixed, and update usage
-    // Stream<CityId> ids();
-    Stream<Object[]> ids();
+    Stream<CityId> ids();
 
     @Update
     City[] modifyData(City... citiesToUpdate);

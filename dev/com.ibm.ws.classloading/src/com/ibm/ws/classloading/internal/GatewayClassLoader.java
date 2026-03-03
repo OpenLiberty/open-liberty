@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2014 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,18 +21,19 @@ import java.util.Map;
 import java.util.Set;
 import java.util.WeakHashMap;
 
+import org.eclipse.osgi.internal.loader.BundleLoader;
+import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.wiring.BundleWiring;
 
 import com.ibm.websphere.ras.annotation.Trivial;
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.JVMPackages;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.classloading.ApiType;
 import com.ibm.wsspi.classloading.ClassLoadingConfigurationException;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
 import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
-import org.eclipse.osgi.internal.loader.BundleLoader;
-import org.eclipse.osgi.internal.loader.ModuleClassLoader;
 
 /*
  * This class needs to implement BundleReference.
@@ -40,6 +41,7 @@ import org.eclipse.osgi.internal.loader.ModuleClassLoader;
  *  the classloader hierarchy looking for the Bundle classloader.
  */
 class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, BundleReference, NoClassNotFoundLoader {
+
     private static class Delegation {
         // This is only used to place a non-class loader class on the call stack which is loaded from a bundle.
         // This is needed as a workaround for defect 89337.
@@ -54,6 +56,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     }
 
     private final GatewayConfiguration config;
+    private final JVMPackages jvmPackages;
     private final Object wiringMonitor = new Object() {};
     private final Bundle bundle;
     private BundleWiring wiring = null;
@@ -64,8 +67,9 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     static GatewayClassLoader createGatewayClassLoader(Map<Bundle, Set<GatewayClassLoader>> classloaders,
                                                        GatewayConfiguration config,
                                                        ClassLoader bundleLoader,
-                                                       CompositeResourceProvider resourceProviders) {
-        GatewayClassLoader result = new GatewayClassLoader(config, bundleLoader, resourceProviders);
+                                                       CompositeResourceProvider resourceProviders,
+                                                       JVMPackages jvmPackages) {
+        GatewayClassLoader result = new GatewayClassLoader(config, bundleLoader, resourceProviders, jvmPackages);
         if (classloaders != null) {
             Bundle b = result.getBundle();
             if (b != null) {
@@ -82,10 +86,10 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         return result;
     }
 
-    private GatewayClassLoader(GatewayConfiguration config, ClassLoader bundleLoader, CompositeResourceProvider resourceProviders) {
-        // call the no-args super constructor so the parent methods delegate to the system classloader
-        super();
+    private GatewayClassLoader(GatewayConfiguration config, ClassLoader bundleLoader, CompositeResourceProvider resourceProviders, JVMPackages jvmPackages) {
+        super(jvmPackages.delegate());
         this.config = config;
+        this.jvmPackages = jvmPackages;
         // stash the bundle revision to delegate to its class loader
         if (bundleLoader instanceof BundleReference) {
             this.cl = null;
@@ -128,7 +132,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         // Do bundle first resource loading
         URL result = this.findResource(resName);
         // second check the system loader
-        return result == null ? getSystemResource(resName) : result;
+        return result == null ? jvmPackages.getResource(resName) : result;
     }
 
     /**
@@ -159,7 +163,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     @Trivial
     public Enumeration<URL> getResources(String resName) throws IOException {
         // First check for the bundles' resources then check the system loader
-        return findResources(resName).add(getSystemResources(resName));
+        return findResources(resName).add(jvmPackages.getResources(resName));
     }
 
     @Override
@@ -186,12 +190,12 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     @Override
     @Trivial
     protected Class<?> loadClass(String className, boolean resolve) throws ClassNotFoundException {
-        return loadClassNoException0(className, true);
+        return loadClassImpl(className, true);
     }
 
     @FFDCIgnore(ClassNotFoundException.class)
     @Trivial
-    protected Class<?> loadClassNoException0(String className, boolean exception) throws ClassNotFoundException {
+    private Class<?> loadClassImpl(String className, boolean throwException) throws ClassNotFoundException {
         // The resolve parameter is a legacy parameter that is effectively
         // never used as of JDK 1.1 (see footnote 1 of section 5.3.2 of the 2nd
         // edition of the JVM specification).  The only caller of this method
@@ -205,7 +209,7 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
                     return Delegation.loadClass(className, cl);
                 } catch (ClassNotFoundException perfectlyNormal) {
                     // second check the system classloader
-                    return findSystemClass(className);
+                    return jvmPackages.loadClass(className, throwException);
                 }
             } else {
                 return Delegation.loadClass(className, cl);
@@ -216,19 +220,20 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
             return result;
         }
         if (config.getDelegateToSystem()) {
-            return findSystemClass(className);
+            return jvmPackages.loadClass(className, throwException);
         }
-        if (exception) {
+        if (throwException) {
             throw new ClassNotFoundException(className);
         }
         return null;
     }
 
+
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     public Class<?> loadClassNoException(String name) {
         try {
-            return loadClassNoException0(name, false);
+            return loadClassImpl(name, false);
         } catch (ClassNotFoundException e) {
             return null;
         }

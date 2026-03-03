@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Upewnij si\u0119, \u017ce co najmniej j
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Nie mo\u017cna utworzy\u0107 obiektu HttpAuthenticationMechanism dla modu\u0142u {0} w aplikacji {1}.
 JAVAEESEC_ERROR_NO_HAM.explanation=Przyczyny, z kt\u00f3rych nie mo\u017cna utworzy\u0107 obiektu HttpAuthenticationMechanism, mog\u0105 by\u0107 r\u00f3\u017cne. Informacje o tym, dlaczego nie mo\u017cna utworzy\u0107 obiektu HttpAuthenticationMechanism, s\u0105 zawarte w komunikatach o b\u0142\u0119dach dotycz\u0105cych obiektu HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.useraction=Zbadaj wszystkie komunikaty o b\u0142\u0119dach z obiektu HttpAuthenticationMechanism i na ich podstawie wprowad\u017a odpowiednie poprawki.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: Nie znaleziono obiektu implementacji HttpAuthenticationMechanismService dla modu\u0142u {0} w aplikacji {1} jako pakietu OSGi.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=Nie znaleziono obiektu implementacji HttpAuthenticationMechanismService, poniewa\u017c w pliku manifestu funkcji brakuje jednego z zale\u017cnych pakiet\u00f3w zawieraj\u0105cych t\u0119 implementacj\u0119.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Upewnij si\u0119, \u017ce manifest funkcji odwo\u0142uje si\u0119 do pakietu zawieraj\u0105cego implementacj\u0119 interfejsu HttpAuthenticationMechanismService.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Nie mo\u017cna przet\u0142umaczy\u0107 na poprawn\u0105 warto\u015b\u0107 wyra\u017cenia j\u0119zyka wyra\u017ce\u0144 (Expression Language \u2013 EL) dla atrybutu {0} adnotacji sk\u0142adnicy to\u017csamo\u015bci. Upewnij si\u0119, \u017ce wyra\u017cenie EL i wynik s\u0105 poprawne. Ponadto upewnij si\u0119, \u017ce mo\u017cna rozstrzygn\u0105\u0107 wszystkie przywo\u0142ywane komponenty bean, kt\u00f3re s\u0105 u\u017cywane w wyra\u017ceniu. Z powodu tego problemu zostanie u\u017cyta warto\u015b\u0107 domy\u015blna atrybutu {1}.

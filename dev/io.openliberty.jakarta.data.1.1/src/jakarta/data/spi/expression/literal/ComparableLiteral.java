@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,8 +19,10 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Year;
+import java.util.UUID;
 
 import jakarta.data.expression.ComparableExpression;
+import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
@@ -28,6 +30,14 @@ import jakarta.data.expression.ComparableExpression;
 public interface ComparableLiteral<V extends Comparable<?>> extends //
                 ComparableExpression<Object, V>, //
                 Literal<V> {
+
+    static ComparableLiteral<Character> of(char value) {
+        return new ComparableLiteralRecord<>(Character.class, value);
+    }
+
+    static ComparableLiteral<UUID> of(UUID value) {
+        return new ComparableLiteralRecord<>(UUID.class, value);
+    }
 
     @SuppressWarnings("unchecked")
     static <V extends Comparable<?>> ComparableLiteral<V> of(V value) {
@@ -49,6 +59,8 @@ public interface ComparableLiteral<V extends Comparable<?>> extends //
             return (ComparableLiteral<V>) NumericLiteral.of(n);
         else if (value instanceof Short n)
             return (ComparableLiteral<V>) NumericLiteral.of(n);
+        else if (value instanceof Boolean b)
+            return (ComparableLiteral<V>) BooleanLiteral.of(b);
         else if (value instanceof Year y)
             return (ComparableLiteral<V>) TemporalLiteral.of(y);
         else if (value instanceof LocalDate l)
@@ -59,7 +71,9 @@ public interface ComparableLiteral<V extends Comparable<?>> extends //
             return (ComparableLiteral<V>) TemporalLiteral.of(l);
         else if (value instanceof Instant i)
             return (ComparableLiteral<V>) TemporalLiteral.of(i);
+        else if (value == null)
+            throw new NullPointerException(Messages.get("001.arg.required", "value"));
         else
-            return new ComparableLiteralRecord<>(value);
+            return new ComparableLiteralRecord<>((Class<? extends V>) value.getClass(), value);
     }
 }

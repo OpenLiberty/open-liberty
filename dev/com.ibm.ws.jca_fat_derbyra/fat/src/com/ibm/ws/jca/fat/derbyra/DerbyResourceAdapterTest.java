@@ -87,7 +87,8 @@ public class DerbyResourceAdapterTest extends FATServletClient {
                           // This may just be because we don't care about including manifest files in our test buckets, if that's the case, we can ignore this.
                           "J2CA0027E: .*eis/ds3", // Intentionally caused failure on XA.commit in order to cause in-doubt transaction
                           "J2CA0081E", //Expected due to simulated exception in testConnPoolStatsExceptionDestroy
-                          "WTRN0048W: .*XAER_RMFAIL"); // Intentionally caused failure on XA.commit in order to cause in-doubt transaction
+                          "WTRN0048W: .*XAER_RMFAIL", // Intentionally caused failure on XA.commit in order to cause in-doubt transaction
+                          "CWWKS1865W"); // Warning for AES passwords without key
     }
 
     private void runTest(String servlet) throws Exception {

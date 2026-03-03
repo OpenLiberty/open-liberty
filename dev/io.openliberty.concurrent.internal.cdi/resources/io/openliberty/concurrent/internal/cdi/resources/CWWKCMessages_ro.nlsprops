@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@
 
 # All messages must use the range CWWKC1410 to CWWKC1499
 
-CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Adnotarea Schedule, {0} , specific\u0103 o valoare goal\u0103 pentru secundele \u00een care se execut\u0103 sarcina. Specifica\u021bi o valoare nevid\u0103 pentru c\u00e2mpul secunde sau omite\u021bi c\u00e2mpul secunde din adnotarea Schedule. Omiterea c\u00e2mpului secunde programeaz\u0103 sarcina s\u0103 ruleze la \u00eenceputul minutei.
-CWWKC1410.schedule.lacks.seconds.explanation=Valoarea matricei goal\u0103 indic\u0103 faptul c\u0103 c\u00e2mpul secunde trebuie ignorat atunci c\u00e2nd sunt calculate orele programate. Omiterea c\u00e2mpului secunde programeaz\u0103 sarcina s\u0103 ruleze la \u00eenceputul minutei.
-CWWKC1410.schedule.lacks.seconds.useraction=Modifica\u021bi c\u00e2mpul secunde din adnotarea Schedule pentru a specifica o valoare nevid\u0103 sau omite\u021bi c\u00e2mpul secunde din adnotarea Schedule.
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Adnotarea Schedule, {0}, specific\u0103 o list\u0103 goal\u0103 pentru secundele \u00een care se execut\u0103 sarcina. Specifica\u021bi o list\u0103 ne goal\u0103 pentru c\u00e2mpul secunde sau omite\u021bi c\u00e2mpul secunde din adnotarea Programare. Omisiunea c\u00e2mpului secundelor programeaz\u0103 sarcina s\u0103 se execute la \u00eenceputul minutului.
+CWWKC1410.schedule.lacks.seconds.explanation=Lista goal\u0103 indic\u0103 faptul c\u0103 c\u00e2mpul secundelor trebuie ignorat atunci c\u00e2nd se calculeaz\u0103 orele programate. Omisiunea c\u00e2mpului secundelor programeaz\u0103 sarcina s\u0103 se execute la \u00eenceputul minutului.
+CWWKC1410.schedule.lacks.seconds.useraction=Modifica\u021bi c\u00e2mpul secunde din adnotarea Programare pentru a specifica o list\u0103 care nu este goal\u0103 sau omite\u021bi c\u00e2mpul secunde din adnotarea Programare.
 
 CWWKC1411.qualified.res.err=CWWKC1411E: Serverul nu a creat un bean {0} pentru adnotarea {1} sau elementul descriptor de implementare {2} . Adnotarea sau elementul descriptor de implementare are numele {3} \u0219i calificatorii {4} \u0219i este definit \u00een artefactul aplica\u021biei {5} . Eroarea este {6}
 CWWKC1411.qualified.res.err.explanation=Codul nu a creat resursa sau nu a \u00eenregistrat resursa ca bean.

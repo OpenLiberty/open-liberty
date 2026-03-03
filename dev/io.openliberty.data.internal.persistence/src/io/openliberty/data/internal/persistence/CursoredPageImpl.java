@@ -18,27 +18,23 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.util.AbstractList;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Optional;
-import java.util.RandomAccess;
 import java.util.SortedMap;
-import java.util.stream.Stream;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.data.Sort;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
@@ -49,53 +45,21 @@ import jakarta.persistence.TypedQuery;
  * Page with the ability to create cursors from the elements on the page.
  * A cursor can be used to request next and previous pages relative to the cursor.
  */
-public class CursoredPageImpl<T> implements CursoredPage<T> {
+public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> {
     private static final TraceComponent tc = Tr.register(CursoredPageImpl.class);
-
-    /**
-     * Values that are supplied when invoking the repository method that
-     * requests the cursored page.
-     */
-    private final Object[] args;
-
-    /**
-     * Indicates the direction of pagination relative to a cursor.
-     * In the case of a first page requested with offset pagination,
-     * where there is no cursor, the direction is forward.
-     */
-    private final boolean isForward;
-
-    /**
-     * The request for this page.
-     */
-    private final PageRequest pageRequest;
-
-    /**
-     * Query information.
-     */
-    private final QueryInfo queryInfo;
-
-    /**
-     * Results of the query for this page.
-     */
-    private final List<T> results;
-
-    /**
-     * Total number of elements across all pages. This value is computed lazily,
-     * with -1 indicating it has not been computed yet.
-     */
-    private long totalElements = -1;
 
     /**
      * Construct a new CursoredPage.
      *
-     * @param queryInfo       query information.
-     * @param em              the entity manager.
-     * @param pageRequest     the request for this page.
-     * @param args            values that are supplied to the repository method.
-     * @param addedJPQLParams map of JPQL parameter names/indices and values that are
-     *                            added due to repository special parameters.
-     *                            Null indicates none are added.
+     * @param queryInfo            query information.
+     * @param em                   the entity manager.
+     * @param pageRequest          the request for this page.
+     * @param args                 values that are supplied to the repository method.
+     * @param deferredConstraints  map of method parameter index to non-Literal
+     *                                 Constraints that are supplied at execution time.
+     * @param constraintJPQLParams map of JPQL parameter names/indices and values that are
+     *                                 added due to Constraints and Restrictions.
+     *                                 Null indicates none are added.
      * @throws Exception if an error occurs.
      */
     @Trivial // avoid tracing customer data
@@ -103,54 +67,63 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                      EntityManager em,
                      PageRequest pageRequest,
                      Object[] args,
-                     Map<Object, Object> addedJPQLParams) throws Exception {
+                     Map<Integer, Object> deferredConstraints,
+                     Map<Object, Object> constraintJPQLParams) throws Exception {
+        super(queryInfo, pageRequest, args, deferredConstraints, constraintJPQLParams);
+
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
-            Tr.entry(tc, "<init>", queryInfo, pageRequest, queryInfo.loggable(args));
-
-        if (pageRequest == null)
-            queryInfo.missingPageRequest();
-
-        this.args = args;
-        this.queryInfo = queryInfo;
-        this.pageRequest = pageRequest;
-        this.isForward = this.pageRequest.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
-
-        Optional<PageRequest.Cursor> cursor = this.pageRequest.cursor();
+            Tr.entry(tc, "<init>",
+                     queryInfo,
+                     pageRequest,
+                     queryInfo.loggable(args),
+                     deferredConstraints.keySet(),
+                     constraintJPQLParams == null ? null : constraintJPQLParams.keySet());
 
         int maxPageSize = this.pageRequest.size();
         int firstResult = this.pageRequest.mode() == PageRequest.Mode.OFFSET //
                         ? queryInfo.computeOffset(this.pageRequest) //
                         : 0;
 
-        String jpql = cursor.isEmpty() ? queryInfo.jpql : //
-                        isForward ? queryInfo.jpqlAfterCursor : //
-                                        queryInfo.jpqlBeforeCursor;
+        String jpql;
+        Optional<PageRequest.Cursor> cursor = this.pageRequest.cursor();
+        Map<Object, Object> addedJPQLParams;
 
         if (cursor.isPresent()) {
-            if (addedJPQLParams == null)
-                addedJPQLParams = new LinkedHashMap<>();
+            jpql = isForward ? queryInfo.jpqlAfterCursor : queryInfo.jpqlBeforeCursor;
+
+            addedJPQLParams = constraintJPQLParams == null //
+                            ? new LinkedHashMap<>() //
+                            : new LinkedHashMap<>(constraintJPQLParams);
+
             addParametersForCursor(cursor.get(), addedJPQLParams);
+        } else { // no Cursor in PageRequest
+            jpql = queryInfo.jpql;
+
+            addedJPQLParams = constraintJPQLParams;
         }
 
         @SuppressWarnings("unchecked")
         TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, Object.class);
-        queryInfo.setParameters(query, args, addedJPQLParams);
+        queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
 
         query.setFirstResult(firstResult);
-        query.setMaxResults(maxPageSize + (maxPageSize == Integer.MAX_VALUE //
-                        ? 0 //
-                        : 1)); // extra position is for knowing whether to expect another page
+        query.setMaxResults(maxPageSize == Integer.MAX_VALUE //
+                        ? Integer.MAX_VALUE //
+                        : (maxPageSize + 1)); // extra result indicates if next page exists
 
-        List<T> resultList = query.getResultList();
-        results = resultList;
+        results = query.getResultList();
 
         // Cursor-based pagination in the previous page direction is implemented
         // by reversing the ORDER BY to obtain the previous page. A side-effect
         // of that is that the resulting entries for the page are reversed,
         // so we need to reverse again to correct that.
         if (!isForward)
-            for (int size = results.size(), i = 0, j = size - (size > maxPageSize ? 2 : 1); i < j; i++, j--)
+            for (int size = results.size(),
+                            i = 0,
+                            j = size - (size > maxPageSize ? 2 : 1); //
+                            i < j; //
+                            i++, j--)
                 Collections.swap(results, i, j);
 
         if (trace && tc.isEntryEnabled())
@@ -162,8 +135,9 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
      * the addedJPQLParams map.
      *
      * @param cursor          the cursor
-     * @param addedJPQLParams map of JPQL parameter names/indices and values that
-     *                            are added due to repository special parameters.
+     * @param addedJPQLParams JPQL parameters added for repository special parameters.
+     *                            This method adds parameters for the elements of a
+     *                            Cursor that is present on a PageRequest.
      * @throws Exception if an error occurs
      */
     private void addParametersForCursor(Cursor cursor,
@@ -219,53 +193,52 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
     }
 
     /**
-     * Query for count of total elements across all pages.
+     * Creates a Cursor for the specified entity.
      *
-     * @param jpql count query.
-     * @throws IllegalStateException if not configured to request a total count of elements.
+     * @param entity the entity.
+     * @return Cursor with cursor element values according to the sort criteria.
      */
-    @FFDCIgnore(Exception.class)
-    private long countTotalElements() {
-        if (!pageRequest.requestTotal())
-            throw exc(IllegalStateException.class,
-                      "CWWKD1042.no.totals",
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName(),
-                      pageRequest);
-
-        if (queryInfo.jpqlCount.length() < Util.MIN_COUNT_QUERY_LENGTH)
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1119.keyword.prevents.count",
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName(),
-                      queryInfo.jpqlCount,
-                      queryInfo.jpql);
-
-        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
-        try {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
-            TypedQuery<Long> query = em.createQuery(queryInfo.jpqlCount, Long.class);
-            queryInfo.setParameters(query, args, null);
-
-            return query.getSingleResult();
-        } catch (Exception x) {
-            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
-        } finally {
-            em.close();
-        }
-    }
-
-    @Override
     @Trivial
-    public List<T> content() {
-        int size = results.size();
-        int max = pageRequest.size();
-        List<T> content = size > max ? new ResultList(max) : results;
+    private Cursor createCursor(Object entity) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "createCursor", queryInfo.loggable(entity));
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "content", queryInfo.loggable(content));
-        return content;
+        EntityInfo entityInfo = queryInfo.entityInfo;
+        Object[] cursorElements = new Object[queryInfo.sorts.size()];
+        for (int c = 0; c < cursorElements.length; c++)
+            try {
+                Sort<?> sort = queryInfo.sorts.get(c);
+                List<Member> accessors = //
+                                entityInfo.attributeAccessors.get(sort.property());
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "get cursor element " + accessors);
+                if (accessors == null)
+                    throw exc(MappingException.class,
+                              "CWWKD1123.sort.incompat.with.cursor",
+                              queryInfo.method.getName(),
+                              queryInfo.repositoryInterface.getName(),
+                              sort.property(),
+                              "Cursor.forKey",
+                              entityInfo.getType().getName(),
+                              entityInfo.attributeTypes.keySet());
+                Object value = entity;
+                for (Member accessor : accessors)
+                    if (accessor instanceof Method)
+                        value = ((Method) accessor).invoke(value);
+                    else
+                        value = ((Field) accessor).get(value);
+                cursorElements[c] = value;
+            } catch (IllegalAccessException | //
+                            IllegalArgumentException | //
+                            InvocationTargetException x) {
+                throw new DataException(x instanceof InvocationTargetException //
+                                ? x.getCause() : x);
+            }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "createCursor", queryInfo.loggable(cursorElements));
+        return Cursor.forKey(cursorElements);
     }
 
     @Override
@@ -308,10 +281,6 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
      */
     @Trivial
     private void cursorSizeMismatchError(PageRequest.Cursor cursor) {
-        List<String> keyTypes = new ArrayList<>();
-        for (int i = 0; i < cursor.size(); i++)
-            keyTypes.add(cursor.get(i) == null ? null : cursor.get(i).getClass().getName());
-
         throw exc(IllegalArgumentException.class,
                   "CWWKD1036.cursor.size.mismatch",
                   cursor.size(),
@@ -324,34 +293,63 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
 
     @Override
     public boolean hasNext() {
-        // The extra position is only available for identifying a next page if the current page was obtained in the forward direction
-        int minToHaveNextPage = isForward ? (pageRequest.size() + (pageRequest.size() == Integer.MAX_VALUE ? 0 : 1)) : 1;
+        // The extra position is only available for identifying a next page
+        // if the current page was obtained in the forward direction
+        int maxResults = pageRequest.size() == Integer.MAX_VALUE //
+                        ? Integer.MAX_VALUE //
+                        : (pageRequest.size() + 1);
+        int minToHaveNextPage = isForward ? maxResults : 1;
         return results.size() >= minToHaveNextPage;
     }
 
     @Override
     public boolean hasPrevious() {
-        // The extra position is only available for identifying a previous page if the current page was obtained in the reverse direction
-        int minToHavePreviousPage = isForward ? 1 : (pageRequest.size() + (pageRequest.size() == Integer.MAX_VALUE ? 0 : 1));
+        // The extra position is only available for identifying a previous page
+        // if the current page was obtained in the reverse direction
+        int maxResults = pageRequest.size() == Integer.MAX_VALUE //
+                        ? Integer.MAX_VALUE //
+                        : (pageRequest.size() + 1);
+        int minToHavePreviousPage = isForward ? 1 : maxResults;
         return results.size() >= minToHavePreviousPage;
     }
 
     @Override
-    public boolean hasTotals() {
-        return queryInfo.jpqlCount.length() >= Util.MIN_COUNT_QUERY_LENGTH &&
-               pageRequest.requestTotal();
+    public PageRequest nextPageRequest() {
+        if (!hasNext())
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1040.no.next.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName(),
+                      "CursoredPage.hasNext");
+
+        // CURSOR_PREVIOUS that reads a partial page can have a next page
+        int maxPageSize = pageRequest.size();
+        int endingResultIndex = Math.min(maxPageSize, results.size()) - 1;
+        long pageNum = pageRequest.page() == Long.MAX_VALUE //
+                        ? Long.MAX_VALUE //
+                        : (pageRequest.page() + 1);
+
+        return PageRequest.afterCursor(createCursor(results.get(endingResultIndex)),
+                                       pageNum,
+                                       maxPageSize,
+                                       pageRequest.requestTotal());
     }
 
     @Override
-    public int numberOfElements() {
-        int size = results.size();
-        int max = pageRequest.size();
-        return size > max ? max : size;
-    }
+    public PageRequest previousPageRequest() {
+        if (!hasPrevious())
+            throw exc(NoSuchElementException.class,
+                      "CWWKD1039.no.prev.cursor.page",
+                      queryInfo.method.getName(),
+                      queryInfo.repositoryInterface.getName());
 
-    @Override
-    public PageRequest pageRequest() {
-        return pageRequest;
+        // Decrement page number by 1 unless it would go below 1.
+        long pageNum = pageRequest.page() == 1 ? 1 : pageRequest.page() - 1;
+
+        return PageRequest.beforeCursor(createCursor(results.get(0)),
+                                        pageNum,
+                                        pageRequest.size(),
+                                        pageRequest.requestTotal());
     }
 
     /**
@@ -370,7 +368,8 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
                         .append("CursoredPage ").append(pageRequest.page());
         if (totalElements >= 0) {
             s.append('/');
-            s.append(totalElements / maxPageSize + (totalElements % maxPageSize > 0 ? 1 : 0));
+            s.append(totalElements / maxPageSize +
+                     (totalElements % maxPageSize > 0 ? 1 : 0));
         }
         if (!results.isEmpty()) {
             s.append(" of ").append(results.get(0).getClass().getSimpleName());
@@ -394,123 +393,5 @@ public class CursoredPageImpl<T> implements CursoredPage<T> {
 
         s.append(") @").append(Integer.toHexString(hashCode()));
         return s.toString();
-    }
-
-    @Override
-    public long totalElements() {
-        if (totalElements == -1)
-            totalElements = countTotalElements();
-        return totalElements;
-    }
-
-    @Override
-    public long totalPages() {
-        if (totalElements == -1)
-            totalElements = countTotalElements();
-        return totalElements / pageRequest.size() + (totalElements % pageRequest.size() > 0 ? 1 : 0);
-    }
-
-    @Override
-    public boolean hasContent() {
-        return !results.isEmpty();
-    }
-
-    @Override
-    public Iterator<T> iterator() {
-        int size = results.size();
-        int max = pageRequest.size();
-        return size > max ? new ResultIterator(max) : results.iterator();
-    }
-
-    @Override
-    public PageRequest nextPageRequest() {
-        if (!hasNext())
-            throw exc(NoSuchElementException.class,
-                      "CWWKD1040.no.next.page",
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName(),
-                      "CursoredPage.hasNext");
-
-        int maxPageSize = pageRequest.size();
-        int endingResultIndex = Math.min(maxPageSize, results.size()) - 1; // CURSOR_PREVIOUS that reads a partial page can have a next page
-
-        return PageRequest.afterCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(endingResultIndex))),
-                                       pageRequest.page() == Long.MAX_VALUE ? Long.MAX_VALUE : pageRequest.page() + 1,
-                                       maxPageSize,
-                                       pageRequest.requestTotal());
-    }
-
-    @Override
-    public PageRequest previousPageRequest() {
-        if (!hasPrevious())
-            throw exc(NoSuchElementException.class,
-                      "CWWKD1039.no.prev.cursor.page",
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName());
-
-        // Decrement page number by 1 unless it would go below 1.
-        return PageRequest.beforeCursor(Cursor.forKey(queryInfo.getCursorValues(results.get(0))),
-                                        pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
-                                        pageRequest.size(),
-                                        pageRequest.requestTotal());
-    }
-
-    @Override
-    public Stream<T> stream() {
-        return content().stream();
-    }
-
-    /**
-     * Iterator that restricts the number of results to the specified amount.
-     */
-    @Trivial
-    private class ResultIterator implements Iterator<T> {
-        private int index;
-        private final Iterator<T> iterator;
-        private final int size;
-
-        private ResultIterator(int size) {
-            this.size = size;
-            this.iterator = results.iterator();
-        }
-
-        @Override
-        public boolean hasNext() {
-            return index < size && iterator.hasNext();
-        }
-
-        @Override
-        public T next() {
-            if (index >= size)
-                throw new NoSuchElementException("Element at index " + index);
-            T result = iterator.next();
-            index++;
-            return result;
-        }
-    }
-
-    /**
-     * List that restricts the number of results to the specified amount.
-     */
-    @Trivial
-    private class ResultList extends AbstractList<T> implements RandomAccess {
-        private final int size;
-
-        private ResultList(int size) {
-            this.size = size;
-        }
-
-        @Override
-        public T get(int index) {
-            if (index < size)
-                return results.get(index);
-            else
-                throw new IndexOutOfBoundsException(index);
-        }
-
-        @Override
-        public int size() {
-            return size;
-        }
     }
 }

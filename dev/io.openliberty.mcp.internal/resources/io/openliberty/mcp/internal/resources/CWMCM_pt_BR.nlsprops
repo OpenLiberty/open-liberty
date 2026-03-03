@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=Adicione um nome \u00e0 @ToolAr
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: Existem v\u00e1rios m\u00e9todos de ferramentas MCP denominados {0}. Os m\u00e9todos s\u00e3o {1}.
 CWMCM0004E.duplicate.tools.explanation=Um ou mais nomes de ferramentas MCP ocorreram v\u00e1rias vezes. O servidor espera um nome por ferramenta para garantir a exclusividade.
 CWMCM0004E.duplicate.tools.useraction=Forne\u00e7a apenas um nome exclusivo para cada ferramenta MCP.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=Verifique se voc\u00ea importou a classe
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: Uma solicita\u00e7\u00e3o com o {0} ID est\u00e1 em andamento.
-CWMCM0008E.invalid.request.params.explanation=Uma solicita\u00e7\u00e3o com o mesmo ID est\u00e1 em andamento. As solicita\u00e7\u00f5es do mesmo cliente devem ter IDs exclusivos.
-CWMCM0008E.invalid.request.params.useraction=Use um ID exclusivo para cada solicita\u00e7\u00e3o.
+invalid.request.params=Uma solicita\u00e7\u00e3o com o ID {0} est\u00e1 em andamento.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: As solicita\u00e7\u00f5es GET n\u00e3o s\u00e3o suportadas.
-CWMCM0009I.get.disallowed.explanation=Foi enviada uma solicita\u00e7\u00e3o GET, mas essa funcionalidade n\u00e3o \u00e9 suportada.
-CWMCM0009I.get.disallowed.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+# do not translate GET
+get.disallowed=As solicita\u00e7\u00f5es GET n\u00e3o s\u00e3o suportadas.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=O m\u00e9todo da ferrament
 CWMCM0010E.internal.server.error.detailed.useraction=Revise os logs message.log e FFDC do servidor para identificar o problema.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: Ocorreu um erro interno do servidor durante a execu\u00e7\u00e3o da ferramenta.
-CWMCM0011E.internal.server.error.explanation=O servidor n\u00e3o conseguiu concluir a solicita\u00e7\u00e3o de chamada da ferramenta.
-CWMCM0011E.internal.server.error.useraction=Verifique se a solicita\u00e7\u00e3o est\u00e1 correta. Mais informa\u00e7\u00f5es sobre a falha podem estar no servidor messages.log.
+internal.server.error=Ocorreu um erro interno do servidor durante a execu\u00e7\u00e3o da ferramenta.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: Ocorreu um erro ao liberar o bean CDI a
 CWMCM0012E.bean.release.fail.explanation=Ao chamar um m\u00e9todo de ferramenta, uma inst\u00e2ncia do bean CDI que declara o m\u00e9todo \u00e9 adquirida antes de chamar o m\u00e9todo e liberada depois. Ocorreu um erro ao liberar a inst\u00e2ncia do bean.
 CWMCM0012E.bean.release.fail.useraction=Revise os logs message.log e FFDC do servidor para identificar o problema.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Foi fornecido um cabe\u00e7alho MCP-Protocol-Version n\u00e3o suportado. Valores suportados: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=A vers\u00e3o do protocolo no cabe\u00e7alho MCP-Protocol-Version n\u00e3o \u00e9 suportada pelo servidor.
-CWMCM0013E.unsupported.mcp.http.version.useraction=Use uma vers\u00e3o de protocolo compat\u00edvel.
+unsupported.mcp.http.version=Foi fornecido um cabe\u00e7alho MCP-Protocol-Version n\u00e3o suportado. Valores suportados: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: Erro inesperado do servidor. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=Ocorreu um erro inesperado no servidor durante o processamento da solicita\u00e7\u00e3o. A solicita\u00e7\u00e3o n\u00e3o pode ser conclu\u00edda.
-CWMCM0014E.unexpected.server.error.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+unexpected.server.error=Erro inesperado do servidor. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,17 +132,6 @@ jsonrpc.exception.validation.empty.string.id=O campo id \u00e9 inv\u00e1lido. O 
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=O tipo id n\u00e3o \u00e9 um tipo aceit\u00e1vel. O id deve ser uma string ou um n\u00famero inteiro.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=A solicita\u00e7\u00e3o n\u00e3o possui argumentos nos par\u00e2metros.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=Os seguintes argumentos foram passados, mas n\u00e3o foram encontrados no m\u00e9todo: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=Os seguintes argumentos eram esperados pelo m\u00e9todo, mas n\u00e3o foram fornecidos: {0}.
-
 # Used for server logging
 # do not translate MCP
 # {0} = The  qualified name of the tool
@@ -179,7 +159,7 @@ CWMCM0019E.error.encoding.element.useraction=Revise os logs message.log e FFDC d
 
 # Used for server logging
 # do not translate MCP
-# {0} = The  qualified name of the tool
+# {0} = The qualified name of the tool method, or the tool name
 # {1} = corresponding argument name
 # {2} = corresponding argument type
 # {3} = corresponding default value
@@ -194,3 +174,100 @@ CWMCM0020E.defaultvalue.conversion.error.useraction=Certifique-se de que o valor
 CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: O valor padr\u00e3o de um caractere deve ser exatamente um caractere, mas era um {0}
 CWMCM0021E.defaultvalue.character.invalid.length.explanation=Foi fornecido um valor padr\u00e3o para um argumento do tipo Caractere, mas ele n\u00e3o cont\u00e9m exatamente um caractere. Os argumentos de caracteres devem ter uma \u00fanica sequ\u00eancia de caracteres.
 CWMCM0021E.defaultvalue.character.invalid.length.useraction=Certifique-se de que o valor padr\u00e3o para um argumento do tipo Caractere seja uma string com exatamente um caractere.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: O valor do cursor "{0}" \u00e9 inv\u00e1lido.
+CWMCM0022E.invalid.cursor.value.explanation=Um valor de cursor foi fornecido como par\u00e2metro para o comando tool/list, mas o valor \u00e9 inv\u00e1lido.
+CWMCM0022E.invalid.cursor.value.useraction=Certifique-se de que o valor do cursor seja fornecido exatamente como foi retornado pela chamada anterior da ferramenta/lista.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: O nome da ferramenta {0} para o m\u00e9todo da ferramenta MCP {1} n\u00e3o \u00e9 v\u00e1lido. Os nomes das ferramentas devem ter entre 1 e 128 caracteres, inclusive.
+CWMCM0023E.invalid.length.tool.name.explanation=O nome da ferramenta n\u00e3o segue a especifica\u00e7\u00e3o MCP para nomes. Os nomes devem ter entre 1 e 128 caracteres, inclusive.
+CWMCM0023E.invalid.length.tool.name.useraction=Certifique-se de que os nomes das ferramentas tenham entre 1 e 128 caracteres, inclusive.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: O nome da ferramenta {0} para o m\u00e9todo da ferramenta MCP {1} n\u00e3o \u00e9 v\u00e1lido. Os nomes das ferramentas devem conter apenas letras ASCII, d\u00edgitos, sublinhados ou h\u00edfens.
+CWMCM0024E.invalid.character.tool.name.explanation=O nome da ferramenta n\u00e3o segue a especifica\u00e7\u00e3o MCP para nomes. Os nomes podem conter apenas letras ASCII, d\u00edgitos, sublinhados, h\u00edfens e nenhum outro caractere especial.
+CWMCM0024E.invalid.character.tool.name.useraction=Certifique-se de que os nomes das ferramentas contenham apenas letras ASCII, d\u00edgitos, sublinhados ou h\u00edfens.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=O argumento {0} n\u00e3o pode ser convertido para o tipo {1}.
+extra.arguments=Os seguintes argumentos foram passados, mas n\u00e3o foram encontrados no m\u00e9todo: {0}.
+missing.arguments=O m\u00e9todo esperava os seguintes argumentos, mas n\u00e3o os recebeu: {0}.
+unauthorized.cancellation=A ferramenta n\u00e3o pode ser cancelada, pois o usu\u00e1rio que est\u00e1 fazendo a chamada n\u00e3o est\u00e1 autorizado.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: O tipo de retorno ` {0} ` do m\u00e9todo da ferramenta MCP ` {1} ` deve ser um objeto.
+CWMCM0025E.unsupported.output.explanation=O tipo de retorno da ferramenta MCP fornecida n\u00e3o \u00e9 compat\u00edvel.
+CWMCM0025E.unsupported.output.useraction=Forne\u00e7a um tipo de retorno que seja um objeto.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: J\u00e1 existe uma ferramenta MCP com o nome {0}.
+CWMCM0026E.duplicate.tool.name.explanation=Cada ferramenta deve ter um nome exclusivo. N\u00e3o \u00e9 poss\u00edvel registrar uma nova ferramenta com o mesmo nome de uma ferramenta j\u00e1 existente.
+CWMCM0026E.duplicate.tool.name.useraction=Forne\u00e7a um nome exclusivo para cada ferramenta MCP.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: O m\u00e9todo ` setHandler ` ou o m\u00e9todo ` setAsyncHandler ` deve ser chamado para a ferramenta MCP ` {0} `.
+CWMCM0027E.provide.one.handler.explanation=Ao registrar uma nova ferramenta usando ToolManager,, voc\u00ea deve fornecer um manipulador s\u00edncrono chamando o m\u00e9todo setHandler ou um manipulador ass\u00edncrono chamando o m\u00e9todo setAsyncHandler. N\u00e3o forne\u00e7a ambos.
+CWMCM0027E.provide.one.handler.useraction=Chame o m\u00e9todo ` ToolDefinition.setHandler ` ou o m\u00e9todo ` ToolDefinition.setAsyncHandler ` ao registrar uma ferramenta usando o ` ToolManager `.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} O nome da ferramenta MCP n\u00e3o \u00e9 v\u00e1lido. Os nomes das ferramentas devem conter apenas letras ASCII, d\u00edgitos, sublinhados ou h\u00edfens.
+CWMCM0028E.invalid.character.tool.name.explanation=O nome da ferramenta n\u00e3o segue a especifica\u00e7\u00e3o MCP para nomes. Os nomes podem conter apenas letras ASCII, d\u00edgitos, sublinhados, h\u00edfens e nenhum outro caractere especial.
+CWMCM0028E.invalid.character.tool.name.useraction=Certifique-se de que os nomes das ferramentas contenham apenas letras ASCII, d\u00edgitos, sublinhados ou h\u00edfens.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} O nome da ferramenta MCP n\u00e3o \u00e9 v\u00e1lido. Os nomes das ferramentas devem ter entre 1 e 128 caracteres, inclusive.
+CWMCM0029E.invalid.length.tool.name.explanation=O nome da ferramenta n\u00e3o segue a especifica\u00e7\u00e3o MCP para nomes. Os nomes devem ter entre 1 e 128 caracteres, inclusive.
+CWMCM0029E.invalid.length.tool.name.useraction=Certifique-se de que os nomes das ferramentas tenham entre 1 e 128 caracteres, inclusive.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: N\u00e3o \u00e9 poss\u00edvel adicionar um argumento com um nome em branco \u00e0 ferramenta MCP ( {0} ).
+CWMCM0030E.blank.arguments.explanation=Cada argumento da ferramenta MCP deve ter um nome que n\u00e3o esteja em branco. 
+CWMCM0030E.blank.arguments.useraction=Forne\u00e7a nomes n\u00e3o vazios para todos os argumentos da ferramenta.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: O argumento {1} da ferramenta MCP {0} n\u00e3o possui um conversor para alterar seu valor padr\u00e3o em um objeto do tipo {2}.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=Um ou mais argumentos t\u00eam valores padr\u00e3o sem um conversor correspondente para converter o valor padr\u00e3o para o tipo do argumento.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Crie uma implementa\u00e7\u00e3o de conversor personalizada para o tipo do argumento da ferramenta.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: N\u00e3o \u00e9 poss\u00edvel adicionar um segundo argumento com o nome {1} \u00e0 ferramenta MCP {0}.
+CWMCM0032E.duplicate.argument.name.explanation=Cada argumento de uma ferramenta MCP deve ter um nome diferente.
+CWMCM0032E.duplicate.argument.name.useraction=D\u00ea a cada argumento da ferramenta um nome diferente.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Solicita\u00e7\u00e3o proibida. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }, Exce\u00e7\u00e3o: {3}
+CWMCM0033A.forbidden.error.explanation=Foi feita uma solicita\u00e7\u00e3o, mas o usu\u00e1rio n\u00e3o est\u00e1 autorizado a faz\u00ea-la.
+CWMCM0033A.forbidden.error.useraction=Certifique-se de que um usu\u00e1rio autorizado est\u00e1 fazendo a solicita\u00e7\u00e3o.

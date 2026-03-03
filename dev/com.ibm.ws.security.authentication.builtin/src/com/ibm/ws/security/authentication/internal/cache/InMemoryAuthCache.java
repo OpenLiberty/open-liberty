@@ -20,8 +20,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.security.auth.Subject;
-
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCSelfIntrospectable;
@@ -124,7 +122,7 @@ public class InMemoryAuthCache implements AuthCache, FFDCSelfIntrospectable {
      * Find and return the object associated with the specified key.
      */
     @Override
-    public synchronized Object get(Object key) {
+    public synchronized CacheObject get(Object key) {
         ConcurrentHashMap<Object, Object> tableRef = primaryTable;
         Entry curEntry = (Entry) primaryTable.get(key);
 
@@ -162,7 +160,11 @@ public class InMemoryAuthCache implements AuthCache, FFDCSelfIntrospectable {
                     curEntry = prevEntry; // We lost the race, so use the entry from the other thread
             }
         }
-        return curEntry.value;
+        CacheObject value = curEntry.value;
+
+        // If the CacheObject is not null call the copy method on it to get a new instance
+        // of the Subject so that threads don't synchronize on the same Subject object.
+        return value == null ? null : value.copy();
     }
 
     /**
@@ -263,12 +265,12 @@ public class InMemoryAuthCache implements AuthCache, FFDCSelfIntrospectable {
 
     public static class Entry {
 
-        public Object value;
+        public CacheObject value;
 
         public Entry() {
         }
 
-        public Entry(Object value) {
+        public Entry(CacheObject value) {
             this.value = value;
         }
     }
@@ -306,10 +308,5 @@ public class InMemoryAuthCache implements AuthCache, FFDCSelfIntrospectable {
                               "entryLimit = " + entryLimit,
                               "cacheEvictionListenerSet = " + cacheEvictionListenerSet,
                               "timer = " + timer };
-    }
-
-    @Override
-    public CacheObject createCacheObject(Subject subject) {
-        return new InMemoryCacheObject(subject);
     }
 }

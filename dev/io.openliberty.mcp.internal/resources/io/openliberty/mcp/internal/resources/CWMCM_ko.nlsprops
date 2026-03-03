@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=\uc8fc\uc11d\uc5d0 @ToolArg \uc
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: \uc5ec\ub7ec \uac1c\uc758 MCP \ub3c4\uad6c \uba54\uc11c\ub4dc\uac00 \uc788\uc2b5\ub2c8\ub2e4 {0}. \ubc29\ubc95\ub4e4\uc740 {1}.
 CWMCM0004E.duplicate.tools.explanation=\ud558\ub098 \uc774\uc0c1\uc758 MCP \ub3c4\uad6c \uc774\ub984\uc774 \uc5ec\ub7ec \ubc88 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc11c\ubc84\ub294 \uace0\uc720\uc131\uc744 \uc704\ud574 \ub3c4\uad6c\ub2f9 \ud558\ub098\uc758 \uc774\ub984\uc744 \uae30\ub300\ud569\ub2c8\ub2e4.
 CWMCM0004E.duplicate.tools.useraction=\uac01 MCP \ub3c4\uad6c\uc5d0 \ub300\ud574 \uace0\uc720\ud55c \uc774\ub984\ub9cc \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=\uc778\uc790\uc5d0 \uc62c\ubc14\ub978 \u
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: ID\uac00 {0} \uc9c0\uc815\ub41c \uc694\uccad\uc774 \uc9c4\ud589 \uc911\uc785\ub2c8\ub2e4.
-CWMCM0008E.invalid.request.params.explanation=\ub3d9\uc77c\ud55c ID\ub97c \uac00\uc9c4 \uc694\uccad\uc774 \uc9c4\ud589 \uc911\uc785\ub2c8\ub2e4. \ub3d9\uc77c\ud55c \ud074\ub77c\uc774\uc5b8\ud2b8\ub85c\ubd80\ud130\uc758 \uc694\uccad\uc740 \uace0\uc720\ud55c ID\ub97c \uac00\uc838\uc57c \ud569\ub2c8\ub2e4.
-CWMCM0008E.invalid.request.params.useraction=\ubaa8\ub4e0 \uc694\uccad\uc5d0 \uace0\uc720\ud55c ID\ub97c \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+invalid.request.params={0} ID\ub97c \uac00\uc9c4 \uc694\uccad\uc774 \uc9c4\ud589 \uc911\uc785\ub2c8\ub2e4.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: GET \uc694\uccad\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-CWMCM0009I.get.disallowed.explanation=GET \uc694\uccad\uc774 \uc804\uc1a1\ub418\uc5c8\uc73c\ub098 \ud574\ub2f9 \uae30\ub2a5\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-CWMCM0009I.get.disallowed.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+# do not translate GET
+get.disallowed=GET \uc694\uccad\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=\ud574\ub2f9 \ub3c4\uad6c 
 CWMCM0010E.internal.server.error.detailed.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: \ub3c4\uad6c\ub97c \uc2e4\ud589\ud558\ub294 \ub3d9\uc548 \ub0b4\ubd80 \uc11c\ubc84 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
-CWMCM0011E.internal.server.error.explanation=\uc11c\ubc84\uac00 \ub3c4\uad6c \ud638\ucd9c \uc694\uccad\uc744 \uc644\ub8cc\ud558\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4.
-CWMCM0011E.internal.server.error.useraction=\uc694\uccad\uc774 \uc62c\ubc14\ub978\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624. \uc11c\ubc84\uc5d0 \uc624\ub958\uc5d0 \ub300\ud55c \ucd94\uac00 \uc815\ubcf4\uac00 messages.log \uc788\uc744 \uc218 \uc788\uc2b5\ub2c8\ub2e4.
+internal.server.error=\ub3c4\uad6c\ub97c \uc2e4\ud589\ud558\ub294 \ub3d9\uc548 \ub0b4\ubd80 \uc11c\ubc84 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: \ub3c4\uad6c\ub97c {1} \ud638\ucd9c\ud5
 CWMCM0012E.bean.release.fail.explanation=\ub3c4\uad6c \uba54\uc11c\ub4dc\ub97c \ud638\ucd9c\ud560 \ub54c, \ud574\ub2f9 \uba54\uc11c\ub4dc\ub97c \uc120\uc5b8\ud558\ub294 CDI \ube48\uc758 \uc778\uc2a4\ud134\uc2a4\ub294 \uba54\uc11c\ub4dc \ud638\ucd9c \uc804\uc5d0 \ud68d\ub4dd\ub418\uace0 \ud638\ucd9c \ud6c4 \ud574\uc81c\ub429\ub2c8\ub2e4. \ube48 \uc778\uc2a4\ud134\uc2a4\ub97c \ud574\uc81c\ud558\ub294 \uacfc\uc815\uc5d0\uc11c \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4.
 CWMCM0012E.bean.release.fail.useraction=\uc11c\ubc84 message.log \ubc0f FFDC \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc5ec \ubb38\uc81c\uc810\uc744 \uc2dd\ubcc4\ud558\uc2ed\uc2dc\uc624.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: \uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 MCP-Protocol-Version \ud5e4\ub354\uac00 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc9c0\uc6d0\ub418\ub294 \uac12: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=MCP-Protocol-Version \ud5e4\ub354\uc758 \ud504\ub85c\ud1a0\ucf5c \ubc84\uc804\uc774 \uc11c\ubc84\uc5d0\uc11c \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
-CWMCM0013E.unsupported.mcp.http.version.useraction=\uc9c0\uc6d0\ub418\ub294 \ud504\ub85c\ud1a0\ucf5c \ubc84\uc804\uc744 \uc0ac\uc6a9\ud558\uc2ed\uc2dc\uc624.
+unsupported.mcp.http.version=\uc9c0\uc6d0\ub418\uc9c0 \uc54a\ub294 MCP-Protocol-Version \ud5e4\ub354\uac00 \uc81c\uacf5\ub418\uc5c8\uc2b5\ub2c8\ub2e4. \uc9c0\uc6d0\ub418\ub294 \uac12: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: \uc608\uc0c1\uce58 \ubabb\ud55c \uc11c\ubc84 \uc624\ub958. Method= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=\uc694\uccad\uc744 \ucc98\ub9ac\ud558\ub294 \ub3d9\uc548 \uc608\uae30\uce58 \uc54a\uc740 \uc11c\ubc84 \uc624\ub958\uac00 \ubc1c\uc0dd\ud588\uc2b5\ub2c8\ub2e4. \uc694\uccad\uc744 \uc644\ub8cc\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
-CWMCM0014E.unexpected.server.error.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+unexpected.server.error=\uc608\uc0c1\uce58 \ubabb\ud55c \uc11c\ubc84 \uc624\ub958. Method= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,17 +132,6 @@ jsonrpc.exception.validation.empty.string.id=id \ud544\ub4dc\uac00 \uc720\ud6a8\
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=id \uc720\ud615\uc740 \ud5c8\uc6a9\ub418\uc9c0 \uc54a\ub294 \uc720\ud615\uc785\ub2c8\ub2e4. id\ub294 \ubb38\uc790\uc5f4 \ub610\ub294 \uc815\uc218\uc5ec\uc57c \ud569\ub2c8\ub2e4.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=\uc694\uccad\uc5d0\ub294 \ub9e4\uac1c\ubcc0\uc218\uc5d0 \ub300\ud55c \uc778\uc218\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=\ub2e4\uc74c \uc778\uc218\uac00 \uc804\ub2ec\ub418\uc5c8\uc73c\ub098 \uba54\uc11c\ub4dc\uc5d0\uc11c \ubc1c\uacac\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=\ub2e4\uc74c \uc778\uc218\uac00 \uba54\uc11c\ub4dc\uc5d0 \uc758\ud574 \uc608\uc0c1\ub418\uc5c8\uc73c\ub098 \uc81c\uacf5\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4: {0}.
-
 # Used for server logging
 # do not translate MCP
 # {0} = The  qualified name of the tool
@@ -179,7 +159,7 @@ CWMCM0019E.error.encoding.element.useraction=\uc11c\ubc84 message.log \ubc0f FFD
 
 # Used for server logging
 # do not translate MCP
-# {0} = The  qualified name of the tool
+# {0} = The qualified name of the tool method, or the tool name
 # {1} = corresponding argument name
 # {2} = corresponding argument type
 # {3} = corresponding default value
@@ -194,3 +174,100 @@ CWMCM0020E.defaultvalue.conversion.error.useraction=\uc778\uc218\uc758 \uc720\ud
 CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: \ubb38\uc790 \uae30\ubcf8\uac12\uc740 \uc815\ud655\ud788 \ud558\ub098\uc758 \ubb38\uc790\uc5ec\uc57c \ud558\uc9c0\ub9cc, {0}
 CWMCM0021E.defaultvalue.character.invalid.length.explanation=\ubb38\uc790\ud615 \uc778\uc218\uc5d0 \ub300\ud55c \uae30\ubcf8\uac12\uc774 \uc81c\uacf5\ub418\uc5c8\uc9c0\ub9cc, \uc815\ud655\ud788 \ud558\ub098\uc758 \ubb38\uc790\ub97c \ud3ec\ud568\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ubb38\uc790 \uc778\uc218\ub294 \ub2e8\uc77c \ubb38\uc790\uc5f4\uc774\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 CWMCM0021E.defaultvalue.character.invalid.length.useraction=\ubb38\uc790\uc5f4(Character) \uc720\ud615\uc758 \uc778\uc790\uc5d0 \ub300\ud55c \uae30\ubcf8\uac12\uc774 \uc815\ud655\ud788 \ud558\ub098\uc758 \ubb38\uc790\ub85c \uad6c\uc131\ub41c \ubb38\uc790\uc5f4\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: "{0}" \uc758 \ucee4\uc11c \uac12\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+CWMCM0022E.invalid.cursor.value.explanation=\ucee4\uc11c \uac12\uc774 \ub3c4\uad6c/\ubaa9\ub85d \uba85\ub839\uc5b4\uc758 \ub9e4\uac1c\ubcc0\uc218\ub85c \uc81c\uacf5\ub418\uc5c8\uc73c\ub098, \ud574\ub2f9 \uac12\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CWMCM0022E.invalid.cursor.value.useraction=\ucee4\uc11c \uac12\uc774 \uc774\uc804 \ub3c4\uad6c/\ubaa9\ub85d \ud638\ucd9c\uc5d0\uc11c \ubc18\ud658\ub41c \uac83\uacfc \uc815\ud655\ud788 \ub3d9\uc77c\ud558\uac8c \uc81c\uacf5\ub418\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: {1} MCP \ub3c4\uad6c \uba54\uc11c\ub4dc\uc5d0 \ub300\ud55c {0} \ub3c4\uad6c \uc774\ub984\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub3c4\uad6c \uc774\ub984\uc740 1\uc790\uc5d0\uc11c 128\uc790 \uc0ac\uc774\uc5ec\uc57c \ud569\ub2c8\ub2e4(\ud3ec\ud568).
+CWMCM0023E.invalid.length.tool.name.explanation=\ub3c4\uad6c \uc774\ub984\uc774 MCP \uba85\uba85 \uaddc\uce59\uc744 \ub530\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774\ub984\uc740 1\uc790\uc5d0\uc11c 128\uc790 \uc0ac\uc774\uc5ec\uc57c \ud569\ub2c8\ub2e4(\ud3ec\ud568).
+CWMCM0023E.invalid.length.tool.name.useraction=\ub3c4\uad6c \uc774\ub984\uc740 1\uc790\ubd80\ud130 128\uc790 \uc0ac\uc774\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: {1} MCP \ub3c4\uad6c \uba54\uc11c\ub4dc\uc5d0 \ub300\ud55c {0} \ub3c4\uad6c \uc774\ub984\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub3c4\uad6c \uc774\ub984\uc740 ASCII \ubb38\uc790, \uc22b\uc790, \ubc11\uc904 \ub610\ub294 \ud558\uc774\ud508\ub9cc \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWMCM0024E.invalid.character.tool.name.explanation=\ud574\ub2f9 \ub3c4\uad6c \uc774\ub984\uc740 MCP \uba85\uba85 \uaddc\uce59\uc744 \ub530\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774\ub984\uc5d0\ub294 ASCII \ubb38\uc790, \uc22b\uc790, \ubc11\uc904, \ud558\uc774\ud508\ub9cc \ud3ec\ud568\ub420 \uc218 \uc788\uc73c\uba70, \uadf8 \uc678 \ud2b9\uc218\ubb38\uc790\ub294 \ud3ec\ud568\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0024E.invalid.character.tool.name.useraction=\ub3c4\uad6c \uc774\ub984\uc5d0\ub294 ASCII \ubb38\uc790, \uc22b\uc790, \ubc11\uc904 \ub610\ub294 \ud558\uc774\ud508\ub9cc \ud3ec\ud568\ub418\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed={0} \uc778\uc218\ub294 {1} \uc720\ud615\uc73c\ub85c \ubcc0\ud658\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+extra.arguments=\ub2e4\uc74c \uc778\uc218\uac00 \uc804\ub2ec\ub418\uc5c8\uc73c\ub098 \uba54\uc11c\ub4dc\uc5d0\uc11c \ubc1c\uacac\ub418\uc9c0 \uc54a\uc558\uc2b5\ub2c8\ub2e4: {0}.
+missing.arguments=\ud574\ub2f9 \uba54\uc11c\ub4dc\ub294 \ub2e4\uc74c \uc778\uc218\ub97c \uae30\ub300\ud588\uc73c\ub098 \ubc1b\uc9c0 \ubabb\ud588\uc2b5\ub2c8\ub2e4: {0}.
+unauthorized.cancellation=\ud638\ucd9c \uc0ac\uc6a9\uc790\uc5d0\uac8c \uad8c\ud55c\uc774 \uc5c6\uc73c\ubbc0\ub85c \ub3c4\uad6c\ub97c \ucde8\uc18c\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: {1} MCP \ub3c4\uad6c \uba54\uc11c\ub4dc\uc758 {0} \ubc18\ud658 \uc720\ud615\uc740 \uac1d\uccb4\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+CWMCM0025E.unsupported.output.explanation=\uc81c\uacf5\ub41c MCP \ub3c4\uad6c\uc758 \ubc18\ud658 \uc720\ud615\uc740 \uc9c0\uc6d0\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+CWMCM0025E.unsupported.output.useraction=\ubc18\ud658 \uc720\ud615\uc73c\ub85c \uac1d\uccb4\ub97c \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: {0} \ub77c\ub294 \uc774\ub984\uc758 MCP \ub3c4\uad6c\uac00 \uc774\ubbf8 \uc874\uc7ac\ud569\ub2c8\ub2e4.
+CWMCM0026E.duplicate.tool.name.explanation=\uac01 \ub3c4\uad6c\ub294 \uace0\uc720\ud55c \uc774\ub984\uc744 \uac00\uc838\uc57c \ud569\ub2c8\ub2e4. \uae30\uc874 \ub3c4\uad6c\uc640 \ub3d9\uc77c\ud55c \uc774\ub984\uc744 \uac00\uc9c4 \uc0c8 \ub3c4\uad6c\ub97c \ub4f1\ub85d\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0026E.duplicate.tool.name.useraction=\uac01 MCP \ub3c4\uad6c\uc5d0 \uace0\uc720\ud55c \uc774\ub984\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: {0} MCP \ub3c4\uad6c\ub97c \uc0ac\uc6a9\ud558\ub824\uba74 setHandler \uba54\uc11c\ub4dc \ub610\ub294 setAsyncHandler \uba54\uc11c\ub4dc \uc911 \ud558\ub098\ub97c \ud638\ucd9c\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWMCM0027E.provide.one.handler.explanation=ToolManager, \ub97c \uc0ac\uc6a9\ud558\uc5ec \uc0c8 \ub3c4\uad6c\ub97c \ub4f1\ub85d\ud560 \ub54c\ub294 setHandler \uba54\uc11c\ub4dc\ub97c \ud638\ucd9c\ud558\uc5ec \ub3d9\uae30\uc2dd \ud578\ub4e4\ub7ec\ub97c \uc81c\uacf5\ud558\uac70\ub098, setAsyncHandler \uba54\uc11c\ub4dc\ub97c \ud638\ucd9c\ud558\uc5ec \ube44\ub3d9\uae30\uc2dd \ud578\ub4e4\ub7ec\ub97c \uc81c\uacf5\ud574\uc57c \ud569\ub2c8\ub2e4. \ub458 \ub2e4 \uc81c\uacf5\ud558\uc9c0 \ub9c8\uc2ed\uc2dc\uc624.
+CWMCM0027E.provide.one.handler.useraction=ToolManager \ub97c \uc0ac\uc6a9\ud558\uc5ec \ub3c4\uad6c\ub97c \ub4f1\ub85d\ud560 \ub54c\ub294 ToolDefinition.setHandler \uba54\uc11c\ub4dc \ub610\ub294 ToolDefinition.setAsyncHandler \uba54\uc11c\ub4dc\ub97c \ud638\ucd9c\ud558\uc2ed\uc2dc\uc624.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} MCP \ub3c4\uad6c \uc774\ub984\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub3c4\uad6c \uc774\ub984\uc740 ASCII \ubb38\uc790, \uc22b\uc790, \ubc11\uc904 \ub610\ub294 \ud558\uc774\ud508\ub9cc \ud3ec\ud568\ud574\uc57c \ud569\ub2c8\ub2e4.
+CWMCM0028E.invalid.character.tool.name.explanation=\ud574\ub2f9 \ub3c4\uad6c \uc774\ub984\uc740 MCP \uba85\uba85 \uaddc\uce59\uc744 \ub530\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774\ub984\uc5d0\ub294 ASCII \ubb38\uc790, \uc22b\uc790, \ubc11\uc904, \ud558\uc774\ud508\ub9cc \ud3ec\ud568\ub420 \uc218 \uc788\uc73c\uba70, \uadf8 \uc678 \ud2b9\uc218\ubb38\uc790\ub294 \ud3ec\ud568\ub420 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0028E.invalid.character.tool.name.useraction=\ub3c4\uad6c \uc774\ub984\uc5d0\ub294 ASCII \ubb38\uc790, \uc22b\uc790, \ubc11\uc904 \ub610\ub294 \ud558\uc774\ud508\ub9cc \ud3ec\ud568\ub418\ub3c4\ub85d \ud558\uc2ed\uc2dc\uc624.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} MCP \ub3c4\uad6c \uc774\ub984\uc774 \uc720\ud6a8\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \ub3c4\uad6c \uc774\ub984\uc740 1\uc790\uc5d0\uc11c 128\uc790 \uc0ac\uc774\uc5ec\uc57c \ud569\ub2c8\ub2e4(\ud3ec\ud568).
+CWMCM0029E.invalid.length.tool.name.explanation=\ud574\ub2f9 \ub3c4\uad6c \uc774\ub984\uc740 MCP \uba85\uba85 \uaddc\uce59\uc744 \ub530\ub974\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. \uc774\ub984\uc740 1\uc790\uc5d0\uc11c 128\uc790 \uc0ac\uc774\uc5ec\uc57c \ud569\ub2c8\ub2e4(\ud3ec\ud568).
+CWMCM0029E.invalid.length.tool.name.useraction=\ub3c4\uad6c \uc774\ub984\uc740 1\uc790\ubd80\ud130 128\uc790 \uc0ac\uc774\uc5ec\uc57c \ud569\ub2c8\ub2e4.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: {0} MCP \ub3c4\uad6c\uc5d0 \uc774\ub984\uc774 \ube44\uc5b4 \uc788\ub294 \uc778\uc218\ub97c \ucd94\uac00\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0030E.blank.arguments.explanation=\ubaa8\ub4e0 MCP \ub3c4\uad6c \uc778\uc218\ub294 \ube44\uc5b4 \uc788\uc9c0 \uc54a\uc740 \uc774\ub984\uc744 \uac00\uc838\uc57c \ud569\ub2c8\ub2e4. 
+CWMCM0030E.blank.arguments.useraction=\ubaa8\ub4e0 \ub3c4\uad6c \uc778\uc218\uc5d0 \ube44\uc5b4 \uc788\uc9c0 \uc54a\uc740 \uc774\ub984\uc744 \uc9c0\uc815\ud558\uc2ed\uc2dc\uc624.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: {0} MCP \ub3c4\uad6c\uc758 ` {1} ` \uc778\uc218\ub294 \uae30\ubcf8\uac12\uc744 ` {2} ` \uc720\ud615\uc758 \uac1c\uccb4\ub85c \ubcc0\ud658\ud558\ub294 \ubcc0\ud658\uae30\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=\ud558\ub098 \uc774\uc0c1\uc758 \uc778\uc790\uc5d0 \ub300\ud574 \uae30\ubcf8\uac12\uc774 \uc874\uc7ac\ud558\uc9c0\ub9cc, \ud574\ub2f9 \uae30\ubcf8\uac12\uc744 \uc778\uc790\uc758 \uc720\ud615\uc73c\ub85c \ubcc0\ud658\ud560 \uc218 \uc788\ub294 \uc77c\uce58\ud558\ub294 \ubcc0\ud658\uae30\uac00 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=\ub3c4\uad6c \uc778\uc790\uc758 \uc720\ud615\uc5d0 \ub300\ud55c \uc0ac\uc6a9\uc790 \uc815\uc758 \ubcc0\ud658\uae30 \uad6c\ud604\uc744 \uc0dd\uc131\ud558\uc2ed\uc2dc\uc624.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: {0} MCP \ub3c4\uad6c\uc5d0 {1} \uc774\ub984\uc758 \ub450 \ubc88\uc9f8 \uc778\uc218\ub97c \ucd94\uac00\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0032E.duplicate.argument.name.explanation=MCP \ub3c4\uad6c\uc758 \uac01 \uc778\uc218\ub294 \uc11c\ub85c \ub2e4\ub978 \uc774\ub984\uc744 \uac00\uc838\uc57c \ud569\ub2c8\ub2e4.
+CWMCM0032E.duplicate.argument.name.useraction=\uac01 \ub3c4\uad6c \uc778\uc218\uc5d0 \uc11c\ub85c \ub2e4\ub978 \uc774\ub984\uc744 \ubd80\uc5ec\ud558\uc2ed\uc2dc\uc624.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: \uae08\uc9c0\ub41c \uc694\uccad\uc785\ub2c8\ub2e4. Method= {0} RequestURI={1 } RequestQuery={2 }, Exception: {3}
+CWMCM0033A.forbidden.error.explanation=\uc694\uccad\uc774 \uc774\ub8e8\uc5b4\uc84c\uc73c\ub098 \uc0ac\uc6a9\uc790\uc5d0\uac8c \ud574\ub2f9 \uad8c\ud55c\uc774 \uc5c6\uc2b5\ub2c8\ub2e4.
+CWMCM0033A.forbidden.error.useraction=\uc694\uccad\uc744 \ud638\ucd9c\ud558\ub294 \uc0ac\uc6a9\uc790\uac00 \uc2b9\uc778\ub41c \uc0ac\uc6a9\uc790\uc778\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

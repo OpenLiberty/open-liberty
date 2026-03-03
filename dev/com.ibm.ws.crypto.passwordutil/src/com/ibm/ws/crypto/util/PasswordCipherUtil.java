@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2007, 2025 IBM Corporation and others.
+ * Copyright (c) 2007, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -95,6 +95,7 @@ public class PasswordCipherUtil {
 
     private static boolean alreadyLoggedAESWeakPasswordAlgoWarning = false;
     private static boolean alreadyLoggedHASHWeakPasswordAlgoWarning = false;
+    private static boolean alreadyLoggedAESDefaultKeyWarning = false;
 
     // in order to support the custom encryption for the command line parameter, implement a static initialier to check whether
     // the custom encryption is enabled.
@@ -274,13 +275,33 @@ public class PasswordCipherUtil {
                             new Object[] { "{aes}", ": AES-" + AES_V0.keyLength, ": AES-" + AES_V1.keyLength });
                 alreadyLoggedAESWeakPasswordAlgoWarning = true;
             }
+            checkAndLogDefaultKeyWarning(AES_V0);
             return aesDecipherV0(encrypted_bytes);
         } else if (encrypted_bytes[0] == 1) {
+            checkAndLogDefaultKeyWarning(AES_V1);
             return aesDecipherV1(encrypted_bytes);
         } else if (encrypted_bytes[0] == 2) {
             return aesDecipherV2(encrypted_bytes);
         } else {
             throw new InvalidPasswordCipherException();
+        }
+    }
+
+    /**
+     * Check if the default encryption key is being used and log a warning message.
+     *
+     * @param version - the AES key version being used
+     */
+    private static void checkAndLogDefaultKeyWarning(AESKeyManager.KeyVersion version) {
+        if (!!!alreadyLoggedAESDefaultKeyWarning) {
+            char[] keyChars = AESKeyManager.getKeyCharsUsingResolver(version, null);
+            String keyString = new String(keyChars);
+            
+            if (AESKeyManager.PROPERTY_WLP_PASSWORD_ENCRYPTION_KEY.equals(keyString) ) {
+                logger.logp(Level.WARNING, PasswordCipherUtil.class.getName(), "checkAndLogDefaultKeyWarning",
+                            "PASSWORDUTIL_DEFAULT_KEY_WARNING");
+                alreadyLoggedAESDefaultKeyWarning = true;
+            }
         }
     }
 

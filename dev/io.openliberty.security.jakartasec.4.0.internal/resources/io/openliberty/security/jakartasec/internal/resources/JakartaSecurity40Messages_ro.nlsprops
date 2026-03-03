@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: \u00cen cadrul acestei aplica\u021bii a fost detectat un magazin de identit\u0103\u021bi configurat utiliz\u00e2nd o adnotare \u201e @InMemoryIdentityStoreDefinition \u201d. Nu utiliza\u021bi aceast\u0103 defini\u021bie \u00eentr-un mediu de produc\u021bie.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=Utiliza\u021bi defini\u021bia \u201e @InMemoryIdentityStoreDefinition \u201d numai \u00een scopuri de dezvoltare, testare \u0219i depanare.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=\u00cenainte ca aplica\u021bia dvs. s\u0103 intre \u00een produc\u021bie, elimina\u021bi @InMemoryIdentityStoreDefinition \u0219i \u00eenlocui\u021bi-l cu un magazin de identit\u0103\u021bi compatibil cu produc\u021bia, cum ar fi LDAP sau Database.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: Variabila de mediu {0} este goal\u0103 sau nesetat\u0103. Orice valid\u0103ri ulterioare ale cererilor de autentificare care utilizeaz\u0103 apelantul asociat vor e\u0219ua.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=O variabil\u0103 de mediu a fost utilizat\u0103 ca valoare a unui c\u00e2mp de parol\u0103 \u00een adnotarea @Credential, dar aceast\u0103 variabil\u0103 nu este setat\u0103 extern sau este setat\u0103 la un \u0219ir gol.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Asigura\u021bi-v\u0103 c\u0103 seta\u021bi variabila de mediu men\u021bionat\u0103 \u00een adnotare, specificat\u0103 de obicei \u00een server.env.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: Acreditarea furnizat\u0103 obiectului IdentityStore nu este o UsernamePasswordCredential \u015fi nu poate fi validat\u0103.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=Acreditarea furnizat\u0103 obiectului IdentityStore nu este o clas\u0103 UsernamePasswordCredential \u015fi nu poate fi validat\u0103.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=Examina\u0163i tipul de acreditare transmis \u00een obiectul IdentityStore de implementarea HttpAuthMechanism.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: Expresia limbajului de expresie (EL) pentru atributul \u201e ''{0}'' \u201d al adnot\u0103rii magazinului de identit\u0103\u021bi nu poate fi rezolvat\u0103 \u00eentr-o valoare valid\u0103. Asigura\u0163i-v\u0103 c\u0103 sunt valide expresia EL \u015fi rezultatul \u015fi c\u0103 toate bean-urile referite care sunt utilizate \u00een expresie sunt rezolvabile. \u00cen schimb, se utilizeaz\u0103 valoarea implicit\u0103 a atributului ''{1}''.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Asigura\u0163i-v\u0103 c\u0103 adnotarea con\u0163ine o valoare valid\u0103 de configura\u0163ie. Asigura\u0163i-v\u0103 c\u0103 sunt valide expresiile EL, \u015fi c\u0103 toate bean-urile referite care sunt utilizate \u00een expresie sunt rezolvabile \u015fi c\u0103 tipul de rezultat corespunde cu atributul.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=Cauza erorii este o nepotrivire de tip \u00eentre rezultatul EL \u015fi valoarea a\u015fteptat\u0103 a atributului. De exemplu, dac\u0103 tipul de atribut a\u0219teptat este String, rezultatul EL trebuie s\u0103 fie String.
+
+# NOTE, this error message (JAKARTASEC_ERROR_NO_HAM) is copied directly from bundle com.ibm.ws.security.javaeesec
+JAKARTASEC_ERROR_NO_HAM=CWWKS2604E: Obiectul HttpAuthenticationMechanism pentru modulul {0} din aplica\u0163ia {1} nu a putut fi creat.
+JAKARTASEC_ERROR_NO_HAM.explanation=Motivul pentru care nu a putut fi creat obiectul HttpAuthenticationMechanism difer\u0103. Mesajele de eroare pentru obiectul HttpAuthenticationMechanism furnizeaz\u0103 informa\u0163ii despre motivul pentru care nu poate fi creat obiectul HttpAuthenticationMechanism.
+JAKARTASEC_ERROR_NO_HAM.useraction=Investiga\u0163i toate mesajele de eroare din obiectul HttpAuthenticationMechanism \u015fi face\u0163i corec\u0163ii bazate pe mesajele de eroare.
+
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION=CWWKS2605E: Imposibil de determinat care HttpAuthenticationMechanism s\u0103 gestioneze solicitarea. Urm\u0103toarele HttpAuthenticationMechanisms au aceea\u0219i prioritate sau tip de mecanism de autentificare Http {0}.
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION.explanation=Dac\u0103 sunt specificate mai multe autentific\u0103ri HTTP ( HttpAuthenticationMechanisms ), trebuie selectat\u0103 una unic\u0103 pentru autorizare, pe baza priorit\u0103\u021bii, tipului mecanismului de autentificare HTTP \u0219i calificatorilor op\u021bionali ai mecanismului de autentificare HTTP.
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION.useraction=Seta\u021bi sau ajusta\u021bi valoarea priorit\u0103\u021bii unuia dintre aceste HttpAuthenticationMechanisms.
+

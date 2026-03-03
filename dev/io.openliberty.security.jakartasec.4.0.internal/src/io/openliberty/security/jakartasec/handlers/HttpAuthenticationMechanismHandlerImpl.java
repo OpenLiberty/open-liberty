@@ -13,8 +13,6 @@
 
 package io.openliberty.security.jakartasec.handlers;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -34,6 +32,7 @@ import jakarta.enterprise.inject.AmbiguousResolutionException;
 import jakarta.enterprise.inject.Default;
 import jakarta.enterprise.inject.Instance;
 import jakarta.enterprise.inject.spi.CDI;
+import jakarta.security.enterprise.AuthenticationException;
 import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanismHandler;
@@ -109,66 +108,40 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
      * {@inheritDoc}
      */
     @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+    public AuthenticationStatus validateRequest(HttpServletRequest request,
+                                                HttpServletResponse response,
+                                                HttpMessageContext httpMessageContext) throws AuthenticationException {
 
         MultiHttpAuthenticationMechanism multiHttpAuthenticationMechanism = getHighestPriorityHttpAuthenticationMechanism();
         if (multiHttpAuthenticationMechanism == null) {
-            if (tc.isWarningEnabled()) {
-                Tr.warning(tc, "No HttpAuthenticationMechanism available.");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Selecting the highest priority HttpAuthenticationMechanism but none returned.");
             }
             return AuthenticationStatus.NOT_DONE;
         }
         logHAMToDebugIfChanged(multiHttpAuthenticationMechanism);
 
-        // Use privileged action for security sensitive operations
-        PrivilegedAction<AuthenticationStatus> action = new PrivilegedAction<AuthenticationStatus>() {
-            @Override
-            public AuthenticationStatus run() {
-                try {
-                    return multiHttpAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
-                } catch (Exception e) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Exception during validateRequest: " + e.getMessage(), e);
-                    }
-                    return AuthenticationStatus.SEND_FAILURE;
-                }
-            }
-        };
-
-        return AccessController.doPrivileged(action);
+        return multiHttpAuthenticationMechanism.validateRequest(request, response, httpMessageContext);
     }
 
     /**
      * {@inheritDoc}
      */
     @Override
-    public AuthenticationStatus secureResponse(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) {
+    public AuthenticationStatus secureResponse(HttpServletRequest request,
+                                               HttpServletResponse response,
+                                               HttpMessageContext httpMessageContext) throws AuthenticationException {
 
         MultiHttpAuthenticationMechanism multiHttpAuthenticationMechanism = getHighestPriorityHttpAuthenticationMechanism();
         if (multiHttpAuthenticationMechanism == null) {
-            if (tc.isWarningEnabled()) {
-                Tr.warning(tc, "No HttpAuthenticationMechanism available.");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Selecting the highest priority HttpAuthenticationMechanism but none returned.");
             }
             return AuthenticationStatus.NOT_DONE;
         }
         logHAMToDebugIfChanged(multiHttpAuthenticationMechanism);
 
-        // Use privileged action for security sensitive operations
-        PrivilegedAction<AuthenticationStatus> action = new PrivilegedAction<AuthenticationStatus>() {
-            @Override
-            public AuthenticationStatus run() {
-                try {
-                    return multiHttpAuthenticationMechanism.secureResponse(request, response, httpMessageContext);
-                } catch (Exception e) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Exception during secureResponse: " + e.getMessage(), e);
-                    }
-                    return AuthenticationStatus.SEND_FAILURE;
-                }
-            }
-        };
-
-        return AccessController.doPrivileged(action);
+        return multiHttpAuthenticationMechanism.secureResponse(request, response, httpMessageContext);
     }
 
     /**
@@ -180,31 +153,14 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
         MultiHttpAuthenticationMechanism multiHttpAuthenticationMechanism = getHighestPriorityHttpAuthenticationMechanism();
 
         if (multiHttpAuthenticationMechanism == null) {
-            if (tc.isWarningEnabled()) {
-                Tr.warning(tc, "No HttpAuthenticationMechanism available.");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Selecting the highest priority HttpAuthenticationMechanism but none returned.");
             }
             return;
         }
         logHAMToDebugIfChanged(multiHttpAuthenticationMechanism);
 
-        // Use privileged action for security sensitive operations
-        PrivilegedAction<Void> action = new PrivilegedAction<Void>() {
-            @Override
-            public Void run() {
-                try {
-                    multiHttpAuthenticationMechanism.cleanSubject(request, response, httpMessageContext);
-                } catch (Exception e) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Exception during cleanSubject: " + e.getMessage(), e);
-                    }
-                }
-                return null;
-            }
-        };
-
-        if (action != null) {
-            AccessController.doPrivileged(action);
-        }
+        multiHttpAuthenticationMechanism.cleanSubject(request, response, httpMessageContext);
     }
 
     /**
@@ -316,8 +272,8 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
         if (tc.isDebugEnabled() == false) {
             return;
         }
-        StringBuffer msg = new StringBuffer("Order of HttpAuthenticationMechanisms found (the first one will be used if its prioritization is unique - @Priority for application HAMs and HAM type - Oidc/CustomForm/Form/Basic - for in-built HAMs): ");
-        final String prioritySeperator = ", ";
+        StringBuilder msg = new StringBuilder("Order of HttpAuthenticationMechanisms found (the first one will be used if its prioritization is unique - @Priority for application HAMs and HAM type - Oidc/CustomForm/Form/Basic - for in-built HAMs): ");
+        final String prioritySeparator = ", ";
         for (MultiHttpAuthenticationMechanism httpAuthenticationMechanism : multiHttpAuthenticationMechanisms) {
             String simpleName = httpAuthenticationMechanism.getSimpleName();
             msg = msg.append(simpleName);
@@ -325,10 +281,11 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
             if (hamClassPriorities.containsKey(simpleName) == false) {
                 msg = msg.append(" Priority = " + httpAuthenticationMechanism.getPriority());
             }
-            msg = msg.append(prioritySeperator);
+            msg = msg.append(prioritySeparator);
         }
         // remove trailing ", "
-        Tr.debug(tc, getApplicationName(), msg.toString().substring(0, msg.length() - prioritySeperator.length()));
+        msg.setLength(msg.length() - prioritySeparator.length());
+        Tr.debug(tc, getApplicationName(), msg.toString());
     }
 
     /**

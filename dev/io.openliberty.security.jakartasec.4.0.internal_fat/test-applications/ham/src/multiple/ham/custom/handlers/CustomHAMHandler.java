@@ -12,20 +12,10 @@
  *******************************************************************************/
 package multiple.ham.custom.handlers;
 
-import java.security.AccessController;
-import java.security.PrivilegedAction;
-
-import jakarta.annotation.PostConstruct;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Default;
 import jakarta.inject.Inject;
-import jakarta.security.enterprise.AuthenticationException;
-import jakarta.security.enterprise.AuthenticationStatus;
 import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanism;
-import jakarta.security.enterprise.authentication.mechanism.http.HttpAuthenticationMechanismHandler;
-import jakarta.security.enterprise.authentication.mechanism.http.HttpMessageContext;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import multiple.ham.common.qualifiers.Admin;
 import multiple.ham.common.qualifiers.Operator;
 import multiple.ham.common.qualifiers.Tester;
@@ -39,7 +29,8 @@ import multiple.ham.common.qualifiers.User;
 
 @Default
 @ApplicationScoped
-public class CustomHAMHandler implements HttpAuthenticationMechanismHandler {
+public class CustomHAMHandler extends BaseHAMHandler {
+    private static final Class<?> c = CustomHAMHandler.class;
 
     @Inject
     @Admin
@@ -54,68 +45,50 @@ public class CustomHAMHandler implements HttpAuthenticationMechanismHandler {
     @Tester
     private HttpAuthenticationMechanism testerHAM;
 
-    public CustomHAMHandler() {
+    @Override
+    protected Class<?> getTestClass() {
+        return c;
     }
 
-    @PostConstruct
-    public void init() {
+    @Override
+    protected HttpAuthenticationMechanism getAdminHAM() {
+        return adminHAM;
     }
 
+    @Override
+    protected HttpAuthenticationMechanism getUserHAM() {
+        return userHAM;
+    }
+
+    @Override
+    protected HttpAuthenticationMechanism getOperatorHAM() {
+        return operatorHAM;
+    }
+
+    @Override
+    protected HttpAuthenticationMechanism getTesterHAM() {
+        return testerHAM;
+    }
+
+    @Override
+    protected HttpAuthenticationMechanism getDefaultHAM() {
+        return null;
+    }
+
+    @Override
     protected HttpAuthenticationMechanism getHighestPriorityAuthMechanism() {
 
         HttpAuthenticationMechanism ham = null;
-        if (adminHAM != null) {
-            ham = adminHAM;
-        } else if (userHAM != null) {
-            ham = userHAM;
-        } else if (operatorHAM != null) {
-            ham = operatorHAM;
-        } else if (testerHAM != null) {
-            ham = testerHAM;
+        if (getAdminHAM() != null) {
+            ham = getAdminHAM();
+        } else if (getUserHAM() != null) {
+            ham = getUserHAM();
+        } else if (getOperatorHAM() != null) {
+            ham = getOperatorHAM();
+        } else if (getTesterHAM() != null) {
+            ham = getTesterHAM();
         }
 
         return ham;
     }
-
-    @SuppressWarnings("removal")
-    @Override
-    public AuthenticationStatus validateRequest(HttpServletRequest request, HttpServletResponse response, HttpMessageContext httpMessageContext) throws AuthenticationException {
-
-        System.out.println("######## found adminHAM of [" + ((adminHAM == null) ? "null" : adminHAM.toString()) + "].");
-        System.out.println("######## found userHAM of [" + ((userHAM == null) ? "null" : userHAM.toString()) + "].");
-        System.out.println("######## found operatorHAM of [" + ((operatorHAM == null) ? "null" : operatorHAM.toString()) + "].");
-        System.out.println("######## found testerHAM of [" + ((testerHAM == null) ? "null" : testerHAM.toString()) + "].");
-
-        HttpAuthenticationMechanism authMech = getHighestPriorityAuthMechanism();
-        if (authMech == null) {
-            System.err.println("No HttpAuthenticationMechanism available");
-            return AuthenticationStatus.SEND_FAILURE;
-        } else {
-            System.out.println("######## found Highest Priority HttpAuthenticationMechanism: " + getSimpleName(authMech));
-        }
-
-        // Use privileged action for security sensitive operations
-        PrivilegedAction<AuthenticationStatus> action = new PrivilegedAction<AuthenticationStatus>() {
-            @Override
-            public AuthenticationStatus run() {
-                try {
-                    System.out.println("Delegating validateRequest to: " + authMech.getClass().getName());
-                    return authMech.validateRequest(request, response, httpMessageContext);
-                } catch (Exception e) {
-                    System.err.println("Exception during validateRequest: " + e.getMessage());
-                    return AuthenticationStatus.SEND_FAILURE;
-                }
-            }
-        };
-
-        return AccessController.doPrivileged(action);
-    }
-
-    private String getSimpleName(Object anyObject) {
-        if (anyObject == null) {
-            return "null";
-        }
-        return anyObject.getClass().getSimpleName().split("\\$")[0];
-    }
-
 }

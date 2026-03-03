@@ -16,7 +16,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.cache.Cache;
-import javax.security.auth.Subject;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -118,7 +117,7 @@ public class JCacheAuthCache implements AuthCache {
     }
 
     @Override
-    public Object get(Object key) {
+    public CacheObject get(Object key) {
         Object value = null;
 
         /*
@@ -168,7 +167,7 @@ public class JCacheAuthCache implements AuthCache {
             }
         }
 
-        return value;
+        return (CacheObject) value;
     }
 
     @Override
@@ -285,10 +284,5 @@ public class JCacheAuthCache implements AuthCache {
         if (inMemoryCache != null) {
             inMemoryCache.stopEvictionTask();
         }
-    }
-
-    @Override
-    public CacheObject createCacheObject(Subject subject) {
-        return new CacheObject(subject);
     }
 }

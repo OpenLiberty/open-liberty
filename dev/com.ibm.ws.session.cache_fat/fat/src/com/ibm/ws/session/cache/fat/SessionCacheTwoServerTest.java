@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
@@ -25,8 +25,6 @@ import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -58,13 +56,15 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, true, "session.cache.web", "session.cache.web.cdi", "session.cache.web.listener1");
         serverB.useSecondaryHTTPPort();
 
-        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
-        String osName = System.getProperty("os.name").toLowerCase();
+//        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+//        String osName = System.getProperty("os.name").toLowerCase();
+//
+//        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
+//            Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+//            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+//        }
 
-        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
-            Log.info(SessionCacheTwoServerTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        }
+        String hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
 
         String sessionCacheConfigFile = "httpSessionCache_1.xml";
         if (RepeatTestFilter.isRepeatActionActive(CacheManagerRepeatAction.ID)) {

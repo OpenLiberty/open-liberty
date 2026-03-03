@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la,
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: A(z) {0} modul HttpAuthenticationMechanism objektuma nem hozhat\u00f3 l\u00e9tre a(z) {1} alkalmaz\u00e1sban.
 JAVAEESEC_ERROR_NO_HAM.explanation=Az ok, ami\u00e9rt a HttpAuthenticationMechanism nem hozhat\u00f3 l\u00e9tre, v\u00e1ltoz\u00f3. A HttpAuthenticationMechanism objektum hiba\u00fczenetei biztos\u00edtanak inform\u00e1ci\u00f3kat arr\u00f3l, hogy a HttpAuthenticationMechanism objektum mi\u00e9rt nem hozhat\u00f3 l\u00e9tre.
 JAVAEESEC_ERROR_NO_HAM.useraction=Vizsg\u00e1lja ki a HttpAuthenticationMechanism objektum hiba\u00fczeneteit, \u00e9s v\u00e9gezze el a jav\u00edt\u00e1sokat a hiba\u00fczeneteket alapj\u00e1n.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: Az {1} alkalmaz\u00e1s {0} modulj\u00e1nak HttpAuthenticationMechanismService implement\u00e1ci\u00f3s objektuma nem tal\u00e1lhat\u00f3 OSGi csomagk\u00e9nt.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=Az HttpAuthenticationMechanismService implement\u00e1ci\u00f3s objektum nem tal\u00e1lhat\u00f3, mert az egyik f\u00fcgg\u0151 csomag, amely tartalmazza ezt az implement\u00e1ci\u00f3t, hi\u00e1nyzik a funkci\u00f3k manifeszt f\u00e1jlj\u00e1b\u00f3l.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a funkci\u00f3 manifesztje hivatkozik egy olyan csomagra, amely tartalmazza az HttpAuthenticationMechanismService implement\u00e1ci\u00f3j\u00e1t.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Az azonoss\u00e1gt\u00e1rol\u00f3 feljegyz\u00e9s ''{0}'' attrib\u00fatum\u00e1hoz tartoz\u00f3 Expression Language (EL) kifejez\u00e9s nem oldhat\u00f3 fel egy \u00e9rv\u00e9nyes \u00e9rt\u00e9kre. Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy az EL kifejez\u00e9s \u00e9s az eredm\u00e9ny \u00e9rv\u00e9nyes-e, \u00e9s gondoskodj\u00e9k r\u00f3la, hogy a kifejez\u00e9sben haszn\u00e1lt hivatkozott komponensek feloldhat\u00f3k legyenek. Helyette az alap\u00e9rtelmezett ''{1}'' attrib\u00fatum\u00e9rt\u00e9k ker\u00fcl felhaszn\u00e1l\u00e1sra.

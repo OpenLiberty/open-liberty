@@ -39,17 +39,11 @@ public class ReadOnlySocket extends Socket{
     private final ChannelConfig config;
 
     /**
-     * Create a Read-only view of a Netty Channel's socket. If the Netty channel has a 
-     * parent channel, the child socket might not have all of the expcted information. In 
-     * such cases the parent channel will be used instead. 
+     * Create a Read-only view of a Netty Channel's socket.
      * @param channel the Netty Channel
      */
     public ReadOnlySocket(Channel channel){
         this.nettyChannel = channel;
-        if(channel.parent() != null){
-            channel = channel.parent();
-        }
-
         this.local = (InetSocketAddress) channel.localAddress();
         this.remote = (InetSocketAddress) channel.remoteAddress();
         this.config = channel.config();

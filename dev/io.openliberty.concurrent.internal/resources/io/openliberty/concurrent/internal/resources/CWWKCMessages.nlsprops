@@ -68,7 +68,7 @@ CWWKC1207.lacks.qualifier.anno=CWWKC1207E: The {0} application artifact \
  {3} name and {4} qualifiers list. The qualifiers list includes the \
  {5} annotation, which is not annotated with @jakarta.inject.Qualifier and \
  @Retention(RUNTIME). An example of a valid qualifier is: {6}
-CWWKC1207.lacks.qualifier.anno.explanation=The Qualifier annotation indicates \
+CWWKC1207.lacks.qualifier.anno.explanation=The @Qualifier annotation indicates \
  that the annotation is a qualifier. The Retention annotation controls the \
  availability of annotations.
 CWWKC1207.lacks.qualifier.anno.useraction=Add the @Qualifier and \

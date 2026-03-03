@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=Cada valor na lista de qualificador
 CWWKC1206.qualifier.must.be.anno.useraction=Certifique-se de que todos os valores da lista de qualificadores sejam classes de anota\u00e7\u00e3o.
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: O artefato de aplicativo {0} especifica uma anota\u00e7\u00e3o {1} ou um elemento descritor de implanta\u00e7\u00e3o {2} que tem o nome {3} e a lista de qualificadores {4}. A lista de qualificadores inclui a anota\u00e7\u00e3o {5}, que n\u00e3o \u00e9 anotada com @jakartajakarta.inject.Qualifier e @Retention(RUNTIME). Um exemplo de um qualificador v\u00e1lido \u00e9: {6}
-CWWKC1207.lacks.qualifier.anno.explanation=A anota\u00e7\u00e3o Qualifier indica que a anota\u00e7\u00e3o \u00e9 um qualificador. A anota\u00e7\u00e3o Retention controla a disponibilidade das anota\u00e7\u00f5es.
+CWWKC1207.lacks.qualifier.anno.explanation=A anota\u00e7\u00e3o @Qualifier indica que a anota\u00e7\u00e3o \u00e9 um qualificador. A anota\u00e7\u00e3o Reten\u00e7\u00e3o controla a disponibilidade das anota\u00e7\u00f5es.
 CWWKC1207.lacks.qualifier.anno.useraction=Adicione as anota\u00e7\u00f5es @Qualifier e @Retention(RUNTIME) \u00e0 classe do qualificador.
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: O artefato do aplicativo {0} especifica uma anota\u00e7\u00e3o {1} ou um elemento descritor de implanta\u00e7\u00e3o {2} que tem o nome {3} e a lista de qualificadores {4}. N\u00e3o \u00e9 poss\u00edvel configurar um recurso do Jakarta Concurrency para ter qualificadores e um namespace java:global ao mesmo tempo. Remova os qualificadores da configura\u00e7\u00e3o do recurso Jakarta Concurrency que tem o nome {3} ou mude para o namespace java:app.

@@ -16,8 +16,7 @@
  * limitations under the License.
  * 
  * All modifications made by IBM from initial source -
- * https://github.com/wildfly/jandex/blob/master/src/main/java/org/jboss/jandex/IndexReaderV2.java
- * commit - 36c2b049b7858205c6504308a5e162a4e943ff21
+ * https://github.com/wildfly/jandex/blob/36c2b049b7858205c6504308a5e162a4e943ff21/src/main/java/org/jboss/jandex/IndexReaderV2.java
  * 
  * Have been merged from the following, which update the Jandex supported version from
  * Jandex 2.0.3.Final to Jandex 2.1.2.Final:
