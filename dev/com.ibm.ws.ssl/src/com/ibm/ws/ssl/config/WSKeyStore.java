@@ -520,7 +520,7 @@ public class WSKeyStore extends Properties {
                 }
             }
             this.location = res;
-            if (res != null && resFile.isFile()) {
+            if (resFile != null && resFile.isFile()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Found store under [" + location + "]");
                 }
