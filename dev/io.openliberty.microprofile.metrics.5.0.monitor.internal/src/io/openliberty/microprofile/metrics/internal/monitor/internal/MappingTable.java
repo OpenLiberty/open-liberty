@@ -213,6 +213,40 @@ public class MappingTable {
                         "grpc.client.responseTime.total.description", GAUGE, MetricUnits.MILLISECONDS,
                         "ResponseTimeDetails", "total", GRPC_CLIENT_TAG_NAME } };
         mappingTable.put("WebSphere:type=GrpcClientStats,name=*", grpcClientTable);
+        
+        String[][] mcpServerTable = new String[][] {
+
+            { "vendor",
+              "mcp.server.tool.calls",
+              "Tool Call Count",
+              "mcp.server.tool.calls.description",
+              COUNTER,
+              MetricUnits.NONE,
+              "ToolCallCount",
+              null,
+              null },
+
+            { "vendor",
+              "mcp.server.tool.failures",
+              "Tool Failure Count",
+              "mcp.server.tool.failures.description",
+              COUNTER,
+              MetricUnits.NONE,
+              "ToolCallFailedCount",
+              null,
+              null },
+
+            { "vendor",
+              "mcp.server.tool.duration",
+              "Tool Duration",
+              "mcp.server.tool.duration.description",
+              GAUGE,
+              MetricUnits.MILLISECONDS,
+              "ToolCallTimeDetails",
+              "total",
+              null }
+        };
+        mappingTable.put("WebSphere:type=McpServerStats,name=*", mcpServerTable);
 
     }
 
