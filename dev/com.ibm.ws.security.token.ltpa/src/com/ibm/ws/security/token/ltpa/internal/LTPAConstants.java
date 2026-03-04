@@ -32,7 +32,7 @@ public class LTPAConstants {
     /**
      * Used to identify the refresh LTPA token lifetime.
      */
-    protected static final String REFRESH_LIFE_TIME = "refreshLifetime";
+    protected static final String REFRESH_LIFE_TIME = "maxLifetime";
     /**
      * Used to identify the primary LTPA shared key.
      */

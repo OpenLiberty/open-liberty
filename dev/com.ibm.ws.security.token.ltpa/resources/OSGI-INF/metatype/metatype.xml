@@ -28,7 +28,7 @@
             default="120m" />
         <AD id="refreshThreshold"  name="%refreshThreshold" description="%refreshThreshold.desc"
             required="false" type="String" ibm:type="duration(m)" />
-        <AD id="refreshLifetime"  name="%refreshLifetime" description="%refreshLifetime.desc"
+        <AD id="maxLifetime"  name="%maxLifetime" description="%maxLifetime.desc"
         	required="false" type="String" ibm:type="duration(m)" />
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
             required="false" type="String" ibm:type="duration" 

@@ -89,7 +89,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private String primaryKeyPassword;
     private long keyTokenExpiration;
     private long refreshThreshold;
-    private long refreshLifetime;
+    private long maxLifetime;
     private long monitorInterval;
     private LTPAFileMonitor ltpaFileMonitor;
     private ServiceRegistration<FileMonitor> ltpaFileMonitorRegistration;
@@ -194,10 +194,10 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
         primaryKeyPassword = sps == null ? null : new String(sps.getChars());
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
-        refreshLifetime = (long) props.get(CFG_KEY_TOKEN_REFRESH_LIFE_TIME);
+        maxLifetime = (long) props.get(CFG_KEY_TOKEN_REFRESH_LIFE_TIME);
         refreshThreshold = (long) props.get(CFG_KEY_TOKEN_REFRESH_THRESHOLD);
         //TODO: UTLE
-        //if refreshLifetime is smaller than expiration, should we issue an error?
+        //if maxLifetime is smaller than expiration, should we issue an error?
 
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
         authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);
@@ -249,7 +249,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             sj.add("primaryKeyImportFile: " + primaryKeyImportFile);
             sj.add("keyTokenExpiration: " + keyTokenExpiration);
             sj.add("refreshThreshold: " + refreshThreshold);
-            sj.add("refreshLifetime: " + refreshLifetime);
+            sj.add("maxLifetime: " + maxLifetime);
             sj.add("monitorInterval: " + monitorInterval);
             sj.add("authFilterRef: " + authFilterRef);
             sj.add("monitorValidationKeysDir: " + monitorValidationKeysDir);
@@ -613,7 +613,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
      * @param oldUpdateTrigger
      * @param oldValidationKeys
      */
-    // TODO: UTLE need to add refreshLifetime to keysConfig
+    // TODO: UTLE need to add maxLifetime to keysConfig
     private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir,
                                         String oldUpdateTrigger,
                                         @Sensitive List<Properties> oldValidationKeys) {
@@ -781,8 +781,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /** {@inheritDoc} */
     @Override
-    public long getRefreshLifetime() {
-        return refreshLifetime;
+    public long getmaxLifetime() {
+        return maxLifetime;
     }
 
     /** {@inheritDoc} */
