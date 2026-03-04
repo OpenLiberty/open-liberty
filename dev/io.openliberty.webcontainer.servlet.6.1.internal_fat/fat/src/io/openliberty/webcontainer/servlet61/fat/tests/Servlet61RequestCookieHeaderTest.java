@@ -42,7 +42,7 @@ import componenttest.topology.impl.LibertyServer;
 @Mode(TestMode.FULL)
 public class Servlet61RequestCookieHeaderTest {
     private static final Logger LOG = Logger.getLogger(Servlet61RequestCookieHeaderTest.class.getName());
-    private static final String TEST_APP_NAME = "RequestCookieHeaderTest";
+    private static final String TEST_APP_NAME = "RequestCookieHeader61Test";
 
     @Server("servlet61_RequestCookieHeaderTest")
     public static LibertyServer server;

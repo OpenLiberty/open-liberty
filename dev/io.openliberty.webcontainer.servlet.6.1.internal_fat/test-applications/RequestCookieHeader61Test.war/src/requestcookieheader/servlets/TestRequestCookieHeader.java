@@ -25,7 +25,7 @@ import jakarta.servlet.http.HttpServletResponse;
  * Test Request Cookie header according to RFC 6265:
  * Semicolon is the only delimiter. Command is discarded
  *
- *  (For test quoted name and value, see bucket 6.0 tests)
+ * Test quoted name and value, and Response Set-Cookie are in bucket 6.0 tests.
  *
  * request URL: /Test61RequestCookieHeader
  */

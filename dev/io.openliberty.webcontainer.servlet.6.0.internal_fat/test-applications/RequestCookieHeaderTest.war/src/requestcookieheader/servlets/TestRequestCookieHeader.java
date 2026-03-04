@@ -323,10 +323,7 @@ public class TestRequestCookieHeader extends HttpServlet {
          * (1) cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value
          * (2) cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly
          * 
-         * 6.1: generate ONE cookie2 (comma pair is removed)
-         * (1) cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly
-         * 
-         *  [, cookie2_After_Comma_Name=cookie2_After_Comma_Value] is discarded
+         * 6.1: ignore entire cookie
          */
         String manualSetCookie2 = "cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value, cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
         response.addHeader("Set-Cookie", manualSetCookie2);

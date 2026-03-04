@@ -132,6 +132,11 @@ public class Servlet60RequestCookieHeaderTest {
         }
     }
 
+    /*
+     * Test Response Set-Cookie:
+     *  Quotes in name and value
+     *  Comma in cookie-pair. EX: cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value, cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly"
+     */
     @Test
     public void test_Response_Set_Cookie_Name_Expires_Attribute() throws Exception {
         boolean ee10 = JakartaEEAction.isEE11OrLaterActive() ? false : true;
@@ -160,7 +165,6 @@ public class Servlet60RequestCookieHeaderTest {
         ArrayList<String> expectedSetCookieHeaders61 = new ArrayList<>();
         expectedSetCookieHeaders61.add("cookieviaMaxAge=cookieValue; Expires=");
         expectedSetCookieHeaders61.add("cookie1_manualSetCookie_Name=cookie1_Value");
-        expectedSetCookieHeaders61.add("cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value; Expires=Sat, 01 Mar 2036"); //comma pair removed
         expectedSetCookieHeaders61.add("cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value");
         expectedSetCookieHeaders61.add("cookie5_WRAP_DQuote_InValue_Name=\"cookie5_WRAP_DQuote_Value\"");
         
