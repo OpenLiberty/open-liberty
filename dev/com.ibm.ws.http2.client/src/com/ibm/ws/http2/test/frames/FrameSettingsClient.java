@@ -30,25 +30,6 @@ public class FrameSettingsClient extends com.ibm.ws.http.channel.h2internal.fram
 
     private final ByteBuf frame;
 
-    static {
-        // We discovered an issue with the adaptive allocator using Unsafe being unavailable
-        // and throwing exceptions which do not allow the tests to proceed due to Java 2 Security.
-        // Because of this, while this is fixed we will use the pooled allocator as before to
-        // ensure proper testing
-        if (System.getSecurityManager() == null) {
-            System.setProperty("io.netty.allocator.type", "pooled");
-        }
-        else {
-            AccessController.doPrivileged(new PrivilegedAction<Void>() {
-                @Override
-                public Void run() {
-                    System.setProperty("io.netty.allocator.type", "pooled");
-                    return null;
-                }
-            });
-        }
-    }
-
     /**
      *
      * @param streamId

@@ -226,13 +226,13 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
             // issues are found and leak detection is needed to debug them.
             System.setProperty("io.netty.leakDetection.level", "DISABLED");
         }
-        if (System.getProperty("io.netty.allocator.type") == null) {
-            // On Netty version 4.2, the default allocator changed from pooled to adaptive and so
-            // as of that moment, the adaptive allocator showed a regression from the pooled allocator
-            // used in Netty 4.1. We switch to the pooled allocator for the moment until these issues
-            // are addressed
-            System.setProperty("io.netty.allocator.type", "pooled");
-        }
+        // if (System.getProperty("io.netty.allocator.type") == null) {
+        //     // On Netty version 4.2, the default allocator changed from pooled to adaptive and so
+        //     // as of that moment, the adaptive allocator showed a regression from the pooled allocator
+        //     // used in Netty 4.1. We switch to the pooled allocator for the moment until these issues
+        //     // are addressed
+        //     System.setProperty("io.netty.allocator.type", "pooled");
+        // }
     }
 
     /*
