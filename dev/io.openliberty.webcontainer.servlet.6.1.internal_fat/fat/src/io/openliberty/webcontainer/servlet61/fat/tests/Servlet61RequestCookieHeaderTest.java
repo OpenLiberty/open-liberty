@@ -17,7 +17,6 @@ import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
-import org.apache.hc.core5.http.Header;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -34,7 +33,6 @@ import componenttest.topology.impl.LibertyServer;
 /**
  * Test RFC 6265 Request Cookie header:
  * 1. semicolon is the only delimiter; comma is discarded
- * 2. quotes are part of cookie value
  *
  * request URL: /Test61RequestCookieHeader?testName=xyz
  *
@@ -98,56 +96,6 @@ public class Servlet61RequestCookieHeaderTest {
         String cookieHeader = "$Version=1, comma_Name1=Invalid; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColon_Name=endSemiColonValue, comma_Name2=Invalid";
 
         sendRequest(testName, cookieHeader);
-    }
-
-    /*
-     * Test Response Set-Cookie: application generates several Set-Cookie headers
-     *
-     * 1. the comma in the Response Set-Cookie ; Expires attribute.
-     * 2. several Set-Cookie header with quotes in both name and value
-     *
-     * Any Set-Cookie contains "InValid" fails this test.
-     * Check for ; Expires in one Set-Cookie "manualSetCookie_Valid_Name"
-     */
-    @Test
-    public void test_Response_Set_Cookie_Name_Expires_Attribute() throws Exception {
-        LOG.info(">>>>> test_Response_Set_Cookie_Name_Expires_Attribute <<<<<<");
-
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=test_Response_Set_Cookie_Name_Expires_Attribute";
-        LOG.info("Sending Request [" + url + "]");
-        HttpGet getMethod = new HttpGet(url);
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            String value = null;
-            final String EXPIRES = "; Expires=Sat, 01 Mar 2036"; //do not include time
-            final String OTHER_ATT = "; HttpOnly";
-            int validCookieCounter = 0;
-
-            try (CloseableHttpResponse response = client.execute(getMethod)) {
-                Header[] headers = response.getHeaders();
-                for (Header header : headers) {
-                    if (header.getName().equals("Set-Cookie")){
-                        LOG.info(header.toString());
-
-                        value = header.getValue();
-                        if (value.contains("InValid")) {
-                            assertTrue("Response Set-Cookie has InValid string [" + value + "]", false);
-                        }
-
-                        /*
-                         * This Set-Cookie is sent  "cookie2_Quote'Name=Value_Valid, cookie2_Comma_Pair=Invalid; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
-                         * Verify the comma skipping for [cookie2_Comma_Pair=Invalid] pair and ;Expires are parsed correctly.
-                         */
-                        if (value.contains("cookie2_Quote'Name=Value_Valid")) {
-                            assertTrue("Response Set-Cookie [cookie2_Quote'Name=Value_Valid] does not contain [" + EXPIRES + "] AND [" + OTHER_ATT + "]", value.contains(EXPIRES) && value.contains(OTHER_ATT));
-                        }
-                        validCookieCounter++;
-                    }
-                }
-
-                //2nd check - Expect 5 valid Set-Cookie
-                assertTrue("Response Set-Cookie: Expected 5 valid Set-Cookie, but found [" + validCookieCounter + "]", validCookieCounter == 5);
-            }
-        }
     }
 
     /*

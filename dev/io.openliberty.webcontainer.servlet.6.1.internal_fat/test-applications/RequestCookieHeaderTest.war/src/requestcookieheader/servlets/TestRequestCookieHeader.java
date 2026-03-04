@@ -15,7 +15,6 @@ import java.util.Arrays;
 import java.util.logging.Logger;
 
 import jakarta.servlet.ServletException;
-import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServlet;
@@ -24,10 +23,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * Test Request Cookie header according to RFC 6265:
+ * Semicolon is the only delimiter. Command is discarded
  *
- * 1. Semicolon is the only delimiter. Command is discarded
- * 2. Cookie value can have single and double quotes as part of value
- * 3. Cookie name cannot have double quotes
+ *  (For test quoted name and value, see bucket 6.0 tests)
  *
  * request URL: /Test61RequestCookieHeader
  */
@@ -55,9 +53,6 @@ public class TestRequestCookieHeader extends HttpServlet {
         }
         else if (testName.equalsIgnoreCase("test_Cookie_Mix_Comma_Semicolon_Delimiter")) {
             test_Cookie_Mix_Comma_Semicolon_Delimiter(request, response);
-        }
-        else if (testName.equalsIgnoreCase("test_Response_Set_Cookie_Name_Expires_Attribute")) {
-            test_Response_Set_Cookie_Name_Expires_Attribute(request, response);
         }
     }
 
@@ -139,45 +134,5 @@ public class TestRequestCookieHeader extends HttpServlet {
         }
         //Client check this header.
         response.setHeader("TestResult", sBuilderResponse.toString());
-    }
-
-    /*
-     * Response Set-Cookie:
-     *  Test quotes in name and value
-     *  Test comma ends pair (which is discarded)
-     *  Test comma is kept in Expires attribute
-     */
-    private void test_Response_Set_Cookie_Name_Expires_Attribute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        LOG.info(">>>>> Test test_Response_Set_Cookie_Name_Expires_Attribute");
-
-        ServletOutputStream sos = response.getOutputStream();
-        sos.println("Response from TestRequestCookieHeader.test_Request_Set_Cookie_Name_Expires_Attribute");
-
-        Cookie testCookie = new Cookie("cookieviaMaxAge", "cookieValue");
-        testCookie.setMaxAge(3600);     //will add ; Expires attribute
-        response.addCookie(testCookie);
-
-        String manualSetCookie = "manualSetCookie_Valid_Name=cookieValue; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
-        response.addHeader("Set-Cookie", manualSetCookie);
-
-        // , cookie2_Comma_Pair=Invalid is discarded
-        String manualSetCookie2 = "cookie2_Quote'Name=Value_Valid, cookie2_Comma_Pair=Invalid; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
-        response.addHeader("Set-Cookie", manualSetCookie2);
-
-        //mix quotes in Value
-        String manualSetCookie3 = "cookie3_Quotes_InValue_Name=Quote's\"_Valid";
-        response.addHeader("Set-Cookie", manualSetCookie3);
-
-        //double quoted value
-        String manualSetCookie4= "cookie4_2Quotes_InValue_Name=\"Quote_Valid\"";
-        response.addHeader("Set-Cookie", manualSetCookie4);
-
-        //single double in name
-        String manualSetCookie_InValid_1 = "manualSetCookie_InValid_1\"_Name=InValid; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
-        response.addHeader("Set-Cookie", manualSetCookie_InValid_1);
-
-        //2 double quotes in name
-        String manualSetCookie_InValid_2 = "\"manualSetCookie_InValid_2\"_Name=InValid; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
-        response.addHeader("Set-Cookie", manualSetCookie_InValid_2);
     }
 }

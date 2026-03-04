@@ -62,6 +62,8 @@ public class TestRequestCookieHeader extends HttpServlet {
             test_Cookie_Other(request, response);
         } else if (testName.equalsIgnoreCase("test_Cookie_Quoted_Value")) {
             test_Cookie_Quoted_Value(request, response);
+        } else if (testName.equalsIgnoreCase("test_Response_Set_Cookie_Name_Expires_Attribute")) {
+            test_Response_Set_Cookie_Name_Expires_Attribute(request, response);
         }
     }
 
@@ -285,5 +287,70 @@ public class TestRequestCookieHeader extends HttpServlet {
         }
         //Client check this header.
         response.setHeader("TestResult", sBuilderResponse.toString());
+    }
+    
+    /*
+     * Response Set-Cookie:
+     *  Test quotes in name and value
+     *  Test comma pair
+     *  Test comma is kept in Expires attribute
+     *  
+     *  Servlet 6.0: Only remove DQuotes is they are at begin and end
+     *     Expects 9 Set-Cookie headers
+     *  
+     *  Servlet 6.1: No DQuotes anywhere in Name. Quotes are parts of Value
+     *     Expect  5 Set-Cookie headers
+     */
+    private void test_Response_Set_Cookie_Name_Expires_Attribute(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOG.info(">>>>> Test test_Response_Set_Cookie_Name_Expires_Attribute");
+
+        ServletOutputStream sos = response.getOutputStream();
+        sos.println("Response from TestRequestCookieHeader.test_Request_Set_Cookie_Name_Expires_Attribute");
+
+        //Valid in 6.0 and 6.1
+        Cookie testCookie = new Cookie("cookieviaMaxAge", "cookieValue");
+        testCookie.setMaxAge(3600);     //will add ; Expires attribute
+        response.addCookie(testCookie);
+
+        //Valid in 6.0 and 6.1
+        String manualSetCookie1 = "cookie1_manualSetCookie_Name=cookie1_Value";
+        response.addHeader("Set-Cookie", manualSetCookie1);
+
+        /*
+         * cookie2:
+         * 
+         * 6.0: generate TWO cookie2 set (since comma is also delimiter)
+         * (1) cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value
+         * (2) cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly
+         * 
+         * 6.1: generate ONE cookie2 (comma pair is removed)
+         * (1) cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly
+         * 
+         *  [, cookie2_After_Comma_Name=cookie2_After_Comma_Value] is discarded
+         */
+        String manualSetCookie2 = "cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value, cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly";
+        response.addHeader("Set-Cookie", manualSetCookie2);
+
+        //Valid in 6.0 and 6.1 (middle quotes are retained)
+        String manualSetCookie3 = "cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value";
+        response.addHeader("Set-Cookie", manualSetCookie3);
+
+        //mix quotes in Name. Valid in 6.0 (quotes are retained) ; 6.1 discard this cookie
+        String manualSetCookie4 = "cookie4_Mix_SQuotes'_AND_DQuote\"_In_Name=cookie4_Mix_QuotesInName_Value";
+        response.addHeader("Set-Cookie", manualSetCookie4);
+
+        //wrap value in double quotes. 6.0 removes wrapped quotes; // 6.1 retains wrapped quotes
+        String manualSetCookie5= "cookie5_WRAP_DQuote_InValue_Name=\"cookie5_WRAP_DQuote_Value\"";
+        response.addHeader("Set-Cookie", manualSetCookie5);
+
+        //single DQuote in name
+        // 6.0 including DQuote ; 6.1 discard this cookie as no DQuote anywhere in name
+        String manualSetCookie6 = "cookie6_DQuote_\"_In_Name=cookie6_Value ; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
+        response.addHeader("Set-Cookie", manualSetCookie6);
+
+        //WRAP name in DQuote
+        // 6.0 keep with wrapped DQuote removed (since they are at begin and end) ; 6.1 discards this cookie
+        String manualSetCookie7 = "\"cookie7_WRAP_DQuote_In_Name\"=cookie7_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
+        response.addHeader("Set-Cookie", manualSetCookie7);
     }
 }

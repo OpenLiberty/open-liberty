@@ -11,12 +11,14 @@ package io.openliberty.webcontainer.servlet60.fat.tests;
 
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.logging.Logger;
 
 import org.apache.hc.client5.http.classic.methods.HttpGet;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
 import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
 import org.apache.hc.client5.http.impl.classic.HttpClientBuilder;
+import org.apache.hc.core5.http.Header;
 import org.apache.hc.core5.http.io.entity.EntityUtils;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -130,6 +132,67 @@ public class Servlet60RequestCookieHeaderTest {
         }
     }
 
+    @Test
+    public void test_Response_Set_Cookie_Name_Expires_Attribute() throws Exception {
+        boolean ee10 = JakartaEEAction.isEE11OrLaterActive() ? false : true;
+
+        LOG.info(">>>>> test_Response_Set_Cookie_Name_Expires_Attribute . " + (ee10 ? "Servlet 6.0" : "Servlet 6.1+" )+ " <<<<<<");
+        int cookieCounter = 0;
+        int expectedSetCookieSize = 0;
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=test_Response_Set_Cookie_Name_Expires_Attribute";
+        LOG.info("Sending Request [" + url + "]");
+        
+        HttpGet getMethod = new HttpGet(url);
+
+        ArrayList<String> expectedCookieList = null;
+        ArrayList<String> expectedSetCookieHeaders60 = new ArrayList<>();
+        expectedSetCookieHeaders60.add("cookieviaMaxAge=cookieValue; Expires="); //Do not include time as setMaxAge is dynamic time when test runs 
+        expectedSetCookieHeaders60.add("cookie1_manualSetCookie_Name=cookie1_Value");
+        expectedSetCookieHeaders60.add("cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value");
+        expectedSetCookieHeaders60.add("cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036");
+        expectedSetCookieHeaders60.add("cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value");
+        expectedSetCookieHeaders60.add("cookie4_Mix_SQuotes'_AND_DQuote\"_In_Name=cookie4_Mix_QuotesInName_Value");
+        expectedSetCookieHeaders60.add("cookie5_WRAP_DQuote_InValue_Name=cookie5_WRAP_DQuote_Value");
+        expectedSetCookieHeaders60.add("cookie6_DQuote_\"_In_Name=cookie6_Value; Expires=Sat, 01 Mar 2036");
+        expectedSetCookieHeaders60.add("cookie7_WRAP_DQuote_In_Name=cookie7_Value; Expires=Sat, 01 Mar 2036");
+
+        ArrayList<String> expectedSetCookieHeaders61 = new ArrayList<>();
+        expectedSetCookieHeaders61.add("cookieviaMaxAge=cookieValue; Expires=");
+        expectedSetCookieHeaders61.add("cookie1_manualSetCookie_Name=cookie1_Value");
+        expectedSetCookieHeaders61.add("cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value; Expires=Sat, 01 Mar 2036"); //comma pair removed
+        expectedSetCookieHeaders61.add("cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value");
+        expectedSetCookieHeaders61.add("cookie5_WRAP_DQuote_InValue_Name=\"cookie5_WRAP_DQuote_Value\"");
+        
+        expectedCookieList = ee10 ? (new ArrayList<>(expectedSetCookieHeaders60)) : (new ArrayList<>(expectedSetCookieHeaders61)); 
+
+        expectedSetCookieSize = expectedCookieList.size();
+
+        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
+            final String EXPIRES = "; Expires=Sat, 01 Mar 2036"; //do not include time
+            final String OTHER_ATT = "; HttpOnly";
+
+            try (CloseableHttpResponse response = client.execute(getMethod)) {
+                Header[] headers = response.getHeaders();
+                int matchedCookie = 0;
+                for (Header header : headers) {
+                    if (header.getName().equals("Set-Cookie")){
+                        LOG.info(header.toString());
+                        cookieCounter++;
+
+                        if (expectedCookieList.stream().anyMatch(s -> header.getValue().contains(s))){
+                            LOG.info("Matched Header : " + header.getValue());
+                            matchedCookie++;
+                        }
+                    }
+                }
+
+                LOG.info("Response Set-Cookie: Total: [" + cookieCounter +"] . Expected [" + expectedSetCookieSize + "] . Found [" + matchedCookie + "]");
+                assertTrue("Response Set-Cookie: Expected [" + expectedSetCookieSize + "] . Found matched cookies [" + matchedCookie + "]", expectedSetCookieSize == matchedCookie);
+            }
+        }
+    }
+    
     /*
      * Test others cases:
      * =noNameWithValue
