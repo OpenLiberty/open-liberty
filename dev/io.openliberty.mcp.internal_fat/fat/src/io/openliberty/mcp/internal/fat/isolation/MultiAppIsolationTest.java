@@ -23,6 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -74,7 +75,7 @@ public class MultiAppIsolationTest extends FATServletClient {
     }
 
     @Test
-    public void testAlphaToolListReturnsAlpaToolsOnly() throws Exception {
+    public void testAlphaToolListReturnsAlphaToolsOnly() throws Exception {
         String alphaToolCallResponse = alphaClient.listAllTools();
         JSONObject jsonResponse = new JSONObject(alphaToolCallResponse);
         JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
@@ -101,4 +102,287 @@ public class MultiAppIsolationTest extends FATServletClient {
         assertTrue("Expected to find `sharedToolName` in the Aplha app tool list", foundSharedToolName);
     }
 
+    @Test
+    public void testBetaToolListReturnsBetaToolsOnly() throws Exception {
+        String betaToolCallResponse = betaClient.listAllTools();
+        JSONObject jsonResponse = new JSONObject(betaToolCallResponse);
+        JSONArray tools = jsonResponse.getJSONObject("result").getJSONArray("tools");
+
+        boolean foundAlphaTool = false;
+        boolean foundBetaTool = false;
+        boolean foundSharedToolName = false;
+
+        for (int i = 0; i < tools.length(); i++) {
+            String tooName = tools.getJSONObject(i).getString("name");
+            if ("alphaOnlyTool".equals(tooName)) {
+                foundAlphaTool = true;
+            }
+            if ("betaOnlyTool".equals(tooName)) {
+                foundBetaTool = true;
+            }
+            if ("sharedToolName".equals(tooName)) {
+                foundSharedToolName = true;
+            }
+        }
+
+        assertTrue("Expected to find `betaOnlyTool` in the Beta app tool list", foundBetaTool);
+        assertFalse("Did NOT expect to find `alphaOnlyTool` in the Beta app tool list", foundAlphaTool);
+        assertTrue("Expected to find `sharedToolName` in the Beta app tool list", foundSharedToolName);
+    }
+
+    //Calling a tool that exists in one app from another app should fail with method not found
+    @Test
+    public void testCallingBetaToolFromAlphaAppFails() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "betaOnlyTool",
+                            "arguments": {
+                              "input": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String expectedResponseString = """
+                        {
+                            "id": "2",
+                            "jsonrpc": "2.0",
+                            "error": {
+                                "code": -32602,
+                                "data": ["Method betaOnlyTool not found"],
+                                "message": "Invalid params"
+                            }
+                        }
+                        """;
+
+        String response = alphaClient.callMCP(request);
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testCallingAlphaToolFromBetaAppFails() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "alphaOnlyTool",
+                            "arguments": {
+                              "input": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String expectedResponseString = """
+                        {
+                            "id": "2",
+                            "jsonrpc": "2.0",
+                            "error": {
+                                "code": -32602,
+                                "data": ["Method alphaOnlyTool not found"],
+                                "message": "Invalid params"
+                            }
+                        }
+                        """;
+
+        String response = betaClient.callMCP(request);
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    //Calling a tool with the same name deployed in different apps will return different results
+
+    @Test
+    public void testCallingToolsWithTheSameNameInDifferentAops() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "sharedToolName"
+                          }
+                        }
+                        """;
+
+        String expectedAlphaResponseString = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "from-alpha"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        String expectedBetaResponseString = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "from-beta"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        String alphaResponse = alphaClient.callMCP(request);
+        JSONAssert.assertEquals(expectedAlphaResponseString, alphaResponse, true);
+
+        String betaResponse = betaClient.callMCP(request);
+        JSONAssert.assertEquals(expectedBetaResponseString, betaResponse, true);
+    }
+
+    //Test for ToolResponseEncoders
+
+    @Test
+    public void testAlphaToolUsesAlphaToolResponseEncoderForToolEncoderResult() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "alphaEncodedTool"
+                          }
+                        }
+                        """;
+
+        String response = alphaClient.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"encoded by AlphaToolResponseEncoder: alphaEncodedTool"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    //Testing that the AlphaToolResponseEncoder from the Alpha app is not seen by the Beta app
+    @Test
+    public void testBetaToolDoesNotUseAlphaToolResponseEncoderForToolEncoderResult() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "betaEncodedTool"
+                          }
+                        }
+                        """;
+
+        String response = betaClient.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\"message\\":\\"betaEncodedTool\\",\\"success\\":true}"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    //A content encoder registered in the Beta app will be visible to only the beta tools deployed in the beta app
+    @Test
+    public void testBetaToolUsesBetaContentEncoderForContentEncoderResult() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "betaContentEncodedTool"
+                          }
+                        }
+                        """;
+
+        String response = betaClient.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"encoded by BetaContentEncoder: BetaContentEncodedTool, count=10"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    //A content encoder registered in the Beta app will NOT be visible to Alpha tools deployed in the alpha app
+    @Test
+    public void testAlphaToolDoesNotUseBetaContentEncoderForContentEncoderResult() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "alphaContentEncodedTool"
+                          }
+                        }
+                        """;
+
+        String response = alphaClient.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "isError": false,
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\"count\\":22,\\"name\\":\\"AlphaContentEncodedTool\\"}"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
 }

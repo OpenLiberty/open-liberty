@@ -11,6 +11,8 @@ package io.openliberty.mcp.internal.fat.isolation.alpha;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.annotations.ToolArg;
+import io.openliberty.mcp.tools.ToolResponse;
+import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
@@ -29,5 +31,35 @@ public class AlphaTools {
           description = "Tool with the same name in both apps, Aplha and Beta")
     public String sharedToolName() {
         return "from-alpha";
+    }
+
+    public record ToolEncoderResult(boolean success, String message) {}
+
+    public record ContentEncoderResult(String name, int count) {}
+
+    @ApplicationScoped
+    public static class AlphaToolResponseEncoder implements ToolResponseEncoder<ToolEncoderResult> {
+
+        @Override
+        public boolean supports(Class<?> runtimeType) {
+            return ToolEncoderResult.class.isAssignableFrom(runtimeType);
+        }
+
+        @Override
+        public ToolResponse encode(ToolEncoderResult value) {
+            return ToolResponse.success("encoded by AlphaToolResponseEncoder: " + value.message);
+        }
+    }
+
+    @Tool(name = "alphaEncodedTool", title = "Alpha Encoded Tool",
+          description = "Tool with result encoded by AlphaToolResponseEncoder")
+    public ToolEncoderResult alphaEncodedTool() {
+        return new ToolEncoderResult(true, "alphaEncodedTool");
+    }
+
+    @Tool(name = "alphaContentEncodedTool", title = "Aplpha Content Encoded Tool",
+          description = "Tool result should be encoded by the default encoder because the BetaContentEncoder is not visible in the Alpha app")
+    public ContentEncoderResult alphaContentEncodedTool() {
+        return new ContentEncoderResult("AlphaContentEncodedTool", 22);
     }
 }
