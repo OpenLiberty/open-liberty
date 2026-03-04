@@ -358,32 +358,28 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         try {
             for (WsByteBuffer buffer : buffers) {
                 if (buffer != null && buffer.hasRemaining()) { // Check if buffer is not null and has data
-                    byte[] byteArray = WsByteBufferUtils.asByteArray(buffer);
-                    if (byteArray != null) {
+                    if (isH2) {
+                        totalWrittenBytes += buffer.remaining();
+                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                        HttpContent httpContent = new StreamSpecificHttpContent(Integer.valueOf(this.streamID), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
+                        writeQueue.add(httpContent);
 
-                        if (isH2) {
-                            totalWrittenBytes += buffer.remaining();
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            HttpContent httpContent = new StreamSpecificHttpContent(Integer.valueOf(this.streamID), Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer)));
-                            writeQueue.add(httpContent);
+                    }
 
+                    else if (hasContentLength || isWsoc || isHttp10) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Writing sync on channel: " + nettyChannel + " which is wsoc? " + isWsoc);
                         }
+                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                        totalWrittenBytes += nettyBuf.readableBytes();
+                        writeQueue.add(nettyBuf);
+                    }
 
-                        else if (hasContentLength || isWsoc || isHttp10) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "Writing sync on channel: " + nettyChannel + " which is wsoc? " + isWsoc);
-                            }
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            totalWrittenBytes += nettyBuf.readableBytes();
-                            writeQueue.add(nettyBuf);
-                        }
-
-                        else {
-                            ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
-                            DefaultHttpContent httpContent = new DefaultHttpContent(nettyBuf);
-                            totalWrittenBytes += nettyBuf.readableBytes();
-                            writeQueue.add(httpContent);
-                        }
+                    else {
+                        ByteBuf nettyBuf = Unpooled.wrappedBuffer(WsByteBufferUtils.asByteArray(buffer));
+                        DefaultHttpContent httpContent = new DefaultHttpContent(nettyBuf);
+                        totalWrittenBytes += nettyBuf.readableBytes();
+                        writeQueue.add(httpContent);
                     }
                 }
             }
