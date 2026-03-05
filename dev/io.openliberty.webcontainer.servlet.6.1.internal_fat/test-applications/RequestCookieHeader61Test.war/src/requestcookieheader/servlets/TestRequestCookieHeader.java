@@ -88,7 +88,7 @@ public class TestRequestCookieHeader extends HttpServlet {
 
     /*
      * Request Cookie:
-     *  $Version=1, comma_Name1=Invalid; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColon_Name=endSemiColonValue, comma_Name2=Invalid";
+     *  $Version=1; cookie1_Name=good; cookie2_Name=reject, cookie3_name=reject; middleSemiColonName=good; $NAME2=DollarNameValue, Domain=DomainValue; end1_Name=good; end2_Name=good;
      *
      * Version is not a cookie pair; thus not included in the request.getCookies();
      */
@@ -96,7 +96,7 @@ public class TestRequestCookieHeader extends HttpServlet {
         LOG.info(">>>>> Test test_Cookie_Mix_Comma_Semicolon_Delimiter");
         StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Mix_Comma_Semicolon_Delimiter ======");
 
-        ArrayList<String> expectedCookieList = new ArrayList<>(Arrays.asList("middleSemiColonName=middleSemiColonValue","endSemiColon_Name=endSemiColonValue"));
+        ArrayList<String> expectedCookieList = new ArrayList<>(Arrays.asList("cookie1_Name=good","middleSemiColonName=good", "end1_Name=good","end2_Name=good"));
         int cookieCounter = 0;
         int expectedNumCookies = expectedCookieList.size();
         String cookiePair = null;

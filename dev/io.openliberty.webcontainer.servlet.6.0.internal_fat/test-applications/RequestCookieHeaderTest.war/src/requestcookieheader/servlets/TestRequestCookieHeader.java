@@ -11,6 +11,7 @@ package requestcookieheader.servlets;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.logging.Logger;
 
 import jakarta.servlet.ServletContext;
@@ -64,6 +65,8 @@ public class TestRequestCookieHeader extends HttpServlet {
             test_Cookie_Quoted_Value(request, response);
         } else if (testName.equalsIgnoreCase("test_Response_Set_Cookie_Name_Expires_Attribute")) {
             test_Response_Set_Cookie_Name_Expires_Attribute(request, response);
+        } else if (testName.equalsIgnoreCase("test_Cookie_Mix_Comma_Semicolon_Delimiter")) {
+            test_Cookie_Mix_Comma_Semicolon_Delimiter(request, response);
         }
     }
 
@@ -349,5 +352,75 @@ public class TestRequestCookieHeader extends HttpServlet {
         // 6.0 keep with wrapped DQuote removed (since they are at begin and end) ; 6.1 discards this cookie
         String manualSetCookie7 = "\"cookie7_WRAP_DQuote_In_Name\"=cookie7_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
         response.addHeader("Set-Cookie", manualSetCookie7);
+    }
+    
+
+    /*
+     * Request Cookie:
+     *  $Version=1; cookie1_Name=good; cookie2_Name=reject, cookie3_name=reject; middleSemiColonName=good; $NAME2=DollarNameValue, Domain=DomainValue; end1_Name=good; end2_Name=good;
+     *
+     * Version is not a cookie pair; thus not included in the request.getCookies();
+     */
+    private void test_Cookie_Mix_Comma_Semicolon_Delimiter(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        LOG.info(">>>>> Test test_Cookie_Mix_Comma_Semicolon_Delimiter");
+        StringBuilder sBuilderResponse = new StringBuilder("====== TEST test_Cookie_Mix_Comma_Semicolon_Delimiter ======");
+        ArrayList<String> expectedCookieList = null;
+        
+        ArrayList<String> expectedCookieListServlet60 = new ArrayList<>();
+        expectedCookieListServlet60.add("cookie1_Name=good");
+        expectedCookieListServlet60.add("cookie2_Name=reject");
+        expectedCookieListServlet60.add("cookie3_name=reject");
+        expectedCookieListServlet60.add("middleSemiColonName=good");
+        expectedCookieListServlet60.add("$NAME2=DollarNameValue");
+        expectedCookieListServlet60.add("Domain=DomainValue");
+        expectedCookieListServlet60.add("end1_Name=good");
+        expectedCookieListServlet60.add("end2_Name=good");
+        
+        ArrayList<String> expectedCookieListServlet61 = new ArrayList<>();
+        expectedCookieListServlet61.add("cookie1_Name=good");
+        expectedCookieListServlet61.add("middleSemiColonName=good");
+        expectedCookieListServlet61.add("end1_Name=good");
+        expectedCookieListServlet61.add("end2_Name=good");
+        
+        expectedCookieList = servletVersion.equals("6.0") ? (new ArrayList<>(expectedCookieListServlet60)) : (new ArrayList<>(expectedCookieListServlet61)); 
+
+
+        int cookieCounter = 0;
+        int expectedNumCookies = expectedCookieList.size();
+        String cookiePair = null;
+
+        Cookie[] cookies = request.getCookies();
+        if (cookies != null) {
+            for (Cookie cookie : cookies) {
+                cookiePair = cookie.getName() + "=" + cookie.getValue();
+                LOG.info("Cookie pair [" + cookiePair + "]");
+
+                expectedCookieList.remove(cookiePair);
+                cookieCounter++;
+            }
+        } else {
+            LOG.info("No cookies found");
+        }
+
+        LOG.info("Expected pairs [" + expectedNumCookies+"] ; found [" + cookieCounter + "] . Remaining [" + expectedCookieList.size() + "] in cookie list; Expecting 0" );
+
+        if (expectedCookieList.size() > 0) {
+            LOG.info("Remaining item :");
+            for (String item : expectedCookieList) {
+                LOG.info(item);
+            }
+        }
+
+        if (cookieCounter != expectedNumCookies || expectedCookieList.size() != 0) {
+            String message = "Cookie pairs NOT match: Expecting [" + expectedNumCookies + "] but found [" + cookieCounter + "]. Or Cookie list remaining [" + expectedCookieList.size() + "] but expecting 0";
+            LOG.info(message + " " + FAIL_TEXT);
+            sBuilderResponse.append(message + FAIL_TEXT);
+        }
+        else {
+            LOG.info(PASS_TEXT);
+            sBuilderResponse.append(PASS_TEXT);
+        }
+        //Client check this header.
+        response.setHeader("TestResult", sBuilderResponse.toString());
     }
 }

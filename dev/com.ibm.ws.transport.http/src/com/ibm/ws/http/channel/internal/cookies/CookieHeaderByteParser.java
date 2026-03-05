@@ -106,12 +106,21 @@ public class CookieHeaderByteParser {
             Tr.entry(tc, "parse ENTRY [" + GenericUtils.nullOutPasswords(headerValue, (byte) '&') + "] " + cookieHeader);
             Tr.debug(tc, (isRequestCookie ? "Request Cookie" : "Response Set-Cookie") + ", EE11 [" + isEE11 + "] , cookie length [" + headerValue.length + "]");
         }
-        
+       
+        /*
+         * Early validation for Response Set-Cookie: One per cookie
+         * Invalid:     
+         * Set-Cookie: name1=value1, name2=value2"
+         * Set-Cookie: name1=value1, name2=value2; Path=/
+         *    
+         * Valid: 
+         * Set-Cookie: name1=value1; Expires=Thu, 01 Jan 2026 00:00:00 GMT
+         */
         if (this.isEE11 && !this.isRequestCookie) {
-            // One Set-Cookie per cookie.  Any comma presents (or presents before semicolon) will discard this Set-Cookie.
+            // Any comma presents (or presents before semicolon) will discard this Set-Cookie.
             boolean foundComma = false;
             for (int i = 0; i < headerValue.length; i++) {
-                if (';' == headerValue[i]) { //valid as as comma after this point can potentially be in ; Expires attribute
+                if (';' == headerValue[i]) { //valid as comma after this point can potentially be in ; Expires attribute
                     break;
                 }
                 if (',' == headerValue[i]) {
@@ -124,7 +133,7 @@ public class CookieHeaderByteParser {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "parse: EE11 response Set-Cookie contains comma in cookie-pair , ignore entire cookie");
                 }
-                return cookiesList;
+                return cookiesList; //empty list
             }
         }
 
@@ -309,14 +318,19 @@ public class CookieHeaderByteParser {
                 // will notice the missing value (by seeing semi-colon first)
                 pos--;
                 break;
-            }
-
+            } 
+            
             if (',' == b) {
-                if (this.isEE11) {
-                    // EE11 request Cookie: comma is invalid, skip this cookie-pair until the next ; or end of data 
+                if (this.isEE11 && this.isRequestCookie) {
+                    // EE11 request Cookie: comma is invalid, skip this cookie-pair until the next ; or end of data
+                    // Example: "name1=value1; bad1=val1, bad2=val2; name3=value3"
+                    //   -> Skip "bad1=val1, bad2=val2", continue with "name3=value3"
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "matchAndParse: EE11 request Cookie contains comma, skipping invalid cookie pair to the next ;");
+                    }
                     for (pos++; pos < data.length; pos++) {
                         if (';' == data[pos]) {
-                            // Found semicolon, position after it and return null to skip this (, cookie-pair)
+                            // Found semicolon, position after it and return null to skip this cookie-pair
                             this.bytePosition = pos + 1;
                             return null;
                         }
@@ -325,15 +339,14 @@ public class CookieHeaderByteParser {
                     this.bytePosition = data.length;
                     return null;
                 }
-                if (!this.isEE11) {
-                    // pre-EE11: comma acts as delimiter
-                    if (-1 == start) {
-                        // just ignore this empty bit
-                        continue;
-                    }
-                    pos--;
-                    break;
+                
+                // Pre-EE11 or EE11 response Set-Cookie (already validated): comma acts as delimiter
+                if (-1 == start) {
+                    // just ignore this empty bit
+                    continue;
                 }
+                pos--;
+                break;
             }
 
             // ignore white space
@@ -496,10 +509,9 @@ public class CookieHeaderByteParser {
      *                  The value byte array passed down by parse method
      * @param token
      *                  The type of the CookieData attribute
+     *         
+     *                 
      *                  
-     * Upon return, parsed value is up to, but excluding, the semicolon. Then calling matchAndParse() for next pair
-     *          For EE11, in case of comma ends, the value is parsed up to, but excluding the comma ends.
-     *          Then skipping to the next semicolon or end of data, and calling matchAndParse() for next pair
      */
     private void parseValue(byte[] data, CookieData token) {
         int start = -1;
@@ -525,63 +537,47 @@ public class CookieHeaderByteParser {
                 num_quotes++;
             }
 
-            // Commas should not be treated as delimiters when they are part of the Set-Cookie Expires attribute
+            /*
+             * EE11 request Cookie - Skip invalid cookie-pair with comma ended until the next semicolon or end of data. Then call matchAndParse() for next pair
+             * Response Set-Cookie - already validate early at the start of parse(). 
+             *  
+             * Commas should not be treated as delimiters when they are part of the Set-Cookie Expires attribute
+             */
             if (',' == b) {
-                if (this.isEE11) {
-                    if (this.isRequestCookie) {
-                        // Request Cookie: comma ends in the current value (capture value up to the end comma).
-                        // Skip the comma-separated cookie-pair until the next semicolon or end of data.
-                        // The value captured so far (up to stop) will be used; advance bytePosition past the skipped pair.
-                        for (pos++; pos < data.length; pos++) {
-                            if (';' == data[pos]) {
-                                // Found semicolon; position after it so the main loop continues parsing
-                                this.bytePosition = pos + 1;
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, " parseValue, has comma ends. Skip the next pair until next ; at index: " + pos + " . Back to matchAndParse for the next pair");
-                                }
-                                break;
-                            }
-                        }
-                        if (pos >= data.length) {
+                if (this.isEE11 && this.isRequestCookie) {
+                    this.name = null;
+                    this.value = null;
+                    for (pos++; pos < data.length; pos++) {
+                        if (';' == data[pos]) {
+                            // Found semicolon; position after it so the main loop continues parsing
+                            this.bytePosition = pos + 1;
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, " parseValue, reached end of data.");
+                                Tr.debug(tc, "parseValue: EE11 request Cookie contains comma in value, skipping invalid cookie-pair to the next ; at index: " + pos);
                             }
-                            this.bytePosition = data.length;
+                            break;
                         }
-                        // Break out of the value-parsing loop; value captured up to 'stop' (i.e all value before the comma end) will be used below
-                        break;
-                    } else {
+                    }
+                    if (pos >= data.length) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, " parseValue, response Set-Cookie");
+                            Tr.debug(tc, " parseValue, reached end of data.");
                         }
-                        // Response Set-Cookie: comma allowed only within Expires and Port attributes; 
-                        // Any comma in cookie pairs section, prior to semicolon, will void this cookie header
-                        if (!CookieData.cookieExpires.equals(token) && !CookieData.cookiePort.equals(token)) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "parseValue: EE11 response Set-Cookie contains invalid comma in cookie-pair, ignore entire cookie");
-                            }
-                            // Set bytePosition to end of data to stop parsing this header completely.
-                            this.bytePosition = data.length;
-                            this.name = null;
-                            this.value = null;
-                            return;
-                        }
-                        // For Port, check if still within quotes
-                        if (CookieData.cookiePort.equals(token) && 2 <= num_quotes) {
-                            // this comma is after the quoted port string
-                            break;
-                        }
+                        this.bytePosition = data.length;
                     }
-                } else { // pre-EE11
+                    return;
+                } else if (CookieData.cookieExpires.equals(token)) {
+                    // Comma is part of the Expires date format (e.g., "Thu, 01 Jan 2026 00:00:00 GMT")
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "parseValue: comma is part of Expires attribute, pos: " + pos);
+                    }
+                } else if (CookieData.cookiePort.equals(token)) {
                     // Port="80,8080" is valid
-                    if (CookieData.cookiePort.equals(token)) {
-                        if (2 <= num_quotes) {
-                            // this comma is after the quoted port string
-                            break;
-                        }
-                    } else if (!CookieData.cookieExpires.equals(token)) {
+                    if (2 <= num_quotes) {
+                        // this comma is after the quoted port string
                         break;
                     }
+                } else {
+                    // For all other cases (Pre-EE11 only, since EE11 is already validated)
+                    break;
                 }
             }
 

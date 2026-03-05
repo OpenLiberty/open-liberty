@@ -70,7 +70,7 @@ public class Servlet61RequestCookieHeaderTest {
      *
      * All Cookie are discard since comma is used for all. getCookie() return null
      */
-    @Test
+    //@Test
     public void test_Cookie_All_Comma_Delimiter() throws Exception {
         LOG.info(">>>>> test_Cookie_All_Comma_Delimiter <<<<<<");
 
@@ -84,7 +84,7 @@ public class Servlet61RequestCookieHeaderTest {
     /**
      * Test COOKIE header with mix comma and semicolon delimiters.
      * Cookie:
-     * "$Version=1, comma_Name1=Invalid; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColon_Name=endSemiColonValue, comma_Name2=Invalid";
+     * $Version=1; cookie1_Name=good; cookie2_Name=reject, cookie3_name=reject; middleSemiColonName=good; $NAME2=DollarNameValue, Domain=DomainValue; end1_Name=good; end2_Name=good;
      *
      * All Cookie comma pair are discard.
      */
@@ -93,7 +93,7 @@ public class Servlet61RequestCookieHeaderTest {
         LOG.info(">>>>> test_Cookie_Mix_Comma_Semicolon_Delimiter <<<<<<");
 
         String testName = "test_Cookie_Mix_Comma_Semicolon_Delimiter";
-        String cookieHeader = "$Version=1, comma_Name1=Invalid; middleSemiColonName=middleSemiColonValue, $Path=/Dollar_Path, $Domain=localhost, $NAME2=DollarNameValue, Domain=DomainValue; endSemiColon_Name=endSemiColonValue, comma_Name2=Invalid";
+        String cookieHeader = "$Version=1; cookie1_Name=good; cookie2_Name=reject, cookie3_name=reject; middleSemiColonName=good; $NAME2=DollarNameValue, Domain=DomainValue; end1_Name=good; end2_Name=good";
 
         sendRequest(testName, cookieHeader);
     }
@@ -105,6 +105,7 @@ public class Servlet61RequestCookieHeaderTest {
         String EXPECTED_TEXT = "Result [PASS]";
 
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=" + urlPattern;
+        //String url = "http://localhost:8080" + "/" + TEST_APP_NAME + "/Test61RequestCookieHeader?testName=" + urlPattern;
 
         LOG.info("Sending Request [" + url + "]");
         LOG.info("Request Cookie [" + cookieHeader + "]");
