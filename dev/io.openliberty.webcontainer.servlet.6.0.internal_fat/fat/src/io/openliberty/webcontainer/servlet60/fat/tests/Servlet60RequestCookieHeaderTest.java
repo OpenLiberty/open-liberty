@@ -198,7 +198,7 @@ public class Servlet60RequestCookieHeaderTest {
     }
     
     /*
-     * Test others cases:
+     * Test special cases:
      * =noNameWithValue
      * nameWithEmptyValue=""
      * nameWithoutAnyValue=
@@ -210,17 +210,44 @@ public class Servlet60RequestCookieHeaderTest {
         LOG.info(">>>>> test_Cookie_Other <<<<<<");
 
         String testName = "test_Cookie_Other";
-        String cookieHeader = "$Version=1; =noNameWithValue; nameWithEmptyValue=\"\"; nameWithoutAnyValue=; nameOnly; endingSemiName=NoPairAfterSemi;";
+        String cookieHeader = "=noNameWithValue; nameWithEmptyValue=\"\"; nameWithoutAnyValue=; nameOnly; endingSemiName=NoPairAfterSemi;";
 
         sendRequest(testName, cookieHeader);
     }
 
+    /*
+     * Servlet 6.0:
+     *      Name: Only Wrapped DQuote is valid but quotes are not part of the name; Anywhere else is invalid
+     *      Value: Wrapped DQuote is removed. Anywhere else is part of the value.
+     *      
+     * Servlet 6.1:
+     *      Name: No DQuote anywhere in name. SQuote is allowed and part of the name
+     *      Value: All quotes are part of value. Wrapped quotes are part of the value
+     *          
+     */
     @Test
     public void test_Cookie_Quoted_Value() throws Exception {
         LOG.info(">>>>> test_Cookie_Quoted_Value <<<<<<");
 
         String testName = "test_Cookie_Quoted_Value";
-        String cookieHeader = "$Version=1; DQuote\"InName=INVALID; SQuote'In_Name=Keep_SQuote ; Mix_SQuote'And\"_DQuote_In_Name=INVALID; \"WRAP_DQuote_InName\"=Keep_But_Removed_All_DQuote; \"Two_DQuote_AnyWhere\"_InName=INVALID; Mix_Quotes_InValue_Name=Keep_All_DQuote\"And'SQuote_Name; WRAP_SQuote_InValue_Name='Keep_All_SQuote'; WRAP_DQuote_InValue_Name=\"Keep_But_Removed_All_DQuote\"";
+        String cookieHeader = "DQuote\"InName=INVALID; SQuote'In_Name=Keep_SQuote ; Mix_SQuote'And\"_DQuote_In_Name=INVALID; \"WRAP_DQuote_InName\"=Keep_But_Removed_All_DQuote; \"Two_DQuote_AnyWhere\"_InName=INVALID; Mix_Quotes_InValue_Name=Keep_All_DQuote\"And'SQuote_Name; WRAP_SQuote_InValue_Name='Keep_All_SQuote'; WRAP_DQuote_InValue_Name=\"Keep_But_Removed_All_DQuote\"";
+
+        sendRequest(testName, cookieHeader);
+    }
+
+    /**
+     * Test COOKIE header with All comma delimiter.
+     *  "name1=value1, $NAME3=Dollar$Value, Domain=DomainValue"
+     *
+     * 6.0: All cookie with comma are parsed.
+     * 6.1: All Cookie with comma are discard. getCookie() return null
+     */
+    @Test
+    public void test_Cookie_All_Comma_Delimiter() throws Exception {
+        LOG.info(">>>>> test_Cookie_All_Comma_Delimiter <<<<<<");
+
+        String testName = "test_Cookie_All_Comma_Delimiter";
+        String cookieHeader = "name1=value1, $NAME3=Dollar$Value, Domain=DomainValue";
 
         sendRequest(testName, cookieHeader);
     }
@@ -230,7 +257,8 @@ public class Servlet60RequestCookieHeaderTest {
      * Cookie:
      * $Version=1; cookie1_Name=good; cookie2_Name=reject, cookie3_name=reject; middleSemiColonName=good; $NAME2=DollarNameValue, Domain=DomainValue; end1_Name=good; end2_Name=good;
      *
-     * All Cookie comma pair are discard.
+     * 6.0: All cookies are valid
+     * 6.1: Any Cookie comma pair are discard.
      */
     @Test
     public void test_Cookie_Mix_Comma_Semicolon_Delimiter() throws Exception {
@@ -242,13 +270,11 @@ public class Servlet60RequestCookieHeaderTest {
         sendRequest(testName, cookieHeader);
     }
 
-
     /*
      * application servlet will verify the cookies and response PASS or FAIL.
      */
     private void sendRequest(String urlPattern, String cookieHeader) throws Exception {
         String EXPECTED_TEXT = "Result [PASS]";
-
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=" + urlPattern;
 
         LOG.info("Sending Request [" + url + "]");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2026 IBM Corporation and others.
+ * Copyright (c) 2023, 2024 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,6 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HTTPServletMappi
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61HttpSessionAccessorTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61PathCanonicalizationTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ReadWriteByteBufferTest;
-import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61RequestCookieHeaderTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61RequestParameterTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseNoOpAfterCommit;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61ResponseSendRedirectTest;
@@ -46,7 +45,6 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61SetCookieRandomA
     Servlet61HttpSessionAccessorTest.class,
     Servlet61PathCanonicalizationTest.class,
     Servlet61ReadWriteByteBufferTest.class,
-    Servlet61RequestCookieHeaderTest.class,
     Servlet61RequestParameterTest.class,
     Servlet61ResponseNoOpAfterCommit.class,
     Servlet61ResponseSendRedirectTest.class,
