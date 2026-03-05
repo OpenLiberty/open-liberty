@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -2285,7 +2285,20 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         Matcher matcher = null;
 
         String remoteIp = nettyContext.channel().remoteAddress().toString();
-        remoteIp = remoteIp.substring(1, remoteIp.indexOf(':'));
+        // Note: Format changed in Netty 4.2
+        // Handing updated to work with both formats: "/127.0.0.1:port" and "hostname/127.0.0.1:port"
+
+        // If there's a hostname prefix (e.g., "localhost/127.0.0.1:port") or it starts with a forward slash,
+        // Extract just the IP:Port part
+        int slashIndex = remoteIp.indexOf('/');
+        if (slashIndex > 0) {
+            remoteIp = remoteIp.substring(slashIndex + 1);
+        }
+        // Extract IP address before the port
+        int colonIndex = remoteIp.indexOf(':');
+        if (colonIndex > 0) {
+            remoteIp = remoteIp.substring(0, colonIndex);
+        }
 
         String attribute;
 
