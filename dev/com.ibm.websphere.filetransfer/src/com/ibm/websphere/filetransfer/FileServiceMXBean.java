@@ -120,7 +120,24 @@ public interface FileServiceMXBean {
     List<String> getWriteList();
 
     /**
-     * TODO Write the javadoc
+     * Get the configured list of blocked locations on the host where
+     * this server resides. This list is configurable for each server by
+     * modifying the server.xml. Each directory to be blocked can
+     * be specified to the &lt;remoteFileAccess&gt; configuration element
+     * 'blockDir' attribute.
+     * <p>
+     * For example:
+     * <br>
+     * <pre>
+     * &lt;remoteFileAccess&gt;
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;blockDir&gt;${server.output.dir}/target&lt;/blockDir&gt;
+     * &lt;/remoteFileAccess&gt;
+     * </pre>
+     * <p>
+     * The default is a list containing 1 entry: ${server.output.dir}/resources/security
+     * 
+     * @return a list of Strings containing the absolute paths which are blocked.
+
      */
     List<String> getBlockList();
 
