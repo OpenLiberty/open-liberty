@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.microprofile.metrics.monitor_fat;
+package com.ibm.ws.microprofile.metrics.monitor_fat; 
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
