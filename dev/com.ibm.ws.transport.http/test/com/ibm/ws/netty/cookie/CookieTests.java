@@ -565,7 +565,10 @@ public class CookieTests {
         }
   
         @Test
-        public void testTrailingCommaCookieHeader(){
+        public void testTrailingCommaCookieHeaderPreEE11() throws Exception{
+            
+            setEE11Mode(false);
+ 
             TestableNettyMessage message = createMessage(REQUEST);
             message.getNettyHeaders().add("Cookie", "comma=value,");
             List<HttpCookie> cookies = message.getAllCookies();
@@ -573,6 +576,17 @@ public class CookieTests {
             HttpCookie cookie = cookies.get(0);
             assertThat(cookie.getName(), is("comma"));
             assertThat(cookie.getValue(), is("value"));
+        }
+        
+        @Test
+        public void testTrailingCommaCookieHeaderEE11() throws Exception{
+            
+            setEE11Mode(true);
+ 
+            TestableNettyMessage message = createMessage(REQUEST);
+            message.getNettyHeaders().add("Cookie", "comma=value,");
+            List<HttpCookie> cookies = message.getAllCookies();
+            assertThat(cookies, hasSize(0));
         }
 
     }
