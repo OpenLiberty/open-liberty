@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.encoders;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -42,28 +41,31 @@ public class EncoderRegistry {
     }
 
     private int getPriority(Object encoder) {
-        Priority priority = encoder.getClass().getAnnotation(Priority.class);
-        return priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
+        int result = DEFAULT_ENCODER_PRIORITY;
+        Class<?> encoderClass = encoder.getClass();
+
+        while (encoderClass != null && encoderClass != Object.class) {
+            Priority priority = encoderClass.getAnnotation(Priority.class);
+            if (priority != null) {
+                result = priority.value();
+                break;
+            }
+            encoderClass = encoderClass.getSuperclass();
+        }
+        return result;
     }
 
     public Optional<Encoder<?, ?>> findEncoder(Class<?> returnType) {
-        System.out.println("Target Return type: " + returnType.getName());
 
-        System.out.println("Available ToolResponseEncoders : " + Arrays.asList(toolResponseEncoders));
         for (ToolResponseEncoder<?> encoder : toolResponseEncoders) {
-            System.out.println("ToolResponseEncoder: " + encoder.getClass().getName());
             if (encoder.supports(returnType)) {
                 return Optional.of(encoder);
             }
-            System.out.println("Not supported");
         }
-        System.out.println("Available ContentEncoders : " + Arrays.asList(contentEncoders));
         for (ContentEncoder<?> encoder : contentEncoders) {
-            System.out.println("ContentEncoder: " + encoder.getClass().getName());
             if (encoder.supports(returnType)) {
                 return Optional.of(encoder);
             }
-            System.out.println("Not supported");
         }
         return Optional.empty();
     }
