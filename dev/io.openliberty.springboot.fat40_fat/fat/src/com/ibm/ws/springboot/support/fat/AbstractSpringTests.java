@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.springboot.support.fat;
 
+import static componenttest.annotation.SkipForSecurity.FIPS_140_3;
+import static componenttest.annotation.SkipForSecurity.SEMERU;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
@@ -46,14 +48,12 @@ import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.config.VirtualHost;
 import com.ibm.websphere.simplicity.config.WebApplication;
 
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.annotation.SkipForSecurity;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
+@SkipForSecurity(property = FIPS_140_3, runtimeName = SEMERU)
 public abstract class AbstractSpringTests {
-
-    @Rule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("SpringBootTests");
 
     // All current FAT application names.
     public static final String SPRING_BOOT_40_APP_BASE = "io.openliberty.springboot.fat40.app-0.0.1-SNAPSHOT.jar";
