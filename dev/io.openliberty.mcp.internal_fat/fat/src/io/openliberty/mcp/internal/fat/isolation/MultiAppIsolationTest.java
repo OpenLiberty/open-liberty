@@ -252,7 +252,7 @@ public class MultiAppIsolationTest extends FATServletClient {
     //Test for ToolResponseEncoders
 
     @Test
-    public void testAlphaToolUsesAlphaToolResponseEncoderForToolEncoderResult() throws Exception {
+    public void testAlphaToolUsesAlphaToolResponseEncoderForLocalDate() throws Exception {
         String request = """
                           {
                           "jsonrpc": "2.0",
@@ -274,7 +274,7 @@ public class MultiAppIsolationTest extends FATServletClient {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"encoded by AlphaToolResponseEncoder: alphaEncodedTool"
+                                "text":"encoded by AlphaToolResponseEncoder: 2026-03-03"
                               }
                             ]
                           }
@@ -286,7 +286,7 @@ public class MultiAppIsolationTest extends FATServletClient {
 
     //Testing that the AlphaToolResponseEncoder from the Alpha app is not seen by the Beta app
     @Test
-    public void testBetaToolDoesNotUseAlphaToolResponseEncoderForToolEncoderResult() throws Exception {
+    public void testBetaToolDoesNotUseAlphaToolResponseEncoderForLocalDate() throws Exception {
         String request = """
                           {
                           "jsonrpc": "2.0",
@@ -308,7 +308,7 @@ public class MultiAppIsolationTest extends FATServletClient {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"{\\"message\\":\\"betaEncodedTool\\",\\"success\\":true}"
+                                "text":"\\"2026-03-03\\""
                               }
                             ]
                           }
@@ -320,7 +320,7 @@ public class MultiAppIsolationTest extends FATServletClient {
 
     //A content encoder registered in the Beta app will be visible to only the beta tools deployed in the beta app
     @Test
-    public void testBetaToolUsesBetaContentEncoderForContentEncoderResult() throws Exception {
+    public void testBetaToolUsesBetaContentEncoderForLocalDateTime() throws Exception {
         String request = """
                           {
                           "jsonrpc": "2.0",
@@ -342,7 +342,7 @@ public class MultiAppIsolationTest extends FATServletClient {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"encoded by BetaContentEncoder: BetaContentEncodedTool, count=10"
+                                "text":"encoded by BetaContentEncoder: 2026-03-03T03:03"
                               }
                             ]
                           }
@@ -354,7 +354,7 @@ public class MultiAppIsolationTest extends FATServletClient {
 
     //A content encoder registered in the Beta app will NOT be visible to Alpha tools deployed in the alpha app
     @Test
-    public void testAlphaToolDoesNotUseBetaContentEncoderForContentEncoderResult() throws Exception {
+    public void testAlphaToolDoesNotUseBetaContentEncoderForLocalDateTime() throws Exception {
         String request = """
                           {
                           "jsonrpc": "2.0",
@@ -376,7 +376,7 @@ public class MultiAppIsolationTest extends FATServletClient {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"{\\"count\\":22,\\"name\\":\\"AlphaContentEncodedTool\\"}"
+                                "text":"\\"2026-03-03T03:03:00\\""
                               }
                             ]
                           }
