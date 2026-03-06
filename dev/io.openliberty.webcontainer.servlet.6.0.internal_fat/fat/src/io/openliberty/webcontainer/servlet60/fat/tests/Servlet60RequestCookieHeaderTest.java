@@ -135,7 +135,7 @@ public class Servlet60RequestCookieHeaderTest {
     /*
      * Test Response Set-Cookie:
      *  Quotes in name and value
-     *  Comma in cookie-pair. EX: cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value, cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT; HttpOnly"
+     *  Comma in cookie-pair. EX: cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value, cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT"
      */
     @Test
     public void test_Response_Set_Cookie_Name_Expires_Attribute() throws Exception {
@@ -151,12 +151,13 @@ public class Servlet60RequestCookieHeaderTest {
         HttpGet getMethod = new HttpGet(url);
 
         ArrayList<String> expectedCookieList = null;
+        
         ArrayList<String> expectedSetCookieHeaders60 = new ArrayList<>();
         expectedSetCookieHeaders60.add("cookieviaMaxAge=cookieValue; Expires="); //Do not include time as setMaxAge is dynamic time when test runs 
         expectedSetCookieHeaders60.add("cookie1_manualSetCookie_Name=cookie1_Value");
         expectedSetCookieHeaders60.add("cookie2_Quote'Name=cookie2_Has_CommaTrailing_Value");
         expectedSetCookieHeaders60.add("cookie2_After_Comma_Name=cookie2_After_Comma_Value; Expires=Sat, 01 Mar 2036");
-        expectedSetCookieHeaders60.add("cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value");
+        expectedSetCookieHeaders60.add("cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value; Expires=Sat, 01 Mar 2036");
         expectedSetCookieHeaders60.add("cookie4_Mix_SQuotes'_AND_DQuote\"_In_Name=cookie4_Mix_QuotesInName_Value");
         expectedSetCookieHeaders60.add("cookie5_WRAP_DQuote_InValue_Name=cookie5_WRAP_DQuote_Value");
         expectedSetCookieHeaders60.add("cookie6_DQuote_\"_In_Name=cookie6_Value; Expires=Sat, 01 Mar 2036");
@@ -165,7 +166,7 @@ public class Servlet60RequestCookieHeaderTest {
         ArrayList<String> expectedSetCookieHeaders61 = new ArrayList<>();
         expectedSetCookieHeaders61.add("cookieviaMaxAge=cookieValue; Expires=");
         expectedSetCookieHeaders61.add("cookie1_manualSetCookie_Name=cookie1_Value");
-        expectedSetCookieHeaders61.add("cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value");
+        expectedSetCookieHeaders61.add("cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value; Expires=Sat, 01 Mar 2036");
         expectedSetCookieHeaders61.add("cookie5_WRAP_DQuote_InValue_Name=\"cookie5_WRAP_DQuote_Value\"");
         
         expectedCookieList = ee10 ? (new ArrayList<>(expectedSetCookieHeaders60)) : (new ArrayList<>(expectedSetCookieHeaders61)); 
@@ -173,9 +174,6 @@ public class Servlet60RequestCookieHeaderTest {
         expectedSetCookieSize = expectedCookieList.size();
 
         try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            final String EXPIRES = "; Expires=Sat, 01 Mar 2036"; //do not include time
-            final String OTHER_ATT = "; HttpOnly";
-
             try (CloseableHttpResponse response = client.execute(getMethod)) {
                 Header[] headers = response.getHeaders();
                 int matchedCookie = 0;
@@ -276,6 +274,16 @@ public class Servlet60RequestCookieHeaderTest {
     private void sendRequest(String urlPattern, String cookieHeader) throws Exception {
         String EXPECTED_TEXT = "Result [PASS]";
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=" + urlPattern;
+        
+        /* To test locally against any server (even none-Liberty like tWAS, TC): 
+         *    run ./gradlew test once to obtain the generated .war , 
+         *    deploy on that test server (mind the javax and jakarta namespace server.)
+         *    comment out all the "String url" lines in this test and replacing with url contain "http://localhost:localPort" like below.
+         *    run the client ./gradlew test normally.
+         * 
+         * String url = "http://localhost:9860" +  "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=" + urlPattern;
+         */
+
 
         LOG.info("Sending Request [" + url + "]");
         LOG.info("Request Cookie [" + cookieHeader + "]");

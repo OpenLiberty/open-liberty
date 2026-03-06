@@ -335,7 +335,7 @@ public class TestRequestCookieHeader extends HttpServlet {
         response.addHeader("Set-Cookie", manualSetCookie2);
 
         //Valid in 6.0 and 6.1 (middle quotes are retained)
-        String manualSetCookie3 = "cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value";
+        String manualSetCookie3 = "cookie3_Mix_Quotes_InValue_Name=cookie3_Mix_SQuote'And_DQuote\"_Value; Expires=Sat, 01 Mar 2036 19:00:00 GMT";
         response.addHeader("Set-Cookie", manualSetCookie3);
 
         //mix quotes in Name. Valid in 6.0 (quotes are retained) ; 6.1 discard this cookie
