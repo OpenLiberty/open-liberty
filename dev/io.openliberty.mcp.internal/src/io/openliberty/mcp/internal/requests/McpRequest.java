@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -63,9 +63,12 @@ public record McpRequest(String jsonrpc,
      * @param <T> the target type to map the JSON into
      * @param type the class we want to deserialize the JSON into
      * @param jsonb the jsonb deserializer to convert the JSON string into an object
-     * @return the method parameters converted to {@code type}
+     * @return the method parameters converted to {@code type}, or {@code null} if the request did not include parameters
      */
     public <T> T getParams(Class<T> type, Jsonb jsonb) {
+        if (this.params == null) {
+            return null;
+        }
         String json = jsonb.toJson(this.params);
         return jsonb.fromJson(json, type);
     }

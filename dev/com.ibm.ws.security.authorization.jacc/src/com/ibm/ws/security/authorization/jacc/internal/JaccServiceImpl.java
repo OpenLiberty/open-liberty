@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2025 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,7 +129,6 @@ public class JaccServiceImpl implements JaccService {
                 }
                 try {
                     policyProxy.setPolicy();
-                    policyProxy.refresh();
                 } catch (ClassCastException cce) {
                     Tr.error(tc, "JACC_POLICY_INSTANTIATION_FAILURE", new Object[] { policyName, cce });
                     return Boolean.FALSE;
@@ -198,6 +197,13 @@ public class JaccServiceImpl implements JaccService {
         } catch (PrivilegedActionException e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Exception when resetting setHandlerData. Ignoring.. " + e.getException());
+        }
+
+        // Starting with Jakarta Authorization 3.0 (EE 11), we also clear out the PolicyContext ID since it is used
+        // by the PolicyFactory
+        PolicyProxy proxy = policyProxy;
+        if (proxy != null && proxy.isResetPolicyContextID()) {
+            PolicyContext.setContextID(null);
         }
     }
 }

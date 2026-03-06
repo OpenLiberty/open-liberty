@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -120,13 +120,15 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isAuthorized(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, METHOD_INTERFACE_NAME, METHOD_SIGNATURE, null, null, SUBJECT);
                 will(returnValue(false));
             }
         });
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr);
+        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr, null);
         try {
             ejah.authorizeEJB(erd, SUBJECT);
             fail("EJBAcessDeniedException is not caught");
@@ -187,13 +189,15 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isAuthorized(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, METHOD_INTERFACE_NAME, METHOD_SIGNATURE, Arrays.asList(ARG_LIST), eb, SUBJECT);
                 will(returnValue(true));
             }
         });
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr);
+        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr, null);
         try {
             ejah.authorizeEJB(erd, SUBJECT);
             // success
@@ -245,6 +249,8 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isSubjectInRole(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, Arrays.asList(ARG_LIST), ROLE, eb, SUBJECT);
                 will(returnValue(false));
             }
@@ -252,7 +258,7 @@ public class EJBJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr);
+        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr, null);
         assertFalse(ejah.isCallerInRole(ecmd, erd, ROLE, null, SUBJECT));
     }
 
@@ -296,6 +302,8 @@ public class EJBJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("eJBJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isSubjectInRole(APP_NAME, MODULE_NAME, BEAN_NAME, METHOD_NAME, null, ROLE, null, SUBJECT);
                 will(returnValue(true));
             }
@@ -303,7 +311,7 @@ public class EJBJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr);
+        EJBJaccAuthorizationHelper ejah = new EJBJaccAuthorizationHelper(ajsr, null);
         assertTrue(ejah.isCallerInRole(ecmd, erd, ROLE, null, SUBJECT));
     }
 

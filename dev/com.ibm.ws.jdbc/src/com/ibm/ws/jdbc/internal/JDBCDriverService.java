@@ -290,14 +290,24 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         
         /**
          * Add a default value for serverName when using DB2 JCC DataSources
-         * No need to check for URL since URL does not exist on DB2 JCC DataSources only on Driver
-         * Therefore, we are effectively only setting the default server name when a DataSource is used and not when a Driver is used.
+         * Except when the DataSource is configured to use the client catalog
+         * 
+         * Note: default server name was removed from metatype since it interferes with the ability
+         * to use a connection URL when using the DriverManager.
+         * No need to check for URL since URL does not exist on DB2 JCC DataSources only on DriverManager
          */
-        if(className.startsWith("com.ibm.db2.jcc") && !props.containsKey("serverName")) {
-            if(trace && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Setting serverName property to localhost");
+        if(isVendorFactoryPid(props, "db2.jcc")) {
+            boolean usingClientCatalog = props.containsKey("databaseName") //
+                            && props.containsKey("driverType") //
+                            && props.get("driverType").equals(2) ;
+            boolean isServernameSet = props.containsKey("serverName");
+            
+            if(!usingClientCatalog && !isServernameSet) {
+                if(trace && tc.isDebugEnabled())
+                    Tr.debug(tc, "Setting serverName property to localhost");
+                
+                ((PropertyService) props).setProperty("serverName", "localhost"); 
             }
-            ((PropertyService) props).setProperty("serverName", "localhost");
         }
         
         try {
@@ -430,7 +440,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().unlock();
                 }
 
-            String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+            String vendorPropertiesPID = getVendorFactoryPid(props);
             String className;
 
             if (null != (className = (String) properties.get(ConnectionPoolDataSource.class.getName()))
@@ -509,7 +519,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                     lock.writeLock().unlock();
                 }
 
-            String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+            String vendorPropertiesPID = getVendorFactoryPid(props);
             String className;
             
             if (null != (className = (String) properties.get(XADataSource.class.getName()))
@@ -582,7 +592,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
             String className = (String) properties.get(ConnectionPoolDataSource.class.getName());
             if (className == null) {
-                String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+                String vendorPropertiesPID = getVendorFactoryPid(props);
                 className = JDBCDrivers.getConnectionPoolDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     //if properties.oracle.ucp is configured do not search based on classname or infer because the customer has indicated
@@ -642,7 +652,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
             String className = (String) properties.get(DataSource.class.getName());
             if (className == null) {
-                String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+                String vendorPropertiesPID = getVendorFactoryPid(props);
                 className = JDBCDrivers.getDataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers
@@ -697,7 +707,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
             String className = (String) properties.get(XADataSource.class.getName());
             if (className == null) {
-                String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
+                String vendorPropertiesPID = getVendorFactoryPid(props);
                 className = JDBCDrivers.getXADataSourceClassName(vendorPropertiesPID);
                 if (className == null) {
                     className = JDBCDrivers.getXADataSourceClassName(getFileNames(sharedLib));
@@ -750,10 +760,9 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
 
             final String className = (String) properties.get(Driver.class.getName());
             if (className == null) {
-                String vendorPropertiesPID = props instanceof PropertyService ? ((PropertyService) props).getFactoryPID() : PropertyService.FACTORY_PID;
                 //if properties.oracle.ucp is configured do not search for driver impls because the customer has indicated
                 //they want to use UCP, but this will likely pick up the Oracle driver instead of the UCP driver (since UCP has no Driver interface)
-                if("com.ibm.ws.jdbc.dataSource.properties.oracle.ucp".equals(vendorPropertiesPID)) {
+                if(isVendorFactoryPid(props, "oracle.ucp")) {
                     throw new SQLNonTransientException(AdapterUtil.getNLSMessage("DSRA4015.no.ucp.connection.pool.datasource", dataSourceID, Driver.class.getName()));
                 }
             }
@@ -1110,7 +1119,7 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
                 catch (Exception ex) {
                     throw new IllegalArgumentException(AdapterUtil.getNLSMessage("DSRA4016.enum.property.vaue.not.valid", value, propName), ex);
                 }
-		
+    
             else // the generic case: any object with a single parameter String constructor
                 param = paramType.getConstructor(String.class).newInstance(value);
         }
@@ -1412,6 +1421,19 @@ public class JDBCDriverService extends Observable implements LibraryChangeListen
         matcher.appendTail(sb);
         
         return sb.toString(); 
+    }
+    
+    @Trivial
+    private static String getVendorFactoryPid(final Hashtable<?, ?> props) {
+        if(props instanceof PropertyService)
+            return ((PropertyService) props).getFactoryPID();
+        else 
+            return PropertyService.FACTORY_PID;        
+    }
+    
+    @Trivial
+    private static boolean isVendorFactoryPid(final Hashtable<?, ?> props, final String pidSuffix) {
+        return getVendorFactoryPid(props).equals(PropertyService.FACTORY_PID + '.' + pidSuffix);
     }
     
     @Trivial

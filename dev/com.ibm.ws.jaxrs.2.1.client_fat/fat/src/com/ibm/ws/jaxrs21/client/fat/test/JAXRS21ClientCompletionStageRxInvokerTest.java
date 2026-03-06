@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -213,18 +215,21 @@ public class JAXRS21ClientCompletionStageRxInvokerTest extends JAXRS21AbstractTe
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testCompletionStageRxInvoker_getCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testCompletionStageRxInvoker_getIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getIbmConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testCompletionStageRxInvoker_getIbmOverridesCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_getIbmOverridesCbConnectionTimeout", p, "Timeout as expected");
@@ -249,18 +254,21 @@ public class JAXRS21ClientCompletionStageRxInvokerTest extends JAXRS21AbstractTe
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testCompletionStageRxInvoker_postCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testCompletionStageRxInvoker_postIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postIbmConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testCompletionStageRxInvoker_postIbmOverridesCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(completionStageRxInvokerTarget, "testCompletionStageRxInvoker_postIbmOverridesCbConnectionTimeout", p, "Timeout as expected");

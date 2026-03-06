@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.security.javaeesec.cdi.beans;
 
 import java.util.Map;
+import java.util.Properties;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Default;
@@ -44,6 +45,9 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
 
     private final Utils utils;
 
+    // JS 4.0+ - store properties for qualified HAMs only
+    private Properties qualifiedProperties = null;
+
     public FormAuthenticationMechanism() {
         utils = new Utils();
     }
@@ -51,6 +55,21 @@ public class FormAuthenticationMechanism implements HttpAuthenticationMechanism 
     // this is for unit test.
     protected FormAuthenticationMechanism(Utils utils) {
         this.utils = utils;
+    }
+
+    /**
+     * Used for HAMs with qualifiers, need to store them per HAM as the
+     * properties will (should!) be different.
+     *
+     * NOTE: Currently not used, but here for consistency (with Basic),
+     * allows for consistent interrogation of HAM (if required), enables
+     * future enhancements (similar to Basic) as infrastructure
+     * already in place, and overhead is minimal.
+     *
+     * @param props The properties for this qualified HAM instance
+     */
+    public void setQualifiedProperties(Properties props) {
+        this.qualifiedProperties = props;
     }
 
     @Override

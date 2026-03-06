@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Make sure that at least one IdentitySto
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: The HttpAuthenticationMechanism object for the {0} module in the {1} application could not be created.
 JAVAEESEC_ERROR_NO_HAM.explanation=The reason that the HttpAuthenticationMechanism object cannot be created varies. The error messages for the HttpAuthenticationMechanism object provide information on why the the HttpAuthenticationMechanism object cannot be created.
 JAVAEESEC_ERROR_NO_HAM.useraction=Investigate any error messages from the HttpAuthenticationMechanism object and make corrections based on the error messages.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: The HttpAuthenticationMechanismService implementation object for the {0} module in the {1} application was not found as an OSGi bundle.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=The HttpAuthenticationMechanismService implementation object was not found because one of the dependent bundles that contains this implementation is missing from the features manifest file.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Ensure that the feature manifest references a bundle that contains an implementation of the HttpAuthenticationMechanismService.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: The Expression Language (EL) expression for the ''{0}'' attribute of the identity store annotation cannot be resolved to a valid value. Ensure that the EL expression and the result are valid and ensure that any referenced beans that are used in the expression are resolvable. The default attribute value of ''{1}'' is used instead.

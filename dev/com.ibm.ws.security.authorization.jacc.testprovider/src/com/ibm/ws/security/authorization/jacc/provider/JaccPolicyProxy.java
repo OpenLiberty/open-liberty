@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -114,8 +114,10 @@ public class JaccPolicyProxy extends Policy {
             result = true;
         } else if (p instanceof WebResourcePermission) {
             WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+            // If there is no policy configuration, the application doesn't
+            // have any security constraints.  In that case return true.
             if (pc == null) {
-                return false;
+                return true;
             }
             if (pd.getPrincipals() == null || pd.getPrincipals().length < 1) {
                 if (tc.isDebugEnabled())
@@ -138,8 +140,10 @@ public class JaccPolicyProxy extends Policy {
             }
         } else if (p instanceof WebUserDataPermission) {
             WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+            // If there is no policy configuration, the application doesn't
+            // have any security constraints.  In that case return true.
             if (pc == null) {
-                return false;
+                return true;
             }
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Checking the excluded list");
@@ -152,16 +156,20 @@ public class JaccPolicyProxy extends Policy {
             }
         } else if (p instanceof WebRoleRefPermission || p instanceof EJBRoleRefPermission) {
             WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+            // If there is no policy configuration, the application doesn't
+            // have any security constraints.  In that case return true.
             if (pc == null) {
-                return false;
+                return true;
             }
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Checking the role list");
             return jaccProvider.checkRolePerm(pc, p, PolicyContext.getContextID());
         } else if (p instanceof EJBMethodPermission) {
             WSPolicyConfigurationImpl pc = getPolicyConfiguration();
+            // If there is no policy configuration, the application doesn't
+            // have any security constraints.  In that case return true.
             if (pc == null) {
-                return false;
+                return true;
             }
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "Checking the excluded list");

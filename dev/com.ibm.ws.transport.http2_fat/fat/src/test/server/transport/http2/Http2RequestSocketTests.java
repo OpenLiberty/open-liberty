@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,7 +64,7 @@ public class Http2RequestSocketTests extends FATServletClient {
         server.startServer(Http2SecureTests.class.getSimpleName() + ".log");
         assertNotNull("CWWKO0219I.*ssl not received", server.waitForStringInLog("CWWKO0219I.*ssl"));
         client = new SecureHttp2Client();
-
+        H2FATApplicationHelper.preTestNettyCheck(runtimeServer, server);
     }
 
     @AfterClass

@@ -45,7 +45,6 @@ record NumericOperatorExpressionRecord<T, N extends Number & Comparable<N>>(
             case TIMES -> '*';
             case MINUS -> '-';
             case DIVIDE -> '/';
-            default -> throw new IllegalStateException();
         };
 
         String rightString = right.toString();
@@ -92,5 +91,10 @@ record NumericOperatorExpressionRecord<T, N extends Number & Comparable<N>>(
 
         throw new IllegalArgumentException(Messages.get("009.unknown.number.type",
                                                         number.getClass().getName()));
+    }
+
+    @Override
+    public Class<? extends N> type() {
+        return left.type();
     }
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ jmx.rest.client.not.connected.useraction=\uc11c\ubc84\uc5d0\uc11c REST \ucee4\ub
 jmx.rest.client.url.not.found=CWWKX0207E: \uc11c\ubc84\ub294 \ud074\ub77c\uc774\uc5b8\ud2b8\uac00 \uc694\uccad\ud55c URL\uc744 \ucc3e\uc744 \uc218 \uc5c6\ub2e4\uace0 \ubcf4\uace0\ud569\ub2c8\ub2e4.
 jmx.rest.client.url.not.found.explanation=\ud074\ub77c\uc774\uc5b8\ud2b8\uc758 \uc815\ubcf4\uac00 \uc720\ud6a8 \uae30\uac04\uc774 \uc9c0\ub0ac\uac70\ub098 \uc11c\ubc84\uc758 REST \ucee4\ub125\ud130 \uae30\ub2a5\uc744 \uc0ac\uc6a9 \uc548\ud569\ub2c8\ub2e4.
 jmx.rest.client.url.not.found.useraction=\uc11c\ubc84\uc5d0\uc11c REST \ucee4\ub125\ud130 \uae30\ub2a5\uc774 \uc0ac\uc6a9 \uac00\ub2a5\ud55c\uc9c0 \ud655\uc778\ud558\uace0 \uc11c\ubc84\uc5d0 \ub300\ud55c \uc0c8 \uc5f0\uacb0\uc744 \uc5bb\uc73c\uc2ed\uc2dc\uc624. 
+
 jmx.rest.client.class.name.null=CWWKX0208E: \ud074\ub798\uc2a4 \uc774\ub984 \uc778\uc218\uac00 \ub110\uc785\ub2c8\ub2e4.
 jmx.rest.client.class.name.null.explanation=\ud074\ub798\uc2a4 \uc774\ub984 \uc778\uc218\ub294 \ub110\uc774 \uc544\ub2c8\uc5b4\uc57c \ud569\ub2c8\ub2e4.
 jmx.rest.client.class.name.null.useraction=\uba54\uc18c\ub4dc\ub97c \ud638\ucd9c\ud560 \ub54c \ub110\uc774 \uc544\ub2cc \ud074\ub798\uc2a4 \uc774\ub984\uc744 \uc81c\uacf5\ud558\uc2ed\uc2dc\uc624.
@@ -140,7 +141,11 @@ jmx.rest.client.bad.user.credentials.useraction=\uc0ac\uc6a9\uc790 \uc2e0\uc784 
 jmx.rest.client.connection.connect=CWWKX0230I: Collective \uba64\ubc84\uac00 Collective \uc81c\uc5b4\uae30\uc5d0 JMX \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \uc5f4\uc5c8\uc2b5\ub2c8\ub2e4. {0}
 jmx.rest.client.connection.connect.explanation=\uba64\ubc84\uac00 \uc81c\uc5b4\uae30\uc5d0 \uc5f0\uacb0\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 jmx.rest.client.connection.connect.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.  
+ 
 jmx.rest.client.connection.disconnect=CWWKX0231I: Collective \uba64\ubc84\uac00 Collective \uc81c\uc5b4\uae30\uc5d0\uc11c JMX \ud074\ub77c\uc774\uc5b8\ud2b8\ub97c \ub2eb\uc558\uc2b5\ub2c8\ub2e4. {0}
 jmx.rest.client.connection.disconnect.explanation=\uba64\ubc84\uac00 \uc81c\uc5b4\uae30\uc5d0\uc11c \uc5f0\uacb0 \ud574\uc81c\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
 jmx.rest.client.connection.disconnect.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4. 
 
+jmx.rest.client.server.result.exception=CWWKX0232E: \uc11c\ubc84\uac00 \ud074\ub77c\uc774\uc5b8\ud2b8\uc5d0\uc11c \uc0ac\uc6a9\ud560 \uc218 \uc5c6\ub294 \ud074\ub798\uc2a4\ub97c \ubc18\ud658\ud588\uc2b5\ub2c8\ub2e4: {0}
+jmx.rest.client.server.result.exception.explanation=\uc11c\ubc84\uac00 \ubc18\ud658\ud558\ub294 \ubaa8\ub4e0 \uc778\ud130\ud398\uc774\uc2a4 \ub610\ub294 \uad6c\ud604 \ud074\ub798\uc2a4\ub294 \ud074\ub77c\uc774\uc5b8\ud2b8\uc5d0\uc11c \uc0ac\uc6a9\ud560 \uc218 \uc788\uc5b4\uc57c \ud569\ub2c8\ub2e4.
+jmx.rest.client.server.result.exception.useraction=\ud074\ub77c\uc774\uc5b8\ud2b8 \ud074\ub798\uc2a4\ud328\uc2a4\uc5d0 \ud544\uc694\ud55c \ubaa8\ub4e0 \ud074\ub798\uc2a4\uac00 \uc0ac\uc6a9 \uac00\ub2a5\ud55c\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.

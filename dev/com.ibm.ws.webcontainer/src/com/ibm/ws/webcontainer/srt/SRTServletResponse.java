@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -277,9 +277,16 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
             logger.entering(CLASS_NAME,"finish","["+this+"]");
 
         if (!isCommitted()) {
+           
+            // Depending on where the commit has happened (here or inside service()), the response Content-Length VS Chunked can be set.
+            if(this._bufferedOut!= null && this._bufferedOut instanceof WCOutputStream){
+                HttpOutputStreamConnectWeb output = ((WCOutputStream) this._bufferedOut).getOutput();
+                output.setWC_finishCommitResponse(true);
+            }
+
             commit();
         }
-
+        
         // flush the OutputStream and Writer
         try {
             flushBuffer(false);
@@ -676,17 +683,20 @@ public class SRTServletResponse implements HttpServletResponse, IResponseOutput,
     }
 
     public void flushBuffer() throws IOException {
+        if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) 
+            logger.logp(Level.FINE, CLASS_NAME,"flushBuffer()", "setting flushToWire = true , ["+this+"]");
         flushBuffer(true);
     }
 
     public void flushBuffer(boolean flushToWire) throws IOException {
         final boolean isTraceOn = com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled();
         if (isTraceOn&&logger.isLoggable (Level.FINE))
-            logger.entering(CLASS_NAME, "flushBuffer","flushToWire="+String.valueOf(flushToWire)+" ["+this+"]");
+            logger.entering(CLASS_NAME, "flushBuffer(boolean)","flushToWire="+String.valueOf(flushToWire)+" ["+this+"]");
 
         if (!flushToWire) {
             _response.setFlushMode(false);
         }
+        
         try {
             if (isTraceOn&&logger.isLoggable (Level.FINE))
                 logger.logp(Level.FINE, CLASS_NAME, "flushBuffer" , "_firstWriteToCurrentBuffer->"+this._firstWriteToCurrentBuffer+", skipHeaderFlush->"+skipHeaderFlush);

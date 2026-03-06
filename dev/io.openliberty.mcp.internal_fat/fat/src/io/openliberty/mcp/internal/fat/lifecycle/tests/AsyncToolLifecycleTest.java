@@ -185,7 +185,7 @@ public class AsyncToolLifecycleTest {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"CWMCM0011E: An internal server error occurred while running the tool."}], "isError": true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
                         """;
 
         JSONAssert.assertEquals(expectedResponseString, response, true);

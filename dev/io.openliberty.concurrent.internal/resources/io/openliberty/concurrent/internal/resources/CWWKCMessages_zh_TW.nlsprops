@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=\u9650\u5b9a\u7b26\u5217\u8868\u4e2
 CWWKC1206.qualifier.must.be.anno.useraction=\u78ba\u4fdd\u9650\u5b9a\u7b26\u6e05\u55ae\u4e2d\u7684\u6240\u6709\u503c\u90fd\u662f\u8a3b\u89e3\u985e\u5225\u3002
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: {0}\u61c9\u7528\u7a0b\u5f0f\u5de5\u4ef6\u6307\u5b9a\u5177\u6709{3}\u540d\u7a31\u548c{4}\u9650\u5b9a\u7b26\u6e05\u55ae\u7684{1}\u8a3b\u89e3\u6216{2}\u90e8\u7f72\u63cf\u8ff0\u7b26\u5143\u7d20\u3002 \u9650\u5b9a\u7b26\u5217\u8868\u5305\u542b{5}\u8a3b\u91cb\uff0c\u8a72\u8a3b\u91cb\u672a\u4f7f\u7528 @ jakarta.inject.Qualifier\u548c @Retention(RUNTIME) \u9032\u884c\u8a3b\u91cb\u3002 \u6709\u6548\u9650\u5b9a\u7b26\u7684\u7bc4\u4f8b\u662f\uff1a {6}
-CWWKC1207.lacks.qualifier.anno.explanation=Qualifier \u8a3b\u89e3\u986f\u793a\u8a72\u8a3b\u89e3\u662f\u9650\u5b9a\u7b26\u3002 \u4fdd\u7559\u8a3b\u89e3\u63a7\u5236\u8a3b\u89e3\u7684\u53ef\u7528\u6027\u3002
+CWWKC1207.lacks.qualifier.anno.explanation=@Qualifier \u8a3b\u89e3\u8868\u793a\u8a72\u8a3b\u89e3\u70ba\u9650\u5b9a\u7b26\u3002 \u4fdd\u7559\u8a3b\u89e3\u63a7\u5236\u8a3b\u89e3\u7684\u53ef\u7528\u6027\u3002
 CWWKC1207.lacks.qualifier.anno.useraction=\u5c07 @Qualifier \u548c @Retention(RUNTIME) \u8a3b\u89e3\u52a0\u5165\u9650\u5b9a\u7b26\u985e\u5225\u3002
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: {0} \u61c9\u7528\u7a0b\u5f0f\u5de5\u4ef6\u6307\u5b9a {1} \u8a3b\u89e3\u6216 {2} \u90e8\u7f72\u63cf\u8ff0\u7b26\u5143\u7d20\uff0c\u8a72\u5143\u7d20\u5177\u6709 {3} \u540d\u7a31\u548c {4} \u9650\u5b9a\u7b26\u6e05\u55ae\u3002 \u60a8\u4e0d\u80fd\u8a2d\u5b9a Jakarta Concurrency \u8cc7\u6e90\u540c\u6642\u5177\u6709\u9650\u5b9a\u7b26\u548c java:global \u547d\u540d\u7a7a\u9593\u3002 \u5f9e\u5177\u6709 {3} \u540d\u7a31\u7684 Jakarta Concurrency \u8cc7\u6e90\u8a2d\u5b9a\u4e2d\u79fb\u9664\u9650\u5b9a\u7b26\uff0c\u6216\u5207\u63db\u5230 java:app \u547d\u540d\u7a7a\u9593\u3002

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,9 +91,6 @@ final class TestUtil {
                                                           final GetLibraryAction getLibraries,
                                                           final boolean failResolve,
                                                           final ComponentContextExpectationProvider expectations) throws BundleException, InvalidSyntaxException {
-        final ClassLoadingServiceImpl cls = new ClassLoadingServiceImpl();
-
-        cls.setGlobalClassloadingConfiguration(new GlobalClassloadingConfiguration());
 
         final Mockery mockery = new Mockery();
         final ComponentContext componentContext = mockery.mock(ComponentContext.class);
@@ -109,7 +106,8 @@ final class TestUtil {
 
         mockery.checking(new Expectations() {
             {
-
+                allowing(myBundleContext).getProperty(with(any(String.class)));
+                will(returnValue(null));
                 // componentContext.getBundleContext() should return bCtx
                 allowing(componentContext).getBundleContext();
                 will(returnValue(myBundleContext));
@@ -202,7 +200,9 @@ final class TestUtil {
         if (expectations != null) {
             expectations.addExpectations(mockery, componentContext);
         }
-        cls.activate(componentContext, null);
+
+        final ClassLoadingServiceImpl cls = new ClassLoadingServiceImpl(componentContext, new GlobalClassloadingConfiguration(), null, null, null, null);
+        cls.activate();
         return cls;
     }
 

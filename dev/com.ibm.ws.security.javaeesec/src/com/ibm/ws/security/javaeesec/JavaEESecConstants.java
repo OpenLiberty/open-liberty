@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2018 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,6 +24,7 @@ public class JavaEESecConstants {
     public static final String LOGIN_TO_CONTINUE_LOGIN_FORM_CONTEXT_ROOT = "formLoginContextRoot";
 
     public static final String DEFAULT_REALM = "defaultRealm";
+    public static final String QUALIFIERS = "qualifiers";
 
     public static final String SECURITY_CONTEXT_AUTH_PARAMS = "com.ibm.ws.security.javaeesec.auth.params";
 

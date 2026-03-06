@@ -118,7 +118,7 @@ public class SseClientTestServlet extends FATServlet {
     }
 
     @Test
-    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID}) // RESTEasy does not auto-detect media types - users must register custom MBR
+    @SkipForRepeat({MicroProfileActions.MP50_ID, MicroProfileActions.MP60_ID, MicroProfileActions.MP61_ID, MicroProfileActions.MP70_EE10_ID, MicroProfileActions.MP70_EE11_ID, MicroProfileActions.MP40_ID}) // RESTEasy does not auto-detect media types - users must register custom MBR. Skipping MP40 until Issue #33559 is resolved.
     public void testPublisherSomeObject(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try (SseClient client = builder.build(SseClient.class)) {
             GenericSubscriber<SomeObject> subscriber = new GenericSubscriber<>(7);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -122,16 +122,17 @@ assemble {
     AuditBasicAuthServlet_WAR,
     AuditFormLoginServlet_WAR
     
-  /* 
-   * Collect all the required jars and put them in one uniform place
-   * so that we don't need to keep adding them in each external
-   * project.
-   */
-  copy { 
-    from configurations.collectedDeps
-    into "${buildDir}/collectedJars"
+  doLast {
+    /*
+     * Collect all the required jars and put them in one uniform place
+     * so that we don't need to keep adding them in each external
+     * project.
+     */
+    copy {
+      from configurations.collectedDeps
+      into "${buildDir}/collectedJars"
+    }
   }
-  
 }
 
 // We aren't making a war for the entire project

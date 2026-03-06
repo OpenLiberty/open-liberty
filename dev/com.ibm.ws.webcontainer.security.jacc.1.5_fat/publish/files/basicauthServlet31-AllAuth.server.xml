@@ -49,7 +49,19 @@
 	</basicRegistry>
 
 	<application type="war" id="basicauth" name="basicauth" location="${server.config.dir}/apps/basicauth.war">
-
+        <application-bnd>
+            <security-role name="Employee">
+                <user name="user1"/>
+                <group name="group1"/>
+            </security-role>
+            <security-role name="Manager">
+                <user name="user2"/>
+                <group name="group2"/>
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS"/>
+            </security-role>
+        </application-bnd>
 	</application>
 
 <!-- 

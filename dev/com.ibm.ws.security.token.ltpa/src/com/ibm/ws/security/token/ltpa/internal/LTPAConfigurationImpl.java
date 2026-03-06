@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.StringJoiner;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock.ReadLock;
@@ -98,7 +99,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private long expirationDifferenceAllowed;
     private boolean monitorValidationKeysDir;
     private String updateTrigger;
-    private final List<Properties> validationKeys = new ArrayList<Properties>();
+    private final List<Properties> validationKeys = new CopyOnWriteArrayList<Properties>();
     // configValidationKeys are specified in the server xml configuration
     private List<Properties> configValidationKeys = null;
     // nonConfigValidationKeys are not specified in the server xml configuration

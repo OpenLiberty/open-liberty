@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: El futuro suministrado a los m\u00e9to
 CWWKC1120.future.get.rejected.explanation=Los m\u00e9todos de ManagedTaskListener taskSubmitted y taskStarting se ejecutan en la hebra que enviar\u00e1 o iniciar\u00e1 la tarea. Por lo tanto, el futuro suministrado a estos m\u00e9todos no debe utilizarse para la espera de la tarea.
 CWWKC1120.future.get.rejected.useraction=Actualice la aplicaci\u00f3n para evitar que invoque get en el futuro que se suministra a taskSubmitted y taskStarting.
 
-CWWKC1121.virtual.invalid=CWWKC1121E: La anotaci\u00f3n {0} o elemento descriptor de despliegue {1} que tiene el nombre {0} especifica virtual=true, pero los hilos virtuales no est\u00e1n disponibles antes de Java 21. El nivel Java utilizado es: {1}.
+CWWKC1121.virtual.invalid=CWWKC1121E: La anotaci\u00f3n ` {0} ` o el elemento descriptor de implementaci\u00f3n ` {1} ` con el nombre ` {2} ` especifican `virtual=true`, pero los subprocesos virtuales no est\u00e1n disponibles antes de Java 21. El nivel de Java utilizado es: {3}.
 CWWKC1121.virtual.invalid.explanation=Los hilos virtuales no est\u00e1n disponibles en la versi\u00f3n de Java que se utiliza.
 CWWKC1121.virtual.invalid.useraction=Actualice a una versi\u00f3n m\u00e1s reciente de Java que admita hilos virtuales.
 
-CWWKC1122.mod.unavail=CWWKC1122E: La aplicaci\u00f3n {0} o su m\u00f3dulo {1} no est\u00e1n disponibles.
+CWWKC1122.mod.unavail=CWWKC1122E: La aplicaci\u00f3n {0} o su m\u00f3dulo {1} no est\u00e1n disponibles. ManagedThreadFactory Los beans definidos en la aplicaci\u00f3n o m\u00f3dulo no se pueden obtener.
 CWWKC1122.mod.unavail.explanation=La aplicaci\u00f3n y el m\u00f3dulo que definen la configuraci\u00f3n de ManagedThreadFactory deben estar disponibles para obtener una instancia de ManagedThreadFactory.
 CWWKC1122.mod.unavail.useraction=Aseg\u00farese de que la aplicaci\u00f3n se ha iniciado y de que incluye el m\u00f3dulo que define la configuraci\u00f3n ManagedThreadFactory.
 

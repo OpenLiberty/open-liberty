@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal.cdi/resources/io/openliberty/security/jakartasec/cdi/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2610-2620
+
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER=CWWKS2610E: Manque un gestionnaire personnalis\u00e9 qui utilise l' HttpAuthenticationMechanisms qualifi\u00e9.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.explanation=Si des HttpAuthenticationMechanisms qualifi\u00e9s sont sp\u00e9cifi\u00e9s, alors l' HttpAuthenticationMechanismHandler par d\u00e9faut ne peut pas d\u00e9terminer quel HAM utiliser. Il faut donc fournir une impl\u00e9mentation personnalis\u00e9e de l' HttpAuthenticationMechanismHandler.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.useraction=Impl\u00e9mentez une classe ` HttpAuthenticationMechanismHandler ` qui utilise une logique personnalis\u00e9e pour s\u00e9lectionner un identifiant unique ` HttpAuthenticationMechanism `.
+
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST=CWWKS2611E: \u00c9chec du traitement des annotations pour la d\u00e9finition {0} dans une liste.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.explanation=Lors du traitement d'une liste de d\u00e9finitions d' HttpAuthenticationMechanism, une erreur s'est produite lors de l'extraction des valeurs d'annotation.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.useraction=D\u00e9terminez la cause de l'exception et corrigez la configuration de\nl'application.
+
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES=CWWKS2612E: \u00c9chec du traitement des propri\u00e9t\u00e9s de type {0}.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.explanation=Lors du traitement d'une annotation sp\u00e9cifique d' HttpAuthenticationMechanism, une erreur s'est produite lors de l'extraction des valeurs de propri\u00e9t\u00e9.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.useraction=D\u00e9terminez la cause de l'exception et corrigez la configuration de\nl'application.
+
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS=CWWKS2613E: Impossible de cr\u00e9er l''annotation de qualificateur personnalis\u00e9e {0} pour la classe de qualificateur {1}.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.explanation=Lors de la cr\u00e9ation d'une annotation qualifi\u00e9e HttpAuthenticationMechanism,, une erreur s'est produite lors de la cr\u00e9ation d'une annotation qualificative personnalis\u00e9e.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.useraction=D\u00e9terminez la cause de l'exception et corrigez la configuration de\nl'application.

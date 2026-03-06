@@ -114,6 +114,7 @@ public class FATSuite {
         // Skip tests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/258
         apiExcludes.add("ee.jakarta.tck.concurrent.api.LastExecution");
         specExcludes.add("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi_servlet");
+        specExcludes.add("ee.jakarta.tck.concurrent.spec.ManagedScheduledExecutorService.inheritedapi");
 
         // Skip TriggerTests due to bug in TCK: https://github.com/jakartaee/concurrency/issues/270
         apiExcludes.add("ee.jakarta.tck.concurrent.api.Trigger");

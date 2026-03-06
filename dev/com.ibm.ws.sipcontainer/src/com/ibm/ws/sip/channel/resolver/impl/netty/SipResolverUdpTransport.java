@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2025 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,14 +13,18 @@ import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
 import java.util.*;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import com.ibm.sip.util.log.Log;
 import com.ibm.sip.util.log.LogMgr;
+import com.ibm.ws.sip.stack.transport.GenericEndpointImpl;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.*;
 import io.netty.channel.socket.DatagramPacket;
 import io.netty.handler.codec.MessageToMessageDecoder;
+import io.netty.util.ReferenceCountUtil;
 import io.openliberty.netty.internal.*;
 import io.openliberty.netty.internal.exception.NettyException;
 
@@ -142,9 +146,9 @@ class SipResolverUdpTransport implements SipResolverTransport {
 
         if (c_logger.isTraceDebugEnabled()) {
             c_logger.traceDebug(
-                    "SipResolverTcpTransport: contructor: _ConnectFailuresAllowed: " + _ConnectFailuresAllowed);
+                    "SipResolverUdpTransport: contructor: _ConnectFailuresAllowed: " + _ConnectFailuresAllowed);
             c_logger.traceDebug(
-                    "SipResolverTcpTransport: contructor: _TransportErrorsAllowed: " + _TransportErrorsAllowed);
+                    "SipResolverUdpTransport: contructor: _TransportErrorsAllowed: " + _TransportErrorsAllowed);
         }
 
         if (c_logger.isTraceEntryExitEnabled())
@@ -593,7 +597,12 @@ class SipResolverUdpTransport implements SipResolverTransport {
 
     private class SipResolverUdpTransportHandler extends SimpleChannelInboundHandler<ByteBuf> {
 
+        private boolean processingMessage = false;
+        private static final int DEFAULT_MAX_QUEUE = 50;
+        private final LinkedBlockingQueue<ByteBuf> messageQueue;
+
         public SipResolverUdpTransportHandler() {
+            this.messageQueue = new LinkedBlockingQueue<ByteBuf>(DEFAULT_MAX_QUEUE);
         }
 
         @Override
@@ -601,7 +610,51 @@ class SipResolverUdpTransport implements SipResolverTransport {
             if (c_logger.isTraceEntryExitEnabled()) {
                 c_logger.traceEntry(this, "channelRead0 message length: " + msg.readableBytes());
             }
-            messageRead(ctx, msg.retain());
+            messageQueue.offer(ReferenceCountUtil.retain(msg));
+            if (processingMessage) {
+                if (messageQueue.remainingCapacity() == 0) {
+                    if (c_logger.isTraceDebugEnabled()) {
+                        c_logger.traceDebug("Queue reached capacity. Reads are paused.");
+                    }
+                    pauseReading(ctx);
+                }
+            } else {
+                processingMessage = true;
+                processNextMessage(ctx);
+            }
+        }
+
+        // This is designed so that the logic besides what runs in the Liberty executor pool
+        // needs to run on the event loop, otherwise there could be race conditions that show up.
+        private void processNextMessage(final ChannelHandlerContext ctx){
+            ByteBuf msg = messageQueue.poll();
+            // Continue reading again if isn't autoread and we have space to queue more messages
+            if(!ctx.channel().config().isAutoRead() && messageQueue.remainingCapacity() > DEFAULT_MAX_QUEUE/2){
+                resumeReading(ctx);
+            }
+            if (msg == null) {
+                processingMessage = false;
+                return;
+            }
+            if (GenericEndpointImpl.getExecutorService() == null) {
+                // We should not process messages in the event loop of Netty so throw exception here
+                ctx.fireExceptionCaught(new NettyException("Null executor service while processing message!"));
+            }
+            GenericEndpointImpl.getExecutorService().execute(() -> {
+                try {
+                    try {
+                        messageRead(ctx, msg);
+                    } catch(Exception e) {
+                        // An exception was caught reading the message. Fire exceptionCaught and
+                        // return so that we do not keep processing messages but close properly.
+                        ctx.fireExceptionCaught(e);
+                        return;
+                    }
+                } finally {
+                    ReferenceCountUtil.release(msg);
+                }
+                ctx.channel().eventLoop().execute(() -> processNextMessage(ctx));
+            });
         }
 
         @Override
@@ -609,9 +662,27 @@ class SipResolverUdpTransport implements SipResolverTransport {
             if (c_logger.isTraceEntryExitEnabled()) {
                 c_logger.traceEntry(this, "exceptionCaught: " + e.getMessage());
             }
-            readError(ctx, e);
-            // tell the channel to close; the netty framework will be notified
-            ctx.close();
+            emptyMessageQueue();
+            // Run this out of the eventloop
+            ExecutorService executor = GenericEndpointImpl.getExecutorService();
+            if (ctx.channel().eventLoop().inEventLoop() && executor != null) {
+                executor.execute(() -> {
+                    try {
+                        readError(ctx, e);
+                    } catch (Exception e2) {
+                        // Ignore exception because this is already after the exception handling finished
+                    } finally {
+                        ctx.close();
+                    }
+                });
+            } else {
+                if(executor == null && c_logger.isTraceDebugEnabled()) {
+                    c_logger.traceDebug("exceptionCaught found null executor, running error logic in Netty thread.");
+                }
+                readError(ctx, e);
+                // tell the channel to close; the netty framework will be notified
+                ctx.close();
+            }
         }
 
         /** Called when a new connection is established */
@@ -628,8 +699,31 @@ class SipResolverUdpTransport implements SipResolverTransport {
             if (c_logger.isTraceEntryExitEnabled()) {
                 c_logger.traceEntry(this, "channelInactive remote disconnected: " + ctx.channel().remoteAddress());
             }
+            emptyMessageQueue();
             channel = null;
         }
+
+        private void emptyMessageQueue() {
+            ByteBuf msg;
+            while ((msg = messageQueue.poll()) != null) {
+                ReferenceCountUtil.safeRelease(msg);
+            }
+        }
+
+        private void pauseReading(ChannelHandlerContext context) {
+            ChannelConfig config = context.channel().config();
+            if (config.isAutoRead()) {
+                config.setAutoRead(false);
+            }
+        }
+
+        private void resumeReading(ChannelHandlerContext context) {
+            ChannelConfig config = context.channel().config();
+            if (!config.isAutoRead()) {
+                config.setAutoRead(true);
+            }
+        }
+
     }
 
     private final class SipMessageBufferDatagramDecoder extends MessageToMessageDecoder<DatagramPacket> {

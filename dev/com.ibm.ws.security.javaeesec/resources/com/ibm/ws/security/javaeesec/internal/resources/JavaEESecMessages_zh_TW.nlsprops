@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=\u8acb\u78ba\u5b9a\u81f3\u5c11\u6709\u4
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: \u7121\u6cd5\u5efa\u7acb {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\u4e4b {0} \u6a21\u7d44\u7684 HttpAuthenticationMechanism \u7269\u4ef6\u3002
 JAVAEESEC_ERROR_NO_HAM.explanation=\u7121\u6cd5\u5efa\u7acb HttpAuthenticationMechanism \u7269\u4ef6\u7684\u539f\u56e0\u4e0d\u4e00\u800c\u8db3\u3002HttpAuthenticationMechanism \u7269\u4ef6\u7684\u932f\u8aa4\u8a0a\u606f\u6703\u63d0\u4f9b\u76f8\u95dc\u8cc7\u8a0a\uff0c\u4f86\u8aaa\u660e\u7121\u6cd5\u5efa\u7acb HttpAuthenticationMechanism \u7269\u4ef6\u7684\u539f\u56e0\u3002
 JAVAEESEC_ERROR_NO_HAM.useraction=\u8acb\u8abf\u67e5 HttpAuthenticationMechanism \u7269\u4ef6\u7684\u932f\u8aa4\u8a0a\u606f\uff0c\u4e26\u6839\u64da\u932f\u8aa4\u8a0a\u606f\u9032\u884c\u66f4\u6b63\u3002
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: \u5728 {1} \u61c9\u7528\u7a0b\u5f0f\u4e2d\uff0c\u672a\u80fd\u627e\u5230 {0} \u6a21\u7d44\u7684 HttpAuthenticationMechanismService \u5be6\u4f5c\u7269\u4ef6\u4f5c\u70ba OSGi \u5957\u4ef6\u3002
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=\u672a\u80fd\u627e\u5230 HttpAuthenticationMechanismService \u5be6\u4f5c\u7269\u4ef6\uff0c\u56e0\u70ba\u5305\u542b\u6b64\u5be6\u4f5c\u7684\u5176\u4e2d\u4e00\u500b\u4f9d\u8cf4\u5957\u4ef6\u672a\u51fa\u73fe\u5728\u529f\u80fd\u6e05\u55ae\u6a94\u6848\u4e2d\u3002
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=\u8acb\u78ba\u4fdd\u529f\u80fd\u6e05\u55ae\u53c3\u7167\u7684\u5957\u4ef6\u5305\u542b\u5be6\u73fe ` HttpAuthenticationMechanismService ` \u7684\u5be6\u4f5c\u3002
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: \u7121\u6cd5\u5c07\u8eab\u5206\u5132\u5b58\u5eab\u8a3b\u91cb\u4e4b ''{0}'' \u5c6c\u6027\u7684\u300c\u8868\u793a\u5f0f\u8a9e\u8a00 (EL)\u300d\u8868\u793a\u5f0f\u89e3\u6790\u6210\u6709\u6548\u503c\u3002\u8acb\u78ba\u5b9a EL \u8868\u793a\u5f0f\u548c\u7d50\u679c\u662f\u6709\u6548\u7684\uff0c\u4e26\u78ba\u5b9a\u8868\u793a\u5f0f\u4e2d\u4f7f\u7528\u7684\u4efb\u4f55\u53c3\u7167 Bean \u90fd\u662f\u53ef\u89e3\u6790\u7684\u3002\u5c07\u6539\u7528\u9810\u8a2d\u5c6c\u6027\u503c ''{1}''\u3002

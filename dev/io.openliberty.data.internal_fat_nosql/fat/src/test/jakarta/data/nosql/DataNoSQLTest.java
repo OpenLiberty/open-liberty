@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ public class DataNoSQLTest extends FATServletClient {
 
         server.addEnvVar("MONGO_DBNAME", "testdb");
         server.addEnvVar("MONGO_HOST", mongoDBContainer.getHost() + ":" + String.valueOf(mongoDBContainer.getMappedPort(27017)));
+        server.addEnvVar("JNOSQL_VERSION", FATSuite.JNOSQL_VERSION);
 
         server.startServer();
     }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=Ogni valore dell'elenco dei qualifi
 CWWKC1206.qualifier.must.be.anno.useraction=Assicurarsi che tutti i valori dell'elenco dei qualificatori siano classi di annotazione.
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: L''artefatto applicativo {0} specifica un''annotazione {1} o un elemento descrittore di distribuzione {2} che ha il nome {3} e l''elenco dei qualificatori {4}. L''elenco dei qualificatori include l''annotazione {5}, che non \u00e8 annotata con @jakartajakarta.inject.Qualifier e @Retention(RUNTIME). Un esempio di qualificatore valido \u00e8: {6}
-CWWKC1207.lacks.qualifier.anno.explanation=L'annotazione Qualificatore indica che l'annotazione \u00e8 un qualificatore. L'annotazione Retention controlla la disponibilit\u00e0 delle annotazioni.
+CWWKC1207.lacks.qualifier.anno.explanation=L'annotazione @Qualifier indica che l'annotazione \u00e8 un qualificatore. L'annotazione Retention controlla la disponibilit\u00e0 delle annotazioni.
 CWWKC1207.lacks.qualifier.anno.useraction=Aggiungere le annotazioni @Qualifier e @Retention(RUNTIME) alla classe Qualifier.
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: L''artefatto applicativo {0} specifica un''annotazione {1} o un elemento del descrittore di distribuzione {2} che ha il nome {3} e l''elenco dei qualificatori {4}. Non \u00e8 possibile configurare una risorsa Jakarta Concurrency in modo che abbia qualificatori e uno spazio dei nomi java:global allo stesso tempo. Rimuovere i qualificatori dalla configurazione della risorsa Jakarta Concurrency che ha il nome {3} o passare allo spazio dei nomi java:app.

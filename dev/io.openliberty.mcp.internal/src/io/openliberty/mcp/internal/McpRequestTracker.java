@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,7 +53,7 @@ public class McpRequestTracker {
         CancellationImpl previous = ongoingRequests.putIfAbsent(requestId, cancellation);
         if (previous != null) {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
-                                       Tr.formatMessage(tc, "CWMCM0008E.invalid.request.params", requestId.id()));
+                                       Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
         }
     }
 

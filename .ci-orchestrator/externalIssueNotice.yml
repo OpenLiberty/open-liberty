@@ -12,9 +12,9 @@ triggers:
     include: labeled
   - property: repo
     include: open-liberty
-  - property: labels
+  - property: label
     include: "Opened by external contributor"
-  - property: labels
+  - property: label
     exclude: "test"
   - property: userExternal
     include: true

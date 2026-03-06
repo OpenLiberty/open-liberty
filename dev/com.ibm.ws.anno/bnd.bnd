@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,6 +19,9 @@ Bundle-SymbolicName: com.ibm.ws.anno; singleton:=true
 Private-Package: \
 	com.ibm.ws.anno.*, \
 	com.ibm.ws.annocache.*
+
+Import-Package: \
+        *
 
 Export-Package: \
 	com.ibm.wsspi.anno.service;provide:=true, \
@@ -61,13 +64,14 @@ instrument.classesExcludes: \
 	com.ibm.ws.artifact;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.org.objectweb.asm;version=latest,\
-	com.ibm.ws.org.jboss.jandex;version=latest,\
+	io.openliberty.io.smallrye.jandex3;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.kernel.security.thread;version=latest,\
-	org.eclipse.osgi;version=latest
+	org.eclipse.osgi;version=latest,\
+	com.ibm.ws.kernel.boot.core
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

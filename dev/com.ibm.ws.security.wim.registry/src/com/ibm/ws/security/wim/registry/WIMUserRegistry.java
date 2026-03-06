@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -549,5 +550,39 @@ public class WIMUserRegistry implements FederationRegistry, UserRegistry {
     @Override
     public void removeAllFederatedRegistries() {
         mappingUtils.removeAllFederatedRegistries();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Object> getAttributesForUser(final String userSecurityName, Set<String> attributeNames) throws EntryNotFoundException, RegistryException {
+        Map<String, Object> returnValue = null;
+        try {
+            returnValue = searchBridge.getAttributesForUser(userSecurityName, attributeNames);
+        } catch (Exception excp) {
+            if (excp instanceof EntryNotFoundException)
+                throw (EntryNotFoundException) excp;
+
+            else if (excp instanceof RegistryException)
+                throw (RegistryException) excp;
+
+            else
+                throw new RegistryException(excp.getMessage(), excp);
+        }
+
+        return returnValue;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SearchResult getUsersByAttribute(String attributeName, String value, int limit) throws RegistryException {
+        try {
+            SearchResult returnValue = searchBridge.getUsersByAttribute(attributeName, value, limit);
+            return returnValue;
+        } catch (Exception excp) {
+            if (excp instanceof RegistryException)
+                throw (RegistryException) excp;
+            else
+                throw new RegistryException(excp.getMessage(), excp);
+        }
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2018 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,4 +61,12 @@ public interface IWebAppSecurityCollaborator {
     public ExtensionProcessor getFormLogoutExtensionProcessor(IServletContext webapp);
 
     public List<String> getURIsInSecurityConstraints(String appName, String contextRoot, String vHost, List<String> URIs);
+
+    default public void setPolicyContextID() {
+        // do nothing by default if JACC / Jakarta Authorization is not enabled.  If it is enabled, this method will be overriden.
+    }
+
+    default public void resetPolicyContextID() {
+        // do nothing by default if JACC / Jakarta Authorization is not enabled.  If it is enabled, this method will be overriden.
+    }
 }

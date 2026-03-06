@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,9 +21,6 @@ import jakarta.data.messages.Messages;
 public interface NavigableAttribute<T, U> //
                 extends Attribute<T>, NavigableExpression<T, U> {
 
-    @Override
-    Class<U> attributeType();
-
     static <T, U> NavigableAttribute<T, U> of(Class<T> entityClass,
                                               String name,
                                               Class<U> attributeType) {
@@ -34,4 +31,8 @@ public interface NavigableAttribute<T, U> //
 
         return new NavigableAttributeRecord<>(entityClass, name, attributeType);
     }
+
+    @Override
+    Class<U> type();
+
 }

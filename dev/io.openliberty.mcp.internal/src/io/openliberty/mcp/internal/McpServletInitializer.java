@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.http.VirtualHost;
 
+import io.openliberty.mcp.internal.introspection.McpIntrospectorContextListener;
 import jakarta.servlet.FilterRegistration;
 import jakarta.servlet.ServletContainerInitializer;
 import jakarta.servlet.ServletContext;
@@ -43,7 +44,12 @@ public class McpServletInitializer implements ServletContainerInitializer {
     @FFDCIgnore(IllegalStateException.class)
     public void onStartup(Set<Class<?>> c, ServletContext context) throws ServletException, IllegalStateException {
         try {
-            if (ToolRegistry.get().hasTools()) {
+            ToolRegistry registry = ToolRegistry.get();
+            if (registry.hasTools()) {
+                // Register introspector context listener
+                context.addListener(new McpIntrospectorContextListener(registry));
+
+                // Register Servlet
                 Dynamic reg = context.addServlet("io.openliberty.mcp.servlet", McpServlet.class);
                 reg.addMapping(mcpEndpoint);
                 reg.setAsyncSupported(true);
@@ -54,6 +60,7 @@ public class McpServletInitializer implements ServletContainerInitializer {
 
                 String fullMcpUrl = virtualHost.getUrlString(context.getContextPath() + mcpEndpoint, false);
                 Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
+
             }
         } catch (IllegalStateException e) {
             String inactiveCdiMsg = "The MCP server endpoint for the application {0} is unavailable due to CDI being inactive. Verify that any MCP annotations are placed on methods of CDI beans that have an appropriate scope annotation (for example, @ApplicationScoped).";

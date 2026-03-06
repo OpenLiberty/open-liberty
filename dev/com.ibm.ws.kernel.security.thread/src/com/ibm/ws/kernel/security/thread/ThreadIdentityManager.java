@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,7 +145,7 @@ public class ThreadIdentityManager {
      * @return true if thread identity management is enabled; false otherwise.
      */
     public static boolean isThreadIdentityEnabled() {
-        return isAppThreadIdentityEnabled() || isJ2CThreadIdentityEnabled();
+        return isAppThreadIdentityEnabled() || isJ2CThreadIdentityEnabled() || isConnectorsThreadIdentityEnabled();
     }
 
     /**
@@ -172,6 +172,21 @@ public class ThreadIdentityManager {
     public static boolean isJ2CThreadIdentityEnabled() {
         for (J2CIdentityService j2cIdentityService : j2cIdentityServices) {
             if (j2cIdentityService.isJ2CThreadIdentityEnabled()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    /**
+     * Returns true if connectors thread identity is enabled
+     * for any of the registered ThreadIdentityService instances.
+     * 
+     * @return true if connectors thread identity is enabled; false otherwise.
+     */
+    public static boolean isConnectorsThreadIdentityEnabled() {
+        for (J2CIdentityService j2cIdentityService : j2cIdentityServices) {
+            if (j2cIdentityService.isConnectorsThreadIdentityEnabled()) {
                 return true;
             }
         }

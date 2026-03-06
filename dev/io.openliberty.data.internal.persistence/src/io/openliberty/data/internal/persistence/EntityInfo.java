@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -64,13 +64,6 @@ public class EntityInfo {
      */
     final SortedSet<String> attributeNamesForEntityUpdate;
 
-    /**
-     * Setter methods for entity attributes that have getter methods.
-     * Null if the workaround to create copies of detached entities
-     * is not needed.
-     */
-    final Map<String, Method> attributeSetters;
-
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;
 
@@ -99,7 +92,6 @@ public class EntityInfo {
                Map<String, List<Member>> attributeAccessors,
                Map<String, String> attributeNames,
                SortedSet<String> attributeNamesForUpdate,
-               Map<String, Method> attributeSetters,
                SortedMap<String, Class<?>> attributeTypes,
                Map<String, Class<?>> collectionElementTypes,
                Map<Class<?>, List<String>> relationAttributeNames,
@@ -114,7 +106,6 @@ public class EntityInfo {
         this.attributeAccessors = attributeAccessors;
         this.attributeNames = attributeNames;
         this.attributeNamesForEntityUpdate = attributeNamesForUpdate;
-        this.attributeSetters = attributeSetters;
         this.attributeTypes = attributeTypes;
         this.collectionElementTypes = collectionElementTypes;
         this.relationAttributeNames = relationAttributeNames;

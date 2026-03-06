@@ -147,6 +147,15 @@ steps:
     githubPRApi: ${github_pr_api}
     githubPRNumber: ${github_pr_number}
 
+- stepName: CLA Check
+  workType: Jenkins
+  projectName: claCheck
+  timeoutInMinutes: 1440
+  properties:
+    githubPRUser: ${github_pr_user}
+    githubPRNumber: ${github_pr_number}
+    githubPRApi: ${github_pr_api}
+
 - stepName: Prohibited Terms Check
   workType: Jenkins
   projectName: prohibitedTermsCheck
@@ -274,6 +283,7 @@ steps:
       allowFailures: true
   properties:
     aggregationId: ${Compile Liberty Images:execution_id}
+    fileserverType: personal
     product_image_artifact_execution_id: ${Compile Liberty Images:execution_id}
     bucket_image_artifact_execution_id: ${Compile FATs:execution_id}
     changes_summary_artifact_execution_id: ${Compile Liberty Images:execution_id}

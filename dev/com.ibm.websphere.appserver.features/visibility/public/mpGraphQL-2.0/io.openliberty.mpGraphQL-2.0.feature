@@ -17,7 +17,8 @@ Subsystem-Name: MicroProfile GraphQL 2.0
   io.openliberty.mpConfig-3.0; ibm.tolerates:="3.1", \
   io.openliberty.concurrent-2.0; ibm.tolerates:="3.0,3.1", \
   io.openliberty.mpContextPropagation-1.3, \
-  io.openliberty.org.eclipse.microprofile.graphql-2.0
+  io.openliberty.org.eclipse.microprofile.graphql-2.0, \
+  io.openliberty.jandex.internal-2.0
 -bundles= \
  com.ibm.ws.com.graphql.java.jakarta, \
  com.ibm.ws.io.smallrye.graphql.jakarta, \

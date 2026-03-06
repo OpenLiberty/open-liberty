@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2022 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ui.fat.rest;
 
@@ -17,8 +14,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import javax.ws.rs.core.MediaType;
-import java.net.HttpURLConnection;
 import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
@@ -29,10 +24,8 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
-import java.nio.charset.StandardCharsets;
 
 import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
@@ -216,18 +209,6 @@ public abstract class CommonRESTTest {
                       server.waitForStringInLogUsingMark("CWWKT0016I:.*ibm/api/.*"));
         assertNotNull("The server did not report the FILE persistence layer was available. Aborting test setup",
                       server.waitForStringInLogUsingMark("CWWKX1015I: FILE"));
-    }
-
-    /**
-     * Updates the end of log mark after a configuration change has been made.
-     * This needs to make sure that the 'CWWKF0008I: Feature update completed'
-     * message has been reported before moving the log line up.
-     */
-    protected void setMarkAfterFeatureChange(LibertyServer server) throws Exception {
-        Log.info(c, method.getMethodName(), "Setting the new log mark after finding CWWKF0008I");
-        assertNotNull("The server did not report feature update completed",
-                      server.waitForStringInLogUsingMark("CWWKF0008I:"));
-        server.setMarkToEndOfLog();
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,8 +10,9 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-
 package io.openliberty.jpa.tests.jpa31.web;
+
+import static componenttest.annotation.SkipIfSysProp.DB_Oracle;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -26,6 +27,7 @@ import javax.sql.DataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipIfSysProp;
 import com.ibm.ws.testtooling.vehicle.web.JPADBTestServlet;
 
 import io.openliberty.jpa.tests.jpa31.models.QueryDateTimeEntity;
@@ -199,6 +201,7 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
     }
 
     @Test
+    // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33805
     public void testLocalTimeFunction_JPQL() throws Exception {
         em.clear();
 

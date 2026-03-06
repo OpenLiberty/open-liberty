@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import io.openliberty.mcp.content.Role;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.meta.Meta;
 import io.openliberty.mcp.meta.MetaKey;
+import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
@@ -157,15 +158,6 @@ public class BasicTools {
         return input;
     }
 
-    //tool name is empty string -> allow empty string
-    //tool title is empty string -> ignore
-    //tool description is empty string -> ignore
-    //arg  description is empty string -> ignore
-    @Tool(name = "", title = "", description = "")
-    public String emptyEcho(@ToolArg(name = "input", description = "") String input) {
-        return input;
-    }
-
     //////////
     // Strings
     //////////
@@ -175,6 +167,11 @@ public class BasicTools {
             throw new RuntimeException("Method call caused runtime exception");
         }
         return input;
+    }
+
+    @Tool(name = "echoRequestId", title = "Echo RequestId", description = "Returns the incoming request ID")
+    public String echoRequestId(RequestId id, @ToolArg(name = "input") String input) {
+        return id.toString() + ": " + input;
     }
 
     @Tool(name = "privateEcho", title = "Echoes the input", description = "Returns the input unchanged")
@@ -313,26 +310,6 @@ public class BasicTools {
         return input;
     }
 
-    @Tool(name = "testListObjectResponse", title = "City List",
-          description = "A tool to return a list of cities", structuredContent = true)
-    public List<City> testListObjectResponse() {
-        City city1 = new City("Paris", "France", 8000, true);
-        City city2 = new City("Manchester", "England", 15000, false);
-        return List.of(city1, city2);
-    }
-
-    @Tool(name = "testListStringResponse", title = "String List",
-          description = "A tool to return a list of strings", structuredContent = true)
-    public List<String> testListStringResponse() {
-        return List.of("red", "blue", "yellow");
-    }
-
-    @Tool(name = "testArrayResponse", title = "Array of ints",
-          description = "A tool to return an array of ints", structuredContent = true)
-    public int[] testArrayResponse() {
-        return new int[] { 1, 2, 3, 4, 5 };
-    }
-
     @Tool(name = "testStringStructuredContentResponse", title = "Structured Content String Response",
           description = "A tool to return a string with structuredContent set. The tool should ignore this and not return a structuredContent field when the response is string.",
           structuredContent = true)
@@ -354,14 +331,50 @@ public class BasicTools {
         return false;
     }
 
-    /////////////////////////////////////////////
-    // Special characters in Tool and  parameters
-
-    @Tool(name = "specialCharactersInToolName@!><={}'().%:")
-    public String specialCharactersInToolName(@ToolArg(name = "arg1", description = "specialCharactersInToolName") String arg1) {
-        return arg1;
+    @Tool(name = "testToolArgStringNotRequired", title = "ToolArgStringNotRequired", description = "ToolArgNotRequired")
+    public String testToolArgStringNotRequired(@ToolArg(name = "value", description = "String value", required = false) String value) {
+        return value;
     }
 
+    @Tool(name = "testToolArgIntNotRequired", title = "ToolArgIntNotRequired", description = "ToolArgNotRequired")
+    public int testToolArgIntNotRequired(@ToolArg(name = "value", description = "int value", required = false) int value) {
+        return value;
+    }
+
+    @Tool(name = "testToolArgArrayNotRequired", title = "ToolArgArrayNotRequired", description = "ToolArgNotRequired")
+    public int[] testToolArgArrayNotRequired(@ToolArg(name = "value", description = "Array of ints", required = false) int[] value) {
+        return value;
+    }
+
+    @Tool(name = "testMultipleToolArgsOneNotRequired", title = "testMultipleToolArgsOneNotRequired", description = "MultipleToolArgsOneNotRequired")
+    public String testMultipleToolArgsOneNotRequired(@ToolArg(name = "planet", description = "planet you live in") String planet,
+                                                     @ToolArg(name = "year", description = "current year", required = false) int year) {
+        return "Planet " + planet + " was created in the year " + year;
+    }
+
+    @Tool(name = "testToolArgObjectNotRequired", title = "ToolArgObjectNotRequired", description = "ToolArgNotRequired")
+    public City testToolArgObjectNotRequired(@ToolArg(name = "value", description = "City object value", required = false) City value) {
+        return value;
+    }
+
+    @Tool(name = "testToolArgStringDefaultValue", title = "ToolArg String Default Value", description = "Test tool defaults to default value when argument not provided")
+    public String testToolArgStringDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet) {
+        return planet;
+    }
+
+    @Tool(name = "testToolArgIntDefaultValue", title = "ToolArg Int Default Value", description = "Test tool defaults to default value when argument not provided")
+    public int testToolArgIntDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "2025") int year) {
+        return year;
+    }
+
+    @Tool(name = "testMultipleToolArgsOneDefaultValue", title = "testMultipleToolArgsOneDefaultValue", description = "MultipleToolArgsOneDefaultValue")
+    public String testMultipleToolArgsOneDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet,
+                                                      @ToolArg(name = "year", description = "current year") int year) {
+        return "Planet " + planet + " was created in the year " + year;
+    }
+
+    /////////////////////////////////////////////
+    // Special characters in parameters
     @Tool(name = "specialCharactersInToolArgName")
     public String specialCharactersInToolArgName(@ToolArg(name = "@arg1!><", description = "specialCharactersInToolArgName") String arg1,
                                                  @ToolArg(name = "@arg2={}", description = "specialCharactersInToolArgName") String arg2) {
@@ -439,16 +452,19 @@ public class BasicTools {
         return true;
     }
 
+    public record ListWrapper(List<Person> returnList) {}
+
     @Tool(name = "addPersonToList", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
-    public @Schema(description = "Returns list of person object") List<Person> addPersonToList(@ToolArg(name = "employeeList",
-                                                                                                        description = "List of people") List<Person> employeeList,
-                                                                                               @ToolArg(name = "person", description = "Person object") Optional<Person> person) {
+    @Schema(description = "Returns list of person object")
+    public ListWrapper addPersonToList(
+                                       @ToolArg(name = "employeeList", description = "List of people") List<Person> employeeList,
+                                       @ToolArg(name = "person", description = "Person object") Optional<Person> person) {
         employeeList.add(person.get());
-        return employeeList;
+        return new ListWrapper(employeeList);
     }
 
     @Tool(name = "addPersonToListToolResponse", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
-    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"object\", \"properties\":{ \"returnList\":{ \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } } }, \"description\": \"Returns list of person object\", \"required\": [\"returnList\"] }",
                    description = "Returns list of person object") ToolResponse addPersonToListToolResponse(@ToolArg(name = "employeeList",
                                                                                                                     description = "List of people") List<Person> employeeList,
                                                                                                            @ToolArg(name = "person",
@@ -460,11 +476,13 @@ public class BasicTools {
         _meta.put(MetaKey.from("timestamp"), 1762860699);
         _meta.put(MetaKey.from("api.ibmtest.org/location"), "Hursley");
         _meta.put(MetaKey.from("api.libertytest.org/person"), personInstance);
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+        ListWrapper returnObj = new ListWrapper(employeeList);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(returnObj))), returnObj, _meta);
+
     }
 
     @Tool(name = "addPersonToListToolResponseWithMetaRequest", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
-    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" }, \"description\": \"Returns list of person object\" }",
+    public @Schema(value = "{ \"$defs\": { \"Address\": { \"type\": \"object\", \"properties\": { \"number\": { \"type\": \"integer\" }, \"street\": { \"description\": \"A street object to represent complex streets\", \"type\": \"object\", \"properties\": { \"streetName\": { \"type\": \"string\" }, \"roadType\": { \"type\": \"string\" } }, \"required\": [ \"streetName\" ] }, \"postcode\": { \"type\": \"string\" } }, \"required\": [ \"number\", \"street\", \"postcode\" ] }, \"Person\": { \"description\": \"A person object contains address, company objects\", \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"company\": { \"type\": \"object\", \"properties\": { \"address\": { \"$ref\": \"#/$defs/Address\" }, \"name\": { \"type\": \"string\" }, \"shareholders\": { \"description\": \"A list of shareholder (person object)\", \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } }, \"shareholderRegistry\": { \"type\": \"object\", \"properties\": { \"value\": { \"$ref\": \"#/$defs/person\" }, \"key\": { \"type\": \"integer\" } }, \"required\": [] } }, \"required\": [ \"name\", \"address\", \"shareholders\" ] }, \"fullname\": { \"type\": \"string\" } }, \"required\": [ \"fullname\", \"address\", \"company\" ] } }, \"type\": \"object\", \"properties\":{ \"returnList\":{ \"type\": \"array\", \"items\": { \"$ref\": \"#/$defs/Person\" } } }, \"description\": \"Returns list of person object\", \"required\": [\"returnList\"]}",
                    description = "Returns list of person object") ToolResponse addPersonToListToolResponseWithMetaRequest(@ToolArg(name = "employeeList",
                                                                                                                                    description = "List of people") List<Person> employeeList,
                                                                                                                           @ToolArg(name = "person",
@@ -481,12 +499,13 @@ public class BasicTools {
             meta.getValue(metaKey);
             _meta.put(metaKey, value);
         });
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(employeeList))), employeeList, _meta);
+        ListWrapper returnObj = new ListWrapper(employeeList);
+        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(returnObj))), returnObj, _meta);
     }
 
     @Tool(name = "simpleMetaRequest", title = "return string made from args and metadata", description = "return string made from args and metadata", structuredContent = false)
-    public String addPersonToListToolResponseWithSimpleMetaRequest(@ToolArg(name = "name", description = "name of person") String name,
-                                                                   Meta meta) {
+    public String simpleMetaRequest(@ToolArg(name = "name", description = "name of person") String name,
+                                    Meta meta) {
         Jsonb jsonb = JsonbBuilder.create();
 
         String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
@@ -501,6 +520,23 @@ public class BasicTools {
     public String getUserJp(@ToolArg(name = "userid",
                                      description = "対象ユーザーのユーザーID。") String userId) { // The user ID of the target user
         return "ID: " + userId + ", Name: 仮名, role: user";
+    }
+
+    @Tool(name = "testNonLatinStringStructuredContent", title = "Not Latin String Structured Content Response",
+          description = "A tool to return a string with structuredContent set. The response should successully return non-latin characters",
+          structuredContent = true)
+    public City testNonLatinStringStructuredContent() {
+        return new City("東京", "日本", 14000000, true);
+    }
+
+    @Tool(name = "noArgsRequest", title = "call tool without propviding arguments in params", description = "return string made from args and metadata", structuredContent = false)
+    public String noArgsRequest(Meta meta) {
+        Jsonb jsonb = JsonbBuilder.create();
+
+        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
+        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"));
+        String result = "You have called this tool from " + location + " at timestamp " + timestamp.toString();
+        return result;
     }
 
 }

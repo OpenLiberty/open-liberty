@@ -314,6 +314,26 @@ public class Util {
     }
 
     /**
+     * Identifies if the given object is an instance of any of the given classes.
+     *
+     * @param classes set of classes that the object might be an instance of.
+     * @param object  object that might be an instance of one of the classes.
+     * @return true if the object is an instance of any of the classes.
+     *         Otherwise false.
+     */
+    @Trivial
+    static final boolean isInstanceOfAny(Set<Class<?>> classes, Object object) {
+        if (object == null)
+            return false;
+
+        for (Class<?> type : classes)
+            if (type.isInstance(object))
+                return true;
+
+        return false;
+    }
+
+    /**
      * Indicates if the specified class is a wrapper for the primitive class.
      *
      * @param primitive primitive class.

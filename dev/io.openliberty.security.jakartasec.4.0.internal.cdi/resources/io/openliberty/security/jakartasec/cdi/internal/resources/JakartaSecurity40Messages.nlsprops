@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal.cdi/resources/io/openliberty/security/jakartasec/cdi/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2610-2620
+
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER=CWWKS2610E: Missing a custom handler that uses qualified HttpAuthenticationMechanisms.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.explanation=If qualified HttpAuthenticationMechanisms are specified, then the default HttpAuthenticationMechanismHandler cannot determine which HAM to use, therefore a custom implementation of the HttpAuthenticationMechanismHandler must be provided.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.useraction=Implement an HttpAuthenticationMechanismHandler that uses customized logic to select a unique HttpAuthenticationMechanism.
+
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST=CWWKS2611E: Processing annotations for the {0} definition within a list failed.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.explanation=While processing a list of HttpAuthenticationMechanism definitions, an error occurred when extracting annotation values.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.useraction=Investigate the cause of the exception and correct the application configuration.
+
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES=CWWKS2612E: Processing properties the {0} type failed.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.explanation=While processing a specific HttpAuthenticationMechanism annotation, an error occurred when extracting property values.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.useraction=Investigate the cause of the exception and correct the application configuration.
+
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS=CWWKS2613E: Cannot create the {0} custom qualifier annotation for the {1} qualifier class.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.explanation=While creating a qualified HttpAuthenticationMechanism, an error occurred when creating a custom qualifier annotation.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.useraction=Investigate the cause of the exception and correct the application configuration.

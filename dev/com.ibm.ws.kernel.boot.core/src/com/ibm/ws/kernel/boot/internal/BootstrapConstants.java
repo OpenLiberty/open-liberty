@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2022 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,6 +46,8 @@ public final class BootstrapConstants {
      * Property key designating packages exported into the framework by this jar
      */
     public static final String INITPROP_OSGI_EXTRA_PACKAGE = "org.osgi.framework.system.packages.extra";
+
+    public static final String INITPROP_BOOT_PACKAGES = "io.openliberty.kernel.boot.packages";
 
     /** Kernel properties for clean start */
     public static final String INITPROP_OSGI_CLEAN = "org.osgi.framework.storage.clean";

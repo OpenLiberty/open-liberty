@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,6 +36,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.security.javaeesec.properties.ModulePropertiesUtils;
+
+import io.openliberty.security.jakartasec.services.HttpAuthenticationMechanismHandlerService;
+import io.openliberty.security.jakartasec.services.JakartaSecurityValidationService;
 
 /*
  * This JASPI authentication module is used as the bridge ServerAuthModule for JSR-375.
@@ -82,11 +85,16 @@ public class AuthModule implements ServerAuthModule {
     public AuthStatus validateRequest(MessageInfo messageInfo, Subject clientSubject, Subject serviceSubject) throws AuthException {
         AuthStatus status = AuthStatus.SEND_FAILURE;
         try {
-            HttpAuthenticationMechanism authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
             HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, clientSubject);
-            AuthenticationStatus authenticationStatus = authMech.validateRequest(httpMessageContext.getRequest(),
-                                                                                 httpMessageContext.getResponse(),
-                                                                                 httpMessageContext);
+
+            // only retrieve authMech for JS 1.0/2.0/3.0
+            // (not 4.0, it doesn't need it and an unnecessary overhead to call).
+            HttpAuthenticationMechanism authMech = null;
+            if (!JakartaSecurityValidationService.isJakartaSecurity40OrHigher()) {
+                authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
+            }
+            AuthenticationStatus authenticationStatus = HttpAuthenticationMechanismHandlerService.validateRequest(httpMessageContext, authMech);
+
             status = translateValidateRequestStatus(authenticationStatus);
             registerSession(httpMessageContext);
         } catch (Exception e) {
@@ -105,11 +113,16 @@ public class AuthModule implements ServerAuthModule {
         AuthStatus status = AuthStatus.SEND_FAILURE;
         // TODO: Determine if HttpMessageContext and HttpAuthenticationMechanism must have been cached in the MessageInfo
         try {
-            HttpAuthenticationMechanism authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
             HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
-            AuthenticationStatus authenticationStatus = authMech.secureResponse(httpMessageContext.getRequest(),
-                                                                                httpMessageContext.getResponse(),
-                                                                                httpMessageContext);
+
+            // only retrieve authMech for JS 1.0/2.0/3.0
+            // (not 4.0, it doesn't need it and an unnecessary overhead to call).
+            HttpAuthenticationMechanism authMech = null;
+            if (!JakartaSecurityValidationService.isJakartaSecurity40OrHigher()) {
+                authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
+            }
+            AuthenticationStatus authenticationStatus = HttpAuthenticationMechanismHandlerService.secureResponse(httpMessageContext, authMech);
+
             status = translateSecureResponseStatus(authenticationStatus);
         } catch (AuthenticationException e) {
             // TODO: Issue serviceability message.
@@ -123,9 +136,15 @@ public class AuthModule implements ServerAuthModule {
 
     @Override
     public void cleanSubject(MessageInfo messageInfo, Subject subject) throws AuthException {
-        HttpAuthenticationMechanism authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
         HttpMessageContext httpMessageContext = createHttpMessageContext(messageInfo, null);
-        authMech.cleanSubject(httpMessageContext.getRequest(), httpMessageContext.getResponse(), httpMessageContext);
+
+        // only retrieve authMech for JS 1.0/2.0/3.0
+        // (not 4.0, it doesn't need it and an unnecessary overhead to call).
+        HttpAuthenticationMechanism authMech = null;
+        if (!JakartaSecurityValidationService.isJakartaSecurity40OrHigher()) {
+            authMech = getModulePropertiesUtils().getHttpAuthenticationMechanism();
+        }
+        HttpAuthenticationMechanismHandlerService.cleanSubject(httpMessageContext, authMech);
     }
 
     protected HttpMessageContext createHttpMessageContext(MessageInfo messageInfo, Subject clientSubject) {
@@ -184,5 +203,4 @@ public class AuthModule implements ServerAuthModule {
         }
         return status;
     }
-
 }

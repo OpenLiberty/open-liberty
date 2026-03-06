@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@
 
 # All messages must use the range CWWKC1410 to CWWKC1499
 
-CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Die Anmerkung Schedule, {0}, gibt einen leeren Wert f\u00fcr die Sekunden an, in denen die Aufgabe l\u00e4uft. Geben Sie einen nicht leeren Wert f\u00fcr das Feld Sekunden an, oder lassen Sie das Feld Sekunden in der Anmerkung Zeitplan aus. Wenn Sie das Sekundenfeld weglassen, wird die Aufgabe zu Beginn der Minute ausgef\u00fchrt.
-CWWKC1410.schedule.lacks.seconds.explanation=Der leere Wert des Arrays zeigt an, dass das Sekundenfeld bei der Berechnung der geplanten Zeiten au\u00dfer Acht gelassen werden muss. Wenn Sie das Sekundenfeld weglassen, wird die Aufgabe zu Beginn der Minute ausgef\u00fchrt.
-CWWKC1410.schedule.lacks.seconds.useraction=\u00c4ndern Sie das Sekundenfeld der Zeitplananmerkung, um einen nicht leeren Wert anzugeben, oder lassen Sie das Sekundenfeld in der Zeitplananmerkung weg.
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Die Zeitplan-Anmerkung \u201e {0} \u201c gibt eine leere Liste f\u00fcr die Sekunden an, in denen die Aufgabe ausgef\u00fchrt wird. Geben Sie eine nicht leere Liste f\u00fcr das Feld \u201eSekunden\u201c an oder lassen Sie das Feld \u201eSekunden\u201c in der Zeitplan-Anmerkung weg. Durch Weglassen des Sekundenfeldes wird die Aufgabe so geplant, dass sie zu Beginn der Minute ausgef\u00fchrt wird.
+CWWKC1410.schedule.lacks.seconds.explanation=Die leere Liste bedeutet, dass das Feld \u201eSekunden\u201c bei der Berechnung der geplanten Zeiten ignoriert werden muss. Durch Weglassen des Sekundenfeldes wird die Aufgabe so geplant, dass sie zu Beginn der Minute ausgef\u00fchrt wird.
+CWWKC1410.schedule.lacks.seconds.useraction=\u00c4ndern Sie das Sekundenfeld der Zeitplan-Anmerkung, um eine nicht leere Liste anzugeben, oder lassen Sie das Sekundenfeld in der Zeitplan-Anmerkung weg.
 
 CWWKC1411.qualified.res.err=CWWKC1411E: Der Server hat keine {0} Bean f\u00fcr die {1} Annotation oder das {2} Deployment Descriptor Element erstellt. Das Annotations- oder Deployment-Deskriptor-Element hat den {3} Namen und die {4} Qualifier und ist im {5} Anwendungsartefakt definiert. Der Fehler ist {6}
 CWWKC1411.qualified.res.err.explanation=Der Code hat die Ressource nicht erstellt oder die Ressource nicht als Bean registriert.

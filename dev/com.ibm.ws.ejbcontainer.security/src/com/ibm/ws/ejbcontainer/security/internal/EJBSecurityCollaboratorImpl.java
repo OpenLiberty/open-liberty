@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,8 +31,6 @@ import javax.security.auth.login.CredentialExpiredException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Reference;
-import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
-import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.ras.TraceNLS;
@@ -55,6 +53,8 @@ import com.ibm.ws.ejbcontainer.EJBSecurityCollaborator;
 import com.ibm.ws.ejbcontainer.security.internal.jacc.EJBJaccAuthorizationHelper;
 import com.ibm.ws.ejbcontainer.security.jacc.EJBJaccService;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityException;
+import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.runtime.metadata.MetaData;
 import com.ibm.ws.security.SecurityService;
@@ -159,7 +159,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
     protected void setEJBJaccService(ServiceReference<EJBJaccService> reference) {
         ejbJaccService.setReference(reference);
-        eah = new EJBJaccAuthorizationHelper(ejbJaccService);
+        eah = new EJBJaccAuthorizationHelper(ejbJaccService, this);
     }
 
     protected void unsetEJBJaccService(ServiceReference<EJBJaccService> reference) {
@@ -269,10 +269,10 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
 
             } catch (ThreadIdentityException e) {
                 throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
-                                                                            TraceConstants.MESSAGE_BUNDLE,
-                                                                            "EJB_AUTHZ_EXCLUDED",
-                                                                            new Object[] { "postInvoke" },
-                                                                            "syncToOs failed {0}."));
+                                                                                TraceConstants.MESSAGE_BUNDLE,
+                                                                                "EJB_AUTHZ_EXCLUDED",
+                                                                                new Object[] { "postInvoke" },
+                                                                                "syncToOs failed {0}."));
             }
         }
     }
@@ -799,12 +799,11 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         waitedForSecurity = true;
     }
 
-
     /**
      * Sync the invocation Subject's identity to the thread, if request by the application.
      *
      * @param WebSecurityContext The security context object for this application invocation.
-     *            MUST NOT BE NULL.
+     *                               MUST NOT BE NULL.
      * @throws SecurityViolationException
      */
     private void syncToOSThread(EJBSecurityContext ejbSecurityContext) throws EJBAccessDeniedException {
@@ -824,10 +823,10 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
                 Tr.debug(tc, "Exception setting thread identity", tie);
             }
             throw new EJBAccessDeniedException(TraceNLS.getFormattedMessage(this.getClass(),
-                                                                        TraceConstants.MESSAGE_BUNDLE,
-                                                                        "EJB_AUTHZ_EXCLUDED",
-                                                                        new Object[] { "syncToOSThread" },
-                                                                        "syncToOs failed {0}."));
+                                                                            TraceConstants.MESSAGE_BUNDLE,
+                                                                            "EJB_AUTHZ_EXCLUDED",
+                                                                            new Object[] { "syncToOSThread" },
+                                                                            "syncToOs failed {0}."));
         }
     }
 
@@ -835,7 +834,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      * Remove the invocation Subject's identity from the thread, if it was previously sync'ed.
      *
      * @param WebSecurityContext The security context object for this application invocation.
-     *            MUST NOT BE NULL.
+     *                               MUST NOT BE NULL.
      * @throws ThreadIdentityException
      */
     private void resetSyncToOSThread(SecurityCookieImpl securityCookie) throws ThreadIdentityException {

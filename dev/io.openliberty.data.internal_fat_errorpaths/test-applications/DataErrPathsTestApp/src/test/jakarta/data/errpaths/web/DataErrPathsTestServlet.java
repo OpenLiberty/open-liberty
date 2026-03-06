@@ -428,9 +428,9 @@ public class DataErrPathsTestServlet extends FATServlet {
                                                             PageRequest.ofSize(8));
             fail("Should not be able to retrieve CursoredPage of a non-entity." +
                  " Found: " + page);
-        } catch (UnsupportedOperationException x) {
+        } catch (MappingException x) {
             if (x.getMessage() == null ||
-                !x.getMessage().startsWith("CWWKD1037E:") ||
+                !x.getMessage().startsWith("CWWKD1005E:") ||
                 !x.getMessage().contains("CursoredPage<java.lang.Integer>"))
                 throw x;
         }

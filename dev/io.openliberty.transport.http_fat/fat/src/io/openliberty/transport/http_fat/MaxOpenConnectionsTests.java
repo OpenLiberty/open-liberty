@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -206,7 +206,7 @@ public class MaxOpenConnectionsTests {
      *
      * Three connections are then created. Since the number of connections is 1 greater than maxOpenConnections
      * the following warning should be found in the logs:
-     * CWWKO0222W: TCP Channel defaultHttpEndpoint has exceeded the maximum number of open connections 2.
+     * CWWKO0222W: TCP Channel defaultHttpEndpoint exceeds the maximum number of open connections 2.
      *
      * @throws Exception
      */
@@ -255,7 +255,7 @@ public class MaxOpenConnectionsTests {
             // Wait for the message in the logs before closing the sockets to ensure they are not closed prematurely.
             try {
                 assertNotNull("The CWWKO0222W message was not found in the logs!",
-                              server.waitForStringInLogUsingMark("CWWKO0222W: TCP Channel defaultHttpEndpoint has exceeded the maximum number of open connections 2."));
+                              server.waitForStringInLogUsingMark("CWWKO0222W: TCP Channel defaultHttpEndpoint exceeds the maximum number of open connections 2."));
             } finally {
                 if (socket1 != null) {
                     LOG.info("Closing the first connection.");
@@ -287,8 +287,8 @@ public class MaxOpenConnectionsTests {
      * httpEndpoint2. Since the number of connections is 1 greater than maxOpenConnections for each of the httpEndpoints
      * the following warnings should be found in the logs:
      *
-     * CWWKO0222W: TCP Channel defaultHttpEndpoint has exceeded the maximum number of open connections 2.
-     * CWWKO0222W: TCP Channel httpEndpoint2 has exceeded the maximum number of open connections 1.
+     * CWWKO0222W: TCP Channel defaultHttpEndpoint exceeds the maximum number of open connections 2.
+     * CWWKO0222W: TCP Channel httpEndpoint2 exceeds the maximum number of open connections 1.
      *
      * The main purpose of this test is to ensure that if there are two httpEndpoints that the configuration
      * is unique to each of the httpEndpoints.
@@ -370,11 +370,11 @@ public class MaxOpenConnectionsTests {
             try {
                 // Verify maxOpenConnections was exceeded for the defaultHttpEndpoint.
                 assertNotNull("The CWWKO0222W message was not found in the logs for the defaultHttpEndpoing!",
-                              server.waitForStringInLogUsingMark("CWWKO0222W: TCP Channel defaultHttpEndpoint has exceeded the maximum number of open connections 2."));
+                              server.waitForStringInLogUsingMark("CWWKO0222W: TCP Channel defaultHttpEndpoint exceeds the maximum number of open connections 2."));
 
                 // Verify maxOpenConnections was exceeded for the httpEndpoint2
                 assertNotNull("The CWWKO0222W message was not found in the logs for the httpEndpoint2!",
-                              server.waitForStringInLogUsingMark("CWWKO0222W: TCP Channel httpEndpoint2 has exceeded the maximum number of open connections 1."));
+                              server.waitForStringInLogUsingMark("CWWKO0222W: TCP Channel httpEndpoint2 exceeds the maximum number of open connections 1."));
 
             } finally {
                 // Clean up the Sockets.

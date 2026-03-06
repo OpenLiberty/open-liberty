@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,8 @@ package io.openliberty.data.internal.persistence.orm;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Collections;
+import java.util.Map;
 import java.util.Set;
 
 import com.ibm.websphere.ras.annotation.Trivial;
@@ -49,9 +51,38 @@ public class MockVersionCompatibility implements DataVersionCompatibility {
     }
 
     @Override
+    public int generateConstraint(StringBuilder q,
+                                  String entityVar_,
+                                  Object constraint,
+                                  int jpqlParamCount,
+                                  Set<String> jpqlParamNames,
+                                  Map<Object, Object> jpqlParams) {
+        throw new UnsupportedOperationException("jakarta.data.constraint.Constraint");
+    }
+
+    @Override
+    @Trivial
+    public int generateRestrictions(StringBuilder q,
+                                    String entityVar_,
+                                    Object restriction,
+                                    int jpqlParamCount,
+                                    Set<String> jpqlParamNames,
+                                    Map<Object, Object> jpqlParams) {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
     @Trivial
     public Annotation getCountAnnotation(Method method) {
         return null;
+    }
+
+    @Override
+    @Trivial
+    public Map<Integer, Object> getDeferredConstraints(boolean alwaysDefer,
+                                                       int maxIndex,
+                                                       Object[] methodParams) {
+        return Collections.emptyMap();
     }
 
     @Override
@@ -88,6 +119,12 @@ public class MockVersionCompatibility implements DataVersionCompatibility {
                                   char[] updateOps,
                                   int qpNext) {
         return qpNext;
+    }
+
+    @Override
+    @Trivial
+    public boolean isRestriction(Object param) {
+        return false;
     }
 
     @Override

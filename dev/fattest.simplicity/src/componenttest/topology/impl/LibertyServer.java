@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -3578,8 +3578,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "com.ibm.ws.scaling.member.fat.member1", //com.ibm.ws.scaling.member_fat
                                                      "com.ibm.ws.scaling.member.fat.controller1", //com.ibm.ws.scaling.member_fat
-
-                                                     "com.ibm.ws.ui.fat", //com.ibm.ws.ui_rest_fat
 
                                                      "com.ibm.ws.jaxrs.fat.exceptionMappingWithOT", //com.ibm.ws.jaxrs.2.0_fat
 

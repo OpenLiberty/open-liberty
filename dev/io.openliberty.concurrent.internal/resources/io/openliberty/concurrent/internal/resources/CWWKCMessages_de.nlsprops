@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=Jeder Wert in der Qualifier-Liste m
 CWWKC1206.qualifier.must.be.anno.useraction=Vergewissern Sie sich, dass alle Werte in der Qualifier-Liste Annotationsklassen sind.
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Das {0} Anwendungsartefakt spezifiziert eine {1} Annotation oder ein {2} Deployment-Deskriptor-Element, das den {3} Namen und die {4} Qualifizierungsliste hat. Die Liste der Qualifier enth\u00e4lt die Anmerkung {5}, die nicht mit @jakartajakarta.inject.Qualifier und @Retention(RUNTIME) kommentiert ist. Ein Beispiel f\u00fcr einen g\u00fcltigen Qualifier ist: {6}
-CWWKC1207.lacks.qualifier.anno.explanation=Die Anmerkung Qualifier zeigt an, dass die Anmerkung ein Qualifier ist. Die Anmerkung Retention steuert die Verf\u00fcgbarkeit von Anmerkungen.
+CWWKC1207.lacks.qualifier.anno.explanation=Die Anmerkung @Qualifier gibt an, dass es sich bei der Anmerkung um einen Qualifizierer handelt. Die Anmerkung \u201eAufbewahrung\u201c steuert die Verf\u00fcgbarkeit von Anmerkungen.
 CWWKC1207.lacks.qualifier.anno.useraction=F\u00fcgen Sie die Anmerkungen @Qualifier und @Retention(RUNTIME) zur Qualifier-Klasse hinzu.
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: Das Anwendungsartefakt {0} spezifiziert ein {1} Annotation- oder {2} Deployment Descriptor-Element, das den {3} Namen und die {4} Qualifier-Liste enth\u00e4lt. Sie k\u00f6nnen eine Jakarta Concurrency-Ressource nicht so konfigurieren, dass sie gleichzeitig Qualifier und einen java:global-Namespace hat. Entfernen Sie die Qualifier aus der Konfiguration der Jakarta Concurrency-Ressource, die den Namen {3} tr\u00e4gt, oder wechseln Sie zum Namensraum java:app.

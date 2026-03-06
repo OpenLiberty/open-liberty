@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,7 @@ public interface PrimeNumbers {
                                  @By("NumberId") @Is(LessThan.class) long exclusiveMax);
 
     @Find
+    @Select(ID)
     @OrderBy(value = ID, descending = true)
     List<Long> inRangeHavingNumeralLikeAndNamePattern(@By(ID) @Is(AtLeast.class) long min,
                                                       @By(ID) @Is(AtMost.class) long max,

@@ -24,7 +24,14 @@ package com.ibm.ws.annocache.jandex.internal;
 import java.io.IOException;
 import java.io.InputStream;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 public final class SparseIndexReader {
+    private static final TraceComponent tc = Tr.register(SparseIndexReader.class);
+    
     /** Required first four bytes of any Jandex index. */
     public static final int MAGIC = 0xBABE1F15;
 
@@ -46,6 +53,8 @@ public final class SparseIndexReader {
             return new SparseIndexReaderVersionImpl_V1(input, version);
         } else if ( SparseIndexReaderVersionImpl_V2.accept(version) ) {
             return new SparseIndexReaderVersionImpl_V2(input, version);
+        } else if (SparseIndexReaderVersionImpl_V3.accept(version) ) {
+            return new SparseIndexReaderVersionImpl_V3(input, version);
         } else {
             return null;
         }

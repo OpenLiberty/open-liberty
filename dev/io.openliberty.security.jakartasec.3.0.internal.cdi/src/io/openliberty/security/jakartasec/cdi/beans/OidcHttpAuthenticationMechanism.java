@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,14 +89,28 @@ public class OidcHttpAuthenticationMechanism implements HttpAuthenticationMechan
     private final Utils utils;
     private final AuthorizationRequestUtils requestUtils;
 
+    // Jakarta Security 4.0+ - Store properties directly for qualified HAMs
+    private Properties qualifiedProperties = null;
+
     public OidcHttpAuthenticationMechanism() {
         mpp = getModulePropertiesProvider();
         utils = getUtils();
         requestUtils = getRequestUtils();
     }
 
+    /**
+     * Used for HAMs with qualifiers, need to store them per HAM as the
+     * properties will (should!) be different.
+     *
+     * @param props The properties for this qualified HAM instance
+     */
+    public void setQualifiedProperties(Properties props) {
+        this.qualifiedProperties = props;
+    }
+
     private OpenIdAuthenticationMechanismDefinitionWrapper getOpenIdAuthenticationMechanismDefinition(HttpServletRequest request) {
-        Properties props = mpp.getAuthMechProperties(OidcHttpAuthenticationMechanism.class);
+        // JS 4.0+ - if set, use explicitly specified properties, else fall back to previous
+        Properties props = (qualifiedProperties != null) ? qualifiedProperties : mpp.getAuthMechProperties(OidcHttpAuthenticationMechanism.class);
         /*
          * Build the baseURL from the incoming HttpRequest as the redirectURL may contain baseURL variable, such as ${baseURL}/Callback
          */

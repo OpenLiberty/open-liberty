@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -256,17 +256,17 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * the subject-to-roles map. Otherwise, the list contains the set of
      * roles mapped to the special subject.
      *
-     * @param appName the name of the application, this is the key used when
-     *            updating the subject-to-role map
+     * @param appName                  the name of the application, this is the key used when
+     *                                     updating the subject-to-role map
      * @param specialSubjectToRolesMap the subject-to-role mapping,
-     *            key: appName, value: list of roles (possibly empty)
-     * @param specialSubjectName the string representing the special subject
-     *            to look for. It can be one of these values:
-     *            EVERYONE
-     *            ALL_AUTHENTICATED_USERS
-     *            ALL_AUTHENTICATED_IN_TRUSTED_REALMS
-     * @param secRoles the security-role entries, previously read either
-     *            from server.xml or ibm-application.bnd.xmi/xml
+     *                                     key: appName, value: list of roles (possibly empty)
+     * @param specialSubjectName       the string representing the special subject
+     *                                     to look for. It can be one of these values:
+     *                                     EVERYONE
+     *                                     ALL_AUTHENTICATED_USERS
+     *                                     ALL_AUTHENTICATED_IN_TRUSTED_REALMS
+     * @param secRoles                 the security-role entries, previously read either
+     *                                     from server.xml or ibm-application.bnd.xmi/xml
      * @return the updated subject-to-roles map
      */
     private Map<String, RoleSet> updateMapForSpecialSubject(String appName,
@@ -415,12 +415,12 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
      * not found, an empty list is added to the accessId-to-role map. Otherwise,
      * the list contains the set of roles mapped to the accessId.
      *
-     * @param accessid the access id of the entity
+     * @param accessid  the access id of the entity
      * @param realmName the realm name of the entity (this value suppoes to get from wscredential)
-     * @param appName the name of the application, this is the key used when updating the
-     *            accessId-to-roles map
-     * @param secRoles the security-role entries, previously read either
-     *            from server.xml or ibm-application.bnd.xmi/xml
+     * @param appName   the name of the application, this is the key used when updating the
+     *                      accessId-to-roles map
+     * @param secRoles  the security-role entries, previously read either
+     *                      from server.xml or ibm-application.bnd.xmi/xml
      * @return the updated accessId-to-roles map
      */
     private Map<String, RoleSet> updateMapsForAccessId(String appName, String accessId, String realmName) {
@@ -541,5 +541,20 @@ public class AppBndAuthorizationTableService extends BaseAuthorizationTableServi
         for (AuthzInfo authzInfo : resourceToAuthzInfoMap.values()) {
             authzInfo.authzTableContainer = new AuthzTableContainer(authzInfo.authzTableContainer.resourceName);
         }
+    }
+
+    @Override
+    public boolean isStarStarRoleMapped(String appName) {
+        AuthzInfo authzInfo = resourceToAuthzInfoMap.get(appName);
+        if (authzInfo != null) {
+            // Only looking at security roles and not looking at the special subjects
+            for (SecurityRole role : authzInfo.securityRoles) {
+                String roleName = role.getName();
+                if ("**".equals(roleName)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

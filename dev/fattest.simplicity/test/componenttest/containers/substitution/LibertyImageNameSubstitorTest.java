@@ -59,6 +59,7 @@ public class LibertyImageNameSubstitorTest {
 
     @Test //Priority 4
     public void testRemoteDockerHost() {
+        System.setProperty("fat.test.use.remote.docker", "true");
         try (MockedStatic<DockerClientFactory> envProvider = MockedInstances.dockerClientFactory(EnvironmentAndSystemPropertyClientProviderStrategy.class)) {
             // No mirror available
             LibertyImageNameSubstitutor substitutor = new LibertyImageNameSubstitutor();
@@ -98,6 +99,8 @@ public class LibertyImageNameSubstitorTest {
                 assertEquals("Expected image to be substituted for an artifactory mirror image",
                              expected, actual);
             }
+        } finally {
+            System.clearProperty("fat.test.use.remote.docker");
         }
     }
 

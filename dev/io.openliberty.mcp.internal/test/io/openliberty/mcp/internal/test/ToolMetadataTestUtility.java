@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,19 +9,20 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.test;
 
+import java.time.Instant;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ToolMetadata;
+import io.openliberty.mcp.tools.ToolManager;
 
 /**
  * Used for testing where the ArgumentMetadata is already created and not derived from an application
  */
 public class ToolMetadataTestUtility {
 
-    public static ToolMetadata createFrom(Tool annotation, Map<String, ToolMetadata.ArgumentMetadata> arguments, List<ToolMetadata.SpecialArgumentMetadata> specialArguments) {
+    public static ToolMetadata createFrom(Tool annotation, List<ToolManager.ToolArgument> arguments, List<ToolMetadata.SpecialArgumentMetadata> specialArguments) {
         // used for unit Tests that pre-populate argumentData and create Tools within the tests
         String title = annotation.title().isEmpty() ? null : annotation.title();
         return new ToolMetadata(annotation.name(),
@@ -35,6 +36,7 @@ public class ToolMetadataTestUtility {
                                 t -> null,
                                 null,
                                 Optional.empty(),
-                                null);
+                                null,
+                                Instant.now());
     }
 }

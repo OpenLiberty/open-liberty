@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2025 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -71,9 +71,9 @@ CWWKD1004.general.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
 CWWKD1005.find.rtrn.err=CWWKD1005E: The {0} method of the {1} repository \
  interface is not valid. The method specifies a {2} return type that is \
  not convertible from the {3} entity type. The result type of a \
- find operation must be the entity type, a type of an entity attribute, \
- a Java record composed of entity attributes, or a type constructed \
- by the query that is supplied to the \
+ find operation must be the entity type, a type of an entity attribute \
+ that is chosen by the Select annotation, a Java record that is composed of entity \
+ attributes, or a type that is selected by the query that is supplied to the \
  Query annotation. The return type of the repository find method can be \
  the result type, an array of the result type, or any of the following types \
  parameterized with the result type: {4}.
@@ -1241,3 +1241,17 @@ CWWKD1122.entity.lacks.id.explanation=Entities are required to have a unique \
  identifier attribute.
 CWWKD1122.entity.lacks.id.useraction=Enable the Jakarta Persistence feature \
  and follow the Jakarta Persistence entity model to assign a unique identifier.
+
+CWWKD1123.sort.incompat.with.cursor=CWWKD1123E: A cursor cannot be inferred \
+ for a requested page of results because one of the sort criteria supplied \
+ to the {0} method of the {1} repository is not an entity attribute: {2}. \
+ Use the {3} method to construct a cursor that matches the sort criteria, and \
+ supply the cursor to the afterCursor or beforeCursor method of a PageRequest class. \
+ Alternatively, change the sort criteria to include only the names of entity \
+ attributes. Valid attribute names for the {4} entity class are {5}.
+CWWKD1123.sort.incompat.with.cursor.explanation=To automatically \
+ create a cursor based on the sort criteria, each of the sort criteria must \
+ sort by a single entity attribute name.
+CWWKD1123.sort.incompat.with.cursor.useraction=Supply a cursor that is consistent \
+ with the sort criteria. Alternatively, switch to offset-based pagination or \
+ modify the sort criteria to only sort by entity attributes.

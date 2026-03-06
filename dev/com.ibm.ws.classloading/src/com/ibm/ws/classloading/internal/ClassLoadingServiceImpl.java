@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2025 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -106,6 +106,7 @@ import com.ibm.wsspi.logging.Introspector;
            property = "service.vendor=IBM")
 public class ClassLoadingServiceImpl implements LibertyClassLoadingService<LibertyLoader>, ClassLoaderIdentifierService, Introspector {
     static final TraceComponent tc = Tr.register(ClassLoadingServiceImpl.class);
+
     private final Map<ClassLoader, StackTraceElement[]> leakDetectionMap = new ConcurrentHashMap<ClassLoader, StackTraceElement[]>();
     private final Set<AppClassLoader> appClassLoaders = Collections.newSetFromMap(new WeakHashMap<AppClassLoader, Boolean>());
 
@@ -119,11 +120,11 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         }
     });
     
-    private BundleContext bundleContext;
+    private final BundleContext bundleContext;
     private final CanonicalStore<ClassLoaderIdentity, AppClassLoader> aclStore = new CanonicalStore<ClassLoaderIdentity, AppClassLoader>();
     private final CanonicalStore<String, ThreadContextClassLoader> tcclStore = new CanonicalStore<String, ThreadContextClassLoader>();
-    private RegionDigraph digraph;
-    private ClassRedefiner redefiner = new ClassRedefiner(null);
+    private final RegionDigraph digraph;
+    private final ClassRedefiner redefiner;
     private final BundleListener listener = new BundleListener() {
         @Override
         public void bundleChanged(BundleEvent event) {
@@ -153,7 +154,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                policyOption = ReferencePolicyOption.GREEDY)
     protected volatile List<ApplicationExtensionLibrary> appExtLibs;
 
-    private GlobalClassloadingConfiguration globalConfig;
+    private final GlobalClassloadingConfiguration globalConfig;
 
     // These services are not expected to come and go often,
     // but we want quick iteration so using copy on write approach
@@ -182,34 +183,43 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     /**
      * For converting type/app/module/comp to a metadata ID under getClassLoaderIdentifier.
      */
-    protected MetaDataIdentifierService metadataIdentifierService;
+    protected final MetaDataIdentifierService metadataIdentifierService;
 
     /**
      * reference to the global library - primarily used for dump introspector output
      */
     private final AtomicReference<Library> globalSharedLibrary = new AtomicReference<>();
-    
-    @Reference
-    protected void setGlobalClassloadingConfiguration(GlobalClassloadingConfiguration globalConfig) {
-        this.globalConfig = globalConfig;
-    }
-    
-    protected void unsetGlobalClassloadingConfiguration(GlobalClassloadingConfiguration globalConfig) {
-        if(this.globalConfig == globalConfig) {
-            this.globalConfig = null;
-        }      
-    }
-
 
     List<ClassFileTransformer> getSystemTransformers() {
         return systemTransformers;
     }
 
     @Activate
-    protected void activate(ComponentContext cCtx, Map<String, Object> properties) {
+    public ClassLoadingServiceImpl(ComponentContext cCtx,
+                            @Reference GlobalClassloadingConfiguration globalConfig,
+                            @Reference RegionDigraph digraph,
+                            @Reference MetaDataIdentifierService mdiService,
+                            @Reference(service = URLStreamHandlerService.class, target = "(url.handler.protocol=wsjar)") URLStreamHandlerService wsjar,
+                            @Reference(cardinality = ReferenceCardinality.OPTIONAL) Instrumentation instr) {
+        // Declared a dependency on the URLStreamHandlerService so the wsjar protocol
+        // doesn't go away while we still may still need it; no need to store the instance of wsjar here.
+        this.bundleContext = cCtx.getBundleContext();
+        this.globalConfig = globalConfig;
+        this.digraph = digraph;
+        this.metadataIdentifierService = mdiService;
+        this.redefiner = new ClassRedefiner(instr);
+
         generatorRefs.activate(cCtx);
         metaInfServicesRefs.activate(cCtx);
-        this.bundleContext = cCtx.getBundleContext();
+    }
+
+    // NOTE: it is valid to have both a constructor activate and a method activate.
+    // Here we separate out registering the listener from the constructor because
+    // it is best to not escape this as a listener before the constructor is complete;
+    // otherwise we risk the listener being called before the JVM has finalized the construction
+    // of the object.
+    @Activate
+    protected void activate() {
         // use the system bundle so that it is ensured to see all bundle events
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
@@ -223,7 +233,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
         Bundle systemBundle = this.bundleContext.getBundle(Constants.SYSTEM_BUNDLE_LOCATION);
         BundleContext systemContext = systemBundle.getBundleContext();
         systemContext.removeBundleListener(listener);
-        this.bundleContext = null;
         this.cleanupRememberedBundles();
         this.resourceProviders.clear();
     }
@@ -270,49 +279,6 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
     protected void removeResourceProvider(ResourceProvider rp) {
         resourceProviders.remove(rp);
     }
-
-    @Reference
-    protected void setRegionDigraph(RegionDigraph digraph) {
-        this.digraph = digraph;
-    }
-
-    protected void unsetRegionDigraph(RegionDigraph digraph) {}
-
-    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
-    protected void setInstrumentation(Instrumentation inst) {
-        redefiner = new ClassRedefiner(inst);
-    }
-
-    protected void unsetInstrumentation(Instrumentation inst) {
-        redefiner = null;
-    }
-
-    /**
-     * Declarative Services method for setting the metadata identifier service.
-     *
-     * @param svc the service
-     */
-    @Reference(service = MetaDataIdentifierService.class, name = "metadataIdentifierService")
-    protected void setMetadataIdentifierService(MetaDataIdentifierService svc) {
-        metadataIdentifierService = svc;
-    }
-
-    /**
-     * Declarative Services method for unsetting the metadata identifier service.
-     *
-     * @param svc the service
-     */
-    protected void unsetMetadataIdentifierService(MetaDataIdentifierService svc) {
-        metadataIdentifierService = null;
-    }
-
-    @Reference(service = URLStreamHandlerService.class, target = "(url.handler.protocol=wsjar)")
-    protected void setURLStreamHandlerService(URLStreamHandlerService svc) {
-        // Declare a dependency on the URLStreamHandlerService so the wsjar protocol
-        // doesn't go away while we still may still need it
-    }
-
-    protected void unsetURLStreamHandlerService(URLStreamHandlerService svc) {}
 
     @Override
     public AppClassLoader createTopLevelClassLoader(List<Container> classPath, GatewayConfiguration gwConfig, ClassLoaderConfiguration clConfig) {
@@ -686,7 +652,7 @@ public class ClassLoadingServiceImpl implements LibertyClassLoadingService<Liber
                         .setDynamicImportPackage("*;thread-context=\"true\"")
                         .setDelegateToSystem(false);
         ClassLoaderConfiguration clConfig = this.createClassLoaderConfiguration().setId(createIdentity("Thread Context", key));
-        GatewayBundleFactory gatewayBundleFactory = new GatewayBundleFactory(bundleContext, digraph, classloaders);
+        GatewayBundleFactory gatewayBundleFactory = new GatewayBundleFactory(bundleContext, digraph, classloaders, globalConfig.jvmPackages());
         GatewayClassLoader aug = gatewayBundleFactory.createGatewayBundleClassLoader(gwConfig, clConfig, resourceProviders);
 
         ThreadContextClassLoader tccl;

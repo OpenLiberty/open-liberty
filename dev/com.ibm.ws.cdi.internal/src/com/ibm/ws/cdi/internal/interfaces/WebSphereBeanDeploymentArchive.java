@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2022 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.cdi.internal.interfaces;
 
+import java.io.PrintWriter;
 import java.net.URL;
 import java.util.Collection;
 import java.util.List;
@@ -312,8 +313,15 @@ public interface WebSphereBeanDeploymentArchive extends BeanDeploymentArchive {
 
     /**
      * The the resource URL of the beans.xml file within the archive, if one exists.
-     * 
+     *
      * @return a URL which points to the beans.xml resource, or null if none exists
      */
     URL getBeansXmlResourceURL();
+
+    /**
+     * Print out all information in this BDA for debugging purposes
+     *
+     * @param out a PrintWriter to write out to
+     */
+    public void introspect(PrintWriter out);
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,4 +51,6 @@ public interface NettyConstants {
     public static final int SCALER_UP_STEP = 1;
     public static final int SCALER_CYCLES = 3;
     public static final long SCALER_METRICS_WINDOW = 0;
+    /** Enable Native Transport (EPoll on Linux, Kqueue on MacOS). Otherwise, NIO is the default */
+    public static final String USE_NATIVE_TRANSPORT = "useNativeIO";
 }

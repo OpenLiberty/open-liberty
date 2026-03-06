@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@ import jakarta.data.messages.Messages;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record LiteralRecord<V>(V value) implements Literal<V> {
+record LiteralRecord<V>(Class<? extends V> type, V value) implements Literal<V> {
 
     LiteralRecord {
         Messages.requireNonNull(value, "value");

@@ -186,7 +186,7 @@ function(lang, parser, JSON, topic, on,
     var standby = new Standby({
       id : batchID.GRID_LOADING_PANE,
       target: batchID.MAIN_CONTAINER, // See Note 1
-      image : 'imagesShared/search-loading-T.gif',
+      image : 'imagesShared/search-loading-T.svg',
       imageText : i18n.LOADING_GRID,
       text : i18n.LOADING_GRID,
       tabindex : 0,

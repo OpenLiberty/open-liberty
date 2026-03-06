@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,3 +27,22 @@ addRequiredLibraries {
   dependsOn addJunitdependencies
 }
 
+autoFVT.dependsOn ':com.ibm.ws.security.authorization.jacc.testprovider:assemble'
+
+autoFVT {
+  def testProviderProject = project(':io.openliberty.security.authorization.jacc.testprovider')
+  doLast {
+    /*
+     * Copy the Jakarta Authorization test provider feature.
+     */
+    copy {
+     from new File(testProviderProject.projectDir, "/build/libs/io.openliberty.security.authorization.jacc.testprovider.jar") 
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'io.openliberty.security.authorization.jacc.testprovider.jar', 'io.openliberty.security.authorization.jacc.testprovider_3.0.jar'
+    }
+    copy {
+      from new File(testProviderProject.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-3.0.mf")  
+      into new File(autoFvtDir, 'publish/features')
+    }
+  }
+}

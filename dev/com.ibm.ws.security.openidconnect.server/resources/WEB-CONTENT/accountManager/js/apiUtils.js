@@ -95,14 +95,6 @@ var apiUtils = (function() {
             },
             data: "app_name=" + encodeURIComponent(app_name),    // User friendly name to identify a client application that uses this app-token/password
             success: function(response) {
-                // appp-password: {app_id: "tGzv3JOkF0XG5Qx2TlKWIA“,
-                //                 app_password:"2YotnFZFEjr1zCsicMWpAA",
-                //                 expires_at:167983600,
-                //                 created_at:167783600}
-                //     app-token: {token_id: "tGzv3JOkF0XG5Qx2TlKWIA",
-                //                 app_token: "2YotnFZFEjr1zCsicMWpAA",
-                //                 created_at: 1557195997892,
-                //                 expires_at: 1564971997892}
                 deferred.resolve(response);
             },
             error: function(jqXHR) {

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.netty.internal.tcp;
 
+import java.net.InetSocketAddress;
+import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
@@ -52,7 +54,6 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
 
     @Override
     protected void initChannel(Channel channel) throws Exception {
-        // TODO Add logging equal to channelfw
         if (bundle.isStopping()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(tc, "Tried to start channel: " + channel + " while framework was shutting down. " + bundle);
@@ -75,8 +76,19 @@ public class TCPChannelInitializerImpl extends ChannelInitializerWrapper {
         }
         Channel parent = channel.parent();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Initializing channel: " + channel + " found parent to be: " + parent);
-        }
+            SocketAddress remote = channel.remoteAddress();
+            SocketAddress local = channel.localAddress();
+            String remoteHost = "unknown";
+            String localHost = "unknown";
+
+            if (remote instanceof InetSocketAddress) {
+                remoteHost = ((InetSocketAddress) remote).getHostName();
+                localHost = ((InetSocketAddress) local).getHostName();
+            }
+            Tr.debug(tc, "initChannel. Processing Connection: remote host name: " + remoteHost + " , remote host address: " + remote
+                         + " , local host name: " + localHost + " , local host address: " + local
+                         + " , id: [" + channel.id() + " , parent: " + parent);
+        } 
         // Add channel to endpoint ChannelGroup if known
         if (parent != null) {
             ChannelGroup group = bundle.getActiveChannelsMap().get(parent);

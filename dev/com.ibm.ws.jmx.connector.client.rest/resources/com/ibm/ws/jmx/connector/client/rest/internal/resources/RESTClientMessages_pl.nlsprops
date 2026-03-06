@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -146,3 +146,6 @@ jmx.rest.client.connection.disconnect=CWWKX0231I: W elemencie zosta\u0142 zamkni
 jmx.rest.client.connection.disconnect.explanation=Element zosta\u0142 roz\u0142\u0105czony z kontrolerem.
 jmx.rest.client.connection.disconnect.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
+jmx.rest.client.server.result.exception=CWWKX0232E: Serwer zwr\u00f3ci\u0142 klas\u0119, kt\u00f3ra nie jest dost\u0119pna dla klienta: {0}
+jmx.rest.client.server.result.exception.explanation=Ka\u017cdy interfejs lub klasa implementacyjna zwracana przez serwer musi by\u0107 dost\u0119pna dla klienta.
+jmx.rest.client.server.result.exception.useraction=Sprawd\u017a, czy wszystkie wymagane klasy s\u0105 dost\u0119pne w \u015bcie\u017cce klasy klienta.

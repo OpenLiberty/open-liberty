@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2025 IBM Corporation and others.
+ * Copyright (c) 2020,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,7 +82,8 @@ public class SymbolicNameTest {
             // javaeePlatform and appSecurity are special because they have dependencies on each other.
             if (symbolicName.startsWith("io.openliberty.jakartaeePlatform")
                 || symbolicName.startsWith("com.ibm.websphere.appserver.javaeePlatform")
-                || symbolicName.startsWith("com.ibm.websphere.appserver.appSecurity")) {
+                || symbolicName.startsWith("com.ibm.websphere.appserver.appSecurity")
+                || symbolicName.startsWith("io.openliberty.jandex.internal")) { //Jandex internal was once incorrectly placed in kernelCore.mf, this led to dependencies on multiple versions of Jandex being active at once which has been grandfathered in
                 continue;
             }
 

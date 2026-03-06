@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,11 +19,14 @@ Bundle-Name: Jakarta Security 4.0 CDI
 Bundle-SymbolicName: io.openliberty.security.jakartasec.4.0.internal.cdi
 Bundle-Description: Jakarta Security 4.0 CDI; version=${bVersion}
 
-WS-TraceGroup: JAKARTASEC 
+WS-TraceGroup: JakartaSecurity40
+
+Private-Package: io.openliberty.security.jakartasec.cdi.internal.resources.*
 
 Export-Package: \
     io.openliberty.security.jakartasec.cdi.beans, \
-    io.openliberty.security.jakartasec.cdi.extensions
+    io.openliberty.security.jakartasec.cdi.extensions, \
+    io.openliberty.security.jakartasec40.cdi.extensions
 
 Import-Package: \
     io.openliberty.cdi40.internal.utils,\
@@ -32,10 +35,6 @@ Import-Package: \
     javax.security.auth,\
     !javax.*,\
     *
-
-Private-Package: \
-    io.openliberty.security.jakartasec.cdi,\
-    io.openliberty.security.jakartasec.cdi.internal.*
 
 Include-Resource: \
     META-INF=resources/META-INF
@@ -47,6 +46,8 @@ src: src, resources
 -dsannotations: \
     io.openliberty.security.jakartasec.cdi.extensions.JakartaSecurity40CDIExtensionMetadata,\
     io.openliberty.security.jakartasec.cdi.extensions.JakartaSecurity40CDIExtension,\
+    io.openliberty.security.jakartasec40.cdi.extensions.JakartaSecurity40CDIExtensionMetadata,\
+    io.openliberty.security.jakartasec40.cdi.extensions.JakartaSecurity40CDIExtension,\
     io.openliberty.security.jakartasec.cdi.extensions.JakartaSecurity30CDIExtensionMetadata,\
     io.openliberty.security.jakartasec.cdi.extensions.JakartaSecurity30CDIExtension
 
@@ -57,15 +58,34 @@ src: src, resources
     io.openliberty.security.jakartasec.3.0.internal.cdi;version=latest,\
     io.openliberty.jakarta.authentication.3.0;version=latest,\
     io.openliberty.jakarta.cdi.4.1,\
+    io.openliberty.jakarta.interceptor.2.1;version=latest,\
     io.openliberty.jakarta.jsonp.2.1,\
     io.openliberty.jakarta.security.4.0,\
     io.openliberty.jakarta.servlet.6.1,\
+    io.openliberty.jakarta.annotation.3.0,\
     io.openliberty.security.jakartasec.2.0.internal,\
     io.openliberty.security.jakartasec.2.0.internal.cdi,\
     io.openliberty.security.jakartasec.4.0.internal,\
     io.openliberty.security.oidcclientcore.internal.jakarta,\
     com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+    com.ibm.ws.security.javaeesec.cdi;version=latest,\
     io.openliberty.webcontainer.security.internal;version=latest,\
     com.ibm.ws.security;version=latest,\
     com.ibm.websphere.security;version=latest,\
     com.ibm.ws.security.token;version=latest
+
+-testpath: \
+    ../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+    com.ibm.ws.junit.extensions;version=latest,\
+    org.jmock:jmock-legacy;version=2.5.0,\
+    cglib:cglib;version=3.3.0, \
+    com.ibm.ws.org.objectweb.asm;version=latest,\
+    org.hamcrest:hamcrest-all;version=1.3,\
+    org.jmock:jmock-junit4;strategy=exact;version=2.5.1,\
+    org.jmock:jmock;strategy=exact;version=2.5.1,\
+    com.ibm.ws.org.objenesis:objenesis;version=1.0,\
+    io.openliberty.jakarta.expressionLanguage.5.0;version=latest,\
+    com.ibm.ws.security.common.jsonwebkey;version=latest,\
+    com.ibm.json4j;version=latest,\
+    com.ibm.ws.container.service;version=latest,\
+    com.ibm.ws.org.jose4j;version=latest

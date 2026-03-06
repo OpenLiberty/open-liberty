@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.sessions;
 
+import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.UUID;
@@ -42,18 +43,18 @@ public class McpSessionStore {
     }
 
     /**
-     * Creates a new MCP session with a unique session ID and stores it.
+     * Creates a new MCP session with a unique session ID and stores it mapping to a userId which can also be null if not authentication was used to create the session.
      *
      * @return the newly generated session ID
      */
-    public String createSession() {
+    public String createSession(Principal userId) {
 
         if (isStateless()) {
             return null;
         }
 
         String sessionId = UUID.randomUUID().toString();
-        sessions.put(sessionId, new McpSession(sessionId));
+        sessions.put(sessionId, new McpSession(sessionId, userId));
         return sessionId;
     }
 
@@ -104,5 +105,4 @@ public class McpSessionStore {
         Instant now = Instant.now();
         sessions.entrySet().removeIf(entry -> Duration.between(entry.getValue().getLastAccessed(), now).compareTo(SESSION_TIMEOUT) > 0);
     }
-
 }

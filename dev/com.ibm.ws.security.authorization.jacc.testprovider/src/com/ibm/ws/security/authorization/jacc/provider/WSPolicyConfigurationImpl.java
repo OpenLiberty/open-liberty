@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -304,8 +304,10 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
     public PermissionCollection getExcludedPermissions() {
         Permissions permissions = new Permissions();
         List<Permission> excludedPermissionList = getExcludedList();
-        for (Permission p : excludedPermissionList) {
-            permissions.add(p);
+        if (excludedPermissionList != null) {
+            for (Permission p : excludedPermissionList) {
+                permissions.add(p);
+            }
         }
         return permissions;
     }
@@ -313,8 +315,10 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
     public PermissionCollection getUncheckedPermissions() {
         Permissions permissions = new Permissions();
         List<Permission> uncheckedPermissionList = getUncheckedList();
-        for (Permission p : uncheckedPermissionList) {
-            permissions.add(p);
+        if (uncheckedPermissionList != null) {
+            for (Permission p : uncheckedPermissionList) {
+                permissions.add(p);
+            }
         }
         return permissions;
     }
@@ -327,7 +331,7 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
         if (roleToPermMap != null) {
             for (Map.Entry<String, List<Permission>> entry : roleToPermMap.entrySet()) {
                 permissions = new Permissions();
-                List<Permission> pList = roleToPermMap.get(entry.getValue());
+                List<Permission> pList = entry.getValue();
                 if (pList != null) {
                     for (Permission p : pList) {
                         permissions.add(p);

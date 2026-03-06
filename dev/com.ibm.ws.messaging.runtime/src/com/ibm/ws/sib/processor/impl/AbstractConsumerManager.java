@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -70,6 +70,10 @@ public abstract class AbstractConsumerManager
   /** A map of all currently attached ordering consumerKey groups */
   private HashMap<OrderingContextImpl, JSKeyGroup> keyGroups = new HashMap<OrderingContextImpl, JSKeyGroup>();
 
+  @Deprecated
+  public AbstractConsumerManager() {
+	  //Used to create dummy objects to untangle a type abuse in PubSubRealization
+  }
   
   public AbstractConsumerManager(BaseDestinationHandler bdh)
   {

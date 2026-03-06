@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.processor.impl.destination;
+
+import static com.ibm.ws.sib.processor.impl.ConsumerDispatcher.DUMMY_INSTANCE;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -69,7 +71,9 @@ import com.ibm.ws.sib.processor.impl.store.items.MessageItem;
 import com.ibm.ws.sib.processor.impl.store.items.MessageItemReference;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.AOContainerItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.DurableSubscriptionItemStream;
+import com.ibm.ws.sib.processor.impl.store.itemstreams.MQLinkMessageItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.ProxyReferenceStream;
+import com.ibm.ws.sib.processor.impl.store.itemstreams.PtoPMessageItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.PubSubMessageItemStream;
 import com.ibm.ws.sib.processor.impl.store.itemstreams.SubscriptionItemStream;
 import com.ibm.ws.sib.processor.proxyhandler.Neighbour;
@@ -134,7 +138,7 @@ public class PubSubRealization
      * durHome##clientID##subName is used only when the durable home is not local.
      * Also, the durHome is actually the UUID8 of the durable home ME.
      */
-    private HashMap<String, Object> _consumerDispatchersDurable = null;
+    private HashMap<String, ConsumerDispatcher> _consumerDispatchersDurable = null;
 
     /**
      * A PubSubMessageItemStream is used by the BaseDestinationHandler for storing
@@ -264,7 +268,7 @@ public class PubSubRealization
 
     public void initialise(
                            boolean createPubSubInputHandler,
-                           HashMap<String, Object> durableSubscriptionsTable)
+                           HashMap<String, ConsumerDispatcher> durableSubscriptionsTable)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(
@@ -294,7 +298,7 @@ public class PubSubRealization
     // There will only be one such proxy reference stream.
     public void reconstitute(
                              int startMode,
-                             HashMap<String, Object> durableSubscriptionsTable)
+                             HashMap<String, ConsumerDispatcher> durableSubscriptionsTable)
                     throws
                     SIIncorrectCallException,
                     SIDiscriminatorSyntaxException,
@@ -519,6 +523,8 @@ public class PubSubRealization
             consumerDispatcher =
                             (ConsumerDispatcher) _consumerDispatchersDurable.get(
                                             subState.getSubscriberID());
+            
+            assert DUMMY_INSTANCE != consumerDispatcher; //Previously this would have been a ClassCastException
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -527,7 +533,7 @@ public class PubSubRealization
                        "getDurableSubscriptionConsumerDispatcher",
                        consumerDispatcher);
 
-        return consumerDispatcher;
+        return DUMMY_INSTANCE == consumerDispatcher ? null : consumerDispatcher;
     }
 
     /*
@@ -2005,15 +2011,17 @@ public class PubSubRealization
         synchronized (_consumerDispatchersDurable)
         {
             // Iterate over the table of durable subscriptions.
-            Iterator<Object> iter = _consumerDispatchersDurable.values().iterator();
+            Iterator<ConsumerDispatcher> iter = _consumerDispatchersDurable.values().iterator();
             while (iter.hasNext())
             {
-                Object obj = iter.next();
+            	ConsumerDispatcher cd = iter.next();
                 // May not be a ConsumerDispatcher instance. eg may be a PendingDurableDelete object.
-                if (obj instanceof ConsumerDispatcher)
-                {
-                    ConsumerDispatcher cd = (ConsumerDispatcher) obj;
 
+            	// Whatever the previous line refers to, PendingDurableDelete doesn't exist in Liberty. 
+            	// But there is, at some point, a DUMMY_INSTANCE in this map so I'm checking for it. This would have caught the
+            	// String that was previously in the map at this point. -Ben
+                if (cd != DUMMY_INSTANCE)
+                {
                     // Does the CD belong to this destination
                     if (cd.getDestination().equals(_baseDestinationHandler))
                     {
@@ -2851,11 +2859,11 @@ public class PubSubRealization
                         }
                         // If it's not in pending delete, we'll try to use it
                     }
-                    // A String represents an RCD/AIH that's being created. If the subscription is
+                    // A Dummy Instance represents an RCD/AIH that's being created. If the subscription is
                     // clonable (supports multiple consumers) we'll wait for the completion as we'll
                     // be able to use it. Otherwise, we couldn't use it even if it existed (receive
                     // exclusive) so bomb out now.
-                    else if ((current instanceof String) && subState.isCloned())
+                    else if ((DUMMY_INSTANCE==current) && subState.isCloned())
                     {
                         // Set to null so we go round the loop again (after a delay)
                         current = null;
@@ -2977,7 +2985,7 @@ public class PubSubRealization
                         }
                     }
                 }
-                else if (!subState.isCloned() && (current instanceof String))
+                else if (!subState.isCloned() && (DUMMY_INSTANCE==current))
                 {
                     // This is a String so must be a placeholder for a creating one, which means
                     // someone else is about to attach so we would fail anyway (as we're not cloned)
@@ -3022,7 +3030,7 @@ public class PubSubRealization
                 // subs on this topic.  So create a bogus durSub entry and release the lock.  This will
                 // only block out durSubs attempting to connect to exactly the same durable subscription.
                 // If the create succeeds, then we'll fix the entry.  Otherwise we'll just remove it.
-                _consumerDispatchersDurable.put(remSubName, remSubName);
+                _consumerDispatchersDurable.put(remSubName, DUMMY_INSTANCE);
             }
         } //end sync
 

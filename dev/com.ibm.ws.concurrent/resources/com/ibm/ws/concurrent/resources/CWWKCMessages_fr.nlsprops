@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: Les \u00e9l\u00e9ments fournis ult\u00
 CWWKC1120.future.get.rejected.explanation=Le m\u00e9thodes ManagedTaskListener taskSubmitted et taskStarting s'ex\u00e9cutent sur l'unit\u00e9 d'ex\u00e9cution qui va soumettre ou d\u00e9marrer la t\u00e2che. Par cons\u00e9quent, l'\u00e9l\u00e9ment Future fourni pour ces m\u00e9thodes ne doit pas \u00eatre utilis\u00e9 pour attendre la t\u00e2che.
 CWWKC1120.future.get.rejected.useraction=Mettez \u00e0 jour l'application afin d'\u00e9viter que l'appel se poursuive sur l'\u00e9l\u00e9ment Future qui est fourni pour taskSubmitted et taskStarting.
 
-CWWKC1121.virtual.invalid=CWWKC1121E: L''annotation {0} ou l''\u00e9l\u00e9ment du descripteur de d\u00e9ploiement {1} qui porte le nom {0} sp\u00e9cifie virtual=true, mais les threads virtuels ne sont pas disponibles avant Java 21. Le niveau Java utilis\u00e9 est : {1}.
+CWWKC1121.virtual.invalid=CWWKC1121E: L''annotation {0} ou l''\u00e9l\u00e9ment de descripteur de d\u00e9ploiement {1} avec le nom {2} sp\u00e9cifie virtual=true, mais les threads virtuels ne sont pas disponibles avant Java 21. Le niveau Java utilis\u00e9 est : {3}.
 CWWKC1121.virtual.invalid.explanation=Les threads virtuels ne sont pas disponibles dans la version Java utilis\u00e9e.
 CWWKC1121.virtual.invalid.useraction=Mise \u00e0 jour vers une version plus r\u00e9cente de Java qui prend en charge les threads virtuels.
 
-CWWKC1122.mod.unavail=CWWKC1122E: L''application {0} ou son module {1} n''est pas disponible.
+CWWKC1122.mod.unavail=CWWKC1122E: L''application {0} ou son module {1} n''est pas disponible. ManagedThreadFactory les beans d\u00e9finis dans l''application ou le module ne peuvent pas \u00eatre obtenus.
 CWWKC1122.mod.unavail.explanation=L'application et le module qui d\u00e9finissent la configuration de ManagedThreadFactory doivent \u00eatre disponibles pour obtenir une instance de ManagedThreadFactory.
 CWWKC1122.mod.unavail.useraction=Assurez-vous que l'application est d\u00e9marr\u00e9e et qu'elle inclut le module qui d\u00e9finit la configuration de ManagedThreadFactory.
 

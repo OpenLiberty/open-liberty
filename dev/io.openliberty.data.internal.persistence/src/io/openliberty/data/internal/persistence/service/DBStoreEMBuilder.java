@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -37,6 +37,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.sql.DataSource;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.InvalidSyntaxException;
@@ -138,13 +139,18 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         super(provider, repositoryClassLoader, repositoryInterfaces, dataStore);
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
+        Bundle bundle = FrameworkUtil.getBundle(DatabaseStore.class);
+        BundleContext bc = bundle == null ? null : bundle.getBundleContext();
+        abortIfStopping(bc, null, repositoryInterfaces);
+
         String qualifiedName = null;
         boolean javaApp = false, javaModule = false, javaComp = false;
         J2EEName jeeName = metadata.getJ2EEName();
         String application = jeeName == null ? null : jeeName.getApplication();
         String module = jeeName == null ? null : jeeName.getModule();
 
-        // Qualify resource reference and DataSourceDefinition JNDI names with the application/module/component name to make them unique
+        // Qualify resource reference and DataSourceDefinition JNDI names with the
+        // application/module/component name to make them unique
         if (isJNDIName) {
             javaApp = dataStore.regionMatches(5, "app", 0, 3);
             javaModule = !javaApp && dataStore.regionMatches(5, "module", 0, 6);
@@ -161,13 +167,19 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 Tr.debug(this, tc, "computed qualified dataStore name from JNDI name as " + qualifiedName);
         }
 
-        Map<String, Configuration> dbStoreConfigurations = provider.dbStoreConfigAllApps.get(application);
-        Configuration dbStoreConfig = dbStoreConfigurations == null ? null : dbStoreConfigurations.get(isJNDIName ? qualifiedName : dataStore);
-        Dictionary<String, Object> dbStoreConfigProps = dbStoreConfig == null ? null : dbStoreConfig.getProperties();
-        String dbStoreId = dbStoreConfigProps == null ? null : (String) dbStoreConfigProps.get("id");
+        Map<String, Configuration> dbStoreConfigurations = //
+                        provider.dbStoreConfigAllApps.get(application);
+        Configuration dbStoreConfig = dbStoreConfigurations == null //
+                        ? null //
+                        : dbStoreConfigurations.get(isJNDIName ? qualifiedName : dataStore);
+        Dictionary<String, Object> dbStoreConfigProps = dbStoreConfig == null //
+                        ? null //
+                        : dbStoreConfig.getProperties();
+        String dbStoreId = dbStoreConfigProps == null //
+                        ? null //
+                        : (String) dbStoreConfigProps.get("id");
         if (dbStoreId == null) {
             String dsFactoryFilter = null;
-            BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
             ServiceReference<ResourceFactory> dsRef = null;
             if (isJNDIName) {
                 // Look for DataSourceDefinition with jndiName and application/module matching
@@ -180,8 +192,9 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 filter.append(FilterUtils.createPropertyFilter("jndiName", dataStore)) //
                                 .append(')');
 
-                Collection<ServiceReference<ResourceFactory>> dsRefs = bc.getServiceReferences(ResourceFactory.class,
-                                                                                               filter.toString());
+                Collection<ServiceReference<ResourceFactory>> dsRefs = //
+                                bc.getServiceReferences(ResourceFactory.class,
+                                                        filter.toString());
                 if (!dsRefs.isEmpty()) {
                     dbStoreId = qualifiedName;
                     dsRef = dsRefs.iterator().next();
@@ -189,20 +202,24 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             } else {
                 // Look for databaseStore with id matching
                 String filter = FilterUtils.createPropertyFilter("id", dataStore);
-                Collection<ServiceReference<DatabaseStore>> dbStoreRefs = bc.getServiceReferences(DatabaseStore.class, filter);
+                Collection<ServiceReference<DatabaseStore>> dbStoreRefs = //
+                                bc.getServiceReferences(DatabaseStore.class, filter);
                 if (!dbStoreRefs.isEmpty()) {
                     dbStoreId = dataStore;
                     dsFactoryFilter = (String) dbStoreRefs.iterator().next().getProperty("DataSourceFactory.target");
                 } else {
                     // Look for dataSource with id matching
-                    filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + FilterUtils.createPropertyFilter("id", dataStore) + ')';
-                    Collection<ServiceReference<ResourceFactory>> dsRefs = bc.getServiceReferences(ResourceFactory.class, filter);
+                    filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" +
+                             FilterUtils.createPropertyFilter("id", dataStore) + ')';
+                    Collection<ServiceReference<ResourceFactory>> dsRefs = //
+                                    bc.getServiceReferences(ResourceFactory.class, filter);
                     if (!dsRefs.isEmpty()) {
                         dbStoreId = "application[" + application + "]/databaseStore[" + dataStore + ']';
                         dsRef = dsRefs.iterator().next();
                     } else {
                         // Look for dataSource with jndiName matching
-                        filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" + FilterUtils.createPropertyFilter("jndiName", dataStore) + ')';
+                        filter = "(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)" +
+                                 FilterUtils.createPropertyFilter("jndiName", dataStore) + ')';
                         dsRefs = bc.getServiceReferences(ResourceFactory.class, filter);
                         if (!dsRefs.isEmpty()) {
                             dbStoreId = "application[" + application + "]/databaseStore[" + dataStore + ']';
@@ -215,16 +232,23 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 // Create a ResourceFactory that can delegate back to a resource reference lookup
                 ResourceFactory delegator = new ResRefDelegator(dataStore, metadata);
                 Hashtable<String, Object> svcProps = new Hashtable<String, Object>();
-                dbStoreId = isJNDIName ? qualifiedName : ("application[" + application + "]/databaseStore[" + dataStore + ']');
+                dbStoreId = isJNDIName //
+                                ? qualifiedName //
+                                : ("application[" + application + "]/databaseStore[" + dataStore + ']');
                 String id = dbStoreId + "/ResourceFactory";
                 svcProps.put("id", id);
                 svcProps.put("config.displayId", id);
                 if (application != null)
                     svcProps.put("application", application);
-                ServiceRegistration<ResourceFactory> reg = bc.registerService(ResourceFactory.class, delegator, svcProps);
+
+                abortIfStopping(bc, application, repositoryInterfaces);
+
+                ServiceRegistration<ResourceFactory> reg = //
+                                bc.registerService(ResourceFactory.class, delegator, svcProps);
                 dsRef = reg.getReference();//
 
-                Queue<ServiceRegistration<ResourceFactory>> registrations = provider.delegatorsAllApps.get(application);
+                Queue<ServiceRegistration<ResourceFactory>> registrations = //
+                                provider.delegatorsAllApps.get(application);
                 if (registrations == null) {
                     Queue<ServiceRegistration<ResourceFactory>> empty = new ConcurrentLinkedQueue<>();
                     if ((registrations = provider.delegatorsAllApps.putIfAbsent(application, empty)) == null)
@@ -237,7 +261,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             if (dbStoreId != dataStore) {
                 if (dbStoreConfigurations == null) {
                     Map<String, Configuration> empty = new ConcurrentHashMap<>();
-                    if ((dbStoreConfigurations = provider.dbStoreConfigAllApps.putIfAbsent(application, empty)) == null)
+                    if ((dbStoreConfigurations = provider.dbStoreConfigAllApps //
+                                    .putIfAbsent(application, empty)) == null)
                         dbStoreConfigurations = empty;
                 }
 
@@ -262,16 +287,22 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
                 svcProps.put("NonJTADataSourceFactory.cardinality.minimum", nonJTA ? 1 : 0);
                 if (nonJTA)
-                    svcProps.put("NonJTADataSourceFactory.target", svcProps.get("DataSourceFactory.target"));
+                    svcProps.put("NonJTADataSourceFactory.target",
+                                 svcProps.get("DataSourceFactory.target"));
                 else
-                    svcProps.put("NonJTADataSourceFactory.target", "(&(service.pid=${nonTransactionalDataSourceRef})(transactional=false))");
+                    svcProps.put("NonJTADataSourceFactory.target",
+                                 "(&(service.pid=${nonTransactionalDataSourceRef})(transactional=false))");
 
                 svcProps.put("createTables", provider.createTables);
                 svcProps.put("dropTables", provider.dropTables);
                 svcProps.put("tablePrefix", "");
                 svcProps.put("keyGenerationStrategy", "AUTO");
 
-                dbStoreConfig = provider.configAdmin.createFactoryConfiguration("com.ibm.ws.persistence.databaseStore", bc.getBundle().getLocation());
+                abortIfStopping(bc, application, repositoryInterfaces);
+
+                dbStoreConfig = provider.configAdmin //
+                                .createFactoryConfiguration("com.ibm.ws.persistence.databaseStore",
+                                                            bundle.getLocation());
                 dbStoreConfig.update(svcProps);
                 dbStoreConfigurations.put(isJNDIName ? qualifiedName : dataStore, dbStoreConfig);
             } else if (dsRef != null) {
@@ -288,8 +319,6 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
         databaseStoreId = dbStoreId;
 
-        BundleContext bc = FrameworkUtil.getBundle(DatabaseStore.class).getBundleContext();
-
         ServiceReference<DatabaseStore> ref = null;
         for (long start = System.nanoTime(), poll_ms = 125L; //
                         ref == null; //
@@ -298,38 +327,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             Collection<ServiceReference<DatabaseStore>> refs = //
                             bc.getServiceReferences(DatabaseStore.class, filter);
             if (refs.isEmpty()) {
-                if (FrameworkState.isStopping())
-                    throw exc(IllegalStateException.class,
-                              "CWWKD1113.server.stopping",
-                              Util.names(repositoryInterfaces));
-
-                if (application != null) {
-                    filter = FilterUtils.createPropertyFilter("name", application);
-                    Collection<ServiceReference<Application>> appRefs = //
-                                    bc.getServiceReferences(Application.class, filter);
-                    if (appRefs.isEmpty()) {
-                        throw exc(IllegalStateException.class,
-                                  "CWWKD1115.app.unavailable",
-                                  Util.names(repositoryInterfaces),
-                                  application);
-                    } else {
-                        Object state = appRefs.iterator().next() //
-                                        .getProperty("application.state");
-                        if (ApplicationState.STOPPED == state ||
-                            ApplicationState.STOPPING == state)
-                            throw exc(IllegalStateException.class,
-                                      "CWWKD1114.app.stopping",
-                                      Util.names(repositoryInterfaces),
-                                      application,
-                                      state);
-                    }
-                }
-
                 if (System.nanoTime() - start < MAX_WAIT_FOR_SERVICE_NS) {
                     if (trace && tc.isDebugEnabled())
                         Tr.debug(this, tc, "Wait " + poll_ms +
                                            " ms for service reference to become available...");
                     TimeUnit.MILLISECONDS.sleep(poll_ms);
+
+                    abortIfStopping(bc, application, repositoryInterfaces);
                 } else {
                     throw exc(IllegalStateException.class,
                               "CWWKD1116.resource.unavailable",
@@ -352,6 +356,8 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         EntityParser parser = new EntityParser(tablePrefix, provider);
 
         for (Class<?> c : entityTypes) {
+            abortIfStopping(bc, null, repositoryInterfaces);
+
             if (c.isAnnotationPresent(Entity.class)) {
                 parser.parseAnnotatedEntity(c);
             } else if (c.isRecord()) {
@@ -390,14 +396,66 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         properties.put("io.openliberty.persistence.internal.tableNames", entityTableNames);
 
         if (!generatedEntities.isEmpty())
-            properties.put("io.openliberty.persistence.internal.generatedEntities", generatedEntities);
+            properties.put("io.openliberty.persistence.internal.generatedEntities", //
+                           generatedEntities);
+
+        abortIfStopping(bc, application, repositoryInterfaces);
 
         DatabaseStore dbstore = bc.getService(ref);
-        persistenceServiceUnit = dbstore.createPersistenceServiceUnit(getRepositoryClassLoader(),
-                                                                      properties,
-                                                                      entityClassNames.toArray(new String[entityClassNames.size()]));
+        persistenceServiceUnit = dbstore //
+                        .createPersistenceServiceUnit(getRepositoryClassLoader(),
+                                                      properties,
+                                                      entityClassNames.toArray(new String[entityClassNames.size()]));
 
         collectEntityInfo(entityTypes, convertibleTypes);
+
+        abortIfStopping(bc, application, repositoryInterfaces);
+    }
+
+    /**
+     * Detect if the server is stopping or the application is unvailable.
+     * If so, raise an appropriate error instead of continuing.
+     *
+     * @param bc                   bundle context for a Liberty OSGi bundle.
+     * @param application          name of the application that uses the repository.
+     *                                 Null to avoid checking application availability.
+     * @param repositoryInterfaces repository interfaces that use the entities.
+     * @throws IllegalStateException  if the server is stopping or
+     *                                    the application is unavailable.
+     * @throws InvalidSyntaxException should never occur.
+     */
+    @Trivial
+    private void abortIfStopping(BundleContext bc,
+                                 String application,
+                                 Set<Class<?>> repositoryInterfaces) //
+                    throws InvalidSyntaxException {
+
+        if (FrameworkState.isStopping())
+            throw exc(IllegalStateException.class,
+                      "CWWKD1113.server.stopping",
+                      Util.names(repositoryInterfaces));
+
+        if (application != null) {
+            String filter = FilterUtils.createPropertyFilter("name", application);
+            Collection<ServiceReference<Application>> appRefs = //
+                            bc.getServiceReferences(Application.class, filter);
+            if (appRefs.isEmpty()) {
+                throw exc(IllegalStateException.class,
+                          "CWWKD1115.app.unavailable",
+                          Util.names(repositoryInterfaces),
+                          application);
+            } else {
+                Object state = appRefs.iterator().next() //
+                                .getProperty("application.state");
+                if (ApplicationState.STOPPED == state ||
+                    ApplicationState.STOPPING == state)
+                    throw exc(IllegalStateException.class,
+                              "CWWKD1114.app.stopping",
+                              Util.names(repositoryInterfaces),
+                              application,
+                              state);
+            }
+        }
     }
 
     @Override

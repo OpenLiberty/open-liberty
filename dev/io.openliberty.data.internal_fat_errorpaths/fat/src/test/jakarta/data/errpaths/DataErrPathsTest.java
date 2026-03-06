@@ -54,6 +54,7 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1003E.*existsByAddress", // exists method returning int
                                    "CWWKD1003E.*existsByBirthday", // exists method returning Page<Boolean>
                                    "CWWKD1003E.*existsByName", // exists method returning CompletableFuture<Long>
+                                   "CWWKD1005E.*findByBirthdayOrderBySSN", // Non-entity return without Select
                                    "CWWKD1006E.*deleteReturn.*ByAddress", // invalid result type for delete
                                    "CWWKD1006E.*removeBySSN", // delete method attempts to return record
                                    "CWWKD1009E.*addNothing", // Insert method without parameters
@@ -84,7 +85,6 @@ public class DataErrPathsTest extends FATServletClient {
                                    "CWWKD1024E.*inTownship", // @OrderBy with empty string value
                                    "CWWKD1028E.*findFirst2147483648", // exceeds Integer.MAX_VALUE
                                    "CWWKD1033E.*selectByFirstName", // CursoredPage with ORDER BY in Query
-                                   "CWWKD1037E.*findByBirthdayOrderBySSN", // CursoredPage of non-entity
                                    "CWWKD1037E.*registrations", // CursoredPage of non-entity
                                    "CWWKD1041E.*findBySsnBetweenAnd.*NotNull", // CursoredPage without PageRequest
                                    "CWWKD1046E.*firstLetterOfName", // unsafe conversion to Character

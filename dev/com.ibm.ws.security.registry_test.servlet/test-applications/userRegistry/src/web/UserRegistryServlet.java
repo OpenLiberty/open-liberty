@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,7 +18,10 @@ import java.io.PrintWriter;
 import java.rmi.RemoteException;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
@@ -219,6 +222,18 @@ public class UserRegistryServlet extends HttpServlet {
                 String groupSecurityName = req.getParameter("groupSecurityName");
                 int limit = Integer.valueOf(req.getParameter("limit"));
                 response = convertFromSR(ur.getUsersForGroup(groupSecurityName, limit));
+            } else if ("getAttributesForUser".equals(method)) {
+                String userSecurityName = req.getParameter("userSecurityName");
+                String attributeNames = req.getParameter("attributeNames");
+                response = convertFromMap(ur.getAttributesForUser(
+                        userSecurityName,
+                        Arrays.stream(attributeNames.split(",")).collect(Collectors.toSet())
+                )).replaceAll(System.getProperty("line.separator"), "");
+            } else if ("getUsersByAttribute".equals(method)) {
+                String attributeName = req.getParameter("attributeName");
+                String value = req.getParameter("value");
+                int limit = Integer.parseInt(req.getParameter("limit"));
+                response = convertFromSR(ur.getUsersByAttribute(attributeName, value, limit));
             } else {
                 pw.println("Usage: url?method=name&paramName=paramValue&...");
             }
@@ -314,6 +329,38 @@ public class UserRegistryServlet extends HttpServlet {
         }
         sb.append(']');
 
+        return sb.toString();
+    }
+
+    private static String convertFromMap(Map<String, ?> map) {
+        System.out.println("UserRegistryServlet.convertFromMap(): " + map.getClass() + " " + map);
+
+        if (map.isEmpty()) {
+            return "{}";
+        }
+
+        /*
+         * Something unlikely to occur in a DN, yet still readable. If this value changes
+         * remember to update UserRegistryServletConnection#convertToList() as well.
+         */
+        final String delimiter = " :: ";
+
+        StringBuilder sb = new StringBuilder();
+        sb.append('{');
+
+        int idx = 0;
+        for (Map.Entry<String, ?> entry : map.entrySet()) {
+            sb.append(entry.getKey());
+            sb.append('=');
+            sb.append(entry.getValue());
+
+            if (idx < map.size() - 1) {
+                sb.append(delimiter);
+            }
+            idx++;
+        }
+
+        sb.append('}');
         return sb.toString();
     }
 

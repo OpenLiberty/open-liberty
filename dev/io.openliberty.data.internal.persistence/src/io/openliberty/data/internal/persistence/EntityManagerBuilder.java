@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -146,8 +146,6 @@ public abstract class EntityManagerBuilder {
             for (EntityType<?> entityType : model.getEntities()) {
                 Map<String, String> attributeNames = new HashMap<>();
                 Map<String, List<Member>> attributeAccessors = new HashMap<>();
-                // TODO remove this workaround for #33232 once fixed
-                Map<String, Method> attributeSetters = isHibernate ? new HashMap<>() : null;
                 SortedSet<String> attributeNamesForUpdate = new TreeSet<>();
                 SortedMap<String, Class<?>> attributeTypes = new TreeMap<>();
                 SortedMap<String, Member> idClassAttributeAccessors = null;
@@ -202,11 +200,6 @@ public abstract class EntityManagerBuilder {
 
                         attributeNames.put(attributeName.toLowerCase(), attributeName);
                         attributeAccessors.put(attributeName, Collections.singletonList(accessor));
-                        if (attributeSetters != null && // workaround is only needed for Hibernate
-                            recordClass == null && // Java record entities are always new instances
-                            accessor instanceof Method) // otherwise use the Field
-                            attributeSetters.put(attributeName, getSetMethod(jpaEntityClass,
-                                                                             (Method) accessor));
                         attributeTypes.put(attributeName, attr.getJavaType());
                         if (attr.isCollection()) {
                             if (attr instanceof PluralAttribute) {
@@ -366,7 +359,6 @@ public abstract class EntityManagerBuilder {
                                     attributeAccessors, //
                                     attributeNames, //
                                     attributeNamesForUpdate, //
-                                    attributeSetters, //
                                     attributeTypes, //
                                     collectionElementTypes, //
                                     relationAttributeNames, //

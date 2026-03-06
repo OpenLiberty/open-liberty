@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2024 IBM Corporation and others.
+ * Copyright (c) 1997, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -104,8 +104,8 @@ import com.ibm.ws.container.Container;
 import com.ibm.ws.container.DeployedModule;
 import com.ibm.ws.container.ErrorPage;
 import com.ibm.ws.container.MimeFilter;
-import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
+import com.ibm.ws.container.service.annotations.WebAnnotations;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
@@ -163,6 +163,7 @@ import com.ibm.wsspi.webcontainer.collaborator.CollaboratorHelper;
 import com.ibm.wsspi.webcontainer.collaborator.CollaboratorInvocationEnum;
 import com.ibm.wsspi.webcontainer.collaborator.ICollaboratorHelper;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppNameSpaceCollaborator;
+import com.ibm.wsspi.webcontainer.collaborator.IWebAppSecurityCollaborator;
 import com.ibm.wsspi.webcontainer.collaborator.IWebAppTransactionCollaborator;
 import com.ibm.wsspi.webcontainer.collaborator.TxCollaboratorConfig;
 import com.ibm.wsspi.webcontainer.collaborator.WebAppInitializationCollaborator;
@@ -277,6 +278,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
     private volatile boolean destroyed = false;// 325429
     protected IWebAppNameSpaceCollaborator webAppNameSpaceCollab;
     private IWebAppTransactionCollaborator txCollab;
+    private IWebAppSecurityCollaborator secCollab;
 
     protected ArrayList sessionActivationListeners = new ArrayList();
     protected ArrayList sessionBindingListeners = new ArrayList();
@@ -1038,7 +1040,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             // SERVER (Common
             // Component
             // Specific)
-            
+
             callWebAppInitializationCollaborators(InitializationCollaborCommand.STARTING);
 
             // No longer in use; post-construct and pre-destroy are located on demand.
@@ -1047,8 +1049,11 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
             webAppNameSpaceCollab.preInvoke(config.getMetaData().getCollaboratorComponentMetaData()); //added 661473
             webAppNameCollPreInvokeCalled = true;
+
+            secCollab.setPolicyContextID();
+
             commonInitializationFinish(extensionFactories); // NEVER INVOKED BY
-            
+
             this.initializeServletContainerInitializers(moduleConfig);
             
             loadLifecycleListeners(); //added 661473
@@ -1104,6 +1109,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
             AnnotationHelperManager.verifyClassIsLoaded();
             
         } finally {
+            // if initialization failed, this can be null.
+            if (secCollab != null) {
+                secCollab.resetPolicyContextID();
+            }
             // if initialization failed, this can be null.
             if (webAppNameCollPreInvokeCalled) {
                 webAppNameSpaceCollab.postInvoke(); //added 661473            
@@ -1320,6 +1329,7 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         registerGlobalWebAppListeners();
         txCollab = collabHelper.getWebAppTransactionCollaborator();
+        secCollab = collabHelper.getSecurityCollaborator();
         createSessionContext(moduleConfig);
         eventSource
                         .onApplicationStart(new ApplicationEvent(this, this, new com.ibm.ws.webcontainer.util.IteratorEnumerator(config.getServletNames())));

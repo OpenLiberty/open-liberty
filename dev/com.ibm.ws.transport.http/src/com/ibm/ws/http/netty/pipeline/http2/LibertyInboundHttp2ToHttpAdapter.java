@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
 package com.ibm.ws.http.netty.pipeline.http2;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
@@ -33,6 +34,7 @@ import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapter;
 public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter {
 
     private final Channel channel;
+    private AtomicBoolean goAwayReceived = new AtomicBoolean(false);
 
     protected LibertyInboundHttp2ToHttpAdapter(Http2Connection connection, int maxContentLength, boolean validateHttpHeaders, boolean propagateSettings, Channel channel) {
         super(connection, maxContentLength, validateHttpHeaders, propagateSettings);
@@ -66,9 +68,10 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
     }
 
     @Override
-    public void onGoAwayReceived(int lastStreamId, long errorCode, ByteBuf debugData) {
-        super.onGoAwayReceived(lastStreamId, errorCode, debugData);
-        channel.close();
+    public void onGoAwayRead(ChannelHandlerContext ctx, int lastStreamId, long errorCode, ByteBuf debugData) throws Http2Exception {
+        goAwayReceived.getAndSet(true);
+        super.onGoAwayRead(ctx, lastStreamId, errorCode, debugData);
+        sendGoAwayIfClosing();
     }
 
     @Override
@@ -84,6 +87,23 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
         }
         ctx.fireExceptionCaught(Http2Exception.streamError(streamId, code,
                                                            "HTTP/2 to HTTP layer caught stream reset"));
+    }
+
+    @Override
+    public void onStreamClosed(Http2Stream stream) {
+        super.onStreamClosed(stream);
+        // After stream was closed, check if we need to send a go away frame
+        sendGoAwayIfClosing();
+    }
+
+    private void sendGoAwayIfClosing() {
+        // We received a go away and need to check if we have finished the streams to close
+        // the connection and send a go away back if we haven't sent one already.
+        // I was considering using the API goAwayReceived() from the H2Connection but that
+        // unfortunately is called/set after this listener is called so keeping goAwayReceived to track it.
+        if(goAwayReceived.get() && connection.numActiveStreams() == 0 && !connection.goAwaySent()) {
+            channel.close();
+        }
     }
 
 }

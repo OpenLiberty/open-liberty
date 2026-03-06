@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Assicurarsi che almeno un oggetto Ident
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Impossibile creare l''oggetto HttpAuthenticationMechanism per il modulo {0} nell''applicazione {1}.
 JAVAEESEC_ERROR_NO_HAM.explanation=Il motivo per cui l'oggetto HttpAuthenticationMechanism non pu\u00f2 essere creato varia. I messaggi di errore per l'oggetto HttpAuthenticationMechanism forniscono informazioni sul perch\u00e9 l'oggetto HttpAuthenticationMechanism non pu\u00f2 essere creato.
 JAVAEESEC_ERROR_NO_HAM.useraction=Esaminare eventuali messaggi di errore dall'oggetto HttpAuthenticationMechanism e apportare le correzioni in base ai messaggi di errore.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: L''oggetto di implementazione HttpAuthenticationMechanismService per il modulo {0} nell''applicazione {1} non \u00e8 stato trovato come bundle OSGi.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=L'oggetto di implementazione HttpAuthenticationMechanismService non \u00e8 stato trovato perch\u00e9 uno dei bundle dipendenti che contiene questa implementazione manca dal file manifest delle funzionalit\u00e0.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Assicurarsi che il manifesto della funzionalit\u00e0 faccia riferimento a un bundle che contenga un'implementazione dell' HttpAuthenticationMechanismService.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: L''espressione EL (Expression Language) per l''attributo ''{0}'' dell''annotazione archivio identit\u00e0 non pu\u00f2 essere risolta in un valore valido. Assicurarsi che l''espressione EL e il risultato siano validi e verificare che tutti i bean di riferimento che vengono utilizzati nell''espressione siano risolvibili. Viene utilizzato il valore attributo predefinito ''{1}''.

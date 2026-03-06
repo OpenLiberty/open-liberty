@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,8 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
 
     private static final TraceComponent tc = Tr.register(LibertyNettyALPNHandler.class);
 
+    public static final String NAME = "libertyALPNHandler";
+
     private final NettyHttpChannelConfig httpConfig;
 
     /**
@@ -57,7 +59,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             LibertyUpgradeCodec codec = new LibertyUpgradeCodec(httpConfig, ctx.channel());
             HttpToHttp2ConnectionHandler handler = codec.buildHttp2ConnectionHandler(httpConfig, ctx.channel());
             // HTTP2 to HTTP 1.1 and back pipeline
-            ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_ALPN_HANDLER_NAME, null, handler);
+            ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, null, handler);
 
             // if(ctx.pipeline().get(ReadFlowHandler.class) == null) {
             //     ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, ReadFlowHandler.NAME, new ReadFlowHandler());
@@ -85,7 +87,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configuring pipeline with HTTP 1.1 for incoming connection " + ctx.channel());
             }
-            ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_ALPN_HANDLER_NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC,
+            ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC,
                                     new HttpServerCodec(8192, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize()));
 
             if(ctx.pipeline().get(ReadFlowHandler.class) == null) {

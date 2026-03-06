@@ -12,9 +12,9 @@ triggers:
     include: labeled
   - property: repo
     include: open-liberty
-  - property: labels
+  - property: label
     include: "regression"
-  - property: labels
+  - property: label
     exclude: "test"
   propertyDefinitions:
     - name: user

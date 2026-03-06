@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal.cdi/resources/io/openliberty/security/jakartasec/cdi/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2610-2620
+
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER=CWWKS2610E: \u7f3a\u5c11\u4f7f\u7528\u9650\u5b9a\u7684 HttpAuthenticationMechanisms \u7684\u81ea\u8a02\u8655\u7406\u7a0b\u5e8f\u3002
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.explanation=\u82e5\u6307\u5b9a\u4e86\u5408\u683c\u7684 HttpAuthenticationMechanisms \uff0c\u5247\u9810\u8a2d\u7684 HttpAuthenticationMechanismHandler \u5c07\u7121\u6cd5\u5224\u65b7\u61c9\u4f7f\u7528\u54ea\u500b HAM\uff0c\u56e0\u6b64\u5fc5\u9808\u63d0\u4f9b\u81ea\u8a02\u7684 HttpAuthenticationMechanismHandler \u5be6\u4f5c\u3002
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.useraction=\u5be6\u4f5c\u4e00\u500b\u4f7f\u7528\u81ea\u8a02\u908f\u8f2f\u4f86\u9078\u53d6\u552f\u4e00 HttpAuthenticationMechanism \u7684 HttpAuthenticationMechanismHandler\u3002
+
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST=CWWKS2611E: \u8655\u7406\u6e05\u55ae\u5167 {0} \u5b9a\u7fa9\u7684\u8a3b\u89e3\u6642\u767c\u751f\u932f\u8aa4\u3002
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.explanation=\u5728\u8655\u7406\u4e00\u7d44 HttpAuthenticationMechanism \u5b9a\u7fa9\u6e05\u55ae\u6642\uff0c\u65bc\u63d0\u53d6\u8a3b\u89e3\u503c\u904e\u7a0b\u4e2d\u767c\u751f\u932f\u8aa4\u3002
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.useraction=\u8acb\u8abf\u67e5\u7570\u5e38\u72c0\u6cc1\u7684\u539f\u56e0\uff0c\u4e26\u66f4\u6b63\u61c9\u7528\u7a0b\u5f0f\u914d\u7f6e\u3002
+
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES=CWWKS2612E: \u8655\u7406\u5c6c\u6027\u6642\u767c\u751f\u932f\u8aa4\uff0c\u5c6c\u6027\u985e\u578b\u70ba {0}\u3002
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.explanation=\u5728\u8655\u7406\u7279\u5b9a\u7684 HttpAuthenticationMechanism \u8a3b\u89e3\u6642\uff0c\u65bc\u63d0\u53d6\u5c6c\u6027\u503c\u904e\u7a0b\u4e2d\u767c\u751f\u932f\u8aa4\u3002
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.useraction=\u8acb\u8abf\u67e5\u7570\u5e38\u72c0\u6cc1\u7684\u539f\u56e0\uff0c\u4e26\u66f4\u6b63\u61c9\u7528\u7a0b\u5f0f\u914d\u7f6e\u3002
+
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS=CWWKS2613E: \u7121\u6cd5\u70ba\u4fee\u98fe\u7b26\u985e\u5225 ` {1} ` \u5efa\u7acb\u81ea\u8a02\u4fee\u98fe\u7b26\u8a3b\u89e3 ` {0} `\u3002
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.explanation=\u5728\u5efa\u7acb\u5408\u683c\u7684 HttpAuthenticationMechanism, \u6642\uff0c\u767c\u751f\u5efa\u7acb\u81ea\u8a02\u9650\u5b9a\u7b26\u8a3b\u89e3\u7684\u932f\u8aa4\u3002
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.useraction=\u8acb\u8abf\u67e5\u7570\u5e38\u72c0\u6cc1\u7684\u539f\u56e0\uff0c\u4e26\u66f4\u6b63\u61c9\u7528\u7a0b\u5f0f\u914d\u7f6e\u3002

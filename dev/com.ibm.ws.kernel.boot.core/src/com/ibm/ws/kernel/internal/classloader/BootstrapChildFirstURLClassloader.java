@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,8 +72,9 @@ public final class BootstrapChildFirstURLClassloader extends URLClassLoader {
         if (name == null || name.length() == 0)
             return null;
 
-        if (name.regionMatches(0, BootstrapChildFirstJarClassloader.KERNEL_BOOT_CLASS_PREFIX, 0,
-                               BootstrapChildFirstJarClassloader.KERNEL_BOOT_PREFIX_LENGTH)) {
+        boolean parentFirst = name.regionMatches(0, BootstrapChildFirstJarClassloader.KERNEL_BOOT_CLASS_PREFIX, 0, BootstrapChildFirstJarClassloader.KERNEL_BOOT_PREFIX_LENGTH)
+                              || name.regionMatches(0, BootstrapChildFirstJarClassloader.CHECKPOINT_CLASS_PREFIX, 0, BootstrapChildFirstJarClassloader.CHECKPOINT_CLASS_LENGTH);
+        if (parentFirst) {
             return super.loadClass(name, resolve);
         }
 

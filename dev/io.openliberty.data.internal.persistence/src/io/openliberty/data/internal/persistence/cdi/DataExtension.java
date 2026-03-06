@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.persistence.DataProvider;
@@ -470,7 +471,11 @@ public class DataExtension implements Extension {
     public final static <T extends RuntimeException> T exc(Class<T> exceptionType,
                                                            String messageId,
                                                            Object... args) {
-        if (!exceptionType.equals(EmptyResultException.class) &&
+        // Avoid logging errors that might be due to server shutdown, and
+        // avoid logging various usage errors that are already raised to the
+        // appliaction
+        if (!FrameworkState.isStopping() &&
+            !exceptionType.equals(EmptyResultException.class) &&
             !exceptionType.equals(EntityExistsException.class) &&
             !exceptionType.equals(IllegalArgumentException.class) &&
             !exceptionType.equals(IllegalStateException.class) &&

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,10 @@ public class MemoryInformationTests {
     public void testOSMemoryStatistics() throws Exception {
         // Since unit tests are part of builds, we're conservative in which
         // ones we always test
-        if (OperatingSystem.instance().getOperatingSystemType() == OperatingSystemType.Linux) {
+        OperatingSystemType osType = OperatingSystem.instance().getOperatingSystemType();
+        if (osType == OperatingSystemType.Linux || osType == OperatingSystemType.Windows) {
+            System.out.println("Testing on OS: " + osType);
+            
             long totalMemory = MemoryInformation.instance().getTotalMemory();
             System.out.println("Total memory: " + totalMemory);
             Assert.assertTrue("getTotalMemory invalid",
@@ -42,6 +45,8 @@ public class MemoryInformationTests {
             System.out.println("Available memory %: " + (availableMemoryRatio * 100.0));
             Assert.assertTrue("getAvailableMemoryRatio invalid",
                               availableMemoryRatio > 0);
+        } else {
+            System.out.println("Skipping test on OS: " + osType);
         }
     }
 }

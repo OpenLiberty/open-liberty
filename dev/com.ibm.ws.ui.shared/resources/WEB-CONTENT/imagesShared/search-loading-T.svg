@@ -1,0 +1,73 @@
+<svg
+  width="40"
+  height="40"
+  viewBox="0 0 100 100"
+  xmlns="http://www.w3.org/2000/svg"
+  aria-hidden="true"
+>
+  <style>
+    :root {
+      --circumference: 276.46;
+      --interactive: #0f62fe;
+      --background: #e0e0e0;
+    }
+
+    svg {
+      animation: rotate 690ms linear infinite;
+    }
+
+    circle {
+      fill: none;
+      stroke-dasharray: var(--circumference);
+      stroke-linecap: butt;
+    }
+
+    .bg {
+      stroke: var(--background);
+      stroke-width: 16;
+      stroke-dashoffset: -22;
+    }
+
+    .fg {
+      stroke: var(--interactive);
+      stroke-width: 16;
+      /* loading-progress($circumference, 48) */
+      stroke-dashoffset: calc(var(--circumference) * 0.52);
+      animation: init-stroke 10ms cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    @keyframes rotate {
+      from {
+        transform: rotate(0deg);
+      }
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes init-stroke {
+      from {
+        stroke-dashoffset: var(--circumference);
+      }
+      to {
+        stroke-dashoffset: calc(var(--circumference) * 0.52);
+      }
+    }
+  </style>
+
+  <!-- background ring -->
+  <circle
+    class="bg"
+    cx="50"
+    cy="50"
+    r="42"
+  />
+
+  <!-- animated stroke -->
+  <circle
+    class="fg"
+    cx="50"
+    cy="50"
+    r="42"
+  />
+</svg>

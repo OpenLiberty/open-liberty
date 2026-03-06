@@ -632,7 +632,10 @@ public class DataEclipseLinkServlet extends FATServlet {
         assertEquals(1L, receipts.removeByPurchaseId(3000L));
 
         assertEquals(Set.of(3002L, 3010L, 3012L),
-                     receipts.removeByTotalBetween(10.00f, 20.00f));
+                     receipts.removeByTotalBetween(10.00f, 20.00f)
+                                     .stream()
+                                     .map(Receipt::purchaseId)
+                                     .collect(Collectors.toSet()));
 
         // remove data to avoid interference with other tests
         assertEquals(12, receipts.removeIfTotalUnder(1000000.0f));

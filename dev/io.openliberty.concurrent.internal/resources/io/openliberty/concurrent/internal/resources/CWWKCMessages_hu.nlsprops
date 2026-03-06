@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -56,7 +56,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=A min\u0151s\u00edt\u0151k list\u00
 CWWKC1206.qualifier.must.be.anno.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a min\u0151s\u00edt\u0151k list\u00e1j\u00e1ban szerepl\u0151 \u00f6sszes \u00e9rt\u00e9k annot\u00e1ci\u00f3s oszt\u00e1ly.
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: A(z) {0} alkalmaz\u00e1sm\u0171term\u00e9k meghat\u00e1roz egy {1} megjegyz\u00e9st vagy {2} telep\u00edt\u00e9sle\u00edr\u00f3 elemet, amely a(z) {3} n\u00e9vvel \u00e9s a(z {4} min\u0151s\u00edt\u0151k list\u00e1j\u00e1val rendelkezik. A min\u0151s\u00edt\u0151k list\u00e1ja tartalmazza az {5} megjegyz\u00e9st, amely nem a @ jakarta.inject.Qualifier \u00e9s a @Retention(RUNTIME) megjegyz\u00e9sekkel van ell\u00e1tva. P\u00e9lda egy \u00e9rv\u00e9nyes min\u0151s\u00edt\u0151re: {6}
-CWWKC1207.lacks.qualifier.anno.explanation=A Min\u0151s\u00edt\u0151 megjegyz\u00e9s azt jelzi, hogy a megjegyz\u00e9s min\u0151s\u00edt\u0151. A Meg\u0151rz\u00e9si megjegyz\u00e9s szab\u00e1lyozza a megjegyz\u00e9sek el\u00e9rhet\u0151s\u00e9g\u00e9t.
+CWWKC1207.lacks.qualifier.anno.explanation=A @Qualifier annot\u00e1ci\u00f3 jelzi, hogy az annot\u00e1ci\u00f3 egy min\u0151s\u00edt\u0151. A Retention annot\u00e1ci\u00f3 szab\u00e1lyozza az annot\u00e1ci\u00f3k el\u00e9rhet\u0151s\u00e9g\u00e9t.
 CWWKC1207.lacks.qualifier.anno.useraction=Adja hozz\u00e1 a @Qualifier \u00e9s a @Retention(RUNTIME) megjegyz\u00e9seket a min\u0151s\u00edt\u0151 oszt\u00e1lyhoz.
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: A {0} alkalmaz\u00e1si artefaktum megadja a {1} megjegyz\u00e9st vagy a {2} telep\u00edt\u00e9si le\u00edr\u00f3 elemet, amely rendelkezik a {3} n\u00e9vvel \u00e9s a {4} min\u0151s\u00edt\u0151 list\u00e1val. Egy Jakarta Concurrency er\u0151forr\u00e1s nem konfigur\u00e1lhat\u00f3 \u00fagy, hogy egyszerre rendelkezzen min\u0151s\u00edt\u0151kkel \u00e9s java:global n\u00e9vt\u00e9rrel. T\u00e1vol\u00edtsa el a {3} n\u00e9vvel rendelkez\u0151 Jakarta Concurrency er\u0151forr\u00e1s konfigur\u00e1ci\u00f3j\u00e1b\u00f3l a min\u0151s\u00edt\u0151ket, vagy v\u00e1ltson \u00e1t a java:app n\u00e9vt\u00e9rre.

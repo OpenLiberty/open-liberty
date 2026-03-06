@@ -16,7 +16,8 @@ Subsystem-Name: MicroProfile GraphQL 1.0
   com.ibm.websphere.appserver.org.eclipse.microprofile.graphql-1.0, \
   com.ibm.websphere.appserver.org.reactivestreams.reactive-streams-1.0, \
   com.ibm.websphere.appserver.cdi-2.0, \
-  com.ibm.websphere.appserver.jsonb-1.0
+  com.ibm.websphere.appserver.jsonb-1.0, \
+  io.openliberty.jandex.internal-2.0
 -bundles= \
  com.ibm.ws.com.graphql.java, \
  com.ibm.ws.io.smallrye.graphql, \

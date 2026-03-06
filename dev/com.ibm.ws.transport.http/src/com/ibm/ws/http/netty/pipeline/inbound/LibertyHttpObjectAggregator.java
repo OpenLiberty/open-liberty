@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,6 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
     private static final AttributeKey<CompositeByteBuf> COMPOSITE_CONTENT = AttributeKey.valueOf("compositeContent");
 
     public LibertyHttpObjectAggregator(long maxContentLength) {
-        super(false); //  messages should NOT be released automatically, we will handle reference counting manually instead (i.e ReferenceCountUtil.release )
         if (maxContentLength <= 0) {
             throw new IllegalArgumentException("maxContentLength must be a positive integer.");
         }
@@ -78,7 +77,6 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
                 if (sizeOfCurrentChunk > maxContentLength ||
                     (content.readableBytes() + sizeOfCurrentChunk) > maxContentLength) {
-                    ReferenceCountUtil.release(msg);
                     throw new TooLongFrameException("Content length exceeded max of " + maxContentLength + " bytes.");
                 }
 

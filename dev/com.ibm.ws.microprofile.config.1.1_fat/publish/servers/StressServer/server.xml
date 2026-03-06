@@ -9,4 +9,6 @@
         <feature>componentTest-1.0</feature>
         <feature>mpConfig-1.4</feature>
     </featureManager>
+    
+    <logging traceSpecification="com.ibm.ws.artifact*=FINER" />
 </server>

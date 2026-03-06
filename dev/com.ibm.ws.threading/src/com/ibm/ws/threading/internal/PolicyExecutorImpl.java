@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1535,12 +1535,14 @@ public class PolicyExecutorImpl implements PolicyExecutor {
         Object v;
         int u_expedite = (Integer) props.get("expedite");
         int u_max = null == (v = props.get("max")) ? Integer.MAX_VALUE : (Integer) v;
-        MaxPolicy u_maxPolicy = MaxPolicy.valueOf((String) props.get("maxPolicy"));
         int u_maxQueueSize = null == (v = props.get("maxQueueSize")) ? Integer.MAX_VALUE : (Integer) v;
         long u_maxWaitForEnqueue = (Long) props.get("maxWaitForEnqueue");
         boolean u_runIfQueueFull = (Boolean) props.get("runIfQueueFull");
         long u_startTimeout = null == (v = props.get("startTimeout")) ? -1l : (Long) v;
         boolean useVirtualThreads = null == (v = props.get("virtual")) ? false : (Boolean) v;
+        MaxPolicy u_maxPolicy = null == (v = props.get("maxPolicy")) //
+                        ? (useVirtualThreads ? MaxPolicy.strict : MaxPolicy.loose) //
+                        : MaxPolicy.valueOf((String) v);
 
         // Validation that cannot be performed by metatype:
         if (useVirtualThreads) {
@@ -1554,6 +1556,8 @@ public class PolicyExecutorImpl implements PolicyExecutor {
                 Tr.info(tc, "CWWKE1208.override.virtual",
                         props.get(identifierProp));
             }
+            if (u_maxPolicy.equals(MaxPolicy.loose))
+                throw new IllegalArgumentException("maxPolicy: loose, virtual: true");
         }
 
         if (u_expedite > u_max)

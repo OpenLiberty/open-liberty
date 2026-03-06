@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -182,6 +182,11 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
 
+        if (isZOS()) {
+            Log.info(SessionCacheErrorPathsTest.class, "testAddFeature", "Allow more time for ZOS after removing sessionCache feature");
+            TimeUnit.SECONDS.sleep(10);
+        }
+
         // Session manager should warn user that sessions will be stored in memory
         assertEquals(1, server.findStringsInLogs("SESN8501I").size());
 
@@ -193,6 +198,11 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
         server.setMarkToEndOfLog();
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(APP_NAMES, EMPTY_RECYCLE_LIST);
+
+        if (isZOS()) {
+            Log.info(SessionCacheErrorPathsTest.class, "testAddFeature", "Allow more time for ZOS after adding sessionCache feature");
+            TimeUnit.SECONDS.sleep(10);
+        }
 
         run("testSetAttribute&attribute=testAddFeature2&value=AF2", session);
 

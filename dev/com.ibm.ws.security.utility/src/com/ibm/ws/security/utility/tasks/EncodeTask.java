@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2016 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -134,6 +134,23 @@ public class EncodeTask extends BaseCommandTask {
         } else {
             String encoding = argMap.get(BaseCommandTask.ARG_ENCODING);
             Map<String, String> props = BaseCommandTask.convertToProperties(argMap, stdout);
+            
+            // 26.0.0.3+ - Require a key be specified for AES encryption
+            if (encoding != null && encoding.contains("aes")) {
+                boolean hasKey = argMap.containsKey(BaseCommandTask.ARG_KEY) ||
+                                argMap.containsKey(BaseCommandTask.ARG_BASE64_KEY) ||
+                                argMap.containsKey(BaseCommandTask.ARG_AES_CONFIG_FILE);
+                
+                // On z/OS, the keyring parameter could be used instead
+                if (isZOS()) {
+                    hasKey = hasKey || argMap.containsKey(BaseCommandTask.ARG_KEYRING);
+                }
+                
+                if (!hasKey) {
+                    throw new IllegalArgumentException(getMessage("encode.aesKeyRequired"));
+                }
+            }
+            
             // need to add the key if this is AES/SAF and keyring parameters are provided
             if (isZOS()) {
                 props = getKeyIfSAF(encoding, props);

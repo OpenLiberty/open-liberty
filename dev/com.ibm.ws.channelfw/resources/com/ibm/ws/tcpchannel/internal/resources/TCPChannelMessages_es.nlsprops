@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: Ha fallado la inicializaci\u00f3n del canal TCP {0}.  Ha 
 BIND_ERROR.explanation=Ha fallado la operaci\u00f3n de enlace de socket. Una causa com\u00fan es que el n\u00famero de puerto ya est\u00e1 en uso.  Compruebe el texto del mensaje de excepci\u00f3n del mensaje de error para obtener m\u00e1s informaci\u00f3n.
 BIND_ERROR.useraction=Compruebe que el canal TCP se ha configurado para utilizar el n\u00famero de puerto correcto.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: El canal TCP {0} ha superado el n\u00famero m\u00e1ximo de conexiones abiertas {1}.
-MAX_CONNS_EXCEEDED.explanation=El canal TCP especificado ha superado el n\u00famero m\u00e1ximo de conexiones abiertas y est\u00e1 rechazando algunas conexiones.
+MAX_CONNS_EXCEEDED=CWWKO0222W: El canal TCP {0} supera el n\u00famero m\u00e1ximo de conexiones abiertas {1}.
+MAX_CONNS_EXCEEDED.explanation=El canal TCP especificado excede el n\u00famero m\u00e1ximo de conexiones abiertas y est\u00e1 rechazando algunas conexiones. Este mensaje se emite como m\u00e1ximo una vez cada 10 minutos mientras persista la condici\u00f3n.
 MAX_CONNS_EXCEEDED.useraction=Si se necesitan m\u00e1s conexiones, actualice el n\u00famero m\u00e1ximo de conexiones permitidas.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: El canal TCP {0} no ha podido obtener la hebra de la agrupaci\u00f3n de hebras {1}.

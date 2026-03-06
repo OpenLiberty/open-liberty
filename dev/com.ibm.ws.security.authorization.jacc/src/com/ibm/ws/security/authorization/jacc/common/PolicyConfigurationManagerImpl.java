@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2025 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,8 +13,10 @@
 package com.ibm.ws.security.authorization.jacc.common;
 
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -153,28 +155,31 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
     private void commitModules(String appName) {
         List<PolicyConfiguration> pcs = pcConfigsMap.get(appName);
         if (pcs != null) {
+            Set<String> contextIds = new LinkedHashSet<>();
             for (PolicyConfiguration pc : pcs) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Comitting PolicyConfigurations : " + pc);
+                String ctxId = null;
+                try {
+                    ctxId = pc.getContextID();
+                    contextIds.add(ctxId);
+                } catch (PolicyContextException e) {
+                    ctxId = "<<UNKNOWN>>";
+                }
                 try {
                     pc.commit();
                 } catch (PolicyContextException pce) {
-                    String ctxId = null;
-                    try {
-                        ctxId = pc.getContextID();
-                    } catch (PolicyContextException e) {
-                        ctxId = "<<UNKNOWN>>";
-                    }
                     Tr.error(tc, "JACC_GET_POLICYCONFIGURATION_FAILURE", new Object[] { ctxId, pce });
                 }
             }
-            policyProxy.refresh();
+            policyProxy.refresh(contextIds);
         }
     }
 
     private void removeModules(String appName) {
         List<String> ctxIds = pcModulesMap.get(appName);
         if (ctxIds != null) {
+            Set<String> contextIds = new LinkedHashSet<>();
             for (String ctxId : ctxIds) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "contextID : " + ctxId);
@@ -182,6 +187,7 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
                 try {
                     pc = pcf.getPolicyConfiguration(ctxId, false);
                     if (pc != null) {
+                        contextIds.add(ctxId);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Deleting PolicyConfigurations : " + pc);
                         pc.delete();
@@ -190,7 +196,7 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
                     Tr.error(tc, "JACC_GET_POLICYCONFIGURATION_FAILURE", new Object[] { ctxId, pce });
                 }
             }
-            policyProxy.refresh();
+            policyProxy.refresh(contextIds);
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "refresh is invoked after deleting PolicyConfigurations");
             pcModulesMap.remove(appName);

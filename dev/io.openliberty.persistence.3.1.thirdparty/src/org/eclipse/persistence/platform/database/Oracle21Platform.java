@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2022, 2025 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026 IBM Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -40,21 +41,24 @@ public class Oracle21Platform extends Oracle19Platform {
     }
 
     /**
-    * INTERNAL:
-    * Allow for conversion from the Oracle type to the Java type. Used in cases when DB connection is needed like BLOB, CLOB.
-    */
+     * INTERNAL:
+     * Allow for conversion from the Oracle type to the Java type. Used in cases when DB connection is needed like BLOB, CLOB.
+     */
     public <T> T convertObject(Object sourceObject, Class<T> javaClass, CoreSession<?, ?, ? ,?, ?> session) throws ConversionException, DatabaseException {
         //Handle special case when empty String ("") is passed from the entity into CLOB type column
         if (ClassConstants.CLOB.equals(javaClass) && sourceObject instanceof String && "".equals(sourceObject)) {
-        	Connection connection = ((AbstractSession) session).getAccessor().getConnection();
-            Clob clob = null;
+            AbstractSession abstractSession = (AbstractSession) session;
             try {
-                clob = connection.createClob();
+                abstractSession.getAccessor().incrementCallCount(abstractSession);
+                Connection connection = abstractSession.getAccessor().getConnection();
+                Clob clob = connection.createClob();
                 clob.setString(1, (String)sourceObject);
+                return (T) clob;
             } catch (SQLException e) {
                 throw ConversionException.couldNotBeConvertedToClass(sourceObject, ClassConstants.CLOB, e);
+            } finally {
+                abstractSession.getAccessor().decrementCallCount();
             }
-            return (T) clob;
         }
         return super.convertObject(sourceObject, javaClass);
     }

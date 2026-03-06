@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -35,7 +35,8 @@ Bundle-Localization: \
 -dsannotations: \
  io.openliberty.mcp.internal.McpServletInitializer,\
  io.openliberty.mcp.internal.McpCdiExtensionMetadata,\
- io.openliberty.mcp.internal.config.McpConfiguration
+ io.openliberty.mcp.internal.config.McpConfiguration,\
+ io.openliberty.mcp.internal.introspection.McpIntrospector
  
 -buildpath: \
 	com.ibm.websphere.org.osgi.core;version=latest,\
@@ -49,17 +50,17 @@ Bundle-Localization: \
 	io.openliberty.mcp;version=latest,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
+	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.kernel.service;version=latest
 
-
 -testpath: \
-    org.hamcrest:hamcrest-all;version=1.3, \
-    ../build.sharedResources/lib/junit/old/junit.jar;version=file, \
-    io.openliberty.jakarta.jsonb.3.0;version=latest,\
-    io.openliberty.org.eclipse.yasson.3.0;version=latest,\
-    io.openliberty.org.eclipse.parsson.1.1;version=latest,\
-    io.openliberty.mcp;version=latest,\
-    org.json:json;version=20080701,\
-    org.skyscreamer:jsonassert
+	org.hamcrest:hamcrest-all;version=1.3,\
+	../build.sharedResources/lib/junit/old/junit.jar;version=file,\
+	io.openliberty.jakarta.jsonb.3.0;version=latest,\
+	io.openliberty.org.eclipse.yasson.3.0;version=latest,\
+	io.openliberty.org.eclipse.parsson.1.1;version=latest,\
+	io.openliberty.mcp;version=latest,\
+	org.json:json;version=20080701,\
+	org.skyscreamer:jsonassert

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -146,3 +146,6 @@ jmx.rest.client.connection.disconnect=CWWKX0231I: Membrul colectiv a \u00eenchis
 jmx.rest.client.connection.disconnect.explanation=Membrul s-a deconectat de la controler.
 jmx.rest.client.connection.disconnect.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
+jmx.rest.client.server.result.exception=CWWKX0232E: Serverul a returnat o clas\u0103 care nu este disponibil\u0103 pentru client: {0}
+jmx.rest.client.server.result.exception.explanation=Orice interfa\u021b\u0103 sau clas\u0103 de implementare returnat\u0103 de server trebuie s\u0103 fie disponibil\u0103 pentru client.
+jmx.rest.client.server.result.exception.useraction=Verifica\u021bi dac\u0103 toate clasele necesare sunt disponibile \u00een calea de clas\u0103 a clientului.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2008, 2025 IBM Corporation and others.
+ * Copyright (c) 2008, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.sip.stack.transport.sip.netty;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.*;
+import java.util.concurrent.LinkedBlockingQueue;
 
 import javax.net.ssl.SSLEngine;
 
@@ -34,6 +35,7 @@ import io.netty.handler.ssl.*;
 import io.openliberty.netty.internal.*;
 import jain.protocol.ip.sip.ListeningPoint;
 import io.netty.util.concurrent.GenericFutureListener;
+import io.netty.util.ReferenceCountUtil;
 import io.openliberty.netty.internal.exception.NettyException;
 
 /**
@@ -177,13 +179,20 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 
 	private class SipStreamHandler extends SimpleChannelInboundHandler<SipMessageByteBuffer> {
 
+		private boolean processingMessage = false;
+		private static final int DEFAULT_MAX_QUEUE = 50;
+		private final LinkedBlockingQueue<SipMessageByteBuffer> messageQueue;
+
+		public SipStreamHandler() {
+			this.messageQueue = new LinkedBlockingQueue<SipMessageByteBuffer>(DEFAULT_MAX_QUEUE);
+		}
+
 		/** Called when a new connection is established */
 		@Override
 		public void channelActive(ChannelHandlerContext ctx) throws Exception {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(this, tc, "channelActive", ctx.channel().remoteAddress() + " connected");
 			}
-
 		}
 
 		@Override
@@ -192,7 +201,39 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 				Tr.debug(this, tc, "channelRead0",
 						ctx.channel() + ". [" + msg.getMarkedBytesNumber() + "] bytes received");
 			}
-			complete(msg);
+			messageQueue.offer(ReferenceCountUtil.retain(msg));
+			if (processingMessage) {
+				if (messageQueue.remainingCapacity() == 0) {
+					if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+						Tr.debug(this, tc, "Queue reached capacity. Reads are paused.");
+					}
+					pauseReading(ctx);
+				}
+			} else {
+				processingMessage = true;
+				processNextMessage(ctx);
+			}
+		}
+
+		// This is designed so that the logic besides what runs in the Liberty executor pool
+		// needs to run on the event loop, otherwise there could be race conditions that show up.
+		private void processNextMessage(final ChannelHandlerContext ctx) {
+			SipMessageByteBuffer msg = messageQueue.poll();
+			if(!ctx.channel().config().isAutoRead() && messageQueue.remainingCapacity() > DEFAULT_MAX_QUEUE/2){
+				resumeReading(ctx);
+			}
+			if (msg == null) {
+				processingMessage = false;
+				return;
+			}
+			GenericEndpointImpl.getExecutorService().execute(() -> {
+				try {
+					complete(msg);
+				} finally {
+					ReferenceCountUtil.release(msg);
+				}
+				ctx.channel().eventLoop().execute(() -> processNextMessage(ctx));
+			});
 		}
 
 		@Override
@@ -200,7 +241,11 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disconnected");
 			}
-			destroy(null);
+			SipMessageByteBuffer msg;
+			while ((msg = messageQueue.poll()) != null) {
+				ReferenceCountUtil.safeRelease(msg);
+			}
+			GenericEndpointImpl.getExecutorService().execute(() -> destroy(null));
 		}
 
 		@Override
@@ -208,9 +253,23 @@ public abstract class SipOutboundConnLink extends SipConnLink {
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 				Tr.debug(this, tc, "exceptionCaught", cause);
 			}
-
-			connectionError(new Exception(cause));
+			GenericEndpointImpl.getExecutorService().execute(() -> connectionError(new Exception(cause)));
 			ctx.close();
 		}
+
+		private void pauseReading(ChannelHandlerContext context) {
+			ChannelConfig config = context.channel().config();
+			if (config.isAutoRead()) {
+				config.setAutoRead(false);
+			}
+		}
+
+		private void resumeReading(ChannelHandlerContext context) {
+			ChannelConfig config = context.channel().config();
+			if (!config.isAutoRead()) {
+				config.setAutoRead(true);
+			}
+		}
 	}
+
 }

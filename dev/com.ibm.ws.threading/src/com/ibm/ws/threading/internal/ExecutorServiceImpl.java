@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2025 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -216,8 +216,8 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
     public static boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
 
-    // Default to use BoundedBuffer, but make it possible to easily switch to using ConcurrentPriorityBlockingQueue
-    public static final boolean useBoundedBuffer = Boolean.valueOf(System.getProperty("io.openliberty.threading.useBoundedBuffer", "true"));
+    // Default to use ConcurrentPriorityBlockingQueue, but make it possible to easily switch to using BoundedBuffer
+    public static final boolean useBoundedBuffer = Boolean.valueOf(System.getProperty("io.openliberty.threading.useBoundedBuffer", "false"));
 
     /**
      * Create a thread pool executor with the configured attributes from this

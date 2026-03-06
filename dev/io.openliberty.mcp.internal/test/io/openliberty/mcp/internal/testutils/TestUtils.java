@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,7 @@ public class TestUtils {
      *
      * @param cls
      * @param name
-     * @return the matching {@link MockAnnotatedMethod}
+     * @return the matching {@link Method}
      */
     public static Method findActualMethod(Class<?> cls, String name) {
         List<Method> tools = Arrays.stream(cls.getDeclaredMethods())
@@ -61,7 +61,8 @@ public class TestUtils {
     }
 
     /**
-     * finds and mocks ToolMetadata of tool method
+     * finds and mocks ToolMetadata of tool method.
+     * filtered using method name instead of the tool name annotation as some tools in tests will not be able to be converted to toolMetadata
      *
      * @param cls
      * @param name
@@ -70,8 +71,8 @@ public class TestUtils {
     public static ToolMetadata findTool(Class<?> cls, String name) {
         List<ToolMetadata> tools = Arrays.stream(cls.getDeclaredMethods())
                                          .filter(m -> m.isAnnotationPresent(Tool.class))
+                                         .filter(m -> m.getName().equals(name))
                                          .map(m -> ToolMetadata.createFrom(m.getAnnotation(Tool.class), null, new MockAnnotatedMethod<>(m), null, null))
-                                         .filter(m -> m.name().equals(name))
                                          .collect(Collectors.toList());
         if (tools.size() != 1) {
             throw new RuntimeException("Found " + tools.size() + " tools with name " + name);

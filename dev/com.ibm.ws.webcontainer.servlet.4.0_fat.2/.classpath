@@ -7,6 +7,7 @@
     <classpathentry kind="src" path="test-applications/NettyReadListenerTest.war/src"/>
     <classpathentry kind="src" path="test-applications/NettyServerPushTest.war/src"/>
     <classpathentry kind="src" path="test-applications/NettyServletRequestTest.war/src"/>
+    <classpathentry kind="src" path="test-applications/ResponseContentLengthChunkedEncoding.war/src"/>
     <classpathentry kind="src" path="test-applications/ResponseHeadersTest.war/src"/>
     <classpathentry kind="src" path="test-applications/SameSiteTest.war/src"/>
     <classpathentry kind="src" path="test-applications/SameSiteSecurityTest.war/src"/>

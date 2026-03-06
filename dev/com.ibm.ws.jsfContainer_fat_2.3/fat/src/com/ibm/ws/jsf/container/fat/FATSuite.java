@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
+import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
 import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
@@ -76,9 +77,15 @@ public class FATSuite extends TestContainerSuite {
         if (JavaInfo.JAVA_VERSION >= 11) {
             // Repeating the full FAT for multiple features may exceed the 3 hour limit on Fyre Windows.
             // Skip the EE9 repeat on the windows platform when not running locally.
+            // For Windows,
+            //    if the Java version is = 11 EE10 will be lite mode and EmptyAction and EE10 will be full mode.
+            //        Currently no testing is done with Java versions > 11 < 17.
+            //    if the Java version is >= 17 EE11 will be lite mode and EmptyAction and EE11 will be full mode.
             if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
                 repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                                .andWith(FeatureReplacementAction.EE10_FEATURES());
+                                .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                .withMaxJavaLevel(SEVersion.JAVA11))
+                                .andWith(FeatureReplacementAction.EE11_FEATURES());
             } else {
                 // EE10 requires Java 11.
                 // EE11 requires Java 17
@@ -141,12 +148,12 @@ public class FATSuite extends TestContainerSuite {
 
     public static ExtendedWebDriver getWebDriver() throws Exception {
         int retryCount = 3;
-        while(DRIVER == null && retryCount > 0) {
+        while (DRIVER == null && retryCount > 0) {
             Log.info(c, "getWebDriver", "Attempting to initialize WebDriver, attempts remaining: " + retryCount);
             try {
                 CHROME_CONTAINER = new BrowserWebDriverContainer<>(getChromeImage()).withCapabilities(new ChromeOptions())
-                            .withAccessToHost(true)
-                            .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+                                .withAccessToHost(true)
+                                .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
                 CHROME_CONTAINER.start();
                 DRIVER = new CustomDriver(new RemoteWebDriver(CHROME_CONTAINER.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
             } catch (Exception ex1) {
@@ -154,10 +161,11 @@ public class FATSuite extends TestContainerSuite {
                 retryCount--;
                 try {
                     Thread.sleep(10000); // wait for 10 seconds before retrying
-                } catch (InterruptedException ie) {}
+                } catch (InterruptedException ie) {
+                }
             }
         }
-        if(DRIVER == null) {
+        if (DRIVER == null) {
             throw new Exception("Failed to initialize WebDriver after multiple attempts! See log for details.");
         }
         return DRIVER;

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -146,3 +146,6 @@ jmx.rest.client.connection.disconnect=CWWKX0231I: Az egy\u00fcttes tag lez\u00e1
 jmx.rest.client.connection.disconnect.explanation=A tag vez\u00e9rl\u0151h\u00f6z val\u00f3 csatlakoz\u00e1sa megsz\u0171nt.
 jmx.rest.client.connection.disconnect.useraction=Semmit sem kell tennie.
 
+jmx.rest.client.server.result.exception=CWWKX0232E: A szerver olyan oszt\u00e1lyt adott vissza, amely nem \u00e9rhet\u0151 el az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra: {0}
+jmx.rest.client.server.result.exception.explanation=A szerver \u00e1ltal visszak\u00fcld\u00f6tt b\u00e1rmely interf\u00e9sznek vagy implement\u00e1l\u00f3 oszt\u00e1lynak el\u00e9rhet\u0151nek kell lennie az \u00fcgyf\u00e9l sz\u00e1m\u00e1ra.
+jmx.rest.client.server.result.exception.useraction=Ellen\u0151rizze, hogy az \u00f6sszes sz\u00fcks\u00e9ges oszt\u00e1ly el\u00e9rhet\u0151-e az \u00fcgyf\u00e9l oszt\u00e1ly\u00fatvonal\u00e1n.

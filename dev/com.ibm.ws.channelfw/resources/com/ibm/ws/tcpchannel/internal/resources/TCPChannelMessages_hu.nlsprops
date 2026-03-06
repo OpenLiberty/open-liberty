@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: A(z) {0} TCP csatorna inicializ\u00e1l\u00e1sa nem siker\
 BIND_ERROR.explanation=A socket k\u00f6t\u00e9si m\u0171velet nem siker\u00fclt. A hiba oka \u00e1ltal\u00e1ban az, hogy a portsz\u00e1m m\u00e1r haszn\u00e1latban van.  Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt keresse meg a kiv\u00e9tel \u00fczenet sz\u00f6veg\u00e9t a hiba\u00fczenetben.
 BIND_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a TCP csatorna a helyes portsz\u00e1m haszn\u00e1lat\u00e1ra van be\u00e1ll\u00edtva.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: A(z) {0} TCP csatorna t\u00fall\u00e9pte a megnyitott kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t ({1}).
-MAX_CONNS_EXCEEDED.explanation=A megadott TCP csatorna t\u00fall\u00e9pte a megnyitott kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t.
+MAX_CONNS_EXCEEDED=CWWKO0222W: A TCP-csatorna {0} meghaladja a nyitott kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t {1}.
+MAX_CONNS_EXCEEDED.explanation=A megadott TCP-csatorna t\u00fall\u00e9pi a nyitott kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t, \u00e9s egyes kapcsolatokat elutas\u00edt. Ez az \u00fczenet legfeljebb 10 percenk\u00e9nt egyszer jelenik meg, am\u00edg a felt\u00e9tel fenn\u00e1ll.
 MAX_CONNS_EXCEEDED.useraction=Ha t\u00f6bb kapcsolatra van sz\u00fcks\u00e9g, akkor friss\u00edtse az enged\u00e9lyezett kapcsolatok maxim\u00e1lis sz\u00e1m\u00e1t.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: A(z) {0} TCP csatorna nem tudott beszerezni sz\u00e1lat a(z) {1} sz\u00e1lk\u00e9szletb\u0151l.

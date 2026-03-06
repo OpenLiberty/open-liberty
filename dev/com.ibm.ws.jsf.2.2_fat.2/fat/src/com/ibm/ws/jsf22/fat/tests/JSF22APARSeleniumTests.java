@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -186,7 +186,6 @@ public class JSF22APARSeleniumTests {
      * 
      * Test uses tab button press to verify the only the listener action is invoked.
      */
-    @SkipForRepeat(EE8_OR_LATER_FEATURES) // Only fixed in 2.2 -- 2.3+ will need releases pulled in
     @Test
     public void testPH63238() throws Exception {
         String url = JSFUtils.createSeleniumURLString(jsf22APARSeleniumServer, "PH63238", "index.xhtml");

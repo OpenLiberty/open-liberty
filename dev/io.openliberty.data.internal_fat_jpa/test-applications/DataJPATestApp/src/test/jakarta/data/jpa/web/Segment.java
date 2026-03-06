@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ public class Segment {
 
     @GeneratedValue
     @Id
-    public Long id;
+    protected Long id;
 
     @Embedded
     @Column(nullable = false)
@@ -34,7 +34,7 @@ public class Segment {
     { @AttributeOverride(name = "x", column = @Column(name = "POINTAX")),
       @AttributeOverride(name = "y", column = @Column(name = "POINTAY"))
     })
-    public Point pointA;
+    protected Point pointA;
 
     @Embedded
     @Column(nullable = false)
@@ -42,7 +42,31 @@ public class Segment {
     { @AttributeOverride(name = "x", column = @Column(name = "POINTBX")),
       @AttributeOverride(name = "y", column = @Column(name = "POINTBY"))
     })
-    public Point pointB;
+    protected Point pointB;
+
+    public Long getId() {
+        return id;
+    }
+
+    public Point getPointA() {
+        return pointA;
+    }
+
+    public Point getPointB() {
+        return pointB;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public void setPointA(Point pointA) {
+        this.pointA = pointA;
+    }
+
+    public void setPointB(Point pointB) {
+        this.pointB = pointB;
+    }
 
     @Override
     public String toString() {

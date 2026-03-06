@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package io.openliberty.data.internal.version;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
+import java.util.Map;
 import java.util.Set;
 
 import io.openliberty.data.internal.AttributeConstraint;
@@ -44,28 +45,25 @@ public interface DataVersionCompatibility {
     final int PARAM_ANNOS_CONFLICT = -2;
 
     /**
-     * Return code for inspectMethodParam that indicates that the Constraint subtype
-     * is not determined until method invocation.
-     */
-    final int PARAM_CONSTRAINT_DEFERRED = -3;
-
-    /**
      * Append a constraint such as o.myAttribute < ?1 to the JPQL query.
      *
-     * @param q            JPQL query to which to append.
-     * @param o_           entity identifier variable.
-     * @param attrName     entity attribute name.
-     * @param constraint   type of constraint to apply to the entity attribute.
-     * @param qp           query parameter position (1-based).
-     * @param isCollection whether the entity attribute is a collection.
-     * @param annos        method parameter annotations.
+     * @param q                 JPQL query to which to append.
+     * @param o_                entity identifier variable.
+     * @param attrName          entity attribute name.
+     * @param constraint        type of constraint to apply to the entity attribute.
+     * @param prevNumJPQLParams count of JQPL query parameters required for repository
+     *                              method parameters up to, but not including, the
+     *                              repository method parameter for the constraint
+     *                              being appended.
+     * @param isCollection      whether the entity attribute is a collection.
+     * @param annos             method parameter annotations.
      * @return the updated JPQL query.
      */
     StringBuilder appendConstraint(StringBuilder q,
                                    String o_,
                                    String attrName,
                                    AttributeConstraint constraint,
-                                   int qp,
+                                   int prevNumJPQLParams,
                                    boolean isCollection,
                                    Annotation[] annos);
 
@@ -81,12 +79,85 @@ public interface DataVersionCompatibility {
     boolean atLeast(int major, int minor);
 
     /**
+     * Appends JPQL to the partially built query to represent a Constraint.
+     *
+     * @param q              partially built query to which to append JPQL
+     *                           representing the Constraint.
+     * @param entityVar_     entity identifier variable name and . character.
+     * @param constraint     the Constraint for which to generate JPQL.
+     * @param jpqlParamCount number of named or positional parameters identified
+     *                           up to this point for the JPQL.
+     * @param jpqlParamNames names of named parameters in the partially built
+     *                           query. Empty if the query uses positional
+     *                           parameeters or has none. If using named parameters,
+     *                           this method should add any that are generated.
+     * @param jpqlParams     list for this method to populate with the name of
+     *                           named parameters or index of positional parameters,
+     *                           mapped to value, for each value obtained from the
+     *                           processed Restriction(s).
+     * @return the new count of named or positional parameters, including any that
+     *         were generated for the Constraint.
+     */
+    int generateConstraint(StringBuilder q,
+                           String entityVar_,
+                           Object constraint,
+                           int jpqlParamCount,
+                           Set<String> jpqlParamNames,
+                           Map<Object, Object> jpqlParams);
+
+    /**
+     * Appends JPQL to the partially built query to implement a Restriction
+     * parameter of a repository method.
+     *
+     * @param q              partially built query ending with the WHERE clause.
+     * @param entityVar_     entity identifier variable name and . character.
+     * @param restriction    value of Restriction parameter. Otherwise null.
+     * @param jpqlParamCount number of named or positional parameters in the
+     *                           partially built query.
+     * @param jpqlParamNames names of named parameters in the partially bulit
+     *                           query. Empty if the query uses positional
+     *                           parameeters or has none. If using named parameters,
+     *                           this method should add any that are generated for
+     *                           the restriction part of the query.
+     * @param jpqlParams     list for this method to populate with the name of
+     *                           named parameters or index of positional parameters,
+     *                           mapped to value, for each value obtained from the
+     *                           processed Restriction(s).
+     * @return the new count of named or positional parameters, including any that
+     *         were generated for the Restriction(s).
+     */
+    int generateRestrictions(StringBuilder q,
+                             String entityVar_,
+                             Object restriction,
+                             int jpqlParamCount,
+                             Set<String> jpqlParamNames,
+                             Map<Object, Object> jpqlParams);
+
+    /**
      * Obtains the Count annotation if present on the method. Otherwise null.
      *
      * @param method repository method. Must not be null.
      * @return Count annotation if present, otherwise null.
      */
     Annotation getCountAnnotation(Method method);
+
+    /**
+     * Identify Constraint-typed repository method parameters for which
+     * processing is deferred. Constraints that operate on non-literal
+     * expressions are always deferred until the expression instance is
+     * available.
+     *
+     * @param alwaysDefer  indicates that processing of every Constraint-typed
+     *                         method parameter is always deferred.
+     * @param maxIndex     method parameters positioned up to this index are
+     *                         inspected.
+     * @param methodParams repository method parameters.
+     * @return map of method parameter index (0-based) to Constraint instance
+     *         at that position. The empty map indicates none.
+     */
+    Map<Integer, Object> getDeferredConstraints(boolean alwaysDefer,
+                                                int maxIndex,
+                                                Object[] methodParams);
 
     /**
      * Obtains the entity class from the Find annotation value, if present.
@@ -132,31 +203,33 @@ public interface DataVersionCompatibility {
      * Find/Delete/Update method to determine its meaning. Based on the meaning,
      * updates one or more of (attrNames, constraints, updateOps) at position p.
      *
-     * @param p           repository method parameter index (0-based).
-     * @param paramType   class of the repository method parameter at index p.
-     *                        When generating the query upfront, this comes from
-     *                        the repository method signature. When generating the
-     *                        query at invocation time and a Constraint subtype is
-     *                        supplied, this is the class of the supplied instance.
-     *                        The latter should be done in response to receiving a
-     *                        PARAM_CONSTRAINT_DEFERRED return code during the
-     *                        attempt at upfront query generation.
-     * @param paramAnnos  annotations on the repository method parameter at index p.
-     * @param attrNames   the implementer can update this at position p to supply
-     *                        the entity attribute name from the value of an
-     *                        assignment annotation.
-     * @param constraints the implementer can update this at position p to supply
-     *                        the constraint type indicated by the Is annotation or
-     *                        a constraint type method parameter.
-     * @param updateOps   the implementer can update this at position p to supply
-     *                        the update operation indicated by an assignment
-     *                        annotation.
-     * @param qpNext      the next JQPL query parameter index to use (1-based)
-     *                        for the current repository method parameter.
-     * @return the next JPQL query parameter index to use (1-based) for the
-     *         subsequent repository method parameter. Otherwise returns an
-     *         error code: PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT or
-     *         PARAM_ANNOS_CONFLICT or PARAM_CONSTRAINT_DEFERRED.
+     * @param p                 repository method parameter index (0-based).
+     * @param paramType         class of the repository method parameter at index p.
+     *                              When generating the query upfront, this is from
+     *                              the repository method signature. When generating
+     *                              the query at invocation time and a Constraint
+     *                              subtype is supplied, this is the class of the
+     *                              supplied instance.
+     * @param paramAnnos        annotations on the repository method parameter at
+     *                              index p.
+     * @param attrNames         the implementer can update this at position p to
+     *                              supply the entity attribute name from the value
+     *                              of an assignment annotation.
+     * @param constraints       the implementer can update this at position p to
+     *                              supply the constraint type indicated by the
+     *                              Is annotation or by a Constraint-typed method
+     *                              parameter.
+     * @param updateOps         the implementer can update this at position p to
+     *                              supply the update operation indicated by an
+     *                              assignment annotation.
+     * @param prevNumJPQLParams count of JQPL query parameters required for
+     *                              repository method parameters up to, but not
+     *                              including, the current repository method
+     *                              parameter being inspected.
+     * @return count of JPQL query parameters required for repository method
+     *         parameters up to and including the current one. Otherwise returns
+     *         an error code: PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT or
+     *         PARAM_ANNOS_CONFLICT.
      */
     int inspectMethodParam(int p,
                            Class<?> paramType,
@@ -164,7 +237,15 @@ public interface DataVersionCompatibility {
                            String[] attrNames,
                            AttributeConstraint[] constraints,
                            char[] updateOps,
-                           int qpNext);
+                           int prevNumJPQLParams);
+
+    /**
+     * Determines if the special parameter value is a Restriction.
+     *
+     * @param param possible special parameter value.
+     * @return true if the value is a Restriction. False otherwise.
+     */
+    boolean isRestriction(Object param);
 
     /**
      * Determines if the special parameter type is valid for the type of

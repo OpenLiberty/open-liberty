@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -147,7 +147,7 @@ public class NonZipExtensionFilesInBootInfLibTests30 extends AbstractSpringTests
                     String entryName = entry.getName();
                     if (!entryName.equals(newEntry) && !zipEntries.contains(entryName)) {
                         zipEntries.add(entryName);
-                        jos.putNextEntry(entry);
+                        jos.putNextEntry(new JarEntry(entryName));
                         try (InputStream entryStream = appJar.getInputStream(entry)) {
                             while ((len = entryStream.read(buffer)) != -1) {
                                 jos.write(buffer, 0, len);
@@ -187,12 +187,12 @@ public class NonZipExtensionFilesInBootInfLibTests30 extends AbstractSpringTests
 
                     if (!zipEntries.contains(entryName)) {
                         zipEntries.add(entryName);
-                        if (entryName.equals("BOOT-INF/lib/spring-boot-starter-web-2.0.0.RELEASE.jar")) {
+                        if (entryName.startsWith("BOOT-INF/lib/spring-boot-starter-web")) {
                             //change the extension of the library jar
                             JarEntry entryWithDiffExt = new JarEntry("BOOT-INF/lib/" + entryName + ".xyz");
                             jos.putNextEntry(entryWithDiffExt);
                         } else {
-                            jos.putNextEntry(entry);
+                            jos.putNextEntry(new JarEntry(entryName));
                         }
 
                         try (InputStream entryStream = appJar.getInputStream(entry)) {

@@ -19,6 +19,7 @@
 
 package org.apache.cxf.jaxws.handler.soap;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -45,6 +46,7 @@ import javax.xml.ws.handler.MessageContext;
 import javax.xml.ws.handler.soap.SOAPHandler;
 import javax.xml.ws.handler.soap.SOAPMessageContext;
 
+import org.apache.cxf.attachment.AttachmentUtil;
 import org.apache.cxf.binding.soap.HeaderUtil;
 import org.apache.cxf.binding.soap.SoapMessage;
 import org.apache.cxf.binding.soap.interceptor.AbstractSoapInterceptor;
@@ -60,11 +62,13 @@ import org.apache.cxf.interceptor.Fault;
 import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.interceptor.InterceptorChain;
 import org.apache.cxf.interceptor.OutgoingChainInterceptor;
+import org.apache.cxf.interceptor.ReleaseTempFileHoldInterceptor;
 import org.apache.cxf.jaxws.handler.AbstractProtocolHandlerInterceptor;
 import org.apache.cxf.jaxws.handler.HandlerChainInvoker;
 import org.apache.cxf.message.Exchange;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
+import org.apache.cxf.message.MessageUtils;
 import org.apache.cxf.phase.Phase;
 import org.apache.cxf.staxutils.StaxUtils;
 import org.apache.cxf.transport.MessageObserver;
@@ -130,6 +134,27 @@ public class SOAPHandlerInterceptor extends
             return;
         }
 
+        // Liberty change begin
+        if (AttachmentUtil.isHoldTempFilesPropertyTrue(message)) {
+            try {
+                if (!MessageUtils.isOutbound(message)) {
+                    // When temporary file is read at inbound request,
+                    // cache mechanism marks it for deletion.
+                    // Trying to read same file at outbound response results in empty file
+                    // Here we prevent deletion of the file
+                    AttachmentUtil.holdTempFiles(message);
+                }
+            } catch (IOException e) {
+                LOG.warning("Attempt of putting hold on temporary file and stream failed!");
+            }
+            if (isFinestEnabled) {
+                LOG.finest("ReleaseTempFileHoldInterceptor will be added to interceptor chain.");
+            }
+            // Till we delete at outbound response with ReleaseTempFileHoldInterceptor
+            message.getInterceptorChain().add(new ReleaseTempFileHoldInterceptor());
+        }
+        // Liberty change end
+        
         checkUnderstoodHeaders(message);
 
         if (getInvoker(message).isOutbound()) {

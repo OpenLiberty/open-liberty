@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -146,3 +146,6 @@ jmx.rest.client.connection.disconnect=CWWKX0231I: \u010clen kolektivu zav\u0159e
 jmx.rest.client.connection.disconnect.explanation=\u010clen odpojen\u00fd od \u0159adi\u010de.
 jmx.rest.client.connection.disconnect.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
+jmx.rest.client.server.result.exception=CWWKX0232E: Server vr\u00e1til t\u0159\u00eddu, kter\u00e1 nen\u00ed klientovi k dispozici: {0}
+jmx.rest.client.server.result.exception.explanation=Jak\u00e9koli rozhran\u00ed nebo implementa\u010dn\u00ed t\u0159\u00edda, kterou server vrac\u00ed, mus\u00ed b\u00fdt k dispozici klientovi.
+jmx.rest.client.server.result.exception.useraction=Zkontrolujte, zda jsou v\u0161echny po\u017eadovan\u00e9 t\u0159\u00eddy dostupn\u00e9 v cest\u011b ke t\u0159\u00edd\u00e1m klienta.

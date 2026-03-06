@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,13 +21,14 @@ import javax.enterprise.inject.spi.Bean;
 import javax.enterprise.inject.spi.BeanManager;
 import javax.enterprise.inject.spi.CDI;
 
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 @Component(service = { CDIHelper.class },
            configurationPolicy = ConfigurationPolicy.IGNORE,
@@ -36,6 +37,7 @@ import com.ibm.ws.cdi.CDIService;
 public class CDIHelper {
 
     private static CDIService cdiService;
+    private static final TraceComponent tc = Tr.register(CDIHelper.class);
 
     @SuppressWarnings("static-access")
     @Reference
@@ -71,7 +73,7 @@ public class CDIHelper {
     @SuppressWarnings("rawtypes")
     @FFDCIgnore(IllegalStateException.class)
     public static CDI getCDI() {
-        if (! cdiService.isCurrentModuleCDIEnabled()) {
+        if (!cdiService.isCurrentModuleCDIEnabled()) {
             return null;
         }
         try {
@@ -97,5 +99,4 @@ public class CDIHelper {
         }
         return elProcessor;
     }
-
 }

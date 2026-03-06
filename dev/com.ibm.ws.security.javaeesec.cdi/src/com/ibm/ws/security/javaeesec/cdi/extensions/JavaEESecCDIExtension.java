@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -77,6 +77,8 @@ import com.ibm.ws.webcontainer.security.metadata.LoginConfiguration;
 import com.ibm.ws.webcontainer.security.metadata.SecurityMetadata;
 import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
 import com.ibm.wsspi.webcontainer.metadata.WebModuleMetaData;
+
+import io.openliberty.security.jakartasec.services.JakartaSecurityValidationService;
 
 /**
  * TODO: Add all JSR-375 API classes that can be bean types to api.classes.
@@ -874,7 +876,10 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
     }
 
     /**
-     * make sure that there is one HAM for each modules, and if there is a HAM in a module, make sure there is no login configuration in web.xml.
+     * Verify the configuration after all the beans have been discovered.
+     *
+     * - ensure for Jakarta Security 1.0-3.0, there is one HAM for each module, and
+     * - if there is a HAM in a module, make sure there is no login configuration in web.xml
      **/
     private void verifyConfiguration() throws DeploymentException {
         Map<URL, ModuleMetaData> mmds = getModuleMetaDataMap();
@@ -885,8 +890,8 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                     String j2eeModuleName = mmd.getJ2EEName().getModule();
                     Map<Class<?>, Properties> authMechs = httpAuthenticationMechanismsTracker.getAuthMechs(applicationName, j2eeModuleName);
                     if (authMechs != null && !authMechs.isEmpty()) {
-                        // make sure that only one HAM.
-                        if (authMechs.size() != 1 && !isDecoratorOrAlternative(authMechs)) {
+                        // ensure one HAM for each module (JS 1.0-3.0 only)
+                        if (!JakartaSecurityValidationService.isJakartaSecurity40OrHigher() && authMechs.size() != 1 && !isDecoratorOrAlternative(authMechs)) {
                             String appName = mmd.getJ2EEName().getApplication();
                             String authMechNames = getAuthMechNames(authMechs);
                             Tr.error(tc, "JAVAEESEC_CDI_ERROR_MULTIPLE_HTTPAUTHMECHS", j2eeModuleName, appName, authMechNames);
@@ -894,6 +899,7 @@ public class JavaEESecCDIExtension<T> implements Extension, WebSphereCDIExtensio
                             throw new DeploymentException(msg);
                         }
 
+                        // correct number of HAMs, ensure no login config in web.xml
                         SecurityMetadata smd = (SecurityMetadata) ((WebModuleMetaData) mmd).getSecurityMetaData();
                         if (smd != null) {
                             LoginConfiguration lc = smd.getLoginConfiguration();

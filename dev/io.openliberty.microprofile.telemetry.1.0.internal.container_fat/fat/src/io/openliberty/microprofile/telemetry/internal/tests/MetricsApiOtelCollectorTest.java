@@ -141,15 +141,17 @@ public class MetricsApiOtelCollectorTest {
         Log.info(c, "testDoubleUpDownCounter", "response: " + response);
         getApiMetrics("testDoubleUpDownCounter", "counter", "-40");
     }
+
     /**
      * Gets metrics from otelcollector:3131/metrics in the prometheus format.
      * For more info on the Prometheus metrics format: 
      * https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md#text-format-details
      */
-    
     public void getApiMetrics(String name, String type, String value) throws Exception {
-        String result = client.dumpMetrics();
         
+        waitForApiMetrics();
+        
+        String result = client.dumpMetrics();
         // Add null check for result before using it
         if (result == null) {
             fail("No metrics data returned from collector");
@@ -166,5 +168,21 @@ public class MetricsApiOtelCollectorTest {
             }
         }
         fail(name + " not found in OpenTelemetry Collector output");
+    }
+
+    public void waitForApiMetrics() throws Exception {
+        int maxAttempts = 30;
+
+        for (int i = 0; i < maxAttempts; i++) {
+            String result = client.dumpMetrics();
+            if (result != null) {
+                Log.info(c, "waitForApiMetrics", result);
+                Log.info(c, "waitForApiMetrics", "OtelCollectorQueryClient ready within " + i + " seconds.");
+                return;
+            }
+            Thread.sleep(1000);
+        }
+
+        Log.info(c, "waitForApiMetrics", "OtelCollectorQueryClient not ready within " + maxAttempts + " seconds.");
     }
 }

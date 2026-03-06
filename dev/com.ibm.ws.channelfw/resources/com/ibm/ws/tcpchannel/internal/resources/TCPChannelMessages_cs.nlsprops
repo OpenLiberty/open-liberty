@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: Inicializace kan\u00e1lu TCP {0} se nezda\u0159ila. Nepod
 BIND_ERROR.explanation=Operace sv\u00e1z\u00e1n\u00ed soketu se nezda\u0159ila. K tomu doch\u00e1z\u00ed obvykle v p\u0159\u00edpad\u011b, \u017ee je dan\u00e9 \u010d\u00edslo portu ji\u017e obsazeno. Zkontrolujte text zpr\u00e1vy v\u00fdjimky v chybov\u00e9 zpr\u00e1v\u011b, kde jsou uvedeny dal\u0161\u00ed informace.
 BIND_ERROR.useraction=Ov\u011b\u0159te, zda byl kan\u00e1l TCP konfigurov\u00e1n pro pou\u017eit\u00ed spr\u00e1vn\u00e9ho \u010d\u00edsla portu.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: Kan\u00e1l TCP {0} p\u0159ekro\u010dil maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed {1}.
-MAX_CONNS_EXCEEDED.explanation=Uveden\u00fd kan\u00e1l TCP p\u0159ekro\u010dil maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed a nyn\u00ed n\u011bkter\u00e1 p\u0159ipojen\u00ed odm\u00edt\u00e1.
+MAX_CONNS_EXCEEDED=CWWKO0222W: TCP kan\u00e1l {0} p\u0159ekro\u010dil maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed {1}.
+MAX_CONNS_EXCEEDED.explanation=Zadan\u00fd kan\u00e1l TCP p\u0159ekra\u010duje maxim\u00e1ln\u00ed po\u010det otev\u0159en\u00fdch p\u0159ipojen\u00ed a odm\u00edt\u00e1 n\u011bkter\u00e1 p\u0159ipojen\u00ed. Tato zpr\u00e1va se zobrazuje maxim\u00e1ln\u011b jednou za 10 minut, dokud stav p\u0159etrv\u00e1v\u00e1.
 MAX_CONNS_EXCEEDED.useraction=Pokud pot\u0159ebujete v\u00edce p\u0159ipojen\u00ed, zm\u011b\u0148te maxim\u00e1ln\u00ed povolen\u00fd po\u010det povolen\u00fdch p\u0159ipojen\u00ed.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: Kan\u00e1lu TCP {0} se nepoda\u0159ilo z\u00edskat podproces z fondu podproces\u016f {1}.

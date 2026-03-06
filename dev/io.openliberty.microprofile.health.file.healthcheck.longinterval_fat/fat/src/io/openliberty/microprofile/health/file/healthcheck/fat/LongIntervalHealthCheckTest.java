@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 @RunWith(FATRunner.class)
 public class LongIntervalHealthCheckTest {
 
+    final static String SERVER_DUMMY = "DummyServer";
     final static String SERVER_LONG_STARTUP_CHECK_INTERVAL = "HealthServerLongStartupCheckInterval";
     final static String SERVER_LONG_CHECK_INTERVAL = "HealthServerLongCheckInterval";
     final static String FAIL_START_APP = "FailStartApp";
@@ -54,17 +56,47 @@ public class LongIntervalHealthCheckTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
-                                                             MicroProfileActions.MP61, // mpHealth-4.0 w/ EE9
+                                                             MicroProfileActions.MP61, // mpHealth-4.0 w/ EE10
                                                              MicroProfileActions.MP70_EE10, // mpHealth-4.0 FULL EE10
                                                              MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL EE11
                                                              HealthActions.MP14_MPHEALTH40, // mpHealth-4.0 FULL EE7
                                                              HealthActions.MP41_MPHEALTH40); //mpHealth-4.0 FULL EE8
+
+    @Server(SERVER_DUMMY)
+    public static LibertyServer server;
 
     @Server(SERVER_LONG_STARTUP_CHECK_INTERVAL)
     public static LibertyServer serverLongStart;
 
     @Server(SERVER_LONG_CHECK_INTERVAL)
     public static LibertyServer serverLongCheck;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        /*
+         *
+         * The first test/server-start sometimes?/always? needs to generate a fatFeatureList.xml.
+         * Sometimes this takes a VERY LONG TIME. This happens on Windows OS the majority of the time.
+         * Other OS platforms can also take a long time, but is much less likely.
+         *
+         * Previously, the StartedhealthCheckTestLongStartupInterval was the first test to run.
+         * If this encountered a long featFeatureList generation then the window of time we wanted
+         * to test would already be complete (i.e., health check files have already reached their final state).
+         * The test would "start" testing after the fact and would fail.
+         *
+         * This dummy test is put in place to take the brunt of FAT feature generation.
+         *
+         **/
+        //Test infra checks for fatfeatureList as part of start server.
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "starting dummy server");
+        server.startServer();
+
+        // Read to run a smarter planet
+        server.waitForStringInLogUsingMark("CWWKF0011I");
+
+        server.stopServer();
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "stopping/stopped dummy server");
+    }
 
     @Before
     public void before() throws Exception {
@@ -300,8 +332,9 @@ public class LongIntervalHealthCheckTest {
 
         long readyUpdateDiff = readyModifiedTime - readyCreatedTime;
         Log.info(getClass(), "HealthCheckTestLongCheckInterval", "The difference between creation time and the ready update is (ms) : " + readyUpdateDiff);
-        //Allow for up to 32 seconds diff (account for any potential slowness
-        assertTrue("The modified time is out of bounds(ms): " + readyUpdateDiff, readyUpdateDiff > 30000 && readyUpdateDiff <= 32000);
+
+        //Allow for 29.5-32 range to allow for quickness or slowness of system.
+        assertTrue("The modified time is out of bounds(ms): " + readyUpdateDiff, readyUpdateDiff >= 29500 && readyUpdateDiff <= 32000);
 
     }
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -563,24 +563,14 @@ public class DataExperimentalServlet extends FATServlet {
 
         assertEquals(Arrays.toString(removed), 0, removed.length);
 
-        // TODO enable once #29073 is fixed
-        // but it might be a different EclipseLink bug.
-        // SELECT o.name FROM Town o WHERE (id(o)=?1)
-        // is wrongly interpreted as:
-        // SELECT NAME FROM Town WHERE (STATENAME = ?)
-
         // Ensure non-matching entities remain in the database
-        //assertEquals(true, towns.existsById(TownId.of("Rochester", "Minnesota")));
+        assertEquals(true, towns.existsById(TownId.of("Rochester", "Minnesota")));
     }
 
     /**
      * Repository method with the Count keyword that counts how many matching entities there are.
      */
-    // TODO enable once #29073 is fixed
-    // SELECT COUNT(o) FROM Town o WHERE (o.stateName=?1 AND id(o)<>?2)
-    // is wrongly interpreted as:
-    // SELECT COUNT(STATENAME) FROM Town WHERE (((STATENAME = ?) AND (STATENAME <> ?)))
-    //@Test
+    @Test
     public void testIdClassCountKeyword() {
         assertEquals(1L,
                      towns.countByStateButNotTown("Missouri",
@@ -601,11 +591,7 @@ public class DataExperimentalServlet extends FATServlet {
      * Repository method performing a parameter-based query on a compound entity Id which is an IdClass,
      * without annotating the method parameter.
      */
-    // TODO enable once #29073 is fixed
-    // SELECT o.name FROM Town o WHERE (o.population>?1 AND id(o)=?2)
-    // is wrongly interpreted as:
-    // SELECT NAME AS a1 FROM Town WHERE ((POPULATION > ?) AND (STATENAME = ?)) OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-    //@Test
+    @Test
     public void testIdClassFindByParametersUnannotated() {
         assertEquals(true, towns.isBiggerThan(100000, TownId.of("Rochester", "Minnesota")));
         assertEquals(false, towns.isBiggerThan(500000, TownId.of("Rochester", "Minnesota")));
@@ -651,24 +637,28 @@ public class DataExperimentalServlet extends FATServlet {
     public void testIdClassUpdateAssignIdClass() {
         towns.add(new Town("La Crosse", "Wisconsin", 52680, Set.of(608)));
         try {
-            // TODO enable once #29073 is fixed
-            //assertEquals(true, towns.existsById(TownId.of("La Crosse", "Wisconsin")));
+            assertEquals(true, towns.existsById(TownId.of("La Crosse", "Wisconsin")));
 
-            // TODO enable once #29073 is fixed
-            // UPDATE Town o SET o.name=?2, o.stateName=?3, o.population=?4, o.areaCodes=?5 WHERE (id(o)=?1)
-            // is misinterpreted as:
-            // UPDATE Town SET POPULATION = ?, CHANGECOUNT = (CHANGECOUNT + ?), STATENAME = ?, AREACODES = ?, NAME = ?
-            //  WHERE (STATENAME = ?)
+            // EclipseLink raises the following error, which appears to be valid
+            // because the grammar does not define that the ID(entityVar) function
+            // can be used in the update_item of the UPDATE clause:
+
+            // Syntax error parsing [UPDATE Town o SET id(o)=?2, o.population=?3,
+            //   o.areaCodes=?4, o.changeCount=o.changeCount + 1 WHERE (id(o)=?1)].
+            // [18, 23] The expression is invalid, which means it does not follow the
+            // JPQL grammar. (UPDATE Town o SET [ id(o) ] ...
 
             //assertEquals(1, towns.replace(TownId.of("La Crosse", "Wisconsin"),
-            //                              "Decorah", "Iowa", 7587, Set.of(563))); // TODO TownId.of("Decorah", "Iowa"), 7587, Set.of(563)));
+            //                              TownId.of("Decorah", "Iowa"),
+            //                              7587,
+            //                              Set.of(563)));
 
-            // TODO enable once #29073 is fixed
             //assertEquals(false, towns.existsById(TownId.of("La Crosse", "Wisconsin")));
             //assertEquals(true, towns.existsById(TownId.of("Decorah", "Iowa")));
 
             // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field
+            // test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
             //Town town = towns.findById(TownId.of("Decorah", "Iowa")).orElseThrow();
             //assertEquals("Decorah", town.name);
             //assertEquals("Iowa", town.stateName);
@@ -687,55 +677,24 @@ public class DataExperimentalServlet extends FATServlet {
     public void testIdClassUpdateAssignIdClassComponents() {
         towns.add(new Town("Janesville", "Wisconsin", 65615, Set.of(608)));
         try {
-            // TODO enable once #29073 is fixed
-            //assertEquals(true, towns.existsById(TownId.of("Janesville", "Wisconsin")));
+            assertEquals(true, towns.existsById(TownId.of("Janesville", "Wisconsin")));
 
             assertEquals(1, towns.replace("Janesville", "Wisconsin",
                                           "Ames", "Iowa", Set.of(515), 66427));
 
-            // TODO enable once #29073 is fixed
-            //assertEquals(false, towns.existsById(TownId.of("Janesville", "Wisconsin")));
-            //assertEquals(true, towns.existsById(TownId.of("Ames", "Iowa")));
+            assertEquals(false, towns.existsById(TownId.of("Janesville", "Wisconsin")));
+            assertEquals(true, towns.existsById(TownId.of("Ames", "Iowa")));
 
             // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
-            //Town town = cities.findById(TownId.of("Decorah", "Iowa")).orElseThrow();
+            // java.lang.IllegalArgumentException: Can not set java.util.Set field
+            // test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
+            //Town town = towns.findById(TownId.of("Ames", "Iowa")).orElseThrow();
             //assertEquals("Ames", town.name);
             //assertEquals("Iowa", town.stateName);
             //assertEquals(66427, town.population);
             //assertEquals(Set.of(515), town.areaCodes);
         } finally {
             assertEquals(1, towns.deleteWithinPopulationRange(65000, 67000).length);
-        }
-    }
-
-    /**
-     * Repository method with the Update keyword that makes an update by assigning the IdClass instance to something else.
-     */
-    @Test
-    public void testIdClassUpdateKeyword() {
-        towns.add(new Town("Madison", "Wisconsin", 269840, Set.of(608)));
-        try {
-            // TODO enable once #29073 is fixed
-            //assertEquals(true, towns.existsById(TownId.of("Madison", "Wisconsin")));
-
-            // TODO enable once IdClass is supported for @Update
-            // UnsupportedOperationException: @Assign IdClass
-            //assertEquals(1, cities.updateIdPopulationAndAreaCodes(TownId.of("Madison", "Wisconsin"), 269840,
-            //                                                      TownId.of("Des Moines", "Iowa"), 214133, Set.of(515)));
-
-            //assertEquals(false, cities.existsById(TownId.of("Madison", "Wisconsin")));
-            //assertEquals(true, cities.existsById(TownId.of("Des Moines", "Iowa")));
-
-            // TODO EclipseLink bug needs to be fixed:
-            // java.lang.IllegalArgumentException: Can not set java.util.Set field test.jakarta.data.experimental.web.Town.areaCodes to java.lang.Integer
-            //Town town = cities.findById(TownId.of("Des Moines", "Iowa")).orElseThrow();
-            //assertEquals("Des Moines", town.name);
-            //assertEquals("Iowa", town.stateName);
-            //assertEquals(214133, town.population);
-            //assertEquals(Set.of(515), town.areaCodes);
-        } finally {
-            assertEquals(1, towns.deleteWithinPopulationRange(214000, 270000).length);
         }
     }
 
@@ -799,8 +758,7 @@ public class DataExperimentalServlet extends FATServlet {
      * WHERE clause and the UPDATE clause are intermixed and one of the
      * parameters is a composite IdClass value.
      */
-    // TODO enable once #29073 is fixed
-    //@Test
+    @Test
     public void testIntermixedParametersIncludingIdClass() {
 
         final int oldPopulation = 121395;

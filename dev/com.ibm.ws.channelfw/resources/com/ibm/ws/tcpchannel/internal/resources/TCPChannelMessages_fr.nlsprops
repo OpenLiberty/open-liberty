@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: L''initialisation du canal TCP {0} n''a pas r\u00e9ussi. 
 BIND_ERROR.explanation=L'op\u00e9ration de liaison de socket n'a pas r\u00e9ussi. La cause la plus courante est que le port indiqu\u00e9 est d\u00e9j\u00e0 utilis\u00e9.  Reportez-vous au message de l'exception dans le message d'erreur pour plus d'informations.
 BIND_ERROR.useraction=V\u00e9rifiez que le canal TCP a \u00e9t\u00e9 configur\u00e9 pour utiliser le num\u00e9ro de port correct.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: Le canal TCP {0} a d\u00e9pass\u00e9 le nombre maximum de connexions ouvertes autoris\u00e9 {1}.
-MAX_CONNS_EXCEEDED.explanation=Le canal TCP indiqu\u00e9 a d\u00e9pass\u00e9 le nombre maximum de connexions ouvertes autoris\u00e9 et rejette les nouvelles demandes de connexion.
+MAX_CONNS_EXCEEDED=CWWKO0222W: Le canal TCP {0} d\u00e9passe le nombre maximal de connexions ouvertes {1}.
+MAX_CONNS_EXCEEDED.explanation=Le canal TCP sp\u00e9cifi\u00e9 d\u00e9passe le nombre maximal de connexions ouvertes et refuse certaines connexions. Ce message est \u00e9mis au maximum une fois toutes les 10 minutes tant que la condition persiste.
 MAX_CONNS_EXCEEDED.useraction=Si un plus grand nombre de connexions est n\u00e9cessaire, mettez \u00e0 jour le nombre de connexions autoris\u00e9es.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: Le canal TCP {0} n''a pas obtenu d''unit\u00e9 d''ex\u00e9cution depuis le pool d''unit\u00e9s d''ex\u00e9cution {1}.

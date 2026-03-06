@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2025 IBM Corporation and others.
+    Copyright (c) 2017, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -112,6 +112,29 @@
   </dataSource>
   
   <!-- 
+    Verify setting server name and port number causes external connection when driverType = 2 is set
+    Note: cannot run this test without a z/OS system which supports the use of the type 2 driver 
+    and client catalog.
+  -->
+  <dataSource id="ds-type-2-remote" jndiName="jdbc/ds-type-2-remote" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc serverName="${DB2_HOSTNAME}" portNumber="${DB2_PORT}" databaseName="${DB2_DBNAME}"
+                        user="${DB2_USER}" password="${DB2_PASS}"
+                        driverType="2"/>
+  </dataSource>
+  
+  <!-- 
+    Verify defaults values no longer override client catalog when using driverType = 2
+    Note: cannot run this test without a z/OS system which supports the use of the type 2 driver 
+    and client catalog. But can manually verify that we no longer set the default serverName property
+  -->
+  <dataSource id="ds-type-2-override" jndiName="jdbc/ds-type-2-override" type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="DB2Lib"/>
+    <properties.db2.jcc databaseName="${DB2_DBNAME}" driverType="2" 
+                        user="${DB2_USER}" password="${DB2_PASS}"/>
+  </dataSource>
+  
+  <!-- 
     Verify client re-route config
   -->
   <dataSource id="ds-client-reroute" jndiName="jdbc/ds-client-reroute">
@@ -149,7 +172,7 @@
   </dataSource>
   
   <!-- 
-    Verify trace configuration will allow JCC trace to be output to a seperate file
+    Verify trace configuration will allow JCC trace to be output to a separate file
   -->
   <dataSource id="ds-custom-trace" jndiName="jdbc/ds-custom-trace">
     <jdbcDriver libraryRef="DB2Lib"/>

@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="fat/src"/>
+	<classpathentry kind="src" path="test-applications/attachmentProperties/src"/>
+	<classpathentry kind="src" path="test-applications/calculatorAsync/src"/>
 	<classpathentry kind="src" path="test-applications/testMTOMClient/src"/>
 	<classpathentry kind="src" path="test-applications/testMTOM/src"/>
 	<classpathentry kind="src" path="test-applications/testBindingTypeWsdlWeb/src"/>

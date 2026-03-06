@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -51,8 +51,21 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
 
     private final Utils utils;
 
+    // JS 4.0+ - store properties for qualified HAMs only
+    private Properties qualifiedProperties = null;
+
     public BasicHttpAuthenticationMechanism() {
         utils = new Utils();
+    }
+
+    /**
+     * Used for HAMs with qualifiers, need to store them per HAM as the
+     * properties will (should!) be different.
+     *
+     * @param props The properties for this qualified HAM instance
+     */
+    public void setQualifiedProperties(Properties props) {
+        this.qualifiedProperties = props;
     }
 
     // this is for unit test.
@@ -100,12 +113,18 @@ public class BasicHttpAuthenticationMechanism implements HttpAuthenticationMecha
     }
 
     private void setRealmName() {
-        mpp = getModulePropertiesProvider();
-        if (mpp != null) {
-            Properties props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
-            if (props != null) {
-                realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
+        Properties props = null;
+        // JS 4.0+ - if set, use explicitly specified properties, else fall back to previous
+        if (qualifiedProperties != null) {
+            props = qualifiedProperties;
+        } else {
+            mpp = getModulePropertiesProvider();
+            if (mpp != null) {
+                props = mpp.getAuthMechProperties(BasicHttpAuthenticationMechanism.class);
             }
+        }
+        if (props != null) {
+            realmName = (String) props.get(JavaEESecConstants.REALM_NAME);
         }
     }
 

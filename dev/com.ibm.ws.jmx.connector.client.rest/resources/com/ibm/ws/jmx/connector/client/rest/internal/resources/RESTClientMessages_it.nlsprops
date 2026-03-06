@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -146,3 +146,6 @@ jmx.rest.client.connection.disconnect=CWWKX0231I: Il membro collective ha chiuso
 jmx.rest.client.connection.disconnect.explanation=Il membro \u00e8 disconnesso dal controllore.
 jmx.rest.client.connection.disconnect.useraction=Nessuna azione richiesta.
 
+jmx.rest.client.server.result.exception=CWWKX0232E: Il server ha restituito una classe non disponibile per il client: {0}
+jmx.rest.client.server.result.exception.explanation=Qualsiasi interfaccia o classe di implementazione restituita dal server deve essere disponibile per il client.
+jmx.rest.client.server.result.exception.useraction=Verificare che tutte le classi richieste siano disponibili nel percorso di classe del client.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@
 
 # All messages must use the range CWWKC1410 to CWWKC1499
 
-CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Adnotacja harmonogramu {0} okre\u015bla pust\u0105 warto\u015b\u0107 dla sekund, w kt\u00f3rych wykonywane jest zadanie. Podaj niepust\u0105 warto\u015b\u0107 dla pola sekund lub pomi\u0144 pole sekund w adnotacji harmonogramu. Pomini\u0119cie pola sekund powoduje, \u017ce zadanie zostanie uruchomione na pocz\u0105tku minuty.
-CWWKC1410.schedule.lacks.seconds.explanation=Pusta warto\u015b\u0107 tablicy oznacza, \u017ce pole sekund musi zosta\u0107 zignorowane podczas obliczania zaplanowanych czas\u00f3w. Pomini\u0119cie pola sekund powoduje, \u017ce zadanie zostanie uruchomione na pocz\u0105tku minuty.
-CWWKC1410.schedule.lacks.seconds.useraction=Zmodyfikuj pole sekund adnotacji Harmonogram, aby okre\u015bli\u0107 warto\u015b\u0107 niepust\u0105, lub pomi\u0144 pole sekund w adnotacji Harmonogram.
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: Adnotacja harmonogramu, {0}, okre\u015bla pust\u0105 list\u0119 sekund, w kt\u00f3rych zadanie jest wykonywane. Okre\u015bl niepust\u0105 list\u0119 dla pola sekund lub pomi\u0144 pole sekund w adnotacji harmonogramu. Pomini\u0119cie pola sekund powoduje zaplanowanie zadania do wykonania na pocz\u0105tku minuty.
+CWWKC1410.schedule.lacks.seconds.explanation=Pusta lista oznacza, \u017ce podczas obliczania zaplanowanych czas\u00f3w nale\u017cy pomin\u0105\u0107 pole sekund. Pomini\u0119cie pola sekund powoduje zaplanowanie zadania do wykonania na pocz\u0105tku minuty.
+CWWKC1410.schedule.lacks.seconds.useraction=Zmodyfikuj pole sekund w adnotacji harmonogramu, aby okre\u015bli\u0107 niepust\u0105 list\u0119, lub pomi\u0144 pole sekund w adnotacji harmonogramu.
 
 CWWKC1411.qualified.res.err=CWWKC1411E: Serwer nie utworzy\u0142 komponentu bean {0} dla adnotacji {1} lub elementu deskryptora wdro\u017cenia {2} . Element adnotacji lub deskryptora wdro\u017cenia ma nazw\u0119 {3} i kwalifikatory {4} i jest zdefiniowany w artefakcie aplikacji {5} . B\u0142\u0105d to {6}
 CWWKC1411.qualified.res.err.explanation=Kod nie utworzy\u0142 zasobu ani nie zarejestrowa\u0142 zasobu jako ziarna.
