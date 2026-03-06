@@ -259,14 +259,14 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn off auto read for H1
                 ctx.channel().config().setAutoRead(false);
 
-                pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                pipeline.addBefore(HttpDispatcherHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 
                 if(pipeline.get(FlowControlHandler.class) == null){
                     pipeline.addBefore(HTTP_KEEP_ALIVE_HANDLER_NAME, FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
                 }
 
                 if(pipeline.get(ReadFlowHandler.class) == null){
-                    pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                    pipeline.addBefore(HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
                 }
                 
                 ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
@@ -317,7 +317,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             }
             
             if(pipeline.get(ReadFlowHandler.class) == null) {
-                pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                pipeline.addBefore(HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
             }
         }
 

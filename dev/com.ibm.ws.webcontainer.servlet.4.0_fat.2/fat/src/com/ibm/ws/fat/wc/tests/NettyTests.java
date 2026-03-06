@@ -467,11 +467,7 @@ public class NettyTests {
         }
     }
 
-<<<<<<< HEAD
     @Test
-=======
-    //@Test
->>>>>>> 6feccf0f1bd (Netty CTS test debugging)
     public void TestNettyReadListener_nioInputTest_TCK() throws Exception {
         //int sleepInSeconds = Integer
         //                .parseInt(_props.getProperty("servlet_async_wait").trim());
