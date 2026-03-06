@@ -97,7 +97,7 @@ public class Activator extends AbstractExtender
     private ComponentRegistry m_componentRegistry;
 
     //  thread acting upon configurations
-    private ComponentActorExecutor m_componentActor;
+    private ComponentActorThread m_componentActor;
 
     private ServiceRegistration<ServiceComponentRuntime> m_runtime_reg;
 
@@ -210,8 +210,7 @@ public class Activator extends AbstractExtender
 
         // prepare component registry
         m_componentBundles = new HashMap<>();
-        m_componentActor = new ComponentActorExecutor( this.logger );
-        m_componentRegistry = new ComponentRegistry( this.m_configuration, this.logger, this.m_componentActor );
+        m_componentRegistry = new ComponentRegistry( this.m_configuration, this.logger );
 
         final ServiceComponentRuntimeImpl runtime = new ServiceComponentRuntimeImpl( m_globalContext, m_componentRegistry );
         m_runtime_reg = m_context.registerService( ServiceComponentRuntime.class,
@@ -222,6 +221,12 @@ public class Activator extends AbstractExtender
         // log SCR startup
         logger.log(Level.INFO, " Version = {0}",
             null, m_bundle.getVersion().toString() );
+
+        // create and start the component actor
+        m_componentActor = new ComponentActorThread( this.logger );
+        Thread t = new Thread( m_componentActor, "SCR Component Actor" );
+        t.setDaemon( true );
+        t.start();
 
         super.doStart();
 
@@ -425,13 +430,14 @@ public class Activator extends AbstractExtender
         // dispose component registry
         if ( m_componentRegistry != null )
         {
+            m_componentRegistry.shutdown();
             m_componentRegistry = null;
         }
 
         // terminate the actor thread
         if ( m_componentActor != null )
         {
-            m_componentActor.shutdownNow();
+            m_componentActor.terminate();
             m_componentActor = null;
         }
         ClassUtils.setFrameworkWiring(null);
