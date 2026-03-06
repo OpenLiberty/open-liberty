@@ -39,6 +39,11 @@ import componenttest.topology.impl.LibertyServer;
  * 1. Except $version, $ prefix any name will be part of the new cookie name (including $ sign).
  * That also applies to those special attributes like Domain, Path
  * 2. max-age=0 set by the application is expecting explicitly in the response Set-Cookie header
+ * 
+ * Updated to also test EE11 change
+ * 11.1 : Comma delimiter will discard the cookie (except comma inside the Expires).
+ * 11.2 : Quotes are part of cookie value.
+ * 11.3 : Double Quotes (DQuotes) cannot be anywhere in cookie name.
  *
  * request URL: /TestRequestCookieHeader?testName=xyz
  */
@@ -78,36 +83,24 @@ public class Servlet60RequestCookieHeaderTest {
      */
     @Test
     public void test_MixCookieNameWithDollarSigns() throws Exception {
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=MixCookieNames";
-        LOG.info("\n Sending Request [" + url + "]");
-        HttpGet getMethod = new HttpGet(url);
+        LOG.info(">>>>> test_MixCookieNameWithDollarSigns <<<<<<");
+        
+        String testName = "test_MixCookieNameWithDollarSigns";
+        String cookieHeader = "$Version=1; name1=value1; $Path=/Dollar_Path; $Domain=localhost; $NAME2=DollarNameValue; Domain=DomainValue";
 
-        //Set request header COOKIE
-        //server is expecting to parse this header into 5 separate cookies
-        getMethod.addHeader("Cookie", "$Version=1; name1=value1; $Path=/Dollar_Path; $Domain=localhost; $NAME2=DollarNameValue; Domain=DomainValue");
-
-        try (CloseableHttpClient client = HttpClientBuilder.create().build()) {
-            try (CloseableHttpResponse response = client.execute(getMethod)) {
-                String responseText = EntityUtils.toString(response.getEntity());
-                LOG.info("\n" + "Response Text: [" + responseText + "]");
-
-                String headerValue = response.getHeader("TestResult").getValue();
-
-                LOG.info("\n TestResult : " + headerValue);
-
-                assertTrue("The response does not contain Result [PASS]. TestResult header [" + headerValue + "]", headerValue.contains("Result [PASS]"));
-
-            }
-        }
+        sendRequest(testName, cookieHeader);
     }
 
     /*
+     * Test Response Set-Cookie
      * EE 10 expects both Max-Age=0 and Expires
      * EE 11 and others - expect Expires
      */
     @Test
     public void test_MaxAgeZero() throws Exception {
-        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=MaxAgeZero";
+        LOG.info(">>>>> test_MaxAgeZero <<<<<<");
+        
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=test_MaxAgeZero";
         LOG.info("\n Sending Request [" + url + "]");
         HttpGet getMethod = new HttpGet(url);
 
@@ -214,11 +207,11 @@ public class Servlet60RequestCookieHeaderTest {
     }
 
     /*
-     * Servlet 6.0:
+     * 6.0:
      *      Name: Only Wrapped DQuote is valid but quotes are not part of the name; Anywhere else is invalid
      *      Value: Wrapped DQuote is removed. Anywhere else is part of the value.
      *      
-     * Servlet 6.1:
+     * 6.1:
      *      Name: No DQuote anywhere in name. SQuote is allowed and part of the name
      *      Value: All quotes are part of value. Wrapped quotes are part of the value
      *          
@@ -274,16 +267,6 @@ public class Servlet60RequestCookieHeaderTest {
     private void sendRequest(String urlPattern, String cookieHeader) throws Exception {
         String EXPECTED_TEXT = "Result [PASS]";
         String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=" + urlPattern;
-        
-        /* To test locally against any server (even none-Liberty like tWAS, TC): 
-         *    run ./gradlew test once to obtain the generated .war , 
-         *    deploy on that test server (mind the javax and jakarta namespace server.)
-         *    comment out all the "String url" lines in this test and replacing with url contain "http://localhost:localPort" like below.
-         *    run the client ./gradlew test normally.
-         * 
-         * String url = "http://localhost:9860" +  "/" + TEST_APP_NAME + "/TestRequestCookieHeader?testName=" + urlPattern;
-         */
-
 
         LOG.info("Sending Request [" + url + "]");
         LOG.info("Request Cookie [" + cookieHeader + "]");

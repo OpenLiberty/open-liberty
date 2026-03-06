@@ -55,10 +55,10 @@ public class TestRequestCookieHeader extends HttpServlet {
 
         if (testName == null) {
             return;
-        } else if (testName.equalsIgnoreCase("MixCookieNames")) {
-            testMixCookieNamesWithDollarSign(request, response);
-        } else if (testName.equalsIgnoreCase("MaxAgeZero")) {
-            testMaxAgeZero(request, response);
+        } else if (testName.equalsIgnoreCase("test_MixCookieNameWithDollarSigns")) {
+            test_MixCookieNameWithDollarSigns(request, response);
+        } else if (testName.equalsIgnoreCase("test_MaxAgeZero")) {
+            test_MaxAgeZero(request, response);
         } else if (testName.equalsIgnoreCase("test_Cookie_Other")) {
             test_Cookie_Other(request, response);
         } else if (testName.equalsIgnoreCase("test_Cookie_Quoted_Value")) {
@@ -77,7 +77,7 @@ public class TestRequestCookieHeader extends HttpServlet {
      * Cookie: $Version=1; name1=value1; $Path=/Dollar_Path; $Domain=localhost; $NAME2=DollarNameValue; Domain=DomainValue
      * Expecting 5 cookies
      */
-    private void testMixCookieNamesWithDollarSign(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void test_MixCookieNameWithDollarSigns(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOG.info("Test testMixCookieNamesWithDollarSign");
         Cookie[] cookie = request.getCookies();
         int i = cookie.length;
@@ -149,7 +149,7 @@ public class TestRequestCookieHeader extends HttpServlet {
         response.setHeader("TestResult", sBuilderResponse.toString());
     }
 
-    private void testMaxAgeZero(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    private void test_MaxAgeZero(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         LOG.info("Test testMaxAgeZero");
 
         ServletOutputStream sos = response.getOutputStream();
