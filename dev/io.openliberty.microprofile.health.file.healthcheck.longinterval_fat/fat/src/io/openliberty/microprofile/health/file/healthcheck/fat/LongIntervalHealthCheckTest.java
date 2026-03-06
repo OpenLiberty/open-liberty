@@ -128,7 +128,7 @@ public class LongIntervalHealthCheckTest {
      * This ensures that first query (i.e. first check of the startup check process will fail).
      *
      */
-    public void StartedHealthCheckTestLongStartupInterval() throws Exception {
+    public void StartedHealthCheckTestLongStartupInterval() throws Exception { 
         final String METHOD_NAME = "StartedHealthCheckTestLongStartupInterval";
 
         WebArchive testWAR = ShrinkWrap
