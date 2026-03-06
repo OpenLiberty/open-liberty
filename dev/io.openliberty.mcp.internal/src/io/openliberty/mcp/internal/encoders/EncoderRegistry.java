@@ -41,8 +41,18 @@ public class EncoderRegistry {
     }
 
     private int getPriority(Object encoder) {
-        Priority priority = encoder.getClass().getAnnotation(Priority.class);
-        return priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
+        int result = DEFAULT_ENCODER_PRIORITY;
+        Class<?> encoderClass = encoder.getClass();
+
+        while (encoderClass != null && encoderClass != Object.class) {
+            Priority priority = encoderClass.getAnnotation(Priority.class);
+            if (priority != null) {
+                result = priority.value();
+                break;
+            }
+            encoderClass = encoderClass.getSuperclass();
+        }
+        return result;
     }
 
     public Optional<Encoder<?, ?>> findEncoder(Class<?> returnType) {
