@@ -27,6 +27,7 @@ import io.openliberty.mcp.internal.Capabilities.ClientCapabilities;
 import io.openliberty.mcp.internal.Capabilities.Elicitation;
 import io.openliberty.mcp.internal.Capabilities.Roots;
 import io.openliberty.mcp.internal.Capabilities.Sampling;
+import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.Literals;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.ToolRegistry;
@@ -51,6 +52,7 @@ import jakarta.json.bind.JsonbException;
  */
 public class MessageParsingTest {
     private static Jsonb jsonb;
+    private static ConverterRegistry testConverterRegistry;
 
     @BeforeClass
     public static void setup() {
@@ -59,6 +61,7 @@ public class MessageParsingTest {
         jsonb = JsonbBuilder.create(jsonbConfig);
         ToolRegistry registry = new ToolRegistry(null, jsonb);
         ToolRegistry.set(registry);
+        testConverterRegistry = TestUtils.createTestConverterRegistry();
 
         Tool testTool = Literals.tool("echo", "Echo", "Echos the input");
         List<ToolArgument> arguments = List.of(new ToolArgument("input", "", true, String.class, ""));
@@ -93,7 +96,7 @@ public class MessageParsingTest {
         assertThat(request.id().value(), equalTo(new BigDecimal(2)));
         assertThat(request.getRequestMethod(), equalTo(RequestMethod.TOOLS_CALL));
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertEquals(Map.of("input", "Hello"), toolCallRequest.getArguments(jsonb, TestUtils.getTestConverterRegistry()));
+        assertEquals(Map.of("input", "Hello"), toolCallRequest.getArguments(jsonb, testConverterRegistry));
     }
 
     @Test
@@ -341,7 +344,7 @@ public class MessageParsingTest {
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
 
-        assertEquals(Map.of("num1", 111, "num2", 222), toolCallRequest.getArguments(jsonb, TestUtils.getTestConverterRegistry()));
+        assertEquals(Map.of("num1", 111, "num2", 222), toolCallRequest.getArguments(jsonb, testConverterRegistry));
     }
 
     @Test
@@ -361,7 +364,7 @@ public class MessageParsingTest {
                         """);
         McpRequest request = jsonb.fromJson(reader, McpRequest.class);
         McpToolCallParams toolCallRequest = request.getParams(McpToolCallParams.class, jsonb);
-        assertEquals(Map.of("input", true), toolCallRequest.getArguments(jsonb, TestUtils.getTestConverterRegistry()));
+        assertEquals(Map.of("input", true), toolCallRequest.getArguments(jsonb, testConverterRegistry));
     }
 
 }

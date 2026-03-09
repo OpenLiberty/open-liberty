@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,13 +21,11 @@ import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
-import jakarta.enterprise.inject.spi.CDI;
 
 @ApplicationScoped
 public class ConverterRegistry {
 
     private static final int DEFAULT_CONVERTER_PRIORITY = 0;
-    private static ConverterRegistry staticInstance = null;
 
     private Map<Type, List<DefaultValueConverter<?>>> convertersMap;
     private CreationalContext<?> context;
@@ -36,28 +34,6 @@ public class ConverterRegistry {
         this.convertersMap = convertersMap;
         this.context = context;
         sortConverters();
-    }
-
-    /**
-     * Get the CDI bean for ConverterRegistry,
-     * unless a static instance is set in order to have a ConverterRegistry to use for unit testing
-     *
-     * @return the application scoped ConverterRegistry
-     */
-    public static ConverterRegistry get() {
-        if (staticInstance != null) {
-            return staticInstance;
-        }
-        return CDI.current().select(ConverterRegistry.class).get();
-    }
-
-    /**
-     * For unit testing only
-     *
-     * @param converterRegistry
-     */
-    public static void set(ConverterRegistry converterRegistry) {
-        staticInstance = converterRegistry;
     }
 
     /**

@@ -1,3 +1,12 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
@@ -184,7 +193,6 @@ public class DefaultValueTest extends FATServletClient {
 
     @Test
     public void testToolCallWithDependentBeanCustomConverter() throws Exception {
-        assertNull(server.waitForStringInLog(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), 3000));
         String request = """
                           {
                           "id": 2,
@@ -214,6 +222,7 @@ public class DefaultValueTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+        assertNull(server.waitForStringInLog(Pattern.quote("[PersonConverterDependentBean] PreDestroy called"), 3000));
     }
 
     @Test

@@ -63,7 +63,7 @@ public class McpCdiExtension implements Extension {
 
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
 
-    private static final List<Bean<?>> encoderBeans = new ArrayList<>();
+    private final List<Bean<?>> encoderBeans = new ArrayList<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
     private EncoderRegistry encoderRegistry;
     private ConcurrentHashMap<String, ArrayList<String>> duplicateToolsMap = new ConcurrentHashMap<>();
@@ -177,6 +177,7 @@ public class McpCdiExtension implements Extension {
         }
 
         converterRegistry.registerConverters(converterMap, context);
+        tools.setConverterRegistry(converterRegistry);
     }
 
     private static void logEncoderRegistration(Bean<?> encoderBean) {

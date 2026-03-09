@@ -59,6 +59,7 @@ public class ToolRegistry implements ToolManager {
     }
 
     private final SchemaRegistry schemaRegistry;
+    private ConverterRegistry converterRegistry;
     private final Jsonb jsonb;
 
     private final ToolStore toolStore = new ToolStore();
@@ -123,6 +124,10 @@ public class ToolRegistry implements ToolManager {
         return new ToolDefinitionImpl(name);
     }
 
+    public void setConverterRegistry(ConverterRegistry converterRegistry) {
+        this.converterRegistry = converterRegistry;
+    }
+
     public class ToolDefinitionImpl implements ToolDefinition {
 
         private final String name;
@@ -135,7 +140,6 @@ public class ToolRegistry implements ToolManager {
         private Function<ToolArguments, ToolResponse> handler;
         private Function<ToolArguments, CompletionStage<ToolResponse>> asyncHandler;
         private Optional<ToolAnnotations> toolAnnotations = Optional.empty();
-        private ConverterRegistry converterRegistry;
 
         public ToolDefinitionImpl(String name) {
             this.name = name;
@@ -193,10 +197,6 @@ public class ToolRegistry implements ToolManager {
             if (arguments.stream().anyMatch(a -> a.name().equals(arg.name()))) {
                 String message = Tr.formatMessage(tc, "CWMCM0032E.duplicate.argument.name", this.name, arg.name());
                 throw new IllegalArgumentException(message);
-            }
-            if (converterRegistry == null) {
-                // get ConverterRegistry CDI bean
-                converterRegistry = ConverterRegistry.get();
             }
             for (var error : ToolValidation.validateToolArgument(arg, converterRegistry)) {
                 switch (error.type()) {

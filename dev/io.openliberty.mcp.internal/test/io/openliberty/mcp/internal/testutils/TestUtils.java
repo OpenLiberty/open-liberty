@@ -29,8 +29,6 @@ import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
  */
 public class TestUtils {
 
-    private static ConverterRegistry testConverterRegistry;
-
     /**
      * finds and mocks method of tool method
      *
@@ -91,13 +89,11 @@ public class TestUtils {
         return tools.get(0);
     }
 
-    public static ConverterRegistry getTestConverterRegistry() {
-        if (testConverterRegistry == null) {
-            Map<Type, List<DefaultValueConverter<?>>> convertersMap = new HashMap<>();
-            BuiltinDefaultValueConverters.CONVERTERS.forEach((type, converter) -> convertersMap.computeIfAbsent(type, k -> new ArrayList<>()).add(converter));
-            testConverterRegistry = new ConverterRegistry();
-            testConverterRegistry.registerConverters(convertersMap, null);
-        }
+    public static ConverterRegistry createTestConverterRegistry() {
+        Map<Type, List<DefaultValueConverter<?>>> convertersMap = new HashMap<>();
+        BuiltinDefaultValueConverters.CONVERTERS.forEach((type, converter) -> convertersMap.computeIfAbsent(type, k -> new ArrayList<>()).add(converter));
+        ConverterRegistry testConverterRegistry = new ConverterRegistry();
+        testConverterRegistry.registerConverters(convertersMap, null);
         return testConverterRegistry;
 
     }
