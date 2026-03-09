@@ -136,6 +136,7 @@ public class DefaultValueTest extends FATServletClient {
         assertNull(server.waitForStringInLog(Pattern.quote("[CityConverter] City converter with LOWER priority used"), 3000));
     }
 
+    @Test
     public void testToolCallWithToolArgCustomTypeDefaultValueAndInheritedConverter() throws Exception {
         String request = """
                           {

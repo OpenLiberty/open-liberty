@@ -16,7 +16,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 
@@ -68,19 +67,14 @@ public class ToolValidation {
         // Check default value
         if (argMetadata.defaultValue() != null && !argMetadata.defaultValue().isEmpty()) {
             Type boxedType = TypeUtility.box(argMetadata.type());
-            DefaultValueConverter<?> converter = converterRegistry.getConverter(boxedType).orElse(null);
-            if (converter != null) {
+            converterRegistry.getConverter(boxedType).ifPresentOrElse(converter -> {
                 try {
                     converter.convert(argMetadata.defaultValue());
                 } catch (Exception e) {
                     results.add(new ToolArgumentValidationError(ToolArgumentErrorType.CONVERSION_ERROR, e));
                 }
-            } else {
-                results.add(new ToolArgumentValidationError(ToolArgumentErrorType.NO_CONVERTER, null));
-            }
+            }, () -> results.add(new ToolArgumentValidationError(ToolArgumentErrorType.NO_CONVERTER, null)));
         }
-
         return results;
     }
-
 }
