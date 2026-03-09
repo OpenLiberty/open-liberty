@@ -79,6 +79,7 @@ public abstract class ProgrammaticServerEP extends Endpoint {
 
             // Shouldn't usually call session.close in onClose, but there is a loop condition that this might catch.
             try {
+                Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - reason: ", reason.getReasonPhrase());
                 session.close();
             } catch (IOException e) {
                 // TODO Auto-generated catch block
@@ -117,6 +118,7 @@ public abstract class ProgrammaticServerEP extends Endpoint {
 
             // Shouldn't usually call session.close in onClose, but there is a loop condition that this might catch.
             try {
+                Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - reason: ", reason.getReasonPhrase());
                 session.close();
             } catch (IOException e) {
                 // TODO Auto-generated catch block

@@ -464,7 +464,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Destroy with exc=" + e);
         }
 
-        destroyStarted.set(true);  // Signal to finish() that teardown is in progress
+        //destroyStarted.set(true);  // Signal to finish() that teardown is in progress
         linkIsReady = false;
 
         String upgraded = null;
@@ -1408,13 +1408,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // If destroy() is already tearing down this connection, skip stream
         // operations — the ISC state may already be cleared or in the process
         // of being cleared, which would cause spurious IOExceptions.
-        if (destroyStarted.get()) {
+        /* if (destroyStarted.get()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "finish, destroy already started; skipping stream close");
             }
             close(getVirtualConnection(), error);
             return;
-        }
+        } */
 
         // If servlet upgrade processing is being used, then don't close the socket here
         if (vc != null) {
