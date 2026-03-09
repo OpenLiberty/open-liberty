@@ -10,10 +10,13 @@
 package io.openliberty.http.constants;
 
 /**
- *
+ * Generic constants used within the HTTP Transport code.
  */
 public class HttpGenerics {
 
+    /*
+     * Used for various config (Access Log, Content Length, etc) where no value is set.    
+     */
     public static final int NOT_SET = -1;
 
 }
