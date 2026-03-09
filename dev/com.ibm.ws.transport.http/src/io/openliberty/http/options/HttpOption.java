@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,9 @@ public enum HttpOption implements EndpointOption {
 
     KEEP_ALIVE_ENABLED("keepAliveEnabled", false, Boolean.class, ConfigType.HTTP),
     MAX_KEEP_ALIVE_REQUESTS("maxKeepAliveRequests", -1, Integer.class, ConfigType.HTTP),
-    PERSIST_TIMEOUT("persistTimeout", "30s", String.class, ConfigType.HTTP),
-    READ_TIMEOUT("readTimeout", 60, Long.class, ConfigType.HTTP),
-    WRITE_TIMEOUT("writeTimeout", 60, Long.class, ConfigType.HTTP),
+    PERSIST_TIMEOUT("persistTimeout", 30L, Long.class, ConfigType.HTTP),
+    READ_TIMEOUT("readTimeout", 60L, Long.class, ConfigType.HTTP),
+    WRITE_TIMEOUT("writeTimeout", 60L, Long.class, ConfigType.HTTP),
     REMOVE_SERVER_HEADER("removeServerHeader", false, Boolean.class, ConfigType.HTTP),  
     NO_CACHE_COOKIES_CONTROL("NoCacheCookiesControl", true, Boolean.class, ConfigType.HTTP),
     AUTO_DECOMPRESSION("AutoDecompression", true, Boolean.class, ConfigType.HTTP),
