@@ -130,8 +130,9 @@ public class CookieHeaderByteParser {
             }
             
             if (foundComma) {
-                //always display
-                Tr.debug(tc, "parse, response Set-Cookie contains invalid comma. Ignore entire cookie");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "parse, response Set-Cookie contains invalid comma. Ignore entire cookie");
+                }
 
                 return cookiesList; //empty list
             }
@@ -326,8 +327,9 @@ public class CookieHeaderByteParser {
                     // Example: "name1=value1; bad1=val1, bad2=val2; name3=value3"
                     //   -> Skip "bad1=val1, bad2=val2", continue with "name3=value3"
                     
-                    //always display
-                    Tr.debug(tc, "Request cookie has invalid comma at index: " + pos + " . Ignore cookie name [" + GenericUtils.nullOutPasswords(this.name, (byte) '&') +"]");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Request cookie has invalid comma at index: " + pos + " . Ignore cookie name [" + GenericUtils.nullOutPasswords(this.name, (byte) '&') +"]");
+                    }
 
                     for (pos++; pos < data.length; pos++) {
                         if (';' == data[pos]) {
@@ -554,9 +556,9 @@ public class CookieHeaderByteParser {
              */
             if (',' == b) {
                 if (this.isEE11 && this.isRequestCookie) {
-                    
-                    //always display the ignored cookie name. Can not display cookie value at this point without additional tracking!
-                    Tr.debug(tc, "Request cookie value has invalid comma at index: " + pos + ". Ignore cookie name [" + GenericUtils.nullOutPasswords(this.name, (byte) '&') + "]");
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Request cookie value has invalid comma at index: " + pos + ". Ignore cookie name [" + GenericUtils.nullOutPasswords(this.name, (byte) '&') + "]");
+                    }
 
                     this.name = null;
                     this.value = null;
