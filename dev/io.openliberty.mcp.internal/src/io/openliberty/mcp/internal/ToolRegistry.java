@@ -59,6 +59,7 @@ public class ToolRegistry implements ToolManager {
     }
 
     private final SchemaRegistry schemaRegistry;
+    private ConverterRegistry converterRegistry;
     private final Jsonb jsonb;
 
     private final ToolStore toolStore = new ToolStore();
@@ -121,6 +122,10 @@ public class ToolRegistry implements ToolManager {
     @Override
     public ToolDefinition newTool(String name) {
         return new ToolDefinitionImpl(name);
+    }
+
+    public void setConverterRegistry(ConverterRegistry converterRegistry) {
+        this.converterRegistry = converterRegistry;
     }
 
     public class ToolDefinitionImpl implements ToolDefinition {
@@ -193,7 +198,7 @@ public class ToolRegistry implements ToolManager {
                 String message = Tr.formatMessage(tc, "CWMCM0032E.duplicate.argument.name", this.name, arg.name());
                 throw new IllegalArgumentException(message);
             }
-            for (var error : ToolValidation.validateToolArgument(arg)) {
+            for (var error : ToolValidation.validateToolArgument(arg, converterRegistry)) {
                 switch (error.type()) {
                     case NAME_BLANK -> {
                         String message = Tr.formatMessage(tc, "CWMCM0030E.blank.arguments", this.name);

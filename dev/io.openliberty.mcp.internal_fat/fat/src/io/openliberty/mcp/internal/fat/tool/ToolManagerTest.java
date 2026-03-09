@@ -352,6 +352,35 @@ public class ToolManagerTest extends FATServletClient {
                         }
                         """;
 
+        String successDefaultValueRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 6,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "tool-with-defaultvalue",
+                            "arguments": {
+                            }
+                          }
+                        }
+                        """;
+        String expectedSuccessDefaultValueResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 6,
+                          "result": {
+                            "content": [{
+                              "type": "text",
+                              "text": "2025"
+                            }],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        String successDefaultValueResponse = client.callMCP(successDefaultValueRequest);
+        JSONAssert.assertEquals(expectedSuccessDefaultValueResponse, successDefaultValueResponse, STRICT);
+
         server.setMarkToEndOfLog();
         String exceptionResponse = client.callMCP(exceptionRequest);
         JSONAssert.assertEquals(exceptionErrorResponse, exceptionResponse, STRICT);

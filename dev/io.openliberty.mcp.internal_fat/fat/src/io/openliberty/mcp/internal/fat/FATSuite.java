@@ -49,6 +49,7 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
 import io.openliberty.mcp.internal.fat.tool.AuthCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
+import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
@@ -75,6 +76,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 BeanLifecycleTest.class,
                 CancellationTest.class,
                 ConfigurableMcpPathTest.class,
+                DefaultValueTest.class,
                 DeploymentProblemTest.class,
                 DynamicMcpPathUpdateTest.class,
                 EncoderTest.class,

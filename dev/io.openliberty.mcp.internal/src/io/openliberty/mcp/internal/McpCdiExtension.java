@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -21,6 +22,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
@@ -28,9 +30,11 @@ import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
+import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
+import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
@@ -60,10 +64,12 @@ public class McpCdiExtension implements Extension {
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
 
     private final List<Bean<?>> encoderBeans = new ArrayList<>();
+    private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
     private EncoderRegistry encoderRegistry;
     private ConcurrentHashMap<String, ArrayList<String>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
+    private ConverterRegistry converterRegistry;
     private Jsonb jsonb = createJsonb();
     private ToolRegistry tools = new ToolRegistry(schemas, jsonb);
     private ModuleContext moduleContext;
@@ -104,8 +110,16 @@ public class McpCdiExtension implements Extension {
         }
     }
 
+    void discoverConverterBeans(@Observes ProcessManagedBean<?> processManagedBean) {
+        Class<?> javaClass = processManagedBean.getAnnotatedBeanClass().getJavaClass();
+        if (DefaultValueConverter.class.isAssignableFrom(javaClass)) {
+            TypeUtility.getDefaultValueConverterType(javaClass).ifPresent(type -> converterBeans.put(processManagedBean.getBean(), type));
+        }
+    }
+
     void afterDeploymentValidation(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager manager) {
         registerEncoders(manager);
+        registerCustomConverters(manager);
 
         boolean error = reportOnInvalidToolNames(afterDeploymentValidation) |
                         reportOnDuplicateTools(afterDeploymentValidation) |
@@ -143,12 +157,45 @@ public class McpCdiExtension implements Extension {
         context.release();
     }
 
+    void registerCustomConverters(BeanManager beanManager) {
+        converterRegistry = beanManager.createInstance().select(ConverterRegistry.class).get();
+        CreationalContext<?> context = beanManager.createCreationalContext(null);
+
+        Map<Type, List<DefaultValueConverter<?>>> converterMap = new HashMap<>();
+
+        // Populate converters registry with converters for wrapper types and strings
+        for (Map.Entry<Type, DefaultValueConverter<?>> entry : BuiltinDefaultValueConverters.CONVERTERS.entrySet()) {
+            converterMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(entry.getValue());
+        }
+        // Populate converters registry with provided customer converters
+        for (Map.Entry<Bean<?>, Type> entry : converterBeans.entrySet()) {
+            Bean<?> bean = entry.getKey();
+            Type converterType = entry.getValue();
+            DefaultValueConverter<?> converter = (DefaultValueConverter<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
+            converterMap.computeIfAbsent(converterType, k -> new ArrayList<>()).add(converter);
+            logCustomConverterRegistration(bean);
+        }
+
+        converterRegistry.registerConverters(converterMap, context);
+        tools.setConverterRegistry(converterRegistry);
+    }
+
     private static void logEncoderRegistration(Bean<?> encoderBean) {
         if (TraceComponent.isAnyTracingEnabled()) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(McpCdiExtension.class, tc, "Registered encoder: " + encoderBean.getName(), encoderBean);
             } else if (tc.isEventEnabled()) {
                 Tr.event(McpCdiExtension.class, tc, "Registered encoder: " + encoderBean.getName());
+            }
+        }
+    }
+
+    private static void logCustomConverterRegistration(Bean<?> converterBean) {
+        if (TraceComponent.isAnyTracingEnabled()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(McpCdiExtension.class, tc, "Registered converter: " + converterBean.getName(), converterBean);
+            } else if (tc.isEventEnabled()) {
+                Tr.event(McpCdiExtension.class, tc, "Registered converter: " + converterBean.getName());
             }
         }
     }
@@ -163,7 +210,7 @@ public class McpCdiExtension implements Extension {
             Set<String> names = new HashSet<>();
 
             for (ToolArgument argMetadata : tool.arguments()) {
-                for (var error : ToolValidation.validateToolArgument(argMetadata)) {
+                for (var error : ToolValidation.validateToolArgument(argMetadata, converterRegistry)) {
                     switch (error.type()) {
                         case NAME_BLANK -> Tr.error(tc, "CWMCM0001E.blank.arguments", tool.getToolQualifiedName());
                         case NAME_MISSING -> Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());

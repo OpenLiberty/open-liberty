@@ -19,9 +19,7 @@
  * Based on https://github.com/quarkiverse/quarkus-mcp-server/blob/main/core/runtime/src/main/java/io/quarkiverse/mcp/server/DefaultValueConverter.java
  * Modifications have been made.
  *******************************************************************************/
-package io.openliberty.mcp.internal.requests;
-
-import io.openliberty.mcp.annotations.ToolArg;
+package io.openliberty.mcp.annotations;
 import jakarta.annotation.Priority;
 
 /**

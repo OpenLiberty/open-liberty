@@ -849,58 +849,6 @@
                                         "description": "MultipleToolArgsOneNotRequired",
                                         "title": "testMultipleToolArgsOneNotRequired"
                                      },
-                                     {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "planet": {
-                                                    "description": "planet you live in",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": []
-                                        },
-
-                                        "name": "testToolArgStringDefaultValue",
-                                        "description": "Test tool defaults to default value when argument not provided",
-                                        "title": "ToolArg String Default Value"
-                                     },
-                                     {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "year": {
-                                                    "description": "current year",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": []
-                                        },
-
-                                        "name": "testToolArgIntDefaultValue",
-                                        "description": "Test tool defaults to default value when argument not provided",
-                                        "title": "ToolArg Int Default Value"
-                                        },
-                                      {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "planet": {
-                                                    "description": "planet you live in",
-                                                    "type": "string"
-                                                },
-                                                "year": {
-                                                    "description": "current year",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": ["year"]
-                                        },
-
-                                        "name": "testMultipleToolArgsOneDefaultValue",
-                                        "description": "MultipleToolArgsOneDefaultValue",
-                                        "title": "testMultipleToolArgsOneDefaultValue"
-                                     },
                                     {
                                         "inputSchema": {
                                             "type": "object",

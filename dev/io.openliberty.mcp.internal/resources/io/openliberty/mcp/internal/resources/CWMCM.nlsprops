@@ -271,3 +271,17 @@ CWMCM0032E.duplicate.argument.name.useraction=Give each tool argument a differen
 CWMCM0033A.forbidden.error=CWMCM0033A: Forbidden request. Method={0} RequestURI={1} RequestQuery={2}, Exception: {3}
 CWMCM0033A.forbidden.error.explanation=A request was made but the user is not authorized to make it.
 CWMCM0033A.forbidden.error.useraction=Make sure that an authorized user is calling the request.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: The {0} DefaultValueConverter implementation must specify a type parameter.
+CWMCM0034W.converter.missing.type.parameter.explanation=A DefaultValueConverter implemenation class was registered, but is missing a type parameter, and therefore the type it converts to cannot be detected.
+CWMCM0034W.converter.missing.type.parameter.useraction=Change the class declaration to implement DefaultValueConverter with a concrete type parameter. For example: MyConverterClass implements DefaultValueConverter<MyType>.
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: The {0} DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type.
+CWMCM0035W.converter.generic.type.explanation=A DefaultValueConverter implementation class was registered with a generic type parameter (such as T) instead of a concrete type.
+CWMCM0035W.converter.generic.type.useraction=Change the class declaration to implement DefaultValueConverter with a concrete type parameter.

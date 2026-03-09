@@ -10,17 +10,25 @@
 package io.openliberty.mcp.internal.testutils;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.annotations.Tool;
+import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.ToolMetadata;
+import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 
 /**
  *
  */
 public class TestUtils {
+
     /**
      * finds and mocks method of tool method
      *
@@ -79,5 +87,14 @@ public class TestUtils {
         }
 
         return tools.get(0);
+    }
+
+    public static ConverterRegistry createTestConverterRegistry() {
+        Map<Type, List<DefaultValueConverter<?>>> convertersMap = new HashMap<>();
+        BuiltinDefaultValueConverters.CONVERTERS.forEach((type, converter) -> convertersMap.computeIfAbsent(type, k -> new ArrayList<>()).add(converter));
+        ConverterRegistry testConverterRegistry = new ConverterRegistry();
+        testConverterRegistry.registerConverters(convertersMap, null);
+        return testConverterRegistry;
+
     }
 }

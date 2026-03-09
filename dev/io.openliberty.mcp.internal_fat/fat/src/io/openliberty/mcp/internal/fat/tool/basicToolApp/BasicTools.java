@@ -323,7 +323,7 @@ public class BasicTools {
         return new City(name, "England", 8000, false);
     }
 
-    public record City(String name, String country, int population, boolean isCapital) {};
+    public static record City(String name, String country, int population, boolean isCapital) {};
 
     // Test ToolArg.required is always true by default, check that it works when it is set to true
     @Tool(name = "testToolArgIsNotRequired", title = "ToolArgNotRequired", description = "ToolArgNotRequired")
@@ -355,22 +355,6 @@ public class BasicTools {
     @Tool(name = "testToolArgObjectNotRequired", title = "ToolArgObjectNotRequired", description = "ToolArgNotRequired")
     public City testToolArgObjectNotRequired(@ToolArg(name = "value", description = "City object value", required = false) City value) {
         return value;
-    }
-
-    @Tool(name = "testToolArgStringDefaultValue", title = "ToolArg String Default Value", description = "Test tool defaults to default value when argument not provided")
-    public String testToolArgStringDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet) {
-        return planet;
-    }
-
-    @Tool(name = "testToolArgIntDefaultValue", title = "ToolArg Int Default Value", description = "Test tool defaults to default value when argument not provided")
-    public int testToolArgIntDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "2025") int year) {
-        return year;
-    }
-
-    @Tool(name = "testMultipleToolArgsOneDefaultValue", title = "testMultipleToolArgsOneDefaultValue", description = "MultipleToolArgsOneDefaultValue")
-    public String testMultipleToolArgsOneDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet,
-                                                      @ToolArg(name = "year", description = "current year") int year) {
-        return "Planet " + planet + " was created in the year " + year;
     }
 
     /////////////////////////////////////////////
