@@ -78,15 +78,17 @@ public abstract class ProgrammaticServerEP extends Endpoint {
         public void onClose(Session session, CloseReason reason) {
 
             // Shouldn't usually call session.close in onClose, but there is a loop condition that this might catch.
-            try {
+            //try {
+                Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - Endpoint: ", this.getClass().getSimpleName());
+                Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - session: ", session.getId());
                 Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - reason: ", reason.getReasonPhrase());
-                session.close();
-            } catch (IOException e) {
+                //session.close();
+            //} catch (IOException e) {
                 // TODO Auto-generated catch block
                 // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
                 // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-                e.printStackTrace();
-            }
+                //e.printStackTrace();
+            //}
 
         }
     }
@@ -117,15 +119,17 @@ public abstract class ProgrammaticServerEP extends Endpoint {
         public void onClose(Session session, CloseReason reason) {
 
             // Shouldn't usually call session.close in onClose, but there is a loop condition that this might catch.
-            try {
+            //try {
+                Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - Endpoint: ", this.getClass().getSimpleName());
+                Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - session: ", session.getId());
                 Logger.getLogger(ProgrammaticServerEP.class.getName()).log(Level.INFO, "onClose called - reason: ", reason.getReasonPhrase());
-                session.close();
-            } catch (IOException e) {
+                //session.close();
+            //} catch (IOException e) {
                 // TODO Auto-generated catch block
                 // Do you need FFDC here? Remember FFDC instrumentation and @FFDCIgnore
                 // http://was.pok.ibm.com/xwiki/bin/view/Liberty/LoggingFFDC
-                e.printStackTrace();
-            }
+                //e.printStackTrace();
+            //}
 
         }
     }
