@@ -6,6 +6,6 @@ IBM-Process-Types: server, \
 -features=io.openliberty.jakarta.persistence.base-3.2, \
   com.ibm.websphere.appserver.eeCompatible-11.0
 -bundles=io.openliberty.persistence.3.2.thirdparty; apiJar=false; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:4.0.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

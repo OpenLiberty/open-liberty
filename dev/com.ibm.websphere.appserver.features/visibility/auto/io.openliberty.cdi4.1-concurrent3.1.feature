@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
 -bundles=\
   io.openliberty.concurrent.internal.cdi
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core

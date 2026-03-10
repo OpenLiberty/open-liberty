@@ -11,5 +11,5 @@ IBM-Provision-Capability: \
 -bundles=\
   io.openliberty.data.internal
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core
