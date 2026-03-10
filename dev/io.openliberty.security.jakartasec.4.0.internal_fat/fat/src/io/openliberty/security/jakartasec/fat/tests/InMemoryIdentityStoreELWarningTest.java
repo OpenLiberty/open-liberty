@@ -54,7 +54,7 @@ public class InMemoryIdentityStoreELWarningTest extends BaseJakartaSecurity40Tes
 
     private static String url = null;
 
-    @Server(SERVER_NAME)
+    @Server(IN_MEM_ID_STORE_ENABLED_SERVER_NAME)
     public static LibertyServer server;
 
     @Override

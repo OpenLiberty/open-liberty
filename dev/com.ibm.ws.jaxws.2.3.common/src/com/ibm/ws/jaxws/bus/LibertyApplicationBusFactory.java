@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2020 IBM Corporation and others.
+ * Copyright (c) 2019,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,7 @@ import org.apache.cxf.bus.extension.ExtensionManager;
 import org.apache.cxf.bus.extension.ExtensionManagerImpl;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
 import org.apache.cxf.buslifecycle.BusLifeCycleManager;
+import org.apache.cxf.ext.logging.AbstractLoggingInterceptor;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
 
@@ -146,6 +147,11 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
                     loggingFeature.initialize(bus);
                     featureList.add(loggingFeature);
                     bus.setFeatures(featureList);
+                    // Enable logging at interceptor level
+                    // Default is false as set here but to provide dynamic configuration
+                    // It's set to true when trace is not enabled or enable
+                    // EnableLoggingInOutInterceptor is not set
+                    AbstractLoggingInterceptor.setDisableLogging(false);  
                 }
             }
 

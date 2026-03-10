@@ -32,7 +32,8 @@ import componenttest.topology.impl.LibertyServer;
  */
 public abstract class BaseJakartaSecurity40Test {
 
-    protected static final String SERVER_NAME = "jakartaSec40Server";
+    protected static final String MULTIPLE_HAM_SERVER_NAME = "multipleHAMServer";
+    protected static final String IN_MEM_ID_STORE_ENABLED_SERVER_NAME = "inMemIdStoreEnabledServer";
 
     protected static final String CONFIG_SERVER_NAME = "jakartaSec40ConfigServer";
 
@@ -302,6 +303,17 @@ public abstract class BaseJakartaSecurity40Test {
     protected void startServer() throws Exception {
         logInfo("startServer", "Starting server...");
         getServer().startServer();
+        logInfo("startServer", "Server started successfully");
+    }
+
+    /**
+     * Start the server using a specified configuration file and log the action.
+     *
+     * @throws Exception if an error occurs
+     */
+    protected void startServer(String configFile) throws Exception {
+        logInfo("startServer", "Starting server...");
+        getServer().startServerUsingConfiguration(configFile);
         logInfo("startServer", "Server started successfully");
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,8 +22,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Map.Entry;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.namespace.QName;
 import javax.xml.ws.Dispatch;
@@ -34,26 +32,21 @@ import org.apache.cxf.Bus;
 import org.apache.cxf.endpoint.Client;
 import org.apache.cxf.frontend.ClientProxy;
 import org.apache.cxf.interceptor.Fault;
-import org.apache.cxf.interceptor.Interceptor;
 import org.apache.cxf.jaxws.DispatchImpl;
 import org.apache.cxf.jaxws.ServiceImpl;
-import org.apache.cxf.message.Message;
 import org.apache.cxf.ws.addressing.EndpointReferenceType;
-
+import org.apache.cxf.ext.logging.AbstractLoggingInterceptor;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.jaxws.JaxWsConstants;
-import com.ibm.ws.jaxws.internal.WebServiceConfigConstants;
 import com.ibm.ws.jaxws.metadata.ConfigProperties;
 import com.ibm.ws.jaxws.metadata.PortComponentRefInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceFeatureInfo;
 import com.ibm.ws.jaxws.metadata.WebServiceRefInfo;
 import com.ibm.ws.jaxws.security.JaxWsSecurityConfigurationService;
-import com.ibm.ws.jaxws.support.LibertyLoggingInInterceptor;
-import com.ibm.ws.jaxws.support.LibertyLoggingOutInterceptor;
 import com.ibm.ws.jaxws23.client.security.LibertyJaxWsClientSecurityOutInterceptor;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
 
@@ -201,6 +194,7 @@ public class LibertyServiceImpl extends ServiceImpl {
      * @param portName
      */
     protected void configureCustomizeBinding(Client client, QName portName) {
+        boolean loggingFeatureNotAdded = true;
         //put all properties defined in ibm-ws-bnd.xml into the client request context
         Map<String, Object> requestContext = client.getRequestContext();
         if (null != requestContext && null != wsrInfo) {
@@ -235,13 +229,20 @@ public class LibertyServiceImpl extends ServiceImpl {
                             loggingFeature.initialize(bus);
                             featureList.add(loggingFeature);
                             bus.setFeatures(featureList);
+                            loggingFeatureNotAdded = false;
                         }
                     }
                 }
 
             }
         }
-
+        if(loggingFeatureNotAdded && !(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()))       {
+            AbstractLoggingInterceptor.setDisableLogging(true);
+        } else {
+            Tr.debug(tc, "Common:Trace is enabled through interceptors.");
+            AbstractLoggingInterceptor.setDisableLogging(false);
+        }
+        
         Set<ConfigProperties> configPropsSet = servicePropertiesMap.get(portName);
         client.getOutInterceptors().add(new LibertyCustomizeBindingOutInterceptor(wsrInfo, securityConfigService, configPropsSet));
 

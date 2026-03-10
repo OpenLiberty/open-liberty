@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1058,7 +1058,7 @@ public class CommonValidationTools {
 
             String tokenLine = getTokenLineFromResponse(response);
             if (tokenLine != null) {
-                String[] responseLines = tokenLine.split(System.getProperty("line.separator"));
+                String[] responseLines = tokenLine.split("\\r?\\n");
                 if (responseLines.length == 1) {
 
                     String[] entries = tokenLine.split(",");

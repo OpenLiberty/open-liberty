@@ -18,6 +18,18 @@ public class Jakartasec40TestConstants {
      * Identity Store
      */
 
+    public static final String WEB_APP_SECURITY_CONFIGURATION_UPDATED = "CWWKS9112A";
+    public static final String SERVER_CONFIG_UPDATE_MESSAGES_REGEX = "CWWKG0017I.*|CWWKG0018I.*"; // CWWKG0017I: successfully updated, CWWKG0018I: not updated
+
+    // Expected messages
+    public static final String[] IN_MEM_ID_STORE_EXPECTED_MESSAGES = { "CWWKS2600W", // An in-memory identity store was detected within this application
+//                                                                       "CWWKS2601W", // The environment variable used for password value is empty or unset
+//                                                                       "CWWKS2602E", // The credential is not a UsernamePasswordCredential and cannot be validated
+//                                                                       "CWWKS2603W", // The (EL) expression used for the annotation attribute cannot be resolved
+                                                                       "CWWKS1859E", //  Password decoding error
+                                                                       "CWWKS1865W" // One or more of your AES-encrypted passwords were encrypted without a custom encryption key
+    };
+
     // Test credentials
     public static final String VALID_PASSWORD = "reallysecretpassw0rd";
     public static final String INVALID_PASSWORD = "bad_password";
