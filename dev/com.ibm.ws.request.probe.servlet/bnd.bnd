@@ -37,6 +37,14 @@ Service-Component=com.ibm.ws.request.probe.servlet.ServletWrapperServiceTransfor
         implementation:=com.ibm.ws.request.probe.servlet.ServletWrapperDestroyTransformDescriptor; \
         provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
         properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.servlet.FileServletWrapperServiceTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.servlet.FileServletWrapperServiceTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \
+     com.ibm.ws.request.probe.servlet.FileServletWrapperDestroyTransformDescriptor; \
+        implementation:=com.ibm.ws.request.probe.servlet.FileServletWrapperDestroyTransformDescriptor; \
+        provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
+        properties:="service.vendor=IBM", \        
      com.ibm.ws.request.probe.session.SessionGetAttributeTransformDescriptor; \
         implementation:=com.ibm.ws.request.probe.session.SessionGetAttributeTransformDescriptor; \
         provide:=com.ibm.wsspi.request.probe.bci.RequestProbeTransformDescriptor; \
