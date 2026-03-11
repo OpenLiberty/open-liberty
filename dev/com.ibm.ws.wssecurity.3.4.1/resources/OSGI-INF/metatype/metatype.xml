@@ -86,7 +86,7 @@
     
     <OCD id="com.ibm.ws.wssecurity.sig.config" name="%sigprops" description="%sigprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
            <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
-           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%sksa.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
            ibm:type="password" name="%sksp" description="%sksp.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%sksfile" description="%sksfile.desc" />
@@ -114,7 +114,7 @@
     
    <OCD id="com.ibm.ws.wssecurity.enc.config" name="%encprops" description="%encprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
            <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
-           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%eksa.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
            ibm:type="password" name="%eksp" description="%eksp.desc" />
            <AD id="org.apache.ws.security.crypto.provider" required="false" type="String" name="%crypto" 
