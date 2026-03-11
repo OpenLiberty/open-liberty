@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -130,6 +130,23 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         this.setHeadersParsed();
         setVC(vc);
 
+    }
+
+    /*
+     *. Key difference is that setHttpConfig is set prior to the init call. This ensure the same config is used throughout initialization. 
+     */
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc, HttpChannelConfig config) {
+        super();
+        nettyContext = context;
+        
+        super.setHttpConfig(config); // Must be called before init!
+
+        TCPConnectionContext tsc = new NettyTCPConnectionContext(context.channel(), vc);
+
+        super.init(tsc, context);
+
+        this.setHeadersParsed();
+        setVC(vc);
     }
 
     /**
