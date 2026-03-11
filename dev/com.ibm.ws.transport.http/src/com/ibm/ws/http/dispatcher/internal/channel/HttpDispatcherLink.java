@@ -1738,6 +1738,16 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     ic.connectionCountDecremneted.set(true);
                 }
 
+                if (ic.connectionCountDecremneted.compareAndSet(false, true)) {
+                    Tr.debug(tc, "TaskWrapper.run, decrementNeeded was true: decrement active connection");
+                    //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "connectionCountDecremneted is false: decrement active connection");
+                    }
+                    ic.myChannel.decrementActiveConns();
+                    //ic.connectionCountDecremneted.set(true);
+                }
+
             } finally {
                 if (this.classifiedExecutor != null) {
                     DecoratedExecutorThread.removeExecutor();
