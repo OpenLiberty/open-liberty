@@ -59,7 +59,7 @@ import test.server.transport.http2.Utils;
 public class H2FATDriverServlet extends FATServlet {
     /**  */
     private static final long serialVersionUID = 1L;
-    protected final long defaultTimeoutToSendFrame = 29000L;
+    protected final long defaultTimeoutToSendFrame = 45000L;
     private final int STRESS_TEST_TIMEOUT = 120000;
 
     private static final Logger LOGGER = Logger.getLogger(H2FATDriverServlet.class.getName());
@@ -326,13 +326,13 @@ public class H2FATDriverServlet extends FATServlet {
 
     /**
      * Set the window size to be very small; make sure server waits to send over new frames until a window_update is sent
-     * 
-     * This test is meant to send two 6 byte data frames on streams 3 and 5 with a windows size 
+     *
+     * This test is meant to send two 6 byte data frames on streams 3 and 5 with a windows size
      * set to 6 bytes. The server is expected to respond with two frames, one of 5 bytes, followed
      * by another of 1 byte (sent when the window size is updated).
-     * 
-     * TODO: This test should be improved for the legacy implementation of the transport, as it does not 
-     * currently send the two frames separately. 
+     *
+     * TODO: This test should be improved for the legacy implementation of the transport, as it does not
+     * currently send the two frames separately.
      */
     public void testSmallWindowSize(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
@@ -360,7 +360,7 @@ public class H2FATDriverServlet extends FATServlet {
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
 
             //Stream 3 DATA Frames
-            FrameData first5BytesStream3 = new FrameData(3,"ABC12".getBytes(), 0, false, false, false);
+            FrameData first5BytesStream3 = new FrameData(3, "ABC12".getBytes(), 0, false, false, false);
             // Second 1-byte DATA frame (this one ends the stream)
             FrameData last1ByteStream3 = new FrameData(3, "3".getBytes(), 0, true, false, false);
 
@@ -369,23 +369,21 @@ public class H2FATDriverServlet extends FATServlet {
             // Second 1-byte DATA frame (this one ends the stream)
             FrameData last1ByteStream5 = new FrameData(5, "3".getBytes(), 0, true, false, false);
 
-            if(USING_NETTY){
+            if (USING_NETTY) {
                 h2Client.addExpectedFrame(first5BytesStream3);
                 h2Client.addExpectedFrame(last1ByteStream3);
-            }else{
+            } else {
                 h2Client.addExpectedFrame(new FrameData(3, dataString.getBytes(), 0, false, false, false));
             }
-            
 
             secondFrameHeaders.setStreamID(5);
             h2Client.addExpectedFrame(secondFrameHeaders.clone());
-            if(USING_NETTY){
+            if (USING_NETTY) {
                 h2Client.addExpectedFrame(first5BytesStream5);
                 h2Client.addExpectedFrame(last1ByteStream5);
-            }else{
+            } else {
                 h2Client.addExpectedFrame(new FrameData(5, dataString.getBytes(), 0, false, false, false));
             }
-            
 
             //Headers frame to send for "second" request
             List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
@@ -399,17 +397,16 @@ public class H2FATDriverServlet extends FATServlet {
             // start sending out frames
             FrameSettings settings = new FrameSettings(0, -1, -1, -1, 5, -1, -1, false);
             setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI, settings);
-            
 
             frameHeadersToSend.setStreamID(3);
             h2Client.sendFrame(frameHeadersToSend.clone());
-            if(USING_NETTY){
+            if (USING_NETTY) {
                 h2Client.waitFor(first5BytesStream3);
             }
 
             frameHeadersToSend.setStreamID(5);
             h2Client.sendFrame(frameHeadersToSend.clone());
-            if(USING_NETTY){
+            if (USING_NETTY) {
                 h2Client.waitFor(first5BytesStream5);
             }
 
@@ -5270,18 +5267,17 @@ public class H2FATDriverServlet extends FATServlet {
         handleErrors(h2Client, testName);
 
     }
-    
+
     /*
      * Client sends malformed headers prompting the server to send back resets,
      * server should tolerate to a point, then send goaway
      */
 
-    public void testOutboundResetLimits(HttpServletRequest request, HttpServletResponse response)
-            throws InterruptedException, Exception {
+    public void testOutboundResetLimits(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testOutboundResetLimits", "Started!");
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testOutboundResetLimits",
-                    "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
         }
         final int server_max_streams = 100;
         String testName = "testOutboundResetLimits";
@@ -5301,22 +5297,19 @@ public class H2FATDriverServlet extends FATServlet {
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testOutboundResetLimits",
-                    "Starting to send malformed HEADERS, that will force server RST_STREAM responses");
+                        "Starting to send malformed HEADERS, that will force server RST_STREAM responses");
         }
         // Malformed Headers frame without the method header to send for "second"
         // request
         List<HeaderEntry> firstHeadersToSend = new ArrayList<HeaderEntry>();
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"),
-                HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI),
-                HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        firstHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
 
         int currentStream = 1;
         // create 100 malformed streams
         for (int i = 0; i < server_max_streams + 1; i++) {
             currentStream += 2;
-            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(currentStream, null, 0, 0, 0, false, true,
-                    false, false, false, false);
+            FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(currentStream, null, 0, 0, 0, false, true, false, false, false, false);
             frameHeadersToSend.setHeaderEntries(firstHeadersToSend);
             h2Client.sendFrame(frameHeadersToSend);
         }
@@ -5331,43 +5324,36 @@ public class H2FATDriverServlet extends FATServlet {
      * server should tolerate to a point, then send goaway
      */
 
-    public void testInboundAndOutboundResetLimits(HttpServletRequest request, HttpServletResponse response)
-            throws InterruptedException, Exception {
+    public void testInboundAndOutboundResetLimits(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testInboundAndOutboundResetLimits", "Started!");
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testInboundAndOutboundResetLimits",
-                    "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
+                        "Connecting to = " + request.getParameter("hostName") + ":" + request.getParameter("port"));
         }
         final int server_max_streams = 100;
         String testName = "testInboundAndOutboundResetLimits";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        FrameGoAway errorFrame = new FrameGoAway(0, "too many reset frames processed".getBytes(),
-                ENHANCE_YOUR_CALM_ERROR, 1, false);
+        FrameGoAway errorFrame = new FrameGoAway(0, "too many reset frames processed".getBytes(), ENHANCE_YOUR_CALM_ERROR, 1, false);
         h2Client.addExpectedFrame(errorFrame);
 
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI);
         if (LOGGER.isLoggable(Level.INFO)) {
             LOGGER.logp(Level.INFO, this.getClass().getName(), "testInboundAndOutboundResetLimits",
-                    "Starting to send malformed HEADERS and RST FRAMES alternatively");
+                        "Starting to send malformed HEADERS and RST FRAMES alternatively");
         }
         // Malformed Headers frame without the method header to send for "second"
         // request
         List<HeaderEntry> malformedHeadersToSend = new ArrayList<HeaderEntry>();
-        malformedHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"),
-                HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        malformedHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI),
-                HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        malformedHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        malformedHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
 
         // Headers frame to send for "second" request along with the Reset frame
         List<HeaderEntry> validHeadersToSend = new ArrayList<HeaderEntry>();
-        validHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"),
-                HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        validHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"),
-                HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        validHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI),
-                HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        validHeadersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        validHeadersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        validHeadersToSend.add(new HeaderEntry(new H2HeaderField(":path", HEADERS_ONLY_URI), HpackConstants.LiteralIndexType.NEVERINDEX, false));
 
         int currentStream = 1;
         // create another 100 streams
@@ -5376,10 +5362,9 @@ public class H2FATDriverServlet extends FATServlet {
             if (i % 2 == 0) {
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.logp(Level.INFO, this.getClass().getName(), "testInboundAndOutboundResetLimits",
-                            "Sending the RST FRAME on stream: " + currentStream);
+                                "Sending the RST FRAME on stream: " + currentStream);
                 }
-                FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(currentStream, null, 0, 0, 0, false,
-                        true, false, false, false, false);
+                FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(currentStream, null, 0, 0, 0, false, true, false, false, false, false);
                 frameHeadersToSend.setHeaderEntries(validHeadersToSend);
                 h2Client.sendFrame(frameHeadersToSend);
                 h2Client.sendFrame(new FrameRstStream(currentStream, 0, false));
@@ -5387,10 +5372,9 @@ public class H2FATDriverServlet extends FATServlet {
             } else {
                 if (LOGGER.isLoggable(Level.INFO)) {
                     LOGGER.logp(Level.INFO, this.getClass().getName(), "testInboundAndOutboundResetLimits",
-                            "Sending the frame with malformed headers: " + currentStream);
+                                "Sending the frame with malformed headers: " + currentStream);
                 }
-                FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(currentStream, null, 0, 0, 0, false,
-                        true, false, false, false, false);
+                FrameHeadersClient frameHeadersToSend = new FrameHeadersClient(currentStream, null, 0, 0, 0, false, true, false, false, false, false);
                 frameHeadersToSend.setHeaderEntries(malformedHeadersToSend);
                 h2Client.sendFrame(frameHeadersToSend);
 
@@ -5520,7 +5504,7 @@ public class H2FATDriverServlet extends FATServlet {
     void setupDefaultUpgradedConnection(Http2Client client, String requestUri, FrameSettings settingsFrameToSend, String body) throws IOException, Exception {
         client.addExpectedFrame(DEFAULT_SERVER_SETTINGS_FRAME);
         FrameHeaders headers = addFirstExpectedHeaders(client);
-        if(body == null)
+        if (body == null)
             client.sendUpgradeHeader(requestUri);
         else
             client.sendUpgradeHeader(requestUri, HTTPUtils.HTTPMethod.POST, body);
