@@ -52,8 +52,8 @@
          <AD id="ws-security.password" name="%password" description="%password.desc" required="false" 
          ibm:type="password" type="String" />
          <AD id="ws-security.callback-handler" name="%cbh" description="%cbh.desc" required="false" type="String" />
-         <AD id="ws-security.encryption.username" name="%encuser" description="%encuser.desc" required="false" type="String"/>
-         <AD id="ws-security.signature.username" name="%siguser" description="%siguser.desc" required="false" type="String" />
+         <AD id="ws-security.encryption.username" name="%encuser" description="%encuser-client.desc" required="false" type="String"/>
+         <AD id="ws-security.signature.username" name="%siguser" description="%siguser-client.desc" required="false" type="String" />
          <AD id="signatureProperties" name="%sig" description="%sig.desc" ibm:type="pid" required="false" type="String" 
          ibm:reference="com.ibm.ws.wssecurity.sig.config"/>
          <AD id="encryptionProperties" name="%enc" description="%enc.desc" ibm:type="pid" required="false" type="String" 
