@@ -103,7 +103,7 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         // when serverB joins. Using a log-based wait instead of a fixed sleep makes this
         // reliable across machines with varying startup times (especially Windows under load).
         assertNotNull("Infinispan 2-node cluster did not form within 60 seconds",
-                      serverA.waitForStringInLog("ISPN000094.*2\\]", 60000));
+                      serverA.waitForStringInLog("ISPN000094.*\\(2\\)", 60000));
 
         // Warm up serverB
         List<String> sessionB = new ArrayList<>();
