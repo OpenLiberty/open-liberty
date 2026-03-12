@@ -54,7 +54,8 @@ public class JAXRS21ClientCallbackTest extends JAXRS21AbstractTest {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        server.stopServer();
+        // CWWKE1102W - ignore quiesce issues during server shutdown
+        server.stopServer("CWWKE1102W");
     }
 
     @Before
