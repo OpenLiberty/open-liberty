@@ -31,6 +31,8 @@ Include-Resource: \
 
 Bundle-Localization: \
         OSGI-INF/l10n/metatype
+        
+Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonitor
 
 -dsannotations: \
  io.openliberty.mcp.internal.McpServletInitializer,\
