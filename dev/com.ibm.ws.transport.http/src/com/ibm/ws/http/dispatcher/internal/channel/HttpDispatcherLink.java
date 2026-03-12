@@ -22,12 +22,15 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -154,6 +157,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private final AtomicBoolean decrementNeeded = new AtomicBoolean(false);
 
     private final AtomicBoolean closeCompleted = new AtomicBoolean(false);
+
+    private final AtomicInteger activeFinishOperations = new AtomicInteger(0);
+
+    private final CountDownLatch finishCompleteLatch = new CountDownLatch(1);
 
     // Servlet 6.0
     private static AtomicInteger connectionCounter = new AtomicInteger(1);
@@ -1398,12 +1405,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return; // SA - Trying to Returning early to Prevent calling closeStreams() on destroyed ISC
         } */
 
+        activeFinishOperations.incrementAndGet();
         final HttpInboundServiceContextImpl finalSc = this.isc;
         Exception error = e;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
+        try {
 
         // If destroy() is already tearing down this connection, skip stream
         // operations — the ISC state may already be cleared or in the process
@@ -1454,7 +1463,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 WebConnCanCloseSync.unlock();
             }
         }
-
+    } finally {
+        if(activeFinishOperations.decrementAndGet() == 0) {
+            finishCompleteLatch.countDown();
+        }
+    }
         close(getVirtualConnection(), error);
     }
 
@@ -1823,6 +1836,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         return connectionId;
+    }
+
+    public boolean awaitFinishComplete(long timeout, TimeUnit unit) {
+        try {
+            return finishCompleteLatch.await(timeout, unit);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
     }
 
 
