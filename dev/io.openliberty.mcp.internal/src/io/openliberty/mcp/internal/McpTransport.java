@@ -352,4 +352,19 @@ public class McpTransport {
     public Principal getUser() {
         return req.getUserPrincipal();
     }
+
+    /**
+     * @return the req
+     */
+    public HttpServletRequest getReq() {
+        return req;
+    }
+
+    /**
+     * @return the res
+     */
+    public HttpServletResponse getRes() {
+        return res;
+    }
+
 }
