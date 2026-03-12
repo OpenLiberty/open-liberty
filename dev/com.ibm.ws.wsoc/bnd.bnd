@@ -40,6 +40,7 @@ Import-Package: \
   io.openliberty.wsoc.ssl, \
   com.ibm.ws.http.netty,\
   com.ibm.ws.http.netty.inbound, \
+  com.ibm.ws.http.dispatcher.internal.channel, \
   *
 
 Private-Package: \
