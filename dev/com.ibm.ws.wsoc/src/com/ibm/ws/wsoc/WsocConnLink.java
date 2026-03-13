@@ -1427,10 +1427,14 @@ public class WsocConnLink {
     }
 
     private void waitForDispatcherFinish() {
-        HttpDispatcherLink hdLink = (HttpDispatcherLink) vConnection.getStateMap().get(HttpDispatcherLink.LINK_ID);
-        if (!hdLink.awaitFinishComplete(5, TimeUnit.SECONDS)) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "waitForDispatcherFinish: timeout waiting for finish() to complete");
+        if (vConnection != null) {
+            HttpDispatcherLink hdLink = (HttpDispatcherLink) vConnection.getStateMap().get(HttpDispatcherLink.LINK_ID);
+            if (hdLink != null) {
+                if (!hdLink.awaitFinishComplete(5, TimeUnit.SECONDS)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "waitForDispatcherFinish: timeout waiting for finish() to complete");
+                    }
+                }
             }
         }
     }

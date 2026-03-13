@@ -1408,6 +1408,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         activeFinishOperations.incrementAndGet();
         final HttpInboundServiceContextImpl finalSc = this.isc;
         Exception error = e;
+        boolean doCloseStreams = false;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
@@ -1447,7 +1448,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 WebConnCanCloseSync.lock();
                 try {
                     if (WebConnCanClose) {
-                        error = closeStreams();
+                        doCloseStreams = true;
+                        //error = closeStreams();
                     }
                 } finally {
                     WebConnCanCloseSync.unlock();
@@ -1457,10 +1459,20 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             WebConnCanCloseSync.lock();
             try {
                 if (WebConnCanClose) {
-                    error = closeStreams();
+                    doCloseStreams = true;
+                    //error = closeStreams();
                 }
             } finally {
                 WebConnCanCloseSync.unlock();
+            }
+        }
+        if(doCloseStreams) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, Calling closeStreams()");
+            }
+            error = closeStreams();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, closeStreams() returned error=" + error);
             }
         }
     } finally {
