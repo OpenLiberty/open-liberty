@@ -40,6 +40,7 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
 import io.openliberty.mcp.internal.meta.MetaImpl;
+import io.openliberty.mcp.internal.metrics.McpMetrics;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
@@ -163,17 +164,16 @@ public class McpServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        if (isServerStateless()) {
-            resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
-            return;
-        }
+        /*
+         * Create opertation Context
+         */
+        McpMetrics optCtx = new McpMetrics();
+        optCtx.setMethodName("sessions/delete");
 
-        final String sessionId = req.getHeader(McpTransport.MCP_SESSION_ID_HEADER);
+        String status = "ok";
+        String errorType = null;
 
-        if (sessionId == null) {
-            resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing Mcp-Session-Id");
-            return;
-        }
+        try {
 
         if (sessionStores.getCurrent().isValid(sessionId)) {
             sessionStores.getCurrent().deleteSession(sessionId);
@@ -183,10 +183,25 @@ public class McpServlet extends HttpServlet {
         }
     }
 
-    @FFDCIgnore(ToolCallException.class)
     private void callTool(McpTransport transport) {
+        /*
+         * Create opertation Context
+         */
+        McpMetrics optCtx = new McpMetrics();
+        optCtx.setMethodName("tools/call");
+        optCtx.setTransport(transport);
+
+        String status = "ok";
+        String errorType = null;
+
         ExecutionRequestId requestId = createOngoingRequestId(transport);
+        if (requestId != null) {
+            optCtx.setExecutionRequestId(requestId);
+        }
         McpToolCallParams params = transport.getParams(McpToolCallParams.class);
+        if (params != null && params.getName() != null) {
+            optCtx.setToolName(params.getName());
+        }
         McpRequest request = transport.getMcpRequest();
 
         if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
@@ -195,25 +210,47 @@ public class McpServlet extends HttpServlet {
         }
 
         try {
-            if (params.getMetadata() == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
+            if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
+                status = "error";
+                errorType = "DuplicateRequestId";
+                throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
+                                           Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
+            }
+
+            try {
+                if (params.getMetadata() == null) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                        Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
+                    }
+                    status = "error";
+                    errorType = "ToolNotFound";
+                    throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
+                                               List.of("Method " + params.getName() + " not found"));
                 }
-                throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Method " + params.getName() + " not found"));
-            }
 
-            Authorizer.requireAuthorized(transport, params.getMetadata());
+                Authorizer.requireAuthorized(transport, params.getMetadata());
 
-            if (params.getMetadata().returnsCompletionStage()) {
-                callToolAndSendResponseAsync(transport, requestId, request, params);
-            } else {
-                callToolAndSendResponseSync(transport, requestId, request, params);
+                if (params.getMetadata().returnsCompletionStage()) {
+                    // Async tool should later hook metrics into the async completion
+                    callToolAndSendResponseAsync(transport, requestId, request, params);
+                } else {
+                    callToolAndSendResponseSync(transport, requestId, request, params);
+                }
+            } catch (ToolCallException e) {
+                // Tool validation error → still part of this operation
+                status = "error";
+                errorType = e.getClass().getSimpleName();
+
+                ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
+                transport.sendResponse(response);
+                return;
             }
-        } catch (ToolCallException e) {
-            // Catch validation errors that occur before calling the tool and should result in a tool call error response
-            ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
-            transport.sendResponse(response);
-            return;
+        } finally {
+            optCtx.setOutcome(status, errorType);
+
+            // TODO pass optCtx to metrics:
+            // For async tools, we will also store optCtx with the ongoing request so
+            // we can call a matching "operationEnded" hook when the async result completes.
         }
     }
 
@@ -332,41 +369,58 @@ public class McpServlet extends HttpServlet {
      * @throws IOException
      */
     private void listTools(McpTransport transport) throws IOException {
-        ToolRegistry toolRegistry = ToolRegistry.get();
+        /*
+         * Create opertation Context
+         */
+        McpMetrics optCtx = new McpMetrics();
+        optCtx.setMethodName("tools/list");
+        optCtx.setTransport(transport);
 
-        if (!toolRegistry.hasTools()) {
-            transport.sendResponse(new ToolResult(List.of()));
-            return;
+        String status = "ok";
+        String errorType = null;
+
+        try {
+            ToolRegistry toolRegistry = ToolRegistry.get();
+
+            if (!toolRegistry.hasTools()) {
+                transport.sendResponse(new ToolResult(List.of()));
+                return;
+            }
+
+            boolean supportsStructuredContent = transport.getProtocolVersion().supportsStructuredContent();
+            McpToolListParams params = transport.getParams(McpToolListParams.class);
+            String cursor = params != null ? params.getCursor() : null;
+
+            List<ToolMetadata> allTools = toolRegistry.getAllTools();
+
+            int startIndex = findStartIndex(allTools, cursor);
+
+            //get PAGE_SIZE + 1 tools to see if there's more authorised tools after PAGE_SIZE
+            List<ToolMetadata> authorisedTools = allTools.stream()
+                                                         .skip(startIndex)
+                                                         .filter(tmd -> Authorizer.isAuthorized(transport, tmd))
+                                                         .limit(PAGE_SIZE + 1)
+                                                         .toList();
+
+            boolean theresMore = authorisedTools.size() > PAGE_SIZE;
+
+            List<ToolDescription> response = authorisedTools.stream()
+                                                            .limit(PAGE_SIZE)
+                                                            .map(toolMetadata -> {
+                                                                return new ToolDescription(toolMetadata, supportsStructuredContent);
+                                                            })
+                                                            .toList();
+
+            String nextCursor = theresMore ? authorisedTools.get(PAGE_SIZE - 1).name() : null;
+
+            ToolResult toolResult = new ToolResult(response, nextCursor);
+            transport.sendResponse(toolResult);
+        } catch (Exception e) {
+            status = "error";
+            errorType = e.getClass().getSimpleName();
+        } finally {
+            optCtx.setOutcome(status, errorType);
         }
-
-        boolean supportsStructuredContent = transport.getProtocolVersion().supportsStructuredContent();
-        McpToolListParams params = transport.getParams(McpToolListParams.class);
-        String cursor = params != null ? params.getCursor() : null;
-
-        List<ToolMetadata> allTools = toolRegistry.getAllTools();
-
-        int startIndex = findStartIndex(allTools, cursor);
-
-        //get PAGE_SIZE + 1 tools to see if there's more authorised tools after PAGE_SIZE
-        List<ToolMetadata> authorisedTools = allTools.stream()
-                                                     .skip(startIndex)
-                                                     .filter(tmd -> Authorizer.isAuthorized(transport, tmd))
-                                                     .limit(PAGE_SIZE + 1)
-                                                     .toList();
-
-        boolean theresMore = authorisedTools.size() > PAGE_SIZE;
-
-        List<ToolDescription> response = authorisedTools.stream()
-                                                        .limit(PAGE_SIZE)
-                                                        .map(toolMetadata -> {
-                                                            return new ToolDescription(toolMetadata, supportsStructuredContent);
-                                                        })
-                                                        .toList();
-
-        String nextCursor = theresMore ? authorisedTools.get(PAGE_SIZE - 1).name() : null;
-
-        ToolResult toolResult = new ToolResult(response, nextCursor);
-        transport.sendResponse(toolResult);
     }
 
     private int findStartIndex(List<ToolMetadata> allTools, String cursor) {
@@ -391,15 +445,48 @@ public class McpServlet extends HttpServlet {
      */
     @FFDCIgnore(NoSuchElementException.class)
     private void initialize(McpTransport transport) throws IOException {
-        McpInitializeParams params = transport.getParams(McpInitializeParams.class);
+        McpMetrics optCtx = new McpMetrics();
+        optCtx.setMethodName("initialize");
+        optCtx.setTransport(transport);
 
-        McpProtocolVersion version;
+        String status = "ok";
+        String errorType = null;
+
         try {
-            version = McpProtocolVersion.parse(params.getProtocolVersion());
-        } catch (NoSuchElementException e) {
-            // Client requested version not supported
-            // Respond with our preferred version
-            version = McpProtocolVersion.V_2025_11_25;
+
+            McpInitializeParams params = transport.getParams(McpInitializeParams.class);
+
+            McpProtocolVersion version;
+            try {
+                version = McpProtocolVersion.parse(params.getProtocolVersion());
+            } catch (NoSuchElementException e) {
+                // Client requested version not supported
+                // Respond with our preferred version
+                version = McpProtocolVersion.V_2025_11_25;
+            }
+            // TODO store client capabilities
+            // TODO store client info
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Client initializing: " + params.getClientInfo(), params.getCapabilities());
+            }
+            Principal userId = transport.getUser();
+
+            String sessionId = sessionStore.createSession(userId);
+
+            ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
+
+            // TODO: provide a way for the user to set server info
+            ServerInfo info = new ServerInfo("test-server", "Test Server", "0.1");
+            McpInitializeResult result = new McpInitializeResult(version, caps, info, null);
+
+            transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId);
+            transport.sendResponse(result);
+        } catch (Exception e) {
+            status = "error";
+            errorType = e.getClass().getSimpleName();
+        } finally {
+            optCtx.setOutcome(status, errorType);
         }
         // TODO store client capabilities
         // TODO store client info
@@ -433,6 +520,13 @@ public class McpServlet extends HttpServlet {
     }
 
     private void cancelRequest(McpTransport transport) throws IOException {
+        McpMetrics optCtx = new McpMetrics();
+        optCtx.setMethodName("cancel");
+        optCtx.setTransport(transport);
+
+        String status = "ok";
+        String errorType = null;
+
         McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
         RequestId mcpReqId = notificationParams.getRequestId();
         McpSessionId sessionId = transport.getSessionId();
@@ -446,11 +540,16 @@ public class McpServlet extends HttpServlet {
             if (session == null || !Objects.equals(session.getUserId(), userId)) {
                 transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")));
                 return;
+            } else {
+                var session = sessionStore.getSession(sessionId.value());
+                if (session == null || !Objects.equals(session.getUserId(), userId)) {
+                    transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")));
+                    return;
+                }
             }
-        }
 
-        ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId, userId);
-        Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
+            ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId, userId);
+            Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(this, tc, "Cancellation requested for " + requestId);
@@ -459,11 +558,26 @@ public class McpServlet extends HttpServlet {
         Cancellation cancellation = requestTrackers.getCurrent().getOngoingRequestCancellation(requestId);
         if (cancellation != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "Cancelling task");
+                Tr.event(this, tc, "Cancellation requested for " + requestId);
             }
-            ((CancellationImpl) cancellation).cancel(reason);
+
+            Cancellation cancellation = requestTracker.getOngoingRequestCancellation(requestId);
+            if (cancellation != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Cancelling task");
+                }
+                ((CancellationImpl) cancellation).cancel(reason);
+            }
+            transport.sendEmptyResponse();
+        } catch (RuntimeException e) {
+            status = "error";
+            if (errorType == null) {
+                errorType = e.getClass().getSimpleName();
+            }
+            throw e;
+        } finally {
+            optCtx.setOutcome(status, errorType);
         }
-        transport.sendEmptyResponse();
     }
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
