@@ -307,27 +307,27 @@ public class CheckpointSessionCacheTwoServerTest extends FATServletClient {
             // Verify that the value is updated in the cache itself
             int start;
             start = response2.indexOf("bytes for WELD_S#0: [") + 21;
-            assertNotSame(response2, 20, start);
+            assertTrue("WELD_S#0 not found in response2. Response: " + response2, start != 20);
             String response2weld0 = response2.substring(start, response2.indexOf("]", start));
 
             start = response2.indexOf("bytes for WELD_S#1: [") + 21;
-            assertNotSame(response2, 20, start);
+            assertTrue("WELD_S#1 not found in response2. Response: " + response2, start != 20);
             String response2weld1 = response2.substring(start, response2.indexOf("]", start));
 
             start = response4.indexOf("bytes for WELD_S#0: [") + 21;
-            assertNotSame(response4, 20, start);
+            assertTrue("WELD_S#0 not found in response4. Response: " + response4, start != 20);
             String response4weld0 = response4.substring(start, response4.indexOf("]", start));
 
             start = response4.indexOf("bytes for WELD_S#1: [") + 21;
-            assertNotSame(response4, 20, start);
+            assertTrue("WELD_S#1 not found in response4. Response: " + response4, start != 20);
             String response4weld1 = response4.substring(start, response4.indexOf("]", start));
 
             start = response6.indexOf("bytes for WELD_S#0: [") + 21;
-            assertNotSame(response6, 20, start);
+            assertTrue("WELD_S#0 not found in response6. Response: " + response6, start != 20);
             String response6weld0 = response6.substring(start, response6.indexOf("]", start));
 
             start = response6.indexOf("bytes for WELD_S#1: [") + 21;
-            assertNotSame(response6, 20, start);
+            assertTrue("WELD_S#1 not found in response6. Response: " + response6, start != 20);
             String response6weld1 = response6.substring(start, response6.indexOf("]", start));
 
             // TODO switch all of these to assertFalse once the weld bug is fixed or successfully worked around so that updates get written
