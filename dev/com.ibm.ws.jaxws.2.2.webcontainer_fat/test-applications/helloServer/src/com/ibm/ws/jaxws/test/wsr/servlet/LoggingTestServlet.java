@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package com.ibm.ws.jaxws.test.wsr.server;
+package com.ibm.ws.jaxws.test.wsr.servlet;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -49,8 +49,7 @@ public class LoggingTestServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String wsdlURLString = "http://localhost:8010/helloApp/PeopleService?wsdl";
-//            new StringBuilder("http://").append("localhost:").append(req.getServerPort()).append("/helloApp/PeopleService?wsdl").toString();
+        String wsdlURLString = new StringBuilder("http://").append("localhost:").append(req.getServerPort()).append("/helloApp/PeopleService?wsdl").toString();
 
         String wsType = req.getParameter("WSType"); // Web service type
 

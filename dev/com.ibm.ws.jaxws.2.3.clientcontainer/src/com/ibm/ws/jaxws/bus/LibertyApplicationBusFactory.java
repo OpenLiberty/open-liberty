@@ -30,7 +30,6 @@ import org.apache.cxf.bus.extension.ExtensionManager;
 import org.apache.cxf.bus.extension.ExtensionManagerImpl;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
 import org.apache.cxf.buslifecycle.BusLifeCycleManager;
-import org.apache.cxf.ext.logging.AbstractLoggingInterceptor;
 import org.apache.cxf.ext.logging.LoggingFeature;
 import org.apache.cxf.feature.Feature;
 
@@ -142,11 +141,6 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
                 if (!featureList.contains(loggingFeature)) {
                     featureList.add(loggingFeature);
                     bus.setFeatures(featureList);
-                    // Enable logging at interceptor level
-                    // Default is false as set here but to provide dynamic configuration
-                    // It's set to true when trace is not enabled or enable
-                    // EnableLoggingInOutInterceptor is not set
-                    AbstractLoggingInterceptor.setDisableLogging(false);
                 }
             }
 

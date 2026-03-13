@@ -147,11 +147,6 @@ public class LibertyApplicationBusFactory extends CXFBusFactory {
                     loggingFeature.initialize(bus);
                     featureList.add(loggingFeature);
                     bus.setFeatures(featureList);
-                    // Enable logging at interceptor level
-                    // Default is false as set here but to provide dynamic configuration
-                    // It's set to true when trace is not enabled or enable
-                    // EnableLoggingInOutInterceptor is not set
-                    AbstractLoggingInterceptor.setDisableLogging(false);  
                 }
             }
 

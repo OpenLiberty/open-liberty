@@ -68,6 +68,19 @@ public abstract class AbstractLoggingInterceptor extends AbstractPhaseIntercepto
     public static Boolean getDisableLogging() {
         return disableLogging;
     } 
+    
+    /**
+     * @return the enableLoggingInOutInterceptor property value from endpoint info 
+     */
+    private static boolean isEndpointEnableLoggingInOutInterceptorTrue(Message message) {
+        if (null != message.getExchange().getEndpoint()) {
+            if (null != message.getExchange().getEndpoint().getEndpointInfo()) {
+                Object prop = message.getExchange().getEndpoint().getEndpointInfo().getProperties().get("enableLoggingInOutInterceptor");
+                return PropertyUtils.isTrue(prop);
+            }
+        }
+        return false;
+    }
 
     /**
      * @param disableLogging the disableLogging to set
@@ -84,8 +97,8 @@ public abstract class AbstractLoggingInterceptor extends AbstractPhaseIntercepto
     protected static boolean isLoggingDisabledNow(Message message) throws Fault {
         Object liveLoggingProp = message.getContextualProperty(LIVE_LOGGING_PROP);
         // Liberty change begin 
-        boolean bLiveLoggingProp = liveLoggingProp != null && PropertyUtils.isFalse(liveLoggingProp);
-        if(bLiveLoggingProp || getDisableLogging())    {
+        boolean isLiveLoggingFalse = liveLoggingProp != null && PropertyUtils.isFalse(liveLoggingProp);
+        if(isLiveLoggingFalse || (getDisableLogging() && !isEndpointEnableLoggingInOutInterceptorTrue(message)))    {
             return true;
         }
         return false;

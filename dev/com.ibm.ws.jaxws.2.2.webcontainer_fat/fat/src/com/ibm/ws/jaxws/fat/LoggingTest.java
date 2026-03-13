@@ -59,6 +59,7 @@ public class LoggingTest {
     @BeforeClass
     public static void setUp() throws Exception {
         WebArchive app = ShrinkHelper.buildDefaultApp(APP_NAME, "com.ibm.ws.jaxws.test.wsr.server",
+                                                      "com.ibm.ws.jaxws.test.wsr.servlet",
                                                       "com.ibm.ws.jaxws.test.wsr.server.impl",
                                                       "com.ibm.ws.jaxws.test.wsr.server.stub",
                                                       "com.ibm.ws.jaxws.fat.util");
@@ -121,45 +122,99 @@ public class LoggingTest {
         assertTrue("Dispatch without trace: Expected response is not received testing dynamic logging, obtained result: " + result, result.equals("Dispatch invoke success: true"));
         assertNull("Dispatch without trace: Dynamic configuration failed!", server.waitForStringInLog("<return>Hello World</return>"));
 
-        // ****************************************************************
-        // *** Test enableLoggingInOutInterceptor without trace enabled ***
-        // ****************************************************************
-        log.info("*** < EnableLoggingInOutInterceptor is enabled without trace > ***");
+        // *******************************************************************************************************
+        // *** Test web service reference enableLoggingInOutInterceptor property enabled without trace enabled ***
+        // *******************************************************************************************************
+        log.info("*** < web service reference enableLoggingInOutInterceptor is enabled without trace > ***");
         server.reconfigureServer("LoggingServer/EnableLoggingInOutInterceptor.xml", "CWWKG0017I");
 
         // enableLoggingInOutInterceptor test web service reference
         result = invokeServlet("wsref");
-        assertTrue("Proxy with enableLoggingInOutInterceptor: Expected response is not received, obtained result: " + result,
+        assertTrue("Proxy with web service reference enableLoggingInOutInterceptor: Expected response is not received, obtained result: " + result,
                    result.equals("Hello World"));
-        assertNotNull("Proxy with enableLoggingInOutInterceptor: EnableLoggingInOutInterceptor enablement failed!",
+        assertNotNull("Proxy with web service reference enableLoggingInOutInterceptor: EnableLoggingInOutInterceptor enablement failed!",
                       server.waitForStringInLog("<return>Hello World</return>"));
 
         // enableLoggingInOutInterceptor test dispatch
         result = invokeServlet("dispatch");
-        assertTrue("Dispatch with enableLoggingInOutInterceptor: Expected response is not received, obtained result: " + result,
+        assertTrue("Dispatch with web service reference enableLoggingInOutInterceptor: Expected response is not received, obtained result: " + result,
                    result.equals("Dispatch invoke success: true"));
-        assertNotNull("Dispatch with enableLoggingInOutInterceptor: EnableLoggingInOutInterceptor enablement is failed!",
+        assertNotNull("Dispatch with web service reference enableLoggingInOutInterceptor: EnableLoggingInOutInterceptor enablement is failed!",
                       server.waitForStringInLog("<return>Hello World</return>"));
 
-        // ***********************************************************************************
-        // *** Test without enableLoggingInOutInterceptor set to true and no trace enabled ***
-        // ***********************************************************************************
-        log.info("*** < EnableLoggingInOutInterceptor and trace are disabled > ***");
+        // *******************************************************************************************************************
+        // *** Test without web service reference enableLoggingInOutInterceptor property enabled and without trace enabled ***
+        // *******************************************************************************************************************
+        log.info("*** < web service reference EnableLoggingInOutInterceptor property and trace are disabled > ***");
         server.reconfigureServer("LoggingServer/NegativeLoggingFeature.xml", "CWWKG0017I");
 
         // enableLoggingInOutInterceptor test web service reference
         result = invokeServlet("wsref");
-        assertTrue("Proxy without enableLoggingInOutInterceptor: Expected response is not received testing dynamic logging, obtained result: "
+        assertTrue("Proxy without web service reference enableLoggingInOutInterceptor property: Expected response is not received testing dynamic logging, obtained result: "
                    + result, result.equals("Hello World"));
-        assertNull("Proxy without enableLoggingInOutInterceptor: Dynamic configuration failed!",
+        assertNull("Proxy without web service reference enableLoggingInOutInterceptor property: Dynamic configuration failed!",
                    server.waitForStringInLog("<return>Hello World</return>"));
 
         // enableLoggingInOutInterceptor test dispatch
         result = invokeServlet("dispatch");
-        assertTrue("Dispatch without enableLoggingInOutInterceptor: Expected response is not received testing dynamic logging, obtained result:" + result,
+        assertTrue("Dispatch without web service reference enableLoggingInOutInterceptor property: Expected response is not received testing dynamic logging, obtained result:"
+                   + result,
                    result.equals("Dispatch invoke success: true"));
-        assertNull("Dispatch without enableLoggingInOutInterceptor: Dynamic configuration failed!",
+        assertNull("Dispatch without web service reference enableLoggingInOutInterceptor property: Dynamic configuration failed!",
                    server.waitForStringInLog("<return>Hello World</return>"));
+
+        // ****************************************************************************************************
+        // *** Test with endpoint info enableLoggingInOutInterceptor property enabled without trace enabled ***
+        // ****************************************************************************************************
+        log.info("*** < Endpoint info enableLoggingInOutInterceptor property is enabled without trace > ***");
+        server.reconfigureServer("LoggingServer/EnableLoggingInOutInterceptorFromEndpoint.xml", "CWWKG0017I");
+
+        // enableLoggingInOutInterceptor test endpoint property
+        result = invokeServlet("proxy");
+        assertTrue("Proxy with endpoint info enableLoggingInOutInterceptor property: Expected response is not received, obtained result: " + result,
+                   result.equals("Hello World"));
+        assertNotNull("Proxy with endpoint info enableLoggingInOutInterceptor property: EnableLoggingInOutInterceptor enablement failed!",
+                      server.waitForStringInLog("<return>Hello World</return>"));
+
+        // enableLoggingInOutInterceptor test dispatch endpoint property
+        result = invokeServlet("dispatch");
+        assertTrue("Dispatch with endpoint info enableLoggingInOutInterceptor property: Expected response is not received, obtained result: " + result,
+                   result.equals("Dispatch invoke success: true"));
+        assertNotNull("Dispatch with endpoint info enableLoggingInOutInterceptor property: EnableLoggingInOutInterceptor enablement is failed!",
+                      server.waitForStringInLog("<return>Hello World</return>"));
+
+        // *******************************************************************************************************
+        // *** Test without endpoint info enableLoggingInOutInterceptor property enabled without trace enabled ***
+        // *******************************************************************************************************
+        log.info("*** < EnableLoggingInOutInterceptor and trace are disabled > ***");
+        server.reconfigureServer("LoggingServer/NegativeLoggingFeature.xml", "CWWKG0017I");
+
+        // enableLoggingInOutInterceptor test endpoint property
+        result = invokeServlet("proxy");
+        assertTrue("Proxy without endpoint info enableLoggingInOutInterceptor property: Expected response is not received testing dynamic logging, obtained result: "
+                   + result, result.equals("Hello World"));
+        assertNull("Proxy without endpoint info enableLoggingInOutInterceptor property: Dynamic configuration failed!",
+                   server.waitForStringInLog("<return>Hello World</return>"));
+
+        // enableLoggingInOutInterceptor test dispatch endpoint property
+        result = invokeServlet("dispatch");
+        assertTrue("Dispatch without endpoint info enableLoggingInOutInterceptor property: Expected response is not received testing dynamic logging, obtained result:" + result,
+                   result.equals("Dispatch invoke success: true"));
+        assertNull("Dispatch without endpoint info enableLoggingInOutInterceptor property: Dynamic configuration failed!",
+                   server.waitForStringInLog("<return>Hello World</return>"));
+
+        // *******************************************************************************************************************
+        // *** Check back if we can enable endpoint info enableLoggingInOutInterceptor property back without trace enabled ***
+        // *******************************************************************************************************************
+        log.info("*** < Check back endpoint info enableLoggingInOutInterceptor property is enabled without trace > ***");
+        server.reconfigureServer("LoggingServer/EnableLoggingInOutInterceptorFromEndpoint.xml", "CWWKG0017I");
+
+        // enableLoggingInOutInterceptor test endpoint property
+        result = invokeServlet("proxy");
+        assertTrue("Proxy with endpoint info enableLoggingInOutInterceptor property: Expected response is not received, obtained result: " + result,
+                   result.equals("Hello World"));
+        assertNotNull("Proxy with endpoint info enableLoggingInOutInterceptor property: EnableLoggingInOutInterceptor enablement failed!",
+                      server.waitForStringInLog("<return>Hello World</return>"));
     }
 
     private String invokeServlet(String webServiceType) throws ProtocolException, IOException {
