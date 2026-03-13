@@ -158,7 +158,6 @@ steps:
     githubPRUser: ${github_pr_user}
     githubPRNumber: ${github_pr_number}
     githubPRApi: ${github_pr_api}
-    githubPRHtml: $
 
 - stepName: Prohibited Terms Check
   workType: Jenkins
