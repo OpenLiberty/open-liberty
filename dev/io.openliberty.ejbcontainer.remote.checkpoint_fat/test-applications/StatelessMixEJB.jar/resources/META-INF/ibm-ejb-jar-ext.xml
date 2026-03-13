@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-ext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd" version="1.0">
+  <session name="CMTStatelessLocal2">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+<!-- TODO: Re-enable when merge issue is fixed -->
+<!--
+  <session name="NoNameCMTStatelessLocalBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="RealNoNameBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+-->
+
+  <session name="CompCMTStatelessLocal">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="ExpClassExpAllxml">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="ExpClassExpXMLMethod">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="ExpMethodExpAllxml">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="ExpMethodExpXMLMethod">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="ImpClassExpAllxml">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="ImpClassExpXMLMethod">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="BaseAnnotationOverByXMLTxAttrBean1">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="BaseAnnotationOverByXMLTxAttrBean2">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="BMTBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="CompNoBizCMTStatelessLocal">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="CompCMTStatelessRemote">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="CompNoBizCMTStatelessRemote">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="CMTStatelessRemote2">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+<!-- TODO: Re-enable when merge issue is fixed -->
+<!--
+  <session name="NoNameCMTStatelessRemoteBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="RemoteRealNoNameBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+-->
+
+  <session name="BMTNoXMLTranType">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="CMTNoXMLTranType">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+</ejb-jar-ext>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-ext xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://websphere.ibm.com/xml/ns/javaee"
+    xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-ext_1_0.xsd" version="1.0">
+    
+    <session name="CMTStateful2">
+    <bean-cache activation-policy="ONCE"/>
+  </session>
+
+  <session name="NoNameCMTStatefulBean">
+    <bean-cache activation-policy="ONCE"/>
+  </session>
+
+  <session name="RealNoNameBean">
+    <bean-cache activation-policy="ONCE"/>
+  </session>
+
+  <session name="CompCMTStateful">
+    <bean-cache activation-policy="ONCE"/>
+  </session>
+
+ 
+
+  <session name="SerializableStatefulBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+<session name="SerializableBMTStatefulBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+ 
+
+  <session name="NonSerializableStatefulBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="StaticStateful">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+
+ 
+  <session name="StatefulCLInterceptorBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+   <session name="StatefulCL2InterceptorBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+  
+   <session name="StatefulNonSerCL2InterceptorBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+  
+  <session name="StatefulCLDefInterceptorBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="StatefulDefInterceptorBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="StatefulEmptyBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+  
+  <session name="SuperStatefulNonSerBaseBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+  
+  <session name="SuperStatefulSerBaseBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+  
+  <session name="StatefulCLSuperInterceptorBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+  
+  <session name="StatefulCLSuperSerInterceptorBean">
+    <bean-cache activation-policy="TRANSACTION"/>
+  </session>
+
+  <session name="SFNoBizInterfaceDefined2">
+    <bean-cache activation-policy="ONCE"/>
+  </session>
+
+  <session name="SFNoBizInterfaceDefined3">
+    <bean-cache activation-policy="ONCE"/>
+  </session>
+
+ 
+    
+ 
+</ejb-jar-ext>

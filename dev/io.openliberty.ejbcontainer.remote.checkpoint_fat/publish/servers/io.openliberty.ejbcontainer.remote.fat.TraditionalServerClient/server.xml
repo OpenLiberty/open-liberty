@@ -1,0 +1,21 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbHome-3.2</feature>
+        <feature>ejbRemote-3.2</feature>
+        <feature>j2eeManagement-1.1</feature>
+        <feature>appClientSupport-1.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestCommon.xml"/>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
+
+    <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP.client}">
+        <iiopsOptions  iiopsPort="${bvt.prop.IIOP.client.secure}" sslRef="defaultSSLConfig"/>
+    </iiopEndpoint>
+</server>
