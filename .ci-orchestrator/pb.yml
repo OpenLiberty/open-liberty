@@ -58,6 +58,8 @@ triggers:
       description: "PR number in Open Liberty to checkout."
     - name: github_pr_api
       defaultValue: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${github_pr_number}"
+    - name: github_pr_html
+      defaultValue: "https://github.com/OpenLiberty/open-liberty/pull/${github_pr_number}"
     # Allow user to override ebc.shortlist for only parent steps.
     - name: ebc.shortlist
       defaultValue: parentbuild-personal.yml
@@ -145,6 +147,7 @@ steps:
   timeoutInMinutes: 1440
   properties:
     githubPRApi: ${github_pr_api}
+    githubPRHtml: ${github_pr_html}
     githubPRNumber: ${github_pr_number}
 
 - stepName: CLA Check
@@ -155,6 +158,7 @@ steps:
     githubPRUser: ${github_pr_user}
     githubPRNumber: ${github_pr_number}
     githubPRApi: ${github_pr_api}
+    githubPRHtml: $
 
 - stepName: Prohibited Terms Check
   workType: Jenkins
@@ -162,6 +166,7 @@ steps:
   timeoutInMinutes: 1440
   properties:
     githubPRApi: ${github_pr_api}
+    githubPRHtml: ${github_pr_html}
     githubPRNumber: ${github_pr_number}
 
 - stepName: GenAI Assistance Code Check
