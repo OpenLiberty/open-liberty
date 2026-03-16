@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,13 +10,18 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-/**
- * @version 1.5.0
- */
-@org.osgi.annotation.versioning.Version("1.5.0")
-@TraceOptions(traceGroup = "kernelUtils",
-              messageBundle = "com.ibm.ws.kernel.service.utils.resources.ServiceMessages")
 package com.ibm.wsspi.kernel.service.utils;
 
-import com.ibm.websphere.ras.annotation.TraceOptions;
-
+/**
+ * Service for stopping applications during server quiesce.
+ * This interface allows the runtime.update bundle to request 
+ * application shutdown without depending on the app.manager 
+ * bundle.  This avoids a circular dependency.
+ * 
+ * The application manager bundle implements this service. 
+ * The runtime update manager uses this service to stop 
+ * applications before quiescing other server components.
+ */
+public interface ApplicationQuiesceService {  
+    void stopApplications();
+}
