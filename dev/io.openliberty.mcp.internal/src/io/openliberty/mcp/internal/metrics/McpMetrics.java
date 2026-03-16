@@ -37,7 +37,7 @@ public final class McpMetrics {
     /**
      * @return the startTimeNanos
      */
-    public long getStartTimeNanos() {
+    public long getDurationNanos() {
         return System.nanoTime() - startTimeNanos;
     }
 
@@ -122,5 +122,21 @@ public final class McpMetrics {
     public void setOutcome(String status, String errorType) {
         this.status = status;
         this.errorType = errorType;
+    }
+
+    /**
+     * @param metrics
+     */
+    public static void operationStarted(McpMetrics metrics) {
+        // TODO Auto-generated method stub
+
+    }
+
+    /**
+     * @param metrics
+     */
+    public static void operationEnded(McpMetrics metrics) {
+        // TODO Auto-generated method stub
+
     }
 }
