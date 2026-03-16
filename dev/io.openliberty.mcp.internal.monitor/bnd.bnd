@@ -20,19 +20,19 @@ javac.target: 17
 WS-TraceGroup: MCP
 
 Import-Package: \
-	!io.openliberty.mcp.internal.*;version=latest,\
 	*
 
-DynamicImport-Package: \
-  io.openliberty.mcp.internal.*
 
 Export-Package: \
   io.openliberty.mcp.internal.monitor;thread-context=true,\
   io.openliberty.mcp.internal.monitor.metrics
 
+-dsannotations: \
+  io.openliberty.mcp.internal.monitor.metrics.MetricsManager
+
+Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonitor
 
 -buildpath: \
-	io.openliberty.mcp.internal;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	com.ibm.ws.monitor;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
