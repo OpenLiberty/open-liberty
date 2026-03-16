@@ -188,6 +188,13 @@ public class McpTransport {
         return sessionInfo;
     }
 
+    /*
+     * Returns whether the current request has been successfully authenticated.
+     */
+    public boolean isAuthenticated() {
+        return req.getUserPrincipal() != null;
+    }
+
     /**
      * Returns the session ID associated with this transport.
      * This is the raw ID value provided by the client in the {@code Mcp-Session-Id} header,

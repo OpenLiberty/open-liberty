@@ -72,8 +72,20 @@ public class WebJaccServiceImpl implements WebJaccService {
 
     private static final HandlerProcessor handlerProcessor;
 
+    /**
+     * The HandlerProcessor centralizes the logic for setting the PolicyContext handler data with all the behaviors for each version of
+     * JACC / Jakarta Authorization. There are some behaviors that may not make sense, but for backward compatibility to maintain zero
+     * migration, the behaviors are maintained.
+     */
     enum HandlerProcessor {
-        JACC15(true, false), AUTHORIZATION20_21(false, false), AUTHORIZATION30(false, true);
+        // For JACC 1.5, all javax and jakarta named PolicyContext handler names are supported except the PrincipalMapper which is added in 3.0
+        JACC15(true, false),
+
+        // For Jakarta Authorization 2.0 and 2.1, the javax PolicyContext handlers names are removed
+        AUTHORIZATION20_21(false, false),
+
+        // For Jakarta Authorization 3.0, the new PrincipalMapper is added
+        AUTHORIZATION30(false, true);
 
         final boolean principalMapperSupported;
         final boolean javaxSupported;

@@ -1,20 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.transport.http;
 
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertFalse;
 
 import java.io.IOException;
 import java.net.InetAddress;
@@ -895,7 +893,7 @@ public class HttpXForwardedAndForwardedHeaderTests {
 
         assertTrue("Response does not contain Endpoint Information Servlet Test message", response.contains("Endpoint Information Servlet Test"));
         assertTrue("Response does contain the expected Remote Address", !response.contains("Remote Address: 2001:db9:cafe::17"));
-        assertTrue("Response does contain the expected Remote Port", !response.contains("Remote Port: 943"));
+        assertFalse("Response should not contain the untrusted Remote Port: 943", response.matches("(?s).*Remote Port: 943\\b.*"));
     }
 
     /**

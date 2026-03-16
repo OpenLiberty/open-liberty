@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -134,6 +134,7 @@ public class Constants {
     public final static String IS_EMP_FALSE = "isCallerInRole(Emp)=false";
     public final static String IS_MGR_TRUE = "isCallerInRole(Mgr)=true";
     public final static String IS_MGR_FALSE = "isCallerInRole(Mgr)=false";
+    public final static String IS_STARSTAR_TRUE = "isCallerInRole(**)=true";
 
     // Roles
     public final static String EMPLOYEE_ROLE = "Employee";

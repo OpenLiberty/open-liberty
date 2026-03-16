@@ -21,6 +21,15 @@ import jakarta.security.jacc.PolicyConfigurationFactory;
 import jakarta.security.jacc.PolicyContext;
 import jakarta.security.jacc.PolicyContextException;
 
+/**
+ * Stores the PolicyConfigurationFactory state so that as new PolicyConfigurationFactory instances
+ * are configured dynamically, they can be populated and committed based off of the state of each application
+ * that has started already.
+ *
+ * Only this class accesses the actual PolicyConfigurationFactory instances. All other Liberty runtime function interacts
+ * with this class when using Jakarta Authorization 3.0. The actual PolicyConfigurationFactory is accessed
+ * by the user's PolicyFactory instance to be able to get the state that this class propagates.
+ */
 public class JakartaPolicyConfigFactoryProxy extends PolicyConfigurationFactory {
 
     private final Map<String, JakartaPolicyConfigProxy> configMap = new ConcurrentHashMap<>();
@@ -71,10 +80,14 @@ public class JakartaPolicyConfigFactoryProxy extends PolicyConfigurationFactory 
             });
         }
 
+        // If we added a new PolicyConfiguration, there is no need to call reset to remove any config because it will
+        // already be an empty PolicyConfiguration in open state
         if (newProxyAdded.get()) {
             return existingConfig;
         }
 
+        // Call the actual PolicyConfigurationFactory.getPolicyConfiguration() method to drive any logic that it needs to run.
+        // Namely this will make sure that the remove flag is handled and the state is back to open state
         existingConfig.resetDelegatePolicyConfig(remove);
         return existingConfig;
     }
@@ -101,6 +114,10 @@ public class JakartaPolicyConfigFactoryProxy extends PolicyConfigurationFactory 
         return factory;
     }
 
+    /**
+     * When adding a new PolicyConfigurationFactory from a web.xml config, this method populates the new factory with the
+     * existing state and gets the PolicyConfiguration instances into the correct state.
+     */
     public void ensurePolicyConfigInitialized() {
         for (JakartaPolicyConfigProxy policyConfig : configMap.values()) {
             if (policyConfig != null) {

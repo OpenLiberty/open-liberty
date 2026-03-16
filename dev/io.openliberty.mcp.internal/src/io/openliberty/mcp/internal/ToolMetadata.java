@@ -156,7 +156,8 @@ public record ToolMetadata(String name,
 
         outputSchema = (outputSchema == null || outputSchema.isEmpty()) ? null : outputSchema;
 
-        if (outputSchema != null && outputSchema.getString("type").equals("array")) {
+        if (outputSchema != null && !(method.isAnnotationPresent(Schema.class) && method.getAnnotation(Schema.class).value() != Schema.UNSET)
+            && !checkConcreteType(outputSchema).equals("object")) {
             throw new UnsupportedTypeException(unwrappedOutputType);
         }
 
@@ -192,6 +193,24 @@ public record ToolMetadata(String name,
                                 Optional.of(methodMetadata),
                                 SecurityRequirement.createFrom(method),
                                 Instant.now());
+    }
+
+    /**
+     *
+     * @param outputSchema the JSON schema generated to validate (will not work with custom schemas based JSON)
+     * @return type of object
+     */
+    public static String checkConcreteType(JsonObject outputSchema) {
+        if (outputSchema.containsKey("type")) {
+            return outputSchema.getString("type");
+        } else {
+            if (outputSchema.containsKey("$ref")) {
+                String[] path = outputSchema.getString("$ref").split("/");
+                JsonObject curJsonObj = outputSchema.getJsonObject("$defs").getJsonObject(path[path.length - 1]);
+                return curJsonObj.getString("type");
+            }
+        }
+        return "";
     }
 
     private static String[] getArgNameArray(AnnotatedMethod<?> method, List<ToolMethodArgument> toolMethodArgs) {

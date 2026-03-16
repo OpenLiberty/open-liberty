@@ -6,7 +6,10 @@
     <feature>mcpServer-1.0</feature>
     <feature>appSecurity-5.0</feature>
   </featureManager>
-  <mcpServer stateless="true"/>
+  
+  <application location="securityTests.war">
+  	<mcpServer stateless="true"/>
+  </application>
 
   <include location="../fatTestPorts.xml" />
   

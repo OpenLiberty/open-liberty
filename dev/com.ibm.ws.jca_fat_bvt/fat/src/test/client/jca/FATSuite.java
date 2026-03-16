@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.client.jca;
 
@@ -22,7 +19,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
@@ -34,8 +30,9 @@ import componenttest.topology.impl.LibertyServerFactory;
 })
 public class FATSuite {
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction())
-                    .andWith(new JakartaEE9Action().setSkipTransformation(true).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17)) // Tests with EE10 Features.
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().setSkipTransformation(true).conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 
     public static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jca.fat.bvt");
 

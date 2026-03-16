@@ -46,7 +46,7 @@ import jakarta.data.restrict.Restriction;
 /**
  * Repository for the Fraction entity
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/dbref")
 public interface Fractions {
     @Find
     Stream<Fraction> denominatoredUpTo //

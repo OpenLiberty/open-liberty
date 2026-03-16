@@ -13,7 +13,8 @@
 							com.ibm.ws.javaee.dd.webbnd.WebBnd,
 							com.ibm.ws.javaee.dd.webext.WebExt,
 							com.ibm.ws.javaee.dd.clientbnd.ApplicationClientBnd,
-							com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd">
+							com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd,
+							io.openliberty.mcp.internal.config.McpConfigurationComponent">
 		<AD id="type" name="internal" description="internal" type="String"
 			default="ejb" ibm:final="true" />
 	</OCD>

@@ -41,7 +41,7 @@ public class PermitAllTestsStateless extends AbstractPermitAll {
     Logger logger = Logger.getLogger(PermitAllTestsStateless.class.getName());
 
     @Rule
-    public McpClient client = new McpClient(server, "/permitAllToolsStateless", StateMode.STATELESS);
+    public McpClient client = new McpClient(server, "/securityTests", StateMode.STATELESS);
 
     /** {@inheritDoc} */
     @Override
@@ -51,8 +51,8 @@ public class PermitAllTestsStateless extends AbstractPermitAll {
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "permitAllToolsStateless.war").addClass(PermitAllTools.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        WebArchive war = ShrinkWrap.create(WebArchive.class, "securityTests.war").addClass(PermitAllTools.class);
+        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
         server.startServer();
         assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
         // Wait for LTPA configuration to be ready

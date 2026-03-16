@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2026 IBM Corporation and others.
+ * Copyright (c) 2017, 2022 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,15 +12,10 @@
  *******************************************************************************/
 package componenttest.depchain;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.charset.StandardCharsets;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
+import java.util.Scanner;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -38,7 +33,7 @@ public class FeatureList {
 
     @SuppressWarnings("resource")
     public static synchronized File get(LibertyServer server) throws Exception {
-        final String m = "get";
+        final String m = "createFeatureList";
 
         featureList = new File(server.getUserDir() + "/servers", FAT_FEATURE_LIST);
         if (featureList.exists())
@@ -50,38 +45,23 @@ public class FeatureList {
         Process featureListProc = new ProcessBuilder("java", "-jar", featureListJar, featureList.getAbsolutePath())
                         .redirectErrorStream(true)
                         .start();
-
-        // Create a thread to capture the output of the process (stdout + stderr)
-        Future<String> output = Executors.newSingleThreadExecutor().submit(() -> {
-            return new BufferedReader(new InputStreamReader(featureListProc.getInputStream(), StandardCharsets.UTF_8))
-                            .lines()
-                            .collect(Collectors.joining(System.lineSeparator()));
-        });
-
         boolean completed = featureListProc.waitFor(TIMEOUT_MINUTES, TimeUnit.MINUTES);
         if (!completed) {
-            // Destroy the process (still capturing output)
+            Exception e = new Exception("Generating " + FAT_FEATURE_LIST + " timed out after " + TIMEOUT_MINUTES + " minutes. Aborting process.");
+            Log.error(c, m, e);
             featureListProc.destroyForcibly();
             featureListProc.waitFor();
-
-            //Output error
-            Exception e = new Exception("Generating " + FAT_FEATURE_LIST + " timed out after "
-                                        + TIMEOUT_MINUTES + " minutes. Aborting process." + System.lineSeparator()
-                                        + output.get());
-            Log.error(c, m, e);
-
             reset();
             throw e;
         }
-
         int rc = featureListProc.exitValue();
         if (rc != 0) {
-            //Output error
-            Exception e = new Exception("Process failed with rc=" + rc + " for " + featureList.getAbsolutePath()
-                                        + " generation:" + System.lineSeparator()
-                                        + output.get());
+            String cmdOutput;
+            try (Scanner s = new Scanner(featureListProc.getInputStream()).useDelimiter("\\A")) {
+                cmdOutput = s.hasNext() ? s.next() : "";
+            }
+            Exception e = new Exception("Process failed with rc=" + rc + " for " + featureList.getAbsolutePath() + " generation:\n" + cmdOutput);
             Log.error(c, m, e);
-
             reset();
             throw e;
         }

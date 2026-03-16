@@ -209,7 +209,7 @@ unauthorized.cancellation=The tool cannot be cancelled as the calling user is no
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: The {0} return type of the {1} MCP tool method must be an object.
-CWMCM0025E.unsupported.output.explanation=The provided MCP tool return type is not supported.
+CWMCM0025E.unsupported.output.explanation=The provided MCP tool return type is not supported. Because the structured content is set to true, the output schema type must be an object.
 CWMCM0025E.unsupported.output.useraction=Provide a return type that is an object.
 
 # Used as exception message

@@ -21,6 +21,10 @@ import jakarta.security.jacc.Policy;
 import jakarta.security.jacc.PolicyFactory;
 import jakarta.security.jacc.PrincipalMapper;
 
+/**
+ * Jakarta Authorization 3.0 implementation of PolicyProxy that is the interface used for interacting with
+ * the jakarta.security.jacc.PolicyFactory instead of java.security.Policy as was done in previous spec versions.
+ */
 public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
 
     private static Subject nullSubject = new Subject();
@@ -65,6 +69,14 @@ public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
         return true;
     }
 
+    /**
+     * This method is called when starting applications after the PolicyConfiguration is populated.
+     *
+     * Previously there was only a single Policy object, but now there is one per PolicyContext id
+     * so we need to call refresh on all of them that had populated PolicyConfigurations.
+     *
+     * @param contextIds the context ids of the Policy's that need to be refreshed
+     */
     @Override
     public void refresh(Set<String> contextIds) {
         PolicyFactory policyFactory = PolicyFactory.getPolicyFactory();
@@ -79,6 +91,13 @@ public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
         }
     }
 
+    /**
+     * This method is used to determine if there is a Policy configured. If there isn't
+     * one configured, the Liberty runtime will use the built-in authorization logic since there
+     * isn't a Jakarta Authorization Policy to call.
+     *
+     * @return whether there is a PolicyFactory configured or not
+     */
     @Override
     public boolean isPolicyConfigured() {
         return PolicyFactory.getPolicyFactory() != null;

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
@@ -34,6 +31,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -379,7 +377,7 @@ public class CxfX509SigTests extends CommonTests {
     //issue 23060
     @Test
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" },
-                  repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+                  repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfClientBadSrvKeyStorePswd() throws Exception {
 
         // use server config with bad server pw

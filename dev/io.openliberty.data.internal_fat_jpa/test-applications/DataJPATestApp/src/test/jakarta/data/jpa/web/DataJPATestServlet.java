@@ -98,7 +98,7 @@ import test.jakarta.data.jpa.web.Residence.Occupant;
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataJPATestServlet extends FATServlet {
-    static final long TIMEOUT_MS = TimeUnit.SECONDS.toMillis(2);
+    static final long TIMEOUT_MS = TimeUnit.SECONDS.toMillis(5);
 
     @Inject
     Accounts accounts;
@@ -1649,10 +1649,10 @@ public class DataJPATestServlet extends FATServlet {
                                      .map(s -> s.getPointA().x())
                                      .collect(Collectors.toList()));
 
-        s3.setPointB(new Point( //
+        s3.pointB = new Point( //
                         s3.getPointB().x() - s3.getPointA().x(), //
-                        s3.getPointB().y() - s3.getPointA().y()));
-        s3.setPointA(new Point(0, 0));
+                        s3.getPointB().y() - s3.getPointA().y());
+        s3.pointA = new Point(0, 0);
         s3 = segments.addOrModify(s3);
 
         // removes s1 and s3
@@ -1830,15 +1830,15 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(list.toString(), 1, list.size());
         Mobile m = list.get(0);
         assertEquals(OS.ANDROID,
-                     m.getOperatingSystem());
-        assertEquals(m1.getDeviceId(),
-                     m.getDeviceId());
+                     m.operatingSystem);
+        assertEquals(m1.deviceId,
+                     m.deviceId);
         assertEquals(List.of("Camera",
                              "Photos",
                              "Email"),
-                     m.getApps());
+                     m.apps);
         assertEquals(List.of(),
-                     m.getEmails());
+                     m.emails);
 
         list = mobilePhones.findByEmailsNotEmpty();
         assertEquals(list.toString(), 1, list.size());
@@ -1878,7 +1878,7 @@ public class DataJPATestServlet extends FATServlet {
         PurchaseOrder[] created = orders.create(o1, o2);
         o1 = created[0];
         o2 = created[1];
-        int o1_v1 = o1.getVersionNum();
+        int o1_v1 = o1.versionNum;
 
         PurchaseOrder o3 = new PurchaseOrder();
         o3.setPurchasedBy("testEntitiesAsParameters-Customer3");
@@ -1889,10 +1889,10 @@ public class DataJPATestServlet extends FATServlet {
         assertNotNull(o3.getId());
         assertEquals("testEntitiesAsParameters-Customer3", o3.getPurchasedBy());
         assertEquals(30.99f, o3.getTotal(), 0.001f);
-        int o3_v1 = o3.getVersionNum();
+        int o3_v1 = o3.versionNum;
 
         o3 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer3").orElseThrow();
-        assertEquals(o3_v1, o3.getVersionNum());
+        assertEquals(o3_v1, o3.versionNum);
 
         PurchaseOrder o4 = new PurchaseOrder();
         o4.setPurchasedBy("testEntitiesAsParameters-Customer4");
@@ -1918,8 +1918,8 @@ public class DataJPATestServlet extends FATServlet {
         // Update on another thread:
         CompletableFuture.supplyAsync(() -> {
             PurchaseOrder o1updated = orders.findById(o1id).orElseThrow();
-            o1updated.setTotal(11.99f);
-            return orders.save(o1updated); // Hibernate does SELECT, but no UPDATE, so the version remains the same
+            o1updated.total = 11.99f;
+            return orders.save(o1updated);
         }).get(2, TimeUnit.MINUTES);
 
         tran.begin();
@@ -1944,11 +1944,11 @@ public class DataJPATestServlet extends FATServlet {
         o2old.setVersionNum(o2.getVersionNum());
 
         // increment version of second entity
-        o2.setTotal(22.99f);
+        o2.total = 22.99f;
         o2 = orders.save(o2);
 
         // attempt to save second entity at an old version
-        o2old.setTotal(99.22f);
+        o2old.total = 99.22f;
         try {
             PurchaseOrder unexpected = orders.save(o2old);
             fail("Should not be able to update old version of entity: " + unexpected);
@@ -2052,10 +2052,10 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(o7_v1, o7.getVersionNum());
         assertEquals(o8_v1, o8.getVersionNum());
 
-        o7.setTotal(77.99f);
-        o8.setTotal(88.99f);
-        o1.setTotal(1.99f);
-        o1.setVersionNum(o1_v1);
+        o7.total = 77.99f;
+        o8.total = 88.99f;
+        o1.total = 1.99f;
+        o1.versionNum = o1_v1;
 
         try {
             orders.updateAll(List.of(o8, o1, o7));
@@ -2099,7 +2099,7 @@ public class DataJPATestServlet extends FATServlet {
 
         // use correct version for update:
         o1 = orders.findFirstByPurchasedBy("testEntitiesAsParameters-Customer1").orElseThrow();
-        o1.setTotal(0.99f);
+        o1.total = 0.99f;
 
         updated = orders.update(o1);
 
@@ -2425,14 +2425,14 @@ public class DataJPATestServlet extends FATServlet {
                             .findFirst()
                             .orElseThrow();
             // The entity must be detached so this update must not commit
-            bismarck.setPopulation(77777);
+            bismarck.population = 77777;
 
             grandForks = removed.stream()
                             .filter(c -> "Grand Forks".equals(c.getName()))
                             .findFirst()
                             .orElseThrow();
             // The entity must be detached so this update must not commit
-            grandForks.setPopulation(59800);
+            grandForks.population = 59800;
         } finally {
             tran.commit();
         }
@@ -2441,7 +2441,7 @@ public class DataJPATestServlet extends FATServlet {
 
         assertEquals(found.toString(), 0, found.size());
 
-        bismarck.setChangeCount(0);
+        bismarck.changeCount = 0;
         bismarck = cities.save(bismarck);
 
         assertEquals(77777, bismarck.getPopulation());
@@ -3313,7 +3313,7 @@ public class DataJPATestServlet extends FATServlet {
             id1 = m1.getDeviceId();
 
             // The entity must be detached so this update must not commit
-            m1.setOperatingSystem(OS.IOS);
+            m1.operatingSystem = OS.IOS;
         } finally {
             tran.commit();
         }
@@ -4230,7 +4230,7 @@ public class DataJPATestServlet extends FATServlet {
                             Set.of(406)));
 
             // The entity must be detached so this update must not commit
-            billings.setPopulation(117117);
+            billings.population = 117117;
         } finally {
             tran.commit();
         }
@@ -4305,9 +4305,9 @@ public class DataJPATestServlet extends FATServlet {
 
         PurchaseOrder[] updated;
 
-        o3.setTotal(33.39f);
-        o1.setTotal(31.19f);
-        o2.setTotal(32.29f);
+        o3.total = 33.39f;
+        o1.total = 31.19f;
+        o2.total = 32.29f;
         updated = orders.modifyAll(o3, o1, o2);
         o3 = updated[0];
         o1 = updated[1];
@@ -4319,7 +4319,7 @@ public class DataJPATestServlet extends FATServlet {
         o3 = updated[0];
         o1 = updated[1];
 
-        o3.setTotal(33.99f);
+        o3.total = 33.99f;
         updated = orders.modifyAll(o3);
         o3 = updated[0];
 
@@ -4874,11 +4874,11 @@ public class DataJPATestServlet extends FATServlet {
 
         tran.begin();
         try {
-            m1.setOperatingSystem(OS.IOS);
+            m1.operatingSystem = OS.IOS;
             m1 = mobilePhones.update(m1);
 
             // The entity must be detached so this update must not commit
-            m1.setOperatingSystem(OS.WINDOWS);
+            m1.operatingSystem = OS.WINDOWS;
         } finally {
             tran.commit();
         }
@@ -5052,10 +5052,10 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(o1_initialVersion + 2, o1.getVersionNum());
 
         // update multiple in a variable arguments array where the second entry is not found in the database
-        o2.setTotal(2.03f);
-        o4.setTotal(4.03f);
-        o5.setTotal(5.03f);
-        o6.setTotal(6.03f);
+        o2.total = 2.03f;
+        o4.total = 4.03f;
+        o5.total = 5.03f;
+        o6.total = 6.03f;
         try {
             modified = orders.modifyAll(o5, o6, o4, o2);
             fail("An attempt to update multiple where the second entity is not found in the database " +
@@ -5083,7 +5083,7 @@ public class DataJPATestServlet extends FATServlet {
         assertEquals(o1_initialVersion + 1, o2.getVersionNum());
 
         // update returning one entity
-        o4.setTotal(4.04f);
+        o4.total = 4.04f;
         o4 = orders.modifyOne(o4);
         assertEquals("testUpdateWithEntityResults-Customer4", o4.getPurchasedBy());
         assertEquals(4.04f, o4.getTotal(), 0.001f);
@@ -5148,7 +5148,7 @@ public class DataJPATestServlet extends FATServlet {
 
         int oldVersion = o1.getVersionNum();
 
-        o1.setTotal(1.19f);
+        o1.total = 1.19f;
         orders.modify(o1);
 
         o1 = orders.findById(o1.getId()).orElseThrow();
@@ -5184,7 +5184,7 @@ public class DataJPATestServlet extends FATServlet {
         o3 = created.get(1);
 
         // Attempt deletion at correct version
-        o1.setVersionNum(newVersion);
+        o1.versionNum = newVersion;
         orders.cancel(o1, o2);
 
         // Entities o1 and o2 should no longer be in the database:
@@ -5220,12 +5220,12 @@ public class DataJPATestServlet extends FATServlet {
         City duluth = cities.save(new City("Duluth", "Minnesota", 86697, Set.of(218)));
         long oldVersion = duluth.getChangeCount();
 
-        duluth.setPopulation(86372);
+        duluth.population = 86372;
         duluth = cities.save(duluth);
         long newVersion = duluth.getChangeCount();
 
         duluth = new City("Duluth", "Minnesota", 86697, Set.of(218));
-        duluth.setChangeCount(oldVersion);
+        duluth.changeCount = oldVersion;
         try {
             cities.remove(duluth);
             fail("Attempt to delete with an outdated version must raise OptimisticLockingFailureException.");
@@ -5233,7 +5233,7 @@ public class DataJPATestServlet extends FATServlet {
             // pass
         }
 
-        duluth.setChangeCount(newVersion);
+        duluth.changeCount = newVersion;
         cities.remove(duluth);
     }
 
@@ -5260,7 +5260,7 @@ public class DataJPATestServlet extends FATServlet {
 
         int oldVersion = o1.getVersionNum();
 
-        o1.setTotal(10.19f);
+        o1.total = 10.19f;
         orders.modify(o1);
 
         o1 = orders.findById(o1.getId()).orElseThrow();
@@ -5282,7 +5282,7 @@ public class DataJPATestServlet extends FATServlet {
             // pass
         }
 
-        o1.setVersionNum(newVersion);
+        o1.versionNum = newVersion;
         PurchaseOrder updated = orders.update(o1);
 
         assertEquals("testVersionedUpdate-Customer1", updated.getPurchasedBy());
@@ -5295,7 +5295,7 @@ public class DataJPATestServlet extends FATServlet {
 
         orders.delete(o1);
 
-        o1.setTotal(10.39f);
+        o1.total = 10.39f;
         try {
             orders.modify(o1); // doesn't exist anymore
             fail("Attempt to update an entity that no longer exists in the database must raise OptimisticLockingFailureException.");

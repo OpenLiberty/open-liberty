@@ -39,6 +39,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @RunWith(FATRunner.class)
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
+@SkipJavaSemeruWithFipsEnabledRule
 public class LibertyOP_Encryption_oidc_usingSocialConfig extends Social_EncryptionTests {
 
     public static Class<?> thisClass = LibertyOP_Encryption_oidc_usingSocialConfig.class;
@@ -48,8 +49,8 @@ public class LibertyOP_Encryption_oidc_usingSocialConfig extends Social_Encrypti
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification();
 
-    @Rule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(SocialConstants.SERVER_NAME + ".LibertyOP.opWithStub");
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled();
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -306,7 +306,7 @@ public class MCPServerToolsListTest {
         return null;
     }
 
-    @Tool(name = "addition_calculator", title = "The Calculator Addition Tool", description = "Can add two floating point numbers", structuredContent = true)
+    @Tool(name = "addition_calculator", title = "The Calculator Addition Tool", description = "Can add two floating point numbers", structuredContent = false)
     public double addition_calculator(@ToolArg(name = "number1", description = "operand 1") double number1,
                                       @ToolArg(name = "number2", description = "operand 2") double number2) {
         return 0.0;
@@ -318,7 +318,7 @@ public class MCPServerToolsListTest {
         return 0.0;
     }
 
-    @Tool(name = "and_operator", title = "Boolean And Operator", description = "Does a Boolean And Operation on two boolean variables", structuredContent = true)
+    @Tool(name = "and_operator", title = "Boolean And Operator", description = "Does a Boolean And Operation on two boolean variables", structuredContent = false)
     public boolean and_operator(@ToolArg(name = "var1", description = "operand 1") boolean number1,
                                 @ToolArg(name = "var2", description = "operand 2") boolean number2) {
         return false;
@@ -405,9 +405,6 @@ public class MCPServerToolsListTest {
                                     ],
                                     "type": "object"
                                 },
-                                "outputSchema": {
-                                    "type": "boolean"
-                                },
                                 "name": "and_operator",
                                 "title": "Boolean And Operator"
                             },
@@ -453,9 +450,6 @@ public class MCPServerToolsListTest {
                                     "type": "object"
                                 },
                                 "name": "addition_calculator",
-                                "outputSchema": {
-                                    "type": "number"
-                                },
                                 "title": "The Calculator Addition Tool"
                             }
                         ]

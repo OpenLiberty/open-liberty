@@ -32,9 +32,25 @@
 	</basicRegistry>
 
  	<application type="war" id="JASPIBasicAuthServlet" name="JASPIBasicAuthServlet" location="JASPIBasicAuthServlet.war">
+		<application-bnd>
+			<security-role name="jaspi_basic">
+                <user name="jaspiuser1"/>
+                <group name="group2"/>
+                <user name="jaspiuser101"/>
+                <group name="JASPIGroup"/>
+			</security-role>
+		</application-bnd>
 	</application>
 	
 	<application type="war" id="JASPIFormLoginServlet" name="JASPIFormLoginServlet" location="JASPIFormLoginServlet.war">
+		<application-bnd>
+			<security-role name="jaspi_form">
+                <user name="jaspiuser102"/>
+                <group name="JASPIGroup"/>
+                <user name="jaspiuser3"/>
+                <group name="group5"/>
+			</security-role>
+		</application-bnd>
 	</application>
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 

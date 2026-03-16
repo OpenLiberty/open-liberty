@@ -1,19 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ejb2x.base.spec.sll.web;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -169,7 +167,7 @@ public class SLLocalImplContextServlet extends FATServlet {
      * (ixc04) Test Stateless local EJBContext.getEnvironment().
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void testSLLocalEJBContext_getEnvironment() throws Exception {
         SLLa ejb1 = fhome1.create();
         String tempStr = ejb1.context_getEnvironment("value1");
@@ -181,7 +179,7 @@ public class SLLocalImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void testSLLocalEJBContext_getCallerIdentity() throws Exception {
         SLLa ejb1 = fhome1.create();
         Object o = ejb1.context_getCallerIdentity();
@@ -223,7 +221,7 @@ public class SLLocalImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void testSLLocalEJBContext_isCallerInRole_Identity() throws Exception {
         SLLa ejb1 = fhome1.create();
         Object o = ejb1.context_isCallerInRole((java.security.Identity) null);

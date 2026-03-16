@@ -1,19 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ejb1x.base.spec.sfr.web;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -169,7 +167,7 @@ public class SFRemoteImplContextServlet extends FATServlet {
      * (ixc04) Test Stateful remote EJBContext.getEnvironment().
      */
     @Test
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void test1XSFEJBContext_getEnvironment() throws Exception {
         String tempStr = fejb1.context_getEnvironment("value1");
         assertEquals("Get Environment string from context was unexpected value", tempStr, "value of value1");
@@ -180,7 +178,7 @@ public class SFRemoteImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void test1XSFEJBContext_getCallerIdentity() throws Exception {
         Object o = fejb1.context_getCallerIdentity();
         if (o instanceof Throwable) {
@@ -220,7 +218,7 @@ public class SFRemoteImplContextServlet extends FATServlet {
      */
     @Test
     @SuppressWarnings("deprecation")
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void test1XSFEJBContext_isCallerInRole_Identity() throws Exception {
         Object o = fejb1.context_isCallerInRole((java.security.Identity) null);
         if (o instanceof Throwable) {

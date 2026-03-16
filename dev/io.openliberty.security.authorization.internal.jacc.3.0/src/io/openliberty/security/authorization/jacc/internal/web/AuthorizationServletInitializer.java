@@ -16,6 +16,8 @@ import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import io.openliberty.security.authorization.jacc.internal.proxy.JakartaPolicyConfigFactoryProxy;
@@ -26,8 +28,8 @@ import jakarta.servlet.ServletContext;
 import jakarta.servlet.ServletException;
 
 /**
- * Listeners for web applications to start and reads the init parameters for the web.xml
- * to configure that policy and configuration for Jakarta Security
+ * Listener for web applications to start and reads the init parameters for the web.xml
+ * to configure that policy and configuration factories for Jakarta Authorization
  */
 @Component(
            name = "io.openliberty.security.authorization.jacc.servlet.initializer",
@@ -35,6 +37,8 @@ import jakarta.servlet.ServletException;
            configurationPolicy = IGNORE,
            immediate = true)
 public class AuthorizationServletInitializer implements ServletContainerInitializer {
+
+    private static final TraceComponent tc = Tr.register(AuthorizationServletInitializer.class);
 
     @Override
     @FFDCIgnore({ IllegalStateException.class, SecurityException.class })
@@ -48,6 +52,8 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
 
         try {
             ClassLoader appClassLoader = servletContext.getClassLoader();
+
+            // Set the PolicyFactory if there is one defined in the web.xml
             String policyFactoryName = servletContext.getInitParameter(PolicyFactory.FACTORY_NAME);
             if (policyFactoryName != null) {
                 try {
@@ -55,12 +61,15 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
                 } catch (SecurityException se) {
                 }
 
-                policyFactory = loadClass(appClassLoader, policyFactoryName, PolicyFactory.class, previousPolicyFactory);
+                policyFactory = loadClass(appClassLoader, policyFactoryName, PolicyFactory.class, previousPolicyFactory, servletContext);
                 if (policyFactory != null) {
                     PolicyFactory.setPolicyFactory(policyFactory);
+                    Tr.info(tc, "JACC_AUTHORIZATION_MODULE_CONFIGURED", "PolicyFactory", policyFactoryName, servletContext.getServletContextName());
                     policyFactoryAdded = true;
                 }
             }
+
+            // Set the PolicyConfigurationFactory if there is one defined in the web.xml
             String configFactoryName = servletContext.getInitParameter(PolicyConfigurationFactory.FACTORY_NAME);
             if (configFactoryName != null) {
                 try {
@@ -68,10 +77,11 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
                 } catch (IllegalStateException se) {
                     // expected if there isn't one configured
                 }
-                configFactory = loadClass(appClassLoader, configFactoryName, PolicyConfigurationFactory.class, previousConfigFactory);
+                configFactory = loadClass(appClassLoader, configFactoryName, PolicyConfigurationFactory.class, previousConfigFactory, servletContext);
                 if (configFactory != null) {
                     PolicyConfigurationFactory.setPolicyConfigurationFactory(configFactory);
                     configFactoryAdded = true;
+                    Tr.info(tc, "JACC_AUTHORIZATION_MODULE_CONFIGURED", "PolicyConfigurationFactory", configFactoryName, servletContext.getServletContextName());
                     JakartaPolicyConfigFactoryProxy configFactoryProxy = JakartaPolicyConfigFactoryProxy.getInstance();
                     if (configFactoryProxy != null) {
                         configFactoryProxy.ensurePolicyConfigInitialized();
@@ -88,7 +98,7 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
         }
     }
 
-    private <T> T loadClass(ClassLoader appClassLoader, String className, Class<T> classType, T factoryToWrap) {
+    private <T> T loadClass(ClassLoader appClassLoader, String className, Class<T> classType, T factoryToWrap, ServletContext servletContext) {
         try {
             Class<?> loadedClass = appClassLoader.loadClass(className);
             Constructor<?>[] ctors = loadedClass.getConstructors();
@@ -103,6 +113,8 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
                 }
             }
 
+            // If there is a constructor that wraps the previously set factory, use that one
+            // as required by the specification.
             if (wrapperCtor != null) {
                 return classType.cast(wrapperCtor.newInstance(factoryToWrap));
             } else if (defaultCtor != null) {
@@ -110,7 +122,7 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
             }
             return null;
         } catch (Throwable e) {
-            // FFDC and message
+            Tr.error(tc, "JACC_AUTHORIZATION_MODULE_CREATION_FAILURE", classType.getSimpleName(), className, servletContext.getServletContextName(), e.toString());
         }
         return null;
     }

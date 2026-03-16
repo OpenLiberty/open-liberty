@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 
 /**
@@ -85,6 +86,7 @@ public class PureAnnMergeConflictXMLBindingsInWarEarTest extends EJBAnnTestBase 
      * <OL>
      * <LI> Access is denied for a userId in Employee role in ibm-application-bnd.xml which has been removed from server.xml.
      * <LI> UPDATE: For JACC the user should be granted permission since the JACC ignores the ibm-application-bnd.xml config.
+     * <LI> UPDATE: When using EE 11 provider that looks at the binding data (EE11_SPEC), we expect the access is denied.
      * </OL>
      */
     @Test
@@ -96,7 +98,14 @@ public class PureAnnMergeConflictXMLBindingsInWarEarTest extends EJBAnnTestBase 
 
             String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=employeeAndManagerwithParams";
             String response = generateResponseFromServlet(queryString, Constants.EMPLOYEE_USER, Constants.EMPLOYEE_PWD);
-            verifyResponse(response, Constants.EMPLOYEE_USER_PRINCIPAL, Constants.EMPLOYEE_USER_IDENTITY, Constants.IS_MANAGER_FALSE, Constants.IS_EMPLOYEE_TRUE);
+
+            if (RepeatTestFilter.isRepeatActionActive(FATSuite.EE11_SPEC_ID)) {
+                verifyExceptionWithUserAndRole(response, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.JACC_AUTH_DENIED_USER_NOT_GRANTED_REQUIRED_ROLE,
+                                               Constants.EMPLOYEE_USER, Constants.EMPLOYEE_AND_MANAGER_METHOD);
+
+            } else {
+                verifyResponse(response, Constants.EMPLOYEE_USER_PRINCIPAL, Constants.EMPLOYEE_USER_IDENTITY, Constants.IS_MANAGER_FALSE, Constants.IS_EMPLOYEE_TRUE);
+            }
         } finally {
             testHelper.reconfigureServer(Constants.DEFAULT_MERGE_SERVER_XML, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
         }

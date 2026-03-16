@@ -62,4 +62,5 @@ public class DenyAllTests extends AbstractDenyAll {
     public static void teardown() throws Exception {
         server.stopServer();
     }
+
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -8,8 +8,6 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.security;
-
-import static org.junit.Assert.assertNull;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -40,7 +38,7 @@ public class AuthHelper {
     };
 
     static enum ExpectedTestResult {
-        PASS, FAIL
+        PASS, FAIL_401, FAIL_403
     };
 
     // used to control how far down the call stack we want to go
@@ -79,7 +77,10 @@ public class AuthHelper {
                 case PASS:
                     positiveResponseExpectedForMCPTool(client);
                     break;
-                case FAIL:
+                case FAIL_401:
+                    failedAuthenticationExpected(client);
+                    break;
+                case FAIL_403:
                     negativeResponseExpectedForMCPTool(client);
                     break;
                 default:
@@ -125,7 +126,10 @@ public class AuthHelper {
             case PASS:
                 positiveResponseExpectedForMCPTool(client, user, password);
                 break;
-            case FAIL:
+            case FAIL_401:
+                failedAuthenticationExpected(client, user, password);
+                break;
+            case FAIL_403:
                 negativeResponseExpectedForMCPTool(client, user, password);
                 break;
             default:
@@ -134,21 +138,42 @@ public class AuthHelper {
     }
 
     /*
-     * Given a JSON request and authentication, then this MCP call is expected to fail authorization or authentication
+     * Given a JSON request with valid authentication, this MCP call is expected
+     * to fail authorization (HTTP 403 Forbidden).
      */
     private static void negativeResponseExpectedForMCPTool(McpClient client, String user, String password) throws Exception {
-        String request = AuthHelper.buildMCPCallRequest();
-        String response = client.callMCPwithBasicAuth_AuthorisationErrorExpected(request, user, password);
-        assertNull(response);
+        String request = buildMCPCallRequest();
+
+        client.callMCPExpectingStatus(request, user, password, 403);
     }
 
     /*
-     * Given a JSON request and no authentication, then this MCP call is expected to fail authorization
+     * Given a JSON request without credentials, this MCP call is expected
+     * to fail because the user is not authorized to access the tool (HTTP 403 Forbidden).
      */
-    private static void negativeResponseExpectedForMCPTool(McpClient client) throws Exception {
+    static void negativeResponseExpectedForMCPTool(McpClient client) throws Exception {
         String request = AuthHelper.buildMCPCallRequest();
-        String response = client.callMCPAuthorisationErrorExpected(request);
-        assertNull(response);
+        client.callMCPExpectingStatus(request, 403);
+    }
+
+    /*
+     * Given a JSON request with invalid credentials, this MCP call is expected
+     * to fail authentication (HTTP 401 Unauthorized).
+     */
+
+    private static void failedAuthenticationExpected(McpClient client, String user, String password) throws Exception {
+        String request = buildMCPCallRequest();
+
+        client.callMCPExpectingStatus(request, user, password, 401);
+    }
+
+    /*
+     * Given a JSON request with no credentials, this MCP call is expected
+     * to fail authentication (HTTP 401 Unauthorized).
+     */
+    private static void failedAuthenticationExpected(McpClient client) throws Exception {
+        String request = buildMCPCallRequest();
+        client.callMCPExpectingStatus(request, 401);
     }
 
     /**

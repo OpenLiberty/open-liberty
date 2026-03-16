@@ -13,6 +13,7 @@
 package io.openliberty.security.jakartasec.fat.tests;
 
 import static io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants.INVALID_PASSWORD;
+import static io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants.IN_MEM_ID_STORE_EXPECTED_MESSAGES;
 import static io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants.PRODUCTION_USE_WARNING_MSG;
 import static io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants.USER_BILL;
 import static io.openliberty.security.jakartasec.fat.utils.Jakartasec40TestConstants.USER_FRANK;
@@ -44,6 +45,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
+import inmemory.identity.store.InMemoryIdentityStoreApplication;
+import inmemory.identity.store.InMemoryIdentityStoreProtectedResource;
 
 /**
  * Tests for InMemoryIdentityStoreDefinition with various password encoding schemes.
@@ -62,7 +65,7 @@ public class InMemoryIdentityStoreTests extends BaseJakartaSecurity40Test {
 
     private static String url = null;
 
-    @Server(SERVER_NAME)
+    @Server(IN_MEM_ID_STORE_ENABLED_SERVER_NAME)
     public static LibertyServer server;
 
     @Override
@@ -85,7 +88,7 @@ public class InMemoryIdentityStoreTests extends BaseJakartaSecurity40Test {
 
         // Create the web application
         WebArchive app = ShrinkWrap.create(WebArchive.class,
-                                           APP_NAME + ".war").addPackage("inmemory.identity.store").addAsWebInfResource(new File("test-applications/inmemory/WEB-INF/web.xml"));
+                                           APP_NAME + ".war").addClass(InMemoryIdentityStoreApplication.class).addClass(InMemoryIdentityStoreProtectedResource.class).addAsWebInfResource(new File("test-applications/inmemory/WEB-INF/web.xml"));
 
         ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
@@ -260,12 +263,9 @@ public class InMemoryIdentityStoreTests extends BaseJakartaSecurity40Test {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        InMemoryIdentityStoreTests instance = new InMemoryIdentityStoreTests();
         // Expected warnings and errors during testing
-        instance.stopServer(
-                            "CWWKS2600W", // An in-memory identity store was detected within this application
-                            "CWWKS1859E", //  Password decoding error
-                            "CWWKS1865W" // AES-encrypted passwords without custom encryption key
-        );
+        if (server != null && server.isStarted()) {
+            server.stopServer(IN_MEM_ID_STORE_EXPECTED_MESSAGES);
+        }
     }
 }

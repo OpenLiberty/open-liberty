@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2024 IBM Corporation and others.
+ * Copyright (c) 2003, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1773,9 +1773,14 @@ public class ProxyBranchImpl extends BranchManager
 	}
 
 	/**
-	 * @see javax.servlet.sip.ProxyBranch#setRecordRoute(boolean) 
-	 */	
+	 * @see javax.servlet.sip.ProxyBranch#setRecordRoute(boolean)
+	 */
 	public void setRecordRoute(boolean includeRecordRoute) {
+		//throw IllegalStateException if proxy branch has been already started
+		if (isStarted()) {
+			throw new IllegalStateException(
+				"Cannot set record-route: proxy branch has already been started");
+		}
 		_isRecordRoute = includeRecordRoute;
 	}
 

@@ -17,7 +17,8 @@ src: \
     fat/src,\
     test-applications/inmemory/WEB-INF,\
     test-applications/inmemory/src,\
-    test-applications/ham/src
+    test-applications/ham/src,\
+    test-applications/declaredroles/src
         
 -dependson: \
     build.changeDetector,\

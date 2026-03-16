@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.timer.np.fat.tests;
 
@@ -102,8 +99,23 @@ public class NpTimerOperationsTest extends FATServletClient {
                     @TestServlet(servlet = XMLTxServlet.class, contextRoot = "NpTimersWeb") })
     public static LibertyServer server;
 
+    /*@formatter:off*/
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer")).andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer")).andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.np.fat.TimerServer"));
+    /*@formatter:on*/
 
     @BeforeClass
     public static void beforeClass() throws Exception {

@@ -3913,6 +3913,11 @@
     </dependency>
     <dependency>
       <groupId>org.jboss.arquillian.test</groupId>
+      <artifactId>arquillian-test-api</artifactId>
+      <version>1.7.0.Alpha13</version>
+    </dependency>
+    <dependency>
+      <groupId>org.jboss.arquillian.test</groupId>
       <artifactId>arquillian-test-spi</artifactId>
       <version>1.7.0.Alpha13</version>
     </dependency>

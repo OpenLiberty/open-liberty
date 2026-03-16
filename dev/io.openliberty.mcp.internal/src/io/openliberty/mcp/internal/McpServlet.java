@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import static io.openliberty.mcp.internal.McpServletInitializer.STATELESS_INIT_PARAM;
+
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
@@ -27,12 +29,10 @@ import javax.security.sasl.AuthenticationException;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
-import io.openliberty.mcp.internal.config.McpConfiguration;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
@@ -75,7 +75,6 @@ public class McpServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
     private static final TraceComponent tc = Tr.register(McpServlet.class);
-    private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpServlet.class, McpConfiguration.class);
     private static final int PAGE_SIZE = 20;
 
     @Inject
@@ -116,17 +115,13 @@ public class McpServlet extends HttpServlet {
     @FFDCIgnore({ JSONRPCException.class, HttpResponseException.class })
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, JSONRPCException {
         McpTransport transport = new McpTransport(req, resp, jsonb);
-        try {
-            Boolean stateless = mcpConfigService.run(config -> {
-                boolean s = config.isStateless();
-                return s;
-            }).orElse(false);
 
+        try {
             transport.init(sessionStore);
 
             RequestMethod method = transport.getMcpRequest().getRequestMethod();
 
-            if (!stateless && method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
+            if (!isServerStateless() && method != RequestMethod.INITIALIZE && method != RequestMethod.PING) {
                 McpSession session = transport.getSession();
                 if (session == null) {
                     throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST,
@@ -164,10 +159,7 @@ public class McpServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        boolean stateless = Boolean.TRUE.equals(
-                                                mcpConfigService.run(McpConfiguration::isStateless).orElse(false));
-
-        if (stateless) {
+        if (isServerStateless()) {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
             return;
         }
@@ -481,4 +473,15 @@ public class McpServlet extends HttpServlet {
             return null;
         }
     }
+
+    /**
+     * Gets the stateless configuration for the MCP server. The configuration is stored in the
+     * servlet config as an initParam by McpServletInitializer
+     *
+     * @return true if stateless mode is enabled, and false otherwise
+     */
+    private boolean isServerStateless() {
+        return Boolean.parseBoolean(getServletConfig().getInitParameter(STATELESS_INIT_PARAM));
+    }
+
 }

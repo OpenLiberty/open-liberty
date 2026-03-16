@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -270,8 +270,8 @@ public class DataJPAHibernateServlet extends FATServlet {
     }
 
     /**
-     * Reproduces an issue where updates are made and a flush is requested
-     * during a transaction but not honored, so if the entity is detached
+     * Reproduces an issue (fixed by 33944) where updates are made and a flush is
+     * requested during a transaction but not honored, so if the entity is detached
      * after that point, the updates are lost.
      */
     @Test
@@ -310,7 +310,7 @@ public class DataJPAHibernateServlet extends FATServlet {
             assertEquals(true, em.isJoinedToTransaction());
 
             entity = em.find(SimpleEntity.class, 2);
-            entity.setValue("flushed");
+            entity.value = "flushed";
 
             entity = em.merge(entity);
 
@@ -321,7 +321,7 @@ public class DataJPAHibernateServlet extends FATServlet {
             // EntityManager.flush is defined as:
             // "Synchronize changes held in the persistence context to the underlying database."
 
-            em.flush(); // this is ignored
+            em.flush();
 
             // EntityManager.detach Javadoc says:
             // "Unflushed changes made to the entity, if any, including deletion
@@ -353,13 +353,13 @@ public class DataJPAHibernateServlet extends FATServlet {
             em.close();
         }
 
-        assertEquals("flushed", entity.getValue());
+        assertEquals("flushed", entity.value);
     }
 
     /**
-     * Reproduces an issue where a previously detached entity is merged to the
-     * persistence context in order to make an update, but Hibernate never
-     * writes the update to the database, even when the transaction commits.
+     * Reproduces an issue (fixed by 33944) where a previously detached entity is
+     * merged to the persistence context in order to make an update, but Hibernate
+     * never writes the update to the database, even when the transaction commits.
      * This can also be used to reproduce a similar error where instead of a
      * detached entity, the entity is fetched during the same transaction and
      * then updated, with Hibernate similarly never writing the update to the
@@ -409,7 +409,7 @@ public class DataJPAHibernateServlet extends FATServlet {
 
         assertEquals("new", entity.getValue());
 
-        entity.setValue("merged");
+        entity.value = "merged";
 
         tx.begin();
         try {
@@ -474,7 +474,7 @@ public class DataJPAHibernateServlet extends FATServlet {
         // The original entity should have been persisted to the database.
 
         //Another part of the application modifies the original entity
-        original.setValue("modified");
+        original.value = "modified";
 
         // Now we want to persist this change to the database
         // so we have to re-attach the detached entity.
@@ -523,7 +523,7 @@ public class DataJPAHibernateServlet extends FATServlet {
         // - The entity was updated in the database
         assertNotNull(found);
 
-        assertEquals("modified", found.getValue());
+        assertEquals("modified", found.value);
     }
 
     @Test
@@ -553,7 +553,7 @@ public class DataJPAHibernateServlet extends FATServlet {
         // The original entity should have been persisted to the database.
 
         //Another part of the application modifies the original entity
-        original.setValue("modified");
+        original.value = "modified";
 
         // Now we want to persist this change to the database
         // so we have to re-attach the detached entity.
@@ -601,6 +601,6 @@ public class DataJPAHibernateServlet extends FATServlet {
         // - The entity was updated in the database
         assertNotNull(found);
 
-        assertEquals("modified", found.getValue());
+        assertEquals("modified", found.value);
     }
 }

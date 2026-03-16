@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,9 +18,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.resource.ResourceException;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -41,6 +44,7 @@ import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.resource.WaitForBundleResourceFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -156,7 +160,7 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
         }
 
         String application = (String) annotationProps.remove(AppDefinedResource.APPLICATION);
-        String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
+        final String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(tc, "application : " + application + "  declaringApplication : " + declaringApplication);
@@ -189,65 +193,92 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
                     adminObjectSvcProps.put(AppDefinedResource.COMPONENT, component);
             }
         }
-        String resourceAdapter = (String) annotationProps.remove(RESOURCE_ADAPTER);
+
         String interfaceName = (String) annotationProps.remove(INTERFACE_NAME);
         String className = (String) annotationProps.remove(CLASS_NAME);
 
         //Handle embedded RA as in 18.9
-        if (resourceAdapter.startsWith(EMBEDDED_RA_PREFIX)) {
-            resourceAdapter = declaringApplication + "." + resourceAdapter.substring(resourceAdapter.indexOf(EMBEDDED_RA_PREFIX) + 1, resourceAdapter.length());
+        String ra = (String) annotationProps.remove(RESOURCE_ADAPTER);
+        if (ra.startsWith(EMBEDDED_RA_PREFIX)) {
+            ra = declaringApplication + "." + ra.substring(ra.indexOf(EMBEDDED_RA_PREFIX) + 1, ra.length());
             if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, "Embedded resourceAdapter name : " + resourceAdapter);
+                Tr.debug(tc, "Embedded resourceAdapter name : " + ra);
         }
-        Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(resourceAdapter, interfaceName, className);
+        final String resourceAdapter = ra;
 
-        for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();) {
-            String key = keys.nextElement();
-            Object value = adminObjectDefaultProps.get(key);
+        Function<Bundle, ResourceFactory> createAppDefinedResourceFactory = (bundle) -> {
+            try {
+                Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(bundle, interfaceName, className);
 
-            //Override the administered object default property values with values provided annotation
-            if (annotationProps.containsKey(key))
-                value = annotationProps.remove(key);
+                for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();) {
+                    String key = keys.nextElement();
+                    Object value = adminObjectDefaultProps.get(key);
 
-            if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
+                    //Override the administered object default property values with values provided annotation
+                    if (annotationProps.containsKey(key))
+                        value = annotationProps.remove(key);
 
-            if ("config.displayId".equals(key))
-                adminObjectSvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", value);
-            else
-                adminObjectSvcProps.put(BASE_PROPERTIES_KEY + key, value);
+                    if (value instanceof String)
+                        value = variableRegistry.resolveString((String) value);
+
+                    if ("config.displayId".equals(key))
+                        adminObjectSvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", value);
+                    else
+                        adminObjectSvcProps.put(BASE_PROPERTIES_KEY + key, value);
+                }
+
+                adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
+
+                for (Map.Entry<String, Object> prop : annotationProps.entrySet())
+                    adminObjectSvcProps.put(BASE_PROPERTIES_KEY + prop.getKey(), prop.getValue());
+
+                BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(AdminObjectService.class));
+
+                StringBuilder adminObjectFilter = new StringBuilder(200);
+                adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
+                adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
+
+                ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
+                try {
+
+                    String bundleLocation = bundleContext.getBundle().getLocation();
+                    ConfigurationAdmin configAdmin = configAdminRef.getService();
+
+                    Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
+                    adminObjectSvcConfig.update(adminObjectSvcProps);
+                } catch (Exception x) {
+                    factory.destroy();
+                    throw x;
+                } catch (Error x) {
+                    factory.destroy();
+                    throw x;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "createResourceFactory", factory);
+                return factory;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        };
+
+        Bundle raBundle = bundleContext.getBundle(BUNDLE_LOCATION + resourceAdapter);
+        if (raBundle != null) {
+            return createAppDefinedResourceFactory.apply(raBundle);
+        } else {
+            Supplier<IllegalStateException> notReadyException = () -> {
+                return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
+                                                 ", declaringApplication=" + declaringApplication +
+                                                 ", location=" + BUNDLE_LOCATION + resourceAdapter);
+            };
+
+            WaitForBundleResourceFactory resourceFactory = new WaitForBundleResourceFactory(bundleContext, //
+                            BUNDLE_LOCATION + resourceAdapter, //
+                            createAppDefinedResourceFactory, //
+                            notReadyException);
+            resourceFactory.listenForBundle();
+            return resourceFactory;
         }
-
-        adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
-
-        for (Map.Entry<String, Object> prop : annotationProps.entrySet())
-            adminObjectSvcProps.put(BASE_PROPERTIES_KEY + prop.getKey(), prop.getValue());
-
-        BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(AdminObjectService.class));
-
-        StringBuilder adminObjectFilter = new StringBuilder(200);
-        adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
-        adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
-
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
-        try {
-
-            String bundleLocation = bundleContext.getBundle().getLocation();
-            ConfigurationAdmin configAdmin = configAdminRef.getService();
-
-            Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
-            adminObjectSvcConfig.update(adminObjectSvcProps);
-        } catch (Exception x) {
-            factory.destroy();
-            throw x;
-        } catch (Error x) {
-            factory.destroy();
-            throw x;
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(tc, "createResourceFactory", factory);
-        return factory;
     }
 
     /**
@@ -265,8 +296,8 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
         wsConfigurationHelperRef.deactivate(context);
     }
 
-    private Dictionary<String, Object> getDefaultProperties(String resourceAdapter, String interfaceName, String className) throws ConfigEvaluatorException, ResourceException {
-        MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundleContext.getBundle(BUNDLE_LOCATION + resourceAdapter));
+    private Dictionary<String, Object> getDefaultProperties(Bundle raBundle, String interfaceName, String className) throws ConfigEvaluatorException, ResourceException {
+        MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(raBundle);
         String[] factoryPids = metaTypeInformation.getFactoryPids();
 
         for (String factoryPid : factoryPids) {

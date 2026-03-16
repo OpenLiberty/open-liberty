@@ -26,7 +26,6 @@ import static io.openliberty.data.internal.QueryType.QM_DELETE;
 import static io.openliberty.data.internal.QueryType.QM_UPDATE;
 import static io.openliberty.data.internal.QueryType.SAVE;
 import static io.openliberty.data.internal.persistence.Util.SORT_PARAM_TYPES;
-import static io.openliberty.data.internal.persistence.Util.lifeCycleReturnTypes;
 import static io.openliberty.data.internal.persistence.cdi.DataExtension.exc;
 import static jakarta.data.repository.By.ID;
 
@@ -391,23 +390,13 @@ public class QueryInfo {
             if (++d < depth)
                 type = returnTypeAtDepth.get(d);
             else
-                // TODO add helpful information about supported result types
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1004.general.rtrn.err",
-                          method.getGenericReturnType().getTypeName(),
-                          method.getName(),
-                          repositoryInterface.getName());
+                throw Fail.returnTypeInvalid(this);
         if (isOptional = Optional.class.equals(type)) {
             multiType = null;
             if (++d < depth)
                 type = returnTypeAtDepth.get(d);
             else
-                // TODO add helpful information about supported result types
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1004.general.rtrn.err",
-                          method.getGenericReturnType().getTypeName(),
-                          method.getName(),
-                          repositoryInterface.getName());
+                throw Fail.returnTypeInvalid(this);
         } else {
             if (returnArrayType != null
                 || Iterator.class.equals(type)
@@ -417,12 +406,7 @@ public class QueryInfo {
                 if (++d < depth)
                     type = returnTypeAtDepth.get(d);
                 else
-                    // TODO add helpful information about supported result types
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1004.general.rtrn.err",
-                              method.getGenericReturnType().getTypeName(),
-                              method.getName(),
-                              repositoryInterface.getName());
+                    throw Fail.returnTypeInvalid(this);
             } else {
                 multiType = null;
             }
@@ -702,13 +686,7 @@ public class QueryInfo {
      */
     int computeOffset(PageRequest pagination) {
         if (pagination.mode() != PageRequest.Mode.OFFSET)
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1035.incompat.page.mode",
-                      pagination.mode(),
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericReturnType().getTypeName(),
-                      CursoredPage.class.getSimpleName());
+            throw Fail.pageModeIncompatible(this, pagination);
 
         int maxPageSize = pagination.size();
         long pageIndex = pagination.page() - 1; // zero-based
@@ -740,12 +718,7 @@ public class QueryInfo {
     private Object convert(Object value, Class<?> toType, boolean failIfNotConverted) {
         if (value == null) {
             if (toType.isPrimitive())
-                throw exc(MappingException.class,
-                          "CWWKD1046.result.convert.err",
-                          null,
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          method.getGenericReturnType().getTypeName());
+                throw Fail.resultConversion(this, null, null);
             else
                 return null;
         }
@@ -824,19 +797,19 @@ public class QueryInfo {
                         if (v >= Integer.MIN_VALUE && v <= Integer.MAX_VALUE)
                             return n.intValue();
                         else
-                            convertFail(n, Integer.MIN_VALUE, Integer.MAX_VALUE);
+                            throw Fail.outOfRange(this, n, Integer.MIN_VALUE, Integer.MAX_VALUE);
                     } else if (short.class.equals(toType) ||
                                Short.class.equals(toType)) {
                         if (v >= Short.MIN_VALUE && v <= Short.MAX_VALUE)
                             return n.shortValue();
                         else
-                            convertFail(n, Short.MIN_VALUE, Short.MAX_VALUE);
+                            throw Fail.outOfRange(this, n, Short.MIN_VALUE, Short.MAX_VALUE);
                     } else if (byte.class.equals(toType) ||
                                Byte.class.equals(toType)) {
                         if (v >= Byte.MIN_VALUE && v <= Byte.MAX_VALUE)
                             return n.byteValue();
                         else
-                            convertFail(n, Byte.MIN_VALUE, Byte.MAX_VALUE);
+                            throw Fail.outOfRange(this, n, Byte.MIN_VALUE, Byte.MAX_VALUE);
                     } else if (BigInteger.class.equals(toType)) {
                         return BigInteger.valueOf(v);
                     } else if (BigDecimal.class.equals(toType)) {
@@ -914,41 +887,11 @@ public class QueryInfo {
         }
 
         if (failIfNotConverted) {
-            MappingException x;
-            x = exc(MappingException.class,
-                    "CWWKD1046.result.convert.err",
-                    loggableAppend(fromType.getName(), " (", value, ")"),
-                    method.getName(),
-                    repositoryInterface.getName(),
-                    method.getGenericReturnType().getTypeName());
-            if (cause != null)
-                x = (MappingException) x.initCause(cause);
-            throw x;
+            String resultInfo = loggableAppend(fromType.getName(), " (", value, ")");
+            throw Fail.resultConversion(this, resultInfo, cause);
         } else {
             return value;
         }
-    }
-
-    /**
-     * Raises an error for a type conversion failure due to a value being outside of
-     * the specified range.
-     *
-     * @param queryInfo query information for the repository method.
-     * @param value     the value that fails to convert.
-     * @param min       minimum value for range.
-     * @param max       maximum value for range.
-     * @throws MappingException for the type conversion failure.
-     */
-    @Trivial
-    private void convertFail(Number value, long min, long max) {
-        throw exc(MappingException.class,
-                  "CWWKD1047.result.out.of.range",
-                  loggableAppend(value.getClass().getName(), " (", value, ")"),
-                  method.getName(),
-                  repositoryInterface.getName(),
-                  method.getGenericReturnType().getTypeName(),
-                  min,
-                  max);
     }
 
     /**
@@ -987,12 +930,7 @@ public class QueryInfo {
                 // covers Set
                 list = new LinkedHashSet<>(results.size());
             else
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1046.result.convert.err",
-                          List.class.getName(),
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          method.getGenericReturnType().getTypeName());
+                throw Fail.resultConversion(this, List.class.getName(), null);
         } else {
             try {
                 @SuppressWarnings("unchecked")
@@ -1038,7 +976,7 @@ public class QueryInfo {
                     // ElementCollection attributes instead of rejecting it as
                     // unsupported. Raise an error instead.
                     if (converted == element)
-                        throw excIncompatibleQueryResult(results, query);
+                        throw Fail.resultIncompatible(this, results, query);
                 }
                 list.add(element);
             }
@@ -1081,35 +1019,17 @@ public class QueryInfo {
         } else {
             if (int.class.equals(singleType) || Integer.class.equals(singleType))
                 if (count > Integer.MAX_VALUE)
-                    throw exc(MappingException.class,
-                              "CWWKD1048.result.exceeds.max",
-                              count,
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              method.getGenericReturnType().getTypeName(),
-                              "Integer.MAX_VALUE (" + Integer.MAX_VALUE + ')');
+                    throw Fail.countExceedsMax(this, count, Integer.class);
                 else
                     returnValue = count.intValue();
             else if (short.class.equals(singleType) || Short.class.equals(singleType))
                 if (count > Short.MAX_VALUE)
-                    throw exc(MappingException.class,
-                              "CWWKD1048.result.exceeds.max",
-                              count,
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              method.getGenericReturnType().getTypeName(),
-                              "Short.MAX_VALUE (" + Short.MAX_VALUE + ')');
+                    throw Fail.countExceedsMax(this, count, Short.class);
                 else
                     returnValue = count.shortValue();
             else if (byte.class.equals(singleType) || Byte.class.equals(singleType))
                 if (count > Byte.MAX_VALUE)
-                    throw exc(MappingException.class,
-                              "CWWKD1048.result.exceeds.max",
-                              count,
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              method.getGenericReturnType().getTypeName(),
-                              "Byte.MAX_VALUE (" + Byte.MAX_VALUE + ')');
+                    throw Fail.countExceedsMax(this, count, Byte.class);
                 else
                     returnValue = count.byteValue();
             else if (BigInteger.class.equals(singleType))
@@ -1117,12 +1037,7 @@ public class QueryInfo {
             else if (BigDecimal.class.equals(singleType))
                 returnValue = BigDecimal.valueOf(count);
             else
-                throw exc(MappingException.class,
-                          "CWWKD1049.count.convert.err",
-                          count,
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          method.getGenericReturnType().getTypeName());
+                throw Fail.countConversion(this, count);
         }
 
         Class<?> returnType = method.getReturnType();
@@ -1132,12 +1047,7 @@ public class QueryInfo {
                    CompletionStage.class.equals(returnType)) {
             returnValue = CompletableFuture.completedFuture(returnValue);
         } else if (multiType != null) {
-            throw exc(MappingException.class,
-                      "CWWKD1049.count.convert.err",
-                      count,
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericReturnType().getTypeName());
+            throw Fail.countConversion(this, count);
         }
 
         if (trace && tc.isEntryEnabled())
@@ -1163,12 +1073,7 @@ public class QueryInfo {
 
         for (Object result : results)
             if (result == null) {
-                throw exc(DataException.class,
-                          "CWWKD1046.result.convert.err",
-                          null,
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          method.getGenericReturnType().getTypeName());
+                throw Fail.resultConversion(this, null, null);
             } else if (entityInfo.entityClass.isInstance(result)) {
                 em.remove(result);
             } else if (entityInfo.idClassAttributeAccessors != null) {
@@ -1204,13 +1109,7 @@ public class QueryInfo {
                 } else if (!entityInfo.idType.isInstance(value)) {
                     value = convert(result, entityInfo.idType, false);
                     if (value == result)
-                        throw exc(MappingException.class,
-                                  "CWWKD1006.delete.rtrn.err",
-                                  method.getGenericReturnType().getTypeName(),
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  entityInfo.getType().getName(),
-                                  entityInfo.idType);
+                        throw Fail.returnTypeInvalidForDelete(this);
                 }
 
                 jakarta.persistence.Query delete = em.createQuery(jpqlDelete);
@@ -1264,29 +1163,10 @@ public class QueryInfo {
         }
 
         if (numExpected == 0)
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1092.lifecycle.arg.empty",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericParameterTypes()[0].getTypeName());
+            throw Fail.emptyLifeCycleParam(this);
 
         if (updateCount < numExpected)
-            if (numExpected == 1)
-                throw exc(OptimisticLockingFailureException.class,
-                          "CWWKD1051.single.opt.lock.exc",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          entityInfo.entityClass.getName(),
-                          Util.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS);
-            else
-                throw exc(OptimisticLockingFailureException.class,
-                          "CWWKD1052.multi.opt.lock.exc",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          numExpected - updateCount,
-                          numExpected,
-                          entityInfo.entityClass.getName(),
-                          Util.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS);
+            throw Fail.optimisticLockConflict(this, updateCount, numExpected);
 
         Object returnValue = toReturnValue(updateCount, method.getReturnType());
 
@@ -1311,21 +1191,8 @@ public class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "deleteOne", loggable(e));
 
-        Class<?> entityClass = entityInfo.getType();
-
-        if (e == null)
-            throw exc(NullPointerException.class,
-                      "CWWKD1015.null.entity.param",
-                      method.getName(),
-                      repositoryInterface.getName());
-
-        if (!entityClass.isInstance(e))
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1016.incompat.entity.param",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      entityClass.getName(),
-                      e.getClass().getName());
+        if (!entityInfo.getType().isInstance(e))
+            throw Fail.entityMismatch(this, e);
 
         String jpql = this.jpql;
 
@@ -1381,20 +1248,7 @@ public class QueryInfo {
             if (void.class.equals(returnType) || Void.class.equals(returnType)) {
                 if (idAttributeName == null)
                     idAttributeName = ID;
-                List<String> entityProps = new ArrayList<>(2);
-                if (id != null)
-                    entityProps.add(loggableAppend(idAttributeName,
-                                                   "=", id));
-                if (entityInfo.versionAttributeName != null && version != null)
-                    entityProps.add(loggableAppend(entityInfo.versionAttributeName,
-                                                   "=", version));
-                throw exc(OptimisticLockingFailureException.class,
-                          "CWWKD1050.opt.lock.exc",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          e.getClass().getName(),
-                          entityProps,
-                          Util.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS);
+                throw Fail.entityNotFound(this, e, idAttributeName, id, version);
             }
         } else if (numDeleted > 1) {
             // ought to be unreachable
@@ -1423,354 +1277,6 @@ public class QueryInfo {
     private static boolean endsWith(String searchFor, String text, int minStart, int endBefore) {
         int searchLen = searchFor.length();
         return endBefore - minStart >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
-    }
-
-    /**
-     * Create a new UnsupportedOperationException for a conflicting Limit or
-     * PageRequest parameter.
-     *
-     * @param ql                the query.
-     * @param endOfWhereClause  position at which the WHERE clause ends.
-     * @param endsAtOrderClause indicates if this error is being raised because an
-     *                              ORDER BY clause was found in the query.
-     * @return UnsupportedOperationException
-     */
-    @Trivial
-    private UnsupportedOperationException //
-                    excCursorPaginationNotAllowed(String ql,
-                                                  int endOfWhereClause,
-                                                  boolean endsAtOrderClause) {
-
-        if (endsAtOrderClause)
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1033.ql.orderby.disallowed",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      CursoredPage.class.getSimpleName(),
-                      OrderBy.class.getSimpleName(),
-                      ql);
-        else
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1034.ql.req.end.in.where",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      CursoredPage.class.getSimpleName(),
-                      endOfWhereClause,
-                      ql.length(),
-                      ql);
-    }
-
-    /**
-     * Create a new EmptyResultException.
-     *
-     * @return the EmptyResultException.
-     */
-    @Trivial
-    private EmptyResultException excEmptyResult() {
-        return exc(EmptyResultException.class,
-                   "CWWKD1053.empty.result",
-                   method.getGenericReturnType().getTypeName(),
-                   method.getName(),
-                   repositoryInterface.getName(),
-                   List.of(List.class.getSimpleName(),
-                           Optional.class.getSimpleName(),
-                           Page.class.getSimpleName(),
-                           CursoredPage.class.getSimpleName(),
-                           Stream.class.getSimpleName()));
-    }
-
-    /**
-     * Constructs the MappingException for the error where the repository method
-     * defines extra named parameters that are not used by the JDQL or JPQL query.
-     *
-     * @return MappingException.
-     */
-    @Trivial
-    private MappingException excExtraMethodArgNamedParams(Set<String> extras,
-                                                          Set<String> qlRequired) {
-        String firstExtraParam = null;
-        StringBuilder extraParamNames = new StringBuilder();
-        for (String name : extras)
-            if (name.length() > 0) {
-                if (firstExtraParam == null)
-                    firstExtraParam = name;
-                else
-                    extraParamNames.append(", ");
-                extraParamNames.append(name);
-            }
-
-        if (firstExtraParam == null && !extras.isEmpty())
-            // @Param("") with empty String is not valid
-            return exc(MappingException.class,
-                       "CWWKD1104.empty.anno.value",
-                       Param.class.getSimpleName(),
-                       method.getName(),
-                       repositoryInterface.getName());
-
-        boolean isFirst = true;
-        StringBuilder qlParamNames = new StringBuilder();
-        for (String name : qlRequired) {
-            if (!isFirst)
-                qlParamNames.append(", ");
-            qlParamNames.append(':').append(name);
-            isFirst = false;
-        }
-
-        if (qlRequired.isEmpty())
-            return exc(MappingException.class,
-                       "CWWKD1086.named.params.unused",
-                       method.getName(),
-                       repositoryInterface.getName(),
-                       extraParamNames,
-                       method.getAnnotation(Query.class).value(),
-                       ':' + firstExtraParam);
-        else
-            return exc(MappingException.class,
-                       "CWWKD1085.extra.method.params",
-                       method.getName(),
-                       repositoryInterface.getName(),
-                       extraParamNames,
-                       qlParamNames,
-                       method.getAnnotation(Query.class).value());
-    }
-
-    /**
-     * Create a new UnsupportedOperationException for a conflicting Limit or
-     * PageRequest parameter.
-     *
-     * @param param   method parameter that is an instance of Limit or PageRequest.
-     * @param limit   other Limit parameter value. Otherwise null.
-     * @param pageReq other PageRequest parameter value. Otherwise null.
-     * @param method  repository method
-     * @return UnsupportedOperationException
-     */
-    @Trivial
-    private UnsupportedOperationException excIncompatible(Object param,
-                                                          Limit limit,
-                                                          PageRequest pageReq,
-                                                          Method method) {
-        Class<?> type = param instanceof Limit ? Limit.class : PageRequest.class;
-
-        if (limit == null && pageReq == null)
-            // conflicts with First keyword
-            return exc(UnsupportedOperationException.class,
-                       "CWWKD1099.first.keyword.incompat",
-                       method.getName(),
-                       repositoryInterface.getName(),
-                       type.getSimpleName());
-        else if (param instanceof Limit ? limit != null : pageReq != null)
-            // conflicts with another parameter of the same time
-            return exc(UnsupportedOperationException.class,
-                       "CWWKD1017.dup.special.param",
-                       method.getName(),
-                       repositoryInterface.getName(),
-                       type.getSimpleName());
-        else
-            // conflict between Limit and PageRequest parameters
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1018.confl.special.param",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      Limit.class.getSimpleName(),
-                      PageRequest.class.getSimpleName());
-    }
-
-    /**
-     * Constructs an UnsupportedOperationException for an error where the
-     * repository method return type does not match the query results.
-     * On reason this might happen is when EclipseLink returns wrong values
-     * when selecting ElementCollection attributes instead of rejecting
-     * it as unsupported.
-     *
-     * @param results list of at least 1 result.
-     * @param query   jakarta.persistence.Query, a String, or null.
-     * @return UnsupportedOperationException.
-     */
-    @Trivial
-    private UnsupportedOperationException excIncompatibleQueryResult(List<?> results,
-                                                                     Object query) {
-        String r = results.getClass().getName() +
-                   "<" + results.get(0).getClass().getName() + ">";
-
-        if (query == null)
-            return exc(UnsupportedOperationException.class,
-                       "CWWKD1102.incompat.query.result",
-                       method.getName(),
-                       repositoryInterface.getName(),
-                       method.getGenericReturnType().getTypeName(),
-                       r);
-        else
-            return exc(UnsupportedOperationException.class,
-                       "CWWKD1103.incompat.query.result",
-                       method.getName(),
-                       repositoryInterface.getName(),
-                       method.getGenericReturnType().getTypeName(),
-                       query instanceof String ? query : query.getClass().getName(),
-                       r);
-    }
-
-    /**
-     * Check if the cause of the lacking named parameter is a mispositioned
-     * special parameter. If so, raises UnsupportedOperationException.
-     *
-     * Otherwise, constructs a MappingException for the error where one or more
-     * of the named parameters required by a JDQL or JPQL query are not specified
-     * by the method parameters
-     *
-     * @param lacking query named parameters for which no method parameters were
-     *                    found.
-     * @return MappingException for a missing named parameter.
-     * @throws UnsupportedOperationException if there is a mispositioned special
-     *                                           parameter.
-     */
-    @Trivial
-    private MappingException excLackingMethodArgNamedParams(Set<String> lacking) {
-
-        validateParameterPositions();
-
-        String first = null;
-        StringBuilder all = new StringBuilder();
-        for (String name : lacking) {
-            if (first == null)
-                first = name;
-            else
-                all.append(", ");
-            all.append(':').append(name);
-        }
-
-        return exc(MappingException.class,
-                   "CWWKD1084.missing.named.params",
-                   method.getName(),
-                   repositoryInterface.getName(),
-                   all,
-                   method.getAnnotation(Query.class).value(),
-                   "@Param(\"" + first + "\")",
-                   "String " + first);
-    }
-
-    /**
-     * Constructs the MappingException or UnsupportedOoperationException for
-     * the error where a repository method parameter lacks an annotation that
-     * identifies the corresponding entity attribute name.
-     *
-     * @param p position (1-based) of the repository method parameter.
-     * @return MappingException or UnsupportedOperationException.
-     */
-    @Trivial
-    private RuntimeException excMissingParamAnno(int p) {
-        DataVersionCompatibility compat = producer.compat();
-
-        switch (type) {
-            case FIND:
-            case FIND_AND_DELETE:
-                validateParameterPositions();
-                String specParams = type == FIND //
-                                ? compat.specialParamsForFind() //
-                                : compat.specialParamsForFindAndDelete();
-                throw exc(MappingException.class,
-                          "CWWKD1012.fd.missing.param.anno",
-                          p,
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          specParams);
-            case QM_DELETE:
-            case COUNT:
-            case EXISTS:
-                throw exc(MappingException.class,
-                          "CWWKD1013.cde.missing.param.anno",
-                          p,
-                          method.getName(),
-                          repositoryInterface.getName());
-            case QM_UPDATE:
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1014.upd.missing.param.anno",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          method.getParameterCount(),
-                          p,
-                          compat.paramAnnosForUpdate());
-            default: // should be unreachable
-                throw new IllegalStateException(type.name());
-        }
-    }
-
-    /**
-     * Constructs the UnsupportedOperationException for the error where a repository
-     * method intermixed named and positional parameters for a query.
-     *
-     * @return UnsupportedOperationException.
-     */
-    @Trivial
-    private UnsupportedOperationException excMixedQLParamTypes(int methodNPCount) {
-        String firstNamedParam = null;
-        StringBuilder allNamedParams = new StringBuilder().append('(');
-        for (String name : jpqlParamNames) {
-            if (firstNamedParam == null)
-                firstNamedParam = name;
-            else
-                allNamedParams.append(", ");
-            allNamedParams.append(':').append(name);
-        }
-        allNamedParams.append(')');
-
-        Class<?> firstNamedParamType = String.class;
-        for (Parameter p : method.getParameters()) {
-            Param param = p.getAnnotation(Param.class);
-            if (param == null //
-                            ? p.isNamePresent() && firstNamedParam.equals(p.getName()) //
-                            : firstNamedParam.equals(param.value()))
-                firstNamedParamType = p.getType();
-            break;
-        }
-
-        return exc(UnsupportedOperationException.class,
-                   "CWWKD1019.mixed.positional.named",
-                   method.getName(),
-                   repositoryInterface.getName(),
-                   jpqlParamCount - methodNPCount,
-                   methodNPCount,
-                   allNamedParams,
-                   method.getAnnotation(Query.class).value(),
-                   ':' + firstNamedParam,
-                   "@Param(\"" + firstNamedParam + "\")",
-                   firstNamedParamType.getSimpleName() + ' ' + firstNamedParam);
-    }
-
-    /**
-     * Create a new NonUniqueResultException.
-     *
-     * @param numResults number of results.
-     * @return the NonUniqueResultException.
-     */
-    @Trivial
-    private NonUniqueResultException excNonUniqueResult(int numResults) {
-        throw exc(NonUniqueResultException.class,
-                  "CWWKD1054.non.unique.result",
-                  method.getName(),
-                  repositoryInterface.getName(),
-                  method.getGenericReturnType().getTypeName(),
-                  numResults,
-                  List.of(// In a future release: @Find @First findByX(...)
-                          "findFirstByX(...)",
-                          "findByX(..., Limit.of(1))"));
-    }
-
-    /**
-     * Constructs the UnsupportedOperationException for the general error where
-     * a repository method is unrecognized and log the error.
-     *
-     * @return UnsupportedOperationException.
-     */
-    @Trivial
-    private UnsupportedOperationException excUnsupportedMethod() {
-        return exc(UnsupportedOperationException.class,
-                   "CWWKD1011.unknown.method.pattern",
-                   method.getName(),
-                   repositoryInterface.getName(),
-                   Util.operationAnnoNames(producer),
-                   Util.resourceAccessorTypeNames(producer),
-                   Util.methodNamePrefixes(producer),
-                   entityInfo.getExampleMethodNames());
     }
 
     /**
@@ -1886,7 +1392,7 @@ public class QueryInfo {
                 if (max == 0 && limit == null && pageReq == null)
                     max = (limit = (Limit) param).maxResults();
                 else
-                    throw excIncompatible(param, limit, pageReq, method);
+                    throw Fail.methodParamIncompat(this, param, limit, pageReq);
             } else if (param instanceof Order) {
                 @SuppressWarnings("unchecked")
                 Iterable<Sort<Object>> order = (Iterable<Sort<Object>>) param;
@@ -1895,7 +1401,7 @@ public class QueryInfo {
                 if (max == 0 && pageReq == null && limit == null)
                     max = (pageReq = (PageRequest) param).size();
                 else
-                    throw excIncompatible(param, limit, pageReq, method);
+                    throw Fail.methodParamIncompat(this, param, limit, pageReq);
             } else if (param instanceof Sort) {
                 @SuppressWarnings("unchecked")
                 List<Sort<Object>> newList = supplySorts(sortList, (Sort<Object>) param);
@@ -1908,11 +1414,7 @@ public class QueryInfo {
                 if (restriction == null)
                     restriction = param;
                 else
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1017.dup.special.param",
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              "Restriction");
+                    throw Fail.duplicateSpecialParam(this, "Restriction");
             } else if (param == null) {
                 // ignore null for empty Sort...
                 boolean isSort = false;
@@ -1920,21 +1422,9 @@ public class QueryInfo {
                     isSort |= sortPositions[s] == i;
                 if (!isSort)
                     // BasicRepository.findAll requires NullPointerException
-                    throw exc(NullPointerException.class,
-                              "CWWKD1087.null.param",
-                              method.getParameterTypes()[i].getName(),
-                              method.getName(),
-                              repositoryInterface.getName());
+                    throw Fail.nullMethodParameter(this, i);
             } else {
-                validateParameterPositions();
-
-                throw exc(DataException.class,
-                          "CWWKD1023.extra.param",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          specialParamsStartAt,
-                          method.getParameterTypes()[i].getName(),
-                          jpql);
+                throw Fail.extraMethodParam(this, i);
             }
         }
 
@@ -2060,13 +1550,7 @@ public class QueryInfo {
                             addedJPQLParams);
         } else if (pageReq != null &&
                    !PageRequest.Mode.OFFSET.equals(pageReq.mode())) {
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1035.incompat.page.mode",
-                      pageReq.mode(),
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericReturnType().getTypeName(),
-                      CursoredPage.class.getSimpleName());
+            throw Fail.pageModeIncompatible(this, pageReq);
         } else {
             if (trace && tc.isDebugEnabled())
                 Tr.debug(this, tc, "createQuery",
@@ -2112,12 +1596,7 @@ public class QueryInfo {
                 else if (DoubleStream.class.equals(multiType))
                     returnValue = stream.mapToDouble(this::toDouble);
                 else
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1046.result.convert.err",
-                              List.class.getName(),
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              method.getGenericReturnType().getTypeName());
+                    throw Fail.resultConversion(this, List.class.getName(), null);
             } else {
                 List<?> results = query.getResultList();
 
@@ -2211,19 +1690,15 @@ public class QueryInfo {
                         } else {
                             // List<Object[]> with multiple Object[] elements
                             // cannot convert to a one dimensional array
-                            throw excNonUniqueResult(size);
+                            throw Fail.nonUniqueResult(this, size);
                         }
                     } else {
-                        throw exc(MappingException.class,
-                                  "CWWKD1046.result.convert.err",
-                                  loggableAppend(firstNonNullResult.getClass().getName(),
-                                                 " (", firstNonNullResult, ")"),
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  method.getGenericReturnType().getTypeName());
+                        String resultInfo = loggableAppend(firstNonNullResult.getClass().getName(),
+                                                           " (", firstNonNullResult, ")");
+                        throw Fail.resultConversion(this, resultInfo, null);
                     }
                 } else if (results.isEmpty()) {
-                    throw excEmptyResult();
+                    throw Fail.emptyResult(this);
                 } else { // single result of other type
                     if (Iterable.class.isAssignableFrom(singleType) &&
                         !(results.get(0) instanceof Iterable))
@@ -2298,11 +1773,7 @@ public class QueryInfo {
                    Number.class.isAssignableFrom(singleType)) {
             returnValue = convert(results.size(), singleType, true);
         } else if (results.isEmpty()) {
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1092.lifecycle.arg.empty",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericParameterTypes()[0].getTypeName());
+            throw Fail.emptyLifeCycleParam(this);
         } else if (void.class.equals(returnType) || Void.class.equals(returnType)) {
             returnValue = null;
         } else {
@@ -2320,7 +1791,7 @@ public class QueryInfo {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        throw excNonUniqueResult(results.size());
+                        throw Fail.nonUniqueResult(this, results.size());
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
@@ -2330,15 +1801,8 @@ public class QueryInfo {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw exc(MappingException.class,
-                              "CWWKD1003.rtrn.err",
-                              method.getGenericReturnType().getTypeName(),
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              "Update",
-                              lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
-                                                   hasSingularEntityParam,
-                                                   false));
+                    throw Fail.returnTypeInvalid(this, "Update", hasSingularEntityParam,
+                                                 null, results.get(0).getClass());
             }
         }
 
@@ -2353,15 +1817,8 @@ public class QueryInfo {
         } else if (returnValue != null &&
                    !Util.wrapperClassIfPrimitive(returnType) //
                                    .isAssignableFrom(returnValue.getClass())) {
-            throw exc(MappingException.class,
-                      "CWWKD1003.rtrn.err",
-                      method.getGenericReturnType().getTypeName(),
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      "Update",
-                      lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
-                                           hasSingularEntityParam,
-                                           false));
+            throw Fail.returnTypeInvalid(this, "Update", hasSingularEntityParam,
+                                         null, results.get(0).getClass());
         }
 
         if (trace && tc.isEntryEnabled())
@@ -2435,21 +1892,8 @@ public class QueryInfo {
 
         List<?> results = query.getResultList();
 
-        if (results.isEmpty()) {
-            List<String> entityProps = new ArrayList<>(2);
-            if (id != null)
-                entityProps.add(loggableAppend(idAttributeName, "=", id));
-            if (entityInfo.versionAttributeName != null && version != null)
-                entityProps.add(loggableAppend(entityInfo.versionAttributeName,
-                                               "=", version));
-            throw exc(OptimisticLockingFailureException.class,
-                      "CWWKD1050.opt.lock.exc",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      e.getClass().getName(),
-                      entityProps,
-                      Util.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS);
-        }
+        if (results.isEmpty())
+            throw Fail.entityNotFound(this, e, idAttributeName, id, version);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "found", loggable(results.get(0)));
@@ -2562,7 +2006,7 @@ public class QueryInfo {
         String attribute = methodName.substring(start, endBefore);
 
         if (attribute.length() == 0)
-            throw excUnsupportedMethod();
+            throw Fail.unsupportedMethod(this);
 
         String name = getAttributeName(attribute, true);
 
@@ -2994,33 +2438,26 @@ public class QueryInfo {
 
         Set<Class<?>> specParamTypes = compat.specialParamTypes();
         Class<?>[] paramTypes = method.getParameterTypes();
-        int numAttributeParams = paramTypes.length;
-        while (numAttributeParams > 0 &&
-               specParamTypes.contains(paramTypes[numAttributeParams - 1])) {
-            numAttributeParams--;
-            if (!compat.isSpecialParamValid(paramTypes[numAttributeParams], type))
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1020.invalid.param.type",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          paramTypes[numAttributeParams].getSimpleName(),
-                          methodAnno.annotationType().getSimpleName());
-        }
+        int numConstraints = paramTypes.length;
+        while (numConstraints > 0 &&
+               specParamTypes.contains(paramTypes[numConstraints - 1]))
+            if (!compat.isSpecialParamValid(paramTypes[--numConstraints], type))
+                throw Fail.methodParamInvalid(this, paramTypes[numConstraints], methodAnno);
 
         Annotation[][] annosForAllParams = method.getParameterAnnotations();
 
         // Arrays to be populated per repository method parameter
-        String[] attrNames = new String[numAttributeParams];
+        String[] attrNames = new String[numConstraints];
         AttributeConstraint[] attrConstraints = //
-                        new AttributeConstraint[numAttributeParams];
-        char[] updateOps = new char[numAttributeParams];
-        int[] numPreviousJPQLParams = new int[numAttributeParams + 1];
-        StringBuilder[] constraintJPQL = new StringBuilder[numAttributeParams];
+                        new AttributeConstraint[numConstraints];
+        char[] updateOps = new char[numConstraints];
+        int[] numPreviousJPQLParams = new int[numConstraints + 1];
+        StringBuilder[] constraintJPQL = new StringBuilder[numConstraints];
 
         // p is the repository method parameter number (0-based)
         // qp is the JPQL query parameter number (1-based)
         int numJPQLParams = 0;
-        for (int p = 0; p < numAttributeParams; p++) {
+        for (int p = 0; p < numConstraints; p++) {
             numPreviousJPQLParams[p] = numJPQLParams;
 
             Object constraint = constraints.get(p);
@@ -3032,24 +2469,9 @@ public class QueryInfo {
                                                           attrConstraints,
                                                           updateOps,
                                                           numJPQLParams);
-                if (numJPQLParams == DataVersionCompatibility //
-                                .PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT)
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1117.anno.constraint.conflict",
-                              p + 1,
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              Arrays.toString(annosForAllParams[p]),
-                              paramTypes[p].getClass().getName());
-                else if (numJPQLParams == DataVersionCompatibility //
-                                .PARAM_ANNOS_CONFLICT)
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1118.param.anno.conflict",
-                              p + 1,
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              Arrays.toString(annosForAllParams[p]));
-
+                if (numJPQLParams < 0)
+                    Fail.methodParamAnnoConflict(this, numJPQLParams, p,
+                                                 paramTypes[p], annosForAllParams[p]);
             } else {
                 constraintJPQL[p] = new StringBuilder(50);
                 numJPQLParams = compat.generateConstraint(constraintJPQL[p],
@@ -3078,12 +2500,12 @@ public class QueryInfo {
                 if (Boolean.TRUE.equals(isNamePresent))
                     name = params[p].getName();
                 else
-                    throw excMissingParamAnno(p + 1);
+                    throw Fail.methodParamLacksAnno(this, p + 1);
             }
             attrNames[p] = getAttributeName(name, true);
         }
 
-        numPreviousJPQLParams[numAttributeParams] = numJPQLParams;
+        numPreviousJPQLParams[numConstraints] = numJPQLParams;
 
         // Write new JPQL, starting with SELECT or UPDATE
         if (q == null && type == FIND) { // SELECT
@@ -3102,7 +2524,7 @@ public class QueryInfo {
             boolean needsVersionUpdate = entityInfo.versionAttributeName != null;
             boolean first = true;
             // p is the repository method parameter position (0-based)
-            for (int p = 0; p < numAttributeParams; p++) {
+            for (int p = 0; p < numConstraints; p++) {
                 char op = updateOps[p];
                 if (op != Character.MIN_VALUE) {
                     if (op != '=' &&
@@ -3176,21 +2598,15 @@ public class QueryInfo {
                 first = false;
             }
 
-            if (first)
-                // No parameters are annotated to indicate update.
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1009.lifecycle.param.err",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          method.getParameterCount(),
-                          Update.class.getSimpleName());
+            if (first) // No parameters are annotated to indicate update.
+                throw Fail.lifeCycleMethodParamCount(this, Update.class);
         }
 
         int startIndexForWhereClause = q.length();
 
         // append the WHERE clause
         // p is the repository method parameter position (0-based)
-        for (int p = 0; p < numAttributeParams; p++) {
+        for (int p = 0; p < numConstraints; p++) {
             if (attrConstraints[p] != null || constraintJPQL[p] != null) {
                 if (hasWhere) {
                     q.append(" AND ");
@@ -3228,7 +2644,7 @@ public class QueryInfo {
             q.append(')');
 
         if (countPages && type == FIND)
-            generateCount(numAttributeParams == 0 ? null : q.substring(startIndexForWhereClause));
+            generateCount(numConstraints == 0 ? null : q.substring(startIndexForWhereClause));
 
         if (type == FIND || type == FIND_AND_DELETE)
             specialParamsStartAt = locateFirstSpecialParameter(paramTypes, true);
@@ -3279,13 +2695,7 @@ public class QueryInfo {
         if (type == FIND_AND_DELETE &&
             !(singleType.isAssignableFrom(Util.wrapperClassIfPrimitive(entityInfo.idType)) ||
               singleType.isAssignableFrom(entityInfo.getType()))) {
-            throw exc(MappingException.class,
-                      "CWWKD1006.delete.rtrn.err",
-                      method.getGenericReturnType().getTypeName(),
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      entityInfo.getType().getName(),
-                      entityInfo.idType.getName());
+            throw Fail.returnTypeInvalidForDelete(this);
         }
 
         if (cols == null || cols.length == 0) {
@@ -3306,15 +2716,7 @@ public class QueryInfo {
                 RecordComponent[] recordComponents = singleType.getRecordComponents();
                 if (recordComponents == null) {
                     // not a record, not an entity, and app did not use @Select
-                    throw exc(MappingException.class,
-                              "CWWKD1005.find.rtrn.err",
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              method.getGenericReturnType().getTypeName(),
-                              entityInfo.entityClass.getName(),
-                              List.of("List", "Optional",
-                                      "Page", "CursoredPage",
-                                      "Stream"));
+                    throw Fail.returnTypeInvalidForFind(this);
                 } else {
                     // Construct new instance for record
                     q.append("SELECT NEW ").append(singleType.getName()).append('(');
@@ -3340,19 +2742,7 @@ public class QueryInfo {
                             first = false;
                         }
                     } catch (RuntimeException x) {
-                        // Raise a more precise error that relates to using records
-                        // for a subset of entity attributes
-                        MappingException mx;
-                        mx = exc(MappingException.class,
-                                 "CWWKD1101.attr.subset.mismatch",
-                                 method.getGenericReturnType().getTypeName(),
-                                 method.getName(),
-                                 repositoryInterface.getName(),
-                                 singleType.getName(),
-                                 Arrays.toString(names),
-                                 entityInfo.getType().getName(),
-                                 entityInfo.getAttributeNames());
-                        throw (MappingException) mx.initCause(x);
+                        throw Fail.selectedAttributesMismatch(this, names, x);
                     }
                     q.append(')');
                 }
@@ -3584,23 +2974,11 @@ public class QueryInfo {
                     // id(this)
                     attributeName = entityInfo.attributeNames.get(By.ID);
                     if (attributeName == null && failIfNotFound)
-                        throw exc(MappingException.class,
-                                  "CWWKD1093.fn.not.applicable",
-                                  name,
-                                  entityInfo.getType().getName(),
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  "@Id");
+                        throw Fail.functionNotApplicable(this, name, "@Id");
                 } else if (len == 13 && name.regionMatches(true, 0, "version", 0, 7)) {
                     // version(this)
                     if (entityInfo.versionAttributeName == null && failIfNotFound)
-                        throw exc(MappingException.class,
-                                  "CWWKD1093.fn.not.applicable",
-                                  name,
-                                  entityInfo.getType().getName(),
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  "@Version");
+                        throw Fail.functionNotApplicable(this, name, "@Version");
                     else
                         attributeName = entityInfo.versionAttributeName;
                 } else {
@@ -3616,12 +2994,7 @@ public class QueryInfo {
                 // allow functions, such as LENGTH(name)
                 attributeName = name;
         } else if (len == 0) {
-            throw exc(MappingException.class,
-                      "CWWKD1024.missing.entity.attr",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      entityInfo.getType().getName(),
-                      entityInfo.attributeTypes.keySet());
+            throw Fail.entityAttributeNameMissing(this);
         } else {
             String lowerName = name.toLowerCase();
             attributeName = entityInfo.attributeNames.get(lowerName);
@@ -3642,25 +3015,8 @@ public class QueryInfo {
                             // allow functions, such as: length * width
                             attributeName = name;
 
-                        if (nameCharsOnly && failIfNotFound) {
-                            if (Util.hasOperationAnno(method, producer))
-                                throw exc(MappingException.class,
-                                          "CWWKD1010.unknown.entity.attr",
-                                          name,
-                                          entityInfo.getType().getName(),
-                                          method.getName(),
-                                          repositoryInterface.getName(),
-                                          entityInfo.attributeTypes.keySet());
-                            else
-                                throw exc(MappingException.class,
-                                          "CWWKD1091.method.name.parse.err",
-                                          name,
-                                          entityInfo.getType().getName(),
-                                          method.getName(),
-                                          repositoryInterface.getName(),
-                                          Util.operationAnnoNames(producer),
-                                          entityInfo.attributeTypes.keySet());
-                        }
+                        if (nameCharsOnly && failIfNotFound)
+                            throw Fail.unknownEntityAttribute(this, name);
                     }
                 }
             }
@@ -3698,22 +3054,6 @@ public class QueryInfo {
             return sort.isAscending() //
                             ? sort.ignoreCase() ? Sort.ascIgnoreCase(name) : Sort.asc(name) //
                             : sort.ignoreCase() ? Sort.descIgnoreCase(name) : Sort.desc(name);
-    }
-
-    /**
-     * Determine if the index of the text ignoring case if it is the next non-whitespace characters.
-     *
-     * @parma text the text to match.
-     * @param ql      query language.
-     * @param startAt starting position in the query language string.
-     * @return position of the text ignoring case if it is the next non-whitespace characters. Otherwise -1;
-     */
-    @Trivial
-    private static int indexOfAfterWhitespace(String text, String ql, int startAt) {
-        int length = ql.length();
-        while (startAt < length && Character.isWhitespace(ql.charAt(startAt)))
-            startAt++;
-        return ql.regionMatches(true, startAt, text, 0, 2) ? startAt : -1;
     }
 
     /**
@@ -3872,30 +3212,14 @@ public class QueryInfo {
                 if (type == FIND_AND_DELETE
                     && multiType != null
                     && Stream.class.isAssignableFrom(multiType)) {
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1006.delete.rtrn.err",
-                              method.getGenericReturnType().getTypeName(),
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              entityInfo.getType().getName(),
-                              entityInfo.idType.getName());
+                    throw Fail.returnTypeInvalidForDelete(this);
                 }
             }
 
             // The @OrderBy annotation from Jakarta Data provides sort criteria statically
             if (orderBy.length > 0) {
-                // disallow on incompatible operations
-                if (type != FIND && type != FIND_AND_DELETE)
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1096.orderby.incompat",
-                              method.getName(),
-                              repositoryInterface.getName());
-
-                if (sorts != null) // also has an OrderBy keyword
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1090.orderby.conflict",
-                              method.getName(),
-                              repositoryInterface.getName());
+                if (type != FIND && type != FIND_AND_DELETE || sorts != null)
+                    throw Fail.orderByAnnoIncompat(this);
 
                 sorts = new ArrayList<>(orderBy.length);
                 if (q == null)
@@ -4032,11 +3356,7 @@ public class QueryInfo {
                     specialParamsStartAt = i;
                 if ("jakarta.data.restrict.Restriction".equals(paramType.getName())) // TODO 1.1
                     if (addsToWHERE)
-                        throw exc(UnsupportedOperationException.class,
-                                  "CWWKD1017.dup.special.param",
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  "Restriction");
+                        throw Fail.duplicateSpecialParam(this, "Restriction");
                     else
                         addsToWHERE = true;
             } else if (i > specialParamsStartAt) {
@@ -4090,13 +3410,7 @@ public class QueryInfo {
             if (entityName.length() > 0)
                 setEntityInfo(entityName.toString(), entityInfos, ql);
             else
-                throw exc(UnsupportedOperationException.class,
-                          "CWWKD1030.ql.lacks.entity",
-                          ql,
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          "UPDATE",
-                          "UPDATE [entity_name] SET [update_items] WHERE [conditional_expression]");
+                throw Fail.queryLacksEntityName(this, ql, "UPDATE");
 
             entityVar = parseIdentificationVariable(startAt, length, ql);
             entityVar_ = entityVar + '.';
@@ -4150,13 +3464,7 @@ public class QueryInfo {
                 boolean isDuplicate = !jpqlParamNames.add(paramName);
                 if (qlParamNames.contains(paramName)) {
                     if (isDuplicate) // duplicate of a valid name
-                        throw exc(MappingException.class,
-                                  "CWWKD1083.dup.method.param",
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  paramName,
-                                  "@Param(\"" + paramName + "\")",
-                                  params[i].getType().getSimpleName() + ' ' + paramName);
+                        throw Fail.namedParamConflict(this, paramName, params[i]);
                 } else {
                     hasExtraParam = true;
                 }
@@ -4174,18 +3482,18 @@ public class QueryInfo {
             LinkedHashSet<String> lacking = new LinkedHashSet<>(qlParamNames);
             lacking.removeAll(jpqlParamNames);
             if (!lacking.isEmpty())
-                throw excLackingMethodArgNamedParams(lacking);
+                throw Fail.methodLacksNamedParams(this, lacking);
 
             // Does the method supply any named parameters not needed by the query?
             Set<String> extras = new LinkedHashSet<>(jpqlParamNames);
             extras.removeAll(qlParamNames);
             if (!extras.isEmpty())
-                throw excExtraMethodArgNamedParams(extras, qlParamNames);
+                throw Fail.unusedNamedParamsOnMethod(this, extras, qlParamNames);
         }
 
         // Does the method supply a mixture of named and positional parameters?
         if (paramNamesCount > 0 && paramNamesCount < jpqlParamCount)
-            throw excMixedQLParamTypes(paramNamesCount);
+            throw Fail.mixedQLParamTypes(this, paramNamesCount);
     }
 
     /**
@@ -4279,7 +3587,7 @@ public class QueryInfo {
             type = EXISTS;
             validateReturnForExists();
         } else {
-            throw excUnsupportedMethod();
+            throw Fail.unsupportedMethod(this);
         }
 
         if (trace && tc.isDebugEnabled())
@@ -4433,11 +3741,7 @@ public class QueryInfo {
         }
 
         if (entityCount == 0)
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1092.lifecycle.arg.empty",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericParameterTypes()[0].getTypeName());
+            throw Fail.emptyLifeCycleParam(this);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "flush");
@@ -4463,16 +3767,8 @@ public class QueryInfo {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        throw exc(ClassCastException.class,
-                                  "CWWKD1094.return.mismatch",
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  method.getGenericReturnType().getTypeName(),
-                                  results.size(),
-                                  "@Insert",
-                                  lifeCycleReturnTypes(entityInfo.getType().getName(),
-                                                       hasSingularEntityParam,
-                                                       false));
+                        throw Fail.resultSizeMismatch(this, "@Insert", results.size(),
+                                                      hasSingularEntityParam);
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
@@ -4482,15 +3778,8 @@ public class QueryInfo {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw exc(MappingException.class,
-                              "CWWKD1003.rtrn.err",
-                              method.getGenericReturnType().getTypeName(),
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              "Insert",
-                              lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
-                                                   hasSingularEntityParam,
-                                                   false));
+                    throw Fail.returnTypeInvalid(this, "Insert", hasSingularEntityParam,
+                                                 null, results.get(0).getClass());
             }
         }
 
@@ -4499,15 +3788,8 @@ public class QueryInfo {
             // useful for @Asynchronous
             returnValue = CompletableFuture.completedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw exc(MappingException.class,
-                      "CWWKD1003.rtrn.err",
-                      method.getGenericReturnType().getTypeName(),
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      "Insert",
-                      lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
-                                           hasSingularEntityParam,
-                                           false));
+            throw Fail.returnTypeInvalid(this, "Insert", hasSingularEntityParam,
+                                         null, results.get(0).getClass());
         }
 
         if (trace && tc.isEntryEnabled())
@@ -4643,21 +3925,14 @@ public class QueryInfo {
                                "; multiType: " + (multiType == null ? null : multiType.getSimpleName()) +
                                "; singleType: " + (singleType == null ? null : singleType.getSimpleName()));
 
-        if (isFindAndDelete)
-            if (type != null
-                && !type.equals(entityInfo.entityClass)
-                && !type.equals(entityInfo.recordClass)
-                && !type.equals(Object.class)
-                && !Util.wrapperClassIfPrimitive(singleType) //
-                                .equals(Util.wrapperClassIfPrimitive(entityInfo.idType))) {
-                throw exc(MappingException.class,
-                          "CWWKD1006.delete.rtrn.err",
-                          method.getGenericReturnType().getTypeName(),
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          entityInfo.getType().getName(),
-                          entityInfo.idType.getName());
-            }
+        if (isFindAndDelete &&
+            type != null &&
+            !type.equals(entityInfo.entityClass) &&
+            !type.equals(entityInfo.recordClass) &&
+            !type.equals(Object.class) &&
+            !Util.wrapperClassIfPrimitive(singleType) //
+                            .equals(Util.wrapperClassIfPrimitive(entityInfo.idType)))
+            throw Fail.returnTypeInvalidForDelete(this);
 
         return isFindAndDelete;
     }
@@ -4687,7 +3962,7 @@ public class QueryInfo {
      * @return loggable value.
      */
     @Trivial
-    private final String loggableAppend(String prefix, Object... possibleSuffix) {
+    final String loggableAppend(String prefix, Object... possibleSuffix) {
         return entityInfo.builder.provider.loggableAppend(repositoryInterface,
                                                           method,
                                                           prefix,
@@ -4708,9 +3983,9 @@ public class QueryInfo {
         if (size == 1)
             return results.get(0);
         else if (size == 0)
-            throw excEmptyResult();
+            throw Fail.emptyResult(this);
         else
-            throw excNonUniqueResult(results.size());
+            throw Fail.nonUniqueResult(this, results.size());
     }
 
     /**
@@ -5011,13 +4286,7 @@ public class QueryInfo {
                             if (entityName.length() > 0)
                                 setEntityInfo(entityName.toString(), entityInfos, ql);
                             else if (type != FIND) // a DELETE query
-                                throw exc(UnsupportedOperationException.class,
-                                          "CWWKD1030.ql.lacks.entity",
-                                          ql,
-                                          method.getName(),
-                                          repositoryInterface.getName(),
-                                          "DELETE",
-                                          "DELETE FROM [entity_name] WHERE [conditional_expression]");
+                                throw Fail.queryLacksEntityName(this, ql, "DELETE");
 
                             entityVar = parseIdentificationVariable(i, length, ql);
                             entityVar_ = entityVar + '.';
@@ -5047,16 +4316,9 @@ public class QueryInfo {
                             if (isOrder)
                                 restrictAt = i;
                             if (isCursoredPage && !isSelect && !isWhere && !isOrder)
-                                // ORDER BY isn't allowed with cursored pagination
-                                // either, nor is SELECT positioned after WHERE,
-                                // but those patterns have a better error message
-                                // elsewhere that points out the correct usage
-                                throw exc(UnsupportedOperationException.class,
-                                          "CWWKD1120.cursor.keyword.mismatch",
-                                          method.getName(),
-                                          repositoryInterface.getName(),
-                                          ql.substring(i, i + l),
-                                          ql);
+                                // ORDER BY and SELECT positioned after WHERE are
+                                // also incompatible but are handled better elsewhere
+                                throw Fail.queryIncompatipleWithCursor(this, ql, i, l);
                             if (hasTopLevelSelectClause &&
                                 countReplacesFirstSelectEndingAt < 0) {
                                 countReplacesFirstSelectEndingAt = i;
@@ -5071,7 +4333,7 @@ public class QueryInfo {
                             }
                             if (encloseWhereBeginAt > 0) {
                                 if (isCursoredPage)
-                                    throw excCursorPaginationNotAllowed(ql, i, isOrder);
+                                    throw Fail.cursorQueryIncompat(this, ql, i, isOrder);
                                 int p = i - 1;
                                 while (p > 0 && Character.isWhitespace(ql.charAt(p)))
                                     p--;
@@ -5420,11 +4682,7 @@ public class QueryInfo {
                     if (args[p] == null)
                         // BasicRepository.findAll(PageRequest, Order) requires
                         // NullPointerException when Order is null.
-                        throw exc(NullPointerException.class,
-                                  "CWWKD1087.null.param",
-                                  paramTypeName,
-                                  method.getName(),
-                                  repositoryInterface.getName());
+                        throw Fail.nullMethodParameter(this, p);
                     else
                         throw exc(IllegalArgumentException.class,
                                   "CWWKD1088.empty.sorts",
@@ -5492,11 +4750,7 @@ public class QueryInfo {
         }
 
         if (entityCount == 0)
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1092.lifecycle.arg.empty",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericParameterTypes()[0].getTypeName());
+            throw Fail.emptyLifeCycleParam(this);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "flush");
@@ -5521,16 +4775,8 @@ public class QueryInfo {
                     else if (results.isEmpty())
                         returnValue = null;
                     else
-                        throw exc(ClassCastException.class,
-                                  "CWWKD1094.return.mismatch",
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  method.getGenericReturnType().getTypeName(),
-                                  results.size(),
-                                  "@Save",
-                                  lifeCycleReturnTypes(entityInfo.getType().getName(),
-                                                       hasSingularEntityParam,
-                                                       false));
+                        throw Fail.resultSizeMismatch(this, "@Save", results.size(),
+                                                      hasSingularEntityParam);
                 else if (multiType.isInstance(results))
                     returnValue = results;
                 else if (Stream.class.equals(multiType))
@@ -5540,15 +4786,8 @@ public class QueryInfo {
                 else if (Iterator.class.equals(multiType))
                     returnValue = results.iterator();
                 else
-                    throw exc(MappingException.class,
-                              "CWWKD1003.rtrn.err",
-                              method.getGenericReturnType().getTypeName(),
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              "Save",
-                              lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
-                                                   hasSingularEntityParam,
-                                                   false));
+                    throw Fail.returnTypeInvalid(this, "Save", hasSingularEntityParam,
+                                                 null, results.get(0).getClass());
             }
         }
 
@@ -5557,15 +4796,8 @@ public class QueryInfo {
             // useful for @Asynchronous
             returnValue = CompletableFuture.completedFuture(returnValue);
         } else if (!resultVoid && !returnType.isInstance(returnValue)) {
-            throw exc(MappingException.class,
-                      "CWWKD1003.rtrn.err",
-                      method.getGenericReturnType().getTypeName(),
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      "Save",
-                      lifeCycleReturnTypes(results.get(0).getClass().getSimpleName(),
-                                           hasSingularEntityParam,
-                                           false));
+            throw Fail.returnTypeInvalid(this, "Save", hasSingularEntityParam,
+                                         null, results.get(0).getClass());
         }
 
         if (trace && tc.isEntryEnabled())
@@ -5761,13 +4993,7 @@ public class QueryInfo {
             Iterator<String> paramNames = jpqlParamNames.iterator();
             for (int a = 0; a < specialParamsStartAt; a++) {
                 if (!paramNames.hasNext())
-                    throw exc(UnsupportedOperationException.class,
-                              "CWWKD1022.too.many.params",
-                              method.getName(),
-                              repositoryInterface.getName(),
-                              a + 1,
-                              specialParamsStartAt + 1,
-                              jpql);
+                    throw Fail.extraMethodParams(this, a + 1, specialParamsStartAt + 1);
                 String paramName = paramNames.next();
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "[m] set :" + paramName + ' ' + loggable(args[a]));
@@ -5921,10 +5147,7 @@ public class QueryInfo {
     @Trivial
     private final Object toEntity(Object o, EntityManager em) {
         if (o == null)
-            throw exc(NullPointerException.class,
-                      "CWWKD1015.null.entity.param",
-                      method.getName(),
-                      repositoryInterface.getName());
+            throw Fail.entityNull(this);
 
         Object entity = o;
         Class<?> oClass = o.getClass();
@@ -6098,29 +5321,10 @@ public class QueryInfo {
         em.flush();
 
         if (numExpected == 0)
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1092.lifecycle.arg.empty",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      method.getGenericParameterTypes()[0].getTypeName());
+            throw Fail.emptyLifeCycleParam(this);
 
         if (updateCount < numExpected)
-            if (numExpected == 1)
-                throw exc(OptimisticLockingFailureException.class,
-                          "CWWKD1051.single.opt.lock.exc",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          entityInfo.entityClass.getName(),
-                          Util.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS);
-            else
-                throw exc(OptimisticLockingFailureException.class,
-                          "CWWKD1052.multi.opt.lock.exc",
-                          method.getName(),
-                          repositoryInterface.getName(),
-                          numExpected - updateCount,
-                          numExpected,
-                          entityInfo.entityClass.getName(),
-                          Util.LIFE_CYCLE_METHODS_THAT_RETURN_ENTITIES_STATELESS);
+            throw Fail.optimisticLockConflict(this, updateCount, numExpected);
 
         Object returnValue = toReturnValue(updateCount, method.getReturnType());
 
@@ -6144,21 +5348,8 @@ public class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "updateOne", loggable(e));
 
-        Class<?> entityClass = entityInfo.getType();
-
-        if (e == null)
-            throw exc(NullPointerException.class,
-                      "CWWKD1015.null.entity.param",
-                      method.getName(),
-                      repositoryInterface.getName());
-
-        if (!entityClass.isInstance(e))
-            throw exc(IllegalArgumentException.class,
-                      "CWWKD1016.incompat.entity.param",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      entityClass.getName(),
-                      e.getClass().getName());
+        if (!entityInfo.getType().isInstance(e))
+            throw Fail.entityMismatch(this, e);
 
         String jpql = this.jpql;
         Set<String> attrsToUpdate = entityInfo.attributeNamesForEntityUpdate;
@@ -6219,7 +5410,7 @@ public class QueryInfo {
     @Trivial
     private void validate(boolean validateNumberOfMethodArgs) {
         if (type == null)
-            throw excUnsupportedMethod();
+            throw Fail.unsupportedMethod(this);
 
         int methodParamCount = method.getParameterCount();
         if (validateNumberOfMethodArgs &&
@@ -6253,13 +5444,7 @@ public class QueryInfo {
                                   paramTypes[i].getSimpleName());
             }
 
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1022.too.many.params",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      jpqlParamCount,
-                      methodParamCount,
-                      jpql);
+            throw Fail.extraMethodParams(this, jpqlParamCount, methodParamCount);
         }
 
         if (type == FIND &&
@@ -6349,34 +5534,6 @@ public class QueryInfo {
     }
 
     /**
-     * Confirm that special parameters are positioned after all other parameters.
-     *
-     * @throws UnupportedOperationException if a special parameter is ahead of
-     *                                          a query parameter.
-     */
-    @Trivial
-    private void validateParameterPositions() {
-        DataVersionCompatibility compat = entityInfo.builder.provider.compat;
-
-        Class<?>[] paramTypes = method.getParameterTypes();
-        Set<Class<?>> specParamTypes = compat.specialParamTypes();
-        int specParamIndex = Integer.MAX_VALUE, otherParamIndex = -1;
-        for (int i = 0; i < paramTypes.length; i++)
-            if (specParamTypes.contains(paramTypes[i]))
-                specParamIndex = i < specParamIndex ? i : specParamIndex;
-            else
-                otherParamIndex = i;
-
-        if (specParamIndex < otherParamIndex)
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1098.spec.param.position.err",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      paramTypes[specParamIndex].getName(),
-                      compat.specialParamsForFind());
-    }
-
-    /**
      * Validates that the return type is valid for an exists method.
      */
     @Trivial
@@ -6388,13 +5545,7 @@ public class QueryInfo {
              !CompletableFuture.class.equals(multiType) &&
              !CompletionStage.class.equals(multiType)))
 
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1003.rtrn.err",
-                      method.getGenericReturnType().getTypeName(),
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      "exists",
-                      "boolean, Boolean");
+            throw Fail.returnTypeInvalid(this, "exists", false, "boolean, Boolean", null);
     }
 
     /**

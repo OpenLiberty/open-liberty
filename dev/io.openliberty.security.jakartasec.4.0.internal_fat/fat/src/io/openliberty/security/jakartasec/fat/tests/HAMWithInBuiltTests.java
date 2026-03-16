@@ -47,7 +47,7 @@ public class HAMWithInBuiltTests extends BaseJakartaSecurity40Test {
 
     private static String url = null;
 
-    @Server(SERVER_NAME)
+    @Server(MULTIPLE_HAM_SERVER_NAME)
     public static LibertyServer server;
 
     @Override

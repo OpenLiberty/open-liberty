@@ -35,7 +35,8 @@ Bundle-Localization: \
 -dsannotations: \
  io.openliberty.mcp.internal.McpServletInitializer,\
  io.openliberty.mcp.internal.McpCdiExtensionMetadata,\
- io.openliberty.mcp.internal.config.McpConfiguration,\
+ io.openliberty.mcp.internal.config.McpConfigurationComponent,\
+ io.openliberty.mcp.internal.config.McpServerApplicationTracker,\
  io.openliberty.mcp.internal.introspection.McpIntrospector
  
 -buildpath: \
@@ -53,7 +54,9 @@ Bundle-Localization: \
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
 	com.ibm.ws.transport.http;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.app.manager;version=latest
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3,\

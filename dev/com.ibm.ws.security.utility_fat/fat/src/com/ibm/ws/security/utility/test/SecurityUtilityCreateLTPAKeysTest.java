@@ -473,8 +473,10 @@ public class SecurityUtilityCreateLTPAKeysTest {
                       ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
         ltpaTestServer.stopServer();
 
-        if (!JavaInfo.forCurrentVM().isCriuSupported()) {
-            // skip testing InstantOn if CRIU is not supported on this platform
+        if (!JavaInfo.forCurrentVM().isCriuSupported() || ltpaTestServer.isJava2SecurityEnabled()) {
+            // skip testing InstantOn if CRIU is not supported on this platform or Java 2 security is enabled.
+            // There are non-InstantOn tests that will run with Java 2 security being enabled in the bootstrap.properites
+            // and the server will still have it configured since the server instance is shared.
             return;
         }
 
@@ -545,8 +547,10 @@ public class SecurityUtilityCreateLTPAKeysTest {
                       ltpaTestServer.waitForStringInLogUsingMark("CWWKS4105I", 5000));
         ltpaTestServer.stopServer();
 
-        if (!JavaInfo.forCurrentVM().isCriuSupported()) {
-            // skip testing InstantOn if CRIU is not supported on this platform
+        if (!JavaInfo.forCurrentVM().isCriuSupported() || ltpaTestServer.isJava2SecurityEnabled()) {
+            // skip testing InstantOn if CRIU is not supported on this platform or Java 2 security is enabled.
+            // There are non-InstantOn tests that will run with Java 2 security being enabled in the bootstrap.properites
+            // and the server will still have it configured since the server instance is shared.
             return;
         }
 

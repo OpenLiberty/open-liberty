@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,7 +48,7 @@ public class Data_1_1_Test extends FATServletClient {
 
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = //
-                    DatabaseContainerFactory.create();
+                    DatabaseContainerFactory.createLatest();
 
     @Server("io.openliberty.data.internal.fat.1.1")
     @TestServlets({ @TestServlet(servlet = Data_1_1_Servlet.class,
@@ -58,6 +58,8 @@ public class Data_1_1_Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        FATSuite.standardizeCollation(testContainer);
+
         DatabaseContainerUtil.build(server, testContainer)
                         .withDriverVariable()
                         .withDatabaseProperties()
@@ -65,6 +67,7 @@ public class Data_1_1_Test extends FATServletClient {
 
         WebArchive war = ShrinkHelper
                         .buildDefaultApp("Data_1_1_App",
+                                         "test.jakarta.data.v1_1.eclipselink",
                                          "test.jakarta.data.v1_1.web");
         ShrinkHelper.exportAppToServer(server, war);
         server.startServer();

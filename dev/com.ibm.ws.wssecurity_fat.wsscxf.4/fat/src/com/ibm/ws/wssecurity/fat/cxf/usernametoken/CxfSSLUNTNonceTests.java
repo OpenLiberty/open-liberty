@@ -1,14 +1,11 @@
 /*******************************************************************************
-S * Copyright (c) 2020, 2022 IBM Corporation and others.
+S * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
@@ -25,6 +22,7 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 
 @SkipForRepeat({ RepeatWithEE7cbh20.ID })
@@ -115,7 +113,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      *
      */
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfUntExpiredMsgSSL() throws Exception {
 
         reconfigServer(System.getProperty("user.dir") + File.separator + server.getPathToAutoFVTNamedServer() + "server_ee8.xml");
@@ -140,7 +138,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfUntOldExtFutureTimestampSSL() throws Exception {
 
         genericTest(
@@ -192,7 +190,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfUntReqTimestampMissingSSL() throws Exception {
 
         genericTest(
@@ -225,7 +223,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     //Rested 11/2022 and got FFDC "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP"
     //The test still failed across EE7/9/10. Track in new issue 23415 to further investigate
     //@Test
-    //didn't help: @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    //didn't help: @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfUntReqTimestampHardcodedMsgTwiceSSL() throws Exception {
 
         genericTest("testCxfUntReqTimestampHardcodedMsgTwiceSSL",
@@ -250,7 +248,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
     //Rested 11/2022 got FFDC "BSP:R3227: A SECURITY_HEADER MUST NOT contain more than one TIMESTAMP"
     //The test still failed across EE7/9/10. Track in new issue 23415 to further investigate
     //@Test
-    //didn't help:@ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    //didn't help:@ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfUntReqTimestampSendMsgTwiceSSL() throws Exception {
 
         genericTest("testCxfUntReqTimestampSendMsgTwiceSSL", untSSLClientUrl,
@@ -273,7 +271,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfUntReplaySSL() throws Exception {
 
         genericTest("testCxfUntReplaySSLEE9Only", untSSLClientUrl, portNumberSecure,
@@ -295,7 +293,7 @@ public class CxfSSLUNTNonceTests extends SSLTestCommon {
      */
 
     @Test
-    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID })
+    @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, JakartaEE9Action.ID, JakartaEE10Action.ID, JakartaEE11Action.ID })
     public void testCxfUntHardcodedReplaySSL() throws Exception {
 
         genericTest("testCxfUntHardcodedReplaySSLEE9Only", untSSLClientUrl, portNumberSecure,

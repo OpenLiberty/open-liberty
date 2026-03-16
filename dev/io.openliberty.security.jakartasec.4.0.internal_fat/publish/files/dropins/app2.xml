@@ -1,0 +1,13 @@
+<server>
+    <application type="war" id="appPermissions2" name="appPermissions2"
+                 location="appPermissions2.war">
+        <application-bnd>
+            <security-role name="Role1">
+                <user name="user4" />
+            </security-role>
+            <security-role name="Role2">
+                <user name="user3" />
+            </security-role>
+        </application-bnd>
+    </application>
+</server>

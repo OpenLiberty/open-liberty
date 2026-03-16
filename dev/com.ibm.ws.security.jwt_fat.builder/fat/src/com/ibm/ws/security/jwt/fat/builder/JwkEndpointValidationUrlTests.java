@@ -21,6 +21,7 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -68,12 +69,13 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipJavaSemeruWithFipsEnabledRule
 public class JwkEndpointValidationUrlTests extends CommonSecurityFat {
 
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
-    @Rule
+    @ClassRule
     public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.jwt_fat.builder");
 
     public static class skipIfAddressDoesNotResolve extends MySkipRule {

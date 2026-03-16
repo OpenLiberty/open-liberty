@@ -37,6 +37,7 @@ import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.TestUtils;
 import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
 import io.openliberty.mcp.tools.ToolResponse;
+import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
@@ -181,6 +182,202 @@ public class ToolMetadataTest {
         Type listOfString = new ParameterizedTypeImpl(List.class, String.class);
         Class<?> raw = ToolMetadata.getRawClass(listOfString);
         assertEquals(List.class, raw);
+    }
+
+    @Test
+    public void testCheckConcreteTypeSingleLevelFromRef() {
+        String jsonString = """
+                            {
+                            "$defs": {
+                                "Address": {
+                                    "properties": {
+                                        "number": {
+                                            "type": "integer"
+                                        },
+                                        "street": {
+                                            "description": "A street object to represent complex streets",
+                                            "properties": {
+                                                "streetName": {
+                                                    "type": "string"
+                                                },
+                                                "roadType": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "streetName"
+                                            ],
+                                            "type": "object"
+                                        },
+                                        "postcode": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "number",
+                                        "street",
+                                        "postcode"
+                                    ],
+                                    "type": "object"
+                                },
+                                "Person": {
+                                    "description": "A person object contains address, company objects",
+                                    "properties": {
+                                        "address": {
+                                            "$ref": "#/$defs/Address"
+                                        },
+                                        "company": {
+                                            "properties": {
+                                                "address": {
+                                                    "$ref": "#/$defs/Address"
+                                                },
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "employees": {
+                                                    "description": "A list of employees (person object)",
+                                                    "items": {
+                                                        "$ref": "#/$defs/Person"
+                                                    },
+                                                    "type": "array"
+                                                },
+                                                "employeeRegistry": {
+                                                    "properties": {
+                                                        "value": {
+                                                            "$ref": "#/$defs/Person"
+                                                        },
+                                                        "key": {
+                                                            "type": "integer"
+                                                        }
+                                                    },
+                                                    "required": [],
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "required": [
+                                                "name",
+                                                "address",
+                                                "employees",
+                                                "employeeRegistry"
+                                            ],
+                                            "type": "object"
+                                        },
+                                        "fullname": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "required": [
+                                        "fullname",
+                                        "address",
+                                        "company"
+                                    ],
+                                    "type": "objectA"
+                                }
+                            },
+                            "$ref": "#/$defs/Person"
+                        }
+                                        """;
+        assertEquals("objectA", ToolMetadata.checkConcreteType(jsonb.fromJson(jsonString, JsonObject.class)));
+    }
+
+    @Test
+    public void testCheckConcreteTypeSingleLevelFromType() {
+        String jsonString = """
+                        {
+                                "properties": {
+                                    "number": {
+                                        "type": "integer"
+                                    },
+                                    "street": {
+                                        "description": "A street object to represent complex streets",
+                                        "properties": {
+                                            "streetName": {
+                                                "type": "string"
+                                            },
+                                            "roadType": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "required": [
+                                            "streetName"
+                                        ],
+                                        "type": "object"
+                                    },
+                                    "postcode": {
+                                        "type": "string"
+                                    }
+                                },
+                                "required": [
+                                    "number",
+                                    "street",
+                                    "postcode"
+                                ],
+                                "type": "objectB"
+                            }
+                                    """;
+        assertEquals("objectB", ToolMetadata.checkConcreteType(jsonb.fromJson(jsonString, JsonObject.class)));
+    }
+
+    @Test
+    public void testCheckConcreteTypeArrayFromType() {
+        String jsonString = """
+                        {
+                                    "type": "arrayA",
+                                    "items": {
+                                        "$ref": "#/$defs/Address"
+                                    },
+                                    "$defs": {
+                                        "Address": {
+                                            "properties": {
+                                                "number": {
+                                                    "type": "integer"
+                                                },
+                                                "street": {
+                                                    "description": "A street object to represent complex streets",
+                                                    "properties": {
+                                                        "streetName": {
+                                                            "type": "string"
+                                                        },
+                                                        "roadType": {
+                                                            "type": "string"
+                                                        }
+                                                    },
+                                                    "required": [
+                                                        "streetName"
+                                                    ],
+                                                    "type": "object"
+                                                },
+                                                "postcode": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "number",
+                                                "street",
+                                                "postcode"
+                                            ],
+                                            "type": "object"
+                                        }
+                                    }
+                                }
+                                    """;
+        assertEquals("arrayA", ToolMetadata.checkConcreteType(jsonb.fromJson(jsonString, JsonObject.class)));
+    }
+
+    @Tool(structuredContent = true)
+    @Schema("""
+                    {
+                    "$ref": "#externalURL"
+                    }
+                    """)
+    public City customSchemaType() {
+        return null;
+    }
+
+    @Test
+    public void testToolResponseWithCustomSchemaType() {
+        ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "customSchemaType");
+        assertNotNull(metadata.outputSchema());
     }
 
 }

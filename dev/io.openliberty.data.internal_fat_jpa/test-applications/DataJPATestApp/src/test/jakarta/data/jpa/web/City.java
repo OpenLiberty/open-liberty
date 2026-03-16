@@ -26,18 +26,18 @@ public class City {
     // TODO uncomment to reproduce EclipseLink bugs #28589, #29475
     // that select an attribute that is a collection type.
     //@ElementCollection(fetch = FetchType.EAGER)
-    private Set<Integer> areaCodes;
+    Set<Integer> areaCodes;
 
     @Version
-    private long changeCount;
+    long changeCount;
 
     @Id
-    private String name;
+    String name;
 
-    private int population;
+    int population;
 
     @Id
-    private String stateName;
+    String stateName;
 
     public City() {
     }

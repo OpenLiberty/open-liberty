@@ -19,9 +19,6 @@ Bundle-Name: Security Jakarta Authorization 3.0 Service implementation
 Bundle-SymbolicName: io.openliberty.security.authorization.internal.jacc.3.0; singleton:=true
 Bundle-Description: Security Jakarta Authorization 3.0 Service implementation
 
-Export-Package: \
-  com.ibm.wsspi.security.authorization.jacc
-
 Private-Package: \
   com.ibm.ws.security.authorization.jacc.internal.resources, \
   io.openliberty.security.authorization.jacc.internal.proxy, \

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.injection.fat;
 
@@ -23,8 +20,7 @@ import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -59,9 +55,28 @@ public class RepeatableTranTest extends FATServletClient {
 //    })
     public static LibertyServer server;
 
-    // And switch to JDBC 4.1 for EE9 and JDBC 4.3 for EE10 just for some variety (JDBC not tied to EE level)
+    // And switch to JDBC 4.1 for EE9 and JDBC 4.3 for EE10/EE11 just for some variety (JDBC not tied to EE level)
+    /*@formatter:off*/
     @ClassRule
-    public static RepeatTests r = RepeatTests.withoutModification().andWith(new JakartaEE9Action().removeFeature("jdbc-4.2").addFeature("jdbc-4.1").forServers("com.ibm.ws.injection.fat.RepeatableTranServer").fullFATOnly()).andWith(new JakartaEE10Action().removeFeature("jdbc-4.2").removeFeature("jdbc-4.1").addFeature("jdbc-4.3").forServers("com.ibm.ws.injection.fat.RepeatableTranServer").fullFATOnly());
+    public static RepeatTests r = RepeatTests.withoutModification()
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .removeFeature("jdbc-4.2")
+                                                    .addFeature("jdbc-4.1")
+                                                    .forServers("com.ibm.ws.injection.fat.RepeatableTranServer")
+                                                    .fullFATOnly())
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .removeFeature("jdbc-4.2")
+                                                    .removeFeature("jdbc-4.1")
+                                                    .addFeature("jdbc-4.3")
+                                                    .forServers("com.ibm.ws.injection.fat.RepeatableTranServer")
+                                                    .fullFATOnly())
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .removeFeature("jdbc-4.2")
+                                                    .removeFeature("jdbc-4.1")
+                                                    .addFeature("jdbc-4.3")
+                                                    .forServers("com.ibm.ws.injection.fat.RepeatableTranServer")
+                                                    .fullFATOnly());
+    /*@formatter:on*/
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -5,7 +5,10 @@
     <feature>cdi-4.0</feature>
     <feature>mcpServer-1.0</feature>
   </featureManager>
-  <mcpServer stateless="true"/>
+  
+  <application location="statelessModeTest.war">
+  	<mcpServer stateless="true"/>
+  </application>
 
   <include location="../fatTestPorts.xml" />
   

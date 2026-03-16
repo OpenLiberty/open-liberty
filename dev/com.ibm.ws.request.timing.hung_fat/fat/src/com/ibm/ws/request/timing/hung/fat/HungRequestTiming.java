@@ -1,18 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2025 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.request.timing.hung.fat;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
@@ -150,7 +148,7 @@ public class HungRequestTiming {
     }
 
     @Test
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void testHungRequestIntrospector() throws Exception {
         final String METHOD_NAME = "testHungRequestIntrospector";
 
@@ -378,7 +376,7 @@ public class HungRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void testHungRequestDynamicDisable() throws Exception {
         // Disabling thread dumps, so server stops gracefully, instead of waiting for all thread dumps to be generated.
         CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s, with thread dumps disabled");
@@ -441,7 +439,7 @@ public class HungRequestTiming {
 
     @Test
     @Mode(TestMode.FULL)
-    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     public void testSequentialHungMultipleRequests() throws Exception {
         CommonTasks.writeLogMsg(Level.INFO, "Setting hung threshold as 2s");
         server.setServerConfigurationFile("server_hungRequestThreshold2.xml");

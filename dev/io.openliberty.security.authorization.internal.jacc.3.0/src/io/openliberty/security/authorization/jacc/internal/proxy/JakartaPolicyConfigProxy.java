@@ -25,6 +25,15 @@ import jakarta.security.jacc.PolicyConfiguration;
 import jakarta.security.jacc.PolicyConfigurationFactory;
 import jakarta.security.jacc.PolicyContextException;
 
+/**
+ * Stores the PolicyConfiguration state so that as new PolicyConfigurationFactory instances
+ * are configured dynamically, new PolicyConfiguration instances can be populated and committed 
+ * based off of the state of each application that has started already.
+ *
+ * Only instances of this class access the actual PolicyConfiguration instances. All other Liberty runtime function interacts
+ * with instances of this class when using Jakarta Authorization 3.0. The actual PolicyConfiguration instances are accessed
+ * by the user's PolicyFactory instance to be able to get the state that this class propagates.
+ */
 public class JakartaPolicyConfigProxy implements PolicyConfiguration {
 
     static enum ContextState {
@@ -55,8 +64,15 @@ public class JakartaPolicyConfigProxy implements PolicyConfiguration {
 
     private final Map<String, PermissionCollection> rolePermMap = new ConcurrentHashMap<>();
 
+    /**
+     * Stores the current PolicyConfigurationFactory so that we can know if a new one was added dynamically
+     * and can react appropriately.
+     */
     private final AtomicReference<PolicyConfigurationFactory> currentFactory = new AtomicReference<>();
 
+    /**
+     * Stores the current PolicyConfiguration to be returned if there isn't a change to the PolicyConfigurationFactory.
+     */
     private final AtomicReference<PolicyConfiguration> currentConfig = new AtomicReference<>();
 
     JakartaPolicyConfigProxy(JakartaPolicyConfigFactoryProxy factoryProxy, String contextId, boolean remove) throws PolicyContextException {
@@ -74,12 +90,21 @@ public class JakartaPolicyConfigProxy implements PolicyConfiguration {
         }
     }
 
+    /**
+     * When calling getConfiguration on the JakartaPolicyConfigFactoryProxy, this method is used
+     * to reset the state appropriately in this instance and calls the getPolicyConfiguration() method
+     * on the actual PolicyConfigurationFactory to reset the state there.
+     *
+     * @param remove whether to remove all configuration
+     * @throws PolicyContextException
+     */
     void resetDelegatePolicyConfig(boolean remove) throws PolicyContextException {
         PolicyConfigurationFactory delegateFactory = factoryProxy.getFactory();
         synchronized (this) {
             PolicyConfiguration delegateConfig = delegateFactory == null ? null : delegateFactory.getPolicyConfiguration(contextId, remove);
             if (remove) {
-                 delete(true);
+                // Only deleting our internal state and not calling delete on the delegateConfig since the getPolicyConfiguration() call above handles that
+                delete(true);
             }
             setState(ContextState.OPEN);
 
@@ -94,6 +119,10 @@ public class JakartaPolicyConfigProxy implements PolicyConfiguration {
         state = newState;
     }
 
+    /**
+     * Creates the actual PolicyConfiguration objects if it doesn't exists or there is a change
+     * in the PolicyConfigurationFactory instance because it was dynamically added.
+     */
     void ensureInitialized() {
         PolicyConfigurationFactory delegateFactory = factoryProxy.getFactory();
         if (delegateFactory != null) {
@@ -105,12 +134,27 @@ public class JakartaPolicyConfigProxy implements PolicyConfiguration {
         }
     }
 
+    /**
+     * Returns the current PolicyConfiguration or creates a new one and populates its state.
+     *
+     * Conditionally this method also checks that the PolicyConfiguration instance state
+     * matches the current state in this class. Additionally this method updates the
+     * current PolicyConfigurationFactory and PolicyConfiguration instances to point to
+     * the newly created instances if there is a factory change.
+     *
+     * @param delegateFactory the PolicyConfigurationFactory to check
+     * @param checkState      whether to check the PolicyConfiguration state to match this class
+     * @return the PolicyConfiguration
+     * @throws PolicyContextException
+     */
     private PolicyConfiguration getDelegatePolicyConfig(PolicyConfigurationFactory delegateFactory, boolean checkState) throws PolicyContextException {
         if (currentFactory.get() == delegateFactory) {
             return currentConfig.get();
         }
 
         synchronized (this) {
+            // Standard double check to validate that two threads don't both get in here and both make changes.  If one gets in and updates
+            // the other thread should get what the first thread already did.  This can be done because AtomicRefernece makes use of volatile.
             if (currentFactory.get() == delegateFactory) {
                 return currentConfig.get();
             }

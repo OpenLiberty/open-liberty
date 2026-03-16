@@ -65,6 +65,20 @@ public class SkipJavaSemeruWithFipsEnabled implements TestRule {
 
     }
 
+    // constructor that inspects the local jvm where LibertyServer is not available
+    public SkipJavaSemeruWithFipsEnabled(){
+        this.server = null;
+        String buildInfo = System.getProperty("java.runtime.name");
+        this.IS_SEMERU_JAVA = buildInfo.contains("Semeru");
+        String version = System.getProperty("java.version");
+        String[] versionElements = version.split("\\D"); // split on non-digits
+
+        // Pre-JDK 9 the java.version is 1.MAJOR.MINOR
+        // Post-JDK 9 the java.version is MAJOR.MINOR
+        int i = Integer.valueOf(versionElements[0]) == 1 ? 1 : 0;
+        this.majorVersion = Integer.valueOf(versionElements[i++]);
+    }
+
     @Override
     public Statement apply(Statement statement, Description description) {
         if (description.getAnnotation(SkipJavaSemeruWithFipsEnabledRule.class) != null) {

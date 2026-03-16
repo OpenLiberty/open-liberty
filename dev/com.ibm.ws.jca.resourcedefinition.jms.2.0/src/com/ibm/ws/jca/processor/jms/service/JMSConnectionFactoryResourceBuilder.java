@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.resource.ResourceException;
 
@@ -46,6 +48,7 @@ import com.ibm.ws.jca.processor.jms.util.JMSResourceDefinitionHelper;
 import com.ibm.ws.jca.service.ConnectionFactoryService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.resource.WaitForBundleResourceFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -71,6 +74,8 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
      * rather than being programmatically created via ConfigurationAdmin.
      */
     private static final String FILE = "file";
+
+    private static final String BUNDLE_LOCATION = "ConnectorModuleMetatype@ConnectorModule:";
 
     /**
      * Unique identifier attribute name.
@@ -219,88 +224,113 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
         connectionFactorySvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
         connectionFactorySvcProps.put(CREATES_OBJECTCLASS, interfaceName);
 
-        //Get props with default values only and see if the same is specified by the user in annotation/dd, then use that value otherwise set the default value.
-        //Note: Its not necessary for the user to specify the props which has default value, so we set them in here.
-        Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(resourceAdapter, interfaceName);
+        Function<Bundle, ResourceFactory> createAppDefinedResourceFactory = (bundle) -> {
+            try {
+                //Get props with default values only and see if the same is specified by the user in annotation/dd, then use that value otherwise set the default value.
+                //Note: Its not necessary for the user to specify the props which has default value, so we set them in here.
+                Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(bundle, resourceAdapter, interfaceName);
 
-        for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
-            String key = keys.nextElement();
-            Object value = connectionFactoryDefaultProps.get(key);
+                for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
+                    String key = keys.nextElement();
+                    Object value = connectionFactoryDefaultProps.get(key);
 
-            //Override the managed connection factory class default property values with values provided annotation
-            if (annotationDDProps.containsKey(key))
-                value = annotationDDProps.remove(key);
+                    //Override the managed connection factory class default property values with values provided annotation
+                    if (annotationDDProps.containsKey(key))
+                        value = annotationDDProps.remove(key);
 
-            if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
+                    if (value instanceof String)
+                        value = variableRegistry.resolveString((String) value);
 
-            if ("config.displayId".equals(key))
-                connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
-            else
-                connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
-        }
+                    if ("config.displayId".equals(key))
+                        connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
+                    else
+                        connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
+                }
 
-        //Additional property handling due to naming inconsistency between JEE specification and wasJms & wmqJms resource adapter
-        //For instance, "user" is the key of the property to specify user name in annotation/dd but the wasJms/wmqJms resource adapter expects the key to be "userName"
-        //The key "password" do not have any inconsistency, so not handled here
-        //TODO: There may some third party resource adapters which may have naming inconsistency with different properties, to handle that in future we can keep the mapping(inProp = outProp) in a collection
-        //so that it can be handled dynamically.
-        annotationDDProps.put(USER_NAME_PROP, annotationDDProps.get(USER_PROP));
+                //Additional property handling due to naming inconsistency between JEE specification and wasJms & wmqJms resource adapter
+                //For instance, "user" is the key of the property to specify user name in annotation/dd but the wasJms/wmqJms resource adapter expects the key to be "userName"
+                //The key "password" do not have any inconsistency, so not handled here
+                //TODO: There may some third party resource adapters which may have naming inconsistency with different properties, to handle that in future we can keep the mapping(inProp = outProp) in a collection
+                //so that it can be handled dynamically.
+                annotationDDProps.put(USER_NAME_PROP, annotationDDProps.get(USER_PROP));
 
-        //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter,
-        //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
-        //Note: The above section for handling default values can be eliminated by handling the same here in this section since we get all the properties. Will be taken care in future.
-        AttributeDefinition[] attributeDefinitions = getAttributeDefinitions(resourceAdapter, interfaceName);
-        for (AttributeDefinition attributeDefinition : attributeDefinitions) {
-            Object value = annotationDDProps.remove(attributeDefinition.getID());
-            // TODO standard clientId annotation attribute is not being applied to clientID resource adapter property, which varies only in case.
-            // The following is one possible way to fix,
-            //if (value == null && attributeDefinition.getID().equalsIgnoreCase("clientId"))
-            //    value = annotationDDProps.remove("clientId"); // how should the default "" value be interpreted?
-            if (value != null) {
+                //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter,
+                //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
+                //Note: The above section for handling default values can be eliminated by handling the same here in this section since we get all the properties. Will be taken care in future.
+                AttributeDefinition[] attributeDefinitions = getAttributeDefinitions(resourceAdapter, interfaceName);
+                for (AttributeDefinition attributeDefinition : attributeDefinitions) {
+                    Object value = annotationDDProps.remove(attributeDefinition.getID());
+                    // TODO standard clientId annotation attribute is not being applied to clientID resource adapter property, which varies only in case.
+                    // The following is one possible way to fix,
+                    //if (value == null && attributeDefinition.getID().equalsIgnoreCase("clientId"))
+                    //    value = annotationDDProps.remove("clientId"); // how should the default "" value be interpreted?
+                    if (value != null) {
 
-                if (value instanceof String)
-                    value = variableRegistry.resolveString((String) value);
+                        if (value instanceof String)
+                            value = variableRegistry.resolveString((String) value);
 
-                connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + attributeDefinition.getID(), value);
+                        connectionFactorySvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + attributeDefinition.getID(), value);
+                    }
+                }
+
+                Object value;
+                for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
+                    if ((value = annotationDDProps.remove(name)) != null)
+                        cmSvcProps.put(name, value);
+
+                BundleContext bundleContext = FrameworkUtil.getBundle(ConnectionFactoryService.class).getBundleContext();
+
+                StringBuilder connectionFactoryFilter = new StringBuilder(200);
+                connectionFactoryFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, connectionFactoryID));
+                connectionFactoryFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, ConnectionFactoryService.class.getName())).append(")");
+
+                //Create AppDefinedResourceFactory based on props specified in the annotation/DD
+                ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, connectionFactoryID, connectionFactoryFilter.toString(), declaringApplication);
+                try {
+                    String bundleLocation = bundleContext.getBundle().getLocation();
+                    String jcaBundleLocation = FrameworkUtil.getBundle(ConnectorService.class).getBundleContext().getBundle().getLocation();
+                    ConfigurationAdmin configAdmin = configAdminRef.getService();
+
+                    Configuration conMgrConfig = configAdmin.createFactoryConfiguration(ConnectionManagerService.FACTORY_PID, jcaBundleLocation);
+                    conMgrConfig.update(cmSvcProps);
+                    connectionFactorySvcProps.put(CONNECTION_MANAGER_REF, new String[] { conMgrConfig.getPid() });
+
+                    Configuration connectionFactorySvcConfig = configAdmin.createFactoryConfiguration(ConnectionFactoryService.FACTORY_PID, bundleLocation);
+                    connectionFactorySvcConfig.update(connectionFactorySvcProps);
+                } catch (Exception x) {
+                    factory.destroy();
+                    throw x;
+                } catch (Error x) {
+                    factory.destroy();
+                    throw x;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "createResourceFactory", factory);
+                return factory;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
             }
+        };
+
+        Bundle raBundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
+        if (raBundle != null) {
+            return createAppDefinedResourceFactory.apply(raBundle);
+        } else {
+            Supplier<IllegalStateException> notReadyException = () -> {
+                return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
+                                                 ", declaringApplication=" + declaringApplication +
+                                                 ", location=" + BUNDLE_LOCATION + resourceAdapter);
+            };
+
+            WaitForBundleResourceFactory resourceFactory = new WaitForBundleResourceFactory(bundleContext, //
+                            BUNDLE_LOCATION + resourceAdapter, //
+                            createAppDefinedResourceFactory, //
+                            notReadyException);
+            resourceFactory.listenForBundle();
+            return resourceFactory;
         }
 
-        Object value;
-        for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
-            if ((value = annotationDDProps.remove(name)) != null)
-                cmSvcProps.put(name, value);
-
-        BundleContext bundleContext = FrameworkUtil.getBundle(ConnectionFactoryService.class).getBundleContext();
-
-        StringBuilder connectionFactoryFilter = new StringBuilder(200);
-        connectionFactoryFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, connectionFactoryID));
-        connectionFactoryFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, ConnectionFactoryService.class.getName())).append(")");
-
-        //Create AppDefinedResourceFactory based on props specified in the annotation/DD
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, connectionFactoryID, connectionFactoryFilter.toString(), declaringApplication);
-        try {
-            String bundleLocation = bundleContext.getBundle().getLocation();
-            String jcaBundleLocation = FrameworkUtil.getBundle(ConnectorService.class).getBundleContext().getBundle().getLocation();
-            ConfigurationAdmin configAdmin = configAdminRef.getService();
-
-            Configuration conMgrConfig = configAdmin.createFactoryConfiguration(ConnectionManagerService.FACTORY_PID, jcaBundleLocation);
-            conMgrConfig.update(cmSvcProps);
-            connectionFactorySvcProps.put(CONNECTION_MANAGER_REF, new String[] { conMgrConfig.getPid() });
-
-            Configuration connectionFactorySvcConfig = configAdmin.createFactoryConfiguration(ConnectionFactoryService.FACTORY_PID, bundleLocation);
-            connectionFactorySvcConfig.update(connectionFactorySvcProps);
-        } catch (Exception x) {
-            factory.destroy();
-            throw x;
-        } catch (Error x) {
-            factory.destroy();
-            throw x;
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(tc, "createResourceFactory", factory);
-        return factory;
     }
 
     /**
@@ -327,27 +357,23 @@ public class JMSConnectionFactoryResourceBuilder implements ResourceFactoryBuild
      * @throws ConfigEvaluatorException
      * @throws ResourceException
      */
-    private Dictionary<String, Object> getDefaultProperties(String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
-        Bundle bundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
+    private Dictionary<String, Object> getDefaultProperties(Bundle bundle, String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
+        MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundle);
+        String[] factoryPids = metaTypeInformation.getFactoryPids();
 
-        if (bundle != null) {
+        for (String factoryPid : factoryPids) {
+            ObjectClassDefinition ocd = metaTypeInformation.getObjectClassDefinition(factoryPid, null);
+            ocd.getAttributeDefinitions(0);
 
-            MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundle);
-            String[] factoryPids = metaTypeInformation.getFactoryPids();
-
-            for (String factoryPid : factoryPids) {
-                ObjectClassDefinition ocd = metaTypeInformation.getObjectClassDefinition(factoryPid, null);
-                ocd.getAttributeDefinitions(0);
-
-                Dictionary<String, Object> defaultProps = wsConfigurationHelperRef.getService().getMetaTypeDefaultProperties(factoryPid);
-                if (defaultProps.get(MANAGED_CONNECTION_FACTORY_CLASS) != null) {
-                    for (String createsClass : (String[]) defaultProps.get(CREATES_OBJECTCLASS)) {
-                        if (createsClass.equals(interfaceName))
-                            return defaultProps;
-                    }
+            Dictionary<String, Object> defaultProps = wsConfigurationHelperRef.getService().getMetaTypeDefaultProperties(factoryPid);
+            if (defaultProps.get(MANAGED_CONNECTION_FACTORY_CLASS) != null) {
+                for (String createsClass : (String[]) defaultProps.get(CREATES_OBJECTCLASS)) {
+                    if (createsClass.equals(interfaceName))
+                        return defaultProps;
                 }
             }
         }
+
         ResourceException x = new ResourceException();
         throw x;
     }
