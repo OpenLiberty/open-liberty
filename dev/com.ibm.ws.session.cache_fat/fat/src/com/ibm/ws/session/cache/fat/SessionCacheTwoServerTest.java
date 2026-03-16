@@ -286,18 +286,12 @@ public class SessionCacheTwoServerTest extends FATServletClient {
                 // Skip these assertions if the cache returned null values for the WELD session keys
                 // (can happen on slow Windows machines where Hazelcast attribute propagation hasn't
                 // completed yet, causing Arrays.toString(null) = "null" instead of "[...]").
-                assumeTrue("Skipping WELD cache assertions because WELD_S#0 value was null in response2",
-                           response2.contains("bytes for WELD_S#0: ["));
-                assumeTrue("Skipping WELD cache assertions because WELD_S#0 value was null in response4",
-                           response4.contains("bytes for WELD_S#0: ["));
-                assumeTrue("Skipping WELD cache assertions because WELD_S#0 value was null in response6",
-                           response6.contains("bytes for WELD_S#0: ["));
-                assumeTrue("Skipping WELD cache assertions because WELD_S#1 value was null in response2",
-                           response2.contains("bytes for WELD_S#1: ["));
-                assumeTrue("Skipping WELD cache assertions because WELD_S#1 value was null in response4",
-                           response4.contains("bytes for WELD_S#1: ["));
-                assumeTrue("Skipping WELD cache assertions because WELD_S#1 value was null in response6",
-                           response6.contains("bytes for WELD_S#1: ["));
+                assumeTrue(response2.contains("bytes for WELD_S#0: ["));
+                assumeTrue(response4.contains("bytes for WELD_S#0: ["));
+                assumeTrue(response6.contains("bytes for WELD_S#0: ["));
+                assumeTrue(response2.contains("bytes for WELD_S#1: ["));
+                assumeTrue(response4.contains("bytes for WELD_S#1: ["));
+                assumeTrue(response6.contains("bytes for WELD_S#1: ["));
 
                 int start;
                 start = response2.indexOf("bytes for WELD_S#0: [") + 21;
