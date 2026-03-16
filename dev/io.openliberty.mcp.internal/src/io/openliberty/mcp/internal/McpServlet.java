@@ -207,20 +207,21 @@ public class McpServlet extends HttpServlet {
         /*
          * Create opertation Context
          */
-        McpMetrics optCtx = new McpMetrics();
-        optCtx.setMethodName("tools/call");
-        optCtx.setTransport(transport);
+        McpMetrics metrics = new McpMetrics();
+        metrics.setMethodName("tools/call");
+        metrics.setTransport(transport);
+        McpMetrics.operationStarted(metrics);
 
         String status = "ok";
         String errorType = null;
 
         ExecutionRequestId requestId = createOngoingRequestId(transport);
         if (requestId != null) {
-            optCtx.setExecutionRequestId(requestId);
+            metrics.setExecutionRequestId(requestId);
         }
         McpToolCallParams params = transport.getParams(McpToolCallParams.class);
         if (params != null && params.getName() != null) {
-            optCtx.setToolName(params.getName());
+            metrics.setToolName(params.getName());
         }
         McpRequest request = transport.getMcpRequest();
 
@@ -261,7 +262,8 @@ public class McpServlet extends HttpServlet {
                 return;
             }
         } finally {
-            optCtx.setOutcome(status, errorType);
+            metrics.setOutcome(status, errorType);
+            McpMetrics.operationEnded(metrics);
 
             // TODO pass optCtx to metrics:
             // For async tools, we will also store optCtx with the ongoing request so
@@ -387,9 +389,10 @@ public class McpServlet extends HttpServlet {
         /*
          * Create opertation Context
          */
-        McpMetrics optCtx = new McpMetrics();
-        optCtx.setMethodName("tools/list");
-        optCtx.setTransport(transport);
+        McpMetrics metrics = new McpMetrics();
+        metrics.setMethodName("tools/list");
+        metrics.setTransport(transport);
+        McpMetrics.operationStarted(metrics);
 
         String status = "ok";
         String errorType = null;
@@ -434,7 +437,9 @@ public class McpServlet extends HttpServlet {
             status = "error";
             errorType = e.getClass().getSimpleName();
         } finally {
-            optCtx.setOutcome(status, errorType);
+            metrics.setOutcome(status, errorType);
+            McpMetrics.operationEnded(metrics);
+
         }
     }
 
@@ -460,9 +465,10 @@ public class McpServlet extends HttpServlet {
      */
     @FFDCIgnore(NoSuchElementException.class)
     private void initialize(McpTransport transport) throws IOException {
-        McpMetrics optCtx = new McpMetrics();
-        optCtx.setMethodName("initialize");
-        optCtx.setTransport(transport);
+        McpMetrics metrics = new McpMetrics();
+        metrics.setMethodName("initialize");
+        metrics.setTransport(transport);
+        McpMetrics.operationStarted(metrics);
 
         String status = "ok";
         String errorType = null;
@@ -501,7 +507,8 @@ public class McpServlet extends HttpServlet {
             status = "error";
             errorType = e.getClass().getSimpleName();
         } finally {
-            optCtx.setOutcome(status, errorType);
+            metrics.setOutcome(status, errorType);
+            McpMetrics.operationEnded(metrics);
         }
     }
 
@@ -517,9 +524,10 @@ public class McpServlet extends HttpServlet {
     }
 
     private void cancelRequest(McpTransport transport) throws IOException {
-        McpMetrics optCtx = new McpMetrics();
-        optCtx.setMethodName("cancel");
-        optCtx.setTransport(transport);
+        McpMetrics metrics = new McpMetrics();
+        metrics.setMethodName("cancel");
+        metrics.setTransport(transport);
+        McpMetrics.operationStarted(metrics);
 
         String status = "ok";
         String errorType = null;
@@ -563,7 +571,8 @@ public class McpServlet extends HttpServlet {
             }
             throw e;
         } finally {
-            optCtx.setOutcome(status, errorType);
+            metrics.setOutcome(status, errorType);
+            McpMetrics.operationEnded(metrics);
         }
     }
 
