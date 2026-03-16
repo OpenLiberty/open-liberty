@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,23 +16,23 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class McpStatAttributes {
-        
+
         private final String mcpStat_ID;
-        
+
         private static final TraceComponent tc = Tr.register(McpStatAttributes.class);
-        
+
         /*
          * Mandatory fields - Technically networkProtocolName is optional as per http semantics
          * It is conditionally required if scheme is NOT http and protocol version is set.
          * But we'll make it mandatory anyways
          */
         private final String mcpMethodName;
-        
+
         /*
          * Conditionally required as per HTTP Semantics Convention
          */ 
         private final String errorType, genAiPromptName, genAiToolName, rpcResponseStatusCode;
-        
+
         /*
          * Optional fields.
          * We are unable to facilitate capturing Exceptions
@@ -42,9 +42,9 @@ public class McpStatAttributes {
          * of capturing application exception of Jaxrs/restfulws exceptions
          */
         private final String genAiOperationName, jsonrpcProtocolVersion, mcpProtocolVersion, networkProtocolName, networkProtocolVersion, networkTransport, mcpResourceUri;
-        
-        
-        
+
+
+
         /**
          * Constructor for HttpStatsAttributes. This should not be called directly, but
          * should be instantiated through {@link Builder#build()}
@@ -72,7 +72,7 @@ public class McpStatAttributes {
               throw new IllegalStateException("Invalid MCP Stats attributes");
 			};
 			this.mcpMethodName = builder.mcpMethodName;
-			
+
 			this.errorType = (builder.errorType.isPresent() ? builder.errorType.get() : null);
 			this.genAiPromptName = (builder.genAiPromptName.isPresent() ? builder.genAiPromptName.get() : null);
 			this.genAiToolName = (builder.genAiToolName.isPresent() ? builder.genAiToolName.get() : null);
@@ -84,10 +84,10 @@ public class McpStatAttributes {
 			this.networkProtocolVersion = (builder.networkProtocolVersion.isPresent() ? builder.networkProtocolVersion.get() : null);
 			this.networkTransport = (builder.networkTransport.isPresent() ? builder.networkTransport.get() : null);
 			this.mcpResourceUri = (builder.mcpResourceUri.isPresent() ? builder.mcpResourceUri.get() : null);
-			
+
 			this.mcpStat_ID = this.mcpMethodName;
 		}
-		
+
 
 //        @Override
 //        public String toString() {
@@ -105,7 +105,7 @@ public class McpStatAttributes {
 //                                requestMethod, scheme, networkProtocolName, networkProtocolVersion, serverName, serverPort,
 //                                httpRoute, responseStatus, errorType);
 //        }
-        
+
         /**
 		 * @return the httpStat_ID
 		 */
@@ -214,28 +214,28 @@ public class McpStatAttributes {
 					+ networkProtocolVersion + ", networkTransport=" + networkTransport + ", mcpResourceUri="
 					+ mcpResourceUri + "]";
 		}
-        
-        
+
+
         public static Builder builder() {
                 return new Builder();
         }
-        
-        
-        
+
+
+
 
 
 		public static class Builder {
 
                 private String mcpMethodName;
 
-                
+
                 /*
                  * Conditionally required as per HTTP Semantics Convention
                  */
-                private Optional<String> errorType = Optional.ofNullable(null);
-                private Optional<String> genAiPromptName = Optional.ofNullable(null);
-                private Optional<String> genAiToolName = Optional.ofNullable(null);
-                private Optional<String> rpcResponseStatusCode = Optional.ofNullable(null);
+                private Optional<String> errorType = Optional.empty();
+                private Optional<String> genAiPromptName = Optional.empty();
+                private Optional<String> genAiToolName = Optional.empty();
+                private Optional<String> rpcResponseStatusCode = Optional.empty();
 
                 /*
                  * Exception related fields are optional. We are unable to facilitate capturing
@@ -244,7 +244,14 @@ public class McpStatAttributes {
                  * catch. But we have no way of capturing application exception of
                  * Jaxrs/restfulws exceptions
                  */
-                private Optional<String> genAiOperationName, jsonrpcProtocolVersion, mcpProtocolVersion, networkProtocolName, networkProtocolVersion, networkTransport, mcpResourceUri = Optional.ofNullable(null);
+
+                private Optional<String> genAiOperationName = Optional.empty();
+                private Optional<String> jsonrpcProtocolVersion = Optional.empty();
+                private Optional<String> mcpProtocolVersion = Optional.empty();
+                private Optional<String> networkProtocolName = Optional.empty();
+                private Optional<String> networkProtocolVersion = Optional.empty();
+                private Optional<String> mcpResourceUri = Optional.empty();
+                private Optional<String> networkTransport = Optional.empty();
 
                 /*
                  * Define a constructor with default protection so others do not call it directly and instead
@@ -278,57 +285,57 @@ public class McpStatAttributes {
                         this.mcpMethodName = mcpMethodName;
                         return this;
                 }
-                
+
                 public Builder withErrorType(Optional<String> errorType) {
                     this.errorType = errorType;
                     return this;
                 }
-                
+
                 public Builder withGenAiPromptName(Optional<String> genAiPromptName) {
                     this.genAiPromptName = genAiPromptName;
                     return this;
                 }
-                
+
                 public Builder withGenAiToolName(Optional<String> genAiToolName) {
                     this.genAiToolName = genAiToolName;
                     return this;
                 }
-                
+
                 public Builder withRpcResponseStatusCode(Optional<String> rpcResponseStatusCode) {
                     this.rpcResponseStatusCode = rpcResponseStatusCode;
                     return this;
                 }
-                
+
                 public Builder withGenAiOperationName(Optional<String> genAiOperationName) {
                     this.genAiOperationName = genAiOperationName;
                     return this;
                 }
-                
+
                 public Builder withJsonrpcProtocolVersion(Optional<String> jsonrpcProtocolVersion) {
                     this.jsonrpcProtocolVersion = jsonrpcProtocolVersion;
                     return this;
                 }
-                
+
                 public Builder withMcpProtocolVersion(Optional<String> mcpProtocolVersion) {
                     this.mcpProtocolVersion = mcpProtocolVersion;
                     return this;
                 }
-                
+
                 public Builder withNetworkProtocolName(Optional<String> networkProtocolName) {
                     this.networkProtocolName = networkProtocolName;
                     return this;
                 }
-                
+
                 public Builder withNetworkProtocolVersion(Optional<String> networkProtocolVersion) {
                     this.networkProtocolVersion = networkProtocolVersion;
                     return this;
                 }
-                
+
                 public Builder withNetworkTransport(Optional<String> networkTransport) {
                     this.networkTransport = networkTransport;
                     return this;
                 }
-                
+
                 public Builder withMcpResourceUri(Optional<String> mcpResourceUri) {
                     this.mcpResourceUri = mcpResourceUri;
                     return this;
@@ -338,8 +345,8 @@ public class McpStatAttributes {
                 public boolean validate() {
                         return (mcpMethodName != null);
                 }
-                
-                
+
+
 //                @Override
 //                public String toString() {
 //                        return String.format(
@@ -356,7 +363,7 @@ public class McpStatAttributes {
 //                                        requestMethod, scheme, networkProtocolName, networkProtocolVersion, serverName, serverPort,
 //                                        httpRoute.orElse(null), responseStatus.orElse(null), errorType.orElse(null));
 //                }
-                
+
                 @Override
 				public String toString() {
 					return "Builder [mcpMethodName=" + mcpMethodName + ", errorType=" + errorType + ", genAiPromptName="

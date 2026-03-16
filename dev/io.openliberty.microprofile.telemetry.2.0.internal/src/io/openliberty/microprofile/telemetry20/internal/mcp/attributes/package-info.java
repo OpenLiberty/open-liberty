@@ -10,6 +10,5 @@
 /**
  *
  */
-@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "MCP")
 @org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.mcp.internal.monitor;
+package io.openliberty.microprofile.telemetry20.internal.mcp.attributes;

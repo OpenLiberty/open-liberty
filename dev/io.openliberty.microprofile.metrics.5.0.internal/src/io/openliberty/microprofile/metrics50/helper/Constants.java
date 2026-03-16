@@ -21,6 +21,7 @@ import org.eclipse.microprofile.metrics.MetricRegistry;
  *
  */
 public class Constants {
+
     // HTTP Headers
     public final static String ACCEPT_HEADER = "Accept";
     public final static String ACCEPT_HEADER_JSON = "application/json";
@@ -107,6 +108,10 @@ public class Constants {
     // HTTP Metrics
     public static final String HTTP_SERVER_REQUEST_DURATION_NAME = "http.server.request.duration";
     public static final String HTTP_SERVER_REQUEST_DURATION_DESC = "Duration of HTTP server requests.";
+
+    // MCP Metrics
+    public static final String MCP_SERVER_OPERATION_DURATION_NAME = "mcp.server.operation.duration";
+    public static final String MCP_SERVER_OPERATION_DURATION_DESC = "Duration of MCP operation calls.";
 
     // HTTP Metrics tags
     public static final String HTTP_REQUEST_METHOD = "http_request_method";
