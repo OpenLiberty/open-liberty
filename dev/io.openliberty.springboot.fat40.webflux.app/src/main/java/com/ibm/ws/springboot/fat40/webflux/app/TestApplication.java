@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,14 +21,17 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.reactive.config.EnableWebFlux;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.ServerResponse;
+import org.springframework.web.server.adapter.AbstractReactiveWebInitializer;
 
 import reactor.core.publisher.Mono;
 
 @SpringBootApplication
 @RestController
-public class TestApplication {
+@EnableWebFlux
+public class TestApplication extends AbstractReactiveWebInitializer{
 
     public static void main(String[] args) {
         SpringApplication.run(TestApplication.class, args);
@@ -43,4 +46,9 @@ public class TestApplication {
     public RouterFunction<ServerResponse> monoRouterFunction(EchoHandler echoHandler) {
         return route(POST("/echo"), echoHandler::echo);
     }
+
+	@Override
+	protected Class<?>[] getConfigClasses() {
+		return new Class<?>[] {TestApplication.class};
+	}
 }

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,19 +19,21 @@ import static com.ibm.ws.classloading.internal.TestUtil.ClassSource.B;
 import org.junit.Rule;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
+import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.JVMPackages;
 import com.ibm.wsspi.classloading.GatewayConfiguration;
+
+import test.common.SharedOutputManager;
 
 /** Test the gateway class loader delegates to parent, then to system */
 public class GatewayClassLoaderTest {
     @Rule
     public final SharedOutputManager outputManager = SharedOutputManager.getInstance();
+    public final JVMPackages jvmPackages = new JVMPackages(null, null, null, null);
 
     private static final String OUR_CHOSEN_SYSTEM_CLASS = "javax.rmi.CORBA.Util";
 
     private ClassLoader createGatewayToParent(ClassLoader parentLoader, GatewayConfiguration config) throws Exception {
-        return GatewayClassLoader.createGatewayClassLoader(null, config, parentLoader, new CompositeResourceProvider());
+        return GatewayClassLoader.createGatewayClassLoader(null, config, parentLoader, new CompositeResourceProvider(), jvmPackages);
     }
 
     ClassLoader createGatewayToParent(ClassLoader parentLoader) throws Exception {
@@ -42,16 +44,13 @@ public class GatewayClassLoaderTest {
     /** Check we can load a class from the parent class loader */
     @Test
     public void testLoadingClassesFromParent() throws Exception {
-        createGatewayToParent(getLoaderFor(A))
-                        .loadClass("test.OuterClass");
+        createGatewayToParent(getLoaderFor(A)).loadClass("test.OuterClass");
     }
 
     /** Check we can load a class from the system class loader */
     @Test(expected = NoSuchFieldException.class)
     public void testLoadingClassesFromSystemClassLoader() throws Exception {
-        createGatewayToParent(getLoaderFor(A))
-                        .loadClass(OUR_CHOSEN_SYSTEM_CLASS)
-                        .getField("IMPOSTER"); // ensure it is not our fake version by expecting an exception here
+        createGatewayToParent(getLoaderFor(A)).loadClass(OUR_CHOSEN_SYSTEM_CLASS).getField("IMPOSTER"); // ensure it is not our fake version by expecting an exception here
     }
 
     @Test(expected = ClassNotFoundException.class)
@@ -60,8 +59,7 @@ public class GatewayClassLoaderTest {
         config.setDelegateToSystem(false);
         TestUtilClassLoader parentLoader = getLoaderFor(A);
         parentLoader.doNotLoad(OUR_CHOSEN_SYSTEM_CLASS);
-        createGatewayToParent(parentLoader, config)
-                        .loadClass(OUR_CHOSEN_SYSTEM_CLASS);
+        createGatewayToParent(parentLoader, config).loadClass(OUR_CHOSEN_SYSTEM_CLASS);
     }
 
     /**
@@ -70,9 +68,7 @@ public class GatewayClassLoaderTest {
      */
     @Test
     public void testOverridingClassesFromSystemClassLoader() throws Exception {
-        createGatewayToParent(getLoaderFor(B))
-                        .loadClass(OUR_CHOSEN_SYSTEM_CLASS)
-                        .getField("IMPOSTER");
+        createGatewayToParent(getLoaderFor(B)).loadClass(OUR_CHOSEN_SYSTEM_CLASS).getField("IMPOSTER");
     }
 
     /**
@@ -81,8 +77,6 @@ public class GatewayClassLoaderTest {
      */
     @Test(expected = NoSuchFieldException.class)
     public void testLoadingHiddenClassesDirectlyFromSystemClassLoader() throws Exception {
-        createGatewayToParent(getLoaderFor(B).doNotLoad(OUR_CHOSEN_SYSTEM_CLASS))
-                        .loadClass(OUR_CHOSEN_SYSTEM_CLASS)
-                        .getField("IMPOSTER"); // ensure it is not our fake version by expecting an exception here
+        createGatewayToParent(getLoaderFor(B).doNotLoad(OUR_CHOSEN_SYSTEM_CLASS)).loadClass(OUR_CHOSEN_SYSTEM_CLASS).getField("IMPOSTER"); // ensure it is not our fake version by expecting an exception here
     }
 }

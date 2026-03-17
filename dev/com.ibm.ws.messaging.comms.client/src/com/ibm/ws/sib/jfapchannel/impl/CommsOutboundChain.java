@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
@@ -85,8 +82,6 @@ public class CommsOutboundChain implements ApplicationPrereq {
     
     private static Map<String, CommsOutboundChain> chainList = new HashMap<String,CommsOutboundChain>();
 
-
-    // TODO: Check if this can be removed in favor of using requireService
     public static CommsOutboundChain getChainDetails(String chainName) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             Tr.entry(tc, "getChainDetails");

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -105,7 +105,8 @@ public class SSLTest {
     @After
     public void tearDown() throws Exception {
         try {
-            server.stopServer("CWWKS1864W"); // warning for using {aes} AES-128 password
+            server.stopServer("CWWKS1864W", // warning for using {aes} AES-128 password
+                               "CWWKS1865W"); // AES-encrypted passwords without custom encryption key
         } finally {
             server.restoreServerConfiguration();
             configureEnvVariable(server, emptyMap());

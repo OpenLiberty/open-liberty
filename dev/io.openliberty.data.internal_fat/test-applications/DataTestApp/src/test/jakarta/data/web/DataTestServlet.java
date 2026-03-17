@@ -32,7 +32,6 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Deque;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -562,6 +561,27 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * Include a CASE expression within the SELECT clause of a query.
+     */
+    @Test
+    public void testCaseInSelectClause() {
+
+        Page<Object[]> page1 = primes.getParity(1, 40, PageRequest.ofSize(5));
+
+        assertEquals(3L, page1.totalPages());
+        assertEquals(12L, page1.totalElements());
+
+        assertEquals(List.of("2: even",
+                             "3: odd",
+                             "5: odd",
+                             "7: odd",
+                             "11: odd"),
+                     page1.stream()
+                                     .map(a -> a[0] + ": " + a[1])
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Asynchronous repository method that returns a CompletableFuture of Page.
      */
     @Test
@@ -572,27 +592,34 @@ public class DataTestServlet extends FATServlet {
 
         Order<Prime> asc = Order.by(Sort.asc(ID));
 
-        CompletableFuture<Page<Long>> cf1 = //
+        CompletableFuture<Page<Prime>> cf1 = //
                         primes.divisibleByTwo(false, page1req, asc);
 
-        CompletableFuture<Page<Long>> cf3 = //
+        CompletableFuture<Page<Prime>> cf3 = //
                         primes.divisibleByTwo(false, page3req, asc);
 
-        Page<Long> page1 = cf1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
-        Page<Long> page3 = cf3.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        Page<Prime> page1 = cf1.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
+        Page<Prime> page3 = cf3.get(TIMEOUT_MINUTES, TimeUnit.MINUTES);
 
         assertEquals(List.of(3L, 5L, 7L, 11L),
-                     page1.content());
+                     page1.stream()
+                                     .map(prime -> prime.numberId)
+                                     .collect(Collectors.toList()));
 
         assertEquals(List.of(29L, 31L, 37L, 41L),
-                     page3.content());
+                     page3.stream()
+                                     .map(prime -> prime.numberId)
+                                     .collect(Collectors.toList()));
 
         PageRequest page2req = page3.previousPageRequest();
         assertEquals(page2req, page1.nextPageRequest());
 
         assertEquals(List.of(13L, 17L, 19L, 23L),
                      primes.divisibleByTwo(false, page2req, asc)
-                                     .thenApply(Page::content)
+                                     .thenApply(page -> page
+                                                     .stream()
+                                                     .map(prime -> prime.numberId)
+                                                     .collect(Collectors.toList()))
                                      .get(TIMEOUT_MINUTES, TimeUnit.MINUTES));
     }
 
@@ -622,6 +649,224 @@ public class DataTestServlet extends FATServlet {
 
         assertNotNull(sum = sums.poll());
         assertEquals(Long.valueOf(2L), sum);
+    }
+
+    /**
+     * To a Query by Method Name repository method that returns CursoredPages
+     * of results, supply sort criteria that includes a computation rather than
+     * sorting by a single entity attribute.
+     */
+    @Test
+    public void testComputationInOrderArgOfMethodThatReturnsCursoredPage() {
+        // SQLServer: java long (id) is stored as bigint on hibernate and number(19) eclipselink
+        // Oracle:    java long (id) is stored as number(19) hibernate and eclipselink
+        // When these databases perform division on fields number(19) the result includes a fractional component
+        // Avoid using division operations on long fields
+
+        //| prime | bits   | sumOfBits | Numeral | p%s | p-2s |
+        //|-------|--------|-----------|---------|-----|------|
+        //|     3 | 000011 |         2 | III     |   1 |   -1 |
+        //|     5 | 000101 |         2 | V       |   1 |    1 |
+        //|     7 | 000111 |         3 | VII     |   1 |    1 |
+        //|    13 | 001101 |         3 | XIII    |   1 |    7 |
+        //|    17 | 010001 |         2 | XVII    |   1 |   13 |
+        //|    19 | 010011 |         3 | XIX     |   1 |   13 |
+        //|    29 | 011101 |         4 | XXIX    |   1 |   21 |
+        //|    31 | 011111 |         5 | XXXI    |   1 |   21 |
+        //|    37 | 100101 |         3 | XXXVII  |   1 |   31 |
+        //|    11 | 001011 |         3 | XI      |   2 |    5 |
+        //|    41 | 101001 |         3 | XLI     |   2 |   35 |
+        //|    47 | 101111 |         5 | XLVII   |   2 |   37 |
+        //|    23 | 010111 |         4 | XXIII   |   3 |   15 |
+        //|    43 | 101011 |         4 | XLIII   |   3 |   35 |
+
+        // 3  5  7  13  17  19  29  31  27  11  41  47  23  43
+        // |________page 1_______| |________page 2___________|
+        //    |________page 3________|
+        final Order<Prime> order = Order.by(Sort.asc("MOD(numberId, sumOfBits)"),
+                                            Sort.asc("numberId - 2 * sumOfBits"),
+                                            Sort.asc(ID));
+
+        PageRequest page1Req = PageRequest.ofSize(7);
+
+        CursoredPage<Prime> page1 = primes //
+                        .findByNumberIdBetweenAndEvenFalse(1,
+                                                           50,
+                                                           page1Req,
+                                                           order);
+
+        assertEquals(2, page1.totalPages());
+
+        assertEquals(List.of(3L, 5L, 7L, 13L, 17L, 19L, 29L),
+                     page1.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
+
+        Prime last = page1.content().get(page1.numberOfElements() - 1);
+
+        Cursor cursorNext = Cursor.forKey(last.numberId % last.sumOfBits,
+                                          last.numberId - 2 * last.sumOfBits,
+                                          last.numberId);
+
+        PageRequest page2Req = PageRequest.ofPage(2).size(7).afterCursor(cursorNext);
+
+        Page<Prime> page2 = primes //
+                        .findByNumberIdBetweenAndEvenFalse(1,
+                                                           50,
+                                                           page2Req,
+                                                           order);
+
+        assertEquals(14, page2.totalElements());
+
+        assertEquals(List.of(31L, 37L, 11L, 41L, 47L, 23L, 43L),
+                     page2.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
+
+        assertEquals(false, page2.hasNext());
+
+        Prime prime37 = page2.content().get(1);
+        assertEquals(37L, prime37.numberId);
+        Cursor cursor37 = Cursor.forKey(prime37.numberId % prime37.sumOfBits,
+                                        prime37.numberId - 2 * prime37.sumOfBits,
+                                        prime37.numberId);
+
+        PageRequest before37Req = PageRequest.ofPage(2).size(7).beforeCursor(cursor37);
+
+        Page<Prime> page = primes //
+                        .findByNumberIdBetweenAndEvenFalse(1,
+                                                           50,
+                                                           before37Req,
+                                                           order);
+
+        assertEquals(14, page.totalElements());
+
+        assertEquals(List.of(5L, 7L, 13L, 17L, 19L, 29L, 31L),
+                     page.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
+
+        assertEquals(true, page.hasPrevious());
+    }
+
+    /**
+     * To a Query by Method Name repository method that returns Pages of results,
+     * supply sort criteria that includes a computation rather than sorting by a
+     * single entity attribute.
+     */
+    @Test
+    public void testComputationInOrderArgOfMethodThatReturnsPage() {
+
+        // prime  bits   sumOfbits numeral  p-2s  p/s
+        // ------ ------ --------- -------- ---- ----
+        // 47     101111     5     XLVII     37    9
+        // 41     101001     3     XLI       35   13
+        // 43     101011     4     XLIII     35   10
+        // 37     100101     3     XXXVII    31   12
+        // 29     011101     4     XXIX      21    7
+        // 31     011111     5     XXXI      21    6
+        // 23     010111     4     XXIII     15    5
+        // 17     010001     2     XVII      13    8
+        // 19     010011     3     XIX       13    6
+        // 13     001101     3     XIII       7    4
+        // 11     001011     3     XI         5    3
+
+        Sort<Prime> descByPMinus2S = Sort.desc("numberId-2*sumOfBits");
+        Sort<Prime> descByPDividedByS = Sort.desc("numberId/sumOfBits");
+
+        PageRequest page1req = PageRequest.ofSize(5);
+
+        Order<Prime> order = Order.by(descByPMinus2S,
+                                      descByPDividedByS);
+
+        Page<Prime> page1;
+        page1 = primes.findByRomanNumeralEndsWithAndNumberIdLessThan("X%I%",
+                                                                     50,
+                                                                     page1req,
+                                                                     order);
+
+        assertEquals(11, page1.totalElements());
+
+        assertEquals(List.of(47L, 41L, 43L, 37L, 29L),
+                     page1.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
+
+        // Request page 2 with separate Order and Sort that achieve an equivalent order
+        order = Order.by(descByPMinus2S);
+        PageRequest page2req = page1.nextPageRequest();
+        Page<Prime> page2;
+        page2 = primes.findByRomanNumeralEndsWithAndNumberIdLessThan("X%I%",
+                                                                     50,
+                                                                     page2req,
+                                                                     order,
+                                                                     descByPDividedByS);
+
+        assertEquals(3, page2.totalPages());
+
+        assertEquals(List.of(31L, 23L, 17L, 19L, 13L),
+                     page2.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
+
+        PageRequest page3req = page2.nextPageRequest();
+        Page<Prime> page3;
+        page3 = primes.findByRomanNumeralEndsWithAndNumberIdLessThan("X%I%",
+                                                                     50,
+                                                                     page3req,
+                                                                     order,
+                                                                     descByPDividedByS);
+
+        assertEquals(List.of(11L),
+                     page3.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
+    }
+
+    /**
+     * To a Query by Method Name repository method, supply sort criteria that
+     * includes a computation rather than sorting by a single entity attribute.
+     */
+    @Test
+    public void testComputationInSortArgOfMethodNameQuery() {
+
+        Sort<Prime> sortByFunction = Sort.asc("(numberId - 8) * (numberId - 8)");
+
+        assertEquals(List.of(7L, // computes to 1
+                             5L, // computes to 9
+                             11L, // computes to 9
+                             3L, // computes to 25
+                             13L, // computes to 25
+                             17L), // computes to 81
+                     primes.findByNumberIdBetween(3,
+                                                  18,
+                                                  sortByFunction,
+                                                  Sort.asc("numberId"))
+                                     .stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
+    }
+
+    /**
+     * To a Parameter-based Find repository method, supply sort criteria that
+     * includes a computation rather than sorting by a single entity attribute.
+     */
+    @Test
+    public void testComputationInSortArgOfParameterBasedFind() {
+
+        Sort<Prime> sortByFunction = Sort.asc("numberId*numberId-29*numberId+210");
+
+        assertEquals(List.of(13L, // computes to 2
+                             11L, // computes to 12
+                             19L, // computes to 20
+                             7L, // computes to 56
+                             37L), // computes to 506
+                     primes.find(false,
+                                 3,
+                                 Limit.of(5),
+                                 sortByFunction)
+                                     .map(p -> p.numberId)
+                                     .toList());
     }
 
     /**
@@ -1025,6 +1270,30 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
+     * In a Query, use the same named parameter name that is generated by
+     * default for cursor pagination, intentionally causing a collision.
+     * Verify that the Data implementation avoids the collision and is
+     * able to successfully run the query.
+     */
+    @Test
+    public void testCursorParameterNameCollision() {
+        PageRequest pageReq = PageRequest
+                        .ofPage(2)
+                        .size(5)
+                        .afterCursor(Cursor.forKey("seven", 7));
+
+        assertEquals(List.of("seventeen",
+                             "thirteen",
+                             "thirty-one",
+                             "three",
+                             "twenty-nine"),
+                     primes.cursoredQuery(33L, pageReq)
+                                     .stream()
+                                     .map(p -> p.name)
+                                     .toList());
+    }
+
+    /**
      * Use a repository that inherits from a custom repository interface with type parameters indicating the entity and key types.
      */
     @Test
@@ -1132,7 +1401,7 @@ public class DataTestServlet extends FATServlet {
         Package pkg = packages.deleteFirst5ByWidthLessThan(10.5f);
         assertEquals(10004, pkg.id);
 
-        List<Package> pkgs = packages.deleteFirst2();
+        List<Package> pkgs = packages.deleteFirst3();
         assertEquals(3, pkgs.size());
 
         assertEquals(0, packages.deleteAll()); //cleanup after test
@@ -1851,43 +2120,56 @@ public class DataTestServlet extends FATServlet {
     }
 
     /**
-     * Find-and-delete repository operations that return one or more IDs, corresponding to removed entities.
+     * Find-and-delete repository operations that return one or more removed
+     * entities.
      */
     @Test
-    public void testFindAndDeleteReturnsIds() throws Exception {
+    public void testFindAndDeleteReturnsEntities() throws Exception {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         boolean supportsOrderByForUpdate = !jdbcJarName.startsWith("derby");
 
         packages.deleteAll();
 
-        packages.save(new Package(80081, 18.0f, 18.1f, 8.8f, "testFindAndDeleteReturnsIds#80081"));
-        packages.save(new Package(80080, 80.0f, 80.0f, 8.0f, "testFindAndDeleteReturnsIds#80080"));
-        packages.save(new Package(80088, 88.0f, 18.8f, 8.8f, "testFindAndDeleteReturnsIds#80088"));
-        packages.save(new Package(80008, 80.0f, 10.8f, 0.8f, "testFindAndDeleteReturnsIds#80008"));
+        packages.save(new Package(80081, 18.0f, 18.1f, 8.8f, //
+                        "testFindAndDeleteReturnsEntities#80081"));
+        packages.save(new Package(80080, 80.0f, 80.0f, 8.0f, //
+                        "testFindAndDeleteReturnsEntities#80080"));
+        packages.save(new Package(80088, 88.0f, 18.8f, 8.8f, //
+                        "testFindAndDeleteReturnsEntities#80088"));
+        packages.save(new Package(80008, 80.0f, 10.8f, 0.8f, //
+                        "testFindAndDeleteReturnsEntities#80008"));
 
         Set<Integer> remaining = new TreeSet<>();
         remaining.addAll(Set.of(80008, 80080, 80081, 80088));
 
         Sort<Package> sort = supportsOrderByForUpdate ? Sort.desc("width") : null;
-        Integer id = packages.delete1(Limit.of(1), sort).orElseThrow();
+        Integer id = packages.deleteFirst1(Limit.of(1), sort).orElseThrow().id;
         if (supportsOrderByForUpdate)
             assertEquals(Integer.valueOf(80080), id);
         assertEquals("Found " + id + "; expected one of " + remaining, true, remaining.remove(id));
 
         Sort<?>[] sorts = supportsOrderByForUpdate ? new Sort[] { Sort.desc("height"), Sort.asc("length") } : null;
-        int[] ids = packages.delete2(Limit.of(2), sorts);
-        assertEquals(Arrays.toString(ids), 2, ids.length);
+        Package[] deleted = packages.deleteFirst2(Limit.of(2), sorts);
+        assertEquals(Arrays.toString(deleted), 2, deleted.length);
+
         if (supportsOrderByForUpdate) {
-            assertEquals(80081, ids[0]);
-            assertEquals(80088, ids[1]);
+            assertEquals(80081, deleted[0].id);
+            assertEquals(80088, deleted[1].id);
         }
-        assertEquals("Found " + ids[0] + "; expected one of " + remaining, true, remaining.remove(ids[0]));
-        assertEquals("Found " + ids[1] + "; expected one of " + remaining, true, remaining.remove(ids[1]));
+
+        assertEquals("Found " + deleted[0].id + "; expected one of " + remaining,
+                     true,
+                     remaining.remove(deleted[0].id));
+
+        assertEquals("Found " + deleted[1].id + "; expected one of " + remaining,
+                     true,
+                     remaining.remove(deleted[1].id));
 
         // should have only 1 remaining
-        ids = packages.delete2(Limit.of(2), sorts);
-        assertEquals(Arrays.toString(ids), 1, ids.length);
-        assertEquals(remaining.iterator().next(), Integer.valueOf(ids[0]));
+        deleted = packages.deleteFirst2(Limit.of(2), sorts);
+        assertEquals(Arrays.toString(deleted), 1, deleted.length);
+        assertEquals(remaining.iterator().next(),
+                     Integer.valueOf(deleted[0].id));
     }
 
     /**
@@ -1932,7 +2214,7 @@ public class DataTestServlet extends FATServlet {
         Sort<?>[] sorts = supportsOrderByForUpdate //
                         ? new Sort[] { Sort.desc("description"), Sort.asc("length") } //
                         : null;
-        LinkedList<?> deletesList = packages.delete2ByHeightLessThan(8.0f, Limit.of(2), sorts);
+        LinkedList<?> deletesList = packages.deleteFirst2ByHeightLessThan(8.0f, Limit.of(2), sorts);
         assertEquals("Deleted " + deletesList, 2, deletesList.size());
         Package p0 = (Package) deletesList.get(0);
         Package p1 = (Package) deletesList.get(1);
@@ -1987,7 +2269,10 @@ public class DataTestServlet extends FATServlet {
 
         assertEquals(List.of(551, 589),
                      packages.deleteByDescriptionOrderByWidthAsc(testName,
-                                                                 Limit.of(2)));
+                                                                 Limit.of(2))
+                                     .stream()
+                                     .map(p -> p.id)
+                                     .collect(Collectors.toList()));
 
         // remaining entities are:
         //         id   length  width   height  description
@@ -1995,10 +2280,16 @@ public class DataTestServlet extends FATServlet {
         // Package(533, 925.0f, 756.0f, 533.0f, testName))
 
         assertEquals(List.of(533),
-                     packages.removeIfDescriptionMatches(testName, Limit.of(1)));
+                     packages.removeIfDescriptionMatches(testName, Limit.of(1))
+                                     .stream()
+                                     .map(p -> p.id)
+                                     .collect(Collectors.toList()));
 
         assertEquals(List.of(527),
-                     packages.removeIfDescriptionMatches(testName, Limit.of(10)));
+                     packages.removeIfDescriptionMatches(testName, Limit.of(10))
+                                     .stream()
+                                     .map(p -> p.id)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -2842,7 +3133,7 @@ public class DataTestServlet extends FATServlet {
     @Test
     public void testIntStreamResult() {
         assertEquals(List.of(5, 4, 3, 3, 5, 4, 4),
-                     primes.findSumOfBitsByNumberIdBetween(20, 49)
+                     primes.findSumOfBitsWhereNumberWithin(20, 49)
                                      .mapToObj(i -> Integer.valueOf(i))
                                      .collect(Collectors.toList()));
     }
@@ -3973,8 +4264,11 @@ public class DataTestServlet extends FATServlet {
      */
     @Test
     public void testOrderedSet() {
-        assertEquals(new HashSet<>(List.of(47L, 43L, 41L, 37L, 31L, 29L, 23L)),
-                     primes.findNumberIdByNumberIdBetween(20, 49));
+        assertEquals(List.of(47L, 43L, 41L, 37L, 31L, 29L, 23L),
+                     primes.findPrimeByNumberIdBetween(20L, 49L)
+                                     .stream()
+                                     .map(prime -> prime.numberId)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -3985,7 +4279,10 @@ public class DataTestServlet extends FATServlet {
         List<Long> l;
         l = primes.findByNumberIdLessThanOrNumberIdGreaterThanAndNumberIdLessThan(10,
                                                                                   40,
-                                                                                  50);
+                                                                                  50)
+                        .stream()
+                        .map(prime -> prime.numberId)
+                        .collect(Collectors.toList());
         assertEquals(List.of(2L, 3L, 5L, 7L, 41L, 43L, 47L),
                      l);
     }
@@ -4096,6 +4393,44 @@ public class DataTestServlet extends FATServlet {
     public void testParameterAnnotationTakesPrecedenceOverMethodPrefix() {
         Prime nine = primes.findByBinary("10011").orElseThrow();
         assertEquals(19L, nine.numberId);
+    }
+
+    /**
+     * Use a repository method that supplies a Query for cusror pagination,
+     * where the query's WHERE clause already includes an open parenthesis at
+     * the beginning and a close parenthesis at the end, but these alone are
+     * not sufficient to allow the appending of conditions for cursor pagination
+     * because of additional parenthesis and and OR condition within the WHERE
+     * clause. Retrieval of a page based on the cursor will only behave correctly
+     * if additional parentheses have been inserted by the Jakarta Data provider.
+     */
+    @Test
+    public void testParenthesesInsertionForCursorPagination() {
+        PageRequest pageReq = PageRequest
+                        .ofPage(2)
+                        .size(5)
+                        .afterCursor(Cursor.forKey("s", 7));
+
+        Order<Prime> firstLetterOfNameThenNumber = //
+                        Order.by(Sort.asc("LEFT(name, 1)"),
+                                 Sort.asc(ID));
+
+        Page<Prime> page2 = primes.belowOrWithin(10L,
+                                                 30L,
+                                                 50L,
+                                                 pageReq,
+                                                 firstLetterOfNameThenNumber);
+
+        // If parentheses are not inserted around the WHERE clause by the
+        // Jakarta Data provider, then the following will have some extra
+        // results:
+        assertEquals(List.of("two",
+                             "three",
+                             "thirty-one",
+                             "thirty-seven"),
+                     page2.stream()
+                                     .map(p -> p.name)
+                                     .toList());
     }
 
     /**
@@ -5561,6 +5896,26 @@ public class DataTestServlet extends FATServlet {
         assertEquals(List.of(2, 1), page2.content());
 
         assertEquals(false, page2.hasNext());
+    }
+
+    /**
+     * Use a repository method annotated with a Query that omits the SELECT
+     * and ORDER BY clauses and returns a Page, which requires the computation
+     * of total elements across all pages. Ensure the correct total is returned.
+     */
+    @Test
+    public void testTotalCountsForQueryWithoutSelect() {
+        PageRequest page1Request = PageRequest.ofSize(5).withTotal();
+
+        Page<Prime> page1 = primes.under(40, page1Request);
+
+        assertEquals(12L, page1.totalElements());
+        assertEquals(3L, page1.totalPages());
+
+        assertEquals(List.of(37L, 31L, 29L, 23L, 19L),
+                     page1.stream()
+                                     .map(p -> p.numberId)
+                                     .toList());
     }
 
     /**

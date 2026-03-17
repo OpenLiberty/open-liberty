@@ -392,7 +392,7 @@
 .loadingOverlayDiv {
 	width: 80px;
 	height: 80px;
-	background: transparent url('../imagesShared/search-loading-T.gif') no-repeat 50% 50%;
+	background: transparent url('../imagesShared/search-loading-T.svg') no-repeat 50% 50%;
 	background-color: inherit;
 	border-radius: 10px;
     font-size: 12px !important;

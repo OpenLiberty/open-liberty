@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <display-name>InMemory Identity Store Test Application</display-name>
+
+    <!-- Security constraint for protected REST API resources -->
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Protected REST API</web-resource-name>
+            <url-pattern>/resource/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>user</role-name>
+            <role-name>caller</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Define security roles -->
+    <security-role>
+        <role-name>user</role-name>
+    </security-role>
+    <security-role>
+        <role-name>caller</role-name>
+    </security-role>
+
+</web-app>

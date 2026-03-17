@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: A inicializa\u00e7\u00e3o do Canal TCP {0} n\u00e3o foi b
 BIND_ERROR.explanation=A opera\u00e7\u00e3o de liga\u00e7\u00e3o do soquete n\u00e3o foi bem-sucedida. Uma causa comum \u00e9 que o n\u00famero da porta j\u00e1 est\u00e1 em uso.  Verifique o texto da mensagem de exce\u00e7\u00e3o na mensagem de erro para obter mais informa\u00e7\u00f5es.
 BIND_ERROR.useraction=Verifique se o Canal TCP foi configurado para utilizar o n\u00famero de porta correto.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: O Canal TCP {0} excedeu o n\u00famero m\u00e1ximo de conex\u00f5es abertas {1}.
-MAX_CONNS_EXCEEDED.explanation=O Canal TCP especificado excedeu o n\u00famero m\u00e1ximo de conex\u00f5es abertas e est\u00e1 recusando algumas.
+MAX_CONNS_EXCEEDED=CWWKO0222W: O canal TCP {0} excede o n\u00famero m\u00e1ximo de conex\u00f5es abertas {1}.
+MAX_CONNS_EXCEEDED.explanation=O canal TCP especificado excede o n\u00famero m\u00e1ximo de conex\u00f5es abertas e est\u00e1 recusando algumas conex\u00f5es. Esta mensagem \u00e9 emitida no m\u00e1ximo uma vez a cada 10 minutos enquanto a condi\u00e7\u00e3o persistir.
 MAX_CONNS_EXCEEDED.useraction=Se mais conex\u00f5es forem necess\u00e1rias, atualize o n\u00famero m\u00e1ximo de conex\u00f5es permitidas.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: O Canal TCP {0} n\u00e3o conseguiu obter encadeamento do conjunto de encadeamentos {1}.

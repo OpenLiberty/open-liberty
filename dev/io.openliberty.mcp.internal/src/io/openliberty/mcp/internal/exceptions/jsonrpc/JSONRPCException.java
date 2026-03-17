@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,14 +9,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.exceptions.jsonrpc;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
-
 /**
- *
+ * Signals that a JSON-RPC error response should be returned for this request
  */
-public class JSONRPCException extends RuntimeException {
-    private static final TraceComponent tc = Tr.register(JSONRPCException.class);
+public sealed class JSONRPCException extends McpResponseException permits MCPRequestValidationException {
     private static final long serialVersionUID = 1L;
     private JSONRPCErrorCode errorCode;
     private Object data;

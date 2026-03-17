@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: T\u0159\u00eddu Future dodan\u00e1 met
 CWWKC1120.future.get.rejected.explanation=Metody taskSubmitted a taskStarting modulu ManagedTaskListener se spou\u0161t\u00ed v podprocesu, kter\u00fd \u00falohu ode\u0161le nebo spust\u00ed. Proto nen\u00ed mo\u017en\u00e9 pou\u017e\u00edt k \u010dek\u00e1n\u00ed na danou \u00falohu t\u0159\u00eddu Future dodanou t\u011bmto metod\u00e1m.
 CWWKC1120.future.get.rejected.useraction=Aktualizujte aplikaci, abyste se vyhnuli vyvol\u00e1n\u00ed metody get nad t\u0159\u00eddou Future, kter\u00e1 je dod\u00e1na metod\u00e1m taskSubmitted a taskStarting.
 
-CWWKC1121.virtual.invalid=CWWKC1121E: Anotace {0} nebo prvek deskriptoru nasazen\u00ed {1} , kter\u00fd m\u00e1 n\u00e1zev {0} ur\u010duje virtual=true, ale virtu\u00e1ln\u00ed vl\u00e1kna nejsou k dispozici p\u0159ed verz\u00ed Java 21. Pou\u017eit\u00e1 \u00farove\u0148 Java je: {1} .
+CWWKC1121.virtual.invalid=CWWKC1121E: Anotace ` {0} ` nebo prvek ` {1} ` v popisu nasazen\u00ed s n\u00e1zvem ` {2} ` ur\u010duje `virtual=true`, ale virtu\u00e1ln\u00ed vl\u00e1kna nejsou k dispozici p\u0159ed verz\u00ed Java 21. Pou\u017eit\u00e1 \u00farove\u0148 Java je: {3}.
 CWWKC1121.virtual.invalid.explanation=Virtu\u00e1ln\u00ed vl\u00e1kna nejsou k dispozici v pou\u017eit\u00e9 verzi Java.
 CWWKC1121.virtual.invalid.useraction=Aktualizujte na nov\u011bj\u0161\u00ed verzi Java, kter\u00e1 podporuje virtu\u00e1ln\u00ed vl\u00e1kna.
 
-CWWKC1122.mod.unavail=CWWKC1122E: Aplikace {0} nebo jej\u00ed modul {1} nen\u00ed k dispozici.
+CWWKC1122.mod.unavail=CWWKC1122E: Aplikace {0} nebo jej\u00ed modul {1} nen\u00ed k dispozici. ManagedThreadFactory fazole, kter\u00e9 jsou definov\u00e1ny v aplikaci nebo modulu, nelze z\u00edskat.
 CWWKC1122.mod.unavail.explanation=Aplikace a modul, kter\u00e9 definuj\u00ed konfiguraci ManagedThreadFactory , mus\u00ed b\u00fdt k dispozici pro z\u00edsk\u00e1n\u00ed instance ManagedThreadFactory .
 CWWKC1122.mod.unavail.useraction=Ujist\u011bte se, \u017ee je aplikace spu\u0161t\u011bna a \u017ee aplikace obsahuje modul, kter\u00fd definuje konfiguraci ManagedThreadFactory .
 

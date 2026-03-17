@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,8 +72,20 @@ public class WebJaccServiceImpl implements WebJaccService {
 
     private static final HandlerProcessor handlerProcessor;
 
+    /**
+     * The HandlerProcessor centralizes the logic for setting the PolicyContext handler data with all the behaviors for each version of
+     * JACC / Jakarta Authorization. There are some behaviors that may not make sense, but for backward compatibility to maintain zero
+     * migration, the behaviors are maintained.
+     */
     enum HandlerProcessor {
-        JACC15(true, false), AUTHORIZATION20_21(false, false), AUTHORIZATION30(false, true);
+        // For JACC 1.5, all javax and jakarta named PolicyContext handler names are supported except the PrincipalMapper which is added in 3.0
+        JACC15(true, false),
+
+        // For Jakarta Authorization 2.0 and 2.1, the javax PolicyContext handlers names are removed
+        AUTHORIZATION20_21(false, false),
+
+        // For Jakarta Authorization 3.0, the new PrincipalMapper is added
+        AUTHORIZATION30(false, true);
 
         final boolean principalMapperSupported;
         final boolean javaxSupported;
@@ -83,7 +95,7 @@ public class WebJaccServiceImpl implements WebJaccService {
             this.principalMapperSupported = principalMapperSupported;
         }
 
-        void setPolicyContextData(Subject subject, HttpServletRequest req, PolicyProxy policyProxy, boolean setSubject) throws PolicyContextException {
+        void setPolicyContextData(String appName, Subject subject, HttpServletRequest req, PolicyProxy policyProxy, boolean setSubject) throws PolicyContextException {
             final HashMap<String, Object> handlerObjects = new HashMap<String, Object>();
 
             PolicyContext.registerHandler("javax.security.auth.Subject.container", pch, true);
@@ -93,7 +105,7 @@ public class WebJaccServiceImpl implements WebJaccService {
 
             if (principalMapperSupported) {
                 PolicyContext.registerHandler("jakarta.security.jacc.PrincipalMapper", pch, true);
-                handlerObjects.put("jakarta.security.jacc.PrincipalMapper", policyProxy.getPrincipalMapper());
+                handlerObjects.put("jakarta.security.jacc.PrincipalMapper", policyProxy.getPrincipalMapper(appName));
             }
 
             if (javaxSupported) {
@@ -698,7 +710,7 @@ public class WebJaccServiceImpl implements WebJaccService {
                 @Override
                 public Boolean run() throws javax.security.jacc.PolicyContextException {
                     PolicyContext.setContextID(contextId);
-                    handlerProcessor.setPolicyContextData(null, req, policyProxy, false);
+                    handlerProcessor.setPolicyContextData(applicationName, null, req, policyProxy, false);
                     if (tc.isDebugEnabled())
                         Tr.debug(tc, "Calling JACC implies");
                     return Boolean.valueOf(policyProxy.implies(contextId, null, webUDPerm));
@@ -724,7 +736,7 @@ public class WebJaccServiceImpl implements WebJaccService {
         WebResourcePermission webPerm = new WebResourcePermission(uriName, methodNameArray);
         String contextId = jaccService.getContextId(applicationName, moduleName);
         PolicyProxy policyProxy = jaccService.getPolicyProxy();
-        return checkResourceConstraints(contextId, req, webPerm, subject, policyProxy);
+        return checkResourceConstraints(applicationName, contextId, req, webPerm, subject, policyProxy);
     }
 
     @Override
@@ -736,20 +748,21 @@ public class WebJaccServiceImpl implements WebJaccService {
         WebRoleRefPermission webRolePerm = new WebRoleRefPermission(servletName, role);
         String contextId = jaccService.getContextId(applicationName, moduleName);
         PolicyProxy policyProxy = jaccService.getPolicyProxy();
-        return checkResourceConstraints(contextId, req, webRolePerm, subject, policyProxy);
+        return checkResourceConstraints(applicationName, contextId, req, webRolePerm, subject, policyProxy);
     }
 
-    private boolean checkResourceConstraints(String contextId, HttpServletRequest req, Permission webPerm, Subject subject, PolicyProxy policyProxy) {
+    private boolean checkResourceConstraints(String appName, String contextId, HttpServletRequest req, Permission webPerm, Subject subject, PolicyProxy policyProxy) {
         boolean result = false;
         try {
-            result = privCheckResourceConstraints(contextId, req, webPerm, subject, policyProxy);
+            result = privCheckResourceConstraints(appName, contextId, req, webPerm, subject, policyProxy);
         } catch (PrivilegedActionException e) {
             Tr.error(tc, "JACC_WEB_IMPLIES_FAILURE", new Object[] { contextId, e.getException() });
         }
         return result;
     }
 
-    private boolean privCheckResourceConstraints(final String contextId,
+    private boolean privCheckResourceConstraints(final String appName,
+                                                 final String contextId,
                                                  final HttpServletRequest req,
                                                  final Permission permission,
                                                  final Subject subject,
@@ -763,7 +776,7 @@ public class WebJaccServiceImpl implements WebJaccService {
 
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Registering JACC context handlers and handler data");
-                                                       handlerProcessor.setPolicyContextData(subject, req, policyProxy, true);
+                                                       handlerProcessor.setPolicyContextData(appName, subject, req, policyProxy, true);
 
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Calling JACC implies. Subject : " + subject);
@@ -790,4 +803,22 @@ public class WebJaccServiceImpl implements WebJaccService {
         return uriName;
     }
 
+    @Override
+    public void setPolicyContextID(String applicationName, String moduleName) {
+        JaccService jaccService = jaccServiceRef.getService();
+        if (jaccService != null) {
+            String contextID = jaccService.getContextId(applicationName, moduleName);
+            PolicyContext.setContextID(contextID);
+        }
+    }
+
+    @Override
+    public boolean isPolicyConfigured() {
+        JaccService jaccService = jaccServiceRef.getService();
+        if (jaccService == null) {
+            return false;
+        }
+        PolicyProxy policyProxy = jaccService.getPolicyProxy();
+        return policyProxy == null ? false : policyProxy.isPolicyConfigured();
+    }
 }

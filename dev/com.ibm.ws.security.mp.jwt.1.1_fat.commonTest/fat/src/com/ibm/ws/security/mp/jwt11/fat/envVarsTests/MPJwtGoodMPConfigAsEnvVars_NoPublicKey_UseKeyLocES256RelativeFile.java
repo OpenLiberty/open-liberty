@@ -12,7 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt11.fat.envVarsTests;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -40,9 +42,13 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES256RelativeFile extends MPJwtWithGoodAltSigAlgMPConfig {
 
     public static Class<?> thisClass = MPJwtGoodMPConfigAsEnvVars_NoPublicKey_UseKeyLocES256RelativeFile.class;
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled();
 
     @Server("com.ibm.ws.security.mp.jwt.1.1.fat")
     public static LibertyServer envVarsResourceServer;

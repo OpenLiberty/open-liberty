@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,7 @@ public class FATTest {
     private static final String CWWKS1860E_FIPS_128BIT_AES_SECRET_NOT_ALLOWED = "CWWKS1860E";
     private static final String CWWKS1863E_FIPS_SHA1_HASH_NOT_ALLOWED = "CWWKS1863E";
     private static final String CWWKS1864W_WEAK_ALGORITHM_WARNING = "CWWKS1864W";
+    private static final String CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING = "CWWKS1865W";
     private static final String DEFAULT_CONFIG_FILE = "basic.server.xml.orig";
     private static final String ALTERNATE_BASIC_REGISTRY_CONFIG = "alternateBasicRegistry.xml";
     private static final String DEFAULT_AES_CONFIG_FILE = "defaultAESBasicRegistry.xml";
@@ -68,6 +69,8 @@ public class FATTest {
     private static boolean CWWKS1864wAlreadyLoggedForHash = false;
     /** CWWKS1864w is only logged one time for AES-128 {aes} passwords per server start */
     private static boolean CWWKS1864wAlreadyLoggedForAES = false;
+    /** CWWKS1865w is only logged one time for {aes} passwords without a custom encryption key per server start */
+    private static boolean CWWKS1865wAlreadyLoggedForAES = false;
 
     
     @ClassRule
@@ -188,6 +191,14 @@ public class FATTest {
                 CWWKS1864wAlreadyLoggedForAES = true;
             }
 
+            //Note: CWWKS1865W will be output after CWWKS1864W
+            if (!!!CWWKS1865wAlreadyLoggedForAES) {
+                assertNotNull("AES password without custom encryption key should cause CWWKS1865W",
+                              server.waitForStringInLog(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING));
+                expectedErrors.add(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING);
+                CWWKS1865wAlreadyLoggedForAES = true;
+            }
+
             assertEquals("Authentication should succeed.",
                          "defaultUser", servlet.checkPassword("defaultUser", password));
 
@@ -226,6 +237,14 @@ public class FATTest {
                               server.waitForStringInLog(CWWKS1864W_WEAK_ALGORITHM_WARNING));
                 expectedErrors.add(CWWKS1864W_WEAK_ALGORITHM_WARNING);
                 CWWKS1864wAlreadyLoggedForAES = true;
+            }
+
+            //Note: CWWKS1865W will be output after CWWKS1864W
+            if (!!!CWWKS1865wAlreadyLoggedForAES) {
+                assertNotNull("AES password without custom encryption key should cause CWWKS1865W",
+                              server.waitForStringInLog(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING));
+                expectedErrors.add(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING);
+                CWWKS1865wAlreadyLoggedForAES = true;
             }
         }
 

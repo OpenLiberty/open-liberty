@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: Inizializzazione del canale TCP {0} non riuscita.  Bind d
 BIND_ERROR.explanation=L'operazione di bind del socket ha avuto esito negativo. Una causa comune \u00e8 che il numero di porta \u00e8 gi\u00e0 in uso.  Per ulteriori informazioni fare riferimento al testo del messaggio dell'eccezione nel messaggio di errore.
 BIND_ERROR.useraction=Verificare che il canale TCP sia stato configurato in modo da utilizzare il numero di porta corretto.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: Il canale TCP {0} ha superato il numero massimo di connessioni aperte {1}.
-MAX_CONNS_EXCEEDED.explanation=Il canale TCP specificato ha superato il numero massimo di connessioni aperte e sta rifiutando alcune connessioni.
+MAX_CONNS_EXCEEDED=CWWKO0222W: Il canale TCP {0} supera il numero massimo di connessioni aperte {1}.
+MAX_CONNS_EXCEEDED.explanation=Il canale TCP specificato supera il numero massimo di connessioni aperte e rifiuta alcune connessioni. Questo messaggio viene emesso non pi\u00f9 di una volta ogni 10 minuti mentre la condizione persiste.
 MAX_CONNS_EXCEEDED.useraction=Se sono necessarie ulteriori connessioni, aggiornare il numero massimo di connessioni consentite.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: Il canale TCP {0} non \u00e8 stato in grado di ottenere il thread dal pool di thread {1}.

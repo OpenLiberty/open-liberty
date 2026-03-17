@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -105,7 +105,11 @@ public interface ServletConfigurator {
 
     public ConfigSource getConfigSource();
 
+    public void setConfigSource(ConfigSource source);
+
     public String getLibraryURI();
+
+    public void setLibraryURI(String libraryURI);
 
     boolean getMetadataCompleted();
 

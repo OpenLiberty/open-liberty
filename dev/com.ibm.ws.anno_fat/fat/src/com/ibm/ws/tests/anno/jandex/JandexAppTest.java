@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,17 +19,30 @@ import java.io.File;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
+import org.jboss.shrinkwrap.api.spec.JavaArchive;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
+
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.ws.fat.util.LoggingTest;
 import com.ibm.ws.fat.util.SharedServer;
 import com.ibm.ws.fat.util.browser.WebResponse;
-import com.ibm.ws.tests.anno.util.AppPackagingHelper;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.utils.FileUtils;
+import testservlet40.jar.jandex_v3.MemberClass;
+import testservlet40.jar.jandex_v35.ComputeIntEncloser;
 
 /**
  * Common test class for Jandex enablement.
  */
 public abstract class JandexAppTest extends LoggingTest {
+	
+	private final static String JAR_NAME = "TestServlet40.jar";
+	private final static String WAR_NAME = "TestServlet40.war";
+	private final static String EAR_NAME = "TestServlet40.ear";
+	
     /**
      * Answer the server used by this test.
      * 
@@ -57,16 +70,40 @@ public abstract class JandexAppTest extends LoggingTest {
     		install(logger, sharedServer, jvmOptionsName, "jvm.options");
     	}
 
-        logger.info("setUp: Add TestServlet40 to the server applications folder");
-        AppPackagingHelper.addEarToServerApps(
-            sharedServer.getLibertyServer(),
-            "TestServlet40.ear", // earName
-            true, // addEarResources
-            "TestServlet40.war", // warName
-            true, // addWarResources
-            "TestServlet40.jar", // jarName
-            true, // addJarResources
-            "testservlet40.war.servlets", "testservlet40.jar.servlets"); // packageNames
+        logger.info("setUp: Add TestServlet40 to the server applications folder");     
+        
+        JavaArchive testServlet40Jar = ShrinkWrap.create(JavaArchive.class, JAR_NAME)
+        		.addPackage(testservlet40.jar.servlets.ServletContainerInitializerImpl.class.getPackage())
+        		.addPackage(testservlet40.jar.util.Util_0.class.getPackage());
+        
+        ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources");
+        
+        WebArchive testServlet40War = ShrinkWrap.create(WebArchive.class, WAR_NAME)
+        		.addPackage(testservlet40.war.servlets.MyServlet.class.getPackage())
+        		.addAsLibrary(testServlet40Jar);        		
+        ShrinkHelper.addDirectory(testServlet40War, "test-applications/" + WAR_NAME + "/resources");
+        
+        EnterpriseArchive testServlet40Ear = ShrinkWrap.create(EnterpriseArchive.class, EAR_NAME)
+        		.addAsModule(testServlet40War);
+        ShrinkHelper.addDirectory(testServlet40Ear, "test-applications/" + EAR_NAME + "/resources");
+        
+        
+        String versionString = RepeatTestFilter.getMostRecentRepeatAction().getID();   
+        if (versionString.contains("switch_13")) {
+        	testServlet40Jar.addPackage(ComputeIntEncloser.class.getPackage());
+        	testServlet40Jar.addPackage(MemberClass.class.getPackage());
+            ShrinkHelper.addDirectory(testServlet40War, "test-applications/" + WAR_NAME + "/resources_v3.5");
+            ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources_v3.5");
+        } else if (versionString.contains("switch_12")) {
+        	testServlet40Jar.addPackage(MemberClass.class.getPackage());
+            ShrinkHelper.addDirectory(testServlet40War, "test-applications/" + WAR_NAME + "/resources_v3");
+            ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources_v3");
+        } else  {
+         	ShrinkHelper.addDirectory(testServlet40War, "test-applications/" + WAR_NAME + "/resources_v2");
+            ShrinkHelper.addDirectory(testServlet40Jar, "test-applications/" + JAR_NAME + "/resources_v2");
+        }     
+        
+        ShrinkHelper.exportToServer(sharedServer.getLibertyServer(), "apps", testServlet40Ear);
 
         logger.info("setUp: Added TestServlet40 to the server applications folder");
 

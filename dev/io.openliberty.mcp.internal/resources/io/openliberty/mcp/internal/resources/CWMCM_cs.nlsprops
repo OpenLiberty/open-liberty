@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=Bu\u010f p\u0159idejte n\u00e1z
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: Existuje n\u011bkolik metod n\u00e1stroje MCP s n\u00e1zvem {0}. Metody jsou {1}.
 CWMCM0004E.duplicate.tools.explanation=Jeden nebo v\u00edce n\u00e1zv\u016f n\u00e1stroj\u016f MCP se vyskytlo v\u00edcekr\u00e1t. Server o\u010dek\u00e1v\u00e1 jedno jm\u00e9no pro ka\u017ed\u00fd n\u00e1stroj, aby byla zaji\u0161t\u011bna jedine\u010dnost.
 CWMCM0004E.duplicate.tools.useraction=Pro ka\u017ed\u00fd n\u00e1stroj MCP zadejte pouze jedine\u010dn\u00fd n\u00e1zev.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=Zkontrolujte, zda m\u00e1te pro sv\u016f
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: \u017d\u00e1dost s ID {0} je v procesu zpracov\u00e1n\u00ed.
-CWMCM0008E.invalid.request.params.explanation=\u017d\u00e1dost se stejn\u00fdm ID je pr\u00e1v\u011b zpracov\u00e1v\u00e1na. \u017d\u00e1dosti od stejn\u00e9ho klienta mus\u00ed m\u00edt jedine\u010dn\u00e1 ID.
-CWMCM0008E.invalid.request.params.useraction=Pro ka\u017ed\u00fd po\u017eadavek pou\u017eijte jedine\u010dn\u00e9 ID.
+invalid.request.params=\u017d\u00e1dost s ID {0} je v procesu zpracov\u00e1n\u00ed.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: GET po\u017eadavky nejsou podporov\u00e1ny.
-CWMCM0009I.get.disallowed.explanation=Byl odesl\u00e1n po\u017eadavek GET, ale tato funkce nen\u00ed podporov\u00e1na.
-CWMCM0009I.get.disallowed.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+# do not translate GET
+get.disallowed=GET po\u017eadavky nejsou podporov\u00e1ny.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=Metoda n\u00e1stroje vyvol
 CWMCM0010E.internal.server.error.detailed.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: P\u0159i spu\u0161t\u011bn\u00ed n\u00e1stroje do\u0161lo k intern\u00ed chyb\u011b serveru.
-CWMCM0011E.internal.server.error.explanation=Server nebyl schopen dokon\u010dit po\u017eadavek na vol\u00e1n\u00ed n\u00e1stroje.
-CWMCM0011E.internal.server.error.useraction=Zkontrolujte, zda je po\u017eadavek spr\u00e1vn\u00fd. V\u00edce informac\u00ed o selh\u00e1n\u00ed m\u016f\u017ee b\u00fdt na serveru messages.log.
+internal.server.error=P\u0159i spu\u0161t\u011bn\u00ed n\u00e1stroje do\u0161lo k intern\u00ed chyb\u011b serveru.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: P\u0159i uvoln\u011bn\u00ed CDI bean po
 CWMCM0012E.bean.release.fail.explanation=P\u0159i vol\u00e1n\u00ed metody n\u00e1stroje je p\u0159ed vol\u00e1n\u00edm metody z\u00edsk\u00e1na instance CDI bean, kter\u00e1 tuto metodu deklaruje, a po vol\u00e1n\u00ed metody je uvoln\u011bna. P\u0159i uvoln\u011bn\u00ed instance bean do\u0161lo k chyb\u011b.
 CWMCM0012E.bean.release.fail.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Byla poskytnuta nepodporovan\u00e1 hlavi\u010dka MCP-Protocol-Version. Podporovan\u00e9 hodnoty: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=Verze protokolu v hlavi\u010dce MCP-Protocol-Version nen\u00ed serverem podporov\u00e1na.
-CWMCM0013E.unsupported.mcp.http.version.useraction=Pou\u017eijte podporovanou verzi protokolu.
+unsupported.mcp.http.version=Byla poskytnuta nepodporovan\u00e1 hlavi\u010dka MCP-Protocol-Version. Podporovan\u00e9 hodnoty: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: Neo\u010dek\u00e1van\u00e1 chyba serveru. Metoda= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=P\u0159i zpracov\u00e1n\u00ed po\u017eadavku do\u0161lo k neo\u010dek\u00e1van\u00e9 chyb\u011b serveru. Po\u017eadavek nelze dokon\u010dit.
-CWMCM0014E.unexpected.server.error.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+unexpected.server.error=Neo\u010dek\u00e1van\u00e1 chyba serveru. Metoda= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,16 +132,14 @@ jsonrpc.exception.validation.empty.string.id=Pole id je neplatn\u00e9. ID nesm\u
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=Typ id nen\u00ed p\u0159ijateln\u00fd typ. ID mus\u00ed b\u00fdt \u0159et\u011bzec nebo cel\u00e9 \u010d\u00edslo.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=\u017d\u00e1dost neobsahuje \u017e\u00e1dn\u00e9 argumenty v parametrech.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=Byly p\u0159ed\u00e1ny n\u00e1sleduj\u00edc\u00ed argumenty, ale nebyly nalezeny v metod\u011b: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=Metoda o\u010dek\u00e1vala n\u00e1sleduj\u00edc\u00ed argumenty, ale nebyly poskytnuty: {0}.
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+CWMCM0017E.missing.toolarg.defaultvalue.converter=CWMCM0017E: Argument \u201e {1} \u201c metody n\u00e1stroje MCP \u201e {0} \u201c nem\u00e1 p\u0159evad\u011b\u010d, kter\u00fd by zm\u011bnil jeho v\u00fdchoz\u00ed hodnotu na objekt typu \u201e {2} \u201c.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.explanation=Jeden nebo v\u00edce argument\u016f m\u00e1 v\u00fdchoz\u00ed hodnoty bez odpov\u00eddaj\u00edc\u00edho p\u0159evad\u011b\u010de, kter\u00fd by p\u0159evedl v\u00fdchoz\u00ed hodnotu na typ argumentu.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.useraction=Vytvo\u0159te vlastn\u00ed implementaci p\u0159evad\u011b\u010de pro typ argumentu n\u00e1stroje.
 
 # Used for server logging
 # do not translate MCP
@@ -159,3 +148,126 @@ jsonrpc.missing.arguments=Metoda o\u010dek\u00e1vala n\u00e1sleduj\u00edc\u00ed 
 CWMCM0018E.generic.arguments=CWMCM0018E: Argument \u201e {1} \u201c metody n\u00e1stroje MCP \u201e {0} \u201c obsahuje nepodporovan\u00e9 komponenty, jako jsou \u201e TypeVariable, Wildcard\u201c a \u201e GenericArrayType \u201c.
 CWMCM0018E.generic.arguments.explanation=Byly poskytnuty argumenty n\u00e1stroje MCP, ale nejsou podporov\u00e1ny. 
 CWMCM0018E.generic.arguments.useraction=Poskytn\u011bte argumenty, kter\u00e9 neobsahuj\u00ed obecn\u00e9 komponenty.
+
+# Used for encoder logging
+# {0} = The encoder class name
+# {1} = The tool name
+# {2} = The exception
+CWMCM0019E.error.encoding.element=CWMCM0019E: Kod\u00e9r {0} vyhodil v\u00fdjimku p\u0159i k\u00f3dov\u00e1n\u00ed v\u00fdsledku n\u00e1stroje {1}. V\u00fdjimka: {2}
+CWMCM0019E.error.encoding.element.explanation=Kod\u00e9r vyhodil v\u00fdjimku p\u0159i k\u00f3dov\u00e1n\u00ed v\u00fdsledku n\u00e1stroje. V\u00fdjimka m\u016f\u017ee b\u00fdt zp\u016fsobena probl\u00e9mem s kod\u00e9rem nebo t\u00edm, \u017ee n\u00e1stroj vr\u00e1til neo\u010dek\u00e1van\u00fd v\u00fdsledek.
+CWMCM0019E.error.encoding.element.useraction=Zkontrolujte protokol zpr\u00e1v message.log a identifikujte probl\u00e9m.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool method, or the tool name
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+# {3} = corresponding default value
+# {4} = ExceptionMessage
+CWMCM0020E.defaultvalue.conversion.error=CWMCM0020E: V\u00fdchoz\u00ed hodnota argumentu \u201e {1} \u201c n\u00e1stroje MCP \u201e {0} \u201c nelze p\u0159ev\u00e9st na typ \u201e {2} \u201c. Hodnota je {3}. Chyba je \u201e {4} \u201c (Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru: Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru: Chyba p\u0159i na\u010d\u00edt\u00e1n\u00ed souboru:
+CWMCM0020E.defaultvalue.conversion.error.explanation=Argument m\u00e1 v\u00fdchoz\u00ed hodnotu, kterou nelze p\u0159ev\u00e9st na typ argumentu. Tento probl\u00e9m m\u016f\u017ee nastat, pokud je v\u00fdchoz\u00ed hodnota nulov\u00e1, m\u00e1 neplatn\u00fd form\u00e1t nebo je mimo rozsah pro c\u00edlov\u00fd typ.
+CWMCM0020E.defaultvalue.conversion.error.useraction=Zajist\u011bte, aby v\u00fdchoz\u00ed hodnota byla platn\u00e1 pro typ argumentu. Zajist\u011bte, aby v\u00fdchoz\u00ed hodnota nebyla nulov\u00e1. Pro typy znak\u016f zadejte p\u0159esn\u011b jeden znak. U \u010d\u00edseln\u00fdch typ\u016f zadejte platn\u00e9 \u010d\u00edslo v rozsahu dan\u00e9ho typu.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The default value string
+CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: V\u00fdchoz\u00ed hodnota znaku mus\u00ed b\u00fdt p\u0159esn\u011b jeden znak, ale byla {0}
+CWMCM0021E.defaultvalue.character.invalid.length.explanation=Byla zad\u00e1na v\u00fdchoz\u00ed hodnota pro argument typu Character, ale neobsahuje p\u0159esn\u011b jeden znak. Argumenty typu znak mus\u00ed m\u00edt jeden znakov\u00fd \u0159et\u011bzec.
+CWMCM0021E.defaultvalue.character.invalid.length.useraction=Zajist\u011bte, aby v\u00fdchoz\u00ed hodnota argumentu typu Character byla \u0159et\u011bzec s p\u0159esn\u011b jedn\u00edm znakem.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: Hodnota kurzoru "{0}" je neplatn\u00e1.
+CWMCM0022E.invalid.cursor.value.explanation=Hodnota kurzoru byla zad\u00e1na jako parametr p\u0159\u00edkazu tool/list, ale tato hodnota je neplatn\u00e1.
+CWMCM0022E.invalid.cursor.value.useraction=Ujist\u011bte se, \u017ee hodnota kurzoru je zad\u00e1na p\u0159esn\u011b tak, jak byla vr\u00e1cena z p\u0159edchoz\u00edho vol\u00e1n\u00ed n\u00e1stroje/seznamu.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: N\u00e1zev n\u00e1stroje {0} pro metodu n\u00e1stroje MCP {1} nen\u00ed platn\u00fd. N\u00e1zvy n\u00e1stroj\u016f mus\u00ed m\u00edt d\u00e9lku od 1 do 128 znak\u016f v\u010detn\u011b.
+CWMCM0023E.invalid.length.tool.name.explanation=N\u00e1zev n\u00e1stroje nen\u00ed v souladu se specifikac\u00ed MCP pro n\u00e1zvy. N\u00e1zvy mus\u00ed m\u00edt d\u00e9lku od 1 do 128 znak\u016f v\u010detn\u011b.
+CWMCM0023E.invalid.length.tool.name.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy n\u00e1stroj\u016f maj\u00ed d\u00e9lku od 1 do 128 znak\u016f v\u010detn\u011b.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: N\u00e1zev n\u00e1stroje {0} pro metodu n\u00e1stroje MCP {1} nen\u00ed platn\u00fd. N\u00e1zvy n\u00e1stroj\u016f mohou obsahovat pouze znaky ASCII, \u010d\u00edslice, podtr\u017e\u00edtka nebo poml\u010dky.
+CWMCM0024E.invalid.character.tool.name.explanation=N\u00e1zev n\u00e1stroje nen\u00ed v souladu se specifikac\u00ed MCP pro n\u00e1zvy. N\u00e1zvy mohou obsahovat pouze znaky ASCII, \u010d\u00edslice, podtr\u017e\u00edtka, poml\u010dky a \u017e\u00e1dn\u00e9 jin\u00e9 speci\u00e1ln\u00ed znaky.
+CWMCM0024E.invalid.character.tool.name.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy n\u00e1stroj\u016f obsahuj\u00ed pouze znaky ASCII, \u010d\u00edslice, podtr\u017e\u00edtka nebo poml\u010dky.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=Argument typu \u201e {0} \u201c nelze p\u0159ev\u00e9st na typ \u201e {1} \u201c.
+extra.arguments=Byly p\u0159ed\u00e1ny n\u00e1sleduj\u00edc\u00ed argumenty, ale nebyly nalezeny v metod\u011b: {0}.
+missing.arguments=Metoda o\u010dek\u00e1vala n\u00e1sleduj\u00edc\u00ed argumenty, ale neobdr\u017eela je: {0}.
+unauthorized.cancellation=N\u00e1stroj nelze zru\u0161it, proto\u017ee volaj\u00edc\u00ed u\u017eivatel nen\u00ed opr\u00e1vn\u011bn.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: Typ n\u00e1vratov\u00e9 hodnoty metody MCP n\u00e1stroje {1} mus\u00ed b\u00fdt objekt typu {0}.
+CWMCM0025E.unsupported.output.explanation=Poskytovan\u00fd typ n\u00e1vratov\u00e9 hodnoty n\u00e1stroje MCP nen\u00ed podporov\u00e1n.
+CWMCM0025E.unsupported.output.useraction=Zadejte n\u00e1vratov\u00fd typ, kter\u00fd je objektem.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: N\u00e1stroj MCP s n\u00e1zvem {0} ji\u017e existuje.
+CWMCM0026E.duplicate.tool.name.explanation=Ka\u017ed\u00fd n\u00e1stroj mus\u00ed m\u00edt jedine\u010dn\u00fd n\u00e1zev. Nelze zaregistrovat nov\u00fd n\u00e1stroj, kter\u00fd m\u00e1 stejn\u00fd n\u00e1zev jako ji\u017e existuj\u00edc\u00ed n\u00e1stroj.
+CWMCM0026E.duplicate.tool.name.useraction=Zadejte jedine\u010dn\u00fd n\u00e1zev pro ka\u017ed\u00fd n\u00e1stroj MCP.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: Pro n\u00e1stroj MCP {0} je nutn\u00e9 zavolat bu\u010f metodu setHandler, nebo metodu setAsyncHandler.
+CWMCM0027E.provide.one.handler.explanation=P\u0159i registraci nov\u00e9ho n\u00e1stroje pomoc\u00ed metody ` ToolManager, ` mus\u00edte zadat bu\u010f synchronn\u00ed obslu\u017enou funkci vol\u00e1n\u00edm metody ` setHandler `, nebo asynchronn\u00ed obslu\u017enou funkci vol\u00e1n\u00edm metody ` setAsyncHandler `. Neposkytujte oboj\u00ed.
+CWMCM0027E.provide.one.handler.useraction=P\u0159i registraci n\u00e1stroje pomoc\u00ed slu\u017eby ToolManager zavolejte metodu ToolDefinition.setHandler nebo metodu ToolDefinition.setAsyncHandler.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} N\u00e1zev n\u00e1stroje MCP nen\u00ed platn\u00fd. N\u00e1zvy n\u00e1stroj\u016f mohou obsahovat pouze znaky ASCII, \u010d\u00edslice, podtr\u017e\u00edtka nebo poml\u010dky.
+CWMCM0028E.invalid.character.tool.name.explanation=N\u00e1zev n\u00e1stroje nen\u00ed v souladu se specifikac\u00ed MCP pro n\u00e1zvy. N\u00e1zvy mohou obsahovat pouze znaky ASCII, \u010d\u00edslice, podtr\u017e\u00edtka, poml\u010dky a \u017e\u00e1dn\u00e9 jin\u00e9 speci\u00e1ln\u00ed znaky.
+CWMCM0028E.invalid.character.tool.name.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy n\u00e1stroj\u016f obsahuj\u00ed pouze znaky ASCII, \u010d\u00edslice, podtr\u017e\u00edtka nebo poml\u010dky.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} N\u00e1zev n\u00e1stroje MCP nen\u00ed platn\u00fd. N\u00e1zvy n\u00e1stroj\u016f mus\u00ed m\u00edt d\u00e9lku od 1 do 128 znak\u016f v\u010detn\u011b.
+CWMCM0029E.invalid.length.tool.name.explanation=N\u00e1zev n\u00e1stroje nen\u00ed v souladu se specifikac\u00ed MCP pro n\u00e1zvy. N\u00e1zvy mus\u00ed m\u00edt d\u00e9lku od 1 do 128 znak\u016f v\u010detn\u011b.
+CWMCM0029E.invalid.length.tool.name.useraction=Ujist\u011bte se, \u017ee n\u00e1zvy n\u00e1stroj\u016f maj\u00ed d\u00e9lku od 1 do 128 znak\u016f v\u010detn\u011b.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: Nelze p\u0159idat argument s pr\u00e1zdn\u00fdm n\u00e1zvem do n\u00e1stroje MCP ( {0} ).
+CWMCM0030E.blank.arguments.explanation=Ka\u017ed\u00fd argument n\u00e1stroje MCP mus\u00ed m\u00edt nenulov\u00fd n\u00e1zev. 
+CWMCM0030E.blank.arguments.useraction=Zadejte nepr\u00e1zdn\u00e9 n\u00e1zvy pro v\u0161echny argumenty n\u00e1stroje.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: Argument \u201e {1} \u201c n\u00e1stroje MCP \u201e {0} \u201c nem\u00e1 p\u0159evodn\u00edk, kter\u00fd by zm\u011bnil jeho v\u00fdchoz\u00ed hodnotu na objekt typu \u201e {2} \u201c.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=Jeden nebo v\u00edce argument\u016f m\u00e1 v\u00fdchoz\u00ed hodnoty bez odpov\u00eddaj\u00edc\u00edho p\u0159evad\u011b\u010de, kter\u00fd by p\u0159evedl v\u00fdchoz\u00ed hodnotu na typ argumentu.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Vytvo\u0159te vlastn\u00ed implementaci p\u0159evad\u011b\u010de pro typ argumentu n\u00e1stroje.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: Nelze p\u0159idat druh\u00fd argument s n\u00e1zvem \u201e {1} \u201c do n\u00e1stroje MCP \u201e {0} \u201c.
+CWMCM0032E.duplicate.argument.name.explanation=Ka\u017ed\u00fd argument n\u00e1stroje MCP mus\u00ed m\u00edt jin\u00e9 jm\u00e9no.
+CWMCM0032E.duplicate.argument.name.useraction=Ka\u017ed\u00e9mu argumentu n\u00e1stroje p\u0159i\u0159a\u010fte jin\u00e9 jm\u00e9no.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Zak\u00e1zan\u00fd po\u017eadavek. Metoda= {0} RequestURI={1 } RequestQuery={2 }, V\u00fdjimka: {3}
+CWMCM0033A.forbidden.error.explanation=Byla pod\u00e1na \u017e\u00e1dost, ale u\u017eivatel nem\u00e1 opr\u00e1vn\u011bn\u00ed ji podat.
+CWMCM0033A.forbidden.error.useraction=Ujist\u011bte se, \u017ee po\u017eadavek vol\u00e1 opr\u00e1vn\u011bn\u00fd u\u017eivatel.

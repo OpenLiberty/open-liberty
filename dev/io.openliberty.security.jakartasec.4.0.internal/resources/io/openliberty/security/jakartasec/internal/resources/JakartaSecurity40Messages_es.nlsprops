@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: Se ha detectado un almac\u00e9n de identidades configurado mediante una anotaci\u00f3n ` @InMemoryIdentityStoreDefinition ` dentro de esta aplicaci\u00f3n. No utilice esta definici\u00f3n en un entorno de producci\u00f3n.
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=Utilice la definici\u00f3n @InMemoryIdentityStoreDefinition \u00fanicamente con fines de desarrollo, prueba y depuraci\u00f3n.
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=Antes de que su aplicaci\u00f3n entre en producci\u00f3n, elimine el almac\u00e9n de identidades de desarrollo ( @InMemoryIdentityStoreDefinition ) y sustit\u00fayalo por un almac\u00e9n de identidades compatible con la producci\u00f3n, como LDAP o Database.
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: La variable de entorno ` {0} ` est\u00e1 vac\u00eda o no est\u00e1 definida. Cualquier validaci\u00f3n posterior de solicitudes de autenticaci\u00f3n que utilice el identificador de llamada asociado fallar\u00e1.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=Se utiliz\u00f3 una variable de entorno como valor de un campo de contrase\u00f1a en la anotaci\u00f3n @Credential, pero esta variable no est\u00e1 definida externamente o est\u00e1 definida como una cadena vac\u00eda.
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=Aseg\u00farate de configurar la variable de entorno a la que se hace referencia en la anotaci\u00f3n, que normalmente se especifica en server.env.
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: La credencial proporcionada al objeto IdentityStore no es una UsernamePasswordCredential y no se puede validar.
+JAKARTASEC_ERROR_WRONG_CRED.explanation=La credencial proporcionada al objeto IdentityStore no es una clase UsernamePasswordCredential y no se puede validar.
+JAKARTASEC_ERROR_WRONG_CRED.useraction=Revise el tipo de credencial que se ha pasado al objeto IdentityStore mediante la implementaci\u00f3n de HttpAuthMechanism.
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: La expresi\u00f3n del lenguaje de expresi\u00f3n (EL) para el atributo \u00ab ''{0}'' \u00bb de la anotaci\u00f3n del almac\u00e9n de identidades no se puede resolver en un valor v\u00e1lido. Aseg\u00farese de que la expresi\u00f3n EL y el resultado son v\u00e1lidos y de que los beans de referencia que se utilizan en la expresi\u00f3n se pueden resolver. En su lugar, se utiliza el valor predeterminado del atributo ''{1}''.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=Aseg\u00farese de que la anotaci\u00f3n contiene un valor de configuraci\u00f3n v\u00e1lido. Aseg\u00farese de que las expresiones EL sean v\u00e1lidas y de que los beans de referencia que se utilizan en la expresi\u00f3n se puedan resolver, y que el tipo de resultado se corresponda con el atributo.
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=La causa del error es una discrepancia del tipo entre el resultado de EL y el valor del atributo esperado. Por ejemplo, si el tipo de atributo esperado es String, el resultado EL debe ser String.
+
+# NOTE, this error message (JAKARTASEC_ERROR_NO_HAM) is copied directly from bundle com.ibm.ws.security.javaeesec
+JAKARTASEC_ERROR_NO_HAM=CWWKS2604E: No se ha podido crear el objeto HttpAuthenticationMechanism para el m\u00f3dulo {0} en la aplicaci\u00f3n {1}.
+JAKARTASEC_ERROR_NO_HAM.explanation=La raz\u00f3n por la que no se ha creado el objeto HttpAuthenticationMechanism var\u00eda. Los mensajes de error del objeto HttpAuthenticationMechanism proporcionan informaci\u00f3n sobre por qu\u00e9 no se puede crear el objeto HttpAuthenticationMechanism.
+JAKARTASEC_ERROR_NO_HAM.useraction=Consulte los mensajes de error del objeto HttpAuthenticationMechanism y realice correcciones seg\u00fan lo especificado en los mensajes de error.
+
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION=CWWKS2605E: No se puede determinar qu\u00e9 HttpAuthenticationMechanism debe gestionar la solicitud. Los siguientes HttpAuthenticationMechanisms tienen la misma prioridad o tipo de mecanismo de autenticaci\u00f3n HTTP {0}.
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION.explanation=Si se especifican varios mecanismos de autenticaci\u00f3n HTTP ( HttpAuthenticationMechanisms ), se debe seleccionar uno \u00fanico para la autorizaci\u00f3n en funci\u00f3n de la prioridad, el tipo de mecanismo de autenticaci\u00f3n HTTP y los calificadores opcionales del mecanismo de autenticaci\u00f3n HTTP.
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION.useraction=Establezca o ajuste el valor de prioridad de uno de estos HttpAuthenticationMechanisms.
+

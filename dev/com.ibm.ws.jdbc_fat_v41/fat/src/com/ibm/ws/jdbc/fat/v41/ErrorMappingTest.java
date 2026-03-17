@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.v41;
 
@@ -33,7 +30,7 @@ import jdbc.fat.v41.errormap.web.ErrorMappingTestServlet;
 
 @RunWith(FATRunner.class)
 @AllowedFFDC // allow all FFDCs because this test forces a lot of different error paths
-@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
+@SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES })
 public class ErrorMappingTest extends FATServletClient {
 
     static final String APP_NAME = "errorMappingApp";

@@ -24,7 +24,8 @@ import java.security.AccessController; // Liberty Change
 import java.security.PrivilegedAction; // Liberty Change
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 import org.apache.cxf.Bus;
 import org.apache.cxf.buslifecycle.BusLifeCycleListener;
@@ -91,6 +92,7 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
     //CXF specific
     public static final String USE_POLICY = "org.apache.cxf.transport.http.async.usePolicy";
 
+    private Logger LOG = Logger.getLogger(AsyncHTTPConduitFactory.class.getName()); // Liberty change
 
     public enum UseAsyncPolicy {
         ALWAYS, ASYNC_ONLY, NEVER;
@@ -183,11 +185,20 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
         }
         policy = UseAsyncPolicy.getPolicy(st);
 
-        maxConnections = getInt(s.get(MAX_CONNECTIONS), maxConnections);
+        // maxConnections and maxPerRoute values are fetched from jvm.options file 
+        // in case not found in the property map given in method parameter 
+        maxConnections = getInt(getProperty(s, MAX_CONNECTIONS), maxConnections);       // Liberty change
         connectionTTL = getInt(s.get(CONNECTION_TTL), connectionTTL);
         connectionMaxIdle = getInt(s.get(CONNECTION_MAX_IDLE), connectionMaxIdle);
-        maxPerRoute = getInt(s.get(MAX_PER_HOST_CONNECTIONS), maxPerRoute);
+        // Liberty change begin
+        maxPerRoute = getInt(getProperty(s,MAX_PER_HOST_CONNECTIONS), maxPerRoute);     
 
+        if(LOG.isLoggable(Level.FINE))      {
+            LOG.fine("SetProperties: " + MAX_CONNECTIONS + " is set to " + maxConnections);
+            LOG.fine("SetProperties: " + MAX_PER_HOST_CONNECTIONS + " is set to " + maxPerRoute);
+        }
+        // Liberty change end
+        
         if (connectionManager != null) {
             connectionManager.setMaxTotal(maxConnections);
             connectionManager.setDefaultMaxPerRoute(maxPerRoute);
@@ -226,6 +237,13 @@ public class AsyncHTTPConduitFactory implements HTTPConduitFactory {
 
         return changed;
     }
+    // Liberty change begin
+    // When property can't be found in Map, return property value from system  
+    private Object getProperty(Map<String, Object> s, String key)    {
+        Object propertyValue = s.get(key);
+        return propertyValue == null ? SystemPropertyAction.getProperty(key) : propertyValue;
+    }
+    // Liberty change end 
     private int getInt(Object s, int defaultv) {
         int i = defaultv;
         if (s instanceof String) {

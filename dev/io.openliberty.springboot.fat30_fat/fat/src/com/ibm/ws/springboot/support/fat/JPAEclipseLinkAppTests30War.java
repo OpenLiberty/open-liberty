@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -65,7 +65,6 @@ public class JPAEclipseLinkAppTests30War extends JPAAppAbstractTests {
             Enumeration<JarEntry> entries = jarFile.entries();
             while (entries.hasMoreElements()) {
                 JarEntry originalEntry = entries.nextElement();
-                JarEntry newEntry = originalEntry;
                 String entryName = originalEntry.getName();
                 if (entryName.equals("WEB-INF/classes/META-INF/persistence.xml")) {
                     // Remove the default persistence.xml processed by Liberty
@@ -75,7 +74,7 @@ public class JPAEclipseLinkAppTests30War extends JPAAppAbstractTests {
                     // Remove the web.xml
                     continue;
                 }
-                jarOutputStream.putNextEntry(newEntry);
+                jarOutputStream.putNextEntry(new JarEntry(entryName));
                 byte[] buffer = new byte[1024];
                 int bytesRead;
                 try (InputStream entryIn = jarFile.getInputStream(originalEntry)) {

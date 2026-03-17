@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,10 +20,13 @@ import jakarta.data.messages.Messages;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record NumericLiteralRecord<N extends Number & Comparable<N>>(N value)
+record NumericLiteralRecord<N extends Number & Comparable<N>>(
+                Class<? extends N> type,
+                N value)
                 implements NumericLiteral<N> {
 
     NumericLiteralRecord {
+        Messages.requireNonNull(type, "type");
         Messages.requireNonNull(value, "value");
     }
 

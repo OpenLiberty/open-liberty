@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -213,24 +215,28 @@ public class JAXRS21ClientCXFRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testObservableRxInvoker_getCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testObservableRxInvoker_getIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_getIbmConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testFlowableRxInvoker_getCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testFlowableRxInvoker_getIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_getIbmConnectionTimeout", p, "Timeout as expected");
@@ -261,24 +267,28 @@ public class JAXRS21ClientCXFRxInvokerTest extends JAXRS21AbstractTest {
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL as the test is intermittently failing in some environments
     public void testObservableRxInvoker_postCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testObservableRxInvoker_postIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testObservableRxInvoker_postIbmConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testFlowableRxInvoker_postCbConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postCbConnectionTimeout", p, "Timeout as expected");
     }
 
     @Test
+    @Mode(TestMode.EXPERIMENTAL) //#33408 : Marked as EXPERIMENTAL due to intermittent failures in some environments.
     public void testFlowableRxInvoker_postIbmConnectionTimeout() throws Exception {
         Map<String, String> p = new HashMap<String, String>();
         this.runTestOnServer(cxfRxInvokerTarget, "testFlowableRxInvoker_postIbmConnectionTimeout", p, "Timeout as expected");

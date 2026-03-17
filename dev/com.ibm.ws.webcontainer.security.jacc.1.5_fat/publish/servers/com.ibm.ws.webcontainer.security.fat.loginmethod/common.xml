@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2020 IBM Corporation and others.
+    Copyright (c) 2020, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -73,22 +73,22 @@
 	<application type="ear" id="loginmethod" name="loginmethod" location="loginmethod.ear">
 		<application-bnd>
 			<security-role name="Employee">
-				<!--user name="user1" /-->
-				<!--group name="group1" /-->
+				<user name="user1" />
+				<group name="group1" />
 				<run-as userid="user98" password="user98pwd" />
 			</security-role>
 			<security-role name="Manager">
-				<!--user name="user2" /-->
-				<!--group name="group2" /-->
+				<user name="user2" />
+				<group name="group2" />
 				<run-as userid="user99" password="user99pwd" />
 			</security-role>
 			<security-role name="DeclaredManager">
-				<!--user name="user7" /-->
-				<!--group name="group7" /-->
+				<user name="user7" />
+				<group name="group7" />
 			</security-role>
 			<security-role name="DeclaredManagerDyn">
-				<!--user name="user8" /-->
-				<!--group name="group8" /-->
+				<user name="user8" />
+				<group name="group8" />
 			</security-role>
 			<security-role name="AllAuthenticated">
 				<special-subject type="ALL_AUTHENTICATED_USERS" />

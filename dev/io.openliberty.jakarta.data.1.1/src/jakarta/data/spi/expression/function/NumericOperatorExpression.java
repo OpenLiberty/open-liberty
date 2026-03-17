@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,6 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.function;
 
-import jakarta.data.expression.Expression;
 import jakarta.data.expression.NumericExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.NumericLiteral;
@@ -29,7 +28,7 @@ public interface NumericOperatorExpression<T, N extends Number & Comparable<N>> 
         DIVIDE
     }
 
-    Expression<? super T, N> left();
+    NumericExpression<? super T, N> left();
 
     static <T, N extends Number & Comparable<N>> NumericOperatorExpression<T, N> //
                     of(Operator operator,
@@ -38,7 +37,7 @@ public interface NumericOperatorExpression<T, N extends Number & Comparable<N>> 
         Messages.requireNonNull(left, "left");
 
         return new NumericOperatorExpressionRecord<>(operator, //
-                        NumericLiteral.of(left), //
+                        NumericLiteral.of(right.type(), left), //
                         right);
     }
 
@@ -50,7 +49,7 @@ public interface NumericOperatorExpression<T, N extends Number & Comparable<N>> 
 
         return new NumericOperatorExpressionRecord<>(operator, //
                         left, //
-                        NumericLiteral.of(right));
+                        NumericLiteral.of(left.type(), right));
     }
 
     static <T, N extends Number & Comparable<N>> NumericOperatorExpression<T, N> //
@@ -64,5 +63,5 @@ public interface NumericOperatorExpression<T, N extends Number & Comparable<N>> 
 
     Operator operator();
 
-    Expression<? super T, N> right();
+    NumericExpression<? super T, N> right();
 }

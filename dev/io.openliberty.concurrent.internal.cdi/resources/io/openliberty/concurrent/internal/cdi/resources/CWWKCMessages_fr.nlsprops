@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -26,9 +26,9 @@
 
 # All messages must use the range CWWKC1410 to CWWKC1499
 
-CWWKC1410.schedule.lacks.seconds=CWWKC1410E: L''annotation Schedule, {0}, sp\u00e9cifie une valeur vide pour les secondes d''ex\u00e9cution de la t\u00e2che. Sp\u00e9cifiez une valeur non vide pour le champ des secondes, ou omettez le champ des secondes dans l''annotation Schedule. L''omission du champ des secondes planifie l''ex\u00e9cution de la t\u00e2che au d\u00e9but de la minute.
-CWWKC1410.schedule.lacks.seconds.explanation=La valeur vide du tableau indique que le champ des secondes ne doit pas \u00eatre pris en compte lors du calcul des heures programm\u00e9es. L'omission du champ des secondes planifie l'ex\u00e9cution de la t\u00e2che au d\u00e9but de la minute.
-CWWKC1410.schedule.lacks.seconds.useraction=Modifier le champ secondes de l'annotation Schedule pour sp\u00e9cifier une valeur non vide, ou omettre le champ secondes de l'annotation Schedule.
+CWWKC1410.schedule.lacks.seconds=CWWKC1410E: L''annotation Schedule, {0}, sp\u00e9cifie une liste vide pour les secondes auxquelles la t\u00e2che s''ex\u00e9cute. Sp\u00e9cifiez une liste non vide pour le champ secondes ou omettez le champ secondes de l''annotation Schedule. Si vous omettez le champ des secondes, la t\u00e2che sera programm\u00e9e pour s''ex\u00e9cuter au d\u00e9but de la minute.
+CWWKC1410.schedule.lacks.seconds.explanation=La liste vide indique que le champ des secondes doit \u00eatre ignor\u00e9 lors du calcul des heures programm\u00e9es. Si vous omettez le champ des secondes, la t\u00e2che sera programm\u00e9e pour s'ex\u00e9cuter au d\u00e9but de la minute.
+CWWKC1410.schedule.lacks.seconds.useraction=Modifiez le champ secondes de l'annotation Schedule pour sp\u00e9cifier une liste non vide, ou omettez le champ secondes de l'annotation Schedule.
 
 CWWKC1411.qualified.res.err=CWWKC1411E: Le serveur n''a pas cr\u00e9\u00e9 de bean {0} pour l''\u00e9l\u00e9ment d''annotation {1} ou de descripteur de d\u00e9ploiement {2}. L''\u00e9l\u00e9ment d''annotation ou de descripteur de d\u00e9ploiement a le nom {3} et les qualificatifs {4} et est d\u00e9fini dans l''artefact d''application {5}. L''erreur est {6}
 CWWKC1411.qualified.res.err.explanation=Le code n'a pas cr\u00e9\u00e9 la ressource ou ne l'a pas enregistr\u00e9e en tant que bean.

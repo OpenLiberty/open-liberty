@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Writer;
 import java.nio.charset.StandardCharsets;
+import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -89,11 +90,12 @@ public class McpTransport {
             String supportedValues = Arrays.stream(McpProtocolVersion.values())
                                            .map(McpProtocolVersion::getVersion)
                                            .collect(Collectors.joining(", "));
-            String excpetionMesaage = Tr.formatMessage(tc, "CWMCM0013E.unsupported.mcp.http.version", supportedValues);
+            String excpetionMesaage = Tr.formatMessage(tc, "unsupported.mcp.http.version", supportedValues);
             throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, excpetionMesaage);
         }
         this.mcpRequest = toRequest();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
+
         if (sessionIdHeader == null) {
             this.sessionInfo = null;
             return;
@@ -186,6 +188,13 @@ public class McpTransport {
         return sessionInfo;
     }
 
+    /*
+     * Returns whether the current request has been successfully authenticated.
+     */
+    public boolean isAuthenticated() {
+        return req.getUserPrincipal() != null;
+    }
+
     /**
      * Returns the session ID associated with this transport.
      * This is the raw ID value provided by the client in the {@code Mcp-Session-Id} header,
@@ -230,15 +239,26 @@ public class McpTransport {
     }
 
     /**
-     * sends custom error message response back to client depending on the error
+     * sends custom error message response back to client depending on the error with 500 HTTPS error code
      *
      * @param e the exception that was caught
      * @throws IOException
      */
     public void sendError(Throwable e) throws IOException {
-        String excpetionMessage = Tr.formatMessage(tc, "CWMCM0014E.unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
+        String exceptionMessage = Tr.formatMessage(tc, "unexpected.server.error", new Object[] { req.getMethod(), req.getRequestURI(), req.getQueryString() });
         Tr.error(tc, "CWMCM0015E.unexpected.server.error.exception", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
-        res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, excpetionMessage);
+        res.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, exceptionMessage);
+    }
+
+    /**
+     * sends custom error message response back to client depending on the error with 403 HTTPS error code
+     *
+     * @param e the exception that was caught
+     * @throws IOException
+     */
+    public void sendAuthError(Throwable e) throws IOException {
+        Tr.audit(tc, "CWMCM0033A.forbidden.error", req.getMethod(), req.getRequestURI(), req.getQueryString(), e.getMessage());
+        res.sendError(HttpServletResponse.SC_FORBIDDEN, e.getMessage());
     }
 
     /**
@@ -298,7 +318,7 @@ public class McpTransport {
                 }
             } catch (Exception e) {
                 Tr.error(tc, "CWMCM0016E.error.sending.response.exception", e);
-                sendResponse(ToolResponse.error(Tr.formatMessage(tc, "CWMCM0011E.internal.server.error")));
+                sendResponse(ToolResponse.error(Tr.formatMessage(tc, "internal.server.error")));
             } finally {
                 asyncContext.complete();
             }
@@ -323,5 +343,13 @@ public class McpTransport {
             }
         }
         return false;
+    }
+
+    /**
+     *
+     * @return the user principle injected after authorisation (can be null if authorisation failed)
+     */
+    public Principal getUser() {
+        return req.getUserPrincipal();
     }
 }

@@ -15,7 +15,8 @@ Manifest-Version: 1.0
 IBM-Process-Types: server, \
  client
 -features=io.openliberty.jakarta.annotation-2.0; ibm.tolerates:="2.1, 3.0", \
-  com.ibm.websphere.appserver.artifact-1.0
+  com.ibm.websphere.appserver.artifact-1.0, \
+  io.openliberty.jandex.internal-3.0; ibm.tolerates:="2.0"
 -bundles=com.ibm.ws.anno
 -jars=com.ibm.websphere.appserver.spi.anno; location:=dev/spi/ibm/
 -files=dev/spi/ibm/javadoc/com.ibm.websphere.appserver.spi.anno_1.1-javadoc.zip

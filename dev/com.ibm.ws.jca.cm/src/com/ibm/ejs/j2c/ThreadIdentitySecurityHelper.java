@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012,2021 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -161,6 +161,7 @@ import com.ibm.ws.kernel.security.thread.ThreadIdentityManager;
 public class ThreadIdentitySecurityHelper implements SecurityHelper {
     private final boolean m_ThreadSecurity;
     private final int m_ThreadIdentitySupport;
+    private final int m_serviceType;
 
     private static TraceComponent tc = Tr.register(ThreadIdentitySecurityHelper.class,
                                                    J2CConstants.traceSpec,
@@ -169,13 +170,14 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
     /**
      * Constructor for ThreadIdentitySecurityHelper
      */
-    public ThreadIdentitySecurityHelper(int threadIdentitySupport, boolean threadSecurity) {
+    public ThreadIdentitySecurityHelper(int threadIdentitySupport, boolean threadSecurity, int serviceType) {
 
         if (tc.isEntryEnabled())
-            Tr.entry(this, tc, "<init>", threadIdentitySupport, threadSecurity);
+            Tr.entry(this, tc, "<init>", threadIdentitySupport, threadSecurity, serviceType);
 
         m_ThreadIdentitySupport = threadIdentitySupport;
         m_ThreadSecurity = threadSecurity;
+        m_serviceType = serviceType;
 
         if (tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>");
@@ -350,19 +352,29 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
                         // user identity.
 
                         if (m_ThreadSecurity) {
-
                             // Connector requires that user identity be pushed to
                             // OS Thread.
-
-                            if (ThreadIdentityManager.isJ2CThreadIdentityEnabled()) {
-
+                            if (m_serviceType == AbstractConnectionFactoryService.SERVICE_JDBC_TYPE && ThreadIdentityManager.isJ2CThreadIdentityEnabled()) {
                                 // J2C SyncToThread is enabled for Server.
                                 // Push Subject to thread
 
                                 retObject = setJ2CThreadIdentity(subj);
 
                                 if (tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "beforeGettingConnection() pushed the user identity associated with the thread to the OS Thread:  ",
+                                    Tr.debug(tc, "beforeGettingConnection() J2C pushed the user identity associated with the thread to the OS Thread:  ",
+                                             new Object[] { getSubjectString(subj) });
+                                }
+
+                            } else if ((m_serviceType == AbstractConnectionFactoryService.SERVICE_CONECTORS_TYPE ||
+                                        m_serviceType == AbstractConnectionFactoryService.SERVICE_JDBC_TYPE)
+                                       && ThreadIdentityManager.isConnectorsThreadIdentityEnabled()) {
+                                // Connectors SyncToThread is enabled for Server.
+                                // Push Subject to thread
+
+                                retObject = setJ2CThreadIdentity(subj);
+
+                                if (tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "beforeGettingConnection() Connectors pushed the user identity associated with the thread to the OS Thread:  ",
                                              new Object[] { getSubjectString(subj) });
                                 }
 
@@ -461,7 +473,11 @@ public class ThreadIdentitySecurityHelper implements SecurityHelper {
                     // Later, during afterGettingConnection() processing, the
                     // OS Thread Identity will then be returned to what it was.
 
-                    if (m_ThreadSecurity && ThreadIdentityManager.isThreadIdentityEnabled()) {
+                    if ((m_ThreadSecurity && ThreadIdentityManager.isAppThreadIdentityEnabled()) ||
+                        (m_ThreadSecurity && ThreadIdentityManager.isJ2CThreadIdentityEnabled()) ||
+                        (m_ThreadSecurity && ThreadIdentityManager.isConnectorsThreadIdentityEnabled()
+                         && (m_serviceType == AbstractConnectionFactoryService.SERVICE_CONECTORS_TYPE ||
+                             m_serviceType == AbstractConnectionFactoryService.SERVICE_JDBC_TYPE))) {
                         // Get Server subject and push it to the current OS thread
                         retObject = ThreadIdentityManager.runAsServer();
                     }

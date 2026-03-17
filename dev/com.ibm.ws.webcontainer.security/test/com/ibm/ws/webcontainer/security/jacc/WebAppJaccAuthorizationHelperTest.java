@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -116,6 +116,8 @@ public class WebAppJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("webJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isSubjectInRole(APP_NAME, MODULE_NAME, SERVLET_NAME, ROLE, ier, SUBJECT);
                 will(returnValue(true));
             }
@@ -125,7 +127,7 @@ public class WebAppJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr);
+        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr, null);
         assertTrue(wjah.isUserInRole(ROLE, ier, SUBJECT));
     }
 
@@ -164,6 +166,8 @@ public class WebAppJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("webJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isSubjectInRole(APP_NAME, MODULE_NAME, null, ROLE, ier, SUBJECT);
                 will(returnValue(false));
             }
@@ -173,7 +177,7 @@ public class WebAppJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr);
+        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr, null);
         assertFalse(wjah.isUserInRole(ROLE, ier, SUBJECT));
     }
 
@@ -214,6 +218,8 @@ public class WebAppJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("webJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isAuthorized(APP_NAME, MODULE_NAME, URI_NAME, METHOD_NAME, ier, SUBJECT);
                 will(returnValue(true));
             }
@@ -223,7 +229,7 @@ public class WebAppJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr);
+        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr, null);
         assertTrue(wjah.authorize(AR, wr, URI_NAME));
     }
 
@@ -260,6 +266,8 @@ public class WebAppJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("webJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isSSLRequired(APP_NAME, MODULE_NAME, URI_NAME, METHOD_NAME, ier);
                 will(returnValue(true));
             }
@@ -269,7 +277,7 @@ public class WebAppJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr);
+        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr, null);
         assertTrue(wjah.isSSLRequired(wr, URI_NAME));
     }
 
@@ -298,13 +306,15 @@ public class WebAppJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("webJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isSSLRequired(APP_NAME, MODULE_NAME, URI_NAME, METHOD_NAME, ier);
                 will(returnValue(false));
             }
         });
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr);
+        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr, null);
         assertFalse(wjah.isSSLRequired(wr, URI_NAME));
     }
 
@@ -339,6 +349,8 @@ public class WebAppJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("webJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isAccessExcluded(APP_NAME, MODULE_NAME, URI_NAME, METHOD_NAME, ier);
                 will(returnValue(false));
             }
@@ -348,7 +360,7 @@ public class WebAppJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr);
+        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr, null);
         assertNull(wjah.checkPrecludedAccess(wr, URI_NAME));
     }
 
@@ -383,6 +395,8 @@ public class WebAppJaccAuthorizationHelperTest {
                 will(returnValue(0));
                 one(cc).locateService("webJaccService", jsr);
                 will(returnValue(js));
+                one(js).isPolicyConfigured();
+                will(returnValue(true));
                 one(js).isAccessExcluded(APP_NAME, MODULE_NAME, URI_NAME, METHOD_NAME, ier);
                 will(returnValue(true));
             }
@@ -392,7 +406,7 @@ public class WebAppJaccAuthorizationHelperTest {
 
         ajsr.setReference(jsr);
         ajsr.activate(cc);
-        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr);
+        WebAppJaccAuthorizationHelper wjah = new WebAppJaccAuthorizationHelper(ajsr, null);
         WebReply output = wjah.checkPrecludedAccess(wr, URI_NAME);
         assertTrue(output instanceof DenyReply);
     }

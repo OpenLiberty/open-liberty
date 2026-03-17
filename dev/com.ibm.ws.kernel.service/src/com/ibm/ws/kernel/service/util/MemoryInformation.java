@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2021 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -650,51 +650,58 @@ public class MemoryInformation {
         return Long.parseLong(line);
     }
 
-    @FFDCIgnore({ OperatingSystemException.class })
     private long getTotalMemoryWindows() throws MemoryInformationException {
-        try {
-            List<String> lines = OperatingSystem.executeProgram("wmic", "os", "get", "totalvisiblememorysize", "/format:list");
-            for (String line : lines) {
-                // https://msdn.microsoft.com/en-us/library/aa394239(v=vs.85).aspx
-                if (line.startsWith("TotalVisibleMemorySize=")) {
-                    return processWmicLine(line) * 1024;
-                }
-            }
-            throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "wmic", lines));
-        } catch (OperatingSystemException e) {
-            throw new MemoryInformationException(e);
-        }
+        // This was previously implemented using wmic, which is deprecated 
+        // and removed in modern Windows (Windows 10 21H1+, Windows 11, Server 2022+)
+        // Use Java MXBean instead which is available in Java 8+.
+        return getTotalMemoryJDK();
     }
 
-    private long processWmicLine(String line) {
-        return Long.parseLong(line.substring(line.indexOf('=') + 1));
-    }
-
-    @FFDCIgnore({ OperatingSystemException.class })
+    @FFDCIgnore({ MemoryInformationException.class })
     private long getAvailableMemoryWindows() throws MemoryInformationException {
+        // wmic is deprecated and removed in modern Windows (Windows 10 21H1+, Windows 11, Server 2022+)
+        // Try PowerShell first to maintain the same level of detail (AvailableBytes + CacheBytes)
         try {
-            long available = 0;
-            List<String> lines = OperatingSystem.executeProgram("wmic", "path", "Win32_PerfFormattedData_PerfOS_Memory", "get",
-                                                                "/format:list");
+            return getAvailableMemoryWindowsPowerShell();
+        } catch (OperatingSystemException | MemoryInformationException e) {
+            // If PowerShell fails, fall back to Java MXBean
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "PowerShell failed, falling back to Java MXBean", e);
+            }
+			
+            // Note: JDK free memory does not include cached/standby memory, and might
+            // be lower than previous implementation (wmic) and new PowerShell results.
+            return getFreeMemoryJDK();
+        }
+    }
 
-            // https://technet.microsoft.com/en-ca/aa394268(v=vs.71)
+    private long getAvailableMemoryWindowsPowerShell() throws OperatingSystemException, MemoryInformationException {
+        // Use PowerShell to get the same memory information that wmic provided
+        // Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory provides AvailableBytes and CacheBytes
+        List<String> lines = OperatingSystem.executeProgram("powershell", "-NoProfile", "-Command",
+                "$mem = Get-CimInstance Win32_PerfFormattedData_PerfOS_Memory; " +
+                "Write-Output ($mem.AvailableBytes + $mem.CacheBytes)");
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "PowerShell returned " + lines.size() + " line(s): " + lines);
+        }
 
-            for (String line : lines) {
-                if (line.startsWith("AvailableBytes=")) {
-                    available += processWmicLine(line);
-                } else if (line.startsWith("CacheBytes=")) {
-                    available += processWmicLine(line);
+        for (String line : lines) {
+            line = line.trim();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                 Tr.debug(tc, "Processing line: '" + line + "'");
+            }
+            if (!line.isEmpty() && line.matches("\\d+")) {
+                long available = Long.parseLong(line);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                     Tr.debug(tc, "Parsed available memory: " + available + " bytes");
+                }
+                if (available > 0) {
+                    return available;
                 }
             }
-
-            if (available <= 0) {
-                throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "wmic", lines));
-            }
-
-            return available;
-        } catch (OperatingSystemException e) {
-            throw new MemoryInformationException(e);
         }
+        throw new MemoryInformationException(Tr.formatMessage(tc, "memory.information.unexpected", "PowerShell", lines));
     }
 
     @FFDCIgnore({ OperatingSystemException.class })

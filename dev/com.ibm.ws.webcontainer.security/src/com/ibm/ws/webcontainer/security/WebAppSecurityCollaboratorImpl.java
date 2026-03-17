@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -308,7 +308,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
             Tr.debug(tc, "enabling JACC service");
         }
         webJaccServiceRef.setReference(ref);
-        wasch = new WebAppJaccAuthorizationHelper(webJaccServiceRef);
+        wasch = new WebAppJaccAuthorizationHelper(webJaccServiceRef, this);
     }
 
     protected void unsetWebJaccService(ServiceReference<WebJaccService> ref) {
@@ -1415,13 +1415,13 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     protected String getApplicationName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
         return wmmd.getConfiguration().getApplicationName();
     }
 
     protected String getModuleName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
         return wmmd.getConfiguration().getModuleName();
     }
 
@@ -1431,7 +1431,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
 
     protected void setSecurityMetadata(SecurityMetadata secMetadata) {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+        WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
         wmmd.setSecurityMetaData(secMetadata);
     }
 
@@ -1552,7 +1552,7 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
         WebAppConfig wac = null;
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         if (cmd instanceof WebComponentMetaData) { // Only get the header for web modules, i.e. not for EJB
-            WebModuleMetaData wmmd = (WebModuleMetaData) ((WebComponentMetaData) cmd).getModuleMetaData();
+            WebModuleMetaData wmmd = (WebModuleMetaData) cmd.getModuleMetaData();
             wac = wmmd.getConfiguration();
             if (!(wac instanceof com.ibm.ws.webcontainer.osgi.webapp.WebAppConfiguration)) {
                 wac = null;
@@ -1763,5 +1763,19 @@ public class WebAppSecurityCollaboratorImpl implements IWebAppSecurityCollaborat
                 return subject.toString();
             }
         });
+    }
+
+    @Override
+    public void setPolicyContextID() {
+        if (webJaccServiceRef.getService() != null) {
+            webJaccServiceRef.getService().setPolicyContextID(getApplicationName(), getModuleName());
+        }
+    }
+
+    @Override
+    public void resetPolicyContextID() {
+        if (webJaccServiceRef.getService() != null) {
+            webJaccServiceRef.getService().resetPolicyContextHandlerInfo();
+        }
     }
 }

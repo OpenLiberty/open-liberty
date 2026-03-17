@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2013 IBM Corporation and others.
+ * Copyright 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -255,7 +255,7 @@ public class BaseDestinationHandler
      * @param messageProcessor
      * @param parentStream The Itemstream this DestinationHandler should be
      *            added into.
-     * @param durableSubscriptionsTable Required only by topicspace
+     * @param durableSubscriptions Required only by topicspace
      *            destinations. Can be null if point to point (local or remote).
      * @param busName The name of the bus on which the destination resides
      */
@@ -264,7 +264,7 @@ public class BaseDestinationHandler
                                      MessageProcessor messageProcessor,
                                      SIMPItemStream parentItemStream,
                                      TransactionCommon transaction,
-                                     HashMap<String, Object> durableSubscriptionsTable,
+                                     HashMap<String, ConsumerDispatcher> durableSubscriptions,
                                      String busName) throws SIResourceException
     {
         super(messageProcessor, myDestinationDefinition, busName);
@@ -278,7 +278,7 @@ public class BaseDestinationHandler
                                       messageProcessor,
                                       parentItemStream,
                                       transaction,
-                                      durableSubscriptionsTable,
+                                      durableSubscriptions,
                                       busName });
 
         // 176658.3.1 - Register the destination handler for callback on transaction completion
@@ -380,7 +380,7 @@ public class BaseDestinationHandler
         // we can now initialize that which is common to cold and warm starts.
         initializeNonPersistent(
                                 messageProcessor,
-                                durableSubscriptionsTable,
+                                durableSubscriptions,
                                 transaction);
 
         _forwardRoutingPath = null;
@@ -427,7 +427,7 @@ public class BaseDestinationHandler
                                      MessageProcessor messageProcessor,
                                      SIMPItemStream parentItemStream,
                                      TransactionCommon transaction,
-                                     HashMap<String, Object> durableSubscriptionsTable,
+                                     HashMap<String, ConsumerDispatcher> durableSubscriptionsTable,
                                      String busName) throws SIResourceException
     {
         super(messageProcessor, null, busName);
@@ -624,7 +624,7 @@ public class BaseDestinationHandler
      */
     void initializeNonPersistent(
                                  MessageProcessor messageProcessor,
-                                 HashMap<String, Object> durableSubscriptionsTable,
+                                 HashMap<String, ConsumerDispatcher> durableSubscriptionsTable,
                                  TransactionCommon transaction)
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -668,7 +668,7 @@ public class BaseDestinationHandler
      */
     protected void reconstitute(
                                 MessageProcessor processor,
-                                HashMap<String, Object> durableSubscriptionsTable,
+                                HashMap<String, ConsumerDispatcher> durableSubscriptionsTable,
                                 int startMode) throws SIResourceException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
@@ -822,7 +822,7 @@ public class BaseDestinationHandler
      */
     private void reconstituteEnoughForDeletion(
                                                MessageProcessor processor,
-                                               HashMap<String, Object> durableSubscriptionsTable)
+                                               HashMap<String, ConsumerDispatcher> durableSubscriptionsTable)
                     throws
                     MessageStoreException,
                     SIRollbackException,
@@ -881,7 +881,7 @@ public class BaseDestinationHandler
      */
     protected void deleteDirtyTemporary(
                                         MessageProcessor processor,
-                                        HashMap<String, Object> durableSubscriptionsTable)
+                                        HashMap<String, ConsumerDispatcher> durableSubscriptionsTable)
                     throws
                     SIRollbackException,
                     SIConnectionLostException,

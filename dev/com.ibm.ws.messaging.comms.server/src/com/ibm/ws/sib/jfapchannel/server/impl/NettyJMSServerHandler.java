@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import com.ibm.websphere.sib.exception.SIResourceException;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.jfap.inbound.channel.NettyInboundChain;
 import com.ibm.ws.sib.comms.server.GenericTransportAcceptListener;
+import com.ibm.ws.sib.comms.server.InactiveChannelException;
 import com.ibm.ws.sib.jfapchannel.AcceptListener;
 import com.ibm.ws.sib.jfapchannel.Conversation;
 import com.ibm.ws.sib.jfapchannel.ConversationReceiveListener;
@@ -184,8 +185,15 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 		Attribute<Connection> attr = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION);
 		Connection connection = attr.get();
 
-		//TODO: Check if connection is closed
 		if (connection != null) {
+
+            if( connection.isClosed() || connection.isCloseDeferred() ) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			        SibTr.debug(this, tc, "Connecion is closed or close deferred.");
+		        }
+                return; 
+            }
+
 			IOReadCompletedCallback callback = connection.getReadCompletedCallback();
 			IOReadRequestContext readCtx = connection.getReadRequestContext();
 			NetworkConnection networkConnection = connection.getNetworkConnection();
@@ -213,6 +221,9 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 
 	}
 
+    /* 
+     * Inactive channel means it's closed. Just invalidate the connection.
+     */
 	@Override
 	public void channelInactive(ChannelHandlerContext ctx) throws Exception {
 		if (tc.isEntryEnabled())
@@ -220,9 +231,17 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			SibTr.debug(this, tc, "channelInactive", ctx.channel().remoteAddress() + " has been disconnected");
 		}
-		// TODO: Check how to manage inactive channels
+
 		Connection conn = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).get();
+
+        if(conn != null) {
+            conn.invalidate(false, new InactiveChannelException(), "Channel Inactive: " + ctx.channel().toString());
+        }
+
 		ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).set(null);
+
+        // No need to call ctx.close as it's already closed.
+
 		if (tc.isEntryEnabled())
 			SibTr.exit(this, tc, "channelInactive", ctx.channel());
 	}
@@ -234,7 +253,13 @@ public class NettyJMSServerHandler extends SimpleChannelInboundHandler<WsByteBuf
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 			SibTr.debug(this, tc, "exceptionCaught", cause);
 		}
-		// TODO: Check how to manage an exception
+
+        Connection conn = ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).get();
+        if(conn != null) {
+            conn.invalidate(false, cause, "Exception Caught for Channel: " + ctx.channel().toString());
+        }
+		ctx.channel().attr(NettyNetworkConnectionFactory.CONNECTION).set(null);
+
 		ctx.close();
 		super.exceptionCaught(ctx, cause);
 		if (tc.isEntryEnabled())

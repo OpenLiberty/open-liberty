@@ -142,7 +142,8 @@
        com.ibm.ws.javaee.dd.managedbean.ManagedBeanBnd,
        com.ibm.ws.javaee.dd.webbnd.WebBnd,
        com.ibm.ws.javaee.dd.webext.WebExt
-       com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd">
+       com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd,
+       io.openliberty.mcp.internal.config.McpConfigurationComponent">
   <AD id="location" name="%location" description="%location.desc" type="String" required="true" ibm:type="location"/>
   <AD id="autoStart"                          type="Boolean" required="false" name="%autoStart" description="%autoStart.desc"/>
   <AD id="context-root"                       type="String"  default="/" ibm:final="true" name="internal" description="internal use only"/>

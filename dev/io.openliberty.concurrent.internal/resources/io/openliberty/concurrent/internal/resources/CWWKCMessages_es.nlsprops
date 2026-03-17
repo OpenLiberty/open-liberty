@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=Cada valor de la lista de calificad
 CWWKC1206.qualifier.must.be.anno.useraction=Aseg\u00farese de que todos los valores de la lista de calificadores son clases de anotaci\u00f3n.
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: El artefacto de aplicaci\u00f3n {0} especifica una anotaci\u00f3n {1} o un elemento descriptor de despliegue {2} que tiene el nombre {3} y la lista de calificadores {4}. La lista de calificadores incluye la anotaci\u00f3n {5}, que no est\u00e1 anotada con @jakartajakarta.inject.Qualifier y @Retention(RUNTIME). Un ejemplo de calificador v\u00e1lido es: {6}
-CWWKC1207.lacks.qualifier.anno.explanation=La anotaci\u00f3n Qualifier indica que la anotaci\u00f3n es un calificador. La anotaci\u00f3n Retenci\u00f3n controla la disponibilidad de las anotaciones.
+CWWKC1207.lacks.qualifier.anno.explanation=La anotaci\u00f3n @Qualifier indica que la anotaci\u00f3n es un calificador. La anotaci\u00f3n Retenci\u00f3n controla la disponibilidad de las anotaciones.
 CWWKC1207.lacks.qualifier.anno.useraction=A\u00f1ade las anotaciones @Qualifier y @Retention(RUNTIME) a la clase qualifier.
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: El artefacto de aplicaci\u00f3n {0} especifica una anotaci\u00f3n {1} o un elemento descriptor de despliegue {2} que tiene el nombre {3} y la lista de calificadores {4}. No se puede configurar un recurso de Jakarta Concurrency para que tenga calificadores y un espacio de nombres java:global al mismo tiempo. Elimine los calificadores de la configuraci\u00f3n del recurso Jakarta Concurrency que tiene el nombre {3} o cambie al espacio de nombres java:app.

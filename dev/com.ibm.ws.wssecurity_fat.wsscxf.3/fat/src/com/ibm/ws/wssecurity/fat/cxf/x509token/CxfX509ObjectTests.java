@@ -1,19 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package com.ibm.ws.wssecurity.fat.cxf.x509token;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -36,6 +34,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -43,10 +42,9 @@ import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
-import componenttest.annotation.MinimumJavaLevel;
 
 @MinimumJavaLevel(javaLevel = 17)
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfX509ObjectTests {
@@ -135,11 +133,10 @@ public class CxfX509ObjectTests {
      * And the service need the x509 to sign and encrypt the SOAPBody
      * Service client code uses cxf/wss4j apis to create Crypto objects to sign and encrypt the SOAP message.
      * Service client (CxfX509SvcClient) sets the Crypto objects in requestContext
-     * This test does not require default ws-security client configuration (specified in server.xml)for the service client since all the configuration 
+     * This test does not require default ws-security client configuration (specified in server.xml)for the service client since all the configuration
      * is passed via requestContext. we do not include wsSecurityClient element in server.xml
      * issue 30353
      */
-
 
     @Test
     public void testCxfX509Service() throws Exception {

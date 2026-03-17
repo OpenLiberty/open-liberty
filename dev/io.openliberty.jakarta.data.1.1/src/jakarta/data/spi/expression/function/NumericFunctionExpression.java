@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,20 +34,28 @@ public interface NumericFunctionExpression<T, N extends Number & Comparable<N>> 
 
     static <T, N extends Number & Comparable<N>> NumericFunctionExpression<T, N> //
                     of(String name,
+                       Class<? extends N> returnType,
                        NumericExpression<? super T, N> expression) {
 
         Messages.requireNonNull(expression, "expression");
 
-        return new NumericFunctionExpressionRecord<>(name, List.of(expression));
+        return new NumericFunctionExpressionRecord<>( //
+                        name, //
+                        returnType, //
+                        List.of(expression));
     }
 
     static <T, N extends Number & Comparable<N>> NumericFunctionExpression<T, N> //
                     of(String name,
+                       Class<N> returnType,
                        TextExpression<? super T> expression) {
 
         Messages.requireNonNull(expression, "expression");
 
-        return new NumericFunctionExpressionRecord<>(name, List.of(expression));
+        return new NumericFunctionExpressionRecord<>( //
+                        name, //
+                        returnType, //
+                        List.of(expression));
     }
 
 }

@@ -319,7 +319,10 @@ public class DataJPAEclipseLinkServlet extends FATServlet {
         r = paid.get(2);
         assertEquals(5.0f, r.amount(), 0.001);
 
-        List<Double> amounts = rebates.amounts("testRecordEntityInferredFromReturnType-CustomerA");
+        List<Double> amounts = rebates.byCustomer("testRecordEntityInferredFromReturnType-CustomerA")
+                        .stream()
+                        .map(Rebate::amount)
+                        .collect(Collectors.toList());
 
         assertEquals(4.0f, amounts.get(0), 0.001);
         assertEquals(5.0f, amounts.get(1), 0.001);
@@ -329,7 +332,11 @@ public class DataJPAEclipseLinkServlet extends FATServlet {
         assertEquals(Rebate.Status.VERIFIED, rebates.status(all[4 - 1].id()).orElseThrow());
         assertEquals(Rebate.Status.PAID, rebates.status(all[3 - 1].id()).orElseThrow());
 
-        List<LocalDate> purchaseDates = rebates.findByCustomerIdOrderByPurchaseMadeOnDesc("testRecordEntityInferredFromReturnType-CustomerA");
+        List<LocalDate> purchaseDates = rebates
+                        .findForCustomer("testRecordEntityInferredFromReturnType-CustomerA")
+                        .stream()
+                        .map(Rebate::purchaseMadeOn)
+                        .toList();
 
         assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(0));
         assertEquals(LocalDate.of(2024, Month.MAY, 1), purchaseDates.get(1));

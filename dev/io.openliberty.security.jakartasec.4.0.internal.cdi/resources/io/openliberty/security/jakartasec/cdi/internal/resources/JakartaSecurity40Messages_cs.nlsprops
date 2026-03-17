@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal.cdi/resources/io/openliberty/security/jakartasec/cdi/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2610-2620
+
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER=CWWKS2610E: Chyb\u00ed vlastn\u00ed obslu\u017en\u00e1 rutina, kter\u00e1 pou\u017e\u00edv\u00e1 kvalifikovan\u00e9 n\u00e1zvy soubor\u016f ( HttpAuthenticationMechanisms ).
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.explanation=Pokud jsou zad\u00e1ny kvalifikovan\u00e9 adresy HttpAuthenticationMechanisms, pak v\u00fdchoz\u00ed adresa HttpAuthenticationMechanismHandler nem\u016f\u017ee ur\u010dit, kter\u00fd HAM pou\u017e\u00edt, a proto mus\u00ed b\u00fdt poskytnuta vlastn\u00ed implementace HttpAuthenticationMechanismHandler.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.useraction=Implementujte slu\u017ebu HttpAuthenticationMechanismHandler, kter\u00e1 pou\u017e\u00edv\u00e1 p\u0159izp\u016fsobenou logiku k v\u00fdb\u011bru jedine\u010dn\u00e9ho identifik\u00e1toru HttpAuthenticationMechanism.
+
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST=CWWKS2611E: Zpracov\u00e1n\u00ed pozn\u00e1mek k definici \u201e {0} \u201c v seznamu se nezda\u0159ilo.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.explanation=P\u0159i zpracov\u00e1n\u00ed seznamu definic HttpAuthenticationMechanism do\u0161lo k chyb\u011b p\u0159i extrahov\u00e1n\u00ed hodnot anotac\u00ed.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.useraction=Prozkoumejte p\u0159\u00ed\u010dinu v\u00fdjimky a opravte konfiguraci aplikace.
+
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES=CWWKS2612E: Zpracov\u00e1n\u00ed vlastnost\u00ed typu {0} selhalo.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.explanation=P\u0159i zpracov\u00e1n\u00ed konkr\u00e9tn\u00ed anotace HttpAuthenticationMechanism do\u0161lo k chyb\u011b p\u0159i extrahov\u00e1n\u00ed hodnot vlastnost\u00ed.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.useraction=Prozkoumejte p\u0159\u00ed\u010dinu v\u00fdjimky a opravte konfiguraci aplikace.
+
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS=CWWKS2613E: Nelze vytvo\u0159it vlastn\u00ed kvalifika\u010dn\u00ed anotaci \u201e {0} \u201c pro kvalifika\u010dn\u00ed t\u0159\u00eddu \u201e {1} \u201c.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.explanation=P\u0159i vytv\u00e1\u0159en\u00ed kvalifikovan\u00e9ho HttpAuthenticationMechanism, do\u0161lo k chyb\u011b p\u0159i vytv\u00e1\u0159en\u00ed vlastn\u00ed anotace kvalifik\u00e1toru.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.useraction=Prozkoumejte p\u0159\u00ed\u010dinu v\u00fdjimky a opravte konfiguraci aplikace.

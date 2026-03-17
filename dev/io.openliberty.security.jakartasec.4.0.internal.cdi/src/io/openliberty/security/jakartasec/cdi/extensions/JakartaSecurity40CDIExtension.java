@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -54,13 +54,44 @@ public class JakartaSecurity40CDIExtension implements Extension {
         // empty
     }
 
+    /**
+     * Check if in memory identity stores are enabled via webAppSecurity configuration.
+     *
+     * @return true if enabled, false else.
+     */
+    private boolean areInMemoryIdentityStoresEnabled() {
+        try {
+            com.ibm.ws.webcontainer.security.WebAppSecurityConfig config = com.ibm.ws.webcontainer.security.util.WebConfigUtils.getWebAppSecurityConfig();
+            if (config != null) {
+                return config.getAllowInMemoryIdentityStores();
+            }
+        } catch (Exception e) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Error checking allowInMemoryIdentityStores config - defaulting to false.", e);
+            }
+        }
+        return false;
+    }
+
     /*
      * Process an @InMemoryIdentityStoreDefinition if found within the application.
      */
     public <T> void processAnnotatedInMemory(@WithAnnotations({ InMemoryIdentityStoreDefinition.class }) @Observes ProcessAnnotatedType<T> event, BeanManager beanManager) {
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
-        Annotation inMemoryAnnotation = annotatedType.getAnnotation(InMemoryIdentityStoreDefinition.class);
-        addInMemoryIdentityStoreBean(inMemoryAnnotation, beanManager);
+
+        // add the in memory identity store only if it has been explicitly enabled
+        boolean areInMemoryIdentityStoresEnabled = areInMemoryIdentityStoresEnabled();
+
+        if (areInMemoryIdentityStoresEnabled) {
+            Annotation inMemoryAnnotation = annotatedType.getAnnotation(InMemoryIdentityStoreDefinition.class);
+            addInMemoryIdentityStoreBean(inMemoryAnnotation, beanManager);
+        } else {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "An identity store that is configured by using an @InMemoryIdentityStoreDefinition " +
+                             "annotation was detected within this application, but it will not be used because " +
+                             "it was not explicitly enabled.");
+            }
+        }
     }
 
     /**
@@ -89,9 +120,9 @@ public class JakartaSecurity40CDIExtension implements Extension {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "fetching in memory identity store properties");
             }
-            
+
             Class<? extends Annotation> annotationType = inMemoryAnnotation.annotationType();
-            
+
             // these are the methods from the annotation
             Method[] methods = annotationType.getMethods();
             for (Method m : methods) {
@@ -119,7 +150,7 @@ public class JakartaSecurity40CDIExtension implements Extension {
             Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()) + " BeanManager : " + Integer.toHexString(beanManager.hashCode()));
         }
 
-        // Verification of mechanisms and registration of ModulePropertiesProviderBean performed in JavaEESecCDIExtension's afterBeanDiscovery()
+        // add all beans gathered in the previous annotation parsing phase
         for (Bean<IdentityStore> bean : beansToAdd) {
             afterBeanDiscovery.addBean(bean);
         }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,68 +61,70 @@ task addHibernatePermissions() {
     !isAutomatedBuild
   }
 
-  // Find server.xml files
-  def serverConfigs = []
-  fileTree(project.file('publish/servers')).visit { FileVisitDetails d ->
-    if(d.file.name == "server.xml") {
-      serverConfigs << d.file.path
+  doLast {
+    // Find server.xml files
+    def serverConfigs = []
+    fileTree(project.file('publish/servers')).visit { FileVisitDetails d ->
+      if(d.file.name == "server.xml") {
+        serverConfigs << d.file.path
+      }
     }
-  }
-  
-  println "serverConfigs: "
-  serverConfigs.sort()
-  serverConfigs.each { serverConfig -> println "- " + serverConfig }
 
-  // Generate permissions
-  def permissions = []
-  configurations.hibernateJPA32.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact a ->
-    permissions << "<javaPermission className=\"java.security.AllPermission\" codebase=\"\${shared.resource.dir}/jpa32_hibernate/${a.file.name}\"/>"
-  }
-  
-  println "permissions: "
-  permissions.sort()
-  permissions.each { permission -> println "- " + permission }
+    println "serverConfigs: "
+    serverConfigs.sort()
+    serverConfigs.each { serverConfig -> println "- " + serverConfig }
 
-  // Replace existing permissions
-  serverConfigs.each { String p ->
-    String START_TAG = "<!-- START:"
-    String END_TAG   = "<!-- END:"
+    // Generate permissions
+    def permissions = []
+    configurations.hibernateJPA32.resolvedConfiguration.resolvedArtifacts.each { ResolvedArtifact a ->
+      permissions << "<javaPermission className=\"java.security.AllPermission\" codebase=\"\${shared.resource.dir}/jpa32_hibernate/${a.file.name}\"/>"
+    }
+  
+    println "permissions: "
+    permissions.sort()
+    permissions.each { permission -> println "- " + permission }
+
+    // Replace existing permissions
+    serverConfigs.each { String p ->
+      String START_TAG = "<!-- START:"
+      String END_TAG   = "<!-- END:"
     
-    java.nio.file.Path path = java.nio.file.Paths.get(p)
+      java.nio.file.Path path = java.nio.file.Paths.get(p)
 
-    List<String> original = java.nio.file.Files.readAllLines(path)
-    List<String> updated  = new ArrayList<>(original.size())
+      List<String> original = java.nio.file.Files.readAllLines(path)
+      List<String> updated  = new ArrayList<>(original.size())
 
-    boolean inSection = false
-    for (String line : original) {
-      // Keep start tag, mark in section, and add in all new permissions
-      if (line.contains(START_TAG)) {
-        updated.add(line)
-        inSection = true
-        String whitespace = line.substring(0, line.indexOf(START_TAG));
-        for (String permission : permissions) {
+      boolean inSection = false
+      for (String line : original) {
+        // Keep start tag, mark in section, and add in all new permissions
+        if (line.contains(START_TAG)) {
+          updated.add(line)
+          inSection = true
+          String whitespace = line.substring(0, line.indexOf(START_TAG));
+          for (String permission : permissions) {
             updated.add(whitespace + permission)
+          }
+          continue;
         }
-        continue;
-      }
-      
-      // Keep end tag, mark out of section
-      if (line.contains(END_TAG)) {
-        inSection = false
-        updated.add(line)
-        continue
-      }
-      
-      // Keep all lines outside the tagged section
-      if (!inSection) {
-        updated.add(line)
-      }
-      
-      // Ignore all lines inside the tagged section
-    }
 
-    // overwrite the file with the updated lines
-    java.nio.file.Files.write(path, updated)
+        // Keep end tag, mark out of section
+        if (line.contains(END_TAG)) {
+          inSection = false
+          updated.add(line)
+          continue
+        }
+
+        // Keep all lines outside the tagged section
+        if (!inSection) {
+          updated.add(line)
+        }
+      
+        // Ignore all lines inside the tagged section
+      }
+
+      // overwrite the file with the updated lines
+      java.nio.file.Files.write(path, updated)
+    }
   }
 }
 

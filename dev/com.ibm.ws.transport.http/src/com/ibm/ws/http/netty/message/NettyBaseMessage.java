@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,6 @@ package com.ibm.ws.http.netty.message;
 
 import static com.ibm.ws.http.netty.message.NettyBaseMessage.MessageType.REQUEST;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.ObjectInput;
 import java.io.ObjectOutput;
@@ -40,6 +39,7 @@ import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
 import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
 import com.ibm.ws.http.channel.internal.cookies.SameSiteCookieUtils;
+import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.genericbnf.exception.UnsupportedProtocolVersionException;
@@ -65,7 +65,7 @@ import io.openliberty.http.netty.cookie.CookieEncoder;
 /**
  *
  */
-public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
+public class NettyBaseMessage implements HttpBaseMessage {
 
     private static final TraceComponent tc = Tr.register(NettyBaseMessage.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
@@ -133,96 +133,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     }
 
     @Override
-    public void readExternal(ObjectInput input) throws IOException, ClassNotFoundException {
-        // recreate the local header storage
-        int len = input.readInt();
-        if (SERIALIZATION_V2 == len) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Deserializing a V2 object");
-            }
-            this.deserializationVersion = SERIALIZATION_V2;
-            len = input.readInt();
-        }
-        this.headersMap = new HashMap<>();
-
-        // now read all of the headers
-        int number = input.readInt();
-        if (SERIALIZATION_V2 == this.deserializationVersion) {
-            // this is the new format
-            for (int i = 0; i < number; i++) {
-                appendHeader(readByteArray(input), readByteArray(input));
-            }
-        } else {
-            // this is the old format
-            for (int i = 0; i < number; i++) {
-                appendHeader((String) input.readObject(), (String) input.readObject());
-            }
-        }
-        // BNFHeaders reading of the headers will trigger all the parsed/temp
-        // values at this layer
-        try {
-            if (SERIALIZATION_V2 == this.deserializationVersion) {
-                setVersion(readByteArray(input));
-            } else {
-                setVersion((String) input.readObject());
-            }
-        } catch (UnsupportedProtocolVersionException exc) {
-            // no FFDC required
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Unknown HTTP version");
-            }
-            // malformed version, can't make an "undefined" version
-            IOException ioe = new IOException("Failed deserialization of version");
-            ioe.initCause(exc);
-            throw ioe;
-        }
-        // V2 uses a boolean, while V1 used a byte... SHOULD be the same, but...
-        boolean isTrailer = (SERIALIZATION_V2 == this.deserializationVersion) ? input.readBoolean() : (1 == input.readByte());
-        if (isTrailer) {
-            //TODO update with Netty Trailers
-
-        }
-    }
-
-    /*
-     * @see
-     * com.ibm.ws.genericbnf.internal.GenericMessageImpl#writeExternal(java.io
-     * .ObjectOutput)
-     */
-    @Override
-    public void writeExternal(ObjectOutput output) throws IOException {
-
-        // convert any temporary Cookies into header storage
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE));
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_COOKIE2));
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE));
-        marshallCookieCache(cookieCacheMap.get(HttpHeaderKeys.HDR_SET_COOKIE2));
-
-        output.writeInt(SERIALIZATION_V2);
-        output.writeInt(this.headersMap.size());
-        output.writeInt(this.headersMap.size());
-
-        for (Map.Entry<String, String> entry : headersMap.entrySet()) {
-            writeByteArray(output, entry.getKey().getBytes());
-            writeByteArray(output, entry.getValue().getBytes());
-        }
-
-        writeByteArray(output, getVersionValue().getByteArray());
-    }
-
-    protected byte[] readByteArray(ObjectInput input) throws IOException {
-        int length = input.readInt();
-        byte[] data = new byte[length];
-        input.readFully(data);
-        return data;
-    }
-
-    protected void writeByteArray(ObjectOutput output, byte[] data) throws IOException {
-        output.writeInt(data.length);
-        output.write(data);
-    }
-
-    @Override
     public void setDebugContext(Object o) {
         throw new UnsupportedOperationException("setDebugContext unsupported in Netty context");
     }
@@ -249,7 +159,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         for (String value : values) {
             result.add(new NettyHeader(name, value));
         }
-
         return result;
     }
 
@@ -365,7 +274,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void removeHeader(byte[] header, int instance) {
-
+        throw new UnsupportedOperationException("removeHeader(byte[] header, int instance) not supported in Netty context");
     }
 
     @Override
@@ -375,7 +284,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void removeHeader(HeaderKeys header, int instance) {
-
+        throw new UnsupportedOperationException("removeHeader(HeaderKeys header, int instance) not supported in Netty context");
     }
 
     @Override
@@ -385,7 +294,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void removeHeader(String header, int instance) {
-
+        throw new UnsupportedOperationException("removeHeader(HeaderKeys header, int instance) not supported in Netty context");
     }
 
     @Override
@@ -395,27 +304,27 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setHeader(byte[] header, byte[] value) {
-
+        throw new UnsupportedOperationException("setHeader(byte[] header, byte[] value) not supported in Netty context");
     }
 
     @Override
     public void setHeader(byte[] header, byte[] value, int offset, int length) {
-
+        throw new UnsupportedOperationException("setHeader(byte[] header, byte[] value, int offset, int length) not supported in Netty context");
     }
 
     @Override
     public void setHeader(byte[] header, String value) {
-
+        throw new UnsupportedOperationException("setHeader(byte[] header, String value) not supported in Netty context");
     }
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value) {
-
+        throw new UnsupportedOperationException("setHeader(HeaderKeys header, byte[] value) not supported in Netty context");
     }
 
     @Override
     public void setHeader(HeaderKeys header, byte[] value, int offset, int length) {
-
+        throw new UnsupportedOperationException("setHeader(HeaderKeys header, byte[] value, int offset, int length) not supported in Netty context");
     }
 
     @Override
@@ -427,22 +336,20 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
     public HeaderField setHeaderIfAbsent(HeaderKeys header, String value) {
         Objects.requireNonNull(header);
         Objects.requireNonNull(value);
-
         if (!headers.contains(header.getName())) {
             headers.set(header.getName(), value);
         }
-
         return null;
     }
 
     @Override
     public void setHeader(String header, byte[] value) {
-
+        throw new UnsupportedOperationException("setHeader(String header, byte[] value) not supported in Netty context");
     }
 
     @Override
     public void setHeader(String header, byte[] value, int offset, int length) {
-
+        throw new UnsupportedOperationException("setHeader(String header, byte[] value, int offset, int length) not supported in Netty context");
     }
 
     @Override
@@ -505,7 +412,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
         if(cache.isDirty()){
             parseAllCookies(cache, header);
         }
-        
         cache.getAllCookieValues(name, list);
     }
 
@@ -534,7 +440,6 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
 
     protected HttpCookie getCookie(String name, HttpHeaderKeys header) {
-        
         if(name == null) { return null;}
 
         if(!isValidCookieHeader(header) && !containsHeader(header)){
@@ -682,7 +587,7 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public List<String> getAllCookieValues(String name) {
-        return null;
+        throw new UnsupportedOperationException("getAllCookieValues(String name) not supported in Netty context");
     }
 
     @Override
@@ -762,17 +667,17 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setConnection(ConnectionValues value) {
-
+        throw new UnsupportedOperationException("setConnection(ConnectionValues value) not supported in Netty context");
     }
 
     @Override
     public void setConnection(ConnectionValues[] values) {
-
+        throw new UnsupportedOperationException("setConnection(ConnectionValues[] values) not supported in Netty context");
     }
 
     @Override
     public ConnectionValues[] getConnection() {
-        return null;
+        throw new UnsupportedOperationException("getConnection() not supported in Netty context");
     }
 
     @Override
@@ -787,32 +692,32 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setContentEncoding(ContentEncodingValues value) {
-
+        throw new UnsupportedOperationException("setContentEncoding(ContentEncodingValues value) not supported in Netty context");
     }
 
     @Override
     public void setContentEncoding(ContentEncodingValues[] values) {
-
+        throw new UnsupportedOperationException("setContentEncoding(ContentEncodingValues[] values) not supported in Netty context");
     }
 
     @Override
     public ContentEncodingValues[] getContentEncoding() {
-        return null;
+        throw new UnsupportedOperationException("getContentEncoding() not supported in Netty context");
     }
 
     @Override
     public void setTransferEncoding(TransferEncodingValues value) {
-        throw new UnsupportedOperationException("Tried setting transfer encoding in Netty!");
+        throw new UnsupportedOperationException("setTransferEncoding(TransferEncodingValues value) not supported in Netty context");
     }
 
     @Override
     public void setTransferEncoding(TransferEncodingValues[] values) {
-        throw new UnsupportedOperationException("Tried setting transfer encoding in Netty!");
+        throw new UnsupportedOperationException("setTransferEncoding(TransferEncodingValues[] values) not supported in Netty context");
     }
 
     @Override
     public TransferEncodingValues[] getTransferEncoding() {
-        return null;
+        throw new UnsupportedOperationException("getTransferEncoding() not supported in Netty context");
     }
 
     @Override
@@ -822,17 +727,17 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setCurrentDate() {
-
+        throw new UnsupportedOperationException("setCurrentDate() not supported in Netty context");
     }
 
     @Override
     public void setExpect(ExpectValues value) {
-
+        throw new UnsupportedOperationException("setExpect(ExpectValues value) not supported in Netty context");
     }
 
     @Override
     public byte[] getExpect() {
-        return null;
+        throw new UnsupportedOperationException("getExpect() not supported in Netty context");
     }
 
     @Override
@@ -842,27 +747,57 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public String getMIMEType() {
-        return HttpUtil.getMimeType(message).toString();
+        CharSequence type = HttpUtil.getMimeType(message);
+        if (null == type)
+            return null;
+        return type.toString();
     }
 
     @Override
     public void setMIMEType(String type) {
-
+        throw new UnsupportedOperationException("setMIMEType(String type) not supported in Netty context");
     }
 
     @Override
     public Charset getCharset() {
-        return null;
+        return HttpUtil.getCharset(message);
     }
 
     @Override
     public void setCharset(Charset set) {
-
+        String contentType = getHeader(HttpHeaderKeys.HDR_CONTENT_TYPE).asString();
+        if (null == contentType || contentType.isEmpty()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "setCharset: no Content-Type header present");
+            }
+            contentType = "text/html";
+        } else {
+            // Get everything prior to the first semicolon (if any).
+            int length = contentType.length();
+            int end = -1;
+            for (int i = 0; i < length; i++) {
+                // Semi-colon exists, <type>;<charset>
+                if (BNFHeaders.SEMICOLON == contentType.charAt(i)) {
+                    end = i;
+                    break;
+                }
+            }
+            // check to see if the semi-colon was not found (just <type>)
+            if (-1 == end) {
+                end = length;
+            }
+            contentType = contentType.substring(0, end);
+        }
+        StringBuilder buff = new StringBuilder();
+        buff.append(contentType);
+        buff.append(";charset=");
+        buff.append(set.toString());
+        setHeader(HttpHeaderKeys.HDR_CONTENT_TYPE, buff.toString());
     }
 
     @Override
     public HttpTrailers getTrailers() {
-        return null;
+        throw new UnsupportedOperationException("getTrailers() not supported in Netty context");
     }
 
     @Override
@@ -883,21 +818,25 @@ public class NettyBaseMessage implements HttpBaseMessage, Externalizable {
 
     @Override
     public void setVersion(VersionValues version) {
-
+        throw new UnsupportedOperationException("setVersion(VersionValues version) not supported in Netty context");
     }
 
     @Override
     public void setVersion(String version) throws UnsupportedProtocolVersionException {
-
+        throw new UnsupportedOperationException("setVersion(String version) not supported in Netty context");
     }
 
     @Override
     public void setVersion(byte[] version) throws UnsupportedProtocolVersionException {
-
+        throw new UnsupportedOperationException("setVersion(byte[] version) not supported in Netty context");
     }
 
     @Override
     public HttpTrailersImpl createTrailers() {
+        // In the case of Netty, this operation is a NOOP because there is no
+        // implementation of HttpTrailersImpl on a Netty context so this API
+        // will always return null.
+        // @see com.ibm.wsspi.http.channel.HttpBaseMessage
         return null;
     }
 

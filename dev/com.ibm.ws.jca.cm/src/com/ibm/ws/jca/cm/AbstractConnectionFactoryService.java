@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2019 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -76,6 +76,10 @@ public abstract class AbstractConnectionFactoryService implements Observer, Reso
     public static final int THREAD_IDENTITY_NOT_ALLOWED = 0,
                     THREAD_IDENTITY_ALLOWED = 1,
                     THREAD_IDENTITY_REQUIRED = 2;
+
+    public static final int SERVICE_NONE_TYPE = 0,
+                    SERVICE_JDBC_TYPE = 1,
+                    SERVICE_CONECTORS_TYPE = 2;
 
     /**
      * Set of names of applications that have accessed this connection factory

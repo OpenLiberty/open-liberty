@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2024 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -233,5 +233,9 @@ public abstract class AbstractCDIRuntime implements CDIService, CDIRuntime, CDIP
                        .filter(WebSphereEEModuleDescriptor.class::isInstance)
                        .map(WebSphereEEModuleDescriptor.class::cast)
                        .map(desc -> desc.getJ2eeName());
+    }
+
+    public RuntimeFactory getRuntimeFactory() {
+        return this.runtimeFactory;
     }
 }

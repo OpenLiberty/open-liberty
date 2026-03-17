@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: {0} TCP \ucc44\ub110 \ucd08\uae30\ud654\uac00 \uc2e4\ud32
 BIND_ERROR.explanation=\uc18c\ucf13 \ubc14\uc778\ub4dc \uc870\uc791\uc774 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4. \uc77c\ubc18\uc801\uc778 \uc6d0\uc778\uc740 \ud574\ub2f9 \ud3ec\ud2b8 \ubc88\ud638\uac00 \uc774\ubbf8 \uc0ac\uc6a9 \uc911\uc785\ub2c8\ub2e4. \uc790\uc138\ud55c \uc815\ubcf4\ub294 \uc624\ub958 \uba54\uc2dc\uc9c0\uc758 \uc608\uc678 \uba54\uc2dc\uc9c0 \ud14d\uc2a4\ud2b8\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 BIND_ERROR.useraction=TCP \ucc44\ub110\uc774 \uc62c\ubc14\ub978 \ud3ec\ud2b8 \ubc88\ud638\ub97c \uc0ac\uc6a9\ud558\ub3c4\ub85d \uad6c\uc131\ub418\uc5c8\ub294\uc9c0 \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: {0} TCP \ucc44\ub110\uc774 \uc5f4\ub9b0 \uc5f0\uacb0\uc758 \ucd5c\ub300 \uc218 {1}\uc744(\ub97c) \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4.
-MAX_CONNS_EXCEEDED.explanation=\uc9c0\uc815\ub41c TCP \ucc44\ub110\uc774 \uc5f4\ub9b0 \uc5f0\uacb0\uc758 \ucd5c\ub300 \uc218\ub97c \ucd08\uacfc\ud588\uc73c\uba70 \uc77c\ubd80 \uc5f0\uacb0\uc744 \uac70\ubd80\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4.
+MAX_CONNS_EXCEEDED=CWWKO0222W: TCP \ucc44\ub110 {0} \uc774 \ucd5c\ub300 \uc5f0\uacb0 \uc218 {1} \uc744 \ucd08\uacfc\ud588\uc2b5\ub2c8\ub2e4.
+MAX_CONNS_EXCEEDED.explanation=\uc9c0\uc815\ub41c TCP \ucc44\ub110\uc774 \ucd5c\ub300 \uc5f0\uacb0 \uc218\ub97c \ucd08\uacfc\ud558\uc5ec \uc77c\ubd80 \uc5f0\uacb0\uc744 \uac70\ubd80\ud558\uace0 \uc788\uc2b5\ub2c8\ub2e4. \ud574\ub2f9 \uc0c1\ud0dc\uac00 \uc9c0\uc18d\ub418\ub294 \ub3d9\uc548 \uc774 \uba54\uc2dc\uc9c0\ub294 10\ubd84\ub9c8\ub2e4 \ud55c \ubc88 \uc774\uc0c1 \ubc1c\ud589\ub418\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 MAX_CONNS_EXCEEDED.useraction=\ucd94\uac00 \uc5f0\uacb0\uc774 \ud544\uc694\ud55c \uacbd\uc6b0 \ud5c8\uc6a9\ub418\ub294 \ucd5c\ub300 \uc5f0\uacb0 \uc218\ub97c \uc5c5\ub370\uc774\ud2b8\ud558\uc2ed\uc2dc\uc624.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: {0} TCP \ucc44\ub110\uc774 {1} \uc2a4\ub808\ub4dc \ud480\uc5d0\uc11c \uc2a4\ub808\ub4dc\ub97c \uc5bb\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.

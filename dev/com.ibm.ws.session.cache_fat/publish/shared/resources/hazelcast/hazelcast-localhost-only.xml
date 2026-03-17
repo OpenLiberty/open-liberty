@@ -20,6 +20,12 @@
 		<name>${hazelcast.group.name}</name>
 		<password>dev-pass</password>
 	</group>
+	
+	<network>
+	    <join>
+	    		<multicast enabled="true"/>
+	    </join>
+	</network>
 
 	<executor-service name="default">
 		<pool-size>12</pool-size>

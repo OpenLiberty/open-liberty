@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -373,8 +373,8 @@ public abstract class Connection implements ConnectionInterface
             }
 
             // MS:4 take advantage of being able to leave this null for read (cf integration)
-            // TODO: Verify adding Netty check for performance?
-            if (tcpReadCtx.getBuffer() == null)
+            // Only needed for CHFW
+            if (!isUsingNetty() && tcpReadCtx.getBuffer() == null)
             {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) SibTr.debug(this, tc, "needs new buffer");
                 WsByteBuffer buffer = WsByteBufferPool.getInstance().wrap(new byte[1024]); // F196678.10

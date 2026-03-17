@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015,2024 IBM Corporation and others.
+ * Copyright (c) 2015,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,10 +44,13 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 public class EJBJaccAuthorizationHelper implements EJBAuthorizationHelper {
     private static final TraceComponent tc = Tr.register(EJBJaccAuthorizationHelper.class);
 
-    private AtomicServiceReference<EJBJaccService> jaccServiceRef = null;
+    private final AtomicServiceReference<EJBJaccService> jaccServiceRef;
 
-    public EJBJaccAuthorizationHelper(AtomicServiceReference<EJBJaccService> jaccServiceRef) {
+    private final EJBAuthorizationHelper defaultHelper;
+
+    public EJBJaccAuthorizationHelper(AtomicServiceReference<EJBJaccService> jaccServiceRef, EJBAuthorizationHelper defaultHelper) {
         this.jaccServiceRef = jaccServiceRef;
+        this.defaultHelper = defaultHelper;
     }
 
     protected AuditManager auditManager;
@@ -91,6 +94,11 @@ public class EJBJaccAuthorizationHelper implements EJBAuthorizationHelper {
      */
     @Override
     public void authorizeEJB(EJBRequestData request, Subject subject) throws EJBAccessDeniedException {
+        EJBJaccService ejbJaccService = jaccServiceRef.getService();
+        if (!ejbJaccService.isPolicyConfigured()) {
+            defaultHelper.authorizeEJB(request, subject);
+            return;
+        }
         auditManager = new AuditManager();
         Object req = auditManager.getHttpServletRequest();
         Object webRequest = auditManager.getWebRequest();
@@ -119,8 +127,8 @@ public class EJBJaccAuthorizationHelper implements EJBAuthorizationHelper {
             methodParameters = Arrays.asList(methodArguments);
         }
 
-        boolean isAuthorized = jaccServiceRef.getService().isAuthorized(applicationName, moduleName, beanName, methodName, methodInterface, methodSignature, methodParameters, ejb,
-                                                                        subject);
+        boolean isAuthorized = ejbJaccService.isAuthorized(applicationName, moduleName, beanName, methodName, methodInterface, methodSignature, methodParameters, ejb,
+                                                           subject);
         String authzUserName = subject.getPrincipals(WSPrincipal.class).iterator().next().getName();
 
         if (!isAuthorized) {
@@ -142,6 +150,10 @@ public class EJBJaccAuthorizationHelper implements EJBAuthorizationHelper {
 
     @Override
     public boolean isCallerInRole(EJBComponentMetaData cmd, EJBRequestData request, String roleName, String roleLink, Subject subject) {
+        EJBJaccService ejbJaccService = jaccServiceRef.getService();
+        if (!ejbJaccService.isPolicyConfigured()) {
+            return defaultHelper.isCallerInRole(cmd, request, roleName, roleLink, subject);
+        }
         // roleLink is not used.
         String applicationName = cmd.getJ2EEName().getApplication();
         String moduleName = cmd.getJ2EEName().getModule();
@@ -156,7 +168,7 @@ public class EJBJaccAuthorizationHelper implements EJBAuthorizationHelper {
         if (request.getBeanInstance() instanceof EnterpriseBean) {
             bean = (EnterpriseBean) request.getBeanInstance();
         }
-        return jaccServiceRef.getService().isSubjectInRole(applicationName, moduleName, beanName, methodName, methodParameters, roleName, bean, subject);
+        return ejbJaccService.isSubjectInRole(applicationName, moduleName, beanName, methodName, methodParameters, roleName, bean, subject);
     }
 
 }

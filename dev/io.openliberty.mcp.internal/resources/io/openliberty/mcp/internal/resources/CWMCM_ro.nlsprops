@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=Ad\u0103uga\u021bi un nume la @
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: Exist\u0103 mai multe metode ale instrumentului MCP denumite {0}. Metodele sunt {1}.
 CWMCM0004E.duplicate.tools.explanation=Unul sau mai multe nume de instrumente MCP au ap\u0103rut de mai multe ori. Serverul a\u0219teapt\u0103 un singur nume per instrument pentru unicitate.
 CWMCM0004E.duplicate.tools.useraction=Furniza\u021bi un nume unic pentru fiecare instrument MCP.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=Verifica\u021bi dac\u0103 a\u021bi impor
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: O solicitare cu {0} ID-ul este \u00een curs de procesare.
-CWMCM0008E.invalid.request.params.explanation=O solicitare cu acela\u0219i ID este \u00een curs de procesare. Cererile provenite de la acela\u0219i client trebuie s\u0103 aib\u0103 ID-uri unice.
-CWMCM0008E.invalid.request.params.useraction=Utiliza\u021bi un ID unic pentru fiecare solicitare.
+invalid.request.params=O solicitare cu ID-ul {0} este \u00een curs de procesare.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: Cererile GET nu sunt acceptate.
-CWMCM0009I.get.disallowed.explanation=A fost trimis\u0103 o solicitare GET, dar aceast\u0103 func\u021bionalitate nu este acceptat\u0103.
-CWMCM0009I.get.disallowed.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+# do not translate GET
+get.disallowed=Cererile GET nu sunt acceptate.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=Metoda instrumentului a ge
 CWMCM0010E.internal.server.error.detailed.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: A ap\u0103rut o eroare intern\u0103 a serverului \u00een timpul rul\u0103rii instrumentului.
-CWMCM0011E.internal.server.error.explanation=Serverul nu a putut finaliza solicitarea de apelare a instrumentului.
-CWMCM0011E.internal.server.error.useraction=Verifica\u021bi dac\u0103 cererea este corect\u0103. Mai multe informa\u021bii despre eroare pot fi g\u0103site pe server messages.log.
+internal.server.error=A ap\u0103rut o eroare intern\u0103 a serverului \u00een timpul rul\u0103rii instrumentului.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: A ap\u0103rut o eroare la eliberarea be
 CWMCM0012E.bean.release.fail.explanation=C\u00e2nd se apeleaz\u0103 o metod\u0103 de instrument, o instan\u021b\u0103 a bean-ului CDI care declar\u0103 metoda este achizi\u021bionat\u0103 \u00eenainte de apelarea metodei \u0219i eliberat\u0103 dup\u0103 aceea. A ap\u0103rut o eroare la eliberarea instan\u021bei bean.
 CWMCM0012E.bean.release.fail.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: A fost furnizat un antet MCP-Protocol-Version neacceptat. Valori acceptate: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=Versiunea protocolului din antetul MCP-Protocol-Version nu este acceptat\u0103 de server.
-CWMCM0013E.unsupported.mcp.http.version.useraction=Utiliza\u021bi o versiune de protocol acceptat\u0103.
+unsupported.mcp.http.version=A fost furnizat un antet MCP-Protocol-Version neacceptat. Valori acceptate: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: Eroare nea\u0219teptat\u0103 a serverului. Metod\u0103= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=A ap\u0103rut o eroare nea\u0219teptat\u0103 a serverului \u00een timpul proces\u0103rii cererii. Cererea nu poate fi \u00eendeplinit\u0103.
-CWMCM0014E.unexpected.server.error.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+unexpected.server.error=Eroare nea\u0219teptat\u0103 a serverului. Metoda= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,16 +132,14 @@ jsonrpc.exception.validation.empty.string.id=C\u00e2mpul id este invalid. Id-ul 
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=Tipul id nu este un tip acceptabil. ID-ul trebuie s\u0103 fie un \u0219ir de caractere sau un num\u0103r \u00eentreg.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=Cererea nu con\u021bine niciun argument \u00een parametri.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=Urm\u0103toarele argumente au fost transmise, dar nu au fost g\u0103site \u00een metod\u0103: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=Urm\u0103toarele argumente erau a\u0219teptate de metod\u0103, dar nu au fost furnizate: {0}.
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+CWMCM0017E.missing.toolarg.defaultvalue.converter=CWMCM0017E: Argumentul \u201e {1} \u201d al metodei \u201e {0} \u201d din instrumentul MCP nu dispune de un convertor care s\u0103 transforme valoarea sa implicit\u0103 \u00eentr-un obiect de tip \u201e {2} \u201d.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.explanation=Unul sau mai multe argumente au valori implicite f\u0103r\u0103 un convertor corespunz\u0103tor pentru a converti valoarea implicit\u0103 \u00een tipul argumentului.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.useraction=Crea\u021bi o implementare personalizat\u0103 a convertorului pentru tipul argumentului instrumentului.
 
 # Used for server logging
 # do not translate MCP
@@ -159,3 +148,126 @@ jsonrpc.missing.arguments=Urm\u0103toarele argumente erau a\u0219teptate de meto
 CWMCM0018E.generic.arguments=CWMCM0018E: Argumentul \u201e {1} \u201d al metodei \u201e {0} \u201d din instrumentul MCP con\u021bine componente neacceptate, cum ar fi \u201e TypeVariable, Wildcard\u201d \u0219i \u201e GenericArrayType \u201d.
 CWMCM0018E.generic.arguments.explanation=Au fost furnizate argumente pentru instrumentul MCP, dar acestea nu sunt acceptate. 
 CWMCM0018E.generic.arguments.useraction=Furniza\u021bi argumente care nu con\u021bin componente generice.
+
+# Used for encoder logging
+# {0} = The encoder class name
+# {1} = The tool name
+# {2} = The exception
+CWMCM0019E.error.encoding.element=CWMCM0019E: Codificatorul {0} a generat o excep\u021bie \u00een timpul codific\u0103rii rezultatului instrumentului {1}. Excep\u0163ia este {2}
+CWMCM0019E.error.encoding.element.explanation=Codificatorul a generat o excep\u021bie \u00een timpul codific\u0103rii rezultatului instrumentului. Excep\u021bia poate fi cauzat\u0103 de o problem\u0103 cu codificatorul sau de faptul c\u0103 instrumentul a returnat un rezultat nea\u0219teptat.
+CWMCM0019E.error.encoding.element.useraction=Examina\u0163i istoricele de server message.log \u015fi FFDC pentru a identifica problema.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool method, or the tool name
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+# {3} = corresponding default value
+# {4} = ExceptionMessage
+CWMCM0020E.defaultvalue.conversion.error=CWMCM0020E: Valoarea implicit\u0103 a argumentului \u201e {1} \u201d (Versiune de baz\u0103) al instrumentului MCP \u201e {0} \u201d (Versiune de baz\u0103) nu poate fi convertit\u0103 \u00een tipul \u201e {2} \u201d (Versiune de baz\u0103). Valoarea este {3}. Eroarea este \u201e {4} \u201d.
+CWMCM0020E.defaultvalue.conversion.error.explanation=Un argument are o valoare implicit\u0103 care nu poate fi convertit\u0103 \u00een tipul argumentului. Aceast\u0103 problem\u0103 poate ap\u0103rea dac\u0103 valoarea implicit\u0103 este nul\u0103, are un format nevalid sau este \u00een afara intervalului pentru tipul \u021bint\u0103.
+CWMCM0020E.defaultvalue.conversion.error.useraction=Asigura\u021bi-v\u0103 c\u0103 valoarea implicit\u0103 este valid\u0103 pentru tipul argumentului. Asigura\u021bi-v\u0103 c\u0103 valoarea implicit\u0103 nu este nul\u0103. Pentru tipurile de caractere, introduce\u021bi exact un caracter. Pentru tipurile numerice, introduce\u021bi un num\u0103r valid \u00een intervalul tipului.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The default value string
+CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: Valoarea implicit\u0103 a unui caracter trebuie s\u0103 fie exact un caracter, dar era {0}
+CWMCM0021E.defaultvalue.character.invalid.length.explanation=A fost furnizat\u0103 o valoare implicit\u0103 pentru un argument de tip caracter, dar aceasta nu con\u021bine exact un caracter. Argumentele caracter trebuie s\u0103 con\u021bin\u0103 un singur \u0219ir de caractere.
+CWMCM0021E.defaultvalue.character.invalid.length.useraction=Asigura\u021bi-v\u0103 c\u0103 valoarea implicit\u0103 pentru un argument de tip Character este un \u0219ir cu exact un caracter.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: Valoarea cursorului \u201e "{0}" \u201d este invalid\u0103.
+CWMCM0022E.invalid.cursor.value.explanation=O valoare a cursorului a fost furnizat\u0103 ca parametru pentru comanda tool/list, dar valoarea este invalid\u0103.
+CWMCM0022E.invalid.cursor.value.useraction=Asigura\u021bi-v\u0103 c\u0103 valoarea cursorului este furnizat\u0103 exact a\u0219a cum a fost returnat\u0103 de la apelul anterior al instrumentului/listei.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: Numele instrumentului \u201e {0} \u201d pentru metoda instrumentului MCP \u201e {1} \u201d nu este valid. Numele instrumentelor trebuie s\u0103 aib\u0103 \u00eentre 1 \u0219i 128 de caractere, inclusiv.
+CWMCM0023E.invalid.length.tool.name.explanation=Numele instrumentului nu respect\u0103 specifica\u021biile MCP pentru denumiri. Numele trebuie s\u0103 aib\u0103 \u00eentre 1 \u0219i 128 de caractere, inclusiv.
+CWMCM0023E.invalid.length.tool.name.useraction=Asigura\u021bi-v\u0103 c\u0103 numele instrumentelor au \u00eentre 1 \u0219i 128 de caractere, inclusiv.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: Numele instrumentului \u201e {0} \u201d pentru metoda instrumentului MCP \u201e {1} \u201d nu este valid. Numele instrumentelor trebuie s\u0103 con\u021bin\u0103 numai litere ASCII, cifre, linii de subliniere sau cratime.
+CWMCM0024E.invalid.character.tool.name.explanation=Numele instrumentului nu respect\u0103 specifica\u021biile MCP pentru denumiri. Numele pot con\u021bine numai litere ASCII, cifre, linii de subliniere, cratime \u0219i niciun alt caracter special.
+CWMCM0024E.invalid.character.tool.name.useraction=Asigura\u021bi-v\u0103 c\u0103 numele instrumentelor con\u021bin numai litere ASCII, cifre, linii de subliniere sau cratime.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=Argumentul {0} nu poate fi convertit \u00een tipul {1}.
+extra.arguments=Urm\u0103toarele argumente au fost transmise, dar nu au fost g\u0103site \u00een metod\u0103: {0}.
+missing.arguments=Metoda se a\u0219tepta la urm\u0103toarele argumente, dar nu le-a primit: {0}.
+unauthorized.cancellation=Instrumentul nu poate fi anulat, deoarece utilizatorul care apeleaz\u0103 nu este autorizat.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: Tipul de returnare \u201e {0} \u201d al metodei instrumentului MCP \u201e {1} \u201d trebuie s\u0103 fie un obiect.
+CWMCM0025E.unsupported.output.explanation=Tipul de returnare al instrumentului MCP furnizat nu este acceptat.
+CWMCM0025E.unsupported.output.useraction=Furniza\u021bi un tip de returnare care este un obiect.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: Exist\u0103 deja un instrument MCP cu numele {0}.
+CWMCM0026E.duplicate.tool.name.explanation=Fiecare instrument trebuie s\u0103 aib\u0103 un nume unic. Nu pute\u021bi \u00eenregistra un instrument nou care are acela\u0219i nume cu un instrument existent.
+CWMCM0026E.duplicate.tool.name.useraction=Oferi\u021bi un nume unic pentru fiecare instrument MCP.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: Pentru instrumentul MCP \u201e {0} \u201d (Afi\u0219are informa\u021bii despre procesul de creare a fi\u0219ierelor de stocare), trebuie apelat\u0103 fie metoda \u201e setHandler \u201d, fie metoda \u201e setAsyncHandler \u201d.
+CWMCM0027E.provide.one.handler.explanation=C\u00e2nd \u00eenregistra\u021bi un instrument nou utiliz\u00e2nd ToolManager,, trebuie s\u0103 furniza\u021bi fie un handler sincron, apel\u00e2nd metoda setHandler, fie un handler asincron, apel\u00e2nd metoda setAsyncHandler. Nu furniza\u021bi ambele.
+CWMCM0027E.provide.one.handler.useraction=Apela\u021bi metoda \u201e ToolDefinition.setHandler \u201d sau metoda \u201e ToolDefinition.setAsyncHandler \u201d atunci c\u00e2nd \u00eenregistra\u021bi un instrument utiliz\u00e2nd \u201e ToolManager \u201d.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} Numele instrumentului MCP nu este valid. Numele instrumentelor trebuie s\u0103 con\u021bin\u0103 numai litere ASCII, cifre, linii de subliniere sau cratime.
+CWMCM0028E.invalid.character.tool.name.explanation=Numele instrumentului nu respect\u0103 specifica\u021biile MCP pentru denumiri. Numele pot con\u021bine numai litere ASCII, cifre, linii de subliniere, cratime \u0219i niciun alt caracter special.
+CWMCM0028E.invalid.character.tool.name.useraction=Asigura\u021bi-v\u0103 c\u0103 numele instrumentelor con\u021bin numai litere ASCII, cifre, linii de subliniere sau cratime.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} Numele instrumentului MCP nu este valid. Numele instrumentelor trebuie s\u0103 aib\u0103 \u00eentre 1 \u0219i 128 de caractere, inclusiv.
+CWMCM0029E.invalid.length.tool.name.explanation=Numele instrumentului nu respect\u0103 specifica\u021biile MCP pentru denumiri. Numele trebuie s\u0103 aib\u0103 \u00eentre 1 \u0219i 128 de caractere, inclusiv.
+CWMCM0029E.invalid.length.tool.name.useraction=Asigura\u021bi-v\u0103 c\u0103 numele instrumentelor au \u00eentre 1 \u0219i 128 de caractere, inclusiv.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: Nu se poate ad\u0103uga un argument cu un nume gol la instrumentul MCP \u201e {0} \u201d (Aplicare de la distan\u021b\u0103).
+CWMCM0030E.blank.arguments.explanation=Fiecare argument al instrumentului MCP trebuie s\u0103 aib\u0103 un nume care nu este gol. 
+CWMCM0030E.blank.arguments.useraction=Furniza\u021bi nume care nu sunt goale pentru toate argumentele instrumentului.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: Argumentul \u201e {1} \u201d al instrumentului MCP \u201e {0} \u201d nu dispune de un convertor care s\u0103 transforme valoarea sa implicit\u0103 \u00eentr-un obiect de tip \u201e {2} \u201d.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=Unul sau mai multe argumente au valori implicite f\u0103r\u0103 un convertor corespunz\u0103tor pentru a converti valoarea implicit\u0103 \u00een tipul argumentului.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Crea\u021bi o implementare personalizat\u0103 a convertorului pentru tipul argumentului instrumentului.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: Nu se poate ad\u0103uga un al doilea argument cu numele \u201e {1} \u201d la instrumentul MCP \u201e {0} \u201d.
+CWMCM0032E.duplicate.argument.name.explanation=Fiecare argument al unui instrument MCP trebuie s\u0103 aib\u0103 un nume diferit.
+CWMCM0032E.duplicate.argument.name.useraction=Da\u021bi fiec\u0103rui argument al instrumentului un nume diferit.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Cerere interzis\u0103. Metod\u0103= {0} RequestURI={1 } RequestQuery={2 }, Excep\u021bie: {3}
+CWMCM0033A.forbidden.error.explanation=A fost f\u0103cut\u0103 o solicitare, dar utilizatorul nu este autorizat s\u0103 o fac\u0103.
+CWMCM0033A.forbidden.error.useraction=Asigura\u021bi-v\u0103 c\u0103 solicitarea este efectuat\u0103 de un utilizator autorizat.

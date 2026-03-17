@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,7 +13,7 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-  jnosqlVersion = '1.1.4'
+  jnosqlVersion = '1.1.12'
 }
 
 configurations {
@@ -27,8 +27,8 @@ dependencies {
   jnosql "org.eclipse.jnosql.databases:jnosql-mongodb:${jnosqlVersion}", withoutJakartaAPI
   
   //Annotation processor - generates .java files in build/libs/generated/sources - static meta models
-  annotationProcessor "org.eclipse.jnosql.metamodel:mapping-metamodel-processor:1.1.4"
-  compileOnly "org.eclipse.jnosql.metamodel:mapping-metamodel-processor:1.1.4"
+  annotationProcessor "org.eclipse.jnosql.metamodel:mapping-metamodel-processor:${jnosqlVersion}"
+  compileOnly "org.eclipse.jnosql.metamodel:mapping-metamodel-processor:${jnosqlVersion}"
   
 }
 
@@ -39,17 +39,18 @@ assemble.doLast {
   copy{
     from metaModelDir
     into "generated-src"
-    filter { line -> line.startsWith('@Generated') ? line.replaceAll('date = ".*"', 'date = "2025-05-30T11:32:09.226355"') : line }
+    filter { line -> line.startsWith('@Generated') ? line.replaceAll('date = ".*"', 'date = "2026-01-05T12:00:00.000000"') : line }
   }
 }
 
 task addJNoSQL(type: Copy) {
   mustRunAfter jar
   from configurations.jnosql
-  into new File(autoFvtDir, 'publish/shared/resources/jnosql')
+  into new File(autoFvtDir, "publish/shared/resources/jnosql-${jnosqlVersion}")
 }
 
 addRequiredLibraries {
   dependsOn addJNoSQL
+  dependsOn addDerbyJava17Plus
   dependsOn copyTestContainers
 }

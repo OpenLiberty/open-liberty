@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -361,18 +361,15 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
     public String getMethod() {
         if (Objects.isNull(method)) {
             method = MethodValues.find(request.method().name());
-
         }
         return method.getName();
     }
 
     @Override
     public MethodValues getMethodValue() {
-
         if (Objects.isNull(method)) {
             method = MethodValues.find(request.method().name());
         }
-
         return method;
     }
 
@@ -442,9 +439,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getQueryString() {
-
         return Objects.isNull(parameters) || parameters.isEmpty() ? null : query.rawQuery();
-
     }
 
     @Override
@@ -454,9 +449,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getParameter(String name) {
-
         return parameters.containsKey(name) ? parameters.get(name)[0] : null;
-
     }
 
     @Override
@@ -628,7 +621,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
                 Tr.debug(tc, "getVirtualHost: No host header: [" + host + "]");
             }
             return null;
-//            host = host.substring(0, host.indexOf(":"));
         }
         int index = -1;
         if (LEFT_BRACKET == host.charAt(0)) {
@@ -752,7 +744,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
 
     @Override
     public String getScheme() {
-
         return Objects.isNull(scheme) ? null : scheme.getName();
     }
 
@@ -772,7 +763,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             throw new UnsupportedSchemeException("Illegal scheme " + scheme);
         }
         setScheme(value);
-
     }
 
     @Override
@@ -783,7 +773,6 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             throw new UnsupportedSchemeException("Illegal scheme " + GenericUtils.getEnglishString(scheme));
         }
         setScheme(value);
-
     }
 
     @Override
@@ -906,7 +895,7 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             @Override
             public void run() {
                 try {
-                    ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpPipelineInitializer.HTTP_DISPATCHER_HANDLER_NAME)).channelRead(nettyContext,
+                    ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpDispatcherHandler.NAME)).channelRead(nettyContext,
                                                                                                                                                       newRequest);
                 } catch (Exception e) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

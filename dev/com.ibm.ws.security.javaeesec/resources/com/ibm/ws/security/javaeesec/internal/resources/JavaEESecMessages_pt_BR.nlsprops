@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Certifique-se de que pelo menos um obje
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: O objeto HttpAuthenticationMechanism para o m\u00f3dulo {0} no aplicativo {1} n\u00e3o p\u00f4de ser criado.
 JAVAEESEC_ERROR_NO_HAM.explanation=O motivo pelo qual o objeto HttpAuthenticationMechanism n\u00e3o pode ser criado varia. As mensagens de erro do objeto HttpAuthenticationMechanism fornecem informa\u00e7\u00f5es sobre o motivo pelo qual o objeto HttpAuthenticationMechanism n\u00e3o pode ser criado.
 JAVAEESEC_ERROR_NO_HAM.useraction=Investigue quaisquer mensagens de erro do objeto HttpAuthenticationMechanism e fa\u00e7a as corre\u00e7\u00f5es com base nas mensagens de erro.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: O objeto de implementa\u00e7\u00e3o HttpAuthenticationMechanismService para o m\u00f3dulo {0} no aplicativo {1} n\u00e3o foi encontrado como um pacote OSGi.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=O objeto de implementa\u00e7\u00e3o HttpAuthenticationMechanismService n\u00e3o foi encontrado porque um dos pacotes dependentes que cont\u00e9m essa implementa\u00e7\u00e3o est\u00e1 faltando no arquivo manifesto de recursos.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Certifique-se de que o manifesto do recurso fa\u00e7a refer\u00eancia a um pacote que contenha uma implementa\u00e7\u00e3o da classe ` HttpAuthenticationMechanismService `.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: A express\u00e3o de Linguagem de express\u00e3o (EL) para o atributo ''{0}'' da anota\u00e7\u00e3o do armazenamento de identidade n\u00e3o pode ser resolvida para um valor v\u00e1lido. Certifique-se de que a express\u00e3o EL e o resultado sejam v\u00e1lidos e assegure-se de que os beans referenciados utilizados na express\u00e3o possam ser resolvidos. O valor de atributo padr\u00e3o de ''{1}'' \u00e9 usado no lugar.

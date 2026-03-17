@@ -1,4 +1,4 @@
-<server description="Server for testing Config Admin with dropin applications">
+<server description="Server for testing the check interval attribute">
 
     <include location="../fatTestPorts.xml"/>
 

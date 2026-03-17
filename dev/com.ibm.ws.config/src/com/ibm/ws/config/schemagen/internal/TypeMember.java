@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -85,10 +85,8 @@ class TypeMember {
         } else if (global) {
             return type.getGlobalSchemaType();
         } else {
-            type.getSchemaBaseType();
+            return type.getSchemaBaseType();
         }
-
-        return "xsd:string";
     }
 
     public void setCardinality(int cardinality) {

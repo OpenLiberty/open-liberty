@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: Ini\u0163ializarea canalului TCP {0} nu a avut succes.  L
 BIND_ERROR.explanation=Opera\u0163ia de legare socket nu a avut succes. O cauz\u0103 comun\u0103 este aceea c\u0103 num\u0103rul portului este deja \u00een uz.  Pentru mai multe informa\u0163ii, verifica\u0163i mesajul de eroare din mesajul excep\u0163iei.
 BIND_ERROR.useraction=Verifica\u0163i c\u0103 Canalul TCP a fost configurat s\u0103 utilizeze num\u0103rul de port corect.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: Canalul TCP {0} a dep\u0103\u015fit num\u0103rul maxim de conexiuni deschise {1}.
-MAX_CONNS_EXCEEDED.explanation=Canalul TCP specificat a dep\u0103\u015fit num\u0103rul maxim de conexiuni deschise \u015fi refuz\u0103 unele conexiuni.
+MAX_CONNS_EXCEEDED=CWWKO0222W: Canalul TCP {0} dep\u0103\u0219e\u0219te num\u0103rul maxim de conexiuni deschise {1}.
+MAX_CONNS_EXCEEDED.explanation=Canalul TCP specificat dep\u0103\u0219e\u0219te num\u0103rul maxim de conexiuni deschise \u0219i refuz\u0103 unele conexiuni. Acest mesaj este emis cel mult o dat\u0103 la 10 minute, at\u00e2t timp c\u00e2t condi\u021bia persist\u0103.
 MAX_CONNS_EXCEEDED.useraction=Dac\u0103 sunt necesare mai multe conexiuni, actualiza\u0163i num\u0103rul maxim de conexiuni permise.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: Canalul TCP {0} nu a putut ob\u0163ine firul de execu\u0163ie de la pool-ul de fire de execu\u0163ie {1}.

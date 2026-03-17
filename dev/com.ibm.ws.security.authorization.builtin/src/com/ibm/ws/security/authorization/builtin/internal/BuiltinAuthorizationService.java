@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -14,9 +14,12 @@ package com.ibm.ws.security.authorization.builtin.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
@@ -208,6 +211,22 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         return granted;
     }
 
+    @Override
+    public Set<String> getAllDeclaredRolesForResourceForSubject(String resourceName, Subject subject) {
+        Set<String> roles = new HashSet<String>(Collections.EMPTY_SET);
+        WSCredential wsCred = getWSCredentialFromSubject(subject);
+        if (wsCred != null) {
+            String accessId = getAccessId(wsCred);
+            String realmName = getRealmName(wsCred);
+
+            Collection<String> foundRoles = getRolesForAccessId(resourceName, accessId, realmName);
+            if (foundRoles != null) {
+                roles.addAll(foundRoles);
+            }
+        }
+        return roles;
+    }
+
     /**
      * Check all of the authorization table services for the resourceName.
      * If no authorization table can be found for the resourceName, null
@@ -310,12 +329,12 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * each group is checked.
      *
      * @param resourceName
-     *            the name of the application, used for looking up the correct
-     *            authorization table
+     *                          the name of the application, used for looking up the correct
+     *                          authorization table
      * @param requiredRoles
-     *            the roles required to access the resource
+     *                          the roles required to access the resource
      * @param subject
-     *            the subject to authorize
+     *                          the subject to authorize
      * @return true if the subject is authorized, otherwise false
      */
     private boolean isSubjectAuthorized(String resourceName,
@@ -336,6 +355,83 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         }
 
         return isGranted;
+    }
+
+    @Override
+    public Set<String> getMappedRoles(String resourceName, Subject subject) {
+
+        WSCredential wsCred = getWSCredentialFromSubject(subject);
+
+        Set<String> roles = new HashSet<>();
+        if (wsCred == null) {
+            return roles;
+        }
+
+        if (useRoleAsGroupName && !isAuthzInfoAvailableForApp(resourceName)) {
+            String[] groupIds = getGroupIds(wsCred);
+            if (groupIds != null && groupIds.length > 0) {
+                String realmName = getRealmName(wsCred);
+                // Just include the group name and not the id
+                Collection<String> assignedRoles = AccessIdUtil.getUniqueIds(groupIds, realmName);
+                if (assignedRoles != null) {
+                    roles.addAll(assignedRoles);
+                }
+            }
+        } else {
+            String accessId = getAccessId(wsCred);
+            String realmName = getRealmName(wsCred);
+            Collection<String> userRoles = getRolesForAccessId(resourceName, accessId, realmName);
+            if (userRoles != null) {
+                roles.addAll(userRoles);
+            }
+            String[] groupIds = getGroupIds(wsCred);
+            if (groupIds != null && groupIds.length > 0) {
+                for (int i = 0; i < groupIds.length; i++) {
+                    String groupId = groupIds[i];
+                    Collection<String> assignedRoles = getRolesForAccessId(resourceName, groupId, realmName);
+                    if (assignedRoles != null) {
+                        roles.addAll(assignedRoles);
+                    }
+                }
+            }
+        }
+        Collection<String> allAuthenticatedUsersRoles = getRolesForSpecialSubject(resourceName, AuthorizationTableService.ALL_AUTHENTICATED_USERS);
+        Collection<String> everyoneRoles = getRolesForSpecialSubject(resourceName, AuthorizationTableService.EVERYONE);
+        if (allAuthenticatedUsersRoles != null) {
+            roles.addAll(allAuthenticatedUsersRoles);
+        }
+        if (everyoneRoles != null) {
+            roles.addAll(everyoneRoles);
+        }
+        return roles;
+    }
+
+    @Override
+    public boolean isStarStarRoleMapped(String resourceName) {
+        if (useRoleAsGroupName && !isAuthzInfoAvailableForApp(resourceName)) {
+            // return false for now
+        } else {
+            FeatureAuthorizationTableService featureAuthzTableSvc = featureAuthzTableServiceRef.getService();
+            String featureAuthzRoleHeaderValue = null;
+            if (featureAuthzTableSvc != null) {
+                featureAuthzRoleHeaderValue = featureAuthzTableSvc.getFeatureAuthzRoleHeaderValue();
+            }
+            if (featureAuthzRoleHeaderValue != null &&
+                !featureAuthzRoleHeaderValue.equals(MGMT_AUTHZ_ROLES)) {
+                return featureAuthzTableSvc.isStarStarRoleMapped(resourceName);
+            } else {
+                Iterator<AuthorizationTableService> itr = authorizationTables.getServices();
+                while (itr.hasNext()) {
+                    AuthorizationTableService authzTableSvc = itr.next();
+                    if (authzTableSvc.isAuthzInfoAvailableForApp(resourceName)) {
+                        if (authzTableSvc.isStarStarRoleMapped(resourceName)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     /**
@@ -408,7 +504,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * Get the WSCredential from the given Subject
      *
      * @param subject
-     *            the subject to parse, must not be null
+     *                    the subject to parse, must not be null
      * @return the WSCredential, or null if the Subject does not have one
      */
     private WSCredential getWSCredentialFromSubject(Subject subject) {
@@ -458,7 +554,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * Get the group IDs from the specified credential.
      *
      * @param cred
-     *            the WSCredential to search, must not be null
+     *                 the WSCredential to search, must not be null
      * @return an array of group access ids of the credential, or null when the
      *         cred is expired or destroyed
      */
@@ -489,11 +585,11 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * Validate that the input parameters are not null.
      *
      * @param resourceName
-     *            the name of the resource
+     *                          the name of the resource
      * @param requiredRoles
-     *            the Collection of required roles
+     *                          the Collection of required roles
      * @throws NullPointerException
-     *             when either input is null
+     *                                  when either input is null
      */
     private void validateInput(String resourceName, Collection<String> requiredRoles) {
         if (requiredRoles == null) {
@@ -508,16 +604,16 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * requiredRole.
      *
      * @param resourceName
-     *            the name of the resource being accessed, used to look up
-     *            corresponding the authorization table, must not be null
+     *                          the name of the resource being accessed, used to look up
+     *                          corresponding the authorization table, must not be null
      * @param requiredRoles
-     *            the security constraints required to be authorized, must not
-     *            be null or empty
+     *                          the security constraints required to be authorized, must not
+     *                          be null or empty
      * @param subject
-     *            the user who is trying to access the resource
+     *                          the user who is trying to access the resource
      *
      * @throws NullPointerException
-     *             when resourceName or requiredRoles is null
+     *                                  when resourceName or requiredRoles is null
      */
     protected boolean isAllAuthenticatedGranted(String resourceName,
                                                 Collection<String> requiredRoles,
@@ -532,7 +628,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * Check if the subject has a WScredential, is authenticated, and is not a basic auth credential.
      *
      * @param subject
-     *            the subject to check
+     *                    the subject to check
      * @return true if the subject has a WSCredential that is not marked as
      *         unauthenticated and is not marked as basic auth, otherwise false
      */
@@ -551,7 +647,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
      * Get the realm name from the specified credential.
      *
      * @param cred
-     *            the WSCredential to search, must not be null
+     *                 the WSCredential to search, must not be null
      * @return realm name.
      */
     private String getRealmName(WSCredential cred) {
@@ -567,5 +663,4 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         }
         return realmName;
     }
-
 }

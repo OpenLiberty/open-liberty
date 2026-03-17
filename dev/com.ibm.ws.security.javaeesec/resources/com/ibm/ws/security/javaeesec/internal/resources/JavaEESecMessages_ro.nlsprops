@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Asigura\u0163i-v\u0103 c\u0103 cel pu\u
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Obiectul HttpAuthenticationMechanism pentru modulul {0} din aplica\u0163ia {1} nu a putut fi creat.
 JAVAEESEC_ERROR_NO_HAM.explanation=Motivul pentru care nu a putut fi creat obiectul HttpAuthenticationMechanism difer\u0103. Mesajele de eroare pentru obiectul HttpAuthenticationMechanism furnizeaz\u0103 informa\u0163ii despre motivul pentru care nu poate fi creat obiectul HttpAuthenticationMechanism.
 JAVAEESEC_ERROR_NO_HAM.useraction=Investiga\u0163i toate mesajele de eroare din obiectul HttpAuthenticationMechanism \u015fi face\u0163i corec\u0163ii bazate pe mesajele de eroare.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: Obiectul de implementare HttpAuthenticationMechanismService pentru modulul {0} din aplica\u021bia {1} nu a fost g\u0103sit ca pachet OSGi.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=Obiectul de implementare HttpAuthenticationMechanismService nu a fost g\u0103sit deoarece unul dintre pachetele dependente care con\u021bine aceast\u0103 implementare lipse\u0219te din fi\u0219ierul manifest al caracteristicilor.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Asigura\u021bi-v\u0103 c\u0103 manifestul caracteristicii face referire la un pachet care con\u021bine o implementare a interfe\u021bei HttpAuthenticationMechanismService.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Expresia EL (Expression Language) pentru atributul ''{0}'' al adnot\u0103rii depozitului de identit\u0103\u0163i nu poate fi rezolvat\u0103 la o valoare valid\u0103. Asigura\u0163i-v\u0103 c\u0103 sunt valide expresia EL \u015fi rezultatul \u015fi c\u0103 toate bean-urile referite care sunt utilizate \u00een expresie sunt rezolvabile. Este utilizat\u0103 \u00een loc valoarea implicit\u0103 a atributului ''{1}''.

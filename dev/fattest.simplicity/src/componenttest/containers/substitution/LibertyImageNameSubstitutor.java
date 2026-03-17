@@ -21,6 +21,7 @@ import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.containers.ImageHelper;
 import componenttest.containers.ImageVerifier;
+import componenttest.containers.TestContainerHelper;
 import componenttest.containers.registry.ArtifactoryRegistry;
 import componenttest.containers.registry.InternalRegistry;
 
@@ -61,8 +62,10 @@ public class LibertyImageNameSubstitutor extends ImageNameSubstitutor {
             // Priority 3: If a public registry was explicitly set on an image, do not substitute
             // This is now handled directly by the MIRROR substitutor
 
-            // Priority 4: Always use mirror registry if using remote docker host.
-            if (DockerClientFactory.instance().isUsing(EnvironmentAndSystemPropertyClientProviderStrategy.class)) {
+            // Priority 4: Always use mirror registry if using a non-native docker client strategy
+            // and we plan to connect to a remote docker host
+            if (DockerClientFactory.instance().isUsing(EnvironmentAndSystemPropertyClientProviderStrategy.class) &&
+                TestContainerHelper.useRemoteDocker()) {
                 ImageVerifier.collectImage(original);
                 result = REGISTRY.apply(MIRROR.apply(original));
                 reason = "Using a remote docker host, must use mirrored registry";

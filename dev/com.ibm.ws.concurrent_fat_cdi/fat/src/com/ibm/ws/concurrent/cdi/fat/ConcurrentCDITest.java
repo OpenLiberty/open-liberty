@@ -114,6 +114,7 @@ public class ConcurrentCDITest extends FATServletClient {
     @AfterClass
     public static void tearDown() throws Exception {
         server.stopServer(
+                          "CWWKN0005W", // JNDI copes with race conditions between multiple components registering namespaces by letting the first thread win and throwing this message.
                           "CWWKC1101E.*scheduled-executor-without-app-context", // tests lack of context from scheduled executor thread
                           "CWWKE1205E" // test case intentionally causes startTimeout to be exceeded
         );

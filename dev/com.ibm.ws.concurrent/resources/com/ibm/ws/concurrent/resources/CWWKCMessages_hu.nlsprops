@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: A taskSubmitted \u00e9s taskStarting M
 CWWKC1120.future.get.rejected.explanation=A taskSubmitted \u00e9s taskStarting ManagedTaskListener  met\u00f3dusok azon a sz\u00e1lon futnak, amely a feladatot elk\u00fcldi vagy elind\u00edtja. Ez\u00e9rt az ezen met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9ket nem szabad a feladatra v\u00e1rakoz\u00e1shoz haszn\u00e1lni.
 CWWKC1120.future.get.rejected.useraction=Az alkalmaz\u00e1st friss\u00edt\u00e9s\u00e9vel ker\u00fclje el get megh\u00edv\u00e1s\u00e1t a taskSubmitted \u00e9s taskStarting met\u00f3dusoknak \u00e1tadott Future \u00e9rt\u00e9kre.
 
-CWWKC1121.virtual.invalid=CWWKC1121E: A {0} annot\u00e1ci\u00f3 vagy {1} telep\u00edt\u00e9sle\u00edr\u00f3 elem, amelynek neve {0} , a virtual=true \u00e9rt\u00e9ket adja meg, de a virtu\u00e1lis sz\u00e1lak a Java 21 el\u0151tt nem \u00e1llnak rendelkez\u00e9sre. A haszn\u00e1lt Java szint: {1} .
+CWWKC1121.virtual.invalid=CWWKC1121E: Az {0} annot\u00e1ci\u00f3 vagy az {1} telep\u00edt\u00e9si le\u00edr\u00f3 elem a {2} n\u00e9vvel megadja a virtual=true \u00e9rt\u00e9ket, de a virtu\u00e1lis sz\u00e1lak Java 21 el\u0151tt nem \u00e9rhet\u0151k el. A haszn\u00e1lt Java szint: {3}.
 CWWKC1121.virtual.invalid.explanation=A virtu\u00e1lis sz\u00e1lak nem \u00e1llnak rendelkez\u00e9sre a haszn\u00e1lt Java verzi\u00f3ban.
 CWWKC1121.virtual.invalid.useraction=Friss\u00edtsen egy \u00fajabb Java-verzi\u00f3ra, amely t\u00e1mogatja a virtu\u00e1lis sz\u00e1lakat.
 
-CWWKC1122.mod.unavail=CWWKC1122E: A(z {0} alkalmaz\u00e1s vagy a hozz\u00e1 tartoz\u00f3 {1} modul nem \u00e9rhet\u0151 el.
+CWWKC1122.mod.unavail=CWWKC1122E: Az {0} alkalmaz\u00e1s vagy annak {1} modulja nem \u00e9rhet\u0151 el. ManagedThreadFactory az alkalmaz\u00e1sban vagy modulban defini\u00e1lt bean-ek nem szerezhet\u0151k be.
 CWWKC1122.mod.unavail.explanation=A ManagedThreadFactory p\u00e9ld\u00e1ny beszerz\u00e9s\u00e9hez el\u00e9rhet\u0151nek kell lennie a ManagedThreadFactory konfigur\u00e1ci\u00f3t meghat\u00e1roz\u00f3 alkalmaz\u00e1snak \u00e9s modulnak.
 CWWKC1122.mod.unavail.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az alkalmaz\u00e1s elindult, \u00e9s az alkalmaz\u00e1s tartalmazza a ManagedThreadFactory konfigur\u00e1ci\u00f3t meghat\u00e1roz\u00f3 modult.
 

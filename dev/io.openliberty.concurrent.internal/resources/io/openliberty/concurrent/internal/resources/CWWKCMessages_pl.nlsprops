@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=Ka\u017cda warto\u015b\u0107 na li\
 CWWKC1206.qualifier.must.be.anno.useraction=Upewnij si\u0119, \u017ce wszystkie warto\u015bci na li\u015bcie kwalifikator\u00f3w s\u0105 klasami adnotacji.
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: Artefakt aplikacji {0} okre\u015bla adnotacj\u0119 {1} lub element deskryptora wdro\u017cenia {2} , kt\u00f3ry ma nazw\u0119 {3} i list\u0119 kwalifikator\u00f3w {4} . Lista kwalifikator\u00f3w zawiera adnotacj\u0119 {5} , kt\u00f3ra nie jest opatrzona adnotacjami @ jakarta.inject.Qualifier i @Retention(RUNTIME). Przyk\u0142adem prawid\u0142owego kwalifikatora jest: {6}
-CWWKC1207.lacks.qualifier.anno.explanation=Adnotacja Kwalifikator wskazuje, \u017ce adnotacja jest kwalifikatorem. Adnotacja Retencja kontroluje dost\u0119pno\u015b\u0107 adnotacji.
+CWWKC1207.lacks.qualifier.anno.explanation=Adnotacja @Qualifier wskazuje, \u017ce adnotacja jest kwalifikatorem. Adnotacja \u201eZachowaj\u201d kontroluje dost\u0119pno\u015b\u0107 adnotacji.
 CWWKC1207.lacks.qualifier.anno.useraction=Dodaj adnotacje @Qualifier i @Retention(RUNTIME) do klasy kwalifikatora.
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: Artefakt aplikacji {0} okre\u015bla adnotacj\u0119 {1} lub element deskryptora wdro\u017cenia {2}, kt\u00f3ry ma nazw\u0119 {3} i list\u0119 kwalifikator\u00f3w {4}. Nie mo\u017cna skonfigurowa\u0107 zasobu Jakarta Concurrency tak, aby mia\u0142 jednocze\u015bnie kwalifikatory i przestrze\u0144 nazw java:global. Usuni\u0119cie kwalifikator\u00f3w z konfiguracji zasobu Jakarta Concurrency o nazwie {3} lub przej\u015bcie do przestrzeni nazw java:app.

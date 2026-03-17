@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,9 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.regex.Pattern;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
@@ -101,12 +104,9 @@ public class ToolTest extends FATServletClient {
     public static void teardown() throws Exception {
         server.stopServer(
                           "CWMCM0010E", //The JSON-RPC request is not valid JSON.
-                          "CWMCM0011E", // The JSON-RPC request was invalid.
                           "CWMCM0012E", // The requested JSON-RPC method is not found.
-                          "CWMCM0013E", // JSON-RPC PC request contained invalid parameters.
-                          "CWMCM0014E", // An Internal Server Error occurred whilst processing the JSON-RPC request.
                           "CWMCM0010E", //  Tool method threw an unexpected exception
-                          "CWMCM0011E" // An internal server error occurred
+                          "CWMCM0022E" // Invalid Cursor provided
         );
     }
 
@@ -136,6 +136,42 @@ public class ToolTest extends FATServletClient {
         String expectedResponseString = """
                         {"id":\"2\","jsonrpc":"2.0","result":{"content":[{"type":"text","text":"Hello"}], "isError": false}}
                         """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testEchoRequestIdInjectionWithStringId() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "my-custom-id-42",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echoRequestId",
+                            "arguments": {
+                              "input": "hello-world"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id": "my-custom-id-42",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "my-custom-id-42: hello-world"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
@@ -246,7 +282,7 @@ public class ToolTest extends FATServletClient {
     @Test
     public void testEchoWithInvalidParamsException() throws Exception {
         String request = """
-                          {
+                        {
                           "jsonrpc": "2.0",
                           "id": "2",
                           "method": "tools/call",
@@ -256,46 +292,59 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
         String expectedResponseString = """
-                        {"error":{"code":-32602,
-                        "data":[
-                            "The request does not have any arguments in parameters."
-                            ],
-                        "message":"Invalid params"},
-                        "id":"2",
-                        "jsonrpc":"2.0"}
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "result": {
+                            "isError": true,
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "The method expected the following arguments but did not receive them: [input]."
+                              }
+                            ]
+                          }
+                        }
                         """;
+
+        String response = client.callMCP(request);
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
     @Test
     public void testEchoWithInvalidParamsArgumentMismatchException() throws Exception {
         String request = """
-                          {
+                        {
                           "jsonrpc": "2.0",
                           "id": "2",
                           "method": "tools/call",
                           "params": {
                             "name": "echo",
                             "arguments": {
-                                "other": "Hello"
+                              "other": "Hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String expectedResponseString = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "result": {
+                            "isError": true,
+                            "content": [
+                              {
+                                "type": "text",
+                                    "text": "The following arguments were passed but were not found in the method: [other]. The method expected the following arguments but did not receive them: [input]."
                               }
+                            ]
                           }
                         }
                         """;
 
         String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"error":{"code":-32602,
-                        "data":[
-                            "The following arguments were passed but were not found in the method: [other].",
-                            "The following arguments were expected by the method but were not provided: [input]."
-                            ],
-                        "message": "Invalid params"},
-                        "id":"2",
-                        "jsonrpc":"2.0"}
-                        """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
@@ -632,7 +681,194 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
+    public void testToolCallWithoutNonRequiredStringArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgStringNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithoutNonRequiredIntArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgIntNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "0"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithoutNonRequiredArrayArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgArrayNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithoutNonRequiredObjectArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgObjectNotRequired",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "null"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithTwoToolArgsWithoutNonRequiredArg() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testMultipleToolArgsOneNotRequired",
+                            "arguments": {
+                              "planet": "Earth"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Planet Earth was created in the year 0"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithToolArgStringDefaultValue() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgStringDefaultValue",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Jupiter"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithToolArgIntDefaultValue() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testToolArgIntDefaultValue",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "2025"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testToolCallWithTwoToolArgsWithOneDefaultValue() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testMultipleToolArgsOneDefaultValue",
+                            "arguments": {
+                              "year": "2000"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Planet Jupiter was created in the year 2000"}], "isError": false}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
     public void testToolList() throws Exception {
+
+        String response = client.listAllTools();
+        JSONObject jsonResponse = new JSONObject(response);
+        String expectedString = "";
+        try (InputStream inputStream = this.getClass().getResourceAsStream("expected-tools-list-response.json")) {
+            if (inputStream == null) {
+                throw new FileNotFoundException("Resource not found: expected-tools-list-response.json");
+            }
+            expectedString = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+        }
+        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
+    }
+
+    @Test
+    public void testToolListInvalidCursor() throws Exception {
         String request = """
                         {
                           "jsonrpc": "2.0",
@@ -643,1632 +879,22 @@ public class ToolTest extends FATServletClient {
                           }
                         }
                         """;
-
         String response = client.callMCP(request);
-        JSONObject jsonResponse = new JSONObject(response);
 
-        String expectedString = """
+        String expectedResponseString = """
                         {
-                            "result": {
-                                "tools": [
-                                   {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "input": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "input"
-                                            ]
-                                        },
-                                        "name": "ignoredEcho"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "input": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "input"
-                                            ]
-                                        },
-                                        "name": ""
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "first number",
-                                                    "type": "integer"
-                                                },
-                                                "num2": {
-                                                    "description": "second number",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1",
-                                                "num2"
-                                            ]
-                                        },
-                                        "name": "add",
-                                        "description": "Returns the sum of the two inputs",
-                                        "title": "Addition calculator"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "@arg1!><": {
-                                                    "description": "specialCharactersInToolArgName",
-                                                    "type": "string"
-                                                },
-                                                "@arg2={}": {
-                                                    "description": "specialCharactersInToolArgName",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "@arg1!><",
-                                                "@arg2={}"
-                                            ]
-                                        },
-                                        "name": "specialCharactersInToolArgName",
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "@arg1'()": {
-                                                    "description": "specialCharactersInToolArgName",
-                                                    "type": "string"
-                                                },
-                                                "@arg2.%:": {
-                                                    "description": "specialCharactersInToolArgName",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "@arg1'()",
-                                                "@arg2.%:"
-                                            ]
-                                        },
-                                        "name": "specialCharactersInToolArgNameVariant2",
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "package": {
-                                                    "description": "reservedNamesInToolArgName",
-                                                    "type": "string"
-                                                },
-                                                "int": {
-                                                    "description": "reservedNamesInToolArgName",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "package",
-                                                "int"
-                                            ]
-                                        },
-                                        "name": "reservedNamesInToolArgName",
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "class": {
-                                                    "description": "reservedNamesInToolArgName",
-                                                    "type": "string"
-                                                },
-                                                "void": {
-                                                    "description": "reservedNamesInToolArgName",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "class",
-                                                "void"
-                                            ]
-                                        },
-                                        "name": "reservedNamesInToolArgNameVariant",
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "input": {
-                                                    "description": "input to echo",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "input"
-                                            ]
-                                        },
-                                        "name": "privateEcho",
-                                        "description": "Returns the input unchanged",
-                                        "title": "Echoes the input"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "arg1": {
-                                                    "description": "reservedWordsInToolName",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "arg1"
-                                            ]
-                                        },
-                                        "name": "package"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "arg1": {
-                                                    "description": "specialCharactersInToolName",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "arg1"
-                                            ]
-                                        },
-                                        "name": "specialCharactersInToolName@!><={}'().%:"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "type": "integer"
-                                                },
-                                                "num2": {
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1",
-                                                "num2"
-                                            ]
-                                        },
-                                        "name": "subtract",
-                                        "description": "Minus number 2 from number 1",
-                                        "title": "Subtraction calculator"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "input": {
-                                                    "description": "input to echo",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "input"
-                                            ]
-                                        },
-                                        "name": "echo",
-                                        "description": "Returns the input unchanged",
-                                        "title": "Echoes the input"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "long",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONlong",
-                                        "description": "testJSONlong",
-                                        "title": "testJSONlong"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "double",
-                                                    "type": "number"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONdouble",
-                                        "description": "testJSONdouble",
-                                        "title": "testJSONdouble"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "byte",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONbyte",
-                                        "description": "testJSONbyte",
-                                        "title": "testJSONbyte"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "float",
-                                                    "type": "number"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONfloat",
-                                        "description": "testJSONfloat",
-                                        "title": "testJSONfloat"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "short",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONshort",
-                                        "description": "testJSONshort",
-                                        "title": "testJSONshort"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "Long",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONLong",
-                                        "description": "testJSONLong",
-                                        "title": "testJSONLong"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "Double",
-                                                    "type": "number"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONDouble",
-                                        "description": "testJSONDouble",
-                                        "title": "testJSONDouble"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "Byte",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONByte",
-                                        "description": "testJSONByte",
-                                        "title": "testJSONByte"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "Float",
-                                                    "type": "number"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONFloat",
-                                        "description": "testJSONFloat",
-                                        "title": "testJSONFloat"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "Short",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                         "name": "testJSONShort",
-                                        "description": "testJSONShort",
-                                        "title": "testJSONShort"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "num1": {
-                                                    "description": "Integer",
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "num1"
-                                            ]
-                                        },
-                                        "name": "testJSONInteger",
-                                        "description": "testJSONInteger",
-                                        "title": "testJSONInteger"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "c": {
-                                                    "description": "Character",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "c"
-                                            ]
-                                        },
-                                        "name": "testJSONCharacter",
-                                        "description": "testJSONCharacter",
-                                        "title": "testJSONCharacter"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "c": {
-                                                    "description": "char",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "c"
-                                            ]
-                                        },
-                                        "name": "testJSONcharacter",
-                                        "description": "testJSONcharacter",
-                                        "title": "testJSONcharacter"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "b": {
-                                                    "description": "Boolean",
-                                                    "type": "boolean"
-                                                }
-                                            },
-                                            "required": [
-                                                "b"
-                                            ]
-                                        },
-                                        "name": "testJSONBoolean",
-                                        "description": "testJSONBoolean",
-                                        "title": "testJSONBoolean"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "value": {
-                                            "description": "boolean value",
-                                            "type": "boolean"
-                                          }
-                                        },
-                                        "required": [
-                                          "value"
-                                        ]
-                                      },
-                                      "name": "toggle",
-                                      "description": "toggles the boolean input",
-                                      "title": "Boolean toggle"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input string",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "annotations": {
-                                        "readOnlyHint": true
-                                      },
-                                      "name": "readOnlyTool",
-                                      "title": "Read Only Tool",
-                                      "description": "A tool that is read-only"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input string",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "annotations": {
-                                        "openWorldHint": false,
-                                        "title": "Destructive Tool"
-                                      },
-                                      "name": "destructiveTool",
-                                      "title": "Destructive Tool",
-                                      "description": "A tool that performs a destructive operation"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input string",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "annotations": {
-                                        "title": "Open to World Tool"
-                                      },
-                                      "name": "openWorldTool",
-                                      "title": "Open to World Tool",
-                                      "description": "A tool in an open world context"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input string",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "annotations": {
-                                        "idempotentHint": true,
-                                        "title": "Idempotent Tool"
-                                      },
-                                      "name": "idempotentTool",
-                                      "title": "Idempotent Tool",
-                                      "description": "A tool with idempotent context"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input string",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "name": "missingTitle",
-                                      "description": "A tool that does not have a title"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input to echo",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "name": "mixedContentTool",
-                                      "description": "Returns Text, Audio or Image Content",
-                                      "title": "Mixed Content Tool"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input to echo",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "name": "mixedContentListTool",
-                                      "description": "Returns Text, Audio or Image Content List",
-                                      "title": "Mixed Content List Tool"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input string to echo back as content",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "name": "textContentTool",
-                                      "description": "Returns text content object",
-                                      "title": "Text Content Tool"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "input": {
-                                            "description": "input string to echo back as content",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "input"
-                                        ]
-                                      },
-                                      "name": "textContentToolWithContentAnnotation",
-                                      "description": "Returns text content object with annotation",
-                                      "title": "Text Content Tool With Content Annotation"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "imageData": {
-                                            "description": "Base64-encoded image",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "imageData"
-                                        ]
-                                      },
-                                      "name": "imageContentTool",
-                                      "description": "Returns image content object",
-                                      "title": "Image Content Tool"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "imageData": {
-                                            "description": "Base64-encoded image",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "imageData"
-                                        ]
-                                      },
-                                      "name": "imageContentToolWithContentAnnotation",
-                                      "description": "Returns image content object with annotation",
-                                      "title": "Image Content Tool With Content Annotation"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "audioData": {
-                                            "description": "Base64-encoded audio",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "audioData"
-                                        ]
-                                      },
-                                      "name": "audioContentTool",
-                                      "description": "Returns audio content object",
-                                      "title": "Audio Content Tool"
-                                    },
-                                    {
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "audioData": {
-                                            "description": "Base64-encoded audio",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "audioData"
-                                        ]
-                                      },
-                                      "name": "audioContentToolWithContentAnnotation",
-                                      "description": "Returns audio content object with annotation",
-                                      "title": "Audio Content Tool With Content Annotation"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "object",
-                                                "properties": {
-                                                    "country": {
-                                                        "type": "string"
-                                                    },
-                                                    "isCapital": {
-                                                        "type": "boolean"
-                                                    },
-                                                    "name": {
-                                                        "type": "string"
-                                                    },
-                                                    "population": {
-                                                        "type": "integer"
-                                                    }
-                                                },
-                                                "required": [
-                                                    "name",
-                                                    "country",
-                                                    "population",
-                                                    "isCapital"
-                                                ]
-                                            }
-                                        },
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {},
-                                            "required": []
-                                        },
-                                        "name": "testListObjectResponse",
-                                        "description": "A tool to return a list of cities",
-                                        "title": "City List"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "string"
-                                            }
-                                        },
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {},
-                                            "required": []
-                                        },
-                                        "name": "testListStringResponse",
-                                        "description": "A tool to return a list of strings",
-                                        "title": "String List"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "type": "array",
-                                            "items": {
-                                                "type": "integer"
-                                            }
-                                        },
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {},
-                                            "required": []
-                                        },
-                                        "name": "testArrayResponse",
-                                        "description": "A tool to return an array of ints",
-                                        "title": "Array of ints"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "country": {
-                                                    "type": "string"
-                                                },
-                                                "isCapital": {
-                                                    "type": "boolean"
-                                                },
-                                                "name": {
-                                                    "type": "string"
-                                                },
-                                                "population": {
-                                                    "type": "integer"
-                                                }
-                                            },
-                                            "required": [
-                                                "name",
-                                                "country",
-                                                "population",
-                                                "isCapital"
-                                            ]
-                                        },
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "name": {
-                                                    "description": "name of your city",
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "name"
-                                            ]
-                                        },
-                                        "name": "testObjectResponse",
-                                        "description": "A tool to return a city object you've named",
-                                        "title": "Create a city"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {},
-                                            "required": []
-                                        },
-                                        "name": "testStringStructuredContentResponse",
-                                        "description": "A tool to return a string with structuredContent set. The tool should ignore this and not return a structuredContent field when the response is string.",
-                                        "title": "Structured Content String Response"
-                                    },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "value": {
-                                                    "description": "boolean value",
-                                                    "type": "boolean"
-                                                }
-                                            },
-                                            "required": []
-                                        },
-
-                                        "name": "testToolArgIsNotRequired",
-                                        "description": "ToolArgNotRequired",
-                                        "title": "ToolArgNotRequired"
-                                     },
-                                    {
-                                        "inputSchema": {
-                                            "type": "object",
-                                            "properties": {
-                                                "input": {
-                                                    "type": "string"
-                                                }
-                                            },
-                                            "required": [
-                                                "input"
-                                            ]
-                                        },
-
-                                        "name": "staticInnerTool",
-                                        "description": "Defined in static inner class",
-                                        "title": "Static Inner Tool"
-                                      },
-                                    {
-                                        "inputSchema": {
-                                            "$defs": {
-                                                "Company": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "name": {
-                                                            "type": "string"
-                                                        },
-                                                        "shareholders": {
-                                                            "description": "A list of shareholder (person object)",
-                                                            "type": "array",
-                                                            "items": {
-                                                                "$ref": "#/$defs/Person"
-                                                            }
-                                                        },
-                                                        "shareholderRegistry": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "value": {
-                                                                    "$ref": "#/$defs/person"
-                                                                },
-                                                                "key": {
-                                                                    "type": "integer"
-                                                                }
-                                                            },
-                                                            "required": []
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "name",
-                                                        "address",
-                                                        "shareholders"
-                                                    ]
-                                                },
-                                                "Address": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "number": {
-                                                            "type": "integer"
-                                                        },
-                                                        "street": {
-                                                            "description": "A street object to represent complex streets",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "streetName": {
-                                                                    "type": "string"
-                                                                },
-                                                                "roadType": {
-                                                                    "type": "string"
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "streetName"
-                                                            ]
-                                                        },
-                                                        "postcode": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "number",
-                                                        "street",
-                                                        "postcode"
-                                                    ]
-                                                },
-                                                "Person": {
-                                                    "description": "A person object contains address, company objects",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "company": {
-                                                            "$ref": "#/$defs/Company"
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "fullname",
-                                                        "address",
-                                                        "company"
-                                                    ]
-                                                }
-                                            },
-                                            "type": "object",
-                                            "properties": {
-                                                "person": {
-                                                    "description": "Person object",
-                                                    "$ref": "#/$defs/Person"
-                                                },
-                                                "company": {
-                                                    "description": "Company object",
-                                                    "$ref": "#/$defs/Company"
-                                                }
-                                            },
-                                            "required": [
-                                                "person",
-                                                "company"
-                                            ]
-                                        },
-                                        "name": "checkPerson",
-                                        "description": "Returns boolean",
-                                        "title": "checks if person is shareholder"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "$defs": {
-                                                "Address": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "number": {
-                                                            "type": "integer"
-                                                        },
-                                                        "street": {
-                                                            "description": "A street object to represent complex streets",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "streetName": {
-                                                                    "type": "string"
-                                                                },
-                                                                "roadType": {
-                                                                    "type": "string"
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "streetName"
-                                                            ]
-                                                        },
-                                                        "postcode": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "number",
-                                                        "street",
-                                                        "postcode"
-                                                    ]
-                                                },
-                                                "Person": {
-                                                    "description": "A person object contains address, company objects",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "company": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "address": {
-                                                                    "$ref": "#/$defs/Address"
-                                                                },
-                                                                "name": {
-                                                                    "type": "string"
-                                                                },
-                                                                "shareholders": {
-                                                                    "description": "A list of shareholder (person object)",
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "$ref": "#/$defs/Person"
-                                                                    }
-                                                                },
-                                                                "shareholderRegistry": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "value": {
-                                                                            "$ref": "#/$defs/person"
-                                                                        },
-                                                                        "key": {
-                                                                            "type": "integer"
-                                                                        }
-                                                                    },
-                                                                    "required": []
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "name",
-                                                                "address",
-                                                                "shareholders"
-                                                            ]
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "fullname",
-                                                        "address",
-                                                        "company"
-                                                    ]
-                                                }
-                                            },
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/$defs/Person"
-                                            },
-                                            "description": "Returns list of person object"
-                                        },
-                                        "inputSchema": {
-                                            "$defs": {
-                                                "Address": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "number": {
-                                                            "type": "integer"
-                                                        },
-                                                        "street": {
-                                                            "description": "A street object to represent complex streets",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "streetName": {
-                                                                    "type": "string"
-                                                                },
-                                                                "roadType": {
-                                                                    "type": "string"
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "streetName"
-                                                            ]
-                                                        },
-                                                        "postcode": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "number",
-                                                        "street",
-                                                        "postcode"
-                                                    ]
-                                                },
-                                                "Person": {
-                                                    "description": "A person object contains address, company objects",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "company": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "address": {
-                                                                    "$ref": "#/$defs/Address"
-                                                                },
-                                                                "name": {
-                                                                    "type": "string"
-                                                                },
-                                                                "shareholders": {
-                                                                    "description": "A list of shareholder (person object)",
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "$ref": "#/$defs/Person"
-                                                                    }
-                                                                },
-                                                                "shareholderRegistry": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "value": {
-                                                                            "$ref": "#/$defs/person"
-                                                                        },
-                                                                        "key": {
-                                                                            "type": "integer"
-                                                                        }
-                                                                    },
-                                                                    "required": []
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "name",
-                                                                "address",
-                                                                "shareholders"
-                                                            ]
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "fullname",
-                                                        "address",
-                                                        "company"
-                                                    ]
-                                                }
-                                            },
-                                            "type": "object",
-                                            "properties": {
-                                                "employeeList": {
-                                                    "description": "List of people",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/$defs/Person"
-                                                    }
-                                                },
-                                                "person": {
-                                                    "description": "Person object",
-                                                    "$ref": "#/$defs/Person"
-                                                }
-                                            },
-                                            "required": [
-                                                "employeeList",
-                                                "person"
-                                            ]
-                                        },
-                                        "name": "addPersonToList",
-                                        "description": "adds person to people list",
-                                        "title": "adds person to people list"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "$defs": {
-                                                "Address": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "number": {
-                                                            "type": "integer"
-                                                        },
-                                                        "street": {
-                                                            "description": "A street object to represent complex streets",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "streetName": {
-                                                                    "type": "string"
-                                                                },
-                                                                "roadType": {
-                                                                    "type": "string"
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "streetName"
-                                                            ]
-                                                        },
-                                                        "postcode": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "number",
-                                                        "street",
-                                                        "postcode"
-                                                    ]
-                                                },
-                                                "Person": {
-                                                    "description": "A person object contains address, company objects",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "company": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "address": {
-                                                                    "$ref": "#/$defs/Address"
-                                                                },
-                                                                "name": {
-                                                                    "type": "string"
-                                                                },
-                                                                "shareholders": {
-                                                                    "description": "A list of shareholder (person object)",
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "$ref": "#/$defs/Person"
-                                                                    }
-                                                                },
-                                                                "shareholderRegistry": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "value": {
-                                                                            "$ref": "#/$defs/person"
-                                                                        },
-                                                                        "key": {
-                                                                            "type": "integer"
-                                                                        }
-                                                                    },
-                                                                    "required": []
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "name",
-                                                                "address",
-                                                                "shareholders"
-                                                            ]
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "fullname",
-                                                        "address",
-                                                        "company"
-                                                    ]
-                                                }
-                                            },
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/$defs/Person"
-                                            },
-                                            "description": "Returns list of person object"
-                                        },
-                                        "inputSchema": {
-                                            "$defs": {
-                                                "Address": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "number": {
-                                                            "type": "integer"
-                                                        },
-                                                        "street": {
-                                                            "description": "A street object to represent complex streets",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "streetName": {
-                                                                    "type": "string"
-                                                                },
-                                                                "roadType": {
-                                                                    "type": "string"
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "streetName"
-                                                            ]
-                                                        },
-                                                        "postcode": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "number",
-                                                        "street",
-                                                        "postcode"
-                                                    ]
-                                                },
-                                                "Person": {
-                                                    "description": "A person object contains address, company objects",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "company": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "address": {
-                                                                    "$ref": "#/$defs/Address"
-                                                                },
-                                                                "name": {
-                                                                    "type": "string"
-                                                                },
-                                                                "shareholders": {
-                                                                    "description": "A list of shareholder (person object)",
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "$ref": "#/$defs/Person"
-                                                                    }
-                                                                },
-                                                                "shareholderRegistry": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "value": {
-                                                                            "$ref": "#/$defs/person"
-                                                                        },
-                                                                        "key": {
-                                                                            "type": "integer"
-                                                                        }
-                                                                    },
-                                                                    "required": []
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "name",
-                                                                "address",
-                                                                "shareholders"
-                                                            ]
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "fullname",
-                                                        "address",
-                                                        "company"
-                                                    ]
-                                                }
-                                            },
-                                            "type": "object",
-                                            "properties": {
-                                                "employeeList": {
-                                                    "description": "List of people",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/$defs/Person"
-                                                    }
-                                                },
-                                                "person": {
-                                                    "description": "Person object",
-                                                    "$ref": "#/$defs/Person"
-                                                }
-                                            },
-                                            "required": [
-                                                "employeeList",
-                                                "person"
-                                            ]
-                                        },
-                                        "name": "addPersonToListToolResponse",
-                                        "description": "adds person to people list",
-                                        "title": "adds person to people list"
-                                    },
-                                    {
-                                        "outputSchema": {
-                                            "$defs": {
-                                                "Address": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "number": {
-                                                            "type": "integer"
-                                                        },
-                                                        "street": {
-                                                            "description": "A street object to represent complex streets",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "streetName": {
-                                                                    "type": "string"
-                                                                },
-                                                                "roadType": {
-                                                                    "type": "string"
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "streetName"
-                                                            ]
-                                                        },
-                                                        "postcode": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "number",
-                                                        "street",
-                                                        "postcode"
-                                                    ]
-                                                },
-                                                "Person": {
-                                                    "description": "A person object contains address, company objects",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "company": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "address": {
-                                                                    "$ref": "#/$defs/Address"
-                                                                },
-                                                                "name": {
-                                                                    "type": "string"
-                                                                },
-                                                                "shareholders": {
-                                                                    "description": "A list of shareholder (person object)",
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "$ref": "#/$defs/Person"
-                                                                    }
-                                                                },
-                                                                "shareholderRegistry": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "value": {
-                                                                            "$ref": "#/$defs/person"
-                                                                        },
-                                                                        "key": {
-                                                                            "type": "integer"
-                                                                        }
-                                                                    },
-                                                                    "required": []
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "name",
-                                                                "address",
-                                                                "shareholders"
-                                                            ]
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "fullname",
-                                                        "address",
-                                                        "company"
-                                                    ]
-                                                }
-                                            },
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/$defs/Person"
-                                            },
-                                            "description": "Returns list of person object"
-                                        },
-                                        "inputSchema": {
-                                            "$defs": {
-                                                "Address": {
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "number": {
-                                                            "type": "integer"
-                                                        },
-                                                        "street": {
-                                                            "description": "A street object to represent complex streets",
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "streetName": {
-                                                                    "type": "string"
-                                                                },
-                                                                "roadType": {
-                                                                    "type": "string"
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "streetName"
-                                                            ]
-                                                        },
-                                                        "postcode": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "number",
-                                                        "street",
-                                                        "postcode"
-                                                    ]
-                                                },
-                                                "Person": {
-                                                    "description": "A person object contains address, company objects",
-                                                    "type": "object",
-                                                    "properties": {
-                                                        "address": {
-                                                            "$ref": "#/$defs/Address"
-                                                        },
-                                                        "company": {
-                                                            "type": "object",
-                                                            "properties": {
-                                                                "address": {
-                                                                    "$ref": "#/$defs/Address"
-                                                                },
-                                                                "name": {
-                                                                    "type": "string"
-                                                                },
-                                                                "shareholders": {
-                                                                    "description": "A list of shareholder (person object)",
-                                                                    "type": "array",
-                                                                    "items": {
-                                                                        "$ref": "#/$defs/Person"
-                                                                    }
-                                                                },
-                                                                "shareholderRegistry": {
-                                                                    "type": "object",
-                                                                    "properties": {
-                                                                        "value": {
-                                                                            "$ref": "#/$defs/person"
-                                                                        },
-                                                                        "key": {
-                                                                            "type": "integer"
-                                                                        }
-                                                                    },
-                                                                    "required": []
-                                                                }
-                                                            },
-                                                            "required": [
-                                                                "name",
-                                                                "address",
-                                                                "shareholders"
-                                                            ]
-                                                        },
-                                                        "fullname": {
-                                                            "type": "string"
-                                                        }
-                                                    },
-                                                    "required": [
-                                                        "fullname",
-                                                        "address",
-                                                        "company"
-                                                    ]
-                                                }
-                                            },
-                                            "type": "object",
-                                            "properties": {
-                                                "employeeList": {
-                                                    "description": "List of people",
-                                                    "type": "array",
-                                                    "items": {
-                                                        "$ref": "#/$defs/Person"
-                                                    }
-                                                },
-                                                "person": {
-                                                    "description": "Person object",
-                                                    "$ref": "#/$defs/Person"
-                                                }
-                                            },
-                                            "required": [
-                                                "employeeList",
-                                                "person"
-                                            ]
-                                        },
-                                        "name": "addPersonToListToolResponseWithMetaRequest",
-                                        "description": "adds person to people list",
-                                        "title": "adds person to people list"
-                                    },{
-                                        "inputSchema": {
-                                                        "type": "object",
-                                                        "properties":
-                                                        {
-                                                            "name": {
-                                                                      "type": "string",
-                                                                      "description": "name of person"
-                                                                    }
-
-                                                        },
-                                                        "required": [
-                                                                "name"
-                                                            ]
-                                                        },
-                                        "name": "simpleMetaRequest",
-                                        "description": "return string made from args and metadata",
-                                        "title": "return string made from args and metadata"
-                                    },
-                                    {
-                                      "name": "get-user-jp",
-                                      "title": "ユーザー情報取得",
-                                      "description": "指定されたユーザー ID の名前とロールを取得します。",
-                                      "inputSchema": {
-                                        "type": "object",
-                                        "properties": {
-                                          "userid": {
-                                            "description": "対象ユーザーのユーザーID。",
-                                            "type": "string"
-                                          }
-                                        },
-                                        "required": [
-                                          "userid"
-                                        ]
-                                      }
-                                    }
-                                ]
-                            },
                             "id": 1,
-                            "jsonrpc": "2.0"
+                            "jsonrpc": "2.0",
+                            "error": {
+                                "code": -32602,
+                                "data": "CWMCM0022E: The \\"optional-cursor-value\\" cursor value is invalid.",
+                                "message": "Invalid params"
+                            }
                         }
-                         """;
+                        """;
 
-        JSONAssert.assertEquals(expectedString, jsonResponse.toString(), JSONCompareMode.NON_EXTENSIBLE);
+        JSONAssert.assertEquals(expectedResponseString, response, true);
     }
-
-    /**
-     *
-     */
 
     @Test
     public void testEchoMethodCallError() throws Exception {
@@ -2291,7 +917,7 @@ public class ToolTest extends FATServletClient {
         String response = client.callMCP(request);
 
         String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"CWMCM0011E: An internal server error occurred while running the tool."}], "isError": true}}
+                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text":"An internal server error occurred while running the tool."}], "isError": true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
         assertNotNull(server.waitForStringInLogUsingMark("Method call caused runtime exception", server.getDefaultLogFile()));
@@ -2782,123 +1408,6 @@ public class ToolTest extends FATServletClient {
     }
 
     @Test
-    public void testReturningArray() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testArrayResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[1,2,3,4,5]"
-                              }
-                            ],
-                            "structuredContent": [1,2,3,4,5],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testReturningStringList() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testListStringResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[\\\"red\\\",\\\"blue\\\",\\\"yellow\\\"]"
-                              }
-                            ],
-                            "structuredContent": ["red","blue","yellow"],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testReturningListOfObjects() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testListObjectResponse",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        // the object within the text field is expected to have the fields in lexicographical order after converting the object to JSON
-        String expectedResponseString = """
-                        {
-                          "id":"2",
-                          "jsonrpc":"2.0",
-                          "result": {
-                            "content": [
-                              {
-                                "type":"text",
-                                "text":"[{\\\"country\\\":\\\"France\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"Paris\\\",\\\"population\\\":8000},{\\\"country\\\":\\\"England\\\",\\\"isCapital\\\":false,\\\"name\\\":\\\"Manchester\\\",\\\"population\\\":15000}]"
-                              }
-                            ],
-                            "structuredContent": [
-                              {
-                                "country": "France",
-                                "isCapital": true,
-                                "name": "Paris",
-                                "population": 8000
-                              },
-                              {
-                                "country": "England",
-                                "isCapital": false,
-                                "name": "Manchester",
-                                "population": 15000
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
     public void testStringNotReturnedAsStructuredContent() throws Exception {
         String request = """
                           {
@@ -3380,10 +1889,10 @@ public class ToolTest extends FATServletClient {
         JSONObject jsonResponse = new JSONObject(response);
         // Strict Mode tests
         String expectedResponseString = """
-                                                                {
+                            {
                             "result": {
                                 "isError": false,
-                                "structuredContent": [
+                                "structuredContent": { "returnList": [
                                     {
                                         "address": {
                                             "number": 2,
@@ -3452,10 +1961,10 @@ public class ToolTest extends FATServletClient {
                                         },
                                         "fullname": "John Smith"
                                     }
-                                ],
+                                ]},
                                 "content": [
                                     {
-                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
                                         "type": "text"
                                     }
                                 ]
@@ -3596,7 +2105,7 @@ public class ToolTest extends FATServletClient {
                                                                 {
                             "result": {
                                 "isError": false,
-                                "structuredContent": [
+                                "structuredContent": { "returnList": [
                                     {
                                         "address": {
                                             "number": 2,
@@ -3665,10 +2174,10 @@ public class ToolTest extends FATServletClient {
                                         },
                                         "fullname": "John Smith"
                                     }
-                                ],
+                                ]},
                                 "content": [
                                     {
-                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
                                         "type": "text"
                                     }
                                 ],
@@ -3861,7 +2370,7 @@ public class ToolTest extends FATServletClient {
                                                                 {
                             "result": {
                                 "isError": false,
-                                "structuredContent": [
+                                "structuredContent": { "returnList": [
                                     {
                                         "address": {
                                             "number": 2,
@@ -3930,10 +2439,10 @@ public class ToolTest extends FATServletClient {
                                         },
                                         "fullname": "John Smith"
                                     }
-                                ],
+                                ]},
                                 "content": [
                                     {
-                                        "text": "[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]",
+                                        "text": "{\\\"returnList\\\":[{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\",\\\"shareholderRegistry\\\":{\\\"1\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"}}},\\\"fullname\\\":\\\"John Smith\\\"},{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"fullname\\\":\\\"Shareholder 1\\\"},{\\\"address\\\":{\\\"number\\\":2,\\\"postcode\\\":\\\"so21 2rt\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Poles Ln\\\",\\\"roadType\\\":\\\"n/a\\\"}},\\\"company\\\":{\\\"address\\\":{\\\"number\\\":100,\\\"postcode\\\":\\\"so21 2er\\\",\\\"street\\\":{\\\"streetName\\\":\\\"Hursley Park Rd\\\",\\\"roadType\\\":\\\"Private Property\\\"}},\\\"name\\\":\\\"IBM\\\"},\\\"fullname\\\":\\\"John Smith\\\"}]}",
                                         "type": "text"
                                     }
                                 ],
@@ -4001,6 +2510,44 @@ public class ToolTest extends FATServletClient {
                                 "content": [
                                     {
                                         "text": "Hello IBMUser you have called this tool from Hursley at timestamp 1762860699",
+                                        "type": "text"
+                                    }
+                                ],
+                            },
+                            "id": 2,
+                            "jsonrpc": "2.0"
+                        }
+                                                                                                """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void noArgRequest() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": 2,
+                          "method": "tools/call",
+                          "params": {
+                            "_meta":{
+                                        "api.ibmtest.org/location": "Hursley",
+                                        "timestamp": 1762860699
+                                    },
+                            "name": "noArgsRequest"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONObject jsonResponse = new JSONObject(response);
+        // Strict Mode tests
+        String expectedResponseString = """
+                                                                {
+                            "result": {
+                                "isError": false,
+                                "content": [
+                                    {
+                                        "text": "You have called this tool from Hursley at timestamp 1762860699",
                                         "type": "text"
                                     }
                                 ],
@@ -4137,6 +2684,47 @@ public class ToolTest extends FATServletClient {
                         """;
 
         JSONAssert.assertEquals(expected, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testStructuredContentResponseWithNonLatinCharacters() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testNonLatinStringStructuredContent",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        // 3 backslashes, as it should look like \" in the response. So we need extra backslashes to escape the \ and to escape the "
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\\"country\\\":\\\"日本\\\",\\\"isCapital\\\":true,\\\"name\\\":\\\"東京\\\",\\\"population\\\":14000000}"
+                              }
+                            ],
+                            "structuredContent": {
+                              "country": "日本",
+                              "isCapital": true,
+                              "name": "東京",
+                              "population": 14000000
+                            },
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
 }

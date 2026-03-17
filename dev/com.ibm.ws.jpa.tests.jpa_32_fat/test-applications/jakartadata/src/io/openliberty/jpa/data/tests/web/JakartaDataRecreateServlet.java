@@ -904,7 +904,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
         City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
         City RochesterNY = City.of("Rochester", "New York", 209352, Set.of(14601, 14602, 14603, 14604, 14606));
 
-        List<CityId> rochesters;
+        List<?> rochesters;
 
         tx.begin();
         em.persist(RochesterMN);
@@ -914,9 +914,11 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         try {
             rochesters = em
-                            .createQuery("SELECT ID(THIS) FROM City WHERE (name=?1) ORDER BY population DESC", CityId.class)
+                            .createQuery("SELECT ID(THIS) FROM City WHERE (name=?1) ORDER BY population DESC")
                             .setParameter(1, "Rochester")
                             .getResultList();
+
+            System.out.println("Result list class = " + rochesters.getClass());
         } catch (Exception e) {
             tx.rollback();
 
@@ -930,19 +932,19 @@ public class JakartaDataRecreateServlet extends FATServlet {
         }
 
         assertEquals(2, rochesters.size());
-        assertEquals("New York", rochesters.get(0).getStateName());
-        assertEquals("Minnesota", rochesters.get(1).getStateName());
+        assertEquals("New York", ((CityId) rochesters.get(0)).getStateName());
+        assertEquals("Minnesota", ((CityId) rochesters.get(1)).getStateName());
     }
 
     @Test
-    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
+   //@Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
     public void testOLGH29073_WHERECLAUSE() throws Exception {
         deleteAllEntities(City.class);
 
         City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
         City RochesterNY = City.of("Rochester", "New York", 209352, Set.of(14601, 14602, 14603, 14604, 14606));
 
-        // List<CityId> rochesters;
+        List<?> rochesters;
 
         tx.begin();
         em.persist(RochesterMN);
@@ -955,14 +957,17 @@ public class JakartaDataRecreateServlet extends FATServlet {
             long version1 = em.createQuery("SELECT VERSION(c) FROM City c WHERE ID(c) = ?1", Long.class)
                             .setParameter(1, new CityId("Rochester", "Minnesota"))
                             .getSingleResult();
+            
+            rochesters = em.createQuery("SELECT ID(THIS) FROM City WHERE (name=?1) ORDER BY population DESC")
+                            .setParameter(1, "Rochester")
+                            .getResultList();
+            System.out.println("Result list class = " + rochesters.getClass());
 
             //This one failed
             long version2 = em.createQuery("SELECT VERSION(THIS) FROM City  WHERE ID(THIS) = ?1", Long.class)
                             .setParameter(1, new CityId("Rochester", "Minnesota"))
                             .getSingleResult();
-            //This one passed
-            long rochesters = em.createQuery("SELECT VERSION(THIS) FROM City", Long.class)
-                            .getSingleResult();
+
         } catch (Exception e) {
             tx.rollback();
             throw e;

@@ -22,6 +22,7 @@ import com.ibm.ws.springboot.support.fat.ApplicationArgsTests40;
 import com.ibm.ws.springboot.support.fat.ApplicationStartedEventTests40;
 import com.ibm.ws.springboot.support.fat.CDITests40;
 import com.ibm.ws.springboot.support.fat.CommonWebFluxTests40;
+import com.ibm.ws.springboot.support.fat.CommonWebFluxTests40War;
 import com.ibm.ws.springboot.support.fat.CommonWebServerTests40;
 import com.ibm.ws.springboot.support.fat.ConcurrencyAppTests40;
 import com.ibm.ws.springboot.support.fat.ConcurrencyAppTests40War;
@@ -111,6 +112,7 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 MultiModuleProjectTests40.class,
                 ConfigActuatorXMLOverrideTests40.class,
                 CommonWebFluxTests40.class,
+                CommonWebFluxTests40War.class,
                 NoServletRequiredAppTests40.class,
                 MultiContextTests40.class,
                 WebAnnotationTests40.class,

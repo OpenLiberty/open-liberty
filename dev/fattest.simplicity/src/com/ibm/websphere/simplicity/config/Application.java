@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,8 @@ public class Application extends ConfigElement {
     private ApplicationBnd applicationBnd;
     @XmlElement(name = "resourceAdapter")
     private ConfigElementList<ResourceAdapter> resourceAdapters;
+    @XmlElement(name = "mcpServer")
+    private ConfigElementList<McpServer> mcpServers;
 
     //@XmlElement(name = "library")
     //private List<Library> libraries;
@@ -139,6 +141,16 @@ public class Application extends ConfigElement {
         return resourceAdapters;
     }
 
+    /**
+     * @return configuration for MCP servers in the application
+     */
+    public ConfigElementList<McpServer> getMcpServers() {
+        if (mcpServers == null) {
+            mcpServers = new ConfigElementList<McpServer>();
+        }
+        return mcpServers;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("Application{");
@@ -154,6 +166,8 @@ public class Application extends ConfigElement {
             buf.append(applicationBnd.toString());
         if (resourceAdapters != null)
             buf.append(resourceAdapters);
+        if (mcpServers != null)
+            buf.append(mcpServers);
         buf.append("}");
 
         return buf.toString();
@@ -168,6 +182,8 @@ public class Application extends ConfigElement {
             clone.applicationBnd = this.applicationBnd.clone();
         if (this.resourceAdapters != null)
             clone.resourceAdapters = this.resourceAdapters.clone();
+        if (this.mcpServers != null)
+            clone.mcpServers = this.mcpServers.clone();
 
         return clone;
     }

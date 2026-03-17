@@ -1,0 +1,45 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal/resources/io/openliberty/security/jakartasec/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2600-2610
+
+JAKARTASEC_WARNING_PRODUCTION_USE=CWWKS2600W: \u5728\u8be5\u5e94\u7528\u7a0b\u5e8f\u4e2d\u68c0\u6d4b\u5230\u4e00\u4e2a\u901a\u8fc7 @InMemoryIdentityStoreDefinition \u6ce8\u89e3\u914d\u7f6e\u7684\u8eab\u4efd\u5b58\u50a8\u5e93\u3002 \u8bf7\u52ff\u5728\u751f\u4ea7\u73af\u5883\u4e2d\u4f7f\u7528\u6b64\u5b9a\u4e49\u3002
+JAKARTASEC_WARNING_PRODUCTION_USE.explanation=\u4ec5\u5c06 @InMemoryIdentityStoreDefinition \u5b9a\u4e49\u7528\u4e8e\u5f00\u53d1\u3001\u6d4b\u8bd5\u548c\u8c03\u8bd5\u76ee\u7684\u3002
+JAKARTASEC_WARNING_PRODUCTION_USE.useraction=\u5728\u60a8\u7684\u5e94\u7528\u7a0b\u5e8f\u6295\u5165\u751f\u4ea7\u73af\u5883\u4e4b\u524d\uff0c\u8bf7\u79fb\u9664 @InMemoryIdentityStoreDefinition \uff0c\u5e76\u5c06\u5176\u66ff\u6362\u4e3a\u53d7\u652f\u6301\u7684\u751f\u4ea7\u7ea7\u8eab\u4efd\u5b58\u50a8\u5e93\uff0c\u4f8b\u5982 LDAP \u6216\u6570\u636e\u5e93\u3002
+
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET=CWWKS2601W: {0} \u73af\u5883\u53d8\u91cf\u4e3a\u7a7a\u6216\u672a\u8bbe\u7f6e\u3002 \u4efb\u4f55\u540e\u7eed\u4f7f\u7528\u5173\u8054\u8c03\u7528\u65b9\u7684\u8eab\u4efd\u9a8c\u8bc1\u8bf7\u6c42\u9a8c\u8bc1\u90fd\u5c06\u5931\u8d25\u3002
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.explanation=\u5728@Credential\u6ce8\u89e3\u7684\u5bc6\u7801\u5b57\u6bb5\u4e2d\u4f7f\u7528\u4e86\u73af\u5883\u53d8\u91cf\u4f5c\u4e3a\u503c\uff0c\u4f46\u8be5\u53d8\u91cf\u672a\u5728\u5916\u90e8\u8bbe\u7f6e\uff0c\u6216\u88ab\u8bbe\u7f6e\u4e3a\u7a7a\u5b57\u7b26\u4e32\u3002
+JAKARTASEC_WARNING_ENV_VARIABLE_NOT_SET.useraction=\u8bf7\u786e\u4fdd\u8bbe\u7f6e\u6ce8\u89e3\u4e2d\u5f15\u7528\u7684\u73af\u5883\u53d8\u91cf\uff0c\u8be5\u53d8\u91cf\u901a\u5e38\u5728 ` server.env ` \u4e2d\u6307\u5b9a\u3002
+
+JAKARTASEC_ERROR_WRONG_CRED=CWWKS2602E: \u63d0\u4f9b\u7ed9 IdentityStore \u5bf9\u8c61\u7684\u51ed\u636e\u5e76\u975e UsernamePasswordCredential \uff0c\u56e0\u6b64\u65e0\u6cd5\u8fdb\u884c\u9a8c\u8bc1\u3002
+JAKARTASEC_ERROR_WRONG_CRED.explanation=\u5bf9 IdentityStore \u5bf9\u8c61\u6240\u63d0\u4f9b\u7684\u51ed\u8bc1\u4e0d\u662f UsernamePasswordCredential \u7c7b\uff0c\u65e0\u6cd5\u9a8c\u8bc1\u3002
+JAKARTASEC_ERROR_WRONG_CRED.useraction=\u8bf7\u67e5\u770b\u901a\u8fc7 HttpAuthMechanism \u5b9e\u73b0\u4f20\u9012\u5230 IdentityStore \u5bf9\u8c61\u7684\u51ed\u8bc1\u7684\u7c7b\u578b\u3002
+
+#Note to translator, do not translate "EL"
+JAKARTASEC_WARNING_IDSTORE_CONFIG=CWWKS2603W: \u65e0\u6cd5\u5c06\u6807\u8bc6\u5b58\u50a8\u6ce8\u89e3\u7684 ''{0}'' \u5c5e\u6027\u7684\u8868\u8fbe\u5f0f\u8bed\u8a00(EL)\u8868\u8fbe\u5f0f\u89e3\u6790\u4e3a\u6709\u6548\u503c\u3002 \u8bf7\u786e\u4fdd EL \u8868\u8fbe\u5f0f\u548c\u7ed3\u679c\u6709\u6548\uff0c\u5e76\u786e\u4fdd\u8be5\u8868\u8fbe\u5f0f\u4e2d\u4f7f\u7528\u7684\u6240\u5f15\u7528\u7684\u4efb\u4f55 Bean \u90fd\u53ef\u89e3\u6790\u3002 \u9ed8\u8ba4\u4f7f\u7528 ''{1}'' \u7684\u9ed8\u8ba4\u5c5e\u6027\u503c\u3002
+JAKARTASEC_WARNING_IDSTORE_CONFIG.useraction=\u8bf7\u786e\u4fdd\u6ce8\u91ca\u5305\u542b\u6709\u6548\u914d\u7f6e\u503c\u3002 \u8bf7\u786e\u4fdd EL \u8868\u8fbe\u5f0f\u6709\u6548\uff0c\u5e76\u786e\u4fdd\u8be5\u8868\u8fbe\u5f0f\u4e2d\u4f7f\u7528\u7684\u6240\u5f15\u7528\u7684\u4efb\u4f55 Bean \u90fd\u53ef\u89e3\u6790\uff0c\u5e76\u4e14\u7ed3\u679c\u7684\u7c7b\u578b\u4e0e\u5c5e\u6027\u7c7b\u578b\u76f8\u5bf9\u5e94\u3002
+JAKARTASEC_WARNING_IDSTORE_CONFIG.explanation=\u5bfc\u81f4\u6b64\u9519\u8bef\u7684\u539f\u56e0\u662f EL \u7ed3\u679c\u4e0e\u671f\u671b\u5c5e\u6027\u503c\u4e4b\u95f4\u7684\u7c7b\u578b\u4e0d\u5339\u914d\u3002 \u4f8b\u5982\uff0c\u5982\u679c\u9884\u671f\u5c5e\u6027\u7c7b\u578b\u4e3a\u5b57\u7b26\u4e32\uff0c\u5219EL\u7ed3\u679c\u5fc5\u987b\u4e3a\u5b57\u7b26\u4e32\u3002
+
+# NOTE, this error message (JAKARTASEC_ERROR_NO_HAM) is copied directly from bundle com.ibm.ws.security.javaeesec
+JAKARTASEC_ERROR_NO_HAM=CWWKS2604E: \u65e0\u6cd5\u521b\u5efa\u5e94\u7528\u7a0b\u5e8f {1} \u4e2d\u6a21\u5757 {0} \u7684\u5bf9\u8c61 HttpAuthenticationMechanism\u3002
+JAKARTASEC_ERROR_NO_HAM.explanation=\u9020\u6210\u65e0\u6cd5\u521b\u5efa HttpAuthenticationMechanism \u5bf9\u8c61\u7684\u539f\u56e0\u5404\u6709\u4e0d\u540c\u3002 HttpAuthenticationMechanism \u5bf9\u8c61\u7684\u9519\u8bef\u6d88\u606f\u63d0\u4f9b\u4e86\u6709\u5173\u65e0\u6cd5\u521b\u5efa HttpAuthenticationMechanism \u5bf9\u8c61\u7684\u539f\u56e0\u7684\u4fe1\u606f\u3002
+JAKARTASEC_ERROR_NO_HAM.useraction=\u8c03\u67e5 HttpAuthenticationMechanism \u5bf9\u8c61\u7684\u4efb\u4f55\u9519\u8bef\u6d88\u606f\uff0c\u5e76\u6839\u636e\u8fd9\u4e9b\u9519\u8bef\u6d88\u606f\u8fdb\u884c\u66f4\u6b63\u3002
+
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION=CWWKS2605E: \u65e0\u6cd5\u786e\u5b9a\u5e94\u7531\u54ea\u4e2a HttpAuthenticationMechanism \u5904\u7406\u8bf7\u6c42\u3002 \u4ee5\u4e0b HttpAuthenticationMechanisms \u5177\u6709\u76f8\u540c\u7684\u4f18\u5148\u7ea7\u6216Http\u8ba4\u8bc1\u673a\u5236\u7c7b\u578b {0}\u3002
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION.explanation=\u82e5\u6307\u5b9a\u4e86\u591a\u4e2a HttpAuthenticationMechanisms \uff0c\u5219\u5fc5\u987b\u6839\u636e\u4f18\u5148\u7ea7\u3001HTTP\u8ba4\u8bc1\u673a\u5236\u7c7b\u578b\u53ca\u53ef\u9009\u7684HTTP\u8ba4\u8bc1\u673a\u5236\u9650\u5b9a\u6761\u4ef6\uff0c\u9009\u62e9\u5176\u4e2d\u552f\u4e00\u4e00\u4e2a\u8fdb\u884c\u6388\u6743\u3002
+JAKARTASEC_ERROR_AMBIGUOUS_RESOLUTION.useraction=\u8bbe\u7f6e\u6216\u8c03\u6574\u5176\u4e2d\u4e00\u4e2a HttpAuthenticationMechanisms \u7684\u4f18\u5148\u7ea7\u503c\u3002
+

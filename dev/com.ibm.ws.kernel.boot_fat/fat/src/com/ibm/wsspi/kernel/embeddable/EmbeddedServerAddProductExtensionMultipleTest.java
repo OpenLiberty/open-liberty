@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -40,8 +40,6 @@ import com.ibm.websphere.simplicity.OperatingSystem;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.custom.junit.runner.Mode;
-import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import junit.framework.AssertionFailedError;
@@ -153,7 +151,8 @@ public class EmbeddedServerAddProductExtensionMultipleTest {
     }
 
     @Test
-    public void testAddProductExtensionMultiple() throws Throwable {}
+    public void testAddProductExtensionMultiple() throws Throwable {
+    }
 
     private static void embeddedServerTestHelper(final String REMOTE_METHOD_NAME) throws Throwable {
         final String METHOD_NAME = "embeddedServerTestHelper";
@@ -161,7 +160,7 @@ public class EmbeddedServerAddProductExtensionMultipleTest {
 
         Method testMethod = driverClazz.getDeclaredMethod(REMOTE_METHOD_NAME);
 
-        Method initMethod = driverClazz.getDeclaredMethod("init", new Class[] { String.class });
+        Method initMethod = driverClazz.getDeclaredMethod("init", new Class[] { String.class, Object[].class });
 
         Method tearDownMethod = driverClazz.getDeclaredMethod("tearDown");
 
@@ -169,7 +168,7 @@ public class EmbeddedServerAddProductExtensionMultipleTest {
 
         try {
 
-            initMethod.invoke(driver, new Object[] { REMOTE_METHOD_NAME });
+            initMethod.invoke(driver, new Object[] { REMOTE_METHOD_NAME, new Object[0] });
             testMethod.invoke(driver);
             tearDownMethod.invoke(driver);
 

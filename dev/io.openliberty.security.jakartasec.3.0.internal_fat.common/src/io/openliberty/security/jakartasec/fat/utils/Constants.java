@@ -99,7 +99,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     // Display
     public static final String PAGE_DISPLAY = "page";
 
-    public static final int DEFAULT_JWKS_CONN_TIMEOUT = 500;
+    public static final int DEFAULT_JWKS_CONN_TIMEOUT = 1000;
     public static final int DEFAULT_JWKS_READ_TIMEOUT = 500;
     public static final int OVERRIDE_DEFAULT_JWKS_CONN_TIMEOUT = 30000;
     public static final int OVERRIDE_DEFAULT_JWKS_READ_TIMEOUT = 60000;

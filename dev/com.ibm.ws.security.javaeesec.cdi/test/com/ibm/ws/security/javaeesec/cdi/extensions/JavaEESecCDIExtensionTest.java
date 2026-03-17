@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -1076,6 +1076,11 @@ public class JavaEESecCDIExtensionTest {
         JavaEESecCDIExtension.setHttpAuthenticationMechanismsTracker(httpAuthenticationMechanismsTracker);
         mockery.checking(new Expectations() {
             {
+
+                // NEW: Allow getModuleMap() to be called and return null (no qualifiers)
+                allowing(httpAuthenticationMechanismsTracker).getModuleMap(APP_NAME1);
+                will(returnValue(null));
+
                 allowing(httpAuthenticationMechanismsTracker).initialize(APP_NAME1);
                 one(httpAuthenticationMechanismsTracker).existAuthMech(APP_NAME1, mechanismClass);
                 will(returnValue(authMechExists));
@@ -1175,7 +1180,8 @@ public class JavaEESecCDIExtensionTest {
         assertFalse("the result should be false.", j3ce.equalsDatabaseDefinition(disd1, disd2));
     }
 
-    public @interface InvalidAnnotation {}
+    public @interface InvalidAnnotation {
+    }
 
     private InvalidAnnotation getIAInstance() {
         InvalidAnnotation ann = new InvalidAnnotation() {
@@ -1723,9 +1729,11 @@ public class JavaEESecCDIExtensionTest {
         return mm;
     }
 
-    class HAMClass1 {};
+    class HAMClass1 {
+    };
 
-    class HAMClass2 {};
+    class HAMClass2 {
+    };
 
     class ApplicationHAM implements HttpAuthenticationMechanism {
         @Override
@@ -1745,12 +1753,14 @@ public class JavaEESecCDIExtensionTest {
         @Override
         public void cleanSubject(HttpServletRequest request,
                                  HttpServletResponse response,
-                                 HttpMessageContext httpMessageContext) {}
+                                 HttpMessageContext httpMessageContext) {
+        }
     }
 
     class CustomPasswordHash1 implements PasswordHash {
         @Override
-        public void initialize(Map<String, String> parameters) {}
+        public void initialize(Map<String, String> parameters) {
+        }
 
         @Override
         public String generate(char[] password) {
@@ -1765,7 +1775,8 @@ public class JavaEESecCDIExtensionTest {
 
     class CustomPasswordHash2 implements PasswordHash {
         @Override
-        public void initialize(Map<String, String> parameters) {}
+        public void initialize(Map<String, String> parameters) {
+        }
 
         @Override
         public String generate(char[] password) {

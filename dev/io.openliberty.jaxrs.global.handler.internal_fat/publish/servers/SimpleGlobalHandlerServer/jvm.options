@@ -1,0 +1,2 @@
+-Djavax.ws.rs.client.ClientBuilder=com.ibm.ws.jaxrs20.client.JAXRSClientBuilderImpl
+-Djakarta.ws.rs.client.ClientBuilder=io.openliberty.org.jboss.resteasy.common.client.LibertyResteasyClientBuilderImpl

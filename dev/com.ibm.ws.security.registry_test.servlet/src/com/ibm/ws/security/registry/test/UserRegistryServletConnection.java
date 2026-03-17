@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,10 @@ import java.security.AccessController;
 import java.security.PrivilegedExceptionAction;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -260,6 +263,35 @@ public class UserRegistryServletConnection implements UserRegistry {
      * @param str
      * @return
      */
+    private Map<String, Object> convertToMap(String methodName, String str) {
+        /*
+         * Something unlikely to occur in a DN, yet still readable. If this value changes
+         * remember to update UserRegistryServlet#convertFromList() as well.
+         */
+        final String delimiter = " :: ";
+
+        Map<String, Object> map = new HashMap<>();
+        if (str.startsWith("{") && str.endsWith("}")) {
+            if (str.length() == 2) {
+                return map;
+            } else {
+                String[] contents = str.substring(1, str.length() - 1).split(delimiter);
+                for (String entry : contents) {
+                    String[] mapEntry = entry.split("=");
+                    map.put(mapEntry[0], mapEntry[1]);
+                }
+                return map;
+            }
+        } else {
+            throw new IllegalStateException(methodName + "expected {...}, but was: " + str);
+        }
+    }
+
+    /**
+     * @param methodName
+     * @param str
+     * @return
+     */
     private SearchResult convertToSearchResult(String methodName, String str) {
         String[] tokens = str.split(" ");
         if ("SearchResult".equals(tokens[0])) {
@@ -451,4 +483,25 @@ public class UserRegistryServletConnection implements UserRegistry {
         return makeServletMethodCall(methodName, servletRequest);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public Map<String, Object> getAttributesForUser(String userSecurityName, Set<String> attributeNames) throws EntryNotFoundException, RegistryException {
+        String methodName = "getAttributesForUser";
+        String servletRequest = "?method=" + methodName +
+                "&userSecurityName=" + encodeForURI(userSecurityName) + "&attributeNames=" + String.join(",", attributeNames);
+        String servletResponse = makeServletMethodCallWithExceptions(methodName, servletRequest);
+
+        return convertToMap(methodName, servletResponse);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public SearchResult getUsersByAttribute(String attributeName, String value, int limit) throws RegistryException {
+        String methodName = "getUsersByAttribute";
+        String servletRequest = "?method=" + methodName +
+                "&attributeName=" + encodeForURI(attributeName) + "&value=" + value + "&limit=" + limit;
+        String servletResponse = makeServletMethodCallWithException(methodName, servletRequest);
+
+        return convertToSearchResult(methodName, servletResponse);
+    }
 }

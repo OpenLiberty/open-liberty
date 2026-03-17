@@ -1,0 +1,12 @@
+<server description="Used for InMemoryIdentityStore enablement tests when the corresponding element is missing">
+
+    <featureManager>
+        <feature>servlet-6.1</feature>
+        <feature>appSecurity-6.0</feature>
+        <feature>timedexit-1.0</feature>
+        <feature>componentTest-2.0</feature>
+        <feature>restfulWS-4.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+</server>

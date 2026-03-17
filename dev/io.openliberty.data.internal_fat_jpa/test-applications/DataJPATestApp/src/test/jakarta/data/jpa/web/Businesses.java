@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,7 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     Business[] findByLocation_Address_Street_NameIgnoreCaseEndsWithOrderByLocation_Address_Street_DirectionIgnoreCaseAscNameAsc(String streetName);
 
     // embeddable as result type
+    @Query("SELECT location WHERE location.address.zip = :zipCode")
     @OrderBy("location.address.street")
     @OrderBy("location.address.houseNum")
     Stream<Location> findByLocationAddressZip(ZipCode zipCode);
@@ -86,7 +87,8 @@ public interface Businesses extends BasicRepository<Business, Integer> {
     // embeddable 3 levels deep as result type
     @OrderBy("location.address.street")
     @OrderBy("location.address.houseNum")
-    Stream<Street> findByLocationAddressZipNotAndLocationAddressCity(ZipCode excludeZipCode, String city);
+    Stream<Business> findByLocationAddressZipNotAndLocationAddressCity(ZipCode excludeZipCode,
+                                                                       String city);
 
     @OrderBy("id")
     Business findFirstByName(String name);

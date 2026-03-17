@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -270,8 +270,8 @@ public class DataJPAHibernateServlet extends FATServlet {
     }
 
     /**
-     * Reproduces an issue where updates are made and a flush is requested
-     * during a transaction but not honored, so if the entity is detached
+     * Reproduces an issue (fixed by 33944) where updates are made and a flush is
+     * requested during a transaction but not honored, so if the entity is detached
      * after that point, the updates are lost.
      */
     @Test
@@ -282,8 +282,8 @@ public class DataJPAHibernateServlet extends FATServlet {
                         .doLookup("java:comp/UserTransaction");
 
         SimpleEntity entity = new SimpleEntity();
-        entity.id = 2;
-        entity.value = "new";
+        entity.setId(2);
+        entity.setValue("new");
 
         EntityManager em = null;
 
@@ -321,18 +321,18 @@ public class DataJPAHibernateServlet extends FATServlet {
             // EntityManager.flush is defined as:
             // "Synchronize changes held in the persistence context to the underlying database."
 
-            em.flush(); // this is ignored
+            em.flush();
 
             // EntityManager.detach Javadoc says:
             // "Unflushed changes made to the entity, if any, including deletion
             // of the entity, will never be synchronized to the database."
-            // However, we did invoke flush.
-            //em.detach(entity);
+            // We did invoke flush, so detaching should not interfere with the changes.
+            em.detach(entity);
 
             // EntityManager.clear Javadoc says:
             // "Changes made to entities that have not already been flushed to
             // the database will never be made persistent."
-            // However, we did invoke flush.
+            // We did invoke flush, so clearing should not interfere with the changes.
             em.clear();
         } finally {
             if (tx.getStatus() == Status.STATUS_ACTIVE)
@@ -353,14 +353,13 @@ public class DataJPAHibernateServlet extends FATServlet {
             em.close();
         }
 
-        // TODO enable once #33544 is fixed
-        // assertEquals("flushed", entity.value);
+        assertEquals("flushed", entity.value);
     }
 
     /**
-     * Reproduces an issue where a previously detached entity is merged to the
-     * persistence context in order to make an update, but Hibernate never
-     * writes the update to the database, even when the transaction commits.
+     * Reproduces an issue (fixed by 33944) where a previously detached entity is
+     * merged to the persistence context in order to make an update, but Hibernate
+     * never writes the update to the database, even when the transaction commits.
      * This can also be used to reproduce a similar error where instead of a
      * detached entity, the entity is fetched during the same transaction and
      * then updated, with Hibernate similarly never writing the update to the
@@ -376,8 +375,8 @@ public class DataJPAHibernateServlet extends FATServlet {
                         .doLookup("java:comp/UserTransaction");
 
         SimpleEntity entity = new SimpleEntity();
-        entity.id = 1;
-        entity.value = "new";
+        entity.setId(1);
+        entity.setValue("new");
 
         EntityManager em = null;
 
@@ -408,11 +407,8 @@ public class DataJPAHibernateServlet extends FATServlet {
             em.close();
         }
 
-        assertEquals("new", entity.value);
+        assertEquals("new", entity.getValue());
 
-        entity = new SimpleEntity(); // workaround
-        entity.id = 1; // workaround
-        // TODO remove this line and 2 lines above once #33232 is fixed, or to reproduce
         entity.value = "merged";
 
         tx.begin();
@@ -422,11 +418,9 @@ public class DataJPAHibernateServlet extends FATServlet {
             assertEquals(true, em.isJoinedToTransaction());
 
             SimpleEntity found = em.find(SimpleEntity.class, 1, LockModeType.PESSIMISTIC_WRITE);
-            //found.value = entity.value; // alternative to merge that doesn't work either
-            //entity = found;
 
             entity = em.merge(entity);
-            // em.flush(); // should be unnecessary due to commit
+            // em.flush() is unnecessary due to commit
         } finally {
             if (tx.getStatus() == Status.STATUS_ACTIVE)
                 tx.commit();
@@ -446,7 +440,7 @@ public class DataJPAHibernateServlet extends FATServlet {
             em.close();
         }
 
-        assertEquals("merged", entity.value);
+        assertEquals("merged", entity.getValue());
     }
 
     @Test
@@ -457,8 +451,8 @@ public class DataJPAHibernateServlet extends FATServlet {
                         .doLookup("java:comp/UserTransaction");
 
         SimpleEntity original = new SimpleEntity();
-        original.id = 100;
-        original.value = "new";
+        original.setId(100);
+        original.setValue("new");
 
         EntityManager em = emf.createEntityManager();
         assertNotNull(em);
@@ -502,7 +496,7 @@ public class DataJPAHibernateServlet extends FATServlet {
 
         // Check make sure the merged entity shows the update.
         assertNotNull(merged);
-        assertEquals("modified", merged.value);
+        assertEquals("modified", merged.getValue());
 
         // The merged entity is now detached
         // The merged entity should have been updated after commit
@@ -529,8 +523,7 @@ public class DataJPAHibernateServlet extends FATServlet {
         // - The entity was updated in the database
         assertNotNull(found);
 
-        //TODO enable once https://hibernate.atlassian.net/browse/HHH-19995 is fixed
-//        assertEquals("modified", found.value); //Fail: expected:<[modified]> but was:<[new]>
+        assertEquals("modified", found.value);
     }
 
     @Test
@@ -539,8 +532,8 @@ public class DataJPAHibernateServlet extends FATServlet {
                         .doLookup("java:comp/env/persistence/HibernatePersistenceUnitRef");
 
         SimpleEntity original = new SimpleEntity();
-        original.id = 101;
-        original.value = "new";
+        original.setId(101);
+        original.setValue("new");
 
         assertNotNull(cmEntityManger);
 
@@ -581,7 +574,7 @@ public class DataJPAHibernateServlet extends FATServlet {
 
         // Check make sure the merged entity shows the update.
         assertNotNull(merged);
-        assertEquals("modified", merged.value);
+        assertEquals("modified", merged.getValue());
 
         // The merged entity is now detached
         // The merged entity should have been updated after commit
@@ -608,7 +601,6 @@ public class DataJPAHibernateServlet extends FATServlet {
         // - The entity was updated in the database
         assertNotNull(found);
 
-        //TODO enable once https://hibernate.atlassian.net/browse/HHH-19995 is fixed
-//        assertEquals("modified", found.value); //Fail: expected:<[modified]> but was:<[new]>
+        assertEquals("modified", found.value);
     }
 }

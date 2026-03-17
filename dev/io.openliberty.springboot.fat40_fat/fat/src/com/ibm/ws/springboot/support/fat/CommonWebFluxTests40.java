@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,7 +46,10 @@ public class CommonWebFluxTests40 extends CommonWebFluxTests {
         return SPRING_BOOT_40_APP_WEBFLUX;
     }
 
-    //
+    @Override
+    public AppConfigType getApplicationConfigType() {
+        return AppConfigType.SPRING_BOOT_APP_TAG;
+    }
 
     @Test
     public void testBasicWebFluxtAppServlet61() throws Exception {

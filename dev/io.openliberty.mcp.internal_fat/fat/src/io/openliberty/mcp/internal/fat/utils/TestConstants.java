@@ -24,5 +24,5 @@ public class TestConstants {
     // Header values
     public static final String VALUE_ACCEPT_DEFAULT = "application/json, text/event-stream";
     public static final String VALUE_APPLICATION_JSON = "application/json";
-    public static final String VALUE_MCP_PROTOCOL_VERSION = "2025-06-18";
+    public static final String VALUE_MCP_PROTOCOL_VERSION = "2025-11-25";
 }

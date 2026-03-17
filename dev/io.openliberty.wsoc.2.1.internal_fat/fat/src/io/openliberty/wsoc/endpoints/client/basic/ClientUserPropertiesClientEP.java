@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,42 +12,24 @@
  *******************************************************************************/
 package io.openliberty.wsoc.endpoints.client.basic;
 
-import jakarta.websocket.ClientEndpointConfig;
-import jakarta.websocket.Endpoint;
-import jakarta.websocket.EndpointConfig;
-import jakarta.websocket.HandshakeResponse;
-import jakarta.websocket.Session;
-import jakarta.websocket.MessageHandler;
-
-import jakarta.websocket.ClientEndpointConfig;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.Reader;
-import java.net.URI;
-import java.nio.ByteBuffer;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.Future;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
+import javax.net.ssl.SSLContext;
 
 import io.openliberty.wsoc.util.wsoc.TestHelper;
 import io.openliberty.wsoc.util.wsoc.WsocTestContext;
-
 import jakarta.websocket.ClientEndpointConfig;
-
-import jakarta.websocket.HandshakeResponse;
-import jakarta.websocket.Extension;
-import jakarta.websocket.Encoder;
 import jakarta.websocket.Decoder;
-
-import javax.net.ssl.SSLContext;
+import jakarta.websocket.Encoder;
+import jakarta.websocket.Endpoint;
+import jakarta.websocket.EndpointConfig;
+import jakarta.websocket.Extension;
+import jakarta.websocket.HandshakeResponse;
+import jakarta.websocket.MessageHandler;
+import jakarta.websocket.Session;
 
 /**
  *  Contains everything for the testUserPropertiesOnClient test.

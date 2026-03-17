@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2025 IBM Corporation and others.
+ * Copyright (c) 2021,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -136,10 +136,10 @@ public class ConcurrencyExtension implements Extension {
                 addBeans(event, listFromApp, extSvc);
         });
 
-        //TODO add NLS message
         if (!successState) {
-            throw new IllegalStateException("Could not register all managed service beans because the "
-                                            + "ConcurrencyExtensionMetadata service was unavailable.");
+            // Could not register all managed service beans because the
+            // ConcurrencyExtensionMetadata service was unavailable.
+            throw new IllegalStateException();
         }
     }
 

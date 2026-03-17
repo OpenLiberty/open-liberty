@@ -1,14 +1,11 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 # 
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 ###############################################################################
 # # {0} description of each insert field
 # MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
@@ -122,8 +119,8 @@ BIND_ERROR=CWWKO0221E: Die Initialisierung des TCP-Kanals {0} war nicht erfolgre
 BIND_ERROR.explanation=Die Operation zum Binden des Sockets war nicht erfolgreich. Gew\u00f6hnlich ist dieser Fehler darauf zur\u00fcckzuf\u00fchren, dass die Portnummer bereits im Gebrauch ist. Weitere Informationen finden Sie in der Ausnahmebedingungsnachricht in der Fehlernachricht.
 BIND_ERROR.useraction=Vergewissern Sie sich, dass der TCP-Kanal mit der richtigen Portnummer konfiguriert wurde.
 
-MAX_CONNS_EXCEEDED=CWWKO0222W: Der TCP-Kanal {0} hat die maximal zul\u00e4ssige Anzahl offener Verbindungen ({1}) \u00fcberschritten.
-MAX_CONNS_EXCEEDED.explanation=Der angegebene TCP-Kanal hat die maximal zul\u00e4ssige Anzahl offener Verbindungen \u00fcberschritten und weist einige Verbindungen zur\u00fcck.
+MAX_CONNS_EXCEEDED=CWWKO0222W: TCP-Kanal {0} \u00fcberschreitet die maximale Anzahl offener Verbindungen {1}.
+MAX_CONNS_EXCEEDED.explanation=Der angegebene TCP-Kanal \u00fcberschreitet die maximale Anzahl offener Verbindungen und lehnt einige Verbindungen ab. Diese Meldung wird h\u00f6chstens einmal alle 10 Minuten ausgegeben, solange der Zustand anh\u00e4lt.
 MAX_CONNS_EXCEEDED.useraction=Wenn mehr Verbindungen ben\u00f6tigt werden, aktualisieren Sie die maximal zul\u00e4ssige Anzahl an Verbindungen.
 
 THREAD_DISPATCH_FAILED=CWWKO0223W: Der TCP-Kanal {0} konnte keinen Thread aus dem Thread-Pool {1} abrufen.

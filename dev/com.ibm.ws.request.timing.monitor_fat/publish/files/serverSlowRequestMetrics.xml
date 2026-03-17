@@ -11,6 +11,7 @@
   <mpMetrics authentication="false"/>
   <include location="../fatTestPorts.xml"/>
   
+  <httpSession useSeparateSessionInvalidatorThreadPool="false" delayInvalidationAlarmDuringServerStartup="90"/>
   <requestTiming slowRequestThreshold="10s" hungRequestThreshold="5m"/>
   <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool.deploymentErrorApps;
 
 import java.util.List;
+import java.util.Optional;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
@@ -41,6 +42,21 @@ public class ToolArgValidationTest {
         return arg1;
     }
 
+    @Tool(name = "testToolArgDefaultValueWithoutTypeConverter", title = "testToolArgDefaultValueWithoutTypeConverter",
+          description = "Test toolarg with defaultValue without a converter for its type")
+    public String testToolArgDefaultValueWithoutTypeConverter(@ToolArg(name = "city", description = "current city", required = false,
+                                                                       defaultValue = "name=London::country=UK::population=100::boolean=true") City city) {
+        return city.name;
+    }
+
+    @Tool(name = "testToolArgInvalidNumberDefaultValue", title = "ToolArg Invalid Number Default Value",
+          description = "Test tool response to default value that can't be converted to a integer")
+    public int testToolArgInvalidNumberDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "TwentyTwentyFive") int year) {
+        return year;
+    }
+
+    public record City(String name, String country, int population, boolean isCapital) {};
+
     @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")
     public @Schema(description = "Returns list of  object") <T> List<T> addGenericToGenericArray(@ToolArg(name = "generic list 1",
                                                                                                           description = "List of generics 1") T[] list1,
@@ -49,5 +65,13 @@ public class ToolArgValidationTest {
                                                                                                  @ToolArg(name = "generic", description = "Generic object") T item,
                                                                                                  @ToolArg(name = "concrete", description = "Concrete object") List<String> item2) {
         return null;
+    }
+
+    @Tool
+    public String toolArgWithOptionalValueAndDefaultValueSet(@ToolArg(name = "input", defaultValue = "Java world") Optional<String> input) {
+        if (input.isEmpty()) {
+            return "Hello World";
+        }
+        return "Hello from: " + input.get();
     }
 }

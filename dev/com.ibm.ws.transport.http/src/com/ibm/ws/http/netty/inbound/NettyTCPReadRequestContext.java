@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,7 +11,10 @@ package com.ibm.ws.http.netty.inbound;
 
 import java.io.EOFException;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.Socket;
+import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
@@ -48,6 +51,9 @@ import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.wsspi.channelfw.ChannelFrameworkFactory;
 
 import io.netty.util.concurrent.EventExecutor;
+import io.netty.channel.socket.SocketChannel;
+import io.netty.channel.socket.nio.NioSocketChannel;
+import io.openliberty.http.netty.channel.ReadOnlySocket;
 
 /**
  *
@@ -69,6 +75,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private boolean jitAllocateAction = false;
 
     private volatile boolean aborted = false;
+
+    private volatile Socket cachedSocket;
 
     public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
         this.connectionContext = connectionContext;
@@ -97,7 +105,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
     @Override
     public Socket getSocket() {
-        throw new UnsupportedOperationException("Can not get the socket from a Netty connection!");
+        if(cachedSocket == null){
+            cachedSocket = new ReadOnlySocket(nettyChannel);       
+        }
+        return cachedSocket;
     }
 
     private HttpInputStreamImpl input() throws IOException {

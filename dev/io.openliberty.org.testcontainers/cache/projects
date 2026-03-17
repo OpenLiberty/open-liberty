@@ -177,6 +177,7 @@ io.openliberty.jakarta.data.1.0_fat_tck
 io.openliberty.jakarta.data.1.1_fat_tck
 io.openliberty.jcache.internal_fat.hazelcast
 io.openliberty.jcache.internal_fat.infinispan
+io.openliberty.mcp.internal_fat
 io.openliberty.microprofile.health.3.1.internal_fat
 io.openliberty.microprofile.health.file.healthcheck.internal_fat
 io.openliberty.microprofile.openapi.ui.internal_fat

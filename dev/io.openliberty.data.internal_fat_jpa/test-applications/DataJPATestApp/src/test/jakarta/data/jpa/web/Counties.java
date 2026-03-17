@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -51,6 +51,7 @@ public interface Counties {
     @OrderBy("name")
     List<Set<CityId>> findCitiesByNameStartsWith(String beginning);
 
+    @Query("SELECT lastUpdated WHERE ID(this) = :name")
     LocalDateTime findLastUpdatedByName(String name);
 
     @Query("SELECT zipcodes WHERE name = ?1")

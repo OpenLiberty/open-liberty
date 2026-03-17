@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -55,7 +55,7 @@ CWWKC1206.qualifier.must.be.anno.explanation=Chaque valeur de la liste des quali
 CWWKC1206.qualifier.must.be.anno.useraction=Assurez-vous que toutes les valeurs de la liste des qualificateurs sont des classes d'annotation.
 
 CWWKC1207.lacks.qualifier.anno=CWWKC1207E: L''artefact d''application {0} sp\u00e9cifie une annotation {1} ou un \u00e9l\u00e9ment de descripteur de d\u00e9ploiement {2} qui a le nom {3} et la liste de qualificatifs {4}. La liste des qualificateurs comprend l''annotation {5}, qui n''est pas annot\u00e9e avec @jakartajakarta.inject.Qualifier et @Retention(RUNTIME). Voici un exemple de qualificatif valide : {6}
-CWWKC1207.lacks.qualifier.anno.explanation=L'annotation Qualifier indique que l'annotation est un qualificatif. L'annotation Retention contr\u00f4le la disponibilit\u00e9 des annotations.
+CWWKC1207.lacks.qualifier.anno.explanation=L'annotation @Qualifier indique que l'annotation est un qualificateur. L'annotation Retention contr\u00f4le la disponibilit\u00e9 des annotations.
 CWWKC1207.lacks.qualifier.anno.useraction=Ajoutez les annotations @Qualifier et @Retention(RUNTIME) \u00e0 la classe qualifier.
 
 CWWKC1208.global.with.qualifiers=CWWKC1208E: L''artefact d''application {0} sp\u00e9cifie une annotation {1} ou un \u00e9l\u00e9ment de descripteur de d\u00e9ploiement {2} qui poss\u00e8de le nom {3} et la liste de qualificatifs {4}. Vous ne pouvez pas configurer une ressource Jakarta Concurrency pour qu''elle ait \u00e0 la fois des qualificateurs et un espace de noms java:global. Supprimez les qualificateurs de la configuration de la ressource Jakarta Concurrency qui porte le nom {3} ou passez \u00e0 l''espace de noms java:app.

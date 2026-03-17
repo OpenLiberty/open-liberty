@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021,2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -229,7 +229,6 @@ public class ManagedExecutorResourceFactoryBuilder //
         if (Boolean.TRUE.equals(virtual) && JavaInfo.majorVersion() >= 21) {
             // only available in Concurrency 3.1+ and Java 21+
             concurrencyPolicyProps.put("virtual", virtual);
-            concurrencyPolicyProps.put("maxPolicy", "strict");
         } else {
             if (Boolean.TRUE.equals(virtual))
                 Tr.info(tc, "CWWKC1217.no.virtual.threads",
@@ -239,8 +238,6 @@ public class ManagedExecutorResourceFactoryBuilder //
                         jndiName,
                         JavaInfo.majorVersion());
 
-            // virtual = false is the default
-            concurrencyPolicyProps.put("maxPolicy", "loose");
         }
 
         BundleContext concurrencyBundleCtx = ContextServiceDefinitionProvider.priv.getBundleContext(FrameworkUtil.getBundle(WSManagedExecutorService.class));

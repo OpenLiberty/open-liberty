@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,7 +19,9 @@ task testmarker(type: War, dependsOn: classes) {
   destinationDirectory = file("${appBuildDir}")
   archiveFileName = "${appName}.war"
 
- println "In testmarker"
+  doLast {
+    println "In testmarker"
+  }
   from("test-applications/${appName}/resources") {
     include "**/*"
   }
@@ -34,7 +36,9 @@ task tokenEndpoint(type: War, dependsOn: classes) {
   destinationDirectory = file("${appBuildDir}")
   archiveFileName = "${appName}.war"
 
- println "In tokenEndpoint"
+  doLast {
+    println "In tokenEndpoint"
+  }
   from("test-applications/${appName}/resources") {
     include "**/*"
   }
@@ -45,7 +49,9 @@ task tokenEndpoint(type: War, dependsOn: classes) {
 }
 assemble {
 
-   println "In assemble"
+  doLast {
+    println "In assemble"
+  }
   dependsOn \
     testmarker,\
     tokenEndpoint

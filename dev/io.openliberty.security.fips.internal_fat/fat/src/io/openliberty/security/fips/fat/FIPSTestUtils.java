@@ -74,7 +74,7 @@ public class FIPSTestUtils {
                     validEnv = false;
                     Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");
                 }
-            } else if (javaInfo.majorVersion() < 25) {
+            } else {
                 String javaSecurityPath = javaInfo.javaHome() + "/conf/security/java.security";
                 Path path = Paths.get(javaSecurityPath);
 

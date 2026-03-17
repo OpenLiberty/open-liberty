@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,8 +61,20 @@ public class EJBJaccServiceImpl implements EJBJaccService {
     private static PolicyContextHandlerImpl pch = PolicyContextHandlerImpl.getInstance();
     protected static final String KEY_JACC_SERVICE = "jaccService";
 
+    /**
+     * The HandlerProcessor centralizes the logic for setting the PolicyContext handler data with all the behaviors for each version of
+     * JACC / Jakarta Authorization. There are some behaviors that may not make sense, but for backward compatibility to maintain zero
+     * migration, the behaviors are maintained.
+     */
     enum HandlerProcessor {
-        JACC15(true, false), AUTHORIZATION20_21(false, false), AUTHORIZATION30(false, true);
+        // For JACC 1.5, all javax and jakarta named PolicyContext handler names are supported except the PrincipalMapper which is added in 3.0
+        JACC15(true, false),
+
+        // For Jakarta Authorization 2.0 and 2.1, most javax PolicyContext handlers names are removed except for the "javax.ejb.arguments" handler
+        AUTHORIZATION20_21(false, false),
+
+        // For Jakarta Authorization 3.0, the "javax.ejb.arguments" extra javax name is corrected and the new PrincipalMapper is added
+        AUTHORIZATION30(false, true);
 
         final boolean principalMapperSupported;
         final boolean javaxSupported;
@@ -72,7 +84,8 @@ public class EJBJaccServiceImpl implements EJBJaccService {
             this.javaxSupported = javaxSupported;
         }
 
-        void setPolicyContextData(Subject subject, EnterpriseBean bean, Object[] methodParameters, Object messageContext, PolicyProxy policyProxy) throws PolicyContextException {
+        void setPolicyContextData(String appName, Subject subject, EnterpriseBean bean, Object[] methodParameters, Object messageContext,
+                                  PolicyProxy policyProxy) throws PolicyContextException {
             final HashMap<String, Object> handlerObjects = new HashMap<String, Object>();
 
             PolicyContext.registerHandler("javax.security.auth.Subject.container", pch, true);
@@ -80,7 +93,7 @@ public class EJBJaccServiceImpl implements EJBJaccService {
 
             if (principalMapperSupported) {
                 PolicyContext.registerHandler("jakarta.security.jacc.PrincipalMapper", pch, true);
-                handlerObjects.put("jakarta.security.jacc.PrincipalMapper", policyProxy.getPrincipalMapper());
+                handlerObjects.put("jakarta.security.jacc.PrincipalMapper", policyProxy.getPrincipalMapper(appName));
             } else {
                 PolicyContext.registerHandler("javax.ejb.arguments", pch, true);
                 handlerObjects.put("javax.ejb.arguments", methodParameters);
@@ -186,7 +199,8 @@ public class EJBJaccServiceImpl implements EJBJaccService {
         if (jaccService != null) {
             String[] methodSignatureArray = convertMethodSignature(methodSignature);
             final EJBMethodPermission ejbPerm = new EJBMethodPermission(beanName, methodName, methodInterface, methodSignatureArray);
-            return checkResourceConstraints(jaccService.getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject, jaccService.getPolicyProxy());
+            return checkResourceConstraints(applicationName, jaccService.getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject,
+                                            jaccService.getPolicyProxy());
         }
         return false;
     }
@@ -198,12 +212,14 @@ public class EJBJaccServiceImpl implements EJBJaccService {
         JaccService jaccService = jaccServiceRef.getService();
         if (jaccService != null) {
             final EJBRoleRefPermission ejbPerm = new EJBRoleRefPermission(beanName, role);
-            return checkResourceConstraints(jaccService.getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject, jaccService.getPolicyProxy());
+            return checkResourceConstraints(applicationName, jaccService.getContextId(applicationName, moduleName), methodParameters, bean, ejbPerm, subject,
+                                            jaccService.getPolicyProxy());
         }
         return false;
     }
 
-    private boolean checkResourceConstraints(String contextId, List<Object> methodParameters, EnterpriseBean bean, Permission ejbPerm, Subject subject, PolicyProxy policyProxy) {
+    private boolean checkResourceConstraints(String appName, String contextId, List<Object> methodParameters, EnterpriseBean bean, Permission ejbPerm, Subject subject,
+                                             PolicyProxy policyProxy) {
         boolean result = false;
         Object[] ma = null;
 
@@ -214,14 +230,15 @@ public class EJBJaccServiceImpl implements EJBJaccService {
             ma = methodParameters.toArray(new Object[methodParameters.size()]);
         }
         try {
-            result = checkMethodConstraints(contextId, ma, bean, ejbPerm, subject, policyProxy);
+            result = checkMethodConstraints(appName, contextId, ma, bean, ejbPerm, subject, policyProxy);
         } catch (PrivilegedActionException pae) {
             Tr.error(tc, "JACC_EJB_IMPLIES_FAILURE", new Object[] { contextId, pae.getException() });
         } // Moved resetHandlerInfo to postInvoke.
         return result;
     }
 
-    private boolean checkMethodConstraints(final String contextId,
+    private boolean checkMethodConstraints(final String appName,
+                                           final String contextId,
                                            final Object[] methodParameters,
                                            final EnterpriseBean bean,
                                            final Permission permission,
@@ -250,7 +267,7 @@ public class EJBJaccServiceImpl implements EJBJaccService {
 
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Registering JACC context handlers and setting JACC handler data");
-                                                       handlerProcessor.setPolicyContextData(subject, bean, methodParameters, mc, policyProxy);
+                                                       handlerProcessor.setPolicyContextData(appName, subject, bean, methodParameters, mc, policyProxy);
                                                        if (tc.isDebugEnabled())
                                                            Tr.debug(tc, "Calling JACC implies. subject : " + subject);
                                                        return policyProxy.implies(contextId, subject, permission);
@@ -310,5 +327,15 @@ public class EJBJaccServiceImpl implements EJBJaccService {
             }
         }
         return methodSignatureList.toArray(new String[methodSignatureList.size()]);
+    }
+
+    @Override
+    public boolean isPolicyConfigured() {
+        JaccService jaccService = jaccServiceRef.getService();
+        if (jaccService == null) {
+            return false;
+        }
+        PolicyProxy policyProxy = jaccService.getPolicyProxy();
+        return policyProxy == null ? false : policyProxy.isPolicyConfigured();
     }
 }

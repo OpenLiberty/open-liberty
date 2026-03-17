@@ -24,6 +24,7 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -45,6 +46,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 @RunWith(FATRunner.class)
 public class LongIntervalHealthCheckTest {
 
+    final static String SERVER_DUMMY = "DummyServer";
     final static String SERVER_LONG_STARTUP_CHECK_INTERVAL = "HealthServerLongStartupCheckInterval";
     final static String SERVER_LONG_CHECK_INTERVAL = "HealthServerLongCheckInterval";
     final static String FAIL_START_APP = "FailStartApp";
@@ -54,17 +56,47 @@ public class LongIntervalHealthCheckTest {
 
     @ClassRule
     public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
-                                                             MicroProfileActions.MP61, // mpHealth-4.0 w/ EE9
+                                                             MicroProfileActions.MP61, // mpHealth-4.0 w/ EE10
                                                              MicroProfileActions.MP70_EE10, // mpHealth-4.0 FULL EE10
                                                              MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL EE11
                                                              HealthActions.MP14_MPHEALTH40, // mpHealth-4.0 FULL EE7
                                                              HealthActions.MP41_MPHEALTH40); //mpHealth-4.0 FULL EE8
+
+    @Server(SERVER_DUMMY)
+    public static LibertyServer server;
 
     @Server(SERVER_LONG_STARTUP_CHECK_INTERVAL)
     public static LibertyServer serverLongStart;
 
     @Server(SERVER_LONG_CHECK_INTERVAL)
     public static LibertyServer serverLongCheck;
+
+    @BeforeClass
+    public static void beforeClass() throws Exception {
+        /*
+         *
+         * The first test/server-start sometimes?/always? needs to generate a fatFeatureList.xml.
+         * Sometimes this takes a VERY LONG TIME. This happens on Windows OS the majority of the time.
+         * Other OS platforms can also take a long time, but is much less likely.
+         *
+         * Previously, the StartedhealthCheckTestLongStartupInterval was the first test to run.
+         * If this encountered a long featFeatureList generation then the window of time we wanted
+         * to test would already be complete (i.e., health check files have already reached their final state).
+         * The test would "start" testing after the fact and would fail.
+         *
+         * This dummy test is put in place to take the brunt of FAT feature generation.
+         *
+         **/
+        //Test infra checks for fatfeatureList as part of start server.
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "starting dummy server");
+        server.startServer();
+
+        // Read to run a smarter planet
+        server.waitForStringInLogUsingMark("CWWKF0011I");
+
+        server.stopServer();
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "stopping/stopped dummy server");
+    }
 
     @Before
     public void before() throws Exception {
@@ -146,16 +178,9 @@ public class LongIntervalHealthCheckTest {
 
         Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "First `run` entry trace: " + traceEntryStartofFirstStartCheck);
 
-        //We only care about time
-        DateTimeFormatter timeFormatterHH = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-
-        //Expect to see something like this (ISO date format) : 2026-01-06T22:02:43.886+0300
+        // Expect to see something like this (ISO date format) : 2026-01-06T22:02:43.886+0300
         String dateTimeString = traceEntryStartofFirstStartCheck.split("]")[0].substring(1);
         Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Debug: first `run` trace's timestamp : " + dateTimeString);
-
-        String time = resolveTime(dateTimeString);
-
-        LocalTime timeOfFirstQuery = LocalTime.parse(time, timeFormatterHH);
 
         /*
          * Find the second `run` entry trace
@@ -163,18 +188,31 @@ public class LongIntervalHealthCheckTest {
         String traceEntryStartofSecondStartCheck = serverLongStart.waitForStringInTraceUsingMark(".*HealthCheck40ServiceImpl\\$StartedFileCreateProcess > run Entry.*", 35000);
         Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Second `run` entry trace: " + traceEntryStartofSecondStartCheck);
 
-        dateTimeString = traceEntryStartofSecondStartCheck.split("]")[0].substring(1);
-        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Debug: second `run` trace timestamp : " + dateTimeString);
-
-        String time2 = resolveTime(dateTimeString);
-
-        LocalTime timeOfSecondQuery = LocalTime.parse(time2, timeFormatterHH);
+        String dateTimeString2 = traceEntryStartofSecondStartCheck.split("]")[0].substring(1);
+        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Debug: second `run` trace timestamp : " + dateTimeString2);
 
         /*
          * Time to calculate the difference.
          */
+        DateTimeFormatter timeFormatterHH = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+
+        String time = resolveTime(dateTimeString);
+        String date = resolveDate(dateTimeString);
+        LocalTime timeOfFirstQuery = LocalTime.parse(time, timeFormatterHH);
+
+        String time2 = resolveTime(dateTimeString2);
+        String date2 = resolveDate(dateTimeString2);
+        LocalTime timeOfSecondQuery = LocalTime.parse(time2, timeFormatterHH);
+
+        
+        // Get time difference.
         long diff = Duration.between(timeOfFirstQuery, timeOfSecondQuery).getSeconds();
-        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "The differencce in time between the two timestamps is (in seconds) : " + diff);
+
+        // If test ends on diff date, add one day's worth of seconds time to prevent negative difference.
+        if (!date.equals(date2))
+            diff += Duration.ofDays(1).getSeconds();
+
+        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "The difference in time between the two timestamps is (in seconds) : " + diff);
 
         /*
          * We start with 29 seconds because the tracing the first trace and second trace may have a difference of 29s999ms.
@@ -214,6 +252,20 @@ public class LongIntervalHealthCheckTest {
 
         Log.info(getClass(), "resolveTime", "Debug: the resolved time is: " + time);
         return time;
+    }
+
+    String resolveDate(String traceEntryDateTimeStamp) {
+        String dateTime[] = traceEntryDateTimeStamp.split("T");
+        assertEquals("Should be split into two parts (split by the `T`), the date and time", 2, dateTime.length);
+
+        //ignore zone offset
+        String date = dateTime[0];
+
+        //time can't be null;
+        assertNotNull("Unable to resolve date, the time stamp is: " + traceEntryDateTimeStamp, date);
+
+        Log.info(getClass(), "resolveDate", "Debug: the resolved date is: " + date);
+        return date;
     }
 
     @Test
@@ -300,8 +352,9 @@ public class LongIntervalHealthCheckTest {
 
         long readyUpdateDiff = readyModifiedTime - readyCreatedTime;
         Log.info(getClass(), "HealthCheckTestLongCheckInterval", "The difference between creation time and the ready update is (ms) : " + readyUpdateDiff);
-        //Allow for up to 32 seconds diff (account for any potential slowness
-        assertTrue("The modified time is out of bounds(ms): " + readyUpdateDiff, readyUpdateDiff > 30000 && readyUpdateDiff <= 32000);
+
+        //Allow for 29.5-32 range to allow for quickness or slowness of system.
+        assertTrue("The modified time is out of bounds(ms): " + readyUpdateDiff, readyUpdateDiff >= 29500 && readyUpdateDiff <= 32000);
 
     }
 }

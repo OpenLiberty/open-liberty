@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020,2024 IBM Corporation and others.
+ * Copyright (c) 2020,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,10 @@
  *******************************************************************************/
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -37,8 +41,6 @@ import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
-
-import static org.junit.Assert.*;
 
 public class EJBAnnTestBase {
 
@@ -185,6 +187,7 @@ public class EJBAnnTestBase {
         mustContain(response, getCallerPrincipal);
         mustContain(response, isCallerInRoleManager);
         mustContain(response, isCallerInRoleEmployee);
+        mustContain(response, Constants.IS_STARSTAR_TRUE);
         verifyPolicyContextHandlers(response);
     }
 
@@ -201,6 +204,7 @@ public class EJBAnnTestBase {
             mustContain(response, getCallerIdentity);
             mustContain(response, isCallerInRoleManager);
             mustContain(response, isCallerInRoleEmployee);
+            mustContain(response, Constants.IS_STARSTAR_TRUE);
             verifyPolicyContextHandlers(response);
         }
     }

@@ -102,10 +102,8 @@ Design preliminaries determine whether a formal design, which will be provided b
 - [ ] Performance testing requirements identified, or N/A. (Feature owner and [Performance focal point](https://github.com/orgs/OpenLiberty/teams/performance-approvers))
 
 ### **Design**
-- [ ] POC Design / UFO review requested.
-  - Feature owner adds label `Design Review Request`
 - [ ] POC Design / UFO review scheduled.
-  - Follow the instructions in POC-Forum repo
+  - Follow the instructions in the [README in the POC-Forum repo](https://github.ibm.com/websphere/POC-Forum?tab=readme-ov-file#adding-an-agenda-item).
 - [ ] POC Design / UFO review completed.
 - [ ] POC / UFO Review follow-ons completed.
 - [ ] POC Design / UFO approval requested.

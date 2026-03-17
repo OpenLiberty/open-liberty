@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -438,8 +438,10 @@ public class SecurityUtilityCreateSSLCertificateTest {
      */
     private void runCheckpointServer(ProgramOutput commandOutput, LibertyServer server, String aesKey) throws Exception {
         try {
-            if (!JavaInfo.forCurrentVM().isCriuSupported()) {
-                // skip testing InstantOn if CRIU is not supported on this platform
+            if (!JavaInfo.forCurrentVM().isCriuSupported() || server.isJava2SecurityEnabled()) {
+                // skip testing InstantOn if CRIU is not supported on this platform or Java 2 security is enabled.
+                // There are non-InstantOn tests that will run with Java 2 security being enabled in the bootstrap.properites
+                // and the server will still have it configured since the server instance is shared.
                 return;
             }
             // clean up previous overrides file before checkpoint
@@ -713,7 +715,7 @@ public class SecurityUtilityCreateSSLCertificateTest {
         String keystoreLoadedMessage = sslTestServer.waitForStringInLogUsingMark("Successfully loaded default keystore", 5000);
         assertTrue("Server did not log Successfully loaded default keystore", keystoreLoadedMessage != null);
         
-        sslTestServer.stopServer();
+        sslTestServer.stopServer("CWWKS1865W"); // Warning for AES passwords without key
     }
 
     /**

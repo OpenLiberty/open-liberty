@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import jakarta.data.repository.CrudRepository;
 import jakarta.data.repository.Find;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
@@ -26,7 +27,7 @@ import jakarta.data.repository.Repository;
  */
 @Repository(dataStore = "java:app/env/data/DataStoreRef")
 public interface Models extends CrudRepository<Model, UUID> {
-    @Find
+    @Query("SELECT updatedAt WHERE id=?1")
     Optional<Instant> lastModified(UUID id);
 
     @Find

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -124,6 +124,7 @@ public class DerbyRACheckpointLimitationsTest extends FATServletClient {
             case testCreateTimerBAS:
             case testSubmitWorkBAS:
                 server.stopServer(new String[] { "CWWKG0027W", // Possible timeout while updating server configuration
+                                                 "CWWKS1865W", // AES-encrypted passwords without custom encryption key
                                                  "SRVE9967W" }); // Manifest class path derbyLocale_cs.jar not found in Derby archives
                 break;
             case testCreateTimerAAS:

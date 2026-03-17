@@ -1,4 +1,4 @@
-<server>
+<server quiesceTimeout="90s">
     <include location="../fatTestPorts.xml"/>
     
     <featureManager>

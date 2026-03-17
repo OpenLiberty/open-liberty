@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -38,6 +40,9 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
+import jakarta.data.restrict.Restrict;
+import jakarta.data.restrict.Restriction;
+import jakarta.data.spi.expression.literal.NumericLiteral;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
@@ -74,12 +79,73 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Indicates if testing with the Hibernate Persistence provider
+     * rather than EclipseLink.
+     *
+     * @return true if testing with the Hibernate Persistence provider.
+     */
+    static final boolean isHibernatePersistence() {
+        return Boolean.valueOf(System.getenv("TEST_HIBERNATE"));
+    }
+
+    /**
      * Tests that the Between and NotBetween constraint types can be assigned to
      * repository method parameters to enforce that matching entity attributes
-     * are either within or not within a range.
+     * are either within or not within a range of non-Literal expressions.
      */
     @Test
-    public void testBetweenAndNotBetweenConstraints() {
+    public void testBetweenAndNotBetweenConstraintsWithExpressions() {
+        Between<Integer> denominator2to10LessThanNumerator = //
+                        Between.bounds(_Fraction.numerator.plus(2),
+                                       _Fraction.numerator.plus(10));
+
+        NotBetween<Integer> numeratorNot8to12LessThanDenominator = //
+                        NotBetween.bounds(_Fraction.denominator.minus(12),
+                                          _Fraction.denominator.minus(8));
+
+        assertEquals(List.of("One Fifth",
+                             "Four Sevenths",
+                             "Five Sevenths",
+                             "One Eighth",
+                             "Five Eighths",
+                             "Four Ninths",
+                             "Five Ninths",
+                             "Four Elevenths",
+                             "Five Elevenths",
+                             "Eight Elevenths",
+                             "Nine Elevenths",
+                             "Five Twelfths",
+                             "Eight Thirteenths",
+                             "Nine Thirteenths",
+                             "Eleven Thirteenths",
+                             "Nine Fourteenths",
+                             "Eleven Fourteenths",
+                             "Eight Fifteenths",
+                             "Eleven Fifteenths",
+                             "Nine Sixteenths",
+                             "Eleven Sixteenths",
+                             "Eleven Seventeenths",
+                             "Fourteen Seventeenths",
+                             "Fifteen Seventeenths",
+                             "Eleven Eighteenths",
+                             "Fourteen Nineteenths",
+                             "Fifteen Nineteenths"),
+                     fractions.withDenominatorBetweenNamedBeforeAndNumeratorNotBetween //
+                     (denominator2to10LessThanNumerator,
+                      "One Fourth",
+                      numeratorNot8to12LessThanDenominator,
+                      true) // must be reduced
+                                     .map(f -> f.name)
+                                     .toList());
+    }
+
+    /**
+     * Tests that the Between and NotBetween constraint types can be assigned to
+     * repository method parameters to enforce that matching entity attributes
+     * are either within or not within a range of Literal values.
+     */
+    @Test
+    public void testBetweenAndNotBetweenConstraintsWithLiterals() {
 
         assertEquals(List.of("One Fourteenth",
                              "Eleven Fourteenths",
@@ -95,6 +161,256 @@ public class Data_1_1_Servlet extends FATServlet {
                       "Thirteen",
                       NotBetween.bounds(5, 10),
                       true)
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Tests that the Between and NotBetween constraint types can be assigned to
+     * repository method parameters to enforce that matching entity attributes
+     * are either within or not within a range of mostly Literals, but with one
+     * non-Literal expression.
+     */
+    @Test
+    public void testBetweenAndNotBetweenConstraintsWithOneExpression() {
+
+        assertEquals(List.of("One Sixth",
+                             "One Seventh",
+                             "One Eighth",
+                             "One Ninth",
+                             "Two Ninths",
+                             "Eight Ninths",
+                             "One Tenth",
+                             "Nine Tenths",
+                             "One Eleventh",
+                             "Two Elevenths",
+                             "Ten Elevenths",
+                             "One Twelfth",
+                             "Eleven Twelfths"),
+                     fractions.withDenominatorBetweenNamedBeforeAndNumeratorNotBetween //
+                     (Between.bounds(6, 12),
+                      "Two Sevenths",
+                      NotBetween.bounds(3, _Fraction.name.length().minus(5)),
+                      true) // must be reduced
+                                     .map(f -> f.name)
+                                     .toList());
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * is a restriction on a boolean attribute.
+     */
+    @Test
+    public void testBooleanAttributeRestrictions() {
+
+        assertEquals(List.of(11, 7, 5, 1),
+                     fractions.where(Restrict.all(_Fraction.denominator.equalTo(12),
+                                                  _Fraction.reduced.isTrue()))
+                                     .map(f -> f.numerator)
+                                     .toList());
+
+        assertEquals(List.of(2, 3, 4),
+                     fractions.withNameLike("%ixths",
+                                            _Fraction.reduced.isFalse(),
+                                            Order.by(_Fraction.numerator.asc()))
+                                     .map(f -> f.numerator)
+                                     .toList());
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts BigDecimal values to BigInteger in order to compare as whole numbers.
+     */
+    @Test
+    public void testCastBigDecimalToBigInteger() {
+
+        // EclipseLink does not have
+        // CAST (value AS BIGINTEGER)
+        if (!isHibernatePersistence())
+            return;
+
+        Restriction<Fraction> roundsUpTo2223 = _Fraction.decimal_ceiling
+                        .times(BigDecimal.valueOf(10000L))
+                        .asBigInteger()
+                        .equalTo(BigInteger.valueOf(2223));
+
+        assertEquals(List.of("2/9",
+                             "4/18"),
+                     fractions.where(roundsUpTo2223)
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts BigDecimal values to Long in order to compare as whole numbers.
+     */
+    @Test
+    public void testCastBigDecimalToLong() {
+
+        // EclipseLink does not have
+        // CAST (value AS LONG)
+        if (!isHibernatePersistence())
+            return;
+
+        Restriction<Fraction> roundsDownTo5555 = _Fraction.decimal_truncated
+                        .times(BigDecimal.valueOf(10000L))
+                        .asLong()
+                        .equalTo(5555L);
+
+        assertEquals(List.of("5/9",
+                             "10/18"),
+                     fractions.where(roundsDownTo5555)
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts double values to BigDecimal to compare with another BigDecimal value.
+     */
+    @Test
+    public void testCastDoubleToBigDecimal() {
+        // EclipseLink does not have
+        // CAST (value AS BIGDECIMAL)
+        if (!isHibernatePersistence())
+            return;
+
+        Restriction<Fraction> value_x_4_is_1pt5 = _Fraction.decimal_value
+                        .times(4.0)
+                        .asBigDecimal()
+                        .equalTo(BigDecimal.valueOf(15, 1));
+
+        assertEquals(List.of("3/8",
+                             "6/16"),
+                     fractions.where(value_x_4_is_1pt5)
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts integer values to double in order to perform division that results
+     * in a decimal value.
+     */
+    @Test
+    public void testCastIntegerToDouble() {
+
+        Restriction<Fraction> within22to34Hundreths = _Fraction.numerator
+                        .asDouble()
+                        .dividedBy(_Fraction.denominator.asDouble())
+                        .between(0.22, 0.34);
+
+        assertEquals(List.of("1/3",
+                             "1/4",
+                             "2/6",
+                             "2/7",
+                             "2/8",
+                             "3/9", "2/9",
+                             "3/10",
+                             "3/11",
+                             "4/12", "3/12",
+                             "4/13", "3/13",
+                             "4/14",
+                             "5/15", "4/15",
+                             "5/16", "4/16",
+                             "5/17", "4/17",
+                             "6/18", "5/18", "4/18",
+                             "6/19", "5/19",
+                             "6/20", "5/20"),
+                     fractions.where(within22to34Hundreths)
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
+     * Use a repository method that has the Is annotation on one method
+     * argument and another method argument is a composite All restriction.
+     */
+    @Test
+    public void testCompositeAllRestrictionAndIsAnno() {
+
+        assertEquals(List.of("Three Twelfths",
+                             "Five Twelfths",
+                             "Six Twelfths",
+                             "Ten Twelfths"),
+                     fractions.withNameLike("% Twelfths",
+                                            Restrict.all(_Fraction.numerator.greaterThan(2),
+                                                         _Fraction.name.notBetween("Four",
+                                                                                   "Several"),
+                                                         _Fraction.name.notStartsWith("E")),
+                                            Order.by(_Fraction.numerator.asc())) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that has the Is annotation on one method
+     * argument and another method argument is a composite Any restriction.
+     */
+    @Test
+    public void testCompositeAnyRestrictionAndIsAnno() {
+
+        assertEquals(List.of("Five Elevenths",
+                             "Five Sevenths",
+                             "Nine Elevenths",
+                             "Ten Elevenths",
+                             "Two Elevenths",
+                             "Two Sevenths"),
+                     fractions.withNameLike("%evenths",
+                                            Restrict.any(_Fraction.name.like("T__ %"),
+                                                         _Fraction.name.like("_i_e %")),
+                                            Order.by(_Fraction.name.asc())) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that has the Is annotation on one method
+     * argument and another method argument is a composite restriction
+     * that has another composite restriction within it.
+     */
+    @Test
+    public void testCompositeRestrictionsDepth2() {
+
+        Restriction<Fraction> restriction = //
+                        Restrict.all(_Fraction.numerator.notEqualTo(6),
+                                     Restrict.any(_Fraction.numerator.lessThan(4),
+                                                  _Fraction.numerator.greaterThanEqual(5)));
+
+        assertEquals(List.of("Eight Ninths",
+                             "Seven Ninths",
+                             "Five Ninths",
+                             "Three Ninths",
+                             "Two Ninths"),
+                     fractions.withNameLike("% Ninths",
+                                            restriction,
+                                            Order.by(_Fraction.numerator.desc())) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Supply a concatenation expression to a repository method.
+     */
+    @Test
+    public void testConcatExpression() {
+
+        assertEquals(List.of("One Seventh",
+                             "One Ninth",
+                             "One Tenth",
+                             "One Eleventh",
+                             "One Thirteenth",
+                             "One Fourteenth",
+                             "One Fifteenth",
+                             "One Sixteenth",
+                             "One Seventeenth",
+                             "One Eighteenth",
+                             "One Nineteenth"),
+                     fractions.withNameLike("___ %",
+                                            _Fraction.name.append("s").endsWith("nths"),
+                                            Order.by(_Fraction.denominator.asc()))
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
     }
@@ -321,7 +637,7 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testIsAnnoEqualityAndInequality() {
-        Order<Fraction> order = Order.by(Sort.desc(_Fraction.VALUE));
+        Order<Fraction> order = Order.by(Sort.desc(_Fraction.DECIMAL_VALUE));
 
         assertEquals(List.of("Four Fifths",
                              "Two Fifths",
@@ -416,7 +732,78 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
-     * Tests that the Like constraint types can be assigned to a repository
+     * Supply LEFT and RIGHT expressions to a repository method.
+     */
+    @Test
+    public void testLeftAndRightExpressions() {
+
+        Restriction<Fraction> restriction = //
+                        Restrict.all(_Fraction.name.left(4).right(1).equalTo(" "),
+                                     Restrict.any(_Fraction.name.right(3).equalTo("fth"),
+                                                  _Fraction.name.right(4).equalTo("fths")));
+
+        assertEquals(List.of("Ten Twelfths",
+                             "Six Twelfths",
+                             "Two Twelfths",
+                             "One Twelfth",
+                             "Two Fifths",
+                             "One Fifth"),
+                     fractions.withNameLike("%",
+                                            restriction,
+                                            Order.by(_Fraction.denominator.desc(),
+                                                     _Fraction.numerator.desc()))
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Supply a LENGTH expression to a repository method.
+     */
+    @Test
+    public void testLengthExpression() {
+
+        assertEquals(List.of("One Tenth",
+                             "One Ninth",
+                             "One Sixth",
+                             "One Fifth",
+                             "One Third",
+                             "One Half"),
+                     fractions.withNameLike("%",
+                                            _Fraction.name.length().lessThan(10),
+                                            Order.by(_Fraction.denominator.desc()))
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Tests that the Like constraint type can be assigned to a repository
+     * method parameter to enforce that an entity attributes is matched
+     * according to a computed expression.
+     */
+    @Test
+    public void testLikeConstraintWithExpression() {
+
+        Like first3CharsAlsoAppearLaterInName = //
+                        Like.pattern(_Fraction.name
+                                        .left(3)
+                                        .append("%")
+                                        .prepend("___%"),
+                                     '^');
+
+        assertEquals(List.of("Eight Eighteenths",
+                             "Four Fourteenths",
+                             "Nine Nineteenths",
+                             "Seven Seventeenths",
+                             "Six Sixteenths",
+                             "Twelve Twentieths"),
+                     fractions.named(first3CharsAlsoAppearLaterInName,
+                                     Order.by(_Fraction.name.asc()),
+                                     Limit.of(10)));
+
+    }
+
+    /**
+     * Tests that the Like constraint type can be assigned to a repository
      * method parameter to enforce that an entity attributes is matched
      * according to a literal value.
      */
@@ -484,19 +871,26 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
-     * Tests that a Constraint parameter and Is annotation parameter can be
-     * intermixed on a single repository method.
+     * Supply a LOWER expression to a repository method.
      */
     @Test
-    public void testMixConstraintAndIsAnno() {
-        Sort<Fraction> alphabetizedByName = Sort.asc(_Fraction.NAME);
+    public void testLowerExpression() {
 
-        assertEquals(List.of("Eight Ninths",
-                             "Five Ninths",
-                             "Three Ninths"),
-                     fractions.withNumeratorsAndDenominator(In.values(3, 5, 8, -12),
-                                                            9,
-                                                            alphabetizedByName));
+        assertEquals(List.of("Two Eighteenths",
+                             "Two Elevenths",
+                             "Two Fifteenths",
+                             "Two Fourteenths",
+                             "Two Nineteenths",
+                             "Two Seventeenths",
+                             "Two Sevenths",
+                             "Two Sixteenths",
+                             "Two Tenths",
+                             "Two Thirteenths"),
+                     fractions.withNameLike("%enths",
+                                            _Fraction.name.lower().startsWith("two "),
+                                            Order.by(_Fraction.name.asc()))
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
     }
 
     /**
@@ -525,6 +919,179 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Supply minus and times expressions to a restriction that is
+     * supplied to a repository method.
+     */
+    @Test
+    public void testMinusAndTimes() {
+
+        Restriction<Fraction> restriction = //
+                        _Fraction.numerator.times(3)
+                                        .equalTo(_Fraction.denominator.minus(1));
+
+        assertEquals(List.of("One Fourth",
+                             "Two Sevenths",
+                             "Three Tenths",
+                             "Four Thirteenths",
+                             "Five Sixteenths",
+                             "Six Nineteenths"),
+                     fractions.where(restriction)
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that has the Is annotation on one method
+     * argument and another method argument is a Between restriction.
+     */
+    @Test
+    public void testMixBetweenRestrictionAndIsAnno() {
+
+        assertEquals(List.of("Three Tenths",
+                             "Four Tenths",
+                             "Five Tenths",
+                             "Six Tenths"),
+                     fractions.withNameLike("% Tenths",
+                                            _Fraction.numerator.between(3, 6),
+                                            Order.by(_Fraction.numerator.asc())) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Tests that a Constraint parameter and Is annotation parameter can be
+     * intermixed on a single repository method. Both Literal and non-Literal
+     * expressions are supplied to the Constraint.
+     */
+    @Test
+    public void testMixConstraintAndIsAnno() {
+        In<Integer> numeratorConstraint = In
+                        .expressions(NumericLiteral.of(1),
+                                     NumericLiteral.of(2),
+                                     _Fraction.denominator.minus(_Fraction.numerator).times(3));
+
+        Sort<Fraction> alphabetizedByName = Sort.asc(_Fraction.NAME);
+
+        assertEquals(List.of("One Eighth",
+                             "Six Eighths", // (8 - 6) * 3 = 6
+                             "Two Eighths"),
+                     fractions.withNumeratorsAndDenominator(numeratorConstraint,
+                                                            8,
+                                                            alphabetizedByName));
+    }
+
+    /**
+     * Tests that a Constraint parameter and Is annotation parameter can be
+     * intermixed on a single repository method. Only non-Literal expressions
+     * are supplied to the Constraint.
+     */
+    @Test
+    public void testMixExpressionConstraintAndIsAnno() {
+        In<Integer> numeratorConstraint = In
+                        .expressions(_Fraction.name.length().minus(_Fraction.numerator),
+                                     _Fraction.denominator.minus(1),
+                                     _Fraction.denominator.minus(_Fraction.numerator.times(2)));
+
+        Sort<Fraction> reverseAlphabetizedByName = Sort.desc(_Fraction.NAME);
+
+        assertEquals(List.of(// length(name) - numerator     = 12 - 6      = 6
+                             "Six Twelfths",
+
+                             // length(name) - numerator     = 14 - 7      = 7
+                             "Seven Twelfths",
+
+                             // denominator - numerator * 2  = 12 - 4 * 2  = 4
+                             "Four Twelfths",
+
+                             // denominator - 1              = 12 - 1      = 11
+                             "Eleven Twelfths"),
+                     fractions.withNumeratorsAndDenominator(numeratorConstraint,
+                                                            12,
+                                                            reverseAlphabetizedByName));
+    }
+
+    /**
+     * Tests that a Constraint parameter and Is annotation parameter can be
+     * intermixed on a single repository method. Only Literal expressions
+     * are supplied to the Constraint.
+     */
+    @Test
+    public void testMixLiteralConstraintAndIsAnno() {
+        Sort<Fraction> alphabetizedByName = Sort.asc(_Fraction.NAME);
+
+        assertEquals(List.of("Eight Ninths",
+                             "Five Ninths",
+                             "Three Ninths"),
+                     fractions.withNumeratorsAndDenominator(In.values(3, 5, 8, -12),
+                                                            9,
+                                                            alphabetizedByName));
+    }
+
+    /**
+     * Use a repository method that has the Is annotation on one method
+     * argument and another method argument is a lessThanEqual restriction.
+     */
+    @Test
+    public void testMixLTERestrictionAndIsAnno() {
+
+        assertEquals(List.of("Five Eighths",
+                             "Four Eighths",
+                             "Three Eighths",
+                             "Two Eighths"),
+                     fractions.withNameLike("% Eighths",
+                                            _Fraction.numerator.lessThanEqual(5),
+                                            Order.by(_Fraction.numerator.desc())) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that has the Is annotation on one method
+     * argument and another method argument is a notLike restriction.
+     */
+    @Test
+    public void testMixNotLikeRestrictionAndIsAnno() {
+
+        assertEquals(List.of("Five Sevenths",
+                             "Four Sevenths",
+                             "Three Sevenths"),
+                     fractions.withNameLike("% Sevenths",
+                                            _Fraction.name.notLike("--- *", '-', '*', '!'),
+                                            Order.by(_Fraction.numerator.desc())) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Supply a Restriction to a repository method where the Restriction
+     * requires navigating through 2 levels of embeddables to compute the
+     * expressions that are used in its constraint.
+     */
+    @Test
+    public void testNavigableAttribute() {
+        Restriction<Fraction> twiceAsManyNonrepeatingVsRepeatingDigits = //
+                        _Fraction.decimal
+                                        .navigate(_Decimal.digits)
+                                        .navigate(_Digits.nonrepeating)
+                                        .length()
+                                        .equalTo(_Fraction.decimal
+                                                        .navigate(_Decimal.digits)
+                                                        .navigate(_Digits.repeating)
+                                                        .length()
+                                                        .times(2));
+
+        assertEquals(List.of("4166...",
+                             "5833...",
+                             "9166..."),
+                     fractions.withNameLike("%ths",
+                                            twiceAsManyNonrepeatingVsRepeatingDigits,
+                                            Order.by(_Fraction.decimal_value.desc())) //
+                                     .map(f -> f.decimal.digits().toString())
+                                     .sorted()
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
      * Tests that the NotNull and AtMost constraint types can be assigned to
      * repository method parameters to enforce that matching entity attributes
      * are not null and less than or equal to a provided value.
@@ -542,6 +1109,63 @@ public class Data_1_1_Servlet extends FATServlet {
                                                  AtMost.max(4),
                                                  Sort.desc(_Fraction.DENOMINATOR),
                                                  Sort.asc(_Fraction.NUMERATOR)) //
+                                     .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Supply plus and divide expressions to a restriction that is
+     * supplied to a repository method.
+     */
+    @Test
+    public void testPlusAndDivide() {
+
+        Restriction<Fraction> restriction = //
+                        _Fraction.denominator
+                                        .plus(1)
+                                        .dividedBy(_Fraction.numerator)
+                                        .equalTo(2);
+
+        assertEquals(List.of("Two Thirds", //     (3+1)/2 = 2
+                             "Two Fourths", //    (4+1)/2 floor is 2
+                             "Three Fifths", //   (5+1)/3 = 2
+                             "Three Sixths", //   (6+1)/3 floor is 2
+                             "Four Sevenths", //  (7+1)/4 = 2
+                             "Three Sevenths", // (7+1)/3 floor is 2
+                             "Four Eighths", //   (8+1)/4 floor is 2
+                             "Five Ninths", //    (9+1)/5 = 2
+                             "Four Ninths", //    (9+1)/4 floor is 2
+                             "Five Tenths", //   (10+1)/5 floor is 2
+                             "Four Tenths", //   (10+1)/4 floor is 2
+                             "Six Elevenths", // (11+1)/6 = 2
+                             "Five Elevenths", // ...
+                             "Six Twelfths",
+                             "Five Twelfths",
+                             "Seven Thirteenths",
+                             "Six Thirteenths",
+                             "Five Thirteenths",
+                             "Seven Fourteenths",
+                             "Six Fourteenths",
+                             "Eight Fifteenths",
+                             "Seven Fifteenths",
+                             "Six Fifteenths",
+                             "Eight Sixteenths",
+                             "Seven Sixteenths",
+                             "Six Sixteenths",
+                             "Nine Seventeenths",
+                             "Eight Seventeenths",
+                             "Seven Seventeenths",
+                             "Nine Eighteenths",
+                             "Eight Eighteenths",
+                             "Seven Eighteenths",
+                             "Ten Nineteenths",
+                             "Nine Nineteenths",
+                             "Eight Nineteenths",
+                             "Seven Nineteenths",
+                             "Ten Twentieths",
+                             "Nine Twentieths",
+                             "Eight Twentieths"),
+                     fractions.where(restriction)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
     }

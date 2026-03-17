@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.timer.v32.fat.tests;
 
@@ -58,8 +55,22 @@ public class NpTimerV32ApiTest extends FATServletClient {
     @TestServlets({ @TestServlet(servlet = NpTimerV32ApiServlet.class, contextRoot = "NpTimerV32ApiWeb") })
     public static LibertyServer server;
 
+    /*@formatter:off*/
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer")).andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer")).andWith(FeatureReplacementAction.EE10_FEATURES().forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.timer.v32.fat.NpTimerServer"));
+    /*@formatter:on*/
 
     @BeforeClass
     public static void beforeClass() throws Exception {
@@ -81,7 +92,8 @@ public class NpTimerV32ApiTest extends FATServletClient {
     @AfterClass
     public static void afterClass() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            // CWWKE1102W - ignore the initial quiesce timeout warning
+            server.stopServer("CWWKE1102W");
         }
     }
 

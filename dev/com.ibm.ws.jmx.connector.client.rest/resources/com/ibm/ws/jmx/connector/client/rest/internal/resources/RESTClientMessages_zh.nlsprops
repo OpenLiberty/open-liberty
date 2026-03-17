@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ jmx.rest.client.not.connected.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u4
 jmx.rest.client.url.not.found=CWWKX0207E: \u670d\u52a1\u5668\u62a5\u544a\u672a\u627e\u5230\u5ba2\u6237\u673a\u6240\u8bf7\u6c42\u7684 URL\u3002
 jmx.rest.client.url.not.found.explanation=\u5ba2\u6237\u673a\u5177\u6709\u7684\u4fe1\u606f\u53ef\u80fd\u5df2\u8fc7\u65f6\uff0c\u6216\u8005\u53ef\u80fd\u5728\u670d\u52a1\u5668\u4e0a\u5df2\u7981\u7528 REST \u8fde\u63a5\u5668\u529f\u80fd\u90e8\u4ef6\u3002
 jmx.rest.client.url.not.found.useraction=\u8bf7\u68c0\u67e5\u670d\u52a1\u5668\u4e0a\u662f\u5426\u5df2\u542f\u7528 REST \u8fde\u63a5\u5668\u529f\u80fd\u90e8\u4ef6\u5e76\u83b7\u53d6\u4e0e\u670d\u52a1\u5668\u7684\u65b0\u8fde\u63a5\u3002
+
 jmx.rest.client.class.name.null=CWWKX0208E: \u7c7b\u540d\u81ea\u53d8\u91cf\u4e3a null\u3002
 jmx.rest.client.class.name.null.explanation=\u7c7b\u540d\u81ea\u53d8\u91cf\u4e0d\u5f97\u4e3a null\u3002
 jmx.rest.client.class.name.null.useraction=\u5728\u8c03\u7528\u65b9\u6cd5\u65f6\uff0c\u8bf7\u63d0\u4f9b\u975e null \u7c7b\u540d\u3002
@@ -140,7 +141,11 @@ jmx.rest.client.bad.user.credentials.useraction=\u9a8c\u8bc1\u7528\u6237\u51ed\u
 jmx.rest.client.connection.connect=CWWKX0230I: \u96c6\u5408\u4f53\u6210\u5458\u6253\u5f00\u4e86 JMX \u5ba2\u6237\u673a\u5230\u96c6\u5408\u4f53\u63a7\u5236\u5668\uff1a{0}
 jmx.rest.client.connection.connect.explanation=\u6210\u5458\u5df2\u8fde\u63a5\u81f3\u63a7\u5236\u5668\u3002
 jmx.rest.client.connection.connect.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002 
+ 
 jmx.rest.client.connection.disconnect=CWWKX0231I: \u96c6\u5408\u4f53\u6210\u5458\u4ece\u96c6\u5408\u4f53\u63a7\u5236\u5668\u5173\u95ed\u4e86 JMX \u5ba2\u6237\u673a\uff1a{0}
 jmx.rest.client.connection.disconnect.explanation=\u6210\u5458\u5df2\u4e0e\u63a7\u5236\u5668\u65ad\u5f00\u8fde\u63a5\u3002
 jmx.rest.client.connection.disconnect.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 
+jmx.rest.client.server.result.exception=CWWKX0232E: \u670d\u52a1\u5668\u8fd4\u56de\u4e86\u4e00\u4e2a\u5ba2\u6237\u7aef\u65e0\u6cd5\u8bbf\u95ee\u7684\u7c7b\uff1a {0}
+jmx.rest.client.server.result.exception.explanation=\u670d\u52a1\u5668\u8fd4\u56de\u7684\u4efb\u4f55\u63a5\u53e3\u6216\u5b9e\u73b0\u7c7b\u90fd\u5fc5\u987b\u5bf9\u5ba2\u6237\u7aef\u53ef\u89c1\u3002
+jmx.rest.client.server.result.exception.useraction=\u68c0\u67e5\u5ba2\u6237\u7aef\u7c7b\u8def\u5f84\u4e2d\u662f\u5426\u5305\u542b\u6240\u6709\u5fc5\u9700\u7684\u7c7b\u3002

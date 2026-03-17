@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -119,7 +119,8 @@ public final class DatabaseContainerUtil {
         this.driverDir = findJdbcDriverLocation(databaseType)
                         .orElseThrow(() -> new IllegalStateException("Could not find where the JDBC Driver was located"));
         this.relativeDriverDir = driverDir.getAbsolutePath()
-                        .replace(sharedResourcesDir.getAbsolutePath(), "${shared.resource.dir}");
+                        .replace(sharedResourcesDir.getAbsolutePath(), "${shared.resource.dir}")
+                        .replace("\\", "/");
 
         this.hasDriverPermissionVariable = serverClone.getJavaPermissions()
                         .stream()

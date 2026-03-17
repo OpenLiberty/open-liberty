@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
+import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
@@ -53,20 +54,22 @@ public interface Rebates { // Do not allow this interface to inherit from other
 
     @Query("WHERE customerId=?1")
     @OrderBy("amount")
-    List<Double> amounts(String customerId);
+    List<Rebate> byCustomer(String customerId);
 
     // It should be acceptable for the return type to be more general
     // when using @Query
     @Query("SELECT purchaseMadeOn WHERE ID(THIS) = :id")
     Optional<Temporal> dayOfPurchase(int id);
 
-    List<LocalDate> findByCustomerIdOrderByPurchaseMadeOnDesc(String customer);
+    @Find
+    @OrderBy(value = "purchaseMadeOn", descending = true)
+    List<Rebate> findForCustomer(@By("customerId") String customer);
 
     @OrderBy("purchaseMadeOn")
     @OrderBy("purchaseMadeAt")
     PurchaseTime[] findTimeOfPurchaseByCustomerId(String customer);
 
-    @Find
+    @Query("SELECT updatedAt WHERE :id = id(this)")
     Optional<LocalDateTime> lastUpdated(int id);
 
     @Update
@@ -122,7 +125,7 @@ public interface Rebates { // Do not allow this interface to inherit from other
     @Delete
     void reset();
 
-    @Find
+    @Query("SELECT status WHERE id(this) = ?1")
     Optional<Rebate.Status> status(int id);
 
     @Query("SELECT EXTRACT(TIME FROM updatedAt)")

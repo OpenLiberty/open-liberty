@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -532,7 +532,7 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             mcf1 = mcf;
 
         DatabaseHelper dbHelper = mcf1.getHelper();
-        return new int[] { dbHelper.getThreadIdentitySupport(), dbHelper.getThreadSecurity() ? 1 : 0, dbHelper.getRRSTransactional() ? 1 : 0 };
+        return new int[] { dbHelper.getThreadIdentitySupport(), dbHelper.getThreadSecurity() ? 1 : 0, dbHelper.getRRSTransactional() ? 1 : 0, AbstractConnectionFactoryService.SERVICE_JDBC_TYPE};
     }
 
     /** {@inheritDoc} */

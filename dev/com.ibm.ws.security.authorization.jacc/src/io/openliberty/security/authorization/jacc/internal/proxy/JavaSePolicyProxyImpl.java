@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.security.Permission;
 import java.security.Policy;
 import java.security.Principal;
 import java.security.ProtectionDomain;
+import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -38,7 +39,7 @@ public class JavaSePolicyProxyImpl implements PolicyProxy {
     }
 
     @Override
-    public void refresh() {
+    public void refresh(Set<String> contextIds) {
         policy.refresh();
     }
 
@@ -47,6 +48,7 @@ public class JavaSePolicyProxyImpl implements PolicyProxy {
         if (!isJava24OrLater) {
             Policy.setPolicy(policy);
         }
+        policy.refresh();
     }
 
     @Override

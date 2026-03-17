@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.resource.ResourceException;
 
@@ -44,6 +46,7 @@ import com.ibm.ws.jca.processor.jms.util.JMSResourceDefinitionHelper;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.resource.WaitForBundleResourceFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -69,6 +72,8 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
      * rather than being programmatically created via ConfigurationAdmin.
      */
     private static final String FILE = "file";
+
+    private static final String BUNDLE_LOCATION = "ConnectorModuleMetatype@ConnectorModule:";
 
     /**
      * Unique identifier attribute name.
@@ -108,7 +113,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
     /**
      * Declarative Services method to activate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context context for this component
      */
     protected void activate(ComponentContext context) {
@@ -125,7 +130,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
     /**
      * Creates a resource factory that creates handles of the type specified
      * by the {@link ResourceFactory#CREATES_OBJECT_CLASS} property.
-     * 
+     *
      * @param props the resource-specific type information
      * @return the resource factory
      * @throws Exception a resource-specific exception
@@ -202,76 +207,101 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
                 annotationDDProps.put(JMSResourceDefinitionConstants.WMQ_TOPIC_NAME, destinationName);
             }
         }
-        //Get props with default values only and see if the same is specified by the user in annotation/dd, then use that value otherwise set the default value.
-        //Note: Its not necessary for the user to specify the props which has default value, so we set them in here.  
-        Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(resourceAdapter, interfaceName);
 
-        for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();)
-        {
-            String key = keys.nextElement();
-            Object value = adminObjectDefaultProps.get(key);
+        Function<Bundle, ResourceFactory> createAppDefinedResourceFactory = (bundle) -> {
+            try {
+                //Get props with default values only and see if the same is specified by the user in annotation/dd, then use that value otherwise set the default value.
+                //Note: Its not necessary for the user to specify the props which has default value, so we set them in here.
+                Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(bundle, resourceAdapter, interfaceName);
 
-            //Override the administered object default property values with values provided annotation
-            if (annotationDDProps.containsKey(key))
-                value = annotationDDProps.remove(key);
+                for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();) {
+                    String key = keys.nextElement();
+                    Object value = adminObjectDefaultProps.get(key);
 
-            if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
+                    //Override the administered object default property values with values provided annotation
+                    if (annotationDDProps.containsKey(key))
+                        value = annotationDDProps.remove(key);
 
-            if (CONFIG_DISPLAY_ID.equals(key))
-                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
-            else
-                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
-        }
+                    if (value instanceof String)
+                        value = variableRegistry.resolveString((String) value);
 
-        //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter, 
-        //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
-        //Note: The above section for handling default values can be eliminated by handling the same here in this section since we get all the properties. Will be taken care in future.
-        AttributeDefinition[] ads = getAttributeDefinitions(resourceAdapter, interfaceName);
-        for (AttributeDefinition attributeDefinition : ads) {
-            Object value = annotationDDProps.remove(attributeDefinition.getID());
-            if (value != null) {
+                    if (CONFIG_DISPLAY_ID.equals(key))
+                        adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
+                    else
+                        adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
+                }
 
-                if (value instanceof String)
-                    value = variableRegistry.resolveString((String) value);
+                //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter,
+                //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
+                //Note: The above section for handling default values can be eliminated by handling the same here in this section since we get all the properties. Will be taken care in future.
+                AttributeDefinition[] ads = getAttributeDefinitions(resourceAdapter, interfaceName);
+                for (AttributeDefinition attributeDefinition : ads) {
+                    Object value = annotationDDProps.remove(attributeDefinition.getID());
+                    if (value != null) {
 
-                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + attributeDefinition.getID(), value);
+                        if (value instanceof String)
+                            value = variableRegistry.resolveString((String) value);
+
+                        adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + attributeDefinition.getID(), value);
+                    }
+                }
+
+                adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
+
+                BundleContext bundleContext = FrameworkUtil.getBundle(AdminObjectService.class).getBundleContext();
+
+                StringBuilder adminObjectFilter = new StringBuilder(200);
+                adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
+                adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
+
+                ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
+                try {
+
+                    String bundleLocation = bundleContext.getBundle().getLocation();
+                    ConfigurationAdmin configAdmin = configAdminRef.getService();
+
+                    Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
+                    adminObjectSvcConfig.update(adminObjectSvcProps);
+                } catch (Exception x) {
+                    factory.destroy();
+                    throw x;
+                } catch (Error x) {
+                    factory.destroy();
+                    throw x;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "createResourceFactory", factory);
+                return factory;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
             }
+        };
+
+        Bundle raBundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
+        if (raBundle != null) {
+            return createAppDefinedResourceFactory.apply(raBundle);
+        } else {
+            Supplier<IllegalStateException> notReadyException = () -> {
+                return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
+                                                 ", declaringApplication=" + declaringApplication +
+                                                 ", location=" + BUNDLE_LOCATION + resourceAdapter);
+            };
+
+            WaitForBundleResourceFactory resourceFactory = new WaitForBundleResourceFactory(bundleContext, //
+                            BUNDLE_LOCATION + resourceAdapter, //
+                            createAppDefinedResourceFactory, //
+                            notReadyException);
+            resourceFactory.listenForBundle();
+            return resourceFactory;
         }
 
-        adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
-
-        BundleContext bundleContext = FrameworkUtil.getBundle(AdminObjectService.class).getBundleContext();
-
-        StringBuilder adminObjectFilter = new StringBuilder(200);
-        adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
-        adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
-
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
-        try {
-
-            String bundleLocation = bundleContext.getBundle().getLocation();
-            ConfigurationAdmin configAdmin = configAdminRef.getService();
-
-            Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
-            adminObjectSvcConfig.update(adminObjectSvcProps);
-        } catch (Exception x) {
-            factory.destroy();
-            throw x;
-        } catch (Error x) {
-            factory.destroy();
-            throw x;
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(tc, "createResourceFactory", factory);
-        return factory;
     }
 
     /**
      * Declarative Services method to deactivate this component.
      * Best practice: this should be a protected method, not public or private
-     * 
+     *
      * @param context context for this component
      */
     protected void deactivate(ComponentContext context) {
@@ -283,39 +313,29 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
         wsConfigurationHelperRef.deactivate(context);
     }
 
-    private Dictionary<String, Object> getDefaultProperties(String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException
-    {
-        Bundle bundle;
-        bundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
+    private Dictionary<String, Object> getDefaultProperties(Bundle bundle, String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
+        MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundle);
+        String[] factoryPids = metaTypeInformation.getFactoryPids();
 
-        if (bundle != null) {
+        for (String factoryPid : factoryPids) {
+            Dictionary<String, Object> defaultProps = wsConfigurationHelperRef.getService().getMetaTypeDefaultProperties(factoryPid);
+            if (defaultProps.get(ADMINISTERED_OBJECT_CLASS) != null) {
 
-            MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundle);
-            String[] factoryPids = metaTypeInformation.getFactoryPids();
-
-            for (String factoryPid : factoryPids)
-            {
-                Dictionary<String, Object> defaultProps = wsConfigurationHelperRef.getService().getMetaTypeDefaultProperties(factoryPid);
-                if (defaultProps.get(ADMINISTERED_OBJECT_CLASS) != null)
-                {
-
-                    for (String createsClass : (String[]) defaultProps.get(CREATES_OBJECTCLASS))
-                    {
-                        if (createsClass.equals(interfaceName))
-                            return defaultProps;
-                    }
-
+                for (String createsClass : (String[]) defaultProps.get(CREATES_OBJECTCLASS)) {
+                    if (createsClass.equals(interfaceName))
+                        return defaultProps;
                 }
+
             }
         }
+
         //TODO Add meaningful exceptions statements here.
         //Like 1) Unable to find the default properties for the interface name, resource adapter specified in the annotation/dd.
         ResourceException x = new ResourceException();
         throw x;
     }
 
-    private AttributeDefinition[] getAttributeDefinitions(String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException
-    {
+    private AttributeDefinition[] getAttributeDefinitions(String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
         Bundle bundle;
         bundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
 
@@ -324,13 +344,10 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
             MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundle);
             String[] factoryPids = metaTypeInformation.getFactoryPids();
 
-            for (String factoryPid : factoryPids)
-            {
+            for (String factoryPid : factoryPids) {
                 Dictionary<String, Object> defaultProps = wsConfigurationHelperRef.getService().getMetaTypeDefaultProperties(factoryPid);
-                if (defaultProps.get(ADMINISTERED_OBJECT_CLASS) != null)
-                {
-                    for (String createsClass : (String[]) defaultProps.get(CREATES_OBJECTCLASS))
-                    {
+                if (defaultProps.get(ADMINISTERED_OBJECT_CLASS) != null) {
+                    for (String createsClass : (String[]) defaultProps.get(CREATES_OBJECTCLASS)) {
                         if (createsClass.equals(interfaceName)) {
                             ObjectClassDefinition ocd = metaTypeInformation.getObjectClassDefinition(factoryPid, null);
                             return ocd.getAttributeDefinitions(0);
@@ -351,11 +368,11 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
      * Utility method that creates a unique identifier for an application-defined JMS destination.
      * For example,
      * application[MyApp]/module[MyModule]/jmsQueue[java:module/env/jms/queue1]
-     * 
-     * @param application application name if the destination is in java:app, java:module, or java:comp. Otherwise null.
-     * @param module module name if the destination is in java:module or java:comp. Otherwise null.
-     * @param component component name if the destination is in java:comp and isn't in web container. Otherwise null.
-     * @param jndiName configured JNDI name for the destination. For example, java:module/env/jms/topic1
+     *
+     * @param application   application name if the destination is in java:app, java:module, or java:comp. Otherwise null.
+     * @param module        module name if the destination is in java:module or java:comp. Otherwise null.
+     * @param component     component name if the destination is in java:comp and isn't in web container. Otherwise null.
+     * @param jndiName      configured JNDI name for the destination. For example, java:module/env/jms/topic1
      * @param interfaceName fully qualified name of the JMS destination interface.
      * @return the unique identifier
      */
@@ -385,10 +402,10 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
     /**
      * This method looks for existing configurations and removes them unless they came
      * from server.xml
-     * 
+     *
      * We can distinguish by checking for the presence of a property named "config.source"
      * which is set to "file" when the configuration originates from server.xml.
-     * 
+     *
      * @param filter used to find existing configurations.
      * @return true if all configurations were removed or did not exist to begin with, otherwise false.
      * @throws Exception if an error occurs.
@@ -420,7 +437,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for setting the ConfigurationAdmin service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setConfigAdmin(ServiceReference<ConfigurationAdmin> ref) {
@@ -431,7 +448,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for unsetting the ConfigurationAdmin service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetConfigAdmin(ServiceReference<ConfigurationAdmin> ref) {
@@ -442,7 +459,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for setting the VariableRegistry service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setVariableRegistry(ServiceReference<VariableRegistry> ref) {
@@ -453,7 +470,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for unsetting the VariableRegistry service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetVariableRegistry(ServiceReference<VariableRegistry> ref) {
@@ -464,7 +481,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for setting the WSConfigurationHelper service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setWsConfigurationHelper(ServiceReference<WSConfigurationHelper> ref) {
@@ -475,7 +492,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for unsetting the WSConfigurationHelper service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetWsConfigurationHelper(ServiceReference<WSConfigurationHelper> ref) {
@@ -486,7 +503,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for setting the MetaTypeService service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void setMetaTypeService(ServiceReference<MetaTypeService> ref) {
@@ -497,7 +514,7 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
 
     /**
      * Declarative Services method for unsetting the MetaTypeService service reference.
-     * 
+     *
      * @param ref reference to the service
      */
     protected void unsetMetaTypeService(ServiceReference<MetaTypeService> ref) {

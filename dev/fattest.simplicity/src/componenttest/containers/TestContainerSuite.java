@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -205,7 +205,7 @@ public class TestContainerSuite {
         }
 
         //If using remote docker then setup strategy
-        if (useRemoteDocker()) {
+        if (TestContainerHelper.useRemoteDocker()) {
             try {
                 ExternalTestService.getService("docker-engine", ExternalDockerClientFilter.instance());
             } catch (Exception e) {
@@ -251,11 +251,24 @@ public class TestContainerSuite {
      * Then generates a new ~/.docker-java.properties file in it's place.
      *
      * This method must run AFTER {@link #generateTcConfig()}
+     *
+     * TODO the bug that this method avoids was fixed in version 1.21.4 and could be
+     * removed if we upgraded to that version. But since Testcontainers no longer officially
+     * supports JUnit 4 we cannot expect they will continue to update the 1.X.X stream to support newer
+     * versions of the docker API and we will likely need to continue to update the minimum
+     * API versions until such time as we update our infrastructure to Junit 5.
      */
     private static void generateDjConfig() {
         final String m = "generateDjConfig";
 
         Properties djProps = new Properties();
+
+        // Do not touch a users docker-java properties unless we intended to connect
+        // to our own remote docker hosts.
+        if (!TestContainerHelper.useRemoteDocker()) {
+            Log.info(c, m, "Skipping Docker-java config updates when testing against a local docker host.");
+            return;
+        }
 
         //Create new config file or load existing config properties
         if (djConfigSource.toFile().exists()) {
@@ -268,12 +281,10 @@ public class TestContainerSuite {
             Log.info(c, m, "Docker-java config being created at: " + djConfigSource.toAbsolutePath());
         }
 
-        if (useRemoteDocker()) {
-            if (ExternalDockerClientFilter.instance().isValid()) {
-                djProps.setProperty("api.version", ExternalDockerClientFilter.instance().getMinApiVersion().getVersion());
-            } else {
-                Log.warning(c, "Unable to find valid External Docker Client");
-            }
+        if (ExternalDockerClientFilter.instance().isValid()) {
+            djProps.setProperty("api.version", ExternalDockerClientFilter.instance().getMinApiVersion().getVersion());
+        } else {
+            Log.warning(c, "Unable to find valid External Docker Client");
         }
 
         try {
@@ -348,74 +359,5 @@ public class TestContainerSuite {
         }
 
         return true;
-    }
-
-    /**
-     * Determines if we are going to attempt to run against a remote
-     * docker host, or a local docker host.
-     *
-     * Priority:
-     * 1. System Property: fat.test.use.remote.docker
-     * 2. System Property: fat.test.docker.host -> REMOTE
-     * 3. System: GITHUB_ACTIONS -> LOCAL
-     * 4. System: WINDOWS -> REMOTE
-     * 5. System: ARM -> REMOTE
-     *
-     * default (!!! fat.test.localrun)
-     *
-     * @return true, we are running against a remote docker host, false otherwise.
-     */
-    private static boolean useRemoteDocker() {
-        boolean result;
-        String reason;
-
-        do {
-            //State 1: fat.test.use.remote.docker should always be honored first
-            if (System.getProperty("fat.test.use.remote.docker") != null) {
-                result = Boolean.getBoolean("fat.test.use.remote.docker");
-                reason = "fat.test.use.remote.docker set to " + result;
-                break;
-            }
-
-            //State 2: User provided a remote docker host, assume they want to use the remote host
-            if (ExternalDockerClientFilter.instance().isForced()) {
-                result = true;
-                reason = "fat.test.docker.host was configured";
-                break;
-            }
-
-            //State 3: Github actions build should always use local
-            if (Boolean.parseBoolean(System.getenv("GITHUB_ACTIONS"))) {
-                result = false;
-                reason = "GitHub Actions Build";
-                break;
-            }
-
-            //State 4: Earlier version of TestContainers didn't support docker for windows
-            // Assume a user on windows with no other preferences will want to use a remote host.
-            if (System.getProperty("os.name", "unknown").toLowerCase().contains("windows")) {
-                result = true;
-                reason = "Local operating system is Windows. Default container support not guaranteed.";
-                break;
-            }
-
-            //State 5: ARM architecture can cause performance/starting issues with x86 containers, so also assume remote as the default.
-            if (FATRunner.ARM_ARCHITECTURE) {
-                result = true;
-                reason = "CPU architecture is ARM. x86 container support and performance not guaranteed.";
-                break;
-            }
-
-            // Default, use local docker for local runs, and remote docker for remote (RTC) runs
-            result = !FATRunner.FAT_TEST_LOCALRUN;
-            reason = "fat.test.localrun set to " + FATRunner.FAT_TEST_LOCALRUN;
-        } while (false);
-
-        reason = result ? //
-                        "Remote docker host will be the highest priority. Reason: " + reason : //
-                        "Local docker host will be the highest priority. Reason: " + reason;
-
-        Log.info(c, "useRemoteDocker", reason);
-        return result;
     }
 }

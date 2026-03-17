@@ -1,0 +1,7 @@
+# Enable Java preview features
+--enable-preview
+
+# JEP 500: Prepare to Make Final Mean Final
+# This configuration uses deny mode for strict enforcement testing
+# The test will also dynamically test warn mode by restarting the server
+--illegal-final-field-mutation=deny

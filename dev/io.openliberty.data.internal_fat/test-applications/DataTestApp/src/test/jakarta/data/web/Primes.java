@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2024 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,13 @@ public interface Primes {
     @Query("SELECT ID(this) WHERE ID(this) < ?1 ORDER BY ID(this) DESC")
     List<Long> below(long exclusiveMax);
 
+    @Query("FROM Prime WHERE (numberId < ?1) OR (numberId BETWEEN ?2 AND ?3)")
+    CursoredPage<Prime> belowOrWithin(long firstExclusiveMax,
+                                      long rangeMin,
+                                      long rangeMax,
+                                      PageRequest req,
+                                      Order<Prime> sorts);
+
     @Query("SELECT binaryDigits WHERE numberId <= :max")
     @OrderBy(ID)
     LongStream binaryDigitsAsDecimal(long max);
@@ -102,11 +109,17 @@ public interface Primes {
     @Asynchronous
     CompletableFuture<Short> countByNumberIdBetweenAndEvenNot(long first, long last, boolean isOdd);
 
+    @Query("WHERE numberId <= :cursor2")
+    @OrderBy("name")
+    @OrderBy("numberId")
+    CursoredPage<Prime> cursoredQuery(@Param("cursor2") long maxPrimeNumber,
+                                      PageRequest pageReq);
+
     @Asynchronous
     @Find
-    CompletableFuture<Page<Long>> divisibleByTwo(boolean even,
-                                                 PageRequest req,
-                                                 Order<Prime> order);
+    CompletableFuture<Page<Prime>> divisibleByTwo(boolean even,
+                                                  PageRequest req,
+                                                  Order<Prime> order);
 
     @Asynchronous
     CompletionStage<Boolean> existsByNameIgnoreCase(String name);
@@ -223,9 +236,10 @@ public interface Primes {
     CompletionStage<CursoredPage<Prime>> findByNumberIdLessThanOrderByNumberIdDesc(long max, PageRequest pagination);
 
     @OrderBy(ID)
-    List<Long> findByNumberIdLessThanOrNumberIdGreaterThanAndNumberIdLessThan(int exclusiveMax,
-                                                                              int exclusiveRangeMin,
-                                                                              int exclusiveRangeMax);
+    List<Prime> findByNumberIdLessThanOrNumberIdGreaterThanAndNumberIdLessThan//
+    (int exclusiveMax,
+     int exclusiveRangeMin,
+     int exclusiveRangeMax);
 
     Iterator<Prime> findByNumberIdNotGreaterThan(long max, Sort<?>... order);
 
@@ -265,10 +279,21 @@ public interface Primes {
     List<Object[]> findNumberIdAndName(Sort<?>... sort);
 
     @OrderBy(value = ID, descending = true)
-    Set<Long> findNumberIdByNumberIdBetween(long min, long max);
+    Set<Prime> findPrimeByNumberIdBetween(long min, long max);
 
     @OrderBy(value = ID, descending = true)
-    IntStream findSumOfBitsByNumberIdBetween(long min, long max);
+    @Query("SELECT sumOfBits WHERE numberId BETWEEN :min and :max")
+    IntStream findSumOfBitsWhereNumberWithin(long min, long max);
+
+    // Can omit entity identification variable after EclipseLink #33842 is fixed
+    @Query("""
+                    SELECT p.numberId,
+                           CASE WHEN p.even = TRUE THEN 'even' ELSE 'odd' END
+                      FROM Prime p
+                     WHERE p.numberId BETWEEN ?1 and ?2
+                     ORDER BY p.numberId ASC
+                    """)
+    Page<Object[]> getParity(int first, int last, PageRequest pageRequest);
 
     @Query(value = "Select name" +
                    " Where numberId < 50 and" +
@@ -492,6 +517,10 @@ public interface Primes {
 
     @Query("SELECT hex WHERE numberId=?1")
     Optional<String> toHexadecimal(long num);
+
+    @Query("FROM Prime WHERE (numberId < :exclusiveMaximum)")
+    @OrderBy(value = ID, descending = true)
+    Page<Prime> under(long exclusiveMaximum, PageRequest pagination);
 
     @Query("SELECT prime_ FROM Prime AS prime_ WHERE (prime_.numberId <= ?1)")
     @OrderBy(value = "even", descending = true)

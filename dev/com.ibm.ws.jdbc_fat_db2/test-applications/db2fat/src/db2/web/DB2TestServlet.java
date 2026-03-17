@@ -39,6 +39,7 @@ import javax.sql.DataSource;
 import javax.sql.XADataSource;
 import javax.transaction.UserTransaction;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import com.ibm.db2.jcc.DB2JccDataSource;
@@ -70,6 +71,12 @@ public class DB2TestServlet extends FATServlet {
 
     @Resource(lookup = "jdbc/ds-no-url-defaults")
     private DataSource ds_no_url_defaults;
+
+    @Resource(lookup = "jdbc/ds-type-2-remote")
+    private DataSource ds_type_2_remote;
+
+    @Resource(lookup = "jdbc/ds-type-2-override")
+    private DataSource ds_type_2_override;
 
     @Resource(lookup = "jdbc/ds-client-reroute")
     private DataSource ds_client_reroute;
@@ -396,6 +403,29 @@ public class DB2TestServlet extends FATServlet {
         try (Connection con = ds_custom_trace.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
             stmt.setInt(1, 39);
             stmt.setString(2, "thirty-nine");
+            stmt.execute();
+        }
+    }
+
+    // Note: cannot run these tests without a z/OS system which supports the use
+    // of the type 2 driver and client catalog.
+
+    @Test
+    @Ignore("Cannot run without a configured z/OS system")
+    public void testVerifyDriverType2Remote() throws Throwable {
+        try (Connection con = ds_type_2_remote.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 40);
+            stmt.setString(2, "fourty");
+            stmt.execute();
+        }
+    }
+
+    @Test
+    @Ignore("Cannot run without a configured z/OS system")
+    public void testVerifyDriverType2Defaults() throws Throwable {
+        try (Connection con = ds_type_2_override.getConnection(); PreparedStatement stmt = con.prepareStatement("INSERT INTO MYTABLE VALUES (?, ?)");) {
+            stmt.setInt(1, 41);
+            stmt.setString(2, "fourty-one");
             stmt.execute();
         }
     }

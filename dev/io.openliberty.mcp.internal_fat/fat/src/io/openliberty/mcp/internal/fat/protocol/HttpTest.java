@@ -71,7 +71,7 @@ public class HttpTest {
         String response = request.run(String.class);
 
         assertNotNull("Expected response body for 405 error", response);
-        assertEquals("CWMCM0009I: GET requests are not supported.", response);
+        assertEquals("GET requests are not supported.", response);
     }
 
     @Test
@@ -84,7 +84,7 @@ public class HttpTest {
         String response = request.run(String.class);
 
         assertNotNull("Expected response body for 405 error", response);
-        assertEquals("CWMCM0009I: GET requests are not supported.", response);
+        assertEquals("GET requests are not supported.", response);
     }
 
     @Test

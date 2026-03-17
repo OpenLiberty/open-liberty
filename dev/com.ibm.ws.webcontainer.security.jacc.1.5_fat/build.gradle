@@ -445,10 +445,16 @@ autoFVT {
      rename 'io.openliberty.security.authorization.jacc.testprovider.jar', 'io.openliberty.security.authorization.jacc.testprovider_3.0.jar'
   }
   copy {
+     from new File(testProvider2Project.projectDir, "/build/libs/io.openliberty.security.authorization.jacc.testprovider.spec.jar")
+     into new File(autoFvtDir, 'publish/bundles')
+     rename 'io.openliberty.security.authorization.jacc.testprovider.spec.jar', 'io.openliberty.security.authorization.jacc.testprovider.spec_3.0.jar'
+  }
+  copy {
      from new File(testProvider1Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-1.0.mf")  
      from new File(testProvider1Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.0.mf")  
      from new File(testProvider1Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-2.1.mf")  
      from new File(testProvider2Project.projectDir ,"/publish/usr/extension/lib/features/jaccTestProvider-3.0.mf")  
+     from new File(testProvider2Project.projectDir ,"/publish/usr/extension/lib/features/authzTestProvider-3.0.mf")
      into new File(autoFvtDir, 'publish/features')
   }
 

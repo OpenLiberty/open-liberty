@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2011, 2024 IBM Corporation and others.
+    Copyright (c) 2011, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -606,7 +606,7 @@
    <Option value="4" label="%driverType.4.desc"/>
   </AD>
   <AD id="databaseName"                       required="false" type="String"  name="%databaseName" description="%databaseNameOverrides.desc"/>
-  <AD id="serverName"                         required="false" type="String"  name="%serverName" description="%serverNameOverrides.desc"/>
+  <AD id="serverName"                         required="false" type="String"  name="%serverName" description="%serverNameOverridesDB2JCC.desc"/>
   <AD id="portNumber"                         required="false" type="Integer" default="50000" name="%portNumber" description="%portNumberOverrides.desc"/>
   <!-- Advanced properties for properties.db2.jcc -->
   <!-- TODO: consider having another group for heterogeneous pooling properties -->
@@ -1412,6 +1412,20 @@
    <Option value="always"       label="always"/>
    <Option value="conservative" label="conservative"/>
   </AD>  
+ </OCD>
+ 
+  <!-- H2 properties -->
+ <Designate factoryPid="com.ibm.ws.jdbc.dataSource.properties.h2">
+  <Object ocdref="com.ibm.ws.jdbc.dataSource.properties.h2"/>
+ </Designate>
+  
+ <OCD id="com.ibm.ws.jdbc.dataSource.properties.h2" name="internal" description="internal use only" ibm:extendsAlias="h2" ibm:extends="com.ibm.ws.jdbc.dataSource.properties.supertype" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
+  <AD id="URL"                           required="true" type="String"  name="%URL" description="%URL.desc"/>
+  <!-- Advanced properties for properties.h2 -->
+  <AD id="password"                      ibmui:group="Advanced" required="false" type="String"  ibm:type="password"    name="%password"            description="%password.desc"/>
+  <AD id="user"                          ibmui:group="Advanced" required="false" type="String"  name="%user" description="%user.desc"/>
+  <!-- Login Timeout is ignored by the database, but be prepared to treat it as duration type if H2 adds support -->
+  <AD id="loginTimeout"               required="false" type="String"  ibm:type="duration(s)" name="internal"        description="internal use only"/>
  </OCD>
 
 </metatype:MetaData>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,15 +10,26 @@
 package io.openliberty.security.authorization.jacc.internal.proxy;
 
 import java.security.Principal;
+import java.util.Collections;
 import java.util.Set;
 
 import javax.security.auth.Subject;
 
+import com.ibm.ws.security.SecurityService;
+import com.ibm.ws.security.authorization.AuthorizationService;
 import com.ibm.ws.security.context.SubjectManager;
 
 import jakarta.security.jacc.PrincipalMapper;
 
 public class PrincipalMapperImpl implements PrincipalMapper {
+
+    private final String appName;
+    private final SecurityService securityService;
+
+    public PrincipalMapperImpl(String appName, SecurityService securityService) {
+        this.appName = appName;
+        this.securityService = securityService;
+    }
 
     @Override
     public Principal getCallerPrincipal(Subject subject) {
@@ -27,11 +38,19 @@ public class PrincipalMapperImpl implements PrincipalMapper {
 
     @Override
     public Set<String> getMappedRoles(Subject subject) {
-        return null;
+        AuthorizationService builtinAuthzService = securityService.getAuthorizationService();
+        if (subject == null || builtinAuthzService == null) {
+            return Collections.emptySet();
+        }
+        return builtinAuthzService.getMappedRoles(appName, subject);
     }
 
     @Override
     public boolean isAnyAuthenticatedUserRoleMapped() {
-        return false;
+        AuthorizationService builtinAuthzService = securityService.getAuthorizationService();
+        if (builtinAuthzService == null) {
+            return false;
+        }
+        return builtinAuthzService.isStarStarRoleMapped(appName);
     }
 }

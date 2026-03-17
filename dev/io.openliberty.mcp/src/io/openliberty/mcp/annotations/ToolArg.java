@@ -49,4 +49,13 @@ public @interface ToolArg {
      * An argument is required by default unless the type of the annotated parameter is {@link Optional}.
      */
     boolean required() default true;
+
+    /**
+     * The default value is used when an MCP client does not provide an argument value.
+     * <p>
+     * {@link String}, primitive types and corresponding wrappers, and enums are converted automatically.
+     * Other types cannot have a default value.
+     */
+    String defaultValue() default "";
+
 }

@@ -113,7 +113,6 @@ public class WsocOutboundChain {
         sslOptions.activate(context);
         sslFactoryProvider.activate(context);
 
-        // TODO: Updated this to use constants
         useNettyTransport = ProductInfo.getBetaEdition() &&
                             MetatypeUtils.parseBoolean(WS_CHAIN_NAME, NettyConstants.USE_NETTY, properties.get(NettyConstants.USE_NETTY), true);
 

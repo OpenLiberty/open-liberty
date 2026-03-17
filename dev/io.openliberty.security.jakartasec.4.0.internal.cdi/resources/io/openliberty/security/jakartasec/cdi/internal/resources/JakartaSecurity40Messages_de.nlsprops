@@ -1,0 +1,34 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME io.openliberty.security.jakartasec.4.0.internal.cdi/resources/io/openliberty/security/jakartasec/cdi/internal/resources/JakartaSecurity40Messages.nlsprops
+#COMPONENTPREFIX CWWKS
+#COMPONENTNAMEFOR WebSphere Application Server Jakarta Security 4.0
+#ISMESSAGEFILE TRUE
+#NLS_MESSAGEFORMAT_VAR
+#NLS_ENCODING=UNICODE
+# -------------------------------------------------------------------------------------------------
+
+# Message prefix block: 2610-2620
+
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER=CWWKS2610E: Es fehlt ein benutzerdefinierter Handler, der qualifizierte HttpAuthenticationMechanisms verwendet.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.explanation=Wenn qualifizierte HttpAuthenticationMechanisms angegeben sind, kann der Standard- HttpAuthenticationMechanismHandler nicht bestimmen, welcher HAM verwendet werden soll. Daher muss eine benutzerdefinierte Implementierung von HttpAuthenticationMechanismHandler bereitgestellt werden.
+JAKARTA_SECURITY_CDI_ERROR_CUSTOM_QUALIFIERS_NO_HAM_HANDLER.useraction=Implementieren Sie einen \u201e HttpAuthenticationMechanismHandler \u201c, der mithilfe einer benutzerdefinierten Logik eine eindeutige \u201e HttpAuthenticationMechanism \u201c ausw\u00e4hlt.
+
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST=CWWKS2611E: Die Verarbeitung der Anmerkungen f\u00fcr die Definition \u201e {0} \u201d innerhalb einer Liste ist fehlgeschlagen.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.explanation=Bei der Verarbeitung einer Liste von \u201e HttpAuthenticationMechanism \u201c-Definitionen ist beim Extrahieren von Annotationswerten ein Fehler aufgetreten.
+JAKARTASEC_CDI_ERROR_PROCESSING_HAM_LIST.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES=CWWKS2612E: Die Verarbeitung der Eigenschaften vom Typ \u201e {0} \u201c ist fehlgeschlagen.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.explanation=Bei der Verarbeitung einer bestimmten Anmerkung \u201e HttpAuthenticationMechanism \u201c ist beim Extrahieren von Eigenschaftswerten ein Fehler aufgetreten.
+JAKARTASEC_CDI_ERROR_EXTRACTING_HAM_PROPERTIES.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.
+
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS=CWWKS2613E: Die benutzerdefinierte Qualifiziereranmerkung \u201e {0} \u201c kann nicht f\u00fcr die Qualifizierklasse \u201e {1} \u201c erstellt werden.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.explanation=Beim Erstellen einer qualifizierten Anmerkung \u201e HttpAuthenticationMechanism, \u201d ist beim Erstellen einer benutzerdefinierten Qualifizierungsanmerkung ein Fehler aufgetreten.
+JAKARTASEC_CDI_ERROR_CREATING_QUALIFIERS.useraction=Untersuchen Sie die Ursache f\u00fcr die Ausnahme und korrigieren Sie die Anwendungskonfiguration.

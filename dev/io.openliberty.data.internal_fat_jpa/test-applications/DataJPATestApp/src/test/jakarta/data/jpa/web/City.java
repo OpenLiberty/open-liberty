@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,18 +26,18 @@ public class City {
     // TODO uncomment to reproduce EclipseLink bugs #28589, #29475
     // that select an attribute that is a collection type.
     //@ElementCollection(fetch = FetchType.EAGER)
-    public Set<Integer> areaCodes;
+    Set<Integer> areaCodes;
 
     @Version
     long changeCount;
 
     @Id
-    public String name;
+    String name;
 
-    public int population;
+    int population;
 
     @Id
-    public String stateName;
+    String stateName;
 
     public City() {
     }
@@ -53,6 +53,46 @@ public class City {
         City city = new City(id.name, id.getStateName(), population, areaCodes);
         city.changeCount = version;
         return city;
+    }
+
+    public Set<Integer> getAreaCodes() {
+        return areaCodes;
+    }
+
+    public long getChangeCount() {
+        return changeCount;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getPopulation() {
+        return population;
+    }
+
+    public String getStateName() {
+        return stateName;
+    }
+
+    public void setAreaCodes(Set<Integer> areaCodes) {
+        this.areaCodes = areaCodes;
+    }
+
+    public void setChangeCount(long changeCount) {
+        this.changeCount = changeCount;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setPopulation(int population) {
+        this.population = population;
+    }
+
+    public void setStateName(String stateName) {
+        this.stateName = stateName;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,7 @@ public class JakartaEE11Test extends FATServletClient {
                         .with(new FeatureReplacementAction()
                                         .removeFeature("webProfile-11.0")
                                         .addFeature("jakartaee-11.0")
+                                        .addFeature("usr:jaccTestProvider-3.0")
                                         .withID("jakartaee11")
                                         .fullFATOnly())
                         .andWith(new FeatureReplacementAction()
@@ -79,6 +80,7 @@ public class JakartaEE11Test extends FATServletClient {
                                         .removeFeature("webProfile-11.0")
                                         .removeFeature("jakartaee-11.0")
                                         .addFeatures(olCompatFeatures)
+                                        .addFeature("usr:jaccTestProvider-3.0")
                                         .withID(COMPAT_OL_FEATURES)); //LITE
 
         if (!olCompatFeatures.equals(wlCompatFeatures)) {
@@ -90,6 +92,7 @@ public class JakartaEE11Test extends FATServletClient {
             }
             useRepeat = useRepeat.andWith(new FeatureReplacementAction()
                             .addFeatures(featuresToAdd)
+                            .addFeature("usr:jaccTestProvider-3.0")
                             .withID(COMPAT_WL_FEATURES)
                             .fullFATOnly());
         }
@@ -105,6 +108,8 @@ public class JakartaEE11Test extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        server.installUserBundle("io.openliberty.security.authorization.jacc.testprovider_3.0");
+        server.installUserFeature("jaccTestProvider-3.0");
         WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war");
         war.addPackages(true, WebProfile11TestServlet.class.getPackage());
         war.addAsWebInfResource(WebProfile11TestServlet.class.getPackage(), "persistence.xml", "classes/META-INF/persistence.xml");
@@ -150,5 +155,7 @@ public class JakartaEE11Test extends FATServletClient {
         }
 
         server.stopServer(toleratedWarnErrors);
+        server.uninstallUserBundle("io.openliberty.security.authorization.jacc.testprovider_2.1");
+        server.uninstallUserFeature("jaccTestProvider-3.9");
     }
 }

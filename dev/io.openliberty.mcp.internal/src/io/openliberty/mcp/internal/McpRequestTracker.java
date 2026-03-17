@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,9 +16,8 @@ import java.util.concurrent.ConcurrentMap;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.service.util.ServiceCaller;
 
-import io.openliberty.mcp.internal.config.McpConfiguration;
+import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
@@ -26,6 +25,7 @@ import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.messaging.Cancellation;
 import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Inject;
 
 /**
  * This is a connection tracker bean. It keeps track of ongoing tool call requests
@@ -39,7 +39,8 @@ public class McpRequestTracker {
     private ConcurrentMap<ExecutionRequestId, CancellationImpl> ongoingRequests = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Set<ExecutionRequestId>> sessionToRequestIds = new ConcurrentHashMap<>();
 
-    private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpRequestTracker.class, McpConfiguration.class);
+    @Inject
+    McpConfig mcpConfig;
 
     public McpRequestTracker() {
         this.ongoingRequests = new ConcurrentHashMap<>();
@@ -53,7 +54,7 @@ public class McpRequestTracker {
         CancellationImpl previous = ongoingRequests.putIfAbsent(requestId, cancellation);
         if (previous != null) {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
-                                       Tr.formatMessage(tc, "CWMCM0008E.invalid.request.params", requestId.id()));
+                                       Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
         }
     }
 
@@ -72,8 +73,7 @@ public class McpRequestTracker {
      * request is cancelled with a fixed reason: {@code "Session cancelled"}
      */
     public void cancelSessionRequests(McpSessionId sessionId) {
-        Boolean stateless = mcpConfigService.run(McpConfiguration::isStateless).orElse(false);
-        if (Boolean.TRUE.equals(stateless)) {
+        if (mcpConfig.stateless()) {
             return;
         }
 

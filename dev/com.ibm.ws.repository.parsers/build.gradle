@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,52 +28,54 @@ configurations {
  }
 
 task copyFilesForUnittest() {
-  copy {
-    from configurations.anno_esa
-    into esaDir
-    rename 'anno-esa-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa'
-  }
+  doLast {
+    copy {
+      from configurations.anno_esa
+      into esaDir
+      rename 'anno-esa-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa'
+    }
 
-  copy {
-    from configurations.anno_esa
-    into esaAssetDir
-    rename 'anno-esa-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa'
-  }
+    copy {
+      from configurations.anno_esa
+      into esaAssetDir
+      rename 'anno-esa-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa'
+    }
 
-  copy {
-    from configurations.anno_metadata
-    into esaDir
-    rename 'anno-metadata-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa.metadata.zip'
-  }
+    copy {
+      from configurations.anno_metadata
+      into esaDir
+      rename 'anno-metadata-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa.metadata.zip'
+    }
 
-  copy {
-    from configurations.anno_metadata
-    into esaMetadataDir
-    rename 'anno-metadata-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa.metadata.zip'
-  }
+    copy {
+      from configurations.anno_metadata
+      into esaMetadataDir
+      rename 'anno-metadata-*.*.*.*', 'com.ibm.websphere.appserver.anno-1.0.esa.metadata.zip'
+    }
 
-  copy {
-    from configurations.jsp_esa
-    into esaDir
-    rename 'jsp-esa-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa'
-  }
+    copy {
+      from configurations.jsp_esa
+      into esaDir
+      rename 'jsp-esa-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa'
+    }
 
-  copy {
-    from configurations.jsp_esa
-    into esaAssetDir
-    rename 'jsp-esa-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa'
-  }
+    copy {
+      from configurations.jsp_esa
+      into esaAssetDir
+      rename 'jsp-esa-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa'
+    }
 
-  copy {
-    from configurations.jsp_metadata
-    into esaDir
-    rename 'jsp-metadata-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa.metadata.zip'
-  }
+    copy {
+      from configurations.jsp_metadata
+      into esaDir
+      rename 'jsp-metadata-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa.metadata.zip'
+    }
 
-  copy {
-    from configurations.jsp_metadata
-    into esaMetadataDir
-    rename 'jsp-metadata-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa.metadata.zip'
+    copy {
+      from configurations.jsp_metadata
+      into esaMetadataDir
+      rename 'jsp-metadata-*.*.*.*', 'com.ibm.websphere.appserver.jsp-2.3.esa.metadata.zip'
+    }
   }
 }
 

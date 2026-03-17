@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.security;
 import io.openliberty.mcp.internal.McpTransport;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
+import io.openliberty.mcp.internal.security.SecurityRequirement.SecurityAnnotation;
 import jakarta.servlet.http.HttpServletResponse;
 
 /**
@@ -42,9 +43,27 @@ public class Authorizer {
      * @return true if the user has been authorized
      */
     public static void requireAuthorized(McpTransport transport, ToolMetadata tmd) {
-        if (!passedAuthorization(transport, tmd)) {
+
+        SecurityRequirement authData = tmd.securityRequirement();
+        boolean authorized = passedAuthorization(transport, tmd);
+
+        /*
+         * @DenyAll always results in 403 Forbidden
+         */
+        if (authData.securityAnnotation() == SecurityAnnotation.DENY) {
             throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN);
         }
+
+        if (!authorized) {
+            if (transport.isAuthenticated()) {
+                // User is known but not permitted
+                throw new HttpResponseException(HttpServletResponse.SC_FORBIDDEN);
+            } else {
+                // No user identity present authentication required
+                throw new HttpResponseException(HttpServletResponse.SC_UNAUTHORIZED);
+            }
+        }
+
     }
 
     /**

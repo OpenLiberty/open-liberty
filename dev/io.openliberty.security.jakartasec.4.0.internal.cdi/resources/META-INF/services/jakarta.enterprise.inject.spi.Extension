@@ -1,2 +1,3 @@
 io.openliberty.security.jakartasec.cdi.extensions.JakartaSecurity30CDIExtension
 io.openliberty.security.jakartasec.cdi.extensions.JakartaSecurity40CDIExtension
+io.openliberty.security.jakartasec40.cdi.extensions.JakartaSecurity40CDIExtension

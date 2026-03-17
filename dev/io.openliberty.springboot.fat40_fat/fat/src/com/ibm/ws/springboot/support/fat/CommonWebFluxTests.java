@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.junit.AfterClass;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -53,6 +54,20 @@ public abstract class CommonWebFluxTests extends CommonWebServerTests {
         server.stopServer("CWWKE1102W", "CWWKE1106W");
     }
 
+    public String getContextRoot() {
+        return "/";
+    }
+
+    @Override
+    public boolean useDefaultVirtualHost() {
+        return true;
+    }
+
+    @Before
+    public void setDefaultPort() {
+        server.setHttpDefaultPort(DEFAULT_HTTP_PORT);
+    }
+
     static int sleep = 100;
 
     public void testBlockingIO() throws IOException, InterruptedException {
@@ -75,7 +90,7 @@ public abstract class CommonWebFluxTests extends CommonWebServerTests {
             }
         }
 
-        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/echo");
+        URL url = new URL("http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + getContextRoot() + "echo");
         Log.info(getClass(), "testBlockingIO", url.toExternalForm());
         byte[] response = asyncSendDataGetResponse(data, size, numIterations, url, 1);
         if (response == null) {

@@ -1921,13 +1921,20 @@ public class BaseTraceService implements TrService {
     public final static class TeePrintStream extends PrintStream {
         protected final TrOutputStream trStream;
 
-        public TeePrintStream(TrOutputStream trStream, boolean autoFlush) {
+        protected SystemLogHolder systemLogHolder = null;
+
+        public TeePrintStream(TrOutputStream trStream, boolean autoFlush, SystemLogHolder systemLogHolder) {
             super(trStream, autoFlush);
+            this.systemLogHolder = systemLogHolder;
             this.trStream = trStream;
         }
 
         @Override
         public synchronized void print(boolean b) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(b);
@@ -1939,6 +1946,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(char c) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(c);
@@ -1950,6 +1961,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(int i) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(i);
@@ -1961,6 +1976,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(long l) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(l);
@@ -1972,6 +1991,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(float f) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(f);
@@ -1983,6 +2006,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(double d) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(d);
@@ -1994,6 +2021,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(char c[]) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(c);
@@ -2005,6 +2036,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(String s) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             if (!shouldPrint(s))
                 return;
 
@@ -2019,6 +2054,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void print(Object obj) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(obj);
@@ -2030,6 +2069,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println() {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.println();
@@ -2041,6 +2084,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(boolean b) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(b);
@@ -2052,6 +2099,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(char c) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(c);
@@ -2063,6 +2114,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(int i) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(i);
@@ -2074,6 +2129,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(long l) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(l);
@@ -2085,6 +2144,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(float f) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(f);
@@ -2096,6 +2159,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(double d) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(d);
@@ -2107,6 +2174,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(char c[]) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(c);
@@ -2118,6 +2189,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(String s) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             if (!shouldPrint(s))
                 return;
 
@@ -2132,6 +2207,10 @@ public class BaseTraceService implements TrService {
 
         @Override
         public synchronized void println(Object obj) {
+            if (!systemLogHolder.isEnabled()) {
+                return;
+            }
+
             TrOutputStream.isPrinting.set(true);
             try {
                 super.print(obj);
@@ -2184,6 +2263,11 @@ public class BaseTraceService implements TrService {
 
             super.flush();
 
+            /*
+             * Keep this here.
+             * Very small chance that configuration is updated
+             * between TeePrintStream call and here.
+             */
             if (!holder.isEnabled()) {
                 super.reset();
                 return;
@@ -2274,10 +2358,10 @@ public class BaseTraceService implements TrService {
     protected void captureSystemStreams() {
         isCaptureSystemStreamsExecuted = true;
 
-        teeOut = new TeePrintStream(new TrOutputStream(systemOut, this), true);
+        teeOut = new TeePrintStream(new TrOutputStream(systemOut, this), true, systemOut);
         System.setOut(teeOut);
 
-        teeErr = new TeePrintStream(new TrOutputStream(systemErr, this), true);
+        teeErr = new TeePrintStream(new TrOutputStream(systemErr, this), true, systemErr);
         System.setErr(teeErr);
     }
 

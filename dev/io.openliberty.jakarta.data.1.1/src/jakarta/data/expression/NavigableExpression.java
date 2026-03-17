@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,11 +14,13 @@ package jakarta.data.expression;
 
 import java.time.temporal.Temporal;
 
+import jakarta.data.metamodel.BooleanAttribute;
 import jakarta.data.metamodel.ComparableAttribute;
 import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.metamodel.NumericAttribute;
 import jakarta.data.metamodel.TemporalAttribute;
 import jakarta.data.metamodel.TextAttribute;
+import jakarta.data.spi.expression.path.BooleanPath;
 import jakarta.data.spi.expression.path.ComparablePath;
 import jakarta.data.spi.expression.path.NavigablePath;
 import jakarta.data.spi.expression.path.NumericPath;
@@ -29,6 +31,10 @@ import jakarta.data.spi.expression.path.TextPath;
  * Method signatures are copied from Jakarta Data.
  */
 public interface NavigableExpression<T, U> {
+
+    default BooleanExpression<T> navigate(BooleanAttribute<U> attribute) {
+        return BooleanPath.of(this, attribute);
+    }
 
     default <C extends Comparable<C>> ComparableExpression<T, C> //
                     navigate(ComparableAttribute<U, C> attribute) {

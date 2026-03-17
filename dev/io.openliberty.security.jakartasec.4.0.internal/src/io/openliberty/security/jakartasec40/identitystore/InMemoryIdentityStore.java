@@ -99,16 +99,17 @@ public class InMemoryIdentityStore implements IdentityStore {
         // now extract client caller and password details
         String caller = null;
         ProtectedString password = null;
+        boolean callerOnly = false;
         if (credential instanceof UsernamePasswordCredential) {
             caller = ((UsernamePasswordCredential) credential).getCaller();
             password = new ProtectedString(((UsernamePasswordCredential) credential).getPassword().getValue());
+        } else if (credential instanceof CallerOnlyCredential) {
+            callerOnly = true;
+            caller = ((CallerOnlyCredential) credential).getCaller();
         } else {
+            // neither UsernamePassword nor CallerOnly credential so it cannot be used for validation
             Tr.error(tc, "JAKARTASEC_ERROR_WRONG_CRED");
-            if (credential instanceof CallerOnlyCredential) {
-                return CredentialValidationResult.INVALID_RESULT;
-            } else {
-                return CredentialValidationResult.NOT_VALIDATED_RESULT;
-            }
+            return CredentialValidationResult.NOT_VALIDATED_RESULT;
         }
 
         if (caller == null) { // should be prevented when UsernamePasswordCredential is created.
@@ -118,13 +119,29 @@ public class InMemoryIdentityStore implements IdentityStore {
             return CredentialValidationResult.INVALID_RESULT;
         }
 
-        // finally, check password and if valid, then return success with groups
-        if (isPasswordValid(caller, password)) {
-            Set<String> groups = getCallerGroups(new CredentialValidationResult(null, caller, null, caller, null));
-            return new CredentialValidationResult(null, caller, null, caller, groups);
+        if (!callerOnly) {
+            // check caller against a password
+            if (!isPasswordValid(caller, password)) {
+                return CredentialValidationResult.INVALID_RESULT;
+            }
         } else {
-            return CredentialValidationResult.INVALID_RESULT;
+            // check caller for existence only
+            CredentialValue credentialValue = inMemoryIdentityStoreDefinitionWrapper.getCredential(caller);
+            if (credentialValue == null) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "CallerOnlyCredential, caller [" + caller + "] not found.");
+                }
+                return CredentialValidationResult.INVALID_RESULT;
+            }
         }
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Credential validation succeeded, returning result with fetched groups.");
+        }
+
+        // valid credential at this stage, select and return validation result with groups
+        Set<String> groups = getCallerGroups(new CredentialValidationResult(null, caller, null, caller, null));
+        return new CredentialValidationResult(null, caller, null, caller, groups);
     }
 
     /**

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,6 +12,8 @@
  *******************************************************************************/
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
+
+import static org.junit.Assert.assertEquals;
 
 import java.security.Permission;
 import java.security.PermissionCollection;
@@ -24,11 +26,10 @@ import org.junit.Test;
 import org.junit.rules.TestName;
 
 import com.ibm.websphere.simplicity.log.Log;
+import com.ibm.ws.security.authorization.jacc.provider.AllPolicyConfigs;
 import com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationFactoryImpl;
 import com.ibm.ws.security.authorization.jacc.provider.WSPolicyConfigurationImpl;
-import com.ibm.ws.security.authorization.jacc.provider.AllPolicyConfigs;
 
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import jakarta.security.jacc.EJBMethodPermission;
@@ -195,6 +196,8 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
 
         Map<String, PermissionCollection> perRolePermissions = policyConfig.getPerRolePermissions();
 
+        assertEquals(3, perRolePermissions.size());
+
         for (Map.Entry<String, PermissionCollection> entry : perRolePermissions.entrySet()) {
 
             ArrayList<Permission> inputs = new ArrayList();
@@ -206,7 +209,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
                 if (inputs.size() != 1) {
                     throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
                 }
-                if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("denyAll,Local,java.lang.String")) {
+                if (!inputs.get(0).getName().equals("PolicyTestEJBPerRolePermissions") || !inputs.get(0).getActions().equals("Manager,denyAll,ServiceEndPoint,java.lang.String")) {
                     throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
                 }
             } else if (entry.getKey().equals("Employee")) {
@@ -217,7 +220,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
                 if (inputs.size() != 1) {
                     throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
                 }
-                if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("denyAll,Local,java.lang.String")) {
+                if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("denyAll,ServiceEndPoint,java.lang.String")) {
                     throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
                 }
             } else if (entry.getKey().equals("StarPlayer")) {
@@ -228,9 +231,11 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
                 if (inputs.size() != 1) {
                     throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
                 }
-                if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("Manager,denyAll,ServiceEndPoint,java.lang.String")) {
+                if (!inputs.get(0).getName().equals("PolicyTestEJBUnchecked") || !inputs.get(0).getActions().equals("denyAll,Local,java.lang.String")) {
                     throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
                 }
+            } else {
+                throw new Exception(MessageConstants.EJB_ACCESS_EXCEPTION);
             }
         }
 
@@ -277,7 +282,6 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
 
     }
 
-
     @Mode(TestMode.LITE)
     @Test
     public void testGetPolicyConfigWithNonExistantContextId() throws Exception {
@@ -320,7 +324,7 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
 
     @Mode(TestMode.LITE)
     @Test
-    public void testGetPolicyConfigWithContextIdWithNoExistingPolicyConig () throws Exception {
+    public void testGetPolicyConfigWithContextIdWithNoExistingPolicyConig() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering " + getName().getMethodName());
 
         WSPolicyConfigurationFactoryImpl pcf = new WSPolicyConfigurationFactoryImpl();
@@ -337,7 +341,6 @@ public abstract class EJBJakarta10Base extends EJBAnnTestBase {
         Log.info(logClass, getName().getMethodName(), "**Exiting " + getName().getMethodName());
 
     }
-
 
     @Mode(TestMode.LITE)
     @Test

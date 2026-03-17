@@ -1,20 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package fat.junit;
 
-import java.io.File;
-
 import static componenttest.annotation.SkipIfSysProp.OS_ZOS;
+
+import java.io.File;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -33,8 +30,7 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -61,8 +57,9 @@ public class TranTimeoutCleanupTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(new JakartaEE9Action().forServers("TranTimeoutCleanup"))
-                    .andWith(new JakartaEE10Action().forServers("TranTimeoutCleanup"));
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().forServers("TranTimeoutCleanup"))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers("TranTimeoutCleanup"))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().forServers("TranTimeoutCleanup"));
 
     @Server("TranTimeoutCleanup")
     @TestServlet(servlet = TranTimeoutCleanupServlet.class, path = "implicit/TranTimeoutCleanupServlet")

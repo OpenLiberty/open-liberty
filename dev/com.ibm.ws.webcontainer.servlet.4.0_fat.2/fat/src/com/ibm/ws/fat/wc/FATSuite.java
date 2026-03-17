@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,10 +19,12 @@ import com.ibm.ws.fat.util.FatLogHandler;
 import com.ibm.ws.fat.wc.tests.WCPartitionedAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCPartitionedCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCRequestAutoDecompressTest;
+import com.ibm.ws.fat.wc.tests.WCResponseContentLengthChunkedEncodingTest;
 import com.ibm.ws.fat.wc.tests.WCResponseHeadersTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeSecurityTest;
 import com.ibm.ws.fat.wc.tests.WCSameSiteCookieAttributeTests;
 import com.ibm.ws.fat.wc.tests.WCSameSiteIncompatibleClientsTests;
+import com.ibm.ws.fat.wc.tests.WebAndWebFragmentServletMappingTests;
 import com.ibm.ws.fat.wc.tests.WebSphereServletEventListenerTest;
 import com.ibm.ws.fat.wc.tests.WebSphereSpiHttpRequestURLTest;
 
@@ -49,12 +51,14 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
                 WCRequestAutoDecompressTest.class,
+                WCResponseContentLengthChunkedEncodingTest.class,
                 WCResponseHeadersTest.class,
                 WCSameSiteCookieAttributeTests.class,
                 WCSameSiteCookieAttributeSecurityTest.class,
                 WCPartitionedAttributeTests.class,
                 WCPartitionedCookieAttributeSecurityTest.class,
                 WCSameSiteIncompatibleClientsTests.class,
+                WebAndWebFragmentServletMappingTests.class,
                 WebSphereServletEventListenerTest.class,
                 WebSphereSpiHttpRequestURLTest.class
 })

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,16 +32,16 @@ public class PurchaseOrder {
 
     @GeneratedValue(strategy = GenerationType.UUID)
     @Id
-    public UUID id;
+    UUID id;
 
-    public String purchasedBy;
+    String purchasedBy;
 
-    public OffsetDateTime purchasedOn;
+    OffsetDateTime purchasedOn;
 
-    public float total;
+    float total;
 
     @Version
-    public int versionNum;
+    int versionNum;
 
     static PurchaseOrder of(float total, String purchasedBy) {
         PurchaseOrder order = new PurchaseOrder();
@@ -49,6 +49,46 @@ public class PurchaseOrder {
         order.purchasedBy = purchasedBy;
         order.purchasedOn = OffsetDateTime.now();
         return order;
+    }
+
+    public UUID getId() {
+        return id;
+    }
+
+    public String getPurchasedBy() {
+        return purchasedBy;
+    }
+
+    public OffsetDateTime getPurchasedOn() {
+        return purchasedOn;
+    }
+
+    public float getTotal() {
+        return total;
+    }
+
+    public int getVersionNum() {
+        return versionNum;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public void setPurchasedBy(String purchasedBy) {
+        this.purchasedBy = purchasedBy;
+    }
+
+    public void setPurchasedOn(OffsetDateTime purchasedOn) {
+        this.purchasedOn = purchasedOn;
+    }
+
+    public void setTotal(float total) {
+        this.total = total;
+    }
+
+    public void setVersionNum(int versionNum) {
+        this.versionNum = versionNum;
     }
 
     @Override

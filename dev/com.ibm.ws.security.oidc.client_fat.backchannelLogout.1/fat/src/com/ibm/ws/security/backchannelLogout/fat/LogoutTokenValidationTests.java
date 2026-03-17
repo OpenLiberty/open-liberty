@@ -13,6 +13,7 @@
 
 package com.ibm.ws.security.backchannelLogout.fat;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
@@ -36,6 +37,7 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException" })
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class LogoutTokenValidationTests extends com.ibm.ws.security.backchannelLogout.fat.CommonTests.LogoutTokenValidationTests {
 
     public static Class<?> thisClass = LogoutTokenValidationTests.class;
@@ -43,4 +45,6 @@ public class LogoutTokenValidationTests extends com.ibm.ws.security.backchannelL
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(new SecurityTestRepeatAction(Constants.OIDC));
 
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled();
 }

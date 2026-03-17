@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,12 +89,10 @@ public class NettyNetworkConnection implements NetworkConnection{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "<init>" ,new Object[] {bootstrap, chainName});
 
 		this.chainName = chainName;
-		// TODO: Check if this is the best way to do this for SSL options https://github.com/OpenLiberty/open-liberty/issues/24813
 		this.sslOptions = sslOptions == null ? null : new HashMap<String, Object>((Map)sslOptions);
 		this.isInbound = isInbound;
 		this.tlsProvider = tlsProvider;
 		this.nettyBundle = nettyBundle;
-		// TODO Check if we need to clone this https://github.com/OpenLiberty/open-liberty/issues/24813
 		this.bootstrap = bootstrap;
 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(tc, "<init>", new Object[] {bootstrap, chainName});
@@ -138,11 +136,10 @@ public class NettyNetworkConnection implements NetworkConnection{
 	 *
 	 * @see com.ibm.ws.sib.jfapchannel.framework.NetworkConnection#requestPermissionToClose(long)
 	 */
-	public boolean requestPermissionToClose(long timeout)
-	{
-		// TODO Figure out the netty equivalent for this. Only used in connection see https://github.com/OpenLiberty/open-liberty/issues/24812
-		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.entry(this, tc, "requestPermissionToClose", Long.valueOf(timeout));
-		//	      boolean canProcess = vc.requestPermissionToClose(timeout);
+	public boolean requestPermissionToClose(long timeout) {
+	
+		// Netty does not need a requestPermissionToClose because Netty handles shutdowns gracefully via Channel.close().
+		// Relying on a timeout here would be unnecessary as CHFW & Netty's architectures differ 
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) SibTr.exit(this, tc, "requestPermissionToClose", Boolean.valueOf(true));
 		return true;
 	}

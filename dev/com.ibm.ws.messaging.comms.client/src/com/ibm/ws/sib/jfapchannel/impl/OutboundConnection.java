@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2023 IBM Corporation and others.
+ * Copyright (c) 2003, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.sib.jfapchannel.impl;
 
@@ -79,9 +76,8 @@ public class OutboundConnection extends Connection
                               int heartbeatInterval, // F175658
                               int heartbeatTimeout, // F175658
                               ConnectionData connectionData) throws FrameworkException
-    {//TODO: Check about using requireService for this see https://github.com/OpenLiberty/open-liberty/issues/24830
-        super(connLink, vc, heartbeatInterval, heartbeatTimeout, 
-        		CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()) == null ? false : CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName()).useNetty()); // F174772, F175658
+    {
+        super(connLink, vc, heartbeatInterval, heartbeatTimeout, isNettyUsed(connLink)); // F174772, F175658
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "<init>",
@@ -463,4 +459,10 @@ public class OutboundConnection extends Connection
     {
         return eyeCatcher;
     }
+
+    // Helper method for constructor
+    private static boolean isNettyUsed(NetworkConnectionContext connLink) {
+       CommsOutboundChain chain = CommsOutboundChain.getChainDetails(connLink.getMetaData().getChainName());
+       return (chain != null) && chain.useNetty();
+    }   
 }

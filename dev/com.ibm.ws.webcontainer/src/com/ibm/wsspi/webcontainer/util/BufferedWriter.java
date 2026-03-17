@@ -347,10 +347,12 @@ public class BufferedWriter extends Writer implements ResponseBuffer
      */
     public void write(@Sensitive String str, int off, int len) throws IOException {
         if (len < 0) { throw new IndexOutOfBoundsException(); }
+        boolean traceOn = (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled());
+
         synchronized (lock) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            { // 306998.15
-                Tr.debug(tc, "write(String) total: " + total + " len: " + len + " limit: " + limit + " buf.length: " + buf.length + " count: " + count);
+            if (traceOn)
+            { 
+                Tr.debug(tc, "write(String, int, int) ENTER total = " + total + " | len = " + len + " | count = " + count) ;
             }
             if (!_hasWritten && obs != null)
             {
@@ -369,8 +371,8 @@ public class BufferedWriter extends Writer implements ResponseBuffer
 
             if (len >= buf.length)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                { // 306998.15
+                if (traceOn)
+                { 
                     Tr.debug(tc, "write(String), len >= buf.length");
                 }
                 response.setFlushMode(false);
@@ -386,8 +388,8 @@ public class BufferedWriter extends Writer implements ResponseBuffer
             int avail = buf.length - count;
             if (len > avail)
             {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                { // 306998.15
+                if (traceOn)
+                { 
                     Tr.debug(tc, "write(String), len >= avail");
                 }
                 response.setFlushMode(false);
@@ -398,6 +400,11 @@ public class BufferedWriter extends Writer implements ResponseBuffer
             count += len;
             total += len;
             check();
+            
+            if (traceOn)
+            { 
+                Tr.debug(tc, "write(String, int, int) RETURN total: " + total + " len: " + len + " limit: " + limit + " buf.length: " + buf.length + " count: " + count);
+            }
         }
     }
 
@@ -498,7 +505,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         { // 306998.15
-            Tr.debug(tc, "flushChars");
+            Tr.debug(tc, "flushChars ENTRY. total [" + total + "] limit [" + limit + "] length [" +length + "]");
         }
 
         if (!committed)
@@ -538,6 +545,10 @@ public class BufferedWriter extends Writer implements ResponseBuffer
                     Tr.debug(tc, "flushChars, flush mode is false");
                 }
             }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "flushChars RETURN");
         }
     }
 
@@ -689,7 +700,7 @@ public class BufferedWriter extends Writer implements ResponseBuffer
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
         { // 306998.15
-            Tr.debug(tc, "writeOut(char[]) --> " + len);
+            Tr.debug(tc, "writeOut(char[]) ENTRY --> [" + len + "] buf [" + buf.length + "]");
         }
         try
         {
@@ -717,6 +728,11 @@ public class BufferedWriter extends Writer implements ResponseBuffer
             obs.alertException();
 
             throw ioe;
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+        { // 306998.15
+            Tr.debug(tc, "writeOut(char[]) RETURN , written [" + len + "] buf [" + buf.length + "]");
         }
     }
 

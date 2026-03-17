@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2017, 2018 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -28,6 +28,10 @@ JAVAEESEC_ERROR_NO_VALIDATION.useraction=Stellen Sie sicher, dass mindestens ein
 JAVAEESEC_ERROR_NO_HAM=CWWKS1912E: Das HttpAuthenticationMechanism-Objekt f\u00fcr das Modul {0} in der Anwendung {1} konnte nicht erstellt werden.
 JAVAEESEC_ERROR_NO_HAM.explanation=Es kann verschiedene Gr\u00fcnde daf\u00fcr geben, warum das HttpAuthenticationMechanism-Objekt nicht erstellt werden kann. Die Fehlernachrichten f\u00fcr das HttpAuthenticationMechanism-Objekt enthalten Informationen dazu, warum das HttpAuthenticationMechanism-Objekt nicht erstellt werden kann.
 JAVAEESEC_ERROR_NO_HAM.useraction=Sehen Sie sich alle Fehlernachrichten des HttpAuthenticationMechanism-Objekts an und nehmen Sie anhand der Fehlernachrichten die entsprechenden Korrekturen vor.
+
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL=CWWKS1913E: Das Implementierungsobjekt \u201e HttpAuthenticationMechanismService \u201d f\u00fcr das Modul \u201e {0} \u201d in der Anwendung \u201e {1} \u201d wurde nicht als OSGi-Bundle gefunden.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.explanation=Das Implementierungsobjekt \u201e HttpAuthenticationMechanismService \u201c wurde nicht gefunden, da eines der abh\u00e4ngigen Bundles, das diese Implementierung enth\u00e4lt, in der Manifestdatei der Funktionen fehlt.
+JAVAEESEC_ERROR_NO_HAM_SERVICE_IMPL.useraction=Stellen Sie sicher, dass das Feature-Manifest auf ein Bundle verweist, das eine Implementierung von \u201e HttpAuthenticationMechanismService \u201c enth\u00e4lt.
 
 #Note to translator, do not translate EL.
 JAVAEESEC_WARNING_IDSTORE_CONFIG=CWWKS1916W: Der EL-Ausdruck (Expression Language) f\u00fcr das Attribut ''{0}'' der Identit\u00e4tsspeicherannotation kann nicht in einen g\u00fcltigen Wert aufgel\u00f6st werden. Stellen Sie sicher, dass der EL-Ausdruck und das Ergebnis g\u00fcltig sind, und dass alle referenzierten Beans, die in dem Ausdruck verwendet werden, aufgel\u00f6st werden k\u00f6nnen. Stattdessen wird der Standardattributwert ''{1}'' verwendet.

@@ -10,7 +10,8 @@
   </featureManager>
 
   <mpMetrics authentication="false"/>
-
+  <httpSession useSeparateSessionInvalidatorThreadPool="false" delayInvalidationAlarmDuringServerStartup="90"/>
+  
   <include location="../fatTestPorts.xml"/>
   <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
   <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>

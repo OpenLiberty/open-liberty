@@ -3,6 +3,7 @@
 <feature>enterpriseBeans-4.0</feature>
 <feature>xmlBinding-4.0</feature>
 <feature>xmlWS-4.0</feature>
+<feature>xmlWSClient-4.0</feature>
 <feature>jdbc-4.2</feature>
 <feature>jdbc-4.3</feature>
 <feature>appSecurityClient-1.0</feature>

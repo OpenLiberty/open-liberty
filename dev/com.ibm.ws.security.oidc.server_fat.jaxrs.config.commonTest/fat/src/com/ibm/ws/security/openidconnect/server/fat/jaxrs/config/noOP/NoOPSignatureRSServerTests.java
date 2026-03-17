@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -47,6 +48,7 @@ import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsE
  */
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipJavaSemeruWithFipsEnabledRule
 public class NoOPSignatureRSServerTests extends MangleJWTTestTools {
 
     private static final Class<?> thisClass = NoOPSignatureRSServerTests.class;
@@ -56,7 +58,7 @@ public class NoOPSignatureRSServerTests extends MangleJWTTestTools {
     private static final JwtTokenActions actions = new JwtTokenActions();
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
 
-    @Rule
+    @ClassRule
     public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled(OPServerName);
 
     @BeforeClass

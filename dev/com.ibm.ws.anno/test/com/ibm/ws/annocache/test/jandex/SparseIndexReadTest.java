@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -117,8 +117,8 @@ public class SparseIndexReadTest {
         if ( useTestData == null ) {
             try {
                 useTestData = new TestData(
-                    (String) indexPathObj,
-                    ((Integer) indexSizeObj).intValue());
+                                           (String) indexPathObj,
+                                           ((Integer) indexSizeObj).intValue());
             } catch ( Exception e ) {
                 allTestDataFailures.put(indexNo, e);
                 throw e;
@@ -161,8 +161,8 @@ public class SparseIndexReadTest {
             short fullFlags = fullClass.flags();
 
             Assert.assertEquals(
-                "Class [ " + sparseClassName + " ] full flag does not match sparse flag",
-                fullFlags, sparseFlags);
+                                "Class [ " + sparseClassName + " ] full flag does not match sparse flag",
+                                fullFlags, sparseFlags);
         }
     }
 
@@ -178,16 +178,14 @@ public class SparseIndexReadTest {
 
             Set<String> fullAnno = new HashSet<String>();
 
-            for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : fullClass.annotations().entrySet() ) {
-                DotName annoClassDotName = annoEntry.getKey();
+            for ( AnnotationInstance annoEntry : fullClass.annotations() ) {
+                DotName annoClassDotName = annoEntry.name();
                 String annoClassName = null;
-                for ( AnnotationInstance annoInstance : annoEntry.getValue() ) {
-                    if ( annoInstance.target().kind() == AnnotationTarget.Kind.CLASS ) {
-                        if ( annoClassName == null ) {
-                            annoClassName = annoClassDotName.toString();
-                        }
-                        fullAnno.add(annoClassName);
+                if ( annoEntry.target().kind() == AnnotationTarget.Kind.CLASS ) {
+                    if ( annoClassName == null ) {
+                        annoClassName = annoClassDotName.toString();
                     }
+                    fullAnno.add(annoClassName);
                 }
             }
 
@@ -245,11 +243,10 @@ public class SparseIndexReadTest {
             Set<String> sparseMethods = new HashSet<String>();
             Set<String> sparseMethodAnno = new HashSet<String>();
 
-            for ( Map.Entry<DotName, List<AnnotationInstance>> annoEntry : fullClass.annotations().entrySet() ) {
-                String annoClassName = annoEntry.getKey().toString();
+            for ( AnnotationInstance annoEntry : fullClass.annotations() ) {
+                String annoClassName = annoEntry.name().toString();
 
-                for ( AnnotationInstance anno : annoEntry.getValue() ) {
-                    AnnotationTarget annoTarget = anno.target();
+                    AnnotationTarget annoTarget = annoEntry.target();
                     AnnotationTarget.Kind annoKind = annoTarget.kind();
 
                     if ( annoKind == AnnotationTarget.Kind.FIELD ) {
@@ -261,7 +258,6 @@ public class SparseIndexReadTest {
                     } else  {
                         // Ignore: Not a type of interest.
                     }
-                }
             }
 
             // System.out.println("T:  Full Fields [ " + fullFields + " ]");

@@ -127,7 +127,7 @@ public class StatefulModeTest extends FATServletClient {
                             "error": {
                                 "code": -32602,
                                 "message": "Invalid params",
-                                "data": "CWMCM0008E: A request with the 2 ID is in progress."
+                                "data": "A request with the 2 ID is in progress."
                             }
                         }
                         """;

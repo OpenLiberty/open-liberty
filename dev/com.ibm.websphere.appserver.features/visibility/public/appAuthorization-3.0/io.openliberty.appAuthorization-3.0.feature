@@ -4,8 +4,7 @@ visibility=public
 singleton=true
 IBM-App-ForceRestart: install, \
  uninstall
-IBM-API-Package: jakarta.security.jacc; type="spec", \
- com.ibm.wsspi.security.authorization.jacc; type="ibm-api"
+IBM-API-Package: jakarta.security.jacc; type="spec"
 IBM-ShortName: appAuthorization-3.0
 WLP-AlsoKnownAs: jacc-3.0
 Subsystem-Name: Jakarta Authorization 3.0
@@ -16,9 +15,7 @@ Subsystem-Name: Jakarta Authorization 3.0
 -bundles=\
   io.openliberty.security.authorization.internal.jacc.common, \
   io.openliberty.security.authorization.internal.jacc.3.0
-kind=noship
-edition=full
--jars=io.openliberty.jacc.3.0; location:="dev/api/ibm/,lib/"
--files=dev/api/ibm/javadoc/io.openliberty.jacc.3.0_1.0-javadoc.zip
+kind=beta
+edition=core
 WLP-Platform: jakartaee-11.0
 WLP-InstantOn-Enabled: true

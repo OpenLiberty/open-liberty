@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -83,7 +83,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
     private WebProviderAuthenticatorHelper authHelper;
     private ReferrerURLCookieHandler referrerURLCookieHandler = null;
     private WebAppSecurityConfig webAppSecurityConfig = null;
-    public static ThreadLocal<String> threadOidcProvider = new ThreadLocal<String>();
+    public static ThreadLocal<String> threadOidcClientId = new ThreadLocal<String>();
 
     protected final ConcurrentServiceReferenceMap<String, WebAuthenticator> webAuthenticatorRef;
 
@@ -599,18 +599,19 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
             }
         }
 
-        String provider = oidcClient.getOidcProvider(req);
-        if (provider == null) {
+        String oidcClientId = oidcClient.getOidcProvider(req);
+        if (oidcClientId == null) {
             return new AuthenticationResult(AuthResult.CONTINUE, "not an OpenID Connect client request, skipping OpenID Connect client...");
         }
 
-        ProviderAuthenticationResult oidcResult = oidcClient.authenticate(req, res, provider, referrerURLCookieHandler, firstCall);
+        ProviderAuthenticationResult oidcResult = oidcClient.authenticate(req, res, oidcClientId, referrerURLCookieHandler, firstCall);
 
         if (oidcResult.getStatus() == AuthResult.CONTINUE) {
             return OIDC_CLIENT_CONT;
         }
 
-        setThreadOidcProvider(provider);
+        setThreadOidcClientId(oidcClientId);
+        setThreadOidcProvider(oidcClientId);
 
         if (oidcResult.getStatus() == AuthResult.REDIRECT_TO_PROVIDER) {
             return new AuthenticationResult(AuthResult.REDIRECT, oidcResult.getRedirectUrl());
@@ -636,7 +637,7 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
 
         if (oidcResult.getStatus() == AuthResult.SUCCESS && oidcResult.getUserName() != null) {
             authResult = authHelper.loginWithUserName(req, res, oidcResult.getUserName(), oidcResult.getSubject(),
-                                                      oidcResult.getCustomProperties(), oidcClient.isMapIdentityToRegistryUser(provider));
+                                                      oidcResult.getCustomProperties(), oidcClient.isMapIdentityToRegistryUser(oidcClientId));
             if (AuthResult.SUCCESS == authResult.getStatus()) {
                 // If firstCall is true then disableLtpaCookie is true
                 boolean bDisableLtpaCookie = firstCall; // let's make it clear
@@ -829,11 +830,23 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         return new SSOAuthenticator(securityService.getAuthenticationService(), securityMetadata, webAppSecurityConfig, cookieHelper, ssoAuthFilterRef);
     }
 
+    private void setThreadOidcClientId(String oidcClientId) {
+        threadOidcClientId.set(oidcClientId);
+    }
+
+    public static String getThreadOidcClientId() {
+        return threadOidcClientId.get();
+    }
+
+    public static void clearThreadOidcClientId() {
+        threadOidcClientId.remove();
+    }
+
     private void setThreadOidcProvider(String oidcProvider) {
-        threadOidcProvider.set(oidcProvider);
+        threadOidcClientId.set(oidcProvider);
     }
 
     public static String getThreadOidcProvider() {
-        return threadOidcProvider.get();
+        return threadOidcClientId.get();
     }
 }

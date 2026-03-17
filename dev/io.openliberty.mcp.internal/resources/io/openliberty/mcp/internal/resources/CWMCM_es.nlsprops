@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -39,6 +39,7 @@ CWMCM0003E.missing.tool.argument.name.useraction=A\u00f1ade un nombre a la @Tool
 # Used for server logging
 # do not translate MCP
 # {0} = The list of qualified names of the tool
+# {1} = The list of duplicate methods
 CWMCM0004E.duplicate.tools=CWMCM0004E: Existen m\u00faltiples m\u00e9todos de herramientas MCP denominados {0}. Los m\u00e9todos son {1}.
 CWMCM0004E.duplicate.tools.explanation=Uno o m\u00e1s nombres de herramientas MCP aparecieron varias veces. El servidor espera un nombre por herramienta para garantizar la unicidad.
 CWMCM0004E.duplicate.tools.useraction=Proporcione solo un nombre \u00fanico para cada herramienta MCP.
@@ -66,15 +67,11 @@ CWMCM0007E.invalid.arguments.useraction=Comprueba si has importado la clase corr
 
 # Used as part of a response to a client
 # {0} = Request id
-CWMCM0008E.invalid.request.params=CWMCM0008E: Se est\u00e1 procesando una solicitud con el {0} ID.
-CWMCM0008E.invalid.request.params.explanation=Hay una solicitud con el mismo ID en curso. Las solicitudes del mismo cliente deben tener identificadores \u00fanicos.
-CWMCM0008E.invalid.request.params.useraction=Utiliza un identificador \u00fanico para cada solicitud.
+invalid.request.params=Se est\u00e1 procesando una solicitud con el ID {0}.
 
 # Used as part of a response to a client
-# do not translate GET, POST
-CWMCM0009I.get.disallowed=CWMCM0009I: No se admiten solicitudes GET.
-CWMCM0009I.get.disallowed.explanation=Se envi\u00f3 una solicitud GET, pero esta funcionalidad no es compatible.
-CWMCM0009I.get.disallowed.useraction=No se requiere ninguna acci\u00f3n.
+# do not translate GET
+get.disallowed=No se admiten solicitudes GET.
 
 # Used for server logging
 # {0} = tool name
@@ -84,9 +81,7 @@ CWMCM0010E.internal.server.error.detailed.explanation=El m\u00e9todo de la herra
 CWMCM0010E.internal.server.error.detailed.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
 
 # Used as part of a response to a client
-CWMCM0011E.internal.server.error=CWMCM0011E: Se ha producido un error interno del servidor al ejecutar la herramienta.
-CWMCM0011E.internal.server.error.explanation=El servidor no pudo completar la solicitud de llamada a la herramienta.
-CWMCM0011E.internal.server.error.useraction=Comprueba que la solicitud sea correcta. Es posible que haya m\u00e1s informaci\u00f3n sobre el fallo en el servidor messages.log.
+internal.server.error=Se ha producido un error interno del servidor al ejecutar la herramienta.
 
 # Used for server logging
 # do not translate bean
@@ -96,20 +91,16 @@ CWMCM0012E.bean.release.fail=CWMCM0012E: Se produjo un error al liberar el bean 
 CWMCM0012E.bean.release.fail.explanation=Al llamar a un m\u00e9todo de herramienta, se adquiere una instancia del bean CDI que declara el m\u00e9todo antes de llamar al m\u00e9todo y se libera despu\u00e9s. Se ha producido un error al liberar la instancia del bean.
 CWMCM0012E.bean.release.fail.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
 
-# Used for server logging and client response
+# Used for client response
 # do not translate MCP-Protocol-Version, MCP
 # {0} = List of supported MCP-Protocol-Version values
-CWMCM0013E.unsupported.mcp.http.version=CWMCM0013E: Se proporcion\u00f3 un encabezado MCP-Protocol-Version no compatible. Valores admitidos: {0}
-CWMCM0013E.unsupported.mcp.http.version.explanation=El servidor no admite la versi\u00f3n del protocolo que figura en el encabezado MCP-Protocol-Version.
-CWMCM0013E.unsupported.mcp.http.version.useraction=Utilice una versi\u00f3n de protocolo compatible.
+unsupported.mcp.http.version=Se proporcion\u00f3 un encabezado MCP-Protocol-Version no compatible. Valores admitidos: {0}
 
 # Used as part of a response to a client
 # {0} = Method
 # {1} = RequestURI
 # {2} = RequestQuery
-CWMCM0014E.unexpected.server.error=CWMCM0014E: Error inesperado del servidor. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }
-CWMCM0014E.unexpected.server.error.explanation=Se ha producido un error inesperado en el servidor al procesar la solicitud. No se puede completar la solicitud.
-CWMCM0014E.unexpected.server.error.useraction=No se requiere ninguna acci\u00f3n.
+unexpected.server.error=Error inesperado del servidor. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }
 
 # Used for server logging
 # {0} = Method
@@ -141,16 +132,14 @@ jsonrpc.exception.validation.empty.string.id=El campo id no es v\u00e1lido. El i
 # Used as part of a response to a client
 jsonrpc.exception.validation.invalid.id.type=El tipo id no es un tipo aceptable. El identificador debe ser una cadena o un n\u00famero entero.
 
-# Used as part of a response to a client
-jsonrpc.missing.params=La solicitud no tiene ning\u00fan argumento en los par\u00e1metros.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.extra.arguments=Se pasaron los siguientes argumentos, pero no se encontraron en el m\u00e9todo: {0}.
-
-# Used as part of a response to a client
-# {0} = list of arguments
-jsonrpc.missing.arguments=El m\u00e9todo esperaba los siguientes argumentos, pero no se proporcionaron: {0}.
+# Used for server logging
+# do not translate MCP
+# {0} = The  qualified name of the tool
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+CWMCM0017E.missing.toolarg.defaultvalue.converter=CWMCM0017E: El argumento ` {1} ` del m\u00e9todo ` {0} ` de la herramienta MCP no tiene un convertidor para cambiar su valor predeterminado a un objeto de tipo ` {2} `.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.explanation=Uno o m\u00e1s argumentos tienen valores predeterminados sin un convertidor coincidente para convertir el valor predeterminado al tipo del argumento.
+CWMCM0017E.missing.toolarg.defaultvalue.converter.useraction=Cree una implementaci\u00f3n de convertidor personalizada para el tipo del argumento de la herramienta.
 
 # Used for server logging
 # do not translate MCP
@@ -159,3 +148,126 @@ jsonrpc.missing.arguments=El m\u00e9todo esperaba los siguientes argumentos, per
 CWMCM0018E.generic.arguments=CWMCM0018E: El argumento {1} del m\u00e9todo de la herramienta MCP {0} contiene componentes no compatibles, como TypeVariable, Wildcard, GenericArrayType.
 CWMCM0018E.generic.arguments.explanation=Se proporcionaron argumentos de la herramienta MCP, pero no son compatibles. 
 CWMCM0018E.generic.arguments.useraction=Proporcione argumentos que no tengan componentes gen\u00e9ricos.
+
+# Used for encoder logging
+# {0} = The encoder class name
+# {1} = The tool name
+# {2} = The exception
+CWMCM0019E.error.encoding.element=CWMCM0019E: El codificador {0} gener\u00f3 una excepci\u00f3n al codificar el resultado de la herramienta {1}. La excepci\u00f3n es {2}
+CWMCM0019E.error.encoding.element.explanation=El codificador gener\u00f3 una excepci\u00f3n al codificar el resultado de la herramienta. La excepci\u00f3n puede deberse a un problema con el codificador o a que la herramienta ha devuelto un resultado inesperado.
+CWMCM0019E.error.encoding.element.useraction=Revise los registros FFDC y el archivo message.log del servidor para identificar el problema.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The qualified name of the tool method, or the tool name
+# {1} = corresponding argument name
+# {2} = corresponding argument type
+# {3} = corresponding default value
+# {4} = ExceptionMessage
+CWMCM0020E.defaultvalue.conversion.error=CWMCM0020E: El valor predeterminado del argumento \u00ab {1} \u00bb (Par\u00e1metro de control de la herramienta) de la herramienta MCP \u00ab {0} \u00bb (Control de la herramienta de control de la herramienta) no se puede convertir al tipo \u00ab {2} \u00bb (Par\u00e1metro de control de la herramienta). El valor es {3}. El error es \u00ab {4} \u00bb.
+CWMCM0020E.defaultvalue.conversion.error.explanation=Un argumento tiene un valor predeterminado que no se puede convertir al tipo del argumento. Este problema puede ocurrir si el valor predeterminado es nulo, tiene un formato no v\u00e1lido o est\u00e1 fuera del rango para el tipo de destino.
+CWMCM0020E.defaultvalue.conversion.error.useraction=Aseg\u00farate de que el valor predeterminado sea v\u00e1lido para el tipo del argumento. Aseg\u00farese de que el valor predeterminado no sea nulo. Para los tipos de caracteres, proporcione exactamente un car\u00e1cter. Para los tipos num\u00e9ricos, proporcione un n\u00famero v\u00e1lido dentro del rango del tipo.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The default value string
+CWMCM0021E.defaultvalue.character.invalid.length=CWMCM0021E: El valor predeterminado de un car\u00e1cter debe ser exactamente un car\u00e1cter, pero era {0}
+CWMCM0021E.defaultvalue.character.invalid.length.explanation=Se proporcion\u00f3 un valor predeterminado para un argumento de tipo car\u00e1cter, pero no contiene exactamente un car\u00e1cter. Los argumentos de caracteres deben tener una sola cadena de caracteres.
+CWMCM0021E.defaultvalue.character.invalid.length.useraction=Aseg\u00farate de que el valor predeterminado para un argumento con un tipo de car\u00e1cter sea una cadena con exactamente un car\u00e1cter.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The cursor value string
+CWMCM0022E.invalid.cursor.value=CWMCM0022E: El valor del cursor "{0}" no es v\u00e1lido.
+CWMCM0022E.invalid.cursor.value.explanation=Se proporcion\u00f3 un valor de cursor como par\u00e1metro para el comando tool/list, pero el valor no es v\u00e1lido.
+CWMCM0022E.invalid.cursor.value.useraction=Aseg\u00farese de que el valor del cursor se proporcione exactamente tal y como se devolvi\u00f3 desde la llamada anterior a la herramienta/lista.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool 
+# {1} = The qualified name of the tool
+CWMCM0023E.invalid.length.tool.name=CWMCM0023E: El nombre de la herramienta {0} para el m\u00e9todo de la herramienta MCP {1} no es v\u00e1lido. Los nombres de las herramientas deben tener entre 1 y 128 caracteres, ambos inclusive.
+CWMCM0023E.invalid.length.tool.name.explanation=El nombre de la herramienta no cumple con la especificaci\u00f3n MCP para nombres. Los nombres deben tener entre 1 y 128 caracteres, ambos inclusive.
+CWMCM0023E.invalid.length.tool.name.useraction=Aseg\u00farate de que los nombres de las herramientas tengan entre 1 y 128 caracteres, ambos inclusive.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The name of the tool
+# {1} = The qualified name of the tool
+CWMCM0024E.invalid.character.tool.name=CWMCM0024E: El nombre de la herramienta {0} para el m\u00e9todo de la herramienta MCP {1} no es v\u00e1lido. Los nombres de las herramientas solo deben contener letras ASCII, d\u00edgitos, guiones bajos o guiones.
+CWMCM0024E.invalid.character.tool.name.explanation=El nombre de la herramienta no sigue la especificaci\u00f3n MCP para nombres. Los nombres solo pueden contener letras ASCII, d\u00edgitos, guiones bajos, guiones y ning\u00fan otro car\u00e1cter especial.
+CWMCM0024E.invalid.character.tool.name.useraction=Aseg\u00farate de que los nombres de las herramientas solo contengan letras ASCII, d\u00edgitos, guiones bajos o guiones.
+
+#Used as part of a response to a client
+# do not translate MCP
+argument.conversion.failed=El argumento {0} no se puede convertir al tipo {1}.
+extra.arguments=Se pasaron los siguientes argumentos, pero no se encontraron en el m\u00e9todo: {0}.
+missing.arguments=El m\u00e9todo esperaba los siguientes argumentos, pero no los recibi\u00f3: {0}.
+unauthorized.cancellation=La herramienta no se puede cancelar porque el usuario que realiza la llamada no est\u00e1 autorizado.
+
+# Used for server logging
+# {0} = Parameter name
+# {1} = The qualified name of the tool
+CWMCM0025E.unsupported.output=CWMCM0025E: El tipo de retorno \u00ab {0} \u00bb del m\u00e9todo \u00ab {1} \u00bb de la herramienta MCP debe ser un objeto.
+CWMCM0025E.unsupported.output.explanation=El tipo de retorno de la herramienta MCP proporcionada no es compatible.
+CWMCM0025E.unsupported.output.useraction=Proporcione un tipo de retorno que sea un objeto.
+
+# Used as exception message
+# {0} = The name of the tool
+CWMCM0026E.duplicate.tool.name=CWMCM0026E: Ya existe una herramienta MCP con el nombre {0}.
+CWMCM0026E.duplicate.tool.name.explanation=Cada herramienta debe tener un nombre \u00fanico. No se puede registrar una nueva herramienta que tenga el mismo nombre que una herramienta ya existente.
+CWMCM0026E.duplicate.tool.name.useraction=Proporcione un nombre \u00fanico para cada herramienta MCP.
+
+# Used as exception message
+# Do not translate handler, setHandler, asyncHandler, setAsyncHandler, ToolManager, or ToolDefinition
+# {0} = The name of the tool
+CWMCM0027E.provide.one.handler=CWMCM0027E: Se debe llamar al m\u00e9todo setHandler o al m\u00e9todo setAsyncHandler para la herramienta MCP {0}.
+CWMCM0027E.provide.one.handler.explanation=Cuando registre una nueva herramienta utilizando ToolManager,, deber\u00e1 proporcionar un controlador s\u00edncrono llamando al m\u00e9todo setHandler, o un controlador as\u00edncrono llamando al m\u00e9todo setAsyncHandler. No proporcione ambos.
+CWMCM0027E.provide.one.handler.useraction=Llame al m\u00e9todo ` ToolDefinition.setHandler ` o al m\u00e9todo ` ToolDefinition.setAsyncHandler ` cuando registre una herramienta mediante ` ToolManager `.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0028E.invalid.character.tool.name=CWMCM0028E: {0} El nombre de la herramienta MCP no es v\u00e1lido. Los nombres de las herramientas solo deben contener letras ASCII, d\u00edgitos, guiones bajos o guiones.
+CWMCM0028E.invalid.character.tool.name.explanation=El nombre de la herramienta no sigue la especificaci\u00f3n MCP para nombres. Los nombres solo pueden contener letras ASCII, d\u00edgitos, guiones bajos, guiones y ning\u00fan otro car\u00e1cter especial.
+CWMCM0028E.invalid.character.tool.name.useraction=Aseg\u00farate de que los nombres de las herramientas solo contengan letras ASCII, d\u00edgitos, guiones bajos o guiones.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0029E.invalid.length.tool.name=CWMCM0029E: {0} El nombre de la herramienta MCP no es v\u00e1lido. Los nombres de las herramientas deben tener entre 1 y 128 caracteres, ambos inclusive.
+CWMCM0029E.invalid.length.tool.name.explanation=El nombre de la herramienta no sigue la especificaci\u00f3n MCP para nombres. Los nombres deben tener entre 1 y 128 caracteres, ambos inclusive.
+CWMCM0029E.invalid.length.tool.name.useraction=Aseg\u00farate de que los nombres de las herramientas tengan entre 1 y 128 caracteres, ambos inclusive.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+CWMCM0030E.blank.arguments=CWMCM0030E: No se puede a\u00f1adir un argumento con un nombre en blanco a la herramienta MCP de {0}.
+CWMCM0030E.blank.arguments.explanation=Todos los argumentos de las herramientas MCP deben tener un nombre que no est\u00e9 en blanco. 
+CWMCM0030E.blank.arguments.useraction=Proporcione nombres que no est\u00e9n vac\u00edos para todos los argumentos de la herramienta.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+# {2} = The type of the argument
+CWMCM0031E.missing.toolarg.defaultvalue.converter=CWMCM0031E: El argumento \u00ab {1} \u00bb de la herramienta MCP \u00ab {0} \u00bb no dispone de un convertidor para cambiar su valor predeterminado a un objeto de tipo \u00ab {2} \u00bb.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.explanation=Uno o m\u00e1s argumentos tienen valores predeterminados sin un convertidor coincidente para convertir el valor predeterminado al tipo del argumento.
+CWMCM0031E.missing.toolarg.defaultvalue.converter.useraction=Cree una implementaci\u00f3n de convertidor personalizada para el tipo del argumento de la herramienta.
+
+# Used as exception message
+# Do not translate MCP
+# {0} = The name of the tool
+# {1} = The name of the argument
+CWMCM0032E.duplicate.argument.name=CWMCM0032E: No se puede a\u00f1adir un segundo argumento con el nombre \u00ab {1} \u00bb a la herramienta MCP \u00ab {0} \u00bb.
+CWMCM0032E.duplicate.argument.name.explanation=Cada argumento de una herramienta MCP debe tener un nombre diferente.
+CWMCM0032E.duplicate.argument.name.useraction=Asigna un nombre diferente a cada argumento de la herramienta.
+
+# Used for server logging
+# {0} = Method
+# {1} = RequestURI
+# {2} = RequestQuery
+# {3} = ExceptionMessage
+CWMCM0033A.forbidden.error=CWMCM0033A: Solicitud prohibida. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }, Excepci\u00f3n: {3}
+CWMCM0033A.forbidden.error.explanation=Se ha realizado una solicitud, pero el usuario no est\u00e1 autorizado para ello.
+CWMCM0033A.forbidden.error.useraction=Aseg\u00farate de que un usuario autorizado est\u00e1 haciendo la solicitud.

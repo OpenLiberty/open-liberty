@@ -1,11 +1,20 @@
 <infinispan>
   <jgroups>
-     <stack-file name="jgroups-tcp" path="/default-configs/default-jgroups-tcp.xml"/>
+    <stack name="jgroups-tcp" extends="tcp">
+      <TCPPING
+        initial_hosts="${jgroups.tcpping.initial_hosts:127.0.0.1[7800]}"
+        port_range="0"
+        num_discovery_runs="3"
+        stack.combine="REPLACE"
+        stack.position="MPING"
+      />
+    </stack>
+
   </jgroups>
-  
+
   <cache-container>
-    <transport cluster="${infinispan.cluster.name}" stack="jgroups-tcp"/>
-    <replicated-cache-configuration name="com.ibm.ws.session.attr.*"/>
-    <replicated-cache-configuration name="com.ibm.ws.session.meta.*"/>
+    <transport cluster="${infinispan.cluster.name}" stack="jgroups-tcp" />
+    <replicated-cache-configuration name="com.ibm.ws.session.attr.*" />
+    <replicated-cache-configuration name="com.ibm.ws.session.meta.*" />
   </cache-container>
 </infinispan>

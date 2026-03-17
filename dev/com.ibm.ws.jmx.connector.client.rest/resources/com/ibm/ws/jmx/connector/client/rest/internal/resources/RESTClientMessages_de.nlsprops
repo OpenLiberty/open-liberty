@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012 IBM Corporation and others.
+# Copyright (c) 2012,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ jmx.rest.client.not.connected.useraction=Vergewissern Sie sich, dass das REST-Co
 jmx.rest.client.url.not.found=CWWKX0207E: Der Server hat gemeldet, dass der vom Client angeforderte URL nicht gefunden wurde.
 jmx.rest.client.url.not.found.explanation=Der Client hat m\u00f6glicherweise Informationen, die nicht auf dem neuesten Stand sind, oder das REST-Connector-Feature im Server wurde aktiviert.
 jmx.rest.client.url.not.found.useraction=Vergewissern Sie sich, dass das REST-Connector-Feature im Server aktiviert ist, und fordern Sie eine neue Verbindung zum Server an. 
+
 jmx.rest.client.class.name.null=CWWKX0208E: Das Argument f\u00fcr den Klassennamen ist null.
 jmx.rest.client.class.name.null.explanation=Das Argument f\u00fcr den Klassennamen darf nicht null sein.
 jmx.rest.client.class.name.null.useraction=Geben Sie einen Klassennamen ungleich null beim Aufruf der Methode an.
@@ -145,3 +146,6 @@ jmx.rest.client.connection.disconnect=CWWKX0231I: Das Verbundmember hat den JMX-
 jmx.rest.client.connection.disconnect.explanation=Das Member hat die Verbindung zum Controller getrennt.
 jmx.rest.client.connection.disconnect.useraction=Es ist keine Aktion erforderlich.
 
+jmx.rest.client.server.result.exception=CWWKX0232E: Der Server hat eine Klasse zur\u00fcckgegeben, die f\u00fcr den Client nicht verf\u00fcgbar ist: {0}
+jmx.rest.client.server.result.exception.explanation=Jede Schnittstelle oder Implementierungsklasse, die der Server zur\u00fcckgibt, muss f\u00fcr den Client verf\u00fcgbar sein.
+jmx.rest.client.server.result.exception.useraction=\u00dcberpr\u00fcfen Sie, ob alle erforderlichen Klassen im Klassenpfad des Clients verf\u00fcgbar sind.

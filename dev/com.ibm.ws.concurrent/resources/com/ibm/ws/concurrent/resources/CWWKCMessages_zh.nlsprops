@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: \u5411 ManagedTaskListener \u65b9\u6cd
 CWWKC1120.future.get.rejected.explanation=ManagedTaskListener taskSubmitted \u548c taskStarting \u65b9\u6cd5\u5728\u5c06\u63d0\u4ea4\u6216\u542f\u52a8\u4efb\u52a1\u7684\u7ebf\u7a0b\u4e0a\u8fd0\u884c\u3002\u56e0\u6b64\uff0c\u5411\u8fd9\u4e9b\u65b9\u6cd5\u63d0\u4f9b\u7684 Future \u4e0d\u80fd\u7528\u6765\u7b49\u5f85\u4efb\u52a1\u3002
 CWWKC1120.future.get.rejected.useraction=\u8bf7\u66f4\u65b0\u5e94\u7528\u7a0b\u5e8f\uff0c\u4ee5\u907f\u514d\u5bf9\u5411 taskSubmitted \u548c taskStarting \u63d0\u4f9b\u7684 Future \u8c03\u7528 get\u3002
 
-CWWKC1121.virtual.invalid=CWWKC1121E: \u5177\u6709{0}\u540d\u79f0\u7684{0}\u6ce8\u89e3\u6216{1}\u90e8\u7f72\u63cf\u8ff0\u7b26\u5143\u7d20\u6307\u5b9a virtual=true\uff0c\u4f46\u5728 Java 21 \u4e4b\u524d\u8fd8\u6ca1\u6709\u865a\u62df\u7ebf\u7a0b\u3002 \u4f7f\u7528\u7684 Java \u7ea7\u522b\u4e3a\uff1a{1}\u3002
+CWWKC1121.virtual.invalid=CWWKC1121E: {0} \u6ce8\u89e3\u6216 {1} \u90e8\u7f72\u63cf\u8ff0\u7b26\u5143\u7d20\u4e2d\u7684 {2} \u5c5e\u6027\u6307\u5b9a\u4e86virtual=true\uff0c\u4f46\u865a\u62df\u7ebf\u7a0b\u5728Java 21\u4e4b\u524d\u4e0d\u53ef\u7528\u3002 \u4f7f\u7528\u7684Java\u7ea7\u522b\u4e3a\uff1a {3}\u3002
 CWWKC1121.virtual.invalid.explanation=\u6240\u4f7f\u7528\u7684 Java \u7248\u672c\u4e0d\u63d0\u4f9b\u865a\u62df\u7ebf\u7a0b\u3002
 CWWKC1121.virtual.invalid.useraction=\u66f4\u65b0\u5230\u652f\u6301\u865a\u62df\u7ebf\u7a0b\u7684\u8f83\u65b0 Java \u7248\u672c\u3002
 
-CWWKC1122.mod.unavail=CWWKC1122E: {0}\u5e94\u7528\u7a0b\u5e8f\u6216\u5176{1}\u6a21\u5757\u4e0d\u53ef\u7528\u3002
+CWWKC1122.mod.unavail=CWWKC1122E: {0} \u5e94\u7528\u7a0b\u5e8f\u6216\u5176 {1} \u6a21\u5757\u4e0d\u53ef\u7528\u3002 ManagedThreadFactory \u5728\u5e94\u7528\u7a0b\u5e8f\u6216\u6a21\u5757\u4e2d\u5b9a\u4e49\u7684Beans\u65e0\u6cd5\u83b7\u53d6\u3002
 CWWKC1122.mod.unavail.explanation=\u5b9a\u4e49ManagedThreadFactory\u914d\u7f6e\u7684\u5e94\u7528\u7a0b\u5e8f\u548c\u6a21\u5757\u5fc5\u987b\u53ef\u7528\u4e8e\u83b7\u53d6ManagedThreadFactory\u5b9e\u4f8b\u3002
 CWWKC1122.mod.unavail.useraction=\u786e\u4fdd\u5df2\u542f\u52a8\u5e94\u7528\u7a0b\u5e8f\uff0c\u4e14\u5e94\u7528\u7a0b\u5e8f\u5305\u542b\u5b9a\u4e49ManagedThreadFactory\u914d\u7f6e\u7684\u6a21\u5757\u3002
 

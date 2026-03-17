@@ -88,7 +88,7 @@ public class GenericEndpointImpl {
 	 * Required, dynamic reference to an executor service to schedule chain
 	 * operations
 	 */
-	private ExecutorService executorService = null;
+	private static ExecutorService executorService = null;
 
 	/**
 	 * Optional, dynamic reference to an SSL channel factory provider: used to
@@ -905,6 +905,10 @@ public class GenericEndpointImpl {
 	protected void unsetExecutorService(
 			ServiceReference<ExecutorService> executorService) {
 		this.executorService = null;
+	}
+
+	public static ExecutorService getExecutorService() {
+		return executorService;
 	}
 
 	/**

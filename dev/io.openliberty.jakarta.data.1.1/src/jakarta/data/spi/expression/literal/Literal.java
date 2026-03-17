@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,9 @@ public interface Literal<V> extends Expression<Object, V> {
         if (value instanceof Comparable<?> comparable) {
             return (Literal<V>) ComparableLiteral.of(comparable);
         } else {
-            return new LiteralRecord<>(value);
+            return new LiteralRecord<>( //
+                            (Class<? extends V>) value.getClass(), //
+                            value);
         }
     }
 

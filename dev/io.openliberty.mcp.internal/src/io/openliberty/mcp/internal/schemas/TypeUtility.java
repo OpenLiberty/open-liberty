@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.lang.reflect.WildcardType;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.List;
@@ -25,11 +26,39 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import io.openliberty.mcp.internal.schemas.SchemaGenerator.SchemaGenerationContext;
+import io.openliberty.mcp.internal.typeimpl.GenericArrayTypeImpl;
+import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
 
 /**
  * Utility methods for inspecting types
  */
 public class TypeUtility {
+
+    public static Map<Type, Class<?>> PRIMITIVE_WRAPPERS = Map.of(
+                                                                  Boolean.TYPE, Boolean.class,
+                                                                  Character.TYPE, Character.class,
+                                                                  Byte.TYPE, Byte.class,
+                                                                  Short.TYPE, Short.class,
+                                                                  Integer.TYPE, Integer.class,
+                                                                  Long.TYPE, Long.class,
+                                                                  Float.TYPE, Float.class,
+                                                                  Double.TYPE, Double.class);
+
+    /**
+     * Converts primitive types to their wrapper classes
+     *
+     * @param type the type to be boxed
+     * @return the boxed wrapper type if {@code type} is a primitive, otherwise it returns {@code type}
+     */
+    public static Type box(Type type) {
+        if (type instanceof Class clazz) {
+            if (!clazz.isPrimitive())
+                return type;
+
+            return PRIMITIVE_WRAPPERS.get(clazz);
+        }
+        return type;
+    }
 
     /**
      * The key and value type of a {@code Map}
@@ -268,9 +297,12 @@ public class TypeUtility {
      *
      * @param current the starting type
      * @param genericMap map that will be updated with keys that can route from typevariable to the actual type
+     * @return
      */
-    public static void searchAndUpdateGenericTree(Type current, Map<TypeVariable<?>, Type> genericMap) {
+    public static Map<TypeVariable<?>, Type> generateGenericMap(Type current) {
+        Map<TypeVariable<?>, Type> genericMap = new HashMap<>();
         searchGenericTree(current, genericMap);
+        return Collections.unmodifiableMap(genericMap);
     }
 
     /**
@@ -325,6 +357,11 @@ public class TypeUtility {
         }
     }
 
+    /**
+     * Recursively check if type has generic parameters
+     *
+     * @param type The type to check if it contains unresolved generic parameters
+     */
     public static boolean hasGenericParams(Type type) {
         if (type instanceof ParameterizedType pt) {
             boolean hasGeneric = false;
@@ -336,6 +373,44 @@ public class TypeUtility {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Recreate a Type by instantiating implementation of ParamterizedType or GenericArrayType to resolve TypeVariables using genericMap.
+     * i.e createResolvedType(List<T>, {T: String.class}) -> ParameterizedTypeImpl(List.class, String.class) aka the type of List<String>
+     * i.e createResolvedType(List<T>[], {T: String.class}) -> GenericArrayTypeImpl(ParameterizedTypeImpl(List.class, String.class)) aka the type of List<String>[]
+     * i.e createResolvedType(T[], {T: String.class}) -> the type of String[]
+     *
+     * @param type the type that is being recreated
+     * @param genericMap map thats maps TypeVariable to its concrete Type
+     * @return the recreated Type
+     */
+    public static Type createResolvedType(Type type, Map<TypeVariable<?>, Type> genericMap) {
+        if (type instanceof TypeVariable<?> tv) {
+            if (genericMap.get(tv) == null) {
+                return type;
+            } else {
+                return genericMap.get(tv);
+            }
+        } else if (type instanceof GenericArrayType gat) {
+            Type component = createResolvedType(gat.getGenericComponentType(), genericMap);
+            if (component instanceof Class<?>) {
+                return java.lang.reflect.Array.newInstance((Class<?>) component, 0).getClass();
+            } else {
+                return new GenericArrayTypeImpl(component);
+            }
+        } else if (type instanceof ParameterizedType pt) {
+            Type rawType = pt.getRawType();
+            Type[] actualTypes = new Type[pt.getActualTypeArguments().length];
+            for (int i = 0; i < pt.getActualTypeArguments().length; i++) {
+                actualTypes[i] = createResolvedType(pt.getActualTypeArguments()[i], genericMap);
+            }
+            return new ParameterizedTypeImpl(rawType, actualTypes);
+
+        } else {
+            return type;
+        }
+
     }
 
 }

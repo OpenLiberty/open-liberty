@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ import java.util.List;
 
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.sib.jfapchannel.JFapChannelConstants;
+import com.ibm.ws.sib.jfapchannel.buffer.WsByteBuffer;
 import com.ibm.ws.sib.jfapchannel.buffer.WsByteBufferPool;
 import com.ibm.ws.sib.utils.ras.SibTr;
 
@@ -52,26 +53,22 @@ public class NettyToWsBufferDecoder extends ByteToMessageDecoder {
 			SibTr.debug(this, tc, "decode", ctx.channel().remoteAddress() + " decoding message [ " + in.toString(StandardCharsets.UTF_8) + " ] from Netty ByteBuf to WSByteBuffer");
 		}
 
-		// TODO: Verify if this is the most effective way to do this. See https://github.com/OpenLiberty/open-liberty/issues/24816
-
-		ByteBuf temp = in.readBytes(in.readableBytes());
-
 		byte[] bytes;
 		int offset;
-		int length = temp.readableBytes();
-
-		if (temp.hasArray()) {
-			bytes = temp.array();
-			offset = temp.arrayOffset();
+		int length = in.readableBytes();
+	
+		if (in.hasArray()) {
+			bytes = in.array();
+			offset = in.arrayOffset() + in.readerIndex();
 		} else {
 			bytes = new byte[length];
-			temp.getBytes(temp.readerIndex(), bytes);
+			in.getBytes(in.readerIndex(), bytes);
 			offset = 0;
 		}
-
-		out.add(WsByteBufferPool.getInstance().wrap(bytes).position(in.readerIndex()));
-		temp.release();
-
+	
+		WsByteBuffer wrapped = WsByteBufferPool.getInstance().wrap(bytes, offset, length);
+		out.add(wrapped);
+		in.skipBytes(length);  // skip the read bytes
 
 		if (tc.isEntryEnabled())
 			SibTr.exit(this, tc, "decode", ctx.channel());

@@ -9,4 +9,12 @@
         <feature>componentTest-1.0</feature>
         <feature>mpConfig-1.4</feature>
     </featureManager>
+    
+    <logging traceSpecification="com.ibm.ws.artifact*=FINER" />
+    <!--
+        Unexpected configuration changes are showing in the test while the test server is running;
+        This is causing itermittent errors.
+        This is not a test for dynamic configuration changes; disabling dynamic config updates.
+    -->
+    <config updateTrigger="disabled"/>
 </server>

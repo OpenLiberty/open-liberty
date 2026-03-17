@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -87,9 +87,9 @@ public final class AccessIdUtil {
 
     /**
      * Constructs the full access identifier: type:realm/uniqueId
-     * 
-     * @param type Entity type, must not be null or empty
-     * @param realm Realm, must not be null or empty
+     *
+     * @param type     Entity type, must not be null or empty
+     * @param realm    Realm, must not be null or empty
      * @param uniqueId Entity unique ID, must not be null or empty
      * @return An accessId representing the entity. Will not be null.
      */
@@ -109,7 +109,7 @@ public final class AccessIdUtil {
     /**
      * Checks that the string is a complete accessId, of the format:
      * type:realm/uniqueId
-     * 
+     *
      * @param accessId
      * @return true if the string is a complete accessId, false otherwise
      */
@@ -154,7 +154,7 @@ public final class AccessIdUtil {
 
     /**
      * Given an accessId, extract the entity type.
-     * 
+     *
      * @param accessId
      * @return The type for the accessId, or {@code null} if the accessId is invalid
      */
@@ -168,7 +168,7 @@ public final class AccessIdUtil {
 
     /**
      * Given an accessId, extract the realm.
-     * 
+     *
      * @param accessId
      * @return The realm for the accessId, or {@code null} if the accessId is invalid
      */
@@ -182,7 +182,7 @@ public final class AccessIdUtil {
 
     /**
      * Given an accessId, extract the uniqueId.
-     * 
+     *
      * @param accessId
      * @return The uniqueId for the accessId, or {@code null} if the accessId is invalid
      */
@@ -196,7 +196,7 @@ public final class AccessIdUtil {
 
     /**
      * Given an accessId and realm name, extract the uniqueId.
-     * 
+     *
      * @param accessId
      * @param realm
      * @return The uniqueId for the accessId, or {@code null} if the accessId is invalid
@@ -243,14 +243,17 @@ public final class AccessIdUtil {
 
         Pattern pattern = realm == null ? null : getPatternForRealm(realm);
         for (String accessId : accessIds) {
-            uniqueIds.add(getUniqueId(pattern, accessId));
+            String uniqueId = getUniqueId(pattern, accessId);
+            if (uniqueId != null) {
+                uniqueIds.add(uniqueId);
+            }
         }
         return uniqueIds;
     }
 
     /**
      * Checks to see if the specified accessId is complete.
-     * 
+     *
      * @param accessId
      * @return boolean if accessId is complete and valid
      */
@@ -260,7 +263,7 @@ public final class AccessIdUtil {
 
     /**
      * Checks to see if the specified accessId begins with "server:".
-     * 
+     *
      * @param accessId
      * @return boolean if accessId is valid and begins with "server:"
      */
@@ -270,7 +273,7 @@ public final class AccessIdUtil {
 
     /**
      * Checks to see if the specified accessId begins with "user:".
-     * 
+     *
      * @param accessId
      * @return boolean if accessId is valid and begins with "user:"
      */
@@ -280,7 +283,7 @@ public final class AccessIdUtil {
 
     /**
      * Checks to see if the specified accessId begins with "group:".
-     * 
+     *
      * @param accessId
      * @return boolean if accessId is valid and begins with "group:"
      */

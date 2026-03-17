@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ import java.util.List;
 /**
  *
  */
-public class MCPRequestValidationException extends JSONRPCException {
+public final class MCPRequestValidationException extends JSONRPCException {
     @Serial
     private static final long serialVersionUID = -62283199421949679L;
 

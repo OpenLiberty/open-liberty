@@ -1,6 +1,6 @@
 /*
- * Copyright (c) 1998, 2022 Oracle and/or its affiliates. All rights reserved.
- * Copyright (c) 2021, 2022 IBM Corporation. All rights reserved.
+ * Copyright (c) 1998, 2024 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2021, 2026 IBM Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -95,26 +95,14 @@ public class ArgumentListFunctionExpression extends FunctionExpression {
      * Print SQL
      */
     public void printSQL(ExpressionSQLPrinter printer) {
-        ListExpressionOperator realOperator;
-        realOperator = (ListExpressionOperator)getPlatformOperator(printer.getPlatform());
-        operator.copyTo(realOperator);
-        ((ListExpressionOperator) realOperator).setIsComplete(true);
-        realOperator.printCollection(this.children, printer);
+        ListExpressionOperator platformOperator = (ListExpressionOperator) getPlatformOperator(printer.getPlatform());
+
+        platformOperator.setIsComplete(true);
+        platformOperator.printCollection(this.children, printer);
     }
 
     @Override
     protected void postCopyIn(Map alreadyDone) {
-        /*
-         * Bug 463042: All ArgumentListFunctionExpression instances store the same operator reference.
-         * Unfortunately, ListExpressionOperator.numberOfItems stores state. If multiple ArgumentListFunctionExpression
-         * are run concurrently, then the ListExpressionOperator.numberOfItems state shared by all instances
-         * becomes inconsistent. A solution is to make sure each ArgumentListFunctionExpression has a unique operator
-         * reference.
-         */
-        final ListExpressionOperator originalOperator = ((ListExpressionOperator) this.operator);
-        this.operator = new ListExpressionOperator();
-        originalOperator.copyTo(this.operator);
-
         Boolean hasLastChildCopy = hasLastChild;
         hasLastChild = null;
         super.postCopyIn(alreadyDone);

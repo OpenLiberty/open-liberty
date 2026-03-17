@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2012, 2025 IBM Corporation and others.
+# Copyright (c) 2012, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -82,11 +82,11 @@ CWWKC1120.future.get.rejected=CWWKC1120E: La classe Future fornita ai metodi tas
 CWWKC1120.future.get.rejected.explanation=I metodi taskSubmitted e taskStarting di ManagedTaskListener vengono eseguiti sul thread che inoltrer\u00e0 o avvier\u00e0 l'attivit\u00e0. Pertanto, la classe Future fornita a questi metodi non deve essere utilizzata per attendere l'attivit\u00e0.
 CWWKC1120.future.get.rejected.useraction=Aggiornare l'applicazione per evitare di richiamare get sulla classe Future fornita a taskSubmitted e taskStarting.
 
-CWWKC1121.virtual.invalid=CWWKC1121E: L''annotazione {0} o l''elemento del descrittore di distribuzione {1} che ha il nome {0} specifica virtual=true, ma i thread virtuali non sono disponibili prima di Java 21. Il livello Java utilizzato \u00e8: {1}.
+CWWKC1121.virtual.invalid=CWWKC1121E: L''annotazione ` {0} ` o l''elemento descrittore di distribuzione ` {1} ` con il nome ` {2} ` specifica `virtual=true`, ma i thread virtuali non sono disponibili prima di Java 21. Il livello Java utilizzato \u00e8: {3}.
 CWWKC1121.virtual.invalid.explanation=I thread virtuali non sono disponibili nella versione di Java utilizzata.
 CWWKC1121.virtual.invalid.useraction=Aggiornare a una versione pi\u00f9 recente di Java che supporti i thread virtuali.
 
-CWWKC1122.mod.unavail=CWWKC1122E: L''applicazione {0} o il suo modulo {1} non sono disponibili.
+CWWKC1122.mod.unavail=CWWKC1122E: L''applicazione {0} o il suo modulo {1} non sono disponibili. ManagedThreadFactory i bean definiti nell''applicazione o nel modulo non possono essere ottenuti.
 CWWKC1122.mod.unavail.explanation=L'applicazione e il modulo che definiscono la configurazione di ManagedThreadFactory devono essere disponibili per ottenere un'istanza di ManagedThreadFactory.
 CWWKC1122.mod.unavail.useraction=Assicurarsi che l'applicazione sia avviata e che includa il modulo che definisce la configurazione della ManagedThreadFactory.
 

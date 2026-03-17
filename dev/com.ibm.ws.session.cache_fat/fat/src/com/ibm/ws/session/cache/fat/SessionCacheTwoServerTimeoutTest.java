@@ -63,13 +63,15 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appB = new SessionCacheApp(serverB, false, "session.cache.web"); // no HttpSessionListeners are registered by this app
         serverB.useSecondaryHTTPPort();
 
-        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
+//        String hazelcastConfigFile = "hazelcast-localhost-only.xml";
         String osName = System.getProperty("os.name").toLowerCase();
+//
+//        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
+//            Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
+//            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
+//        }
 
-        if (FATSuite.isMulticastDisabled() || osName.contains("mac os") || osName.contains("macos")) {
-            Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "Disabling multicast in Hazelcast config.");
-            hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        }
+        String hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
 
         String sessionCacheConfigFile = "httpSessionCache_1.xml";
         if (RepeatTestFilter.isRepeatActionActive(CacheManagerRepeatAction.ID)) {

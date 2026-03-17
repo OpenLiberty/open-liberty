@@ -188,7 +188,7 @@ public class WCOutputStream31 extends WCOutputStream
     public void write(byte[] b, int start, int len) throws IOException
     {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
-            Tr.debug(tc, "write(byte[], int, int) ENTRY");         
+            Tr.debug(tc, "WCOutputStream31 write(byte[], int start, int len) ENTRY (" + b.length +", " + start + ", " + len + ")");         
         }
         
         if(b == null){
@@ -220,6 +220,10 @@ public class WCOutputStream31 extends WCOutputStream
                 Tr.debug(tc, "super.write(byte[], int, int)");         
             }
             super.write(b, start, len);
+        }
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){  
+            Tr.debug(tc, "WCOutputStream31 write(byte[], int, int) RETURN");
         }
     }
 

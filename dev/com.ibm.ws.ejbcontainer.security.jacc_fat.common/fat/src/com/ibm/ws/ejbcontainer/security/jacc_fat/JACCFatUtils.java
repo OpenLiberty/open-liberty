@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,8 @@ public class JACCFatUtils {
         if (JakartaEEAction.isEE11OrLaterActive()) {
             myServer.installUserBundle("io.openliberty.security.authorization.jacc.testprovider_3.0");
             myServer.installUserFeature("jaccTestProvider-3.0");
+            myServer.installUserBundle("io.openliberty.security.authorization.jacc.testprovider.spec_3.0");
+            myServer.installUserFeature("authzTestProvider-3.0");
         } else if (JakartaEEAction.isEE10Active()) {
             myServer.installUserBundle("com.ibm.ws.security.authorization.jacc.testprovider_2.1");
             myServer.installUserFeature("jaccTestProvider-2.1");
@@ -57,6 +59,8 @@ public class JACCFatUtils {
         if (JakartaEEAction.isEE11OrLaterActive()) {
             myServer.uninstallUserBundle("io.openliberty.security.authorization.jacc.testprovider_3.0");
             myServer.uninstallUserFeature("jaccTestProvider-3.0");
+            myServer.uninstallUserBundle("io.openliberty.security.authorization.jacc.testprovider.spec_3.0");
+            myServer.uninstallUserFeature("authzTestProvider-3.0");
         } else if (JakartaEEAction.isEE10Active()) {
             myServer.uninstallUserBundle("com.ibm.ws.security.authorization.jacc.testprovider_2.1");
             myServer.uninstallUserFeature("jaccTestProvider-2.1");

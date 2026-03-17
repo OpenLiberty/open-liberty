@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -110,10 +110,6 @@ public class HttpAuthenticationMechanismsTracker {
     public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Set<Annotation> annotations, Properties props) {
         Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
         String moduleName = getModuleFromClass(annotatedClass, moduleMap);
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "moduleName: " + moduleName);
-        }
 
         if (moduleMap.containsKey(moduleName)) {
             moduleMap.get(moduleName).putToAuthMechMap(implClass, props);
@@ -229,5 +225,4 @@ public class HttpAuthenticationMechanismsTracker {
         }
         return result;
     }
-
 }

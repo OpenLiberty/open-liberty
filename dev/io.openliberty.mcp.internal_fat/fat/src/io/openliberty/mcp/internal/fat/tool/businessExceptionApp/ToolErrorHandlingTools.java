@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,4 +72,14 @@ public class ToolErrorHandlingTools {
     public String unwrappedCheckedExceptionTool(@ToolArg(name = "input", description = "Triggers unwrapped checked") String input) throws IOException {
         throw new IOException("Unwrapped checked error for: " + input);
     }
+
+    @Tool(
+          name = "inputValidationTool",
+          title = "Input Validation Tool")
+    public String inputValidationTool(
+                                      @ToolArg(name = "input", required = true) String input,
+                                      @ToolArg(name = "count", required = false) Integer count) {
+        return input.repeat(count);
+    }
+
 }

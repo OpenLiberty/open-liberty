@@ -1,0 +1,21 @@
+<server description="JavaEESec Multiple Module Global Login Cert FAT">
+
+    <featureManager>
+        <feature>servlet-6.1</feature>
+        <feature>appSecurity-6.0</feature>
+        <feature>appAuthorization-3.0</feature>
+        <feature>timedexit-1.0</feature>
+        <feature>componentTest-2.0</feature>
+        <feature>restfulWS-4.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml" />
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="user1pwd"/>
+        <user name="user2" password="user2pwd" />
+        <user name="user3" password="user3pwd"/>
+        <user name="user4" password="user4pwd"/>
+    </basicRegistry>
+
+</server>

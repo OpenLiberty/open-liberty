@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2025 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -73,12 +73,12 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
                                                                                                                                              LibertyClassLoadingService.class);
 
     private final String id;
-    private final Map<String, WebSphereBeanDeploymentArchive> deploymentDBAs = new HashMap<String, WebSphereBeanDeploymentArchive>();
-    private final Set<WebSphereBeanDeploymentArchive> applicationBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
-    private final Map<String, WebSphereBeanDeploymentArchive> extensionBDAs = new HashMap<String, WebSphereBeanDeploymentArchive>();
-    private final Set<WebSphereBeanDeploymentArchive> runtimeExtensionBDAs = new HashSet<WebSphereBeanDeploymentArchive>();
+    private final Map<String, WebSphereBeanDeploymentArchive> deploymentDBAs = new HashMap<String, WebSphereBeanDeploymentArchive>(); //Contains all BDAs
+    private final Set<WebSphereBeanDeploymentArchive> applicationBDAs = new HashSet<WebSphereBeanDeploymentArchive>(); //Contains BDAs representing archives from the customer's application that do NOT contain a CDI Extension.
+    private final Map<String, WebSphereBeanDeploymentArchive> extensionBDAs = new HashMap<String, WebSphereBeanDeploymentArchive>(); //Contains BDAs representing archives from the customer's application that DO contain a CDI Extension.
+    private final Set<WebSphereBeanDeploymentArchive> runtimeExtensionBDAs = new HashSet<WebSphereBeanDeploymentArchive>(); //Contains BDAs representing synthetic archives used to hold classes registered by IBM Liberty Features (including user features).
 
-    private final List<WebSphereBeanDeploymentArchive> orderedBDAs = new ArrayList<WebSphereBeanDeploymentArchive>();
+    private final List<WebSphereBeanDeploymentArchive> orderedBDAs = new ArrayList<WebSphereBeanDeploymentArchive>(); //Contains all BDAs, but ordered so the RuntimeExtensions are first.
     private WeldBootstrap bootstrap;
     private ClassLoader classloader;
     private final Set<ClassLoader> extensionClassLoaders = new HashSet<ClassLoader>();
@@ -822,5 +822,9 @@ public class WebSphereCDIDeploymentImpl implements WebSphereCDIDeployment {
 
     public Set<WebSphereBeanDeploymentArchive> getRuntimeExtensionBDAs() {
         return this.runtimeExtensionBDAs;
+    }
+
+    public List<WebSphereBeanDeploymentArchive> getOrderedBDAs() {
+        return this.orderedBDAs;
     }
 }

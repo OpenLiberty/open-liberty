@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2014 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -287,13 +287,19 @@ public class BootstrapManifest {
         String syspackages = bootProps.get(BootstrapConstants.INITPROP_OSGI_SYSTEM_PACKAGES);
 
         // Look for exported packages in manifest: append to bootstrap packages
-        String mPackages = manifestAttributes.getValue(MANIFEST_EXPORT_PACKAGE);
-        if (mPackages != null) {
-            packages = (packages == null) ? mPackages : packages + "," + mPackages;
+        String bootExportPackages = manifestAttributes.getValue(MANIFEST_EXPORT_PACKAGE);
+        if (bootExportPackages != null) {
+            packages = (packages == null) ? bootExportPackages : packages + "," + bootExportPackages;
 
             // save new "extra" packages
-            if (packages != null)
+            if (packages != null) {
                 bootProps.put(BootstrapConstants.INITPROP_OSGI_EXTRA_PACKAGE, packages);
+            }
+        }
+
+        String bootPrivatePackages = manifestAttributes.getValue("Private-Package");
+        if (bootPrivatePackages != null && bootExportPackages != null) {
+            bootProps.put(BootstrapConstants.INITPROP_BOOT_PACKAGES, bootExportPackages + "," + bootPrivatePackages);
         }
 
         // system packages are replaced, not appended
