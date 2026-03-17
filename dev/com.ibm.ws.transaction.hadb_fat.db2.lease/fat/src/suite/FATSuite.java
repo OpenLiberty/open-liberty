@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package suite;
 
@@ -17,8 +14,8 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import com.ibm.ws.transaction.fat.util.TxTestDB;
 import com.ibm.ws.transaction.fat.util.TxTestContainerSuite;
+import com.ibm.ws.transaction.fat.util.TxTestDB;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -43,5 +40,9 @@ public class FATSuite extends TxTestContainerSuite {
                     .andWith(FeatureReplacementAction.EE9_FEATURES()
                                     .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
                                     .forServers(FailoverTestLease.serverNames))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(FailoverTestLease.serverNames));
+                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
+                                    .forServers(FailoverTestLease.serverNames))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .forServers(FailoverTestLease.serverNames));
 }

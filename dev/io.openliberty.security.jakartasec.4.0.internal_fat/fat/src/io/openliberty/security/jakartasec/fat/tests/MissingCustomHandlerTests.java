@@ -43,7 +43,7 @@ public class MissingCustomHandlerTests extends BaseJakartaSecurity40Test {
 
     public static final String APP_NAME = "MultipleHAMWithoutHandlerApp";
 
-    @Server(SERVER_NAME)
+    @Server(MULTIPLE_HAM_SERVER_NAME)
     public static LibertyServer server;
 
     @Override

@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.security.authorization.jacc.internal.web;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 import jakarta.security.jacc.PolicyConfigurationFactory;
@@ -16,7 +18,12 @@ import jakarta.security.jacc.PolicyFactory;
 import jakarta.servlet.ServletContextEvent;
 import jakarta.servlet.ServletContextListener;
 
+/**
+ * Listener that removes the policy and configuration factories that were added then the application was started.
+ */
 public class AuthorizationServletListener implements ServletContextListener {
+
+    private static final TraceComponent tc = Tr.register(AuthorizationServletListener.class);
 
     private final PolicyFactory policyFactory;
     private final PolicyConfigurationFactory configFactory;
@@ -48,6 +55,8 @@ public class AuthorizationServletListener implements ServletContextListener {
                     wrappedFactory = previousPolicyFactory;
                 }
                 PolicyFactory.setPolicyFactory(wrappedFactory);
+                Tr.info(tc, "JACC_AUTHORIZATION_MODULE_REMOVED", "PolicyFactory", currentFactory.getClass().getName(),
+                        sce.getServletContext().getServletContextName());
             }
         }
 
@@ -66,6 +75,8 @@ public class AuthorizationServletListener implements ServletContextListener {
                     wrappedFactory = previousConfigFactory;
                 }
                 PolicyConfigurationFactory.setPolicyConfigurationFactory(wrappedFactory);
+                Tr.info(tc, "JACC_AUTHORIZATION_MODULE_REMOVED", "PolicyConfigurationFactory", currentFactory.getClass().getName(),
+                        sce.getServletContext().getServletContextName());
             }
         }
     }

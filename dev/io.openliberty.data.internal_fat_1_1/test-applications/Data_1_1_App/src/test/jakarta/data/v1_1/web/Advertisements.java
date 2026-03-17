@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ import jakarta.data.repository.Update;
  * and one of the entity subtypes is not referenced anywhere except
  * by a Find annotation and Query text.
  */
-@Repository
+@Repository(dataStore = "java:app/env/data/dbref")
 public interface Advertisements extends DataRepository<Advertisement, Integer> {
 
     // Do not add any methods that directly reference the subtype Commercial

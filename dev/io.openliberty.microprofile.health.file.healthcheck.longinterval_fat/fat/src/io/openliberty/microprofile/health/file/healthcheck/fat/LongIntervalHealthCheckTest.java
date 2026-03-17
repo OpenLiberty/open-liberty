@@ -178,16 +178,9 @@ public class LongIntervalHealthCheckTest {
 
         Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "First `run` entry trace: " + traceEntryStartofFirstStartCheck);
 
-        //We only care about time
-        DateTimeFormatter timeFormatterHH = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
-
-        //Expect to see something like this (ISO date format) : 2026-01-06T22:02:43.886+0300
+        // Expect to see something like this (ISO date format) : 2026-01-06T22:02:43.886+0300
         String dateTimeString = traceEntryStartofFirstStartCheck.split("]")[0].substring(1);
         Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Debug: first `run` trace's timestamp : " + dateTimeString);
-
-        String time = resolveTime(dateTimeString);
-
-        LocalTime timeOfFirstQuery = LocalTime.parse(time, timeFormatterHH);
 
         /*
          * Find the second `run` entry trace
@@ -195,18 +188,31 @@ public class LongIntervalHealthCheckTest {
         String traceEntryStartofSecondStartCheck = serverLongStart.waitForStringInTraceUsingMark(".*HealthCheck40ServiceImpl\\$StartedFileCreateProcess > run Entry.*", 35000);
         Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Second `run` entry trace: " + traceEntryStartofSecondStartCheck);
 
-        dateTimeString = traceEntryStartofSecondStartCheck.split("]")[0].substring(1);
-        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Debug: second `run` trace timestamp : " + dateTimeString);
-
-        String time2 = resolveTime(dateTimeString);
-
-        LocalTime timeOfSecondQuery = LocalTime.parse(time2, timeFormatterHH);
+        String dateTimeString2 = traceEntryStartofSecondStartCheck.split("]")[0].substring(1);
+        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "Debug: second `run` trace timestamp : " + dateTimeString2);
 
         /*
          * Time to calculate the difference.
          */
+        DateTimeFormatter timeFormatterHH = DateTimeFormatter.ofPattern("HH:mm:ss.SSS");
+
+        String time = resolveTime(dateTimeString);
+        String date = resolveDate(dateTimeString);
+        LocalTime timeOfFirstQuery = LocalTime.parse(time, timeFormatterHH);
+
+        String time2 = resolveTime(dateTimeString2);
+        String date2 = resolveDate(dateTimeString2);
+        LocalTime timeOfSecondQuery = LocalTime.parse(time2, timeFormatterHH);
+
+        
+        // Get time difference.
         long diff = Duration.between(timeOfFirstQuery, timeOfSecondQuery).getSeconds();
-        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "The differencce in time between the two timestamps is (in seconds) : " + diff);
+
+        // If test ends on diff date, add one day's worth of seconds time to prevent negative difference.
+        if (!date.equals(date2))
+            diff += Duration.ofDays(1).getSeconds();
+
+        Log.info(getClass(), "StartedHealthCheckTestLongStartupInterval", "The difference in time between the two timestamps is (in seconds) : " + diff);
 
         /*
          * We start with 29 seconds because the tracing the first trace and second trace may have a difference of 29s999ms.
@@ -246,6 +252,20 @@ public class LongIntervalHealthCheckTest {
 
         Log.info(getClass(), "resolveTime", "Debug: the resolved time is: " + time);
         return time;
+    }
+
+    String resolveDate(String traceEntryDateTimeStamp) {
+        String dateTime[] = traceEntryDateTimeStamp.split("T");
+        assertEquals("Should be split into two parts (split by the `T`), the date and time", 2, dateTime.length);
+
+        //ignore zone offset
+        String date = dateTime[0];
+
+        //time can't be null;
+        assertNotNull("Unable to resolve date, the time stamp is: " + traceEntryDateTimeStamp, date);
+
+        Log.info(getClass(), "resolveDate", "Debug: the resolved date is: " + date);
+        return date;
     }
 
     @Test

@@ -24,6 +24,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.javaeesec.identitystore.ELHelper;
 
 import io.openliberty.security.jakartasec40.JakartaSec40Constants;
+import jakarta.el.ELException;
 import jakarta.el.PropertyNotFoundException;
 import jakarta.security.enterprise.identitystore.IdentityStore;
 import jakarta.security.enterprise.identitystore.IdentityStore.ValidationType;
@@ -167,13 +168,16 @@ public class InMemoryIdentityStoreDefinitionWrapper {
      * @return The priority or null if immediateOnly==true AND the value is not evaluated
      *         from a deferred EL expression.
      */
-    @FFDCIgnore({ IllegalArgumentException.class, PropertyNotFoundException.class })
+    @FFDCIgnore({ IllegalArgumentException.class, PropertyNotFoundException.class, ELException.class })
     private Integer evaluatePriority(boolean immediateOnly) {
         String priorityExpression = inMemoryIdentityStoreDefinition.priorityExpression();
         int priority = inMemoryIdentityStoreDefinition.priority();
         try {
             return elHelper.processInt("priorityExpression", priorityExpression, priority, immediateOnly);
         } catch (PropertyNotFoundException e) {
+            Tr.warning(tc, "JAKARTASEC_WARNING_IDSTORE_CONFIG", new Object[] { "priority/priorityExpression", JakartaSec40Constants.SPEC_DEFAULT_PRIORITY });
+            return JakartaSec40Constants.SPEC_DEFAULT_PRIORITY;
+        } catch (ELException e) {
             Tr.warning(tc, "JAKARTASEC_WARNING_IDSTORE_CONFIG", new Object[] { "priority/priorityExpression", JakartaSec40Constants.SPEC_DEFAULT_PRIORITY });
             return JakartaSec40Constants.SPEC_DEFAULT_PRIORITY;
         } catch (IllegalArgumentException e) {
@@ -331,7 +335,7 @@ public class InMemoryIdentityStoreDefinitionWrapper {
     private static class CredentialPassword {
 
         private final ProtectedString password;
-        private final String hashAlgorithm;  // works as isHashed boolean
+        private final String hashAlgorithm; // works as isHashed boolean
 
         protected CredentialPassword(final @Sensitive String password) throws IllegalArgumentException {
 

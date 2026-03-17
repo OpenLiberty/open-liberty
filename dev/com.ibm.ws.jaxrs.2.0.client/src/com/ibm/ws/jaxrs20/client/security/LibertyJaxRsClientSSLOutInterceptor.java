@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,7 +129,14 @@ public class LibertyJaxRsClientSSLOutInterceptor extends AbstractPhaseIntercepto
             }
             //let's use liberty SSL configuration
             tlsClientParams.setSSLSocketFactory(sslSocketFactory);
-            tlsClientParams.setDisableCNCheck(disableCNCheck);
+            // Only set disableCNCheck when BOTH property is set to "true" AND boolean is true
+            // Avoid setting it when null or "false" to prevent Windows-specific(only on Hotspot JVM) CXF behavior
+            Object disableCNCheckObj = message.get(JAXRSClientConstants.DISABLE_CN_CHECK);
+            
+            if ("true".equalsIgnoreCase(String.valueOf(disableCNCheckObj))) {
+                tlsClientParams.setDisableCNCheck(disableCNCheck);
+            }
+
         } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "May not enable feature ssl-1.0 or appSecurity-2.0.");
         }

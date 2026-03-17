@@ -19,9 +19,9 @@ import jakarta.persistence.Id;
 public class SimpleEntity {
 
     @Id
-    private long id;
+    long id;
 
-    private String value;
+    String value;
 
     public long getId() {
         return id;

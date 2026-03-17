@@ -28,15 +28,15 @@ public class Mobile {
     }
 
     @Id
-    private UUID deviceId;
+    UUID deviceId;
 
-    private OS operatingSystem;
+    OS operatingSystem;
 
     @ElementCollection(fetch = FetchType.LAZY)
-    private List<String> apps;
+    List<String> apps;
 
     @ElementCollection(fetch = FetchType.EAGER)
-    private List<String> emails;
+    List<String> emails;
 
     public static Mobile of(OS os, List<String> apps, List<String> emails) {
         Mobile inst = new Mobile();

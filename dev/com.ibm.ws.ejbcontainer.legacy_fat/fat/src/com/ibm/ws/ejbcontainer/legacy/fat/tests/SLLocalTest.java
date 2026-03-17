@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2002, 2023 IBM Corporation and others.
+ * Copyright (c) 2002, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.legacy.fat.tests;
 
@@ -38,8 +35,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -59,8 +54,23 @@ public class SLLocalTest extends FATServletClient {
                     @TestServlet(servlet = SLLocalInterfaceRemoveServlet.class, contextRoot = "EJB2XLocalSpecWeb") })
     public static LibertyServer server;
 
+    /*@formatter:off*/
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.sll")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("com.ibm.ws.ejbcontainer.legacy.server.sll")).andWith(new JakartaEE9Action().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.sll")).andWith(new JakartaEE10Action().fullFATOnly().forServers("com.ibm.ws.ejbcontainer.legacy.server.sll"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.legacy.server.sll"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.legacy.server.sll"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.legacy.server.sll"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.legacy.server.sll"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.legacy.server.sll"));
+    /*@formatter:on*/
 
     @BeforeClass
     public static void setUp() throws Exception {

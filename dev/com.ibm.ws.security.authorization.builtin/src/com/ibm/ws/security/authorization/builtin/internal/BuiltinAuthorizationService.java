@@ -14,6 +14,7 @@ package com.ibm.ws.security.authorization.builtin.internal;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
@@ -208,6 +209,22 @@ public class BuiltinAuthorizationService implements AuthorizationService {
             }
         }
         return granted;
+    }
+
+    @Override
+    public Set<String> getAllDeclaredRolesForResourceForSubject(String resourceName, Subject subject) {
+        Set<String> roles = new HashSet<String>(Collections.EMPTY_SET);
+        WSCredential wsCred = getWSCredentialFromSubject(subject);
+        if (wsCred != null) {
+            String accessId = getAccessId(wsCred);
+            String realmName = getRealmName(wsCred);
+
+            Collection<String> foundRoles = getRolesForAccessId(resourceName, accessId, realmName);
+            if (foundRoles != null) {
+                roles.addAll(foundRoles);
+            }
+        }
+        return roles;
     }
 
     /**

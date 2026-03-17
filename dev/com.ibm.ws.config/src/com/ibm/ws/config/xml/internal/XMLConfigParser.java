@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -261,7 +261,7 @@ public class XMLConfigParser {
             }
             // If we get here, there is a single element in the file and it is not <server> or <client>
             logError(ThrowBehavior.ALWAYS_THROW_EXCEPTION, "error.root.must.be.server", docLocation, processType);
-            return false; // Dead code because of the always-throw above, but we must please the compiler.
+            return false; // Unreachable: ALWAYS_THROW_EXCEPTION guarantees an exception, but we must please the compiler.
 
         } catch (XMLStreamException e) {
             throw new ConfigParserException(e);
@@ -329,7 +329,38 @@ public class XMLConfigParser {
                     Tr.debug(tc, "parseServer: event=" + eventName + " (" + event + "), depth=" + depth + ", location=" + parser.getLocation().getLineNumber());
                 }
                 
-                if (event == XMLStreamConstants.START_ELEMENT) {
+				// Text between elements
+                if (event == XMLStreamConstants.CHARACTERS) {
+                    // Check for potential malformed XML elements
+                    String text = parser.getText();
+                    
+                    // Debug logging - log ALL CHARACTERS events
+                    if (tc.isDebugEnabled()) {
+                        String displayText = text != null ? text.replace("\n", "\\n").replace("\r", "\\r").replace("\t", "\\t") : "null";
+                        Tr.debug(tc, "CHARACTERS event, text length=" + (text != null ? text.length() : 0) +
+                                ", trimmed length=" + (text != null ? text.trim().length() : 0) +
+                                ", text=[" + displayText + "]");
+                    }
+                    
+                    if (text != null && text.trim().length() > 0) {
+                        String trimmed = text.trim();
+                        
+                        // Skip invisible Unicode whitespace characters.
+                        if (isOnlyInvisibleWhitespace(trimmed)) {
+                            if (tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Invisible Unicode whitespace found at line " + parser.getLocation().getLineNumber());
+                            }
+                        } else {
+                            // At the server level (between top-level elements), there should be no text content.
+                            // Any non-whitespace text might be a malformed element.
+                            if (tc.isDebugEnabled()) {
+                                Location l = parser.getLocation();
+                                String preview = trimmed.length() > 60 ? trimmed.substring(0, 60) + "..." : trimmed;
+                                Tr.debug(tc, "Potential malformed XML element detected: [" + preview + "] at line " + l.getLineNumber() + " in " + docLocation);
+                            }
+                        }
+                    }
+                } else if (event == XMLStreamConstants.START_ELEMENT) {
                     String name = parser.getLocalName();
                     
                     // Debug: Log element name
@@ -390,6 +421,38 @@ public class XMLConfigParser {
         } catch (XMLStreamException ex) {
             throw new ConfigParserException(ex);
         }
+    }
+
+   /**
+     * Checks if a string contains only invisible Unicode whitespace characters.
+     * These characters are commonly inserted during copy/paste operations from
+     * web browsers or rich text editors, but they don't affect XML parsing or
+     * configuration functionality.
+     *
+     * @param text The text to check
+     * @return true if the text contains only invisible whitespace characters, false otherwise
+     */
+    @Trivial
+    private boolean isOnlyInvisibleWhitespace(String text) {
+        if (text == null || text.isEmpty()) {
+            return false;
+        }
+        
+        // Check if string contains only invisible Unicode characters:
+        // U+200B: Zero Width Space
+        // U+200C: Zero Width Non-Joiner
+        // U+200D: Zero Width Joiner
+        // U+FEFF: Zero Width No-Break Space (BOM)
+        // U+2060: Word Joiner
+        for (int i = 0; i < text.length(); i++) {
+            char c = text.charAt(i);
+            if (c != '\u200B' && c != '\u200C' && c != '\u200D' &&
+                c != '\uFEFF' && c != '\u2060') {
+                return false;
+            }
+        }
+        
+        return true;
     }
 
     public enum MergeBehavior {
@@ -925,18 +988,32 @@ public class XMLConfigParser {
             throw new ConfigParserTolerableException();
         }
     }
-    
+
+    /**
+     * Helper method to get a human-readable name for XML stream event types.
+     * Used for debug logging.
+     *
+     * @param eventType The XMLStreamConstants event type
+     * @return A string representation of the event type
+     */
+    @Trivial
     private String getEventName(int eventType) {
         switch (eventType) {
             case XMLStreamConstants.START_ELEMENT: return "START_ELEMENT";
             case XMLStreamConstants.END_ELEMENT: return "END_ELEMENT";
-            case XMLStreamConstants.CHARACTERS: return "CHARACTERS";
+            case XMLStreamConstants.CHARACTERS:  return "CHARACTERS";
             case XMLStreamConstants.COMMENT: return "COMMENT";
-            case XMLStreamConstants.START_DOCUMENT: return "START_DOCUMENT";
-            case XMLStreamConstants.END_DOCUMENT: return "END_DOCUMENT";
             case XMLStreamConstants.PROCESSING_INSTRUCTION: return "PROCESSING_INSTRUCTION";
             case XMLStreamConstants.CDATA: return "CDATA";
             case XMLStreamConstants.SPACE: return "SPACE";
+            case XMLStreamConstants.START_DOCUMENT: return "START_DOCUMENT";
+            case XMLStreamConstants.END_DOCUMENT: return "END_DOCUMENT";
+            case XMLStreamConstants.ENTITY_REFERENCE: return "ENTITY_REFERENCE";
+            case XMLStreamConstants.ATTRIBUTE: return "ATTRIBUTE";
+            case XMLStreamConstants.DTD: return "DTD";
+            case XMLStreamConstants.NAMESPACE: return "NAMESPACE";
+            case XMLStreamConstants.NOTATION_DECLARATION: return "NOTATION_DECLARATION";
+            case XMLStreamConstants.ENTITY_DECLARATION: return "ENTITY_DECLARATION";
             default: return "UNKNOWN(" + eventType + ")";
         }
     }

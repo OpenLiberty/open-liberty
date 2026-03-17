@@ -116,7 +116,7 @@ public class CancellationTest extends FATServletClient {
                         """;
         toolStatus.awaitStarted(LATCH_NAME);
 
-        client.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
+        client.callMCPNotification(cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 
@@ -172,7 +172,7 @@ public class CancellationTest extends FATServletClient {
         latch.await();
         toolStatus.awaitStarted(LATCH_NAME);
 
-        client.callMCPNotification(server, "/cancellationTest", cancellationRequestNotification);
+        client.callMCPNotification(cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 

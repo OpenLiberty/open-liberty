@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -74,6 +76,16 @@ public class Data_1_1_Servlet extends FATServlet {
                 fractionsToAdd.add(f);
             }
         fractions.supply(fractionsToAdd);
+    }
+
+    /**
+     * Indicates if testing with the Hibernate Persistence provider
+     * rather than EclipseLink.
+     *
+     * @return true if testing with the Hibernate Persistence provider.
+     */
+    static final boolean isHibernatePersistence() {
+        return Boolean.valueOf(System.getenv("TEST_HIBERNATE"));
     }
 
     /**
@@ -202,6 +214,113 @@ public class Data_1_1_Servlet extends FATServlet {
                                             _Fraction.reduced.isFalse(),
                                             Order.by(_Fraction.numerator.asc()))
                                      .map(f -> f.numerator)
+                                     .toList());
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts BigDecimal values to BigInteger in order to compare as whole numbers.
+     */
+    @Test
+    public void testCastBigDecimalToBigInteger() {
+
+        // EclipseLink does not have
+        // CAST (value AS BIGINTEGER)
+        if (!isHibernatePersistence())
+            return;
+
+        Restriction<Fraction> roundsUpTo2223 = _Fraction.decimal_ceiling
+                        .times(BigDecimal.valueOf(10000L))
+                        .asBigInteger()
+                        .equalTo(BigInteger.valueOf(2223));
+
+        assertEquals(List.of("2/9",
+                             "4/18"),
+                     fractions.where(roundsUpTo2223)
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts BigDecimal values to Long in order to compare as whole numbers.
+     */
+    @Test
+    public void testCastBigDecimalToLong() {
+
+        // EclipseLink does not have
+        // CAST (value AS LONG)
+        if (!isHibernatePersistence())
+            return;
+
+        Restriction<Fraction> roundsDownTo5555 = _Fraction.decimal_truncated
+                        .times(BigDecimal.valueOf(10000L))
+                        .asLong()
+                        .equalTo(5555L);
+
+        assertEquals(List.of("5/9",
+                             "10/18"),
+                     fractions.where(roundsDownTo5555)
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts double values to BigDecimal to compare with another BigDecimal value.
+     */
+    @Test
+    public void testCastDoubleToBigDecimal() {
+        // EclipseLink does not have
+        // CAST (value AS BIGDECIMAL)
+        if (!isHibernatePersistence())
+            return;
+
+        Restriction<Fraction> value_x_4_is_1pt5 = _Fraction.decimal_value
+                        .times(4.0)
+                        .asBigDecimal()
+                        .equalTo(BigDecimal.valueOf(15, 1));
+
+        assertEquals(List.of("3/8",
+                             "6/16"),
+                     fractions.where(value_x_4_is_1pt5)
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+    }
+
+    /**
+     * Supply restrictions to a repository method where one of the restrictions
+     * casts integer values to double in order to perform division that results
+     * in a decimal value.
+     */
+    @Test
+    public void testCastIntegerToDouble() {
+
+        Restriction<Fraction> within22to34Hundreths = _Fraction.numerator
+                        .asDouble()
+                        .dividedBy(_Fraction.denominator.asDouble())
+                        .between(0.22, 0.34);
+
+        assertEquals(List.of("1/3",
+                             "1/4",
+                             "2/6",
+                             "2/7",
+                             "2/8",
+                             "3/9", "2/9",
+                             "3/10",
+                             "3/11",
+                             "4/12", "3/12",
+                             "4/13", "3/13",
+                             "4/14",
+                             "5/15", "4/15",
+                             "5/16", "4/16",
+                             "5/17", "4/17",
+                             "6/18", "5/18", "4/18",
+                             "6/19", "5/19",
+                             "6/20", "5/20"),
+                     fractions.where(within22to34Hundreths)
+                                     .map(f -> f.numerator + "/" + f.denominator)
                                      .toList());
     }
 
@@ -518,7 +637,7 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testIsAnnoEqualityAndInequality() {
-        Order<Fraction> order = Order.by(Sort.desc(_Fraction.VALUE));
+        Order<Fraction> order = Order.by(Sort.desc(_Fraction.DECIMAL_VALUE));
 
         assertEquals(List.of("Four Fifths",
                              "Two Fifths",
@@ -940,6 +1059,35 @@ public class Data_1_1_Servlet extends FATServlet {
                                             _Fraction.name.notLike("--- *", '-', '*', '!'),
                                             Order.by(_Fraction.numerator.desc())) //
                                      .map(f -> f.name)
+                                     .collect(Collectors.toList()));
+    }
+
+    /**
+     * Supply a Restriction to a repository method where the Restriction
+     * requires navigating through 2 levels of embeddables to compute the
+     * expressions that are used in its constraint.
+     */
+    @Test
+    public void testNavigableAttribute() {
+        Restriction<Fraction> twiceAsManyNonrepeatingVsRepeatingDigits = //
+                        _Fraction.decimal
+                                        .navigate(_Decimal.digits)
+                                        .navigate(_Digits.nonrepeating)
+                                        .length()
+                                        .equalTo(_Fraction.decimal
+                                                        .navigate(_Decimal.digits)
+                                                        .navigate(_Digits.repeating)
+                                                        .length()
+                                                        .times(2));
+
+        assertEquals(List.of("4166...",
+                             "5833...",
+                             "9166..."),
+                     fractions.withNameLike("%ths",
+                                            twiceAsManyNonrepeatingVsRepeatingDigits,
+                                            Order.by(_Fraction.decimal_value.desc())) //
+                                     .map(f -> f.decimal.digits().toString())
+                                     .sorted()
                                      .collect(Collectors.toList()));
     }
 

@@ -11,4 +11,7 @@
  * @version 1.0
  */
 @org.osgi.annotation.versioning.Version("1.0")
+@TraceOptions(traceGroup = "Security.Authorization", messageBundle = "com.ibm.ws.security.authorization.jacc.internal.resources.JaccAuthorizationMessages")
 package io.openliberty.security.authorization.jacc.internal.web;
+
+import com.ibm.websphere.ras.annotation.TraceOptions;

@@ -114,7 +114,7 @@ public class LifecycleTest {
                          }
                         """;
 
-        client.callMCPNotification(server, "/lifecycleTest", request);
+        client.callMCPNotification(request);
     }
 
     @Test

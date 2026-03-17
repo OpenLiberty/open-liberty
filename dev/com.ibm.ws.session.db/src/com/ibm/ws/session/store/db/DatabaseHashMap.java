@@ -30,6 +30,7 @@ import java.sql.Statement;
 import java.util.ConcurrentModificationException;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.logging.Level;
 
@@ -489,16 +490,16 @@ public class DatabaseHashMap extends BackedHashMap {
             //tbName = TABLE_NAME.toUpperCase();
             int index = tableName.indexOf(".");
             if (index != -1) {
-                tbName = tableName.substring(index + 1).toUpperCase();
+                tbName = tableName.substring(index + 1).toUpperCase(Locale.ENGLISH);
             } else {
-                tbName = tableName.toUpperCase();
+                tbName = tableName.toUpperCase(Locale.ENGLISH);
             }
             if (collectionName != null)
                 qualifierName = collectionName;
         } else if (usingDB2 || usingDerby || usingOracle) { // cmd 162172
-            tbName = tbName.toUpperCase();
+            tbName = tbName.toUpperCase(Locale.ENGLISH);
             if (dbid != null) {
-                qualifierName = dbid.toUpperCase(); // cmd PQ81615
+                qualifierName = dbid.toUpperCase(Locale.ENGLISH); // cmd PQ81615
             }
 
             if (_smc.isUsingCustomSchemaName()) { //PM27191
@@ -3270,15 +3271,15 @@ public class DatabaseHashMap extends BackedHashMap {
         PreparedStatement ps = null;
         ResultSet rs = null;
 
-        tblName = tblName.toUpperCase();
+        tblName = tblName.toUpperCase(Locale.ENGLISH);
         if (_smc.isUsingCustomSchemaName()) { //PM27191
             qualifierName = qualifierNameWhenCustomSchemaIsSet;
         } else if (dbid != null) {
-            qualifierName = dbid.toUpperCase();
+            qualifierName = dbid.toUpperCase(Locale.ENGLISH);
         }
 
         sqlQueryCol = "select ColNames from syscat.indexes " +
-                      "where IndName = '" + indexName.toUpperCase() + "' and " +
+                      "where IndName = '" + indexName.toUpperCase(Locale.ENGLISH) + "' and " +
                       "TabName = '" + tblName + "' and UniqueRule = 'U'";
         if (qualifierName != null)
             sqlQueryCol += " and tabschema = '" + qualifierName + "'";
@@ -3300,9 +3301,9 @@ public class DatabaseHashMap extends BackedHashMap {
                     if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                         LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DOES_INDEX_EXISTS_DISTRIBUTED], colNames);
                     }
-                    if (colNames.indexOf(idCol.toUpperCase()) != -1) {
-                        if (colNames.indexOf(propCol.toUpperCase()) != -1) {
-                            if (colNames.indexOf(appCol.toUpperCase()) != -1) {
+                    if (colNames.indexOf(idCol.toUpperCase(Locale.ENGLISH)) != -1) {
+                        if (colNames.indexOf(propCol.toUpperCase(Locale.ENGLISH)) != -1) {
+                            if (colNames.indexOf(appCol.toUpperCase(Locale.ENGLISH)) != -1) {
                                 if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                                     LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DOES_INDEX_EXISTS_DISTRIBUTED],
                                                                         "Index Column Definition is correct");
@@ -3377,17 +3378,17 @@ public class DatabaseHashMap extends BackedHashMap {
         //SELECT INDEX_NAME FROM QSYS2.SYSINDEXES  WHERE INDEX_NAME='SESS_INDEX' AND TABLE_NAME='SESSIONS'
         //AND IS_UNIQUE='U' AND TABLE_SCHEMA='KPW51BSSSN'FOR READ ONLY
         sqlQueryIndex = "select index_name from " + sysIndexes + " where Index_Name = '"
-                        + indexName.toUpperCase() + "' and " + "Table_Name = '" + noQualifiertblName
+                        + indexName.toUpperCase(Locale.ENGLISH) + "' and " + "Table_Name = '" + noQualifiertblName
                         + "' and IS_UNIQUE = 'U'";
 
         //Keep the following line for future reference
         //SELECT COLUMN_NAME FROM qsys2.SYSKEYS  WHERE INDEX_NAME='SESS_INDEX' AND INDEX_SCHEMA='KPW51BSSSN'
         sqlQueryCol = "select COLUMN_NAME from " + sysKeys +
-                      " where INDEX_NAME = '" + indexName.toUpperCase() + "'";
+                      " where INDEX_NAME = '" + indexName.toUpperCase(Locale.ENGLISH) + "'";
 
         if (collectionName != null) {
-            sqlQueryIndex += " and table_schema = '" + collectionName.toUpperCase() + "'";
-            sqlQueryCol += " and index_schema = '" + collectionName.toUpperCase() + "'";
+            sqlQueryIndex += " and table_schema = '" + collectionName.toUpperCase(Locale.ENGLISH) + "'";
+            sqlQueryCol += " and index_schema = '" + collectionName.toUpperCase(Locale.ENGLISH) + "'";
         }
         sqlQueryIndex += " for read only";
         sqlQueryCol += " for read only";
@@ -3405,7 +3406,7 @@ public class DatabaseHashMap extends BackedHashMap {
             if (rs.next()) { //ResultSet returning the possible SESS_INDEX
                 returnIndexName = rs.getString(1);
                 if (returnIndexName != null) {
-                    if (returnIndexName.indexOf(indexName.toUpperCase()) != -1) {
+                    if (returnIndexName.indexOf(indexName.toUpperCase(Locale.ENGLISH)) != -1) {
                         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DOES_INDEX_EXISTS_ISERIES], "index: " + returnIndexName + " exists");
                         }
@@ -3441,9 +3442,9 @@ public class DatabaseHashMap extends BackedHashMap {
                         if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                             LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DOES_INDEX_EXISTS_ISERIES], "extractedColumn : " + extractedColumn);
                         }
-                        if ((extractedColumn.indexOf(idCol.toUpperCase()) != -1) ||
-                                (extractedColumn.indexOf(propCol.toUpperCase()) != -1) ||
-                                   (extractedColumn.indexOf(appCol.toUpperCase()) != -1)) {
+                        if ((extractedColumn.indexOf(idCol.toUpperCase(Locale.ENGLISH)) != -1) ||
+                                (extractedColumn.indexOf(propCol.toUpperCase(Locale.ENGLISH)) != -1) ||
+                                   (extractedColumn.indexOf(appCol.toUpperCase(Locale.ENGLISH)) != -1)) {
 
                             if (com.ibm.websphere.ras.TraceComponent.isAnyTracingEnabled() && LoggingUtil.SESSION_LOGGER_WAS.isLoggable(Level.FINE)) {
                                 LoggingUtil.SESSION_LOGGER_WAS.logp(Level.FINE, methodClassName, methodNames[DOES_INDEX_EXISTS_ISERIES], "column is found : " + extractedColumn);
@@ -3494,12 +3495,12 @@ public class DatabaseHashMap extends BackedHashMap {
         String tblName = tableName, qualifierName = null, sqlQuery = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        tblName = tblName.toUpperCase();
+        tblName = tblName.toUpperCase(Locale.ENGLISH);
 
         if (_smc.isUsingCustomSchemaName()) { //PM27191
             qualifierName = qualifierNameWhenCustomSchemaIsSet;
         } else if (dbid != null) {
-            qualifierName = dbid.toUpperCase();
+            qualifierName = dbid.toUpperCase(Locale.ENGLISH);
         }
         sqlQuery = "select 1 from syscat.tables " +
                    "where TabName = '" + tblName + "' and Volatile = 'C' ";

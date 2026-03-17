@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="UTF-8"?>
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,8 +18,8 @@
   <!--Employee role with run as user defined here, but not in server.xml-->
   <!--Manager role defined in server.xml, but not here-->
   <security-role name="Employee">
-  <!-- <group name="group1"/>
-    <user name="user99"/>-->
+    <group name="group1"/>
+    <user name="user99"/>
     <run-as userid="user99" password="user99pwd"/>
   </security-role>
   <security-role name="AllAuthenticated">

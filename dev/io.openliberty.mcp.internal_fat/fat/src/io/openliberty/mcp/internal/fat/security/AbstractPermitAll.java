@@ -1,5 +1,5 @@
 /*******************************************************************************
- Copyright (c) 2025 IBM Corporation and others.
+ Copyright (c) 2025, 2026 IBM Corporation and others.
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the Eclipse Public License 2.0
  which accompanies this distribution, and is available at
@@ -36,46 +36,46 @@ public abstract class AbstractPermitAll extends FATServletClient {
 
     @Test
     public void testPermitAllClass_echoDenyAll() throws Exception {
-        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL_403, getClient());
     }
 
     @Test
     public void testPermitAllClass_echoAdminAllowed() throws Exception {
-        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL_401, getClient());
         AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.PASS, getClient());
-        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL_403, getClient());
     }
 
     @Test
     public void testPermitAllClass_echoTestUserAllowed() throws Exception {
-        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
         AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.PASS, getClient());
-        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL_403, getClient());
     }
 
     @Test
     public void testPermitAllClass_echoTwoRolesAllowed() throws Exception {
-        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL_401, getClient());
         AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.PASS, getClient());
-        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
         AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.PASS, getClient());
-        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL_403, getClient());
     }
 
     @Test
@@ -91,12 +91,12 @@ public abstract class AbstractPermitAll extends FATServletClient {
 
     @Test
     public void testPermitAllClass_echoRoleDoesNotExist() throws Exception {
-        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL, getClient());
-        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL, getClient());
+        AuthHelper.test(Scenario.NO_AUTHENTICATION, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.ADMIN_PASS_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.ADMIN_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.TESTUSER_PASS_LOGIN, ExpectedTestResult.FAIL_403, getClient());
+        AuthHelper.test(Scenario.TESTUSER_FAIL_LOGIN, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_USER, ExpectedTestResult.FAIL_401, getClient());
+        AuthHelper.test(Scenario.UNKNOWN_ROLE, ExpectedTestResult.FAIL_403, getClient());
     }
 }

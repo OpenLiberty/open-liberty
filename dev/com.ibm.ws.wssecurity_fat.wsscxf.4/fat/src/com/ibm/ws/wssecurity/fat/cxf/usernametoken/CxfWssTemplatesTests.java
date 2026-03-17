@@ -1,19 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package com.ibm.ws.wssecurity.fat.cxf.usernametoken;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 
 import java.io.File;
@@ -23,14 +21,13 @@ import org.junit.runner.RunWith;
 
 import com.ibm.ws.wssecurity.fat.utils.common.CommonTests;
 
+import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.annotation.MinimumJavaLevel;
 
-
-@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+@SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
 public class CxfWssTemplatesTests extends CommonTests {
@@ -293,7 +290,7 @@ public class CxfWssTemplatesTests extends CommonTests {
      * TestDescription:
      *
      * UsernameToken authentication with Service X509Token for message protection
-     
+     *
      * Service has X509 Certificate, and client has UsernameToken without X509 token.
      * The message exchanges are signed and encrypted by an ephemeral key protected for
      * service, and client is using UsernameToken for authentication.

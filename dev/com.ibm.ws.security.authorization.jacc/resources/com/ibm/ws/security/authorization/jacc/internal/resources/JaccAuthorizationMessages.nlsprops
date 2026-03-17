@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: The module for processing the Web security roles 
 JACC_NO_WEB_PLUGIN.explanation=The JACC service is unable to process the Web security roles because the required module is not available.
 JACC_NO_WEB_PLUGIN.useraction=Review the JACC provider logs and the server logs for more information.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: The Jakarta Authorization service is unable to set the {0} provider class {1} from application {2} due to the exception {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=The Jakarta Authorization service is unable to set the provider class due to the exception.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Review the provider logs and the server logs for more information.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: The Jakarta Authorization service configured the {0} provider class {1} defined in application {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=This message is for informational purposes only.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=No action is required.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: The Jakarta Authorization service removed the {0} provider class {1} defined in application {2}.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=This message is for informational purposes only.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=No action is required.

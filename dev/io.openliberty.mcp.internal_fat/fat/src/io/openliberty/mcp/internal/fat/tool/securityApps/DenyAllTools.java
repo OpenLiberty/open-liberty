@@ -65,4 +65,5 @@ public class DenyAllTools {
     public String denyAllClass_echoRoleDoesNotExist(@ToolArg(name = "input", description = "input to echo") String input) {
         return input;
     }
+
 }

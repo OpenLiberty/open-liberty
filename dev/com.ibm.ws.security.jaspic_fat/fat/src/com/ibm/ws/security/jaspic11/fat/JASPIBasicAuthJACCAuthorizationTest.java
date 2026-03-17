@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2020 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -30,6 +30,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -203,10 +204,15 @@ public class JASPIBasicAuthJACCAuthorizationTest extends JASPITestBase {
     @Test
     public void testJaspiBasicAuthJACC_ValidUserInRoleNotInRegistryUserAccessId_CPCBCallback_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        boolean isEE11SpecRepeat = RepeatTestFilter.isRepeatActionActive(FATSuite.EE11_SPEC_ID);
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString + CPCB_CALLBACK, jaspi_notInRegistryInBasicRoleUser, jaspi_notInRegistryInBasicRolePwd,
-                                                          HttpServletResponse.SC_OK);
-        verifyJaspiAuthenticationProcessedByProvider(response, DEFAULT_JASPI_PROVIDER, DEFAULT_BASICAUTH_SERVLET_NAME);
-        verifyUserResponse(response, getUserPrincipalFound + jaspi_notInRegistryInBasicRoleUser, getRemoteUserFound + jaspi_notInRegistryInBasicRoleUser);
+                                                          isEE11SpecRepeat ? HttpServletResponse.SC_FORBIDDEN : HttpServletResponse.SC_OK);
+        if (isEE11SpecRepeat) {
+            verifyMessageReceivedInMessageLog(MSG_JACC_AUTHORIZATION_FAILED + jaspi_notInRegistryInBasicRoleUser);
+        } else {
+            verifyJaspiAuthenticationProcessedByProvider(response, DEFAULT_JASPI_PROVIDER, DEFAULT_BASICAUTH_SERVLET_NAME);
+            verifyUserResponse(response, getUserPrincipalFound + jaspi_notInRegistryInBasicRoleUser, getRemoteUserFound + jaspi_notInRegistryInBasicRoleUser);
+        }
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -227,11 +233,16 @@ public class JASPIBasicAuthJACCAuthorizationTest extends JASPITestBase {
     @Test
     public void testJaspiBasicAuthJACC_ValidUserInRoleNotInRegistryGroupAccessId_CPCBGPCGCallback_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
+        boolean isEE11SpecRepeat = RepeatTestFilter.isRepeatActionActive(FATSuite.EE11_SPEC_ID);
         String response = executeGetRequestBasicAuthCreds(httpclient, urlBase + queryString + CPCBGPCB_CALLBACK, jaspi_notInRegistryNotInRoleUser,
                                                           jaspi_notInRegistryNotInRolePwd,
-                                                          HttpServletResponse.SC_OK);
-        verifyJaspiAuthenticationProcessedByProvider(response, DEFAULT_JASPI_PROVIDER, DEFAULT_BASICAUTH_SERVLET_NAME);
-        verifyUserResponse(response, getUserPrincipalFound + jaspi_notInRegistryNotInRoleUser, getRemoteUserFound + jaspi_notInRegistryNotInRoleUser);
+                                                          isEE11SpecRepeat ? HttpServletResponse.SC_FORBIDDEN : HttpServletResponse.SC_OK);
+        if (isEE11SpecRepeat) {
+            verifyMessageReceivedInMessageLog(MSG_JACC_AUTHORIZATION_FAILED + jaspi_notInRegistryNotInRoleUser);
+        } else {
+            verifyJaspiAuthenticationProcessedByProvider(response, DEFAULT_JASPI_PROVIDER, DEFAULT_BASICAUTH_SERVLET_NAME);
+            verifyUserResponse(response, getUserPrincipalFound + jaspi_notInRegistryNotInRoleUser, getRemoteUserFound + jaspi_notInRegistryNotInRoleUser);
+        }
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 

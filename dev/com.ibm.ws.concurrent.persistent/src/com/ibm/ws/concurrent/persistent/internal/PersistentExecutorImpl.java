@@ -309,6 +309,12 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
     private final AtomicBoolean pollingStartSignalReceived = new AtomicBoolean();
 
     /**
+     * Indicates if the polling task is currently executing.
+     * Used to prevent race condition during deactivation.
+     */
+    private final AtomicBoolean pollingTaskRunning = new AtomicBoolean(false);
+
+    /**
      * Liberty scheduled executor.
      */
     @Reference(target = "(deferrable=false)")
@@ -507,6 +513,25 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
      */
     protected void deactivate(ComponentContext context) throws Exception {
         deactivated = true;
+        
+        // Cancel the polling future to stop background tasks before closing resources 
+        // product bug fix 308877
+        ScheduledFuture<?> pollingFuture = pollingFutureRef.get();
+        if (pollingFuture != null) {
+            pollingFuture.cancel(false);
+            // Wait for the polling task to actually finish to avoid race condition with resource cleanup
+            // Cannot use get() or isDone() on cancelled future, so check our own flag
+            long deadline = System.nanoTime() + TimeUnit.SECONDS.toNanos(5);
+            while (pollingTaskRunning.get() && System.nanoTime() < deadline) {
+                try {
+                    Thread.sleep(50);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+        }
+        
         if (mbean != null) {
             mbean.unregister();
             mbean = null;
@@ -2593,7 +2618,10 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
             if (trace && tc.isEntryEnabled())
                 Tr.entry(PersistentExecutorImpl.this, tc, "run[poll]");
 
-            Config config = configRef.get();
+            // Claim execution state BEFORE checking deactivated to prevent race condition
+            pollingTaskRunning.set(true);
+            try {
+                Config config = configRef.get();
 
             if (deactivated || !config.enableTaskExecution || config != initialConfig) {
                 if (trace && tc.isEntryEnabled())
@@ -2638,6 +2666,9 @@ public class PersistentExecutorImpl implements ApplicationRecycleComponent, DDLG
 
             if (trace && tc.isEntryEnabled())
                 Tr.exit(PersistentExecutorImpl.this, tc, "run[poll]", failure);
+            } finally {
+                pollingTaskRunning.set(false);
+            }
         }
     }
 

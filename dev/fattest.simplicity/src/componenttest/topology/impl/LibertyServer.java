@@ -1689,8 +1689,11 @@ public class LibertyServer implements LogMonitorClient {
             JVM_ARGS += " " + MAC_RUN;
         }
 
-        // if we have java 2 security enabled, add java.security.manager and java.security.policy
-        if (isJava2SecurityEnabled() && !isEE11OrLaterEnabled()) {
+        // If Java 2 security is enabled, add java.security.manager and java.security.policy.
+        //
+        // Java 2 security is not enabled for servers that have Jakarta EE 11 or later features
+        // or if testing InstantOn function since neither one of them support Java 2 security
+        if (isJava2SecurityEnabled() && !isEE11OrLaterEnabled() && checkpointInfo == null) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
@@ -1736,7 +1739,7 @@ public class LibertyServer implements LogMonitorClient {
         //FIPS 140-3
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM Arg
         if (isFIPS140_3EnabledAndSupported(info) || isFIPS140_2EnabledAndSupported(info)) {
-            Map<String,String> opts = getJvmOptionsAsMap();
+            Map<String, String> opts = getJvmOptionsAsMap();
             if (getServerEnv().containsKey("ENABLE_FIPS140_3") || getDefaultEnv().containsKey("ENABLE_FIPS140_3") || useEnvVars.containsKey("ENABLE_FIPS140_3") || opts.containsKey("-Xenablefips140-3") || opts.containsKey("-Dsemeru.fips")) {
                 Log.info(c, methodName, "Test has defined its own settings for FIPS140-3");
             } else {

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.jwtsso.fat.utils;
 
@@ -60,18 +57,22 @@ public class JwtFatUtils extends ServerFileUtils {
     public void updateFeatureFileForEE9(LibertyServer server) throws Exception {
 
         String version = RepeatTestFilter.getMostRecentRepeatAction().getID();
-        // try to replace the EE9 or EE10 noMpJwt repeat instance name with noMpJwt_ee9 or noMpJwt_ee9 respectively 
+        // try to replace the EE9/EE10/EE11 noMpJwt repeat instance name with noMpJwt_(ee9/ee10/ee11) respectively
         // if this is a different repeat action this will do nothing
         version = version.replace(JakartaEEAction.EE9_ACTION_ID + "_" + JwtFatConstants.NO_MPJWT, JwtFatConstants.NO_MPJWT_EE9);
         version = version.replace(JakartaEEAction.EE10_ACTION_ID + "_" + JwtFatConstants.NO_MPJWT, JwtFatConstants.NO_MPJWT_EE10);
-        // if the EE9 or EE10 repeat instance is still in the the action, remove it
+        version = version.replace(JakartaEEAction.EE11_ACTION_ID + "_" + JwtFatConstants.NO_MPJWT, JwtFatConstants.NO_MPJWT_EE11);
+        // if the EE9/EE10/EE11 repeat instance is still in the the action, remove it
         version = version.replace(JakartaEEAction.EE9_ACTION_ID + "_", "");
         version = version.replace(JakartaEEAction.EE10_ACTION_ID + "_", "");
+        version = version.replace(JakartaEEAction.EE11_ACTION_ID + "_", "");
         updateFeatureFile(server, "jwtSsoFeatures", version);
         if (JakartaEEAction.isEE9Active()) {
             updateFeatureFile(server, "featuresWithoutJwtSso", "ee9");
-        } else if (JakartaEEAction.isEE10OrLaterActive()) {
+        } else if (JakartaEEAction.isEE10Active()) {
             updateFeatureFile(server, "featuresWithoutJwtSso", "ee10");
+        } else if (JakartaEEAction.isEE11Active()) {
+            updateFeatureFile(server, "featuresWithoutJwtSso", "ee11");
         }
 
     }

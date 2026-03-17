@@ -70,7 +70,7 @@ public class StatelessModeTest extends FATServletClient {
                                    .addPackage(StatelessModeTools.class.getPackage())
                                    .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
 
         server.startServer();
 

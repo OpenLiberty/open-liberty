@@ -69,8 +69,10 @@ import jakarta.data.constraint.NotLike;
 import jakarta.data.constraint.NotNull;
 import jakarta.data.constraint.Null;
 import jakarta.data.expression.Expression;
+import jakarta.data.expression.NavigableExpression;
 import jakarta.data.expression.TemporalExpression;
 import jakarta.data.metamodel.Attribute;
+import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
@@ -93,6 +95,8 @@ import jakarta.data.spi.expression.function.NumericFunctionExpression;
 import jakarta.data.spi.expression.function.NumericOperatorExpression;
 import jakarta.data.spi.expression.function.TextFunctionExpression;
 import jakarta.data.spi.expression.literal.Literal;
+import jakarta.data.spi.expression.path.NavigablePath;
+import jakarta.data.spi.expression.path.Path;
 import jakarta.persistence.EntityManager;
 
 /**
@@ -545,6 +549,25 @@ public class Data_1_1 implements DataVersionCompatibility {
                 q.append(':').append(paramName);
                 xprParams.put(paramName, literal.value());
             }
+        } else if (expression instanceof Path path) {
+            // put most distant attribute on the top of the stack
+            ArrayList<Attribute<?>> attrStack = new ArrayList<>();
+            for (NavigableExpression<?, ?> nav = path.expression(); nav != null;) {
+                if (nav instanceof NavigablePath<?, ?, ?> npath) {
+                    attrStack.add(npath.attribute());
+                    nav = npath.expression();
+                } else if (nav instanceof NavigableAttribute<?, ?> attr) {
+                    attrStack.add(attr);
+                    nav = null;
+                } else {
+                    throw new IllegalArgumentException(nav.getClass().getName());
+                }
+            }
+            // append attributes from most distant (top of stack) to least distant:
+            q.append(entityVar_);
+            while (!attrStack.isEmpty())
+                q.append(attrStack.removeLast().name()).append('.');
+            q.append(path.attribute().name());
         } else if (expression instanceof FunctionExpression<?, ?> fn) {
             String name = fn.name();
             List<? extends Expression<?, ?>> args = fn.arguments();
@@ -610,6 +633,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                     break;
             }
         } else if (expression instanceof NumericCast<?, ?> cast) {
+            String typeName = cast.type().getSimpleName();
             q.append("CAST (");
             jpqlParamCount = generateExpression(q,
                                                 entityVar_,
@@ -617,9 +641,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                                                 jpqlParamCount,
                                                 jpqlParamNames,
                                                 xprParams);
-            q.append(" AS ") //
-                            .append(cast.type().getSimpleName().toUpperCase()) //
-                            .append(')');
+            q.append(" AS ").append(typeName).append(')');
         } else if (expression instanceof NumericOperatorExpression<?, ?> op) {
             q.append('(');
             jpqlParamCount = generateExpression(q,

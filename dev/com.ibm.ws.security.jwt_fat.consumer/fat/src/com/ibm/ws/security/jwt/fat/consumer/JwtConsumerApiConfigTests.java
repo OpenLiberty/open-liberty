@@ -15,10 +15,7 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletResponse;
 
-import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Rule;
-import org.junit.Test;
+import org.junit.*;
 import org.junit.runner.RunWith;
 
 import com.gargoylesoftware.htmlunit.Page;
@@ -58,6 +55,7 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.consumer")
@@ -74,7 +72,7 @@ public class JwtConsumerApiConfigTests extends CommonSecurityFat {
 
     protected JWTTokenBuilder builder = null;
 
-    @Rule
+    @ClassRule
     public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.jwt_fat.consumer");
 
     @BeforeClass

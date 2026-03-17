@@ -13,6 +13,7 @@
 
 package com.ibm.ws.security.backchannelLogout.fat;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
@@ -35,9 +36,13 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException" })
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class BasicBCLTests extends com.ibm.ws.security.backchannelLogout.fat.CommonTests.BasicBCLTests {
 
     @ClassRule
     public static RepeatTests repeat = createRepeats1(Constants.OIDC);
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled();
 
 }

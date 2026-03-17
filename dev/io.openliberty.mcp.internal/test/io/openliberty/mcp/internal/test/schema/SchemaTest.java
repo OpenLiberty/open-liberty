@@ -734,6 +734,7 @@ public class SchemaTest {
                                 }
                             },
                             "$ref": "#/$defs/Company"
+
                         }
                                 """;
         JSONAssert.assertEquals(expectedResponseString, response, JSONCompareMode.NON_EXTENSIBLE);

@@ -28,7 +28,8 @@
                          com.ibm.ws.javaee.dd.webbnd.WebBnd,
                          com.ibm.ws.javaee.dd.webext.WebExt,
                          com.ibm.ws.javaee.ddmodel.wsbnd.WebservicesBnd,
-                         com.ibm.ws.jca.embeddedResourceAdapter">
+                         com.ibm.ws.jca.embeddedResourceAdapter,
+                         io.openliberty.mcp.internal.config.McpConfigurationComponent">
         <AD id="type" name="internal" description="internal" type="String" default="spring" ibm:final="true"/>
         <AD id="applicationArgument" name="%applicationArgument.name" description="%applicationArgument.desc" required="false" type="String" cardinality="2147483647"/>
         <AD name="internal" description="internal use only"

@@ -165,7 +165,7 @@ public class PageImpl<T> implements Page<T> {
         this.pageRequest = pageRequest;
 
         if (pageRequest == null)
-            missingPageRequest();
+            throw Fail.missingPageRequest(queryInfo);
 
         this.isForward = pageRequest.mode() != PageRequest.Mode.CURSOR_PREVIOUS;
     }
@@ -255,37 +255,6 @@ public class PageImpl<T> implements Page<T> {
         int size = results.size();
         int max = pageRequest.size();
         return size > max ? new ResultIterator(max) : results.iterator();
-    }
-
-    /**
-     * Raise an error because the PageRequest is missing.
-     *
-     * @throws IllegalArgumentException      if the user supplied a null PageRequest
-     * @throws UnsupportedOperationException if the repository method signature
-     *                                           lacks a parameter for supplying a
-     *                                           PageRequest
-     */
-    void missingPageRequest() {
-        Class<?>[] paramTypes = queryInfo.method.getParameterTypes();
-
-        // Check parameter positions after those used for query parameters
-        boolean signatureHasPageReq = false;
-        for (int i = 0; i < paramTypes.length; i++)
-            signatureHasPageReq |= PageRequest.class.equals(paramTypes[i]);
-
-        if (signatureHasPageReq)
-            // NullPointerException is required by BasicRepository.findAll
-            throw exc(NullPointerException.class,
-                      "CWWKD1087.null.param",
-                      PageRequest.class.getName(),
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName());
-        else
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1041.rtrn.mismatch.pagereq",
-                      queryInfo.method.getName(),
-                      queryInfo.repositoryInterface.getName(),
-                      queryInfo.method.getGenericReturnType().getTypeName());
     }
 
     @Override

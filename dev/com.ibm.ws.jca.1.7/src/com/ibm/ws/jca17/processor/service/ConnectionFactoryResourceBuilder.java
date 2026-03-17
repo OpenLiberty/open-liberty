@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2019 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,9 +17,12 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.resource.ResourceException;
 
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.FrameworkUtil;
@@ -41,6 +44,7 @@ import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jca.service.ConnectionFactoryService;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.resource.WaitForBundleResourceFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -157,7 +161,7 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         }
 
         String application = (String) annotationProps.remove(AppDefinedResource.APPLICATION);
-        String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
+        final String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
         String module = (String) annotationProps.remove(AppDefinedResource.MODULE);
         String component = (String) annotationProps.remove(AppDefinedResource.COMPONENT);
         String jndiName = (String) annotationProps.remove(ResourceFactory.JNDI_NAME);
@@ -195,84 +199,110 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
                     connectionFactorySvcProps.put(AppDefinedResource.COMPONENT, component);
             }
         }
-        String resourceAdapter = (String) annotationProps.remove(RESOURCE_ADAPTER);
+
         String interfaceName = (String) annotationProps.remove(INTERFACE_NAME);
 
         //Handle embedded RA as in 18.9
-        if (resourceAdapter.startsWith(EMBEDDED_RA_PREFIX)) {
-            resourceAdapter = declaringApplication + "." + resourceAdapter.substring(resourceAdapter.indexOf(EMBEDDED_RA_PREFIX) + 1, resourceAdapter.length());
+        String ra = (String) annotationProps.remove(RESOURCE_ADAPTER);
+        if (ra.startsWith(EMBEDDED_RA_PREFIX)) {
+            ra = declaringApplication + "." + ra.substring(ra.indexOf(EMBEDDED_RA_PREFIX) + 1, ra.length());
             if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, "Embedded resourceAdapter name : " + resourceAdapter);
+                Tr.debug(tc, "Embedded resourceAdapter name : " + ra);
         }
+        final String resourceAdapter = ra;
 
         connectionFactorySvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
         connectionFactorySvcProps.put(CREATES_OBJECTCLASS, interfaceName);
 
         connectionFactorySvcProps.put("transactionSupport", annotationProps.remove("transactionSupport"));
 
-        Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(resourceAdapter, interfaceName);
+        Function<Bundle, ResourceFactory> createAppDefinedResourceFactory = (bundle) -> {
+            try {
+                Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(bundle, resourceAdapter, interfaceName);
 
-        String configPropsPid = null;
-        for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
-            String key = keys.nextElement();
-            Object value = connectionFactoryDefaultProps.get(key);
+                String configPropsPid = null;
+                for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
+                    String key = keys.nextElement();
+                    Object value = connectionFactoryDefaultProps.get(key);
 
-            //Override the managed connection factory class default property values with values provided annotation
-            if (annotationProps.containsKey(key))
-                value = annotationProps.remove(key);
+                    //Override the managed connection factory class default property values with values provided annotation
+                    if (annotationProps.containsKey(key))
+                        value = annotationProps.remove(key);
 
-            if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
+                    if (value instanceof String)
+                        value = variableRegistry.resolveString((String) value);
 
-            if ("config.displayId".equals(key))
-                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", configPropsPid = (String) value);
-            else
-                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, value);
+                    if ("config.displayId".equals(key))
+                        connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", configPropsPid = (String) value);
+                    else
+                        connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, value);
+                }
+
+                Object value;
+                for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
+                    if ((value = annotationProps.remove(name)) != null)
+                        cmSvcProps.put(name, value);
+
+                // Add remaining properties
+                WSConfigurationHelper configHelper = wsConfigurationHelperRef.getServiceWithException();
+                for (Map.Entry<String, Object> entry : annotationProps.entrySet()) {
+                    String key = entry.getKey();
+                    String attrName = configHelper.getMetaTypeAttributeName(configPropsPid, key);
+                    if (attrName != null && !"INTERNAL".equalsIgnoreCase(attrName))
+                        connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, entry.getValue());
+                }
+
+                BundleContext bundleContext = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectionFactoryService.class));
+
+                StringBuilder connectionFactoryFilter = new StringBuilder(200);
+                connectionFactoryFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, connectionFactoryID));
+                connectionFactoryFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, ConnectionFactoryService.class.getName())).append(")");
+
+                ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, connectionFactoryID, connectionFactoryFilter.toString(), declaringApplication);
+                try {
+                    String bundleLocation = bundleContext.getBundle().getLocation();
+                    String jcaBundleLocation = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
+                    ConfigurationAdmin configAdmin = configAdminRef.getService();
+
+                    Configuration conMgrConfig = configAdmin.createFactoryConfiguration(ConnectionManagerService.FACTORY_PID, jcaBundleLocation);
+                    conMgrConfig.update(cmSvcProps);
+                    connectionFactorySvcProps.put(CONNECTION_MANAGER_REF, new String[] { conMgrConfig.getPid() });
+
+                    Configuration connectionFactorySvcConfig = configAdmin.createFactoryConfiguration(ConnectionFactoryService.FACTORY_PID, bundleLocation);
+                    connectionFactorySvcConfig.update(connectionFactorySvcProps);
+                } catch (Exception x) {
+                    factory.destroy();
+                    throw x;
+                } catch (Error x) {
+                    factory.destroy();
+                    throw x;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "createResourceFactory", factory);
+                return factory;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        };
+
+        Bundle raBundle = bundleContext.getBundle(BUNDLE_LOCATION + resourceAdapter);
+        if (raBundle != null) {
+            return createAppDefinedResourceFactory.apply(raBundle);
+        } else {
+            Supplier<IllegalStateException> notReadyException = () -> {
+                return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
+                                                 ", declaringApplication=" + declaringApplication +
+                                                 ", location=" + BUNDLE_LOCATION + resourceAdapter);
+            };
+
+            WaitForBundleResourceFactory resourceFactory = new WaitForBundleResourceFactory(bundleContext, //
+                            BUNDLE_LOCATION + resourceAdapter, //
+                            createAppDefinedResourceFactory, //
+                            notReadyException);
+            resourceFactory.listenForBundle();
+            return resourceFactory;
         }
-
-        Object value;
-        for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
-            if ((value = annotationProps.remove(name)) != null)
-                cmSvcProps.put(name, value);
-
-        // Add remaining properties
-        WSConfigurationHelper configHelper = wsConfigurationHelperRef.getServiceWithException();
-        for (Map.Entry<String, Object> entry : annotationProps.entrySet()) {
-            String key = entry.getKey();
-            String attrName = configHelper.getMetaTypeAttributeName(configPropsPid, key);
-            if (attrName != null && !"INTERNAL".equalsIgnoreCase(attrName))
-                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, entry.getValue());
-        }
-
-        BundleContext bundleContext = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectionFactoryService.class));
-
-        StringBuilder connectionFactoryFilter = new StringBuilder(200);
-        connectionFactoryFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, connectionFactoryID));
-        connectionFactoryFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, ConnectionFactoryService.class.getName())).append(")");
-
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, connectionFactoryID, connectionFactoryFilter.toString(), declaringApplication);
-        try {
-            String bundleLocation = bundleContext.getBundle().getLocation();
-            String jcaBundleLocation = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
-            ConfigurationAdmin configAdmin = configAdminRef.getService();
-
-            Configuration conMgrConfig = configAdmin.createFactoryConfiguration(ConnectionManagerService.FACTORY_PID, jcaBundleLocation);
-            conMgrConfig.update(cmSvcProps);
-            connectionFactorySvcProps.put(CONNECTION_MANAGER_REF, new String[] { conMgrConfig.getPid() });
-
-            Configuration connectionFactorySvcConfig = configAdmin.createFactoryConfiguration(ConnectionFactoryService.FACTORY_PID, bundleLocation);
-            connectionFactorySvcConfig.update(connectionFactorySvcProps);
-        } catch (Exception x) {
-            factory.destroy();
-            throw x;
-        } catch (Error x) {
-            factory.destroy();
-            throw x;
-        }
-
-        if (trace && tc.isEntryEnabled())
-            Tr.exit(tc, "createResourceFactory", factory);
-        return factory;
     }
 
     /**
@@ -290,8 +320,8 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         wsConfigurationHelperRef.deactivate(context);
     }
 
-    private Dictionary<String, Object> getDefaultProperties(String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
-        MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(bundleContext.getBundle(BUNDLE_LOCATION + resourceAdapter));
+    private Dictionary<String, Object> getDefaultProperties(Bundle raBundle, String resourceAdapter, String interfaceName) throws ConfigEvaluatorException, ResourceException {
+        MetaTypeInformation metaTypeInformation = metaTypeServiceRef.getService().getMetaTypeInformation(raBundle);
         String[] factoryPids = metaTypeInformation.getFactoryPids();
 
         for (String factoryPid : factoryPids) {

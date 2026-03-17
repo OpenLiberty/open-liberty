@@ -16,10 +16,8 @@ import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import com.ibm.ws.kernel.service.util.ServiceCaller;
-
 import io.openliberty.mcp.internal.McpRequestTracker;
-import io.openliberty.mcp.internal.config.McpConfiguration;
+import io.openliberty.mcp.internal.config.McpConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -34,12 +32,14 @@ public class McpSessionStore {
     @Inject
     McpRequestTracker requestTracker;
 
+    @Inject
+    McpConfig mcpConfig;
+
     private static final Duration SESSION_TIMEOUT = Duration.ofMinutes(10);
     private final ConcurrentMap<String, McpSession> sessions = new ConcurrentHashMap<>();
-    private static final ServiceCaller<McpConfiguration> mcpConfigService = new ServiceCaller<>(McpSessionStore.class, McpConfiguration.class);
 
     public boolean isStateless() {
-        return mcpConfigService.run(McpConfiguration::isStateless).orElse(false);
+        return mcpConfig.stateless();
     }
 
     /**

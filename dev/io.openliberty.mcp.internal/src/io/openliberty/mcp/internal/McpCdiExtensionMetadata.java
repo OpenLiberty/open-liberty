@@ -15,6 +15,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
+import io.openliberty.mcp.internal.config.McpConfigProducer;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.encoders.JsonTextContentEncoder;
 import io.openliberty.mcp.internal.sessions.McpSessionStore;
@@ -34,7 +35,8 @@ public class McpCdiExtensionMetadata implements CDIExtensionMetadata {
                       McpSessionStore.class,
                       JsonTextContentEncoder.class,
                       EncoderRegistry.class,
-                      McpCdiProducers.class);
+                      McpCdiProducers.class,
+                      McpConfigProducer.class);
     }
 
 }

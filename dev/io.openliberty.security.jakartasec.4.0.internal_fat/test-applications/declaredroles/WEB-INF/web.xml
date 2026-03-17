@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd"
+         version="6.0">
+    <display-name>Declared Roles Application</display-name>
+
+    <security-constraint>
+        <web-resource-collection>
+            <web-resource-name>Protected REST API</web-resource-name>
+            <url-pattern>/roles/*</url-pattern>
+            <http-method>GET</http-method>
+            <http-method>POST</http-method>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>Role1</role-name>
+            <role-name>Role2</role-name>
+        </auth-constraint>
+    </security-constraint>
+
+    <!-- Define security roles -->
+    <security-role>
+        <role-name>Role1</role-name>
+    </security-role>
+    <security-role>
+        <role-name>Role2</role-name>
+    </security-role>
+
+</web-app>

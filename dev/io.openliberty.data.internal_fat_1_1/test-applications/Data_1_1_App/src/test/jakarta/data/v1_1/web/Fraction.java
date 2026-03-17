@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,17 +29,11 @@ import jakarta.persistence.Id;
 @Entity
 public class Fraction {
 
-    @Column(nullable = false)
-    BigDecimal ceiling; // ceiling 4 digits past the decimal point
+    @Embedded
+    Decimal decimal;
 
     @Column(nullable = false)
     int denominator;
-
-    @Embedded
-    Digits digits;
-
-    @Column(nullable = false)
-    double inverse;
 
     @Column(nullable = false)
     @Id
@@ -51,18 +45,71 @@ public class Fraction {
     @Column(nullable = false)
     boolean reduced;
 
-    @Column(nullable = false)
-    BigDecimal truncated; // truncated to 4 digits past the decimal point
+    @Embeddable
+    public static record Decimal(
+                    @Column(nullable = false, table = "Fraction") //
+                    double value,
 
-    @Column(nullable = false)
-    DecimalType type;
+                    @Column(nullable = false, table = "Fraction") //
+                    Type type,
 
-    @Column(nullable = false)
-    double value;
+                    @Column(nullable = false, table = "Fraction") //
+                    double inverse,
 
-    public static enum DecimalType {
-        REPEATING,
-        TERMINATING
+                    @Column(nullable = false, precision = 12, scale = 4, table = "Fraction") //
+                    BigDecimal ceiling, // rounded up 4 digits past the decimal point
+
+                    @Column(nullable = false, precision = 10, scale = 4, table = "Fraction") //
+                    BigDecimal truncated, // truncated 4 digits past the decimal point
+
+                    @Embedded Digits digits) {
+
+        public static enum Type {
+            REPEATING,
+            TERMINATING
+        }
+
+        public static Decimal of(int numerator, int denominator) {
+            long[] dec = new long[MAX_DIGITS];
+            long[] rem = new long[MAX_DIGITS];
+            rem[0] = numerator;
+            Digits digits = null;
+            Type type = null;
+            for (int i = 1; type == null && i <= MAX_DIGITS; i++) {
+                long n = rem[i - 1] * 10;
+                dec[i] = n / denominator;
+                rem[i] = n % denominator;
+                if (rem[i] == 0) {
+                    digits = Digits.of(dec, i, i);
+                    type = Type.TERMINATING;
+                } else {
+                    // find out if remaining amount is already found in list
+                    for (int prev = i - 1; prev >= 0; prev--)
+                        if (rem[i] == rem[prev]) {
+                            digits = Digits.of(dec, prev, i);
+                            type = Type.REPEATING;
+                        }
+                }
+            }
+
+            if (type == null)
+                throw new IllegalArgumentException(numerator + " / " + denominator +
+                                                   " has too many fractional digits: " +
+                                                   Arrays.toString(dec) + "...");
+
+            BigDecimal truncated = BigDecimal
+                            .valueOf(numerator * 10000
+                                     / denominator,
+                                     4);
+            BigDecimal ceiling = BigDecimal
+                            .valueOf((numerator * 10000 + denominator - 1)
+                                     / denominator,
+                                     4);
+            double value = (double) numerator / (double) denominator;
+            double inverse = (double) denominator / (double) numerator;
+
+            return new Decimal(value, type, inverse, ceiling, truncated, digits);
+        }
     }
 
     @Embeddable
@@ -160,14 +207,7 @@ public class Fraction {
 
         f.numerator = numerator;
         f.denominator = denominator;
-        f.truncated = BigDecimal.valueOf(numerator * 10000
-                                         / denominator,
-                                         4);
-        f.ceiling = BigDecimal.valueOf((numerator * 10000 + denominator - 1)
-                                       / denominator,
-                                       4);
-        f.value = (double) numerator / (double) denominator;
-        f.inverse = (double) denominator / (double) numerator;
+        f.decimal = Decimal.of(numerator, denominator);
 
         f.reduced = true;
 
@@ -176,47 +216,22 @@ public class Fraction {
                 denominator % i == 0)
                 f.reduced = false;
 
-        long[] digits = new long[MAX_DIGITS];
-        long[] rem = new long[MAX_DIGITS];
-        rem[0] = numerator;
-        for (int i = 1; f.type == null && i <= MAX_DIGITS; i++) {
-            long n = rem[i - 1] * 10;
-            digits[i] = n / denominator;
-            rem[i] = n % denominator;
-            if (rem[i] == 0) {
-                f.digits = Digits.of(digits, i, i);
-                f.type = DecimalType.TERMINATING;
-            } else {
-                // find out if remaining amount is already found in list
-                for (int prev = i - 1; prev >= 0; prev--)
-                    if (rem[i] == rem[prev]) {
-                        f.digits = Digits.of(digits, prev, i);
-                        f.type = DecimalType.REPEATING;
-                    }
-            }
-        }
-
-        if (f.type == null)
-            throw new IllegalArgumentException(numerator + " / " + denominator +
-                                               " has too many fractional digits: " +
-                                               Arrays.toString(digits) + "...");
-
         return f;
     }
 
     @Override
     public String toString() {
+        int tenThousandths = decimal.truncated.movePointRight(4).intValue();
         return new StringBuilder("Fraction ")
                         .append(numerator)
                         .append('/')
                         .append(denominator)
                         .append(" ~0.⌊")
-                        .append(String.format("%04d",
-                                              truncated.movePointRight(4).intValue()))
+                        .append(String.format("%04d", tenThousandths))
                         .append("⌋ =0.")
-                        //.append(digits)
+                        .append(decimal.digits)
                         .append(' ')
-                        .append(type)
+                        .append(decimal.type)
                         .append(' ')
                         .append(name)
                         .toString();
