@@ -99,7 +99,7 @@ public class ExternalDependencyDownloadTest {
 
         LibertyFileManager.copyFileIntoLiberty(installServer.getMachine(), installServer.getInstallRoot(), "lib/LibertyFATTestFiles/" + sampleJarFileName);
         pathsToDelete.add(sampleJarFilePath);
-        String[] args = new String[] { "-jar", sampleJarFilePath, "--downloadDependencies", "--acceptLicense", installServer.getInstallRoot(), "--verbose" };
+        String[] args = new String[] { "-jar", sampleJarFilePath, "--downloadDependencies", "--acceptLicense", installServer.getInstallRoot(), "--verbose=DEBUG" };
         Log.info(c, "installSampleWithExternalDependencies", "Using args " + Arrays.toString(args));
         ProgramOutput po = installServer.getMachine().execute(javaFilePath, args);
         if (po.getReturnCode() != 0) {
