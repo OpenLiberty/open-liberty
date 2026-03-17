@@ -24,14 +24,11 @@ import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.messaging.Cancellation;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 /**
  * This is a connection tracker bean. It keeps track of ongoing tool call requests
  */
 
-@ApplicationScoped
 public class McpRequestTracker {
 
     private static final TraceComponent tc = Tr.register(McpRequestTracker.class);
@@ -39,11 +36,11 @@ public class McpRequestTracker {
     private ConcurrentMap<ExecutionRequestId, CancellationImpl> ongoingRequests = new ConcurrentHashMap<>();
     private final ConcurrentMap<String, Set<ExecutionRequestId>> sessionToRequestIds = new ConcurrentHashMap<>();
 
-    @Inject
-    McpConfig mcpConfig;
+    private McpConfig mcpConfig;
 
-    public McpRequestTracker() {
+    public McpRequestTracker(McpConfig mcpConfig) {
         this.ongoingRequests = new ConcurrentHashMap<>();
+        this.mcpConfig = mcpConfig;
     }
 
     public void deregisterOngoingRequest(ExecutionRequestId id) {

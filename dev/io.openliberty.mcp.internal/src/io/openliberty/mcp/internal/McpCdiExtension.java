@@ -19,13 +19,17 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.cdi.CDIService;
+import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
+import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
@@ -62,16 +66,17 @@ import jakarta.json.bind.JsonbConfig;
 public class McpCdiExtension implements Extension {
 
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
+    private static final ServiceCaller<CDIService> CDI_SERVICE = new ServiceCaller<>(McpCdiExtension.class, CDIService.class);
 
     private final List<Bean<?>> encoderBeans = new ArrayList<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
-    private EncoderRegistry encoderRegistry;
-    private ConcurrentHashMap<String, ArrayList<String>> duplicateToolsMap = new ConcurrentHashMap<>();
+    private EncoderRegistries encoderRegistries = new EncoderRegistries();
+    private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
     private ConverterRegistry converterRegistry;
     private Jsonb jsonb = createJsonb();
-    private ToolRegistry tools = new ToolRegistry(schemas, jsonb);
+    private ToolRegistries toolRegistries = new ToolRegistries(schemas, jsonb);
     private ModuleContext moduleContext;
 
     private static Jsonb createJsonb() {
@@ -118,43 +123,99 @@ public class McpCdiExtension implements Extension {
     }
 
     void afterDeploymentValidation(@Observes AfterDeploymentValidation afterDeploymentValidation, BeanManager manager) {
-        registerEncoders(manager);
-        registerCustomConverters(manager);
+        registerEncoders(manager); // Called once with all encoder beans available
+        registerCustomConverters(manager); // Called once with all Converter beans available
 
-        boolean error = reportOnInvalidToolNames(afterDeploymentValidation) |
-                        reportOnDuplicateTools(afterDeploymentValidation) |
-                        reportOnToolArgEdgeCases(afterDeploymentValidation) |
-                        reportOnDuplicateSpecialArguments(afterDeploymentValidation) |
-                        reportOnInvalidSpecialArguments(afterDeploymentValidation);
+        boolean error = false;
+
+        for (ToolRegistry toolRegistry : toolRegistries.getAll()) {
+            error |= reportOnInvalidToolNames(afterDeploymentValidation, toolRegistry) |
+                     reportOnDuplicateTools(afterDeploymentValidation, toolRegistry) |
+                     reportOnToolArgEdgeCases(afterDeploymentValidation, toolRegistry) |
+                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry) |
+                     reportOnInvalidSpecialArguments(afterDeploymentValidation, toolRegistry);
+        }
 
         if (error) {
             afterDeploymentValidation.addDeploymentProblem(new Exception(Tr.formatMessage(tc, "CWMCM0005E.validation.error")));
         }
     }
 
+    /**
+     * Registers all discovered encoder beans to their appropriate encoder registries.
+     *
+     * <p>This method handles encoder registration for multi-module EAR applications where
+     * a single CDI extension instance discovers encoders from all modules (WARs, EAR/lib).
+     * Encoders must be routed to the correct registry based on their module of origin.
+     *
+     * <p><b>Encoder Types and Scopes:</b>
+     * <ul>
+     * <li><b>Global encoders</b> - Beans from EAR/lib or runtime (no module association).
+     * Registered to the Global registry and accessible to all modules.</li>
+     * <li><b>Module encoders</b> - Beans from specific WAR or EJB modules.
+     * Registered to their module's registry and isolated from other modules.</li>
+     * </ul>
+     *
+     * <p><b>Registration Strategy:</b>
+     * <ol>
+     * <li>Groups encoders by module during discovery to enable batch registration</li>
+     * <li>Registers global encoders to the Global registry</li>
+     * <li>Registers each module's complete encoder set to its specific registry in a single call</li>
+     * </ol>
+     *
+     *
+     * @param beanManager The CDI BeanManager for obtaining encoder bean references
+     */
     void registerEncoders(BeanManager beanManager) {
-        encoderRegistry = beanManager.createInstance().select(EncoderRegistry.class).get();
-
         CreationalContext<?> context = beanManager.createCreationalContext(null);
 
-        List<ToolResponseEncoder<?>> toolResponseEncoders = new ArrayList<>();
-        List<ContentEncoder<?>> contentEncoders = new ArrayList<>();
+        // Group encoders by module (null = global)
+        Map<J2EEName, List<ToolResponseEncoder<?>>> toolEncoders = new HashMap<>();
+        Map<J2EEName, List<ContentEncoder<?>>> contentEncoders = new HashMap<>();
 
+        // Collect and classify all encoder beans
         for (Bean<?> bean : encoderBeans) {
-            if (ToolResponseEncoder.class.isAssignableFrom(bean.getBeanClass())) {
-                ToolResponseEncoder<?> encoder = (ToolResponseEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
-                toolResponseEncoders.add(encoder);
-                logEncoderRegistration(bean);
-            } else if (ContentEncoder.class.isAssignableFrom(bean.getBeanClass())) {
-                ContentEncoder<?> encoder = (ContentEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
-                contentEncoders.add(encoder);
-                logEncoderRegistration(bean);
+            J2EEName module = getModuleForBeanOrNull(bean);
+            Object encoder = beanManager.getReference(bean, bean.getBeanClass(), context);
+
+            if (encoder instanceof ToolResponseEncoder<?> tre) {
+                toolEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(tre);
+            } else if (encoder instanceof ContentEncoder<?> ce) {
+                contentEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(ce);
             }
+            logEncoderRegistration(bean, module);
         }
 
-        encoderRegistry.registerEncoders(toolResponseEncoders, contentEncoders);
+        // Register global encoders (module = null)
+        EncoderRegistry globalInstance = EncoderRegistry.getGlobalInstance();
+        globalInstance.registerEncoders(toolEncoders.getOrDefault(null, new ArrayList<>()),
+                                        contentEncoders.getOrDefault(null, new ArrayList<>()));
+
+        // Register module-specific encoders
+        Set<J2EEName> modules = new HashSet<>();
+        modules.addAll(toolEncoders.keySet());
+        modules.addAll(contentEncoders.keySet());
+        modules.remove(null); // Already handled global
+
+        for (J2EEName module : modules) {
+            EncoderRegistry moduleInstance = encoderRegistries.getForModule(module);
+            moduleInstance.registerEncoders(toolEncoders.getOrDefault(module, new ArrayList<>()),
+                                            contentEncoders.getOrDefault(module, new ArrayList<>()));
+        }
 
         context.release();
+    }
+
+    private static void logEncoderRegistration(Bean<?> encoderBean, J2EEName moduleName) {
+        if (TraceComponent.isAnyTracingEnabled()) {
+            String scope = (moduleName == null) ? "GLOBAL (EAR/lib)" : "MODULE (" + moduleName + ")";
+            String beanName = encoderBean.getName() != null ? encoderBean.getName() : encoderBean.getBeanClass().getSimpleName();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(McpCdiExtension.class, tc, "Registered encoder [" + scope + "]: " + beanName, encoderBean);
+            } else if (tc.isEventEnabled()) {
+                Tr.event(McpCdiExtension.class, tc, "Registered encoder [" + scope + "]: " + beanName);
+            }
+        }
     }
 
     void registerCustomConverters(BeanManager beanManager) {
@@ -177,17 +238,7 @@ public class McpCdiExtension implements Extension {
         }
 
         converterRegistry.registerConverters(converterMap, context);
-        tools.setConverterRegistry(converterRegistry);
-    }
-
-    private static void logEncoderRegistration(Bean<?> encoderBean) {
-        if (TraceComponent.isAnyTracingEnabled()) {
-            if (tc.isDebugEnabled()) {
-                Tr.debug(McpCdiExtension.class, tc, "Registered encoder: " + encoderBean.getName(), encoderBean);
-            } else if (tc.isEventEnabled()) {
-                Tr.event(McpCdiExtension.class, tc, "Registered encoder: " + encoderBean.getName());
-            }
-        }
+        getCurrentToolRegistry().setConverterRegistry(converterRegistry);
     }
 
     private static void logCustomConverterRegistration(Bean<?> converterBean) {
@@ -203,7 +254,7 @@ public class McpCdiExtension implements Extension {
     /**
      * @param afterDeploymentValidation
      */
-    private boolean reportOnToolArgEdgeCases(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnToolArgEdgeCases(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         boolean foundErrors = false;
 
         for (ToolMetadata tool : tools.getAllTools()) {
@@ -231,20 +282,22 @@ public class McpCdiExtension implements Extension {
         return foundErrors;
     }
 
-    private boolean reportOnDuplicateTools(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnDuplicateTools(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         boolean error = false;
-        // prune items that are not duplicates
-        duplicateToolsMap.entrySet().removeIf(e -> e.getValue().size() == 1);
-        for (String toolName : duplicateToolsMap.keySet()) {
-            error = true;
-            List<String> qualifiedNames = duplicateToolsMap.get(toolName);
-            Tr.error(tc, "CWMCM0004E.duplicate.tools", toolName, String.join(",", qualifiedNames));
+        for (var moduleDuplicateToolsMap : duplicateToolsMap.values()) {
+            // prune items that are not duplicates
+            moduleDuplicateToolsMap.entrySet().removeIf(e -> e.getValue().size() == 1);
+            for (String toolName : moduleDuplicateToolsMap.keySet()) {
+                error = true;
+                List<String> qualifiedNames = moduleDuplicateToolsMap.get(toolName);
+                Tr.error(tc, "CWMCM0004E.duplicate.tools", toolName, String.join(",", qualifiedNames));
+            }
         }
         return error;
 
     }
 
-    private boolean reportOnInvalidToolNames(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnInvalidToolNames(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         boolean hasErrors = false;
         for (ToolMetadata tool : tools.getAllTools()) {
             for (var error : ToolValidation.validateToolName(tool.name())) {
@@ -258,7 +311,7 @@ public class McpCdiExtension implements Extension {
         return hasErrors;
     }
 
-    private boolean reportOnDuplicateSpecialArguments(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnDuplicateSpecialArguments(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         AtomicBoolean error = new AtomicBoolean(false);
         for (ToolMetadata tool : tools.getAllTools()) {
             if (tool.methodMetadata().isEmpty()) {
@@ -288,7 +341,7 @@ public class McpCdiExtension implements Extension {
 
     }
 
-    private boolean reportOnInvalidSpecialArguments(AfterDeploymentValidation afterDeploymentValidation) {
+    private boolean reportOnInvalidSpecialArguments(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
         boolean error = false;
         for (ToolMetadata tool : tools.getAllTools()) {
             if (tool.methodMetadata().isEmpty()) {
@@ -308,10 +361,12 @@ public class McpCdiExtension implements Extension {
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method, BeanManager beanManager) {
         try {
             ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
-            List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
+            J2EEName module = getModuleForBean(bean);
+            List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(module, key -> new HashMap<>())
+                                                           .computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
             duplicatesList.add(toolmd.getToolQualifiedName());
             if (duplicatesList.size() <= 1) {
-                tools.addTool(toolmd);
+                toolRegistries.getForModule(module).addTool(toolmd);
                 if (TraceComponent.isAnyTracingEnabled()) {
                     if (tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
@@ -329,8 +384,12 @@ public class McpCdiExtension implements Extension {
         }
     }
 
-    public ToolRegistry getToolRegistry() {
-        return tools;
+    public ToolRegistry getCurrentToolRegistry() {
+        return toolRegistries.getCurrent();
+    }
+
+    public EncoderRegistry getCurrentEncoderRegistry() {
+        return encoderRegistries.getCurrent();
     }
 
     public SchemaRegistry getSchemaRegistry() {
@@ -341,7 +400,66 @@ public class McpCdiExtension implements Extension {
         return jsonb;
     }
 
-    public EncoderRegistry getEncoderRegistry() {
-        return encoderRegistry;
+    private J2EEName getModuleForBean(Bean<?> bean) {
+        J2EEName moduleName = CDI_SERVICE.run(cdiService -> cdiService.getModuleNameForClass(bean.getBeanClass()))
+                                         .orElseThrow(() -> new RuntimeException("No current CDIService"))
+                                         .orElseThrow(() -> new RuntimeException("No module for bean " + bean));
+        return moduleName;
+    }
+
+    /**
+     * Determines the J2EE module (J2EEName) that owns a CDI bean, or null if the bean has no module association.
+     *
+     * <p>This is a general-purpose utility method that works for any CDI bean type (encoders or converters etc.).
+     * It uses the OSGi CDI_SERVICE to reliably determine module ownership based on the bean's class loader,
+     * which remains stable throughout the CDI lifecycle.
+     *
+     * <p><b>Why OSGi CDI_SERVICE works vs ComponentMetaDataAccessorImpl (thread-local):</b>
+     * <ul>
+     * <li><b>CDI_SERVICE (OSGi):</b> Maintains a persistent, class-based mapping of which module
+     * loaded each class. This mapping is established during application deployment and remains
+     * stable throughout the CDI lifecycle. Works reliably during:
+     * <ul>
+     * <li>@Observes ProcessManagedBean (bean discovery phase)</li>
+     * <li>@Observes AfterDeploymentValidation (registration phase)</li>
+     * <li>Runtime execution (tool invocation)</li>
+     * </ul>
+     * </li>
+     * <li><b>ComponentMetaDataAccessorImpl (thread-local):</b> Relies on thread-local context
+     * (ComponentMetaData) that varies based on which thread is executing and what operation
+     * is in progress. During CDI initialization:
+     * <ul>
+     * <li>Thread context may not be set or may point to wrong module</li>
+     * <li>Single McpCdiExtension instance processes beans from ALL modules</li>
+     * <li>Thread context during @Observes AfterDeploymentValidation is unpredictable</li>
+     * <li>Would return different modules for same bean depending on execution context</li>
+     * </ul>
+     * </li>
+     * </ul>
+     *
+     * <p><b>Beans without modules (return null):</b>
+     * <ul>
+     * <li>Beans from EAR/lib (shared across modules)</li>
+     * <li>Beans from Liberty runtime bundles (e.g., JsonTextContentEncoder)</li>
+     * </ul>
+     *
+     * <p>These beans are treated as "global" and registered to the GLOBAL encoder registry.
+     *
+     * <p><b>Key Architectural Insight:</b> In multi-module EAR applications, a single McpCdiExtension
+     * instance discovers beans from ALL modules. The CDI_SERVICE provides the only reliable way to
+     * determine which module each bean belongs to, as it uses class loader metadata rather than
+     * thread-local execution context.
+     *
+     * @param bean The CDI bean to check
+     * @return The J2EEName of the bean's module, or null if the bean has no module
+     * @throws RuntimeException if CDI service is unavailable (system error)
+     */
+    private J2EEName getModuleForBeanOrNull(Bean<?> bean) {
+        // Get the Optional<Optional<J2EEName>> from CDI service
+        // Outer Optional: CDI service availability
+        // Inner Optional: Module name for bean class
+        return CDI_SERVICE.run(cdiService -> cdiService.getModuleNameForClass(bean.getBeanClass()))
+                          .orElseThrow(() -> new RuntimeException("No current CDIService"))
+                          .orElse(null); // No module = global bean (EAR/lib or runtime)
     }
 }

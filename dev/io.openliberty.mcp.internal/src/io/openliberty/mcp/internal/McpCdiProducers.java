@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import io.openliberty.mcp.internal.encoders.EncoderRegistry;
+import io.openliberty.mcp.internal.moduleScope.ModuleScoped;
 import io.openliberty.mcp.tools.ToolManager;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
@@ -19,10 +21,16 @@ import jakarta.enterprise.inject.Produces;
 @ApplicationScoped
 public class McpCdiProducers {
 
-    @ApplicationScoped
+    @ModuleScoped
     @Produces
     private ToolManager produceToolManager(McpCdiExtension extension) {
-        return extension.getToolRegistry();
+        return extension.getCurrentToolRegistry();
+    }
+
+    @ModuleScoped
+    @Produces
+    private EncoderRegistry produceEncoderRegistry(McpCdiExtension extension) {
+        return extension.getCurrentEncoderRegistry();
     }
 
 }

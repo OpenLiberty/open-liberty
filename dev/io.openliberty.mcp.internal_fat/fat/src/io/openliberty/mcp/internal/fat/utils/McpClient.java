@@ -248,6 +248,21 @@ public class McpClient extends ExternalResource {
         return request.run(String.class);
     }
 
+    private String setupAndRunRequest(final HttpRequest request, String jsonRequestBody, String aSessionID) throws Exception {
+        request.requestProp(ACCEPT, VALUE_ACCEPT_DEFAULT)
+               .requestProp(MCP_PROTOCOL_VERSION, VALUE_MCP_PROTOCOL_VERSION)
+               .jsonBody(jsonRequestBody)
+               .method("POST");
+
+        if (mode.equals(StateMode.STATEFUL)) {
+            if (sessionId == null) {
+                throw new IllegalStateException("In stateful mode but don't have a sessionId, did you forget to use @Rule?");
+            }
+            request.requestProp(MCP_SESSION_ID, aSessionID);
+        }
+        return request.run(String.class);
+    }
+
     /**
      * Call MCP server endpoint with a given JSON-RPC request body and return the response as a string.
      * The request includes required headers: Accept, MCP-Protocol-Version, and Mcp-Session-Id.
@@ -256,6 +271,11 @@ public class McpClient extends ExternalResource {
     public String callMCP(String jsonRequestBody) throws Exception {
         final HttpRequest request = new HttpRequest(server, getMcpPath());
         return setupAndRunRequest(request, jsonRequestBody);
+    }
+
+    public String callMCPWithSessionID(String jsonRequestBody, String aSessionID) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath());
+        return setupAndRunRequest(request, jsonRequestBody, aSessionID);
     }
 
     public String callMCPwithBasicAuth(String jsonRequestBody, String user, String password) throws Exception {

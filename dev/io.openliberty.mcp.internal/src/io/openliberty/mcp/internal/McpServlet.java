@@ -51,7 +51,7 @@ import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 import io.openliberty.mcp.internal.security.Authorizer;
 import io.openliberty.mcp.internal.sessions.McpSession;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
-import io.openliberty.mcp.internal.sessions.McpSessionStore;
+import io.openliberty.mcp.internal.sessions.McpSessionStores;
 import io.openliberty.mcp.internal.tools.ToolResponses;
 import io.openliberty.mcp.messaging.Cancellation;
 import io.openliberty.mcp.meta.Meta;
@@ -81,16 +81,13 @@ public class McpServlet extends HttpServlet {
     BeanManager bm;
 
     @Inject
-    McpSessionStore sessionStore;
+    McpSessionStores sessionStores;
 
     @Inject
-    McpRequestTracker requestTracker;
+    McpRequestTrackers requestTrackers;
 
     @Inject
     McpCdiExtension cdiExtension;
-
-    @Inject
-    EncoderRegistry encoderRegistry;
 
     @Inject
     ConverterRegistry converterRegistry;
@@ -120,7 +117,7 @@ public class McpServlet extends HttpServlet {
         McpTransport transport = new McpTransport(req, resp, jsonb);
 
         try {
-            transport.init(sessionStore);
+            transport.init(sessionStores.getCurrent());
 
             RequestMethod method = transport.getMcpRequest().getRequestMethod();
 
@@ -174,8 +171,8 @@ public class McpServlet extends HttpServlet {
             return;
         }
 
-        if (sessionStore.isValid(sessionId)) {
-            sessionStore.deleteSession(sessionId);
+        if (sessionStores.getCurrent().isValid(sessionId)) {
+            sessionStores.getCurrent().deleteSession(sessionId);
             resp.setStatus(HttpServletResponse.SC_OK);
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
@@ -188,7 +185,7 @@ public class McpServlet extends HttpServlet {
         McpToolCallParams params = transport.getParams(McpToolCallParams.class);
         McpRequest request = transport.getMcpRequest();
 
-        if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
+        if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
                                        Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
         }
@@ -224,7 +221,7 @@ public class McpServlet extends HttpServlet {
 
         ToolArguments toolArgs = createToolArguments(mcpRequest, params);
         if (requestId != null) {
-            requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
+            requestTrackers.getCurrent().registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }
 
         ToolResponse response;
@@ -254,7 +251,7 @@ public class McpServlet extends HttpServlet {
         ToolArguments toolArgs = createToolArguments(mcpRequest, params);
 
         if (requestId != null) {
-            requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
+            requestTrackers.getCurrent().registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }
 
         var handler = params.getMetadata().asyncHandler();
@@ -310,7 +307,7 @@ public class McpServlet extends HttpServlet {
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
         RequestId requestId = request.id();
 
-        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId);
+        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, EncoderRegistry.getModuleInstance(), requestId);
     }
 
     public record ToolArgumentsImpl(Map<String, Object> args,
@@ -320,8 +317,8 @@ public class McpServlet extends HttpServlet {
                                     RequestId requestId) implements ToolArguments {}
 
     private void cleanup(ExecutionRequestId requestId) {
-        if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
-            requestTracker.deregisterOngoingRequest(requestId);
+        if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
+            requestTrackers.getCurrent().deregisterOngoingRequest(requestId);
         }
     }
 
@@ -408,7 +405,7 @@ public class McpServlet extends HttpServlet {
         }
         Principal userId = transport.getUser();
 
-        String sessionId = sessionStore.createSession(userId);
+        String sessionId = sessionStores.getCurrent().createSession(userId);
 
         ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
 
@@ -441,7 +438,7 @@ public class McpServlet extends HttpServlet {
             transport.sendEmptyResponse();
             return;
         } else {
-            var session = sessionStore.getSession(sessionId.value());
+            var session = sessionStores.getCurrent().getSession(sessionId.value());
             if (session == null || !Objects.equals(session.getUserId(), userId)) {
                 transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")));
                 return;
@@ -455,7 +452,7 @@ public class McpServlet extends HttpServlet {
             Tr.event(this, tc, "Cancellation requested for " + requestId);
         }
 
-        Cancellation cancellation = requestTracker.getOngoingRequestCancellation(requestId);
+        Cancellation cancellation = requestTrackers.getCurrent().getOngoingRequestCancellation(requestId);
         if (cancellation != null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "Cancelling task");

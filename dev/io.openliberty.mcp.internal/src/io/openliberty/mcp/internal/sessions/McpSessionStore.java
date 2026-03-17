@@ -18,25 +18,24 @@ import java.util.concurrent.ConcurrentMap;
 
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.config.McpConfig;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 /**
  * Manages active MCP sessions for the server.
  * <p>
  * Each session is uniquely identified by a UUID and has an associated {@link McpSession}
  */
-@ApplicationScoped
 public class McpSessionStore {
 
-    @Inject
-    McpRequestTracker requestTracker;
-
-    @Inject
-    McpConfig mcpConfig;
+    private McpRequestTracker requestTracker;
+    private McpConfig mcpConfig;
 
     private static final Duration SESSION_TIMEOUT = Duration.ofMinutes(10);
     private final ConcurrentMap<String, McpSession> sessions = new ConcurrentHashMap<>();
+
+    public McpSessionStore(McpRequestTracker requestTracker, McpConfig mcpConfig) {
+        this.requestTracker = requestTracker;
+        this.mcpConfig = mcpConfig;
+    }
 
     public boolean isStateless() {
         return mcpConfig.stateless();
