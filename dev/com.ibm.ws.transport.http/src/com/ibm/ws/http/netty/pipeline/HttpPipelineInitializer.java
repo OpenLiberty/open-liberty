@@ -253,7 +253,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 // Turn on half closure for H1
                 ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
 
-                pipeline.addBefore(HTTP_DISPATCHER_HANDLER_NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                pipeline.addBefore(HttpDispatcherHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
                 ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
                 ctx.pipeline().remove(this);
 
