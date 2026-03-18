@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.EnumSet;
 import java.util.Hashtable;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.logging.Level;
 
 import javax.servlet.ServletContext;
@@ -44,6 +45,7 @@ import com.ibm.ws.session.store.memory.SessionSimpleHashMap;
 import com.ibm.ws.session.utils.IDGeneratorImpl;
 import com.ibm.ws.session.utils.LoggingUtil;
 import com.ibm.ws.util.WSThreadLocal;
+import com.ibm.ws.webcontainer.httpsession.SessionMgrComponentImpl;
 import com.ibm.wsspi.session.IGenericSessionManager;
 import com.ibm.wsspi.session.IProtocolAdapter;
 import com.ibm.wsspi.session.ISession;
@@ -266,7 +268,10 @@ public class SessionContext {
         _invalidator = createInvalidator();
         final int reaperInterval = getReaperInterval(sessionTimeout);
         final IStore fStore = _store;
-        CheckpointPhase.onRestore(3, () -> _invalidator.start(fStore, reaperInterval));
+        // Capture the ScheduledExecutorService reference before registering the lambda
+        // to avoid NPE during dynamic config updates when the service may be temporarily unavailable
+        final ScheduledExecutorService scheduler = SessionMgrComponentImpl.INSTANCE.get().getScheduledExecutorService();
+        CheckpointPhase.onRestore(3, () -> _invalidator.start(scheduler, fStore, reaperInterval));
 
         // storer - handles manual write, eos, and time based differences
         _storer = createStorer(_smc, _store);

@@ -32,7 +32,19 @@ public class SessionInvalidatorWithThreadPool implements ITimer{
     public void start(IStore store, int interval) {
         /*Get reference to ScheduledExecutorService from SessionMgrComponentImpl*/
         ScheduledExecutorService scheduler = SessionMgrComponentImpl.INSTANCE.get().getScheduledExecutorService();
+        start(scheduler, store, interval);
+    }
 
+    /**
+     * Start the invalidator with a pre-captured ScheduledExecutorService.
+     * This method is used when the service reference needs to be captured before
+     * checkpoint/restore operations to avoid NPE during dynamic config updates.
+     *
+     * @param scheduler the ScheduledExecutorService to use
+     * @param store the session store
+     * @param interval the invalidation interval in seconds
+     */
+    public void start(ScheduledExecutorService scheduler, IStore store, int interval) {
         InvalidationTask invalTask = new InvalidationTask(store);
 
         /*schedule periodic invalidation task and store in ScheduledFuture object*/
