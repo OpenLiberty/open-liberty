@@ -119,6 +119,11 @@ public final class McpMetrics {
         return startTIme;
     }
 
+    public void setOutcome(String status, String errorType) {
+        this.status = status;
+        this.errorType = errorType;
+    }
+
     /**
      * @param metrics
      */
