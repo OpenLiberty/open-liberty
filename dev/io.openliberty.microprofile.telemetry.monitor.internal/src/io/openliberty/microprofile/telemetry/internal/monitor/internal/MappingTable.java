@@ -32,6 +32,7 @@ public class MappingTable {
 	public static final String THREADPOOL_TAG_NAME = "threadpool.name";
 	public static final String CONNECTIONPOOL_TAG_NAME = "datasource.name";
 	public static final String SESSION_TAG_NAME = "app.name";
+	public static final String MCP_TOOL_NAME = "tool.name";
 
 
 	public static final String LONG_UP_DOWN_COUNTER = "LONGUPDOWNCOUNTER";
@@ -43,6 +44,7 @@ public class MappingTable {
 	public static final String SESSION_UNIT = "{session}";
 	public static final String CONNECTION_UNIT = "{connection}";
 	public static final String CONNECTION_HANDLE_UNIT = "{connection_handle}";
+	public static final String TOOL_CALL_UNIT = "{tool_call}";
 
 	private static MappingTable singleton = null;
 
@@ -103,6 +105,11 @@ public class MappingTable {
 				{ "connection_pool.connection.free", "connectionpool.connection.free.description",
 						LONG_UP_DOWN_COUNTER, CONNECTION_UNIT, "FreeConnectionCount", null, CONNECTIONPOOL_TAG_NAME }};
 		mappingTable.put("WebSphere:type=ConnectionPoolStats,name=*", connectionPoolTable);
+		
+		String[][] mcpTable = new String[][] {
+			{ "mcp.tool.call.total", "mcp.tool.call.total.description", LONG_COUNTER, TOOL_CALL_UNIT,
+					"ToolCallCount", null, MCP_TOOL_NAME }};
+	mappingTable.put("WebSphere:type=McpStats,name=*", mcpTable);
 
 	}
 

@@ -30,7 +30,11 @@ public class OpenTelemetryConstants {
     public static final String HTTP_SERVER_REQUEST_DURATION_NAME = "http.server.request.duration";
     public static final String HTTP_SERVER_REQUEST_DURATION_DESC = "Duration of HTTP server requests.";
 
-    //HTTP Metric units
+    //MCP Metric name + desc
+    public static final String MCP_SERVER_OPERATION_DURATION_NAME = "mcp.server.operation.duration";
+    public static final String MCP_SERVER_OPERATION_DURATION_DESC = "Duration of MCP operation calls.";
+
+    //HTTP, MCP Metric units
     public static final String OTEL_SECONDS_UNIT = "s";
 
     //Attribute Keys

@@ -29,7 +29,7 @@ public final class McpMetrics {
     private String status;
     private String errorType;
 
-    public void McpOperationContext() {
+    public McpMetrics() {
         this.startTimeNanos = System.nanoTime();
         this.startTIme = Instant.now();
     }
@@ -117,11 +117,6 @@ public final class McpMetrics {
      */
     public Instant getStartTIme() {
         return startTIme;
-    }
-
-    public void setOutcome(String status, String errorType) {
-        this.status = status;
-        this.errorType = errorType;
     }
 
     /**
