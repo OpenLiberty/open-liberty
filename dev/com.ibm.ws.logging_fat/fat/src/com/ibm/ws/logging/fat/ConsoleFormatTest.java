@@ -366,7 +366,7 @@ public class ConsoleFormatTest {
      */
     @Test
     @AllowedFFDC
-    public void testSimpleConsoleFormatWithException() throws Exception {
+    public void testSimpleConsoleFormatWithException() throws Exception { 
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
