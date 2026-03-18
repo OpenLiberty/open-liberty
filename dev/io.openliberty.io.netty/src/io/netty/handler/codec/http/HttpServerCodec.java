@@ -25,6 +25,8 @@ import java.util.ArrayDeque;
 import java.util.List;
 import java.util.Queue;
 
+import io.netty.handler.codec.http.HttpHeadersFactory;
+
 import static io.netty.handler.codec.http.HttpObjectDecoder.DEFAULT_MAX_CHUNK_SIZE;
 import static io.netty.handler.codec.http.HttpObjectDecoder.DEFAULT_MAX_HEADER_SIZE;
 import static io.netty.handler.codec.http.HttpObjectDecoder.DEFAULT_MAX_INITIAL_LINE_LENGTH;
@@ -168,12 +170,13 @@ public final class HttpServerCodec extends CombinedChannelDuplexHandler<HttpRequ
     /**
      * Creates a server codec instance with liberty specific http options.
      */
-    public HttpServerCodec(int maxInitialLineLength , int maxChunkSize, int limitFieldSize, int limitNumHeaders) {
+    public HttpServerCodec(int maxInitialLineLength , int maxChunkSize, int limitFieldSize, int limitNumHeaders, HttpHeadersFactory headerFactory) {
         this(new HttpDecoderConfig()
                 .setMaxInitialLineLength(maxInitialLineLength)
                 .setMaxChunkSize(maxChunkSize)
                 .setLimitFieldSize(limitFieldSize)
-                .setLimitNumHeaders(limitNumHeaders));
+                .setLimitNumHeaders(limitNumHeaders)
+                .setHeadersFactory(headerFactory));
     }
 
     /**

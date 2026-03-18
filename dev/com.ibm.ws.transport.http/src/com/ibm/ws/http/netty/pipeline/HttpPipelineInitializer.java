@@ -9,8 +9,13 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
+import java.util.Collections;
 import java.util.EnumMap;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
@@ -38,6 +43,9 @@ import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
+import io.netty.handler.codec.http.DefaultHttpHeaders;
+import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeadersFactory;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
@@ -205,7 +213,7 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
         // 8192 is used instead 4096 of for the maxInitialLineLength to avoid io.netty.handler.codec.http.TooLongHttpLineException 
         // Needed to pass JWT tests with long tokens
-        HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders());
+        HttpServerCodec sourceCodec = new HttpServerCodec(8192, httpConfig.getIncomingBodyBufferSize(), httpConfig.getLimitOfFieldSize(), httpConfig.getLimitOnNumberOfHeaders(), LibertyHttpHeaderFactory.INSTANCE);
         pipeline.addLast(CRLFValidationHandler.NAME, CRLFValidationHandler.INSTANCE);
         pipeline.addLast(NETTY_HTTP_SERVER_CODEC, sourceCodec);
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
@@ -374,6 +382,98 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
             return new HttpPipelineInitializer(chain, httpConfig, configOptions);
         }
+    }
+
+    public static class LibertyHttpHeaderFactory implements HttpHeadersFactory {
+
+        public static final LibertyHttpHeaderFactory INSTANCE = new LibertyHttpHeaderFactory();
+
+        @Override
+        public HttpHeaders newEmptyHeaders() {
+            return new LibertyHttpHeaders();
+        }
+
+        @Override
+        public HttpHeaders newHeaders() {
+            return new LibertyHttpHeaders();
+        }
+
+    }
+
+    public static class LibertyHttpHeaders extends DefaultHttpHeaders {
+
+        private final Map<String, List<String>> cachedHeaders;
+
+        public LibertyHttpHeaders() {
+            super();
+            cachedHeaders = new HashMap<String, List<String>>();
+        }
+
+        public HttpHeaders add(String name, Object value) {
+            super.add(name, value);
+            cacheHeader(name, value.toString());
+            return this;
+        }
+
+        public HttpHeaders add(CharSequence name, Object value) {
+            super.add(name, value);
+            cacheHeader(name.toString(), value.toString());
+            return this;
+        }
+
+        public HttpHeaders set(String name, Object value) {
+            super.set(name, value);
+            cacheHeader(name, value.toString());
+            return this;
+        }
+
+        public HttpHeaders set(CharSequence name, Object value) {
+            super.set(name, value);
+            cacheHeader(name.toString(), value.toString());
+            return this;
+        }
+
+        public HttpHeaders remove(String name) {
+            super.remove(name);
+            cachedHeaders.remove(name);
+            return this;
+        }
+
+        public HttpHeaders remove(CharSequence name) {
+            super.remove(name);
+            cachedHeaders.remove(name.toString());
+            return this;
+        }
+
+        public HttpHeaders clear() {
+            super.clear();
+            cachedHeaders.clear();
+            return this;
+        }
+
+        public List<String> getAll(String name) {
+            List<String> values = cachedHeaders.get(name);
+            if (values != null)
+                return new LinkedList<String>(values);
+            return Collections.emptyList();
+        }
+
+        public Iterator<String> valueStringIterator(CharSequence name) {
+            List<String> values = cachedHeaders.get(name.toString());
+            if (values != null)
+                return values.iterator();
+            return Collections.emptyIterator();
+        }
+
+        private void cacheHeader(String name, String value) {
+            List<String> values = cachedHeaders.get(name);
+            if (values == null) {
+                values = new LinkedList<String>();
+                cachedHeaders.put(name, values);
+            }
+            values.add(value);
+        }
+
     }
 
     /**

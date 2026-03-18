@@ -52,6 +52,14 @@ public class NettyHeader implements HeaderField {
 
     }
 
+    public NettyHeader(HeaderKeys key, String value) {
+        Objects.nonNull(key);
+        this.key = key;
+        this.name = key.getName();
+
+        this.value = Objects.isNull(value) ? "" : value;
+    }
+
     public NettyHeader(String name, String value) {
         Objects.nonNull(name);
         this.name = name;

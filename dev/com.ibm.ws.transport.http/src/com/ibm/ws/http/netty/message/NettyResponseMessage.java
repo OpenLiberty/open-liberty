@@ -238,46 +238,6 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
     }
 
     @Override
-    public List<HeaderField> getHeaders(String name) {
-        List<String> values = headers.getAll(name);
-        List<HeaderField> result = new ArrayList<HeaderField>();
-        for (String value : values) {
-            result.add(new NettyHeader(name, value));
-        }
-        return result;
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(byte[] name) {
-        return getHeaders(new String(name, StandardCharsets.UTF_8));
-    }
-
-    @Override
-    public List<HeaderField> getHeaders(HeaderKeys name) {
-        return getHeaders(name.getName());
-    }
-
-    @Override
-    public List<HeaderField> getAllHeaders() {
-        List<Entry<String, String>> entries = headers.entries();
-        List<HeaderField> headers = new ArrayList<HeaderField>();
-        for (Entry<String, String> entry : entries) {
-            headers.add(new NettyHeader(entry.getKey(), entry.getValue()));
-        }
-        return headers;
-    }
-
-    @Override
-    public List<String> getAllHeaderNames() {
-        return new ArrayList<String>(headers.names());
-    }
-
-    @Override
-    public Set<String> getAllHeaderNamesSet() {
-        return headers.names();
-    }
-
-    @Override
     public void appendHeader(byte[] header, byte[] value) {
         appendHeader(new String(header, StandardCharsets.UTF_8), new String(value, StandardCharsets.UTF_8));
 
