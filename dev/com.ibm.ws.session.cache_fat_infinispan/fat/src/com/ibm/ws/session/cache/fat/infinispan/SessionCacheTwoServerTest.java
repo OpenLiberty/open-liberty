@@ -145,17 +145,20 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         
         // Poll for session replication to serverB before stopping serverA (especially important on slower platforms like z/OS)
         long timeout = System.currentTimeMillis() + 10_000; // 10 second max wait
+        boolean replicated = false;
+        AssertionError lastError = null;
         while (System.currentTimeMillis() < timeout) {
             try {
                 appB.sessionGet("testFailover-1", "foo", session);
+                replicated = true;
                 break; // replication succeeded
             } catch (AssertionError e) {
-                if (System.currentTimeMillis() < timeout) {
-                    TimeUnit.MILLISECONDS.sleep(500);
-                } else {
-                    throw new AssertionError("Session did not replicate to appB within 10 seconds before failover", e);
-                }
+                lastError = e;
+                TimeUnit.MILLISECONDS.sleep(500);
             }
+        }
+        if (!replicated) {
+            throw new AssertionError("Session did not replicate to appB within 10 seconds before failover", lastError);
         }
         
         serverA.stopServer();
@@ -270,17 +273,20 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         
         // Poll for session replication to appB (especially important on slower platforms like z/OS)
         long timeout = System.currentTimeMillis() + 10_000; // 10 second max wait
+        boolean replicated = false;
+        AssertionError lastError = null;
         while (System.currentTimeMillis() < timeout) {
             try {
                 appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
+                replicated = true;
                 break; // replication succeeded
             } catch (AssertionError e) {
-                if (System.currentTimeMillis() < timeout) {
-                    TimeUnit.MILLISECONDS.sleep(500);
-                } else {
-                    throw new AssertionError("Session attribute did not replicate to appB within 10 seconds", e);
-                }
+                lastError = e;
+                TimeUnit.MILLISECONDS.sleep(500);
             }
+        }
+        if (!replicated) {
+            throw new AssertionError("Session attribute did not replicate to appB within 10 seconds", lastError);
         }
         
         try {
@@ -374,17 +380,20 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         
         // Poll for session replication to appB (especially important on slower platforms like z/OS)
         long timeout = System.currentTimeMillis() + 10_000; // 10 second max wait
+        boolean replicated = false;
+        AssertionError lastError = null;
         while (System.currentTimeMillis() < timeout) {
             try {
                 appB.sessionGet("testMaxInactiveInterval-key", 55901, session);
+                replicated = true;
                 break; // replication succeeded
             } catch (AssertionError e) {
-                if (System.currentTimeMillis() < timeout) {
-                    TimeUnit.MILLISECONDS.sleep(500);
-                } else {
-                    throw new AssertionError("Session did not replicate to appB within 10 seconds", e);
-                }
+                lastError = e;
+                TimeUnit.MILLISECONDS.sleep(500);
             }
+        }
+        if (!replicated) {
+            throw new AssertionError("Session did not replicate to appB within 10 seconds", lastError);
         }
         appA.invokeServlet("setMaxInactiveInterval", session); //set max inactive interval to 1 second
 
