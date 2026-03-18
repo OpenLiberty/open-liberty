@@ -216,8 +216,8 @@ public class ExternalDependencyDownloadTest {
                 flag = true;
                 break;
             } catch (Exception e) {
-                Log.info(LibertyServer.class, "installSampleWithExternalDependencies",
-                         String.format("Error Occurred During %d attempt of Liberty install: %s", count, e.getMessage()));
+                Log.error(LibertyServer.class, "installSampleWithExternalDependencies",
+                          e, String.format("Error Occurred During %d attempt of Liberty install: %s", count, e.getMessage()));
                 count++;
             }
         }
