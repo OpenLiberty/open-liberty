@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.checkpoint.fat;
 
@@ -38,12 +35,10 @@ import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.Server;
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.DerbyNetworkUtilities;
 import componenttest.topology.impl.LibertyServer;
@@ -58,9 +53,10 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 public class TransactionManagerTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EE8FeatureReplacementAction().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog"))
-                    .andWith(new JakartaEE9Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly())
-                    .andWith(new JakartaEE10Action().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly());
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog"))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().forServers("checkpointTransactionServlet", "checkpointTransactionDbLog").fullFATOnly());
 
     static final String APP_NAME = "transactionservlet";
     static final String SERVLET_NAME = APP_NAME + "/SimpleServlet";

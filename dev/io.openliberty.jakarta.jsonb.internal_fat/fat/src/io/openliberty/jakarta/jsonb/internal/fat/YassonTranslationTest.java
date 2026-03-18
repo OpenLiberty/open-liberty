@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,7 +42,8 @@ public class YassonTranslationTest extends FATServletClient {
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().fullFATOnly());
 
     @Server("io.openliberty.jakarta.yasson.internal.fat.translation")
     @TestServlet(servlet = YassonTranslationTestServlet.class, contextRoot = CONTEXT)
