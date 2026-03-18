@@ -14,6 +14,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.OperatingSystemMXBean;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -73,6 +75,11 @@ public class LongIntervalHealthCheckTest {
 
     @BeforeClass
     public static void beforeClass() throws Exception {
+        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        int availableProcessors = osBean.getAvailableProcessors();
+
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass",
+                 "Available CPUs beforeClass: " + availableProcessors);
         /*
          *
          * The first test/server-start sometimes?/always? needs to generate a fatFeatureList.xml.
@@ -130,6 +137,12 @@ public class LongIntervalHealthCheckTest {
      */
     public void StartedHealthCheckTestLongStartupInterval() throws Exception {
         final String METHOD_NAME = "StartedHealthCheckTestLongStartupInterval";
+
+        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        int availableProcessors = osBean.getAvailableProcessors();
+
+        Log.info(LongIntervalHealthCheckTest.class, "StartedHealthCheckTestLongStartupInterval",
+                 "Available CPUs: " + availableProcessors);
 
         WebArchive testWAR = ShrinkWrap
                         .create(WebArchive.class, FAIL_START_APP_WAR)
@@ -274,6 +287,12 @@ public class LongIntervalHealthCheckTest {
      */
     public void HealthCheckTestLongCheckInterval() throws Exception {
         final String METHOD_NAME = "HealthCheckTestLongCheckInterval";
+
+        OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        int availableProcessors = osBean.getAvailableProcessors();
+
+        Log.info(LongIntervalHealthCheckTest.class, "HealthCheckTestLongCheckInterval",
+                 "Available CPUs: " + availableProcessors);
 
         WebArchive testWAR = ShrinkWrap
                         .create(WebArchive.class, FAIL_START_APP_WAR)
