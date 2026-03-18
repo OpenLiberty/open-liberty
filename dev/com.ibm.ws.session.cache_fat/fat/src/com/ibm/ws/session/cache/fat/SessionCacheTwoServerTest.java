@@ -276,8 +276,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         if (session != null) {
             appA.sessionPut("testModifyWithoutPut-key&sync=true", new StringBuffer("MyValue"), session, true);
-            // Wait for session to replicate to server B with retry logic (up to 15 seconds)
-            waitForSessionReplication("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyValue"), session, appB, 15000);
+            // Wait for session to replicate to server B with retry logic (up to 5 seconds)
+            waitForSessionReplication("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyValue"), session, appB, 5000);
             try {
                 appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
                 // appA should not see the update because it does not get written to the persistent store without a putAttribute per writeContents=ONLY_SET_ATTRIBUTES
@@ -371,8 +371,8 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         List<String> session = new ArrayList<>();
         if (session != null) {
             appA.sessionPut("testMaxInactiveInterval-key", 55901, session, true);
-            // Wait for session to replicate to server B with retry logic (up to 15 seconds)
-            waitForSessionReplication("testMaxInactiveInterval-key", 55901, session, appB, 15000);
+            // Wait for session to replicate to server B with retry logic (up to 5 seconds)
+            waitForSessionReplication("testMaxInactiveInterval-key", 55901, session, appB, 5000);
             appA.invokeServlet("setMaxInactiveInterval", session); //set max inactive interval to 1 second
 
             for (int attempt = 0; attempt < 5; attempt++) {
