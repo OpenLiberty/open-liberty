@@ -277,7 +277,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         AssertionError lastError = null;
         while (System.currentTimeMillis() < timeout) {
             try {
-                appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
+                appB.sessionGet("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyValue"), session);
                 replicated = true;
                 break; // replication succeeded
             } catch (AssertionError e) {
@@ -290,6 +290,7 @@ public class SessionCacheTwoServerTest extends FATServletClient {
         }
         
         try {
+            appB.invokeServlet("testStringBufferAppendWithoutSetAttribute&key=testModifyWithoutPut-key", session);
             // appA should not see the update because it does not get written to the persistent store without a putAttribute per writeContents=ONLY_SET_ATTRIBUTES
             appA.sessionGet("testModifyWithoutPut-key&compareAsString=true", new StringBuffer("MyValue"), session);
 
