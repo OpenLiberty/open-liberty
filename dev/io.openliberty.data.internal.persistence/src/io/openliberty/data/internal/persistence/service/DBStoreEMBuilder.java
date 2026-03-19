@@ -187,7 +187,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                                 .append("(&(service.factoryPid=com.ibm.ws.jdbc.dataSource)");
                 if (application != null && (javaApp || javaModule || javaComp))
                     filter.append(FilterUtils.createPropertyFilter("application", application));
-                if (module != null && javaModule || javaComp)
+                if (module != null && (javaModule || javaComp))
                     filter.append(FilterUtils.createPropertyFilter("module", module));
                 filter.append(FilterUtils.createPropertyFilter("jndiName", dataStore)) //
                                 .append(')');

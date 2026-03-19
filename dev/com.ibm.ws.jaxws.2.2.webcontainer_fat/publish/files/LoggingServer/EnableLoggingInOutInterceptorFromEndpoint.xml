@@ -24,9 +24,11 @@
     <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers"/>
     <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read"/>
   	
-	<!-- Trace logging and debug are turned on to enable feature logging -->
-	<logging traceSpecification="com.ibm.ws.jaxws.*=debug:org.apache.cxf.*=debug"/>
-
-	<webApplication name="helloApp" location="helloApp.war" context-root="helloApp" />
-	
+	<!-- using enableLoggingInOutInterceptor to enable feature logging -->
+	<webApplication name="helloApp" location="helloApp.war"
+		context-root="helloApp">
+		<webservices-bnd>
+			<webservice-endpoint-properties enableLoggingInOutInterceptor="true"/>  
+		</webservices-bnd>
+	</webApplication>
 </server>

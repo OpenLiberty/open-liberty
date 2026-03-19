@@ -245,7 +245,7 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
     public PageRequest.Cursor cursor(int index) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        if (index < 0 || index >= pageRequest.size())
+        if (index < 0 || index >= pageRequest.size() || index >= results.size())
             throw new IllegalArgumentException("index: " + index);
 
         T entity = results.get(index);
@@ -266,7 +266,9 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, "key element " + k + ": " +
                                        queryInfo.loggable(value));
-            } catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException x) {
+            } catch (IllegalAccessException | IllegalArgumentException x) {
+                throw new DataException(x);
+            } catch (InvocationTargetException x) {
                 throw new DataException(x.getCause());
             }
 

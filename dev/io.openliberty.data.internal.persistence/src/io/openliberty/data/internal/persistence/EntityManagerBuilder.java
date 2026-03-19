@@ -138,8 +138,7 @@ public abstract class EntityManagerBuilder {
                                      Set<Class<?>> convertibleTypes) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         this.convertibleTypes = convertibleTypes;
-        EntityManager em = createEntityManager();
-        try {
+        try (EntityManager em = createEntityManager()) {
             boolean isHibernate = em.getClass().getName().startsWith("org.hibernate.");
             Set<Class<?>> missingEntityTypes = new HashSet<>(entityTypes);
             Metamodel model = em.getMetamodel();
@@ -235,8 +234,9 @@ public abstract class EntityManagerBuilder {
                         boolean isEmbeddablesOnly = relationEmbeddablesOnly.poll();
 
                         ManagedType<?> relation = model.managedType(attr.getJavaType());
-                        if (relation instanceof EntityType && !entityTypeClasses.add(attr.getJavaType()))
-                            break;
+                        if (relation instanceof EntityType &&
+                            !entityTypeClasses.add(attr.getJavaType()))
+                            continue;
                         List<String> relAttributeList = relationAttributeNames.get(attr.getJavaType());
                         for (Attribute<?, ?> relAttr : relation.getAttributes()) {
                             String relationAttributeName = relAttr.getName();
@@ -392,9 +392,6 @@ public abstract class EntityManagerBuilder {
                     entityInfoMap.computeIfAbsent(ec, EntityInfo::newFuture) //
                                     .completeExceptionally(x);
             }
-        } finally {
-            if (em != null)
-                em.close();
         }
     }
 
@@ -451,7 +448,7 @@ public abstract class EntityManagerBuilder {
         boolean isIdClassRecord = idType.isRecord();
         for (SingularAttribute<?, ?> attr : idClassAttributes) {
             String entityAttrName = attr.getName();
-            Member idClassMember = null;;
+            Member idClassMember = null;
             if (isIdClassRecord)
                 idClassMember = idType.getMethod(entityAttrName);
             else

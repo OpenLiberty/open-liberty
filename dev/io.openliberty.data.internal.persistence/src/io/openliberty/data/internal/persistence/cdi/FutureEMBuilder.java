@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -776,8 +776,14 @@ public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> imp
 
         // We know the repository classloaders are different but with no natural ording.  Therefore,
         // the only other comparison we can make would be based off of the repository interfaces
-        String r0 = this.repositoryInterfaces.stream().map(c -> c.getCanonicalName()).sorted().collect(Collectors.joining());
-        String r1 = o.repositoryInterfaces.stream().map(c -> c.getCanonicalName()).sorted().collect(Collectors.joining());
+        String r0 = this.repositoryInterfaces.stream() //
+                        .map(Class::getName) //
+                        .sorted() //
+                        .collect(Collectors.joining());
+        String r1 = o.repositoryInterfaces.stream() //
+                        .map(Class::getName) //
+                        .sorted() //
+                        .collect(Collectors.joining());
 
         return r0.compareTo(r1);
     }
