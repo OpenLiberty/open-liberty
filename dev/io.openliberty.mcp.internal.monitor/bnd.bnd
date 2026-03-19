@@ -28,9 +28,10 @@ Export-Package: \
   io.openliberty.mcp.internal.monitor.metrics
 
 -dsannotations: \
-  io.openliberty.mcp.internal.monitor.metrics.MetricsManager
+  io.openliberty.mcp.internal.monitor.metrics.MetricsManager,\
+  io.openliberty.mcp.internal.monitor.McpStatsMonitorImpl
 
-Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonitor
+Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonitorImpl
 
 -buildpath: \
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
@@ -40,4 +41,5 @@ Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonit
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
-	com.ibm.ws.kernel.service;version=latest
+	com.ibm.ws.kernel.service;version=latest,\
+	io.openliberty.mcp.internal;version=latest
