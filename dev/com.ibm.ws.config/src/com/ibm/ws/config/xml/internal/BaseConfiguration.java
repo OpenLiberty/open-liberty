@@ -36,7 +36,14 @@ class BaseConfiguration {
 
     private static final TraceComponent tc = Tr.register(BaseConfiguration.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
+    /**
+     * Default quiesce timeout value in seconds.
+     * This is the timeout used when no quiesceTimeout attribute is specified in server.xml.
+     */
+    public static final int DEFAULT_QUIESCE_TIMEOUT_SECONDS = 30;
+
     private String description;
+    private int quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_SECONDS;
 
     protected long lastModified = -1;
 
@@ -444,6 +451,38 @@ class BaseConfiguration {
 
     public String getDescription() {
         return description;
+    }
+
+    /**
+     * Set the quiesce timeout value in seconds.
+     *
+     * @param timeoutSeconds The timeout value in seconds (must be >= the minimum of 30 seconds).
+     *                       If less than the minimum, it sets to the default.
+     * @return true if the value was set successfully, false if the value was below the minimum
+     */
+    public boolean setQuiesceTimeout(int timeoutSeconds) {
+        if (timeoutSeconds < DEFAULT_QUIESCE_TIMEOUT_SECONDS) {
+            setDefaultQuiesceTimeout();
+            return false;
+        }
+        this.quiesceTimeout = timeoutSeconds;
+        return true;
+    }
+
+    /**
+     * Get the quiesce timeout value in seconds.
+     *
+     * @return The timeout value in seconds
+     */
+    public int getQuiesceTimeout() {
+        return quiesceTimeout;
+    }
+
+    /**
+     * Reset the quiesce timeout to the default value.
+     */
+    public void setDefaultQuiesceTimeout() {
+        this.quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_SECONDS;
     }
 
     @Override
