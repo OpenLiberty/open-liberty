@@ -86,7 +86,8 @@ public class LongIntervalHealthCheckTest {
         Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "getArch: " + osBean.getArch());
         Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "getName: " + osBean.getName());
         Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "getVersion: " + osBean.getVersion());
-        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "Java: " + ManagementFactory.getRuntimeMXBean().getVmVersion());
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass",
+                 "Java Vendor and Version: " + System.getProperty("java.vendor") + " " + System.getProperty("java.vm.vendor") + " " + System.getProperty("java.runtime.version"));
 
         if (!(availableProcessors >= minCPU)) {
             Log.info(LongIntervalHealthCheckTest.class, "beforeClass",
