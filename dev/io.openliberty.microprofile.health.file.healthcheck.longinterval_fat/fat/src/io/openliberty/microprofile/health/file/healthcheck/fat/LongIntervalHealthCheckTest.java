@@ -25,6 +25,7 @@ import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
 import org.junit.Assert;
+import org.junit.Assume;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -76,10 +77,22 @@ public class LongIntervalHealthCheckTest {
     @BeforeClass
     public static void beforeClass() throws Exception {
         OperatingSystemMXBean osBean = ManagementFactory.getOperatingSystemMXBean();
+        int minCPU = 3;
         int availableProcessors = osBean.getAvailableProcessors();
 
         Log.info(LongIntervalHealthCheckTest.class, "beforeClass",
-                 "Available CPUs beforeClass: " + availableProcessors);
+                 "Available CPUs: " + availableProcessors);
+
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "getArch: " + osBean.getArch());
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "getName: " + osBean.getName());
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "getVersion: " + osBean.getVersion());
+        Log.info(LongIntervalHealthCheckTest.class, "beforeClass", "Java: " + ManagementFactory.getRuntimeMXBean().getVmVersion());
+
+        if (!(availableProcessors >= minCPU)) {
+            Log.info(LongIntervalHealthCheckTest.class, "beforeClass",
+                     "Available CPUs is less than 2, skipping test class.");
+        }
+        Assume.assumeTrue(availableProcessors >= minCPU);
         /*
          *
          * The first test/server-start sometimes?/always? needs to generate a fatFeatureList.xml.
