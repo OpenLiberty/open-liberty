@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.monitor;
+package io.openliberty.mcp.internal.monitoring;
 
 import java.util.Optional;
 

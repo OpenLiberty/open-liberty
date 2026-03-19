@@ -40,6 +40,7 @@ Import-Package: \
 DynamicImport-Package: \
     io.openliberty.http.monitor,\
     io.openliberty.http.monitor.metrics,\
+    io.openliberty.mcp.internal.monitoring,\
     io.openliberty.mcp.internal.monitor,\
     io.openliberty.mcp.internal.monitor.metrics
 
@@ -100,4 +101,5 @@ WS-TraceGroup: METRICS
 	com.ibm.ws.microprofile.metrics.common;version=latest,\
 	com.ibm.ws.microprofile.metrics;version=latest,\
 	io.openliberty.http.monitor,\
-	io.openliberty.mcp.internal.monitor
+	io.openliberty.mcp.internal;version=latest,\
+	io.openliberty.mcp.internal.monitor;version=latest

@@ -11,7 +11,7 @@ package io.openliberty.mcp.internal.monitor.metrics;
 
 import java.time.Duration;
 
-import io.openliberty.mcp.internal.monitor.McpStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
 
 
 
