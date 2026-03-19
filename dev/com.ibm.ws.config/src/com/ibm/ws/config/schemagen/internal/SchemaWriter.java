@@ -121,6 +121,12 @@ class SchemaWriter {
     private static boolean isEarlyAccess() {
         boolean result = false;
 
+        // Check system property first (for testing/development)
+        String betaProperty = System.getProperty("com.ibm.ws.beta.edition");
+        if ("true".equalsIgnoreCase(betaProperty)) {
+            return true;
+        }
+
         final Properties props = new Properties();
         AccessController.doPrivileged(new PrivilegedAction<Object>() {
 
@@ -167,7 +173,7 @@ class SchemaWriter {
 
                         File f = new File(url.toURI());
                         // The parent of the jar is lib, so the parent of the parent is the install.
-                        installDir = f.getParentFile();
+                        installDir = f.getParentFile().getParentFile();
                     } catch (MalformedURLException e) {
                         // Not sure we can get here so ignore.
                     } catch (URISyntaxException e) {
@@ -413,11 +419,13 @@ class SchemaWriter {
             if (serverOcd != null) {
                 Map<String, ExtendedAttributeDefinition> serverAttrs = serverOcd.getAttributeMap();
                 for (ExtendedAttributeDefinition attr : serverAttrs.values()) {
-                    String attrName = attr.getID();
-                    Type type = Type.fromId(attr.getType());
-                    String xsdType = type.getGlobalSchemaType();
-                    boolean required = attr.getCardinality() > 0;
-                    writeAttributeWithDocumentation(attrName, xsdType, required, attr.getDescription(), attr.getName());
+                    if (shouldAddAttribute(attr)) {
+                        String attrName = attr.getID();
+                        Type type = Type.fromId(attr.getType());
+                        String xsdType = type.getGlobalSchemaType();
+                        boolean required = attr.getCardinality() > 0;
+                        writeAttributeWithDocumentation(attrName, xsdType, required, attr.getDescription(), attr.getName(), null);
+                    }
                 }
             }
             
@@ -1271,25 +1279,17 @@ class SchemaWriter {
         label = resourceBundle.getString("config.internal.metatype.includeType.label");
         writeDocumentation(doc, label);
 
-        writer.writeStartElement(XSD, "attribute");
-        writer.writeAttribute("name", "optional");
-        writer.writeAttribute("type", "xsd:boolean");
-        writer.writeAttribute("use", "optional");
-        writer.writeAttribute("default", "false");
+        // Write "optional" attribute
         doc = resourceBundle.getString("config.internal.metatype.includeType.attribute.optional.documentation");
         label = resourceBundle.getString("config.internal.metatype.includeType.attribute.optional.label");
-        writeDocumentation(doc, label);
-        writer.writeEndElement();
+        writeAttributeWithDocumentation("optional", "xsd:boolean", false, doc, label, "false");
 
-        writer.writeStartElement(XSD, "attribute");
-        writer.writeAttribute("name", "location");
-        writer.writeAttribute("type", "location");
-        writer.writeAttribute("use", "required");
+        // Write "location" attribute
         doc = resourceBundle.getString("config.internal.metatype.includeType.attribute.location.documentation");
         label = resourceBundle.getString("config.internal.metatype.includeType.attribute.location.label");
-        writeDocumentation(doc, label);
-        writer.writeEndElement();
+        writeAttributeWithDocumentation("location", "location", true, doc, label, null);
 
+        // Write "onConflict" attribute
         writer.writeStartElement(XSD, "attribute");
         writer.writeAttribute("name", "onConflict");
         writer.writeAttribute("use", "optional");
@@ -1341,31 +1341,20 @@ class SchemaWriter {
         label = resourceBundle.getString("config.internal.metatype.variableDefinitionType.label");
         writeDocumentation(doc, label);
 
-        writer.writeStartElement(XSD, "attribute");
-        writer.writeAttribute("name", "name");
-        writer.writeAttribute("type", "xsd:string");
-        writer.writeAttribute("use", "required");
+        // Write "name" attribute
         doc = resourceBundle.getString("config.internal.metatype.variableDefinitionType.name.documentation");
         label = resourceBundle.getString("config.internal.metatype.variableDefinitionType.name.label");
-        writeDocumentation(doc, label);
-        writer.writeEndElement();
+        writeAttributeWithDocumentation("name", "xsd:string", true, doc, label, null);
 
-        writer.writeStartElement(XSD, "attribute");
-        writer.writeAttribute("name", "value");
-        writer.writeAttribute("type", "xsd:string");
-
+        // Write "value" attribute
         doc = resourceBundle.getString("config.internal.metatype.variableDefinitionType.value.documentation");
         label = resourceBundle.getString("config.internal.metatype.variableDefinitionType.value.label");
-        writeDocumentation(doc, label);
-        writer.writeEndElement();
+        writeAttributeWithDocumentation("value", "xsd:string", false, doc, label, null);
 
-        writer.writeStartElement(XSD, "attribute");
-        writer.writeAttribute("name", "defaultValue");
-        writer.writeAttribute("type", "xsd:string");
+        // Write "defaultValue" attribute
         doc = resourceBundle.getString("config.internal.metatype.variableDefinitionType.defaultValue.documentation");
         label = resourceBundle.getString("config.internal.metatype.variableDefinitionType.defaultValue.label");
-        writeDocumentation(doc, label);
-        writer.writeEndElement();
+        writeAttributeWithDocumentation("defaultValue", "xsd:string", false, doc, label, null);
 
         writer.writeEndElement();
     }
@@ -1433,11 +1422,28 @@ class SchemaWriter {
         writer.writeAttribute("use", (required) ? "required" : "optional");
     }
 
-    private void writeAttributeWithDocumentation(String name, String type, boolean required, String description, String label) throws XMLStreamException {
+    /**
+     * Write an attribute element with documentation.
+     *
+     * @param name The attribute name
+     * @param type The XSD type (e.g., "xsd:string", "xsd:boolean")
+     * @param required true if the attribute is required, otherwise false
+     * @param description The documentation text
+     * @param label The label for the attribute
+     * @param defaultValue Optional default value (can be null)
+     * @throws XMLStreamException
+     */
+    private void writeAttributeWithDocumentation(String name, String type, boolean required,
+                                                 String description, String label,
+                                                 String defaultValue) throws XMLStreamException {
         writer.writeStartElement(XSD, "attribute");
         writer.writeAttribute("name", name);
         writer.writeAttribute("use", (required) ? "required" : "optional");
         writer.writeAttribute("type", type);
+        
+        if (defaultValue != null) {
+            writer.writeAttribute("default", defaultValue);
+        }
         
         // Write annotation with documentation
         writer.writeStartElement(XSD, "annotation");
