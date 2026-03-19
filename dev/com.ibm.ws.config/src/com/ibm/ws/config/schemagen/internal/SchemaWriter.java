@@ -269,11 +269,13 @@ class SchemaWriter {
 
         Collection<OCDType> types = builder.getTypes();
 
+        ExtendedObjectClassDefinition serverOcd = null;
         for (TypeBuilder.OCDType type : types) {
             if ("com.ibm.ws.config".equals(type.getTypeName())) {
                 ExtendedObjectClassDefinition ocd = type.getObjectClassDefinition();
                 onErrorDefinition = ocd.getAttributeMap().get("onError");
-                break;
+            } else if ("com.ibm.ws.server".equals(type.getTypeName())) {
+                serverOcd = type.getObjectClassDefinition();
             }
         }
 
@@ -295,6 +297,10 @@ class SchemaWriter {
 
         // write types first for each OCD
         for (TypeBuilder.OCDType type : types) {
+            // Skip com.ibm.ws.server - its attributes are used for serverType, but it shouldn't be a separate type
+            if ("com.ibm.ws.server".equals(type.getTypeName())) {
+                continue;
+            }
             if (shouldAddOCD(type)) {
                 writeObjectClassType(builder, type);
             }
@@ -308,6 +314,7 @@ class SchemaWriter {
 
             writer.writeStartElement(XSD, "complexType");
             writer.writeAttribute("name", SERVER_TYPE);
+            
             writer.writeStartElement(XSD, "choice");
             writer.writeAttribute("minOccurs", "0");
             writer.writeAttribute("maxOccurs", "unbounded");
@@ -347,6 +354,13 @@ class SchemaWriter {
         // write out any aliases
         // Note, we don't need to deal with childAlias here because they are always nested
         outer: for (Map.Entry<String, List<TypeBuilder.OCDType>> entry : builder.getAliasMap().entrySet()) {
+            String aliasName = entry.getKey();
+            
+            // Skip "server" alias - it's the root element, not a child element
+            if ("server".equals(aliasName)) {
+                continue;
+            }
+            
             List<TypeBuilder.OCDType> typesList = entry.getValue();
             if (typesList.size() == 0) {
                 continue;
@@ -394,8 +408,19 @@ class SchemaWriter {
             //            }
 
             writer.writeEndElement(); // close xsd:choice
-
-            writeAttribute("description", "xsd:string", false);
+            
+            // Write attributes from the server OCD after child elements (per XSD spec)
+            if (serverOcd != null) {
+                Map<String, ExtendedAttributeDefinition> serverAttrs = serverOcd.getAttributeMap();
+                for (ExtendedAttributeDefinition attr : serverAttrs.values()) {
+                    String attrName = attr.getID();
+                    Type type = Type.fromId(attr.getType());
+                    String xsdType = type.getGlobalSchemaType();
+                    boolean required = attr.getCardinality() > 0;
+                    writeAttributeWithDocumentation(attrName, xsdType, required, attr.getDescription(), attr.getName());
+                }
+            }
+            
             if (generateWildcards) {
                 writeAttributeWildcard();
             }
@@ -1141,14 +1166,9 @@ class SchemaWriter {
         }
 
         // If the type is onError then we should generate the onError enum.
-        AttributeDefinition optionAD = attribute.getType() == MetaTypeFactory.ON_ERROR_TYPE && onErrorDefinition != null ? onErrorDefinition : attribute;
+        AttributeDefinition optionAD = attribute.getType() == MetaTypeFactory.ON_ERROR_TYPE ? onErrorDefinition : attribute;
 
         String[] optionValues = optionAD != null ? optionAD.getOptionValues() : null;
-        
-        // If this is an onError type but has no options defined, provide default options
-        if (attribute.getType() == MetaTypeFactory.ON_ERROR_TYPE && (optionValues == null || optionValues.length == 0)) {
-            optionValues = new String[] { "WARN", "FAIL", "IGNORE" };
-        }
 
         final boolean altLabel = alternateLabel;
         DocumentationWriter docWriter = new DocumentationWriter() {
@@ -1411,6 +1431,31 @@ class SchemaWriter {
         writer.writeAttribute("name", name);
         writer.writeAttribute("type", type);
         writer.writeAttribute("use", (required) ? "required" : "optional");
+    }
+
+    private void writeAttributeWithDocumentation(String name, String type, boolean required, String description, String label) throws XMLStreamException {
+        writer.writeStartElement(XSD, "attribute");
+        writer.writeAttribute("name", name);
+        writer.writeAttribute("use", (required) ? "required" : "optional");
+        writer.writeAttribute("type", type);
+        
+        // Write annotation with documentation
+        writer.writeStartElement(XSD, "annotation");
+        
+        // Write documentation
+        writer.writeStartElement(XSD, "documentation");
+        writer.writeCharacters(description != null ? description : "");
+        writer.writeEndElement(); // documentation
+        
+        // Write appinfo with label
+        writer.writeStartElement(XSD, "appinfo");
+        writer.writeStartElement(IBM_EXT_NS, "label");
+        writer.writeCharacters(label != null ? label : name);
+        writer.writeEndElement(); // label
+        writer.writeEndElement(); // appinfo
+        
+        writer.writeEndElement(); // annotation
+        writer.writeEndElement(); // attribute
     }
 
     private static String combineStrings(String one, String two) {
