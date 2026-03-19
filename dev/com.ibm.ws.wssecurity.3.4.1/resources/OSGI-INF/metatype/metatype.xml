@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2020, 2026 IBM Corporation and others.
+    Copyright (c) 2020 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -52,8 +52,8 @@
          <AD id="ws-security.password" name="%password" description="%password.desc" required="false" 
          ibm:type="password" type="String" />
          <AD id="ws-security.callback-handler" name="%cbh" description="%cbh.desc" required="false" type="String" />
-         <AD id="ws-security.encryption.username" name="%encuser" description="%encuser-client.desc" required="false" type="String"/>
-         <AD id="ws-security.signature.username" name="%siguser" description="%siguser-client.desc" required="false" type="String" />
+         <AD id="ws-security.encryption.username" name="%encuser" description="%encuser.desc" required="false" type="String"/>
+         <AD id="ws-security.signature.username" name="%siguser" description="%siguser.desc" required="false" type="String" />
          <AD id="signatureProperties" name="%sig" description="%sig.desc" ibm:type="pid" required="false" type="String" 
          ibm:reference="com.ibm.ws.wssecurity.sig.config"/>
          <AD id="encryptionProperties" name="%enc" description="%enc.desc" ibm:type="pid" required="false" type="String" 
@@ -67,7 +67,7 @@
     
     <OCD id="com.ibm.ws.wssecurity.caller.config" name="%callerprops" description="%callerprops.desc">
         <AD id="name" required="false" type="String" name="%callername" description="%callername.desc" />
-        <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc" default="NameID" required="false" type="String"/>
+        <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc" required="false" type="String"/>
         <AD id="groupIdentifier" name="%groupIdentifier" description="%groupIdentifier.desc" required="false" type="String" />     
         <AD id="userUniqueIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" />
         <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc" default="issuer" required="false" type="String" />
@@ -86,10 +86,10 @@
     
     <OCD id="com.ibm.ws.wssecurity.sig.config" name="%sigprops" description="%sigprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
            <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
-           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%sksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
-           ibm:type="password" name="%sksp" description="%sksp.desc" />
-           <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%sksfile" description="%sksfile.desc" />
+           ibm:type="password" name="%ksp" description="%ksp.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%ksfile" description="%ksfile.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.truststore.file" required="false" type="String" 
            name="%tsfile" description="%tsfile.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.truststore.password" required="false" type="String" 
@@ -99,7 +99,7 @@
            <AD id="org.apache.ws.security.crypto.provider" required="false" type="String" name="%crypto" 
            description="%crypto.desc" default="org.apache.ws.security.components.crypto.Merlin"/>
            <AD id="org.apache.ws.security.crypto.merlin.keystore.provider" required="false" type="String" 
-           name="%ksprovider" description="%ksprovider.desc"/>
+           name="%ksprovider" description="%ksprovider.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.cert.provider" required="false" type="String" 
            name="%certprovider" description="%certprovider.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.x509crl.file" required="false" type="String" 
@@ -114,12 +114,12 @@
     
    <OCD id="com.ibm.ws.wssecurity.enc.config" name="%encprops" description="%encprops.desc" ibmui:extraProperties="true" ibmui:localization="OSGI-INF/l10n/metatype">
            <AD id="org.apache.ws.security.crypto.merlin.keystore.type" required="false" type="String" name="%ks" description="%ks.desc" />
-           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%eksa.desc" />
+           <AD id="org.apache.ws.security.crypto.merlin.keystore.alias" required="false" type="String" name="%ksa" description="%ksa.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.keystore.password" required="false" type="String" 
-           ibm:type="password" name="%eksp" description="%eksp.desc" />
+           ibm:type="password" name="%ksp" description="%ksp.desc" />
            <AD id="org.apache.ws.security.crypto.provider" required="false" type="String" name="%crypto" 
            description="%crypto.desc" default="org.apache.ws.security.components.crypto.Merlin" /> 
-           <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%eksfile" description="%eksfile.desc" /> 
+           <AD id="org.apache.ws.security.crypto.merlin.file" required="false" type="String" name="%ksfile" description="%ksfile.desc" /> 
            <AD id="org.apache.ws.security.crypto.merlin.keystore.provider" required="false" type="String" 
            name="%ksprovider" description="%ksprovider.desc" />
            <AD id="org.apache.ws.security.crypto.merlin.cert.provider" required="false" type="String" 
