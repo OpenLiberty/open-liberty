@@ -24,7 +24,7 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.internal.monitor.McpStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class MetricsManager {

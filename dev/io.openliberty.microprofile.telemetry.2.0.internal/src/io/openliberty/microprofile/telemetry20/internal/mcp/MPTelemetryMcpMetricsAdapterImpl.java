@@ -42,8 +42,8 @@ import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
-import io.openliberty.mcp.internal.monitor.McpStatAttributes;
 import io.openliberty.mcp.internal.monitor.metrics.McpMetricAdapter;
+import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.OpenTelemetry;

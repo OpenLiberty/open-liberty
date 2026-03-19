@@ -22,6 +22,10 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 WS-TraceGroup: MCP
 
+Export-Package: \
+	io.openliberty.mcp.internal.*;thread-context=true;version=${bVersion},\
+	io.openliberty.mcp.internal.monitoring;thread-context=true;version=${bVersion}
+
 Import-Package: \
     jakarta.annotation.*;version='[2.1.0,4.0.0)',\
     *
