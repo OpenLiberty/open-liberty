@@ -386,12 +386,11 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             return;
 
         ThreadQuiesce tq = (ThreadQuiesce) executorService;
-        int quiesceTimeout = tq.getQuiesceTimeout();
 
         if (isServer())
-            Tr.audit(tc, "quiesce.begin", quiesceTimeout);
+            Tr.audit(tc, "quiesce.begin");
         else
-            Tr.audit(tc, "client.quiesce.begin", quiesceTimeout);
+            Tr.audit(tc, "client.quiesce.begin");
 
         // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
@@ -415,6 +414,7 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
         final ConcurrentLinkedQueue<Object> invoking = new ConcurrentLinkedQueue<>();
         long startTime = System.currentTimeMillis();
+
         // now call the listeners
         boolean preListenerSuccess = callQuiesceListeners(startTime, quiesceTimeout, invoking, preListenerRefs, null);
         long currentTime = System.currentTimeMillis();
@@ -511,10 +511,10 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
          * @return
          */
         @FFDCIgnore(TimeoutException.class)
-        boolean isComplete(long startTime, int quiesceTimeout) {
-            // We will wait quiesceTimeout seconds past the start time for tasks to complete
-            // Configured in the <executor> element of server.xml.  Default 30 seconds.
-            long endTime = startTime + quiesceTimeout * 1000;
+        boolean isComplete(long startTime) {
+            // We will wait 30 seconds past the start time for tasks to complete
+            long endTime = startTime + 30000;
+
 
             for (Future<?> f : quiesceListenerFutures) {
                 long waitTime = endTime - System.currentTimeMillis();

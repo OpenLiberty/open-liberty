@@ -27,6 +27,4 @@ public interface ThreadQuiesce {
     int getActiveThreads();
 
     boolean quiesceStarted();
-
-    int getQuiesceTimeout();
 }

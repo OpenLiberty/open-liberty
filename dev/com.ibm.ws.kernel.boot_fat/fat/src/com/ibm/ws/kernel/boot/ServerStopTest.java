@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -259,116 +259,6 @@ public class ServerStopTest {
         }
         Log.info(c, METHOD_NAME, "<");
     }
-
-    ///////  BEGIN QUIESE TESTS
-
-    /**
-     * Test - Quiesce NOT configured.
-     * Ensure default quiesce timeout is used when quiesceTimeout not configured.
-     * Starts & Stops the server and verifies that the expected timeout value is in
-     * the quiesce message in the logs.
-     */
-    @Test
-    public void testQuiesceTimeDefault() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeDefault()";
-        Log.info(c, METHOD_NAME, ENTERING);
-        assertTrue("", runQuiesceTest("30"));
-        Log.info(c, METHOD_NAME, EXITING);
-    }
-
-    /**
-     * Test - Quiesce configured but NOT valid.
-     * Ensure default quiesce timeout is used when quiesceTimeout when the configured
-     * timeout value is NOT valid.
-     * Starts & Stops the server and verifies that the expected timeout value is in
-     * the quiesce message in the logs.
-     */
-    @ExpectedFFDC("java.lang.NumberFormatException")
-    @Test
-    public void testQuiesceTimeNotValid() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeNotValid()";
-        Log.info(c, METHOD_NAME, ENTERING);
-
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("XXXXX"));
-        assertTrue("", runQuiesceTest("30"));
-        Log.info(c, METHOD_NAME, EXITING);
-    }
-
-    /**
-     * Test - Quiesce configured but LESS than default.
-     * Ensure default quiesce timeout is used when quiesceTimeout when the configured
-     * timeout value is LESS than the default.
-     * Starts & Stops the server and verifies that the expected timeout value is in
-     * the quiesce message in the logs.
-     */
-    @Test
-    public void testQuiesceTimeValueLessThanDefault() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeValueLessThanDefault()";
-        Log.info(c, METHOD_NAME, ENTERING);
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("29s"));
-        assertTrue("", runQuiesceTest("30"));
-        Log.info(c, METHOD_NAME, EXITING);
-    }
-
-    /**
-     * Test - Quiesce configured and is GREATER than default.
-     * Ensure the configured quiesce timeout is used when quiesceTimeout when the configured
-     * timeout value is GREATER than the default.
-     * Starts & Stops the server and verifies that the expected timeout value is in
-     * the quiesce message in the logs.
-     */
-    @Test
-    public void testQuiesceTimeValueGreaterThanDefault() throws Exception {
-        final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefault()";
-        Log.info(c, METHOD_NAME, ENTERING);
-        Utils.createFile(serverXmlFilePath, getServerXmlContents("1m30s"));
-        assertTrue("", runQuiesceTest("90"));
-        Log.info(c, METHOD_NAME, EXITING);
-    }
-
-    // -----
-
-    public boolean runQuiesceTest(String expectedResult) throws Exception {
-        final String METHOD_NAME = "runQuiesceTest";
-        final String quiesceMessage = "CWWKE1100I";
-
-        startServer();
-        stopServer();
-
-        RemoteFile consoleLog = server.getConsoleLogFile();
-
-        if (consoleLog == null) {
-            Log.info(c, METHOD_NAME, "The consoleLog is null.");
-        } else {
-            Log.info(c, METHOD_NAME, "consoleLog Path [" + consoleLog.getAbsolutePath() + "]");
-        }
-
-        List<String> matches = server.findStringsInLogs(quiesceMessage, consoleLog);
-        if (matches == null) {
-            Log.info(c, METHOD_NAME, "matches is null");
-        }
-
-        String lastMatch = null;
-        for (String s : matches) {
-            Log.info(c, METHOD_NAME, "matches [" + s + "]");
-            lastMatch = s;
-        }
-        Log.info(c, METHOD_NAME, "lastMatch [" + lastMatch + "]");
-        if (lastMatch != null) {
-            String actualResult = extractTimeValue(lastMatch);
-            if (actualResult != null) {
-                Log.info(c, METHOD_NAME, "returning  - actual result is [" + actualResult + "]");
-                return actualResult.equals(expectedResult);
-            }
-            Log.info(c, METHOD_NAME, "Problem extracting time from quiesce message [" + lastMatch + "]");
-        } else {
-            Log.info(c, METHOD_NAME, "Quiesce message" + "[" + quiesceMessage + "]" + "not found in " + consoleLog.getAbsolutePath());
-        }
-        Log.info(c, METHOD_NAME, "returning false");
-        return false;
-    }
-
-    ///////  END QUIESE TESTS
 
     public String getServerXmlContents(String timeout) {
         return "<server>\n" +
