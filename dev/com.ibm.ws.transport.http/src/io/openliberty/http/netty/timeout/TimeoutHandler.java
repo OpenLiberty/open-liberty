@@ -159,8 +159,11 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         }
 
         if (isRequestStart(message)) {
-           // cancel();
+            cancel();
             clientRequestedKeepAlive = shouldKeepAliveRequest(context, message);
+            if(!isRequestEnd(message)){
+                arm(context, Phase.READ);
+            }
         } else if(phase == Phase.READ){
             resetRead(context);
         }
