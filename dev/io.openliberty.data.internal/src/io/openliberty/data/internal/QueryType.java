@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,7 +12,15 @@
  *******************************************************************************/
 package io.openliberty.data.internal;
 
+import java.lang.annotation.Annotation;
+
 import com.ibm.websphere.ras.annotation.Trivial;
+
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Find;
+import jakarta.data.repository.Insert;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
 
 /**
  * Type of repository method query.
@@ -20,40 +28,82 @@ import com.ibm.websphere.ras.annotation.Trivial;
 @Trivial
 public enum QueryType {
     // query method count
-    COUNT(!Require.TX, !Require.DETACH_ENTITIES, !Require.RETURN_HIDDEN),
+    COUNT(null, //
+          !Require.TX, //
+          !Require.DETACH_ENTITIES, //
+          !Require.RETURN_HIDDEN),
 
     // query method exists
-    EXISTS(!Require.TX, !Require.DETACH_ENTITIES, !Require.RETURN_HIDDEN),
+    EXISTS(null, //
+           !Require.TX, //
+           !Require.DETACH_ENTITIES, //
+           !Require.RETURN_HIDDEN),
 
     // query method find/@Find/@Query(SELECT/FROM/WHERE)
-    FIND(!Require.TX, Require.DETACH_ENTITIES, Require.RETURN_HIDDEN),
+    FIND(Find.class, //
+         !Require.TX, //
+         Require.DETACH_ENTITIES, //
+         Require.RETURN_HIDDEN),
 
     // query method delete/@Delete with entity result
-    FIND_AND_DELETE(Require.TX, Require.DETACH_ENTITIES, Require.RETURN_HIDDEN),
+    FIND_AND_DELETE(Delete.class, //
+                    Require.TX, //
+                    Require.DETACH_ENTITIES, //
+                    Require.RETURN_HIDDEN),
 
     // life cycle @Insert
-    INSERT(Require.TX, Require.DETACH_ENTITIES, Require.RETURN_HIDDEN),
+    INSERT(Insert.class, //
+           Require.TX, //
+           Require.DETACH_ENTITIES, //
+           Require.RETURN_HIDDEN),
 
     // life cycle @Delete
-    LC_DELETE(Require.TX, !Require.DETACH_ENTITIES, !Require.RETURN_HIDDEN),
+    LC_DELETE(Delete.class, //
+              Require.TX, //
+              !Require.DETACH_ENTITIES, //
+              !Require.RETURN_HIDDEN),
 
     // life cycle @Update
-    LC_UPDATE(Require.TX, !Require.DETACH_ENTITIES, !Require.RETURN_HIDDEN),
+    LC_UPDATE(Update.class, //
+              Require.TX, //
+              !Require.DETACH_ENTITIES, //
+              !Require.RETURN_HIDDEN),
 
-    // life cycle @Update often with entity result (find & merge)
-    LC_UPDATE_MERGE(Require.TX, Require.DETACH_ENTITIES, Require.RETURN_HIDDEN),
+    // life cycle @Update with entity result (find & merge)
+    LC_UPDATE_MERGE(Update.class, //
+                    Require.TX, //
+                    Require.DETACH_ENTITIES, //
+                    Require.RETURN_HIDDEN),
 
     // query method delete/@Delete/@Query(DELETE)
-    QM_DELETE(Require.TX, !Require.DETACH_ENTITIES, !Require.RETURN_HIDDEN),
+    QM_DELETE(Delete.class, //
+              Require.TX, //
+              !Require.DETACH_ENTITIES, //
+              !Require.RETURN_HIDDEN),
 
     // query method update/@Update/@Query(UPDATE)
-    QM_UPDATE(Require.TX, !Require.DETACH_ENTITIES, !Require.RETURN_HIDDEN),
+    QM_UPDATE(Update.class, //
+              Require.TX, //
+              !Require.DETACH_ENTITIES, //
+              !Require.RETURN_HIDDEN),
 
     // resource accessor method
-    RESOURCE_ACCESS(!Require.TX, !Require.DETACH_ENTITIES, !Require.RETURN_HIDDEN),
+    RESOURCE_ACCESS(null, //
+                    !Require.TX, //
+                    !Require.DETACH_ENTITIES, //
+                    !Require.RETURN_HIDDEN),
 
     // life cycle @Save
-    SAVE(Require.TX, Require.DETACH_ENTITIES, Require.RETURN_HIDDEN);
+    SAVE(Save.class, //
+         Require.TX, //
+         Require.DETACH_ENTITIES, //
+         Require.RETURN_HIDDEN);
+
+    /**
+     * Annotation class that corresponds to the type of repository operation.
+     * Otherwise null.
+     */
+    public final Class<? extends Annotation> annoClass;
 
     /**
      * Indicates that a stateless repository must clear the entity manager to
@@ -75,18 +125,31 @@ public enum QueryType {
     /**
      * Internal constructor for enumeration values.
      *
+     * @param annoClass           Jakarta Data annotation class. Otherwise null.
      * @param requiresTransaction require a transaction for the operation.
      * @param detachEntities      require a stateless repository to detach entities
      *                                after the operation.
      * @param hideReturnValue     suppress logging/tracing of the method's return
      *                                value by default
      */
-    private QueryType(boolean requiresTransaction,
+    private QueryType(Class<? extends Annotation> annoClass,
+                      boolean requiresTransaction,
                       boolean detachEntities,
                       boolean hideReturnValue) {
+        this.annoClass = annoClass;
         this.detachEntities = detachEntities;
         this.hideReturnValue = hideReturnValue;
         this.requiresTransaction = requiresTransaction;
+    }
+
+    /**
+     * Name suitable for display in messages to the user.
+     *
+     * @return name of the repository operation.
+     */
+    @Trivial
+    public String operationName() {
+        return annoClass == null ? name() : annoClass.getSimpleName();
     }
 
     /**

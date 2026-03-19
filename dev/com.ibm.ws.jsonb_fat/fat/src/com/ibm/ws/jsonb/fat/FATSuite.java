@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
@@ -33,11 +30,9 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
-import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -61,43 +56,33 @@ public class FATSuite {
 
     /**
      * JavaEE8 - without modification - Full Mode - usr:testFeatureUsingJsonb-1.0
-     * JakartaEE9 - required modification - Full Mode - usr:testFeatureUsingJsonb-2.0
-     * JakartaEE10 - required modification - Lite Mode - usr:testFeatureUsingJsonb-3.0
+     * JakartaEE9 - required modification - usr:testFeatureUsingJsonb-2.0
+     * JakartaEE10 - required modification - usr:testFeatureUsingJsonb-3.0
+     * JakartaEE11 - required modification - usr:testFeatureUsingJsonb-3.0
      */
     @ClassRule
-    public static RepeatTests repeat;
-
-    static {
-        if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests
-                            .withoutModificationInFullMode()
-                            .andWith(new JakartaEE9Action().fullFATOnly()
-                                            .forServers(servers)
-                                            .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonb-1.0", "usr:testFeatureUsingJsonb-3.0")))
-                                            .addFeature("usr:testFeatureUsingJsonb-2.0")
-                                            .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonp-1.1", "usr:testFeatureUsingJsonp-2.1")))
-                                            .addFeature("usr:testFeatureUsingJsonpa-2.0"))
-                            .andWith(new JakartaEE10Action()
-                                            .forServers(servers)
-                                            .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonb-1.0", "usr:testFeatureUsingJsonb-2.0")))
-                                            .addFeature("usr:testFeatureUsingJsonb-3.0")
-                                            .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonp-1.1", "usr:testFeatureUsingJsonp-2.0")))
-                                            .addFeature("usr:testFeatureUsingJsonp-2.1"));
-        } else {
-            // JakartaEE10 requires Java 11, so when we test on Java8,
-            // only run the Jakarta EE9 tests, otherwise we get errors
-            // related to 0 tests run because the JakartaEE10 tests
-            // will all get filtered out on Java8
-            repeat = RepeatTests
-                            .withoutModificationInFullMode()
-                            .andWith(new JakartaEE9Action()
-                                            .forServers(servers)
-                                            .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonb-1.0", "usr:testFeatureUsingJsonb-3.0")))
-                                            .addFeature("usr:testFeatureUsingJsonb-2.0")
-                                            .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonp-1.1", "usr:testFeatureUsingJsonp-2.1")))
-                                            .addFeature("usr:testFeatureUsingJsonpa-2.0"));
-        }
-    }
+    public static RepeatTests repeat = RepeatTests
+                    .withoutModificationInFullMode()
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                    .forServers(servers)
+                                    .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonb-1.0", "usr:testFeatureUsingJsonb-3.0")))
+                                    .addFeature("usr:testFeatureUsingJsonb-2.0")
+                                    .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonp-1.1", "usr:testFeatureUsingJsonp-2.1")))
+                                    .addFeature("usr:testFeatureUsingJsonpa-2.0"))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
+                                    .forServers(servers)
+                                    .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonb-1.0", "usr:testFeatureUsingJsonb-2.0")))
+                                    .addFeature("usr:testFeatureUsingJsonb-3.0")
+                                    .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonp-1.1", "usr:testFeatureUsingJsonp-2.0")))
+                                    .addFeature("usr:testFeatureUsingJsonp-2.1"))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .forServers(servers)
+                                    .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonb-1.0", "usr:testFeatureUsingJsonb-2.0")))
+                                    .addFeature("usr:testFeatureUsingJsonb-3.0")
+                                    .removeFeatures(new HashSet<>(Arrays.asList("usr:testFeatureUsingJsonp-1.1", "usr:testFeatureUsingJsonp-2.0")))
+                                    .addFeature("usr:testFeatureUsingJsonp-2.1"));
 
     //JSONB providers
     public static final String PROVIDER_YASSON = "org.eclipse.yasson.JsonBindingProvider";

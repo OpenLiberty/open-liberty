@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
+import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
@@ -50,6 +51,7 @@ import com.ibm.wsspi.http.ee8.Http2PushBuilder;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.VoidChannelPromise;
+import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
@@ -865,37 +867,23 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
             }
         }
 
-        this.nettyContext.channel().eventLoop().execute(new Runnable() {
-            @Override
-            public void run() {
-                ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
-                                                                           new VoidChannelPromise(nettyContext.channel(), true));
-                promise.addListener(future -> {
-                    if (future.isSuccess()) {
-                        // Should we process the new request here when we ensure we wrote out a push promise?
-                        // Follow up issue https://github.com/OpenLiberty/open-liberty/issues/31439
-                    }
-                });
-            }
-        });
-
         DefaultFullHttpRequest newRequest = new DefaultFullHttpRequest(request.protocolVersion(), HttpMethod.GET, pbPath);
         newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), nextPromisedStreamId);
         newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(), scheme);
         HttpUtil.setContentLength(newRequest, 0);
-        HttpDispatcher.getExecutorService().execute(new Runnable() {
 
-            @Override
-            public void run() {
-                try {
-                    ((HttpDispatcherHandler) nettyContext.channel().pipeline().get(HttpDispatcherHandler.NAME)).channelRead(nettyContext,
-                                                                                                                                                      newRequest);
-                } catch (Exception e) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "pushNewRequest() Unable to dispatch push request: " + e.getMessage(), e);
-                    }
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
+                                                                       new VoidChannelPromise(nettyContext.channel(), true));
+            promise.addListener(future -> {
+                if (!(future.isDone() && future.isSuccess())){
+                    if(future.cause() == null)
+                        newRequest.setDecoderResult(DecoderResult.failure(new IOException("Failed to properly finish writing push promise!")));
+                    else
+                        newRequest.setDecoderResult(DecoderResult.failure(future.cause()));
                 }
-            }
+                nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
+            });
         });
     }
 

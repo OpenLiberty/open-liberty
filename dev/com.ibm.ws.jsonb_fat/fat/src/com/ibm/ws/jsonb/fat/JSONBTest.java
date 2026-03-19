@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jsonb.fat;
 
@@ -17,6 +14,7 @@ import static com.ibm.ws.jsonb.fat.FATSuite.JSONB_APP;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_GLASSFISH_JSONP;
 import static com.ibm.ws.jsonb.fat.FATSuite.PROVIDER_YASSON;
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -72,7 +70,7 @@ public class JSONBTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
     //Skipping the test for jakartaee testing since it is beyond the scope of what is needed
     //TODO for jakartaee testing: Transform the johnzon jars in AUTO_FVT/publish/shared/resources folder, solve the classloader problems with yasson and jonhzon provider impls
     public void testJsonbFromUserFeature() throws Exception {

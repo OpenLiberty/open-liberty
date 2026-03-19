@@ -88,6 +88,8 @@ import test.jakarta.data.errpaths.web.Voters.NameAndZipCode;
                  unitName = "VoterPersistenceUnit")
 @Resource(name = "java:app/jdbc/env/DSForInvalidEntityRecordWithJPAAnnoRef",
           lookup = "java:module/jdbc/DataSourceForInvalidEntity")
+@Resource(name = "java:app/jdbc/env/DSForInvalidEntityRecordWithValAnnoRef",
+          lookup = "java:module/jdbc/DataSourceForInvalidEntity")
 @Resource(name = "java:comp/jdbc/env/DSForInvalidEntityClassWithoutAnnoRef",
           lookup = "java:module/jdbc/DataSourceForInvalidEntity")
 @SuppressWarnings("serial")
@@ -105,6 +107,9 @@ public class DataErrPathsTestServlet extends FATServlet {
 
     @Inject
     Inventions errEntityMissingIdRepo;
+
+    @Inject
+    Islands errValidationAnnoRepo;
 
     @Inject
     InvalidNonJNDIRepo errIncorrectDataStoreName;
@@ -964,14 +969,33 @@ public class DataErrPathsTestServlet extends FATServlet {
     public void testExistsAsPage() {
         try {
             LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
-            Page<Boolean> page = voters.existsByBirthday(today,
-                                                         PageRequest.ofSize(5));
+            Page<Boolean> page = voters.existsByBirthday(today);
             fail("Should not be able to use an exists query that returns a" +
                  " Page rather than boolean. Page is: " + page);
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1003E:") ||
                 !x.getMessage().contains("Page<java.lang.Boolean>"))
+                throw x;
+        }
+    }
+
+    /**
+     * Verify an error is raised when an exists Query by Method Name method
+     * tries to supply a PageRequest parameter.
+     */
+    @Test
+    public void testExistsRequestsPage() {
+        try {
+            LocalDate today = LocalDate.of(2025, Month.FEBRUARY, 18);
+            boolean exists = voters.existsAnyByBirthday(today,
+                                                        PageRequest.ofSize(5));
+            fail("Should not be able to use an exists query that receives a " +
+                 " PageRequest. Reuslt is: " + exists);
+        } catch (UnsupportedOperationException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1020E:") ||
+                !x.getMessage().contains("PageRequest"))
                 throw x;
         }
     }
@@ -2183,6 +2207,34 @@ public class DataErrPathsTestServlet extends FATServlet {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1109E:") ||
                 !x.getMessage().contains("jakarta.persistence.Column"))
+                throw x;
+        }
+
+    }
+
+    /**
+     * Verify an error is raised when an entity class has Jakarta Validation
+     * annotations on its members.
+     */
+    @Test
+    public void testRecordEntityWithJakartaValidationAnno() {
+        Island maui = new Island(1, "maui");
+
+        Arrays.asList(maui.getClass().getMethods()).forEach(m -> {
+            System.out.println("Method: " + m);
+            Arrays.asList(m.getAnnotations()).forEach(a -> {
+                System.out.println("  Anno: " + a);
+            });
+        });
+        try {
+            errValidationAnnoRepo.add(maui);
+
+            fail("Used a record entity that has a Jakarta Validation annotation" +
+                 " on a record component.");
+        } catch (MappingException x) {
+            if (x.getMessage() == null ||
+                !x.getMessage().startsWith("CWWKD1109E:") ||
+                !x.getMessage().contains("jakarta.validation.constraints.NotBlank"))
                 throw x;
         }
     }

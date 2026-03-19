@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import static org.opensaml.xmlsec.signature.X509Data.DEFAULT_ELEMENT_NAME;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyStoreException;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -109,6 +110,7 @@ public class MetadataHandlerTest {
     private static final SsoSamlService ssoService = mockery.mock(SsoSamlService.class, "ssoServiceMD");
     private static final X509Data X509Data = mockery.mock(X509Data.class, "X509DataMD");
     private static final X509Certificate xCertificate509 = mockery.mock(X509Certificate.class, "X509CertificateMD");
+    private static final PublicKey publicKey = mockery.mock(PublicKey.class, "publicKeyMD");
     private static final org.opensaml.xmlsec.signature.X509Certificate x509CertificateSaml = mockery.mock(org.opensaml.xmlsec.signature.X509Certificate.class, "X509CertificateSamlMD");
     @SuppressWarnings("unchecked")
     private static final HashMap<String, Object> HashMap = mockery.mock(HashMap.class, "hashMap<String,Object>MD");
@@ -378,6 +380,10 @@ public class MetadataHandlerTest {
                 will(returnValue(true));
                 one(ssoService).getSignatureCertificate();
                 will(returnValue(xCertificate509));
+                allowing(xCertificate509).getPublicKey();
+                will(returnValue(publicKey));
+                allowing(publicKey).getAlgorithm();
+                will(returnValue("RSA"));
                 
                 allowing(builderFactory).getBuilderOrThrow(with(any(Element.class)));
                 will(returnValue(XMLObjectBuilder));

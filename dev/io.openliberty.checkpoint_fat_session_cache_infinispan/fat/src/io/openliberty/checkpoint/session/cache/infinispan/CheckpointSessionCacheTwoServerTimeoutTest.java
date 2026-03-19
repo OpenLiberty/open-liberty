@@ -1,20 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.checkpoint.session.cache.infinispan;
 
 import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.CACHE_MANAGER_EE10_ID;
+import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.CACHE_MANAGER_EE11_ID;
 import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.CACHE_MANAGER_EE9_ID;
 import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.checkpointRepeatActionEE10;
+import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.checkpointRepeatActionEE11;
 import static io.openliberty.checkpoint.session.cache.infinispan.FATSuite.checkpointRepeatActionEE9;
 import static org.junit.Assert.assertNotNull;
 
@@ -43,6 +42,7 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -77,16 +77,20 @@ public class CheckpointSessionCacheTwoServerTimeoutTest extends FATServletClient
 
     public static String[] servers = new String[] { checkpointServerA, checkpointServerB };
 
-    public static final FeatureReplacementAction EE9 = checkpointRepeatActionEE9(new JakartaEE9Action(), JakartaEE9Action.ID, servers);
-    public static final FeatureReplacementAction EE10 = checkpointRepeatActionEE10(new JakartaEE10Action(), JakartaEE10Action.ID, servers);
-    public static final FeatureReplacementAction CACHE_MANAGER_EE9 = checkpointRepeatActionEE9(new JakartaEE9Action(), CACHE_MANAGER_EE9_ID, servers);
-    public static final FeatureReplacementAction CACHE_MANAGER_EE10 = checkpointRepeatActionEE10(new JakartaEE10Action(), CACHE_MANAGER_EE10_ID, servers);
+    public static final FeatureReplacementAction EE9 = checkpointRepeatActionEE9(FeatureReplacementAction.EE9_FEATURES(), JakartaEE9Action.ID, servers);
+    public static final FeatureReplacementAction EE10 = checkpointRepeatActionEE10(FeatureReplacementAction.EE10_FEATURES(), JakartaEE10Action.ID, servers);
+    public static final FeatureReplacementAction EE11 = checkpointRepeatActionEE11(FeatureReplacementAction.EE11_FEATURES(), JakartaEE11Action.ID, servers);
+    public static final FeatureReplacementAction CACHE_MANAGER_EE9 = checkpointRepeatActionEE9(FeatureReplacementAction.EE9_FEATURES(), CACHE_MANAGER_EE9_ID, servers);
+    public static final FeatureReplacementAction CACHE_MANAGER_EE10 = checkpointRepeatActionEE10(FeatureReplacementAction.EE10_FEATURES(), CACHE_MANAGER_EE10_ID, servers);
+    public static final FeatureReplacementAction CACHE_MANAGER_EE11 = checkpointRepeatActionEE11(FeatureReplacementAction.EE11_FEATURES(), CACHE_MANAGER_EE11_ID, servers);
 
     @ClassRule
     public static RepeatTests r = RepeatTests.with(EE9)
                     .andWith(CACHE_MANAGER_EE9)
                     .andWith(EE10.fullFATOnly())
-                    .andWith(CACHE_MANAGER_EE10.fullFATOnly());
+                    .andWith(CACHE_MANAGER_EE10.fullFATOnly())
+                    .andWith(EE11.fullFATOnly())
+                    .andWith(CACHE_MANAGER_EE11.fullFATOnly());
 
     @BeforeClass
     public static void setUp() throws Exception {

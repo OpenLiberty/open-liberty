@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.checkpoint.session.cache.infinispan;
 
@@ -30,6 +27,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
+import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
@@ -50,6 +48,7 @@ public class FATSuite {
 
     public static final String CACHE_MANAGER_EE9_ID = JakartaEE9Action.ID + "_CacheManager";
     public static final String CACHE_MANAGER_EE10_ID = JakartaEE10Action.ID + "_CacheManager";
+    public static final String CACHE_MANAGER_EE11_ID = JakartaEE11Action.ID + "_CacheManager";
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
@@ -102,6 +101,10 @@ public class FATSuite {
                         .addFeature("mpMetrics-5.1")
                         .withID(ID)
                         .forServers(servers);
+    }
+
+    public static FeatureReplacementAction checkpointRepeatActionEE11(FeatureReplacementAction action, String ID, String[] servers) {
+        return checkpointRepeatActionEE10(action, ID, servers); // Use same mpMetrics as EE10 repeat.
     }
 
     static void configureEnvVariable(LibertyServer server, Map<String, String> newEnv) throws Exception {

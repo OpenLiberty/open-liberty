@@ -944,11 +944,7 @@ public class Data_1_1 implements DataVersionCompatibility {
         return switch (queryType) {
             case FIND -> true;
             case FIND_AND_DELETE -> !PageRequest.class.equals(paramType);
-            case COUNT, EXISTS -> Order.class.equals(paramType) ||
-                                  Restriction.class.equals(paramType) ||
-                                  Sort.class.equals(paramType) ||
-                                  Sort[].class.equals(paramType);
-            case QM_DELETE -> Restriction.class.equals(paramType);
+            case COUNT, EXISTS, QM_DELETE -> Restriction.class.equals(paramType);
             case QM_UPDATE -> false; // TODO FUTURE same as QM_DELETE
             default -> false;
         };

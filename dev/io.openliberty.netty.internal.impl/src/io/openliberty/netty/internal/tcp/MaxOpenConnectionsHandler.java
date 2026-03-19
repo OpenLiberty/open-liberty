@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,6 +19,8 @@ import io.netty.channel.ChannelHandler.Sharable;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.openliberty.netty.internal.ConfigConstants;
+import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.impl.NettyConstants;
 
 /**
  * Channel handler which keeps track of the overall connection count and terminates new
@@ -60,6 +62,17 @@ public class MaxOpenConnectionsHandler extends ChannelInboundHandlerAdapter {
                 Tr.warning(tc, TCPMessageConstants.MAX_CONNS_EXCEEDED, channelName, maxConnections);
                 lastConnExceededTime = currentTime;
             }
+        }
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext ctx) throws Exception {
+        // If handler is removed while channel is active, we should throw an exception
+        if(ctx.channel().isActive()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Unallowed removal of handler: " + NettyConstants.MAX_OPEN_CONNECTIONS_HANDLER_NAME + " from channel: " + ctx.channel());
+            }
+            ctx.fireExceptionCaught(new NettyException("Removed from channel pipeline handler: " + NettyConstants.MAX_OPEN_CONNECTIONS_HANDLER_NAME));
         }
     }
 

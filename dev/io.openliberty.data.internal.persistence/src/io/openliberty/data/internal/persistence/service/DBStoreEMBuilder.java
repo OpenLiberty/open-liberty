@@ -361,7 +361,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
             if (c.isAnnotationPresent(Entity.class)) {
                 parser.parseAnnotatedEntity(c);
             } else if (c.isRecord()) {
-                disallowPersistenceAnnos(c, true);
+                disallowPersistenceAndValidationAnnos(c, true);
 
                 // an entity class is generated for the record
                 String entityClassName = c.getName() + EntityInfo.RECORD_ENTITY_SUFFIX;
@@ -378,7 +378,7 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
                 generatedToRecordClass.put(ec, c);
                 parser.parseRecord(c, ec);
             } else {
-                disallowPersistenceAnnos(c, false);
+                disallowPersistenceAndValidationAnnos(c, false);
                 parser.parseUnannotatedEntity(c);
             }
         }
@@ -471,13 +471,13 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
 
     /**
      * Raises an error if any method (or field if not a Java record) is annotated
-     * with an annotation from Jakarta Persistence.
+     * with an annotation from Jakarta Persistence or Jakarta Validation.
      *
      * @param c        class that does not have the Entity annotation.
      * @param isRecord true if the entity class is a Java record, otherwise false.
      */
     @Trivial
-    private void disallowPersistenceAnnos(Class<?> c, boolean isRecord) {
+    private void disallowPersistenceAndValidationAnnos(Class<?> c, boolean isRecord) {
 
         if (!isRecord)
             for (Field field : c.getDeclaredFields())
@@ -494,7 +494,10 @@ public class DBStoreEMBuilder extends EntityManagerBuilder implements DDLGenerat
         for (Method method : c.getDeclaredMethods())
             for (Annotation anno : method.getAnnotations())
                 if (anno.annotationType().getPackageName() //
-                                .startsWith("jakarta.persistence"))
+                                .startsWith("jakarta.persistence")
+                    ||
+                    anno.annotationType().getPackageName() //
+                                    .startsWith("jakarta.validation"))
                     if (isRecord)
                         throw exc(MappingException.class,
                                   "CWWKD1109.jpa.anno.on.record",

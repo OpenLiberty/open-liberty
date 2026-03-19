@@ -243,6 +243,12 @@ public class QueryInfo {
     public final Method method;
 
     /**
+     * Repository method annotation indicating the type of method.
+     * Null if the repository method is not annotated Delete, Find, Insert, Query, ...
+     */
+    private Annotation methodTypeAnno;
+
+    /**
      * The type of data structure that returns multiple results for this query.
      * Null if the query return type limits to single results.
      */
@@ -467,7 +473,7 @@ public class QueryInfo {
      *                          starts at jpqlParamCount, which is updated by this
      *                          method when JPQL parameters for repository method
      *                          special parameters are added.
-     * @param jpql          JPQL to use instead of the JPQL from source.
+     * @param pageReq       PageRequest, if supplied to the repository method.
      * @param sortsOverride If present, sorts to use instead of the sorts from source.
      *                          A value is supplied when the repostiory method has
      *                          Order or Sort parameters. Otherwise null.
@@ -486,6 +492,7 @@ public class QueryInfo {
         isOptional = source.isOptional;
         maxResults = source.maxResults;
         method = source.method;
+        methodTypeAnno = source.methodTypeAnno;
         multiType = source.multiType;
         producer = source.producer;
         repositoryInterface = source.repositoryInterface;
@@ -543,24 +550,11 @@ public class QueryInfo {
         } else {
             // Constraints were deferred until execution
             // Generate new JPQL for Query by Parameters
-            Annotation methodTypeAnno = method.getAnnotation(Find.class);
-            if (methodTypeAnno == null) {
-                methodTypeAnno = method.getAnnotation(Update.class);
-                if (methodTypeAnno == null) {
-                    methodTypeAnno = method.getAnnotation(Delete.class);
-                    if (methodTypeAnno == null) {
-                        methodTypeAnno = compat.getCountAnnotation(method);
-                        if (methodTypeAnno == null) {
-                            methodTypeAnno = compat.getExistsAnnotation(method);
-                        }
-                    }
-                }
-            }
 
             boolean countPages = Page.class.equals(multiType) ||
                                  CursoredPage.class.equals(multiType);
 
-            q = initQueryByParameters(methodTypeAnno, countPages, constraints, jpqlParams);
+            q = initQueryByParameters(countPages, constraints, jpqlParams);
 
             if (restriction != null) {
                 q.append(hasWhere ? " AND " : " WHERE ");
@@ -1006,8 +1000,9 @@ public class QueryInfo {
                      // em and method args have already been logged if loggable
                      "to be returned as " + singleType.getName());
 
-        TypedQuery<Long> query = em.createQuery(jpql, Long.class);
-        setParameters(query, args, NO_CONSTRAINTS_DEFERRED, null); // TODO 1.1 constraints
+        @SuppressWarnings("unchecked")
+        TypedQuery<Long> query = //
+                        (TypedQuery<Long>) createQuery(em, Long.class, args);
 
         Long count = query.getSingleResult();
 
@@ -1056,6 +1051,79 @@ public class QueryInfo {
             else
                 Tr.exit(this, tc, "count", count + " converted to " + returnValue);
         return returnValue;
+    }
+
+    /**
+     * Creates and prepares a query, including setting parameters basd on the
+     * repository method arguments and any Constraints and Restrictions.
+     *
+     * @param em               entity manager.
+     * @param typeOfTypedQuery TypedQuery type. Null to avoid using TypedQuery
+     *                             (for UPDATE or DELETE).
+     * @param args             method parameters.
+     * @return the query, ready to execute.
+     */
+    @Trivial // avoid tracing repository method args
+    private jakarta.persistence.Query createQuery(EntityManager em,
+                                                  Class<?> typeOfTypedQuery,
+                                                  Object[] args) {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        DataVersionCompatibility compat = producer.compat();
+        Object restriction = null;
+
+        for (int i = specialParamsStartAt; i < (args == null ? 0 : args.length); i++) {
+            Object param = args[i];
+            if (compat.isRestriction(param)) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc,
+                             "found restriction " + param.getClass().getName(),
+                             loggable(param));
+                if (restriction == null)
+                    restriction = param;
+                else
+                    throw Fail.duplicateSpecialParam(this, "Restriction");
+            } else if (param == null) {
+                throw Fail.nullMethodParameter(this, i);
+            } else {
+                throw Fail.extraMethodParam(this, i);
+            }
+        }
+
+        Map<Integer, Object> deferredConstraints;
+        if (args == null || args.length == 0 ||
+            methodTypeAnno == null || methodTypeAnno instanceof Query)
+            deferredConstraints = NO_CONSTRAINTS_DEFERRED;
+        else
+            deferredConstraints = compat.getDeferredConstraints(restriction != null,
+                                                                specialParamsStartAt - 1,
+                                                                args);
+        boolean requiresNewQuery = restriction != null ||
+                                   !deferredConstraints.isEmpty();
+
+        // Map of named parameter name or positional parameter index to value
+        // for values corresponding to repository method special parameters.
+        // The first positional parameter index to add starts at jpqlParamCount,
+        // which is updated as entries for additional JPQL parameters are added.
+        Map<Object, Object> addedJPQLParams = null;
+
+        QueryInfo queryInfo = requiresNewQuery //
+                        ? new QueryInfo(this, //
+                                        deferredConstraints, //
+                                        restriction, //
+                                        addedJPQLParams = new LinkedHashMap<>(), //
+                                        null, //
+                                        null) //
+                        : this;
+
+        jakarta.persistence.Query query = typeOfTypedQuery == null //
+                        ? em.createQuery(queryInfo.jpql) //
+                        : em.createQuery(queryInfo.jpql, typeOfTypedQuery);
+
+        if (trace && tc.isDebugEnabled())
+            Tr.debug(this, tc, "created query " + query);
+
+        setParameters(query, args, deferredConstraints, addedJPQLParams);
+        return query;
     }
 
     /**
@@ -1288,12 +1356,6 @@ public class QueryInfo {
      *         matching entities, or a CompletableFuture for the value,
      *         whichever is compatible with the method signature.
      * @throws Exception if an error occurs.
-     *
-     *
-     * @param em
-     * @param args
-     * @return
-     * @throws Exception
      */
     @Trivial // em and method args have already been logged if loggable
     Object execute(EntityManager em, Object... args) throws Exception {
@@ -1301,8 +1363,7 @@ public class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "execute", type); // DELETE or UPDATE
 
-        jakarta.persistence.Query update = em.createQuery(jpql);
-        setParameters(update, args, NO_CONSTRAINTS_DEFERRED, null); // TODO 1.1 constraints
+        jakarta.persistence.Query update = createQuery(em, null, args);
 
         int updateCount = update.executeUpdate();
 
@@ -1428,11 +1489,14 @@ public class QueryInfo {
             }
         }
 
-        Map<Integer, Object> deferredConstraints = args == null || args.length == 0 //
-                        ? NO_CONSTRAINTS_DEFERRED //
-                        : compat.getDeferredConstraints(restriction != null,
-                                                        specialParamsStartAt - 1,
-                                                        args);
+        Map<Integer, Object> deferredConstraints;
+        if (args == null || args.length == 0 ||
+            methodTypeAnno == null || methodTypeAnno instanceof Query)
+            deferredConstraints = NO_CONSTRAINTS_DEFERRED;
+        else
+            deferredConstraints = compat.getDeferredConstraints(restriction != null,
+                                                                specialParamsStartAt - 1,
+                                                                args);
         boolean requiresNewQuery = restriction != null ||
                                    !deferredConstraints.isEmpty();
 
@@ -2646,8 +2710,7 @@ public class QueryInfo {
         if (countPages && type == FIND)
             generateCount(numConstraints == 0 ? null : q.substring(startIndexForWhereClause));
 
-        if (type == FIND || type == FIND_AND_DELETE)
-            specialParamsStartAt = locateFirstSpecialParameter(paramTypes, true);
+        specialParamsStartAt = locateSpecialParameters(paramTypes);
 
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "generateParamBasedQuery", q);
@@ -3166,10 +3229,9 @@ public class QueryInfo {
             Annotation count = compat.getCountAnnotation(method);
             Annotation exists = compat.getExistsAnnotation(method);
 
-            Annotation methodTypeAnno = //
-                            validateAnnotationCombinations(delete, insert, update, save,
-                                                           find, query, orderBy,
-                                                           count, exists);
+            methodTypeAnno = validateAnnotationCombinations(delete, insert, update, save,
+                                                            find, query, orderBy,
+                                                            count, exists);
 
             if (query != null) { // @Query annotation
                 initQueryLanguage(query.value(),
@@ -3196,8 +3258,7 @@ public class QueryInfo {
             } else {
                 if (methodTypeAnno != null) {
                     // Query by Parameters
-                    q = initQueryByParameters(methodTypeAnno,
-                                              countPages,
+                    q = initQueryByParameters(countPages,
                                               NO_CONSTRAINTS_DEFERRED,
                                               null);
 
@@ -3302,31 +3363,6 @@ public class QueryInfo {
         }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc, "found sort criteria position (1-based): " + (index + 1));
-    }
-
-    /**
-     * Records positions (0-based) of all sort criteria in the method parameters
-     * following the query parameters.
-     *
-     * @param paramTypes method parameter types.
-     */
-    private int locateFirstSpecialParameter(Class<?>[] paramTypes,
-                                            boolean initDynamicSortPositions) {
-        Set<Class<?>> specialParamTypes = //
-                        entityInfo.builder.provider.compat.specialParamTypes();
-        int specialParamsStartAt = paramTypes.length; // not found yet
-
-        for (int i = 0; i < paramTypes.length; i++) {
-            if (i < specialParamsStartAt &&
-                specialParamTypes.contains(paramTypes[i]))
-                specialParamsStartAt = i;
-
-            if (i >= specialParamsStartAt &&
-                SORT_PARAM_TYPES.contains(paramTypes[i]))
-                initDynamicSortPosition(i);
-        }
-
-        return specialParamsStartAt;
     }
 
     /**
@@ -3506,6 +3542,7 @@ public class QueryInfo {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         String methodName = method.getName();
+        Class<?>[] paramTypes = method.getParameterTypes();
         String o = entityVar;
         StringBuilder q = null;
 
@@ -3530,12 +3567,12 @@ public class QueryInfo {
                     generateCount(q.substring(where));
             }
 
-            specialParamsStartAt = locateFirstSpecialParameter(method.getParameterTypes(),
-                                                               true);
+            type = FIND;
+            specialParamsStartAt = locateSpecialParameters(paramTypes);
+
             if (orderBy >= 0)
                 parseOrderBy(orderBy, q);
 
-            type = FIND;
         } else if (methodName.startsWith("delete") || methodName.startsWith("remove")) {
             int orderBy = -1;
             boolean isFindAndDelete = isFindAndDelete();
@@ -3561,12 +3598,11 @@ public class QueryInfo {
             if (by > 0)
                 generateWhereClause(methodName, by + 2, orderBy > 0 ? orderBy : methodName.length(), q);
 
-            specialParamsStartAt = locateFirstSpecialParameter(method.getParameterTypes(),
-                                                               true);
+            type = type == null ? QM_DELETE : type;
+            specialParamsStartAt = locateSpecialParameters(paramTypes);
+
             if (orderBy > 0)
                 parseOrderBy(orderBy, q);
-
-            type = type == null ? QM_DELETE : type;
         } else if (methodName.startsWith("count")) {
             q = new StringBuilder(150) //
                             .append("SELECT COUNT(").append(o).append(") FROM ") //
@@ -3576,6 +3612,7 @@ public class QueryInfo {
             if (by > 0 && methodName.length() > by + 2)
                 generateWhereClause(methodName, by + 2, methodName.length(), q);
             type = COUNT;
+            specialParamsStartAt = locateSpecialParameters(paramTypes);
         } else if (methodName.startsWith("exists")) {
             q = new StringBuilder(200) //
                             .append("SELECT ID(").append(o).append(") FROM ") //
@@ -3585,6 +3622,7 @@ public class QueryInfo {
             if (by > 0 && methodName.length() > by + 2)
                 generateWhereClause(methodName, by + 2, methodName.length(), q);
             type = EXISTS;
+            specialParamsStartAt = locateSpecialParameters(paramTypes);
             validateReturnForExists();
         } else {
             throw Fail.unsupportedMethod(this);
@@ -3601,28 +3639,24 @@ public class QueryInfo {
      * which requires one of the following annotations:
      * Count, Delete, Exists, Find, or Update.
      *
-     * @param methodTypeAnno Count, Delete, Exists, Find, or Update annotation.
-     *                           The Insert, Save, and Query annotations are never
-     *                           supplied to this method.
-     * @param countPages     whether to generate a count query (for Page.totalElements
-     *                           and Page.totalPages).
-     * @param constraints    map of method parameter index (0-based) to deferred
-     *                           Constraint at the position. Null indicates
-     *                           Constraint values are not yet avaiable or there
-     *                           are no deferred Constraints.
-     * @param jpqlParams     Map to be populated with JPQL parameter names and values
-     *                           for Constraints and Restrictions. Map keys are the
-     *                           named parameter name or positional parameter index.
-     *                           Map values are obtained from the Constraints or
-     *                           Restrictions. The first positional parameter index
-     *                           starts at jpqlParamCount, which is updated by this
-     *                           method when JPQL parameters for repository method
-     *                           special parameters are added.
+     * @param countPages  whether to generate a count query (for Page.totalElements
+     *                        and Page.totalPages).
+     * @param constraints map of method parameter index (0-based) to deferred
+     *                        Constraint at the position. Null indicates
+     *                        Constraint values are not yet avaiable or there
+     *                        are no deferred Constraints.
+     * @param jpqlParams  Map to be populated with JPQL parameter names and values
+     *                        for Constraints and Restrictions. Map keys are the
+     *                        named parameter name or positional parameter index.
+     *                        Map values are obtained from the Constraints or
+     *                        Restrictions. The first positional parameter index
+     *                        starts at jpqlParamCount, which is updated by this
+     *                        method when JPQL parameters for repository method
+     *                        special parameters are added.
      * @return the generated query written to a StringBuilder.
      */
     @Trivial
-    private StringBuilder initQueryByParameters(Annotation methodTypeAnno,
-                                                boolean countPages,
+    private StringBuilder initQueryByParameters(boolean countPages,
                                                 Map<Integer, Object> constraints,
                                                 Map<Object, Object> jpqlParams) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -3934,6 +3968,48 @@ public class QueryInfo {
             throw Fail.returnTypeInvalidForDelete(this);
 
         return isFindAndDelete;
+    }
+
+    /**
+     * Locates the repository method special parameters. These are positioned
+     * after the query parameters. Records positions (0-based) of all sort criteria
+     * if valid for the type of repository method.
+     *
+     * @param paramTypes method parameter types.
+     * @return 0-based index at which which the first special parameter occurs in
+     *         the method parameters. If no special parameters, then the number of
+     *         method parameters.
+     */
+    private int locateSpecialParameters(Class<?>[] paramTypes) {
+        DataVersionCompatibility compat = entityInfo.builder.provider.compat;
+        Set<Class<?>> specialParamTypes = compat.specialParamTypes();
+        int specialParamsStartAt = paramTypes.length; // not found yet
+
+        for (int i = 0; i < paramTypes.length; i++) {
+            if (i < specialParamsStartAt &&
+                specialParamTypes.contains(paramTypes[i]))
+                specialParamsStartAt = i;
+
+            if (i >= specialParamsStartAt)
+                if (compat.isSpecialParamValid(paramTypes[i], type) &&
+                    (i == specialParamsStartAt ||
+                     specialParamTypes.contains(paramTypes[i]))) {
+
+                    if (SORT_PARAM_TYPES.contains(paramTypes[i]))
+                        initDynamicSortPosition(i);
+                } else if (type == QM_DELETE &&
+                           compat.isSpecialParamValid(paramTypes[i], FIND_AND_DELETE)) {
+                    throw exc(UnsupportedOperationException.class,
+                              "CWWKD1097.param.incompat",
+                              method.getName(),
+                              repositoryInterface.getName(),
+                              paramTypes[i].getSimpleName());
+                } else {
+                    throw Fail.specialParamIncompatible(this, paramTypes[i]);
+                }
+        }
+
+        return specialParamsStartAt;
     }
 
     /**
@@ -4941,12 +5017,16 @@ public class QueryInfo {
         final int numArgs = args == null ? 0 : args.length;
         final DataVersionCompatibility compat = producer.compat();
 
-        if (trace && tc.isDebugEnabled())
+        if (trace && tc.isDebugEnabled()) {
+            Object addedLoggable = loggable(addedJPQLParams);
             Tr.debug(this, tc, "setParameters",
                      numArgs + " method args",
-                     "first special param at " + (specialParamsStartAt + 1),
+                     "first special param at 0-based index " + specialParamsStartAt,
                      jpqlParamNames,
-                     addedJPQLParams == null ? null : addedJPQLParams.keySet());
+                     addedLoggable == addedJPQLParams //
+                                     ? addedLoggable //
+                                     : addedJPQLParams.keySet());
+        }
 
         if (jpqlParamNames.isEmpty()) { // positional parameters
             int paramNum = 1;
@@ -5411,10 +5491,9 @@ public class QueryInfo {
         if (type == null)
             throw Fail.unsupportedMethod(this);
 
-        int methodParamCount = method.getParameterCount();
         if (validateNumberOfMethodArgs &&
             jpql != null &&
-            methodParamCount < jpqlParamCount &&
+            method.getParameterCount() < jpqlParamCount &&
             type != LC_DELETE &&
             type != LC_UPDATE &&
             type != LC_UPDATE_MERGE)
@@ -5422,29 +5501,9 @@ public class QueryInfo {
                       "CWWKD1021.insufficient.params",
                       method.getName(),
                       repositoryInterface.getName(),
-                      methodParamCount,
+                      method.getParameterCount(),
                       jpqlParamCount,
                       jpql);
-
-        if (jpql != null &&
-            jpqlParamCount < methodParamCount &&
-            type != FIND &&
-            type != FIND_AND_DELETE) {
-
-            if (type == QM_DELETE) {
-                Class<?>[] paramTypes = method.getParameterTypes();
-                for (int i = jpqlParamCount; i < methodParamCount; i++)
-                    if (Util.SORT_PARAM_TYPES.contains(paramTypes[i]) ||
-                        Limit.class.equals(paramTypes[i]))
-                        throw exc(UnsupportedOperationException.class,
-                                  "CWWKD1097.param.incompat",
-                                  method.getName(),
-                                  repositoryInterface.getName(),
-                                  paramTypes[i].getSimpleName());
-            }
-
-            throw Fail.extraMethodParams(this, jpqlParamCount, methodParamCount);
-        }
 
         if (type == FIND &&
             CursoredPage.class.equals(multiType)) {

@@ -21,6 +21,7 @@ import java.math.BigInteger;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.constraint.AtLeast;
 import jakarta.data.constraint.AtMost;
 import jakarta.data.constraint.Between;
 import jakarta.data.constraint.In;
@@ -1168,6 +1170,178 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.where(restriction)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a repository method that imposes restrictions on a Query By Method Name
+     * count method that has no constraints indicated by the method name.
+     */
+    @Test
+    public void testRestrictedCount() {
+
+        Restriction<Fraction> filter = _Fraction.denominator
+                        .in(// 1/18, 2/19, 3/20:
+                            _Fraction.numerator.plus(17),
+                            // 2/3, 3/8, 4/15:
+                            _Fraction.numerator.plus(1)
+                                            .times(_Fraction.numerator.minus(1)),
+                            // One Ninth
+                            // Two Tenths
+                            // Six Tenths
+                            // Two Twelfths
+                            // Six Twelfths
+                            // Ten Twelfths
+                            // One Fourteenth
+                            // Four Fifteenths (duplicate of 4/15 from above)
+                            // Five Fifteenths
+                            // Nine Fifteenths
+                            // Three Sixteenths
+                            // Seven Sixteenths
+                            // Eight Sixteenths
+                            // Four Seventeenths
+                            // Five Seventeenths
+                            // Nine Seventeenths
+                            // Eleven Eighteenths
+                            // Twelve Eighteenths
+                            // Fifteen Nineteenths
+                            // Sixteen Nineteenths
+                            // Seventeen Twentieths:
+                            _Fraction.name.length());
+
+        assertEquals(Long.valueOf(26),
+                     fractions.count(filter));
+    }
+
+    /**
+     * Use a repository method that imposes restrictions on a Query By Method Name
+     * count method that has a Between constraint from its method name.
+     */
+    @Test
+    public void testRestrictedCountBy() {
+
+        Restriction<Fraction> filter = //
+                        Restrict.all(_Fraction.reduced.isTrue(),
+                                     _Fraction.denominator
+                                                     .minus(_Fraction.numerator)
+                                                     .lessThanEqual(3));
+
+        assertEquals(8L, // 1/3, 2/3, 1/4, 3/4, 2/5, 3/5, 4/5, 5/6
+                     fractions.countByDenominatorBetween(3, 6, filter));
+    }
+
+    /**
+     * Use a repository method that imposes restrictions and constraints on
+     * deletion.
+     */
+    @Test
+    public void testRestrictedDeletion() {
+
+        // Populate with fractions that have denominators of 21 and 22.
+        // These will be deleted by the test case.
+        List<Fraction> twentyFirstsAndTwentySeconds = new ArrayList<>(41);
+        for (int n = 1; n < 21; n++)
+            twentyFirstsAndTwentySeconds.add(Fraction.of(n, 21));
+        for (int n = 1; n < 22; n++)
+            twentyFirstsAndTwentySeconds.add(Fraction.of(n, 22));
+
+        fractions.supply(twentyFirstsAndTwentySeconds);
+        try {
+            List<Fraction> removed;
+
+            System.out.println("Deletion with constraint and composite restriction:");
+
+            Restriction<Fraction> restriction = Restrict
+                            .all(_Fraction.numerator
+                                            .plus(_Fraction.denominator)
+                                            .lessThan(30),
+                                 _Fraction.denominator.greaterThan(20));
+            removed = fractions.remove(Like.prefix("Tw"), restriction);
+            assertEquals(List.of("Two Twenty-firsts",
+                                 "Two Twenty-seconds"),
+                         removed.stream()
+                                         .map(f -> f.name)
+                                         .sorted()
+                                         .toList());
+
+            System.out.println("Deletion with constraint and unrestricted restriction:");
+
+            Like first6CharsRepeatedAtPosition8 = //
+                            Like.pattern(_Fraction.name.left(6).append("%").prepend("______ "),
+                                         '$');
+            removed = fractions.remove(first6CharsRepeatedAtPosition8,
+                                       Restrict.unrestricted());
+            assertEquals(List.of("Twenty Twenty-firsts",
+                                 "Twenty Twenty-seconds"),
+                         removed.stream()
+                                         .map(f -> f.name)
+                                         .sorted()
+                                         .toList());
+
+            System.out.println("Deletion with constraint and single restriction:");
+
+            removed = fractions.remove(Like.pattern("-i--teen *^-*", '-', '*', '^'),
+                                       _Fraction.name.like("%e________n%"));
+            assertEquals(List.of("Eighteen Twenty-seconds",
+                                 "Nineteen Twenty-firsts",
+                                 "Nineteen Twenty-seconds"),
+                         removed.stream()
+                                         .map(f -> f.name)
+                                         .sorted()
+                                         .toList());
+
+            System.out.println("Deletion with 2 constraints and simple Like restriction:");
+
+            assertEquals(4L, // 11/21, 12/21, 11/22, 12/22
+                         fractions.discard(AtLeast.min(21),
+                                           AtMost.max(22),
+                                           _Fraction.name.like(":l:ve:", '.', ':')));
+
+            System.out.println("Deletion with 2 constraints and arithmetic restriction:");
+
+            restriction = _Fraction.numerator
+                            .plus(_Fraction.name.length())
+                            .minus(_Fraction.denominator)
+                            .equalTo(6);
+            assertEquals(6L, // 8/21, 9/21, 10/21, 8/22, 9/22, 10/22
+                         fractions.discard(AtLeast.min(21),
+                                           AtMost.max(22),
+                                           restriction));
+
+            System.out.println("Deletion with 2 constraints and composite restriction:");
+
+            restriction = Restrict.any(_Fraction.numerator.in(21, 13),
+                                       _Fraction.reduced.isFalse());
+            assertEquals(13L,
+                         // numerator in:  21/22, 13/23, 13/22
+                         // not reduced:   3/21, 6/21, 7/21, 14/21, 15/21, 18/21,
+                         //                4/22, 6/22, 14/22, 16/22,
+                         fractions.discard(AtLeast.min(21),
+                                           AtMost.max(22),
+                                           restriction));
+
+            System.out.println("Deletion by method name query with restriction:");
+
+            restriction = Restrict.all(_Fraction.name.left(5).right(1).equalTo(" "),
+                                       _Fraction.denominator.between(21, 30));
+
+            assertEquals(3, // 4/21, 5/21, 5/22
+                         fractions.deleteByNameStartsWith("F", restriction));
+
+            // If the assertions above complete successfully, the following remain:
+            //  1/21 One Twenty-first
+            // 16/21 Sixteen Twenty-firsts
+            // 17/21 Seventeen Twenty-firsts
+            //  1/22 One Twenty-second
+            //  3/22 Three Twenty-seconds
+            //  7/22 Seven Twenty-seconds
+            // 15/22 Fifteen Twenty-seconds
+            // 17/22 Seventeen Twenty-seconds
+        } finally {
+            // Ensure no fractions with deninators above 20 are left around
+            fractions.discard(AtLeast.min(21),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
     }
 
     /**

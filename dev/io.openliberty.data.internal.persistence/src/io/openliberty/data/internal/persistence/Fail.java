@@ -1034,6 +1034,28 @@ public class Fail {
     }
 
     /**
+     * Raise a new UnsupportedOperationException for the error where a repository
+     * method parameter is of a special parameter type that is incompatible with
+     * the type of repository method.
+     *
+     * @param info      query information for the repository method.
+     * @param paramType the type of special parameter that does not belong on
+     *                      the repository method.
+     * @throws UnsupportedOperationException.
+     */
+    static UnsupportedOperationException specialParamIncompatible(QueryInfo info,
+                                                                  Class<?> paramType) {
+        Fail.validateParameterPositions(info);
+
+        throw exc(UnsupportedOperationException.class,
+                  "CWWKD1020.invalid.param.type",
+                  info.method.getName(),
+                  info.repositoryInterface.getName(),
+                  paramType.getSimpleName(),
+                  info.type.operationName());
+    }
+
+    /**
      * Raises MappingException because there is no known entity attribute
      * with the given name.
      *

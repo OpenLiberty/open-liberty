@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -2284,8 +2285,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
         Matcher matcher = null;
 
-        String remoteIp = nettyContext.channel().remoteAddress().toString();
-        remoteIp = remoteIp.substring(1, remoteIp.indexOf(':'));
+        // The remoteAddress API is meant to be cast down to a specific type. Since we are using HTTP this
+        // should be a cast down to InetSocketAddress
+        String remoteIp = ((InetSocketAddress)nettyContext.channel().remoteAddress()).getAddress().getHostAddress();
 
         String attribute;
 

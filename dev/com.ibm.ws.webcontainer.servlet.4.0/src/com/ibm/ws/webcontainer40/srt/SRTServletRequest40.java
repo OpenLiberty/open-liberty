@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer40.srt;
 
@@ -188,7 +185,9 @@ public class SRTServletRequest40 extends SRTServletRequest31 implements HttpServ
                     // matchValue should not start with "/"
                     matchValue = servletPath.substring(servletPath.startsWith("/") ? 1 : 0, servletPath.indexOf("."));
 
-                    pattern = "*" + servletPath.substring(servletPath.indexOf("."));
+                    // Changed to lastIndexof from indexOf to support URLs with multiple "." in them. 
+                    // For example, if the servletPath is "/test/file.name.xhtml", the extension should be ".xhtml" and not ".name.xhtml"
+                    pattern = "*" + servletPath.substring(servletPath.lastIndexOf("."));
                     returnMapping = new HttpServletMappingImpl(MappingMatch.EXTENSION, matchValue, pattern, servletName);
                     break;
                 case PATH:
