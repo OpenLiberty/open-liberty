@@ -260,10 +260,157 @@ public class ServerStopTest {
         Log.info(c, METHOD_NAME, "<");
     }
 
+    ///////  BEGIN QUIESE TESTS
+
+    /**
+     * Test - Quiesce NOT configured on server element - Beta Mode.
+     * Ensure default quiesce timeout is used when quiesceTimeout not configured.
+     * Starts & Stops the server and verifies that the expected timeout value is in
+     * the quiesce message in the logs.
+     */
+    @Test
+    public void testQuiesceTimeDefaultBetaMode() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeDefaultBetaMode()";
+        Log.info(c, METHOD_NAME, ENTERING);
+        
+        // Enable beta mode
+        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+        
+        assertTrue("Default quiesce timeout should be 30 seconds in beta mode", runQuiesceTest("30"));
+        Log.info(c, METHOD_NAME, EXITING);
+    }
+
+    /**
+     * Test - Quiesce NOT configured on server element - Non-Beta Mode.
+     * Ensure default quiesce timeout is used when quiesceTimeout not configured.
+     */
+    @Test
+    public void testQuiesceTimeDefaultNonBetaMode() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeDefaultNonBetaMode()";
+        Log.info(c, METHOD_NAME, ENTERING);
+        
+        // Disable beta mode
+        server.setJvmOptions(java.util.Collections.emptyList());
+        
+        assertTrue("Default quiesce timeout should be 30 seconds in non-beta mode", runQuiesceTest("30"));
+        Log.info(c, METHOD_NAME, EXITING);
+    }
+
+    /**
+     * Test - Quiesce configured on server element but NOT valid - Beta Mode.
+     * Ensure default quiesce timeout is used when quiesceTimeout value is NOT valid.
+     */
+    @Test
+    public void testQuiesceTimeNotValidBetaMode() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeNotValidBetaMode()";
+        Log.info(c, METHOD_NAME, ENTERING);
+
+        // Enable beta mode
+        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+        
+        Utils.createFile(serverXmlFilePath, getServerXmlContents("XXXXX"));
+        assertTrue("Quiesce timeout not valid. Should use default 30 seconds in beta mode", runQuiesceTest("30"));
+        Log.info(c, METHOD_NAME, EXITING);
+    }
+
+    /**
+     * Test - Quiesce configured on server element but LESS than minimum - Beta Mode.
+     * Ensure default quiesce timeout is used when quiesceTimeout value is LESS than minimum (30).
+     */
+    @Test
+    public void testQuiesceTimeValueLessThanMinimumBetaMode() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeValueLessThanMinimumBetaMode()";
+        Log.info(c, METHOD_NAME, ENTERING);
+        
+        // Enable beta mode
+        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+        
+        Utils.createFile(serverXmlFilePath, getServerXmlContents("15"));
+        assertTrue("Quiesce timeout below minimum should use default 30 seconds in beta mode", runQuiesceTest("30"));
+        Log.info(c, METHOD_NAME, EXITING);
+    }
+
+    /**
+     * Test - Quiesce configured on server element and is GREATER than default - Beta Mode.
+     * Ensure the configured quiesce timeout is used when quiesceTimeout value is valid and GREATER than default.
+     */
+    @Test
+    public void testQuiesceTimeValueGreaterThanDefaultBetaMode() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefaultBetaMode()";
+        Log.info(c, METHOD_NAME, ENTERING);
+        
+        // Enable beta mode
+        server.setJvmOptions(java.util.Arrays.asList("-Dcom.ibm.ws.beta.edition=true"));
+        
+        Utils.createFile(serverXmlFilePath, getServerXmlContents("1m30s"));
+        assertTrue("Valid quiesce timeout should be used (90 seconds) in beta mode", runQuiesceTest("90"));
+        Log.info(c, METHOD_NAME, EXITING);
+    }
+
+    /**
+     * Test - Quiesce configured on server element and is GREATER than default - Non-Beta Mode.
+     * Ensure the quiesceTimeout attribute is ignored when beta mode is disabled.
+     */
+    @Test
+    public void testQuiesceTimeValueGreaterThanDefaultNonBetaMode() throws Exception {
+        final String METHOD_NAME = "testQuiesceTimeValueGreaterThanDefaultNonBetaMode()";
+        Log.info(c, METHOD_NAME, ENTERING);
+        
+        // Disable beta mode
+        server.setJvmOptions(java.util.Collections.emptyList());
+        
+        Utils.createFile(serverXmlFilePath, getServerXmlContents("1m30s"));
+        assertTrue("Quiesce timeout attribute ignored in non-beta mode should use default 30 seconds", runQuiesceTest("30"));
+        Log.info(c, METHOD_NAME, EXITING);
+    }
+
+    // -----
+
+    public boolean runQuiesceTest(String expectedResult) throws Exception {
+        final String METHOD_NAME = "runQuiesceTest";
+        final String quiesceMessage = "CWWKE1100I";
+
+        startServer();
+        stopServer();
+
+        RemoteFile consoleLog = server.getConsoleLogFile();
+
+        if (consoleLog == null) {
+            Log.info(c, METHOD_NAME, "The consoleLog is null.");
+        } else {
+            Log.info(c, METHOD_NAME, "consoleLog Path [" + consoleLog.getAbsolutePath() + "]");
+        }
+
+        List<String> matches = server.findStringsInLogs(quiesceMessage, consoleLog);
+        if (matches == null) {
+            Log.info(c, METHOD_NAME, "matches is null");
+        }
+
+        String lastMatch = null;
+        for (String s : matches) {
+            Log.info(c, METHOD_NAME, "matches [" + s + "]");
+            lastMatch = s;
+        }
+        Log.info(c, METHOD_NAME, "lastMatch [" + lastMatch + "]");
+        if (lastMatch != null) {
+            String actualResult = extractTimeValue(lastMatch);
+            if (actualResult != null) {
+                Log.info(c, METHOD_NAME, "returning  - actual result is [" + actualResult + "]");
+                return actualResult.equals(expectedResult);
+            }
+            Log.info(c, METHOD_NAME, "Problem extracting time from quiesce message [" + lastMatch + "]");
+        } else {
+            Log.info(c, METHOD_NAME, "Quiesce message" + "[" + quiesceMessage + "]" + "not found in " + consoleLog.getAbsolutePath());
+        }
+        Log.info(c, METHOD_NAME, "returning false");
+        return false;
+    }
+
+    ///////  END SERVER ELEMENT QUIESCE TESTS
+
     public String getServerXmlContents(String timeout) {
-        return "<server>\n" +
+        return "<server quiesceTimeout=\"" + timeout + "\">\n" +
                "    <include location=\"../fatTestPorts.xml\"/>\n" +
-               "    <executor quiesceTimeout=\"" + timeout + "\"/>\n" +
                "</server>";
     }
 
