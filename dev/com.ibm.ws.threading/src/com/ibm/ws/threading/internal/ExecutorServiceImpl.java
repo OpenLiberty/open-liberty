@@ -609,6 +609,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
     }
 
     @Override
+    @Deprecated
     public boolean quiesceThreads() {
         throw new UnsupportedOperationException();
     }
@@ -618,7 +619,8 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * @see com.ibm.ws.threading.ThreadQuiesce#quiesceThreads()
      */
     @Override
-    public boolean quiesceThreads(long startTime) {
+    @FFDCIgnore(TimeoutException.class)
+    public boolean quiesceThreads(long quiesceTimeoutMillis) {
         this.serverStopping = true;
 
         // Wait for all pre-quiesce work to complete.

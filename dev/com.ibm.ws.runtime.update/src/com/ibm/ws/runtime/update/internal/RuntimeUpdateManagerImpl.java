@@ -54,6 +54,7 @@ import com.ibm.ws.runtime.update.RuntimeUpdateNotification;
 import com.ibm.ws.threading.FutureMonitor;
 import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.ws.threading.listeners.CompletionListener;
+import com.ibm.websphere.kernel.server.ServerElementConfig;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
 import com.ibm.wsspi.kernel.service.location.WsLocationConstants;
 import com.ibm.wsspi.kernel.service.utils.FrameworkState;
@@ -103,6 +104,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
     private ExecutorService executorService;
 
+    private ServerElementConfig serverElementConfig;
+
     @Activate
     protected void activate(BundleContext ctx) {
         bundleCtx = ctx;
@@ -122,6 +125,17 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
     protected void unsetFutureMonitor(FutureMonitor futureMonitor) {
         this.futureMonitor = null;
+    }
+
+    @Reference(service = ServerElementConfig.class,
+               cardinality = ReferenceCardinality.OPTIONAL,
+               policy = ReferencePolicy.STATIC)
+    protected void setServerElementConfig(ServerElementConfig config) {
+        this.serverElementConfig = config;
+    }
+
+    protected void unsetServerElementConfig(ServerElementConfig config) {
+        this.serverElementConfig = null;
     }
 
     @Reference(service = RuntimeUpdateListener.class,
@@ -386,11 +400,13 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             return;
 
         ThreadQuiesce tq = (ThreadQuiesce) executorService;
+        int quiesceTimeoutSeconds = (serverElementConfig != null) ? serverElementConfig.getQuiesceTimeout() : 30;
+        long quiesceTimeoutMillis = quiesceTimeoutSeconds * 1000L;
 
         if (isServer())
-            Tr.audit(tc, "quiesce.begin");
+            Tr.audit(tc, "quiesce.begin", quiesceTimeoutSeconds);
         else
-            Tr.audit(tc, "client.quiesce.begin");
+            Tr.audit(tc, "client.quiesce.begin", quiesceTimeoutSeconds);
 
         // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
@@ -506,15 +522,14 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
         /**
          *
-         * @param startTime      - time now in milliseconds
-         * @param quiesceTimeout - timeout in seconds
+         * @param startTime             - time now in milliseconds
+         * @param quiesceTimeoutMillis  - timeout in milliseconds
          * @return
          */
         @FFDCIgnore(TimeoutException.class)
-        boolean isComplete(long startTime) {
-            // We will wait 30 seconds past the start time for tasks to complete
-            long endTime = startTime + 30000;
-
+        boolean isComplete(long startTime, long quiesceTimeoutMillis) {
+            // We will wait quiesceTimeoutMillis past the start time for tasks to complete
+            long endTime = startTime + quiesceTimeoutMillis;
 
             for (Future<?> f : quiesceListenerFutures) {
                 long waitTime = endTime - System.currentTimeMillis();
