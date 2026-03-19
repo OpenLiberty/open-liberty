@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 
 import javax.xml.stream.Location;
@@ -35,6 +36,7 @@ import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamReader;
 
 import org.osgi.framework.Bundle;
+import org.osgi.service.metatype.AttributeDefinition;
 
 import com.ibm.websphere.config.ConfigParserException;
 import com.ibm.websphere.config.ConfigValidationException;
@@ -44,9 +46,12 @@ import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.config.xml.LibertyVariable;
 import com.ibm.ws.config.xml.internal.DefaultConfiguration.DefaultConfigFile;
+import com.ibm.ws.config.xml.internal.MetaTypeRegistry.RegistryEntry;
+import com.ibm.ws.config.xml.internal.metatype.ExtendedObjectClassDefinition;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariable;
 import com.ibm.ws.config.xml.internal.variables.ConfigVariableRegistry;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.service.util.DesignatedXMLInputFactory;
 import com.ibm.wsspi.kernel.service.location.MalformedLocationException;
 import com.ibm.wsspi.kernel.service.location.WsLocationAdmin;
@@ -66,7 +71,7 @@ public class XMLConfigParser {
     private static final TraceComponent tc = Tr.register(XMLConfigParser.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
 
     private static final String IS_SUPPORTING_LOCATION_COORDINATES_PROPERTY = "javax.xml.stream.isSupportingLocationCoordinates";
-
+    
     protected static final String BEHAVIOR_ATTRIBUTE = "onConflict";
 
     public static final String REQUIRE_EXISTING = "requireExisting";
@@ -78,10 +83,23 @@ public class XMLConfigParser {
     private final LinkedList<MergeBehavior> behaviorStack = new LinkedList<MergeBehavior>();
 
     private final ConfigVariableRegistry variableRegistry;
+    private final MetaTypeRegistry metatypeRegistry;
 
+    /**
+     * Constructor for backward compatibility (used by tests).
+     * Creates parser without MetaTypeRegistry support.
+     */
     public XMLConfigParser(WsLocationAdmin locationService, ConfigVariableRegistry variableRegistry) {
+        this(locationService, variableRegistry, null);
+    }
+
+    /**
+     * Constructor with MetaTypeRegistry support for querying metatype defaults.
+     */
+    public XMLConfigParser(WsLocationAdmin locationService, ConfigVariableRegistry variableRegistry, MetaTypeRegistry metatypeRegistry) {
         this.locationService = locationService;
         this.variableRegistry = variableRegistry;
+        this.metatypeRegistry = metatypeRegistry;
     }
 
     private static final class XifHolder {
@@ -301,6 +319,86 @@ public class XMLConfigParser {
 
     private final BaseConfiguration tempVariables = new BaseConfiguration();
 
+    /**
+     * Parse and process the quiesceTimeout attribute from the server element.
+     * This is a beta-only feature that sets the server quiesce timeout.
+     *
+     * @param parser The XML stream reader positioned at the server element
+     * @param config The BaseConfiguration to store the timeout value in
+     */
+    @FFDCIgnore(IllegalArgumentException.class)
+    private void parseQuiesceTimeout(DepthAwareXMLStreamReader parser, BaseConfiguration config) {
+
+        boolean isBeta = Boolean.valueOf(System.getProperty("com.ibm.ws.beta.edition"));
+        String quiesceTimeoutValue = (isBeta) ? getAttributeValue(parser, "quiesceTimeout") : null;
+
+        if (quiesceTimeoutValue != null) {
+            // Beta mode with quiesceTimeout attribute present
+            try {
+                Long timeoutSeconds = KernelUtils.evaluateDuration(quiesceTimeoutValue, TimeUnit.SECONDS);
+                if (timeoutSeconds != null) {
+                    boolean isValid = config.setQuiesceTimeout(timeoutSeconds.intValue());
+                    if (!isValid) {
+                        // Value was below minimum - setQuiesceTimeout has already set it to default
+                        Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
+                    }
+                } else {
+                    // Could not parse duration
+                    setQuiesceTimeoutFromMetatype(config);
+                    Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
+                }
+            } catch (IllegalArgumentException e) {
+                // Exception during parsing
+                setQuiesceTimeoutFromMetatype(config);
+                Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
+            }
+        } else if (isBeta) {
+            // Beta mode, parsing server.xml, but no quiesceTimeout attribute - use metatype default
+            setQuiesceTimeoutFromMetatype(config);
+        }
+    }
+
+    /**
+     * Set the quiesce timeout from the metatype default value.
+     * If metatype is not available or doesn't have a default, falls back to hardcoded default.
+     *
+     * @param config The BaseConfiguration to store the timeout value in
+     */
+    @FFDCIgnore(Exception.class)
+    private void setQuiesceTimeoutFromMetatype(BaseConfiguration config) {
+        if (metatypeRegistry != null) {
+            try {
+                RegistryEntry entry = metatypeRegistry.getRegistryEntry("com.ibm.ws.server");
+                if (entry != null) {
+                    ExtendedObjectClassDefinition ocd = entry.getObjectClassDefinition();
+                    if (ocd != null) {
+                        AttributeDefinition[] attrs = ocd.getAttributeDefinitions(ExtendedObjectClassDefinition.ALL);
+                        if (attrs != null) {
+                            for (AttributeDefinition attr : attrs) {
+                                if ("quiesceTimeout".equals(attr.getID())) {
+                                    String[] defaultValues = attr.getDefaultValue();
+                                    if (defaultValues != null && defaultValues.length > 0) {
+                                        String defaultValue = defaultValues[0];
+                                        Long timeoutSeconds = KernelUtils.evaluateDuration(defaultValue, TimeUnit.SECONDS);
+                                        if (timeoutSeconds != null) {
+                                            config.setQuiesceTimeout(timeoutSeconds.intValue());
+                                            return;
+                                        }
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+            } catch (Exception e) {
+                // Fall through to use hardcoded default
+            }
+        }
+        // Fallback to hardcoded default if metatype not available or query failed
+        config.setDefaultQuiesceTimeout();
+    }
+
     @FFDCIgnore({ XMLStreamException.class, ConfigParserTolerableException.class })
     private void parseServer(DepthAwareXMLStreamReader parser, String docLocation, BaseConfiguration config,
                              String processType) throws ConfigParserException, ConfigValidationException {
@@ -310,9 +408,17 @@ public class XMLConfigParser {
             Tr.debug(tc, "parseServer: Starting to parse file: " + docLocation);
         }
         
+        // Parse description attribute from server element
         String descriptionAttributeValue = getAttributeValue(parser, "description");
         if (descriptionAttributeValue != null) {
             config.setDescription(descriptionAttributeValue);
+        }
+        
+        // Parse quiesceTimeout attribute
+        // Only do this for doclocation server.xml or test (used by unit tests)
+        boolean isServerXml = docLocation != null && (docLocation.contains("server.xml") || docLocation.equals("test"));
+        if (isServerXml) {
+           parseQuiesceTimeout(parser, config);
         }
 
         List<WsResource> includes = config.getIncludes();
