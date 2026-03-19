@@ -165,8 +165,10 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             state.setHeadRequest(request.method() == HttpMethod.HEAD);
             state.setBodyReadWanted(false);
             state.setReadAgain(false);
-            state.setRequestConsumed(state.isHeadRequest() || !isBodyExpected(request));
+            //state.setRequestConsumed(state.isHeadRequest() || !isBodyExpected(request));
+            boolean requestEnd = (message instanceof LastHttpContent);
             super.channelRead(context, message);
+            state.setRequestConsumed(requestEnd);
             return;
         }
 
@@ -377,7 +379,7 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
      * @return true if a body is expected; false otherwise. 
      */
     private static boolean isBodyExpected(HttpRequest request){
-        if (request.method() == HttpMethod.HEAD) return false;
+       // if (request.method() == HttpMethod.HEAD) return false;
         if (HttpUtil.isTransferEncodingChunked(request)) return true;
         return HttpUtil.getContentLength(request, -1) > 0;
     }

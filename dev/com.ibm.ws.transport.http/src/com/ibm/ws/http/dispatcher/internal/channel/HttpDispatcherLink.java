@@ -271,9 +271,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         if (!(hasBody || expect100)) {
             this.isc.setBodyComplete();
-            ReadFlowHandler.markRequestConsumed(ctx);
+            //ReadFlowHandler.markRequestConsumed(ctx);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "initStreaming: request has no body; marked as consumed");
+                Tr.debug(tc, "initStreaming: request has no body; wait for LastHttpContent");
             }
         }
 

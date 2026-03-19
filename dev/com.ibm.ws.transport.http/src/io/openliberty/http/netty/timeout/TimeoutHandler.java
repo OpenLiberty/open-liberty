@@ -159,24 +159,34 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         }
 
         if (isRequestStart(message)) {
-            cancel();
+           // cancel();
             clientRequestedKeepAlive = shouldKeepAliveRequest(context, message);
+        } else if(phase == Phase.READ){
+            resetRead(context);
         }
+        
+        
+        //else{
 
-        switch (phase) {
-            case TCP_IDLE:
-                arm(context, Phase.READ);
-                break;
-            case READ:
-                resetRead(context);
-                break;
-            default:
-        }
+        //     switch (phase) {
+        //         case TCP_IDLE:
+        //             arm(context, Phase.READ);
+        //             break;
+        //         case READ:
+        //             resetRead(context);
+        //             break;
+        //         default:
+        //     }
+        // }
 
         super.channelRead(context, message);
 
         if (isRequestEnd(message)) {
-            cancel();
+          //  cancel();
+            
+            if (phase == Phase.READ){
+                cancel();
+            }
             firstRequest = false;
         }
     }
@@ -214,15 +224,15 @@ public class TimeoutHandler extends ChannelDuplexHandler {
         }
         super.write(context, message, promise);
 
-        // promise.addListener(future -> {
-        //     if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
-        //         if (!serverKeepAlive) {
-        //             context.close();
-        //         } else {
-        //             armPersistIfNeeded(context);
-        //         }
-        //     }
-        // }); -> leave this responsibility to the link
+        promise.addListener(future -> {
+            if (future.isSuccess() && isResponseEnd(message) && !streamOnly) {
+                if (!serverKeepAlive) {
+                   // context.close();
+                } else {
+                    armPersistIfNeeded(context);
+                }
+            }
+        }); //-> TODO: move over to keep-alive handler when implemented
 
     }
 
@@ -293,13 +303,15 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     }
 
     private static boolean isRequestEnd(Object message) {
+        if(message instanceof LastHttpContent){
+                return true;
+        }
+
         if (message instanceof HttpRequest) {
+            
             HttpRequest req = (HttpRequest) message;
             boolean hasBody = HttpUtil.isTransferEncodingChunked(req) || HttpUtil.isContentLengthSet(req);
             return !hasBody;
-        }
-        if (message instanceof LastHttpContent) {
-            return true;
         }
         if (message instanceof Http2DataFrame) {
             return ((Http2DataFrame) message).isEndStream();
@@ -374,6 +386,20 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     private static ProtocolName getProtocol(ChannelHandlerContext context) {
         String protocol = context.channel().attr(NettyHttpConstants.PROTOCOL).get();
         return ProtocolName.from(protocol);
+    }
+
+    public static void armPersistTimeout(Channel channel){
+        TimeoutHandler handler = channel.pipeline().get(TimeoutHandler.class);
+        if(handler == null || handler.streamOnly){
+            return;
+        }
+        ChannelHandlerContext context = handler.parentContext;
+        if(context == null){
+            return;
+        }
+
+
+        handler.armPersistIfNeeded(context);
     }
 
     public static ReadOpToken armReadOp(Channel channel, int timeout, Runnable callback){
