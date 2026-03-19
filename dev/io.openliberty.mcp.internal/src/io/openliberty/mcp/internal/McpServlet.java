@@ -183,10 +183,8 @@ public class McpServlet extends HttpServlet {
         }
     }
 
+    @FFDCIgnore(ToolCallException.class)
     private void callTool(McpTransport transport) {
-        /*
-         * Create opertation Context
-         */
         McpMetrics metrics = new McpMetrics();
         metrics.setMethodName("tools/call");
         metrics.setTransport(transport);
@@ -194,15 +192,18 @@ public class McpServlet extends HttpServlet {
 
         String status = "ok";
         String errorType = null;
+        boolean asyncOperation = false;
 
         ExecutionRequestId requestId = createOngoingRequestId(transport);
         if (requestId != null) {
             metrics.setExecutionRequestId(requestId);
         }
+
         McpToolCallParams params = transport.getParams(McpToolCallParams.class);
         if (params != null && params.getName() != null) {
             metrics.setToolName(params.getName());
         }
+
         McpRequest request = transport.getMcpRequest();
 
         if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
@@ -214,45 +215,47 @@ public class McpServlet extends HttpServlet {
             if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
                 status = "error";
                 errorType = "DuplicateRequestId";
-                throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
+                throw new JSONRPCException(
+                                           JSONRPCErrorCode.INVALID_PARAMS,
                                            Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
             }
 
-            try {
-                if (params.getMetadata() == null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
-                    }
-                    status = "error";
-                    errorType = "ToolNotFound";
-                    throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
-                                               List.of("Method " + params.getName() + " not found"));
+            if (params.getMetadata() == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
                 }
-
-                Authorizer.requireAuthorized(transport, params.getMetadata());
-
-                if (params.getMetadata().returnsCompletionStage()) {
-                    // Async tool should later hook metrics into the async completion
-                    callToolAndSendResponseAsync(transport, requestId, request, params);
-                } else {
-                    callToolAndSendResponseSync(transport, requestId, request, params);
-                }
-            } catch (ToolCallException e) {
-                // Tool validation error → still part of this operation
                 status = "error";
-                errorType = e.getClass().getSimpleName();
-
-                ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
-                transport.sendResponse(response);
-                return;
+                errorType = "ToolNotFound";
+                throw new JSONRPCException(
+                                           JSONRPCErrorCode.INVALID_PARAMS,
+                                           List.of("Method " + params.getName() + " not found"));
             }
-        } finally {
-            metrics.setOutcome(status, errorType);
-            McpMetrics.operationEnded(metrics);
 
-            // TODO pass optCtx to metrics:
-            // For async tools, we will also store optCtx with the ongoing request so
-            // we can call a matching "operationEnded" hook when the async result completes.
+            Authorizer.requireAuthorized(transport, params.getMetadata());
+
+            if (params.getMetadata().returnsCompletionStage()) {
+                // Important: build tool args here so ToolCallException is handled in one place
+                ToolArguments toolArgs = createToolArguments(request, params);
+                asyncOperation = true;
+                callToolAndSendResponseAsync(transport, requestId, params, toolArgs, metrics);
+            } else {
+                callToolAndSendResponseSync(transport, requestId, request, params);
+            }
+
+        } catch (ToolCallException e) {
+            status = "error";
+            errorType = e.getClass().getSimpleName();
+
+            ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
+            transport.sendResponse(response);
+            return;
+        } finally {
+            // For sync requests, end metrics here.
+            // For async requests, metrics must end in the async completion callback.
+            if (!asyncOperation) {
+                metrics.setOutcome(status, errorType);
+                McpMetrics.operationEnded(metrics);
+            }
         }
     }
 
@@ -289,9 +292,9 @@ public class McpServlet extends HttpServlet {
 
     private void callToolAndSendResponseAsync(McpTransport transport,
                                               ExecutionRequestId requestId,
-                                              McpRequest mcpRequest,
-                                              McpToolCallParams params) {
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params);
+                                              McpToolCallParams params,
+                                              ToolArguments toolArgs,
+                                              McpMetrics metrics) {
 
         if (requestId != null) {
             requestTrackers.getCurrent().registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
@@ -310,13 +313,28 @@ public class McpServlet extends HttpServlet {
                                } else if (throwable instanceof ToolCallException toolEx) {
                                    return ToolResponses.createBusinessErrorResponse(toolEx);
                                } else {
-                                   return ToolResponses.createNonBusinessErrorResponse(throwable,
-                                                                                       params.getName());
+                                   return ToolResponses.createNonBusinessErrorResponse(throwable, params.getName());
                                }
                            });
 
         transport.sendResultAsync(response)
-                 .whenComplete((result, throwable) -> cleanup(requestId));
+                 .whenComplete((result, throwable) -> {
+                     try {
+                         String status = "ok";
+                         String errorType = null;
+
+                         if (throwable != null) {
+                             status = "error";
+                             Throwable actual = throwable instanceof CompletionException ? throwable.getCause() : throwable;
+                             errorType = actual != null ? actual.getClass().getSimpleName() : "UnknownAsyncError";
+                         }
+
+                         metrics.setOutcome(status, errorType);
+                         McpMetrics.operationEnded(metrics);
+                     } finally {
+                         cleanup(requestId);
+                     }
+                 });
     }
 
     @FFDCIgnore(Exception.class)
@@ -370,6 +388,7 @@ public class McpServlet extends HttpServlet {
      * @return
      * @throws IOException
      */
+    @FFDCIgnore(Exception.class)
     private void listTools(McpTransport transport) throws IOException {
         /*
          * Create opertation Context
@@ -421,6 +440,7 @@ public class McpServlet extends HttpServlet {
         } catch (Exception e) {
             status = "error";
             errorType = e.getClass().getSimpleName();
+            throw e;
         } finally {
             metrics.setOutcome(status, errorType);
             McpMetrics.operationEnded(metrics);
