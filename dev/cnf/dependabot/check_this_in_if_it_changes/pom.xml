@@ -5119,17 +5119,17 @@
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webflux</artifactId>
-      <version>5.3.21</version>
+      <version>6.2.17</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webflux</artifactId>
-      <version>6.1.14</version>
+      <version>6.2.17</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
       <artifactId>spring-webflux</artifactId>
-      <version>7.0.0-M7</version>
+      <version>6.2.17</version>
     </dependency>
     <dependency>
       <groupId>org.springframework</groupId>
