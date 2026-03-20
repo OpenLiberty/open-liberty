@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,7 @@
 package com.ibm.ws.session.cache.fat;
 
 import static componenttest.custom.junit.runner.Mode.TestMode.FULL;
+import static org.junit.Assert.assertNotNull;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -90,7 +91,6 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         // z/OS and OS/390 often need extra time
         Log.info(SessionCacheTwoServerTimeoutTest.class, "setUp", "OS name = " + osName);
-        TimeUnit.SECONDS.sleep(10);
 
         // Use HTTP session on serverA before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests. Invoking this before starting
@@ -102,8 +102,11 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
 
         serverB.startServer();
 
-        // Wait 10 seconds
-        TimeUnit.SECONDS.sleep(10);
+        // Wait for Hazelcast to form a 2-node cluster. This message appears in serverA's log
+        // when serverB joins. Using a log-based wait instead of a fixed sleep makes this
+        // reliable across machines with varying startup times (especially Windows under load).
+        assertNotNull("Hazelcast 2-node cluster did not form within 60 seconds",
+                      serverA.waitForStringInLog("Members \\{size:2", 60000));
 
         // Use HTTP session on serverB before running any tests, so that the time it takes to initialize
         // the JCache provider does not interfere with timing of tests.

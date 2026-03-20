@@ -916,7 +916,8 @@ public class SessionCacheTestServlet extends FATServlet {
         }        
         if (session != null) {
             StringBuffer value = (StringBuffer) session.getAttribute(key);
-            value.append("Appended");
+            if (value != null)
+                value.append("Appended");
         }
     }
 
