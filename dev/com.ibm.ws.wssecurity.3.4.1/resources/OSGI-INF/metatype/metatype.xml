@@ -70,7 +70,7 @@
         <AD id="userIdentifier" name="%userIdentifier" description="%userIdentifier.desc" required="false" type="String"/>
         <AD id="groupIdentifier" name="%groupIdentifier" description="%groupIdentifier.desc" required="false" type="String" />     
         <AD id="userUniqueIdentifier" name="%userUniqueIdentifier" description="%userUniqueIdentifier.desc" required="false" type="String" />
-        <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc" default="issuer" required="false" type="String" />
+        <AD id="realmIdentifier" name="%realmIdentifier" description="%realmIdentifier.desc" required="false" type="String" />
         <AD id="includeTokenInSubject" name ="%includeTokenInSubject" description="%includeTokenInSubject.desc" required="false" type="Boolean" default="true"/>
         <AD id="mapToUserRegistry" name ="%mapToUserRegistry" description="%mapToUserRegistry.desc" required="false" type="String" default="No">
                 <Option label="%mapToUserRegistry.NO"     value="No" />
