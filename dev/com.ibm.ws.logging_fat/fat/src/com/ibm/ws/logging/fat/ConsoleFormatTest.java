@@ -388,7 +388,7 @@ public class ConsoleFormatTest {
 
         // Verify if the exception is complete, and not trimmed and/or suppressed
         List<String> lines = server.findStringsInLogs(INTERNAL_CLASSES_REGEXP, consoleLogFile);
-        assertTrue("The SystemErr message is not in the  simple console format.", lines.isEmpty());
+        assertTrue("The SystemErr message is not in the simple console format.", lines.isEmpty());
     }
 
     /*
