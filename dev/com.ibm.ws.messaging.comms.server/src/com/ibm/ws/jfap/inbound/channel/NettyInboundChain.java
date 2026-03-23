@@ -42,7 +42,6 @@ import io.netty.channel.Channel;
 import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.ssl.SslHandler;
-import io.openliberty.netty.internal.impl.NettyConstants;
 
 
 public class NettyInboundChain implements InboundChain{
@@ -346,8 +345,7 @@ public class NettyInboundChain implements InboundChain{
             }
             pipeline.addLast(NettyNetworkConnectionFactory.DECODER_HANDLER_KEY, new NettyToWsBufferDecoder());
             pipeline.addLast(NettyNetworkConnectionFactory.ENCODER_HANDLER_KEY, new WsBufferToNettyEncoder());
-            // Replace the timeout handler to handler the timeouts ourselves
-            pipeline.replace(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME, NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
+            pipeline.addLast(NettyNetworkConnectionFactory.HEARTBEAT_HANDLER_KEY, new NettyJMSHeartbeatHandler(0));
             pipeline.addLast(NettyNetworkConnectionFactory.JMS_SERVER_HANDLER_KEY, new NettyJMSServerHandler());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 SibTr.debug(this, tc, "Channel: " + ch + " handler names: " + pipeline.names());

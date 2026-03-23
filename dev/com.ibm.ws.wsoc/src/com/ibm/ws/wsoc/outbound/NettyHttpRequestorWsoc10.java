@@ -75,7 +75,6 @@ import io.openliberty.http.options.HttpOption;
 import io.openliberty.netty.internal.BootstrapExtended;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.impl.NettyConstants;
 
 /**
  *
@@ -442,7 +441,6 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
                 }
 
             });
-            pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
         }
     }
 

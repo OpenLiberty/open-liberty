@@ -51,7 +51,6 @@ import io.openliberty.http.netty.channel.TransportHandler;
 import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.netty.internal.ChannelInitializerWrapper;
 import io.openliberty.netty.internal.exception.NettyException;
-import io.openliberty.netty.internal.impl.NettyConstants;
 import io.openliberty.netty.internal.tls.NettyTlsProvider;
 
 /**
@@ -108,11 +107,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         } else {
             setupUnsecurePipeline(pipeline);
         }
-        if(Objects.nonNull(pipeline.get(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME))){
-            pipeline.remove(NettyConstants.INACTIVITY_TIMEOUT_HANDLER_NAME);
-        }
-       
-
         Tr.exit(tc, "initChannel");
     }
 
