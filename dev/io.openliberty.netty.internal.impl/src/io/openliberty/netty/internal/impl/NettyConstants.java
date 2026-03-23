@@ -23,8 +23,6 @@ public interface NettyConstants {
 
     /** TCP Logging Handler Name */
     public final String TCP_LOGGING_HANDLER_NAME = "tcpLoggingHandler";
-    /** Inactivity Timeout Handler Name */
-    public final String INACTIVITY_TIMEOUT_HANDLER_NAME = "inactivityTimeoutHandler";
     /** Max Connections Handler Name */
     public final String MAX_OPEN_CONNECTIONS_HANDLER_NAME = "maxConnectionHandler";
     /** Max Connections Handler Name */
