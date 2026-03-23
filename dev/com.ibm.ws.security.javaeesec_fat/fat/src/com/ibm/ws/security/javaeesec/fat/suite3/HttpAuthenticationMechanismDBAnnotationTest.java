@@ -32,6 +32,8 @@ import org.junit.runner.RunWith;
 
 import javax.servlet.http.HttpServletResponse;
 
+import java.util.Collections;
+
 import static org.junit.Assert.assertNotNull;
 
 /**
@@ -72,8 +74,7 @@ public class HttpAuthenticationMechanismDBAnnotationTest extends JavaEESecTestBa
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
-
+        myServer.stopServer("CWWKE0912W");
     }
 
     @Before

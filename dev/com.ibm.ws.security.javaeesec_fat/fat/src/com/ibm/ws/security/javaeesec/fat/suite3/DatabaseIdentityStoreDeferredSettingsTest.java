@@ -85,7 +85,7 @@ public class DatabaseIdentityStoreDeferredSettingsTest extends JavaEESecTestBase
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS1916W", "CWWKS1919W", "CWWKS1918E", "CWWKS1924W");
+        myServer.stopServer("CWWKS1916W", "CWWKS1919W", "CWWKS1918E", "CWWKS1924W", "CWWKE0912W");
     }
 
     @Before

@@ -72,7 +72,7 @@ public class HttpAuthenticationMechanismDBShortNameTest extends JavaEESecTestBas
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer("CWWKS1922W", "CWWKS1923W", "CWWKS1924W");
+        myServer.stopServer("CWWKS1922W", "CWWKS1923W", "CWWKS1924W", "CWWKE0912W");
     }
 
     @Before

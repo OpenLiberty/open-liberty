@@ -80,7 +80,7 @@ public class HttpAuthenticationMechanismDBHashTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDown() throws Exception {
-        myServer.stopServer();
+        myServer.stopServer("CWWKE0912W");
     }
 
     @Before

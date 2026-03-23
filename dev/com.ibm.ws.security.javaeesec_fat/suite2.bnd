@@ -33,8 +33,10 @@ tested.features: \
     servlet-6.0,\
     expressionlanguage-6.0,\
     faces-4.1,\
+    pages-3.1,\
     appsecurity-6.0,\
     jsonp-2.1,\
     cdi-4.1,\
     servlet-6.1,\
-    faces-4.0
+    faces-4.0,\
+    pages-4.0,\

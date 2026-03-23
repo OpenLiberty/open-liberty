@@ -16,6 +16,7 @@ package com.ibm.ws.security.javaeesec.fat.suite1;
 import static org.junit.Assert.assertEquals;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -89,6 +90,9 @@ public class BasicAuthenticationMechanismTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        // Server might occasionally throw a MissingDoPrivException, but the tests are unaffected by it.
+        // the privilege is the related permissions.xml, but occasionally seems to not be available to Java when required.
+        myServer.addIgnoredErrors(Collections.singletonList("CWWKE0912W"));
         ServerHelper.commonStopServer(myServer, Constants.HAS_LDAP_SERVER);
     }
 

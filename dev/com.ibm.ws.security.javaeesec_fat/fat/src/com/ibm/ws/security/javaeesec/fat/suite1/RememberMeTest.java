@@ -16,6 +16,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Collections;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -106,6 +107,7 @@ public class RememberMeTest extends JavaEESecTestBase {
 
     @AfterClass
     public static void tearDownAfterClass() throws Exception {
+        myServer.addIgnoredErrors(Collections.singletonList("CWWKE0912W"));
         ServerHelper.commonStopServer(myServer);
     }
 
