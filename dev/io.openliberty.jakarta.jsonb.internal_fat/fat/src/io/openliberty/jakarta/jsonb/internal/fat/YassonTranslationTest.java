@@ -38,14 +38,15 @@ public class YassonTranslationTest extends FATServletClient {
 
     private static final String APP_NAME = "yassontranslationtestapp";
     private static final String CONTEXT = "YassonTranslationTestServlet";
+    private static final String SERVER_NAME = "io.openliberty.jakarta.yasson.internal.fat.translation";
 
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE11_FEATURES().fullFATOnly());
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().forServers(SERVER_NAME).fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().forServers(SERVER_NAME).fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().forServers(SERVER_NAME).fullFATOnly());
 
-    @Server("io.openliberty.jakarta.yasson.internal.fat.translation")
+    @Server(SERVER_NAME)
     @TestServlet(servlet = YassonTranslationTestServlet.class, contextRoot = CONTEXT)
     public static LibertyServer server;
 
