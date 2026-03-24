@@ -323,6 +323,22 @@ public class XMLConfigParser {
      * Parse and process the quiesceTimeout attribute from the server element.
      * This is a beta-only feature that sets the server quiesce timeout.
      *
+     * <p><b>Important Note on <server> Element Attribute Processing:</b></p>
+     * The <server> element is the root element in server.xml and is parsed directly here in
+     * XMLConfigParser, NOT through the normal OSGi config processing in ConfigEvaluator.
+     * This means that metatype metadata (ibm:type, min, max, default) serves primarily as
+     * documentation and schema generation input, but is NOT automatically enforced at runtime.
+     *
+     * <p>For <server> element attributes, this code must manually implement:</p>
+     * <ul>
+     * <li><b>Type conversion</b>: ibm:type="duration(s)" -> manually parse with seconds as default unit</li>
+     * <li><b>Validation</b>: min="30s" -> manually validate in BaseConfiguration.setQuiesceTimeoutMillis()</li>
+     * <li><b>Default values</b>: default="30s" -> manually retrieve from metatype in setQuiesceTimeoutFromMetatype()</li>
+     * </ul>
+     *
+     * <p>This is different from regular config elements (like <executor>, <logging>, etc.) which are
+     * processed through ConfigEvaluator where metatype rules are automatically applied.</p>
+     *
      * @param parser The XML stream reader positioned at the server element
      * @param config The BaseConfiguration to store the timeout value in
      */
@@ -335,16 +351,31 @@ public class XMLConfigParser {
         if (quiesceTimeoutValue != null) {
             // Beta mode with quiesceTimeout attribute present
             try {
-                Long timeoutSeconds = KernelUtils.evaluateDuration(quiesceTimeoutValue, TimeUnit.SECONDS);
-                if (timeoutSeconds != null) {
-                    boolean isValid = config.setQuiesceTimeout(timeoutSeconds.intValue());
-                    if (!isValid) {
-                        // Value was below minimum - setQuiesceTimeout has already set it to default
-                        Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
-                    }
+                Long timeout;
+                // Check if value contains a unit suffix (letters), or did they just specify a number.
+                if (quiesceTimeoutValue.matches(".*[a-zA-Z].*")) {
+                    // Has unit suffix - parse with MILLISECONDS to preserve full precision
+                    // e.g., "30500ms" -> 30500ms, "30s" -> 30000ms,"1m" -> 60000ms
+                    timeout = KernelUtils.evaluateDuration(quiesceTimeoutValue, TimeUnit.MILLISECONDS);
                 } else {
-                    // Could not parse duration
+                    // No unit suffix - treat as seconds since our metatype has ibm:type="duration(s)".
+                    // Since <server> element attributes are parsed here in XMLConfigParser rather than
+                    // through the normal config processing in ConfigEvaluator (which would apply the
+                    // metatype duration type conversion), we have to manually implement the default unit
+                    // behavior specified by ibm:type="duration(s)" in the metatype.
+                    // e.g., quiesceTimeout="47" -> 47 seconds -> 47000ms
+                    Long timeoutSeconds = KernelUtils.evaluateDuration(quiesceTimeoutValue, TimeUnit.SECONDS);
+                    timeout = (timeoutSeconds != null) ? timeoutSeconds * 1000L : null;
+                }
+                
+                if (timeout == null) {
                     setQuiesceTimeoutFromMetatype(config);
+                    Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
+                    return;
+                }
+                
+                boolean isValid = config.setQuiesceTimeoutMillis(timeout);
+                if (!isValid) {
                     Tr.warning(tc, "warn.invalid.quiesce.timeout", quiesceTimeoutValue);
                 }
             } catch (IllegalArgumentException e) {
@@ -379,9 +410,9 @@ public class XMLConfigParser {
                                     String[] defaultValues = attr.getDefaultValue();
                                     if (defaultValues != null && defaultValues.length > 0) {
                                         String defaultValue = defaultValues[0];
-                                        Long timeoutSeconds = KernelUtils.evaluateDuration(defaultValue, TimeUnit.SECONDS);
-                                        if (timeoutSeconds != null) {
-                                            config.setQuiesceTimeout(timeoutSeconds.intValue());
+                                        Long timeout = KernelUtils.evaluateDuration(defaultValue, TimeUnit.MILLISECONDS);
+                                        if (timeout != null) {
+                                            config.setQuiesceTimeoutMillis(timeout.longValue());
                                             return;
                                         }
                                     }

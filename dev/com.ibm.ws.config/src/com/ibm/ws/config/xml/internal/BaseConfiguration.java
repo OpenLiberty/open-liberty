@@ -35,15 +35,15 @@ import com.ibm.wsspi.kernel.service.location.WsResource;
 class BaseConfiguration {
 
     private static final TraceComponent tc = Tr.register(BaseConfiguration.class, XMLConfigConstants.TR_GROUP, XMLConfigConstants.NLS_PROPS);
-
+    
     /**
-     * Default quiesce timeout value in seconds.
+     * Default quiesce timeout value in milliseconds.
      * This is the timeout used when no quiesceTimeout attribute is specified in server.xml.
      */
-    public static final int DEFAULT_QUIESCE_TIMEOUT_SECONDS = 30;
+    public static final long DEFAULT_QUIESCE_TIMEOUT_MILLIS = 30000L;
 
     private String description;
-    private int quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_SECONDS;
+    private long quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_MILLIS;
 
     protected long lastModified = -1;
 
@@ -460,21 +460,22 @@ class BaseConfiguration {
      *                       If less than the minimum, it sets to the default.
      * @return true if the value was set successfully, false if the value was below the minimum
      */
-    public boolean setQuiesceTimeout(int timeoutSeconds) {
-        if (timeoutSeconds < DEFAULT_QUIESCE_TIMEOUT_SECONDS) {
+    public boolean setQuiesceTimeoutMillis(long timeoutMillis) {
+        long minTimeout = DEFAULT_QUIESCE_TIMEOUT_MILLIS;
+        if (timeoutMillis < minTimeout) {
             setDefaultQuiesceTimeout();
             return false;
         }
-        this.quiesceTimeout = timeoutSeconds;
+        this.quiesceTimeout = timeoutMillis;
         return true;
     }
 
     /**
-     * Get the quiesce timeout value in seconds.
+     * Get the quiesce timeout value in milliseconds.
      *
-     * @return The timeout value in seconds
+     * @return The timeout value in milliseconds
      */
-    public int getQuiesceTimeout() {
+    public long getQuiesceTimeoutMillis() {
         return quiesceTimeout;
     }
 
@@ -482,7 +483,7 @@ class BaseConfiguration {
      * Reset the quiesce timeout to the default value.
      */
     public void setDefaultQuiesceTimeout() {
-        this.quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_SECONDS;
+        this.quiesceTimeout = DEFAULT_QUIESCE_TIMEOUT_MILLIS;
     }
 
     @Override

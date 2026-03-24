@@ -400,8 +400,8 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             return;
 
         ThreadQuiesce tq = (ThreadQuiesce) executorService;
-        int quiesceTimeoutSeconds = (serverElementConfig != null) ? serverElementConfig.getQuiesceTimeout() : 30;
-        long quiesceTimeoutMillis = quiesceTimeoutSeconds * 1000L;
+        long quiesceTimeoutMillis = (serverElementConfig != null) ? serverElementConfig.getQuiesceTimeoutMillis() : 30000L;
+        int quiesceTimeoutSeconds = (int) (quiesceTimeoutMillis / 1000L);
 
         if (isServer())
             Tr.audit(tc, "quiesce.begin", quiesceTimeoutSeconds);

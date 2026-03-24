@@ -33,11 +33,11 @@ public interface ServerElementConfig {
     String getDescription();
 
     /**
-     * Get the current quiesce timeout value in seconds.
+     * Get the current quiesce timeout value in milliseconds.
      * The quiesce timeout controls how long the server will wait for
      * listeners and threads to complete their work during shutdown.
      *
-     * @return the quiesce timeout in seconds
+     * @return the quiesce timeout in milliseconds
      */
-    int getQuiesceTimeout();
+    long getQuiesceTimeoutMillis();
 }

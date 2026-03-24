@@ -93,19 +93,19 @@ public class ServerElementConfigImpl implements ServerElementConfig {
     }
     
     /**
-     * Get the current quiesce timeout value in seconds from BaseConfiguration.
+     * Get the current quiesce timeout value in milliseconds from BaseConfiguration.
      *
-     * @return the quiesce timeout in seconds, or default if configuration not available
+     * @return the quiesce timeout in milliseconds, or default if configuration not available
      */
     @Override
-    public int getQuiesceTimeout() {
+    public long getQuiesceTimeoutMillis() {
         ServerXMLConfiguration config = serverXMLConfiguration;
         if (config != null) {
             ServerConfiguration serverConfig = config.getConfiguration();
             if (serverConfig != null) {
-                return serverConfig.getQuiesceTimeout();
+                return serverConfig.getQuiesceTimeoutMillis();
             }
         }
-        return BaseConfiguration.DEFAULT_QUIESCE_TIMEOUT_SECONDS;
+        return BaseConfiguration.DEFAULT_QUIESCE_TIMEOUT_MILLIS;
     }
 }
