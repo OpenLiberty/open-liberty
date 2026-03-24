@@ -6296,7 +6296,7 @@ public class LibertyServer implements LogMonitorClient {
         return subset;
     }
 
-    private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I: The server installed the following features:";
+    private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I:";
 
     /**
      * Returns sets of the features which were installed at runtime startup, based on the CWWKF0012I message in messages.log.
