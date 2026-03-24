@@ -9,15 +9,24 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.monitoring;
 
-import io.openliberty.mcp.internal.metrics.McpMetrics;
-
 /**
  *
  */
+public final class McpStatsMonitorHolder {
 
-public interface McpStatsMonitor {
+    private static volatile McpStatsMonitor monitor;
 
-    void recordOperationStart(McpMetrics metrics);
+    private McpStatsMonitorHolder() {}
 
-    void recordOperationEnd(McpMetrics metrics);
+    public static void set(McpStatsMonitor mcpStatsMonitor) {
+        monitor = mcpStatsMonitor;
+    }
+
+    public static McpStatsMonitor get() {
+        return monitor;
+    }
+
+    public static void clear() {
+        monitor = null;
+    }
 }

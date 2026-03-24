@@ -140,10 +140,5 @@ public class McpStats extends Meter implements McpStatsMXBean {
 	public double getDuration() {
 		return toolCallRunDuration.getTotal();
 	}
-	
-	
-
-
-
 
 }

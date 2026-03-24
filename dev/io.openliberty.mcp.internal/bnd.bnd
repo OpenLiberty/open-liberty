@@ -36,7 +36,6 @@ Include-Resource: \
 Bundle-Localization: \
         OSGI-INF/l10n/metatype
         
-Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonitor
 
 -dsannotations: \
  io.openliberty.mcp.internal.McpServletInitializer,\
@@ -62,7 +61,8 @@ Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonit
 	com.ibm.ws.transport.http;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
-	com.ibm.ws.app.manager;version=latest
+	com.ibm.ws.app.manager;version=latest,\
+	com.ibm.ws.logging.core
 
 -testpath: \
 	org.hamcrest:hamcrest-all;version=1.3,\

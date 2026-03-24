@@ -11,7 +11,12 @@ package io.openliberty.mcp.internal.metrics;
 
 import java.time.Instant;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+
 import io.openliberty.mcp.internal.McpTransport;
+import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
+import io.openliberty.mcp.internal.monitoring.McpStatsMonitorHolder;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 
 /**
@@ -28,6 +33,8 @@ public final class McpMetrics {
     private String toolName;
     private String status;
     private String errorType;
+
+    private static final TraceComponent tc = Tr.register(McpMetrics.class);
 
     public McpMetrics() {
         this.startTimeNanos = System.nanoTime();
@@ -124,19 +131,35 @@ public final class McpMetrics {
         this.errorType = errorType;
     }
 
-    /**
-     * @param metrics
-     */
     public static void operationStarted(McpMetrics metrics) {
-        // TODO Auto-generated method stub
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "operationStarted hook called for method: " + metrics.getMethodName());
+        }
 
+        McpStatsMonitor monitor = McpStatsMonitorHolder.get();
+        if (monitor == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Monitor is null in operationStarted");
+            }
+            return;
+        }
+
+        monitor.recordOperationStart(metrics);
     }
 
-    /**
-     * @param metrics
-     */
     public static void operationEnded(McpMetrics metrics) {
-        // TODO Auto-generated method stub
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "operationEnded hook called for method: " + metrics.getMethodName());
+        }
 
+        McpStatsMonitor monitor = McpStatsMonitorHolder.get();
+        if (monitor == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Monitor is null in operationEnded");
+            }
+            return;
+        }
+
+        monitor.recordOperationEnd(metrics);
     }
 }

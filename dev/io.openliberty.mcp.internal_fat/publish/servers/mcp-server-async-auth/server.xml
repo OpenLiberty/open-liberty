@@ -6,6 +6,7 @@
     <feature>mcpServer-1.0</feature>
     <feature>concurrent-3.0</feature>
     <feature>appSecurity-5.0</feature>
+    <feature>monitor-1.0</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml" />
