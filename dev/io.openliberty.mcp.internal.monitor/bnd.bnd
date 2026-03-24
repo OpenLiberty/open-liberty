@@ -43,3 +43,4 @@ Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonit
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	io.openliberty.mcp.internal;version=latest
+-testpath: com.ibm.ws.componenttest.2.0

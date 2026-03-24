@@ -9,22 +9,18 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.monitor;
 
-import com.ibm.websphere.monitor.annotation.Args;
 import com.ibm.websphere.monitor.annotation.Monitor;
-import com.ibm.websphere.monitor.annotation.ProbeAtEntry;
-import com.ibm.websphere.monitor.annotation.ProbeAtReturn;
-import com.ibm.websphere.monitor.annotation.ProbeBeforeCall;
-import com.ibm.websphere.monitor.annotation.ProbeSite;
 import com.ibm.websphere.monitor.annotation.PublishedMetric;
-import com.ibm.websphere.monitor.annotation.This;
 import com.ibm.websphere.monitor.meters.MeterCollection;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.wsspi.pmi.factory.StatisticActions;
 
+import io.openliberty.mcp.internal.metrics.McpMetrics;
 import io.openliberty.mcp.internal.monitor.metrics.MetricsManager;
 import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
+import io.openliberty.mcp.internal.monitoring.McpStatsMonitorHolder;
 
 import java.time.Duration;
 import java.util.HashSet;
@@ -33,12 +29,14 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Activate;
 
 /**
  *
  */
 @Monitor(group = "MCP")
-@Component(service = McpStatsMonitor.class)
+@Component(service = McpStatsMonitor.class, immediate = true)
 public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMonitor  {
 
 	private static final TraceComponent tc = Tr.register(McpStatsMonitorImpl.class);
@@ -94,7 +92,6 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
      * @param duration
      * @param appName Can be null (would mean its from these probes -- ergo server, don't have to worry about unloading)
      */
-	@Override
 	public void updateMcpStatDuration(McpStatAttributes.Builder builder, Duration duration, String appName) {
 
 		McpStatAttributes mcpStatsAttributes;
@@ -178,23 +175,111 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 		}
 	}
 
-	/**
-	 * @return the tl_mcpStatsBuilder
-	 */
-	@Override
-	public ThreadLocal<McpStatAttributes.Builder> getTl_mcpStatsBuilder() {
-		return tl_mcpStatsBuilder;
+	@Activate
+	public void activate() {
+	    McpStatsMonitorHolder.set(this);
+	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	        Tr.debug(tc, "McpStatsMonitorImpl registered with McpStatsMonitorHolder");
+	    }
 	}
 
-	/**
-	 * @return the tl_startNanos
-	 */
-	@Override
-	public ThreadLocal<Long> getTl_startNanos() {
-		return tl_startNanos;
+	@Deactivate
+	public void deactivate() {
+	    McpStatsMonitorHolder.clear();
+	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	        Tr.debug(tc, "McpStatsMonitorImpl cleared from McpStatsMonitorHolder");
+	    }
 	}
-
 	
+	@Override
+	public void recordOperationStart(McpMetrics metrics) {
+	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	        Tr.debug(tc, "Recording operation start for method: " + metrics.getMethodName());
+	    }
+
+	    tl_mcpStatsBuilder.remove();
+	    tl_startNanos.remove();
+
+	    tl_startNanos.set(System.nanoTime());
+
+	    McpStatAttributes.Builder builder = McpStatAttributes.builder();
+	    builder.withMcpMethodName(metrics.getMethodName());
+
+	    if (metrics.getToolName() != null) {
+	        builder.withGenAiToolName(Optional.of(metrics.getToolName()));
+	    }
+
+	    if (metrics.getTransport() != null) {
+	        try {
+	            if (metrics.getTransport().getMcpRequest() != null) {
+	                String jsonrpcVersion = metrics.getTransport().getMcpRequest().jsonrpc();
+	                if (jsonrpcVersion != null) {
+	                    builder.withJsonrpcProtocolVersion(Optional.of(jsonrpcVersion));
+	                }
+	            }
+
+	            if (metrics.getTransport().getProtocolVersion() != null) {
+	                builder.withMcpProtocolVersion(Optional.of(metrics.getTransport().getProtocolVersion().toString()));
+	            }
+
+	            if (metrics.getTransport().getReq() != null) {
+	                String protocol = metrics.getTransport().getReq().getProtocol();
+	                if (protocol != null) {
+	                    String[] protocolParts = protocol.split("/");
+	                    if (protocolParts.length >= 2) {
+	                        builder.withNetworkProtocolName(Optional.of(protocolParts[0]));
+	                        builder.withNetworkProtocolVersion(Optional.of(protocolParts[1]));
+	                    }
+	                }
+	            }
+
+	            builder.withNetworkTransport(Optional.of("tcp"));
+	        } catch (Exception e) {
+	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	                Tr.debug(tc, "Error extracting transport information: " + e.getMessage());
+	            }
+	        }
+	    }
+
+	    tl_mcpStatsBuilder.set(builder);
+	}
+
+	@Override
+	public void recordOperationEnd(McpMetrics metrics) {
+	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	        Tr.debug(tc, "Recording operation end for method: " + metrics.getMethodName());
+	        Tr.debug(tc, "MCP status=" + metrics.getStatus() + ", errorType=" + metrics.getErrorType());
+
+	    }
+
+	    try {
+	        McpStatAttributes.Builder builder = tl_mcpStatsBuilder.get();
+	        Long startNanos = tl_startNanos.get();
+
+	        if (builder == null || startNanos == null) {
+	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	                Tr.debug(tc, "Missing MCP monitor state. Operation start may not have been recorded.");
+	            }
+	            return;
+	        }
+
+	        long elapsedNanos = System.nanoTime() - startNanos;
+	        Duration duration = Duration.ofNanos(elapsedNanos);
+
+	        if (metrics.getStatus() != null) {
+	            builder.withRpcResponseStatusCode(Optional.of(metrics.getStatus()));
+	        }
+
+	        if (metrics.getErrorType() != null) {
+	            builder.withErrorType(Optional.of(metrics.getErrorType()));
+	        }
+
+	        updateMcpStatDuration(builder, duration, null);
+	    } finally {
+	        tl_mcpStatsBuilder.remove();
+	        tl_startNanos.remove();
+	    }
+	}
 	
 	
 
