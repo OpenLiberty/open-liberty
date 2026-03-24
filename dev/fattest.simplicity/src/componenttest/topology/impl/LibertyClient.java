@@ -787,6 +787,11 @@ public class LibertyClient {
         useEnvVars.setProperty("LOG_DIR", logsRoot);
         useEnvVars.setProperty("LOG_FILE", consoleFileName);
 
+        // default ltpa keys password for FAT tests
+        if (!useEnvVars.containsKey("ltpa_keys_password")) {
+            useEnvVars.setProperty("ltpa_keys_password", "WebAS");
+        }
+
         Log.info(c, method, "Using additional env props: " + useEnvVars.toString());
 
         Log.info(c, method, "Starting Client with command: " + cmd);

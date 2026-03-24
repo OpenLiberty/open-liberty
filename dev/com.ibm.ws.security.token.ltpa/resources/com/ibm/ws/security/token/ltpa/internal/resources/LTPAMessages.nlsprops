@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2025 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -91,3 +91,19 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility creat
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: The {0} validation keys must be regenerated using cryptographic algorithms that are not FIPS 140-3 certified.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=The LTPA validation keys that are created with FIPS 140-3 enabled fail when FIPS 140-3 is disabled.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility createLTPAKeys command to create the non FIPS approved validation keys when FIPS 140-3 is disabled.
+
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: LTPA configuration error. Add a keysPassword attribute to your <ltpa /> configuration, or set the 'ltpa_keys_password' or 'keystore_password' environment variables.
+LTPA_KEYS_PASSWORD_ERROR.explanation=The LTPA configuration requires a password to store and read LTPA keys.
+LTPA_KEYS_PASSWORD_ERROR.useraction=Configure the keysPassword attribute in the <ltpa /> element, or set the 'ltpa_keys_password' or 'keystore_password' environment variables to provide a password.
+
+LTPA_KEYS_REENCRYPT=CWWKS4119I: Re-encrypting the {0} LTPA keys by using the ''keystore_password'' environment variable.
+LTPA_KEYS_REENCRYPT.explanation=The LTPA keys are being re-encrypted by using the 'keystore_password' because the default value for the LTPA keysPassword attribute is removed to improve security.
+LTPA_KEYS_REENCRYPT.useraction=No action is required.
+
+LTPA_KEYS_REENCRYPT_SUCCESS=CWWKS4120I: Successfully re-encrypted the {0} LTPA keys by using the ''keystore_password'' environment variable.
+LTPA_KEYS_REENCRYPT_SUCCESS.explanation=The LTPA keys are re-encrypted by using the 'keystore_password' environment variable.
+LTPA_KEYS_REENCRYPT_SUCCESS.useraction=If you are sharing the LTPA keys between servers in a common location, the other servers must be updated so they can continue to read those LTPA keys. Set the keysPassword attribute in the corresponding <ltpa /> element, or the password attribute in the corresponding <validationKeys /> element, to the value of the 'keystore_password' environment variable from this server. The 'keystore_password' environment variable is typically defined in the server.env file.
+
+LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Failed to re-encrypt the {0} LTPA keys. Exception: {1}
+LTPA_KEYS_REENCRYPT_ERROR.explanation=The LTPA keys could not be re-encrypted. For more information, see the exception in the message.
+LTPA_KEYS_REENCRYPT_ERROR.useraction=Ensure that the LTPA keys file and its directory are not read-only. If the LTPA keys file and its directory are not read-only, then see the exception in the message for more information.

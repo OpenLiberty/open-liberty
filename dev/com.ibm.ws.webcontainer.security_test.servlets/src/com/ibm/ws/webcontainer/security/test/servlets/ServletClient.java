@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,8 +32,8 @@ public interface ServletClient {
     public static final String PROTECTED_OVERLAP_ALL_ACCESS = "/OverlapNoConstraintServlet";
     public static final String PROTECTED_OVERLAP_ACCESS_PRECLUDED = "/OverlapNoRoleServlet";
     public static final String PROTECTED_MATCH_ANY_PATTERN = "/MatchAny";
-    public static final String PROTECTED_SPECIAL_ANY_ROLE_AUTH = "/StarConstraintServlet";
-    public static final String PROTECTED_SPECIAL_ALL_AUTH = "/StarStarConstraintServlet";
+    public static final String PROTECTED_SPECIAL_ANY_ROLE_AUTH = "/StarConstraintServlet"; // pragma: allowlist secret
+    public static final String PROTECTED_SPECIAL_ALL_AUTH = "/StarStarConstraintServlet"; // pragma: allowlist secret
     public static final String SSL_SECURED_SIMPLE = "/SecureSimpleServlet";
 
     public static final String UNPROTECTED_PROGRAMMATIC_API_SERVLET = "/UnprotectedProgrammaticAPIServlet";
@@ -173,6 +173,20 @@ public interface ServletClient {
      * @return true if access was denied with 401
      */
     public abstract boolean accessProtectedServletWithInvalidRegistry(String urlPattern, String user, String password);
+
+    /**
+     * Access a protected URL pattern that is part of the context root. Access
+     * is expected to be rejected as the ltpa service is not ready.
+     *
+     * @param urlPattern
+     *                       URL pattern that is under of the context root.
+     * @param user
+     *                       user to authenticate as
+     * @param password
+     *                       password to authenticate with
+     * @return true if access was denied with 401
+     */
+    public abstract boolean accessProtectedServletWithoutLtpaServiceReady(String urlPattern, String user, String password);
 
     /**
      * Access a protected URL pattern that is part of the context root using
