@@ -44,7 +44,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean useLtpaSSOForJaspic = false;
     private final Boolean useAuthenticationDataForUnprotectedResource = true;
     private final Boolean includePathInWASReqURL = false;
-    private final Boolean trackLoggedOutSSOCookies = false;
+    private final Boolean trackLoggedOutSSOCookies = true;
     private final Boolean useOnlyCustomCookieName = false;
     private final Boolean useContextRootForSSOCookiePath = false;
     private final Boolean partitionedCookie = null;

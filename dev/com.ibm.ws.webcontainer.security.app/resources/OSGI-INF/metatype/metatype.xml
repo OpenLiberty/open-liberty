@@ -116,7 +116,7 @@
             default="false" />
         <AD id="trackLoggedOutSSOCookies" name="%trackLoggedOutSSOCookies" description="%trackLoggedOutSSOCookies.desc"
             required="false" type="Boolean"
-            default="false" />
+            default="true" />
 
         <AD id="overrideHttpAuthMethod" name="%overrideHttpAuthMethod" description="%overrideHttpAuthMethod.desc"
             required="false" type="String">
