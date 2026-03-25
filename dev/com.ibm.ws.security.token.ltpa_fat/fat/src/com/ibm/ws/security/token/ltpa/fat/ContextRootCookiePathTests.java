@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.token.ltpa.fat;
@@ -20,6 +17,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.IOException;
+import java.nio.file.Paths;
 
 import org.apache.http.Header;
 import org.apache.http.HeaderElement;
@@ -52,6 +50,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.SSLHelper;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -104,6 +103,14 @@ public class ContextRootCookiePathTests {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        // Transform the applications for EE9+ that were copied
+        // from com.ibm.ws.webcontainer.security_test.servlets.
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(Paths.get(server.getServerRoot() + "/apps/basicauth.war"));
+            JakartaEEAction.transformApp(Paths.get(server.getServerRoot() + "/apps/formlogin.war"));
+        }
+
         server.startServer(true);
 
         assertNotNull("Featurevalid did not report update was complete",
@@ -689,7 +696,7 @@ public class ContextRootCookiePathTests {
         //CWWKG0018I: The server configuration was not updated. No functional changes were detected.
         String logLine = server.waitForStringInLogUsingMark("CWWKG001[7-8]I");
 
-        // Wait for feature update to be completed or LTPA configuration to get ready 
+        // Wait for feature update to be completed or LTPA configuration to get ready
         Thread.sleep(200);
     }
 
