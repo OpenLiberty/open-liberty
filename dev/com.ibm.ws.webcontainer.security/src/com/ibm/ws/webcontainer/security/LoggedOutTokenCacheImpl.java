@@ -15,6 +15,7 @@ package com.ibm.ws.webcontainer.security;
 import java.util.Map;
 import java.util.Properties;
 
+import com.ibm.ws.cache.CacheConfig;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
 
@@ -189,9 +190,15 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
          */
         private DistributedMap getDistributedMap(String mapName) {
             DistributedMap dm = null;
+            Properties cacheConfig = new Properties();
+            WebAppSecurityConfig webAppSecurityConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
 
-            dm = DistributedObjectCacheFactory.getMap(mapName, new Properties());
+            if (webAppSecurityConfig != null) {
+                int maxCacheSize = webAppSecurityConfig.getTrackLoggedOutSSOCookiesMaxCacheSize();
+                cacheConfig.setProperty(CacheConfig.CACHE_SIZE, String.valueOf(maxCacheSize));
+            }
 
+            dm = DistributedObjectCacheFactory.getMap(mapName, cacheConfig);
             return dm;
         }
     }

@@ -117,6 +117,9 @@
         <AD id="trackLoggedOutSSOCookies" name="%trackLoggedOutSSOCookies" description="%trackLoggedOutSSOCookies.desc"
             required="false" type="Boolean"
             default="true" />
+        <AD id="trackLoggedOutSSOCookiesMaxCacheSize" name="%trackLoggedOutSSOCookiesMaxCacheSize" description="%trackLoggedOutSSOCookiesMaxCacheSize.desc"
+            required="false" type="Integer"
+            default="10000" />
 
         <AD id="overrideHttpAuthMethod" name="%overrideHttpAuthMethod" description="%overrideHttpAuthMethod.desc"
             required="false" type="String">

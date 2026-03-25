@@ -51,6 +51,7 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean allowFailOverToAppDefined = false;
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = true;
+    private final Integer trackLoggedOutSSOCookiesMaxCacheSize = 10000;
     private final Boolean useOnlyCustomCookieName = false;
     private final String sameSiteCookie = "Disabled";
     private final Boolean partitionedCookie = null;
@@ -253,6 +254,12 @@ class WebAdminSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public boolean isTrackLoggedOutSSOCookiesEnabled() {
         return trackLoggedOutSSOCookies;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getTrackLoggedOutSSOCookiesMaxCacheSize() {
+        return trackLoggedOutSSOCookiesMaxCacheSize;
     }
 
     /** {@inheritDoc} */

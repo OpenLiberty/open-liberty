@@ -65,6 +65,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     public static final String CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD = "allowAuthenticationFailOverToAuthMethod";
     static final String CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL = "includePathInWASReqURL";
     static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES = "trackLoggedOutSSOCookies";
+    static final String CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES_MAX_CACHE_SIZE = "trackLoggedOutSSOCookiesMaxCacheSize";
     static final String CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME = "useOnlyCustomCookieName";
     public static final String CFG_KEY_OVERRIDE_HAM = "overrideHttpAuthMethod";
     public static final String CFG_KEY_LOGIN_FORM_CONTEXT_ROOT = "contextRootForFormAuthenticationMechanism";
@@ -100,6 +101,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     private final String allowFailOverToAuthMethod;
     private final Boolean includePathInWASReqURL;
     private final Boolean trackLoggedOutSSOCookies;
+    private final Integer trackLoggedOutSSOCookiesMaxCacheSize;
     private final Boolean useOnlyCustomCookieName;
     private final String overrideHttpAuthMethod;
     private final String loginFormContextRoot;
@@ -142,6 +144,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
             put(CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD, "allowFailOverToAuthMethod");
             put(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL, "includePathInWASReqURL");
             put(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES, "trackLoggedOutSSOCookies");
+            put(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES_MAX_CACHE_SIZE, "trackLoggedOutSSOCookiesMaxCacheSize");
             put(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME, "useOnlyCustomCookieName");
             put(CFG_KEY_WAS_REQ_URL_REDIRECT_DOMAIN_NAMES, "wasReqURLRedirectDomainNames");
             put(CFG_KEY_OVERRIDE_HAM, "overrideHttpAuthMethod");
@@ -190,6 +193,7 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
         allowFailOverToAuthMethod = (String) newProperties.get(CFG_KEY_ALLOW_FAIL_OVER_TO_AUTH_METHOD);
         includePathInWASReqURL = (Boolean) newProperties.get(CFG_KEY_INCLUDE_PATH_IN_WAS_REQ_URL);
         trackLoggedOutSSOCookies = (Boolean) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES);
+        trackLoggedOutSSOCookiesMaxCacheSize = (Integer) newProperties.get(CFG_KEY_TRACK_LOGGED_OUT_SSO_COOKIES_MAX_CACHE_SIZE);
         useOnlyCustomCookieName = (Boolean) newProperties.get(CFG_KEY_USE_ONLY_CUSTOM_COOKIE_NAME);
         overrideHttpAuthMethod = (String) newProperties.get(CFG_KEY_OVERRIDE_HAM);
         loginFormContextRoot = (String) newProperties.get(CFG_KEY_LOGIN_FORM_CONTEXT_ROOT);
@@ -406,6 +410,16 @@ public class WebAppSecurityConfigImpl implements WebAppSecurityConfig {
     @Override
     public boolean isTrackLoggedOutSSOCookiesEnabled() {
         return trackLoggedOutSSOCookies;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see com.ibm.ws.webcontainer.security.WebAppSecurityConfig#getTrackLoggedOutSSOCookiesMaxCacheSize()
+     */
+    @Override
+    public int getTrackLoggedOutSSOCookiesMaxCacheSize() {
+        return trackLoggedOutSSOCookiesMaxCacheSize;
     }
 
     @Override

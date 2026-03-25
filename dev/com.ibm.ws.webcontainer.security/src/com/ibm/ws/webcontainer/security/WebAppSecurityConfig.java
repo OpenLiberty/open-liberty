@@ -125,6 +125,11 @@ public interface WebAppSecurityConfig {
     boolean isTrackLoggedOutSSOCookiesEnabled();
 
     /**
+     * get logged out LTPA maximum cache size.
+     */
+    int getTrackLoggedOutSSOCookiesMaxCacheSize();
+
+    /**
      * Is use only custom cookie name enabled.
      */
     boolean isUseOnlyCustomCookieName();

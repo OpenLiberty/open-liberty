@@ -45,6 +45,7 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
     private final Boolean useAuthenticationDataForUnprotectedResource = true;
     private final Boolean includePathInWASReqURL = false;
     private final Boolean trackLoggedOutSSOCookies = true;
+    private final Integer trackLoggedOutSSOCookiesMaxCacheSize = 10000;
     private final Boolean useOnlyCustomCookieName = false;
     private final Boolean useContextRootForSSOCookiePath = false;
     private final Boolean partitionedCookie = null;
@@ -342,6 +343,16 @@ class FeatureWebSecurityConfigImpl implements WebAppSecurityConfig {
             return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().isTrackLoggedOutSSOCookiesEnabled();
         else
             return trackLoggedOutSSOCookies;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getTrackLoggedOutSSOCookiesMaxCacheSize() {
+        WebAppSecurityConfig globalConfig = WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig();
+        if (globalConfig != null)
+            return WebAppSecurityCollaboratorImpl.getGlobalWebAppSecurityConfig().getTrackLoggedOutSSOCookiesMaxCacheSize();
+        else
+            return trackLoggedOutSSOCookiesMaxCacheSize;
     }
 
     /** {@inheritDoc} */
