@@ -877,6 +877,9 @@ public class CommonTest {
                 case "myTestClient":
                     apps = new String[] { "apps/BasicCalculatorClient.ear", "apps/TechnologySamples.ear" };
                     break;
+                case "myTestClientCipher":
+                    apps = new String[] { "apps/BasicCalculatorClient.ear", "apps/TechnologySamples.ear" };
+                    break;
                 case "noDefaultKeyClient":
                     apps = new String[] { "apps/BasicCalculatorClient.ear" };
                     break;

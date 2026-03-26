@@ -21,8 +21,8 @@
 		<feature>transportSecurity-1.0</feature>
 	</featureManager>
 
-	<!-- Use the same keystore as the myTestClient so the client already trusts the server cert -->
-	<keyStore id="defaultKeyStore" location="${wlp.install.dir}/usr/clients/myTestClient/resources/security/key.p12"
+	<!-- Use the same keystore as the myTestClientCipher so the client already trusts the server cert -->
+	<keyStore id="defaultKeyStore" location="${wlp.install.dir}/usr/clients/myTestClientCipher/resources/security/key.p12"
 		password="{xor}EzY9Oi0rJg==" type="PKCS12" />
 
 	<sslDefault sslRef="supportedClientAuthenticationSSLConfig" />

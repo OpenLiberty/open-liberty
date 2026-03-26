@@ -211,7 +211,7 @@ public abstract class AbstractJSSEProvider implements JSSEProvider {
     /*
      * @see com.ibm.websphere.ssl.JSSEProvider#getCiphersForSecurityLevel(boolean,
      * java.lang.String)
-     * We will be ignoring security level and will default to the effective JDK cipher list.
+     * The security level will be ignored. It will default to the effective JDK cipher list.
      */
     @Override
     public String[] getCiphersForSecurityLevel(boolean isClient, String securityLevel) {

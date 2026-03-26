@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2020 IBM Corporation and others.
+# Copyright (c) 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -11,13 +11,7 @@
 #     IBM Corporation - initial API and implementation
 ###############################################################################
 
-###############################################################################
-#
-# THIS FILE IS NOT USED IN OPEN LIBERTY BUILD. IT IS LEFT FOR HISTORICAL
-# PURPOSES ONLY.
-#
-###############################################################################
-
-module.pattern= BasicCalculatorEJBClient.jar BasicCalculatorClient.jar
-client.pattern=myTestClient noDefaultKeyClient noUserNamePasswordClient mySSLTestClient myTestClientCipher
-app.dir=apps
+#In JDK22, the console no longer returns null when there is no console
+#Using java.base restores the existing console behavior from previous JDK versions. 
+-Djdk.console=java.base
+-Dcom.ibm.ws.beta.edition=true

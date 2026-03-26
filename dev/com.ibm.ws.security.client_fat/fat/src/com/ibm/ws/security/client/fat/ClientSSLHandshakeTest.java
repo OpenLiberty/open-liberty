@@ -57,7 +57,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     /**
      * Starts the server before each test.
      * The server is configured with a specific set of ECDHE-based cipher suites.
-     * The server uses the same keystore as the myTestClient so the client already
+     * The server uses the same keystore as the myTestClientCipher so the client already
      * trusts the server's certificate.
      */
     @Before
@@ -147,7 +147,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithPlusCipherModifierPass() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with '+' cipher modifier (expected to pass) ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_plus_pass.xml", "CWWKF0040E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_plus_pass.xml", "CWWKF0040E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it has started successfully (CWWKF0035I).",
@@ -172,7 +172,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithMinusCipherModifierFail() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with '-' cipher modifier removing ECDHE ciphers (expected to fail) ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_minus_fail.xml", "CWWKF0040E", "CWPKI0823E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_minus_fail.xml", "CWWKF0040E", "CWPKI0823E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it failed with handshake exception.", output.contains(ERRORSTRING));
@@ -197,7 +197,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithInvalidCipher() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with wildcard '-' cipher modifier (expected to fail) ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_invalid.xml", "CWWKF0040E", "CWPKI0823E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_invalid.xml", "CWWKF0040E", "CWPKI0823E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it failed with handshake exception.",
@@ -222,7 +222,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithEmptyCipher() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with wildcard '-' cipher modifier (expected to fail) ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_empty.xml", "CWWKF0040E", "CWPKI0823E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_empty.xml", "CWWKF0040E", "CWPKI0823E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it has started successfully (CWWKF0035I).",
@@ -249,7 +249,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithMixedModeCiphers() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with mixed mode ciphers (static + filter) - error expected, the JDK effective list used ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_mixed_mode.xml", "CWWKF0040E", "CWPKI0837E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_mixed_mode.xml", "CWWKF0040E", "CWPKI0837E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should log CWPKI0837E error for mixed mode cipher configuration.",
@@ -278,7 +278,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithWildcardInStaticEntry() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with wildcard in static entry - error expected, the JDK effective list used ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_wildcard_in_static.xml", "CWWKF0040E", "CWPKI0841E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_wildcard_in_static.xml", "CWWKF0040E", "CWPKI0841E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should log CWPKI0841E error for wildcard in static entry.",
@@ -307,7 +307,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithWildcardInPlusEntry() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with wildcard in + entry - error expected, the JDK effective list used ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_wildcard_plus.xml", "CWWKF0040E", "CWPKI0840E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_wildcard_plus.xml", "CWWKF0040E", "CWPKI0840E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should log CWPKI0840E error for wildcard in + entry.",
@@ -333,7 +333,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
     public void testHandshakeWithNoEnabledCiphersAttribute() {
         try {
             Log.info(c, name.getMethodName(), "Starting the client with wildcard in, the JDK effective list will be used ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_default.xml", "CWWKF0040E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_default.xml", "CWWKF0040E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it has started successfully using the JDK effective list (CWWKF0035I).",
@@ -373,7 +373,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
                         testServer.waitForStringInLogUsingMark("CWPKI0838I"));
             // Run the client with a valid configuration
             Log.info(c, name.getMethodName(), "Starting the client with valid configuration ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_plus_pass.xml", "CWWKF0040E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_plus_pass.xml", "CWWKF0040E");
             String output = programOutput.getStdout();
             assertTrue("Client should report it has started successfully (CWWKF0035I).",
                     output.contains("5"));
@@ -444,14 +444,16 @@ public class ClientSSLHandshakeTest extends CommonTest {
             testServer.startServer();
 
             // Wait for the securityLevel messages (appears during config processing)
-            assertNotNull("Server should log CWPKI0838I info message for securityLevel attribute.",
-                        testServer.waitForStringInLogUsingMark("CWPKI0838I"));
+            // CWPKI0838I appears because DefaultSSLConfig is always loaded because securityLevel
+            // HIGH is set as the default in the metatype.
+           assertNotNull("Server should log CWPKI0838I info message for defaultSSLConfig for securityLevel attribute.",
+                        testServer.waitForStringInLogUsingMark("CWPKI0838I.*defaultSSLConfig"));
             assertNotNull("Server should log CWPKI0839W warning for weak cipher specification.",
                         testServer.waitForStringInLogUsingMark("CWPKI0839W"));
             
             // Run the client with a valid configuration
             Log.info(c, name.getMethodName(), "Starting the client with valid configuration ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_plus_pass.xml", "CWWKF0040E", "CWWKI0003E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_plus_pass.xml", "CWWKF0040E", "CWWKI0003E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it has started successfully (CWWKF0035I).",
@@ -488,22 +490,21 @@ public class ClientSSLHandshakeTest extends CommonTest {
 
             // Wait for the securityLevel messages (appears during config processing)
             // Should appear twice - once for each SSL config
-            List<String> infoMessages = testServer.findStringsInLogsUsingMark("CWPKI0838I", testServer.getDefaultLogFile());
-            assertNotNull("Server should log CWPKI0838I info messages for securityLevel attribute.", infoMessages);
-            assertTrue("Server should log CWPKI0838I twice (once for each SSL config), but found: " + infoMessages.size(),
-                    infoMessages.size() >= 2);
+            //CWPKI0838I appears because DefaultSSLConfig is always loaded because securityLevel
+            //HIGH is set as the default in the metatype
+            assertNotNull("Server should log CWPKI0838I info message for securityLevel attribute.",
+                        testServer.waitForStringInLogUsingMark("CWPKI0838I.*defaultSSLConfig"));
             
             List<String> warningMessages = testServer.findStringsInLogsUsingMark("CWPKI0839W", testServer.getDefaultLogFile());
             assertNotNull("Server should log CWPKI0839W warning messages for weak cipher specification.", warningMessages);
             assertTrue("Server should log CWPKI0839W twice (once for each SSL config), but found: " + warningMessages.size(),
                     warningMessages.size() >= 2);
             
-            Log.info(c, name.getMethodName(), "Found " + infoMessages.size() + " CWPKI0838I messages and " +
-                    warningMessages.size() + " CWPKI0839W messages as expected for two SSL configs.");
+            Log.info(c, name.getMethodName(), "Found " + warningMessages.size() + " CWPKI0839W messages as expected for two SSL configs.");
             
             // Run the client with a valid configuration
             Log.info(c, name.getMethodName(), "Starting the client with valid configuration ...");
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_plus_pass.xml", "CWWKF0040E", "CWWKI0003E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_plus_pass.xml", "CWWKF0040E", "CWWKI0003E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it has started successfully (CWWKF0035I).",
@@ -535,7 +536,7 @@ public class ClientSSLHandshakeTest extends CommonTest {
             // Set mark before starting client to capture trace
             testServer.setMarkToEndOfLog();
             
-            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClient", "client_handshake_remove_readd.xml", "CWWKF0040E");
+            ProgramOutput programOutput = commonClientSetUpWithCalcArgs("myTestClientCipher", "client_handshake_remove_readd.xml", "CWWKF0040E");
             String output = programOutput.getStdout();
 
             assertTrue("Client should report it has started successfully (CWWKF0035I).",

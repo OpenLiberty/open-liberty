@@ -23,12 +23,14 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -119,8 +121,8 @@ public class SSLConfigManager {
     // Collective controller and member serverIdentity
     private static final String SERVER_IDENTITY = "serverIdentity";
 
-    private static final Set<String> securityLevelWarningLoggedConfigs = new HashSet<>();
-    private static final Set<String> weakCipherWarningLoggedConfigs = new HashSet<>();
+    private static final Set<String> securityLevelWarningLoggedConfigs = ConcurrentHashMap.newKeySet();
+    private static final Set<String> weakCipherWarningLoggedConfigs = ConcurrentHashMap.newKeySet();
 
     /**
      * Private constructor, use getInstance().
@@ -456,13 +458,15 @@ public class SSLConfigManager {
 
     /**
      * Log CWPKI0838I once per SSL config to inform users it is no longer used.
+     * && !LibertyConstants.DEFAULT_SSL_CONFIG_ID.equals(configId)
      *
      * @param configId The SSL configuration ID
      */
     private static void logSecurityLevelInfo(String configId) {
-        if (configId != null && !securityLevelWarningLoggedConfigs.contains(configId)) {
-            Tr.info(tc, "ssl.securitylevel.ignored.CWPKI0838I");
-            securityLevelWarningLoggedConfigs.add(configId);
+        // Skip logging for Liberty's internal defaultSSLConfig
+        if (configId != null 
+            && securityLevelWarningLoggedConfigs.add(configId)) {
+            Tr.info(tc, "ssl.securitylevel.ignored.CWPKI0838I", configId);
         }
     }
 
@@ -576,12 +580,15 @@ public class SSLConfigManager {
             if(ProductInfo.getBetaEdition()){
                 // Get the SSL config ID for per-config logging
                 String configId = (String) map.get("id");
-                logSecurityLevelInfo(configId);
 
-                // Check for LOW or MEDIUM cipher specifications and issue warning once per config
-                if(prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_MEDIUM) || prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_LOW)){
+                if(prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_HIGH)){
+                    // Check for HIGH cipher specifications and issue an info log once per config
+                    logSecurityLevelInfo(configId);
+                }
+                else if(prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_MEDIUM) || prop.equalsIgnoreCase(Constants.SECURITY_LEVEL_LOW)){
+                    // Check for LOW or MEDIUM cipher specifications and issue warning once per config
                     weakCipherLogging(configId);
-                    }
+                }
             }
         }
 
@@ -1264,9 +1271,8 @@ public class SSLConfigManager {
      * @param configId The SSL configuration ID
      */
     private void weakCipherLogging(String configId) {
-        if (configId != null && !weakCipherWarningLoggedConfigs.contains(configId)) {
+        if (configId != null && weakCipherWarningLoggedConfigs.add(configId)) {
             Tr.warning(tc, "ssl.weak.cipher.spec.CWPKI0839W");
-            weakCipherWarningLoggedConfigs.add(configId);
         }
     }
     

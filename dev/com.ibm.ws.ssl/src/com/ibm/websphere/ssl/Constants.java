@@ -76,6 +76,8 @@ public class Constants {
     public static final String SSLPROP_USE_DEFAULTCERTS = "com.ibm.ws.ssl.trustDefaultCerts";
     public static final String SSLPROP_ENFORCE_CIPHER_ORDER = "com.ibm.ws.ssl.enforceCipherOrder";
 
+    private static boolean issuedBetaMessage = false;
+
     public static final String SSLPROP_AUTOACCEPT_SERVER_CERT = "com.ibm.ssl.autoaccept.server.certificates";
     public static final String SSLPROP_AUTOSTORE_SERVER_CERT = "com.ibm.ssl.autostore.server.certificates";
     public static final String SSLPROP_AUTOACCEPT_SERVER_CERT_FROM = "com.ibm.ssl.autoaccept.server.certificates.from";
@@ -566,6 +568,12 @@ public class Constants {
     public static String[] adjustSupportedCiphers(String[] supportedCiphers, String enabledCiphers) {
         if (!ProductInfo.getBetaEdition()) {
             throw new UnsupportedOperationException("This method is not supported in the non-beta edition of the product.");
+        }
+        else{
+            if (!issuedBetaMessage) {
+                Tr.info(tc, "BETA: A beta method has been invoked for the class " + Constants.class.getName() + " for the first time.");
+                issuedBetaMessage = !issuedBetaMessage;
+            }
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {

@@ -1063,6 +1063,15 @@ autoFVT.doLast {
   }
 
   /*
+   * Copy applications into the myTestClientCipher client.
+   */
+  copy { 
+    from new File(project.buildDir, 'test-application')
+    into new File(autoFvtDir, 'publish/clients/myTestClientCipher/apps')
+    include 'BasicCalculatorClient.ear', 'TechnologySamples.ear'
+  }
+
+  /*
    * Copy applications into the noDefaultKeyClient client.
    */
   copy { 

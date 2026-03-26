@@ -54,8 +54,8 @@ public interface JSSEProvider {
 
     /**
      * Query all encryption ciphers for the specified security level supported by
-     * this provider. This function will no longer be used as we will be ignoring 
-     * the security level and defaulting to the effective JDK list if used.
+     * this provider. This function will default to the effective JDK list 
+     * as we will be ignoring the security level.
      * 
      * @param isClient
      * @param securityLevel
