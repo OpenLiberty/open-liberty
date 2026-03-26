@@ -4336,10 +4336,10 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
 
         try {
             if (rd == null) {
+                System.out.println("PMDINH, " + CLASS_NAME + " , No error-page found");
                 //PI09474 Start
                 // PK23428 BEGIN
                 try {
-
                     PrintWriter pw = res.getWriter();
                     if( WCCustomProperties.DISPLAY_TEXT_WHEN_NO_ERROR_PAGE_DEFINED == null) {
                         // PM03788 Start
@@ -4350,7 +4350,16 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                             if (WCCustomProperties.INCLUDE_STACK_IN_DEFAULT_ERROR_PAGE || this.isLocalAddr(req.getRemoteAddr())) {
                                 pw.println(error.getDebugMessageAsHTML());
                             } else {
-                                pw.println(error.getMessageAsHTML());
+                                String message = error.getMessageAsHTML();
+                                System.out.println("PMDINH, 1 " + CLASS_NAME + " error [" + error.getErrorCode() + "] . Type [" + error.getExceptionType() + "] , message: "+ error.getMessage());
+                                if (error.getErrorCode() == 500) {
+                                    if (error.getExceptionType().startsWith("java.") || error.getExceptionType().startsWith("jakarta.")) {
+                                        message = "Error " + error.getErrorCode() + ": Bob says so!";
+                                        
+                                    }
+                                }
+                                    
+                                pw.println(message);
                             }
                         }// PM03788 End
                     }
@@ -4369,7 +4378,16 @@ public abstract class WebApp extends BaseContainer implements ServletContext, IS
                             os.println(error.getUnencodedMessageAsHTML());
                         }
                         else {
-                            os.println(error.getMessageAsHTML());
+                            String message = error.getMessageAsHTML();
+                            System.out.println("PMDINH, 2 " + CLASS_NAME + " error [" + error.getErrorCode() + "] . Type [" + error.getExceptionType() + "] , message: "+ error.getMessage());
+                            if (error.getErrorCode() == 500) {
+                                if (error.getExceptionType().startsWith("java.") || error.getExceptionType().startsWith("jakarta.")) {
+                                    message = "Error " + error.getErrorCode() + ": Bob says so!";
+                                    
+                                }
+                            }
+                                
+                            os.println(message);
                         }// PM03788 End
                     }
                     else {
