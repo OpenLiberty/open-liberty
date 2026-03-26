@@ -366,7 +366,8 @@ public class ConsoleFormatTest {
      */
     @Test
     @AllowedFFDC
-    public void testSimpleConsoleFormatWithException() throws Exception { 
+    public void testSimpleConsoleFormatWithException() throws Exception {
+        restoreServer();
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
@@ -389,8 +390,6 @@ public class ConsoleFormatTest {
         // Verify if the exception is complete, and not trimmed and/or suppressed
         List<String> lines = server.findStringsInLogs(INTERNAL_CLASSES_REGEXP, consoleLogFile);
         assertTrue("The SystemErr message is not in the simple console format.", lines.isEmpty());
-
-        assertTrue("Fail on purpose", false);
     }
 
     /*
