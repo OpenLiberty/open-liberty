@@ -77,7 +77,8 @@ dependencies {
         transitive = false
     }
     requiredLibs 'org.brotli:dec:0.1.2'
-    requiredLibs 'xalan:xalan:2.7.2'
+    requiredLibs 'xalan:xalan:2.7.3'
+    requiredLibs 'xalan:serializer:2.7.3'
     requiredLibs 'xml-apis:xml-apis:1.4.01'
     requiredLibs project(':com.ibm.ws.org.apache.commons.io')
     requiredLibs project(':io.openliberty.org.apache.commons.codec')

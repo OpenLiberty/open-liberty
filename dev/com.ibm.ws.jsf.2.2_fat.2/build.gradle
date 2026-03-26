@@ -37,7 +37,8 @@ dependencies {
       project(':io.openliberty.org.apache.commons.codec'),
       'org.apache.commons:commons-text:1.9',
       project(':io.openliberty.org.apache.xercesImpl'),
-      'xalan:xalan:2.7.2',
+      'xalan:xalan:2.7.3',
+      'xalan:serializer:2.7.3',
       'xml-apis:xml-apis:1.4.01'
     // transitive = false makes it so that io.openliberty.faces.fat.selenium.util.internal dependencies are not imported
     // it is required to keep from guava-android being imported
