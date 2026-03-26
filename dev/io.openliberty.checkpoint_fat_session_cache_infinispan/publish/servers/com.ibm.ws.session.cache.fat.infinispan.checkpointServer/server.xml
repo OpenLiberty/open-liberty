@@ -45,4 +45,7 @@
 	    <jdbcDriver libraryRef="DerbyLib"/>
 	    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"/>
 	</dataSource>
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

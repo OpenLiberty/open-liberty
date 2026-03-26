@@ -90,4 +90,7 @@
     <javaPermission className="javax.management.MBeanPermission" name="*" actions="*"/>
     <javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

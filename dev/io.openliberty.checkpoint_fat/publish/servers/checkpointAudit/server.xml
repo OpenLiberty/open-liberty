@@ -22,4 +22,7 @@
 	<auditFileHandler maxFiles="${maxFiles}" maxFileSize="20" compact="true" />
 	
 	<variable name="maxFiles" value="1" />
+
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>
