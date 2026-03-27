@@ -45,6 +45,13 @@ import jakarta.persistence.EntityManager;
 public class Data_1_0 implements DataVersionCompatibility {
 
     /**
+     * Annotations for repository query operations that accept a JPQL query.
+     */
+    private static final Set<Class<? extends Annotation>> JPQL_QUERY_ANNOS = //
+                    // TODO add new Jakarta Persistence anno
+                    Set.of(Query.class);
+
+    /**
      * Annotations that represent lifecycle operations that are allowed for
      * methods of a stateful repository.
      */
@@ -60,26 +67,6 @@ public class Data_1_0 implements DataVersionCompatibility {
                            Insert.class,
                            Update.class,
                            Save.class);
-
-    /**
-     * Annotations that represent operations that are allowed for methods of a
-     * stateful repository.
-     */
-    private static final Set<Class<? extends Annotation>> OP_ANNOS_STATEFUL = //
-                    Set.of(Find.class,
-                           Query.class);
-
-    /**
-     * Annotations that represent operations that are allowed for methods of a
-     * stateless repository.
-     */
-    private static final Set<Class<? extends Annotation>> OP_ANNOS_STATELESS = //
-                    Set.of(Delete.class,
-                           Find.class,
-                           Insert.class,
-                           Query.class,
-                           Save.class,
-                           Update.class);
 
     /**
      * Classes that are valid as return types of resource accessor methods for a
@@ -116,6 +103,7 @@ public class Data_1_0 implements DataVersionCompatibility {
                                      Class<?> repositoryInterface,
                                      Method method,
                                      QueryType methodType,
+                                     Annotation methodTypeAnno,
                                      Class<?> entityParamType,
                                      boolean isOptional,
                                      Class<?> returnArrayType,
@@ -127,6 +115,7 @@ public class Data_1_0 implements DataVersionCompatibility {
                         repositoryInterface, //
                         method, //
                         methodType, //
+                        methodTypeAnno, //
                         entityParamType, //
                         isOptional, //
                         returnArrayType, //
@@ -178,14 +167,16 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Set<Class<? extends Annotation>> lifeCycleAnnoTypes(boolean stateful) {
-        return stateful ? LIFECYCLE_ANNOS_STATEFUL : LIFECYCLE_ANNOS_STATELESS;
+    public Set<Class<? extends Annotation>> jpqlQueryAnnoTypes() {
+        return JPQL_QUERY_ANNOS;
     }
 
     @Override
     @Trivial
-    public Set<Class<? extends Annotation>> operationAnnoTypes(boolean stateful) {
-        return stateful ? OP_ANNOS_STATEFUL : OP_ANNOS_STATELESS;
+    public Set<Class<? extends Annotation>> lifeCycleAnnoTypes(Boolean stateful) {
+        return Boolean.TRUE.equals(stateful) //
+                        ? LIFECYCLE_ANNOS_STATEFUL //
+                        : LIFECYCLE_ANNOS_STATELESS;
     }
 
     @Override

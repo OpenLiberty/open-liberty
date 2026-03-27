@@ -51,6 +51,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,6 +60,7 @@ import java.util.Set;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
+import java.util.function.BiFunction;
 import java.util.stream.BaseStream;
 import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
@@ -162,7 +164,7 @@ public abstract class QueryInfo {
     /**
      * Type of the first parameter if a life cycle method, otherwise null.
      */
-    final Class<?> entityParamType;
+    private final Class<?> entityParamType;
 
     /**
      * Entity identifier variable name if an identifier variable is used.
@@ -360,6 +362,8 @@ public abstract class QueryInfo {
      * @param repositoryInterface   interface annotated with @Repository.
      * @param method                repository method.
      * @param methodType            type of repository method, if known in advance.
+     * @param methodTypeAnno        mutually exclusive repository method annotation
+     *                                  (Find/Delete/...) if known in advance.
      * @param entityParamType       type of the first parameter if a life cycle method,
      *                                  otherwise null.
      * @param isOptional            indicates if the return type is an Optional.
@@ -377,6 +381,7 @@ public abstract class QueryInfo {
                         Class<?> repositoryInterface,
                         Method method,
                         QueryType methodType,
+                        Annotation methodTypeAnno,
                         Class<?> entityParamType,
                         boolean isOptional,
                         Class<?> returnArrayType,
@@ -397,27 +402,28 @@ public abstract class QueryInfo {
             b.append(first ? "()" : ")");
             Tr.entry(this, tc, "<init>",
                      b.toString(),
-                     entityParamType,
+                     "life cycle entity: " + entityParamType,
                      "result isOptional? " + isOptional,
                      "result multiType:  " + multiType,
                      "result singleType: " + singleType,
                      "          element: " + singleTypeElementType,
                      "return array type: " + returnArrayType,
-                     "type if known:     " + type);
+                     "type if known:     " + methodType,
+                     "anno if known:     " + methodTypeAnno);
         }
 
         this.producer = repositoryProducer;
         this.repositoryInterface = repositoryInterface;
         this.method = method;
         this.type = methodType;
+        this.methodTypeAnno = methodTypeAnno;
         this.entityParamType = entityParamType;
         this.isOptional = isOptional;
         this.returnArrayType = returnArrayType;
         this.multiType = multiType;
         this.singleType = singleType;
         this.singleTypeElementType = singleTypeElementType;
-
-        specialParamsStartAt = method.getParameterCount(); // assume none unless found
+        this.specialParamsStartAt = method.getParameterCount(); // assume none unless found
 
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "<init>", this);
@@ -860,6 +866,7 @@ public abstract class QueryInfo {
                                                 repositoryInterface, //
                                                 method, //
                                                 type, //
+                                                methodTypeAnno, //
                                                 entityParamType, //
                                                 isOptional, //
                                                 multiType, //
@@ -870,7 +877,6 @@ public abstract class QueryInfo {
         info.entityVar = entityVar;
         info.entityVar_ = entityVar_;
         info.maxResults = maxResults;
-        info.methodTypeAnno = methodTypeAnno;
         info.sorts = sortsOverride == null ? sorts : sortsOverride;
         info.validateParams = validateParams;
 
@@ -3149,6 +3155,63 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Looks for mutually exclusive annotations (Delete, Find, Query, ...)
+     * on the repository method, validating that at most one is present and
+     * returning the annotation that is found. Otherwise null.
+     *
+     * @return annotation if present on the method.
+     */
+    @Trivial
+    private Annotation getMutuallyExclusiveMethodAnno() {
+        Annotation methodAnno = null;
+        List<String> conflicts = new LinkedList<String>();
+        DataVersionCompatibility compat = producer.compat();
+
+        BiFunction<Annotation, Annotation, Annotation> inspect = (anno, previous) -> {
+            if (anno == null) {
+                return previous;
+            } else if (previous == null) {
+                return anno;
+            } else { // conflict
+                if (conflicts.isEmpty())
+                    conflicts.add(previous.annotationType().getSimpleName());
+                conflicts.add(anno.annotationType().getSimpleName());
+                return previous;
+            }
+        };
+
+        for (Class<? extends Annotation> annoClass : compat.lifeCycleAnnoTypes(null))
+            methodAnno = inspect.apply(method.getAnnotation(annoClass), methodAnno);
+
+        methodAnno = inspect.apply(compat.getCountAnnotation(method), methodAnno);
+        methodAnno = inspect.apply(compat.getExistsAnnotation(method), methodAnno);
+
+        OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
+        if (orderBy.length > 0 &&
+            methodTypeAnno != null &&
+            !(methodTypeAnno instanceof Delete))
+            conflicts.add(OrderBy.class.getName());
+
+        for (Class<? extends Annotation> annoClass : compat.jpqlQueryAnnoTypes())
+            methodAnno = inspect.apply(method.getAnnotation(annoClass), methodAnno);
+
+        methodAnno = inspect.apply(method.getAnnotation(Find.class), methodAnno);
+
+        if (!conflicts.isEmpty())
+            // Invalid combination of multiple annotations
+            throw exc(UnsupportedOperationException.class,
+                      "CWWKD1002.method.annos.err",
+                      method.getName(),
+                      repositoryInterface.getName(),
+                      conflicts);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "getMutuallyExclusiveMethodAnno: " +
+                               (methodAnno == null ? null : methodAnno.annotationType()));
+        return methodAnno;
+    }
+
+    /**
      * Creates a Sort instance with the corresponding entity attribute name
      * or returns the existing instance if it already matches.
      *
@@ -3234,7 +3297,8 @@ public abstract class QueryInfo {
     }
 
     /**
-     * Gathers the information that is needed to perform the query that the repository method represents.
+     * Gathers the information that is needed to perform the query that the
+     * repository method represents.
      *
      * @param entityInfos map of entity name to entity information.
      * @param repository  repository implementation.
@@ -3242,13 +3306,16 @@ public abstract class QueryInfo {
      */
     @FFDCIgnore(Throwable.class) // report invalid repository methods as errors instead
     @Trivial
-    QueryInfo init(Map<String, CompletableFuture<EntityInfo>> entityInfos, RepositoryImpl<?> repository) {
+    QueryInfo init(Map<String, CompletableFuture<EntityInfo>> entityInfos,
+                   RepositoryImpl<?> repository) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "init", entityInfos, this);
 
         try {
             DataVersionCompatibility compat = repository.provider.compat;
+
+            methodTypeAnno = getMutuallyExclusiveMethodAnno();
 
             entityInfo = entityInfos.size() == 1 //
                             ? entityInfos.values().iterator().next().join() //
@@ -3260,40 +3327,30 @@ public abstract class QueryInfo {
                 validateResult = v[1];
             }
 
-            boolean countPages = Page.class.equals(multiType) || CursoredPage.class.equals(multiType);
+            boolean countPages = Page.class.equals(multiType) ||
+                                 CursoredPage.class.equals(multiType);
             StringBuilder q = null;
             boolean validateNumberOfMethodArgs = true;
 
-            // spec-defined annotation types
-            Delete delete = method.getAnnotation(Delete.class);
-            Find find = method.getAnnotation(Find.class);
-            Insert insert = method.getAnnotation(Insert.class);
-            Update update = method.getAnnotation(Update.class);
-            Save save = method.getAnnotation(Save.class);
-            Query query = method.getAnnotation(Query.class);
-            OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
+            String queryAnnoValue;
+            if (methodTypeAnno instanceof Query query) // @Query annotation
+                queryAnnoValue = query.value();
+            else // TODO query annotations from Jakarta Persistence
+                queryAnnoValue = null;
 
-            // experimental annotation types
-            Annotation count = compat.getCountAnnotation(method);
-            Annotation exists = compat.getExistsAnnotation(method);
-
-            methodTypeAnno = validateAnnotationCombinations(delete, insert, update, save,
-                                                            find, query, orderBy,
-                                                            count, exists);
-
-            if (query != null) { // @Query annotation
-                initQueryLanguage(query.value(),
+            if (queryAnnoValue != null) {
+                initQueryLanguage(queryAnnoValue,
                                   entityInfos,
                                   repository.primaryEntityInfoFuture,
                                   compat);
-            } else if (save != null) { // @Save annotation
-                setType(Save.class, SAVE);
-            } else if (insert != null) { // @Insert annotation
+            } else if (methodTypeAnno instanceof Insert) { // @Insert annotation
                 setType(Insert.class, INSERT);
+            } else if (methodTypeAnno instanceof Save) { // @Save annotation
+                setType(Save.class, SAVE);
             } else if (entityParamType != null) {
-                if (update != null) { // @Update annotation
+                if (methodTypeAnno instanceof Update) { // @Update annotation
                     q = generateUpdateEntity();
-                } else if (delete != null) { // @Delete annotation
+                } else if (methodTypeAnno instanceof Delete) { // @Delete annotation
                     q = generateDeleteEntity();
                 } else { // should be unreachable
                     throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
@@ -3326,6 +3383,7 @@ public abstract class QueryInfo {
             }
 
             // The @OrderBy annotation from Jakarta Data provides sort criteria statically
+            OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
             if (orderBy.length > 0) {
                 if (type != FIND && type != FIND_AND_DELETE || sorts != null)
                     throw Fail.orderByAnnoIncompat(this);
@@ -3355,7 +3413,7 @@ public abstract class QueryInfo {
             // Default to ascending by ID when the repository method that uses
             // pagination does not provide a way to indicate sort criteria.
             if (type == FIND &&
-                query == null && // do not change the user's Query value
+                queryAnnoValue == null && // do not change the user's Query value
                 sortPositions.length == 0 &&
                 (sorts == null || sorts.isEmpty()) &&
                 (Page.class.equals(multiType) ||
@@ -5227,7 +5285,7 @@ public abstract class QueryInfo {
                       "CWWKD1009.lifecycle.param.err",
                       method.getName(),
                       repositoryInterface.getName(),
-                      paramCount == 1 ? method.getGenericParameterTypes()[0] //
+                      paramCount == 1 ? method.getGenericParameterTypes()[0].getTypeName() //
                                       : paramCount,
                       annoClass.getSimpleName());
         }
@@ -5632,70 +5690,6 @@ public abstract class QueryInfo {
                           method.getGenericReturnType().getTypeName(),
                           "Order, Sort, Sort[]");
         }
-    }
-
-    /**
-     * Ensure that the annotations are valid together on the same repository method.
-     *
-     * @param delete  The Delete annotation if present, otherwise null.
-     * @param insert  The Insert annotation if present, otherwise null.
-     * @param update  The Update annotation if present, otherwise null.
-     * @param save    The Save annotation if present, otherwise null.
-     * @param find    The Find annotation if present, otherwise null.
-     * @param query   The Query annotation if present, otherwise null.
-     * @param orderBy array of OrderBy annotations if present, otherwise an empty array.
-     * @param count   The Count annotation if present, otherwise null.
-     * @param exists  The Exists annotation if present, otherwise null.
-     * @return Count, Delete, Exists, Find, Insert, Query, Save, or Update annotation if present. Otherwise null.
-     * @throws UnsupportedOperationException if the combination of annotations is not valid.
-     */
-    @Trivial
-    private Annotation validateAnnotationCombinations(Delete delete, Insert insert, Update update, Save save,
-                                                      Find find, jakarta.data.repository.Query query, OrderBy[] orderBy,
-                                                      Annotation count, Annotation exists) {
-        int o = orderBy.length == 0 ? 0 : 1;
-
-        // These can be paired with OrderBy:
-        int f = find == null ? 0 : 1;
-        int q = query == null ? 0 : 1;
-
-        // These cannot be paired with OrderBy or with each other:
-        int ius = (insert == null ? 0 : 1) +
-                  (update == null ? 0 : 1) +
-                  (save == null ? 0 : 1);
-
-        int iusce = ius +
-                    (count == null ? 0 : 1) +
-                    (exists == null ? 0 : 1);
-
-        int iusdce = iusce +
-                     (delete == null ? 0 : 1);
-
-        if (iusdce + f > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, Find)
-            || iusce + o > 1 // more than one of (Insert, Update, Save, Delete, Count, Exists, OrderBy)
-            || iusdce + q > 1) { // one of (Insert, Update, Save, Delete, Count, Exists) with Query
-
-            // Invalid combination of multiple annotations
-
-            List<String> annoClassNames = new ArrayList<String>();
-            for (Annotation anno : Arrays.asList(count, delete, exists, find, insert, query, save, update))
-                if (anno != null)
-                    annoClassNames.add(anno.annotationType().getName());
-            if (orderBy.length > 0)
-                annoClassNames.add(OrderBy.class.getName());
-
-            throw exc(UnsupportedOperationException.class,
-                      "CWWKD1002.method.annos.err",
-                      method.getName(),
-                      repositoryInterface.getName(),
-                      annoClassNames);
-        }
-
-        return ius == 1 //
-                        ? (insert != null ? insert : update != null ? update : save) //
-                        : iusdce == 1 //
-                                        ? (delete != null ? delete : count != null ? count : exists) //
-                                        : (q == 1 ? query : f == 1 ? find : null);
     }
 
     /**

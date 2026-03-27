@@ -540,7 +540,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     validator.validateParameters(proxy, method, args);
 
                 int txStatus = provider.tranMgr.getStatus();
-                if ((queryType = queryInfo.type).requiresTransaction &&
+                if ((queryType = queryInfo.type).autoStartTransaction &&
                     txStatus == Status.STATUS_NO_TRANSACTION) {
                     suspendedLTC = provider.localTranCurrent.suspend();
                     provider.tranMgr.begin();
@@ -566,6 +566,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case LC_UPDATE -> queryInfo.update(args[0], em);
                     case LC_UPDATE_MERGE -> queryInfo.findAndUpdate(args[0], em);
                     case RESOURCE_ACCESS -> getResource(method);
+                    default -> throw new UnsupportedOperationException(queryType.operationName);
                 };
 
                 if (queryInfo.validateResult)

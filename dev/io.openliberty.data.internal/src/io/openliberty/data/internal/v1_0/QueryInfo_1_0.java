@@ -36,9 +36,12 @@ public class QueryInfo_1_0 extends QueryInfo {
      * @param repositoryProducer    producer of the repository bean instance.
      * @param repositoryInterface   interface annotated with @Repository.
      * @param method                repository method.
+     * @param methodType            type of repository method, if known in advance.
+     * @param methodTypeAnno        mutually exclusive repository method annotation
+     *                                  (Find/Delete/...) if known in advance,
+     *                                  in which case methodType must be supplied.
      * @param entityParamType       type of the first parameter if a life cycle method,
      *                                  otherwise null.
-     * @param methodType            type of repository method, if known in advance.
      * @param isOptional            indicates if the return type is an Optional.
      * @param returnArrayType       array element type if the repository method returns
      *                                  an array, otherwise null.
@@ -54,6 +57,7 @@ public class QueryInfo_1_0 extends QueryInfo {
                   Class<?> repositoryInterface,
                   Method method,
                   QueryType methodType,
+                  Annotation methodTypeAnno,
                   Class<?> entityParamType,
                   boolean isOptional,
                   Class<?> returnArrayType,
@@ -64,6 +68,7 @@ public class QueryInfo_1_0 extends QueryInfo {
               repositoryInterface, //
               method, //
               methodType, //
+              methodTypeAnno, //
               entityParamType, //
               isOptional, //
               multiType, //

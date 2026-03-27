@@ -63,13 +63,9 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
-import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
-import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
-import jakarta.data.repository.Save;
-import jakarta.data.repository.Update;
 import jakarta.data.spi.EntityDefining;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.spi.AfterBeanDiscovery;
@@ -210,6 +206,7 @@ public class DataExtension implements Extension {
         Map<Class<?>, List<QueryInfo>> queriesPerEntity = new HashMap<>();
         List<QueryInfo> queriesWithQueryAnno = new ArrayList<>();
         ArrayList<QueryInfo> additionalQueriesForPrimaryEntity = new ArrayList<>();
+        Boolean stateful = null;
 
         RepositoryProducer<Object> producer = new RepositoryProducer<>( //
                         repositoryInterface, beanMgr, provider, this, //
@@ -225,11 +222,13 @@ public class DataExtension implements Extension {
                 (EntityManager.class.equals(returnType)
                  || DataSource.class.equals(returnType)
                  || Connection.class.equals(returnType))) {
+                // TODO use compat to obtain above types, and identity stateless from EntityAgent type
                 QueryInfo queryInfo = provider.compat //
                                 .createQueryInfo(producer, //
                                                  repositoryInterface, //
                                                  method, //
                                                  QueryType.RESOURCE_ACCESS, //
+                                                 null, //
                                                  null, //
                                                  false, //
                                                  null, //
@@ -247,7 +246,8 @@ public class DataExtension implements Extension {
             Find find = method.getAnnotation(Find.class);
             Class<?> entityClass = find == null //
                             ? void.class //
-                            : producer.compat().getEntityClass(find);
+                            : provider.compat.getEntityClass(find);
+
             Class<?> returnArrayComponentType = null;
             List<Class<?>> returnTypeAtDepth = new ArrayList<>(5);
             Type type = method.getGenericReturnType();
@@ -304,22 +304,45 @@ public class DataExtension implements Extension {
                 }
             }
 
-            if (entityClass == void.class)
+            boolean hasQueryAnno = false;
+            boolean possiblyLifeCycleMethod = false;
+            if (entityClass == void.class) {
                 entityClass = returnTypeAtDepth.get(returnTypeAtDepth.size() - 1);
+
+                for (Class<? extends Annotation> statelessAnnoType : provider.compat //
+                                .lifeCycleAnnoTypes(false))
+                    if (method.getAnnotation(statelessAnnoType) != null)
+                        if (stateful == Boolean.TRUE) {
+                            // TODO error
+                        } else {
+                            stateful = false;
+                            possiblyLifeCycleMethod = true;
+                            break;
+                        }
+
+                for (Class<? extends Annotation> statefulAnnoType : provider.compat //
+                                .lifeCycleAnnoTypes(true))
+                    if (method.getAnnotation(statefulAnnoType) != null)
+                        if (stateful == Boolean.FALSE) {
+                            // TODO error
+                        } else {
+                            stateful = true;
+                            possiblyLifeCycleMethod = true;
+                            break;
+                        }
+
+                for (Class<? extends Annotation> statefulAnnoType : provider.compat //
+                                .jpqlQueryAnnoTypes())
+                    if (method.getAnnotation(statefulAnnoType) != null) {
+                        hasQueryAnno = true;
+                        break;
+                    }
+            }
 
             Class<?> entityParamType = null;
 
-            boolean hasQueryAnno = method.isAnnotationPresent(Query.class);
-
             // Determine entity class from a lifecycle method parameter:
-            if (method.getParameterCount() == 1
-                && !method.isDefault()
-                && !hasQueryAnno
-                && (method.isAnnotationPresent(Insert.class)
-                    || method.isAnnotationPresent(Update.class)
-                    || method.isAnnotationPresent(Save.class)
-                    || method.isAnnotationPresent(Delete.class))) {
-                // TODO 1.1 detect stateful annos and invoke repositoryProducer.setStateful()
+            if ((possiblyLifeCycleMethod &= method.getParameterCount() == 1)) {
                 Class<?> c = method.getParameterTypes()[0];
                 if (Iterable.class.isAssignableFrom(c) || Stream.class.isAssignableFrom(c)) {
                     type = method.getGenericParameterTypes()[0];
@@ -433,6 +456,7 @@ public class DataExtension implements Extension {
                                                         repositoryInterface, //
                                                         method, //
                                                         null, //
+                                                        null, //
                                                         entityParamType, //
                                                         isOptional, //
                                                         multiType, //
@@ -504,6 +528,10 @@ public class DataExtension implements Extension {
 
             producer.setPrimaryEntityClass(primaryEntityClass);
         }
+
+        if (stateful == Boolean.TRUE)
+            // Repository methods indicate a stateful repository
+            producer.setStateful();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc,

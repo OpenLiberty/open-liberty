@@ -16,7 +16,9 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Collection;
 import java.util.Set;
+import java.util.TreeMap;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -84,6 +86,9 @@ public interface DataVersionCompatibility {
      * @param repositoryInterface   interface annotated with @Repository.
      * @param method                repository method.
      * @param methodType            type of repository method, if known in advance.
+     * @param methodTypeAnno        mutually exclusive repository method annotation
+     *                                  (Find/Delete/...) if known in advance,
+     *                                  in which case methodType must be supplied.
      * @param entityParamType       type of the first parameter if a life cycle method,
      *                                  otherwise null.
      * @param isOptional            indicates if the return type is an Optional.
@@ -101,6 +106,7 @@ public interface DataVersionCompatibility {
                                      Class<?> repositoryInterface,
                                      Method method,
                                      QueryType methodType,
+                                     Annotation methodTypeAnno,
                                      Class<?> entityParamType,
                                      boolean isOptional,
                                      Class<?> returnArrayType,
@@ -163,24 +169,60 @@ public interface DataVersionCompatibility {
                                 QueryType queryType);
 
     /**
+     * Returns the repository method annotations that accept JPQL
+     * (such as Query).
+     *
+     * @return the annotation classes.
+     */
+    Set<Class<? extends Annotation>> jpqlQueryAnnoTypes();
+
+    /**
      * Returns the repository method annotations that represent life cycle
      * operations (such as Delete and Insert) for either a stateful or
      * stateless repository, depending on the parameter.
      *
-     * @param stateful true for a stateful repository; false for stateless.
+     * @param stateful true for a stateful repository; false for stateless;
+     *                     null for both.
      * @return the annotation classes.
      */
-    Set<Class<? extends Annotation>> lifeCycleAnnoTypes(boolean stateful);
+    Collection<Class<? extends Annotation>> lifeCycleAnnoTypes(Boolean stateful);
 
     /**
      * Returns the repository method annotations that represent operations
      * (such as Find and Delete, but not OrderBy) for either a stateful or
-     * stateless repository, depending on the parameter.
+     * stateless repository, depending on the parameter. This method is
+     * intended for error reporting and is not written to be efficient.
      *
-     * @param stateful true for a stateful repository; false for stateless.
+     * @param method   the repository method if experimental annotation types
+     *                     should be included. Otherwise null.
+     * @param stateful true for a stateful repository; false for stateless;
+     *                     null for both.
      * @return the annotation classes.
      */
-    Set<Class<? extends Annotation>> operationAnnoTypes(boolean stateful);
+    @Trivial
+    default Collection<Class<? extends Annotation>> operationAnnoTypes(Method method,
+                                                                       Boolean stateful) {
+        TreeMap<String, Class<? extends Annotation>> sorted = new TreeMap<>();
+
+        sorted.put(Find.class.getName(), Find.class);
+
+        for (Class<? extends Annotation> annoClass : jpqlQueryAnnoTypes())
+            sorted.put(annoClass.getSimpleName(), annoClass);
+
+        for (Class<? extends Annotation> annoClass : lifeCycleAnnoTypes(stateful))
+            sorted.put(annoClass.getSimpleName(), annoClass);
+
+        if (method != null) {
+            Annotation anno;
+            if ((anno = getCountAnnotation(method)) != null)
+                sorted.put(anno.annotationType().getName(), anno.annotationType());
+
+            if ((anno = getExistsAnnotation(method)) != null)
+                sorted.put(anno.annotationType().getName(), anno.annotationType());
+        }
+
+        return sorted.values();
+    }
 
     /**
      * Returns the names of annotations that are valid on the parameters of a

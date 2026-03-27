@@ -1584,8 +1584,8 @@ public class DataErrPathsTestServlet extends FATServlet {
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1002E:") ||
-                !x.getMessage().contains(Find.class.getName()) ||
-                !x.getMessage().contains(Insert.class.getName()))
+                !x.getMessage().contains(Find.class.getSimpleName()) ||
+                !x.getMessage().contains(Insert.class.getSimpleName()))
                 throw x;
         }
     }
@@ -1606,8 +1606,8 @@ public class DataErrPathsTestServlet extends FATServlet {
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1002E:") ||
-                !x.getMessage().contains(Save.class.getName()) ||
-                !x.getMessage().contains(Delete.class.getName()))
+                !x.getMessage().contains(Save.class.getSimpleName()) ||
+                !x.getMessage().contains(Delete.class.getSimpleName()))
                 throw x;
         }
     }
@@ -1628,8 +1628,8 @@ public class DataErrPathsTestServlet extends FATServlet {
         } catch (UnsupportedOperationException x) {
             if (x.getMessage() == null ||
                 !x.getMessage().startsWith("CWWKD1002E:") ||
-                !x.getMessage().contains(Query.class.getName()) ||
-                !x.getMessage().contains(Update.class.getName()))
+                !x.getMessage().contains(Query.class.getSimpleName()) ||
+                !x.getMessage().contains(Update.class.getSimpleName()))
                 throw x;
         }
     }

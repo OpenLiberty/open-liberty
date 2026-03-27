@@ -16,12 +16,12 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AnnotatedElement;
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import javax.sql.DataSource;
-
-import org.osgi.service.component.annotations.Component;
-import org.osgi.service.component.annotations.ConfigurationPolicy;
 
 import com.ibm.websphere.ras.annotation.Trivial;
 
@@ -49,22 +49,35 @@ import jakarta.data.repository.Save;
 import jakarta.data.repository.Select;
 import jakarta.data.repository.Update;
 import jakarta.data.restrict.Restriction;
+import jakarta.data.stateful.Detach;
+import jakarta.data.stateful.Merge;
+import jakarta.data.stateful.Persist;
+import jakarta.data.stateful.Refresh;
+import jakarta.data.stateful.Remove;
 import jakarta.persistence.EntityManager;
 
 /**
  * Capability that is specific to the version of Jakarta Data.
  */
-@Component(configurationPid = "io.openliberty.data.internal.version.1.1",
-           configurationPolicy = ConfigurationPolicy.IGNORE,
-           service = DataVersionCompatibility.class)
 public class Data_1_1 implements DataVersionCompatibility {
+
+    /**
+     * Annotations for repository query operations that accept a JPQL query.
+     */
+    private static final Set<Class<? extends Annotation>> JPQL_QUERY_ANNOS = //
+                    // TODO add new Jakarta Persistence anno
+                    Set.of(Query.class);
 
     /**
      * Annotations that represent lifecycle operations that are allowed for
      * methods of a stateful repository.
      */
     private static final Set<Class<? extends Annotation>> LIFECYCLE_ANNOS_STATEFUL = //
-                    Set.of(); // TODO 1.1 Detach, Merge, Persist, Refresh, Remove
+                    Set.of(Detach.class,
+                           Merge.class,
+                           Persist.class,
+                           Refresh.class,
+                           Remove.class);
 
     /**
      * Annotations that represent lifecycle operations that are allowed for
@@ -77,25 +90,12 @@ public class Data_1_1 implements DataVersionCompatibility {
                            Save.class);
 
     /**
-     * Annotations that represent operations that are allowed for methods of a
-     * stateful repository.
+     * Annotations that represent lifecycle operations.
      */
-    private static final Set<Class<? extends Annotation>> OP_ANNOS_STATEFUL = //
-                    Set.of(Find.class,
-                           // TODO 1.1 Merge, Persist, ...
-                           Query.class);
-
-    /**
-     * Annotations that represent operations that are allowed for methods of a
-     * stateless repository.
-     */
-    private static final Set<Class<? extends Annotation>> OP_ANNOS_STATELESS = //
-                    Set.of(Delete.class,
-                           Find.class,
-                           Insert.class,
-                           Query.class,
-                           Save.class,
-                           Update.class);
+    private static final List<Class<? extends Annotation>> LIFECYCLE_ANNOS = //
+                    Stream.concat(LIFECYCLE_ANNOS_STATEFUL.stream(),
+                                  LIFECYCLE_ANNOS_STATELESS.stream()) //
+                                    .toList();
 
     /**
      * Classes that are valid as return types of resource accessor methods for a
@@ -117,8 +117,10 @@ public class Data_1_1 implements DataVersionCompatibility {
      * Types that are valid as repository method special parameters.
      */
     private static final Set<Class<?>> SPECIAL_PARAM_TYPES = //
-                    Set.of(Limit.class, Order.class,
-                           Sort.class, Sort[].class,
+                    Set.of(Limit.class,
+                           Order.class,
+                           Sort.class,
+                           Sort[].class,
                            PageRequest.class,
                            Restriction.class);
 
@@ -134,6 +136,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                                      Class<?> repositoryInterface,
                                      Method method,
                                      QueryType methodType,
+                                     Annotation methodTypeAnno,
                                      Class<?> entityParamType,
                                      boolean isOptional,
                                      Class<?> returnArrayType,
@@ -145,6 +148,7 @@ public class Data_1_1 implements DataVersionCompatibility {
                         repositoryInterface, //
                         method, //
                         methodType, //
+                        methodTypeAnno, //
                         entityParamType, //
                         isOptional, //
                         returnArrayType, //
@@ -204,14 +208,18 @@ public class Data_1_1 implements DataVersionCompatibility {
 
     @Override
     @Trivial
-    public Set<Class<? extends Annotation>> lifeCycleAnnoTypes(boolean stateful) {
-        return stateful ? LIFECYCLE_ANNOS_STATEFUL : LIFECYCLE_ANNOS_STATELESS;
+    public Set<Class<? extends Annotation>> jpqlQueryAnnoTypes() {
+        return JPQL_QUERY_ANNOS;
     }
 
     @Override
     @Trivial
-    public Set<Class<? extends Annotation>> operationAnnoTypes(boolean stateful) {
-        return stateful ? OP_ANNOS_STATEFUL : OP_ANNOS_STATELESS;
+    public Collection<Class<? extends Annotation>> lifeCycleAnnoTypes(Boolean stateful) {
+        return stateful == null //
+                        ? LIFECYCLE_ANNOS //
+                        : stateful //
+                                        ? LIFECYCLE_ANNOS_STATEFUL //
+                                        : LIFECYCLE_ANNOS_STATELESS;
     }
 
     @Override

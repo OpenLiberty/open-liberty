@@ -1053,7 +1053,7 @@ public class Fail {
                   info.method.getName(),
                   info.repositoryInterface.getName(),
                   paramType.getSimpleName(),
-                  info.type.operationName());
+                  info.type.operationName);
     }
 
     /**

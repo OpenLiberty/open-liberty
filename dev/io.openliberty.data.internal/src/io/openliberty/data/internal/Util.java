@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.data.internal.cdi.RepositoryProducer;
 import jakarta.data.Order;
 import jakarta.data.Sort;
+import jakarta.data.repository.Find;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
@@ -299,13 +300,12 @@ public class Util {
     @Trivial
     static final boolean hasOperationAnno(Method method,
                                           RepositoryProducer<?> producer) {
-        DataVersionCompatibility compat = producer.compat();
-        Set<Class<? extends Annotation>> statefulAnnos = compat.operationAnnoTypes(true);
-        Set<Class<? extends Annotation>> statelessAnnos = compat.operationAnnoTypes(false);
+        Collection<Class<? extends Annotation>> annoTypes = //
+                        producer.compat().operationAnnoTypes(method, null);
 
         for (Annotation anno : method.getAnnotations())
-            if (statefulAnnos.contains(anno.annotationType()) ||
-                statelessAnnos.contains(anno.annotationType()))
+            if (Find.class == anno.annotationType() ||
+                annoTypes.contains(anno.annotationType()))
                 return true;
 
         return false;
@@ -369,7 +369,7 @@ public class Util {
      */
     @Trivial
     static String lifeCycleAnnoNames(RepositoryProducer<?> producer) {
-        Set<Class<? extends Annotation>> annoClasses = producer.compat() //
+        Collection<Class<? extends Annotation>> annoClasses = producer.compat() //
                         .lifeCycleAnnoTypes(producer.stateful());
 
         return annoClasses.stream() //
@@ -438,8 +438,8 @@ public class Util {
      */
     @Trivial
     static String operationAnnoNames(RepositoryProducer<?> producer) {
-        Set<Class<? extends Annotation>> annoClasses = producer.compat() //
-                        .operationAnnoTypes(producer.stateful());
+        Collection<Class<? extends Annotation>> annoClasses = producer.compat() //
+                        .operationAnnoTypes(null, producer.stateful());
 
         return annoClasses.stream() //
                         .map(Class::getSimpleName) //
