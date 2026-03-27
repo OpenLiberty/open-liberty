@@ -19,7 +19,7 @@ Fragment-Host: com.ibm.ws.jsp
 Import-Package: \
    !org.apache.xml.*,\
    !org.apache.xerces*, \
-    !org.apache.commons.lang3, \
+   !org.apache.commons.lang3, \
    *
 
 Export-Package: \
