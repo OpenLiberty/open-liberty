@@ -47,4 +47,3 @@ public class EjbXmlMethodParamInjectionResource {
     }
 }
 
-// Made with Bob

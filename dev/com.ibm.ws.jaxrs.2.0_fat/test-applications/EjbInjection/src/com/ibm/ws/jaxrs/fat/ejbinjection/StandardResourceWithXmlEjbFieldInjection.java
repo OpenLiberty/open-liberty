@@ -43,4 +43,3 @@ public class StandardResourceWithXmlEjbFieldInjection {
     }
 }
 
-// Made with Bob
