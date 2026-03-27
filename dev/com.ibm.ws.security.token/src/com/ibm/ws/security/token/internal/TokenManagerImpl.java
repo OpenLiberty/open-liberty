@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,15 @@ import java.util.Map;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.websphere.ras.Tr;
@@ -34,6 +43,7 @@ import com.ibm.wsspi.security.token.SingleSignonToken;
 /**
  * The TokenManager class creates tokens as specified by the token type and recreates a token from the token bytes.
  */
+@Component(name = "com.ibm.ws.security.token", service = TokenManager.class, configurationPolicy = ConfigurationPolicy.OPTIONAL, property = "service.vendor=IBM")
 public class TokenManagerImpl implements TokenManager {
     private static final TraceComponent tc = Tr.register(TokenManagerImpl.class, TraceConstants.TRACE_GROUP, TraceConstants.MESSAGE_BUNDLE);
 
@@ -43,6 +53,7 @@ public class TokenManagerImpl implements TokenManager {
     private final ConcurrentServiceReferenceMap<String, TokenService> services = new ConcurrentServiceReferenceMap<String, TokenService>(KEY_TOKEN_SERVICE);
     private volatile String ssoTokenType;
 
+    @Reference(name = KEY_TOKEN_SERVICE, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     protected void setTokenService(ServiceReference<TokenService> tokenServiceReference) {
         String tokenType = (String) tokenServiceReference.getProperty(KEY_TOKEN_TYPE);
         services.putReference(tokenType, tokenServiceReference);
@@ -53,15 +64,18 @@ public class TokenManagerImpl implements TokenManager {
         services.removeReference(tokenType, tokenServiceReference);
     }
 
+    @Activate
     protected void activate(ComponentContext componentContext, Map<String, Object> props) {
         services.activate(componentContext);
         ssoTokenType = (String) props.get(CFG_KEY_SSO_TOKEN_TYPE);
     }
 
+    @Modified
     protected void modified(Map<String, Object> props) {
         ssoTokenType = (String) props.get(CFG_KEY_SSO_TOKEN_TYPE);
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         services.deactivate(componentContext);
     }

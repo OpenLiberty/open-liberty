@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -39,19 +39,10 @@ Include-Resource: \
     OSGI-INF/metatype=resources/OSGI-INF/metatype, \
     OSGI-INF/l10n=resources/OSGI-INF/l10n
 
+-dsannotations: \
+  com.ibm.ws.security.token.internal.TokenManagerImpl
+
 Service-Component: \
-  com.ibm.ws.security.token; \
-    implementation:=com.ibm.ws.security.token.internal.TokenManagerImpl; \
-    provide:=com.ibm.ws.security.token.TokenManager; \
-    activate:=activate; \
-    deactivate:=deactivate; \
-    modified:='modified'; \
-    configuration-policy:=optional; \
-    tokenService=com.ibm.ws.security.token.TokenService; \
-    dynamic:='tokenService'; \
-    optional:='tokenService'; \
-    multiple:='tokenService'; \
-    properties:='service.vendor=IBM', \
   com.ibm.wsspi.security.token.WSSecurityPropagationHelper;\
     implementation:=com.ibm.wsspi.security.token.WSSecurityPropagationHelper;\
     configuration-policy:=ignore;\
@@ -75,6 +66,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/internal/resources/*.class
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.websphere.org.osgi.service.component,\
 	com.ibm.ws.security.jaas.common;version=latest, \
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

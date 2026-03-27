@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,10 +27,10 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.osgi.service.component.ComponentContext;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.security.ltpa.TokenFactory;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -53,15 +53,12 @@ public class LTPATokenServiceTest {
 
     @Before
     public void setUp() {
-        ltpaTokenService = new LTPATokenService();
-        ltpaTokenService.setLtpaConfig(ltpaConfig);
-        ltpaTokenService.activate(context);
+        ltpaTokenService = new LTPATokenService(ltpaConfig);
     }
 
     @After
     public void tearDown() throws Exception {
         ltpaTokenService.deactivate(context);
-        ltpaTokenService.unsetLtpaConfig(ltpaConfig);
         outputMgr.resetStreams();
     }
 

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -40,6 +40,9 @@ Include-Resource: \
 
 IBM-Default-Config: OSGI-INF/wlp/defaultInstances.xml
 
+-dsannotations: \
+  com.ibm.ws.security.token.ltpa.internal.LTPATokenService
+
 Service-Component: \
   com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAConfigurationImpl; \
@@ -52,14 +55,6 @@ Service-Component: \
     executorService=java.util.concurrent.ExecutorService; \
     ltpaKeysChangeNotifier=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
     dynamic:='ltpaKeysChangeNotifier'; \
-    properties:='service.vendor=IBM,tokenType=Ltpa2', \
-  com.ibm.ws.security.token.ltpa.LTPATokenService; \
-    implementation:=com.ibm.ws.security.token.ltpa.internal.LTPATokenService; \
-    provide:='com.ibm.ws.security.token.TokenService'; \
-    activate:=activate; \
-    deactivate:=deactivate; \
-    configuration-policy:=ignore; \
-    ltpaConfig=com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     properties:='service.vendor=IBM,tokenType=Ltpa2', \
   com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
     implementation:=com.ibm.ws.security.token.ltpa.internal.LTPAKeysChangeNotifier; \
@@ -101,6 +96,7 @@ instrument.classesExcludes: com/ibm/ws/security/token/ltpa/internal/resources/*.
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
   com.ibm.ws.security.fat.common;version=latest,\
     com.ibm.ws.security.registry;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
 	com.ibm.ws.config;version=latest
 
 -testpath: \
