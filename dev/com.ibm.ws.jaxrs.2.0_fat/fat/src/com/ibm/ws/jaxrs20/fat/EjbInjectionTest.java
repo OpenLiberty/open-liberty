@@ -38,6 +38,7 @@ public class EjbInjectionTest extends FATServletClient {
     public static void setup() throws Exception {
         // Build an application and export it to the dropins directory
         ShrinkHelper.defaultDropinApp(server, appName, "com.ibm.ws.jaxrs.fat.ejbinjection",
+                                                       "com.ibm.ws.jaxrs.fat.ejbinjection.ejbs",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.interfaces",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.interfaces.annotated",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.servlet");
