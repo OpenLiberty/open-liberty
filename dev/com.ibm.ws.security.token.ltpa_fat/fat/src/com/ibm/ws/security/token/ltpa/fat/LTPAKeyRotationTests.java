@@ -256,6 +256,12 @@ public class LTPAKeyRotationTests {
 
         messagesLogFile = server.getDefaultLogFile();
 
+        // Now that this test is repeated and these clients are static this is necessary
+        // to avoid "Manager is shut down.". The @AfterClass method is executed at the end of each repeat
+        // which calls the shutdown() method on the ConnectionManager.
+        flClient1.resetClientState();
+        flClient2.resetClientState();
+
     }
 
     private static void checkFipsEnabledMessages() {
@@ -2689,7 +2695,7 @@ public class LTPAKeyRotationTests {
     private static void notifyFileChangesWithMbean(List<String> createdFilePaths, List<String> modifiedFilePaths, List<String> deletedFilePaths) throws Exception {
 
         ObjectName appMBean = new ObjectName("WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean");
-        
+
         // Use try-with-resources to ensure JMX connector is always closed
         try (JMXConnector jmxConnector = server.getJMXRestConnector("user1", "user1pwd", "Liberty")) {
             MBeanServerConnection mbs = jmxConnector.getMBeanServerConnection();

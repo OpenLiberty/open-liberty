@@ -119,6 +119,14 @@ public class ContextRootCookiePathTests {
                       server.waitForStringInLog("CWWKS0008I"));
         assertNotNull("The application did not report is was started",
                       server.waitForStringInLog("CWWKZ0001I"));
+
+        // Now that this test is repeated and these clients are static this is necessary
+        // to avoid "Manager is shut down.". The @AfterClass method is executed at the end of each repeat
+        // which calls the shutdown() method on the ConnectionManager.
+        baClient1.resetClientState();
+        baClient2.resetClientState();
+        flClient1.resetClientState();
+        flClient2.resetClientState();
     }
 
     @After
