@@ -821,7 +821,7 @@ public class ComponentRegistry
             } catch (Exception e) {
                 logger.log(Level.WARN,
                     "Service changecount update for {0} had a problem", e,
-                    registration.getReference());
+                    currentReg.getReference());
             }
         }
     }
