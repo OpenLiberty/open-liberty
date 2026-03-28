@@ -22,6 +22,9 @@ Export-Package: \
  com.ibm.ws.kernel.feature.provisioning, \
  com.ibm.wsspi.kernel.feature;provide:=true
 
+Require-Bundle: \
+ com.ibm.ws.kernel.service; bundle-version="[1.4,1.5)"
+
 Import-Package: \
  !com.sun.tools.attach, !*.internal.*, !com.ibm.ws.kernel.boot.cmdline, *
 

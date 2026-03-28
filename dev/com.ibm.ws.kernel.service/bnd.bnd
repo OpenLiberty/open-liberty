@@ -44,6 +44,7 @@ Import-Package: \
  !com.sun.management, \
  !com.ibm.lang.management, \
  !com.ibm.websphere.kernel.server, \
+ !com.ibm.wsspi.kernel.service.utils, \
  org.apache.felix.service.command; resolution:=optional, \
  *
 
