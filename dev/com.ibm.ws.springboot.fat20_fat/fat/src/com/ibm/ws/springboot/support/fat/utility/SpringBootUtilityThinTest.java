@@ -27,6 +27,7 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -56,6 +57,7 @@ import com.ibm.websphere.simplicity.config.HttpEndpoint;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.springboot.support.fat.CommonWebServerTests;
+import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityScriptUtils.EnvVar;
 
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -349,15 +351,18 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         server.updateServerConfiguration(config);
 
         // now create the Liberty uber JAR
-        SpringBootUtilityScriptUtils.execute("server", null,
-                                             Arrays.asList("package", server.getServerName(), "--include=runnable,minify", "--archive=libertyUber.jar"), false);
+        List<EnvVar> envVars = new ArrayList<>();
+        File file = new File("usr/shared/testlogs");
+        String absolutePath = file.getAbsolutePath();
+        envVars.add(new EnvVar("LOG_DIR", absolutePath));
 
+        SpringBootUtilityScriptUtils.execute("server", envVars,
+                                             Arrays.asList("package", server.getServerName(), "--include=runnable,minify", "--archive=libertyUber.jar"), false);
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
 
         //Run libertyUberJar using java -jar command
         Process proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
-
         String line = null;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
             line = readTimeout(reader);
@@ -370,6 +375,18 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
                 line = readTimeout(reader);
             }
         }
+
+        //Debug the failure within the JAR:
+
+        try (JarFile jarFile = new JarFile(libertyUberJar.getAbsolutePath())) {
+            Log.info(getClass(), "testRunLibertyUberJarWithSSL", "The following is the content of the uber Jar: " + libertyUberJar.getAbsolutePath());
+            for (java.util.jar.JarEntry jarEntry : Collections.list(jarFile.entries())) {
+                Log.info(getClass(), "Jar Entry:", jarEntry.getName());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         assertNotNull("The endpoint is not available", line);
         assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
 
