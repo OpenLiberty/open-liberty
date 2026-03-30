@@ -61,7 +61,7 @@ Subsystem-Category: JakartaEE9Application
   com.ibm.websphere.appserver.httptransport-1.0, \
   com.ibm.websphere.appserver.requestProbes-1.0, \
   com.ibm.websphere.appserver.eeCompatible-9.0
--bundles=com.ibm.ws.app.manager.war.jakarta, \
+-bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \
  com.ibm.websphere.security, \

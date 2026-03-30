@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee https://jakarta.ee/xml/ns/jakartaee/web-app_6_1.xsd" version="6.1">
+
+  <context-param>
+    <param-name>jakarta.security.jacc.PolicyConfigurationFactory.provider</param-name>
+    <param-value>io.openliberty.security.authorization.internal.tests.factories.BothExpectedCtorsPolicyFactory</param-value>
+  </context-param>
+
+  <context-param>
+    <param-name>jakarta.security.jacc.PolicyFactory.provider</param-name>
+    <param-value>io.openliberty.security.authorization.internal.tests.factories.BothExpectedCtorsPolicyConfigFactory</param-value>
+  </context-param>
+
+</web-app>
+

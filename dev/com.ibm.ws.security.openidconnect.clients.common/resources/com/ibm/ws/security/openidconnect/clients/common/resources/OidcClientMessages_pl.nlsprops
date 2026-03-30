@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: \u017b\u0105danie skierow
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=\u017b\u0105danie zawiera zniekszta\u0142cony plik cookie. Nazwa hosta w pliku cookie musi by\u0107 zgodna z bie\u017c\u0105cym \u017c\u0105daniem lub z jedn\u0105 z dozwolonych nazw domen. Plik cookie mo\u017cna modyfikowa\u0107 z poziomu agenta u\u017cytkownika.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Sprawd\u017a konfiguracje dostawcy i klienta OpenID Connect. Je\u015bli oczekiwana jest nazwa hosta, dodaj j\u0105 do atrybutu wasReqURLRedirectDomainNames elementu webAppSecurity w konfiguracji serwera.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: Nie mo\u017cna za\u0142adowa\u0107 wpis\u00f3w certyfikat\u00f3w zaufanych z magazynu certyfikat\u00f3w [ {0} ]. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by pobrania listy wpis\u00f3w certyfikat\u00f3w zaufanych z podanego magazynu certyfikat\u00f3w. By\u0107 mo\u017ce w konfiguracji brakuje magazynu certyfikat\u00f3w lub wyst\u0105pi\u0142 problem uniemo\u017cliwiaj\u0105cy dost\u0119p do niego.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=Sprawd\u017a, czy magazyn certyfikat\u00f3w jest poprawnie skonfigurowany w ustawieniach serwera i czy jest dost\u0119pny. Aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du, zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

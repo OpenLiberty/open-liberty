@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ encode.entriesDidNotMatch=Intr\u0103rile nu s-au potrivit.
 encode.mutuallyExclusiveArgError=Fi\u0219ierul de intrare nu poate specifica at\u00e2t propriet\u0103\u021bile {0}, c\u00e2t \u0219i {1}.
 encode.aesConfigFileEncryptionAmbiguous=ERROR: Fi\u0219ierul de intrare nu poate fi utilizat dac\u0103 con\u021bine ambele variabile {0} \u0219i {1}.
 encode.aesConfigFileMissingEncryptionVariables=Nu se poate codifica parola; fie fi\u0219ierul de intrare nu con\u021bine variabilele {0} sau {1}, fie fi\u0219ierul de intrare este malformat.
+encode.aesKeyRequired=Atunci c\u00e2nd se utilizeaz\u0103 criptarea AES, trebuie specificat unul dintre urm\u0103toarele argumente: --key, --base64Key, --aesConfigFile, sau --keyring.
 
 password.enterText=Introducere parol\u0103:
 password.reenterText=Reintroducere parol\u0103:

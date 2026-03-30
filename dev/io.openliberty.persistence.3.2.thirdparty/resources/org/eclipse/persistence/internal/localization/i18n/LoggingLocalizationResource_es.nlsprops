@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Aviso: {0}: intento de cerrar conexi\u00f3n
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Aviso: {0}: el intento de cerrar conexi\u00f3n ha provocado una excepci\u00f3n {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Advertencia: {0} : el intento de cerrar el suscriptor ha provocado una excepci\u00f3n {1}
+
 broadcast_ignored_command_while_closing_connection=Aviso: {0}: ignorando solicitud para publicar mandato mientras se est\u00e1 cerrando la conexi\u00f3n.
 
 broadcast_listening_sleep_on_error=Aviso: {0}: Se ha lanzado la excepci\u00f3n {1}. La hebra estar\u00e1 en suspensi\u00f3n durante {2} milisegundos antes de reanudar la escucha.

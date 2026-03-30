@@ -209,7 +209,7 @@ unauthorized.cancellation=A ferramenta n\u00e3o pode ser cancelada, pois o usu\u
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: O tipo de retorno ` {0} ` do m\u00e9todo da ferramenta MCP ` {1} ` deve ser um objeto.
-CWMCM0025E.unsupported.output.explanation=O tipo de retorno da ferramenta MCP fornecida n\u00e3o \u00e9 compat\u00edvel.
+CWMCM0025E.unsupported.output.explanation=O tipo de retorno da ferramenta MCP fornecida n\u00e3o \u00e9 compat\u00edvel. Como o conte\u00fado estruturado est\u00e1 definido como verdadeiro, o tipo do esquema de sa\u00edda deve ser um objeto.
 CWMCM0025E.unsupported.output.useraction=Forne\u00e7a um tipo de retorno que seja um objeto.
 
 # Used as exception message

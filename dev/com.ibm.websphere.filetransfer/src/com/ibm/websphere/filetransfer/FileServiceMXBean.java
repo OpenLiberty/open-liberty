@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,6 +72,11 @@ public interface FileServiceMXBean {
     String ATTRIBUTE_NAME_WRITE_LIST = "WriteList";
 
     /**
+     * The name of the attribute representing the list of blocked locations.
+     */
+    String ATTRIBUTE_NAME_BLOCK_LIST = "BlockList";
+
+    /**
      * Get the configured list of read-accessible locations on the host where
      * this server resides. This list is configurable for each server by
      * modifying the server.xml. Each directory to allow for read access can
@@ -113,6 +118,28 @@ public interface FileServiceMXBean {
      * @return a list of Strings containing the absolute paths which are write-accessible.
      */
     List<String> getWriteList();
+
+    /**
+     * Get the configured list of blocked locations on the host where
+     * this server resides. This list is configurable for each server by
+     * modifying the server.xml. Each directory to be blocked can
+     * be specified to the &lt;remoteFileAccess&gt; configuration element
+     * 'blockDir' attribute.
+     * <p>
+     * For example:
+     * <br>
+     * <pre>
+     * &lt;remoteFileAccess&gt;
+     * &nbsp;&nbsp;&nbsp;&nbsp;&lt;blockDir&gt;${server.output.dir}/target&lt;/blockDir&gt;
+     * &lt;/remoteFileAccess&gt;
+     * </pre>
+     * <p>
+     * The default is a list containing 1 entry: ${server.output.dir}/resources/security
+     * 
+     * @return a list of Strings containing the absolute paths which are blocked.
+
+     */
+    List<String> getBlockList();
 
     /**
      * Get the metadata pertaining to the specified path. The result object

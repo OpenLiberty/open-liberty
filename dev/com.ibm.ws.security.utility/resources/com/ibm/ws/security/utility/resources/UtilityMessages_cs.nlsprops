@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ encode.entriesDidNotMatch=Polo\u017eky si neodpov\u00eddaly.
 encode.mutuallyExclusiveArgError=Ve vstupn\u00edm souboru nelze zadat vlastnosti {0} a {1}.
 encode.aesConfigFileEncryptionAmbiguous=CHYBA: Vstupn\u00ed soubor nelze pou\u017e\u00edt, pokud obsahuje prom\u011bnn\u00e9 {0} a {1}.
 encode.aesConfigFileMissingEncryptionVariables=Nelze zak\u00f3dovat heslo; bu\u010f vstupn\u00ed soubor neobsahuje prom\u011bnn\u00e9 {0} nebo {1}, nebo je vstupn\u00ed soubor chybn\u011b vytvo\u0159en.
+encode.aesKeyRequired=P\u0159i pou\u017eit\u00ed \u0161ifrov\u00e1n\u00ed AES je nutn\u00e9 zadat jeden z n\u00e1sleduj\u00edc\u00edch argument\u016f: --key, --base64Key, --aesConfigFile, nebo --keyring.
 
 password.enterText=Zadejte heslo:
 password.reenterText=Potvr\u010fte heslo:

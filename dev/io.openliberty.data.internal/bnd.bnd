@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -18,26 +18,98 @@ javac.target: 17
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
-Bundle-Name: Jakarta Data Version-dependent Function
+Bundle-Name: Built-in Jakarta Data Provider
 Bundle-SymbolicName: io.openliberty.data.internal
-Bundle-Description: Coordinates differences between versions of Jakarta Data; version=${bVersion}
+Bundle-Description: Built-in Jakarta Data Provider that delegates to Jakarta Persistence; version=${bVersion}
 
 WS-TraceGroup: data
 
-Export-Package: \
-  io.openliberty.data.internal,\
-  io.openliberty.data.internal.version.*
+DynamicImport-Package: \
+  com.ibm.ws.beanvalidation.service, \
+  io.openliberty.data.repository, \
+  io.openliberty.data.repository.function, \
+  io.openliberty.data.repository.update, \
+  jakarta.data, \
+  jakarta.data.constraint, \
+  jakarta.data.event, \
+  jakarta.data.exceptions, \
+  jakarta.data.expression, \
+  jakarta.data.metamodel, \
+  jakarta.data.page, \
+  jakarta.data.repository, \
+  jakarta.data.restrict, \
+  jakarta.data.spi, \
+  jakarta.data.spi.expression.function, \
+  jakarta.data.spi.expression.literal, \
+  jakarta.data.spi.expression.path, \
+  jakarta.data.stateless, \
+  jakarta.validation, \
+  jakarta.validation.executable, \
+  jakarta.validation.metadata
+
+Import-Package: \
+  !*.internal.*, \
+  !com.ibm.ws.beanvalidation.service, \
+  !io.openliberty.data.repository, \
+  !io.openliberty.data.repository.*, \
+  !jakarta.data, \
+  !jakarta.data.*, \
+  !jakarta.validation, \
+  !jakarta.validation.*, \
+  jakarta.annotation;version="[2.1,4)", \
+  *
 
 Private-Package: \
-  io.openliberty.data.internal.resources.*
+  io.openliberty.data.internal.*,\
+  io.openliberty.data.internal.cdi.*,\
+  io.openliberty.data.internal.resources.*,\
+  io.openliberty.data.internal.v1_0.*,\
+  io.openliberty.data.internal.v1_1.*,\
+  io.openliberty.data.internal.validation.*
+
+Include-Resource:\
+  OSGI-INF=resources/OSGI-INF
+
+-cdiannotations:
+
+-dsannotations: \
+  io.openliberty.data.internal.DataProvider
 
 instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
 
 -buildpath: \
-  com.ibm.websphere.appserver.spi.logging,\
-  com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
-  com.ibm.websphere.org.osgi.core,\
-  com.ibm.websphere.org.osgi.service.component,\
-  com.ibm.wsspi.org.osgi.service.component.annotations,\
-  com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
-  io.openliberty.jakarta.data.1.0
+	com.ibm.tx.jta.jakarta;version=latest,\
+	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
+	com.ibm.websphere.appserver.spi.logging,\
+	com.ibm.websphere.org.osgi.core,\
+	com.ibm.websphere.org.osgi.service.cm;version=latest,\
+	com.ibm.websphere.org.osgi.service.component,\
+	com.ibm.wsspi.org.osgi.service.component.annotations,\
+	com.ibm.ws.app.manager;version=latest,\
+	com.ibm.ws.beanvalidation.jakarta;version=latest,\
+	com.ibm.ws.cdi.interfaces.jakarta;version=latest,\
+	com.ibm.ws.classloading;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	com.ibm.ws.kernel.boot.common;version=latest,\
+	com.ibm.ws.org.objectweb.asm;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.persistence.jakarta;version=latest,\
+	com.ibm.ws.resource;version=latest,\
+	com.ibm.ws.threading,\
+	com.ibm.ws.tx.embeddable.jakarta;version=latest,\
+	io.openliberty.data,\
+	io.openliberty.jakarta.annotation.2.1,\
+	io.openliberty.jakarta.cdi.4.0,\
+	io.openliberty.jakarta.data.1.1,\
+	io.openliberty.jakarta.interceptor.2.1,\
+	io.openliberty.jakarta.persistence.3.2,\
+	io.openliberty.jakarta.transaction.2.0,\
+	io.openliberty.jakarta.validation.3.0,\
+	com.ibm.ws.jdbc
+
+  -testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file, \
+	com.ibm.ws.junit.extensions;version=latest, \
+	com.ibm.ws.logging;version=latest, \
+	com.ibm.ws.kernel.boot.logging;version=latest, \
+	com.ibm.ws.kernel.security.thread;version=latest

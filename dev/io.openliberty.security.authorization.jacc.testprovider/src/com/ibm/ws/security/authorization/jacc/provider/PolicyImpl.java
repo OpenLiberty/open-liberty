@@ -59,7 +59,7 @@ public class PolicyImpl implements Policy {
             }
         }
         PrincipalMapper principalMapper = PolicyContext.get(PolicyContext.PRINCIPAL_MAPPER);
-        if (!principalMapper.isAnyAuthenticatedUserRoleMapped()) {
+        if (!principalMapper.isAnyAuthenticatedUserRoleMapped() && !subject.getPrincipals().isEmpty()) {
             PermissionCollection rolePermissions = perRolePermissions.get("**");
             if (rolePermissions != null && rolePermissions.implies(p)) {
                 return true;

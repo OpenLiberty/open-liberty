@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -784,7 +784,15 @@ warning.manual.PPV.env.var.useraction=Chcete-li zachovat prom\u011bnnou prost\u0
 
 error.read.server.env=CWWKE0970E: Nelze \u010d\u00edst soubor server.env v um\u00edst\u011bn\u00ed {}.
 error.read.server.env.explanation=Selh\u00e1n\u00ed p\u0159i \u010dten\u00ed souboru server.env .
-error.read.server.env.useraction=Nelze \u010d\u00edst soubor server.env .  Zkontrolujte opr\u00e1vn\u011bn\u00ed k souboru a zopakujte operaci.
+error.read.server.env.useraction=Nelze na\u010d\u00edst soubor server.env. Zkontrolujte opr\u00e1vn\u011bn\u00ed k souboru a zkus to znovu.
+
+warning.java2security.stopped=CWWKE0971W: Funkce Java 2 Security je deaktivov\u00e1na, proto\u017ee Jakarta EE 11 ji nepodporuje.
+warning.java2security.stopped.explanation=V Jakarta EE 11 byla odstran\u011bna podpora pro Java 2 Security.
+warning.java2security.stopped.useraction=Pokud vyu\u017e\u00edv\u00e1te funkce Jakarta EE 11, deaktivujte zabezpe\u010den\u00ed Java 2 v konfiguraci serveru.
+
+info.java2security.restarted=CWWKE0972I: Zabezpe\u010den\u00ed Java 2 bylo znovu povoleno, proto\u017ee byly odstran\u011bny funkce Jakarta EE 11.
+info.java2security.restarted.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+info.java2security.restarted.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
 
 info.serverStarting=Spou\u0161t\u011bn\u00ed serveru {0}.
 info.serverStarted=Server {0} byl spu\u0161t\u011bn.

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security;
 
@@ -47,6 +44,17 @@ public class WebProviderAuthenticatorHelper {
     }
 
     /**
+     * When the caller does not have a Http request and response this method can be called
+     * instead of the one that requires Http request and response which allows for the caller
+     * to not have a dependency on the servlet API and require transformation.
+     */
+    public AuthenticationResult loginWithUserName(String userName, Subject subj,
+                                                  Hashtable<String, Object> customProperties,
+                                                  boolean mapIdentityToRegistryUser) {
+        return loginWithUserName(null, null, userName, subj, customProperties, mapIdentityToRegistryUser);
+    }
+
+    /**
      * @param req
      * @param res
      * @param subject
@@ -77,15 +85,14 @@ public class WebProviderAuthenticatorHelper {
         }
 
         if (!mapIdentityToRegistryUser && !subject.isReadOnly()) {
-	    try {
-		removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
-	    }
-	    catch (Exception e) {
+            try {
+                removeSecurityNameAndUniquedIdFromHashtable(subject, customProperties, mapIdentityToRegistryUser);
+            } catch (Exception e) {
                 // Even though isReadOnly is checked earlier in the if condition,
-                // there's a very small time window where getCallerSubject() could be called by applications  
+                // there's a very small time window where getCallerSubject() could be called by applications
                 // and make the subject readOnly before removeSecurity..() is called. This could cause an exception. 
-		// Here, we can disregard the exception if it happens. We aim to keep the hashtable size the best we can.  
-	    }
+                // Here, we can disregard the exception if it happens. We aim to keep the hashtable size the best we can.  
+            }
         }
 
         AuthenticationResult authResult = new AuthenticationResult(AuthResult.SUCCESS, subject);

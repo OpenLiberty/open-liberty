@@ -392,7 +392,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 ASC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 ASC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? ASC", sql.remove(0));
@@ -402,7 +404,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 ASC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 ASC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? ASC", sql.remove(0));
@@ -413,7 +417,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 ASC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 ASC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? ASC", sql.remove(0));
@@ -428,7 +434,7 @@ public class TestOrderingLogic extends AbstractTestLogic {
             ParameterExpression<Integer> intParam2 = cb.parameter(Integer.class);
             cquery.multiselect(root.get(OLGH17837Entity_.intVal1), root.get(OLGH17837Entity_.intVal2));
             cquery.where(cb.equal(root.get(OLGH17837Entity_.intVal1), intParam1));
-            cquery.orderBy(cb.desc(intParam2));
+            cquery.orderBy(cb.asc(intParam2));
 
             query = em.createQuery(cquery);
             query.setParameter(intParam1, 36);
@@ -436,10 +442,12 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 ASC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 ASC", sql.remove(0));
             } else {
-                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? ASC", sql.remove(0));
             }
 
             CriteriaBuilder cb2 = em.getCriteriaBuilder();
@@ -447,16 +455,18 @@ public class TestOrderingLogic extends AbstractTestLogic {
             Root<OLGH17837Entity> root2 = cquery2.from(OLGH17837Entity.class);
             cquery2.multiselect(root2.get(OLGH17837Entity_.intVal1), root2.get(OLGH17837Entity_.intVal2));
             cquery2.where(cb2.equal(root2.get(OLGH17837Entity_.intVal1), cb2.literal(36)));
-            cquery2.orderBy(cb2.desc(cb2.literal(1)));
+            cquery2.orderBy(cb2.asc(cb2.literal(1)));
 
             query = em.createQuery(cquery2);
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 ASC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 ASC", sql.remove(0));
             } else {
-                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? ASC", sql.remove(0));
             }
 
             CriteriaBuilder cb3 = em.getCriteriaBuilder();
@@ -465,17 +475,19 @@ public class TestOrderingLogic extends AbstractTestLogic {
             ParameterExpression<Integer> intParam4 = cb3.parameter(Integer.class);
             cquery3.multiselect(root3.get(OLGH17837Entity_.intVal1), root3.get(OLGH17837Entity_.intVal2));
             cquery3.where(cb3.equal(root3.get(OLGH17837Entity_.intVal1), intParam4));
-            cquery3.orderBy(cb3.desc(cb3.literal(1)));
+            cquery3.orderBy(cb3.asc(cb3.literal(1)));
 
             query = em.createQuery(cquery3);
             query.setParameter(intParam4, 36);
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
-                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 ASC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 ASC", sql.remove(0));
             } else {
-                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? ASC", sql.remove(0));
             }
         } catch (java.lang.AssertionError ae) {
             throw ae;
@@ -1137,7 +1149,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
@@ -1147,7 +1161,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
@@ -1158,7 +1174,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
@@ -1181,7 +1199,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
@@ -1198,7 +1218,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));
@@ -1217,7 +1239,9 @@ public class TestOrderingLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY 1 DESC", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = 36) ORDER BY 1 DESC", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1, INTVAL2 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?) ORDER BY ? DESC", sql.remove(0));

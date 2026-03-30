@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Asig
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Una sau mai multe valori ale parolei {0} stocate \u00een configura\u021bia serverului au fost generate cu un algoritm mai vechi {1}. Utiliza\u021bi comanda securityUtility encode pentru a re-gena parolele {0} cu cel mai recent algoritm {2}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty utilizeaz\u0103 acum algoritmi mai puternici pentru parolele {aes} \u0219i {hash} nou generate.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Asigura\u021bi-v\u0103 c\u0103 valorile parolelor {aes} \u0219i {hash} sunt generate cu cea mai recent\u0103 versiune a Liberty.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Una sau mai multe dintre parolele dvs. criptate cu AES au fost criptate f\u0103r\u0103 o cheie de criptare personalizat\u0103. Pentru a spori securitatea datelor de autentificare stocate, cripta\u021bi-le din nou folosind o cheie de criptare personalizat\u0103. Asigura\u021bi-v\u0103 c\u0103 p\u0103stra\u021bi aceast\u0103 cheie \u00eentr-un loc sigur.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=Parolele criptate cu AES din configura\u021bia serverului utilizeaz\u0103 valoarea implicit\u0103 \u201e wlp.password.encryption.key \u201d. O cheie de criptare personalizat\u0103 este mai sigur\u0103.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Defini\u021bi o cheie de criptare personalizat\u0103 prin setarea variabilei \u201e wlp.password.encryption.key \u201d sau \u201e wlp.aes.encryption.key \u201d, apoi recripta\u021bi parolele folosind comanda de codificare \u201e securityUtility \u201d cu cheia personalizat\u0103.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=Lungimea cheie a valorii specificate \u00een variabila wlp.aes.encryption.key trebuie s\u0103 fie de 256 de bi\u021bi.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=Valoarea care este specificat\u0103 \u00een variabila wlp.aes.encryption.key trebuie s\u0103 fie codificat\u0103 base64.

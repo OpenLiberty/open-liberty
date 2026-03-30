@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: El m\u00f3dulo para procesar los roles de segurid
 JACC_NO_WEB_PLUGIN.explanation=El servicio JACC no puede procesar los roles de seguridad web porque el m\u00f3dulo requerido no est\u00e1 disponible.
 JACC_NO_WEB_PLUGIN.useraction=Revise los registros de proveedor de JACC y los registros del servidor para obtener m\u00e1s informaci\u00f3n.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: El servicio de autorizaci\u00f3n de Jakarta no puede establecer la clase de proveedor {0} {1} desde la aplicaci\u00f3n {2} debido a la excepci\u00f3n {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=El servicio de autorizaci\u00f3n de Jakarta no puede establecer la clase de proveedor debido a la excepci\u00f3n.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Consulte los registros del proveedor y los registros del servidor para obtener m\u00e1s informaci\u00f3n.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: El servicio de autorizaci\u00f3n de Yakarta ha configurado la clase de proveedor {0} {1} definida en la aplicaci\u00f3n {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Este mensaje es s\u00f3lo de car\u00e1cter informativo.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=No se requiere ninguna acci\u00f3n.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: El servicio de autorizaci\u00f3n de Yakarta ha eliminado la clase de proveedor \u00ab {0} \u00bb {1} definida en la aplicaci\u00f3n {2}.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Este mensaje es s\u00f3lo de car\u00e1cter informativo.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=No se requiere ninguna acci\u00f3n.

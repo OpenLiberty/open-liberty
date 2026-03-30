@@ -34,9 +34,7 @@ Subsystem-Name: Jakarta Data 1.1
   io.openliberty.jakarta.data-1.1
 -bundles=\
   io.openliberty.data; location:="dev/api/ibm/,lib/",\
-  io.openliberty.data.internal,\
-  io.openliberty.data.internal.beandef,\
-  io.openliberty.data.1.1.internal
+  io.openliberty.data.internal.beandef
 # TODO add this back in if we GA this feature and include this IBM API
 # Also need to update io.openliberty.data/bnd.bnd file to move the bundle to dev/api/ibm
 # -files=dev/api/ibm/javadoc/io.openliberty.data_1.0-javadoc.zip

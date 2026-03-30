@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Une demande envoy\u00e9e 
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=La demande inclut un cookie syntaxiquement incorrect. Le nom d'h\u00f4te dans le cookie doit correspondre \u00e0 la demande en cours ou \u00e0 l'un des noms de domaine autoris\u00e9s. Le cookie peut \u00eatre modifi\u00e9 \u00e0 partir de l'agent utilisateur.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=V\u00e9rifiez la configuration du client et la configuration du fournisseur OpenID Connect. Si le nom d'h\u00f4te est attendu, ajoutez-le \u00e0 l'attribut wasReqURLRedirectDomainNames de l'\u00e9l\u00e9ment de s\u00e9curit\u00e9 webAppdans la configuration du serveur.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: Impossible de charger les entr\u00e9es de certificats de confiance \u00e0 partir du magasin de certificats [ {0} ]. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=Une erreur s'est produite alors que le syst\u00e8me tentait de r\u00e9cup\u00e9rer la liste des entr\u00e9es de certificats de confiance \u00e0 partir du magasin de confiance sp\u00e9cifi\u00e9. Il se peut que le magasin de certificats soit absent de la configuration, ou qu'un probl\u00e8me emp\u00eache d'y acc\u00e9der.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=V\u00e9rifiez que le magasin de certificats est correctement configur\u00e9 dans les param\u00e8tres de votre serveur et qu'il est accessible. Consultez le message d'erreur pour obtenir plus d'informations sur l'\u00e9chec.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

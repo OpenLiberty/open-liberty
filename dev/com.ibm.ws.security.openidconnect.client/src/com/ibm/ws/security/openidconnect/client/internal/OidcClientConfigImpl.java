@@ -823,7 +823,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      */
     private String rpSupportsOPConfig(String key, ArrayList<String> values) {
 
-        String rpSupportedSignatureAlgorithms = "HS256 HS384 HS512 RS256 RS384 RS512 ES256 ES384 ES512 none";
+        String rpSupportedSignatureAlgorithms = "HS256 HS384 HS512 RS256 RS384 RS512 ES256 ES384 ES512";
         String rpSupportedTokenEndpointAuthMethods = "post basic private_key_jwt";
         String rpSupportedScopes = "openid profile";
 

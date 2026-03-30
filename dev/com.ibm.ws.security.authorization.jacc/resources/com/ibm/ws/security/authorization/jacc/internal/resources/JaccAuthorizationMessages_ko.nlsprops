@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: \uc6f9 \ubcf4\uc548 \uc5ed\ud560\uc744 \ucc98\ub9
 JACC_NO_WEB_PLUGIN.explanation=\ud544\uc218 \ubaa8\ub4c8\uc744 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc73c\ubbc0\ub85c JACC \uc11c\ube44\uc2a4\uac00 \uc6f9 \ubcf4\uc548 \uc5ed\ud560\uc744 \ucc98\ub9ac\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 JACC_NO_WEB_PLUGIN.useraction=\uc790\uc138\ud55c \uc815\ubcf4\ub97c \uc5bb\uc73c\ub824\uba74 JACC \uc81c\uacf5\uc790 \ub85c\uadf8 \ubc0f \uc11c\ubc84 \ub85c\uadf8\ub97c \uac80\ud1a0\ud558\uc2ed\uc2dc\uc624.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: Jakarta \uad8c\ud55c \ubd80\uc5ec \uc11c\ube44\uc2a4\ub294 \uc608\uc678 {3} \ub85c \uc778\ud574 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {2} \uc5d0\uc11c {0} \uacf5\uae09\uc790 \ud074\ub798\uc2a4 {1} \uc744 \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=\uc608\uc678\uac00 \ubc1c\uc0dd\ud558\uc5ec Jakarta Authorization \uc11c\ube44\uc2a4\uac00 \uacf5\uae09\uc790 \ud074\ub798\uc2a4\ub97c \uc124\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=\uc790\uc138\ud55c \ub0b4\uc6a9\uc740 \uacf5\uae09\uc790 \ub85c\uadf8\uc640 \uc11c\ubc84 \ub85c\uadf8\ub97c \ud655\uc778\ud558\uc2ed\uc2dc\uc624.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: Jakarta Authorization \uc11c\ube44\uc2a4\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {2} \uc5d0 \uc815\uc758\ub41c {0} \uc81c\uacf5\uc790 \ud074\ub798\uc2a4 {1} \ub97c \uad6c\uc131\ud588\uc2b5\ub2c8\ub2e4.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4\ub97c \uc81c\uacf5\ud558\ub294 \uc6a9\ub3c4\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: \uc790\uce74\ub974\ud0c0 \uc778\uc99d \uc11c\ube44\uc2a4\ub294 \uc560\ud50c\ub9ac\ucf00\uc774\uc158 {2} \uc5d0 \uc815\uc758\ub41c {0} \uc81c\uacf5\uc790 \ud074\ub798\uc2a4 {1} \ub97c \uc81c\uac70\ud588\uc2b5\ub2c8\ub2e4.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4\ub97c \uc81c\uacf5\ud558\ub294 \uc6a9\ub3c4\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.

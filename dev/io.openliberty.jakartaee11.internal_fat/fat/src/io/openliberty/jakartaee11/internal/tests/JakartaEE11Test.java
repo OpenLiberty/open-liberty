@@ -155,7 +155,7 @@ public class JakartaEE11Test extends FATServletClient {
         }
 
         server.stopServer(toleratedWarnErrors);
-        server.uninstallUserBundle("io.openliberty.security.authorization.jacc.testprovider_2.1");
-        server.uninstallUserFeature("jaccTestProvider-3.9");
+        server.uninstallUserBundle("io.openliberty.security.authorization.jacc.testprovider_3.0");
+        server.uninstallUserFeature("jaccTestProvider-3.0");
     }
 }

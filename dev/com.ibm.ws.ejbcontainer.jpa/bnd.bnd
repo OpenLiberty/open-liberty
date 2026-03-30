@@ -1,22 +1,19 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
+# SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
--sub: *.bnd
-
 bVersion=1.0
 
-
+Bundle-Name: EJB EPC enablement feature for JPA
+Bundle-SymbolicName: com.ibm.ws.ejbcontainer.jpa
+Bundle-Description: EJB EPC enablement feature for JPA; version=${bVersion}
 
 WS-TraceGroup: EJBContainer
   
@@ -60,7 +57,6 @@ instrument.classesExcludes: com/ibm/ws/ejbcontainer/jpa/resources/*.class
 	com.ibm.ws.ejbcontainer.core;version=latest,\
 	com.ibm.ws.jpa.container;version=latest,\
 	com.ibm.ws.jpa.container.core;version=latest,\
-	com.ibm.websphere.javaee.ejb.3.1;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.component;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2016 IBM Corporation and others.
+ * Copyright (c) 2013,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -296,11 +296,11 @@ public class FileTransferHelper {
     public boolean checkAccess(String path, boolean readOnly) {
         final FileServiceMXBean fileService = getFileService();
         if (readOnly) {
-            //we can read from both the read and write list
-            return (FileServiceUtil.isPathContained(fileService.getReadList(), path) || FileServiceUtil.isPathContained(fileService.getWriteList(), path));
+            //we can read from both the read and write list unless blocked
+            return (!FileServiceUtil.isPathContained(fileService.getBlockList(), path) && (FileServiceUtil.isPathContained(fileService.getReadList(), path) || FileServiceUtil.isPathContained(fileService.getWriteList(), path)));
         } else {
-            //we can write only to the write list
-            return FileServiceUtil.isPathContained(fileService.getWriteList(), path);
+            //we can write only to the write list, apart from the block list
+            return (!FileServiceUtil.isPathContained(fileService.getBlockList(), path) && FileServiceUtil.isPathContained(fileService.getWriteList(), path));
         }
     }
 

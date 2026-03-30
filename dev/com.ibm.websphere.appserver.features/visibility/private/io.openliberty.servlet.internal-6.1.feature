@@ -12,7 +12,7 @@ Subsystem-Category: JakartaEE11Application
   com.ibm.websphere.appserver.requestProbes-1.0, \
   io.openliberty.jakarta.annotation-3.0, \
   com.ibm.websphere.appserver.eeCompatible-11.0
--bundles=com.ibm.ws.app.manager.war.jakarta, \
+-bundles=com.ibm.ws.app.manager.war, \
  com.ibm.ws.managedobject, \
  com.ibm.ws.org.apache.commons.io, \
  com.ibm.websphere.security, \

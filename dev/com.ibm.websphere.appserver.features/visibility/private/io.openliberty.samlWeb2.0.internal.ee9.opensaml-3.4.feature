@@ -9,6 +9,7 @@ singleton=true
   com.ibm.ws.org.ehcache.ehcache.107.3.8.1.jakarta, \
   com.ibm.ws.org.jasypt.jasypt.1.9.3, \
   com.ibm.ws.org.joda.time.2.9.9, \
+  io.openliberty.com.fasterxml.jackson, \
   io.openliberty.net.shibboleth.utilities.java.support.jakarta, \
   io.openliberty.org.opensaml.opensaml.core.jakarta, \
   io.openliberty.org.opensaml.opensaml.messaging.api.jakarta, \

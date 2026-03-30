@@ -64,7 +64,11 @@ tested.features: jaxws-2.3, \
   servlet-6.0, \
   appsecurity-5.0, \
   jsonp-2.1, \
-  cdi-4.0
+  cdi-4.0, \
+  pages-4.0, \
+  servlet-6.1, \
+  appsecurity-6.0, \
+  cdi-4.1
 
 
 -buildpath: \

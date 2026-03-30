@@ -19,9 +19,7 @@ Subsystem-Name: Jakarta Data 1.0
   io.openliberty.cdi-4.1,\
   io.openliberty.jakarta.data-1.0
 -bundles=\
-  io.openliberty.data.internal,\
-  io.openliberty.data.internal.beandef,\
-  io.openliberty.data.1.0.internal
+  io.openliberty.data.internal.beandef
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

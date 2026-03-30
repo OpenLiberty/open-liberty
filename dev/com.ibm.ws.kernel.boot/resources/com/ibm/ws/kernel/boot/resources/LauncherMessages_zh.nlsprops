@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -784,7 +784,15 @@ warning.manual.PPV.env.var.useraction=\u8981\u4fdd\u7559 PREFERRED_PLATFORM_VERS
 
 error.read.server.env=CWWKE0970E: \u65e0\u6cd5\u8bfb\u53d6 {} \u4f4d\u7f6e\u7684 server.env \u6587\u4ef6\u3002
 error.read.server.env.explanation=\u672a\u80fd\u8bfb\u53d6 server.env \u6587\u4ef6\u3002
-error.read.server.env.useraction=\u65e0\u6cd5\u8bfb\u53d6 server.env \u6587\u4ef6\u3002  \u8bf7\u68c0\u67e5\u6587\u4ef6\u8bb8\u53ef\u6743\uff0c\u7136\u540e\u91cd\u8bd5\u8be5\u64cd\u4f5c\u3002
+error.read.server.env.useraction=\u65e0\u6cd5\u8bfb\u53d6 server.env \u6587\u4ef6\u3002 \u8bf7\u68c0\u67e5\u6587\u4ef6\u6743\u9650\uff0c\u7136\u540e\u91cd\u8bd5\u8be5\u64cd\u4f5c\u3002
+
+warning.java2security.stopped=CWWKE0971W: Java 2 \u5b89\u5168\u529f\u80fd\u5df2\u88ab\u7981\u7528\uff0c\u56e0\u4e3a Jakarta EE 11 \u4e0d\u652f\u6301\u8be5\u529f\u80fd\u3002
+warning.java2security.stopped.explanation=Jakarta EE 11 \u5df2\u4e0d\u518d\u652f\u6301 Java 2 \u5b89\u5168\u529f\u80fd\u3002
+warning.java2security.stopped.useraction=\u5728\u4f7f\u7528 Jakarta EE 11 \u529f\u80fd\u65f6\uff0c\u8bf7\u5728\u670d\u52a1\u5668\u914d\u7f6e\u4e2d\u7981\u7528 Java 2 \u5b89\u5168\u529f\u80fd\u3002
+
+info.java2security.restarted=CWWKE0972I: \u7531\u4e8e\u79fb\u9664\u4e86 Jakarta EE 11 \u7684\u529f\u80fd\uff0cJava 2 \u5b89\u5168\u529f\u80fd\u5df2\u88ab\u91cd\u65b0\u542f\u7528\u3002
+info.java2security.restarted.explanation=\u6b64\u6d88\u606f\u4ec5\u4f9b\u53c2\u8003\u3002
+info.java2security.restarted.useraction=\u4e0d\u9700\u8981\u6267\u884c\u4efb\u4f55\u64cd\u4f5c\u3002
 
 info.serverStarting=\u6b63\u5728\u542f\u52a8\u670d\u52a1\u5668 {0}\u3002
 info.serverStarted=\u670d\u52a1\u5668 {0} \u5df2\u542f\u52a8\u3002

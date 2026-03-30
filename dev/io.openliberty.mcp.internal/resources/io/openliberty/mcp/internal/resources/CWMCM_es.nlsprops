@@ -209,7 +209,7 @@ unauthorized.cancellation=La herramienta no se puede cancelar porque el usuario 
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: El tipo de retorno \u00ab {0} \u00bb del m\u00e9todo \u00ab {1} \u00bb de la herramienta MCP debe ser un objeto.
-CWMCM0025E.unsupported.output.explanation=El tipo de retorno de la herramienta MCP proporcionada no es compatible.
+CWMCM0025E.unsupported.output.explanation=El tipo de retorno de la herramienta MCP proporcionada no es compatible. Dado que el contenido estructurado est\u00e1 configurado como \u00abtrue\u00bb, el tipo de esquema de salida debe ser un objeto.
 CWMCM0025E.unsupported.output.useraction=Proporcione un tipo de retorno que sea un objeto.
 
 # Used as exception message

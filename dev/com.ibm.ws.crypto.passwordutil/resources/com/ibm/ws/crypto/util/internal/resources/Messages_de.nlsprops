@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Stel
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Ein oder mehrere in der Serverkonfiguration gespeicherte {0} -Passwortwerte wurden mit einem \u00e4lteren Algorithmus {1} generiert. Verwenden Sie den Verschl\u00fcsselungsbefehl securityUtility, um die {0} -Passw\u00f6rter mit dem neuesten Algorithmus {2} neu zu generieren.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty verwendet jetzt st\u00e4rkere Algorithmen f\u00fcr neu generierte {aes} - und {hash} -Passw\u00f6rter.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Stellen Sie sicher, dass die Kennwortwerte f\u00fcr {aes} und {hash} mit der neuesten Version von Liberty generiert werden.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Eines oder mehrere Ihrer AES-verschl\u00fcsselten Passw\u00f6rter wurden ohne einen benutzerdefinierten Verschl\u00fcsselungsschl\u00fcssel verschl\u00fcsselt. Um die Sicherheit Ihrer gespeicherten Anmeldedaten zu erh\u00f6hen, verschl\u00fcsseln Sie diese erneut mit einem benutzerdefinierten Verschl\u00fcsselungsschl\u00fcssel. Bewahren Sie diesen Schl\u00fcssel unbedingt an einem sicheren Ort auf.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=AES-verschl\u00fcsselte Passw\u00f6rter in der Serverkonfiguration verwenden den Standardwert \u201e wlp.password.encryption.key \u201c. Ein benutzerdefinierter Verschl\u00fcsselungsschl\u00fcssel ist sicherer.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Definieren Sie einen benutzerdefinierten Verschl\u00fcsselungsschl\u00fcssel, indem Sie die Variable \u201e wlp.password.encryption.key \u201c oder \u201e wlp.aes.encryption.key \u201c festlegen, und verschl\u00fcsseln Sie Ihre Passw\u00f6rter anschlie\u00dfend erneut mit dem Befehl \u201e securityUtility encode\u201c unter Verwendung Ihres benutzerdefinierten Schl\u00fcssels.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=Die Schl\u00fcssell\u00e4nge des Wertes, der in der Variablen wlp.aes.encryption.key angegeben ist, muss 256 Bit betragen.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=Der in der Variablen wlp.aes.encryption.key angegebene Wert muss base64 kodiert sein.

@@ -8,6 +8,7 @@ singleton=true
   com.ibm.ws.org.apache.httpcomponents, \
   com.ibm.ws.org.cryptacular.cryptacular.1.2.4, \
   com.ibm.ws.org.joda.time.2.9.9, \
+  io.openliberty.com.fasterxml.jackson, \
   io.openliberty.net.shibboleth.utilities.java.support, \
   io.openliberty.org.opensaml.opensaml.core, \
   io.openliberty.org.opensaml.opensaml.messaging.api, \

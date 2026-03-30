@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Stellen Sie sicher, dass der Algorithmus-Heade
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: Das JSON Web Encryption-Token (JWE) ist ung\u00fcltig, da sein Inhaltsverschl\u00fcsselungsschl\u00fcssel (CEK, Content Encryption Key) mit dem Algorithmus {0} verschl\u00fcsselt wurde. Inhaltsverschl\u00fcsselungsschl\u00fcssel m\u00fcssen mit dem Algorithmus {1} verschl\u00fcsselt werden.
 JWE_ALGORITHM_MISMATCH.explanation=Die Inhaltsverschl\u00fcsselungsschl\u00fcssel m\u00fcssen mit dem in der Nachricht angegebenen Algorithmus verschl\u00fcsselt werden. Inhaltsverschl\u00fcsselungsschl\u00fcssel, die mit einem anderen Verschl\u00fcsselungsalgorithmus verschl\u00fcsselt wurden, k\u00f6nnen nicht validiert werden.
 JWE_ALGORITHM_MISMATCH.useraction=Fordern Sie ein neues Token mit einem Inhaltsverschl\u00fcsselungsschl\u00fcssel an, der mit dem in der Nachricht angegebenen erforderlichen Algorithmus verschl\u00fcsselt wurde. Alternativ k\u00f6nnen Sie Ihre JWT-Konfiguration aktualisieren, um Tokens mit Inhaltsverschl\u00fcsselungsschl\u00fcsseln zuzulassen, die mit dem anderen Verschl\u00fcsselungsalgorithmus verschl\u00fcsselt wurden.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Die vertrauensw\u00fcrdigen Zertifikateintr\u00e4ge k\u00f6nnen nicht aus dem Truststore [ {0} ] geladen werden. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=Beim Abruf der Liste der vertrauensw\u00fcrdigen Zertifikate aus dem angegebenen Truststore ist ein Fehler aufgetreten. M\u00f6glicherweise fehlt der Truststore in der Konfiguration, oder ein Problem verhindert den Zugriff auf den Truststore.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Stellen Sie sicher, dass der Truststore in Ihrer Serverkonfiguration korrekt eingerichtet ist und dass darauf zugegriffen werden kann. Weitere Informationen zum Fehler finden Sie in der Fehlermeldung.
+
+

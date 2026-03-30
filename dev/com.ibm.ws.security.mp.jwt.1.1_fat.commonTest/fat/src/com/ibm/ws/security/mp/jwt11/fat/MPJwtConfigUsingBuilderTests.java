@@ -1612,6 +1612,11 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      */
     @Test
     public void MPJwtConfigUsingBuilderTests_FromHeader_AllowAllRSAlgs_useTrustAlias() throws Exception {
+
+        // Increase timeout for server configuration update messages to prevent failures on slower platforms
+        int timeout = resourceServer.getConfigUpdateTimeout(); 
+        resourceServer.setConfigUpdateTimeout(timeout * 2);
+        
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_diff_sigAlg_FROM_HEADER_allow_RSAlgs.xml");
         
         for (String sigAlg : Arrays.asList(Constants.ALL_TEST_RSSIGALGS)) {

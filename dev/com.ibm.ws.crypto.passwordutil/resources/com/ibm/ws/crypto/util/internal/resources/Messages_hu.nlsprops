@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Gy\u
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: A kiszolg\u00e1l\u00f3 konfigur\u00e1ci\u00f3j\u00e1ban t\u00e1rolt egy vagy t\u00f6bb {0} jelsz\u00f3\u00e9rt\u00e9ket egy r\u00e9gebbi algoritmussal gener\u00e1lt\u00e1k {1}. A securityUtility encode paranccsal a {0} jelszavakat a {2} leg\u00fajabb algoritmus\u00e1val gener\u00e1lhatja \u00fajra.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty mostant\u00f3l er\u0151sebb algoritmusokat haszn\u00e1l az \u00fajonnan gener\u00e1lt {aes} \u00e9s {hash} jelszavakhoz.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a {aes} \u00e9s a {hash} jelsz\u00f3\u00e9rt\u00e9kek a Liberty leg\u00fajabb verzi\u00f3j\u00e1val lettek gener\u00e1lva.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Egy vagy t\u00f6bb AES-titkos\u00edt\u00e1s\u00fa jelszavadat egyedi titkos\u00edt\u00e1si kulcs n\u00e9lk\u00fcl titkos\u00edtott\u00e1k. A t\u00e1rolt hiteles\u00edt\u0151 adatok biztons\u00e1g\u00e1nak n\u00f6vel\u00e9se \u00e9rdek\u00e9ben titkos\u00edtsa azokat \u00fajra egy egyedi titkos\u00edt\u00e1si kulcs seg\u00edts\u00e9g\u00e9vel. K\u00e9rj\u00fck, gondoskodjon arr\u00f3l, hogy ezt a kulcsot biztons\u00e1gos helyen t\u00e1rolja.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=A szerverkonfigur\u00e1ci\u00f3ban az AES-titkos\u00edt\u00e1s\u00fa jelszavak az alap\u00e9rtelmezett wlp.password.encryption.key \u00e9rt\u00e9ket haszn\u00e1lj\u00e1k. Az egyedi titkos\u00edt\u00e1si kulcs biztons\u00e1gosabb.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Hat\u00e1rozzon meg egy egy\u00e9ni titkos\u00edt\u00e1si kulcsot az ` wlp.password.encryption.key ` vagy az ` wlp.aes.encryption.key ` v\u00e1ltoz\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1val, majd titkos\u00edtsa \u00fajra a jelszavait az ` securityUtility ` k\u00f3dol\u00e1si paranccsal az egy\u00e9ni kulcs haszn\u00e1lat\u00e1val.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=A wlp.aes.encryption.key v\u00e1ltoz\u00f3ban megadott \u00e9rt\u00e9k kulcshossz\u00e1nak 256 bitesnek kell lennie.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=A wlp.aes.encryption.key v\u00e1ltoz\u00f3ban megadott \u00e9rt\u00e9knek base64 k\u00f3dol\u00e1s\u00fanak kell lennie.

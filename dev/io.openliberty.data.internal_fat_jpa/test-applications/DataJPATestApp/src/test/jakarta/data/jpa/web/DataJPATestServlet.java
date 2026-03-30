@@ -4763,7 +4763,7 @@ public class DataJPATestServlet extends FATServlet {
      * eclipselink.ps.query 3 Execute query ReadObjectQuery(name="debtor" referenceClass=Customer )
      *
      * then just returns the original entity (custom trace added during debug):
-     * io.openliberty.data.internal.persistence.QueryInfo 3 after merge: Discrooger card #5000921051110001 (501) for Maximilian@tests.openliberty.io valid from 2021-05-10
+     * io.openliberty.data.internal.QueryInfo 3 after merge: Discrooger card #5000921051110001 (501) for Maximilian@tests.openliberty.io valid from 2021-05-10
      * to 2025-05-10
      *
      * TODO need to investigate this more and possibly replicate the issue and open a bug with EclipseLink

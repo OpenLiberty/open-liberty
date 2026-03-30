@@ -1230,7 +1230,7 @@ public class LTPAKeyRotationTests {
 
         // Successful authentication to simple servlet
         String response2 = flClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, cookie1);
-        cookie1 = flClient2.getCookieFromLastLogin();
+        cookie1 = flClient1.getCookieFromLastLogin();
         assertNotNull("Expected SSO Cookie is missing.", cookie1);
     }
 
@@ -2684,31 +2684,34 @@ public class LTPAKeyRotationTests {
     private static void notifyFileChangesWithMbean(List<String> createdFilePaths, List<String> modifiedFilePaths, List<String> deletedFilePaths) throws Exception {
 
         ObjectName appMBean = new ObjectName("WebSphere:service=com.ibm.ws.kernel.filemonitor.FileNotificationMBean");
-        JMXConnector jmxConnector = server.getJMXRestConnector("user1", "user1pwd", "Liberty");
-        MBeanServerConnection mbs = jmxConnector.getMBeanServerConnection();
+        
+        // Use try-with-resources to ensure JMX connector is always closed
+        try (JMXConnector jmxConnector = server.getJMXRestConnector("user1", "user1pwd", "Liberty")) {
+            MBeanServerConnection mbs = jmxConnector.getMBeanServerConnection();
 
-        if (mbs.isRegistered(appMBean)) {
+            if (mbs.isRegistered(appMBean)) {
 
-            String[] MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE = new String[] { Collection.class.getName(),
-                                                                                          Collection.class.getName(),
-                                                                                          Collection.class.getName() };
+                String[] MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE = new String[] { Collection.class.getName(),
+                                                                                              Collection.class.getName(),
+                                                                                              Collection.class.getName() };
 
-            // Set MBean method notifyFileChanges parameters (createdFiles, modifiedFiles, deletedFiles)
-            Object[] params = new Object[] { createdFilePaths, modifiedFilePaths, deletedFilePaths };
+                // Set MBean method notifyFileChanges parameters (createdFiles, modifiedFiles, deletedFiles)
+                Object[] params = new Object[] { createdFilePaths, modifiedFilePaths, deletedFilePaths };
 
-            Log.info(thisClass, "notifyFileChangesWithMbean", "Calling FileNotificationMBean notifyFileChanges");
-            Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + (createdFilePaths != null ? createdFilePaths.toString() : "null")
-                                                              + "modifiedFilePaths: "
-                                                              + (modifiedFilePaths != null ? modifiedFilePaths.toString() : "null")
-                                                              + "deletedFilePaths: "
-                                                              + (deletedFilePaths != null ? deletedFilePaths.toString() : "null"));
-            // Invoke FileNotificationMBean method notifyFileChanges
-            mbs.invoke(appMBean, "notifyFileChanges", params,
-                       MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE);
-            Log.info(thisClass, "notifyFileChangesWithMbean", "Finished FileNotificationMBean notifyFileChanges");
-        } else {
-            Log.info(thisClass, "notifyFileChangesWithMbean", "FileNotificationMBean is not registered.");
-            throw new Exception("FileNotificationMBean is not registered.");
+                Log.info(thisClass, "notifyFileChangesWithMbean", "Calling FileNotificationMBean notifyFileChanges");
+                Log.info(thisClass, "notifyFileChangesWithMbean", "createdFilePaths: " + (createdFilePaths != null ? createdFilePaths.toString() : "null")
+                                                                  + "modifiedFilePaths: "
+                                                                  + (modifiedFilePaths != null ? modifiedFilePaths.toString() : "null")
+                                                                  + "deletedFilePaths: "
+                                                                  + (deletedFilePaths != null ? deletedFilePaths.toString() : "null"));
+                // Invoke FileNotificationMBean method notifyFileChanges
+                mbs.invoke(appMBean, "notifyFileChanges", params,
+                           MBEAN_FILE_NOTIFICATION_NOTIFYFILECHANGES_SIGNATURE);
+                Log.info(thisClass, "notifyFileChangesWithMbean", "Finished FileNotificationMBean notifyFileChanges");
+            } else {
+                Log.info(thisClass, "notifyFileChangesWithMbean", "FileNotificationMBean is not registered.");
+                throw new Exception("FileNotificationMBean is not registered.");
+            }
         }
     }
 

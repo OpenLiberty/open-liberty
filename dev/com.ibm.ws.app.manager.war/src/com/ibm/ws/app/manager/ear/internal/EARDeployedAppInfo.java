@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.app.manager.ear.internal;
 
@@ -117,6 +114,31 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
     private final String appConfigDefaultClientModule;
 
     private static final String CONTEXT_ROOT = "context-root";
+
+    /**
+     * Annotations which identify an application jar as an EJB jar.
+     *
+     * Both the Java EE and Jakarta ones are defined to avoid having to transform the bundle for
+     * this one reference to the javax namespace
+     */
+    private static final List<String> EJB_ANNOTATIONS;
+    private static final List<String> JAKARTA_EJB_ANNOTATIONS;
+
+    static {
+        EJB_ANNOTATIONS = new ArrayList<String>();
+        EJB_ANNOTATIONS.add("javax.ejb.MessageDriven");
+        EJB_ANNOTATIONS.add("javax.ejb.Stateless");
+        EJB_ANNOTATIONS.add("javax.ejb.Stateful");
+        EJB_ANNOTATIONS.add("javax.ejb.Singleton");
+
+        JAKARTA_EJB_ANNOTATIONS = new ArrayList<String>();
+        JAKARTA_EJB_ANNOTATIONS.add("jakarta.ejb.MessageDriven");
+        JAKARTA_EJB_ANNOTATIONS.add("jakarta.ejb.Stateless");
+        JAKARTA_EJB_ANNOTATIONS.add("jakarta.ejb.Stateful");
+        JAKARTA_EJB_ANNOTATIONS.add("jakarta.ejb.Singleton");
+    }
+
+    private final List<String> ejbAnnotations;
 
     //
 
@@ -255,6 +277,9 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
 
         this.appDD = appDD;
         this.altDDEnabled = (factory.platformVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0); // JavaEE7 or higher
+
+        this.ejbAnnotations = factory.platformVersion.compareTo(JavaEEVersion.VERSION_8_0) <= 0 ? // Java EE 8 or lower
+                        EJB_ANNOTATIONS : JAKARTA_EJB_ANNOTATIONS;
 
         this.preExpansionAppContainer = preExpansionAppContainer;
 
@@ -704,7 +729,7 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         } else if (moduleHandler == ejbModuleHandler) {
             EJBModuleContainerInfo mci = new EJBModuleContainerInfo(moduleHandler, deployedAppServices.getModuleMetaDataExtenders("ejb"), deployedAppServices.getNestedModuleMetaDataFactories("ejb"), moduleContainer, altDDEntry, moduleURI, this, moduleClassesInfo, manifestClassPathConsumer);
 
-            if (!checkForDDOrAnnotations || mci.moduleDD != null || hasAnnotations(mci.getContainer(), EJB_ANNOTATIONS)) {
+            if (!checkForDDOrAnnotations || mci.moduleDD != null || hasAnnotations(mci.getContainer(), ejbAnnotations)) {
                 if (ddInitializeInOrder) {
                     moduleContainerInfos.add(mci);
                 } else {
@@ -1186,17 +1211,6 @@ public class EARDeployedAppInfo extends DeployedAppInfoBase {
         } catch (Throwable th) {
             Tr.error(_tc, "error.application.libraries", getName(), th);
         }
-    }
-
-    /** Annotations which identify an application jar as an EJB jar. */
-    private static final List<String> EJB_ANNOTATIONS;
-
-    static {
-        EJB_ANNOTATIONS = new ArrayList<String>();
-        EJB_ANNOTATIONS.add("javax.ejb.MessageDriven");
-        EJB_ANNOTATIONS.add("javax.ejb.Stateless");
-        EJB_ANNOTATIONS.add("javax.ejb.Stateful");
-        EJB_ANNOTATIONS.add("javax.ejb.Singleton");
     }
 
     private String getFullPath(Container useContainer) {
