@@ -3352,13 +3352,29 @@ public abstract class QueryInfo {
                     q = generateUpdateEntity();
                 } else if (methodTypeAnno instanceof Delete) { // @Delete annotation
                     q = generateDeleteEntity();
-                } else { // should be unreachable
-                    throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
-                                                            repository.repositoryInterface.getName() +
-                                                            " repository interface must be annotated with one of " +
-                                                            "(Delete, Insert, Save, Update)" +
-                                                            " because the method's parameter accepts entity instances. The following" +
-                                                            " annotations were found: " + Arrays.toString(method.getAnnotations()));
+                } else {
+                    // TODO 1.1 rewrite the following using the superclass and
+                    // move it out of the entityParamType != null block for better
+                    // error checking
+                    Class<? extends Annotation> c = methodTypeAnno.annotationType();
+                    if (c.getSimpleName().equals("Detach"))
+                        setType(c, QueryType.DETACH);
+                    else if (c.getSimpleName().equals("Merge"))
+                        setType(c, QueryType.MERGE);
+                    else if (c.getSimpleName().equals("Persist"))
+                        setType(c, QueryType.PERSIST);
+                    else if (c.getSimpleName().equals("Refresh"))
+                        setType(c, QueryType.REFRESH);
+                    else if (c.getSimpleName().equals("Remove"))
+                        setType(c, QueryType.REMOVE);
+                    else
+                        // should be unreachable
+                        throw new UnsupportedOperationException("The " + method.getName() + " method of the " +
+                                                                repository.repositoryInterface.getName() +
+                                                                " repository interface must be annotated with one of " +
+                                                                "(Delete, Insert, Save, Update)" +
+                                                                " because the method's parameter accepts entity instances. The following" +
+                                                                " annotations were found: " + Arrays.toString(method.getAnnotations()));
                 }
             } else {
                 if (methodTypeAnno != null) {

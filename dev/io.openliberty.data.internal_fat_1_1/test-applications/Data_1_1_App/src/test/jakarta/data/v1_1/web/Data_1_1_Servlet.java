@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import jakarta.annotation.Resource;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -49,10 +50,13 @@ import jakarta.inject.Inject;
 import jakarta.servlet.ServletConfig;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
+import jakarta.transaction.Status;
+import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
 import componenttest.app.FATServlet;
+import test.jakarta.data.v1_1.web.Fraction.Decimal;
 
 @SuppressWarnings("serial")
 @WebServlet("/*")
@@ -63,6 +67,12 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    StatefulFractions statefulFractions;
+
+    @Resource
+    UserTransaction tx;
 
     /**
      * Initialize read-only data that is prepopulated for tests
@@ -1113,6 +1123,60 @@ public class Data_1_1_Servlet extends FATServlet {
                                                  Sort.asc(_Fraction.NUMERATOR)) //
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a stateless repository to find an entity. Modify the entity. Verify the
+     * updates can be committed or rolled back.
+     */
+    @Test
+    public void testPersistenceContext() throws Exception {
+
+        // TODO use stateful method to persist entities
+        // Populate with 2/23 and 3/23.
+        // Ensure deletion in the finally block.
+        fractions.supply(List.of(Fraction.of(2, 23),
+                                 Fraction.of(3, 23)));
+        try {
+            System.out.println("Fetch 2/23 to modify and commit");
+
+            tx.begin();
+            Fraction f = statefulFractions.fetch(2, 23).orElseThrow();
+            f.numerator = f.numerator * 2;
+            f.decimal = Decimal.of(f.numerator, 23);
+            tx.commit();
+
+            assertEquals(BigDecimal.valueOf(1739, 4),
+                         statefulFractions.fetch(4, 23).orElseThrow() //
+                                         .decimal.truncated());
+
+            assertEquals(true,
+                         statefulFractions.fetch(2, 23).isEmpty());
+
+            System.out.println("Fetch 3/23 to modify and roll back");
+
+            tx.begin();
+            f = statefulFractions.fetch(3, 23).orElseThrow();
+            f.numerator = f.numerator - 2;
+            f.decimal = Decimal.of(f.numerator, 23);
+            tx.rollback();
+
+            assertEquals(BigDecimal.valueOf(1304, 4),
+                         statefulFractions.fetch(3, 23).orElseThrow() //
+                                         .decimal.truncated());
+
+            assertEquals(true,
+                         statefulFractions.fetch(1, 23).isEmpty());
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // TODO use stateful method to remove entities
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
     }
 
     /**

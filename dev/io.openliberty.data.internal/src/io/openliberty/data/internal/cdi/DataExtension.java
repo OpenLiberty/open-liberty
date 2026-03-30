@@ -331,9 +331,9 @@ public class DataExtension implements Extension {
                             break;
                         }
 
-                for (Class<? extends Annotation> statefulAnnoType : provider.compat //
+                for (Class<? extends Annotation> queryAnnoType : provider.compat //
                                 .jpqlQueryAnnoTypes())
-                    if (method.getAnnotation(statefulAnnoType) != null) {
+                    if (method.getAnnotation(queryAnnoType) != null) {
                         hasQueryAnno = true;
                         break;
                     }

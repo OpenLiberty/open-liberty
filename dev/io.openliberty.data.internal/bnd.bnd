@@ -37,12 +37,12 @@ DynamicImport-Package: \
   jakarta.data.metamodel, \
   jakarta.data.page, \
   jakarta.data.repository, \
+  jakarta.data.repository.stateful, \
   jakarta.data.restrict, \
   jakarta.data.spi, \
   jakarta.data.spi.expression.function, \
   jakarta.data.spi.expression.literal, \
   jakarta.data.spi.expression.path, \
-  jakarta.data.stateful, \
   jakarta.validation, \
   jakarta.validation.executable, \
   jakarta.validation.metadata

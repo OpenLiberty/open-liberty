@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package jakarta.data.stateful;
+package jakarta.data.repository.stateful;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

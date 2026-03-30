@@ -48,12 +48,12 @@ import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Select;
 import jakarta.data.repository.Update;
+import jakarta.data.repository.stateful.Detach;
+import jakarta.data.repository.stateful.Merge;
+import jakarta.data.repository.stateful.Persist;
+import jakarta.data.repository.stateful.Refresh;
+import jakarta.data.repository.stateful.Remove;
 import jakarta.data.restrict.Restriction;
-import jakarta.data.stateful.Detach;
-import jakarta.data.stateful.Merge;
-import jakarta.data.stateful.Persist;
-import jakarta.data.stateful.Refresh;
-import jakarta.data.stateful.Remove;
 import jakarta.persistence.EntityManager;
 
 /**

@@ -21,12 +21,12 @@ IBM-API-Package: \
   jakarta.data.page; type="spec",\
   jakarta.data.page.impl; type="spec",\
   jakarta.data.repository; type="spec",\
+  jakarta.data.repository.stateful; type="spec",\
   jakarta.data.restrict; type="spec",\
   jakarta.data.spi; type="spec",\
   jakarta.data.spi.expression.function; type="spec",\
   jakarta.data.spi.expression.literal; type="spec",\
-  jakarta.data.spi.expression.path; type="spec",\
-  jakarta.data.stateless; type="spec"
+  jakarta.data.spi.expression.path; type="spec"
 Subsystem-Name: Jakarta Data 1.1
 -features=\
   com.ibm.websphere.appserver.eeCompatible-11.0,\
