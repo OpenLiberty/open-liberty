@@ -32,15 +32,12 @@ import componenttest.rules.repeater.RepeatTests;
  */
 public class FATSuite {
 
-    /*
-     * Run EE9 tests in LITE mode if Java 8, EE10 tests in LITE mode if >= Java 11, EE11 tests in LITE mode if >= Java 17 and run all tests in FULL mode.
-     */
     /*@formatter:off*/
     @ClassRule
     public static RepeatTests repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT()
                                                          .fullFATOnly())
                                         .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                         .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                                                         .liteFATOnly()) // Having all repeats in FULL mode causes bucket timeouts.
                                         .andWith(FeatureReplacementAction.EE10_FEATURES()
                                                          .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                                         .andWith(FeatureReplacementAction.EE11_FEATURES());
