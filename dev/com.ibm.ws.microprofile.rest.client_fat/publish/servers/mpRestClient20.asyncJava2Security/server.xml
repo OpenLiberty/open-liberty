@@ -17,5 +17,4 @@
     <javaPermission className="java.io.FilePermission" name="ALL FILES" actions="read,write,delete"/>
     <javaPermission className="java.lang.RuntimePermission" name="*"/>
     <javaPermission className="java.security.AllPermission" name="*" actions="*"/>
-
 </server>
