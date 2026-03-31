@@ -3188,8 +3188,8 @@ public abstract class QueryInfo {
 
         OrderBy[] orderBy = method.getAnnotationsByType(OrderBy.class);
         if (orderBy.length > 0 &&
-            methodTypeAnno != null &&
-            !(methodTypeAnno instanceof Delete))
+            methodAnno != null &&
+            !(methodAnno instanceof Delete))
             conflicts.add(OrderBy.class.getName());
 
         for (Class<? extends Annotation> annoClass : compat.jpqlQueryAnnoTypes())
