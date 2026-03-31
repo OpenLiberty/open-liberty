@@ -91,7 +91,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param sharedKey                 The LTPA shared key
      * @param privateKey                The LTPA private key
      * @param publicKey                 The LTPA public key
-     * @param maxLifetime           The LTPA token max lifetime
+     * @param maxLifetime               The LTPA token max lifetime
      * @param refreshThresholdInMinutes The LTPA token expiration remaining threshold
      * @param expirationInMinutes       The LTPA token expiration in minutes
      */
@@ -120,7 +120,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param sharedKey                 The LTPA shared key
      * @param privateKey                The LTPA private key
      * @param publicKey                 The LTPA public key
-     * @param maxLifetime           The LTPA token max lifetime
+     * @param maxLifetime               The LTPA token max lifetime
      * @param refreshThresholdInMinutes The LTPA token expiration time remaining threshold
      * @param expirationInMinutes       The LTPA token expiration in minutes
      * @param attributes                The list of attributes will be removed from the LTPA2 token
@@ -159,7 +159,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param sharedKey                 The LTPA shared key
      * @param privateKey                The LTPA private key
      * @param publicKey                 The LTPA public key
-     * @param maxLifetime           TODO
+     * @param maxLifetime               TODO
      * @param refreshThresholdInMinutes TODO
      */
     protected LTPAToken2(String accessID, long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, long maxLifetime,
@@ -187,7 +187,7 @@ public class LTPAToken2 implements Token, Serializable {
      * @param privateKey                The LTPA private key
      * @param publicKey                 The LTPA public key
      * @param userdata                  The UserData
-     * @param maxLifetime           The LTPA token max lifetime
+     * @param maxLifetime               The LTPA token max lifetime
      * @param refreshThresholdInMinutes The LTPA token expiration time remaining threshold
      */
     protected LTPAToken2(long expirationInMinutes, @Sensitive byte[] sharedKey, LTPAPrivateKey privateKey, LTPAPublicKey publicKey, UserData userdata, long maxLifetime,
@@ -444,6 +444,10 @@ public class LTPAToken2 implements Token, Serializable {
             throw new TokenExpiredException(expirationInMilliseconds, msg);
         }
 
+        // Check if token has exceeded maximum lifetime
+        validateMaxLifetime();
+
+        // Check if token needs refresh
         isRefreshNeed();
     }
 
@@ -454,21 +458,48 @@ public class LTPAToken2 implements Token, Serializable {
         triggleRefresh = false;
         long expireTime = getExpiration();
         long currentTime = System.currentTimeMillis();
-        double timeRemaining = expireTime - currentTime;
-        double expirationInMils = expirationInMinutes * 60 * 1000;
-        double remainTimeInMils = timeRemaining * 60 * 1000;
+        long timeRemaining = expireTime - currentTime;
+        long thresholdInMillis = getRefreshThreshold();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(this, tc, "expire time: " + new Date(expireTime) + " expiration in mils: " + expirationInMils + " remaining in mils: " + remainTimeInMils);
-
-            Tr.debug(this, tc, "remaining time: " + remainTimeInMils);
+            Tr.debug(this, tc, "Current time: " + new Date(currentTime));
+            Tr.debug(this, tc, "Expire time: " + new Date(expireTime));
+            Tr.debug(this, tc, "Time remaining (ms): " + timeRemaining);
+            Tr.debug(this, tc, "Refresh threshold (ms): " + thresholdInMillis);
         }
-        if (remainTimeInMils <= getRefreshThreshold()) {
+
+        if (timeRemaining <= thresholdInMillis) {
             triggleRefresh = true;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Token refresh triggered: remaining time (" + timeRemaining + "ms) <= threshold (" + thresholdInMillis + "ms)");
+            }
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "LTPA token refresh = " + triggleRefresh);
+        }
+    }
+
+    /**
+     * Validates that the token has not exceeded its maximum lifetime.
+     *
+     * @throws TokenExpiredException if the token has exceeded max lifetime
+     */
+    private void validateMaxLifetime() throws TokenExpiredException {
+        //AI check both values ??
+        if (maxLifetimeInMinutes > 0 && maxLifetimeInMilliseconds > 0) {
+            long currentTime = System.currentTimeMillis();
+            if (currentTime > maxLifetimeInMilliseconds) {
+                long creationTime = maxLifetimeInMilliseconds - (maxLifetimeInMinutes * 60 * 1000);
+                String msg = "Token has exceeded maximum lifetime: " +
+                             "created at " + new Date(creationTime) +
+                             ", max lifetime " + maxLifetimeInMinutes + " minutes, " +
+                             "current time " + new Date(currentTime);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, msg);
+                }
+                throw new TokenExpiredException(maxLifetimeInMilliseconds, msg);
+            }
         }
     }
 
@@ -701,7 +732,7 @@ public class LTPAToken2 implements Token, Serializable {
     }
 
     private long getRefreshThreshold() {
-        return System.currentTimeMillis() + refreshThresholdInMinutes * 60 * 1000;
+        return refreshThresholdInMinutes * 60 * 1000;
     }
 
 //    private double getRefreshThresholdPercentage() {

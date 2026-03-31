@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,8 @@ import java.util.Hashtable;
 import java.util.Map;
 import java.util.concurrent.locks.ReentrantLock;
 
+import java.util.Set;
+
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.login.CredentialException;
@@ -30,9 +32,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.TraceOptions;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
+import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
@@ -70,6 +74,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     static final String KEY_DELEGATION_PROVIDER = "delegationProvider";
     static final String KEY_DEFAULT_DELEGATION_PROVIDER = "defaultDelegationProvider";
     static final String KEY_CREDENTIALS_SERVICE = "credentialsService";
+    static final String KEY_LTPA_CONFIGURATION = "ltpaConfiguration";
     private static final String LTPA_OID = "oid:1.3.18.0.2.30.2";
     private static final String JWT_OID = "oid:1.3.18.0.2.30.3"; // ?????
 
@@ -78,6 +83,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AtomicServiceReference<DelegationProvider> delegationProviderRef = new AtomicServiceReference<DelegationProvider>(KEY_DELEGATION_PROVIDER);
     private final AtomicServiceReference<DefaultDelegationProvider> defaultDelegationProviderRef = new AtomicServiceReference<DefaultDelegationProvider>(KEY_DEFAULT_DELEGATION_PROVIDER);
     private final AtomicServiceReference<CredentialsService> credentialsServiceRef = new AtomicServiceReference<CredentialsService>(KEY_CREDENTIALS_SERVICE);
+    private final AtomicServiceReference<LTPAConfiguration> ltpaConfigurationRef = new AtomicServiceReference<LTPAConfiguration>(KEY_LTPA_CONFIGURATION);
     private JAASService jaasService;
     private ComponentContext cc;
     private boolean cacheEnabled = true;
@@ -142,6 +148,14 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         credentialsServiceRef.unsetReference(reference);
     }
 
+    protected void setLtpaConfiguration(ServiceReference<LTPAConfiguration> reference) {
+        ltpaConfigurationRef.setReference(reference);
+    }
+
+    protected void unsetLtpaConfiguration(ServiceReference<LTPAConfiguration> reference) {
+        ltpaConfigurationRef.unsetReference(reference);
+    }
+
     /**
      * Based on the configuration properties, the auth cache should either
      * be active or not.
@@ -190,6 +204,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         delegationProviderRef.activate(cc);
         defaultDelegationProviderRef.activate(cc);
         credentialsServiceRef.activate(cc);
+        ltpaConfigurationRef.activate(cc);
         updateCacheState(props);
     }
 
@@ -203,6 +218,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         delegationProviderRef.deactivate(cc);
         defaultDelegationProviderRef.deactivate(cc);
         credentialsServiceRef.deactivate(cc);
+        ltpaConfigurationRef.deactivate(cc);
         if (jaasService instanceof JAASServiceImpl) {
             ((JAASServiceImpl) jaasService).unsetAuthenticationService(this);
         }
@@ -371,6 +387,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectInAuthCache(AuthenticationData authenticationData, Subject partialSubject,
                                            AuthenticationData hashtableAuthData) throws AuthenticationException {
         Subject subject = null;
+        
         AuthCacheService authCacheService = getAuthCacheService();
         if (authCacheService != null && authenticationData != null) {
             String jwtSSOToken = (String) authenticationData.get(AuthenticationData.JWT_TOKEN);
@@ -401,8 +418,92 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     }
                 }
             }
+            
+            // Check if the cached subject's LTPA token needs refresh
+            if (subject != null && shouldRefreshCachedToken(subject)) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Cached subject's LTPA token needs refresh, returning null to force re-authentication");
+                }
+                return null;
+            }
         }
         return subject;
+    }
+    
+    /**
+     * Checks if the LTPA token in the cached Subject needs to be refreshed based on
+     * refreshThreshold, expiration, and maxLifetime settings.
+     *
+     * @param subject The Subject retrieved from auth cache
+     * @return true if token needs refresh, false otherwise
+     */
+    private boolean shouldRefreshCachedToken(Subject subject) {
+        if (subject == null) {
+            return false;
+        }
+        
+        try {
+            // Extract WSCredential from Subject
+            Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
+            if (wsCredentials == null || wsCredentials.isEmpty()) {
+                return false;
+            }
+            
+            WSCredential wsCredential = wsCredentials.iterator().next();
+            if (wsCredential == null) {
+                return false;
+            }
+            
+            // Get the credential token (LTPA token bytes)
+            byte[] tokenBytes = wsCredential.getCredentialToken();
+            if (tokenBytes == null || tokenBytes.length == 0) {
+                return false;
+            }
+            
+            // Get expiration time from WSCredential
+            long expiration = wsCredential.getExpiration();
+            long currentTime = System.currentTimeMillis();
+            
+            // Check if token is expired
+            if (currentTime >= expiration) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Token is expired: current=" + currentTime + ", expiration=" + expiration);
+                }
+                return true;
+            }
+            
+            // Get LTPA configuration to check refresh threshold
+            LTPAConfiguration ltpaConfig = ltpaConfigurationRef.getService();
+            if (ltpaConfig != null) {
+                long refreshThresholdInMinutes = ltpaConfig.getRefreshThreshold();
+                if (refreshThresholdInMinutes > 0) {
+                    long refreshThresholdInMillis = refreshThresholdInMinutes * 60 * 1000;
+                    long timeRemaining = expiration - currentTime;
+                    
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Checking refresh threshold: timeRemaining=" + timeRemaining +
+                                    "ms, threshold=" + refreshThresholdInMillis + "ms");
+                    }
+                    
+                    // Check if token is within refresh threshold
+                    if (timeRemaining <= refreshThresholdInMillis) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "Token needs refresh: remaining time (" + timeRemaining +
+                                        "ms) <= threshold (" + refreshThresholdInMillis + "ms)");
+                        }
+                        return true;
+                    }
+                }
+            }
+            
+            return false;
+            
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Error checking if cached token needs refresh", e);
+            }
+            return false;
+        }
     }
 
     private Subject findSubjectByX509Cert(AuthCacheService authCacheService, X509Certificate[] certChain) {
