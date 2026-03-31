@@ -29,19 +29,12 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 
-/**
- * Test servlet for GitHub issue #26810: MP Rest Client 2.0 hangs when performing an async request with Java 2 Security enabled.
- */
+// Test servlet for GitHub issue #26810: MP Rest Client 2.0 hangs when performing an async request with Java 2 Security enabled.
 @SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/AsyncJava2SecurityTestServlet")
 public class AsyncJava2SecurityTestServlet extends FATServlet {
 
-    /**
-     * Test that async MP Rest Client requests work with Java 2 Security enabled.
-     * This reproduces the issue from GitHub #26810 where the request would hang
-     * due to SecurityException when trying to set the context class loader on
-     * InnocuousForkJoinWorkerThread.
-     */
+    // Test async MP Rest Client requests work with Java 2 Security enabled. Reproduces #26810 
     @Test
     public void testAsyncRequestWithJava2Security(HttpServletRequest request, HttpServletResponse response) throws Exception {
         String baseUri = "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
@@ -56,9 +49,7 @@ public class AsyncJava2SecurityTestServlet extends FATServlet {
         assertEquals("Response should match expected value", "test string", result);
     }
     
-    /**
-     * Rest client interface to call the target endpoint
-     */
+    // Rest client interface to call the target endpoint
     public static interface TestClientInterface {
         @Path("/target")
         @GET
