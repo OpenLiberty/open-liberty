@@ -38,12 +38,12 @@ Export-Package: \
   jakarta.data.page;version="1.0.0",\
   jakarta.data.page.impl;version="1.0.0",\
   jakarta.data.repository;version="1.0.0",\
+  jakarta.data.repository.stateful;version='1.0.0',\
   jakarta.data.restrict;version="1.0.0",\
   jakarta.data.spi;version="1.0.0",\
   jakarta.data.spi.expression.function;version="1.0.0",\
   jakarta.data.spi.expression.literal;version="1.0.0",\
-  jakarta.data.spi.expression.path;version="1.0.0",\
-  jakarta.data.stateful;version="1.0.0"
+  jakarta.data.spi.expression.path;version="1.0.0"
 
 Private-Package: \
   jakarta.data.messages;version="1.0.0"
