@@ -130,7 +130,7 @@ public enum QueryType {
            !Require.AUTO_START_TX, //
            !Require.DETACH_ENTITIES, //
            !Require.RETURN_HIDDEN, //
-           Require.STATELESS),
+           Require.STATEFUL),
 
     // resource accessor method
     RESOURCE_ACCESS(null, //
