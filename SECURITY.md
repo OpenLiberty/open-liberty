@@ -2,10 +2,13 @@
 
 ## Supported Versions
 
-| Version    | Supported          |
-| ---------- | ------------------ |
-| 25.x.x.x   | :white_check_mark: |
-| 26.x.x.x   | :white_check_mark: |
+We accept issues and vulnerability disclosures on all releases for up to two years. For example;
+
+| Version    | Release date | Supported |
+| ---------- | ------------------ |---------|
+| 24.0.0.1   | Jan 2024 | until Jan 2026 |
+| 25.0.0.12  | Dec 2025 | until Dec 2027 |
+| 26.0.0.3   | Mar 2026 | until Mar 2028 |
 
 ## Reporting a Vulnerability
 
