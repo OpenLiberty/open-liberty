@@ -164,7 +164,7 @@ public class Fraction {
                                                              "Twentieth",
                                                              "Twenty-first",
                                                              "Twenty-second",
-                                                             "Twenth-third"
+                                                             "Twenty-third"
     };
 
     static final String[] NUMERATOR_NAMES = new String[] {
