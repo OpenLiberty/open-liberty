@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2025 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -362,9 +362,41 @@ public class DatabaseStoreImpl implements DatabaseStore {
             if (!(entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)) {
                 boolean createTables = (Boolean) this.properties.get("createTables");
                 boolean dropTables = (Boolean) this.properties.get("dropTables");
+                // Line 366 in DatabaseStoreImpl.java
                 if (createTables || dropTables) {
-                    CheckpointPhase.onRestore(() -> dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables));
+                    CheckpointPhase.onRestore(() -> {
+                        
+                        // Configurable delay to allow database authentication provider to initialize
+                        // after checkpoint/restore. Default is 1000ms (1 second).
+                        // Can be configured via: -Dcom.ibm.ws.persistence.checkpoint.delay=<milliseconds>
+                        // Set to 0 to disable delay.
+                        long delayMs = Long.getLong("com.ibm.ws.persistence.checkpoint.delay", 1000L);
+                        
+                        if (delayMs > 0) {
+                            if (trace && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Waiting " + delayMs + "ms for database authentication provider " +
+                                        "to initialize after checkpoint/restore");
+                            }
+                            
+                            try {
+                                Thread.sleep(delayMs);
+                            } catch (InterruptedException e) {
+                                Thread.currentThread().interrupt();
+                                if (trace && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "Interrupted while waiting for database initialization, " +
+                                            "proceeding with table operations");
+                                }
+                            }
+                            
+                            if (trace && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Database initialization delay complete, proceeding with table operations");
+                            }
+                        }
+                        
+                        dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables);
+                    });
                 }
+
             }
 
             if (deactivated) {
@@ -809,194 +841,6 @@ public class DatabaseStoreImpl implements DatabaseStore {
                     localTranCurrent.resume(suspendedLTC);
             }
         }
-    }
-
-    /**
-     * Drop and/or create tables with retry logic for checkpoint/restore scenarios.
-     * This method handles transient authentication failures that can occur when
-     * Derby's authentication state is not properly preserved across checkpoint/restore.
-     *
-     * @param persistenceServiceUnit persistence service unit
-     * @param createTables whether to create tables
-     * @param dropTables whether to drop tables
-     * @throws Exception if an error occurs after all retries are exhausted
-     */
-    private void dropAndOrCreateTablesWithRetry(PersistenceServiceUnit persistenceServiceUnit, 
-                                                boolean createTables, 
-                                                boolean dropTables) throws Exception {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        
-        // Validate connection before attempting table operations if we're running after a restore
-        if (CheckpointPhase.getPhase() == CheckpointPhase.INACTIVE) {
-            validateConnectionAfterRestore();
-        }
-        
-        // Retry logic for transient authentication failures
-        int maxRetries = 3;
-        int retryDelayMs = 500; 
-        Exception lastException = null;
-        
-        for (int attempt = 1; attempt <= maxRetries; attempt++) {
-            try {
-                // Attempt the table operation
-                dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables);
-                if (attempt > 1 && trace && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Table creation succeeded on attempt " + attempt + 
-                            " for persistence service unit: " + persistenceServiceUnit);
-                }
-                return; 
-                
-            } catch (Exception e) {
-                lastException = e;
-                
-                // Check if this is a transient authentication/connection error that we should retry
-                boolean isAuthError = isTransientAuthenticationError(e);
-                
-                if (isAuthError && attempt < maxRetries) {
-                    if (trace && tc.isWarningEnabled()) {
-                        Tr.warning(tc, "Table creation failed with authentication error on attempt " + attempt + 
-                                " of " + maxRetries + ", will retry after delay. Error: " + e.getMessage());
-                    }
-                    
-                    try {
-                        long delay = retryDelayMs * attempt;
-                        if (trace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Waiting " + delay + "ms before retry attempt " + (attempt + 1));
-                        }
-                        Thread.sleep(delay);
-                    } catch (InterruptedException ie) {
-                        Thread.currentThread().interrupt();
-                        if (trace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Interrupted while waiting to retry, throwing original exception");
-                        }
-                        throw e;
-                    }
-                    
-                } else {
-                    // Either not an auth error, or we're out of retries
-                    if (trace && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Table creation failed on attempt " + attempt + 
-                                (isAuthError ? " (authentication error, no more retries)" : 
-                                            " (non-authentication error, not retrying)") +
-                                ": " + e.getMessage());
-                    }
-                    throw e; 
-                }
-            }
-        }
-        
-        // All retries exhausted - throw the last exception
-        if (lastException != null) {
-            if (trace && tc.isWarningEnabled()) {
-                Tr.warning(tc, "Table creation failed after " + maxRetries + 
-                        " attempts. Last error: " + lastException.getMessage());
-            }
-            throw lastException;
-        }
-    }
-
-    /**
-     * Validate that the database connection is usable after checkpoint/restore.
-     * If validation fails, the connection is closed to force the pool to create 
-     * a fresh connection on the next attempt.
-     */
-    private void validateConnectionAfterRestore() {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-        
-        try {
-            ResourceConfig resourceInfo = resourceConfigFactory.createResourceConfig(DataSource.class.getName());
-            resourceInfo.setSharingScope(ResourceConfig.SHARING_SCOPE_SHAREABLE);
-            resourceInfo.setIsolationLevel(Connection.TRANSACTION_READ_COMMITTED);
-            resourceInfo.setResAuthType(ResourceConfig.AUTH_CONTAINER);
-            
-            if (authDataRef != null) {
-                String authDataId = (String) authDataRef.getProperty("id");
-                resourceInfo.addLoginProperty("DefaultPrincipalMapping",
-                                            authDataId.matches(".*(\\]/).*(\\[default-\\d*\\])")
-                                                            ? (String) authDataRef.getProperty("config.displayId")
-                                                            : authDataId);
-            }
-            
-            DataSource dataSource = (DataSource) dataSourceFactory.createResource(resourceInfo);
-            
-            if (dataSource != null) {
-                Connection testConn = null;
-                try {
-                    // Try to get a connection from the pool
-                    testConn = dataSource.getConnection();
-                    
-                    // Validate the connection is actually usable (5 second timeout)
-                    if (!testConn.isValid(5)) {
-                        if (trace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Connection validation failed after restore - connection is not valid. " +
-                                    "Closing stale connection to force pool refresh.");
-                        }
-                        // Connection is stale, close it to force pool refresh
-                        try {
-                            testConn.close();
-                        } catch (Exception closeEx) {
-                            // Ignore errors during close
-                            if (trace && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Error closing stale connection: " + closeEx.getMessage());
-                            }
-                        }
-                        testConn = null;
-                    } else {
-                        if (trace && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Connection validation successful after restore");
-                        }
-                    }
-                } finally {
-                    // Always close the test connection
-                    if (testConn != null) {
-                        try {
-                            testConn.close();
-                        } catch (Exception closeEx) {
-                            // Ignore errors during close
-                            if (trace && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Error closing test connection: " + closeEx.getMessage());
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            if (trace && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Connection validation after restore encountered error " +
-                        "(will retry during table creation): " + e.getMessage());
-            }
-        }
-    }
-
-    /**
-     * Check if an exception is a transient authentication or connection error
-     * that might be resolved by retrying.
-     * 
-     * @param e the exception to check
-     * @return true if this appears to be a transient authentication/connection error
-     */
-    private boolean isTransientAuthenticationError(Exception e) {
-        if (e == null) {
-            return false;
-        }
-        
-        String message = e.getMessage();
-        if (message == null) {
-            message = "";
-        }
-        message = message.toLowerCase();
-        
-        // Check for SQL state codes and error messages indicating transient auth/connection issues
-        // SQL State 08004: Connection exception - authentication failure
-        // SQL State 08003: Connection does not exist
-        // SQL State 08001: Unable to establish connection
-        return message.contains("08004") ||  
-            message.contains("08003") ||  
-            message.contains("08001") ||  
-            message.contains("authentication") ||
-            message.contains("auth") && (message.contains("fail") || message.contains("error")) ||
-            message.contains("no current connection") ||
-            message.contains("connection") && message.contains("fail") && !message.contains("syntax");
     }
 
     @Deactivate
