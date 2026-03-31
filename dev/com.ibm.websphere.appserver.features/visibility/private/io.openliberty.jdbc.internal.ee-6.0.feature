@@ -6,6 +6,6 @@ WLP-DisableAllFeatures-OnConflict: false
  com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2"
 -bundles=\
  com.ibm.ws.jdbc
-kind=ga
-edition=core
+kind=noship
+edition=full
 WLP-Activation-Type: parallel

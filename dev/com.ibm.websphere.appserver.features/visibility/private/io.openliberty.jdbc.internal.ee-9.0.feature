@@ -5,6 +5,6 @@ singleton=true
  com.ibm.websphere.appserver.transaction-2.0
 -bundles=\
  com.ibm.ws.jdbc.jakarta
-kind=ga
-edition=core
+kind=noship
+edition=full
 WLP-Activation-Type: parallel
