@@ -92,11 +92,11 @@ LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: The {0} validation keys
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=The LTPA validation keys that are created with FIPS 140-3 enabled fail when FIPS 140-3 is disabled.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility createLTPAKeys command to create the non FIPS approved validation keys when FIPS 140-3 is disabled.
 
-LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: LTPA configuration error. Add a keysPassword attribute to your <ltpa /> configuration, or set the 'ltpa_keys_password' or 'keystore_password' environment variables.
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: LTPA configuration error. A keysPassword attribute is not configured on the <ltpa /> element, the 'ltpa_keys_password' environment variable is not set, and the 'keystore_password' environment variable is not set.
 LTPA_KEYS_PASSWORD_ERROR.explanation=The LTPA configuration requires a password to store and read LTPA keys.
 LTPA_KEYS_PASSWORD_ERROR.useraction=Configure the keysPassword attribute in the <ltpa /> element, or set the 'ltpa_keys_password' or 'keystore_password' environment variables to provide a password.
 
-LTPA_KEYS_REENCRYPT=CWWKS4119I: Re-encrypting the {0} LTPA keys by using the ''keystore_password'' environment variable.
+LTPA_KEYS_REENCRYPT=CWWKS4119I: The {0} LTPA keys are being re-encrypted by using the ''keystore_password'' environment variable.
 LTPA_KEYS_REENCRYPT.explanation=The LTPA keys are being re-encrypted by using the 'keystore_password' because the default value for the LTPA keysPassword attribute is removed to improve security.
 LTPA_KEYS_REENCRYPT.useraction=No action is required.
 
