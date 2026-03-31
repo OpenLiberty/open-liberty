@@ -24,7 +24,7 @@ import componenttest.topology.utils.FATServletClient;
 import mpRestClient20.asyncJava2Security.AsyncJava2SecurityTestServlet;
 
 /**
- * Test for GitHub issue #26810: MP Rest Client 2.0 hangs when performing an async request with Java 2 Security enabled.
+ * Test for GitHub issue #26810
  * This test does not use RepeatTests since it tests a specific Java 2 Security configuration.
  */
 @RunWith(FATRunner.class)
