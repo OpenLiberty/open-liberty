@@ -21,10 +21,7 @@ import javax.ws.rs.core.UriInfo;
 
 import org.eclipse.microprofile.rest.client.RestClientBuilder;
 
-/**
- * Test resource for GitHub issue #26810
- * Reproduces the hang when performing async requests with Java 2 Security enabled
- */
+// For GitHub issue #26810. Reproduces the hang when performing async requests with Java 2 Security enabled
 @Path("/")
 public class TestResource {
 
