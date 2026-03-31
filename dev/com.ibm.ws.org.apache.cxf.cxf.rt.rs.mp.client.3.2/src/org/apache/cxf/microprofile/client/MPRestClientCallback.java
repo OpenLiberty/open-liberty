@@ -53,13 +53,11 @@ public class MPRestClientCallback<T> extends JaxrsClientCallback<T> {
         if (es == null) {
             es = AccessController.doPrivileged((PrivilegedAction<ExecutorService>)() -> {
                 try {
-                    // Use Liberty's DefaultManagedExecutorService to avoid Java 2 Security issues
-                    // with ForkJoinPool.commonPool() which uses InnocuousForkJoinWorkerThread
+                    // Liberty's DefaultManagedExecutorService to avoid Java 2 Security issues
                     InitialContext ctx = new InitialContext();
                     return (ExecutorService) ctx.lookup("java:comp/DefaultManagedExecutorService");
                 } catch (Exception e) {
-                    // Fallback to ForkJoinPool.commonPool() for backward compatibility
-                    // in non-Liberty environments
+                    // For backward compatibility in non-Liberty environments
                     return ForkJoinPool.commonPool();
                 }
             });
