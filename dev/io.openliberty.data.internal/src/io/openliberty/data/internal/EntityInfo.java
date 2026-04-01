@@ -62,7 +62,7 @@ public class EntityInfo {
      * Excludes inner relation attributes, such as location.address
      * when there is also a location.address.zipcode
      */
-    final SortedSet<String> attributeNamesForEntityUpdate;
+    public final SortedSet<String> attributeNamesForEntityUpdate;
 
     // properly cased/qualified JPQL attribute name --> type
     final SortedMap<String, Class<?>> attributeTypes;

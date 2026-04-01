@@ -205,7 +205,7 @@ public class Util {
     /**
      * Valid types for when a repository method computes an update count
      */
-    static final Set<Class<?>> UPDATE_COUNT_TYPES = //
+    public static final Set<Class<?>> UPDATE_COUNT_TYPES = //
                     Set.of(boolean.class, Boolean.class,
                            int.class, Integer.class,
                            long.class, Long.class,

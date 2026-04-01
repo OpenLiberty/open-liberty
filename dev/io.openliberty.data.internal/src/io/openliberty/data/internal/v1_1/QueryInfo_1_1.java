@@ -12,6 +12,17 @@
  *******************************************************************************/
 package io.openliberty.data.internal.v1_1;
 
+import static io.openliberty.data.internal.QueryType.DETACH;
+import static io.openliberty.data.internal.QueryType.INSERT;
+import static io.openliberty.data.internal.QueryType.LC_DELETE;
+import static io.openliberty.data.internal.QueryType.LC_UPDATE;
+import static io.openliberty.data.internal.QueryType.LC_UPDATE_MERGE;
+import static io.openliberty.data.internal.QueryType.MERGE;
+import static io.openliberty.data.internal.QueryType.PERSIST;
+import static io.openliberty.data.internal.QueryType.REFRESH;
+import static io.openliberty.data.internal.QueryType.REMOVE;
+import static io.openliberty.data.internal.QueryType.SAVE;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -29,6 +40,7 @@ import com.ibm.websphere.ras.annotation.Trivial;
 import io.openliberty.data.internal.AttributeConstraint;
 import io.openliberty.data.internal.QueryInfo;
 import io.openliberty.data.internal.QueryType;
+import io.openliberty.data.internal.Util;
 import io.openliberty.data.internal.cdi.RepositoryProducer;
 import io.openliberty.data.repository.IgnoreCase;
 import io.openliberty.data.repository.function.AbsoluteValue;
@@ -62,7 +74,17 @@ import jakarta.data.expression.NavigableExpression;
 import jakarta.data.expression.TemporalExpression;
 import jakarta.data.metamodel.Attribute;
 import jakarta.data.metamodel.NavigableAttribute;
+import jakarta.data.repository.Delete;
+import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
+import jakarta.data.repository.Query;
+import jakarta.data.repository.Save;
+import jakarta.data.repository.Update;
+import jakarta.data.repository.stateful.Detach;
+import jakarta.data.repository.stateful.Merge;
+import jakarta.data.repository.stateful.Persist;
+import jakarta.data.repository.stateful.Refresh;
+import jakarta.data.repository.stateful.Remove;
 import jakarta.data.restrict.BasicRestriction;
 import jakarta.data.restrict.CompositeRestriction;
 import jakarta.data.spi.expression.function.CurrentDate;
@@ -713,6 +735,16 @@ public class QueryInfo_1_1 extends QueryInfo {
         return deferred;
     }
 
+    @Override
+    @Trivial
+    protected String getQueryAnnoValue() {
+        if (methodTypeAnno instanceof Query query)
+            return query.value();
+        // else TODO query annotation(s) from Jakarta Persistence
+        else
+            return null;
+    }
+
     /**
      * Determine if the constraint applies to one or more values that are
      * expressions other than literal expressions.
@@ -757,6 +789,33 @@ public class QueryInfo_1_1 extends QueryInfo {
             throw new UnsupportedOperationException("Constraint: " +
                                                     constraint.getClass().getName());
         return !allLiteral;
+    }
+
+    @Override
+    @Trivial
+    protected void identifyType() {
+        if (entityParamType != null && methodTypeAnno instanceof Delete)
+            setType(Delete.class, LC_DELETE);
+        else if (entityParamType != null && methodTypeAnno instanceof Update)
+            setType(Update.class,
+                    entityInfo.attributeNamesForEntityUpdate != null &&
+                                  Util.UPDATE_COUNT_TYPES.contains(singleType) //
+                                                  ? LC_UPDATE //
+                                                  : LC_UPDATE_MERGE);
+        else if (methodTypeAnno instanceof Insert)
+            setType(Insert.class, INSERT);
+        else if (methodTypeAnno instanceof Save)
+            setType(Save.class, SAVE);
+        else if (methodTypeAnno instanceof Detach)
+            setType(Detach.class, DETACH);
+        else if (methodTypeAnno instanceof Merge)
+            setType(Merge.class, MERGE);
+        else if (methodTypeAnno instanceof Persist)
+            setType(Persist.class, PERSIST);
+        else if (methodTypeAnno instanceof Refresh)
+            setType(Refresh.class, REFRESH);
+        else if (methodTypeAnno instanceof Remove)
+            setType(Remove.class, REMOVE);
     }
 
     @Override
