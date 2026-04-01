@@ -41,6 +41,7 @@ import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.security.filemonitor.LTPAFileMonitor;
 import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.token.ltpa.LTPAKeyInfoManager;
@@ -96,6 +97,9 @@ public class LTPAConfigurationImplTest {
 
     private Map<String, Object> props;
 
+    /** Saved beta property value so tests that mutate it can restore it cleanly. */
+    private String savedBetaProperty;
+
     private static String PATH_TO_DIR;
     static {
         try {
@@ -113,8 +117,9 @@ public class LTPAConfigurationImplTest {
 
     @Before
     public void setUp() {
+        savedBetaProperty = System.getProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
         props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER,
-                            0L, DEFAULT_VALIDATION_KEY_ELEMENT, DEFAULT_VALIDATION_FILENAME, DEFAULT_VALIDATION_PASSWORD, DEFAULT_VALIDATION_VALID_UNTIL_DATE);
+                            0L, 240L, 30L, DEFAULT_VALIDATION_KEY_ELEMENT, DEFAULT_VALIDATION_FILENAME, DEFAULT_VALIDATION_PASSWORD, DEFAULT_VALIDATION_VALID_UNTIL_DATE);
 
         mock.checking(new Expectations() {
             {
@@ -137,7 +142,7 @@ public class LTPAConfigurationImplTest {
     }
 
     private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorValidationKeysDir, String updateTrigger,
-                                            long expDiffAllowed, String validationKey, String validationKeyFileName, String validationKeyPassword,
+                                            long expDiffAllowed, long inactivityTimeout, long refreshThreshold, String validationKey, String validationKeyFileName, String validationKeyPassword,
                                             String validationKeyValidUntilDate) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
@@ -147,6 +152,8 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, monitorValidationKeysDir);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
+        props.put(LTPAConfiguration.CFG_KEY_INACTIVITY_TIMEOUT, 60L);
+        props.put(LTPAConfiguration.CFG_KEY_REFRESH_THRESHOLD, refreshThreshold);
 
         // Create one validation key in props
         props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME, validationKeyFileName);
@@ -224,6 +231,12 @@ public class LTPAConfigurationImplTest {
 
     @After
     public void tearDown() {
+        // Restore beta edition system property to whatever it was before the test.
+        if (savedBetaProperty == null) {
+            System.clearProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY);
+        } else {
+            System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, savedBetaProperty);
+        }
         ltpaConfig.deactivate(cc);
         ltpaConfig.unsetExecutorService(executorServiceRef);
         ltpaConfig.unsetLocationService(locateServiceRef);
@@ -631,6 +644,74 @@ public class LTPAConfigurationImplTest {
         LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
         assertEquals("Key file value was not the expected value",
                      RESOLVED_DEFAULT_OUTPUT_LOCATION, ltpaConfig.getPrimaryKeyFile());
+    }
+
+    @Test
+    public void modified_inactivityTimeoutChanged_keysReloaded() throws Exception {
+        setupExecutorServiceExpectations(2);
+        setupLocationServiceExpectations(2);
+
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        props.put(LTPAConfiguration.CFG_KEY_INACTIVITY_TIMEOUT, 90L); // was 60L in setUp
+        ltpaConfig.modified(props);
+        assertTrue("The old file monitor must be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
+        assertTrue("Expected CWWKS4107A message was not logged", outputMgr.checkForStandardOut("CWWKS4107A:.*"));
+    }
+
+    @Test
+    public void modified_dynamicExpirationValidationChanged_keysReloaded() throws Exception {
+        setupExecutorServiceExpectations(2);
+        setupLocationServiceExpectations(2);
+
+        LTPAConfigurationImplTestDouble ltpaConfig = createActivatedLTPAConfigurationImpl();
+
+        props.put(LTPAConfiguration.CFG_KEY_DYNAMIC_EXPIRATION_VALIDATION, true); // was false (default)
+        ltpaConfig.modified(props);
+        assertTrue("The old file monitor must be unset.", ltpaConfig.wasUnsetFileMonitorRegistrationCalled);
+        assertTrue("Expected CWWKS4107A message was not logged", outputMgr.checkForStandardOut("CWWKS4107A:.*"));
+    }
+
+    @Test
+    public void loadConfig_inactivityTimeoutGreaterThanExpiration_emitsWarning() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+
+        // inactivityTimeout (180m) >= expiration (120m) — should emit CWWKS4125W
+        props.put(LTPAConfiguration.CFG_KEY_INACTIVITY_TIMEOUT, 180L);
+        createActivatedLTPAConfigurationImpl();
+
+        assertTrue("Expected CWWKS4125W warning was not logged",
+                   outputMgr.checkForStandardOut("CWWKS4125W:.*"));
+    }
+
+    @Test
+    public void loadConfig_inactivityTimeoutEqualToExpiration_emitsWarning() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+
+        // inactivityTimeout (120m) == expiration (120m) — should emit CWWKS4125W
+        props.put(LTPAConfiguration.CFG_KEY_INACTIVITY_TIMEOUT, 120L);
+        createActivatedLTPAConfigurationImpl();
+
+        assertTrue("Expected CWWKS4125W warning was not logged",
+                   outputMgr.checkForStandardOut("CWWKS4125W:.*"));
+    }
+
+    @Test
+    public void loadConfig_inactivityTimeoutLessThanExpiration_noWarning() {
+        System.setProperty(ProductInfo.BETA_EDITION_JVM_PROPERTY, "true");
+        setupExecutorServiceExpectations(1);
+        setupLocationServiceExpectations(1);
+
+        // inactivityTimeout (30m) < expiration (120m) — should NOT emit CWWKS4125W
+        props.put(LTPAConfiguration.CFG_KEY_INACTIVITY_TIMEOUT, 30L);
+        createActivatedLTPAConfigurationImpl();
+
+        assertTrue("Unexpected CWWKS4125W warning was logged",
+                   !outputMgr.checkForStandardOut("CWWKS4125W:.*"));
     }
 
     @Test
