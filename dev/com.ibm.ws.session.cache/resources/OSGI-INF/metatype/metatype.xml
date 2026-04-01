@@ -42,6 +42,7 @@
   </AD>
   <AD id="writeInterval"                  type="String"  ibm:type="duration(s)" default="2m" ibmui:group="performance" name="%writeInterval"  description="%writeInterval.desc"/>
   <AD id="cacheSeparator"                 type="String"  required="false"       default="%" ibmui:group="performance" name="%cacheSeparator" description="%cacheSeparator.desc"/>
+   <AD id="cacheNamePrefix"                type="String"  required="false"       default="" ibmui:group="performance" name="%cacheNamePrefix" description="%cacheNamePrefix.desc"/>
   <AD id="appInCacheName"                 type="Boolean" required="false"       default="false" ibmui:group="performance" name="%appInCacheName" description="%appInCacheName.desc"/>
   
   <!-- 

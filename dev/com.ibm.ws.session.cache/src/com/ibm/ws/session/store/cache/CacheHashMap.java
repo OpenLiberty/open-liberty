@@ -169,7 +169,9 @@ public class CacheHashMap extends BackedHashMap {
 
             // Session Meta Information Cache
 
-            String metaCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.meta.").append(a).toString();
+            String prefix = cacheStoreService.cacheNamePrefix;
+            String baseMetaPrefix = prefix.isEmpty() ? "com.ibm.ws.session.meta." : prefix + "com.ibm.ws.session.meta.";
+            String metaCacheName = new StringBuilder(baseMetaPrefix.length() + a.length()).append(baseMetaPrefix).append(a).toString();
 
             if (trace && tc.isDebugEnabled())
                 tcInvoke(cacheStoreService.tcCacheManager, "getCache", metaCacheName, "String", "ArrayList");
@@ -209,7 +211,8 @@ public class CacheHashMap extends BackedHashMap {
 
             // Session Attributes Cache
 
-            String attrCacheName = new StringBuilder(24 + a.length()).append("com.ibm.ws.session.attr.").append(a).toString();
+            String baseAttrPrefix = prefix.isEmpty() ? "com.ibm.ws.session.attr." : prefix + "com.ibm.ws.session.attr.";
+            String attrCacheName = new StringBuilder(baseAttrPrefix.length() + a.length()).append(baseAttrPrefix).append(a).toString();
 
             if (trace && tc.isDebugEnabled())
                 tcInvoke(cacheStoreService.tcCacheManager, "getCache", attrCacheName, "String", "byte[]");

@@ -82,6 +82,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final String CONFIG_KEY_PROPERTIES = "properties";
     private static final Set<String> sessionCacheAttributes = new HashSet<>(Arrays.asList("appInCacheName",
                                                                                           "cacheSeparator",
+                                                                                          "cacheNamePrefix",
                                                                                           "scheduleInvalidationFirstHour",
                                                                                           "scheduleInvalidationSecondHour",
                                                                                           "writeContents",
@@ -103,6 +104,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
     final AtomicReference<ServiceReference<?>> monitorRef = new AtomicReference<ServiceReference<?>>();
 
+    
+    /**
+     * Optional prefix to prepend to Liberty-generated cache names.
+     * Empty string means no prefix (default behavior for backward compatibility).
+     */
+    volatile String cacheNamePrefix = "";
     SerializationService serializationService;
     private CacheManagerService cacheManagerService;
 
@@ -145,6 +152,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
         Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
         Object writeContents = configurationProperties.get("writeContents");
+        Object prefix = configurationProperties.get("cacheNamePrefix");
+        if (prefix != null && prefix instanceof String && !((String) prefix).isEmpty()) {
+            cacheNamePrefix = (String) prefix;
+        } else {
+            cacheNamePrefix = ""; // ensure empty string, not null
+        }
         Object writeFrequency = configurationProperties.get("writeFrequency");
 
         // httpSessionCache writeContents accepts ONLY_SET_ATTRIBUTES in place of ONLY_UPDATED_ATTRIBUTES to better reflect the behavior provided
