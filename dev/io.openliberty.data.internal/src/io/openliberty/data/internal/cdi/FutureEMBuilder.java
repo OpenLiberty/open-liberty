@@ -62,7 +62,7 @@ import jakarta.persistence.EntityManagerFactory;
  */
 public class FutureEMBuilder extends CompletableFuture<EntityManagerBuilder> implements DDLGenerationParticipant, Comparable<FutureEMBuilder> {
     private static final TraceComponent tc = Tr.register(FutureEMBuilder.class);
-    private static final long DDLGEN_WAIT_TIME = 15;
+    private static final long DDLGEN_WAIT_TIME = 30;
 
     /**
      * These are present only if needed to disambiguate a JNDI name
