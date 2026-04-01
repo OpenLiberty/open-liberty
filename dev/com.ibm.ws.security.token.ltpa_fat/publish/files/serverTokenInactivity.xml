@@ -1,0 +1,78 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="com.ibm.ws.security.token.ltpa.fat.refresh - Inactivity Timeout Test Configuration">
+
+    <featureManager>
+        <feature>appSecurity-2.0</feature>
+        <feature>jsp-2.3</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ltpafattestlibertyinternals-1.0</feature>
+    </featureManager>
+
+    <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty -->
+
+    <applicationManager autoExpand="true"/>
+
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />
+        <group name="group1">
+            <member name="user1"/>
+        </group>
+        <group name="group2">
+            <member name="user2"/>
+        </group>
+    </basicRegistry>
+
+    <application type="war" id="ltpaTest" name="ltpaTest" location="${server.config.dir}/apps/ltpaTest.war">
+        <application-bnd>
+            <security-role name="Employee">
+                <user name="user1" />
+                <group name="group1" />
+            </security-role>
+            <security-role name="Manager">
+                <user name="user2" />
+                <group name="group2" />
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS" />
+            </security-role>
+        </application-bnd>
+    </application>
+
+    <authentication id="Basic" cacheEnabled="true" />
+
+    <httpSession securityIntegrationEnabled="false"/>
+
+    <!-- LTPA configuration for inactivity timeout testing
+         - expiration: 10 minutes - absolute lifetime, kept long so it never interferes
+         - inactivityTimeout: 1 minute - token expires if idle longer than 1 minute
+         - refreshThreshold: not set (0) - no proactive refresh; only hard expiry on idle
+         This config isolates the inactivity expiry path from the proactive-refresh path.
+    -->
+    <ltpa expiration="10m"
+          inactivityTimeout="1m"
+          keysFileName="${server.config.dir}/resources/security/ltpa.keys"
+          keysPassword="{xor}Lz4sLCgwLTs="/>
+
+    <include location="../fatTestPorts.xml" />
+
+    <javaPermission className="javax.security.auth.AuthPermission" name="createLoginContext.system.WEB_INBOUND"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
+    <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
+    <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="com.ibm.ws.security.authentication.principals.WSPrincipal" principalName="*" actions="read"/>
+
+    <!-- Default SSL configuration enables trust for default certificates from the Java runtime -->
+    <ssl id="defaultSSLConfig" />
+
+</server>
