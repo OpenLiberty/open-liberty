@@ -27,6 +27,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleEvent;
@@ -409,12 +410,6 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
             return;
         } else {
-
-            if (tc.isDebugEnabled()) {
-                // If debug is enabled we will dump threads so that we can determine what was still running
-                libertyProcess.createJavaDump(Collections.singleton("thread"));
-            }
-
             int count = tq.getActiveThreads();
 
             // we timed out - we now have to stop waiting for existing notifications to finish...
@@ -426,31 +421,39 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
             int notificationCount = 0;
 
+            List<String> incompleteNotifications = new ArrayList<String>(0);
             for (RuntimeUpdateNotification notification : existingNotifications.values()) {
                 if (!!!notification.isDone()) {
                     notificationCount++;
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Notification did not complete during quiesce: ", notification.getName());
-                    }
+                    incompleteNotifications.add(notification.getName());
                 }
             }
             if (notificationCount > 0) {
-                Tr.warning(tc, "notifications.not.complete", notificationCount);
+                Tr.warning(tc, "notifications.not.complete", notificationCount, String.join(", ", incompleteNotifications));
             }
 
+            List<String> runningListenerClasses = Collections.emptyList();
             if (listeners.size() > 0) {
-                Tr.warning(tc, "quiesce.listeners.not.complete", listeners.size());
-            }
-
-            if (tc.isDebugEnabled()) {
-                for (ServerQuiesceListener sql : listeners) {
-                    Tr.debug(tc, "Quiesce listener did not complete during quiesce: ", sql.getClass().getName());
+                // snapshot listener classes to avoid timing issues
+                runningListenerClasses = listeners.stream().map(l -> l.getClass().getName()).collect(Collectors.toList());
+                if (runningListenerClasses.size() > 0) {
+                    Tr.warning(tc, "quiesce.listeners.not.complete", runningListenerClasses.size(),
+                               String.join(", ", runningListenerClasses));
                 }
             }
 
-            count = count - notificationCount - listeners.size();
+            count = count - notificationCount - runningListenerClasses.size();
             if (count > 0) {
                 Tr.warning(tc, "quiesce.waiting.on.threads", count);
+            }
+
+            // Moved the core to the end to ensure the above messages are accurate.
+            // Java cores can take a long time on slow systems; if this was done first then some
+            // of the notifications and listeners may have completed before we could gather them
+            // for the messages.
+            if (tc.isDebugEnabled()) {
+                // If debug is enabled we will dump threads so that we can determine what was still running
+                libertyProcess.createJavaDump(Collections.singleton("thread"));
             }
         }
 
