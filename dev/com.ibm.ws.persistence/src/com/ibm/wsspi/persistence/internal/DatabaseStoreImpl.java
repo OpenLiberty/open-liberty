@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2026 IBM Corporation and others.
+ * Copyright (c) 2014, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -362,7 +362,6 @@ public class DatabaseStoreImpl implements DatabaseStore {
             if (!(entitySet.equals(SpecialEntitySet.PERSISTENT_EXECUTOR) && entityClassNames.length == 1)) {
                 boolean createTables = (Boolean) this.properties.get("createTables");
                 boolean dropTables = (Boolean) this.properties.get("dropTables");
-                // Line 366 in DatabaseStoreImpl.java
                 if (createTables || dropTables) {
                     CheckpointPhase.onRestore(() -> dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables));
                 }
