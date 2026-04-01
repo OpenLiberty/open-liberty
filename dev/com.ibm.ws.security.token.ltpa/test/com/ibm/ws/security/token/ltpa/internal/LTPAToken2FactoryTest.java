@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,12 +78,16 @@ public class LTPAToken2FactoryTest {
     private Map<String, Object> createTestTokenFactoryMap() {
         long expectedExpirationLimit = 120;
         long expDiffAllowed = 0;
+        long maxLifetime = 240; // 4 hours
+        long refreshThreshold = 30; // 30 minutes
         Map<String, Object> tokenFactoryMap = new HashMap<String, Object>();
         tokenFactoryMap.put("expiration", expectedExpirationLimit);
         tokenFactoryMap.put("primary_ltpa_shared_key", encodedSharedKey.getBytes());
         tokenFactoryMap.put("primary_ltpa_public_key", ltpaPublicKey);
         tokenFactoryMap.put("primary_ltpa_private_key", ltpaPrivateKey);
         tokenFactoryMap.put("expirationDifferenceAllowed", expDiffAllowed);
+        tokenFactoryMap.put("maxLifetime", maxLifetime);
+        tokenFactoryMap.put("refreshThreshold", refreshThreshold);
 
         return tokenFactoryMap;
     }
@@ -164,6 +168,52 @@ public class LTPAToken2FactoryTest {
 
     @Test
     public void testValidateTokenBytes() throws Exception {
+        Map<String, Object> tokenData = createBasicLTPA2TokenData();
+        Token token = tokenFactory.createToken(tokenData);
+        byte[] tokenBytes = token.getBytes();
+        Token validatedToken = tokenFactory.validateTokenBytes(tokenBytes);
+        assertNotNull("There must be a validated token.", validatedToken);
+        assertTrue("Token is invalid.", validatedToken.isValid());
+    }
+
+    @Test
+    public void testInitializeSetsMaxLifetime() throws Exception {
+        long expectedMaxLifetime = (Long) tokenFactoryMap.get("maxLifetime");
+        Field maxLifetimeField = LTPAToken2Factory.class.getDeclaredField("maxLifetimeInMinutes");
+        maxLifetimeField.setAccessible(true);
+        long actualMaxLifetime = maxLifetimeField.getLong(tokenFactory);
+
+        assertEquals("The max lifetime must be equals to the expected max lifetime.", expectedMaxLifetime, actualMaxLifetime);
+    }
+
+    @Test
+    public void testInitializeSetsRefreshThreshold() throws Exception {
+        long expectedRefreshThreshold = (Long) tokenFactoryMap.get("refreshThreshold");
+        Field refreshThresholdField = LTPAToken2Factory.class.getDeclaredField("refreshThresholdInMinutes");
+        refreshThresholdField.setAccessible(true);
+        long actualRefreshThreshold = refreshThresholdField.getLong(tokenFactory);
+
+        assertEquals("The refresh threshold must be equals to the expected refresh threshold.", expectedRefreshThreshold, actualRefreshThreshold);
+    }
+
+    @Test
+    public void testTokenHasLastUsedTimestamp() throws Exception {
+        Map<String, Object> tokenData = createBasicLTPA2TokenData();
+        Token token = tokenFactory.createToken(tokenData);
+        long lastUsed = token.getLastUsed();
+        assertTrue("Last used timestamp should be greater than 0.", lastUsed > 0);
+    }
+
+    @Test
+    public void testTokenRefreshNotTriggeredWhenFarFromExpiration() throws Exception {
+        Map<String, Object> tokenData = createBasicLTPA2TokenData();
+        Token token = tokenFactory.createToken(tokenData);
+        // Token was just created, so it should not need refresh
+        assertTrue("Token should not need refresh when just created.", !token.shouldRefreshToken());
+    }
+
+    @Test
+    public void testValidateTokenBytesWithRefresh() throws Exception {
         Map<String, Object> tokenData = createBasicLTPA2TokenData();
         Token token = tokenFactory.createToken(tokenData);
         byte[] tokenBytes = token.getBytes();

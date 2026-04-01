@@ -194,8 +194,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
         primaryKeyPassword = sps == null ? null : new String(sps.getChars());
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
-        maxLifetime = (long) props.get(CFG_KEY_TOKEN_REFRESH_LIFE_TIME);
-        refreshThreshold = (long) props.get(CFG_KEY_TOKEN_REFRESH_THRESHOLD);
+        maxLifetime = (Long) props.get(CFG_KEY_TOKEN_REFRESH_LIFE_TIME);
+        refreshThreshold = (Long) props.get(CFG_KEY_TOKEN_REFRESH_THRESHOLD);
         //TODO: UTLE
         //if maxLifetime is smaller than expiration, should we issue an error?
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -114,7 +114,7 @@ public class LTPAConfigurationImplTest {
     @Before
     public void setUp() {
         props = createProps(PATH_TO_FILE, PWD, 120L, 0L, DEFAULT_MONITOR_DIR_VALUE, DEFAULT_UPDATE_TRIGGER,
-                            0L, DEFAULT_VALIDATION_KEY_ELEMENT, DEFAULT_VALIDATION_FILENAME, DEFAULT_VALIDATION_PASSWORD, DEFAULT_VALIDATION_VALID_UNTIL_DATE);
+                            0L, 240L, 30L, DEFAULT_VALIDATION_KEY_ELEMENT, DEFAULT_VALIDATION_FILENAME, DEFAULT_VALIDATION_PASSWORD, DEFAULT_VALIDATION_VALID_UNTIL_DATE);
 
         mock.checking(new Expectations() {
             {
@@ -137,7 +137,7 @@ public class LTPAConfigurationImplTest {
     }
 
     private Map<String, Object> createProps(String filePath, String password, long expiration, long monitorInterval, boolean monitorValidationKeysDir, String updateTrigger,
-                                            long expDiffAllowed, String validationKey, String validationKeyFileName, String validationKeyPassword,
+                                            long expDiffAllowed, long maxLifetime, long refreshThreshold, String validationKey, String validationKeyFileName, String validationKeyPassword,
                                             String validationKeyValidUntilDate) {
         Map<String, Object> props = new HashMap<String, Object>();
         props.put(LTPAConfiguration.CFG_KEY_IMPORT_FILE, filePath);
@@ -147,6 +147,8 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, monitorValidationKeysDir);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
+        props.put(LTPAConfiguration.CFG_KEY_TOKEN_REFRESH_LIFE_TIME, maxLifetime);
+        props.put(LTPAConfiguration.CFG_KEY_TOKEN_REFRESH_THRESHOLD, refreshThreshold);
 
         // Create one validation key in props
         props.put(LTPAConfiguration.CFG_KEY_VALIDATION_KEYS + ".0." + LTPAConfiguration.CFG_KEY_VALIDATION_FILE_NAME, validationKeyFileName);

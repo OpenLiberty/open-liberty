@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -163,10 +163,18 @@ public class LTPAToken2SerializationTest {
         sharedKey = encodedSharedKey.getBytes();
 
         /*
-         * Create LTPAToken2
+         * Create LTPAToken2 with new constructor parameters:
+         * - expDiffAllowed: 1L
+         * - maxLifetime: 240 minutes (4 hours)
+         * - refreshThreshold: 30 minutes
+         * - expirationInMinutes: 120 minutes (2 hours)
          */
         LTPAToken2 object = null;
-        object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, 1L, 0, 0, 0);
+        long expDiffAllowed = 1L;
+        long maxLifetime = 240; // 4 hours
+        long refreshThreshold = 30; // 30 minutes
+        long expirationInMinutes = 120; // 2 hours
+        object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, expDiffAllowed, maxLifetime, refreshThreshold, expirationInMinutes);
 
         /*
          * Set expiration via reflection so we don't need to update this test constantly for the token verification to pass. If the test fails validation, there may be something
