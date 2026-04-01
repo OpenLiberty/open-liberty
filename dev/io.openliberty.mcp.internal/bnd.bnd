@@ -40,6 +40,7 @@ Bundle-Localization: \
 -dsannotations: \
  io.openliberty.mcp.internal.McpServletInitializer,\
  io.openliberty.mcp.internal.McpCdiExtensionMetadata,\
+ io.openliberty.mcp.internal.McpMetricRecorderProviderHolder,\
  io.openliberty.mcp.internal.config.McpConfigurationComponent,\
  io.openliberty.mcp.internal.config.McpServerApplicationTracker,\
  io.openliberty.mcp.internal.introspection.McpIntrospector

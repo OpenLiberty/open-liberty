@@ -85,7 +85,21 @@ public class McpStatAttributes {
 			this.networkTransport = (builder.networkTransport.isPresent() ? builder.networkTransport.get() : null);
 			this.mcpResourceUri = (builder.mcpResourceUri.isPresent() ? builder.mcpResourceUri.get() : null);
 
-			this.mcpStat_ID = this.mcpMethodName;
+            StringBuilder mcpStatIDBuilder = new StringBuilder(this.mcpMethodName);
+            if (this.genAiToolName != null) {
+                mcpStatIDBuilder.append("_").append(this.genAiToolName);
+            }
+            if (this.genAiPromptName != null) {
+                mcpStatIDBuilder.append("_").append(this.genAiPromptName);
+            }
+            if (this.errorType != null) {
+                mcpStatIDBuilder.append("_").append(this.errorType);
+            }
+            if (this.rpcResponseStatusCode != null) {
+                mcpStatIDBuilder.append("_").append(this.rpcResponseStatusCode);
+            }
+
+            this.mcpStat_ID = mcpStatIDBuilder.toString();
 		}
 
 
