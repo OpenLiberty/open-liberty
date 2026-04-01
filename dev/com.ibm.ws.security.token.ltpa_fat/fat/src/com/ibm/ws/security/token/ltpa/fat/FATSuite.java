@@ -35,6 +35,8 @@ import componenttest.rules.repeater.RepeatTests;
                 ContextRootCookiePathTests.class,
                 FATTest.class,
                 LTPAKeyRotationTests.class,
+                LTPATokenRefreshTest.class,
+                SSOAuthenticatorRefreshTest.class,
                 LTPAValidationKeyTests.class
 })
 /**
