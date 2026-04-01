@@ -35,9 +35,10 @@ public class McpMetricServlet extends FATServlet {
         Optional<MetricData> getMetricAttributes = getMetricData("mcp.server.operation.duration");
         assertTrue("mcp.server.operation.duration metric not found", getMetricAttributes.isPresent());
 
+        System.out.println(getMetricAttributes.get());
+
         List<HistogramPointData> basicToolAttributesList = getToolMetricAttributes(getMetricAttributes.get(), "basicTool");
         assertTrue("No attributes with the tool name 'basicTool'", basicToolAttributesList.size() == 1);
-
         // Test tool call count is correct
         assertEquals(1, basicToolAttributesList.get(0).getCount());
 

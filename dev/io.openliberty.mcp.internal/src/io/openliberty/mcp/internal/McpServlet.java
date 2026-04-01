@@ -14,7 +14,6 @@ import static io.openliberty.mcp.internal.McpServletInitializer.STATELESS_INIT_P
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.security.Principal;
-import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -43,7 +42,6 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
 import io.openliberty.mcp.internal.meta.MetaImpl;
 import io.openliberty.mcp.internal.metrics.McpMetrics;
-import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
@@ -140,16 +138,16 @@ public class McpServlet extends HttpServlet {
             }
             callRequest(transport);
         } catch (JSONRPCException e) {
-            atExceptionReturn(e);
+//            atExceptionReturn(e);
             transport.sendJsonRpcException(e);
         } catch (HttpResponseException e) {
-            atExceptionReturn(e);
+//            atExceptionReturn(e);
             transport.sendHttpException(e);
         } catch (Exception e) {
-            atExceptionReturn(e);
+//            atExceptionReturn(e);
             transport.sendError(e);
         }
-        atExit(transport);
+//        atExit(transport);
     }
 
     public void callRequest(McpTransport transport)
@@ -167,68 +165,70 @@ public class McpServlet extends HttpServlet {
 
     }
 
-    public void atEntry(McpTransport transport) {
-        mcpMonitoringService.call(monitor -> {
-            monitor.getTl_mcpStatsBuilder().set(null);; //reset just in case
+    // Old hooks
 
-            monitor.getTl_startNanos().set(System.nanoTime());
-            McpStatAttributes.Builder builder = McpStatAttributes.builder();
-
-            String method = transport.getMcpRequest().method();
-            builder.withMcpMethodName(method);
-            if (method.equals("tools/call")) {
-                McpToolCallParams params = transport.getParams(McpToolCallParams.class);
-                builder.withGenAiToolName(Optional.of(params.getName()));
-            }
-            builder.withJsonrpcProtocolVersion(Optional.of(transport.getMcpRequest().jsonrpc()));
-            builder.withMcpProtocolVersion(Optional.of(transport.getProtocolVersion().toString()));
-
-            String[] fullProtocal = transport.getReq().getProtocol().split("/");
-            builder.withNetworkProtocolName(Optional.of(fullProtocal[0]));
-            builder.withNetworkProtocolVersion(Optional.of(fullProtocal[1]));
-            builder.withNetworkTransport(Optional.of("tcp"));
-
-            monitor.getTl_mcpStatsBuilder().set(builder);
-        });
-    }
-
-    public void atExceptionReturn(Throwable t) {
-        mcpMonitoringService.call(monitor -> {
-            if (t instanceof Throwable) {
-                McpStatAttributes.Builder builder = monitor.getTl_mcpStatsBuilder().get();
-                if (builder != null) {
-                    builder.withErrorType(Optional.of(t.getCause().getMessage()));
-                }
-            } else if (t instanceof JSONRPCException) {
-                JSONRPCException j = (JSONRPCException) t;
-                McpStatAttributes.Builder builder = monitor.getTl_mcpStatsBuilder().get();
-                if (builder != null) {
-                    builder.withErrorType(Optional.of(j.getCause().getMessage()));
-                    builder.withRpcResponseStatusCode(Optional.of(String.valueOf(j.getErrorCode().getCode())));
-                }
-            }
-        });
-    }
-
-    public void atExit(McpTransport transport) {
-        mcpMonitoringService.call(monitor -> {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "starting atSendResponseReturn probbe");
-            }
-
-            long elapsedNanos = System.nanoTime() - monitor.getTl_startNanos().get();
-            McpStatAttributes.Builder retrievedMcpStatAttributesBuilder = monitor.getTl_mcpStatsBuilder().get();
-
-            if (retrievedMcpStatAttributesBuilder == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Unable to retrieve McpStatAttributes. Unable to record time.");
-                }
-                return;
-            }
-            monitor.updateMcpStatDuration(retrievedMcpStatAttributesBuilder, Duration.ofNanos(elapsedNanos), null);
-        });
-
-    }
+//    public void atEntry(McpTransport transport) {
+//        mcpMonitoringService.call(monitor -> {
+//            monitor.getTl_mcpStatsBuilder().set(null); //reset just in case
+//
+//            monitor.getTl_startNanos().set(System.nanoTime());
+//            McpStatAttributes.Builder builder = McpStatAttributes.builder();
+//
+//            String method = transport.getMcpRequest().method();
+//            builder.withMcpMethodName(method);
+//            if (method.equals("tools/call")) {
+//                McpToolCallParams params = transport.getParams(McpToolCallParams.class);
+//                builder.withGenAiToolName(Optional.of(params.getName()));
+//            }
+//            builder.withJsonrpcProtocolVersion(Optional.of(transport.getMcpRequest().jsonrpc()));
+//            builder.withMcpProtocolVersion(Optional.of(transport.getProtocolVersion().toString()));
+//
+//            String[] fullProtocal = transport.getReq().getProtocol().split("/");
+//            builder.withNetworkProtocolName(Optional.of(fullProtocal[0]));
+//            builder.withNetworkProtocolVersion(Optional.of(fullProtocal[1]));
+//            builder.withNetworkTransport(Optional.of("tcp"));
+//
+//            monitor.getTl_mcpStatsBuilder().set(builder);
+//        });
+//    }
+//
+//    public void atExceptionReturn(Throwable t) {
+//        mcpMonitoringService.call(monitor -> {
+//            if (t instanceof Throwable) {
+//                McpStatAttributes.Builder builder = monitor.getTl_mcpStatsBuilder().get();
+//                if (builder != null) {
+//                    builder.withErrorType(Optional.of(t.getCause().getMessage()));
+//                }
+//            } else if (t instanceof JSONRPCException) {
+//                JSONRPCException j = (JSONRPCException) t;
+//                McpStatAttributes.Builder builder = monitor.getTl_mcpStatsBuilder().get();
+//                if (builder != null) {
+//                    builder.withErrorType(Optional.of(j.getCause().getMessage()));
+//                    builder.withRpcResponseStatusCode(Optional.of(String.valueOf(j.getErrorCode().getCode())));
+//                }
+//            }
+//        });
+//    }
+//
+//    public void atExit(McpTransport transport) {
+//        mcpMonitoringService.call(monitor -> {
+//            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                Tr.debug(tc, "starting atSendResponseReturn probbe");
+//            }
+//
+//            long elapsedNanos = System.nanoTime() - monitor.getTl_startNanos().get();
+//            McpStatAttributes.Builder retrievedMcpStatAttributesBuilder = monitor.getTl_mcpStatsBuilder().get();
+//
+//            if (retrievedMcpStatAttributesBuilder == null) {
+//                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+//                    Tr.debug(tc, "Unable to retrieve McpStatAttributes. Unable to record time.");
+//                }
+//                return;
+//            }
+//            monitor.updateMcpStatDuration(retrievedMcpStatAttributesBuilder, Duration.ofNanos(elapsedNanos), null);
+//        });
+//
+//    }}
 
     /*
      * Delete method for deleting sessionId
