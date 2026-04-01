@@ -59,6 +59,7 @@ import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
+import io.openliberty.mcp.internal.fat.tool.TelemetryTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
@@ -95,6 +96,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
                 StatelessModeTest.class,
+                TelemetryTest.class,
                 ToolErrorHandlingTest.class,
                 ToolManagerTest.class,
                 ToolTest.class,
