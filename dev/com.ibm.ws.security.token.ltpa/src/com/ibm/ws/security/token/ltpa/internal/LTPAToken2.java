@@ -48,6 +48,7 @@ public class LTPAToken2 implements Token, Serializable {
 
     private static final long serialVersionUID = 1L;
     private static final String DELIM = "%";
+    private static final long MILLIS_PER_MINUTE = 60 * 1000;
     private static final MessageDigest md1JCE;
     private static final MessageDigest md2JCE;
     private static final Object lockObj1;
@@ -194,7 +195,7 @@ public class LTPAToken2 implements Token, Serializable {
                          long refreshThresholdInMinutes) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.entry(this, tc, "call by the clone() method, userData: " + userdata);
-            Tr.debug(this, tc, "expire: " + new Date(expirationInMinutes * 60 * 1000));
+            Tr.debug(this, tc, "expire: " + new Date(expirationInMinutes * MILLIS_PER_MINUTE));
         }
         this.signature = null;
         this.encryptedBytes = null;
@@ -490,7 +491,7 @@ public class LTPAToken2 implements Token, Serializable {
         if (maxLifetimeInMinutes > 0 && maxLifetimeInMilliseconds > 0) {
             long currentTime = System.currentTimeMillis();
             if (currentTime > maxLifetimeInMilliseconds) {
-                long creationTime = maxLifetimeInMilliseconds - (maxLifetimeInMinutes * 60 * 1000);
+                long creationTime = maxLifetimeInMilliseconds - (maxLifetimeInMinutes * MILLIS_PER_MINUTE);
                 String msg = "Token has exceeded maximum lifetime: " +
                              "created at " + new Date(creationTime) +
                              ", max lifetime " + maxLifetimeInMinutes + " minutes, " +
@@ -648,7 +649,7 @@ public class LTPAToken2 implements Token, Serializable {
      */
     private final void setExpiration(long expirationInMinutes) {
 
-        expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * 60 * 1000;
+        expirationInMilliseconds = System.currentTimeMillis() + expirationInMinutes * MILLIS_PER_MINUTE;
 
 //        if (expirationInMilliseconds > maxLifetimeInMilliseconds) {
 //            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -688,7 +689,7 @@ public class LTPAToken2 implements Token, Serializable {
     }
 
     private final void setmaxLifetime(long maxLifetimeInMinutes) {
-        maxLifetimeInMilliseconds = System.currentTimeMillis() + maxLifetimeInMinutes * 60 * 1000;
+        maxLifetimeInMilliseconds = System.currentTimeMillis() + maxLifetimeInMinutes * MILLIS_PER_MINUTE;
     }
 
     /**
@@ -732,7 +733,7 @@ public class LTPAToken2 implements Token, Serializable {
     }
 
     private long getRefreshThreshold() {
-        return refreshThresholdInMinutes * 60 * 1000;
+        return refreshThresholdInMinutes * MILLIS_PER_MINUTE;
     }
 
 //    private double getRefreshThresholdPercentage() {

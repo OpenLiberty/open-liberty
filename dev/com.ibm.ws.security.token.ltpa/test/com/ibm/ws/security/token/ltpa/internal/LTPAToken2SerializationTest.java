@@ -166,7 +166,7 @@ public class LTPAToken2SerializationTest {
          * Create LTPAToken2
          */
         LTPAToken2 object = null;
-        object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, 1L, 0, null, 0);
+        object = new LTPAToken2(test, sharedKey, ltpaPrivateKey, ltpaPublicKey, 1L, 0, 0, 0);
 
         /*
          * Set expiration via reflection so we don't need to update this test constantly for the token verification to pass. If the test fails validation, there may be something

@@ -15,9 +15,8 @@ package com.ibm.ws.security.authentication.internal;
 import java.security.cert.X509Certificate;
 import java.util.Hashtable;
 import java.util.Map;
-import java.util.concurrent.locks.ReentrantLock;
-
 import java.util.Set;
+import java.util.concurrent.locks.ReentrantLock;
 
 import javax.security.auth.Subject;
 import javax.security.auth.callback.CallbackHandler;
@@ -36,7 +35,6 @@ import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.security.authentication.AuthenticationConstants;
-import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.ws.security.authentication.AuthenticationData;
 import com.ibm.ws.security.authentication.AuthenticationException;
 import com.ibm.ws.security.authentication.AuthenticationService;
@@ -57,8 +55,10 @@ import com.ibm.ws.security.jwtsso.token.proxy.JwtSSOTokenHelper;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
+
 import io.openliberty.checkpoint.spi.CheckpointPhase;
 
 @TraceOptions(messageBundle = "com.ibm.ws.security.authentication.internal.resources.AuthenticationMessages")
@@ -190,7 +190,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (useDisplayNameForSecurityNameState != null) {
             useDisplayNameForSecurityName = useDisplayNameForSecurityNameState;
         }
-	
+
         Boolean ignoreCustomCacheKeyState = (Boolean) props.get(CFG_IGNORE_CUSTOM_CACHE_KEY);
         if (ignoreCustomCacheKeyState != null) {
             ignoreCustomCacheKey = ignoreCustomCacheKeyState;
@@ -387,7 +387,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectInAuthCache(AuthenticationData authenticationData, Subject partialSubject,
                                            AuthenticationData hashtableAuthData) throws AuthenticationException {
         Subject subject = null;
-        
+
         AuthCacheService authCacheService = getAuthCacheService();
         if (authCacheService != null && authenticationData != null) {
             String jwtSSOToken = (String) authenticationData.get(AuthenticationData.JWT_TOKEN);
@@ -418,7 +418,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     }
                 }
             }
-            
+
             // Check if the cached subject's LTPA token needs refresh
             if (subject != null && shouldRefreshCachedToken(subject)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -429,7 +429,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         }
         return subject;
     }
-    
+
     /**
      * Checks if the LTPA token in the cached Subject needs to be refreshed based on
      * refreshThreshold, expiration, and maxLifetime settings.
@@ -441,29 +441,29 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         if (subject == null) {
             return false;
         }
-        
+
         try {
             // Extract WSCredential from Subject
             Set<WSCredential> wsCredentials = subject.getPublicCredentials(WSCredential.class);
             if (wsCredentials == null || wsCredentials.isEmpty()) {
                 return false;
             }
-            
+
             WSCredential wsCredential = wsCredentials.iterator().next();
             if (wsCredential == null) {
                 return false;
             }
-            
+
             // Get the credential token (LTPA token bytes)
-            byte[] tokenBytes = wsCredential.getCredentialToken();
-            if (tokenBytes == null || tokenBytes.length == 0) {
-                return false;
-            }
-            
+            //byte[] tokenBytes = wsCredential.getCredentialToken();
+            //if (tokenBytes == null || tokenBytes.length == 0) {
+            //    return false;
+            //}
+
             // Get expiration time from WSCredential
             long expiration = wsCredential.getExpiration();
             long currentTime = System.currentTimeMillis();
-            
+
             // Check if token is expired
             if (currentTime >= expiration) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -471,33 +471,38 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                 }
                 return true;
             }
-            
+
             // Get LTPA configuration to check refresh threshold
             LTPAConfiguration ltpaConfig = ltpaConfigurationRef.getService();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "ltpaConfig: " + ltpaConfig);
+            }
             if (ltpaConfig != null) {
                 long refreshThresholdInMinutes = ltpaConfig.getRefreshThreshold();
                 if (refreshThresholdInMinutes > 0) {
                     long refreshThresholdInMillis = refreshThresholdInMinutes * 60 * 1000;
                     long timeRemaining = expiration - currentTime;
-                    
+
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Checking refresh threshold: timeRemaining=" + timeRemaining +
-                                    "ms, threshold=" + refreshThresholdInMillis + "ms");
+                                     "ms, threshold=" + refreshThresholdInMillis + "ms");
                     }
-                    
+
                     // Check if token is within refresh threshold
                     if (timeRemaining <= refreshThresholdInMillis) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                             Tr.debug(tc, "Token needs refresh: remaining time (" + timeRemaining +
-                                        "ms) <= threshold (" + refreshThresholdInMillis + "ms)");
+                                         "ms) <= threshold (" + refreshThresholdInMillis + "ms)");
                         }
                         return true;
                     }
                 }
+            } else {
+                Tr.warning(tc, "LTPA configuration not available, token refresh disabled");
             }
-            
+
             return false;
-            
+
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Error checking if cached token needs refresh", e);
@@ -511,13 +516,12 @@ public class AuthenticationServiceImpl implements AuthenticationService {
         return authCacheService.getSubject(certHash);
     }
 
-
     /**
      * Finds a Subject based on the provided token contents.
      *
-     * @param authCacheService The authentication cache service used to retrieve subjects.
-     * @param token The token string to search for in the cache.
-     * @param ssoTokenBytes The byte array representation of the Single Sign-On (SSO) token.
+     * @param authCacheService   The authentication cache service used to retrieve subjects.
+     * @param token              The token string to search for in the cache.
+     * @param ssoTokenBytes      The byte array representation of the Single Sign-On (SSO) token.
      * @param authenticationData The authentication data containing the authentication mechanism OID.
      * @return The Subject associated with the provided token, or null if not found.
      * @throws AuthenticationException If the token is invalid or the custom cache key is missing.
@@ -555,14 +559,13 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             if (customCacheKey != null) {
                 subject = authCacheService.getSubject(customCacheKey);
                 if (subject == null) {
-		    if (ignoreCustomCacheKey()) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			    Tr.debug(tc, "ignoreCustomCacheKey is set to true. Continue authentication without re-challenging");
-			}			
-		    }
-		    else {
-			throw new AuthenticationException("Custom cache key missed authentication cache. Need to re-challenge the user to login again.");			
-		    }
+                    if (ignoreCustomCacheKey()) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "ignoreCustomCacheKey is set to true. Continue authentication without re-challenging");
+                        }
+                    } else {
+                        throw new AuthenticationException("Custom cache key missed authentication cache. Need to re-challenge the user to login again.");
+                    }
                 }
             }
         }
@@ -572,7 +575,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private Subject findSubjectByUseridAndPassword(AuthCacheService authCacheService, String userid, @Sensitive String password) {
         return authCacheService.getSubject(BasicAuthCacheKeyProvider.createLookupKey(getRealm(), userid, password));
     }
-
 
 /*
  * We only create cache key (CustomCacheKeyProvider.java) for hashtable login so there is no need to

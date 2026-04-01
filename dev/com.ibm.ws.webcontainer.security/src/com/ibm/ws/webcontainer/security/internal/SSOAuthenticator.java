@@ -12,6 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.internal;
 
+import java.security.MessageDigest;
 import java.util.HashMap;
 
 import javax.security.auth.Subject;
@@ -183,8 +184,12 @@ public class SSOAuthenticator implements WebAuthenticator {
             return false;
         }
 
+        // Use constant-time comparison to prevent timing attacks
+        byte[] originalBytes = originalToken.getBytes();
+        byte[] newBytes = newToken.getBytes();
+        
         // Compare the tokens - if they're different, the token was refreshed
-        return !originalToken.equals(newToken);
+        return !MessageDigest.isEqual(originalBytes, newBytes);
     }
 
     /**

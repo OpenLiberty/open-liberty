@@ -57,6 +57,7 @@ Service-Component: \
     authCacheService=com.ibm.ws.security.authentication.cache.AuthCacheService; \
     userRegistryService=com.ibm.ws.security.registry.UserRegistryService; \
     delegationProvider=com.ibm.ws.security.delegation.DelegationProvider; \
+    ltpaConfiguration=com.ibm.ws.security.token.ltpa.LTPAConfiguration; \
     defaultDelegationProvider=com.ibm.ws.security.delegation.DefaultDelegationProvider; \
     credentialsService=com.ibm.ws.security.credentials.CredentialsService; \
     optional:='delegationProvider,defaultDelegationProvider,credentialsService'; \
