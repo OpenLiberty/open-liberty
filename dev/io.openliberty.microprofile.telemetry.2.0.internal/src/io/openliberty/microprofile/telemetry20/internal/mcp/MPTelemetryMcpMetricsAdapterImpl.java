@@ -149,7 +149,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         }
 
         String genAiToolName = mcpStatAttributes.getGenAiToolName();
-        if (genAiPromptName != null) {
+        if (genAiToolName != null) {
             attributesBuilder.put(GEN_AI_TOOL_NAME, genAiToolName);
         }
 

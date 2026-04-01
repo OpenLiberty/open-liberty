@@ -1,0 +1,13 @@
+<server description="Sample Liberty server with Telemetry Enabled">
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcpServer-1.0</feature>
+    <feature>mpTelemetry-2.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml" />
+  
+</server>

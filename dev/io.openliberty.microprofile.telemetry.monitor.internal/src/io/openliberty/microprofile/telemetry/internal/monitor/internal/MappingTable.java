@@ -106,10 +106,10 @@ public class MappingTable {
 						LONG_UP_DOWN_COUNTER, CONNECTION_UNIT, "FreeConnectionCount", null, CONNECTIONPOOL_TAG_NAME }};
 		mappingTable.put("WebSphere:type=ConnectionPoolStats,name=*", connectionPoolTable);
 		
-		String[][] mcpTable = new String[][] {
-			{ "mcp.tool.call.total", "mcp.tool.call.total.description", LONG_COUNTER, TOOL_CALL_UNIT,
-					"ToolCallCount", null, MCP_TOOL_NAME }};
-	mappingTable.put("WebSphere:type=McpStats,name=*", mcpTable);
+//		String[][] mcpTable = new String[][] {
+//			{ "mcp.tool.call.total", "mcp.tool.call.total.description", LONG_COUNTER, TOOL_CALL_UNIT,
+//					"ToolCallCount", null, MCP_TOOL_NAME }};
+//	mappingTable.put("WebSphere:type=McpStats,name=*", mcpTable);
 
 	}
 
