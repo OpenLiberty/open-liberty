@@ -66,10 +66,11 @@ public class ExecEnabledDBStoreConfigUpdateTest {
     public static void afterSuite() throws Exception {
     	// CWWKC1556W: task deferred until application available; application not yet started after update
     	// J2CA0024E: Method rollback, within transaction; configuration update during execution
+        // J2CA0056I: Connection Manager received a connection error in between(Derby connection issues during config updates)
     	// J2CA0081E: Method cleanup failed; configuration update during execution already destroyed connection
         if (server != null) {
             if (server.isStarted())
-                server.stopServer("CWWKC1556W", "J2CA0024E", "J2CA0081E:.*cleanup");
+                server.stopServer("CWWKC1556W", "J2CA0024E","J2CA0056I", "J2CA0081E:.*cleanup");
             server.updateServerConfiguration(originalConfigForAfterSuite);
         }
     }

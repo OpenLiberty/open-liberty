@@ -364,39 +364,8 @@ public class DatabaseStoreImpl implements DatabaseStore {
                 boolean dropTables = (Boolean) this.properties.get("dropTables");
                 // Line 366 in DatabaseStoreImpl.java
                 if (createTables || dropTables) {
-                    CheckpointPhase.onRestore(() -> {
-                        
-                        // Configurable delay to allow database authentication provider to initialize
-                        // after checkpoint/restore. Default is 1000ms (1 second).
-                        // Can be configured via: -Dcom.ibm.ws.persistence.checkpoint.delay=<milliseconds>
-                        // Set to 0 to disable delay.
-                        long delayMs = Long.getLong("com.ibm.ws.persistence.checkpoint.delay", 1000L);
-                        
-                        if (delayMs > 0) {
-                            if (trace && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Waiting " + delayMs + "ms for database authentication provider " +
-                                        "to initialize after checkpoint/restore");
-                            }
-                            
-                            try {
-                                Thread.sleep(delayMs);
-                            } catch (InterruptedException e) {
-                                Thread.currentThread().interrupt();
-                                if (trace && tc.isDebugEnabled()) {
-                                    Tr.debug(tc, "Interrupted while waiting for database initialization, " +
-                                            "proceeding with table operations");
-                                }
-                            }
-                            
-                            if (trace && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Database initialization delay complete, proceeding with table operations");
-                            }
-                        }
-                        
-                        dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables);
-                    });
+                    CheckpointPhase.onRestore(() -> dropAndOrCreateTables(persistenceServiceUnit, createTables, dropTables));
                 }
-
             }
 
             if (deactivated) {
