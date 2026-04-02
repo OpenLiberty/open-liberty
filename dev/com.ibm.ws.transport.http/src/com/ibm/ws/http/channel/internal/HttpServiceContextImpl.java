@@ -2332,6 +2332,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 Tr.debug(tc, "sendHeaders: Adding close connection header due to keep alive disabled or exceeded number of maximum persistent requests");
             }
             getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
+            setPersistent(false);
+        }
+        // If status code is an error code, then we need to set the close value for persistence
+        else if (getResponse().getStatusCode().isErrorCode()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Error status code disabling persistence.");
+            }
+            getResponse().setHeader(HttpHeaderKeys.HDR_CONNECTION,  ConnectionValues.CLOSE.getName());
+            setPersistent(false);
         }
         if (HttpUtil.isContentLengthSet(response)) {
             this.nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(HttpUtil.getContentLength(response));
@@ -3094,7 +3103,14 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         Http2Connection connection = handler.connection();
 
         int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
-        int currentStreamId = nettyRequest.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+        int parsedStreamId = 0;
+        try {
+            parsedStreamId = Integer.parseInt(nettyRequest.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text()));
+        } catch (NumberFormatException e) {
+            // Ignore this exception since the currentStreamId will be left the same
+        }
+
+        final int currentStreamId = parsedStreamId;
 
         Http2Headers headers = new DefaultHttp2Headers().clear();
         String scheme = "https";

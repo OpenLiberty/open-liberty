@@ -813,7 +813,14 @@ public class NettyRequestMessage extends NettyBaseMessage implements HttpRequest
         Http2Connection connection = handler.connection();
 
         int nextPromisedStreamId = connection.local().incrementAndGetNextStreamId();
-        int currentStreamId = this.request.headers().getInt(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 0);
+        int parsedStreamId = 0;
+        try {
+            parsedStreamId = Integer.parseInt(this.request.headers().get(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text()));
+        } catch (NumberFormatException e) {
+            // Ignore this exception since the currentStreamId will be left the same
+        }
+
+        final int currentStreamId = parsedStreamId;
 
         Http2Headers headers = new DefaultHttp2Headers().clear();
         String scheme = "https";
