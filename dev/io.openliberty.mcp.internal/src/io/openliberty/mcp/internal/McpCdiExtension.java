@@ -144,8 +144,7 @@ public class McpCdiExtension implements Extension {
     /**
      * Registers all discovered encoder beans to their appropriate encoder registries.
      *
-     * <p>This method handles encoder registration for multi-module EAR applications where
-     * a single CDI extension instance discovers encoders from all modules (WARs, EAR/lib).
+     * <p>This method handles encoder registration.
      * Encoders must be routed to the correct registry based on their module of origin.
      *
      * <p><b>Encoder Types and Scopes:</b>
@@ -155,13 +154,6 @@ public class McpCdiExtension implements Extension {
      * <li><b>Module encoders</b> - Beans from specific WAR or EJB modules.
      * Registered to their module's registry and isolated from other modules.</li>
      * </ul>
-     *
-     * <p><b>Registration Strategy:</b>
-     * <ol>
-     * <li>Groups encoders by module during discovery to enable batch registration</li>
-     * <li>Registers global encoders to the Global registry</li>
-     * <li>Registers each module's complete encoder set to its specific registry in a single call</li>
-     * </ol>
      *
      *
      * @param beanManager The CDI BeanManager for obtaining encoder bean references
@@ -410,9 +402,6 @@ public class McpCdiExtension implements Extension {
     /**
      * Determines the J2EE module (J2EEName) that owns a CDI bean, or null if the bean has no module association.
      *
-     * <p>This is a general-purpose utility method that works for any CDI bean type (encoders or converters etc.).
-     * It uses the OSGi CDI_SERVICE to reliably determine module ownership based on the bean's class loader,
-     * which remains stable throughout the CDI lifecycle.
      *
      * <p><b>Why OSGi CDI_SERVICE works vs ComponentMetaDataAccessorImpl (thread-local):</b>
      * <ul>

@@ -28,16 +28,18 @@ public class McpCdiExtensionMetadata implements CDIExtensionMetadata {
      * Each module gets its own instance of McpCdiExtension
      * This is how McpCdiExtension discovers tools and encoders in each module
      *
-     * @return
+     * @return Set containing McpCdiExtension.class - the CDI extension that will be instantiated per module
      */
     @Override
     public Set<Class<? extends Extension>> getExtensions() {
         return Set.of(McpCdiExtension.class);
     }
 
-    /*
+    /**
      * Tells Liberty's CDI runtime: "Make these classes available as CDI beans in every module"
      * These beans are automatically discovered and injectable in all modules
+     *
+     * @return Set of classes that will be registered as CDI beans in every module
      */
     @Override
     public Set<Class<?>> getBeanClasses() {
