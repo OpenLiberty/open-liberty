@@ -16,6 +16,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.Writer;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -38,6 +39,7 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.vulnerability.LeakedPasswordChecker;
@@ -105,6 +107,17 @@ public class LTPAKeyPasswordTests {
             LTPA_KEYS_MYLTPAKEYSPASSWORD = FIPS140_3_FOLDER + LTPA_KEYS_MYLTPAKEYSPASSWORD;
             LTPA_KEYS_MYKEYSTOREPASSWORD = FIPS140_3_FOLDER + LTPA_KEYS_MYKEYSTOREPASSWORD;
         }
+
+        // Transform the application for EE9+ that was copied
+        // from com.ibm.ws.webcontainer.security_test.servlets.
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(Paths.get(server.getServerRoot() + "/apps/formlogin.war"));
+        }
+
+        // Now that this test is repeated and these clients are static this is necessary
+        // to avoid "Manager is shut down.". The @AfterClass method is executed at the end of each repeat
+        // which calls the shutdown() method on the ConnectionManager.
+        formLoginClient.resetClientState();
 
         Log.info(thisClass, "beforeClass()", "exiting");
     }
