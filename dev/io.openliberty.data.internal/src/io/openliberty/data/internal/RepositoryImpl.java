@@ -74,6 +74,11 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     new ThreadLocal<>();
 
     /**
+     * Creates EntityManager instances.
+     */
+    private final EntityManagerBuilder builder;
+
+    /**
      * Indicates if the bean for the repository has been disposed.
      */
     private final AtomicBoolean isDisposed = new AtomicBoolean();
@@ -125,6 +130,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                           Class<R> repositoryInterface,
                           Class<?> primaryEntityClass,
                           Map<Class<?>, List<QueryInfo>> queriesPerEntityClass) {
+        this.builder = builder;
 
         // EntityManagerBuilder implementations guarantee that the future
         // in the following map will be completed even if an error occurs
@@ -280,6 +286,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
      * jakarta.persistence.PersistenceException (and subclasses).
      *
      * @param original exception to possibly replace.
+     * @parma emb      entity manager builder.
      * @return exception to replace with, if any. Otherwise, the original.
      */
     @Trivial
@@ -384,14 +391,12 @@ public class RepositoryImpl<R> implements InvocationHandler {
         Object resource = null;
         Class<?> type = method.getReturnType();
         if (EntityManager.class.equals(type))
-            resource = primaryEntityInfoFuture.join().builder.createEntityManager();
+            resource = builder.createEntityManager();
         else if (DataSource.class.equals(type))
-            resource = primaryEntityInfoFuture.join().builder //
-                            .getDataSource(method, repositoryInterface);
+            resource = builder.getDataSource(method, repositoryInterface);
         else if (Connection.class.equals(type))
             try {
-                resource = primaryEntityInfoFuture.join().builder //
-                                .getDataSource(method, repositoryInterface) //
+                resource = builder.getDataSource(method, repositoryInterface) //
                                 .getConnection();
             } catch (SQLException x) {
                 throw new DataConnectionException(x);
@@ -452,7 +457,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
         CompletableFuture<QueryInfo> queryInfoFuture = queries.get(method);
         boolean isDefaultMethod = false;
-        EntityManager em = null;
 
         if (queryInfoFuture == null)
             if (method.isDefault()) {
@@ -479,8 +483,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                '.' + method.getName(),
                      provider.loggable(repositoryInterface, method, args));
 
-        QueryInfo queryInfo = null;
-
+        EntityManager em = null;
         try {
             if (isDisposed.get())
                 throw exc(IllegalStateException.class,
@@ -528,12 +531,15 @@ public class RepositoryImpl<R> implements InvocationHandler {
             boolean failed = true;
             QueryType queryType = null;
             boolean startedTransaction = false;
+            boolean stateful = false;
 
             try {
-                queryInfo = queryInfoFuture.join();
+                QueryInfo queryInfo = queryInfoFuture.join();
 
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, queryInfo.toString());
+
+                stateful = queryInfo.producer.stateful();
 
                 if (queryInfo.validateParams)
                     validator.validateParameters(proxy, method, args);
@@ -552,7 +558,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                 }
 
                 if (queryType != RESOURCE_ACCESS)
-                    em = queryInfo.entityInfo.builder.createEntityManager();
+                    em = builder.createEntityManager();
 
                 returnValue = switch (queryType) {
                     case FIND, FIND_AND_DELETE -> queryInfo.find(em, txStatus, args);
@@ -588,9 +594,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             provider.tranMgr.commit();
                         }
                     } else {
-                        boolean detach;
-                        detach = em != null &&
-                                 queryType.detachEntities(queryInfo.producer.stateful());
+                        boolean detach = em != null &&
+                                         queryType.detachEntities(stateful);
                         if (Status.STATUS_ACTIVE == provider.tranMgr.getStatus()) {
                             if (failed) {
                                 if (trace && tc.isDebugEnabled())
@@ -601,11 +606,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                                 if (trace && tc.isDebugEnabled())
                                     Tr.debug(this, tc, "flush");
                                 em.flush();
-                                if (queryInfo.entityInfo != null) {
-                                    if (trace && tc.isDebugEnabled())
-                                        Tr.debug(this, tc, "clear");
-                                    em.clear();
-                                }
+                                if (trace && tc.isDebugEnabled())
+                                    Tr.debug(this, tc, "clear");
+                                em.clear();
                             }
                         } else if (detach) {
                             if (trace && tc.isDebugEnabled())
@@ -638,10 +641,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
             return returnValue;
         } catch (Throwable x) {
             if (!isDefaultMethod && x instanceof Exception)
-                x = failure((Exception) x,
-                            queryInfo == null || queryInfo.entityInfo == null //
-                                            ? null //
-                                            : queryInfo.entityInfo.builder);
+                x = failure((Exception) x, builder);
             if (trace && tc.isEntryEnabled())
                 Tr.exit(this, tc, "invoke " + repositoryInterface.getSimpleName() +
                                   '.' + method.getName(),
