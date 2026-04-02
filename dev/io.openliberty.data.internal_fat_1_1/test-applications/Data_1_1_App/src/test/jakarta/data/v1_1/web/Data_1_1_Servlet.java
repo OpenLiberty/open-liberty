@@ -427,6 +427,49 @@ public class Data_1_1_Servlet extends FATServlet {
                                      .collect(Collectors.toList()));
     }
 
+    /**
+     * Use a stateless repository to find an entity. Modify the entity. Update the
+     * entity. Use a detach operation to make the entity unmanaged. Make additional
+     * updates to the entity. Verify that only the updates made before the detach
+     * operation are written to the database.
+     */
+    @Test
+    public void testDetach() throws Exception {
+
+        // TODO use stateful method to persist entities
+        // Populate with 5/23.
+        // Ensure deletion in the finally block.
+        fractions.supply(List.of(Fraction.of(5, 23)));
+        try {
+            System.out.println("Fetch 5/23 to modify, detach, modify, and commit");
+
+            tx.begin();
+            Fraction f = statefulFractions.fetch(5, 23).orElseThrow();
+            statefulFractions.detach(f);
+            f.reduced = false;
+            f.decimal = Decimal.of(4, 23);
+            tx.commit();
+
+            f = statefulFractions.fetch(5, 23).orElseThrow();
+
+            // modifications from after detach should not be persisted
+            assertEquals(true,
+                         f.reduced);
+
+            assertEquals(BigDecimal.valueOf(2173, 4), // first 4 decimals of 5/23
+                         f.decimal.truncated());
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // TODO use stateful method to remove entities
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
+    }
+
     @Test
     public void testInheritanceFromAbstractEntity() {
         ads.removeBySponsorIn(List.of("Open Liberty",

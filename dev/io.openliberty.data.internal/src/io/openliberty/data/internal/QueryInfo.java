@@ -60,7 +60,6 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.function.BiFunction;
 import java.util.stream.BaseStream;
-import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
@@ -1195,7 +1194,7 @@ public abstract class QueryInfo {
     @Trivial
     Object delete(Object arg, EntityManager em) throws Exception {
         arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                        ? ((Stream<?>) arg).sequential().toList() //
                         : arg;
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -1315,6 +1314,39 @@ public abstract class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "deleteOne", numDeleted);
         return numDeleted;
+    }
+
+    /**
+     * Detaches entities from the persistence context.
+     *
+     * @param arg the entity or array/Iterable/Stream of entity
+     * @param em  the entity manager
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    Void detach(Object arg, EntityManager em) throws Exception {
+        arg = arg instanceof Stream //
+                        ? ((Stream<?>) arg).sequential().toList() //
+                        : arg;
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "detach", loggable(arg));
+
+        if (arg instanceof Iterable) {
+            for (Object e : ((Iterable<?>) arg))
+                em.detach(e);
+        } else if (entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            for (int i = 0; i < length; i++)
+                em.detach(Array.get(arg, i));
+        } else {
+            em.detach(arg);
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "detach");
+        return null;
     }
 
     /**
@@ -1794,7 +1826,7 @@ public abstract class QueryInfo {
                 results.add(findAndUpdateOne(Array.get(arg, i), em));
         } else {
             arg = arg instanceof Stream //
-                            ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                            ? ((Stream<?>) arg).sequential().toList() //
                             : arg;
 
             results = new ArrayList<>();
@@ -3827,7 +3859,7 @@ public abstract class QueryInfo {
     @Trivial
     Object insert(Object arg, EntityManager em) throws Exception {
         arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                        ? ((Stream<?>) arg).sequential().toList() //
                         : arg;
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -4929,7 +4961,7 @@ public abstract class QueryInfo {
     @Trivial // avoid logging customer data
     Object save(Object arg, EntityManager em) throws Exception {
         arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                        ? ((Stream<?>) arg).sequential().toList() //
                         : arg;
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();
@@ -5522,7 +5554,7 @@ public abstract class QueryInfo {
     @Trivial
     Object update(Object arg, EntityManager em) throws Exception {
         arg = arg instanceof Stream //
-                        ? ((Stream<?>) arg).sequential().collect(Collectors.toList()) //
+                        ? ((Stream<?>) arg).sequential().toList() //
                         : arg;
 
         final boolean trace = TraceComponent.isAnyTracingEnabled();

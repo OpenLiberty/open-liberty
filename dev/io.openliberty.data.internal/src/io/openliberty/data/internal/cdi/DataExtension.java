@@ -222,7 +222,7 @@ public class DataExtension implements Extension {
                 (EntityManager.class.equals(returnType)
                  || DataSource.class.equals(returnType)
                  || Connection.class.equals(returnType))) {
-                // TODO use compat to obtain above types, and identity stateless from EntityAgent type
+                // TODO use compat to obtain above types, and identify stateless from EntityAgent type
                 QueryInfo queryInfo = provider.compat //
                                 .createQueryInfo(producer, //
                                                  repositoryInterface, //
@@ -529,9 +529,17 @@ public class DataExtension implements Extension {
             producer.setPrimaryEntityClass(primaryEntityClass);
         }
 
-        if (stateful == Boolean.TRUE)
+        if (stateful == Boolean.TRUE) {
             // Repository methods indicate a stateful repository
             producer.setStateful();
+
+            for (Class<?> c : queriesPerEntity.keySet())
+                if (c.isRecord()) // TODO NLS
+                    throw new UnsupportedOperationException("The " + c.getName() +
+                                                            " Java record type cannot" +
+                                                            " be an entity class for a" +
+                                                            " stateful repository.");
+        }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(this, tc,
