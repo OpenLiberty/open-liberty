@@ -100,7 +100,8 @@ public class JASPIBasicAuthenticationTest extends JASPITestBase {
                                     .removeFeatures(EE8_FEATURES)
                                     .removeFeatures(EE9_FEATURES)
                                     .removeFeatures(EE10_FEATURES)
-                                    .addFeatures(EE11_FEATURES));
+                                    .addFeatures(EE11_FEATURES)
+                                    .fullFATOnly());
 
     public JASPIBasicAuthenticationTest() {
         super(server, logClass);
