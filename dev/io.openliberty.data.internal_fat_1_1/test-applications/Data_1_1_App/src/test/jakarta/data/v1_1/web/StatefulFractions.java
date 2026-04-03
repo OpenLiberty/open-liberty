@@ -20,6 +20,7 @@ import jakarta.data.repository.Find;
 import jakarta.data.repository.Is;
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.stateful.Detach;
+import jakarta.persistence.EntityManager;
 
 /**
  * Stateful repository for the Fraction entity
@@ -34,4 +35,10 @@ public interface StatefulFractions {
     Optional<Fraction> fetch//
     (@By(_Fraction.NUMERATOR) @Is(EqualTo.class) long num,
      @By(_Fraction.DENOMINATOR) @Is long den);
+
+    default void flush() {
+        manager().flush();
+    }
+
+    EntityManager manager();
 }

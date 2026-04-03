@@ -428,10 +428,10 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
-     * Use a stateless repository to find an entity. Modify the entity. Update the
-     * entity. Use a detach operation to make the entity unmanaged. Make additional
-     * updates to the entity. Verify that only the updates made before the detach
-     * operation are written to the database.
+     * Use a stateful repository to find an entity. Use a detach operation to
+     * make the entity unmanaged. Make updates to the entity. After committing,
+     * verify that updates made after the detach operation are not written to
+     * the database.
      */
     @Test
     public void testDetach() throws Exception {
@@ -441,7 +441,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // Ensure deletion in the finally block.
         fractions.supply(List.of(Fraction.of(5, 23)));
         try {
-            System.out.println("Fetch 5/23 to modify, detach, modify, and commit");
+            System.out.println("Fetch 5/23 to detach, modify, and commit");
 
             tx.begin();
             Fraction f = statefulFractions.fetch(5, 23).orElseThrow();
@@ -1576,6 +1576,56 @@ public class Data_1_1_Servlet extends FATServlet {
                                      .sorted()
                                      .limit(15)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a stateful repository to find an entity. Make updates to the entity.
+     * Obtain the EntityManager via a resource accessor method and use it to
+     * flush changes to the database. Then use a repository detach operation to
+     * make the entity unmanaged and make additional changes to the entity.
+     * After committing, verify that only the updates from before the flush
+     * are written to the database.
+     */
+    @Test
+    public void testStatefulResourceAccessor() throws Exception {
+
+        // TODO use stateful method to persist entities
+        // Populate with 6/23.
+        // Ensure deletion in the finally block.
+        fractions.supply(List.of(Fraction.of(6, 23)));
+        try {
+            System.out.println("Fetch 6/23 to modify, flush, detach, modify," +
+                               " and commit");
+
+            tx.begin();
+            Fraction f = statefulFractions.fetch(6, 23).orElseThrow();
+            f.reduced = false;
+            statefulFractions.flush(); // via resource accessor
+            statefulFractions.detach(f);
+            f.decimal = Decimal.of(3, 23);
+            tx.commit();
+
+            f = statefulFractions.fetch(6, 23).orElseThrow();
+
+            // modifications from before flush should be persisted
+
+            assertEquals(false,
+                         f.reduced);
+
+            // modifications from after detach should not be persisted
+
+            assertEquals(BigDecimal.valueOf(2608, 4), // first 4 decimals of 6/23
+                         f.decimal.truncated());
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // TODO use stateful method to remove entities
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
     }
 
 }

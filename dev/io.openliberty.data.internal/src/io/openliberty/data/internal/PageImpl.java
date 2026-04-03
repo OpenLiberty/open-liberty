@@ -211,6 +211,8 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.jpqlCount,
                       queryInfo.jpql);
 
+        // TODO share EntityManager from constructor if stateful and still
+        // in the same transaction
         EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
         try {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
