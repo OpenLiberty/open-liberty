@@ -3589,12 +3589,6 @@ public class LibertyServer implements LogMonitorClient {
 
                                                      "HungRequestTimingServer", //com.ibm.ws.request.timing.hung_fat
 
-                                                     "com.ibm.ws.rest.handler.config.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.openapi.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.audit.feature.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.appdef.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.jca.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.jms.fat", //com.ibm.ws.rest.handler.config_fat
                                                      "com.ibm.ws.rest.handler.validator.jdbc.fat", //com.ibm.ws.rest.handler.validator_fat
                                                      "com.ibm.ws.rest.handler.validator.jca.fat", //com.ibm.ws.rest.handler.validator_fat
                                                      "com.ibm.ws.rest.handler.validator.jms.fat", //com.ibm.ws.rest.handler.validator_fat
