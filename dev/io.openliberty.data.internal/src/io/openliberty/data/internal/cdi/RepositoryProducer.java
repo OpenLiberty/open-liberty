@@ -284,6 +284,12 @@ public class RepositoryProducer<R> implements Producer<R>, ProducerFactory<R>, B
                        (primaryEntityClass == null ? null : primaryEntityClass.getName()));
         writer.println(indent + "  intercepted: " + intercepted);
 
+        if (repositoryImpl != null) {
+            writer.println();
+            writer.println(indent + "  Most recently created bean:");
+            repositoryImpl.introspect(writer, indent + "  ");
+        }
+
         writer.println();
         writer.println(Util.toString(repositoryInterface, indent + "  "));
 

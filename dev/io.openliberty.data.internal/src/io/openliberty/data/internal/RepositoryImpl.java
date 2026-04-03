@@ -15,6 +15,7 @@ package io.openliberty.data.internal;
 import static io.openliberty.data.internal.QueryType.RESOURCE_ACCESS;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 
+import java.io.PrintWriter;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.sql.Connection;
@@ -491,6 +492,28 @@ public class RepositoryImpl<R> implements InvocationHandler {
         @SuppressWarnings("unchecked")
         T t = (T) resource;
         return t;
+    }
+
+    /**
+     * Write information about this instance to the introspection file for
+     * Jakarta Data.
+     *
+     * @param writer writes to the introspection file.
+     * @param indent indentation for lines.
+     */
+    @Trivial
+    public void introspect(PrintWriter writer, String indent) {
+
+        writer.println(indent + "RepositoryImpl@" + Integer.toHexString(hashCode()));
+        writer.println(indent + "  builder: " + builder);
+        writer.println(indent + "  isDisposed? " + isDisposed);
+        writer.println(indent + "  primary entity future: " + primaryEntityInfoFuture);
+        writer.println(indent + "  provider: " + provider);
+        writer.println(indent + "  repository: " + repositoryInterface.getName());
+        writer.println(indent + "  validator: " + validator);
+        writer.println(indent + "  stateless entity manager per transaction:");
+        entityManagerPerTx.forEach((tx, em) -> writer //
+                        .println(indent + "    " + tx + " -> " + em));
     }
 
     /**
