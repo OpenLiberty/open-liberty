@@ -35,7 +35,7 @@
 
     <OCD id="com.ibm.ws.server" name="%server.name" description="%server.desc" ibm:alias="server">
         <AD id="description" name="%server.description.name" description="%server.description.desc" required="false" type="String" />
-        <AD ibm:beta="true" id="quiesceTimeout" name="%server.quiesce.timeout.name" description="%server.quiesce.timeout.desc" required="false" type="String" ibm:type="duration(s)" default="30s" min="30s" />
+        <AD ibm:beta="true" id="quiesceTimeout" name="%server.quiesce.timeout.name" description="%server.quiesce.timeout.desc" required="false" type="String" ibm:type="duration" default="30s" min="30s" />
     </OCD>
 
     <Designate pid="com.ibm.ws.server">
