@@ -69,6 +69,9 @@ public class Data_1_1_Servlet extends FATServlet {
     Fractions fractions;
 
     @Inject
+    StatefulFractionRepository statefulFractionRepo;
+
+    @Inject
     StatefulFractions statefulFractions;
 
     @Resource
@@ -436,11 +439,13 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testDetach() throws Exception {
 
-        // TODO use stateful method to persist entities
-        // Populate with 5/23.
-        // Ensure deletion in the finally block.
-        fractions.supply(List.of(Fraction.of(5, 23)));
         try {
+            // Populate with 5/23.
+            // Ensure deletion in the finally block.
+            tx.begin();
+            statefulFractionRepo.write(Fraction.of(5, 23));
+            tx.commit();
+
             System.out.println("Fetch 5/23 to detach, modify, and commit");
 
             tx.begin();
@@ -1175,11 +1180,10 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testPersistenceContext() throws Exception {
 
-        // TODO use stateful method to persist entities
         // Populate with 2/23 and 3/23.
         // Ensure deletion in the finally block.
-        fractions.supply(List.of(Fraction.of(2, 23),
-                                 Fraction.of(3, 23)));
+        statefulFractionRepo.persistAll(List.of(Fraction.of(2, 23),
+                                                Fraction.of(3, 23)));
         try {
             System.out.println("Fetch 2/23 to modify and commit");
 
@@ -1589,10 +1593,9 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testStatefulResourceAccessor() throws Exception {
 
-        // TODO use stateful method to persist entities
         // Populate with 6/23.
         // Ensure deletion in the finally block.
-        fractions.supply(List.of(Fraction.of(6, 23)));
+        statefulFractionRepo.write(Fraction.of(6, 23));
         try {
             System.out.println("Fetch 6/23 to modify, flush, detach, modify," +
                                " and commit");

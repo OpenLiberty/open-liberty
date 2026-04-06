@@ -1333,15 +1333,19 @@ public abstract class QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "detach", loggable(arg));
 
+        int count = 0;
         if (arg instanceof Iterable) {
-            for (Object e : ((Iterable<?>) arg))
-                em.detach(e);
+            for (Object entity : ((Iterable<?>) arg)) {
+                em.detach(entityNotNull(entity));
+                count++;
+            }
         } else if (entityParamType.isArray()) {
             int length = Array.getLength(arg);
-            for (int i = 0; i < length; i++)
-                em.detach(Array.get(arg, i));
+            for (; count < length; count++)
+                em.detach(entityNotNull(Array.get(arg, count)));
         } else {
-            em.detach(arg);
+            em.detach(entityNotNull(arg));
+            count++;
         }
 
         if (trace && tc.isEntryEnabled())
@@ -1366,6 +1370,21 @@ public abstract class QueryInfo {
     private static boolean endsWith(String searchFor, String text, int minStart, int endBefore) {
         int searchLen = searchFor.length();
         return endBefore - minStart >= searchLen && text.regionMatches(endBefore - searchLen, searchFor, 0, searchLen);
+    }
+
+    /**
+     * Convenience method that raises an error if the given entity is null
+     * and otherwise returns the entity.
+     *
+     * @param entity entity instance that might be null.
+     * @return the non-null entity.
+     * @throws NullPointerException if the given entity is null.
+     */
+    @Trivial
+    private Object entityNotNull(Object entity) {
+        if (entity == null)
+            throw Fail.entityNull(this);
+        return entity;
     }
 
     /**
@@ -4739,6 +4758,46 @@ public abstract class QueryInfo {
         }
 
         return insertConstructorBeginAt;
+    }
+
+    /**
+     * Adds entities to the persistence context to be inserted in to the database.
+     *
+     * @param arg the entity or array/Iterable/Stream of entity
+     * @param em  the entity manager
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    Void persist(Object arg, EntityManager em) throws Exception {
+        arg = arg instanceof Stream //
+                        ? ((Stream<?>) arg).sequential().toList() //
+                        : arg;
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "persist", loggable(arg));
+
+        int count = 0;
+        if (entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            for (; count < length; count++)
+                em.persist(entityNotNull(Array.get(arg, count)));
+        } else if (arg instanceof Iterable) {
+            for (Object entity : ((Iterable<?>) arg)) {
+                em.persist(entityNotNull(entity));
+                count++;
+            }
+        } else {
+            em.persist(entityNotNull(arg));
+            count = 1;
+        }
+
+        if (count == 0)
+            throw Fail.emptyLifeCycleParam(this);
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "persist", count);
+        return null;
     }
 
     /**
