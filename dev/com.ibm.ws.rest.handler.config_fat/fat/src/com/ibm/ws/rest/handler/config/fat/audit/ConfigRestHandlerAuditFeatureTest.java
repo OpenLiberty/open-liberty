@@ -36,6 +36,7 @@ public class ConfigRestHandlerAuditFeatureTest extends FATServletClient {
                     .andWith(FeatureReplacementAction.EE8_FEATURES()
                                     .forServers("com.ibm.ws.rest.handler.config.audit.feature.fat")
                                     .alwaysAddFeature("servlet-4.0")
+                                    .alwaysAddFeature("appSecurity-3.0")
                                     .fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES()
                                     .forServers("com.ibm.ws.rest.handler.config.audit.feature.fat")

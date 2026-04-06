@@ -65,5 +65,11 @@ tested.features: componenttest-2.0,\
                  restfulws-4.0,\
                  audit-2.0,\
                  restconnector-2.0,\
+                 appsecurity-3.0,\
+                 el-3.0,\
+                 appsecurity-4.0,\
+                 expressionlanguage-4.0,\
+                 appsecurity-5.0,\
+                 expressionlanguage-5.0,\
                  appsecurity-6.0,\
                  expressionlanguage-6.0
