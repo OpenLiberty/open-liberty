@@ -42,7 +42,7 @@ import jakarta.ws.rs.HttpMethod;
 
 @RunWith(FATRunner.class)
 public class ContainerJSFApplicationTest extends BaseTestClass {
-
+ 
     private static Class<?> c = ContainerJSFApplicationTest.class;
 
     private static final String SERVER_NAME = "ContainerJSFServer";
