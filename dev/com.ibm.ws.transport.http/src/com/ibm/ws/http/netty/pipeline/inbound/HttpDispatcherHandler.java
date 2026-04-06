@@ -11,6 +11,7 @@ package com.ibm.ws.http.netty.pipeline.inbound;
 
 import java.net.InetSocketAddress;
 import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.Objects;
 
 import com.ibm.websphere.ras.Tr;
@@ -20,6 +21,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.bytebuffer.WsByteBufferUtils;
@@ -32,7 +34,7 @@ import com.ibm.wsspi.http.channel.values.StatusCodes;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import  io.netty.handler.codec.TooLongFrameException;
+import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -58,12 +60,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
 
     public static final String NAME = "httpDispatcherHandler";
 
-    HttpChannelConfig config;
+    NettyHttpChannelConfig config;
     private ChannelHandlerContext context;
     private final DefaultFullHttpResponse errorResponse;
     private static final String MAX_STREAMS_REFUSED_MESSAGE = "too many client-initiated streams have been refused; closing the connection";
 
-    public HttpDispatcherHandler(HttpChannelConfig config) {
+    public HttpDispatcherHandler(NettyHttpChannelConfig config) {
         super(false);
         Objects.requireNonNull(config);
         this.config = config;
@@ -112,8 +114,16 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 }
             });
         } else {
-            if (request.decoderResult().cause() != null) {
-                request.decoderResult().cause().printStackTrace();
+            if(context.channel().isActive()) {
+                if (request.decoderResult().cause() != null) {
+                    sendErrorMessage(request.decoderResult().cause());
+                } else {
+                    sendErrorMessage(new Exception("HTTP request decoding failure!"));
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed decode request on closed channel: " + context.channel());
+                }
             }
         }
 
@@ -158,15 +168,19 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 return;
             }
         } else if (cause instanceof IllegalArgumentException) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Ignoring exceptionCaught while decoding request of IllegalArgumentException: " + cause);
+            }
+            // We assume the IllegalArgumentException comes from the Netty codec. From here we assume that the codecs
+            // will still send an http request but with a decoding exception. And we will use that to handle with an 
+            // appropriate response. Return for now
+            return;
+        } else if (cause instanceof ParseException) {
             //Legacy doesnt throw ffdc on processNewInformation
             if (context.channel().attr(NettyHttpConstants.THROW_FFDC).get() != null) {
                 context.channel().attr(NettyHttpConstants.THROW_FFDC).set(null);
-            } else if (!cause.getMessage().contains("possibly HTTP/0.9")) {
+            } else {
                 FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
-            }
-
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "exceptionCaught encountered an IllegalArgumentException : " + cause);
             }
             sendErrorMessage(cause);
             return;

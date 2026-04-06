@@ -9,7 +9,7 @@ IBM-Provision-Capability: \
   com.ibm.websphere.appserver.jdbc-4.3; ibm.tolerates:="4.2",\
   io.openliberty.persistenceService-2.0
 -bundles=\
-  io.openliberty.data.internal.persistence
+  io.openliberty.data.internal
 IBM-Install-Policy: when-satisfied
 kind=beta
 edition=core

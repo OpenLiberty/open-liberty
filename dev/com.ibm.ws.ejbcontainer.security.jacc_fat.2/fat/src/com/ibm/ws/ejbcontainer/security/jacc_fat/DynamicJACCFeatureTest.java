@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
@@ -120,14 +117,17 @@ public class DynamicJACCFeatureTest extends EJBAnnTestBase {
     @Test
     public void testDynamicFeatureUpdate_AddJaccFeature_Then_NoJACCFeature() throws Exception {
         Log.info(logClass, getName().getMethodName(), "**Entering Test: " + getName().getMethodName());
+        String waitForMessage = "CWWKT0016I.*/securityejbinwar/";
+        List<String> msgs = new ArrayList<String>();
+        msgs.add(waitForMessage);
 
-        testHelper.reconfigureServer(Constants.DEFAULT_CONFIG_FILE, getName().getMethodName(), Constants.RESTART_SERVER);
+        testHelper.reconfigureServer(Constants.DEFAULT_CONFIG_FILE, getName().getMethodName(), msgs, Constants.RESTART_SERVER);
         String queryString2 = "/SimpleServlet?testInstance=ejb01&testMethod=denyAll";
         String response2 = generateResponseFromServlet(queryString2, Constants.MANAGER_USER, Constants.MANAGER_PWD);
         verifyException(response2, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.JACC_AUTH_DENIED_USER_NOT_GRANTED_REQUIRED_ROLE);
         client.resetClientState();
 
-        testHelper.reconfigureServer(Constants.JACC_FEATURE_NOT_ENABLED, getName().getMethodName(), Constants.DO_NOT_RESTART_SERVER);
+        testHelper.reconfigureServer(Constants.JACC_FEATURE_NOT_ENABLED, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
         String queryString = "/SimpleServlet?testInstance=ejb01&testMethod=denyAll";
         String response = generateResponseFromServlet(queryString, Constants.MANAGER_USER, Constants.MANAGER_PWD);
         verifyException(response, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.AUTH_DENIED_METHOD_EXPLICITLY_EXCLUDED);

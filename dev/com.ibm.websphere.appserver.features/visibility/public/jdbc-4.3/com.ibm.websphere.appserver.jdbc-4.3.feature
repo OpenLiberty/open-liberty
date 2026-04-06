@@ -13,7 +13,12 @@ Subsystem-Name: Java Database Connectivity 4.3
   com.ibm.websphere.appserver.requestProbes-1.0, \
   com.ibm.websphere.appserver.classloading-1.0, \
   io.openliberty.jdbc4.3.internal.ee-6.0; ibm.tolerates:="9.0"
+# TODO:  In the future can switch to use this instead, but requires updates to feature checker.
+#  io.openliberty.jdbc.internal.ee-7.0; ibm.tolerates:="9.0"
 -bundles=\
+  com.ibm.ws.jdbc.4.1,\
+  com.ibm.ws.jdbc.4.2,\
+  com.ibm.ws.jdbc.4.3,\
   com.ibm.ws.jdbc.4.3.feature,\
   com.ibm.ws.jdbc.metatype
 kind=ga

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,8 +32,12 @@ public class ManagedExecutorRunnableWrapper implements AsyncClientRunnableWrappe
     public void prepare(Message message) {
         Executor executor = message.getExchange().get(Executor.class);
         if (executor instanceof WSManagedExecutorService) {
-            final ThreadContextDescriptor tcd = ((WSManagedExecutorService) executor).captureThreadContext(null);
-            message.put(ThreadContextDescriptor.class, tcd);
+            // This prevents overwriting good context captured earlier in HTTPConduit.prepare()
+            ThreadContextDescriptor existingTcd = message.get(ThreadContextDescriptor.class);
+            if (existingTcd == null) {
+                final ThreadContextDescriptor tcd = ((WSManagedExecutorService) executor).captureThreadContext(null);
+                message.put(ThreadContextDescriptor.class, tcd);
+            }
         }
     }
 

@@ -33,7 +33,7 @@ import jakarta.data.repository.Update;
  * and one of the entity subtypes is not referenced anywhere except
  * by a Find annotation and Query text.
  */
-@Repository(dataStore = "java:app/env/data/dbref")
+@Repository(dataStore = "MyDataStore")
 public interface Advertisements extends DataRepository<Advertisement, Integer> {
 
     // Do not add any methods that directly reference the subtype Commercial

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -798,7 +798,15 @@ warning.manual.PPV.env.var.useraction=To retain the PREFERRED_PLATFORM_VERSION e
 
 error.read.server.env=CWWKE0970E: Unable to read the server.env file at the {} location.
 error.read.server.env.explanation=Failure to read the server.env file.
-error.read.server.env.useraction=Unable to read the server.env file.  Check file permissions and retry the operation.
+error.read.server.env.useraction=Unable to read the server.env file. Check file permissions and retry the operation.
+
+warning.java2security.stopped=CWWKE0971W: Java 2 Security is disabled because Jakarta EE 11 does not support it.
+warning.java2security.stopped.explanation=Jakarta EE 11 removed support for Java 2 Security.
+warning.java2security.stopped.useraction=Disable Java 2 Security in the server configuration when you are using Jakarta EE 11 features.
+
+info.java2security.restarted=CWWKE0972I: Java 2 Security is re-enabled because Jakarta EE 11 features were removed.
+info.java2security.restarted.explanation=This message is for informational purposes only.
+info.java2security.restarted.useraction=No action is required.
 
 info.serverStarting=Starting server {0}.
 info.serverStarted=Server {0} started.

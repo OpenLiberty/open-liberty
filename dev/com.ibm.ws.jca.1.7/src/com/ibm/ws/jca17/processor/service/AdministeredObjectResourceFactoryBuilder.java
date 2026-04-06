@@ -18,6 +18,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.resource.ResourceException;
 
@@ -40,9 +42,9 @@ import com.ibm.ws.jca.cm.AppDefinedResource;
 import com.ibm.ws.jca.cm.AppDefinedResourceFactory;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.kernel.service.util.SecureAction;
-import com.ibm.ws.resource.AbstractWaitForBundleResourceFactory;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.resource.WaitForBundleResourceFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -158,7 +160,7 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
         }
 
         String application = (String) annotationProps.remove(AppDefinedResource.APPLICATION);
-        String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
+        final String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
 
         if (trace && tc.isDebugEnabled())
             Tr.debug(tc, "application : " + application + "  declaringApplication : " + declaringApplication);
@@ -191,143 +193,92 @@ public class AdministeredObjectResourceFactoryBuilder implements ResourceFactory
                     adminObjectSvcProps.put(AppDefinedResource.COMPONENT, component);
             }
         }
-        String resourceAdapter = (String) annotationProps.remove(RESOURCE_ADAPTER);
+
         String interfaceName = (String) annotationProps.remove(INTERFACE_NAME);
         String className = (String) annotationProps.remove(CLASS_NAME);
 
         //Handle embedded RA as in 18.9
-        if (resourceAdapter.startsWith(EMBEDDED_RA_PREFIX)) {
-            resourceAdapter = declaringApplication + "." + resourceAdapter.substring(resourceAdapter.indexOf(EMBEDDED_RA_PREFIX) + 1, resourceAdapter.length());
+        String ra = (String) annotationProps.remove(RESOURCE_ADAPTER);
+        if (ra.startsWith(EMBEDDED_RA_PREFIX)) {
+            ra = declaringApplication + "." + ra.substring(ra.indexOf(EMBEDDED_RA_PREFIX) + 1, ra.length());
             if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, "Embedded resourceAdapter name : " + resourceAdapter);
+                Tr.debug(tc, "Embedded resourceAdapter name : " + ra);
         }
+        final String resourceAdapter = ra;
+
+        Function<Bundle, ResourceFactory> createAppDefinedResourceFactory = (bundle) -> {
+            try {
+                Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(bundle, interfaceName, className);
+
+                for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();) {
+                    String key = keys.nextElement();
+                    Object value = adminObjectDefaultProps.get(key);
+
+                    //Override the administered object default property values with values provided annotation
+                    if (annotationProps.containsKey(key))
+                        value = annotationProps.remove(key);
+
+                    if (value instanceof String)
+                        value = variableRegistry.resolveString((String) value);
+
+                    if ("config.displayId".equals(key))
+                        adminObjectSvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", value);
+                    else
+                        adminObjectSvcProps.put(BASE_PROPERTIES_KEY + key, value);
+                }
+
+                adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
+
+                for (Map.Entry<String, Object> prop : annotationProps.entrySet())
+                    adminObjectSvcProps.put(BASE_PROPERTIES_KEY + prop.getKey(), prop.getValue());
+
+                BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(AdminObjectService.class));
+
+                StringBuilder adminObjectFilter = new StringBuilder(200);
+                adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
+                adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
+
+                ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
+                try {
+
+                    String bundleLocation = bundleContext.getBundle().getLocation();
+                    ConfigurationAdmin configAdmin = configAdminRef.getService();
+
+                    Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
+                    adminObjectSvcConfig.update(adminObjectSvcProps);
+                } catch (Exception x) {
+                    factory.destroy();
+                    throw x;
+                } catch (Error x) {
+                    factory.destroy();
+                    throw x;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "createResourceFactory", factory);
+                return factory;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        };
 
         Bundle raBundle = bundleContext.getBundle(BUNDLE_LOCATION + resourceAdapter);
         if (raBundle != null) {
-            return createAppDefinedResourceFactory(raBundle, declaringApplication, resourceAdapter, adminObjectID, interfaceName, className, adminObjectSvcProps, annotationProps,
-                                                   variableRegistry);
+            return createAppDefinedResourceFactory.apply(raBundle);
         } else {
-            // The RA bundle may come later;
-            // Use a factory that waits for the bundle to arrive once the modules are deployed
-            // TODO need an error condition on starting the application if the RA bundle
-            // doesn't arrive after the modules have been provisioned
-            WaitForRABundleResourceFactory resourceFactory = new WaitForRABundleResourceFactory(bundleContext, declaringApplication, resourceAdapter, adminObjectID, interfaceName, className, adminObjectSvcProps, annotationProps, variableRegistry);
+            Supplier<IllegalStateException> notReadyException = () -> {
+                return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
+                                                 ", declaringApplication=" + declaringApplication +
+                                                 ", location=" + BUNDLE_LOCATION + resourceAdapter);
+            };
+
+            WaitForBundleResourceFactory resourceFactory = new WaitForBundleResourceFactory(bundleContext, //
+                            BUNDLE_LOCATION + resourceAdapter, //
+                            createAppDefinedResourceFactory, //
+                            notReadyException);
             resourceFactory.listenForBundle();
             return resourceFactory;
         }
-    }
-
-    class WaitForRABundleResourceFactory extends AbstractWaitForBundleResourceFactory {
-        private final String declaringApplication;
-        private final String resourceAdapter;
-        private final String adminObjectID;
-        private final String interfaceName;
-        private final String className;
-        private final Hashtable<String, Object> adminObjectSvcProps;
-        private final Map<String, Object> annotationProps;
-        private final VariableRegistry variableRegistry;
-
-        WaitForRABundleResourceFactory(BundleContext bundleContext,
-                                       String declaringApplication,
-                                       String resourceAdapter,
-                                       String adminObjectID,
-                                       String interfaceName,
-                                       String className,
-                                       Hashtable<String, Object> adminObjectSvcProps,
-                                       Map<String, Object> annotationProps,
-                                       VariableRegistry variableRegistry) {
-
-            super(bundleContext, BUNDLE_LOCATION + resourceAdapter);
-            this.declaringApplication = declaringApplication;
-            this.resourceAdapter = resourceAdapter;
-            this.adminObjectID = adminObjectID;
-            this.interfaceName = interfaceName;
-            this.className = className;
-            this.adminObjectSvcProps = adminObjectSvcProps;
-            this.annotationProps = annotationProps;
-            this.variableRegistry = variableRegistry;
-        }
-
-        @Override
-        protected ResourceFactory createDelegate(Bundle b) throws Exception {
-            return createAppDefinedResourceFactory(b,
-                                                   declaringApplication,
-                                                   resourceAdapter,
-                                                   adminObjectID,
-                                                   interfaceName,
-                                                   className,
-                                                   adminObjectSvcProps,
-                                                   annotationProps,
-                                                   variableRegistry);
-        }
-
-        @Override
-        protected RuntimeException notReadyException() {
-            return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
-                                             ", declaringApplication=" + declaringApplication +
-                                             ", location=" + getTargetBundleLocation());
-        }
-    }
-
-    private ResourceFactory createAppDefinedResourceFactory(Bundle raBundle,
-                                                            String declaringApplication,
-                                                            String resourceAdapter,
-                                                            String adminObjectID,
-                                                            String interfaceName,
-                                                            String className,
-                                                            Hashtable<String, Object> adminObjectSvcProps,
-                                                            Map<String, Object> annotationProps,
-                                                            VariableRegistry variableRegistry) throws Exception {
-
-        Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(raBundle, interfaceName, className);
-
-        for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();) {
-            String key = keys.nextElement();
-            Object value = adminObjectDefaultProps.get(key);
-
-            //Override the administered object default property values with values provided annotation
-            if (annotationProps.containsKey(key))
-                value = annotationProps.remove(key);
-
-            if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
-
-            if ("config.displayId".equals(key))
-                adminObjectSvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", value);
-            else
-                adminObjectSvcProps.put(BASE_PROPERTIES_KEY + key, value);
-        }
-
-        adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
-
-        for (Map.Entry<String, Object> prop : annotationProps.entrySet())
-            adminObjectSvcProps.put(BASE_PROPERTIES_KEY + prop.getKey(), prop.getValue());
-
-        BundleContext bundleContext = priv.getBundleContext(FrameworkUtil.getBundle(AdminObjectService.class));
-
-        StringBuilder adminObjectFilter = new StringBuilder(200);
-        adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
-        adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
-
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
-        try {
-
-            String bundleLocation = bundleContext.getBundle().getLocation();
-            ConfigurationAdmin configAdmin = configAdminRef.getService();
-
-            Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
-            adminObjectSvcConfig.update(adminObjectSvcProps);
-        } catch (Exception x) {
-            factory.destroy();
-            throw x;
-        } catch (Error x) {
-            factory.destroy();
-            throw x;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "createResourceFactory", factory);
-        return factory;
     }
 
     /**

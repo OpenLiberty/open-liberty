@@ -15,7 +15,9 @@ package com.ibm.ws.security.social.fat.LibertyOP;
 import java.util.ArrayList;
 import java.util.List;
 
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
@@ -47,9 +49,13 @@ import componenttest.custom.junit.runner.Mode.TestMode;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class LibertyOP_SignatureAlg_oidc_usingSocialConfig extends Social_SignatureAlgTests {
 
     public static Class<?> thisClass = LibertyOP_SignatureAlg_oidc_usingSocialConfig.class;
+
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled();
 
     @BeforeClass
     public static void setUp() throws Exception {

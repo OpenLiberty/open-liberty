@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Ensure that the algorithm header of the JWE to
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: The JSON Web Encryption (JWE) is not valid because its Content Encryption Key (CEK) was encrypted by using the {0} algorithm. Content Encryption Keys must be encrypted by using the {1} algorithm.
 JWE_ALGORITHM_MISMATCH.explanation=The Content Encryption Keys must be encrypted by the algorithm specified in the message. Content Encryption Keys that are encrypted with any other encryption algorithm cannot be validated.
 JWE_ALGORITHM_MISMATCH.useraction=Obtain a new token with a Content Encryption Key that is encrypted by using the required algorithm that is specified in the message. Alternatively, update your JWT configuration to allow tokens with Content Encryption Keys that are encrypted by using the other encryption algorithm.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Cannot load trusted certificate entries from the [{0}] truststore. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=An error occurred while the system was attempting to retrieve the list of trusted certificate entries from the specified truststore. The truststore might be missing from the configuration, or an issue might be preventing access to the truststore.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Verify that the truststore is configured correctly in your server configuration and that it is accessible. Check the error message for more information about the failure.
+
+

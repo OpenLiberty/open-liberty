@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,10 +56,11 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 SpringBootDeployDataTests.class,
-                WarDeployDataTests.class
+                SpringBootDeployDataTests40.class,
+                WarDeployDataTests.class,
+                WarDeployDataTests40.class
 })
 public class FATSuite extends TestContainerSuite {
-    private static final String APP_NAME = "io.openliberty.checkpoint.springboot.fat30.data.app-1.0.0.war";
     private static final String POSTGRES_DB = "database";
     private static final String POSTGRES_USER = "productionuser";
     private static final String POSTGRES_PASS = "productionpw";
@@ -90,8 +91,8 @@ public class FATSuite extends TestContainerSuite {
         }
     }
 
-    public static void setUp(LibertyServer server, boolean asWar, CheckpointPhase phase, String testMethod) throws Exception {
-        configureApplication(server, APP_NAME, asWar);
+    public static void setUp(LibertyServer server, String appName, boolean asWar, CheckpointPhase phase, String testMethod) throws Exception {
+        configureApplication(server, appName, asWar);
         server.setCheckpoint(phase, true,
                              s -> {
                                  if (phase == CheckpointPhase.AFTER_APP_START) {

@@ -21,6 +21,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
@@ -34,6 +35,7 @@ import test.jakarta.data.v1_1.web.Data_1_1_Servlet;
 
 @RunWith(FATRunner.class)
 @MinimumJavaLevel(javaLevel = 21)
+@MaximumJavaLevel(javaLevel = 25) // TODO remove once RTC 309096 updates Byte Buddy to a version that supports java 26+
 public class Data_1_1_HibernateTest extends FATServletClient {
     /**
      * Error messages, typically for invalid repository methods, that are

@@ -209,7 +209,7 @@ unauthorized.cancellation=Az eszk\u00f6z nem t\u00f6r\u00f6lhet\u0151, mivel a h
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: Az {1} MCP eszk\u00f6z m\u00f3dszer\u00e9nek {0} visszat\u00e9r\u00e9si t\u00edpus\u00e1nak objektumnak kell lennie.
-CWMCM0025E.unsupported.output.explanation=A megadott MCP eszk\u00f6z visszat\u00e9r\u00e9si t\u00edpusa nem t\u00e1mogatott.
+CWMCM0025E.unsupported.output.explanation=A megadott MCP-eszk\u00f6z visszat\u00e9r\u00e9si t\u00edpusa nem t\u00e1mogatott. Mivel a struktur\u00e1lt tartalom be\u00e1ll\u00edt\u00e1sa \u201etrue\u201d, a kimeneti s\u00e9mat\u00edpusnak objektumnak kell lennie.
 CWMCM0025E.unsupported.output.useraction=Adjon meg egy objektum t\u00edpus\u00fa visszat\u00e9r\u00e9si t\u00edpust.
 
 # Used as exception message

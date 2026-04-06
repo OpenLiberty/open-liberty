@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -106,7 +106,6 @@ public class NettyNetworkConnectionFactory implements NetworkConnectionFactory{
 	{
 		if (tc.isEntryEnabled())
 			SibTr.entry(this, tc, "createConnection", endpoint);
-		// TODO: Verify if this is used. See https://github.com/OpenLiberty/open-liberty/issues/22692
 		throw new FrameworkException("Not implemented yet for Netty. Currently only used on tWAS not Liberty.");
 
 	}

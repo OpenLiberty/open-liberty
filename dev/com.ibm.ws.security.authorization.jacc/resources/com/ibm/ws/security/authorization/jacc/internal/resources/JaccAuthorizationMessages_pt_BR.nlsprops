@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: O m\u00f3dulo para processamento das fun\u00e7\u0
 JACC_NO_WEB_PLUGIN.explanation=O servi\u00e7o JACC n\u00e3o \u00e9 capaz de processar as fun\u00e7\u00f5es de seguran\u00e7a da web porque o m\u00f3dulo necess\u00e1rio n\u00e3o est\u00e1 dispon\u00edvel.
 JACC_NO_WEB_PLUGIN.useraction=Revise os logs do provedor JACC e os logs do servidor para obter informa\u00e7\u00f5es adicionais.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: O servi\u00e7o de autoriza\u00e7\u00e3o de Jacarta n\u00e3o consegue definir a classe do provedor {0} {1} a partir do aplicativo {2} devido \u00e0 exce\u00e7\u00e3o {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=O servi\u00e7o de autoriza\u00e7\u00e3o de Jacarta n\u00e3o consegue definir a classe do provedor devido \u00e0 exce\u00e7\u00e3o.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Consulte os registros do provedor e os registros do servidor para obter mais informa\u00e7\u00f5es.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: O servi\u00e7o de autoriza\u00e7\u00e3o de Jacarta configurou a classe de provedor {0} {1} definida na aplica\u00e7\u00e3o {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Essa mensagem destina-se apenas para fins informativos.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: O servi\u00e7o de autoriza\u00e7\u00e3o de Jacarta removeu a classe de provedor {0} {1} definida na aplica\u00e7\u00e3o {2}.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Essa mensagem destina-se apenas para fins informativos.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria.

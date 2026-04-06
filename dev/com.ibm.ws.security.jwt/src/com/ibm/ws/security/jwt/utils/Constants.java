@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2025 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ public class Constants {
     public static final String SIGNATURE_ALG_ES256 = "ES256";
     public static final String SIGNATURE_ALG_ES384 = "ES384";
     public static final String SIGNATURE_ALG_ES512 = "ES512";
+    public static final String SIGNATURE_FROM_HEADER = "FROM_HEADER";
 
     public static final String SIGNING_KEY_X509 = "x509";
     public static final String SIGNING_KEY_JWK = "jwk";

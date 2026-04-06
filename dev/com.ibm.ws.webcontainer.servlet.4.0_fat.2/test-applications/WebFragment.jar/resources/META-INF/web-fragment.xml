@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-fragment xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+              xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee 
+                                  http://xmlns.jcp.org/xml/ns/javaee/web-fragment_4_0.xsd"
+              version="4.0">
+
+    <display-name>WebFragmentXML</display-name>
+	<name>WebFragmentXMLName</name>
+
+    <servlet>
+        <description></description>
+        <display-name>DeclaredServletInWebFragment</display-name>
+        <servlet-name>DeclaredServletInWebFragment</servlet-name>
+        <servlet-class>com.ibm.ws.jar.webFragmentJar.DeclaredServletInWebFragment</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <description></description>
+        <display-name>AnnotatedServletInWebFragment</display-name>
+        <servlet-name>AnnotatedServletInWebFragment</servlet-name>
+        <servlet-class>com.ibm.ws.jar.webFragmentJar.AnnotatedServletInWebFragment</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>DeclaredServletInWebFragment</servlet-name>
+        <url-pattern>/MappingServletInWebFragmentXML</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>AnnotatedServletInWebFragment</servlet-name>
+        <url-pattern>/MappingServletInWebFragmentXML_Override_Annotation</url-pattern>
+    </servlet-mapping>
+</web-fragment>

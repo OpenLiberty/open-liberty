@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Asigura\u021bi-v\u0103 c\u0103 antetul de algo
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: JWE (JSON Web Encryption) nu este valid, deoarece cheia CEK (Content Encryption Key) a fost criptat\u0103 utiliz\u00e2nd algoritmul {0}. Cheile CEK trebuie s\u0103 fie criptate utiliz\u00e2nd algoritmul {1}.
 JWE_ALGORITHM_MISMATCH.explanation=Cheile CEK trebuie s\u0103 fie criptate cu algoritmul specificat \u00een mesaj. Cheile CEK care sunt criptate cu orice alt algoritm de criptare nu pot fi validate.
 JWE_ALGORITHM_MISMATCH.useraction=Ob\u021bine\u021bi un jeton nou, cu o cheie CEK care s\u0103 fie criptat\u0103 prin utilizarea algoritmului necesar care este specificat \u00een mesaj. Sau actualiza\u021bi configura\u021bia JWT pentru a permite jetoane cu chei CEK care sunt criptate prin utilizarea celuilalt algoritm de criptare.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Nu se pot \u00eenc\u0103rca \u00eenregistr\u0103rile certificatelor de \u00eencredere din magazinul de certificate [ {0} ]. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=A ap\u0103rut o eroare \u00een timp ce sistemul \u00eencerca s\u0103 preia lista intr\u0103rilor de certificate de \u00eencredere din magazinul de certificate specificat. Este posibil ca truststore-ul s\u0103 lipseasc\u0103 din configura\u021bie sau ca o problem\u0103 s\u0103 \u00eempiedice accesul la acesta.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Asigura\u021bi-v\u0103 c\u0103 truststore-ul este configurat corect \u00een set\u0103rile serverului \u0219i c\u0103 este accesibil. Consulta\u021bi mesajul de eroare pentru mai multe informa\u021bii despre eroare.
+
+

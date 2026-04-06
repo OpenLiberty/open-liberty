@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2024 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -139,6 +139,11 @@ INVALID_CONFIG_PARAM.useraction=V\u00e9rifiez le param\u00e8tre manquant dans la
 OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Le client de login social [{0}] n''est pas parvenu \u00e0 obtenir d''informations sur le noeud final du fournisseur OpenID Connect via l''URL du noeud final de reconnaissance [{1}]. Mettez\n\u00e0 jour la configuration de login social (configuration oidcLogin)\navec l''URL\nHTTPS correcte pour le noeud final de reconnaissance.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configuration oidcLogin est configur\u00e9e pour reconna\u00eetre les noeuds finaux des fournisseurs OpenID Connect par le biais de l'URL de reconnaissance, mais le processus de reconnaissance a \u00e9chou\u00e9. Le client ne pourra pas traiter les demandes d'authentification tant que la configuration du noeud final de reconnaissance n'est pas corrig\u00e9e ou que le processus de reconnaissance n'aura pas abouti.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrigez la configuration oidcLogin afin que 1) l'URL du noeud final de reconnaissance fasse r\u00e9f\u00e9rence au fournisseur OpenID Connect appropri\u00e9, 2) l'URL du noeud final de reconnaissance utilise le protocole HTTPS 3) la fonction SSL et les \u00e9l\u00e9ments de magasin de cl\u00e9s soient configur\u00e9s correctement pour faire confiance au fournisseur OpenID Connect 4) de vous assurer que le noeud final de reconnaissance des fournisseurs OpenID Connect est fonctionnel.
+
+#0=social login client ID, 1="none"
+SOCIAL_LOGIN_NONE_ALG=CWWKS5392W: L'' signatureAlgorithm e du client de connexion via les r\u00e9seaux sociaux [ {0} ] est d\u00e9finie sur [ {1} ].
+SOCIAL_LOGIN_NONE_ALG.explanation=Comme le param\u00e8tre \u00ab signatureAlgorithm \u00bb est d\u00e9fini sur \u00ab none \u00bb, un jeton non sign\u00e9 est attendu, ce qui n'est pas un cas d'utilisation courant.
+SOCIAL_LOGIN_NONE_ALG.useraction=Si vous ne vous attendez pas \u00e0 ce que les jetons entrants soient sign\u00e9s, vous n'avez rien \u00e0 faire. Sinon, s\u00e9lectionnez un\n\u00e9l\u00e9ment signatureAlgorithm pris en charge, tel que RS256 ou HS256.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configuration de login social [{0}] a \u00e9t\u00e9 trait\u00e9e correctement.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configuration de login social indiqu\u00e9e a \u00e9t\u00e9 trait\u00e9e correctement.

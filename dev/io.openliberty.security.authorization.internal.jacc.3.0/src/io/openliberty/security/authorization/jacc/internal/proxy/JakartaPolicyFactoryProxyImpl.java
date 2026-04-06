@@ -25,7 +25,7 @@ import jakarta.security.jacc.PrincipalMapper;
  * Jakarta Authorization 3.0 implementation of PolicyProxy that is the interface used for interacting with
  * the jakarta.security.jacc.PolicyFactory instead of java.security.Policy as was done in previous spec versions.
  */
-public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
+class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
 
     private static Subject nullSubject = new Subject();
 
@@ -70,28 +70,6 @@ public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
     }
 
     /**
-     * This method is called when starting applications after the PolicyConfiguration is populated.
-     *
-     * Previously there was only a single Policy object, but now there is one per PolicyContext id
-     * so we need to call refresh on all of them that had populated PolicyConfigurations.
-     *
-     * @param contextIds the context ids of the Policy's that need to be refreshed
-     */
-    @Override
-    public void refresh(Set<String> contextIds) {
-        PolicyFactory policyFactory = PolicyFactory.getPolicyFactory();
-
-        if (policyFactory != null) {
-            for (String contextId : contextIds) {
-                Policy policy = policyFactory.getPolicy(contextId);
-                if (policy != null) {
-                    policy.refresh();
-                }
-            }
-        }
-    }
-
-    /**
      * This method is used to determine if there is a Policy configured. If there isn't
      * one configured, the Liberty runtime will use the built-in authorization logic since there
      * isn't a Jakarta Authorization Policy to call.
@@ -100,6 +78,13 @@ public class JakartaPolicyFactoryProxyImpl implements PolicyProxy {
      */
     @Override
     public boolean isPolicyConfigured() {
+        return PolicyFactory.getPolicyFactory() != null;
+    }
+
+    @Override
+    public boolean isUnauthenticatedAuthorizationCheckAllowed() {
+        // If there is no policy defined, we fall back to built-in authorization behavior which
+        // follows the servlet specification rules.
         return PolicyFactory.getPolicyFactory() != null;
     }
 }

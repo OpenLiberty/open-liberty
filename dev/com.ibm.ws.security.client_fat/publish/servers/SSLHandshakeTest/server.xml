@@ -1,0 +1,25 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+<include location="../fatTestPorts.xml" />
+	<include location="server_base.xml" />
+
+	<!-- Server is configured with only ECDHE-based cipher suites.
+	     Tests using '+' modifiers on the client that include ECDHE ciphers should succeed.
+	     Tests using '-TLS_ECDHE*' or '-TLS_*' modifiers on the client should fail (no common ciphers). -->
+	<ssl id="supportedClientAuthenticationSSLConfig"
+		clientAuthenticationSupported="true" keyStoreRef="defaultKeyStore"
+		sslProtocol="TLSv1.2"
+		enabledCiphers="TLS_ECDHE_ECDSA_WITH_AES_128_CBC_SHA TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA TLS_ECDH_ECDSA_WITH_AES_128_CBC_SHA TLS_ECDH_RSA_WITH_AES_128_CBC_SHA" />
+
+</server>

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Eine Anforderung f\u00fcr
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=Die Anforderung enth\u00e4lt ein fehlerhaftes Cookie. Der Hostname im Cookie muss mit der aktuellen Anforderung oder mit einem der zul\u00e4ssigen Dom\u00e4nennamen \u00fcbereinstimmen. Das Cookie kann \u00fcber den Benutzeragenten ge\u00e4ndert werden.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=\u00dcberpr\u00fcfen Sie die OpenID Connect-Providerkonfiguration und die OpenID Connect-Clientkonfiguration. Wenn der Hostname erwartet wurde, f\u00fcgen Sie ihn dem Attribut wasReqURLRedirectDomainNames des Elements webAppSecurity in der Serverkonfiguration hinzu.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: Die vertrauensw\u00fcrdigen Zertifikateintr\u00e4ge k\u00f6nnen nicht aus dem Truststore [ {0} ] geladen werden. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=Beim Abruf der Liste der vertrauensw\u00fcrdigen Zertifikate aus dem angegebenen Truststore ist ein Fehler aufgetreten. M\u00f6glicherweise fehlt der Truststore in der Konfiguration, oder ein Problem verhindert den Zugriff auf den Truststore.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=Stellen Sie sicher, dass der Truststore in Ihrer Serverkonfiguration korrekt eingerichtet ist und dass darauf zugegriffen werden kann. Weitere Informationen zum Fehler finden Sie in der Fehlermeldung.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

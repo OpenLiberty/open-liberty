@@ -59,19 +59,19 @@ public class InjectionXMLTest {
     /*@formatter:off*/
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
-                                   .andWith(FeatureReplacementAction.EE8_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
-                                   .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
-                                   .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
-                                   .andWith(FeatureReplacementAction.EE11_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"));
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.injection.fat.mdbserver"));
     /*@formatter:on*/
 
     @BeforeClass

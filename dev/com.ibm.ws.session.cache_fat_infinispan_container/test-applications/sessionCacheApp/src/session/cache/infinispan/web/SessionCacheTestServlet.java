@@ -897,7 +897,8 @@ public class SessionCacheTestServlet extends FATServlet {
         String key = request.getParameter("key");
         HttpSession session = request.getSession(true);
         StringBuffer value = (StringBuffer) session.getAttribute(key);
-        value.append("Appended");
+        if (value != null)
+            value.append("Appended");
     }
 
     public void testTimeoutExtensionA(HttpServletRequest request, HttpServletResponse response) throws Exception {

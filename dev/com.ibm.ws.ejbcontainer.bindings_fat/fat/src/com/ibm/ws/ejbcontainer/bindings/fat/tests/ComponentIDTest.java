@@ -60,19 +60,19 @@ public class ComponentIDTest extends AbstractTest {
     /*@formatter:off*/
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
-                                   .andWith(FeatureReplacementAction.EE8_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
-                                   .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                   .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
-                                   .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                   .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
-                                   .andWith(FeatureReplacementAction.EE11_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.server"));
     /*@formatter:on*/
 
     @BeforeClass

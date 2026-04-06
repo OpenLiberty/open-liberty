@@ -34,15 +34,15 @@ import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.classloading.platform.delegation.test.app.PlatformDelegationTestServlet;
 import junit.framework.AssertionFailedError;
 
-/**
- *
- */
+//Skip on IBM i because extra JARs are on the JVM classpath (db2 JARs)
+@SkipIfSysProp(SkipIfSysProp.OS_IBMI)
 @RunWith(FATRunner.class)
 public class AppParentDelegationDefaultTest extends AppParentDelegationAbstractTest {
 

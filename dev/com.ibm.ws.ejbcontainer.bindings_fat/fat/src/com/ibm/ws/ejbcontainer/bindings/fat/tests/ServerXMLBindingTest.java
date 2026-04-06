@@ -63,19 +63,19 @@ public class ServerXMLBindingTest extends AbstractTest {
     /*@formatter:off*/
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
-                                   .andWith(FeatureReplacementAction.EE8_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
-                                   .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
-                                   .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
-                                   .andWith(FeatureReplacementAction.EE11_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"));
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.bindings.fat.serverxml.testserver"));
     /*@formatter:on*/
 
     @Test

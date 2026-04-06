@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2022,2024 IBM Corporation and others.
+# Copyright (c) 2022,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -10,7 +10,7 @@
 # Contributors:
 #     IBM Corporation - initial API and implementation
 ###############################################################################
-#CMVCPATHNAME io.openliberty.data.internal/resources/io/openliberty/data/internal/resources/CWWKDMessages.nlsprops
+#CMVCPATHNAME io.openliberty.data.internal/resources/io/openliberty/data/internal/persistence/resources/CWWKDMessages.nlsprops
 #ISMESSAGEFILE TRUE
 #NLS_ENCODING=UNICODE
 #
@@ -24,5 +24,1234 @@
 #   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
 #   (single quote must be coded as one single quote '). 
 
-# All messages must use the range CWWKD1400 to CWWKD1499
+# All messages must use the range CWWKD1000 to CWWKD1399
 
+CWWKD1000.repo.general.err=CWWKD1000E: The {0} method of the {1} repository \
+ interface encountered an error. The error might indicate that the repository \
+ method is not valid. The error is: {2}.
+CWWKD1000.repo.general.err.explanation=An error was found with the specified \
+ repository method.
+CWWKD1000.repo.general.err.useraction=Locate the repository interface and method \
+ and determine whether corrections are needed.
+
+CWWKD1001.no.primary.entity=CWWKD1001E: The {0} repository method requires \
+ an entity class but the {1} repository interface does not specify a primary \
+ entity class. To correct this error, the {1} repository interface can extend \
+ one of the built-in repository supertypes, such as {2}, and supply the entity \
+ class as the first type parameter.
+CWWKD1001.no.primary.entity.explanation=Repository methods without an entity \
+ class of their own require the repository to define a primary entity class.
+CWWKD1001.no.primary.entity.useraction=Define a primary entity class for the \
+ repository.
+
+CWWKD1002.method.annos.err=CWWKD1002E: The {0} method of the {1} repository \
+ interface is annotated with a combination of annotations that is not valid: {2}.
+CWWKD1002.method.annos.err.explanation=This combination of annotations is not \
+ valid on a single repository method.
+CWWKD1002.method.annos.err.useraction=Locate the repository interface and method \
+ and determine the correct combination of method annotations.
+
+CWWKD1003.rtrn.err=CWWKD1003E: The {0} return type of the {1} method \
+ of the {2} repository interface is not a valid return type for a repository \
+ {3} method. Valid return types include: {4}.
+CWWKD1003.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for the stated type of repository method.
+CWWKD1003.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
+ information for the Insert, Update, and Save annotations and the \
+ Query by Method name documentation for valid return types.
+
+CWWKD1004.general.rtrn.err=CWWKD1004E: The {0} return type of the {1} method \
+ of the {2} repository interface is not a valid return type for a repository \
+ method.
+CWWKD1004.general.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for the type of repository method.
+CWWKD1004.general.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
+ information for a list of valid return types for the type of repository method.
+
+CWWKD1005.find.rtrn.err=CWWKD1005E: The {0} method of the {1} repository \
+ interface is not valid. The method specifies a {2} return type that is \
+ not convertible from the {3} entity type. The result type of a \
+ find operation must be the entity type, a type of an entity attribute \
+ that is chosen by the Select annotation, a Java record that is composed of entity \
+ attributes, or a type that is selected by the query that is supplied to the \
+ Query annotation. The return type of the repository find method can be \
+ the result type, an array of the result type, or any of the following types \
+ parameterized with the result type: {4}.
+CWWKD1005.find.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for repository find methods.
+CWWKD1005.find.rtrn.err.useraction=Refer to the Jakarta Data Javadoc \
+ information for a list of valid return types for repository find methods.
+
+CWWKD1006.delete.rtrn.err=CWWKD1006E: The {0} return type of the {1} method \
+ of the {2} repository interface is not a valid return type for a delete \
+ operation. The return type must be either void, long, int, boolean, array, \
+ List, or Optional. A return type of void returns no value. A return type of \
+ long or int returns a deletion count. A return type of boolean returns \
+ an indicator of whether any entities were deleted. A return type of array, \
+ List, or Optional, that is parameterized with either a {3} entity class or \
+ a {4} unique identifier class returns the deleted entities or entity IDs.
+CWWKD1006.delete.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for a delete operation.
+CWWKD1006.delete.rtrn.err.useraction=Update the repository method to use one \
+ of the supported return types.
+
+CWWKD1007.updel.rtrn.err=CWWKD1007E: The {0} return type of the {1} method \
+ of the {2} repository interface is not a valid return type for a repository \
+ {3} operation. The return type must be either void, long, int, or boolean. \
+ A return type of void returns no value. A return type of long or int returns \
+ a count of matching entities. A return type of boolean returns an indicator \
+ of whether any entities match.
+CWWKD1007.updel.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for an update or delete operation.
+CWWKD1007.updel.rtrn.err.useraction=Update the repository method to use one \
+ of the supported return types.
+
+CWWKD1008.ambig.rtrn.err=CWWKD1008E: The {0} return type of the {1} method \
+ of the {2} repository interface is ambiguous as a return type because it \
+ corresponds to multiple entity attributes: {3}. The repository method \
+ must switch to the Query annotation and use a query with a \
+ SELECT clause that specifies which entity attribute to return.
+CWWKD1008.ambig.rtrn.err.explanation=The return type of the method is not \
+ one of the supported return types for a delete method.
+CWWKD1008.ambig.rtrn.err.useraction=Update the repository method to use the \
+ Query annotation to select the entity attribute.
+
+CWWKD1009.lifecycle.param.err=CWWKD1009E: The {0} method of the {1} repository \
+ interface cannot have {2} parameters because the method is annotated with the \
+ {3} lifecycle annotation. Repository methods that are annotated with a lifecycle \
+ annotation must have exactly 1 parameter, which must be the entity or an \
+ array or List of the entity.
+CWWKD1009.lifecycle.param.err.explanation=Lifecycle methods must have a single \
+ entity parameter.
+CWWKD1009.lifecycle.param.err.useraction=Update the repository method to have a \
+ single parameter that is an entity, an array of the entity, or a List of the \
+ entity.
+
+CWWKD1010.unknown.entity.attr=CWWKD1010E: An entity attribute named {0} is \
+ not found on the {1} entity class for the {2} method of the {3} repository \
+ interface. Valid attribute names for the entity are: {4}.
+CWWKD1010.unknown.entity.attr.explanation=The repository method is attempting \
+ to use an entity attribute that does not exist.
+CWWKD1010.unknown.entity.attr.useraction=Update the repository method to match \
+ a valid attribute that is defined by the entity.
+
+CWWKD1011.unknown.method.pattern=CWWKD1011E: The {0} method of the {1} repository \
+ interface does not match any of the Jakarta Data defined patterns. \
+ A repository method must either use annotations, be a resource accessor method, \
+ or be named according to the Query by Method Name pattern. Annotations such as \
+ {2} are used to define operations. A resource accessor method must contain \
+ no parameters and any of the {3} return types. The Query by Method Name pattern \
+ must begin with one of the {4} keywords, followed by 0 or more characters. \
+ Method names can also include the By keyword and one or more delimited \
+ conditions. Examples of valid repository method names are: {5}.
+CWWKD1011.unknown.method.pattern.explanation=Repository methods must follow the \
+ Jakarta Data defined patterns.
+CWWKD1011.unknown.method.pattern.useraction=Update the repository method to \
+ adhere to one of the patterns from Jakarta Data.
+
+CWWKD1012.fd.missing.param.anno=CWWKD1012E: Parameter {0} of the {1} method of \
+ the {2} repository interface does not match an entity attribute. Parameters that \
+ do not match an entity attribute must be annotated with the By annotation or have \
+ one of the special parameter types: {3}. To define a condition for the \
+ restriction of query results, the parameter must be annotated with the By \
+ annotation and the value of the By annotation must be assigned to be the entity \
+ attribute name. Alternatively, enable the -parameters compile option and give \
+ the parameter the same name as the entity attribute.
+CWWKD1012.fd.missing.param.anno.explanation=Parameters of repository find and \
+ delete methods must correspond to entity attributes or be special Jakarta Data \
+ defined parameter types.
+CWWKD1012.fd.missing.param.anno.useraction=Update the repository method such \
+ that all parameters correspond to entity attributes or have one of the Jakarta \
+ Data special parameter types.
+
+CWWKD1013.cde.missing.param.anno=CWWKD1013E: Parameter {0} of the {1} method of \
+ the {2} repository interface does not match an entity attribute. Parameters \
+ that do not match an entity attribute must be annotated with the By annotation and \
+ the By annotation value must be assigned to be the entity attribute name. \
+ Alternatively, enable the -parameters compile option and give the parameter \
+ the same name as the entity attribute.
+CWWKD1013.cde.missing.param.anno.explanation=Parameters of repository count, \
+ delete, and exists methods must correspond to entity attributes.
+CWWKD1013.cde.missing.param.anno.useraction=Update the repository method such \
+ that all parameters correspond to entity attributes.
+
+CWWKD1014.upd.missing.param.anno=CWWKD1014E: The {0} method of the {1} repository \
+ is not a valid lifecycle Update method because the method has {2} parameters. \
+ Repository methods that are annotated with a lifecycle annotation must have \
+ exactly 1 parameter, which must be the entity, an array of the entity, or a \
+ List of the entity. \
+ The {0} method is also not a valid parameter-based update operation because \
+ method parameter {3} does not have an annotation ({4}) that indicates the entity \
+ attribute name. Alternatively, enable the -parameters compile option and give the \
+ parameter the same name as the entity attribute.
+CWWKD1014.upd.missing.param.anno.explanation=Parameters of repository update \
+ methods must correspond to entity attributes. Alternatively, lifecycle methods \
+ must have a single entity parameter.
+CWWKD1014.upd.missing.param.anno.useraction=Update the repository method such that \
+ all parameters correspond to entity attributes. Alternatively, update the \
+ repository method to have a single parameter that is an entity, an array of the \
+ entity, or a List of the entity.
+
+CWWKD1015.null.entity.param=CWWKD1015E: The {0} method of the {1} repository \
+ interface cannot accept a null entity.
+CWWKD1015.null.entity.param.explanation=Lifecycle methods require a non-null \
+ entity instance.
+CWWKD1015.null.entity.param.useraction=Update application code to avoid supplying \
+ a null entity value to the repository method.
+
+CWWKD1016.incompat.entity.param=CWWKD1016E: The {0} method of the {1} repository \
+ interface requires a {2} entity, but a {3} value was supplied.
+CWWKD1016.incompat.entity.param.explanation=The lifecycle method accepts only \
+ entity values of the declared type.
+CWWKD1016.incompat.entity.param.useraction=Update application code to supply an \
+ entity value of the same entity type that the repository method declares.
+
+CWWKD1017.dup.special.param=CWWKD1017E: The {0} method of the {1} repository \
+ cannot have multiple {2} parameters.
+CWWKD1017.dup.special.param.explanation=Some of the Jakarta Data special \
+ parameters, including Limit and PageRequest, cannot appear multiple times within \
+ a repository method signature.
+CWWKD1017.dup.special.param.useraction=Update the repository method signature \
+ to have at most one occurrence of the Jakarta Data special parameter type.
+
+CWWKD1018.confl.special.param=CWWKD1018E: The {0} method of the {1} repository \
+ cannot have a {2} parameter and a {3} parameter.
+CWWKD1018.confl.special.param.explanation=Some of the Jakarta Data special \
+ parameters, such as Limit and PageRequest, cannot be combined on a single \
+ repository method signature.
+CWWKD1018.confl.special.param.useraction=Update the repository to not use \
+ both of the Jakarta Data special parameter types in the same method signature.
+
+CWWKD1019.mixed.positional.named=CWWKD1019E: The {0} method of the {1} repository \
+ interface cannot have a query that mixes positional and named parameters. \
+ The interface defines a mix of {2} positional parameters and \
+ {3} named parameters {4} for the Query annotation value: {5}. A query with \
+ positional parameters must reference each parameter by its ordinal value, \
+ starting with ?1, and the method parameters must not have the Param annotation. \
+ In a query with named parameters, each parameter must be referenced by its name, \
+ such as {6}, and the method parameters must have the Param annotation, \
+ such as {7}. Alternatively, enabling the -parameters compile option allows \
+ method parameters to indicate the named parameter by matching its name, \
+ for example, {8}.
+CWWKD1019.mixed.positional.named.explanation=Queries with parameters must use all \
+ named parameters or all positional parameters, not a combination.
+CWWKD1019.mixed.positional.named.useraction=Update the repository method to use \
+ only named parameters or only positional parameters.
+
+CWWKD1020.invalid.param.type=CWWKD1020E: Parameters of the {0} method of the \
+ {1} repository interface must not be of the {2} type because the repository \
+ method is a {3} operation.
+CWWKD1020.invalid.param.type.explanation=The parameter type is not permitted \
+ on this type of method.
+CWWKD1020.invalid.param.type.useraction=Update the repository method to define \
+ a method parameter for each value that is required by a comparison.
+
+CWWKD1021.insufficient.params=CWWKD1021E: The {0} method of the {1} repository \
+ interface has {2} parameters, but the query conditions that are defined by the \
+ method require {3} parameters. The query for the method is: {4}.
+CWWKD1021.insufficient.params.explanation=Query conditions that define \
+ comparisons of values require a corresponding number of repository method \
+ parameters to supply the values.
+CWWKD1021.insufficient.params.useraction=Update the repository method to define \
+ a method parameter for each value that is required by a comparison.
+
+CWWKD1022.too.many.params=CWWKD1022E: The query conditions of the {0} method \
+ of the {1} repository interface require {2} parameters, but the repository \
+ method signature has {3} parameters. The query for the method is: {4}.
+CWWKD1022.too.many.params.explanation=Query conditions that define \
+ comparisons of values require a corresponding number of repository method \
+ parameters to supply the values. Extra parameters are not permitted.
+CWWKD1022.too.many.params.useraction=Update the repository method signature \
+ to remove extra parameters that do not correspond to declared conditions.
+
+CWWKD1023.extra.param=CWWKD1023E: The query conditions of the {0} method \
+ of the {1} repository interface require {2} parameters, but the repository \
+ method has an additional {3} parameter. The query for the method is: {4}.
+CWWKD1023.extra.param.explanation=Query conditions that define \
+ comparisons of values require a corresponding number of repository method \
+ parameters to supply the values. Extra parameters are not permitted.
+CWWKD1023.extra.param.useraction=Update the repository method signature \
+ to remove extra parameters that do not correspond to declared conditions.
+
+CWWKD1024.missing.entity.attr=CWWKD1024E: The {0} method of the {1} repository \
+ interface is missing an entity attribute name or was supplied with a parameter \
+ that lacks an entity attribute name. Valid attribute names for the {2} entity \
+ class are: {3}.
+CWWKD1024.missing.entity.attr.explanation=The query conditions and sort criteria \
+ for a repository method must include an entity attribute name.
+CWWKD1024.missing.entity.attr.useraction=Inspect the declaration and usage of \
+ the repository method to ensure that an entity attribute name is supplied for \
+ each query condition and sort criterion.
+
+CWWKD1025.missing.id.attr=CWWKD1025E: The {0} entity class that is used by the \
+ {1} method of the {2} repository interface does not have an ID attribute.
+CWWKD1025.missing.id.attr.explanation=Repository methods that delete and return \
+ an entity must have an ID attribute.
+CWWKD1025.missing.id.attr.useraction=If the entity does not have a single \
+ attribute for the ID, define separate repository methods that query for the \
+ entity and delete the entity.
+
+CWWKD1026.ignore.case.not.text=CWWKD1026E: The {0} attribute of the {1} entity is \
+ not a character or character sequence; therefore, the {2} sort criteria must not \
+ specify to ignore case. The type of the attribute is {3}, and it was supplied to \
+ the {4} method of the {5} repository interface.
+CWWKD1026.ignore.case.not.text.explanation=Sorting with case ignored is only \
+ possible with entity attributes that represent text.
+CWWKD1026.ignore.case.not.text.useraction=Ensure the sort criteria is applied \
+ to the correct entity attribute and remove the instruction to ignore case if the \
+ entity attribute does not represent text.
+
+CWWKD1027.datastore.lacks.java.comp=CWWKD1027E: One or more repository interfaces \
+ ({0}) from the {1} application artifact specify a {2} dataStore value that \
+ does not match a data source resource reference or persistence unit reference \
+ because it lacks a java:comp/env/ namespace prefix. Consider changing the \
+ Repository annotation to specify {3}.
+CWWKD1027.datastore.lacks.java.comp.explanation=JNDI names of data source \
+ resource references and persistence unit references must include a java: \
+ namespace prefix.
+CWWKD1027.datastore.lacks.java.comp.useraction=Ensure that the data store value \
+ of the Repository annotation includes a java: namespace prefix when the value \
+ indicates the JNDI name of a data source resource reference or persistence unit \
+ reference.
+
+CWWKD1028.first.exceeds.max=CWWKD1028E: The {0} method of the {1} repository \
+ interface requests the first {2} results, which exceeds the maximum allowed \
+ number of results: {3}.
+CWWKD1028.first.exceeds.max.explanation=The maximum number of query results is \
+ limited by system constraints and the value specified.
+CWWKD1028.first.exceeds.max.useraction=Reduce the requested maximum number of \
+ query results to a smaller value.
+
+CWWKD1029.first.neg.or.zero=CWWKD1029E: The {0} method of the {1} repository \
+ interface requests the first {2} results. The requested maximum number of \
+ results to return must be a positive number.
+CWWKD1029.first.neg.or.zero.explanation=The maximum number of query results \
+ must be a positive number.
+CWWKD1029.first.neg.or.zero.useraction=Update the repository method to specify \
+ a positive maximum number of results.
+
+CWWKD1030.ql.lacks.entity=CWWKD1030E: The entity name is missing from the {0} \
+ query that is specified for the {1} method of the {2} repository. \
+ For {3} queries, use the form: {4}.
+CWWKD1030.ql.lacks.entity.explanation=The query contains a clause that requires \
+ the entity name.
+CWWKD1030.ql.lacks.entity.useraction=Update the query for repository method to \
+ include the entity name.
+
+CWWKD1031.ql.similar.entity=CWWKD1031E: The {0} method of the {1} repository \
+ interface specifies a query that requires a {2} entity name that is not found \
+ but is a close match for the {3} entity name. The query is: {4}.
+CWWKD1031.ql.similar.entity.explanation=The query might have a typographical \
+ error in its reference to the entity name.
+CWWKD1031.ql.similar.entity.useraction=Review the query to ensure the correct \
+ entity name is used.
+
+CWWKD1032.ql.unknown.entity=CWWKD1032E: The {0} method of the {1} repository \
+ interface specifies a query that requires a {2} entity name that is not found. \
+ Ensure that {2} is the name of a valid entity. To enable the entity to be found, \
+ give the repository a lifecycle method that is annotated with one of the {3} \
+ annotations and supply the entity as its parameter. Alternatively, have the \
+ repository extend the DataRepository interface or another built-in repository \
+ interface, with the entity class as the first type variable. The query is: {4}.
+CWWKD1032.ql.unknown.entity.explanation=The query might have a typographical error \
+ in its reference to the entity name, or the repository does not specify its \
+ primary entity class.
+CWWKD1032.ql.unknown.entity.useraction=Review the query to ensure the correct \
+ entity name is used. Review the repository definition to ensure the correct \
+ primary entity class is specified.
+
+CWWKD1033.ql.orderby.disallowed=CWWKD1033E: The {0} method of the {1} repository \
+ interface cannot specify a query that includes an ORDER BY clause because \
+ the method returns {2}. Remove the ORDER BY clause and instead use the {3} \
+ annotation to specify static sort criteria. The query is: {4}.
+CWWKD1033.ql.orderby.disallowed.explanation=The ORDER BY clause is incompatible \
+ with cursor-based pagination.
+CWWKD1033.ql.orderby.disallowed.useraction=Replace the ORDER BY clause with \
+ annotations that specify the sort criteria.
+
+CWWKD1034.ql.req.end.in.where=CWWKD1034E: The query that is specified by the \
+ {0} method of the {1} repository interface must end in a WHERE clause because \
+ the method returns {2}. There WHERE clause ends at position {3}, but the \
+ length of the query is {4}. The query is: {5}.
+CWWKD1034.ql.req.end.in.where.explanation=A WHERE clause is required when \
+ using cursor-based pagination.
+CWWKD1034.ql.req.end.in.where.useraction=Add a WHERE clause to the query.
+
+CWWKD1035.incompat.page.mode=CWWKD1035E: A page request with the {0} pagination \
+ mode must not be supplied to the {1} method of the {2} repository interface \
+ because the method returns {3} instead of {4}.
+CWWKD1035.incompat.page.mode.explanation=The requested pagination mode is \
+ not compatible with the return type of the repository method.
+CWWKD1035.incompat.page.mode.useraction=Use a return type of Page for the \
+ OFFSET pagination mode and a return type of CursoredPage for the CURSOR_NEXT \
+ and CURSOR_PREVIOUS pagination modes.
+
+CWWKD1036.cursor.size.mismatch=CWWKD1036E: A cursor with {0} elements that is \
+ supplied to the {1} method of the {2} repository interface cannot be used with \
+ sort criteria of size {3} because the number and order of the cursor elements \
+ must match the sort criteria. The cursor consists of: {4}. The sort criteria is: \
+ {5}.
+CWWKD1036.cursor.size.mismatch.explanation=The number of cursor elements must \
+ match the size of the combined sort criteria of the repository method.
+CWWKD1036.cursor.size.mismatch.useraction=Correct the cursor elements or the \
+ sort criteria such that both have the same size.
+
+CWWKD1037.cursor.rtrn.mismatch=CWWKD1037E: Unable to obtain a cursor from the \
+ {0} result of the {1} method of the {2} repository interface. Queries that \
+ use cursor-based pagination must return results of the same type as the \
+ entity type, which is {3}. The repository method return type is {4}.
+CWWKD1037.cursor.rtrn.mismatch.explanation=Cursor-based pagination is only \
+ possible when the repository method returns the entity type.
+CWWKD1037.cursor.rtrn.mismatch.useraction=Update the repository method to \
+ return the entity type.
+
+CWWKD1038.no.prev.offset.page=CWWKD1038E: A page number prior to {0} cannot \
+ be requested for the {1} method of the {2} repository interface because the \
+ Page.hasPrevious method returns false, indicating there is no previous page.
+CWWKD1038.no.prev.offset.page.explanation=Offset pagination does not allow \
+ page numbers less than 1.
+CWWKD1038.no.prev.offset.page.useraction=Ensure that the requested page number \
+ is a positive number and use the Page.hasPrevious method to ensure it is valid \
+ to request the previous page.
+
+CWWKD1039.no.prev.cursor.page=CWWKD1039E: A previous page cannot be requested \
+ for the {0} method of the {1} repository interface because the Page.hasPrevious \
+ method returns false, indicating there is no previous page.
+CWWKD1039.no.prev.cursor.page.explanation=Cursor-based pagination does not allow \
+ requesting a previous page when the current page is known to contain the \
+ results at the beginning of the data set.
+CWWKD1039.no.prev.cursor.page.useraction=Use the Page.hasPrevious method to \
+ ensure it is valid to request the previous page.
+
+CWWKD1040.no.next.page=CWWKD1040E: A next page cannot be requested for the \
+ {0} method of the {1} repository interface because {2} returns false, \
+ indicating there is no next page.
+CWWKD1040.no.next.page.explanation=A next page cannot be requested when the \
+ current page is known to contains the end of the data set.
+CWWKD1040.no.next.page.useraction=Use the hasNext method to ensure it is valid \
+ to request the next page.
+
+CWWKD1041.rtrn.mismatch.pagereq=CWWKD1041E: The {0} method of the {1} repository \
+ interface has a {2} return type but lacks a parameter of type PageRequest \
+ following the parameters for the query conditions.
+CWWKD1041.rtrn.mismatch.pagereq.explanation=Repository methods with the Page \
+ and CursoredPage return types must have a PageRequest parameter.
+CWWKD1041.rtrn.mismatch.pagereq.useraction=Add a PageRequest parameter to the \
+ repository method signature.
+
+CWWKD1042.no.totals=CWWKD1042E: Pages that are retrieved by the {0} method of \
+ the {1} repository interface do not include a total count of elements and pages \
+ because the {2} page request specifies a value of false for requestTotal. \
+ To request a page with the total count included, use the PageRequest.withTotal \
+ method instead of the PageRequest.withoutTotal method.
+CWWKD1042.no.totals.explanation=The PageRequest.withoutTotal method specifies that \
+ requested pages do not include a total count of elements and pages.
+CWWKD1042.no.totals.useraction=Use the PageRequest.withTotal method to request a \
+ total count of elements and pages.
+
+CWWKD1043.offset.exceeds.max=CWWKD1043E: The {0} offset that is needed for the \
+ {1} page request that is supplied to the {2} method of the {3} repository \
+ interface exceeds the maximum allowed value of {4}.
+CWWKD1043.offset.exceeds.max.explanation=The combination of page number and \
+ maximum page size is too large.
+CWWKD1043.offset.exceeds.max.useraction=Add restrictions to the query to reduce \
+ the number of matching results.
+
+CWWKD1044.invalid.resource.type=CWWKD1044E: The {0} resource accessor method \
+ of the {1} repository cannot return a {2} resource. The supported return types \
+ for resource accessor methods are: {3}.
+CWWKD1044.invalid.resource.type.explanation=The return type of the resource \
+ accessor method is not one of the supported types for Jakarta Data.
+CWWKD1044.invalid.resource.type.useraction=Remove the method or update it to \
+ return one of the supported types.
+
+CWWKD1045.unknown.entity.anno=CWWKD1045E: The built-in Jakarta Data provider \
+ cannot provide an implementation of the {0} repository interface because the \
+ {1} entity class that is used by the repository includes an unrecognized entity \
+ annotation. The following entity annotations are found on the entity class: {2}. \
+ Supported entity annotations are: {3}.
+CWWKD1045.unknown.entity.anno.explanation=The built-in Jakarta Data provider does \
+ not support one of the entity annotations.
+CWWKD1045.unknown.entity.anno.useraction=Remove the unrecognized entity annotation \
+ or use the provider attribute of the Repository annotation to select a Jakarta \
+ Data provider that recognizes the entity annotation.
+
+CWWKD1046.result.convert.err=CWWKD1046E: The {0} result of the {1} method of the \
+ {2} repository interface cannot be converted to the {3} return type of the \
+ repository method.
+CWWKD1046.result.convert.err.explanation=The result value is not compatible with \
+ the return type of the repository method.
+CWWKD1046.result.convert.err.useraction=Ensure the return type of the repository \
+ method is consistent with the type of result that is returned by the query.
+
+CWWKD1047.result.out.of.range=CWWKD1047E: The {0} result of the {1} method of the \
+ {2} repository interface cannot be converted to the {3} return type of the \
+ repository method because the result is not within the range of {4} to {5}.
+CWWKD1047.result.out.of.range.explanation=The result value is not compatible with \
+ the return type for the repository method because it is outside of the range of \
+ values that can be converted.
+CWWKD1047.result.out.of.range.useraction=Adjust the return type of the repository \
+ method to allow for the value to be returned.
+
+CWWKD1048.result.exceeds.max=CWWKD1048E: The {0} result of the {1} method of the \
+ {2} repository interface cannot be converted to the {3} return type of the \
+ repository method because the result value exceeds the maximum value of {4}.
+CWWKD1048.result.exceeds.max.explanation=The result value is not compatible with \
+ the return type for the repository method because it exceeds the maximum value \
+ that can be converted to that type.
+CWWKD1048.result.exceeds.max.useraction=Adjust the return type of the repository \
+ method to allow for the value to be returned.
+
+CWWKD1049.count.convert.err=CWWKD1049E: The count value, {0}, from the {1} method \
+ of the {2} repository interface cannot be converted to the {3} return type of \
+ the repository method.
+CWWKD1049.count.convert.err.explanation=The count value is not compatible with \
+ the return type of the repository method.
+CWWKD1049.count.convert.err.useraction=Adjust the return type of the repository \
+ method to allow for the value to be returned.
+
+CWWKD1050.opt.lock.exc=CWWKD1050E: The {0} method of the {1} repository \
+ interface did not find a {2} entity that matches the entity attributes: {3}. \
+ Verify that the entity instance that is supplied to the \
+ {0} method is based on the most recent version of the entity. The most recent \
+ version of the entity can be obtained from a find method or from the result \
+ value of one of the following lifecycle methods: {4}.
+CWWKD1050.opt.lock.exc.explanation=A matching entity was not found.
+CWWKD1050.opt.lock.exc.useraction=If it is expected that the entity might \
+ not be found in the database, no action is needed. Otherwise, ensure that the \
+ most recent version of the entity is used.
+
+CWWKD1051.single.opt.lock.exc=CWWKD1051E: The {0} method of the {1} repository \
+ interface did not find a matching {2} entity in the database. \
+ Verify that the entity instance that is supplied to the \
+ {0} method is based on the most recent version of the entity. The most recent \
+ version of the entity can be obtained from a find method or from the result \
+ value of one of the following lifecycle methods: {3}.
+CWWKD1051.single.opt.lock.exc.explanation=A matching entity was not found.
+CWWKD1051.single.opt.lock.exc.useraction=If it is expected that the entity might \
+ not be found in the database, no action is needed. Otherwise, ensure that the \
+ most recent version of the entity is used.
+
+CWWKD1052.multi.opt.lock.exc=CWWKD1052E: The {0} method of the {1} repository \
+ interface did not find {2} of the {3} {4} entities in the database. \
+ Verify that the entity instances that are supplied to the \
+ {0} method are based on the most recent version of each entity. The most recent \
+ version of an entity can be obtained from a find method or from the result \
+ value of one of the following lifecycle methods: {5}.
+CWWKD1052.multi.opt.lock.exc.explanation=One or more of the entities were not \
+ found in the database.
+CWWKD1052.multi.opt.lock.exc.useraction=If it is expected that an entity might \
+ not be found in the database, no action is needed. Otherwise, ensure that the \
+ most recent version of each entity is used.
+
+CWWKD1053.empty.result=CWWKD1053E: The {0} return type of the {1} method of the \
+ {2} repository interface is not capable of returning an empty result. If an \
+ empty result is expected, the repository method must return an array or one of \
+ the following return types: {3}.
+CWWKD1053.empty.result.explanation=The return type of the repository method does \
+ not allow it to return an empty result.
+CWWKD1053.empty.result.useraction=Update the repository method to use one of the \
+ return types that can represent an empty result.
+
+CWWKD1054.non.unique.result=CWWKD1054E: The {0} method of the {1} repository \
+ interface has the {2} return type, which is not capable of returning {3} results. \
+ To limit to a single result, use one of the following Jakarta Data patterns: {4}.
+CWWKD1054.non.unique.result.explanation=The return type of the repository method \
+ does not allow returning multiple results.
+CWWKD1054.non.unique.result.useraction=Update the repository method to either use \
+ a return type that supports multiple results or update the repository method \
+ to return no more than a single result.
+
+CWWKD1055.unsupported.entity.attr=CWWKD1055E: The {0} attribute of the {1} entity \
+ has an unsupported type: {2}. Jakarta Data supports Java enumeration types, \
+ the {3} temporal types, and the following basic types: {4}. The built-in \
+ Jakarta Data provider also supports some Jakarta Persistence types, such as \
+ embeddables. Alternatively, if you are using a Jakarta Persistence entity, \
+ you can add the {5} annotation to the {0} attribute to provide an \
+ AttributeConverter implementation that converts an unsupported type to a \
+ supported type.
+CWWKD1055.unsupported.entity.attr.explanation=Jakarta Data does not support the \
+ type used by the entity attribute.
+CWWKD1055.unsupported.entity.attr.useraction=Update the entity attribute to use \
+ one of the supported types.
+
+CWWKD1056.unsupported.keyword=CWWKD1056E: The {0} method of the {1} repository \
+ interface has a name that includes a keyword {2}, which is not a supported \
+ keyword of the Jakarta Data Query by Method Name pattern.
+CWWKD1056.unsupported.keyword.explanation=The method name includes a keyword \
+ that is not recognized as part of the \
+ supported Jakarta Data Query by Method Name pattern.
+CWWKD1056.unsupported.keyword.useraction=Rename the repository method to remove \
+ the unsupported keyword.
+
+CWWKD1057.no.args.constr.inacc=CWWKD1057E: The {0} return type of the {1} method \
+ of the {2} repository interface is not valid for a repository method because the \
+ {3} class lacks a public constructor without parameters.
+CWWKD1057.no.args.constr.inacc.explanation=A public constructor without parameters \
+ is needed to convert the result to the specified class.
+CWWKD1057.no.args.constr.inacc.useraction=Update the repository method to have a \
+ return type that Jakarta Data supports or to be a subclass of Iterable \
+ with a public constructor that does not have parameters.
+
+CWWKD1058.no.args.constr.err=CWWKD1058E: The {0} return type of the {1} method \
+ of the {2} repository interface is not valid for a repository method because the \
+ constructor of the {3} class raised an error: {4}.
+CWWKD1058.no.args.constr.err.explanation=The public constructor without parameters \
+ failed due to an error.
+CWWKD1058.no.args.constr.err.useraction=Fix the error in the constructor, or \
+ update the repository method to use a different return type.
+
+CWWKD1059.attr.cast.err=CWWKD1059E: The {0} method of the {1} repository \
+ interface cannot access the {2} attribute of the {3} entity because the \
+ {4} field or method of the {5} class is incompatible with a {6} value.
+CWWKD1059.attr.cast.err.explanation=An entity attribute or a related attribute from \
+ its hierarchy is not compatible with the expected type.
+CWWKD1059.attr.cast.err.useraction=Review the entity model and verify that the \
+ correct types are used for each attribute.
+
+CWWKD1060.name.out.of.scope=CWWKD1060E: The {0} repository interface in the \
+ {1} application configures a {2} value for the {3} attribute, but {3} names \
+ are not accessible to the artifact that provides the repository interface. \
+ Use a {4} name instead.
+CWWKD1060.name.out.of.scope.explanation=The specified namespace is not accessible \
+ from the artifact where the repository interface is defined.
+CWWKD1060.name.out.of.scope.useraction=Update the Repository annotation to \
+ specify a data store name that is visible to the module or library \
+ providing the repository interface.
+
+CWWKD1061.comp.name.in.ejb=CWWKD1061E: One or more repository interfaces ({0}) \
+ that are defined in the {1} enterprise bean module of the {2} application \
+ configure a {3} value for the {4} attribute. However, {5} names are not accessible \
+ to enterprise bean modules. Use a name from one of the following \
+ namespaces: {6}.
+CWWKD1061.comp.name.in.ejb.explanation=The specified namespace is not accessible \
+ to the enterprise bean module where the repository interface is defined.
+CWWKD1061.comp.name.in.ejb.useraction=Update the Repository annotation to \
+ specify a data store name that is visible to the enterprise bean module that \
+ provides the repository interface.
+
+CWWKD1062.resource.not.found=CWWKD1062E: The {0} method of the {1} repository \
+ interface is unable to locate the {2} resource with the {3} filter.
+CWWKD1062.resource.not.found.explanation=The resource is not found.
+CWWKD1062.resource.not.found.useraction=Ensure that the specified resource and all \
+ other resources it depends on exist and are correctly configured.
+
+CWWKD1063.unsupported.resource=CWWKD1063E: The {0} method of the {1} repository \
+ interface cannot obtain a {2} resource because the Jakarta Persistence provider \
+ does not support the unwrap operation returning a {3} instance.
+CWWKD1063.unsupported.resource.explanation=The Jakarta Persistence provider does \
+ not support the unwrap operation returning the specified resource type.
+CWWKD1063.unsupported.resource.useraction=Remove the unsupported resource accessor \
+ method from the repository interface.
+
+CWWKD1064.datastore.error=CWWKD1064E: The {0} method of the {1} repository \
+ interface is unable to obtain the {2} data store for the repository due to \
+ the following error: {3}.
+CWWKD1064.datastore.error.explanation=An error occurred when attempting to obtain \
+ the data store.
+CWWKD1064.datastore.error.useraction=Ensure that the specified data store and all \
+ other resources it depends on exist and are correctly configured.
+
+CWWKD1065.ddlgen.timeout=CWWKD1065E: DDL generation for one or more repository \
+ interfaces ({0}) failed because the {1} data store did not complete DDL generation \
+ within {2} seconds for the following entities: {3}.
+CWWKD1065.ddlgen.timeout.explanation=The DDL generation attempt timed out \
+ and did not complete.
+CWWKD1065.ddlgen.timeout.useraction=Reattempt DDL generation \
+ when the system and database are not under load.
+
+CWWKD1066.ddlgen.failed=CWWKD1066E: DDL generation for one or more repository \
+ interfaces ({0}) that use the {1} data store encountered an error during \
+ DDL generation for the following entities: {2}. The error is: {3}.
+CWWKD1066.ddlgen.failed.explanation=The DDL generation attempt failed \
+ and did not complete.
+CWWKD1066.ddlgen.failed.useraction=Investigate the error and make corrections \
+ to the repository interface, entities, data store configuration, or database.
+
+CWWKD1067.ddlgen.emf.timeout=CWWKD1067E: DDL generation for one or more repository \
+ interfaces ({0}) failed because the {1} data store was not available or was unable \
+ to make the following entities available within {2} seconds: {3}.
+CWWKD1067.ddlgen.emf.timeout.explanation=Acquisition of the resources needed \
+ for DDL generation timed out and did not complete.
+CWWKD1067.ddlgen.emf.timeout.useraction=Reattempt DDL generation \
+ when the system and database are not under load.
+
+CWWKD1068.entity.name.conflict=CWWKD1068E: The {0} repository interface has \
+ multiple entities named {1} that are provided by different classes: {2}. \
+ Use the following Jakarta Persistence entity annotations to assign a unique \
+ entity name and table name to each entity class: {3}.
+CWWKD1068.entity.name.conflict.explanation=Entity names and tables names are \
+ inferred from the unqualified class name or assigned by Jakarta Persistence \
+ annotations.
+CWWKD1068.entity.name.conflict.useraction=Rename the entities or add \
+ Jakarta Persistence annotations to explicitly resolve the name conflict.
+
+CWWKD1069.record.entity.name.conflict=CWWKD1069E: The {0} repository interface \
+ has multiple entities named {1} that are provided by different classes: {2}. \
+ When Java records are used as entities, it must also be possible to append \
+ a suffix of Entity to the entity name without resulting in a name conflict. \
+ For example: {2}.
+CWWKD1069.record.entity.name.conflict.explanation=Entity names and tables names \
+ are inferred from the unqualified class name or assigned by Jakarta Persistence \
+ annotations.
+CWWKD1069.record.entity.name.conflict.useraction=Rename the entities or switch \
+ to Jakarta Persistence entities to resolve the name conflict.
+
+CWWKD1070.record.convert.err=CWWKD1070E: The {0} record that is supplied to the \
+ {1} method of the {2} repository interface cannot be used as an entity due to \
+ the following error: {3}.
+CWWKD1070.record.convert.err.explanation=It is not possible to use the \
+ Java record as an entity.
+CWWKD1070.record.convert.err.useraction=Define the entity as a Jakarta Persistence \
+ entity instead of using a Java record entity.
+
+CWWKD1071.record.with.type.var=CWWKD1071E: The {0} record is used as an entity by \
+ one or more of the repository interfaces ({1}) in the {2} application artifact, \
+ but the record cannot be an entity because it has one or more type variables: {3}.
+CWWKD1071.record.with.type.var.explanation=Entity classes cannot have generic \
+ type variables.
+CWWKD1071.record.with.type.var.useraction=Remove the type variables from the \
+ record.
+
+CWWKD1072.record.comp.conflict=CWWKD1072E: The {0} record is used as an entity by \
+ one or more of the repository interfaces ({1}) in the {2} application artifact, \
+ but the record cannot be an entity because its {3} component and {4} component \
+ both resolve to the same entity attribute name.
+CWWKD1072.record.comp.conflict.explanation=Entity attribute names must be \
+ unique ignoring case.
+CWWKD1072.record.comp.conflict.useraction=Rename one of the record components \
+ to avoid the conflict.
+
+CWWKD1073.offset.exceeds.max=CWWKD1073E: The {0} starting point of the \
+ {1} limit that is supplied to the {2} method of the {3} repository interface \
+ exceeds the maximum allowed value of {4}.
+CWWKD1073.offset.exceeds.max.explanation=The starting point for the limit is \
+ too large.
+CWWKD1073.offset.exceeds.max.useraction=Add restrictions to the query to reduce \
+ the number of matching results.
+
+CWWKD1074.qbmn.incompat.keywords=CWWKD1074E: The {0} method of the {1} repository \
+ interface must not combine the {2} keyword with the {3} keyword on the same \
+ Query by Method Name condition.
+CWWKD1074.qbmn.incompat.keywords.explanation=The specified Query by Method Name \
+ keywords are not compatible with each other.
+CWWKD1074.qbmn.incompat.keywords.useraction=Rename the method to not combine \
+ the keywords on the same condition.
+
+CWWKD1075.entity.attr.conflict=CWWKD1075E: The {0} entity cannot have an attribute \
+ named {1} and an attribute named {2} because the Jakarta Data specification \
+ considers these names to be aliases for the same entity attribute.
+CWWKD1075.entity.attr.conflict.explanation=There is a collision between the \
+ names of two entity attributes due to the underscore character.
+CWWKD1075.entity.attr.conflict.useraction=Do not use the underscore character \
+ in entity attribute names.
+
+CWWKD1076.repo.disposed=CWWKD1076E: The {0} method of the {1} repository \
+ interface cannot be invoked because the application that defines the repository \
+ has stopped. The repository instance is {2}.
+CWWKD1076.repo.disposed.explanation=Repository methods must not be used outside \
+ of the lifecycle of the application that defines the repository.
+CWWKD1076.repo.disposed.useraction=Ensure that the repository method is not \
+ used outside of the scope of the application that defines the repository.
+
+CWWKD1077.defaultds.not.found=CWWKD1077E: The {0} application artifact \
+ has one or more repository interfaces ({1}) that use or default to the \
+ {2} data store. This data store must be configured in the server configuration \
+ by defining a dataSource element that has an identifier of \
+ DefaultDataSource. For example, {3} \
+ Alternatively, assign the dataStore value of the Repository annotation \
+ to be the identifier of a databaseStore element or the JNDI name of \
+ a data source resource reference or persistence unit reference \
+ that is accessible to the application artifact. A databaseStore element \
+ can be defined in server configuration. For example, {4} \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {5}, which requires server \
+ configuration to have a dataSource configuration element with a {6} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {7}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {8}
+CWWKD1077.defaultds.not.found.explanation=Jakarta Data repositories default to \
+ the Jakarta EE default data source, which must be configured in server \
+ configuration.
+CWWKD1077.defaultds.not.found.useraction=Configure the Jakarta EE default \
+ data source or specify a different data store for the repository.
+
+CWWKD1078.datastore.not.found=CWWKD1078E: One or more repository interfaces \
+ ({0}) from the {1} application artifact \
+ specify a {2} data store that does not match the ID of a \
+ dataSource element or a databaseStore element in server configuration, or it does \
+ not match the JNDI name of a data source, a data source resource reference, or \
+ a persistence unit reference that is accessible to the application artifact, \
+ or one of the related resources is not configured correctly. \
+ A dataSource element can be defined in server configuration. For example, {3} \
+ A databaseStore element can be defined in server configuration. For example, {4} \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {5}, which requires server \
+ configuration to have a dataSource configuration element with a {6} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {7}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {8}
+CWWKD1078.datastore.not.found.explanation=The data store of a Jakarta Data \
+ repository can be the ID of a dataSource element or databaseStore element \
+ in server configuration, or it can be a JNDI name of a data source, data source \
+ resource reference, or persistence unit reference.
+CWWKD1078.datastore.not.found.useraction=Ensure that the resource is configured \
+ correctly. If using a JNDI name, ensure that the scope of the JNDI name makes \
+ the resource accessible to the application artifact that provides the repository.
+
+CWWKD1079.jndi.not.found=CWWKD1079E: One or more repository interfaces ({0}) from \
+ the {1} application artifact specify a data store with the {2} JNDI name, \
+ but a data source, data source resource reference, or persistence unit reference \
+ with that JNDI name is not accessible to the application artifact, \
+ or one of the related resources is not configured correctly. \
+ An application component can use the Resource annotation to define a \
+ data source resource reference. For example, {3}, which points to a \
+ dataSource server configuration element with a {4} attribute. \
+ An application component can use the PersistenceUnit annotation to define a \
+ persistence unit reference. For example, {5}, which requires the persistence.xml \
+ file to have a persistence-unit element with a matching name attribute. \
+ For example, {6} \
+ An application component can use the DataSourceDefinition annotation \
+ to define a data source. Alternatively, a dataSource element can define a \
+ data source in the server configuration. For example, {7}
+CWWKD1079.jndi.not.found.explanation=When the data store of a Jakarta Data \
+ repository is set to a JNDI name of a data source, a data source resource \
+ reference, or a persistence unit reference, the JNDI name must be accessible \
+ to the application artifact that provides the repository, and the data source \
+ or persistence unit must be configured correctly.
+CWWKD1079.jndi.not.found.useraction=Ensure that the resource is configured \
+ correctly, and ensure that the scope of the JNDI name makes the resource \
+ accessible to the application artifact that provides the repository.
+
+CWWKD1080.datastore.general.err=CWWKD1080E: One or more repository interfaces \
+ ({0}) from the {1} application artifact are not available because of an error. \
+ The error might be due to a configuration problem, or the {2} data store for \
+ the repository might not be available. The error is: {3}.
+CWWKD1080.datastore.general.err.explanation=An error prevents \
+ the specified repositories from being used.
+CWWKD1080.datastore.general.err.useraction=Locate the repository interfaces and \
+ the data store configuration make corrections if needed.
+
+CWWKD1081.entity.general.err=CWWKD1081E: Due to an error, the {0} entity is \
+ not available to one or more repository interfaces ({1}) that use the \
+ {2} data store. The error is {3}.
+CWWKD1081.entity.general.err.explanation=An error prevents the \
+ specified entity from being used.
+CWWKD1081.entity.general.err.useraction=Locate the entity and make \
+ corrections if needed.
+
+CWWKD1082.entity.classes.missing=CWWKD1082E: The persistence unit for the \
+ {0} data store does not define one or more entity classes ({1}) \
+ that one or more repository interfaces ({2}), which use the data store, require.
+CWWKD1082.entity.classes.missing.explanation=Repositories use entity classes \
+ that must be defined in the persistence unit.
+CWWKD1082.entity.classes.missing.useraction=Include all entity classes \
+ in the persistence unit.
+
+CWWKD1083.dup.method.param=CWWKD1083E: Multiple parameters in the {0} method \
+ of the {1} repository interface correspond to the named parameter: {2}. \
+ You can annotate one method parameter with {3} to specify the query language \
+ named parameter. Alternatively, you can enable the -parameters compile option \
+ and define one method parameter in the form, {4}, which does not require the \
+ Param annotation.
+CWWKD1083.dup.method.param.explanation=Each method parameter must correspond \
+ to exactly one query parameter.
+CWWKD1083.dup.method.param.useraction=Check if each of the method parameters \
+ specifies the correct named parameter. Remove duplicate method parameters. \
+
+CWWKD1084.missing.named.params=CWWKD1084E: The parameters of the {0} method \
+ of the {1} repository interface do not define the named parameters ({2}) \
+ that are required by the Query annotation value: {3}. You can define a \
+ named parameter for the query by placing the Param annotation on a \
+ corresponding method parameter. For example, {4}. Alternatively, if you \
+ enable the -parameters compile option, you can omit the Param annotation \
+ if you name the method parameter to have the same name as the named parameter. \
+ For example, if String is the named parameter type, the method parameter \
+ can be {5}, which does not require the Param annotation.
+CWWKD1084.missing.named.params.explanation=The Query annotation value requires \
+ one or more named parameters that are not supplied by the repository method.
+CWWKD1084.missing.named.params.useraction=Add parameters to the repository method \
+ to specify the missing named parameters.
+
+CWWKD1085.extra.method.params=CWWKD1085E: The parameters of the {0} method \
+ of the {1} repository interface define query parameters ({2}), which do not \
+ match any of the named parameters ({3}) that are used by the Query annotation \
+ value: {4}.
+CWWKD1085.extra.method.params.explanation=All the method parameters must be \
+ used by the query or be Jakarta Data defined parameter types.
+CWWKD1085.extra.method.params.useraction=Remove the extra method parameters.
+
+CWWKD1086.named.params.unused=CWWKD1086E: The parameters of the {0} method \
+ of the {1} repository interface define named parameters ({2}), which are not \
+ used in the Query annotation value: {3}. You can refer to named parameters \
+ in a query by using the : character followed by the parameter name. \
+ For example, {4}. Positional parameters in a query can be referenced by using \
+ the ? character followed by an ordinal value, starting with ?1. Avoid \
+ annotating method parameters with the Param annotation when the query \
+ uses positional parameters or has no parameters.
+CWWKD1086.named.params.unused.explanation=The Param annotation can only be used \
+ when the query has named parameters.
+CWWKD1086.named.params.unused.useraction=Remove the Param annotation or switch \
+ the query to use named parameters.
+
+CWWKD1087.null.param=CWWKD1087E: The {0} parameter of the {1} method of the \
+ {2} repository interface is a null value. Specify a nonnull value.
+CWWKD1087.null.param.explanation=The parameter value must not be null.
+CWWKD1087.null.param.useraction=Specify a nonnull value to the parameter.
+
+CWWKD1088.empty.sorts=CWWKD1088E: The sort criteria that are specified by the \
+ {0} parameter of the {1} method of the {2} repository interface are empty.
+CWWKD1088.empty.sorts.explanation=The sort criteria must not be empty.
+CWWKD1088.empty.sorts.useraction=Specify a value for the sort criteria.
+
+CWWKD1089.unordered.pagination=CWWKD1089E: The {0} method of the {1} repository \
+ interface must specify the sort criteria because the method returns a {2} value. \
+ Unordered data cannot be split into pages.
+CWWKD1089.unordered.pagination.explanation=Pagination requires ordered data.
+CWWKD1089.unordered.pagination.useraction=Use the OrderBy annotation to define \
+ the sort criteria for the repository method.
+
+CWWKD1090.orderby.conflict=CWWKD1090E: The {0} method of the {1} repository \
+ interface cannot combine the OrderBy annotation and the OrderBy keyword.
+CWWKD1090.orderby.conflict.explanation=The OrderBy annotation is not compatible \
+ with the OrderBy keyword.
+CWWKD1090.orderby.conflict.useraction=Use only the OrderBy annotation or the \
+ OrderBy keyword.
+
+CWWKD1091.method.name.parse.err=CWWKD1091E: An entity attribute named {0} is \
+ not found on the {1} entity class for the {2} method of the {3} repository \
+ interface. Confirm that the repository method either has a name that conforms \
+ to the Query by Method Name pattern or is annotated with one of: {4}. \
+ Valid attribute names for the entity are: {5}.
+CWWKD1091.method.name.parse.err.explanation=The repository method name was parsed \
+ according to the Query by Method Name pattern because the repository method \
+ does not have a Jakarta Data annotation that indicates the type of operation.
+CWWKD1091.method.name.parse.err.useraction=Correct the repository method name \
+ or annotate the repository method to indicate a Jakarta Data operation such as \
+ Query, Find, or Save.
+
+CWWKD1092.lifecycle.arg.empty=CWWKD1092E: The {0} method of the {1} repository \
+ does not accept an empty {2} parameter. The parameter value must contain at \
+ least one entity.
+CWWKD1092.lifecycle.arg.empty.explanation=Insert, Update, Save, and Delete methods
+ require at least one entity.
+CWWKD1092.lifecycle.arg.empty.useraction=Ensure that the array, List, or Stream \
+ that is supplied to the method contains at least one entity.
+
+CWWKD1093.fn.not.applicable=CWWKD1093E: The {0} function cannot be evaluated \
+ for the {1} entity that is used by the {2} method of the {3} repository \
+ interface. The entity does not have an attribute that is annotated with {4} \
+ or from which {0} can be inferred.
+CWWKD1093.fn.not.applicable.explanation=The function cannot be used on the entity \
+ because the entity lacks an ID or version attribute.
+CWWKD1093.fn.not.applicable.useraction=Do not use the function in query language \
+ or parameters for the repository method.
+
+CWWKD1094.return.mismatch=CWWKD1094E: The {0} method of the {1} repository \
+ interface has the {2} return type, which is not capable of returning the number \
+ of entities, {3}, that the repository method accepts as a parameter. \
+ Valid return types for a {4} method that accepts multiple entities include: {5}.
+CWWKD1094.return.mismatch.explanation=A repository life cycle method that \
+ returns entities must be able to return the same number of entities as are \
+ accepted by the method.
+CWWKD1094.return.mismatch.useraction=Update the repository method to either use \
+ a return type that can return multiple entities or update the repository method \
+ to accept only a single entity.
+
+CWWKD1095.repo.err=CWWKD1095E: An implementation of the {0} repository interface \
+ cannot be provided due to an error. The repository annotation is {1}. \
+ The primary entity class is {2}. The error is: {3}
+CWWKD1095.repo.err.explanation=The built-in Jakarta Data provider is unable \
+ to provide an instance of the repository due to an error.
+CWWKD1095.repo.err.useraction=Investigate the error and correct \
+ the repository interface, entities, data store configuration, or database.
+
+CWWKD1096.orderby.incompat=CWWKD1096E: The {0} method of the {1} repository \
+ has an OrderBy annotation, but the {0} method is not a find operation or a \
+ delete operation that returns entities.
+CWWKD1096.orderby.incompat.explanation=The OrderBy annotation is not compatible \
+ with the type of repository operation.
+CWWKD1096.orderby.incompat.useraction=Remove the OrderBy annotation.
+
+CWWKD1097.param.incompat=CWWKD1097E: The {0} method of the {1} repository \
+ has a {2} parameter, but the {0} method is not a find operation or a \
+ delete operation that returns entities.
+CWWKD1097.param.incompat.explanation=Order, Sort, and Limit parameters are \
+ not compatible with the type of repository operation.
+CWWKD1097.param.incompat.useraction=Remove the Order, Sort, or Limit parameter.
+
+CWWKD1098.spec.param.position.err=CWWKD1098E: The {0} method of the {1} repository \
+ has a {2} parameter that is positioned before the query parameters. \
+ Parameter types that have special meaning in Jakarta Data ({3}) must be \
+ positioned after the other parameters in the repository method signature.
+CWWKD1098.spec.param.position.err.explanation=When special Jakarta Data defined \
+ parameter types are included in a repository method signture, they must be \
+ positioned after all the query parameters.
+CWWKD1098.spec.param.position.err.useraction=Move the special Jakarta Data defined \
+ parameter types to positions at the end of the repository method signature.
+
+CWWKD1099.first.keyword.incompat=CWWKD1099E: The {0} method of the {1} repository \
+ has a name that includes the First keyword, which is incompatible with the \
+ {2} parameter of the method.
+CWWKD1099.first.keyword.incompat.explanation=A Query by Method Name method \
+ that includes a Limit or PageRequest parameter cannot use the First keyword.
+CWWKD1099.first.keyword.incompat.useraction=Remove the First keyword from the \
+ method name.
+
+CWWKD1100.cursor.requires.sort=CWWKD1100E: The {0} method of the {1} repository \
+ returns {2} but does not have an OrderBy annotation or any of the following \
+ parameters to specify sort criteria: {3}. Sort criteria is required for \
+ cursor-based pagination and cannot be specified within an ORDER BY clause of \
+ a Query annotation value.
+CWWKD1100.cursor.requires.sort.explanation=Cursor-based pagination requires \
+ sort criteria.
+CWWKD1100.cursor.requires.sort.useraction=Remove the ORDER BY clause from the \
+ Query annotation value if one is found there. Add an OrderBy annotation or a \
+ repository method parameter to specify the sort criteria.
+
+CWWKD1101.attr.subset.mismatch=CWWKD1101E: The {0} return type of the \
+ {1} method of the {2} repository uses the {3} Java record type to define the \
+ results to be a subset of entity attributes: {4}. However, at least one of the \
+ requested attribute names is not present on the {5} entity. To return a subset \
+ of entity attributes as a Java record, ensure that the record component names \
+ are within the following set of valid attribute names for the {5} entity: {6}. \
+ Alternatively, use the Select annotation to assign valid entity attribute names. \
+ To return a single entity attribute that has a Java record type, annotate \
+ the {1} method to have a Select annotation and assign its member value \
+ to the name of the entity attribute.
+CWWKD1101.attr.subset.mismatch.explanation=When Java records are used to \
+ retrieve a subset of entity attributes, all of the record components must \
+ correspond to valid entity attributes.
+CWWKD1101.attr.subset.mismatch.useraction=Rename the record components to \
+ match valid entity attribute names, or use the Select annotation to explicitly \
+ request entity attributes by their name.
+
+CWWKD1102.incompat.query.result=CWWKD1102E: The {0} method of the {1} repository \
+ has the {2} return type, but the Jakarta Persistence provider performed a \
+ query with results of the {3} type. Check whether the Jakarta Persistence \
+ provider allows querying for the types of entity attributes that the {0} method \
+ selects. Check for other causes of incompatibility if the Jakarta provider does \
+ allow querying for the types of entity attributes that the {0} method selects.
+CWWKD1102.incompat.query.result.explanation=Jakarta Persistence providers do not \
+ allow returning all types of entity attributes. If the Jakarta provider does \
+ return the type of entity attributes that the method selected, another cause \
+ of incompatibility exists. For example, the Jakarta Persistence provider might \
+ have a bug or the repository method signature might have an error.
+CWWKD1102.incompat.query.result.useraction=If the type of entity attributes that \
+ the method selects is not allowed, modify the query to retrieve the whole entity \
+ or a different set of entity attributes that the Jakarta Persistence provider \
+ allows. If the type of entity attributes that the method selects is allowed, \
+ check for other causes of incompatibility.
+
+CWWKD1103.incompat.query.result=CWWKD1103E: The {0} method of the {1} repository \
+ has the {2} return type, but the Jakarta Persistence provider performed a \
+ {3} query with results of the {4} type. Check whether the Jakarta Persistence \
+ provider allows querying for the types of entity attributes that the {0} method \
+ selects. Check for other causes of incompatibility if the Jakarta provider does \
+ allow querying for the types of entity attributes that the {0} method selects.
+CWWKD1103.incompat.query.result.explanation=Jakarta Persistence providers do not \
+ allow returning all types of entity attributes. If the Jakarta provider does \
+ return the type of entity attributes that the method selected, another cause \
+ of incompatibility exists. For example, the Jakarta Persistence provider might \
+ have a bug or the repository method signature might have an error.
+CWWKD1103.incompat.query.result.useraction=If the type of entity attributes that \
+ the method selects is not allowed, modify the query to retrieve the whole entity \
+ or a different set of entity attributes that the Jakarta Persistence provider \
+ allows. If the type of entity attributes that the method selects is allowed, \
+ check for other causes of incompatibility.
+
+CWWKD1104.empty.anno.value=CWWKD1104E: The empty value for the String class is \
+ not a valid value for the {0} annotation that is used on the {1} method of the \
+ {2} repository.
+CWWKD1104.empty.anno.value.explanation=The empty value for the String class is \
+ not a supported value. What the supported value is depends on the type of \
+ annotation. For example, if the annotation is a Param annotation, then valid \
+ values are the named parameter names that are used within the Query annotation \
+ value.
+CWWKD1104.empty.anno.value.useraction=If the annotation is not needed, \
+ remove it from the repository method. Otherwise, specify a valid value for \
+ the annotation.
+
+CWWKD1105.keyword.in.orderby=CWWKD1105E: The OrderBy clause of the {0} method \
+ of the {1} repository cannot be parsed because the {2} entity attribute of the \
+ {3} entity contains the {4} keyword of the Jakarta Data Query by Method Name \
+ pattern. Remove the OrderBy clause from the {0} method name and use the \
+ OrderBy annotation instead.
+CWWKD1105.keyword.in.orderby.explanation=Entity attribute names that contain \
+ Jakarta Data keywords cannot be used in the names of repository methods that \
+ follow the Jakarta Data Query by Method Name pattern.
+CWWKD1105.keyword.in.orderby.useraction=Rename the entity attribute or switch \
+ to the OrderBy annotation to specify the ordering.
+
+CWWKD1106.init.timed.out=CWWKD1106E: The {0} repository that requires the \
+ {1} data store and is provided or used by the {2} application artifact did not \
+ become available within {3} seconds. Confirm that the {2} application artifact \
+ starts and that the {1} data store resource that is specified as the dataStore \
+ value of the Repository annotation is configured correctly and is accessible to \
+ the application artifact at the point when the {0} repository is first accessed.
+CWWKD1106.init.timed.out.explanation=A repository did not become available \
+ within the allotted amount of time.
+CWWKD1106.init.timed.out.useraction=Check the configuration of the dataStore \
+ and confirm that it is accessible to application artifacts that define and use \
+ the repository. Also confirm that the application and all of its modules start \
+ successfully.
+
+CWWKD1107.init.timed.out.checkpoint=CWWKD1107E: The {0} application artifact \
+ accessed the {1} repository before a checkpoint of the application completed. \
+ Update the {0} application to avoid using the repository before a checkpoint.
+CWWKD1107.init.timed.out.checkpoint.explanation=Applications cannot use \
+ repositories before completion of a checkpoint.
+CWWKD1107.init.timed.out.checkpoint.useraction=Avoid using the repository \
+ until after the checkpoint completes.
+
+CWWKD1108.missing.entity.anno=CWWKD1108E: The {0} entity class requires the \
+ {1} annotation because the {2} annotation is applied to the {3} member of \
+ the entity class.
+CWWKD1108.missing.entity.anno.explanation=Entity classes that use annotations
+ from the jakarta.persistence package must also be annotated with the Entity
+ annotation from the Jakarta Persistence specification.
+CWWKD1108.missing.entity.anno.useraction=Apply the Entity annotation to the
+ entity class or remove the Jakarta Persistence annotations from its members.
+
+CWWKD1109.jpa.anno.on.record=CWWKD1109E: The {0} annotation is not allowed \
+ on the {1} method of the {2} entity class because the {2} entity class is \
+ a Java record.
+CWWKD1109.jpa.anno.on.record.explanation=Jakarta Persistence annotations \
+ are not allowed on Java records.
+CWWKD1109.jpa.anno.on.record.useraction=Switch to a Jakarta Persistence \
+ entity class or remove the Jakarta Persistence annotation from the \
+ Java record.
+
+CWWKD1110.incompat.with.collection=CWWKD1110E: The {0} method of the \
+ {1} repository interface has a name that includes the {2} keyword, which is \
+ incompatible with the {3} attribute of the {4} entity because the attribute \
+ has a collection type. The following Query by Method Name keywords can be \
+ used with entity attributes that have a collection type: {5}.
+CWWKD1110.incompat.with.collection.explanation=Some of the Query by Method Name \
+ keywords are not compatible with entity attributes that have a collection type.
+CWWKD1110.incompat.with.collection.useraction=Update the repository method \
+ to avoid using the keyword that is not compatible with the collection type.
+
+CWWKD1111.unsupported.convert=CWWKD1111E: The {0} AttributeConverter \
+ implementation converts {1} values to the {2} type, which is not supported \
+ by the Jakarta Data specification. The Jakarta Data specification supports \
+ Java enumeration types, the {3} temporal types, and the following basic \
+ types: {4}. The built-in Jakarta Data provider also supports some Jakarta \
+ Persistence types.
+CWWKD1111.unsupported.convert.explanation=The AttributeConverter implementation \
+ cannot be used with the built-in Jakarta Data provider because it converts \
+ values to an unsupported type.
+CWWKD1111.unsupported.convert.useraction=Update the AttributeConverter \
+ implementation to convert values to one of the supported types.
+
+CWWKD1112.record.entity.verify.err=CWWKD1112W: An entity class for the {0} record \
+ is defined but might not work. The verification of the bytes of the Jakarta \
+ Persistence entity class, which was generated for the entity class, failed. \
+ The defined entity class is used by one or more repository interfaces ({1}) \
+ in the {2} application artifact. The error is: {3}.
+CWWKD1112.record.entity.verify.err.explanation=When a repository uses a record \
+ entity, a Jakarta Persistence entity is generated to represent the record entity. \
+ The verification of the bytes of the generated Jakarta Persistence entity class \
+ failed.
+CWWKD1112.record.entity.verify.err.useraction=Verify that the implementation of \
+ the record entity adheres to the requirements and conventions for a record \
+ entity.
+
+CWWKD1113.server.stopping=CWWKD1113I: One or more repositories ({0}) did not \
+ initialize because the server is shutting down.
+CWWKD1113.server.stopping.explanation=The server is shutting down and will not \
+ attempt to initialize the repositories.
+CWWKD1113.server.stopping.useraction=No action is needed.
+
+CWWKD1114.app.stopping=CWWKD1114I: One or more repositories ({0}) did not \
+ initialize because the {1} application is in the {2} state.
+CWWKD1114.app.stopping.explanation=The application is stopping or has stopped \
+ and will not try to initialize the repositories.
+CWWKD1114.app.stopping.useraction=Start the application to make the repositories \
+ available.
+
+CWWKD1115.app.unavailable=CWWKD1115E: One or more repositories ({0}) did not \
+ initialize because the {1} application is not available.
+CWWKD1115.app.unavailable.explanation=The application that defines the \
+ repositories is not available. The repositories cannot initialize.
+CWWKD1115.app.unavailable.useraction=Start the application to make the \
+ repositories available.
+
+CWWKD1116.resource.unavailable=CWWKD1116E: One or more repositories ({0}) did not \
+ initialize because the {1} resource did not become available within {2} seconds.
+CWWKD1116.resource.unavailable.explanation=A resource that the repositories \
+ require did not become available.
+CWWKD1116.resource.unavailable.useraction=Verify the configuration of resources \
+ that the repositories use.
+
+CWWKD1117.anno.constraint.conflict=CWWKD1117E: Parameter {0} of the {1} method \
+ of the {2} repository interface cannot be annotated with the annotations: {3}. \
+ One or more of the annotations are incompatible with the {4} type of the \
+ repository method parameter.
+CWWKD1117.anno.constraint.conflict.explanation=Constraint and its subtypes \
+ cannot be combined with parameter annotations other than the By annotation.
+CWWKD1117.anno.constraint.conflict.useraction=Remove the conflicting annotation \
+ or specify the entity attribute type instead of a Constraint type.
+
+CWWKD1118.param.anno.conflict=CWWKD1118E: Parameter {0} of the {1} method \
+ of the {2} repository interface cannot be annotated with the annotations: {3}. \
+ Two or more of the annotations conflict with each other.
+CWWKD1118.param.anno.conflict.explanation=The combination of parameter \
+ annotations is not valid.
+CWWKD1118.param.anno.conflict.useraction=Remove one or more of the conflicting \
+ annotations from the repository method parameter.
+
+CWWKD1119.keyword.prevents.count=CWWKD1119E: The {0} method of the {1} repository \
+ interface retrieves pages that do not include a total count of elements and pages \
+ because the query contains the {2} keyword. The full query is: {3}.
+CWWKD1119.keyword.prevents.count.explanation=The keyword is incompatible with \
+ the ability to obtain a total count of elements and pages.
+CWWKD1119.keyword.prevents.count.useraction=Replace the query with one that \
+ does not use the keyword or avoid requesting a total count of elements and pages.
+
+CWWKD1120.cursor.keyword.mismatch=CWWKD1120E: The {0} method of the {1} repository \
+ interface specifies a query that includes the {2} keyword, which is incompatible \
+ with cursor-based pagination. Queries for cursor-based pagination must end with \
+ a WHERE clause and must not include subqueries. The query is: {3}.
+CWWKD1120.cursor.keyword.mismatch.explanation=Keywords such as GROUP BY, HAVING, \
+ ORDER BY, EXCEPT, INTERSECT, and UNION are not compatible with cursor-based \
+ pagination.
+CWWKD1120.cursor.keyword.mismatch.useraction=Rewrite the query to include only \
+ the clauses: SELECT, FROM, and WHERE.
+
+CWWKD1121.record.lacks.id=CWWKD1121E: The {0} record cannot be used as an entity \
+ because it lacks a unqiue identifier. One of the record components ({1}) must \
+ be named id, have a name that ends with _id, Id or ID, or be of the type \
+ java.util.UUID.
+CWWKD1121.record.lacks.id.explanation=Entities are required to have a unique \
+ identifier attribute.
+CWWKD1121.record.lacks.id.useraction=Add or rename a record component to \
+ follow one of the stated conventions for assigning a unique identifier.
+
+CWWKD1122.entity.lacks.id=CWWKD1122E: The {0} class cannot be used as an \
+ entity because it lacks a unique identifier. To assign a unique identifier, \
+ ensure the {1} feature is enabled and add the @jakarta.persistence.Entity annotation \
+ to the entity class and add the @jakarta.persistence.Id annotation to at most one \
+ field or getter method of the entity class. \
+ Alternatively, use a META-INF/orm.xml file to \
+ define the entity and its unique identifier.
+CWWKD1122.entity.lacks.id.explanation=Entities are required to have a unique \
+ identifier attribute.
+CWWKD1122.entity.lacks.id.useraction=Enable the Jakarta Persistence feature \
+ and follow the Jakarta Persistence entity model to assign a unique identifier.
+
+CWWKD1123.sort.incompat.with.cursor=CWWKD1123E: A cursor cannot be inferred \
+ for a requested page of results because one of the sort criteria supplied \
+ to the {0} method of the {1} repository is not an entity attribute: {2}. \
+ Use the {3} method to construct a cursor that matches the sort criteria, and \
+ supply the cursor to the afterCursor or beforeCursor method of a PageRequest class. \
+ Alternatively, change the sort criteria to include only the names of entity \
+ attributes. Valid attribute names for the {4} entity class are {5}.
+CWWKD1123.sort.incompat.with.cursor.explanation=To automatically \
+ create a cursor based on the sort criteria, each of the sort criteria must \
+ sort by a single entity attribute name.
+CWWKD1123.sort.incompat.with.cursor.useraction=Supply a cursor that is consistent \
+ with the sort criteria. Alternatively, switch to offset-based pagination or \
+ modify the sort criteria to only sort by entity attributes.

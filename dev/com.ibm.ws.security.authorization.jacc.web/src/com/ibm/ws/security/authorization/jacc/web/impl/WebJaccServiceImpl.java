@@ -821,4 +821,14 @@ public class WebJaccServiceImpl implements WebJaccService {
         PolicyProxy policyProxy = jaccService.getPolicyProxy();
         return policyProxy == null ? false : policyProxy.isPolicyConfigured();
     }
+
+    @Override
+    public boolean isUnauthenticatedAuthorizationCheckAllowed() {
+        JaccService jaccService = jaccServiceRef.getService();
+        if (jaccService == null) {
+            return false;
+        }
+        PolicyProxy policyProxy = jaccService.getPolicyProxy();
+        return policyProxy == null ? false : policyProxy.isUnauthenticatedAuthorizationCheckAllowed();
+    }
 }

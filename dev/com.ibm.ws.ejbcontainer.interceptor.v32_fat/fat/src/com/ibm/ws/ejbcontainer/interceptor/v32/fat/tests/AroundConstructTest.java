@@ -44,18 +44,18 @@ public class AroundConstructTest extends FATServletClient {
     /*@formatter:off*/
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
-                                   .andWith(FeatureReplacementAction.EE8_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
-                                   .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                   .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
-                                   .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                   .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
-                                   .andWith(FeatureReplacementAction.EE11_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"));
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.v32.fat.aroundconstruct"));
     /*@formatter:on*/
 
     @BeforeClass

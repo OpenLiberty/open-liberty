@@ -65,7 +65,7 @@ public class BasicAuthTest extends CommonServletTestScenarios {
         myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.webcontainer.security.fat.basicauth");
         JACCFatUtils.installJaccUserFeature(myServer);
         myServer.setServerConfigurationFile(DEFAULT_CONFIG_FILE);
-        JACCFatUtils.transformApps(myServer, "basicauth.war", "basicauthXMI.ear", "basicauthXMInoAuthz.ear", "basicauthXML.ear", "basicauthXMLnoAuthz.ear");
+        JACCFatUtils.transformApps(myServer, "basicauth.war", "basicauthXMInoAuthz.ear", "basicauthXMLnoAuthz.ear");
         myClient = new BasicAuthClient(myServer);
         mySSLClient = new SSLBasicAuthClient(myServer);
         myClient.setJaccValidation(true);

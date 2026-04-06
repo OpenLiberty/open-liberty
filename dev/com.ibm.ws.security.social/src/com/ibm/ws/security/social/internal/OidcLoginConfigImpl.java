@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import java.security.PrivateKey;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -43,10 +44,12 @@ import com.ibm.ws.security.openidconnect.clients.common.ConvergedClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.InMemoryOidcSessionCache;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
+import com.ibm.ws.security.social.Constants;
 import com.ibm.ws.security.social.SocialLoginConfig;
 import com.ibm.ws.security.social.SocialLoginService;
 import com.ibm.ws.security.social.TraceConstants;
 import com.ibm.ws.security.social.error.SocialLoginException;
+import com.ibm.ws.security.social.internal.utils.ClientConstants;
 
 import io.openliberty.security.oidcclientcore.token.auth.PrivateKeyJwtAuthMethod;
 
@@ -72,6 +75,9 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
 
     public static final String KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";
     String signatureAlgorithm = null;
+
+    public static final String KEY_ALLOWED_SIGNATURE_ALGORITHMS = "allowedSignatureAlgorithms";
+    String[] allowedSignatureAlgorithms = null;
 
     public static final String KEY_CLOCKSKEW = "clockSkew";
     int clockSkewMsec = 0;
@@ -171,6 +177,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
         hostNameVerificationEnabled = configUtils.getBooleanConfigAttribute(props, CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, hostNameVerificationEnabled);
         userInfoEndpointEnabled = configUtils.getBooleanConfigAttribute(props, KEY_USERINFO_ENDPOINT_ENABLED, userInfoEndpointEnabled);
         signatureAlgorithm = configUtils.getConfigAttribute(props, KEY_SIGNATURE_ALGORITHM);
+        if (Constants.ALGORITHM_NONE.equals(signatureAlgorithm)) {
+            // 220146
+            Tr.warning(tc, "SOCIAL_LOGIN_NONE_ALG", new Object[] { clientId, signatureAlgorithm });
+        }
+        allowedSignatureAlgorithms = configUtils.getStringArrayConfigAttribute(props, KEY_ALLOWED_SIGNATURE_ALGORITHMS);
         tokenEndpointAuthMethod = configUtils.getConfigAttribute(props, KEY_tokenEndpointAuthMethod);
         tokenEndpointAuthSigningAlgorithm = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM);
         keyAliasName = configUtils.getConfigAttribute(props, KEY_keyAliasName);
@@ -439,6 +450,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
             Tr.debug(tc, KEY_userUniqueIdAttribute + " = " + userUniqueIdAttribute);
             Tr.debug(tc, KEY_CLOCKSKEW + " = " + clockSkewMsec);
             Tr.debug(tc, KEY_SIGNATURE_ALGORITHM + " = " + signatureAlgorithm);
+            Tr.debug(tc, KEY_ALLOWED_SIGNATURE_ALGORITHMS + " = " + Arrays.toString(allowedSignatureAlgorithms));
             Tr.debug(tc, KEY_tokenEndpointAuthMethod + " = " + tokenEndpointAuthMethod);
             Tr.debug(tc, CFG_KEY_TOKEN_ENDPOINT_AUTH_SIGNING_ALGORITHM + " = " + tokenEndpointAuthSigningAlgorithm);
             Tr.debug(tc, KEY_keyAliasName + " = " + keyAliasName);
@@ -544,6 +556,11 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     public String getSignatureAlgorithm() {
         return signatureAlgorithm;
+    }
+
+    @Override
+    public String[] getAllowedSignatureAlgorithms() {
+        return allowedSignatureAlgorithms;
     }
 
     /** {@inheritDoc} */
@@ -991,6 +1008,28 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     @Override
     public List<String> getTokenOrderToFetchCallerClaims() {  
         return tokenOrderToFetchCallerClaims;
+    }
+
+    @Override
+    public Key getPublicKey(String alias) throws Exception {
+        if (sslRefInfo == null) {
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
+                return null;
+            }
+        }
+        return sslRefInfo.getPublicKey(alias);
+    }
+
+    @Override
+    public Collection<String> getTrustedCertAliases(String trustStoreRef) throws SocialLoginException {
+        if (sslRefInfo == null) {
+            sslRefInfo = initializeSslRefInfo();
+            if (sslRefInfo == null) {
+                return null;
+            }
+        }
+        return sslRefInfo.getTrustedCertAliases(trustStoreRef);
     }
 
 }

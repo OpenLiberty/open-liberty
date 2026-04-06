@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Figyelmeztet\u00e9s: {0}: k\u00eds\u00e9rle
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Figyelmeztet\u00e9s: {0}: a kapcsolat lez\u00e1r\u00e1s\u00e1ra tett k\u00eds\u00e9rlet {1} kiv\u00e9telt eredm\u00e9nyezett
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Figyelem: {0} : a feliratkoz\u00f3 bez\u00e1r\u00e1s\u00e1nak k\u00eds\u00e9rlete kiv\u00e9telt okozott {1}
+
 broadcast_ignored_command_while_closing_connection=Figyelmeztet\u00e9s: {0}: parancs k\u00f6zz\u00e9t\u00e9tel\u00e9re vonatkoz\u00f3 k\u00e9r\u00e9st a rendszer figyelmen k\u00edv\u00fcl hagyja kapcsolat lez\u00e1r\u00e1sa sor\u00e1n.
 
 broadcast_listening_sleep_on_error=Figyelmeztet\u00e9s: {0}: {1} kiv\u00e9tel t\u00f6rt\u00e9nt. A sz\u00e1l {2} ezredm\u00e1sodpercig v\u00e1rakozik, miel\u0151tt folytatn\u00e1 a figyel\u00e9st.

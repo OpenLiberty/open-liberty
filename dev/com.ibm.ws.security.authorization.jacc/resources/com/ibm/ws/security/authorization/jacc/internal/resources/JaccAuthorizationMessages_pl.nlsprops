@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: Modu\u0142 do przetwarzania r\u00f3l zabezpiecze\
 JACC_NO_WEB_PLUGIN.explanation=Us\u0142uga JACC nie mo\u017ce przetworzy\u0107 r\u00f3l zabezpiecze\u0144 WWW, poniewa\u017c wymagany modu\u0142 jest niedost\u0119pny.
 JACC_NO_WEB_PLUGIN.useraction=Przejrzyj dzienniki dostawcy JACC i dzienniki serwera, aby uzyska\u0107 wi\u0119cej informacji.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: Us\u0142uga Jakarta Authorization nie mo\u017ce ustawi\u0107 klasy dostawcy {0} {1} z aplikacji {2} z powodu wyj\u0105tku {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=Us\u0142uga Jakarta Authorization nie mo\u017ce ustawi\u0107 klasy dostawcy z powodu wyst\u0105pienia wyj\u0105tku.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Aby uzyska\u0107 wi\u0119cej informacji, przejrzyj logi dostawcy i logi serwera.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: Us\u0142uga Jakarta Authorization skonfigurowa\u0142a klas\u0119 dostawcy {0} o nazwie {1}, zdefiniowan\u0105 w aplikacji {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: Us\u0142uga Jakarta Authorization usun\u0119\u0142a klas\u0119 dostawcy {0} {1} zdefiniowan\u0105 w aplikacji {2}.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.

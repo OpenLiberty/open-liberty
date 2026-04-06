@@ -137,4 +137,6 @@
     </jmsActivationSpec>
     <cdi emptyBeansXmlCDI3Compatibility="true"/>
 
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

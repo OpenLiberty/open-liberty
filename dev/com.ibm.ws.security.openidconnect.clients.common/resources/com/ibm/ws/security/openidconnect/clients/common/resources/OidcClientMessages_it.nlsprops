@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Una richiesta per [{0}] n
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=La richiesta include un cookie con formato non corretto. Il nome host nel cookie deve corrispondere alla richiesta corrente o deve corrispondere a uno dei nomi dominio consentiti. Il cookie potrebbe essere modificato dall'interno dell'agent utente.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Verificare la configurazione del provider OpenID Connect e del client. Se il nome host \u00e8 previsto, aggiungerlo all'attributo wasReqURLRedirectDomainNames dell'elemento webAppSecurity nella configurazione del server.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: Impossibile caricare le voci dei certificati attendibili dall''archivio di certificati [ {0} ]. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=Si \u00e8 verificato un errore mentre il sistema tentava di recuperare l'elenco delle voci dei certificati attendibili dall'archivio di certificati specificato. \u00c8 possibile che il truststore non sia presente nella configurazione oppure che un problema impedisca l'accesso al truststore.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=Verificare che il truststore sia configurato correttamente nella configurazione del server e che sia accessibile. Controlla il messaggio di errore per ulteriori informazioni sul problema.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2015 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.async.osgi.internal;
 
@@ -47,6 +44,7 @@ import com.ibm.ws.ejbcontainer.EJBMethodInterface;
 import com.ibm.ws.ejbcontainer.EJBPMICollaborator;
 import com.ibm.ws.ejbcontainer.osgi.EJBAsyncRuntime;
 import com.ibm.ws.ejbcontainer.osgi.EJBRemoteRuntime;
+import com.ibm.ws.ejbcontainer.osgi.EJBRuntimeConstants;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -68,12 +66,6 @@ public class EJBAsyncRuntimeImpl implements EJBAsyncRuntime {
     private static final long DEFAULT_UNCLAIMED_REMOTE_RESULT_TIMEOUT_MILLIS = 24 * 60 * 60 * 1000;
     // This value is taken from metatype.xml.
     private static final int DEFAULT_MAX_UNCLAIMED_REMOTE_RESULTS = 1000;
-
-    /**
-     * This is the value of javax.enterprise.concurrent.ManagedTask.IDENTITY_NAME,
-     * but is hard-coded here to avoid a dependency on the concurrency feature.
-     */
-    private static final String MANAGEDTASK_IDENTITY_NAME = "javax.enterprise.concurrent.IDENTITY_NAME";
 
     /**
      * Create the default set of thread context providers that must be propagated
@@ -281,7 +273,7 @@ public class EJBAsyncRuntimeImpl implements EJBAsyncRuntime {
             // ASYNC_REQUIRED_CONTEXTS. When a configured context service is being
             // used, then only the configured contexts will be propagated.
             Map<String, String> executionProperties = new HashMap<String, String>();
-            executionProperties.put(MANAGEDTASK_IDENTITY_NAME, taskIdentity);
+            executionProperties.put(EJBRuntimeConstants.getManagedTaskIdentityName(), taskIdentity);
             executionProperties.put(WSContextService.TASK_OWNER, taskOwner);
 
             Map<String, ?>[] requiredContexts = null;

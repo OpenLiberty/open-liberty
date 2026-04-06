@@ -12,6 +12,9 @@
  *******************************************************************************/
 package com.ibm.ws.webcontainer.security.jacc;
 
+import java.util.Collections;
+import java.util.Set;
+
 import javax.security.auth.Subject;
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,6 +66,12 @@ public class WebAppJaccAuthorizationHelper implements WebAppAuthorizationHelper 
         return webJaccService.isSubjectInRole(getApplicationName(), getModuleName(), servletName, role, req, subject);
     }
 
+    @Override
+    public boolean isUnauthenticatedAuthorizationCheckAllowed() {
+        WebJaccService webJaccService = jaccServiceRef.getService();
+        return webJaccService.isUnauthenticatedAuthorizationCheckAllowed();
+    }
+
     /**
      * Call the JACC authorization service to determine if the subject is authorized
      *
@@ -71,7 +80,6 @@ public class WebAppJaccAuthorizationHelper implements WebAppAuthorizationHelper 
      * @param previousCaller the previous caller, used to restore the previous state if authorization fails
      * @return true if the subject is authorized, otherwise false
      */
-
     @Override
     public boolean authorize(AuthenticationResult authResult, WebRequest webRequest, String uriName) {
         WebJaccService webJaccService = jaccServiceRef.getService();
@@ -101,7 +109,9 @@ public class WebAppJaccAuthorizationHelper implements WebAppAuthorizationHelper 
                 Tr.audit(tc, "SEC_JACC_AUTHZ_FAILED", authUserName.concat(":").concat(authRealm), appName, uriName);
             } else {
                 // We have a subject if we got this far, use it to determine the name
-                authUserName = authResult.getSubject().getPrincipals(WSPrincipal.class).iterator().next().getName();
+                Subject subject = authResult.getSubject();
+                Set<WSPrincipal> principals = subject == null ? Collections.emptySet() : subject.getPrincipals(WSPrincipal.class);
+                authUserName = principals.isEmpty() ? "UNAUTHENTICATED" : principals.iterator().next().getName();
                 //WebReply reply = isAuthorized ? new PermitReply() : DENY_AUTHZ_FAILED;
                 Tr.audit(tc, "SEC_JACC_AUTHZ_FAILED", authUserName, appName, uriName);
             }

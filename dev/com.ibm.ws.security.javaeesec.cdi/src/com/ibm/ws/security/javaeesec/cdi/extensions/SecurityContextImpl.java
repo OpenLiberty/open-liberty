@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,9 +13,7 @@
 package com.ibm.ws.security.javaeesec.cdi.extensions;
 
 import java.security.Principal;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import javax.security.auth.Subject;
 import javax.security.enterprise.AuthenticationStatus;
@@ -24,6 +22,9 @@ import javax.security.enterprise.authentication.mechanism.http.AuthenticationPar
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.websphere.security.cred.WSCredential;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.security.authorization.AuthorizationService;
 import com.ibm.ws.security.context.SubjectManager;
@@ -39,6 +40,9 @@ import com.ibm.ws.webcontainer.security.util.WebConfigUtils;
  *
  */
 public class SecurityContextImpl implements SecurityContext {
+
+
+    private static final TraceComponent tc = Tr.register(SecurityContextImpl.class);
 
     /*
      * (non-Javadoc)
@@ -164,6 +168,26 @@ public class SecurityContextImpl implements SecurityContext {
         return false;
     }
 
+    /*
+     * (non-Javadoc)
+     *
+     * Available as part of Jakarta Security 4.0 onwards
+     *
+     * @see jakarta.security.enterprise.SecurityContext#getAllDeclaredCallerRoles()
+     */
+    public Set<String> getAllDeclaredCallerRoles() {
+        Set<String> roles = new HashSet<>();
+        Subject callerSubject = getCallerSubject();
+        WSCredential wsCred = getWSCredentialFromSubject(callerSubject);
+        if(wsCred != null ) {
+            if(!wsCred.isUnauthenticated()) {
+                AuthorizationService authService = SecurityContextHelper.getAuthorizationService();
+                roles.addAll(authService.getAllDeclaredRolesForResourceForSubject(getApplicationName(), callerSubject));
+            }
+        }
+        return roles;
+    }
+
     private Subject getCallerSubject() {
         SubjectManagerService subjectManagerService = SecurityContextHelper.getSubjectManagerService();
         if (subjectManagerService != null) {
@@ -178,5 +202,24 @@ public class SecurityContextImpl implements SecurityContext {
     private String getApplicationName() {
         ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return cmd.getJ2EEName().getApplication();
+    }
+
+    private WSCredential getWSCredentialFromSubject(Subject subject) {
+        if (subject != null) {
+            java.util.Collection<Object> publicCreds = subject.getPublicCredentials();
+
+            if (publicCreds != null && publicCreds.size() > 0) {
+                java.util.Iterator<Object> publicCredIterator = publicCreds.iterator();
+
+                while (publicCredIterator.hasNext()) {
+                    Object cred = publicCredIterator.next();
+
+                    if (cred instanceof WSCredential) {
+                        return (WSCredential) cred;
+                    }
+                }
+            }
+        }
+        return null;
     }
 }

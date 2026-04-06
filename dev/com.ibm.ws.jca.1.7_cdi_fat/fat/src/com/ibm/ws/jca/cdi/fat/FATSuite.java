@@ -18,12 +18,13 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-                AlwaysPassesTest.class, // Java 8 no tests will run
+                AlwaysPassesTest.class,
                 JCA17CDITest.class
 })
 public class FATSuite {
@@ -31,7 +32,7 @@ public class FATSuite {
     @ClassRule
     public static RepeatTests r = RepeatTests
                     .with(FeatureReplacementAction.NO_REPLACEMENT()
-                                    .fullFATOnly())
+                                    .conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES()
                                     .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
                                     .setSkipTransformation(true))

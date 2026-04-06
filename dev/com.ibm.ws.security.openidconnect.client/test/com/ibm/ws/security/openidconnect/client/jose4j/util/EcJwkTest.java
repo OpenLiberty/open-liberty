@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2023 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,6 +41,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.common.jwk.impl.JWKSet;
 import com.ibm.ws.security.common.jwk.impl.Jose4jEllipticCurveJWK;
 import com.ibm.ws.security.common.jwk.impl.JwKRetriever;
+import com.ibm.ws.security.common.jwk.impl.JwKRetriever.JwkKeyType;
 import com.ibm.ws.security.common.jwk.interfaces.JWK;
 // import com.ibm.ws.security.common.jwk.interfaces.JSONWebKey;
 import com.ibm.ws.security.oauth20.plugins.jose4j.JWTData;
@@ -151,7 +152,7 @@ public class EcJwkTest {
         }
 
         @Override
-        public JwKRetriever createJwkRetriever(ConvergedClientConfig config) {
+        public JwKRetriever createJwkRetriever(ConvergedClientConfig config, String signatureAlgorithm) {
             return jwkRetriever;
         }
     }
@@ -451,7 +452,7 @@ public class EcJwkTest {
         String jwksString = jwkProvider.getJwkSetString();
         JWKSet jwkset = new JWKSet();
 
-        boolean bJwk = jwkRetriever.parseJwk(jwksString, null, jwkset, "ES256");
+        boolean bJwk = jwkRetriever.parseJwk(jwksString, null, jwkset, "ES256", JwkKeyType.PUBLIC);
         assertTrue("No EC JWk was parsing", bJwk);
         List<JWK> jwks = jwkset.getJWKs();
         int iCnt = 0;

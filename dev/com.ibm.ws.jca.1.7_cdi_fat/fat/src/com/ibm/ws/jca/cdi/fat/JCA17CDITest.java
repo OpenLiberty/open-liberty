@@ -26,7 +26,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -43,7 +42,6 @@ import lib.cdi.CDIExtension;
  * resource adapter bundle.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 11)
 public class JCA17CDITest extends FATServletClient {
 
     private static final String WEB_MODULE_NAME = "web";

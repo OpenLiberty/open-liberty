@@ -158,7 +158,6 @@ public class PolicyConfigurationManagerTest {
                     will(returnValue(APP_NAME));
 
                     allowing(pc1).linkConfiguration(with(any(PolicyConfiguration.class)));
-                    one(pc1).getContextID();
                     one(pc1).commit();
                 }
             });

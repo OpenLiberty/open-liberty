@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -53,15 +53,7 @@ public class TCPUtils {
      */
     public static ServerBootstrapExtended createTCPBootstrapInbound(NettyFrameworkImpl framework,
                                                                     Map<String, Object> tcpOptions) throws NettyException {
-        BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, true);
-        ServerBootstrapExtended bs = new ServerBootstrapExtended();
-        bs.group(framework.getParentGroup(), framework.getChildGroup());
-        bs.channel(framework.getServerSocketChannelClass());
-        // apply the existing user config to the Netty TCP channel
-        bs.applyConfiguration(config);
-        ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config, framework);
-        bs.setBaseInitializer(tcpInitializer);
-        return bs;
+        return (ServerBootstrapExtended)createBootstrap(framework, tcpOptions, true);
     }
 
     /**
@@ -74,14 +66,26 @@ public class TCPUtils {
      */
     public static BootstrapExtended createTCPBootstrapOutbound(NettyFrameworkImpl framework,
                                                                Map<String, Object> tcpOptions) throws NettyException {
-        BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, false);
-        BootstrapExtended bs = new BootstrapExtended();
-        bs.group(framework.getChildGroup());
-        bs.channel(framework.getSocketChannelClass());
-        // apply the existing user config to the Netty TCP channel
-        bs.applyConfiguration(config);
+        return (BootstrapExtended)createBootstrap(framework, tcpOptions, false);
+    }
+
+    private static AbstractBootstrap createBootstrap(NettyFrameworkImpl framework, Map<String, Object> tcpOptions, boolean isInbound) throws NettyException {
+        BootstrapConfiguration config = new TCPConfigurationImpl(tcpOptions, isInbound);
         ChannelInitializerWrapper tcpInitializer = new TCPChannelInitializerImpl(config, framework);
-        bs.setBaseInitializer(tcpInitializer);
+        AbstractBootstrap bs;
+        if (isInbound) {
+            bs = new ServerBootstrapExtended()
+                .applyConfiguration(config)
+                .setBaseInitializer(tcpInitializer)
+                .group(framework.getParentGroup(), framework.getChildGroup())
+                .channel(framework.getServerSocketChannelClass());
+        } else {
+            bs = new BootstrapExtended()
+                .applyConfiguration(config)
+                .setBaseInitializer(tcpInitializer)
+                .group(framework.getChildGroup())
+                .channel(framework.getSocketChannelClass());
+        }
         return bs;
     }
 

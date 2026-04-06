@@ -14,7 +14,6 @@ import java.security.Permission;
 import java.security.Policy;
 import java.security.Principal;
 import java.security.ProtectionDomain;
-import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -39,7 +38,7 @@ public class JavaSePolicyProxyImpl implements PolicyProxy {
     }
 
     @Override
-    public void refresh(Set<String> contextIds) {
+    public void refresh() {
         policy.refresh();
     }
 

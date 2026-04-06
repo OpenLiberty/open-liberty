@@ -83,8 +83,10 @@ public class TestUpdateLogic extends AbstractTestLogic {
             query.executeUpdate();
 
             List<String> sql = SQLCallListener.getAndClearCallList();
-            Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            Assert.assertEquals(1, sql.size());            
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = 9 WHERE (STRVAL2 = LCASE('HELLO'))", sql.remove(0));
             } else {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
@@ -101,7 +103,9 @@ public class TestUpdateLogic extends AbstractTestLogic {
 
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = 9 WHERE (STRVAL2 = LCASE('HELLO'))", sql.remove(0));
             } else {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
@@ -119,7 +123,9 @@ public class TestUpdateLogic extends AbstractTestLogic {
 
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = 9 WHERE (STRVAL2 = LCASE('HELLO'))", sql.remove(0));
             } else {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
@@ -149,7 +155,9 @@ public class TestUpdateLogic extends AbstractTestLogic {
 
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = 9 WHERE (STRVAL2 = LCASE('HELLO'))", sql.remove(0));
             } else {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
@@ -172,7 +180,9 @@ public class TestUpdateLogic extends AbstractTestLogic {
 
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = 9 WHERE (STRVAL2 = LCASE('HELLO'))", sql.remove(0));
             } else {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));
@@ -198,7 +208,9 @@ public class TestUpdateLogic extends AbstractTestLogic {
 
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = 9 WHERE (STRVAL2 = LCASE('HELLO'))", sql.remove(0));
             } else {
                 Assert.assertEquals("UPDATE OLGH17837ENTITY SET INTVAL1 = ? WHERE (STRVAL2 = LOWER(?))", sql.remove(0));

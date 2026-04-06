@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -24,8 +24,8 @@ import com.ibm.websphere.ras.annotation.Sensitive;
  */
 public class CacheContext {
 
-    private final CacheObject cacheObject;
     private final AuthCacheConfig config;
+    private final Subject subject;
     private String userid;
     private String password;
     private X509Certificate[] certChain = null;
@@ -34,9 +34,9 @@ public class CacheContext {
      * @param config
      * @param cacheObject
      */
-    public CacheContext(AuthCacheConfig config, CacheObject cacheObject) {
+    public CacheContext(AuthCacheConfig config, Subject subject) {
         this.config = config;
-        this.cacheObject = cacheObject;
+        this.subject = subject;
     }
 
     /**
@@ -44,15 +44,15 @@ public class CacheContext {
      * @param userid
      * @param password
      */
-    public CacheContext(AuthCacheConfig config, CacheObject cacheObject, String userid, @Sensitive String password) {
-        this(config, cacheObject);
+    public CacheContext(AuthCacheConfig config, Subject subject, String userid, @Sensitive String password) {
+        this(config, subject);
         this.userid = userid;
         this.password = password;
     }
 
-    public CacheContext(AuthCacheConfig config, CacheObject cacheObject, X509Certificate[] certChain) {
+    public CacheContext(AuthCacheConfig config, Subject subject, X509Certificate[] certChain) {
         this.config = config;
-        this.cacheObject = cacheObject;
+        this.subject = subject;
         this.certChain = certChain;
     }
 
@@ -71,7 +71,7 @@ public class CacheContext {
      * @return
      */
     public Subject getSubject() {
-        return cacheObject.getSubject();
+        return subject;
     }
 
     /**

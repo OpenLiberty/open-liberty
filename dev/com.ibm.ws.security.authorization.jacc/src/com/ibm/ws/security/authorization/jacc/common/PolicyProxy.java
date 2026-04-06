@@ -10,7 +10,6 @@
 package com.ibm.ws.security.authorization.jacc.common;
 
 import java.security.Permission;
-import java.util.Set;
 
 import javax.security.auth.Subject;
 
@@ -19,7 +18,9 @@ import javax.security.auth.Subject;
  */
 public interface PolicyProxy {
 
-    public void refresh(Set<String> contextIds);
+    default public void refresh() {
+        // Do nothing for EE 11+.  The refresh logic is handled in the JakartaPolicyConfigProxy instead.
+    }
 
     default public void setPolicy() {
         // Do nothing for EE 11+
@@ -50,5 +51,18 @@ public interface PolicyProxy {
     default public boolean isPolicyConfigured() {
         // return true for pre EE 11 versions since the PolicyProxy isn't created unless there is a Policy
         return true;
+    }
+
+    /**
+     * Determines whether to do an authorization check for an Unauthenticated user. Before Jakarta Authorization
+     * 3.0, Liberty followed the servlet's spec behavior, but with Authorization 3.0, we are now allowing for a unchecked
+     * Permission to allow unauthenticated users to have permission to access servlets and EJBs even if there are
+     * roles constraints defined on the servlet or EJB.
+     *
+     * @return
+     */
+    default public boolean isUnauthenticatedAuthorizationCheckAllowed() {
+        // return false for pre EE 11 versions since that was the previous behavior before Authorization 3.0 behavior change
+        return false;
     }
 }

@@ -1,0 +1,5 @@
+<server>
+    <application type="war" id="appPermissions2" name="appPermissions2"
+                 location="appPermissions2.war">
+    </application>
+</server>

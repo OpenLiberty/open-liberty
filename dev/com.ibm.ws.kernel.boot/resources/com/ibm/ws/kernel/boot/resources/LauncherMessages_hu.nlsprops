@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -784,7 +784,15 @@ warning.manual.PPV.env.var.useraction=A PREFERRED_PLATFORM_VERSION k\u00f6rnyeze
 
 error.read.server.env=CWWKE0970E: A (z) {} helyen tal\u00e1lhat\u00f3 server.env f\u00e1jl nem olvashat\u00f3.
 error.read.server.env.explanation=Nem siker\u00fclt beolvasni a server.env f\u00e1jlt.
-error.read.server.env.useraction=A server.env f\u00e1jl nem olvashat\u00f3.  Ellen\u0151rizze a f\u00e1jl enged\u00e9lyeit, majd pr\u00f3b\u00e1lkozzon \u00fajra a m\u0171velettel.
+error.read.server.env.useraction=Nem siker\u00fclt beolvasni az \u201e server.env \u201d f\u00e1jlt. Ellen\u0151rizze a f\u00e1jl jogosults\u00e1gait, majd pr\u00f3b\u00e1lja meg \u00fajra a m\u0171veletet.
+
+warning.java2security.stopped=CWWKE0971W: A Java 2 Security le van tiltva, mivel a Jakarta EE 11 nem t\u00e1mogatja.
+warning.java2security.stopped.explanation=A Jakarta EE 11 megsz\u00fcntette a Java 2 Security t\u00e1mogat\u00e1s\u00e1t.
+warning.java2security.stopped.useraction=Ha a Jakarta EE 11 funkci\u00f3it haszn\u00e1lja, tiltsa le a Java 2 Security funkci\u00f3t a szerverkonfigur\u00e1ci\u00f3ban.
+
+info.java2security.restarted=CWWKE0972I: A Java 2 Security \u00fajra enged\u00e9lyezve van, mivel a Jakarta EE 11 funkci\u00f3i elt\u00e1vol\u00edt\u00e1sra ker\u00fcltek.
+info.java2security.restarted.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+info.java2security.restarted.useraction=Nincs teend\u0151.
 
 info.serverStarting=A(z) {0} kiszolg\u00e1l\u00f3 ind\u00edt\u00e1sa.
 info.serverStarted=A(z) {0} kiszolg\u00e1l\u00f3 elindult.

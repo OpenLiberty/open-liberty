@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,14 +26,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.common.encoder.Base64Coder;
 import com.ibm.ws.security.authentication.cache.AuthCacheConfig;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
-import com.ibm.ws.security.authentication.cache.CacheObject;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -50,21 +49,20 @@ public class SSOTokenBytesCacheKeyProviderTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        // There are variations of this constructor: 
+        // There are variations of this constructor:
         // e.g. to specify a log location or an enabled trace spec. Ctrl-Space for suggestions
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
         ssoToken = createSSOToken();
         testSubject = createTestSubject();
-        CacheObject cacheObject = new CacheObject(testSubject);
         authCacheConfig = mockery.mock(AuthCacheConfig.class);
-        cacheContext = new CacheContext(authCacheConfig, cacheObject);
+        cacheContext = new CacheContext(authCacheConfig, testSubject);
     }
 
     private static SingleSignonToken createSSOToken() {
@@ -90,7 +88,7 @@ public class SSOTokenBytesCacheKeyProviderTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -101,7 +99,7 @@ public class SSOTokenBytesCacheKeyProviderTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -139,8 +137,7 @@ public class SSOTokenBytesCacheKeyProviderTest {
         final String methodName = "testProvideKeyWithNoTokenReturnsNull";
         try {
             CacheKeyProvider provider = new SSOTokenBytesCacheKeyProvider();
-            CacheObject cacheObject = new CacheObject(new Subject());
-            CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject);
+            CacheContext cacheContext = new CacheContext(authCacheConfig, new Subject());
             Object cacheKey = provider.provideKey(cacheContext);
             assertNull("There must not be a key.", cacheKey);
         } catch (Throwable t) {

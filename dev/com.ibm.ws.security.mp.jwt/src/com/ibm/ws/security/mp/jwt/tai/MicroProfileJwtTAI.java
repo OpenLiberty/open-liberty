@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2022 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- * IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.mp.jwt.tai;
 
@@ -372,8 +369,17 @@ public class MicroProfileJwtTAI implements TrustAssociationInterceptor {
         return false;
     }
 
+    /**
+     * When caller doesn't have an HTTP request and response this method can be called instead of
+     * having the method it calls be public and require the bundle to be transformed due to
+     * servlet class reference in the signature. 
+     */
+    public TAIResult handleMicroProfileJwtValidation(MicroProfileJwtConfig clientConfig, String token, boolean addJwtPrincipal) throws WebTrustAssociationFailedException {
+        return handleMicroProfileJwtValidation(null, null, clientConfig, token, addJwtPrincipal);
+    }
+
     @FFDCIgnore({ Exception.class })
-    public TAIResult handleMicroProfileJwtValidation(HttpServletRequest req, HttpServletResponse res, MicroProfileJwtConfig clientConfig, String token, boolean addJwtPrincipal) throws WebTrustAssociationFailedException {
+    private TAIResult handleMicroProfileJwtValidation(HttpServletRequest req, HttpServletResponse res, MicroProfileJwtConfig clientConfig, String token, boolean addJwtPrincipal) throws WebTrustAssociationFailedException {
         String methodName = "handleMicroProfileJwtValidation";
         if (tc.isDebugEnabled()) {
             Tr.entry(tc, methodName, req, res, clientConfig, token);

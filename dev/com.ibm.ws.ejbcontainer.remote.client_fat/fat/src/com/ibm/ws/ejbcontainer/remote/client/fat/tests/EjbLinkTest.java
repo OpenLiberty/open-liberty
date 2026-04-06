@@ -71,18 +71,18 @@ public class EjbLinkTest extends FATServletClient {
     /*@formatter:off*/
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
-                                                   .fullFATOnly()
-                                                   .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"))
-                                   .andWith(FeatureReplacementAction.EE8_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"))
-                                   .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")
-                                                   .fullFATOnly())
-                                   .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")
-                                                   .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                                   .andWith(FeatureReplacementAction.EE11_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"));
+                                                    .fullFATOnly()
+                                                    .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")
+                                                    .fullFATOnly())
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection")
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.remote.client.fat.serverInjection"));
     /*@formatter:on*/
 
     @BeforeClass

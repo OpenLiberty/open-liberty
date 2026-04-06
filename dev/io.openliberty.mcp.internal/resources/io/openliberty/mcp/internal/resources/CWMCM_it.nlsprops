@@ -209,7 +209,7 @@ unauthorized.cancellation=Lo strumento non pu\u00f2 essere annullato poich\u00e9
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: Il tipo di ritorno " {0} " del metodo dello strumento MCP " {1} " deve essere un oggetto.
-CWMCM0025E.unsupported.output.explanation=Il tipo di ritorno dello strumento MCP fornito non \u00e8 supportato.
+CWMCM0025E.unsupported.output.explanation=Il tipo di ritorno dello strumento MCP specificato non \u00e8 supportato. Poich\u00e9 l'opzione "contenuto strutturato" \u00e8 impostata su "true", il tipo dello schema di output deve essere un oggetto.
 CWMCM0025E.unsupported.output.useraction=Fornire un tipo di ritorno che sia un oggetto.
 
 # Used as exception message

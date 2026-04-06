@@ -78,17 +78,17 @@ public class AroundTimeoutTest extends FATServletClient {
     /*@formatter:off*/
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
-                                   .andWith(FeatureReplacementAction.EE8_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
-                                   .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                   .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
-                                   .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                   .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
-                                   .andWith(FeatureReplacementAction.EE11_FEATURES()
-                                                   .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"));
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .forServers("com.ibm.ws.ejbcontainer.interceptor.fat.AroundTimeoutServer"));
     /*@formatter:on*/
 
     @BeforeClass

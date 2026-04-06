@@ -13,7 +13,8 @@
 package com.ibm.ws.security.authorization.jacc.common;
 
 import java.util.ArrayList;
-import java.util.LinkedHashSet;
+import java.util.Collections;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,7 +37,7 @@ import com.ibm.ws.security.authorization.jacc.ejb.EJBSecurityPropagator;
 @Component(service = { ApplicationStateListener.class, PolicyConfigurationManager.class })
 public class PolicyConfigurationManagerImpl implements ApplicationStateListener, PolicyConfigurationManager {
     private static final TraceComponent tc = Tr.register(PolicyConfigurationManagerImpl.class);
-    private final Map<String, List<PolicyConfiguration>> pcConfigsMap = new ConcurrentHashMap<String, List<PolicyConfiguration>>();
+    private final Map<String, Set<PolicyConfiguration>> pcConfigsMap = new ConcurrentHashMap<>();
     private final Map<String, List<String>> pcModulesMap = new ConcurrentHashMap<String, List<String>>();
     private final Map<String, List<String>> pcEjbMap = new ConcurrentHashMap<String, List<String>>();
     private final List<String> pcRunningList = new CopyOnWriteArrayList<String>();
@@ -65,11 +66,22 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
 
     @Override
     public void linkConfiguration(String appName, PolicyConfiguration pc) throws PolicyContextException {
-        List<PolicyConfiguration> pcs = pcConfigsMap.get(appName);
+        Set<PolicyConfiguration> pcs = pcConfigsMap.get(appName);
         if (pcs != null) {
-            pc.linkConfiguration(pcs.get(0));
+            for (PolicyConfiguration lpc : pcs) {
+                if (lpc != pc) {
+                    try {
+                        pc.linkConfiguration(lpc);
+                    } catch (Exception e) {
+                        // linkConfiguration can throw IllegalArgumentException if we pass the wrong
+                        // PolicyConfiguration that has the same context id as the one being linked.
+                        // The if (lpc != pc) check should sufficient since we shouldn't have two PolicyConfiguration
+                        // objects for the same contextID, but catch the exception and FFDC it just in case.
+                    }
+                }
+            }
         } else {
-            pcs = new ArrayList<PolicyConfiguration>();
+            pcs = Collections.newSetFromMap(new IdentityHashMap<>());
             pcConfigsMap.put(appName, pcs);
         }
         pcs.add(pc);
@@ -153,33 +165,30 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
     }
 
     private void commitModules(String appName) {
-        List<PolicyConfiguration> pcs = pcConfigsMap.get(appName);
+        Set<PolicyConfiguration> pcs = pcConfigsMap.get(appName);
         if (pcs != null) {
-            Set<String> contextIds = new LinkedHashSet<>();
             for (PolicyConfiguration pc : pcs) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "Comitting PolicyConfigurations : " + pc);
-                String ctxId = null;
-                try {
-                    ctxId = pc.getContextID();
-                    contextIds.add(ctxId);
-                } catch (PolicyContextException e) {
-                    ctxId = "<<UNKNOWN>>";
-                }
                 try {
                     pc.commit();
                 } catch (PolicyContextException pce) {
+                    String ctxId = null;
+                    try {
+                        ctxId = pc.getContextID();
+                    } catch (PolicyContextException e) {
+                        ctxId = "<<UNKNOWN>>";
+                    }
                     Tr.error(tc, "JACC_GET_POLICYCONFIGURATION_FAILURE", new Object[] { ctxId, pce });
                 }
             }
-            policyProxy.refresh(contextIds);
+            policyProxy.refresh();
         }
     }
 
     private void removeModules(String appName) {
         List<String> ctxIds = pcModulesMap.get(appName);
         if (ctxIds != null) {
-            Set<String> contextIds = new LinkedHashSet<>();
             for (String ctxId : ctxIds) {
                 if (tc.isDebugEnabled())
                     Tr.debug(tc, "contextID : " + ctxId);
@@ -187,7 +196,6 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
                 try {
                     pc = pcf.getPolicyConfiguration(ctxId, false);
                     if (pc != null) {
-                        contextIds.add(ctxId);
                         if (tc.isDebugEnabled())
                             Tr.debug(tc, "Deleting PolicyConfigurations : " + pc);
                         pc.delete();
@@ -196,7 +204,7 @@ public class PolicyConfigurationManagerImpl implements ApplicationStateListener,
                     Tr.error(tc, "JACC_GET_POLICYCONFIGURATION_FAILURE", new Object[] { ctxId, pce });
                 }
             }
-            policyProxy.refresh(contextIds);
+            policyProxy.refresh();
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "refresh is invoked after deleting PolicyConfigurations");
             pcModulesMap.remove(appName);

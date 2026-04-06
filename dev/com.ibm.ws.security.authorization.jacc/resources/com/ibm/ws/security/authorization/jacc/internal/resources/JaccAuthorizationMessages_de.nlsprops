@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: Das Modul f\u00fcr die Verarbeitung der Websicher
 JACC_NO_WEB_PLUGIN.explanation=Der JACC-Service kann die Websicherheitsrollen nicht verarbeiten, weil das erforderliche Modul nicht verf\u00fcgbar ist.
 JACC_NO_WEB_PLUGIN.useraction=Suchen Sie in den JACC-Providerprotokollen und in den Serverprotokollen nach weiteren Informationen.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: Der Jakarta-Autorisierungsdienst kann die Anbieterklasse \u201e {0} \u201c unter \u201e {1} \u201c von der Anwendung \u201e {2} \u201c aufgrund der Ausnahme \u201e {3} \u201c nicht festlegen.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=Der Jakarta-Autorisierungsdienst kann die Provider-Klasse aufgrund der Ausnahme nicht festlegen.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Weitere Informationen finden Sie in den Anbieterkonfigurationsdateien und den Serverprotokollen.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: Der Jakarta-Autorisierungsdienst hat die Anbieterklasse \u201e {0} \u201c ( {1} ) konfiguriert, die in der Anwendung \u201e {2} \u201c definiert ist.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Diese Nachricht ist f\u00fcr Informationszwecke bestimmt.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Es ist keine Aktion erforderlich.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: Der Jakarta-Autorisierungsdienst hat die Anbieterklasse \u201e {0} \u201c ( {1} ) entfernt, die in der Anwendung \u201e {2} \u201c definiert war.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Diese Nachricht ist f\u00fcr Informationszwecke bestimmt.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Es ist keine Aktion erforderlich.

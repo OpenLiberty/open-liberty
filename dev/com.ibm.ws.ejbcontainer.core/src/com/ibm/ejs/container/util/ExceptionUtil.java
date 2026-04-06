@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2001, 2013 IBM Corporation and others.
+ * Copyright (c) 2001, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ejs.container.util;
 
@@ -124,7 +121,7 @@ public class ExceptionUtil {
      * and return the last one in the chain as the root cause.
      *
      * @param throwable must be a non-null reference of a Throwable object
-     *            to be processed.
+     *                      to be processed.
      **/
     static public Throwable findRootCause(Throwable throwable) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
@@ -203,7 +200,7 @@ public class ExceptionUtil {
      * exception. <p>
      *
      * @param throwable must be a non-null reference of a Throwable object
-     *            to be processed.
+     *                      to be processed.
      *
      * @return the 'external' cause of the specified exception, or null.
      **/
@@ -278,12 +275,14 @@ public class ExceptionUtil {
      * message text is hard coded at "See nested exception" for convenience. <p>
      *
      * @param cause the cause of the EJBException. If already an EJBException
-     *            it will just be returned; null is permitted.
+     *                  it will just be returned; null is permitted.
      * @returns an EJBException with appropriate nested exception, stack,
      *          and message text.
      **/
     // d259882
-    public static EJBException EJBException(Throwable cause) {
+    // Using a generic return type so that the caller can just reference RuntimeException and not have
+    // a hard dependency on the EJBException class
+    public static <EJBEx extends RuntimeException> EJBEx EJBException(Throwable cause) {
         return EJBException("See nested exception", cause);
     }
 
@@ -294,7 +293,7 @@ public class ExceptionUtil {
      * thrown to customer code and a subclass would be inappropriate. In
      * general, EJBException(message, cause) should be preferred. <p>
      *
-     * This is a convienience method that consolidates all of the code
+     * This is a convenience method that consolidates all of the code
      * to properly construct an EJBException or detect that the cause
      * already is an EJBException (or WsEJBException). And, accounts
      * for the deficiencies of the EJBException class, taking care of
@@ -320,14 +319,17 @@ public class ExceptionUtil {
      * already be an EJBException. <p>
      *
      * @param message the preferred message text for the returned EJBException.
-     * @param cause the cause of the EJBException. If already an EJBException
-     *            it will just be returned; null is permitted.
+     * @param cause   the cause of the EJBException. If already an EJBException
+     *                    it will just be returned; null is permitted.
      * @returns an EJBException with appropriate nested exception, stack,
      *          and message text.
      **/
     // d259882
-    public static EJBException EJBException(String message,
-                                            Throwable cause) {
+    // Using a generic return type so that the caller can just reference RuntimeException and not have
+    // a hard dependency on the EJBException class
+    @SuppressWarnings("unchecked")
+    public static <EJBEx extends RuntimeException> EJBEx EJBException(String message,
+                                                                      Throwable cause) {
         EJBException ejbex = null;
 
         // -----------------------------------------------------------------------
@@ -409,7 +411,7 @@ public class ExceptionUtil {
             }
         }
 
-        return ejbex;
+        return (EJBEx) ejbex;
     }
 
     /**
@@ -417,7 +419,7 @@ public class ExceptionUtil {
      * cause. The cause will be nested even if it is a NoSuchEJBException. <p>
      *
      * @param message the message text for the returned NoSuchEJBException.
-     * @param cause the cause of the NoSuchEJBException; null is permitted.
+     * @param cause   the cause of the NoSuchEJBException; null is permitted.
      * @returns a NoSuchEJBException with appropriate nested exception, stack,
      *          and message text.
      **/
@@ -457,7 +459,7 @@ public class ExceptionUtil {
      * message text is hard coded at "See nested exception" for convenience. <p>
      *
      * @param cause the cause of the RemoteException. If already a RemoteException
-     *            it will just be returned; null is permitted.
+     *                  it will just be returned; null is permitted.
      * @returns a RemoteException with appropriate nested exception, stack,
      *          and message text.
      **/
@@ -491,8 +493,8 @@ public class ExceptionUtil {
      * already be a RemoteException. <p>
      *
      * @param message the preferred message text for the returned RemoteException.
-     * @param cause the cause of the RemoteException. If already a RemoteException
-     *            it will just be returned; null is permitted.
+     * @param cause   the cause of the RemoteException. If already a RemoteException
+     *                    it will just be returned; null is permitted.
      * @returns a RemoteException with appropriate nested exception, stack,
      *          and message text.
      **/

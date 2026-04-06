@@ -1578,8 +1578,8 @@ public class LibertyServer implements LogMonitorClient {
         Log.info(c, methodName, ">>> STARTING SERVER: " + getServerName());
         Log.info(c, methodName,
                  "Starting " + getServerName() + "; preClean=" + preClean + ", clean=" + cleanStart + ", validateApps=" + useValidateApps + ", expectStartFailure="
-                            + expectStartFailure
-                            + ", cmd=" + serverCmd + ", args=" + args);
+                                + expectStartFailure
+                                + ", cmd=" + serverCmd + ", args=" + args);
 
         if (serverCleanupProblem) {
             throw new Exception("The server was not cleaned up on the previous test.");
@@ -1691,9 +1691,8 @@ public class LibertyServer implements LogMonitorClient {
 
         // If Java 2 security is enabled, add java.security.manager and java.security.policy.
         //
-        // Java 2 security is not enabled for servers that have Jakarta EE 11 or later features
-        // or if testing InstantOn function since neither one of them support Java 2 security
-        if (isJava2SecurityEnabled() && !isEE11OrLaterEnabled() && checkpointInfo == null) {
+        // Java 2 security is not enabled for servers if testing InstantOn function since it does not support it.
+        if (isJava2SecurityEnabled() && checkpointInfo == null) {
             RemoteFile f = getServerBootstrapPropertiesFile();
             addJava2SecurityPropertiesToBootstrapFile(f, GLOBAL_DEBUG_JAVA2SECURITY);
             String reason = GLOBAL_JAVA2SECURITY ? "GLOBAL_JAVA2SECURITY" : "GLOBAL_DEBUG_JAVA2SECURITY";
@@ -1740,7 +1739,8 @@ public class LibertyServer implements LogMonitorClient {
         // if we have FIPS 140-3 enabled, and the matched java/platform, add JVM Arg
         if (isFIPS140_3EnabledAndSupported(info) || isFIPS140_2EnabledAndSupported(info)) {
             Map<String, String> opts = getJvmOptionsAsMap();
-            if (getServerEnv().containsKey("ENABLE_FIPS140_3") || getDefaultEnv().containsKey("ENABLE_FIPS140_3") || useEnvVars.containsKey("ENABLE_FIPS140_3") || opts.containsKey("-Xenablefips140-3") || opts.containsKey("-Dsemeru.fips")) {
+            if (getServerEnv().containsKey("ENABLE_FIPS140_3") || getDefaultEnv().containsKey("ENABLE_FIPS140_3") || useEnvVars.containsKey("ENABLE_FIPS140_3")
+                || opts.containsKey("-Xenablefips140-3") || opts.containsKey("-Dsemeru.fips")) {
                 Log.info(c, methodName, "Test has defined its own settings for FIPS140-3");
             } else {
                 if (!GLOBAL_ENHANCED_ALGO) {
@@ -1820,6 +1820,11 @@ public class LibertyServer implements LogMonitorClient {
         // This takes the custom console file name used for tests into consideration
         useEnvVars.setProperty("LOG_DIR", logsRoot);
         useEnvVars.setProperty("LOG_FILE", consoleFileName);
+
+        // default ltpa keys password for FAT tests
+        if (!useEnvVars.containsKey("ltpa_keys_password")) {
+            useEnvVars.setProperty("ltpa_keys_password", "WebAS");
+        }
 
         Log.info(c, methodName, "Using additional env props: " + useEnvVars);
 
@@ -3463,6 +3468,22 @@ public class LibertyServer implements LogMonitorClient {
             for (String regex : fixedIgnoreErrorsList) {
                 ignorePatterns.add(Pattern.compile(regex));
             }
+        }
+
+        if (startedWithJavaSecurity && isEE11Enabled()) {
+            final String JAVA2_SECURITY_DISABLED = "CWWKE0971W";
+
+            List<String> message = findStringsInLogs(JAVA2_SECURITY_DISABLED);
+            if (message == null || message.isEmpty()) {
+                String errorMessage = "The warning messsage about Jakarta 2 Security being disabled when starting server with Jakarta EE 11 was not found.";
+                Log.info(c, method, "ERROR: " + errorMessage);
+
+                TopologyException serverStartException = new TopologyException(errorMessage);
+                Log.error(c, method, serverStartException, "ERROR: " + errorMessage);
+
+                throw serverStartException;
+            }
+            ignorePatterns.add(Pattern.compile(JAVA2_SECURITY_DISABLED));
         }
 
         // Remove any ignored warnings or patterns
@@ -6280,7 +6301,7 @@ public class LibertyServer implements LogMonitorClient {
         return subset;
     }
 
-    private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I: The server installed the following features:";
+    private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I:";
 
     /**
      * Returns sets of the features which were installed at runtime startup, based on the CWWKF0012I message in messages.log.
@@ -7561,8 +7582,8 @@ public class LibertyServer implements LogMonitorClient {
      */
     public JMXConnector getJMXRestConnector(int port) throws Exception {
         final String userName = "theUser";
-        final String password = "thePassword";
-        final String keystorePassword = "Liberty";
+        final String password = "thePassword"; // pragma: allowlist secret
+        final String keystorePassword = "Liberty"; // pragma: allowlist secret
 
         return getJMXRestConnector(userName, password, keystorePassword, port);
     }
@@ -7820,43 +7841,32 @@ public class LibertyServer implements LogMonitorClient {
         return !"true".equalsIgnoreCase(getBootstrapProperties().getProperty("websphere.java.security.exempt"));
     }
 
-    private boolean isEE11OrLaterEnabled() throws Exception {
-        if (JakartaEEAction.isEE11OrLaterActive()) {
-            return true;
-        }
-
-        if (JakartaEEAction.isEE9OrLaterActive()) {
+    private boolean isEE11Enabled() throws Exception {
+        if (JakartaEEAction.isEE9Active() || JakartaEEAction.isEE10Active()) {
             return false;
         }
 
-        // EE 11 which doesn't support Java security manager can run with Java 17.  As such we need to return false even if we are running
-        // with Java security enabled in the build.
+        // EE 11 which doesn't support Java security manager can run with Java 17.
+        List<Set<String>> installedFeatures;
+        try {
+            installedFeatures = getInstalledFeatures();
+        } catch (Exception e) {
+            // Will get FileNotFoundException if there is no messages.log file
+            installedFeatures = null;
+        }
 
-        RemoteFile serverXML = machine.getFile(serverRoot + "/" + SERVER_CONFIG_FILE_NAME);
-        InputStreamReader in = new InputStreamReader(serverXML.openForReading());
-        try (Scanner s = new Scanner(in)) {
-            while (s.hasNextLine()) {
-                String line = s.nextLine();
-                if (line.contains("<featureManager>")) {//So has reached featureSets
-                    while (s.hasNextLine()) {
-                        line = s.nextLine();
-                        if (line.contains("</featureManager>"))
-                            break;
-
-                        line = line.replaceAll("<feature>", "");
-                        line = line.replaceAll("</feature>", "");
-                        line = line.trim();
-                        String lowerCaseFeatureName = line.toLowerCase();
-
-                        // special case data-1.1 until JakartaEE12Action is created when EE 12 is more of a thing.
-                        if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(lowerCaseFeatureName) || "data-1.1".equals(lowerCaseFeatureName)) {
-                            return true;
-                        }
+        if (installedFeatures != null) {
+            for (Set<String> installedFeatureSet : installedFeatures) {
+                for (String installedFeature : installedFeatureSet) {
+                    String lowerCaseFeatureName = installedFeature.toLowerCase();
+                    if (JakartaEE11Action.EE11_ONLY_FEATURE_SET_LOWERCASE.contains(lowerCaseFeatureName)) {
+                        return true;
+                    } else if ("springboot-4.0".equals(lowerCaseFeatureName)) {
+                        return true;
                     }
                 }
             }
         }
-
         return false;
     }
 
@@ -8181,7 +8191,8 @@ public class LibertyServer implements LogMonitorClient {
                                                  + " with IBM Java " + info.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
                 opts.put("-Dsemeru.fips", "true");
                 opts.put("-Dsemeru.customprofile", "OpenJCEPlusFIPS.FIPS140-3-Custom");
-                opts.put("-Djava.security.propertiesList", getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() + File.pathSeparator + getSemeruFips140_3CustomProfileLocationAndPrintFileContents());
+                opts.put("-Djava.security.propertiesList",
+                         getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() + File.pathSeparator + getSemeruFips140_3CustomProfileLocationAndPrintFileContents());
             } else if (info.majorVersion() == 8) {
                 Log.info(c, "getFipsJvmOptions", "FIPS 140-3 global build properties is set for server "
                                                  + getServerName()

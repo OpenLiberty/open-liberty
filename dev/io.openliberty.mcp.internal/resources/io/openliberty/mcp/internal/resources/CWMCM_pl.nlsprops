@@ -209,7 +209,7 @@ unauthorized.cancellation=Nie mo\u017cna anulowa\u0107 dzia\u0142ania narz\u0119
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: Typ zwracany przez metod\u0119 narz\u0119dzia MCP \u201e {1} \u201d (Ustawianie w\u0142a\u015bciwo\u015bci) musi by\u0107 obiektem. {0}
-CWMCM0025E.unsupported.output.explanation=Podany typ zwracany narz\u0119dzia MCP nie jest obs\u0142ugiwany.
+CWMCM0025E.unsupported.output.explanation=Podany typ zwracanej warto\u015bci narz\u0119dzia MCP nie jest obs\u0142ugiwany. Poniewa\u017c dla w\u0142a\u015bciwo\u015bci \u201estructured content\u201d ustawiono warto\u015b\u0107 \u201etrue\u201d, typ schematu wyj\u015bciowego musi by\u0107 obiektem.
 CWMCM0025E.unsupported.output.useraction=Podaj typ zwracanej warto\u015bci, kt\u00f3ry jest obiektem.
 
 # Used as exception message

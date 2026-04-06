@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.resource.ResourceException;
 
@@ -42,9 +44,9 @@ import com.ibm.ws.jca.cm.AppDefinedResourceFactory;
 import com.ibm.ws.jca.processor.jms.util.JMSResourceDefinitionConstants;
 import com.ibm.ws.jca.processor.jms.util.JMSResourceDefinitionHelper;
 import com.ibm.ws.jca.service.AdminObjectService;
-import com.ibm.ws.resource.AbstractWaitForBundleResourceFactory;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.resource.WaitForBundleResourceFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -206,141 +208,94 @@ public class JMSDestinationResourceFactoryBuilder implements ResourceFactoryBuil
             }
         }
 
+        Function<Bundle, ResourceFactory> createAppDefinedResourceFactory = (bundle) -> {
+            try {
+                //Get props with default values only and see if the same is specified by the user in annotation/dd, then use that value otherwise set the default value.
+                //Note: Its not necessary for the user to specify the props which has default value, so we set them in here.
+                Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(bundle, resourceAdapter, interfaceName);
+
+                for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();) {
+                    String key = keys.nextElement();
+                    Object value = adminObjectDefaultProps.get(key);
+
+                    //Override the administered object default property values with values provided annotation
+                    if (annotationDDProps.containsKey(key))
+                        value = annotationDDProps.remove(key);
+
+                    if (value instanceof String)
+                        value = variableRegistry.resolveString((String) value);
+
+                    if (CONFIG_DISPLAY_ID.equals(key))
+                        adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
+                    else
+                        adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
+                }
+
+                //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter,
+                //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
+                //Note: The above section for handling default values can be eliminated by handling the same here in this section since we get all the properties. Will be taken care in future.
+                AttributeDefinition[] ads = getAttributeDefinitions(resourceAdapter, interfaceName);
+                for (AttributeDefinition attributeDefinition : ads) {
+                    Object value = annotationDDProps.remove(attributeDefinition.getID());
+                    if (value != null) {
+
+                        if (value instanceof String)
+                            value = variableRegistry.resolveString((String) value);
+
+                        adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + attributeDefinition.getID(), value);
+                    }
+                }
+
+                adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
+
+                BundleContext bundleContext = FrameworkUtil.getBundle(AdminObjectService.class).getBundleContext();
+
+                StringBuilder adminObjectFilter = new StringBuilder(200);
+                adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
+                adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
+
+                ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
+                try {
+
+                    String bundleLocation = bundleContext.getBundle().getLocation();
+                    ConfigurationAdmin configAdmin = configAdminRef.getService();
+
+                    Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
+                    adminObjectSvcConfig.update(adminObjectSvcProps);
+                } catch (Exception x) {
+                    factory.destroy();
+                    throw x;
+                } catch (Error x) {
+                    factory.destroy();
+                    throw x;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "createResourceFactory", factory);
+                return factory;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        };
+
         Bundle raBundle = JMSResourceDefinitionHelper.getBundle(bundleContext, resourceAdapter);
         if (raBundle != null) {
-            return createAppDefinedResourceFactory(raBundle, declaringApplication, resourceAdapter, adminObjectID, interfaceName, adminObjectSvcProps, annotationDDProps,
-                                                   variableRegistry);
+            return createAppDefinedResourceFactory.apply(raBundle);
         } else {
-            // The RA bundle may come later;
-            // Use a factory that waits for the bundle to arrive once the modules are deployed
-            // TODO need an error condition on starting the application if the RA bundle
-            // doesn't arrive after the modules have been provisioned
-            WaitForRABundleResourceFactory resourceFactory = new WaitForRABundleResourceFactory(bundleContext, declaringApplication, resourceAdapter, adminObjectID, interfaceName, adminObjectSvcProps, annotationDDProps, variableRegistry);
+            Supplier<IllegalStateException> notReadyException = () -> {
+                return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
+                                                 ", declaringApplication=" + declaringApplication +
+                                                 ", location=" + BUNDLE_LOCATION + resourceAdapter);
+            };
+
+            WaitForBundleResourceFactory resourceFactory = new WaitForBundleResourceFactory(bundleContext, //
+                            BUNDLE_LOCATION + resourceAdapter, //
+                            createAppDefinedResourceFactory, //
+                            notReadyException);
             resourceFactory.listenForBundle();
             return resourceFactory;
         }
 
-    }
-
-    class WaitForRABundleResourceFactory extends AbstractWaitForBundleResourceFactory {
-        private final String declaringApplication;
-        private final String resourceAdapter;
-        private final String adminObjectID;
-        private final String interfaceName;
-        private final Hashtable<String, Object> adminObjectSvcProps;
-        private final Map<String, Object> annotationDDProps;
-        private final VariableRegistry variableRegistry;
-
-        WaitForRABundleResourceFactory(BundleContext bundleContext,
-                                       String declaringApplication,
-                                       String resourceAdapter,
-                                       String adminObjectID,
-                                       String interfaceName,
-                                       Hashtable<String, Object> adminObjectSvcProps,
-                                       Map<String, Object> annotationDDProps,
-                                       VariableRegistry variableRegistry) {
-
-            super(bundleContext, BUNDLE_LOCATION + resourceAdapter);
-            this.declaringApplication = declaringApplication;
-            this.resourceAdapter = resourceAdapter;
-            this.adminObjectID = adminObjectID;
-            this.interfaceName = interfaceName;
-            this.adminObjectSvcProps = adminObjectSvcProps;
-            this.annotationDDProps = annotationDDProps;
-            this.variableRegistry = variableRegistry;
-        }
-
-        @Override
-        protected ResourceFactory createDelegate(Bundle b) throws Exception {
-            return createAppDefinedResourceFactory(b,
-                                                   declaringApplication,
-                                                   resourceAdapter,
-                                                   adminObjectID,
-                                                   interfaceName,
-                                                   adminObjectSvcProps,
-                                                   annotationDDProps,
-                                                   variableRegistry);
-        }
-
-        @Override
-        protected RuntimeException notReadyException() {
-            return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
-                                             ", declaringApplication=" + declaringApplication +
-                                             ", location=" + getTargetBundleLocation());
-        }
-    }
-
-    private ResourceFactory createAppDefinedResourceFactory(Bundle raBundle,
-                                                            String declaringApplication,
-                                                            String resourceAdapter,
-                                                            String adminObjectID,
-                                                            String interfaceName,
-                                                            Hashtable<String, Object> adminObjectSvcProps,
-                                                            Map<String, Object> annotationDDProps,
-                                                            VariableRegistry variableRegistry) throws Exception {
-        //Get props with default values only and see if the same is specified by the user in annotation/dd, then use that value otherwise set the default value.
-        //Note: Its not necessary for the user to specify the props which has default value, so we set them in here.
-        Dictionary<String, Object> adminObjectDefaultProps = getDefaultProperties(raBundle, resourceAdapter, interfaceName);
-
-        for (Enumeration<String> keys = adminObjectDefaultProps.keys(); keys.hasMoreElements();) {
-            String key = keys.nextElement();
-            Object value = adminObjectDefaultProps.get(key);
-
-            //Override the administered object default property values with values provided annotation
-            if (annotationDDProps.containsKey(key))
-                value = annotationDDProps.remove(key);
-
-            if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
-
-            if (CONFIG_DISPLAY_ID.equals(key))
-                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + "config.referenceType", value);
-            else
-                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + key, value);
-        }
-
-        //Get all the properties for a given resource(get the resource by the interfaceName) from the corresponding resource adapter,
-        //then see if user specified any of these props in annotation/dd, if yes set that value otherwise ignore.
-        //Note: The above section for handling default values can be eliminated by handling the same here in this section since we get all the properties. Will be taken care in future.
-        AttributeDefinition[] ads = getAttributeDefinitions(resourceAdapter, interfaceName);
-        for (AttributeDefinition attributeDefinition : ads) {
-            Object value = annotationDDProps.remove(attributeDefinition.getID());
-            if (value != null) {
-
-                if (value instanceof String)
-                    value = variableRegistry.resolveString((String) value);
-
-                adminObjectSvcProps.put(JMSResourceDefinitionConstants.PROPERTIES_REF_KEY + attributeDefinition.getID(), value);
-            }
-        }
-
-        adminObjectSvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
-
-        BundleContext bundleContext = FrameworkUtil.getBundle(AdminObjectService.class).getBundleContext();
-
-        StringBuilder adminObjectFilter = new StringBuilder(200);
-        adminObjectFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, adminObjectID));
-        adminObjectFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, AdminObjectService.class.getName())).append(")");
-
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, adminObjectID, adminObjectFilter.toString(), declaringApplication);
-        try {
-
-            String bundleLocation = bundleContext.getBundle().getLocation();
-            ConfigurationAdmin configAdmin = configAdminRef.getService();
-
-            Configuration adminObjectSvcConfig = configAdmin.createFactoryConfiguration(AdminObjectService.ADMIN_OBJECT_PID, bundleLocation);
-            adminObjectSvcConfig.update(adminObjectSvcProps);
-        } catch (Exception x) {
-            factory.destroy();
-            throw x;
-        } catch (Error x) {
-            factory.destroy();
-            throw x;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "createResourceFactory", factory);
-        return factory;
     }
 
     /**

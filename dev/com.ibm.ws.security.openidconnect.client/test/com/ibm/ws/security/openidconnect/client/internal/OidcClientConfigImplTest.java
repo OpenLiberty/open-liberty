@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2020 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,9 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     final String MY_SSL_REF = "mySSLRef";
     private final String SSL_CONFIGURATION_NAME = "mySSLConfig";
     final String SHA256 = "HS256";//"SHA256";
+    final String RS256 = "RS256";
+    final String ES256 = "ES256";
+    final String NONE = "none";
     //final String DISCOVERY_ENDPOINT_URL = "authorizationEndpointUrl";
     final String AUTHORIZATION_ENDPOINT_URL = "authorizationEndpointUrl";
     final String TOKEN_ENDPOINT_URL = "tokenEndpointUrl";
@@ -283,7 +286,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         }
     }
 
-    // rp has HS256 (default), supports HS256, RS256 and NONE and op supports RS256 and ES256, adjust should set algorithm to RS256 which is supported by both in this case
+    // rp has HS256 (default), supports HS256, HS384, HS512, RS256, RS384, RS512, ES256, ES384, ES512, NONE and op supports ES256 and RS256
+    // adjust should set algorithm to ES256 which is supported by both in this case
     @Test
     public void testAdjustSignatureAlgorithm() throws Exception {
         try {
@@ -291,7 +295,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             oidcClientConfig.parseJsonResponse(discoveryjsonString);
             oidcClientConfig.adjustSignatureAlgorithm();
 
-            assertEquals("Signature Algorithm should be  " + "RS256", "RS256", oidcClientConfig.getSignatureAlgorithm());
+            assertEquals("Signature Algorithm should be  " + "ES256", "ES256", oidcClientConfig.getSignatureAlgorithm());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -316,7 +320,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         }
     }
 
-    // rp has HS256 (default), supports HS256, RS256 and NONE and op supports ES256 only, adjust should not set algorithm to ES256 since rp cannot support this
+    // rp has HS256 (default), supports supports HS256, HS384, HS512, RS256, RS384, RS512, ES256, ES384, ES512, NONE and op supports ES256 only
+    // adjust should set algorithm to ES256 since rp supports this
     @Test
     public void testNoAdjustSignatureAlgorithm_es() throws Exception {
         try {
@@ -329,7 +334,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             oidcClientConfig2.parseJsonResponse(discoveryjsonString_2);
             oidcClientConfig2.adjustSignatureAlgorithm();
 
-            assertEquals("Signature Algorithm should be  " + "HS256", "HS256", oidcClientConfig2.getSignatureAlgorithm());
+            assertEquals("Signature Algorithm should be  " + "ES256", "ES256", oidcClientConfig2.getSignatureAlgorithm());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

@@ -1,19 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.fat.grpc;
 
 import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.checkMetric;
+
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.net.URL;
@@ -114,9 +113,21 @@ public class GrpcMetricsTest extends FATServletClient {
         GrpcClientOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".client.log");
         GrpcServerOnly.startServer(GrpcMetricsTest.class.getSimpleName() + ".server.log");
 
+        GrpcClientOnly.setMarkToEndOfLog();
+        GrpcServerOnly.setMarkToEndOfLog();
+
         // enable mpMetrics-2.3 on both servers
         GrpcTestUtils.setServerConfiguration(GrpcClientOnly, null, GRPC_CLIENT_METRICS, appName, LOG);
         GrpcTestUtils.setServerConfiguration(GrpcServerOnly, null, GRPC_SERVER_METRICS, appName_srv, LOG);
+
+        // Wait for metrics endpoint to be fully available after configuration update before making client calls
+        assertNotNull("Metrics endpoint not available on GrpcClientOnly",
+                      GrpcClientOnly.waitForStringInLog("CWWKT0016I.*metrics"));
+        assertNotNull("Metrics endpoint not available on GrpcServerOnly",
+                      GrpcServerOnly.waitForStringInLog("CWWKT0016I.*metrics"));
+
+        GrpcClientOnly.resetLogMarks();
+        GrpcServerOnly.resetLogMarks();
 
         try (WebClient webClient = new WebClient()) {
 

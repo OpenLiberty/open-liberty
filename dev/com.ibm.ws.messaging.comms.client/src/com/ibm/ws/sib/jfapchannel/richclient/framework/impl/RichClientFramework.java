@@ -140,7 +140,7 @@ public class RichClientFramework extends Framework
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
             SibTr.entry(this, tc, "getOutboundConnectionProperties", ep);
         
-     // TODO: Check if this data path is even used see https://github.com/OpenLiberty/open-liberty/issues/22692
+	// Note: No known code paths within Liberty
 
         Map properties = null;
         if (ep instanceof CFEndPoint)

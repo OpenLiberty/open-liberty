@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,7 @@
 package com.ibm.ws.http.channel.internal.inbound;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,6 +32,7 @@ import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
@@ -100,7 +102,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private boolean suppress0ByteChunk = false;
     private long bytesWritten;
 
-    private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
     private NettyRequestMessage requestMessage;
@@ -119,17 +120,15 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         init(tsc, link, vc, hcc);
     }
 
-    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc) {
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc, NettyHttpChannelConfig config) {
         super();
-        nettyContext = context;
 
-        TCPConnectionContext tsc = new NettyTCPConnectionContext(context.channel(), vc);
+        TCPConnectionContext tsc = new NettyTCPConnectionContext(context.channel(), vc, config);
 
-        super.init(tsc, context);
+        super.init(tsc, context, config);
 
         this.setHeadersParsed();
         setVC(vc);
-
     }
 
     /**
@@ -195,10 +194,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
     public HttpResponse getNettyResponse() {
         return this.nettyResponse;
-    }
-
-    public ChannelHandlerContext getNettyContext() {
-        return this.nettyContext;
     }
 
     /*
@@ -2284,8 +2279,9 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         Pattern pattern = getHttpConfig().getForwardedProxiesRegex();
         Matcher matcher = null;
 
-        String remoteIp = nettyContext.channel().remoteAddress().toString();
-        remoteIp = remoteIp.substring(1, remoteIp.indexOf(':'));
+        // The remoteAddress API is meant to be cast down to a specific type. Since we are using HTTP this
+        // should be a cast down to InetSocketAddress
+        String remoteIp = ((InetSocketAddress)nettyContext.channel().remoteAddress()).getAddress().getHostAddress();
 
         String attribute;
 

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2019 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -53,6 +53,7 @@ Private-Package: \
   com.ibm.ws.classloading.internal.ClassLoadingServiceImpl,\
   com.ibm.ws.classloading.internal.NativeLibraryAdapter,\
   com.ibm.ws.classloading.internal.util.ClassRedefiner,\
+  com.ibm.ws.classloading.java2sec.PermissionManager,\
   com.ibm.ws.library.internal.SharedLibraryFactory
 
 Service-Component: \
@@ -60,19 +61,6 @@ Service-Component: \
     configuration-policy:=require; \
     implementation:=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
     provide:=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
-    properties:="service.vendor=IBM", \
-  com.ibm.ws.classloading.java2sec.PermissionManager; \
-    configuration-policy:=ignore; \
-    immediate:=true;\
-    implementation:=com.ibm.ws.classloading.java2sec.PermissionManager; \
-    provide:=com.ibm.ws.classloading.java2sec.PermissionManager; \
-    permission=com.ibm.ws.classloading.java2sec.JavaPermissionsConfiguration; \
-    classLoadingService=com.ibm.wsspi.classloading.ClassLoadingService; \
-    wsjarURLStreamHandler='org.osgi.service.url.URLStreamHandlerService(url.handler.protocol=wsjar)'; \
-    dynamic:='permission'; \
-    multiple:='permission'; \
-    greedy:='permission'; \
-    optional:='permission'; \
     properties:="service.vendor=IBM"
 
 instrument.classesExcludes: com/ibm/ws/classloading/internal/resources/*.class

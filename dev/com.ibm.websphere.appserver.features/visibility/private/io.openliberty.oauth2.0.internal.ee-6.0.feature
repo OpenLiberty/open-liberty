@@ -9,7 +9,6 @@ visibility = private
 -bundles=\
   com.ibm.ws.security.oauth.2.0, \
   com.ibm.ws.security.jwt, \
-  com.ibm.ws.security.common, \
-  io.openliberty.security.common.jwt
+  com.ibm.ws.security.common
 kind=ga
 edition=core

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -784,7 +784,15 @@ warning.manual.PPV.env.var.useraction=Um die Umgebungsvariable preferRED_PLATFOR
 
 error.read.server.env=CWWKE0970E: Die Datei server.env an der Position {} kann nicht gelesen werden.
 error.read.server.env.explanation=Fehler beim Lesen der Datei server.env .
-error.read.server.env.useraction=Die Datei server.env kann nicht gelesen werden.  \u00dcberpr\u00fcfen Sie die Dateiberechtigungen und wiederholen Sie die Operation.
+error.read.server.env.useraction=Die Datei \u201e server.env \u201c kann nicht gelesen werden. \u00dcberpr\u00fcfen Sie die Dateiberechtigungen und wiederholen Sie den Vorgang.
+
+warning.java2security.stopped=CWWKE0971W: Java 2 Security ist deaktiviert, da Jakarta EE 11 diese Funktion nicht unterst\u00fctzt.
+warning.java2security.stopped.explanation=In Jakarta EE 11 wurde die Unterst\u00fctzung f\u00fcr Java 2 Security eingestellt.
+warning.java2security.stopped.useraction=Deaktivieren Sie die Java 2-Sicherheit in der Serverkonfiguration, wenn Sie Funktionen von Jakarta EE 11 nutzen.
+
+info.java2security.restarted=CWWKE0972I: Java 2 Security wurde wieder aktiviert, da Funktionen von Jakarta EE 11 entfernt wurden.
+info.java2security.restarted.explanation=Diese Nachricht ist f\u00fcr Informationszwecke bestimmt.
+info.java2security.restarted.useraction=Es ist keine Aktion erforderlich.
 
 info.serverStarting=Server {0} wird gestartet.
 info.serverStarted=Der Server {0} wurde gestartet.

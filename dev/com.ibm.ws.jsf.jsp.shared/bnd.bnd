@@ -1,22 +1,26 @@
 #*******************************************************************************
-# Copyright (c) 2022, 2023 IBM Corporation and others.
+# Copyright (c) 2022, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 
--sub: *.bnd
-
 bVersion=1.0
+
+Bundle-Name: WAS JSF JSP Shared
+Bundle-SymbolicName: com.ibm.ws.jsf.jsp.shared
+Bundle-Description: WAS JSF JSP Shared, version ${bVersion}
 
 Export-Package: \
     com.ibm.ws.jsf.jsp.shared.util
 
 Import-Package: \
+ com.ibm.wsspi.webcontainer.servlet;version="[3.1,11.0)", \
+ com.ibm.wsspi.webcontainer.webapp;version="[2.0,11.0)", \
  *
 
 instrument.ffdc: false

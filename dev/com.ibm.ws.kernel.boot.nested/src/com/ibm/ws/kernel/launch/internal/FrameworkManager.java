@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2025 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -240,14 +240,7 @@ public class FrameworkManager {
             // Save the bootstrap config locally
             this.config = config;
 
-            boolean j2secManager = false;
             if (config.get(BootstrapConstants.JAVA_2_SECURITY_PROPERTY) != null) {
-                j2secManager = true;
-            }
-
-            String j2secNoRethrow = config.get(BootstrapConstants.JAVA_2_SECURITY_NORETHROW);
-
-            if (j2secManager) {
                 // OLGH#20289 -- Java 2 Security Manager is no longer supported with Java 18+
                 if (javaVersion() >= 18) {
                     Tr.error(tc, "error.set.securitymanager.jdk18", javaVersion());
@@ -259,6 +252,8 @@ public class FrameworkManager {
                             throw new IllegalStateException(Tr.formatMessage(tc, "error.checkpoint.securitymanager.not.supported"));
                         }
                     });
+                    String j2secNoRethrow = config.get(BootstrapConstants.JAVA_2_SECURITY_NORETHROW);
+
                     if (j2secNoRethrow == null || j2secNoRethrow.equals("false")) {
                         try {
                             AccessController.doPrivileged(new java.security.PrivilegedExceptionAction<Void>() {

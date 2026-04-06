@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -570,14 +570,20 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
         this.libraryConfigHelper = new ClassLoaderConfigHelper(getConfigHelper(), configAdmin, classLoadingService);
         this.isDelegateLast = libraryConfigHelper.isDelegateLast();
         this.permissionManager = deployedAppServices.getPermissionManager();
-        try {
-            this.permissionsConfig = getContainer().adapt(PermissionsConfig.class); // throws UnableToAdaptException
-        } catch (UnableToAdaptException e) {
-            // error.application.parse.descriptor=
-            // CWWKZ0113E: Application {0}: Parse error for application descriptor {1}: {2}
-            Tr.error(_tc, "error.application.parse.descriptor", getName(), "META-INF/permissions.xml", e);
-            throw e;
+
+        if (!java2SecurityEnabled()) {
+            this.permissionsConfig = null;
+        } else {
+            try {
+                this.permissionsConfig = getContainer().adapt(PermissionsConfig.class); // throws UnableToAdaptException
+            } catch (UnableToAdaptException e) {
+                // error.application.parse.descriptor=
+                // CWWKZ0113E: Application {0}: Parse error for application descriptor {1}: {2}
+                Tr.error(_tc, "error.application.parse.descriptor", getName(), "META-INF/permissions.xml", e);
+                throw e;
+            }
         }
+
         String parentPid = (String) applicationInformation.getConfigProperty(Constants.SERVICE_PID);
         String sourcePid = (String) applicationInformation.getConfigProperty("ibm.extends.source.pid");
         if (sourcePid != null) {
@@ -742,10 +748,6 @@ public abstract class DeployedAppInfoBase extends SimpleDeployedAppInfoBase impl
     }
 
     private boolean java2SecurityEnabled() {
-        SecurityManager sm = System.getSecurityManager();
-        if (sm != null)
-            return true;
-        else
-            return false;
+        return System.getSecurityManager() != null;
     }
 }

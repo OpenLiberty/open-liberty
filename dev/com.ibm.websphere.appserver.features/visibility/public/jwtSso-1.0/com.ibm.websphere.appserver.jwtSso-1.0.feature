@@ -14,7 +14,8 @@ Subsystem-Name: JSON Web Token Single Sign-On 1.0
   com.ibm.websphere.appserver.httpcommons-1.0, \
   com.ibm.websphere.appserver.servlet-3.1; ibm.tolerates:="4.0, 5.0, 6.0, 6.1", \
   io.openliberty.jwtSso1.0.internal.ee-7.0; ibm.tolerates:="9.0, 10.0, 11.0"
--bundles=com.ibm.ws.security.jwtsso.token
+-bundles=com.ibm.ws.security.jwtsso.token, \
+  com.ibm.ws.security.jwtsso
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

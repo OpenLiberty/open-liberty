@@ -24,5 +24,8 @@
     <enterpriseApplication id="webProfileEARapp"
         location="webProfileEARapp.ear"
         name="webProfileEARapp" />
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>
  

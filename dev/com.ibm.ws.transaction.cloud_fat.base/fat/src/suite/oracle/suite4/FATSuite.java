@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package suite.oracle.suite4;
 
@@ -28,13 +25,13 @@ import tests.DBRotationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	//Ensure failures in @BeforeClass don't prevent zero tests run
-	AlwaysPassesTest.class,
-	DBRotationTest.class,
+                //Ensure failures in @BeforeClass don't prevent zero tests run
+                AlwaysPassesTest.class,
+                DBRotationTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
-	@ClassRule
+    @ClassRule
     public static TxTestDB p = new TxTestDB(DatabaseContainerType.Oracle);
 
     @ClassRule

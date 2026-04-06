@@ -4,7 +4,8 @@ WLP-DisableAllFeatures-OnConflict: false
 visibility=private
 singleton=true
 Subsystem-Version: 8.0.0
--bundles=com.ibm.ws.javaee.version
+-bundles=com.ibm.ws.javaee.platform.v8, \
+ com.ibm.ws.javaee.version
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

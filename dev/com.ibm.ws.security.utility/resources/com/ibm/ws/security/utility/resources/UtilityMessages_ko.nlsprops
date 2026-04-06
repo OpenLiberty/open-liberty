@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ encode.entriesDidNotMatch=\ud56d\ubaa9\uc774 \uc77c\uce58\ud558\uc9c0 \uc54a\uc2
 encode.mutuallyExclusiveArgError=\uc785\ub825 \ud30c\uc77c\uc740 {0} \ubc0f {1} \uc18d\uc131\uc744 \ubaa8\ub450 \uc9c0\uc815\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 encode.aesConfigFileEncryptionAmbiguous=\uc624\ub958: \uc785\ub825 \ud30c\uc77c\uc5d0 {0} \ubc0f {1} \ubcc0\uc218\uac00 \ubaa8\ub450 \ud3ec\ud568\ub418\uc5b4 \uc788\uc73c\uba74 \uc0ac\uc6a9\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 encode.aesConfigFileMissingEncryptionVariables=\ube44\ubc00\ubc88\ud638\ub97c \uc778\ucf54\ub529\ud560 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \uc785\ub825 \ud30c\uc77c\uc5d0 {0} \ub610\ub294 {1} \ubcc0\uc218\uac00 \ud3ec\ud568\ub418\uc5b4 \uc788\uc9c0 \uc54a\uac70\ub098 \uc785\ub825 \ud30c\uc77c\uc774 \uc798\ubabb\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+encode.aesKeyRequired=AES \uc778\ucf54\ub529\uc744 \uc0ac\uc6a9\ud560 \ub54c\ub294 \ub2e4\uc74c \uc778\uc790 \uc911 \ud558\ub098\ub97c \uc9c0\uc815\ud574\uc57c \ud569\ub2c8\ub2e4: --key, --base64Key, --aesConfigFile, \ub610\ub294 --keyring.
 
 password.enterText=\ube44\ubc00\ubc88\ud638 \uc785\ub825:
 password.reenterText=\ube44\ubc00\ubc88\ud638 \uc7ac\uc785\ub825:

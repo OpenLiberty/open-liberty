@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Avertisment: {0}: se \u00eencearc\u0103 \u0
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Avertisment: {0}: se \u00eencearc\u0103 \u00eenchiderea conexiunii determinat\u0103 de excep\u0163ia {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Avertisment: {0} : \u00eencercarea de a \u00eenchide abonatul a generat o excep\u021bie {1}
+
 broadcast_ignored_command_while_closing_connection=Avertisment: {0}: se ignor\u0103 cererea de a publica comanda c\u00e2t timp conexiunea se \u00eenchide.
 
 broadcast_listening_sleep_on_error=Avertisment: {0}: Excep\u0163ia {1} a fost aruncat\u0103. Firul de execu\u0163ie va dormi {2} milisecunde \u00eenainte de a relua ascultarea.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -784,7 +784,15 @@ warning.manual.PPV.env.var.useraction=Aby zachowa\u0107 zmienn\u0105 \u015brodow
 
 error.read.server.env=CWWKE0970E: Nie mo\u017cna odczyta\u0107 pliku server.env w po\u0142o\u017ceniu {}.
 error.read.server.env.explanation=Nie powiod\u0142o si\u0119 odczytanie pliku server.env .
-error.read.server.env.useraction=Nie mo\u017cna odczyta\u0107 pliku server.env .  Sprawd\u017a uprawnienia do pliku i pon\u00f3w operacj\u0119.
+error.read.server.env.useraction=Nie mo\u017cna odczyta\u0107 pliku \u201e server.env \u201d. Sprawd\u017a uprawnienia do pliku i spr\u00f3buj ponownie.
+
+warning.java2security.stopped=CWWKE0971W: Funkcja Java 2 Security jest wy\u0142\u0105czona, poniewa\u017c Jakarta EE 11 jej nie obs\u0142uguje.
+warning.java2security.stopped.explanation=W wersji Jakarta EE 11 wycofano obs\u0142ug\u0119 zabezpiecze\u0144 Java 2.
+warning.java2security.stopped.useraction=W przypadku korzystania z funkcji Jakarta EE 11 nale\u017cy wy\u0142\u0105czy\u0107 zabezpieczenia Java 2 w konfiguracji serwera.
+
+info.java2security.restarted=CWWKE0972I: Funkcja Java 2 Security zosta\u0142a ponownie w\u0142\u0105czona, poniewa\u017c usuni\u0119to funkcje Jakarta EE 11.
+info.java2security.restarted.explanation=Ten komunikat ma charakter wy\u0142\u0105cznie informacyjny.
+info.java2security.restarted.useraction=Nie jest wymagana \u017cadna czynno\u015b\u0107.
 
 info.serverStarting=Uruchamianie serwera {0}.
 info.serverStarted=Serwer {0} zosta\u0142 uruchomiony.

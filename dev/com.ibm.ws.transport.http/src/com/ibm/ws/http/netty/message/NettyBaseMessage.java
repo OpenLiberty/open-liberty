@@ -9,11 +9,6 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.message;
 
-import static com.ibm.ws.http.netty.message.NettyBaseMessage.MessageType.REQUEST;
-
-import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectOutput;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -26,19 +21,14 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
-import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.HttpTrailersImpl;
 import com.ibm.ws.http.channel.internal.cookies.CookieCacheData;
 import com.ibm.ws.http.channel.internal.cookies.CookieHeaderByteParser;
-import com.ibm.ws.http.channel.internal.cookies.CookieUtils;
-import com.ibm.ws.http.channel.internal.cookies.SameSiteCookieUtils;
 import com.ibm.wsspi.genericbnf.BNFHeaders;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
@@ -55,6 +45,7 @@ import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
 
 import io.netty.handler.codec.http.HttpHeaders;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpMessage;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http2.HttpConversionUtil;
@@ -655,9 +646,30 @@ public class NettyBaseMessage implements HttpBaseMessage {
 
     @Override
     public void setContentLength(long length) {
-        if (HttpUtil.isTransferEncodingChunked(message))
-            HttpUtil.setTransferEncodingChunked(message, false);
-        HttpUtil.setContentLength(message, length);
+        if(isChunkedEncodingSet()) {
+            //retain HttpUtil.setTransferEncodingChunked false case logic
+            String temp = HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName();
+            List<String> encodings = headers.getAll(temp);
+            if (!encodings.isEmpty()) {
+                List<CharSequence> values = new ArrayList(encodings);
+                Iterator<CharSequence> valuesIt = values.iterator();
+
+                while (valuesIt.hasNext()) {
+                    CharSequence value = valuesIt.next();
+                    if (HttpHeaderValues.CHUNKED.contentEqualsIgnoreCase(value)) {
+                        valuesIt.remove();
+                    }
+                }
+
+                if (values.isEmpty()) {
+                    headers.remove(temp);
+                } else {
+                    headers.set(temp, values);
+                }
+            }
+        }
+
+        headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), length);
     }
 
     @Override

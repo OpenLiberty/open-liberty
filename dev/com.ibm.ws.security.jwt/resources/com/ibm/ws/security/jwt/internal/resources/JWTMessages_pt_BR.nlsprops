@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Certifique-se de que o cabe\u00e7alho do algor
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: A JWE (JSON Web Encryption) n\u00e3o \u00e9 v\u00e1lida pois sua CEK (Content Encryption Key) foi criptografada usando o algoritmo {0}. As CEKs (Content Encryption Keys) devem ser criptografadas usando o algoritmo {1}.
 JWE_ALGORITHM_MISMATCH.explanation=As CEKs devem ser criptografadas pelo algoritmo especificado na mensagem. As CEKs que s\u00e3o criptografadas com qualquer outro algoritmo de criptografia n\u00e3o podem ser validadas.
 JWE_ALGORITHM_MISMATCH.useraction=Obtenha um novo token com uma CEK que \u00e9 criptografada usando o algoritmo necess\u00e1rio que \u00e9 especificado na mensagem. Alternativamente, atualize sua configura\u00e7\u00e3o JWT para permitir tokens com as CEKs que s\u00e3o criptografadas usando o outro algoritmo de criptografia.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: N\u00e3o \u00e9 poss\u00edvel carregar as entradas de certificados confi\u00e1veis do reposit\u00f3rio de certificados [ {0} ]. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=Ocorreu um erro enquanto o sistema tentava recuperar a lista de entradas de certificados confi\u00e1veis do armazenamento de confian\u00e7a especificado. O truststore pode estar ausente da configura\u00e7\u00e3o, ou pode haver algum problema impedindo o acesso ao truststore.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Verifique se o truststore est\u00e1 configurado corretamente na configura\u00e7\u00e3o do servidor e se est\u00e1 acess\u00edvel. Verifique a mensagem de erro para obter mais informa\u00e7\u00f5es sobre a falha.
+
+

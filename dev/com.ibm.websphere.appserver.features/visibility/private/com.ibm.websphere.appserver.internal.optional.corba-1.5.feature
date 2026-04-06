@@ -10,11 +10,11 @@ Subsystem-Name: OMG CORBA APIs and RMI-IIOP API
 -bundles=\
   io.openliberty.org.apache.bcel; require-java:="9",\
   com.ibm.ws.org.apache.commons.lang3; require-java:="9", \
-  com.ibm.ws.org.apache.yoko.corba.spec.1.5; require-java:="9",\
-  com.ibm.ws.org.apache.yoko.osgi.1.5; require-java:="9",\
-  com.ibm.ws.org.apache.yoko.rmi.impl.1.5; require-java:="9",\
-  com.ibm.ws.org.apache.yoko.core.1.5; require-java:="9",\
-  com.ibm.ws.org.apache.yoko.util.1.5; require-java:="9",\
-  com.ibm.ws.org.apache.yoko.rmi.spec.1.5; require-java:="9"
+  io.openliberty.yoko.spec.corba; require-java:="9",\
+  io.openliberty.yoko.osgi; require-java:="9",\
+  io.openliberty.yoko.rmi.impl; require-java:="9",\
+  io.openliberty.yoko.core; require-java:="9",\
+  io.openliberty.yoko.util; require-java:="9",\
+  io.openliberty.yoko.rmi.spec; require-java:="9"
 kind=ga
 edition=core

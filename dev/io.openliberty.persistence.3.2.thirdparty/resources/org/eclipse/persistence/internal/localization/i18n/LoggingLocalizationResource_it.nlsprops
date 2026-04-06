@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Avvertenza: {0}: tentativo di chiudere la c
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Avvertenza: {0}: il tentativo di chiusura della connessione ha provocato l''eccezione {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Avviso: {0} : il tentativo di chiudere il subscriber ha causato un''eccezione {1}
+
 broadcast_ignored_command_while_closing_connection=Avvertenza: {0}: richiesta di pubblicare il comando durante la chiusura della connessione ignorata.
 
 broadcast_listening_sleep_on_error=Avvertenza: {0}: \u00e8 stata generata l''eccezione {1}. Il thread viene sospeso per {2} millisecondi prima di riprendere l''ascolto.

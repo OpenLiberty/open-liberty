@@ -40,6 +40,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -70,9 +71,7 @@ public class JPA31Test extends JPAFATServletClient {
     public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
 
     static {
-        dropSet.add("JPA31_DROP_${dbvendor}.ddl");
-        createSet.add("JPA31_CREATE_${dbvendor}.ddl");
-        populateSet.add("JPA31_POPULATE_${dbvendor}.ddl");
+        // DDL file names will be populated in setUp() based on the active Jakarta EE version
     }
 
     @Server("JPA31Server")
@@ -109,6 +108,18 @@ public class JPA31Test extends JPAFATServletClient {
         DatabaseContainerUtil.setupDataSourceProperties(server, testContainer);
 
         server.startServer();
+
+        // Determine DDL file prefix based on Jakarta EE version
+        // Use JPA32 DDL files for Jakarta EE 11 (JPA 3.2), otherwise use JPA31 DDL files
+        String ddlPrefix = JakartaEEAction.isEE11OrLaterActive() ? "JPA32" : "JPA31";
+        System.out.println(JPA31Test.class.getName() + " Using DDL prefix: " + ddlPrefix + " (EE11 active: " + JakartaEEAction.isEE11OrLaterActive() + ")");
+        
+        dropSet.clear();
+        dropSet.add(ddlPrefix + "_DROP_${dbvendor}.ddl");
+        createSet.clear();
+        createSet.add(ddlPrefix + "_CREATE_${dbvendor}.ddl");
+        populateSet.clear();
+        populateSet.add(ddlPrefix + "_POPULATE_${dbvendor}.ddl");
 
         setupDatabaseApplication(server, RESOURCE_ROOT + "ddl/");
 

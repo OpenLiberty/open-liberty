@@ -18,6 +18,7 @@ import java.net.SocketAddress;
 import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -29,6 +30,8 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.VirtualConnection;
@@ -39,7 +42,9 @@ import com.ibm.wsspi.tcpchannel.TCPReadRequestContext;
 import io.netty.channel.Channel;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
 import io.openliberty.http.netty.channel.ReadOnlySocket;
+import io.openliberty.http.options.TcpOption;
 
 /**
  *
@@ -66,14 +71,15 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private int jitAllocateSize = 0;
 
     private VirtualConnection vc = null;
+    private int channelTimeout;
 
     private volatile Socket cachedSocket;
+    private NettyHttpChannelConfig config;
 
-    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
-
+    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel, NettyHttpChannelConfig config) {
         this.connectionContext = connectionContext;
         this.nettyChannel = nettyChannel;
-
+        this.config = config;
     }
 
     @Override
@@ -94,7 +100,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     @Override
     public Socket getSocket() {
         if(cachedSocket == null){
-            cachedSocket = new ReadOnlySocket(nettyChannel);       
+            Optional<Socket> socket = Optional.ofNullable(this.nettyChannel.attr(NettyHttpConstants.SOCKET_HANDLE).get());
+            cachedSocket = socket.orElse(new ReadOnlySocket(nettyChannel));     
         }
         return cachedSocket;
     }
@@ -177,7 +184,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             if (timeout == NO_TIMEOUT)
                 return readFuture.get();
             else if (timeout == USE_CHANNEL_TIMEOUT)
-                return readFuture.get(60000, TimeUnit.MILLISECONDS);
+                return readFuture.get((int)config.get(TcpOption.INACTIVITY_TIMEOUT), TimeUnit.MILLISECONDS);
             else
                 return readFuture.get(timeout, TimeUnit.MILLISECONDS);
         } catch (InterruptedException e) {

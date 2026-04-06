@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app
+    version="4.0"
+    xmlns="http://xmlns.jcp.org/xml/ns/javaee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd">
+
+  <display-name>WebFragmentApplication</display-name>
+
+  <!-- Servlet Definition -->
+  <!-- ################## -->
+
+  <!-- Definition and Mapping are defined in web.xml and also inside the servlet using @WebServlet -->
+  <servlet>
+    <description>Definition and Mapping are defined in web.xml; also annotation</description>
+    <servlet-name>AugmentedServlet</servlet-name>
+    <servlet-class>com.ibm.ws.servletAnnotation.AugmentedServlet</servlet-class>
+    <init-param>
+        <param-name>aaa</param-name>
+        <param-value>111</param-value>
+    </init-param>
+  </servlet>
+
+  <!-- Definition and Mapping are defined in web.xml.-->
+  <servlet>
+    <description>Definition and Mapping are defined in web.xml</description>
+    <display-name>DeclaredServletInWebXML</display-name>
+    <servlet-name>DeclaredServletInWebXML</servlet-name>
+    <servlet-class>com.ibm.ws.webFragment.DeclaredServletInWebXML</servlet-class>
+  </servlet>
+
+  <!-- Servlet Mapping    -->
+  <!-- ################## -->
+
+  <!-- The AugmentedServlet also uses @WebServlet for same <servlet-name> AugmentedServlet , but different urlPatterns /AugmentedServletIgnore
+      * Expecting:  web.xml mapping /AugmentedServletKeepMapping returns 200
+      *             @WebServlet mapping /AugmentedServletIgnore is ignored; returns 404
+  -->
+  <servlet-mapping>
+    <servlet-name>AugmentedServlet</servlet-name>
+    <url-pattern>/AugmentedServletKeepMapping</url-pattern>
+  </servlet-mapping>
+
+  <!-- Expecting 200 for this mapping -->
+  <servlet-mapping>
+    <servlet-name>DeclaredServletInWebXML</servlet-name>
+    <url-pattern>/DeclaredServletInWebXML</url-pattern>
+  </servlet-mapping>
+
+  <!-- Mapping defines here without definition; its servlet definition is inside the lib/webfrag.jar 's web-fragment.xml
+       * Expecting: Request to this mapping /MappingServletInWebXML_DefinitonInWebFrag returns 200
+       *            Request to web-fragment mapping (for the same servlet-name) /MappingServletInWebFragmentXML returns 404
+  -->
+  <servlet-mapping>
+    <servlet-name>DeclaredServletInWebFragment</servlet-name>
+    <url-pattern>/MappingServletInWebXML_DefinitonInWebFragXML</url-pattern>
+  </servlet-mapping>
+
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+  </welcome-file-list>
+</web-app>

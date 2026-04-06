@@ -14,6 +14,7 @@ package com.ibm.ws.security.authorization;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Set;
 
 import javax.security.auth.Subject;
@@ -89,4 +90,21 @@ public interface AuthorizationService {
     default boolean isStarStarRoleMapped(String resourceName) {
         return false;
     }
+    /**
+     *
+     * Retrieve all declared roles subject is assigned to within the provided resource
+     *
+     * Any dynamically assigned roles should not be returned.
+     *
+     * @param resourceName the name of the resource being accessed, used to
+     *            look up the corresponding authorization table. Must not be {@code null}.
+     * @param subject the Subject which roles we are trying to find in the resource. Must not be {@code null}.
+     *
+     * @return {@code Set<String>} of all the roles assigned to the subject in the resource.
+     *            Returns an empty set if no roles for
+     */
+    default Set<String> getAllDeclaredRolesForResourceForSubject(String resourceName, Subject subject){
+        return new HashSet<String>(Collections.EMPTY_SET);
+    }
+
 }

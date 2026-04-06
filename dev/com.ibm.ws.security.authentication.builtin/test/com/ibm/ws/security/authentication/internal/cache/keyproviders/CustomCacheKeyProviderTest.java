@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,14 +27,13 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import test.common.SharedOutputManager;
-
 import com.ibm.ws.security.authentication.cache.AuthCacheConfig;
 import com.ibm.ws.security.authentication.cache.CacheContext;
 import com.ibm.ws.security.authentication.cache.CacheKeyProvider;
-import com.ibm.ws.security.authentication.cache.CacheObject;
 import com.ibm.wsspi.security.token.AttributeNameConstants;
 import com.ibm.wsspi.security.token.SingleSignonToken;
+
+import test.common.SharedOutputManager;
 
 /**
  *
@@ -52,20 +51,19 @@ public class CustomCacheKeyProviderTest {
 
     /**
      * Capture stdout/stderr output to the manager.
-     * 
+     *
      * @throws Exception
      */
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
-        // There are variations of this constructor: 
+        // There are variations of this constructor:
         // e.g. to specify a log location or an enabled trace spec. Ctrl-Space for suggestions
         outputMgr = SharedOutputManager.getInstance();
         outputMgr.captureStreams();
 
         ssoToken = createSSOToken();
         testSubject = new Subject();
-        CacheObject cacheObject = new CacheObject(testSubject);
-        cacheContext = new CacheContext(config, cacheObject);
+        cacheContext = new CacheContext(config, testSubject);
     }
 
     private static SingleSignonToken createSSOToken() {
@@ -87,7 +85,7 @@ public class CustomCacheKeyProviderTest {
 
     /**
      * Final teardown work when class is exiting.
-     * 
+     *
      * @throws Exception
      */
     @AfterClass
@@ -98,7 +96,7 @@ public class CustomCacheKeyProviderTest {
 
     /**
      * Individual teardown after each test.
-     * 
+     *
      * @throws Exception
      */
     @After
@@ -133,8 +131,7 @@ public class CustomCacheKeyProviderTest {
     public void testProvideKeyFromHashtable() {
         final String methodName = "testProvideKeyFromHashtable";
         Subject subject = createTestSubjectWithCustomCacheKey();
-        CacheObject cacheObject = new CacheObject(subject);
-        cacheContext = new CacheContext(config, cacheObject);
+        cacheContext = new CacheContext(config, subject);
         try {
             CacheKeyProvider provider = new CustomCacheKeyProvider();
             Object cacheKey = provider.provideKey(cacheContext);

@@ -1,5 +1,6 @@
 /*
- * Copyright (c) 1998, 2025 Oracle and/or its affiliates. All rights reserved.
+ * Copyright (c) 2026 Contributors to the Eclipse Foundation. All rights reserved.
+ * Copyright (c) 1998, 2026 Oracle and/or its affiliates. All rights reserved.
  * Copyright (c) 2019, 2026 IBM Corporation. All rights reserved.
  *
  * This program and the accompanying materials are made available under the
@@ -22,11 +23,26 @@
 //       - Issue 1771: Fix UUID handling for PostgreSQL
 package org.eclipse.persistence.platform.database;
 
+import java.io.CharArrayWriter;
+import java.io.IOException;
+import java.io.Writer;
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.sql.CallableStatement;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
+import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import org.eclipse.persistence.exceptions.ValidationException;
 import org.eclipse.persistence.expressions.Expression;
 import org.eclipse.persistence.expressions.ExpressionOperator;
 import org.eclipse.persistence.internal.databaseaccess.DatabaseCall;
-import org.eclipse.persistence.internal.databaseaccess.FieldTypeDefinition;
 import org.eclipse.persistence.internal.expressions.ExpressionJavaPrinter;
 import org.eclipse.persistence.internal.expressions.ExpressionSQLPrinter;
 import org.eclipse.persistence.internal.expressions.ExtractOperator;
@@ -41,20 +57,6 @@ import org.eclipse.persistence.queries.Call;
 import org.eclipse.persistence.queries.SQLCall;
 import org.eclipse.persistence.queries.ValueReadQuery;
 import org.eclipse.persistence.tools.schemaframework.FieldDefinition;
-
-import java.io.CharArrayWriter;
-import java.io.IOException;
-import java.io.Writer;
-import java.sql.CallableStatement;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Hashtable;
-import java.util.Iterator;
-import java.util.List;
-import java.util.UUID;
 
 /**
  * <p>
@@ -127,7 +129,7 @@ public class PostgreSQLPlatform extends DatabasePlatform {
      * PostGreSQL uses case #2 and therefore the maxResults has to be altered
      * based on the firstResultIndex
      *
-     * @see org.eclipse.persistence.platform.database.MySQLPlatform
+     * @see MySQLPlatform
      */
     @Override
     public int computeMaxRowsForSQL(int firstResultIndex, int maxResults) {
@@ -328,25 +330,6 @@ public class PostgreSQLPlatform extends DatabasePlatform {
     }
 
     /**
-     * This method is used to print the output parameter token when stored
-     * procedures are called
-     */
-    @Override
-    public String getInOutputProcedureToken() {
-        return "OUT";
-    }
-
-    /**
-     * This is required in the construction of the stored procedures with output
-     * parameters
-     */
-    @Override
-    public boolean shouldPrintOutputTokenAtStart() {
-        // TODO: Check with the reviewer where this is used
-        return true;
-    }
-
-    /**
      * INTERNAL:
      * Should the variable name of a stored procedure call be printed as part of the procedure call
      * e.g. EXECUTE PROCEDURE MyStoredProc(myvariable = ?)
@@ -446,61 +429,6 @@ public class PostgreSQLPlatform extends DatabasePlatform {
     }
 
     /**
-     * INTERNAL: Append the receiver's field 'identity' constraint clause to a
-     * writer.
-     */
-    @Override
-    public void printFieldIdentityClause(Writer writer) throws ValidationException {
-        try {
-            writer.write(" SERIAL");
-        } catch (IOException ioException) {
-            throw ValidationException.fileError(ioException);
-        }
-    }
-
-    @Override
-    protected Hashtable<Class<?>, FieldTypeDefinition> buildFieldTypes() {
-        Hashtable<Class<?>, FieldTypeDefinition> fieldTypeMapping = new Hashtable<>();
-
-        fieldTypeMapping.put(Boolean.class, new FieldTypeDefinition("BOOLEAN", false));
-
-        fieldTypeMapping.put(Integer.class, new FieldTypeDefinition("INTEGER", false));
-        fieldTypeMapping.put(Long.class, new FieldTypeDefinition("BIGINT", false));
-        fieldTypeMapping.put(Float.class, new FieldTypeDefinition("FLOAT", false));
-        fieldTypeMapping.put(Double.class, new FieldTypeDefinition("FLOAT", false));
-        fieldTypeMapping.put(Short.class, new FieldTypeDefinition("SMALLINT", false));
-        fieldTypeMapping.put(Byte.class, new FieldTypeDefinition("SMALLINT", false));
-        fieldTypeMapping.put(java.math.BigInteger.class, new FieldTypeDefinition("BIGINT", false));
-        fieldTypeMapping.put(java.math.BigDecimal.class, new FieldTypeDefinition("DECIMAL", 38));
-        fieldTypeMapping.put(Number.class, new FieldTypeDefinition("DECIMAL", 38));
-
-        fieldTypeMapping.put(String.class, new FieldTypeDefinition("VARCHAR", DEFAULT_VARCHAR_SIZE));
-        fieldTypeMapping.put(Character.class, new FieldTypeDefinition("CHAR", 1));
-
-        fieldTypeMapping.put(Byte[].class, new FieldTypeDefinition("BYTEA", false));
-        fieldTypeMapping.put(Character[].class, new FieldTypeDefinition("TEXT", false));
-        fieldTypeMapping.put(byte[].class, new FieldTypeDefinition("BYTEA", false));
-        fieldTypeMapping.put(char[].class, new FieldTypeDefinition("TEXT", false));
-        fieldTypeMapping.put(java.sql.Blob.class, new FieldTypeDefinition("BYTEA"));
-        fieldTypeMapping.put(java.sql.Clob.class, new FieldTypeDefinition("TEXT", false));
-
-        fieldTypeMapping.put(java.sql.Date.class, new FieldTypeDefinition("DATE", false));
-        fieldTypeMapping.put(java.sql.Time.class, new FieldTypeDefinition("TIME"));
-        fieldTypeMapping.put(java.sql.Timestamp.class, new FieldTypeDefinition("TIMESTAMP"));
-
-        fieldTypeMapping.put(java.time.LocalDate.class, new FieldTypeDefinition("DATE", false));
-        fieldTypeMapping.put(java.time.LocalDateTime.class, new FieldTypeDefinition("TIMESTAMP"));
-        fieldTypeMapping.put(java.time.LocalTime.class, new FieldTypeDefinition("TIME"));
-        fieldTypeMapping.put(java.time.OffsetDateTime.class, new FieldTypeDefinition("TIMESTAMP"));
-        fieldTypeMapping.put(java.time.OffsetTime.class, new FieldTypeDefinition("TIME"));
-        fieldTypeMapping.put(java.time.Instant.class, new FieldTypeDefinition("TIMESTAMP"));
-
-        fieldTypeMapping.put(java.util.UUID.class, new FieldTypeDefinition("UUID", false));
-
-        return fieldTypeMapping;
-    }
-
-    /**
      * INTERNAL: Override the default locate operator.
      */
     protected ExpressionOperator operatorLocate() {
@@ -548,55 +476,12 @@ public class PostgreSQLPlatform extends DatabasePlatform {
         return true;
     }
 
-    // According to PostgreSQL manuals, support of fractional seconds precision in time SQL types
-    // was added in version 7.2. This version is from 4th February 2002. Let's support it from
-    // the base level of PostgreSQL platforms.
-    // All time, timestamp, and interval accept an optional precision value p which specifies the number
-    // of fractional digits retained in the seconds field. By default, there is no explicit bound on precision.
-    // The allowed range of p is from 0 to 6 for the timestamp and interval types.
-    @Override
-    public boolean supportsFractionalTime() {
-        return true;
-    }
-
     /**
      * INTERNAL:
      */
     @Override
     protected String getCreateTempTableSqlPrefix() {
         return "CREATE LOCAL TEMPORARY TABLE ";
-    }
-
-    /**
-     * INTERNAL: returns the maximum number of characters that can be used in a
-     * field name on this platform.
-     */
-    @Override
-    public int getMaxFieldNameSize() {
-        // The system uses no more than NAMEDATALEN-1 characters of an
-        // identifier; longer names can be written in commands,
-        // but they will be truncated. By default, NAMEDATALEN is 64 so the
-        // maximum identifier length is 63 (but at the time PostgreSQL
-        // is built, NAMEDATALEN can be changed in src/include/postgres_ext.h).
-        // http://www.postgresql.org/docs/7.3/interactive/sql-syntax.html#SQL-SYNTAX-IDENTIFIERS
-        return 63;
-    }
-
-    // http://www.postgresql.org/docs/8.1/interactive/plpgsql-declarations.html
-    /**
-     * INTERNAL: Used for sp calls.
-     */
-    @Override
-    public String getProcedureBeginString() {
-        return "$$  BEGIN ";
-    }
-
-    /**
-     * INTERNAL: Used for sp calls.
-     */
-    @Override
-    public String getProcedureEndString() {
-        return "END; $$ LANGUAGE plpgsql;";
     }
 
     /**
@@ -616,50 +501,12 @@ public class PostgreSQLPlatform extends DatabasePlatform {
     }
 
     /**
-     * Allows DROP TABLE to cascade dropping of any dependent constraints if the database supports this option.
-     */
-    @Override
-    public String getDropCascadeString() {
-        return " CASCADE";
-    }
-
-    @Override
-    public void printFieldTypeSize(Writer writer, FieldDefinition field, FieldTypeDefinition fieldType, boolean shouldPrintFieldIdentityClause) throws IOException {
-        if (!shouldPrintFieldIdentityClause) {
-            super.printFieldTypeSize(writer, field, fieldType, shouldPrintFieldIdentityClause);
-        }
-    }
-
-    @Override
-    public void printFieldTypeSize(Writer writer, FieldDefinition field, FieldDefinition.DatabaseType databaseType, boolean shouldPrintFieldIdentityClause) throws IOException {
-        if (!shouldPrintFieldIdentityClause) {
-            super.printFieldTypeSize(writer, field, databaseType, shouldPrintFieldIdentityClause);
-        }
-    }
-
-    @Override
-    public void printFieldUnique(Writer writer, boolean shouldPrintFieldIdentityClause) throws IOException {
-        if (!shouldPrintFieldIdentityClause) {
-            super.printFieldUnique(writer, shouldPrintFieldIdentityClause);
-        }
-    }
-
-    /**
      * JDBC defines and outer join syntax, many drivers do not support this. So
      * we normally avoid it.
      */
     @Override
     public boolean shouldUseJDBCOuterJoinSyntax() {
         return false;
-    }
-
-    /**
-     * INTERNAL: Override this method if the platform supports sequence objects
-     * and it's possible to alter sequence object's increment in the database.
-     */
-    @Override
-    public boolean isAlterSequenceObjectSupported() {
-        return true;
     }
 
     /**
@@ -849,4 +696,144 @@ public class PostgreSQLPlatform extends DatabasePlatform {
         }
         return super.appendParameterInternal(call, writer, p);
     }
+
+    /*
+                                 ____  ____  __
+                                |    \|    \|  |
+                                |  |  |  |  |  |__
+                                |____/|____/|_____|
+     */
+
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_BOOLEAN = new FieldDefinition.DatabaseType("BOOLEAN", false);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_BIGINT = new FieldDefinition.DatabaseType("BIGINT", false);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_INTEGER = new FieldDefinition.DatabaseType("INTEGER", false);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_FLOAT = new FieldDefinition.DatabaseType("FLOAT", false);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_SMALLINT = new FieldDefinition.DatabaseType("SMALLINT", false);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_DECIMAL = new FieldDefinition.DatabaseType("DECIMAL", 38);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_CHAR = TYPE_CHAR.ofSize(1);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_VARCHAR = TYPE_VARCHAR.ofSize(DEFAULT_VARCHAR_SIZE);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_DATE = TYPE_DATE.ofNoSize();
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_BYTEA = new FieldDefinition.DatabaseType("BYTEA");
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_BYTEA_FIXED = PGSQL_TYPE_BYTEA.ofNoSize();
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_TEXT = new FieldDefinition.DatabaseType("TEXT", false);
+    private static final FieldDefinition.DatabaseType PGSQL_TYPE_UUID = new FieldDefinition.DatabaseType("UUID", false);
+
+    @Override
+    protected Map<Class<?>, FieldDefinition.DatabaseType> buildDatabaseTypes() {
+        Map<Class<?>, FieldDefinition.DatabaseType> fieldTypeMapping = new HashMap<>();
+        fieldTypeMapping.put(Boolean.class, PGSQL_TYPE_BOOLEAN);
+
+        fieldTypeMapping.put(Integer.class, PGSQL_TYPE_INTEGER);
+        fieldTypeMapping.put(Long.class, PGSQL_TYPE_BIGINT);
+        fieldTypeMapping.put(Float.class, PGSQL_TYPE_FLOAT);
+        fieldTypeMapping.put(Double.class, PGSQL_TYPE_FLOAT);
+        fieldTypeMapping.put(Short.class, PGSQL_TYPE_SMALLINT);
+        fieldTypeMapping.put(Byte.class, PGSQL_TYPE_SMALLINT);
+        fieldTypeMapping.put(BigInteger.class, PGSQL_TYPE_BIGINT);
+        fieldTypeMapping.put(BigDecimal.class, PGSQL_TYPE_DECIMAL);
+        fieldTypeMapping.put(Number.class, PGSQL_TYPE_DECIMAL);
+
+        fieldTypeMapping.put(String.class, PGSQL_TYPE_VARCHAR);
+        fieldTypeMapping.put(Character.class, PGSQL_TYPE_CHAR);
+
+        fieldTypeMapping.put(Byte[].class, PGSQL_TYPE_BYTEA_FIXED);
+        fieldTypeMapping.put(Character[].class, PGSQL_TYPE_TEXT);
+        fieldTypeMapping.put(byte[].class, PGSQL_TYPE_BYTEA_FIXED);
+        fieldTypeMapping.put(char[].class, PGSQL_TYPE_TEXT);
+        fieldTypeMapping.put(java.sql.Blob.class, PGSQL_TYPE_BYTEA);
+        fieldTypeMapping.put(java.sql.Clob.class, PGSQL_TYPE_TEXT);
+
+        fieldTypeMapping.put(java.sql.Date.class, PGSQL_TYPE_DATE);
+        fieldTypeMapping.put(java.sql.Time.class, TYPE_TIME);
+        fieldTypeMapping.put(java.sql.Timestamp.class, TYPE_TIMESTAMP);
+
+        fieldTypeMapping.put(java.time.LocalDate.class, PGSQL_TYPE_DATE);
+        fieldTypeMapping.put(java.time.LocalDateTime.class, TYPE_TIMESTAMP);
+        fieldTypeMapping.put(java.time.LocalTime.class, TYPE_TIME);
+        fieldTypeMapping.put(java.time.OffsetDateTime.class, TYPE_TIMESTAMP);
+        fieldTypeMapping.put(java.time.OffsetTime.class, TYPE_TIME);
+        fieldTypeMapping.put(java.time.Instant.class, TYPE_TIMESTAMP);
+
+        fieldTypeMapping.put(java.util.UUID.class, PGSQL_TYPE_UUID);
+
+        return fieldTypeMapping;
+    }
+
+    @Override
+    public String getDropCascadeString() {
+        return " CASCADE";
+    }
+
+    @Override
+    public String getInOutputProcedureToken() {
+        return "OUT";
+    }
+
+    @Override
+    public int getMaxFieldNameSize() {
+        // The system uses no more than NAMEDATALEN-1 characters of an
+        // identifier; longer names can be written in commands,
+        // but they will be truncated. By default, NAMEDATALEN is 64 so the
+        // maximum identifier length is 63 (but at the time PostgreSQL
+        // is built, NAMEDATALEN can be changed in src/include/postgres_ext.h).
+        // http://www.postgresql.org/docs/7.3/interactive/sql-syntax.html#SQL-SYNTAX-IDENTIFIERS
+        return 63;
+    }
+
+    // http://www.postgresql.org/docs/8.1/interactive/plpgsql-declarations.html
+    @Override
+    public String getProcedureBeginString() {
+        return "$$  BEGIN ";
+    }
+
+    @Override
+    public String getProcedureEndString() {
+        return "END; $$ LANGUAGE plpgsql;";
+    }
+
+    @Override
+    public boolean isAlterSequenceObjectSupported() {
+        return true;
+    }
+
+    @Override
+    public void printFieldTypeSize(Writer writer, FieldDefinition field, FieldDefinition.DatabaseType databaseType, boolean shouldPrintFieldIdentityClause) throws IOException {
+        if (!shouldPrintFieldIdentityClause) {
+            super.printFieldTypeSize(writer, field, databaseType, shouldPrintFieldIdentityClause);
+        }
+    }
+
+    @Override
+    public void printFieldIdentityClause(Writer writer) throws ValidationException {
+        try {
+            writer.write(" SERIAL");
+        } catch (IOException ioException) {
+            throw ValidationException.fileError(ioException);
+        }
+    }
+
+    @Override
+    public void printFieldUnique(Writer writer, boolean shouldPrintFieldIdentityClause) throws IOException {
+        if (!shouldPrintFieldIdentityClause) {
+            super.printFieldUnique(writer, shouldPrintFieldIdentityClause);
+        }
+    }
+
+    @Override
+    public boolean shouldPrintOutputTokenAtStart() {
+        // TODO: Check with the reviewer where this is used
+        return true;
+    }
+
+    @Override
+    public boolean supportsFractionalTime() {
+        // According to PostgreSQL manuals, support of fractional seconds precision in time SQL types
+        // was added in version 7.2. This version is from 4th February 2002. Let's support it from
+        // the base level of PostgreSQL platforms.
+        // All time, timestamp, and interval accept an optional precision value p which specifies the number
+        // of fractional digits retained in the seconds field. By default, there is no explicit bound on precision.
+        // The allowed range of p is from 0 to 6 for the timestamp and interval types.
+        return true;
+    }
+
 }

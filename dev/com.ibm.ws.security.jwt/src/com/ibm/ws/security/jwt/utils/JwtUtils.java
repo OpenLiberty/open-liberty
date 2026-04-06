@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2023 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,6 +71,7 @@ public class JwtUtils {
     public static final String CFG_KEY_SCOPE = "scope";
     public static final String CFG_KEY_AUDIENCES = "audiences";
     public static final String CFG_KEY_SIGNATURE_ALGORITHM = "signatureAlgorithm";
+    public static final String CFG_KEY_ALLOWED_SIGNATURE_ALGORITHMS = "allowedSignatureAlgorithms";
     public static final String CFG_KEY_CLAIMS = "claims";
     public static final String CFG_KEY_KEYSTORE_REF = "keyStoreRef";
     public static final String CFG_KEY_KEY_ALIAS_NAME = "keyAlias";

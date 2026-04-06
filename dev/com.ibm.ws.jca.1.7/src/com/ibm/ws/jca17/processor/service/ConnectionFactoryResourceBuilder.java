@@ -17,6 +17,8 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import javax.resource.ResourceException;
 
@@ -40,9 +42,9 @@ import com.ibm.ws.jca.cm.AppDefinedResourceFactory;
 import com.ibm.ws.jca.cm.ConnectionManagerService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jca.service.ConnectionFactoryService;
-import com.ibm.ws.resource.AbstractWaitForBundleResourceFactory;
 import com.ibm.ws.resource.ResourceFactory;
 import com.ibm.ws.resource.ResourceFactoryBuilder;
+import com.ibm.ws.resource.WaitForBundleResourceFactory;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.kernel.service.utils.FilterUtils;
@@ -159,7 +161,7 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
         }
 
         String application = (String) annotationProps.remove(AppDefinedResource.APPLICATION);
-        String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
+        final String declaringApplication = (String) annotationProps.remove(DECLARING_APPLICATION);
         String module = (String) annotationProps.remove(AppDefinedResource.MODULE);
         String component = (String) annotationProps.remove(AppDefinedResource.COMPONENT);
         String jndiName = (String) annotationProps.remove(ResourceFactory.JNDI_NAME);
@@ -197,161 +199,110 @@ public class ConnectionFactoryResourceBuilder implements ResourceFactoryBuilder 
                     connectionFactorySvcProps.put(AppDefinedResource.COMPONENT, component);
             }
         }
-        String resourceAdapter = (String) annotationProps.remove(RESOURCE_ADAPTER);
+
         String interfaceName = (String) annotationProps.remove(INTERFACE_NAME);
 
         //Handle embedded RA as in 18.9
-        if (resourceAdapter.startsWith(EMBEDDED_RA_PREFIX)) {
-            resourceAdapter = declaringApplication + "." + resourceAdapter.substring(resourceAdapter.indexOf(EMBEDDED_RA_PREFIX) + 1, resourceAdapter.length());
+        String ra = (String) annotationProps.remove(RESOURCE_ADAPTER);
+        if (ra.startsWith(EMBEDDED_RA_PREFIX)) {
+            ra = declaringApplication + "." + ra.substring(ra.indexOf(EMBEDDED_RA_PREFIX) + 1, ra.length());
             if (trace && tc.isDebugEnabled())
-                Tr.debug(tc, "Embedded resourceAdapter name : " + resourceAdapter);
+                Tr.debug(tc, "Embedded resourceAdapter name : " + ra);
         }
+        final String resourceAdapter = ra;
 
         connectionFactorySvcProps.put(BOOTSTRAP_CONTEXT, "(id=" + resourceAdapter + ")");
         connectionFactorySvcProps.put(CREATES_OBJECTCLASS, interfaceName);
 
         connectionFactorySvcProps.put("transactionSupport", annotationProps.remove("transactionSupport"));
 
+        Function<Bundle, ResourceFactory> createAppDefinedResourceFactory = (bundle) -> {
+            try {
+                Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(bundle, resourceAdapter, interfaceName);
+
+                String configPropsPid = null;
+                for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
+                    String key = keys.nextElement();
+                    Object value = connectionFactoryDefaultProps.get(key);
+
+                    //Override the managed connection factory class default property values with values provided annotation
+                    if (annotationProps.containsKey(key))
+                        value = annotationProps.remove(key);
+
+                    if (value instanceof String)
+                        value = variableRegistry.resolveString((String) value);
+
+                    if ("config.displayId".equals(key))
+                        connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", configPropsPid = (String) value);
+                    else
+                        connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, value);
+                }
+
+                Object value;
+                for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
+                    if ((value = annotationProps.remove(name)) != null)
+                        cmSvcProps.put(name, value);
+
+                // Add remaining properties
+                WSConfigurationHelper configHelper = wsConfigurationHelperRef.getServiceWithException();
+                for (Map.Entry<String, Object> entry : annotationProps.entrySet()) {
+                    String key = entry.getKey();
+                    String attrName = configHelper.getMetaTypeAttributeName(configPropsPid, key);
+                    if (attrName != null && !"INTERNAL".equalsIgnoreCase(attrName))
+                        connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, entry.getValue());
+                }
+
+                BundleContext bundleContext = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectionFactoryService.class));
+
+                StringBuilder connectionFactoryFilter = new StringBuilder(200);
+                connectionFactoryFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, connectionFactoryID));
+                connectionFactoryFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, ConnectionFactoryService.class.getName())).append(")");
+
+                ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, connectionFactoryID, connectionFactoryFilter.toString(), declaringApplication);
+                try {
+                    String bundleLocation = bundleContext.getBundle().getLocation();
+                    String jcaBundleLocation = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
+                    ConfigurationAdmin configAdmin = configAdminRef.getService();
+
+                    Configuration conMgrConfig = configAdmin.createFactoryConfiguration(ConnectionManagerService.FACTORY_PID, jcaBundleLocation);
+                    conMgrConfig.update(cmSvcProps);
+                    connectionFactorySvcProps.put(CONNECTION_MANAGER_REF, new String[] { conMgrConfig.getPid() });
+
+                    Configuration connectionFactorySvcConfig = configAdmin.createFactoryConfiguration(ConnectionFactoryService.FACTORY_PID, bundleLocation);
+                    connectionFactorySvcConfig.update(connectionFactorySvcProps);
+                } catch (Exception x) {
+                    factory.destroy();
+                    throw x;
+                } catch (Error x) {
+                    factory.destroy();
+                    throw x;
+                }
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
+                    Tr.exit(tc, "createResourceFactory", factory);
+                return factory;
+            } catch (Throwable t) {
+                throw new RuntimeException(t);
+            }
+        };
+
         Bundle raBundle = bundleContext.getBundle(BUNDLE_LOCATION + resourceAdapter);
         if (raBundle != null) {
-            return createAppDefinedResourceFactory(raBundle, declaringApplication, resourceAdapter, connectionFactoryID, interfaceName, connectionFactorySvcProps,
-                                                   cmSvcProps, annotationProps,
-                                                   variableRegistry);
+            return createAppDefinedResourceFactory.apply(raBundle);
         } else {
-            // The RA bundle may come later;
-            // Use a factory that waits for the bundle to arrive once the modules are deployed
-            // TODO need an error condition on starting the application if the RA bundle
-            // doesn't arrive after the modules have been provisioned
-            WaitForRABundleResourceFactory resourceFactory = new WaitForRABundleResourceFactory(bundleContext, declaringApplication, resourceAdapter, connectionFactoryID, interfaceName, connectionFactorySvcProps, cmSvcProps, annotationProps, variableRegistry);
+            Supplier<IllegalStateException> notReadyException = () -> {
+                return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
+                                                 ", declaringApplication=" + declaringApplication +
+                                                 ", location=" + BUNDLE_LOCATION + resourceAdapter);
+            };
+
+            WaitForBundleResourceFactory resourceFactory = new WaitForBundleResourceFactory(bundleContext, //
+                            BUNDLE_LOCATION + resourceAdapter, //
+                            createAppDefinedResourceFactory, //
+                            notReadyException);
             resourceFactory.listenForBundle();
             return resourceFactory;
         }
-    }
-
-    class WaitForRABundleResourceFactory extends AbstractWaitForBundleResourceFactory {
-        private final String declaringApplication;
-        private final String resourceAdapter;
-        private final String connectionFactoryID;
-        private final String interfaceName;
-        private final Hashtable<String, Object> connectionFactorySvcProps;
-        private final Hashtable<String, Object> cmSvcProps;
-        private final Map<String, Object> annotationProps;
-        private final VariableRegistry variableRegistry;
-
-        WaitForRABundleResourceFactory(BundleContext bundleContext,
-                                       String declaringApplication,
-                                       String resourceAdapter,
-                                       String connectionFactoryID,
-                                       String interfaceName,
-                                       Hashtable<String, Object> connectionFactorySvcProps,
-                                       Hashtable<String, Object> cmSvcProps,
-                                       Map<String, Object> annotationProps,
-                                       VariableRegistry variableRegistry) {
-
-            super(bundleContext, BUNDLE_LOCATION + resourceAdapter);
-            this.declaringApplication = declaringApplication;
-            this.resourceAdapter = resourceAdapter;
-            this.connectionFactoryID = connectionFactoryID;
-            this.interfaceName = interfaceName;
-            this.connectionFactorySvcProps = connectionFactorySvcProps;
-            this.cmSvcProps = cmSvcProps;
-            this.annotationProps = annotationProps;
-            this.variableRegistry = variableRegistry;
-        }
-
-        @Override
-        protected ResourceFactory createDelegate(Bundle b) throws Exception {
-            return createAppDefinedResourceFactory(b,
-                                                   declaringApplication,
-                                                   resourceAdapter,
-                                                   connectionFactoryID,
-                                                   interfaceName,
-                                                   connectionFactorySvcProps,
-                                                   cmSvcProps,
-                                                   annotationProps,
-                                                   variableRegistry);
-        }
-
-        @Override
-        protected RuntimeException notReadyException() {
-            return new IllegalStateException("RA bundle not ready for resourceAdapter=" + resourceAdapter +
-                                             ", declaringApplication=" + declaringApplication +
-                                             ", location=" + getTargetBundleLocation());
-        }
-    }
-
-    private ResourceFactory createAppDefinedResourceFactory(Bundle raBundle,
-                                                            String declaringApplication,
-                                                            String resourceAdapter,
-                                                            String connectionFactoryID,
-                                                            String interfaceName,
-                                                            Hashtable<String, Object> connectionFactorySvcProps,
-                                                            Hashtable<String, Object> cmSvcProps,
-                                                            Map<String, Object> annotationProps,
-                                                            VariableRegistry variableRegistry) throws Exception {
-        Dictionary<String, Object> connectionFactoryDefaultProps = getDefaultProperties(raBundle, resourceAdapter, interfaceName);
-
-        String configPropsPid = null;
-        for (Enumeration<String> keys = connectionFactoryDefaultProps.keys(); keys.hasMoreElements();) {
-            String key = keys.nextElement();
-            Object value = connectionFactoryDefaultProps.get(key);
-
-            //Override the managed connection factory class default property values with values provided annotation
-            if (annotationProps.containsKey(key))
-                value = annotationProps.remove(key);
-
-            if (value instanceof String)
-                value = variableRegistry.resolveString((String) value);
-
-            if ("config.displayId".equals(key))
-                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + "config.referenceType", configPropsPid = (String) value);
-            else
-                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, value);
-        }
-
-        Object value;
-        for (String name : ConnectionManagerService.CONNECTION_MANAGER_PROPS)
-            if ((value = annotationProps.remove(name)) != null)
-                cmSvcProps.put(name, value);
-
-        // Add remaining properties
-        WSConfigurationHelper configHelper = wsConfigurationHelperRef.getServiceWithException();
-        for (Map.Entry<String, Object> entry : annotationProps.entrySet()) {
-            String key = entry.getKey();
-            String attrName = configHelper.getMetaTypeAttributeName(configPropsPid, key);
-            if (attrName != null && !"INTERNAL".equalsIgnoreCase(attrName))
-                connectionFactorySvcProps.put(BASE_PROPERTIES_KEY + key, entry.getValue());
-        }
-
-        BundleContext bundleContext = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectionFactoryService.class));
-
-        StringBuilder connectionFactoryFilter = new StringBuilder(200);
-        connectionFactoryFilter.append("(&").append(FilterUtils.createPropertyFilter(ID, connectionFactoryID));
-        connectionFactoryFilter.append(FilterUtils.createPropertyFilter(Constants.OBJECTCLASS, ConnectionFactoryService.class.getName())).append(")");
-
-        ResourceFactory factory = new AppDefinedResourceFactory(this, bundleContext, connectionFactoryID, connectionFactoryFilter.toString(), declaringApplication);
-        try {
-            String bundleLocation = bundleContext.getBundle().getLocation();
-            String jcaBundleLocation = AdministeredObjectResourceFactoryBuilder.priv.getBundleContext(FrameworkUtil.getBundle(ConnectorService.class)).getBundle().getLocation();
-            ConfigurationAdmin configAdmin = configAdminRef.getService();
-
-            Configuration conMgrConfig = configAdmin.createFactoryConfiguration(ConnectionManagerService.FACTORY_PID, jcaBundleLocation);
-            conMgrConfig.update(cmSvcProps);
-            connectionFactorySvcProps.put(CONNECTION_MANAGER_REF, new String[] { conMgrConfig.getPid() });
-
-            Configuration connectionFactorySvcConfig = configAdmin.createFactoryConfiguration(ConnectionFactoryService.FACTORY_PID, bundleLocation);
-            connectionFactorySvcConfig.update(connectionFactorySvcProps);
-        } catch (Exception x) {
-            factory.destroy();
-            throw x;
-        } catch (Error x) {
-            factory.destroy();
-            throw x;
-        }
-
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-            Tr.exit(tc, "createResourceFactory", factory);
-        return factory;
     }
 
     /**

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,6 +71,7 @@ import componenttest.common.apiservices.Bootstrap;
 import componenttest.common.apiservices.LocalMachine;
 import componenttest.custom.junit.runner.LogPolice;
 import componenttest.exception.TopologyException;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyFileManager.LogSearchResult;
 import componenttest.topology.utils.FileUtils;
@@ -562,7 +563,6 @@ public class LibertyClient {
         if (preClean)
             preStartClientLogsTidy();
 
-
         Properties useEnvVars = new Properties();
         useEnvVars.putAll(envVars);
         if (!useEnvVars.isEmpty())
@@ -629,6 +629,8 @@ public class LibertyClient {
             JVM_ARGS += " " + MAC_RUN;
         }
 
+        boolean startedWithJavaSecurity = false;
+
         // if we have java 2 security enabled, add java.security.manager and java.security.policy
         if (GLOBAL_JAVA2SECURITY) {
             RemoteFile f = getClientBootstrapPropertiesFile();
@@ -637,11 +639,12 @@ public class LibertyClient {
             if (clientNeedsToRunWithJava2Security()) {
                 addJava2SecurityPropertiesToBootstrapFile(f);
                 Log.info(c, "startClientWithArgs", "Java 2 Security enabled for client " + getClientName() + " because GLOBAL_JAVA2SECURITY=true");
+                startedWithJavaSecurity = true;
             } else {
                 LOG.warning("The build is configured to run FAT tests with Java 2 Security enabled, but the FAT client " + getClientName() +
                             " is exempt from Java 2 Security regression testing.");
             }
-        } else if (javaInfo.majorVersion() >= 18) {
+        } else {
             // Check if "websphere.java.security" has been added to bootstrapping.properties
             // as some tests will add it for their own security enable tests
             boolean bootstrapHasJava2SecProps = false;
@@ -664,16 +667,18 @@ public class LibertyClient {
                     reader.close();
             }
 
+            startedWithJavaSecurity = bootstrapHasJava2SecProps;
+
             if (bootstrapHasJava2SecProps) {
                 if (javaInfo.majorVersion() >= 24) {
                     // Security manager is permanently disabled starting in Java 24
                     LOG.severe("The build is configured to run FAT tests with Java 2 security enabled, but the security manager is permanently disabled in Java versions 24 and later.  The security manager cannot be set!");
                     throw new RuntimeException("The security manager is permanently disabled in Java versions 24 and later.  When running FATs, use @MaximumJavaLevel(javaLevel = 23) or disable Java 2 security to prevent this test from failing running in Java 24 or later.");
+                } else if (javaInfo.majorVersion() >= 18) {
+                    // If we are running on Java 18 through 23, then we need to explicitly enable the security manager
+                    Log.info(c, method, "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
+                    JVM_ARGS += " -Djava.security.manager=allow";
                 }
-
-                // If we are running on Java 18 through 23, then we need to explicitly enable the security manager
-                Log.info(c, method, "Java 18 + Java2Sec requested, setting -Djava.security.manager=allow");
-                JVM_ARGS += " -Djava.security.manager=allow";
             }
         }
 
@@ -688,23 +693,25 @@ public class LibertyClient {
                 Properties clientEnv = getClientEnv();
                 Properties defaultEnv = getDefaultEnv();
                 Map<String, String> opts = getJvmOptionsAsMap();
-                if (clientEnv.containsKey("ENABLE_FIPS140_3") || defaultEnv.containsKey("ENABLE_FIPS140_3") || opts.containsKey("-Xenablefips140-3") || opts.containsKey("-Dsemeru.fips")) {
+                if (clientEnv.containsKey("ENABLE_FIPS140_3") || defaultEnv.containsKey("ENABLE_FIPS140_3") || opts.containsKey("-Xenablefips140-3")
+                    || opts.containsKey("-Dsemeru.fips")) {
                     Log.info(c, method, "Test has defined its own settings for FIPS140-3");
                 } else {
                     Log.info(c, "startClientWithArgs", "The JDK version: " + javaInfo.majorVersion() + " and vendor: " + JavaInfo.Vendor.IBM);
 
                     if (javaInfo.majorVersion() >= 11) {
                         Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                + " with IBM Java " + javaInfo.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
+                                                           + " with IBM Java " + javaInfo.majorVersion() + ", adding required JVM arguments to run with FIPS 140-3 enabled");
 
                         JVM_ARGS += " -Dsemeru.fips=true";
                         JVM_ARGS += " -Dsemeru.customprofile=OpenJCEPlusFIPS.FIPS140-3-Custom";
-                        JVM_ARGS += " -Djava.security.propertiesList=" + getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() + File.pathSeparator + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
+                        JVM_ARGS += " -Djava.security.propertiesList=" + getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() + File.pathSeparator
+                                    + getSemeruFips140_3CustomProfileLocationAndPrintFileContents();
                         JVM_ARGS += " -Dcom.ibm.fips.mode=140-3";
                         // JVM_ARGS += " -Djavax.net.debug=all";  // Uncomment as needed for additional debugging
                     } else if (javaInfo.majorVersion() == 8) {
                         Log.info(c, "startClientWithArgs", "FIPS 140-3 global build properties is set for Client " + getClientName()
-                                + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
+                                                           + " with IBM Java 8, adding JVM arguments -Xenablefips140-3, ...,  to run with FIPS 140-3 enabled");
 
                         JVM_ARGS += " -Xenablefips140-3";
                         JVM_ARGS += " -Dcom.ibm.jsse2.usefipsprovider=true";
@@ -779,6 +786,11 @@ public class LibertyClient {
         // This takes the custom console file name used for tests into consideration
         useEnvVars.setProperty("LOG_DIR", logsRoot);
         useEnvVars.setProperty("LOG_FILE", consoleFileName);
+
+        // default ltpa keys password for FAT tests
+        if (!useEnvVars.containsKey("ltpa_keys_password")) {
+            useEnvVars.setProperty("ltpa_keys_password", "WebAS");
+        }
 
         Log.info(c, method, "Using additional env props: " + useEnvVars.toString());
 
@@ -870,11 +882,50 @@ public class LibertyClient {
         // Create a marker file to indicate client is started
         createClientMarkerFile();
 
+        if (startedWithJavaSecurity && isEE11Enabled()) {
+            final String JAVA2_SECURITY_DISABLED = "CWWKE0971W";
+            fixedIgnoreErrorsList.add(JAVA2_SECURITY_DISABLED);
+        }
+
         if ("run".equals(clientCmd)) {
             validateClientStopped(output, expectStartFailure);
         }
         postStopClientArchive();
         return output;
+    }
+
+    private boolean isEE11Enabled() throws Exception {
+        if (JakartaEEAction.isEE9Active() || JakartaEEAction.isEE10Active()) {
+            return false;
+        }
+
+        // EE 11 which doesn't support Java security manager can run with Java 17.
+
+        RemoteFile serverXML = machine.getFile(getClientConfigurationPath());
+        InputStreamReader in = new InputStreamReader(serverXML.openForReading());
+        try (Scanner s = new Scanner(in)) {
+            while (s.hasNextLine()) {
+                String line = s.nextLine();
+                if (line.contains("<featureManager>")) {//So has reached featureSets
+                    while (s.hasNextLine()) {
+                        line = s.nextLine();
+                        if (line.contains("</featureManager>"))
+                            break;
+
+                        line = line.replaceAll("<feature>", "");
+                        line = line.replaceAll("</feature>", "");
+                        line = line.trim();
+                        String lowerCaseFeatureName = line.toLowerCase();
+
+                        if ("jakartaeeclient-11.0".equals(lowerCaseFeatureName)) {
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+
+        return false;
     }
 
     private String getLibertySemeruFips140_3ProfileLocationAndPrintFileContents() throws Exception {
@@ -2761,6 +2812,13 @@ public class LibertyClient {
         RemoteFile remoteLogFile = machine.getFile(logFile);
         return findStringsInLogs(regexp, remoteLogFile);
     }
+    public List<String> findStringsInCopiedTraceLogs(String regexp, String filePath) throws Exception {
+        String logFile = pathToAutoFVTOutputClientsFolder + "/" + clientToUse + "-" + logStamp + "/" + filePath;
+        RemoteFile remoteLogFile = machine.getFile(logFile);
+        return findStringsInLogs(regexp, remoteLogFile);
+    }
+
+    
 
     /**
      * This method will search the output and trace files for this client
@@ -4038,8 +4096,8 @@ public class LibertyClient {
     public void addEnvVar(String key, String value) {
         if (!Pattern.matches("[a-zA-Z_]+[a-zA-Z0-9_]*", key)) {
             throw new IllegalArgumentException("Invalid environment variable key '" + key +
-                    "'. Environment variable keys must consist of characers [a-zA-Z0-9_] " +
-                    "in order to work on all OSes.");
+                                               "'. Environment variable keys must consist of characers [a-zA-Z0-9_] " +
+                                               "in order to work on all OSes.");
         }
         if (isStarted())
             throw new RuntimeException("Cannot add env vars to a running server");

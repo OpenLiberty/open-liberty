@@ -161,7 +161,10 @@ public class Fraction {
                                                              "Seventeenth",
                                                              "Eighteenth",
                                                              "Nineteenth",
-                                                             "Twentieth"
+                                                             "Twentieth",
+                                                             "Twenty-first",
+                                                             "Twenty-second",
+                                                             "Twenty-third"
     };
 
     static final String[] NUMERATOR_NAMES = new String[] {
@@ -185,7 +188,10 @@ public class Fraction {
                                                            "Seventeen",
                                                            "Eighteen",
                                                            "Nineteen",
-                                                           "Twenty"
+                                                           "Twenty",
+                                                           "Twenty-one",
+                                                           "Twenty-two",
+                                                           "Twenty-three"
     };
 
     public static Fraction of(int numerator, int denominator) {

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Assi
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Uno o pi\u00f9 valori di password dell'' {0}, memorizzati nella configurazione del server, sono stati generati con un algoritmo pi\u00f9 vecchio {1}. Utilizzare il comando encode dell'' securityUtility e per rigenerare le password dell'' {0} e con l''ultimo algoritmo {2}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty ora utilizza algoritmi pi\u00f9 forti per le password appena generate {aes} e {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Assicurarsi che i valori delle password {aes} e {hash} siano generati con l''ultima versione di Liberty.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Una o pi\u00f9 delle tue password crittografate con AES sono state crittografate senza una chiave di crittografia personalizzata. Per migliorare la sicurezza delle credenziali archiviate, ricrittografale utilizzando una chiave di crittografia personalizzata. Assicurati di conservare questa chiave in un luogo sicuro.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=Le password crittografate con AES nella configurazione del server utilizzano il valore predefinito wlp.password.encryption.key. Una chiave di crittografia personalizzata \u00e8 pi\u00f9 sicura.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Definisci una chiave di crittografia personalizzata impostando la variabile wlp.password.encryption.key o wlp.aes.encryption.key, quindi ricrittografa le tue password utilizzando il comando di codifica securityUtility con la tua chiave personalizzata.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=La lunghezza della chiave del valore specificato nella variabile wlp.aes.encryption.key deve essere di 256 bit.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=Il valore specificato nella variabile wlp.aes.encryption.key deve essere codificato in base64.
