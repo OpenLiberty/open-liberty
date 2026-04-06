@@ -32,7 +32,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.sql.DataSource;
@@ -59,8 +58,6 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Table;
 import jakarta.transaction.Status;
-import jakarta.transaction.Synchronization;
-import jakarta.transaction.Transaction;
 
 /**
  * Provides implementation of the methods of a repository interface.
@@ -83,12 +80,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private final EntityManagerBuilder builder;
 
-    /**
-     * Map of Transaction to EntityManager that allows stateful repositories to
-     * reuse the same EnityManager within a transaction.
-     */
-    private final Map<Transaction, EntityManager> entityManagerPerTx = //
-                    new ConcurrentHashMap<>();
     /**
      * Indicates if the bean for the repository has been disposed.
      */
@@ -379,42 +370,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Obtains a shared EntityManager instance if running in a transaction
-     * and the repository is stateful. Otherwise create a new instance.
-     *
-     * @param stateful indicates a stateful repository.
-     * @return EntityManager and indicator of whether the EntityManager will be
-     *         automatically closed by the current transaction.
-     * @throws Exception if an error occurs.
-     */
-    private SimpleEntry<EntityManager, Boolean> getEntityManager(boolean stateful) //
-                    throws Exception {
-        boolean autoClosedByTx;
-        EntityManager em;
-
-        if (stateful) {
-            Transaction tx = provider.tranMgr.getTransaction();
-            if (tx == null) {
-                autoClosedByTx = false;
-                em = builder.createEntityManager();
-            } else {
-                autoClosedByTx = true;
-                em = entityManagerPerTx.get(tx);
-                if (em == null) {
-                    em = builder.createEntityManager();
-                    tx.registerSynchronization(new EntityManagerCleanup(tx));
-                    entityManagerPerTx.put(tx, em);
-                }
-            }
-        } else {
-            autoClosedByTx = false;
-            em = builder.createEntityManager();
-        }
-
-        return new SimpleEntry<>(em, autoClosedByTx);
-    }
-
-    /**
      * Used during introspection to report errors that occurred when processing
      * repository methods.
      *
@@ -442,7 +397,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
         if (EntityManager.class.equals(type)) {
             SimpleEntry<EntityManager, Boolean> emAutoCloseable = //
-                            getEntityManager(stateful);
+                            builder.getEntityManager(stateful);
             resource = emAutoCloseable.getKey();
             resourceAutoClosedByTx = emAutoCloseable.getValue();
         } else if (DataSource.class.equals(type)) {
@@ -511,9 +466,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         writer.println(indent + "  provider: " + provider);
         writer.println(indent + "  repository: " + repositoryInterface.getName());
         writer.println(indent + "  validator: " + validator);
-        writer.println(indent + "  stateless entity manager per transaction:");
-        entityManagerPerTx.forEach((tx, em) -> writer //
-                        .println(indent + "    " + tx + " -> " + em));
     }
 
     /**
@@ -636,7 +588,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
 
                 if (queryType != RESOURCE_ACCESS) {
                     SimpleEntry<EntityManager, Boolean> emAutoCloseable = //
-                                    getEntityManager(stateful);
+                                    builder.getEntityManager(stateful);
                     em = emAutoCloseable.getKey();
                     emAutoClosedByTx = emAutoCloseable.getValue();
                 }
@@ -732,26 +684,4 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
     }
 
-    /**
-     * Cleans up the state of the entityManagerPerTx map and closes the
-     * respective EntityManager instance after the transaction completes.
-     */
-    private class EntityManagerCleanup implements Synchronization {
-        private final Transaction tx;
-
-        private EntityManagerCleanup(Transaction tx) {
-            this.tx = tx;
-        }
-
-        @Override
-        public void afterCompletion(int status) {
-            EntityManager em = entityManagerPerTx.remove(tx);
-            if (em != null)
-                em.close();
-        }
-
-        @Override
-        public void beforeCompletion() {
-        }
-    }
 }

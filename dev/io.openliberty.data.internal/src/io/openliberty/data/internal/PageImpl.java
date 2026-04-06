@@ -15,6 +15,7 @@ package io.openliberty.data.internal;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 
 import java.util.AbstractList;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -211,20 +212,24 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.jpqlCount,
                       queryInfo.jpql);
 
-        // TODO share EntityManager from constructor if stateful and still
-        // in the same transaction
-        EntityManager em = queryInfo.entityInfo.builder.createEntityManager();
+        EntityManagerBuilder builder = queryInfo.entityInfo.builder;
+        boolean stateful = queryInfo.producer.stateful();
+        SimpleEntry<EntityManager, Boolean> emAutoCloseable = null;
         try {
+            emAutoCloseable = builder.getEntityManager(stateful);
+            EntityManager em = emAutoCloseable.getKey();
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
+
             TypedQuery<Long> query = em.createQuery(queryInfo.jpqlCount, Long.class);
             queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x, queryInfo.entityInfo.builder);
+            throw RepositoryImpl.failure(x, builder);
         } finally {
-            em.close();
+            if (emAutoCloseable != null && emAutoCloseable.getValue())
+                emAutoCloseable.getKey().close();
         }
     }
 

@@ -25,6 +25,7 @@ import java.sql.SQLException;
 import java.sql.SQLNonTransientConnectionException;
 import java.sql.SQLRecoverableException;
 import java.sql.SQLTransientConnectionException;
+import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -60,6 +61,8 @@ import jakarta.persistence.metamodel.Metamodel;
 import jakarta.persistence.metamodel.PluralAttribute;
 import jakarta.persistence.metamodel.SingularAttribute;
 import jakarta.persistence.metamodel.Type;
+import jakarta.transaction.Synchronization;
+import jakarta.transaction.Transaction;
 
 /**
  * Creates EntityManager instances from an EntityManagerFactory (from a persistence unit reference)
@@ -85,7 +88,15 @@ public abstract class EntityManagerBuilder {
      * Mapping of entity class (as seen by the user, not a generated record entity class)
      * to entity information.
      */
-    protected final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = new ConcurrentHashMap<>();
+    protected final ConcurrentHashMap<Class<?>, CompletableFuture<EntityInfo>> entityInfoMap = //
+                    new ConcurrentHashMap<>();
+
+    /**
+     * Map of Transaction to EntityManager that allows stateful repositories to
+     * reuse the same EnityManager within a transaction.
+     */
+    private final Map<Transaction, EntityManager> entityManagerPerTx = //
+                    new ConcurrentHashMap<>();
 
     /**
      * OSGi service component that provides the CDI extension for Data.
@@ -397,10 +408,12 @@ public abstract class EntityManagerBuilder {
 
     /**
      * Creates a new EntityManager instance.
+     * Use the getEntityManager method instead to ensure the same EntityManager
+     * and its persistence context are reused within a transaction.
      *
      * @return a new EntityManager instance.
      */
-    public abstract EntityManager createEntityManager();
+    protected abstract EntityManager createEntityManager();
 
     /**
      * Returns an alphabetized comma-delimited list of the class names as text
@@ -439,6 +452,42 @@ public abstract class EntityManagerBuilder {
      */
     public abstract DataSource getDataSource(Method repoMethod,
                                              Class<?> repoInterface);
+
+    /**
+     * Obtains a shared EntityManager instance if running in a transaction
+     * and the repository is stateful. Otherwise create a new instance.
+     *
+     * @param stateful indicates a stateful repository.
+     * @return EntityManager and indicator of whether the EntityManager will be
+     *         automatically closed by the current transaction.
+     * @throws Exception if an error occurs.
+     */
+    SimpleEntry<EntityManager, Boolean> getEntityManager(boolean stateful) //
+                    throws Exception {
+        boolean autoClosedByTx;
+        EntityManager em;
+
+        if (stateful) {
+            Transaction tx = provider.tranMgr.getTransaction();
+            if (tx == null) {
+                autoClosedByTx = false;
+                em = createEntityManager();
+            } else {
+                autoClosedByTx = true;
+                em = entityManagerPerTx.get(tx);
+                if (em == null) {
+                    em = createEntityManager();
+                    tx.registerSynchronization(new EntityManagerCleanup(tx));
+                    entityManagerPerTx.put(tx, em);
+                }
+            }
+        } else {
+            autoClosedByTx = false;
+            em = createEntityManager();
+        }
+
+        return new SimpleEntry<>(em, autoClosedByTx);
+    }
 
     @FFDCIgnore(NoSuchFieldException.class)
     private static final SortedMap<String, Member> getIdClassAccessors(Class<?> idType,
@@ -578,6 +627,12 @@ public abstract class EntityManagerBuilder {
             for (Class<?> c : convertibleTypes)
                 writer.println(indent + "    " + c.getName());
         }
+
+        if (!entityManagerPerTx.isEmpty()) {
+            writer.println(indent + "  stateless entity manager per transaction:");
+            entityManagerPerTx.forEach((tx, em) -> writer //
+                            .println(indent + "    " + tx + " -> " + em));
+        }
     }
 
     /**
@@ -593,4 +648,26 @@ public abstract class EntityManagerBuilder {
                cause instanceof SQLTransientConnectionException;
     }
 
+    /**
+     * Cleans up the state of the entityManagerPerTx map and closes the
+     * respective EntityManager instance after the transaction completes.
+     */
+    private class EntityManagerCleanup implements Synchronization {
+        private final Transaction tx;
+
+        private EntityManagerCleanup(Transaction tx) {
+            this.tx = tx;
+        }
+
+        @Override
+        public void afterCompletion(int status) {
+            EntityManager em = entityManagerPerTx.remove(tx);
+            if (em != null)
+                em.close();
+        }
+
+        @Override
+        public void beforeCompletion() {
+        }
+    }
 }
