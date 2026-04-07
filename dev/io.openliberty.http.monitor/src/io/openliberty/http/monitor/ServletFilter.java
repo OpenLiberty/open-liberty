@@ -33,6 +33,7 @@ import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 /**
  *
@@ -65,6 +66,22 @@ public class ServletFilter implements Filter {
 		}
 		
 		String appName = servletRequest.getServletContext().getAttribute("com.ibm.websphere.servlet.enterprise.application.name").toString();
+		
+		if (servletRequest instanceof HttpServletRequest) {
+	        HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
+	        HttpSession session = httpReq.getSession(false); // Don't create session
+	        
+	        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	            Tr.debug(tc, "CARL_DEBUG: ServletFilter BEFORE filterChain.doFilter - Session exists: " + (session != null) + 
+	                        ", Session ID: " + (session != null ? session.getId() : "null") +
+	                        ", Session valid: " + (session != null ? !session.isNew() : "N/A") +
+	                        ", Request URI: " + httpReq.getRequestURI());
+	        }
+	        
+	        // Also log to messages.log for easier debugging
+	        Tr.info(tc, "CARL_DEBUG: ServletFilter BEFORE chain - Session: " + (session != null ? session.getId() : "null") + 
+	                   ", URI: " + httpReq.getRequestURI());
+	    }
 
 		Exception servletException = null;
 		Exception exception = null;
@@ -74,16 +91,41 @@ public class ServletFilter implements Filter {
 		contextPath = (contextPath == null ) ? null : contextPath.trim();
 		long nanosStart = System.nanoTime();
 		try {
+			
 			filterChain.doFilter(servletRequest, servletResponse);
 		} catch (IOException ioe) {
 			throw ioe;
 		} catch (ServletException se) {
 			servletException = se;
+			
+	        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	            Tr.debug(tc, "ServletFilter caught ServletException: " + se.getMessage(), se);
+	        }
+	        Tr.info(tc, "CARL_DEBUG: ServletFilter caught ServletException: " + se.getMessage());
+			
 			throw se;
 		} catch (Exception e) {
 			exception = e;
+			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	            Tr.debug(tc, "ServletFilter caught Exception: " + e.getMessage(), e);
+	        }
+	        Tr.info(tc, "CARL_DEBUG: ServletFilter caught Exception: " + e.getMessage());
+			
 			throw e;
 		} finally {
+			if (servletRequest instanceof HttpServletRequest) {
+	            HttpServletRequest httpReq = (HttpServletRequest) servletRequest;
+	            HttpSession session = httpReq.getSession(false);
+	            
+	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	                Tr.debug(tc, "ServletFilter AFTER filterChain.doFilter - Session exists: " + (session != null) +
+	                            ", Session ID: " + (session != null ? session.getId() : "null") +
+	                            ", Exception occurred: " + (servletException != null || exception != null));
+	            }
+	            
+	            Tr.info(tc, "CARL_DEBUG: ServletFilter AFTER chain - Session: " + (session != null ? session.getId() : "null") +
+	                       ", Exception: " + (servletException != null || exception != null));
+	        }
 			long elapsednanos = System.nanoTime()-nanosStart;
 			
 			//builder for HttpStatAttributes
