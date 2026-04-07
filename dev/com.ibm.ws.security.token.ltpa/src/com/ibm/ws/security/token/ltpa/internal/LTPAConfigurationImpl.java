@@ -196,8 +196,6 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
         maxLifetime = (Long) props.get(CFG_KEY_TOKEN_REFRESH_LIFE_TIME);
         refreshThreshold = (Long) props.get(CFG_KEY_TOKEN_REFRESH_THRESHOLD);
-        //TODO: UTLE
-        //if maxLifetime is smaller than expiration, should we issue an error?
 
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
         authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);

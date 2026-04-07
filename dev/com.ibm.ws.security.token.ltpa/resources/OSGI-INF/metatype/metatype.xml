@@ -25,13 +25,13 @@
             default="{xor}CDo9Hgw=" /> <!-- WebAS -->
         <AD id="expiration"  name="%expiration" description="%expiration.desc"
             required="false" type="String" ibm:type="duration(m)"
-            default="120m" />
+            default="15m" />
         <AD id="refreshThreshold"  name="%refreshThreshold" description="%refreshThreshold.desc"
             required="false" type="String" ibm:type="duration(m)"
-            default="30m" />
+            default="5m" />
         <AD id="maxLifetime"  name="%maxLifetime" description="%maxLifetime.desc"
         	required="false" type="String" ibm:type="duration(m)"
-        	default="480m" />
+        	default="60m" />
         <AD id="monitorInterval" name="%ltpa.monitorInterval" description="%ltpa.monitorInterval.desc"
             required="false" type="String" ibm:type="duration" 
             default="0ms" />
