@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 /**
@@ -43,25 +40,9 @@ subprojects {
     // Configure 'assemble' to depend on above tasks.	
     apply from: rootProject.file('wlp-gradle/subprojects/assemble.gradle')
 
-    // Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.	
+    // Configure 'buildfat', 'runfat', 'buildandrun', and 'cleanFat' tasks.
     if (bnd.is('fat.project')) {
       apply from: rootProject.file('wlp-gradle/subprojects/fat.gradle')
-
-    // Apply OSS Audit plugin to all non-test projects that output bundles.
-    // See: https://github.com/OSSIndex/ossindex-gradle-plugin/blob/master/README.md
-    } else if (!bnd.is('test.project') && !bndProject.isNoBundles()) {
-      apply plugin: 'net.ossindex.audit'
-
-      audit {
-        group = "verification"
-        failOnError = true
-        rateLimitAsError = false
-        if (gradle.userProps.getProperty("ossindexUser") != null && 
-            gradle.userProps.getProperty("ossindexToken") != null) { 
-              user  = gradle.userProps.getProperty("ossindexUser") 
-              token = gradle.userProps.getProperty("ossindexToken") 
-        }
-      }
     }
 
   } else {
@@ -76,9 +57,4 @@ subprojects {
   // will publish jar updates to the local `build.image/wlp` image and `cnf/release` repository
   release.dependsOn assemble
   release.dependsOn publish
-}
-
-// Ensure the root project has the 'audit' task so it shows up in the output of `./gradlew tasks`
-task audit {
-  group = "verification"
 }
