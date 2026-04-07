@@ -10,12 +10,18 @@
 package com.ibm.ws.security.javaeesec.fat;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -75,6 +81,8 @@ public class FeatureTest extends JavaEESecTestBase {
 
     protected static LocalLdapServer ldapServer;
 
+    protected static final Map<String, String> FEATURE_MAP = new HashMap<>();
+
     public FeatureTest() {
         super(myServer, logClass);
     }
@@ -87,6 +95,12 @@ public class FeatureTest extends JavaEESecTestBase {
         Log.info(logClass, "setUp()", "-----setting up test");
         ldapServer = new LocalLdapServer();
         ldapServer.start();
+
+        // Add appSecurity-3.0+ mappings
+        FEATURE_MAP.put("NO_MODIFICATION_ACTION","appSecurity-3.0");
+        FEATURE_MAP.put("EE9_FEATURES","appSecurity-4.0");
+        FEATURE_MAP.put("EE10_FEATURES","appSecurity-5.0");
+        FEATURE_MAP.put("EE11_FEATURES","appSecurity-6.0");
 
     }
 
@@ -126,6 +140,10 @@ public class FeatureTest extends JavaEESecTestBase {
     }
 
     /**
+     * Repeat Test that applies to all versions of the appSecurity-3.0 onwards
+     *
+     * The Repeat action will modify the supplied server config with the correct versions
+     *
      * Verify the following:
      * <OL>
      * <LI> An ear file that contains two war files.
@@ -141,7 +159,8 @@ public class FeatureTest extends JavaEESecTestBase {
      * </OL>
      */
     @Test
-    public void testEJBAppSecurity30() throws Exception {
+    public void testEJBAppSecurityJakarta() throws Exception {
+        assumeNotWindowsEe9Plus();
         String response;
         String queryString;
         //create app and setup server
@@ -167,6 +186,16 @@ public class FeatureTest extends JavaEESecTestBase {
         try {
             Log.info(logClass, getCurrentTestName(), "-----Accessing Application to test scenarios...");
             startServer(XML_NAME, EJB_APP_NAME);
+
+            List<Set<String>> allFeaturesInstalled = myServer.getInstalledFeatures();
+            boolean correctFeature = false;
+            String expectedAppSecurityVersion = FEATURE_MAP.get(RepeatTestFilter.getMostRecentRepeatAction().getID());
+            for(Set<String> features: allFeaturesInstalled){
+                if (features.contains(expectedAppSecurityVersion)){
+                    correctFeature = true;
+                }
+            }
+            assertTrue("Did not find the expected version of appSecurity. Expected: "+ expectedAppSecurityVersion, correctFeature);
 
             //Test case isUserInRoleLDAPISWar1
             //Access WAR 1 and check UserInRole, sending user1 which exist in the Annotated LDAP IS.
@@ -205,7 +234,7 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // EE9 can't run with appSecurity-2.0
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES,SkipForRepeat.EE10_FEATURES,SkipForRepeat.EE11_FEATURES}) // EE9, EE10 and EE11 can't run with appSecurity-2.0
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity20() throws Exception {
@@ -260,7 +289,7 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // EE9 can't run with appSecurity-1.0
+    @SkipForRepeat({SkipForRepeat.EE9_FEATURES,SkipForRepeat.EE10_FEATURES,SkipForRepeat.EE11_FEATURES}) // EE9, EE10 and EE11 can't run with appSecurity-1.0
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity10() throws Exception {

@@ -102,7 +102,12 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            stopServer();
+            String[] ignoredFailuresRegExps = new String[0];
+            // For EE11 onwards we expect these warnings and exceptions, but not in EE10 and lower
+            if (JakartaEEAction.isEE11Active()) {
+                ignoredFailuresRegExps = new String[]{"SRVE8115W", "SRVE8094W", "SRVE0777E"};
+            }
+            myServer.stopServer(ignoredFailuresRegExps);
         } finally {
             if (ldapServer != null) {
                 ldapServer.stop();
@@ -196,9 +201,14 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
+     *
+     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
+     * When authentication fails and the system tries to render the error page, the response has already been partially committed
+     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
+     * MyFaces 4.0 just logs a warning
      */
+    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" }) //
     @Test
-    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostRedirectWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // retry the test 5 times when 500 is returned which indicates some EL expression error happened on
@@ -308,9 +318,14 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
+     *
+     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
+     * When authentication fails and the system tries to render the error page, the response has already been partially committed
+     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
+     * MyFaces 4.0 just logs a warning
      */
+    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" }) //
     @Test
-    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostForwardWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // retry the test 5 times when 500 is returned which indicates some EL expression error happened on
@@ -394,10 +409,6 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         myServer.addInstalledAppForValidation(APP_REDIRECT_NAME);
         myServer.addInstalledAppForValidation(APP_FORWARD_NAME);
         myServer.startServer(true);
-    }
-
-    private static void stopServer() throws Exception {
-        myServer.stopServer();
     }
 
     private void restartTestEnv() throws Exception {
