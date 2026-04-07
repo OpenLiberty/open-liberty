@@ -1284,6 +1284,59 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a stateful repository to find an entity. Modify the entity. Use a
+     * repository Refresh method to restore the state of the entity from the
+     * database and verify that the previously modified entity attributes
+     * have been restored to their prior values.
+     */
+    @Test
+    public void testRefresh() throws Exception {
+
+        // Populate with 7/23 and 8/23.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(7, 23),
+                                                Fraction.of(8, 23)));
+        try {
+            Fraction f;
+
+            // TODO clarify how persistence context works for a stateful repository
+            // apart from a transaction
+            //System.out.println("Fetch 7/23 to modify and refresh outside of tran");
+
+            //f = statefulFractions.fetch(7, 23).orElseThrow();
+            //f.decimal = Decimal.of(7, 21);
+            //f.reduced = false;
+            //statefulFractionRepo.restore(f);
+            //assertEquals(true,
+            //             f.reduced);
+            //assertEquals(BigDecimal.valueOf(3043, 4), // first 4 decimals of 7/23
+            //             f.decimal.truncated());
+
+            System.out.println("Fetch 8/23 to modify and refresh within tran");
+
+            tx.begin();
+            f = statefulFractions.fetch(8, 23).orElseThrow();
+            f.decimal = Decimal.of(8, 16);
+            f.reduced = false;
+            statefulFractionRepo.restore(f);
+            assertEquals(true,
+                         f.reduced);
+            assertEquals(BigDecimal.valueOf(3478, 4), // first 4 decimals of 8/23
+                         f.decimal.truncated());
+            tx.commit();
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // TODO use stateful method to remove entities
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
+    }
+
+    /**
      * Use a repository method that imposes restrictions on a Query By Method Name
      * count method that has no constraints indicated by the method name.
      */

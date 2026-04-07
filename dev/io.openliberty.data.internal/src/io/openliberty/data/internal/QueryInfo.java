@@ -4801,6 +4801,43 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Refreshes the state of managed entities from the database.
+     *
+     * @param arg the entity or array/Iterable/Stream of entity
+     * @param em  the entity manager
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    Void refresh(Object arg, EntityManager em) throws Exception {
+        arg = arg instanceof Stream //
+                        ? ((Stream<?>) arg).sequential().toList() //
+                        : arg;
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "refresh", loggable(arg));
+
+        int count = 0;
+        if (arg instanceof Iterable) {
+            for (Object entity : ((Iterable<?>) arg)) {
+                em.refresh(entityNotNull(entity));
+                count++;
+            }
+        } else if (entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            for (; count < length; count++)
+                em.refresh(entityNotNull(Array.get(arg, count)));
+        } else {
+            em.refresh(entityNotNull(arg));
+            count++;
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "refresh");
+        return null;
+    }
+
+    /**
      * Replaces the given query with one that includes the requested modifications.
      *
      * @param ql       the query.
