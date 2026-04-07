@@ -147,7 +147,7 @@ public class LTPAConfigurationImplTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, monitorValidationKeysDir);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, updateTrigger);
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, expDiffAllowed);
-        props.put(LTPAConfiguration.CFG_KEY_TOKEN_REFRESH_LIFE_TIME, maxLifetime);
+        props.put(LTPAConfiguration.CFG_KEY_TOKEN_MAX_LIFE_TIME, maxLifetime);
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_REFRESH_THRESHOLD, refreshThreshold);
 
         // Create one validation key in props

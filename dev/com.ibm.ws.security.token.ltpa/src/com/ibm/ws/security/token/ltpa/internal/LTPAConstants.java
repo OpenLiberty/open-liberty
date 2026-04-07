@@ -22,7 +22,6 @@ public class LTPAConstants {
     /**
      * Used to identity the LTPA last used time.
      */
-    protected static final String LAST_USED = "lastUsed";
 
     /**
      * Used to identify the refresh LTPA token threshold time.
@@ -30,9 +29,9 @@ public class LTPAConstants {
     protected static final String REFRESH_THRESHOLD = "refreshThreshold";
 
     /**
-     * Used to identify the refresh LTPA token lifetime.
+     * Used to identify the LTPA token max lifetime.
      */
-    protected static final String REFRESH_LIFE_TIME = "maxLifetime";
+    protected static final String MAX_LIFE_TIME = "maxLifetime";
     /**
      * Used to identify the primary LTPA shared key.
      */

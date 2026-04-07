@@ -91,3 +91,11 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility creat
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: The {0} validation keys must be regenerated using cryptographic algorithms that are not FIPS 140-3 certified.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=The LTPA validation keys that are created with FIPS 140-3 enabled fail when FIPS 140-3 is disabled.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Use the securityUtility createLTPAKeys command to create the non FIPS approved validation keys when FIPS 140-3 is disabled.
+
+LTPA_MAX_LIFETIME_MUST_BE_GREATER_THAN_EXPIRATION=CWWKS4118W: The LTPA maxLifetime value ({0} ms) must be greater than the expiration value ({1} ms) to allow token refresh. The maxLifetime value is automatically adjusted to {0} ms.
+LTPA_MAX_LIFETIME_MUST_BE_GREATER_THAN_EXPIRATION.explanation=The maxLifetime attribute defines the maximum absolute lifetime of an LTPA token. For token refresh to work properly, the maxLifetime value must be greater than the expiration value.
+LTPA_MAX_LIFETIME_MUST_BE_GREATER_THAN_EXPIRATION.useraction=Update the LTPA configuration in the server.xml file to set the maxLifetime attribute to a value that is greater than the expiration attribute value.
+
+LTPA_REFRESH_THRESHOLD_MUST_BE_LESS_THAN_EXPIRATION=CWWKS4119W: The LTPA refreshThreshold value ({0} ms) must be less than the expiration value ({1} ms) to allow token refresh. The refreshThreshold value is automatically adjusted to {0} ms.
+LTPA_REFRESH_THRESHOLD_MUST_BE_LESS_THAN_EXPIRATION.explanation=The refreshThreshold attribute defines when a token should be refreshed before it expires. For token refresh to work properly, the refreshThreshold value must be less than the expiration value.
+LTPA_REFRESH_THRESHOLD_MUST_BE_LESS_THAN_EXPIRATION.useraction=Update the LTPA configuration in the server.xml file to set the refreshThreshold attribute to a value that is less than the expiration attribute value.

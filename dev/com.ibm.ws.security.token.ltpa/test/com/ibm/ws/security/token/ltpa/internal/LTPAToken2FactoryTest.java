@@ -197,14 +197,6 @@ public class LTPAToken2FactoryTest {
     }
 
     @Test
-    public void testTokenHasLastUsedTimestamp() throws Exception {
-        Map<String, Object> tokenData = createBasicLTPA2TokenData();
-        Token token = tokenFactory.createToken(tokenData);
-        long lastUsed = token.getLastUsed();
-        assertTrue("Last used timestamp should be greater than 0.", lastUsed > 0);
-    }
-
-    @Test
     public void testTokenRefreshNotTriggeredWhenFarFromExpiration() throws Exception {
         Map<String, Object> tokenData = createBasicLTPA2TokenData();
         Token token = tokenFactory.createToken(tokenData);

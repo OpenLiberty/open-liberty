@@ -422,7 +422,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
             // Check if the cached subject's LTPA token needs refresh
             if (subject != null && shouldRefreshCachedToken(subject)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Cached subject's LTPA token needs refresh, returning null to force re-authentication");
+                    Tr.debug(tc, "Cached subject's LTPA token needs refresh, returning null to force validation LTPA token and then refresh it");
                 }
                 return null;
             }
@@ -498,7 +498,9 @@ public class AuthenticationServiceImpl implements AuthenticationService {
                     }
                 }
             } else {
-                Tr.warning(tc, "LTPA configuration not available, token refresh disabled");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "LTPA configuration not available, token refresh disabled");
+                }
             }
 
             return false;

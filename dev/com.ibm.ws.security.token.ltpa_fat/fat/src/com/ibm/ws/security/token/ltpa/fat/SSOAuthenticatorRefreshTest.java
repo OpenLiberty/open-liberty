@@ -34,7 +34,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -49,7 +48,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Comprehensive FAT tests for SSOAuthenticator LTPA token refresh functionality.
- * 
+ *
  * These tests verify the complete SSO authentication flow with token refresh:
  * 1. Initial authentication and LTPA cookie creation
  * 2. SSO authentication using existing LTPA cookie
@@ -68,22 +67,31 @@ public class SSOAuthenticatorRefreshTest {
     private static final Class<?> thisClass = SSOAuthenticatorRefreshTest.class;
     private static LibertyServer server;
 
+    // Timing constants for token refresh tests
+    // Configuration: expiration=2m, refreshThreshold=1m, maxLifetime=4m
+    private static final long REFRESH_THRESHOLD_WAIT_MS = 70000;  // 70 seconds - wait past 1m threshold
+    private static final long SHORT_EXPIRATION_WAIT_MS = 35000;   // 35 seconds - for short expiration tests
+    private static final long FULL_EXPIRATION_WAIT_MS = 130000;   // 130 seconds - wait past 2m expiration
+    private static final long CONFIG_UPDATE_WAIT_MS = 2000;       // 2 seconds - wait for config update
+    private static final long RAPID_REQUEST_DELAY_MS = 500;       // 500ms - delay between rapid requests
+    private static final long FRESH_TOKEN_DELAY_MS = 1000;        // 1 second - delay for fresh token
+
     @Rule
     public final TestWatcher logger = new TestWatcher() {
         @Override
         public void starting(Description description) {
-            Log.info(thisClass, description.getMethodName(), 
-                    "\n=====================================\n" +
-                    "Starting test: " + description.getMethodName() + 
-                    "\n=====================================");
+            Log.info(thisClass, description.getMethodName(),
+                     "\n=====================================\n" +
+                                                             "Starting test: " + description.getMethodName() +
+                                                             "\n=====================================");
         }
 
         @Override
         public void finished(Description description) {
-            Log.info(thisClass, description.getMethodName(), 
-                    "\n=====================================\n" +
-                    "Finished test: " + description.getMethodName() + 
-                    "\n=====================================");
+            Log.info(thisClass, description.getMethodName(),
+                     "\n=====================================\n" +
+                                                             "Finished test: " + description.getMethodName() +
+                                                             "\n=====================================");
         }
     };
 
@@ -120,7 +128,7 @@ public class SSOAuthenticatorRefreshTest {
 
     /**
      * Test SSO authentication flow with token refresh.
-     * 
+     *
      * Scenario:
      * 1. User authenticates with credentials -> receives LTPA cookie
      * 2. User makes request with LTPA cookie (SSO) -> authenticated without credentials
@@ -139,7 +147,7 @@ public class SSOAuthenticatorRefreshTest {
         Log.info(thisClass, testName, "Step 1: Initial authentication with credentials");
         HttpURLConnection conn1 = makeAuthenticatedRequest(servletUrl, null, "user1", "user1pwd");
         assertEquals("Initial authentication should succeed", 200, conn1.getResponseCode());
-        
+
         String cookie1 = extractLTPACookie(conn1);
         assertNotNull("LTPA cookie should be set after authentication", cookie1);
         Log.info(thisClass, testName, "Received initial LTPA cookie: " + maskCookie(cookie1));
@@ -149,7 +157,7 @@ public class SSOAuthenticatorRefreshTest {
         Log.info(thisClass, testName, "Step 2: SSO authentication using existing cookie");
         HttpURLConnection conn2 = makeRequestWithCookie(servletUrl, cookie1);
         assertEquals("SSO authentication should succeed", 200, conn2.getResponseCode());
-        
+
         String cookie2 = extractLTPACookie(conn2);
         if (cookie2 == null) {
             Log.info(thisClass, testName, "No new cookie - using existing token (expected for fresh token)");
@@ -157,19 +165,19 @@ public class SSOAuthenticatorRefreshTest {
         conn2.disconnect();
 
         // Step 3: Wait for token to approach refresh threshold
-        Log.info(thisClass, testName, "Step 3: Waiting 12 seconds for token to approach refresh threshold");
-        Thread.sleep(12000);
+        Log.info(thisClass, testName, "Step 3: Waiting " + REFRESH_THRESHOLD_WAIT_MS + "ms for token to approach refresh threshold");
+        Thread.sleep(REFRESH_THRESHOLD_WAIT_MS);
 
         // Step 4: SSO request should trigger token refresh
         Log.info(thisClass, testName, "Step 4: Making SSO request that should trigger refresh");
         HttpURLConnection conn3 = makeRequestWithCookie(servletUrl, cookie1);
         assertEquals("SSO request should succeed", 200, conn3.getResponseCode());
-        
+
         String cookie3 = extractLTPACookie(conn3);
         if (cookie3 != null) {
             assertFalse("Token should be refreshed (different cookie)", cookie1.equals(cookie3));
             Log.info(thisClass, testName, "Token successfully refreshed: " + maskCookie(cookie3));
-            
+
             // Step 5: Verify new cookie works for SSO
             Log.info(thisClass, testName, "Step 5: Verifying refreshed cookie works for SSO");
             HttpURLConnection conn4 = makeRequestWithCookie(servletUrl, cookie3);
@@ -202,7 +210,7 @@ public class SSOAuthenticatorRefreshTest {
             Log.info(thisClass, testName, "SSO request #" + i + " with fresh token");
             HttpURLConnection conn = makeRequestWithCookie(servletUrl, cookie);
             assertEquals("SSO request #" + i + " should succeed", 200, conn.getResponseCode());
-            
+
             String newCookie = extractLTPACookie(conn);
             if (newCookie == null) {
                 Log.info(thisClass, testName, "No new cookie in response #" + i + " (expected - token still fresh)");
@@ -210,10 +218,10 @@ public class SSOAuthenticatorRefreshTest {
                 assertEquals("Cookie should not change for fresh token", cookie, newCookie);
             }
             conn.disconnect();
-            
+
             // Small delay between requests
             if (i < 3) {
-                Thread.sleep(1000);
+                Thread.sleep(FRESH_TOKEN_DELAY_MS);
             }
         }
     }
@@ -258,7 +266,7 @@ public class SSOAuthenticatorRefreshTest {
 
         // Wait for refresh threshold
         Log.info(thisClass, testName, "Waiting for tokens to approach refresh threshold");
-        Thread.sleep(12000);
+        Thread.sleep(REFRESH_THRESHOLD_WAIT_MS);
 
         // Both users should get refreshed tokens
         Log.info(thisClass, testName, "User1 requesting token refresh");
@@ -274,7 +282,7 @@ public class SSOAuthenticatorRefreshTest {
         // Verify refreshed cookies are still different
         if (user1RefreshedCookie != null && user2RefreshedCookie != null) {
             assertFalse("Refreshed cookies should still be different for different users",
-                       user1RefreshedCookie.equals(user2RefreshedCookie));
+                        user1RefreshedCookie.equals(user2RefreshedCookie));
             Log.info(thisClass, testName, "Both users received unique refreshed tokens");
         }
     }
@@ -294,35 +302,36 @@ public class SSOAuthenticatorRefreshTest {
         Map<String, List<String>> headers1 = conn1.getHeaderFields();
         String cookieHeader1 = getCookieHeader(headers1, LTPA_COOKIE_NAME);
         assertNotNull("Should have Set-Cookie header", cookieHeader1);
-        
+
         Log.info(thisClass, testName, "Initial cookie header: " + cookieHeader1);
         boolean initialHttpOnly = cookieHeader1.toLowerCase().contains("httponly");
         boolean initialSecure = cookieHeader1.toLowerCase().contains("secure");
         boolean initialHasPath = cookieHeader1.toLowerCase().contains("path=");
-        
+
+        // Extract cookie before disconnecting
+        String cookie = extractLTPACookie(conn1);
+        assertNotNull("Should have LTPA cookie", cookie);
         conn1.disconnect();
 
         // Wait and trigger refresh
-        Thread.sleep(12000);
-        
-        String cookie = extractLTPACookie(conn1);
+        Thread.sleep(REFRESH_THRESHOLD_WAIT_MS);
         HttpURLConnection conn2 = makeRequestWithCookie(servletUrl, cookie);
         Map<String, List<String>> headers2 = conn2.getHeaderFields();
         String cookieHeader2 = getCookieHeader(headers2, LTPA_COOKIE_NAME);
-        
+
         if (cookieHeader2 != null) {
             Log.info(thisClass, testName, "Refreshed cookie header: " + cookieHeader2);
             boolean refreshedHttpOnly = cookieHeader2.toLowerCase().contains("httponly");
             boolean refreshedSecure = cookieHeader2.toLowerCase().contains("secure");
             boolean refreshedHasPath = cookieHeader2.toLowerCase().contains("path=");
-            
+
             assertEquals("HttpOnly attribute should be preserved", initialHttpOnly, refreshedHttpOnly);
             assertEquals("Secure attribute should be preserved", initialSecure, refreshedSecure);
             assertEquals("Path attribute should be preserved", initialHasPath, refreshedHasPath);
-            
+
             Log.info(thisClass, testName, "Cookie attributes preserved during refresh");
         }
-        
+
         conn2.disconnect();
     }
 
@@ -343,30 +352,35 @@ public class SSOAuthenticatorRefreshTest {
         conn.disconnect();
 
         // Wait for refresh threshold
-        Thread.sleep(12000);
+        Thread.sleep(REFRESH_THRESHOLD_WAIT_MS);
 
         // Make rapid successive requests
         List<String> cookies = new ArrayList<>();
         cookies.add(cookie);
-        
+        int requests = 1;
         for (int i = 1; i <= 5; i++) {
+            requests = i;
             Log.info(thisClass, testName, "Rapid request #" + i);
             HttpURLConnection rapidConn = makeRequestWithCookie(servletUrl, cookie);
             assertEquals("Rapid request #" + i + " should succeed", 200, rapidConn.getResponseCode());
-            
+
             String newCookie = extractLTPACookie(rapidConn);
             if (newCookie != null) {
                 Log.info(thisClass, testName, "Received new cookie in request #" + i);
                 cookie = newCookie; // Use new cookie for next request
                 cookies.add(newCookie);
-            }
-            
-            rapidConn.disconnect();
-            Thread.sleep(500); // Small delay between requests
-        }
 
-        Log.info(thisClass, testName, "Completed " + cookies.size() + " requests with cookie updates");
-        assertTrue("Should have made multiple requests", cookies.size() >= 5);
+            }
+
+            rapidConn.disconnect();
+            Thread.sleep(RAPID_REQUEST_DELAY_MS); // Small delay between requests
+        }
+        Log.info(thisClass, testName, "Number of requests: " + requests);
+        Log.info(thisClass, testName, "Number of unique cookies: " + cookies.size());
+
+        Log.info(thisClass, testName, "Completed " + requests + " requests with " + cookies.size() + " cookie updates");
+        assertTrue("Should have made multiple requests", requests >= 5);
+        assertTrue("Should have at least one cookie", cookies.size() >= 1);
     }
 
     /**
@@ -392,7 +406,7 @@ public class SSOAuthenticatorRefreshTest {
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Wait for new config to take effect
-        Thread.sleep(2000);
+        Thread.sleep(CONFIG_UPDATE_WAIT_MS);
 
         // Make SSO request with old cookie - should still work
         HttpURLConnection conn2 = makeRequestWithCookie(servletUrl, cookie1);
@@ -400,18 +414,18 @@ public class SSOAuthenticatorRefreshTest {
         conn2.disconnect();
 
         // Wait for short expiration threshold
-        Thread.sleep(7000);
+        Thread.sleep(SHORT_EXPIRATION_WAIT_MS);
 
         // Request should trigger refresh with new expiration settings
         HttpURLConnection conn3 = makeRequestWithCookie(servletUrl, cookie1);
         assertEquals("Request should succeed", 200, conn3.getResponseCode());
-        
+
         String cookie2 = extractLTPACookie(conn3);
         if (cookie2 != null) {
             assertFalse("Should receive refreshed cookie with new expiration", cookie1.equals(cookie2));
             Log.info(thisClass, testName, "Token refreshed with new configuration");
         }
-        
+
         conn3.disconnect();
     }
 
@@ -437,41 +451,52 @@ public class SSOAuthenticatorRefreshTest {
         conn1.disconnect();
 
         // Wait for token to fully expire (beyond max lifetime)
-        Log.info(thisClass, testName, "Waiting for token to expire completely");
-        Thread.sleep(35000); // Wait longer than token expiration
+        Log.info(thisClass, testName, "Waiting " + FULL_EXPIRATION_WAIT_MS + "ms for token to expire completely");
+        Thread.sleep(FULL_EXPIRATION_WAIT_MS);
 
         // Try to use expired cookie - should fail or require re-auth
         HttpURLConnection conn2 = makeRequestWithCookie(servletUrl, cookie);
         int responseCode = conn2.getResponseCode();
-        
+
         Log.info(thisClass, testName, "Response code with expired token: " + responseCode);
-        
+
         // Should either get 401 Unauthorized or be redirected to login
-        assertTrue("Expired token should not grant access", 
-                  responseCode == 401 || responseCode == 302 || responseCode == 403);
-        
+        assertTrue("Expired token should not grant access",
+                   responseCode == 401 || responseCode == 302 || responseCode == 403);
+
         conn2.disconnect();
 
         // Re-authenticate should work
         HttpURLConnection conn3 = makeAuthenticatedRequest(servletUrl, null, "user1", "user1pwd");
         assertEquals("Re-authentication should succeed", 200, conn3.getResponseCode());
-        
+
         String newCookie = extractLTPACookie(conn3);
         assertNotNull("Should receive new cookie after re-authentication", newCookie);
         assertFalse("New cookie should be different from expired one", cookie.equals(newCookie));
-        
+
         conn3.disconnect();
     }
 
     // Helper methods
 
     private String getServletUrl() {
-        return "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + 
+        return "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() +
                "/" + APP_NAME + "/" + SERVLET_NAME;
     }
 
-    private HttpURLConnection makeAuthenticatedRequest(String urlString, String cookie, 
-                                                      String username, String password) throws IOException {
+    /**
+     * Make an authenticated HTTP request with credentials.
+     * IMPORTANT: Caller MUST call disconnect() on the returned connection to prevent resource leaks.
+     *
+     * @param urlString the URL to request
+     * @param cookie optional LTPA cookie
+     * @param username the username for basic auth
+     * @param password the password for basic auth
+     * @return the HTTP connection (caller must call disconnect())
+     * @throws IOException if the request fails
+     */
+    private HttpURLConnection makeAuthenticatedRequest(String urlString, String cookie,
+                                                       String username, String password) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
@@ -479,21 +504,30 @@ public class SSOAuthenticatorRefreshTest {
         conn.setDoOutput(false);
         conn.setUseCaches(false);
         conn.setInstanceFollowRedirects(false);
-        
+
         if (cookie != null) {
             conn.setRequestProperty("Cookie", LTPA_COOKIE_NAME + "=" + cookie);
         }
-        
+
         String userpass = username + ":" + password;
         String basicAuth = "Basic " + java.util.Base64.getEncoder().encodeToString(userpass.getBytes());
         conn.setRequestProperty("Authorization", basicAuth);
-        
+
         conn.connect();
         consumeResponse(conn);
-        
+
         return conn;
     }
 
+    /**
+     * Make an HTTP request with an LTPA cookie.
+     * IMPORTANT: Caller MUST call disconnect() on the returned connection to prevent resource leaks.
+     *
+     * @param urlString the URL to request
+     * @param cookie the LTPA cookie value
+     * @return the HTTP connection (caller must call disconnect())
+     * @throws IOException if the request fails
+     */
     private HttpURLConnection makeRequestWithCookie(String urlString, String cookie) throws IOException {
         URL url = new URL(urlString);
         HttpURLConnection conn = (HttpURLConnection) url.openConnection();
@@ -502,65 +536,41 @@ public class SSOAuthenticatorRefreshTest {
         conn.setDoOutput(false);
         conn.setUseCaches(false);
         conn.setInstanceFollowRedirects(false);
-        
+
         conn.setRequestProperty("Cookie", LTPA_COOKIE_NAME + "=" + cookie);
-        
+
         conn.connect();
         consumeResponse(conn);
-        
+
         return conn;
     }
 
+    /**
+     * Consume the HTTP response body to complete the request.
+     * Note: IOException is expected and acceptable for error responses (401, 403, etc.)
+     */
     private void consumeResponse(HttpURLConnection conn) {
         try (InputStream is = conn.getInputStream();
-             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = br.readLine()) != null) {
                 // Just consume the response
             }
         } catch (IOException e) {
-            // May occur for error responses
+            // Expected for error responses (e.g., 401, 403) - connection is still valid
+            Log.info(thisClass, "consumeResponse", "IOException while consuming response: " + e.getMessage());
         }
     }
 
     private String extractLTPACookie(HttpURLConnection conn) {
-        Map<String, List<String>> headers = conn.getHeaderFields();
-        List<String> cookies = headers.get("Set-Cookie");
-        
-        if (cookies != null) {
-            for (String cookie : cookies) {
-                if (cookie.startsWith(LTPA_COOKIE_NAME + "=")) {
-                    int start = cookie.indexOf("=") + 1;
-                    int end = cookie.indexOf(";");
-                    if (end == -1) {
-                        end = cookie.length();
-                    }
-                    return cookie.substring(start, end);
-                }
-            }
-        }
-        
-        return null;
+        return LTPATestUtils.extractLTPACookie(conn);
     }
 
     private String getCookieHeader(Map<String, List<String>> headers, String cookieName) {
-        List<String> cookies = headers.get("Set-Cookie");
-        if (cookies != null) {
-            for (String cookie : cookies) {
-                if (cookie.startsWith(cookieName + "=")) {
-                    return cookie;
-                }
-            }
-        }
-        return null;
+        return LTPATestUtils.getCookieHeader(headers, cookieName);
     }
 
     private String maskCookie(String cookie) {
-        if (cookie == null || cookie.length() < 20) {
-            return "***";
-        }
-        return cookie.substring(0, 10) + "..." + cookie.substring(cookie.length() - 10);
+        return LTPATestUtils.maskCookie(cookie);
     }
 }
-
-// Made with Bob

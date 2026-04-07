@@ -103,7 +103,7 @@ public class LTPAKeyCreateTaskTest {
         props.put(LTPAConfiguration.CFG_KEY_MONITOR_VALIDATION_KEYS_DIR, false);
         props.put(LTPAConfiguration.CFG_KEY_UPDATE_TRIGGER, "polled");
         props.put(LTPAConfigurationImpl.KEY_EXP_DIFF_ALLOWED, 0L);
-        props.put(LTPAConfiguration.CFG_KEY_TOKEN_REFRESH_LIFE_TIME, 240L);
+        props.put(LTPAConfiguration.CFG_KEY_TOKEN_MAX_LIFE_TIME, 240L);
         props.put(LTPAConfiguration.CFG_KEY_TOKEN_REFRESH_THRESHOLD, 30L);
     }
 

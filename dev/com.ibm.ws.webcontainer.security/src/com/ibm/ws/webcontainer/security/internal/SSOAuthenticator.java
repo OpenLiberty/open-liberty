@@ -184,12 +184,9 @@ public class SSOAuthenticator implements WebAuthenticator {
             return false;
         }
 
-        // Use constant-time comparison to prevent timing attacks
-        byte[] originalBytes = originalToken.getBytes();
-        byte[] newBytes = newToken.getBytes();
-        
-        // Compare the tokens - if they're different, the token was refreshed
-        return !MessageDigest.isEqual(originalBytes, newBytes);
+        // Direct string comparison - tokens are already Base64-encoded and public (sent in cookies)
+        // so constant-time comparison is not required
+        return !originalToken.equals(newToken);
     }
 
     /**

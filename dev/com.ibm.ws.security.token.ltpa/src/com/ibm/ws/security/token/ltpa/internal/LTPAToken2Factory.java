@@ -32,7 +32,6 @@ import com.ibm.wsspi.security.ltpa.TokenFactory;
 public class LTPAToken2Factory implements TokenFactory {
     private static final TraceComponent tc = Tr.register(LTPAToken2Factory.class);
     private long expirationInMinutes;
-    private long lastUsedInMinutes;
     private long maxLifetimeInMinutes;
     private long refreshThresholdInMinutes;
     private byte[] primarySharedKey;
@@ -47,7 +46,7 @@ public class LTPAToken2Factory implements TokenFactory {
     public void initialize(@Sensitive Map tokenFactoryMap) {
         expirationInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.EXPIRATION);
         refreshThresholdInMinutes = (long) tokenFactoryMap.get(LTPAConstants.REFRESH_THRESHOLD);
-        maxLifetimeInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.REFRESH_LIFE_TIME);
+        maxLifetimeInMinutes = (Long) tokenFactoryMap.get(LTPAConstants.MAX_LIFE_TIME);
         primarySharedKey = (byte[]) tokenFactoryMap.get(LTPAConstants.PRIMARY_SECRET_KEY);
         primaryPublicKey = (LTPAPublicKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PUBLIC_KEY);
         primaryPrivateKey = (LTPAPrivateKey) tokenFactoryMap.get(LTPAConstants.PRIMARY_PRIVATE_KEY);
@@ -97,7 +96,10 @@ public class LTPAToken2Factory implements TokenFactory {
             try {
 
                 // Start timing
-                long startTime = System.nanoTime();
+                long startTime = 0;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    startTime = System.nanoTime();
+                }
 
                 Token returnToken = null;
 
@@ -108,38 +110,14 @@ public class LTPAToken2Factory implements TokenFactory {
                     }
                     if (validatedToken.shouldRefreshToken()) {
                         returnToken = (Token) validatedToken.clone();
-                        //return (Token) validatedToken.clone();
-
-                        // End timing
-                        long endTime = System.nanoTime();
-
-                        // Calculate duration in milliseconds
-                        long durationMs = (endTime - startTime) / 1_000_000;
-                        // Or in seconds (with decimals)
-                        double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
-
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "<request> new LTPAToken2() with clone took milliseconds: " + durationMs + " ms");
-                            Tr.debug(tc, "<request> new LTPAToken2() with clone took seconds: ", durationSeconds);
+                            debugMeasureTime(startTime, true);
                         }
-
                     } else {
                         returnToken = validatedToken;
-                        //return validatedToken;
-
-                        // End timing
-                        long endTime = System.nanoTime();
-
-                        // Calculate duration in milliseconds
-                        long durationMs = (endTime - startTime) / 1_000_000;
-                        // Or in seconds (with decimals)
-                        double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
-
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() took milliseconds: " + durationMs + " ms");
-                            Tr.debug(tc, "<UTLE><request> new LTPAToken2() took seconds: ", durationSeconds);
+                            debugMeasureTime(startTime, false);
                         }
-
                     }
                 }
 
@@ -222,6 +200,28 @@ public class LTPAToken2Factory implements TokenFactory {
         if (tc.isEntryEnabled())
             Tr.exit(tc, "validateTokenBytes (no keys)");
         throw new com.ibm.websphere.security.auth.InvalidTokenException("Token factory not properly initialized.");
+    }
+
+    /**
+     * @param startTime
+     */
+    private void debugMeasureTime(long startTime, boolean clone) {
+        long endTime = System.nanoTime();
+
+        String msg = null;
+        if (clone) {
+            msg = "validateTokenBytes() took ";
+        } else {
+            msg = "validateTokenBytes() and clone took ";
+        }
+
+        // Calculate duration in milliseconds
+        long durationMs = (endTime - startTime) / 1_000_000;
+        // Or in seconds (with decimals)
+        double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
+
+        Tr.debug(tc, msg + "milliseconds: " + durationMs);
+        Tr.debug(tc, msg + "second: " + durationSeconds);
     }
 
 }

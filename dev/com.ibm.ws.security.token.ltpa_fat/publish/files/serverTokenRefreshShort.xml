@@ -56,14 +56,15 @@
     <httpSession securityIntegrationEnabled="false"/>
 
     <!-- LTPA configuration for short expiration testing
-         - expiration: 30 seconds - very short expiration for testing
-         - refreshThreshold: 25 seconds - token refreshes when 25s or less remaining
-         - maxLifetime: 60 seconds (1 minute) - maximum token lifetime
+         - expiration: 2 minute - short expiration for testing
+         - refreshThreshold: 1m - token refreshes when 1m or less remaining
+         - maxLifetime: 4 minutes - maximum token lifetime
          - This allows testing refresh behavior with minimal wait time
+         - Note: refreshThreshold must be specified in minutes due to duration(m) type in metatype
     -->
-    <ltpa expiration="30s"
-          refreshThreshold="25s"
-          maxLifetime="1m"
+    <ltpa expiration="2m"
+          refreshThreshold="1m"
+          maxLifetime="4m"
           keysFileName="${server.config.dir}/resources/security/ltpa.keys"
           keysPassword="{xor}Lz4sLCgwLTs="/>
 

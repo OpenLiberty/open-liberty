@@ -89,7 +89,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private String primaryKeyPassword;
     private long keyTokenExpiration;
     private long refreshThreshold;
-    private long maxLifetime;
+    private long keyTokenMaxLifetime;
     private long monitorInterval;
     private LTPAFileMonitor ltpaFileMonitor;
     private ServiceRegistration<FileMonitor> ltpaFileMonitorRegistration;
@@ -164,6 +164,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     protected void modified(Map<String, Object> props) {
         String oldKeyImportFile = primaryKeyImportFile;
         Long oldKeyTokenExpiration = keyTokenExpiration;
+        Long oldKeyTokenMaxLifetime = keyTokenMaxLifetime;
+        Long oldRefreshThreshold = refreshThreshold;
         Long oldMonitorInterval = monitorInterval;
         Long oldExpirationDifferenceAllowed = expirationDifferenceAllowed;
         boolean oldMonitorValidationKeysDir = monitorValidationKeysDir;
@@ -177,7 +179,8 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
         loadConfig(props);
 
-        if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
+        if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldKeyTokenMaxLifetime, oldRefreshThreshold, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir,
+                                oldUpdateTrigger, oldValidationKeys)) {
             unsetFileMonitorRegistration();
             Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
             setupRuntimeLTPAInfrastructure();
@@ -194,8 +197,36 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
         primaryKeyPassword = sps == null ? null : new String(sps.getChars());
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
-        maxLifetime = (Long) props.get(CFG_KEY_TOKEN_REFRESH_LIFE_TIME);
+        keyTokenMaxLifetime = (Long) props.get(CFG_KEY_TOKEN_MAX_LIFE_TIME);
         refreshThreshold = (Long) props.get(CFG_KEY_TOKEN_REFRESH_THRESHOLD);
+
+        // Validate that keyTokenMaxLifetime is greater than expiration to allow token refresh
+        if (keyTokenMaxLifetime <= keyTokenExpiration) {
+            Tr.warning(tc, "LTPA_MAX_LIFETIME_MUST_BE_GREATER_THAN_EXPIRATION", keyTokenMaxLifetime, keyTokenExpiration);
+            // Adjust keyTokenMaxLifetime to be at least 2x the expiration to allow meaningful refresh
+            // Check for potential overflow before multiplication
+            if (keyTokenExpiration > Long.MAX_VALUE / 2) {
+                keyTokenMaxLifetime = Long.MAX_VALUE;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "keyTokenExpiration too large for safe multiplication, setting keyTokenMaxLifetime to Long.MAX_VALUE");
+                }
+            } else {
+                keyTokenMaxLifetime = keyTokenExpiration * 2;
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Adjusted keyTokenMaxLifetime to: " + keyTokenMaxLifetime);
+            }
+        }
+
+        // Validate that refreshThreshold is less than or equal to expiration
+        if (refreshThreshold >= keyTokenExpiration) {
+            Tr.warning(tc, "LTPA_REFRESH_THRESHOLD_MUST_BE_LESS_THAN_EXPIRATION", refreshThreshold, keyTokenExpiration);
+            // Adjust refreshThreshold to be 1/3 of expiration
+            refreshThreshold = keyTokenExpiration / 3;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Adjusted refreshThreshold to: " + refreshThreshold);
+            }
+        }
 
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
         authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);
@@ -247,7 +278,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             sj.add("primaryKeyImportFile: " + primaryKeyImportFile);
             sj.add("keyTokenExpiration: " + keyTokenExpiration);
             sj.add("refreshThreshold: " + refreshThreshold);
-            sj.add("maxLifetime: " + maxLifetime);
+            sj.add("keyTokenMaxLifetime: " + keyTokenMaxLifetime);
             sj.add("monitorInterval: " + monitorInterval);
             sj.add("authFilterRef: " + authFilterRef);
             sj.add("monitorValidationKeysDir: " + monitorValidationKeysDir);
@@ -599,24 +630,27 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     }
 
     /**
-     * The keys config is changed if the file, expiration, expirationDifferenceAllowed, moitorInterval, monitorValidationKeysDir, updateTrigger or validationKeys configured were
-     * modified.
+     * The keys config is changed if the file, expiration, maxLifetime, refreshThreshold, expirationDifferenceAllowed,
+     * monitorValidationKeysDir, updateTrigger or validationKeys configured were modified.
      * Changing the password by itself must not be considered a config change that should trigger a keys reload.
      *
      * @param oldKeyImportFile
      * @param oldKeyTokenExpiration
+     * @param oldKeyTokenMaxLifetime
+     * @param oldRefreshThreshold
      * @param oldExpirationDifferenceAllowed
-     * @param oldMonitorInterval
      * @param oldMonitorValidationKeysDir
      * @param oldUpdateTrigger
      * @param oldValidationKeys
      */
-    // TODO: UTLE need to add maxLifetime to keysConfig
-    private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir,
+    private boolean isKeysConfigChanged(String oldKeyImportFile, Long oldKeyTokenExpiration, Long oldKeyTokenMaxLifetime, Long oldRefreshThreshold,
+                                        Long oldExpirationDifferenceAllowed, boolean oldMonitorValidationKeysDir,
                                         String oldUpdateTrigger,
                                         @Sensitive List<Properties> oldValidationKeys) {
         return ((oldKeyImportFile.equals(primaryKeyImportFile) == false)
                 || (oldKeyTokenExpiration != keyTokenExpiration)
+                || (oldKeyTokenMaxLifetime != keyTokenMaxLifetime)
+                || (oldRefreshThreshold != refreshThreshold)
                 || (oldExpirationDifferenceAllowed != expirationDifferenceAllowed)
                 || (oldMonitorValidationKeysDir != monitorValidationKeysDir)
                 || (oldUpdateTrigger != updateTrigger)
@@ -780,7 +814,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     /** {@inheritDoc} */
     @Override
     public long getmaxLifetime() {
-        return maxLifetime;
+        return keyTokenMaxLifetime;
     }
 
     /** {@inheritDoc} */
