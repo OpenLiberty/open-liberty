@@ -28,6 +28,7 @@ tested.features: \
     jaxrs-3.0,\
     enterprisebeanslite-4.0,\
     faces-3.0,\
+    pages-3.1,\
     restfulwsclient-3.0,\
     restfulws-3.0,\
     expressionlanguage-5.0,\
@@ -41,7 +42,8 @@ tested.features: \
     jsonp-2.1,\
     cdi-4.1,\
     servlet-6.1,\
-    faces-4.0
+    faces-4.0,\
+    pages-4.0,\
 #fat.test.mode=full
 
 src: \

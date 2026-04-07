@@ -221,7 +221,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         String queryString;
         //create app and setup server
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
 
         Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
 
