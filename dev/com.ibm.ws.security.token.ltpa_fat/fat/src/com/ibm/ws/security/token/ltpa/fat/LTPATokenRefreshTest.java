@@ -16,7 +16,6 @@ package com.ibm.ws.security.token.ltpa.fat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,7 +32,6 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.TestRule;
 import org.junit.rules.TestWatcher;
 import org.junit.runner.Description;
 import org.junit.runner.RunWith;
@@ -48,7 +46,7 @@ import componenttest.topology.impl.LibertyServerFactory;
 
 /**
  * Test LTPA token refresh functionality.
- * 
+ *
  * This test verifies that:
  * 1. LTPA tokens are refreshed when they approach expiration
  * 2. New cookies are set in the response when tokens are refreshed
@@ -69,20 +67,21 @@ public class LTPATokenRefreshTest {
     public final TestWatcher logger = new TestWatcher() {
         @Override
         public void starting(Description description) {
-            Log.info(thisClass, description.getMethodName(), 
-                    "\n@@@@@@@@@@@@@@@@@\nEntering test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
+            Log.info(thisClass, description.getMethodName(),
+                     "\n@@@@@@@@@@@@@@@@@\nEntering test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
         }
 
         @Override
         public void finished(Description description) {
-            Log.info(thisClass, description.getMethodName(), 
-                    "\n@@@@@@@@@@@@@@@@@\nExiting test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
+            Log.info(thisClass, description.getMethodName(),
+                     "\n@@@@@@@@@@@@@@@@@\nExiting test " + description.getMethodName() + "\n@@@@@@@@@@@@@@@@@");
         }
     };
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.security.token.ltpa.fat.refresh");
+        server.copyFileToLibertyInstallRoot("lib/features", "internalFeatureForFat/ltpafattestlibertyinternals-1.0.mf");
         server.addInstalledAppForValidation(APP_NAME);
     }
 
@@ -114,12 +113,12 @@ public class LTPATokenRefreshTest {
 
     /**
      * Test that LTPA token is refreshed when it approaches the refresh threshold.
-     * 
+     *
      * Configuration:
      * - Token expiration: 60 seconds
      * - Refresh threshold: 50 seconds
      * - Max lifetime: 120 seconds
-     * 
+     *
      * Expected behavior:
      * 1. Initial request creates a new LTPA token
      * 2. Wait for token to approach refresh threshold (>10 seconds remaining)
@@ -132,12 +131,12 @@ public class LTPATokenRefreshTest {
         Log.info(thisClass, testName, "Starting test");
 
         // Step 1: Make initial request to get LTPA token
-        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + 
-                           "/" + APP_NAME + "/" + SERVLET_NAME;
-        
+        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() +
+                            "/" + APP_NAME + "/" + SERVLET_NAME;
+
         HttpURLConnection conn1 = makeRequest(servletUrl, null);
         assertEquals("First request should succeed", 200, conn1.getResponseCode());
-        
+
         String initialCookie = extractLTPACookie(conn1);
         assertNotNull("Initial LTPA cookie should be set", initialCookie);
         Log.info(thisClass, testName, "Initial LTPA cookie: " + maskCookie(initialCookie));
@@ -150,18 +149,15 @@ public class LTPATokenRefreshTest {
         // Step 3: Make second request - should trigger refresh
         HttpURLConnection conn2 = makeRequest(servletUrl, initialCookie);
         assertEquals("Second request should succeed", 200, conn2.getResponseCode());
-        
+
         String refreshedCookie = extractLTPACookie(conn2);
-        
+
         // Step 4: Verify token was refreshed
-        if (refreshedCookie != null) {
-            assertFalse("LTPA cookie should be refreshed (different from initial)",
-                       initialCookie.equals(refreshedCookie));
-            Log.info(thisClass, testName, "Token was successfully refreshed");
-            Log.info(thisClass, testName, "Refreshed LTPA cookie: " + maskCookie(refreshedCookie));
-        } else {
-            Log.info(thisClass, testName, "No new cookie in response - token may not have reached threshold yet");
-        }
+        assertNotNull("LTPA cookie should be refreshed (new cookie in response)", refreshedCookie);
+        assertFalse("LTPA cookie should be refreshed (different from initial)",
+                    initialCookie.equals(refreshedCookie));
+        Log.info(thisClass, testName, "Token was successfully refreshed");
+        Log.info(thisClass, testName, "Refreshed LTPA cookie: " + maskCookie(refreshedCookie));
 
         conn1.disconnect();
         conn2.disconnect();
@@ -169,11 +165,11 @@ public class LTPATokenRefreshTest {
 
     /**
      * Test that LTPA token is NOT refreshed when it's still far from expiration.
-     * 
+     *
      * Configuration:
      * - Token expiration: 60 seconds
      * - Refresh threshold: 50 seconds
-     * 
+     *
      * Expected behavior:
      * 1. Initial request creates a new LTPA token
      * 2. Immediate second request should NOT trigger refresh (token still valid)
@@ -184,13 +180,13 @@ public class LTPATokenRefreshTest {
         String testName = "testTokenNotRefreshedWhenStillValid";
         Log.info(thisClass, testName, "Starting test");
 
-        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + 
-                           "/" + APP_NAME + "/" + SERVLET_NAME;
-        
+        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() +
+                            "/" + APP_NAME + "/" + SERVLET_NAME;
+
         // Step 1: Make initial request
         HttpURLConnection conn1 = makeRequest(servletUrl, null);
         assertEquals("First request should succeed", 200, conn1.getResponseCode());
-        
+
         String initialCookie = extractLTPACookie(conn1);
         assertNotNull("Initial LTPA cookie should be set", initialCookie);
         Log.info(thisClass, testName, "Initial LTPA cookie: " + maskCookie(initialCookie));
@@ -198,16 +194,16 @@ public class LTPATokenRefreshTest {
         // Step 2: Make immediate second request (token still fresh)
         HttpURLConnection conn2 = makeRequest(servletUrl, initialCookie);
         assertEquals("Second request should succeed", 200, conn2.getResponseCode());
-        
+
         String secondCookie = extractLTPACookie(conn2);
-        
+
         // Step 3: Verify token was NOT refreshed
         if (secondCookie == null) {
             Log.info(thisClass, testName, "No new cookie in response - token was not refreshed (expected)");
         } else {
             // If a cookie is returned, it should be the same as the initial one
-            assertEquals("LTPA cookie should not be refreshed when still valid", 
-                        initialCookie, secondCookie);
+            assertEquals("LTPA cookie should not be refreshed when still valid",
+                         initialCookie, secondCookie);
             Log.info(thisClass, testName, "Same cookie returned - token was not refreshed (expected)");
         }
 
@@ -217,11 +213,11 @@ public class LTPATokenRefreshTest {
 
     /**
      * Test token refresh with short expiration time.
-     * 
+     *
      * Configuration:
      * - Token expiration: 30 seconds
      * - Refresh threshold: 25 seconds
-     * 
+     *
      * Expected behavior:
      * Token should refresh quickly after initial creation
      */
@@ -236,15 +232,16 @@ public class LTPATokenRefreshTest {
         server.waitForConfigUpdateInLogUsingMark(null);
         Log.info(thisClass, testName, "Server reconfigured with short token expiration");
 
-        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + 
-                           "/" + APP_NAME + "/" + SERVLET_NAME;
-        
+        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() +
+                            "/" + APP_NAME + "/" + SERVLET_NAME;
+
         // Make initial request
         HttpURLConnection conn1 = makeRequest(servletUrl, null);
         assertEquals("First request should succeed", 200, conn1.getResponseCode());
-        
+
         String initialCookie = extractLTPACookie(conn1);
         assertNotNull("Initial LTPA cookie should be set", initialCookie);
+        Log.info(thisClass, testName, "Initial LTPA cookie: " + maskCookie(initialCookie));
 
         // Wait for token to approach threshold (30s expiration, 25s threshold = 5s window)
         Log.info(thisClass, testName, "Waiting 7 seconds for token to approach refresh threshold...");
@@ -253,14 +250,14 @@ public class LTPATokenRefreshTest {
         // Make second request - should trigger refresh
         HttpURLConnection conn2 = makeRequest(servletUrl, initialCookie);
         assertEquals("Second request should succeed", 200, conn2.getResponseCode());
-        
+
         String refreshedCookie = extractLTPACookie(conn2);
-        
-        if (refreshedCookie != null) {
-            assertFalse("LTPA cookie should be refreshed with short expiration",
-                       initialCookie.equals(refreshedCookie));
-            Log.info(thisClass, testName, "Token was successfully refreshed with short expiration");
-        }
+
+        assertNotNull("LTPA cookie should be refreshed (new cookie in response)", refreshedCookie);
+        assertFalse("LTPA cookie should be refreshed with short expiration",
+                    initialCookie.equals(refreshedCookie));
+        Log.info(thisClass, testName, "Token was successfully refreshed with short expiration");
+        Log.info(thisClass, testName, "Refreshed LTPA cookie: " + maskCookie(refreshedCookie));
 
         conn1.disconnect();
         conn2.disconnect();
@@ -274,20 +271,20 @@ public class LTPATokenRefreshTest {
         String testName = "testMultipleRequestsWithTokenRefresh";
         Log.info(thisClass, testName, "Starting test");
 
-        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + 
-                           "/" + APP_NAME + "/" + SERVLET_NAME;
-        
+        String servletUrl = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() +
+                            "/" + APP_NAME + "/" + SERVLET_NAME;
+
         String currentCookie = null;
-        
+
         // Make 3 requests with delays
         for (int i = 1; i <= 3; i++) {
             Log.info(thisClass, testName, "Making request #" + i);
-            
+
             HttpURLConnection conn = makeRequest(servletUrl, currentCookie);
             assertEquals("Request #" + i + " should succeed", 200, conn.getResponseCode());
-            
+
             String newCookie = extractLTPACookie(conn);
-            
+
             if (i == 1) {
                 assertNotNull("First request should set LTPA cookie", newCookie);
                 currentCookie = newCookie;
@@ -299,15 +296,15 @@ public class LTPATokenRefreshTest {
                     Log.info(thisClass, testName, "Request #" + i + " used existing cookie (no refresh)");
                 }
             }
-            
+
             conn.disconnect();
-            
+
             // Wait between requests
             if (i < 3) {
                 Thread.sleep(5000);
             }
         }
-        
+
         assertNotNull("Should have valid LTPA cookie after all requests", currentCookie);
     }
 
@@ -322,22 +319,22 @@ public class LTPATokenRefreshTest {
         conn.setDoOutput(false);
         conn.setUseCaches(false);
         conn.setInstanceFollowRedirects(false);
-        
+
         // Add cookie if provided
         if (cookie != null) {
             conn.setRequestProperty("Cookie", LTPA_COOKIE_NAME + "=" + cookie);
         }
-        
+
         // Add basic auth for initial authentication
         String userpass = "user1:user1pwd";
         String basicAuth = "Basic " + java.util.Base64.getEncoder().encodeToString(userpass.getBytes());
         conn.setRequestProperty("Authorization", basicAuth);
-        
+
         conn.connect();
-        
+
         // Read response to complete the request
         try (InputStream is = conn.getInputStream();
-             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                        BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
             String line;
             while ((line = br.readLine()) != null) {
                 // Just consume the response
@@ -345,7 +342,7 @@ public class LTPATokenRefreshTest {
         } catch (IOException e) {
             // May occur for error responses, that's ok
         }
-        
+
         return conn;
     }
 
@@ -355,7 +352,7 @@ public class LTPATokenRefreshTest {
     private String extractLTPACookie(HttpURLConnection conn) {
         Map<String, List<String>> headers = conn.getHeaderFields();
         List<String> cookies = headers.get("Set-Cookie");
-        
+
         if (cookies != null) {
             for (String cookie : cookies) {
                 if (cookie.startsWith(LTPA_COOKIE_NAME + "=")) {
@@ -369,7 +366,7 @@ public class LTPATokenRefreshTest {
                 }
             }
         }
-        
+
         return null;
     }
 

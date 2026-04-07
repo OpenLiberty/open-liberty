@@ -77,7 +77,8 @@ autoFVT {
     'com.ibm.ws.security.token.ltpa.fat.contextRootCookiePathTestServer',
     'com.ibm.ws.security.token.ltpa.fat.ltpaKeyRotationTestServer',
     'com.ibm.ws.security.token.ltpa.fat.validationKeyTestServer1',
-    'com.ibm.ws.security.token.ltpa.fat.validationKeyTestServer2'
+    'com.ibm.ws.security.token.ltpa.fat.validationKeyTestServer2',
+    'com.ibm.ws.security.token.ltpa.fat.refresh'
   ]
   servers.each { server ->
     copy { 
