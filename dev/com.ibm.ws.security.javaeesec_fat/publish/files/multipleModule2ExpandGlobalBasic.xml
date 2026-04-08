@@ -3,6 +3,7 @@
     <featureManager>
         <feature>appSecurity-3.0</feature>
         <feature>jsf-2.3</feature>
+        <feature>jsp-2.3</feature>
     </featureManager>
 
     <webAppSecurity overrideHttpAuthMethod="BASIC" basicAuthenticationMechanismRealmName="OverriddenByContainer" />

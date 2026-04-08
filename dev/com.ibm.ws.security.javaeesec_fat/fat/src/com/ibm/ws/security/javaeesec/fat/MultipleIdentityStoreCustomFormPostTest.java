@@ -198,7 +198,13 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * </OL>
      */
     @Test
-    @AllowedFFDC({ "javax.naming.AuthenticationException" })
+    /*
+     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
+     * When authentication fails and the system tries to render the error page, the response has already been partially committed
+     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
+     * MyFaces 4.0 just logs a warning
+     */
+    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" }) //
     public void testMultipleISCustomFormPostRedirectWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // retry the test 5 times when 500 is returned which indicates some EL expression error happened on
@@ -310,7 +316,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * </OL>
      */
     @Test
-    @AllowedFFDC({ "javax.naming.AuthenticationException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" })
     public void testMultipleISCustomFormPostForwardWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // retry the test 5 times when 500 is returned which indicates some EL expression error happened on
@@ -397,7 +403,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
     }
 
     private static void stopServer() throws Exception {
-        myServer.stopServer();
+        myServer.stopServer("SRVE8115W", "SRVE8094W", "SRVE0777E");
     }
 
     private void restartTestEnv() throws Exception {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
@@ -205,7 +205,7 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // EE9 can't run with appSecurity-2.0
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES }) // EE9, EE10 and EE11 can't run with appSecurity-2.0
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity20() throws Exception {
@@ -260,7 +260,7 @@ public class FeatureTest extends JavaEESecTestBase {
      * <LI>
      * </OL>
      */
-    @SkipForRepeat(SkipForRepeat.EE9_FEATURES) // EE9 can't run with appSecurity-1.0
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES }) // EE9, EE10 and EE11 can't run with appSecurity-2.0
     @Test
     @ExpectedFFDC(value = { "java.lang.NoClassDefFoundError", "com.ibm.ws.container.service.state.StateChangeException" })
     public void testEJBAppSecurity10() throws Exception {

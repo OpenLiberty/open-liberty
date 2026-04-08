@@ -4,12 +4,10 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
-
-import static com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase.assumeNotWindowsEe9;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -177,7 +175,7 @@ public class MultipleModuleNoExpandTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWars() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        //assumeNotWindowsEe9();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
