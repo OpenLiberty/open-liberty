@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package suite.postgresql.suite6;
 
@@ -20,12 +17,10 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.transaction.fat.util.PostgresqlContainerSuite;
 import com.ibm.ws.transaction.fat.util.TxTestDB;
 
-import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.database.container.PostgreSQLContainer;
 import tests.DBRotationTest;
 
 @RunWith(Suite.class)

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -91,7 +91,6 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         serverB.setJvmOptions(options);
 
         serverA.startServer();
-        TimeUnit.SECONDS.sleep(10);
 
         // Warm up serverA
         List<String> sessionA = new ArrayList<>();
@@ -99,7 +98,12 @@ public class SessionCacheTwoServerTimeoutTest extends FATServletClient {
         appA.invalidateSession(sessionA);
 
         serverB.startServer();
-        TimeUnit.SECONDS.sleep(10);
+
+        // Wait for Infinispan/JGroups to form a 2-node cluster. This message appears in serverA's log
+        // when serverB joins. Using a log-based wait instead of a fixed sleep makes this
+        // reliable across machines with varying startup times (especially Windows under load).
+        assertNotNull("Infinispan 2-node cluster did not form within 60 seconds",
+                      serverA.waitForStringInLog("ISPN000094.*\\(2\\)", 60000));
 
         // Warm up serverB
         List<String> sessionB = new ArrayList<>();

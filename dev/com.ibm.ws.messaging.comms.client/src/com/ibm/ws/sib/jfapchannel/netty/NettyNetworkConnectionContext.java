@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -102,13 +102,6 @@ public class NettyNetworkConnectionContext implements NetworkConnectionContext{
 		if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
 			SibTr.entry(this, tc, "close", new Object[] { networkConnection, throwable });
 
-		// TODO: This needs to be verified and implemented is not. https://github.com/OpenLiberty/open-liberty/issues/24814
-		// If the server is stopping, all connections will be closed/flushed by netty bundle? Verify
-		if (FrameworkState.isStopping()) {
-			if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled())
-				SibTr.exit(this, tc, "close");
-			return;
-		}
 		Exception exception = null;
 		if (throwable instanceof Exception)
 		{

@@ -55,13 +55,4 @@ public class JwtConfigUtil {
         return secret;
     }
 
-    public static String getSignatureAlgorithm(String configId, Map<String, Object> props, String sigAlgAttrName) {
-        String defaultSignatureAlgorithm = "RS256";
-        String signatureAlgorithm = JwtUtils.trimIt((String) props.get(sigAlgAttrName));
-        if (signatureAlgorithm == null) {
-            signatureAlgorithm = defaultSignatureAlgorithm;
-        }
-        return signatureAlgorithm;
-    }
-
 }

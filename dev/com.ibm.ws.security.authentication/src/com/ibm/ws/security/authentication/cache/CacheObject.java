@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -36,7 +36,15 @@ public class CacheObject implements Serializable {
 
     private static final long serialVersionUID = -2299564519252837462L;
 
+    private transient boolean isReadOnly;
+
     private transient Subject subject;
+
+    private transient Set<Principal> principals;
+
+    private transient Set<Object> publicCredentials;
+
+    private transient Set<Object> privateCredentials;
 
     private final List<Object> lookupKeys = Collections.synchronizedList(new ArrayList<Object>(8));
 
@@ -54,6 +62,14 @@ public class CacheObject implements Serializable {
      */
     public CacheObject(Subject subject) {
         this.subject = subject;
+        // save off the principals and credentials so that we are not doing synchronization logic when returning
+        // the Subject in the getSubject() method
+        if (subject != null) {
+            isReadOnly = subject.isReadOnly();
+            principals = Collections.unmodifiableSet(new HashSet<Principal>(subject.getPrincipals()));
+            publicCredentials = Collections.unmodifiableSet(new HashSet<Object>(subject.getPublicCredentials()));
+            privateCredentials = Collections.unmodifiableSet(new HashSet<Object>(subject.getPrivateCredentials()));
+        }
     }
 
     /**
@@ -84,12 +100,22 @@ public class CacheObject implements Serializable {
     }
 
     /**
-     * Get the {@link Subject} stored in this {@link CacheObject}.
+     * Gets a {@link Subject} with the stored state in this {@link CacheObject}.
      *
-     * @return The subject.
+     * Returns a new Subject instance each time for 2 reasons.
+     *
+     * The Subject class is heavily synchronized so if multiple threads are using the login information,
+     * they will end up bottlenecking on the same Subject instance instead of being able to run in parallel.
+     *
+     * If we returned the actual Subject instance, any changes to the Subject would modify the cached value
+     * as well which is a problem if multiple threads are using the same Subject instance. Where this is
+     * most notably a problem is when calling logout which ends up clearing the Subject and suddenly the other
+     * thread would have no state in their Subject.
+     *
+     * @return A new Subject with the cached content in it
      */
     public Subject getSubject() {
-        return this.subject;
+        return subject == null ? null : new Subject(isReadOnly, principals, publicCredentials, privateCredentials);
     }
 
     @SuppressWarnings("unchecked")
@@ -102,15 +128,15 @@ public class CacheObject implements Serializable {
         /*
          * Read the fields comprising the Subject.
          */
-        boolean subjectReadOnly = input.readBoolean();
-        Set<Principal> subjectPrincipals = (Set<Principal>) input.readObject();
-        Set<Object> subjectPubCreds = (Set<Object>) input.readObject();
-        Set<Object> subjectPrivCreds = (Set<Object>) input.readObject();
+        isReadOnly = input.readBoolean();
+        principals = (Set<Principal>) input.readObject();
+        publicCredentials = (Set<Object>) input.readObject();
+        privateCredentials = (Set<Object>) input.readObject();
 
         /*
          * Create the subject from the subject fields.
          */
-        subject = new Subject(subjectReadOnly, subjectPrincipals, subjectPubCreds, subjectPrivCreds);
+        subject = new Subject(isReadOnly, principals, publicCredentials, privateCredentials);
     }
 
     private void writeObject(ObjectOutputStream output) throws IOException {
@@ -125,9 +151,9 @@ public class CacheObject implements Serializable {
          * Use new sets since the the SecureSet implementation in Subject was not intended for
          * serialization.
          */
-        output.writeBoolean(subject.isReadOnly());
-        output.writeObject(new HashSet<Principal>(subject.getPrincipals()));
-        output.writeObject(new HashSet<Object>(subject.getPublicCredentials()));
-        output.writeObject(new HashSet<Object>(subject.getPrivateCredentials()));
+        output.writeBoolean(isReadOnly);
+        output.writeObject(principals);
+        output.writeObject(publicCredentials);
+        output.writeObject(privateCredentials);
     }
 }

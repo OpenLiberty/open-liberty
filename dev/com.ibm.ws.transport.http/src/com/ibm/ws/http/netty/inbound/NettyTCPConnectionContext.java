@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@ package com.ibm.ws.http.netty.inbound;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.wsspi.channelfw.VirtualConnection;
 import com.ibm.wsspi.tcpchannel.SSLConnectionContext;
@@ -42,13 +43,15 @@ public class NettyTCPConnectionContext implements TCPConnectionContext {
     private final VirtualConnection vc;
     private final Channel nettyChannel;
     private SSLConnectionContext sslContext;
+    private NettyHttpChannelConfig config;
 
-    public NettyTCPConnectionContext(Channel channel, VirtualConnection vc) {
+    public NettyTCPConnectionContext(Channel channel, VirtualConnection vc, NettyHttpChannelConfig config) {
 
         this.vc = vc;
         this.nettyChannel = channel;
+        this.config = config;
 
-        this.readContext = new NettyTCPReadRequestContext(this, nettyChannel);
+        this.readContext = new NettyTCPReadRequestContext(this, nettyChannel, config);
         this.readContext.setVC(this.vc);
         this.writeContext = new NettyTCPWriteRequestContext(this, nettyChannel);
         this.writeContext.setVC(this.vc);

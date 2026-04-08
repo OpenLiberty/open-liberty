@@ -493,7 +493,7 @@ unknown_bean_class=Clas\u0103 bean Entitate necunoscut\u0103: {0}, v\u0103 rug\u
 
 unknown_entitybean_name=Nume bean entitate necunoscut: {0}
 
-unsupported_classfile_version=Clasa {0} a fost compilat\u0103 cu un JDK nesuportat. Raporta\u0163i aceast\u0103 eroare la proiectul de surs\u0103 deschis\u0103 EclipseLink.
+unsupported_classfile_version=Clasa \u201e {0} \u201d a fost compilat\u0103 cu un JDK neacceptat \u0219i nu poate fi citit\u0103. Versiunea actual\u0103 a ASM accept\u0103 p\u00e2n\u0103 la JDK {1}. Actualiza\u021bi dependen\u021bele ASM d OW2.
 
 wrap_convert_exception=A ap\u0103rut o excep\u0163ie \u00een timp ce se apela {0} pe clasa de convertor {1} cu valoarea {2}
 

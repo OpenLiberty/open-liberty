@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution,  and is available at
@@ -114,11 +114,13 @@ import io.netty.channel.ChannelFuture;
 import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.VoidChannelPromise;
+import io.netty.handler.codec.DecoderResult;
 import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.DefaultHttpContent;
 import io.netty.handler.codec.http.DefaultLastHttpContent;
 import io.netty.handler.codec.http.FullHttpRequest;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
@@ -318,7 +320,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     private final CopyOnWriteArrayList<Frame> framesToWrite = new CopyOnWriteArrayList<Frame>();
 
-    private ChannelHandlerContext nettyContext;
+    protected ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
 
@@ -334,6 +336,10 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
 
     public void setNettyContext(ChannelHandlerContext ctx) {
         this.nettyContext = ctx;
+    }
+
+    public ChannelHandlerContext getNettyContext() {
+        return this.nettyContext;
     }
 
     public void setNettyRequest(FullHttpRequest request) {
@@ -1040,8 +1046,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
-    public void init(TCPConnectionContext tsc, ChannelHandlerContext context) {
+    public void init(TCPConnectionContext tsc, ChannelHandlerContext context, HttpChannelConfig config) {
         this.setNettyContext(context);
+        this.setHttpConfig(config);
 
         if (null != tsc) {
             this.myTSC = tsc;
@@ -3010,7 +3017,9 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             if (!isPartialBody() && !getRequest().getMethod().equals(MethodValues.HEAD.getName())) {
                 msg.setContentLength(GenericUtils.sizeOf(buffers));
             } else if (addedCompressionContentLength || (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET)) {
-                HttpUtil.setTransferEncodingChunked(nettyResponse, true);
+                nettyResponse.headers().set(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName(), HttpHeaderValues.CHUNKED);
+                nettyResponse.headers().remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
+
                 if (nettyContext.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
                     nettyContext.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
                 }
@@ -3113,30 +3122,23 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                          + headers);
         }
 
-        this.nettyContext.channel().eventLoop().execute(() -> {
-            ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
-                                                                       new VoidChannelPromise(nettyContext.channel(), true));
-                    promise.addListener(future -> {
-                        if (future.isSuccess()){
-                            // Should we process the new request here when we ensure we wrote out a push promise?
-                            // Follow up issue https://github.com/OpenLiberty/open-liberty/issues/31439
-                        }
-                    });
-        });
-
         DefaultFullHttpRequest newRequest = new DefaultFullHttpRequest(nettyRequest.protocolVersion(), HttpMethod.GET, uri);
         newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), nextPromisedStreamId);
         newRequest.headers().set(HttpConversionUtil.ExtensionHeaderNames.SCHEME.text(), scheme);
-        HttpUtil.setContentLength(newRequest, 0);
+        newRequest.headers().set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), 0);
 
-        HttpDispatcher.getExecutorService().execute(() -> {
-            try {
-                nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
-            } catch (Exception e) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "handleNettyPreload(): Unable to dispatch push request: " + e.getMessage(), e);
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture promise = handler.encoder().writePushPromise(nettyContext, currentStreamId, nextPromisedStreamId, headers, 0,
+                                                                       new VoidChannelPromise(nettyContext.channel(), true));
+            promise.addListener(future -> {
+                if (!(future.isDone() && future.isSuccess())){
+                    if(future.cause() == null)
+                        newRequest.setDecoderResult(DecoderResult.failure(new IOException("Failed to properly finish writing push promise!")));
+                    else
+                        newRequest.setDecoderResult(DecoderResult.failure(future.cause()));
                 }
-            }
+                nettyContext.pipeline().get(HttpDispatcherHandler.class).channelRead(nettyContext, newRequest);
+            });
         });
     }
 
@@ -3344,7 +3346,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                 complete = true;
                 getResponse().setContentLength(GenericUtils.sizeOf(buffers));
             } else if (!msg.isChunkedEncodingSet() && msg.getContentLength() == HttpGenerics.NOT_SET) {
-                HttpUtil.setTransferEncodingChunked(nettyResponse, true);
+                nettyResponse.headers().set(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName(), HttpHeaderValues.CHUNKED);
+                nettyResponse.headers().remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
             }
 
             if (msg.isBodyExpected()) {

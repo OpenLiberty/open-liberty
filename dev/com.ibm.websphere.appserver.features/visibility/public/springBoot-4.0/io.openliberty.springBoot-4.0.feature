@@ -5,8 +5,8 @@ singleton=true
 IBM-ShortName: springBoot-4.0
 IBM-Process-Types: server
 Subsystem-Name: Spring Boot Support 4.0
--features=io.openliberty.springBootHandler-4.0, \
-  com.ibm.websphere.appserver.eeCompatible-11.0
--bundles=io.openliberty.java17.internal
+-features=io.openliberty.jakartaeePlatform-11.0, \
+  com.ibm.websphere.appserver.springBootHandler-1.0
 kind=beta
 edition=core
+WLP-InstantOn-Enabled: true

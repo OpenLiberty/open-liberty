@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,9 @@ import com.ibm.ws.security.SecurityService;
 public class Constants {
 
     public final static String UTF8 = "UTF-8";
+
+    public static final String ALGORITHM_NONE = "none";
+    public static final String ALGORITHM_FROM_HEADER = "FROM_HEADER";
 
     public static final String ATTRIBUTE_SOCIALMEDIA_REQUEST = "SocialLoginRequest";
     public static final String ATTRIBUTE_TAI_REQUEST = "SocialTaiRequest";

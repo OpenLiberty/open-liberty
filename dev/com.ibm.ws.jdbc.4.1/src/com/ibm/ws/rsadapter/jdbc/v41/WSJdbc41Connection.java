@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.rsadapter.jdbc.v41;
 
@@ -87,7 +84,7 @@ public class WSJdbc41Connection extends WSJdbcConnection implements Connection {
             // Update the connection request information with the new value, so that
             // requests for shared connections will match based on the updated criteria.
             if (managedConn.connectionSharing == ConnectionSharing.MatchCurrentState) {
-                WSConnectionRequestInfoImpl cri = (WSConnectionRequestInfoImpl) managedConn.getConnectionRequestInfo();
+                WSConnectionRequestInfoImpl cri = managedConn.getConnectionRequestInfo();
                 if (!cri.isCRIChangable()) // only set the cri if its not one of the static ones.
                     managedConn.setCRI(cri = WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
 
@@ -136,7 +133,7 @@ public class WSJdbc41Connection extends WSJdbcConnection implements Connection {
             // Update the connection request information with the new value, so that
             // requests for shared connections will match based on the updated criteria.
             if (managedConn.connectionSharing == ConnectionSharing.MatchCurrentState) {
-                WSConnectionRequestInfoImpl cri = (WSConnectionRequestInfoImpl) managedConn.getConnectionRequestInfo();
+                WSConnectionRequestInfoImpl cri = managedConn.getConnectionRequestInfo();
                 if (!cri.isCRIChangable()) // only set the cri if its not one of the static ones.
                     managedConn.setCRI(cri = WSConnectionRequestInfoImpl.createChangableCRIFromNon(cri));
 

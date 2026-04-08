@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2023, 2024 IBM Corporation and others.
+# Copyright (c) 2023, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -31,4 +31,6 @@ fat.project: true
   com.ibm.ws.org.apache.httpcomponents;version=latest, \
   com.ibm.ws.kernel.boot, \
   io.openliberty.checkpoint.springboot.fat30.app;version=latest, \
-  io.openliberty.checkpoint.springboot.fat30.webflux.app;version=latest
+  io.openliberty.checkpoint.springboot.fat30.webflux.app;version=latest, \
+  io.openliberty.checkpoint.springboot.fat40.app;version=latest, \
+  io.openliberty.checkpoint.springboot.fat40.webflux.app;version=latest

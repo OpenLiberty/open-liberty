@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ encode.entriesDidNotMatch=Les entr\u00e9es ne concordent pas.
 encode.mutuallyExclusiveArgError=Le fichier d''entr\u00e9e ne peut pas sp\u00e9cifier \u00e0 la fois les propri\u00e9t\u00e9s {0} et {1}.
 encode.aesConfigFileEncryptionAmbiguous=ERREUR : Le fichier d''entr\u00e9e ne peut pas \u00eatre utilis\u00e9 s''il contient \u00e0 la fois les variables {0} et {1}.
 encode.aesConfigFileMissingEncryptionVariables=Impossible d''encoder le mot de passe; soit le fichier d''entr\u00e9e ne contient pas les variables {0} ou {1}, soit le fichier d''entr\u00e9e est malform\u00e9.
+encode.aesKeyRequired=Lors de l'utilisation du chiffrement AES, l'un des arguments suivants doit \u00eatre sp\u00e9cifi\u00e9 : --key, --base64Key, --aesConfigFile, ou --keyring.
 
 password.enterText=Entrez le mot de passe :
 password.reenterText=Entrer de nouveau le mot de passe :

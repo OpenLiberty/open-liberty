@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.ejbcontainer.mdb.ra.checkpoint.fat.tests;
 
@@ -37,8 +34,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -56,8 +51,13 @@ public class MsgEndpointTest extends FATServletClient {
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
+    /*@formatter:off*/
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(SERVER_NAME)).andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(SERVER_NAME)).andWith(new JakartaEE10Action().forServers(SERVER_NAME));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE8_FEATURES().fullFATOnly().forServers(SERVER_NAME))
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers(SERVER_NAME))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17).forServers(SERVER_NAME))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().forServers(SERVER_NAME));
+    /*@formatter:on*/
 
     static final String[] CHECKPOINT_IGNORE_REGEX = new String[] { "J2CA8501E:.*Property propertyJ", // Bean property cannot be set
                                                                    "CNTR0067W:.*MsgEndpointApp#MsgEndpointEJB.jar#MDBTimedBMTBean", // Mixed transaction types

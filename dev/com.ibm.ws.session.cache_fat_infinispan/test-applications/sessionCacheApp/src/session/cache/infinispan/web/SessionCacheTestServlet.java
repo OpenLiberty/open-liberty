@@ -916,6 +916,9 @@ public class SessionCacheTestServlet extends FATServlet {
         }        
         if (session != null) {
             StringBuffer value = (StringBuffer) session.getAttribute(key);
+            if (value == null) {
+                throw new AssertionError("Session attribute '" + key + "' is null despite successful replication check. This may indicate a cache inconsistency.");
+            }
             value.append("Appended");
         }
     }

@@ -388,6 +388,7 @@ public class FATTest {
 
             CWWKS1864wAlreadyLoggedForHash = false;
             CWWKS1864wAlreadyLoggedForAES = false;
+            CWWKS1865wAlreadyLoggedForAES = false; 
 
             server.setServerConfigurationFile(serverXML);
             if (CheckpointRule.isActive()) {

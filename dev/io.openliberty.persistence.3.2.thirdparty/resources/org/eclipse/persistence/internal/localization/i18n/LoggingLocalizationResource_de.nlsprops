@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Warnung: {0}: Es wurde versucht, eine Verbi
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Warnung: {0}: Der Versuch, eine Verbindung zu schlie\u00dfen, hat die folgende Ausnahme ausgel\u00f6st: {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Warnung: {0} : Der Versuch, den Abonnenten zu schlie\u00dfen, hat eine Ausnahme ausgel\u00f6st: {1}
+
 broadcast_ignored_command_while_closing_connection=Warnung: {0}: Die Anforderung, den Befehl zu ver\u00f6ffentlichen, w\u00e4hrend die Verbindung geschlossen wird, wird ignoriert.
 
 broadcast_listening_sleep_on_error=Warnung: {0}: Die Ausnahme {1} wurde ausgel\u00f6st. Der Thread wird f\u00fcr {2} Millisekunden inaktiviert, bevor er wieder empfangsbereit ist.

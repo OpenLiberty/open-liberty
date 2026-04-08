@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Assicurarsi che l'intestazione dell'algoritmo 
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: La JWE (JSON Web Encryption) non \u00e8 valida perch\u00e9 la relativa chiave CEK (Content Encryption Key - Chiave di crittografia del contenuto) \u00e8 stata crittografata utilizzando l''algoritmo {0}. Le chiavi CEK devono essere crittografate utilizzando l''algoritmo {1}.
 JWE_ALGORITHM_MISMATCH.explanation=Le chiavi CEK devono essere crittografate dall'algoritmo specificato nel messaggio. Le chiavi CEK crittografate con qualsiasi altro algoritmo di crittografia non possono essere convalidate.
 JWE_ALGORITHM_MISMATCH.useraction=Ottenere un nuovo token con una chiave CEK crittografata utilizzando l'algoritmo richiesto, specificato nel messaggio. In alternativa, aggiornare la propria configurazione JWT per consentire token con chiavi CEK crittografate utilizzando l'altro algoritmo di crittografia.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Impossibile caricare le voci dei certificati attendibili dall''archivio di certificati [ {0} ]. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=Si \u00e8 verificato un errore mentre il sistema tentava di recuperare l'elenco delle voci dei certificati attendibili dall'archivio di certificati specificato. \u00c8 possibile che il truststore non sia presente nella configurazione oppure che un problema impedisca l'accesso al truststore.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Verificare che il truststore sia configurato correttamente nella configurazione del server e che sia accessibile. Controlla il messaggio di errore per ulteriori informazioni sul problema.
+
+

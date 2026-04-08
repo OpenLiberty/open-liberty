@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxb.fat;
 
@@ -66,7 +63,7 @@ public class LibertyJAXBSpecTest {
      */
     @Test
     @MinimumJavaLevel(javaLevel = 9)
-    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES })
+    @SkipForRepeat({ SkipForRepeat.EE9_FEATURES, SkipForRepeat.EE10_FEATURES, SkipForRepeat.EE11_FEATURES })
     public void testBackupWithParentNamespaceTrue_Servlet() throws Exception {
         Map<String, String> map = server.getJvmOptionsAsMap();
         map.put("-Dcom.sun.xml.bind.backupWithParentNamespace", "true");

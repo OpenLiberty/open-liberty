@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2025 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -77,7 +77,7 @@ public class JwKRetriever {
     boolean defaultSSLConfig = false;
     String jwkEndpointUrl = null; // jwksUri
 
-    String sigAlg = null;
+    String algorithm = null;
     JWKSet jwkSet = null; // using the JWKSet from the JwtConsumerConfig. Do not create it every time
     SSLSupport sslSupport = null;//JwtUtils.getSSLSupportService();
 
@@ -118,12 +118,12 @@ public class JwKRetriever {
      *            using the jwkSet from the config
      * @param hnvEnabled
      */
-    public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret, String signatureAlgorithm) {
-        this(configId, sslConfigurationName, jwkEndpointUrl, jwkSet, sslSupport, hnvEnabled, jwkClientId, jwkClientSecret, signatureAlgorithm, null, null);
+    public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret, String algorithm) {
+        this(configId, sslConfigurationName, jwkEndpointUrl, jwkSet, sslSupport, hnvEnabled, jwkClientId, jwkClientSecret, algorithm, null, null);
     }
 
     public JwKRetriever(String configId, String sslConfigurationName, String jwkEndpointUrl, JWKSet jwkSet, SSLSupport sslSupport, boolean hnvEnabled, String jwkClientId, @Sensitive String jwkClientSecret,
-            String signatureAlgorithm, @Sensitive String keyText, @Sensitive String keyLocation) {
+            String algorithm, @Sensitive String keyText, @Sensitive String keyLocation) {
         this.configId = configId;
         this.sslConfigurationName = sslConfigurationName;
         this.jwkEndpointUrl = jwkEndpointUrl;
@@ -132,7 +132,7 @@ public class JwKRetriever {
         this.hostNameVerificationEnabled = hnvEnabled;
         this.jwkClientId = jwkClientId;
         this.jwkClientSecret = jwkClientSecret;
-        this.sigAlg = signatureAlgorithm;
+        this.algorithm = algorithm;
         this.keyText = keyText;
         this.keyLocation = keyLocation;
         this.httpUtils = new HttpUtils();
@@ -146,8 +146,8 @@ public class JwKRetriever {
         return this.defaultSSLConfig;
     }
     
-    public void setSignatureAlgorithm(String signatureAlgorithm) {
-        this.sigAlg = signatureAlgorithm;
+    public void setAlgorithm(String algorithm) {
+        this.algorithm = algorithm;
     }
 
     public void setKeyText(@Sensitive String keyText) {
@@ -270,7 +270,7 @@ public class JwKRetriever {
                         is = getInputStream(jwkFile, fileSystemCacheSelector, location, classLoadingCacheSelector);
                         if (is != null) {
                             keyString = getKeyAsString(is);
-                            parseJwk(keyString, null, jwkSet, sigAlg); // also adds entry to cache.
+                            parseJwk(keyString, null, jwkSet, algorithm, keyType); // also adds entry to cache.
                             key = getJwkFromJWKSet(locationUsed, kid, x5t, x5tS256, use, keyString, keyType);
                         }
                     } finally {
@@ -357,7 +357,7 @@ public class JwKRetriever {
             synchronized (jwkSet) {
                 Key key = getJwkFromJWKSet(keyText, kid, x5t, x5tS256, use, keyText, keyType);
                 if (key == null) {
-                    parseJwk(keyText, null, jwkSet, sigAlg);
+                    parseJwk(keyText, null, jwkSet, algorithm, keyType);
                     key = getJwkFromJWKSet(keyText, kid, x5t, x5tS256, use, keyText, keyType);
                 }
                 return key;
@@ -426,7 +426,7 @@ public class JwKRetriever {
             HttpClient client = createHTTPClient(sslSocketFactory, locationUsed, hostNameVerificationEnabled, useSystemPropertiesForHttpClientConnections);
             jsonString = getHTTPRequestAsString(client, locationUsed);
             
-            boolean bJwk = parseJwk(jsonString, null, jwkSet, sigAlg);
+            boolean bJwk = parseJwk(jsonString, null, jwkSet, algorithm, keyType);
             if (!bJwk) {
                 // can not get back any JWK from OP
                 // since getJwkLocal will be called later and NO key exception
@@ -483,31 +483,31 @@ public class JwKRetriever {
     }
 
     // separate to be an independent method for unit tests
-    public boolean parseJwk(@Sensitive String keyText, FileInputStream inputStream, JWKSet jwkset, String signatureAlgorithm) {
+    public boolean parseJwk(@Sensitive String keyText, FileInputStream inputStream, JWKSet jwkset, String algorithm, JwkKeyType keyType) {
         boolean bJwk = false;
 
         if (keyText != null) {
-            bJwk = parseKeyText(keyText, locationUsed, jwkset, signatureAlgorithm);
+            bJwk = parseKeyText(keyText, locationUsed, jwkset, algorithm, keyType);
         } else if (inputStream != null) {
             String keyAsString = getKeyAsString(inputStream);
-            bJwk = parseKeyText(keyAsString, locationUsed, jwkset, signatureAlgorithm);
+            bJwk = parseKeyText(keyAsString, locationUsed, jwkset, algorithm, keyType);
         }
 
         return bJwk;
     }
 
-    protected boolean parseKeyText(@Sensitive String keyText, String location, JWKSet jwkset, String signatureAlgorithm) {
+    protected boolean parseKeyText(@Sensitive String keyText, String location, JWKSet jwkset, String algorithm, JwkKeyType keyType) {
         Set<JWK> jwks = new HashSet<JWK>();
         JWK jwk = null;
 
-        if (isPEM(keyText) && isPemSupportedAlgorithm(signatureAlgorithm)) {
-            jwk = parsePEMFormat(keyText, signatureAlgorithm);
+        if (isPEM(keyText) && isPemSupportedAlgorithm(algorithm, keyType)) {
+            jwk = parsePEMFormat(keyText, algorithm);
         } else {
             JSONObject jsonObject = parseJsonObject(keyText);
             if (jsonObject != null) {
-                jwk = parseJwkFormat(jsonObject, signatureAlgorithm);
+                jwk = parseJwkFormat(jsonObject, algorithm);
                 if (jwk == null && jsonObject.containsKey(JWKS)) {
-                    jwks.addAll(parseJwksFormat(jsonObject, signatureAlgorithm));
+                    jwks.addAll(parseJwksFormat(jsonObject, algorithm));
                 }
             }
         }
@@ -531,20 +531,26 @@ public class JwKRetriever {
         return !jwks.isEmpty();
     }
 
-    boolean isPemSupportedAlgorithm(String signatureAlgorithm) {
-        return KeyAlgorithmChecker.isRSAlgorithm(signatureAlgorithm) || KeyAlgorithmChecker.isESAlgorithm(signatureAlgorithm);
+    boolean isPemSupportedAlgorithm(String algorithm, JwkKeyType keyType) {
+
+        // If the keyType is PRIVATE, validate against JWE encryption identifiers (i.e. RSA-OAEP, ECDH-ES)
+        // Both JWS and JWE use PEM-compatible RSA/EC keys, but algorithms differ
+        if (keyType == JwkKeyType.PRIVATE){
+            return KeyAlgorithmChecker.isRSAEncryptionAlgorithm(algorithm) || KeyAlgorithmChecker.isECEncryptionAlgorithm(algorithm);
+        }
+        return KeyAlgorithmChecker.isRSAlgorithm(algorithm) || KeyAlgorithmChecker.isESAlgorithm(algorithm);
     }
 
     @Sensitive
     @FFDCIgnore(Exception.class)
-    private JWK parsePEMFormat(@Sensitive String keyText, String signatureAlgorithm) {
+    private JWK parsePEMFormat(@Sensitive String keyText, String algorithm) {
         Jose4jRsaJWK jwk = null;
         try {
             KeyType keyType = PemKeyUtil.getKeyType(keyText);
             if (isPublicKeyJwk(keyType)) {
-                return parsePublicKeyJwk(keyText, signatureAlgorithm);
+                return parsePublicKeyJwk(keyText, algorithm);
             } else if (keyType == KeyType.PRIVATE) {
-                return parsePrivateKeyJwk(keyText, signatureAlgorithm);
+                return parsePrivateKeyJwk(keyText, algorithm);
             }
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
@@ -558,27 +564,27 @@ public class JwKRetriever {
         return keyType == KeyType.RSA_PUBLIC || keyType == KeyType.EC_PUBLIC || keyType == KeyType.PUBLIC || keyType == KeyType.UNKNOWN;
     }
 
-    JWK parsePublicKeyJwk(String keyText, String signatureAlgorithm) throws Exception {
+    JWK parsePublicKeyJwk(String keyText, String algorithm) throws Exception {
         PublicKey pubKey = PemKeyUtil.getPublicKey(keyText);
-        if (KeyAlgorithmChecker.isESAlgorithm(signatureAlgorithm)) {
-            return getEcJwkPublicKey(pubKey, signatureAlgorithm);
+        if (KeyAlgorithmChecker.isESAlgorithm(algorithm)) {
+            return getEcJwkPublicKey(pubKey, algorithm);
         } else {
-            return getRsaJwkPublicKey(pubKey, signatureAlgorithm);
+            return getRsaJwkPublicKey(pubKey, algorithm);
         }
     }
 
     @Sensitive
-    JWK parsePrivateKeyJwk(@Sensitive String keyText, String signatureAlgorithm) throws Exception {
+    JWK parsePrivateKeyJwk(@Sensitive String keyText, String algorithm) throws Exception {
         PrivateKey privateKey = PemKeyUtil.getPrivateKey(keyText);
-        if (KeyAlgorithmChecker.isESAlgorithm(signatureAlgorithm)) {
-            return getEcJwkPrivateKey(privateKey, signatureAlgorithm);
+        if (KeyAlgorithmChecker.isECEncryptionAlgorithm(algorithm)) {
+            return getEcJwkPrivateKey(privateKey, algorithm);
         } else {
-            return getRsaJwkPrivateKey(privateKey, signatureAlgorithm);
+            return getRsaJwkPrivateKey(privateKey, algorithm);
         }
     }
 
     @FFDCIgnore(Exception.class)
-    private Jose4jEllipticCurveJWK getEcJwkPublicKey(PublicKey publicKey, String signatureAlgorithm) {
+    private Jose4jEllipticCurveJWK getEcJwkPublicKey(PublicKey publicKey, String algorithm) {
         if (!(publicKey instanceof ECPublicKey)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Provided public key was not of type ECPublicKey");
@@ -587,7 +593,7 @@ public class JwKRetriever {
         }
         Jose4jEllipticCurveJWK jwk = null;
         try {
-            jwk = Jose4jEllipticCurveJWK.getInstance((ECPublicKey) publicKey, signatureAlgorithm, JwkConstants.sig);
+            jwk = Jose4jEllipticCurveJWK.getInstance((ECPublicKey) publicKey, algorithm, JwkConstants.sig);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Caught exception instantiating EC JWK object: " + e);
@@ -598,7 +604,7 @@ public class JwKRetriever {
 
     @Sensitive
     @FFDCIgnore(Exception.class)
-    private Jose4jEllipticCurveJWK getEcJwkPrivateKey(@Sensitive PrivateKey privateKey, String signatureAlgorithm) {
+    private Jose4jEllipticCurveJWK getEcJwkPrivateKey(@Sensitive PrivateKey privateKey, String algorithm) {
         if (!(privateKey instanceof ECPrivateKey)) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "Provided private key was not of type ECPrivateKey");
@@ -607,7 +613,7 @@ public class JwKRetriever {
         }
         Jose4jEllipticCurveJWK jwk = null;
         try {
-            jwk = Jose4jEllipticCurveJWK.getInstance(null, signatureAlgorithm, JwkConstants.sig);
+            jwk = Jose4jEllipticCurveJWK.getInstance(null, algorithm, JwkConstants.enc);
             jwk.setPrivateKey(privateKey);
         } catch (Exception e) {
             if (tc.isDebugEnabled()) {
@@ -618,11 +624,11 @@ public class JwKRetriever {
     }
 
     @FFDCIgnore(Exception.class)
-    private Jose4jRsaJWK getRsaJwkPublicKey(PublicKey pubKey, String signatureAlgorithm) {
+    private Jose4jRsaJWK getRsaJwkPublicKey(PublicKey pubKey, String algorithm) {
         Jose4jRsaJWK jwk = null;
         try {
             jwk = new Jose4jRsaJWK((RSAPublicKey) pubKey);
-            jwk.setAlgorithm(signatureAlgorithm);
+            jwk.setAlgorithm(algorithm);
             jwk.setUse(JwkConstants.sig);
         } catch (Exception e) {
         }
@@ -631,17 +637,17 @@ public class JwKRetriever {
 
     @Sensitive
     @FFDCIgnore(Exception.class)
-    private Jose4jRsaJWK getRsaJwkPrivateKey(@Sensitive PrivateKey privateKey, String signatureAlgorithm) {
+    private Jose4jRsaJWK getRsaJwkPrivateKey(@Sensitive PrivateKey privateKey, String algorithm) {
         Jose4jRsaJWK jwk = null;
         try {
-            jwk = Jose4jRsaJWK.getInstance(signatureAlgorithm, null, null, privateKey, null);
+            jwk = Jose4jRsaJWK.getInstance(algorithm, JwkConstants.enc, null, privateKey, null);
         } catch (Exception e) {
         }
         return jwk;
     }
 
     @Sensitive
-    private JWK parseJwkFormat(@Sensitive JSONObject jsonObject, String signatureAlgorithm) {
+    private JWK parseJwkFormat(@Sensitive JSONObject jsonObject, String algorithm) {
         JWK jwk = null;
 
         Object ktyEntry = jsonObject.get("kty");
@@ -655,7 +661,7 @@ public class JwKRetriever {
             return null;
         }
         String kty = (String) ktyEntry;
-        jwk = createJwkBasedOnKty(kty, jsonObject, signatureAlgorithm);
+        jwk = createJwkBasedOnKty(kty, jsonObject, algorithm);
         if (jwk != null) {
             jwk.parse();
         }
@@ -663,7 +669,7 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    private Set<JWK> parseJwksFormat(@Sensitive JSONObject jsonObject, String signatureAlgorithm) {
+    private Set<JWK> parseJwksFormat(@Sensitive JSONObject jsonObject, String algorithm) {
         Set<JWK> jwks = Collections.emptySet();
         JSONArray keys = new JSONArray();
         Object keysEntry = jsonObject.get(JWKS);
@@ -678,7 +684,7 @@ public class JwKRetriever {
                     continue;
                 }
 
-                JWK jwk = parseJwkFormat(jwkJson, signatureAlgorithm);
+                JWK jwk = parseJwkFormat(jwkJson, algorithm);
                 if (jwk != null) {
                     jwks.add(jwk);
                 }
@@ -739,7 +745,7 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    JWK createJwkBasedOnKty(String kty, @Sensitive JSONObject keyEntry, String signatureAlgorithm) {
+    JWK createJwkBasedOnKty(String kty, @Sensitive JSONObject keyEntry, String algorithm) {
         JWK jwk = null;
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "kty of JWK is '" + kty + "'");
@@ -747,7 +753,7 @@ public class JwKRetriever {
         if (JwkConstants.RSA.equalsIgnoreCase(kty)) {
             jwk = getRsaJwk(keyEntry);
         } else if (JwkConstants.EC.equalsIgnoreCase(kty)) {
-            jwk = getEllipticCurveJwk(keyEntry, signatureAlgorithm);
+            jwk = getEllipticCurveJwk(keyEntry, algorithm);
         }
         return jwk;
     }
@@ -761,9 +767,9 @@ public class JwKRetriever {
     }
 
     @Sensitive
-    JWK getEllipticCurveJwk(@Sensitive JSONObject thing, String signatureAlgorithm) {
+    JWK getEllipticCurveJwk(@Sensitive JSONObject thing, String algorithm) {
         // let get the map<String, Object> from keyObject
-        if (signatureAlgorithm != null && signatureAlgorithm.startsWith("ES")) { // ES256, ES384, ES512
+        if (algorithm != null && (algorithm.startsWith("ES") || algorithm.startsWith("ECDH-ES"))) { // ES256, ES384, ES512
             return Jose4jEllipticCurveJWK.getInstance(thing); // if implemented
                                                               // ES256
         }

@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline;
 
+import java.text.ParseException;
+
 import com.ibm.ws.http.netty.NettyHttpConstants;
 
 import io.netty.buffer.ByteBuf;
@@ -49,7 +51,7 @@ public class CRLFValidationHandler extends ChannelInboundHandlerAdapter {
 
             if (++leadingCRLFCount > MAX_CRLF_ALLOWED) {
                 ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(true);
-                throw new IllegalArgumentException("Too many leading CRLF characters");
+                throw new ParseException("Too many leading CRLF characters", MAX_CRLF_ALLOWED);
             }
         }
 

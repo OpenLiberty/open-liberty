@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Aviso: {0}: tentativa de fechar a conex\u00
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Aviso: {0}: tentativa de fechar a conex\u00e3o causou a exce\u00e7\u00e3o{1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Aviso: {0} : tentativa de fechar o assinante causou uma exce\u00e7\u00e3o {1}
+
 broadcast_ignored_command_while_closing_connection=Aviso: {0}: ignorando a solicita\u00e7\u00e3o para publicar o comando enquanto a conex\u00e3o est\u00e1 sendo fechada.
 
 broadcast_listening_sleep_on_error=Aviso: {0}: A exce\u00e7\u00e3o {1} foi emitida. O encadeamento ficar\u00e1 inativo por {2} milissegundos antes de recome\u00e7ar o atendimento.

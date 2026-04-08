@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.channel.outstream.HttpOutputStreamObserver;
 
 import io.netty.util.AttributeKey;
+import java.net.Socket;
 
 /**
  *
@@ -41,6 +42,7 @@ public class NettyHttpConstants {
     public static final AttributeKey<Boolean> THROW_FFDC = AttributeKey.valueOf("throwFFDC");
     public static final AttributeKey<Integer> NUMBER_OF_HTTP_REQUESTS = AttributeKey.valueOf("numberOfHttpRequests");
     public static final AttributeKey<Integer> STREAMS_REFUSED = AttributeKey.valueOf("streamsRefused");
+    public static final AttributeKey<Socket> SOCKET_HANDLE = AttributeKey.valueOf("SocketHandleKey");
 
     //AUTOREAD WORK
     public static final AttributeKey<HttpInputStreamImpl> HTTP_INPUT_STREAM = AttributeKey.valueOf("httpInputStream");

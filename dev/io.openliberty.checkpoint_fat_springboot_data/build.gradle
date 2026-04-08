@@ -66,3 +66,33 @@ autoFVT.doLast {
     }
   }
 }
+
+def appDefs40 =
+  [ [ 'io.openliberty.checkpoint.springboot.fat40.data.app', '.war' ] ]
+
+appDefs40.each { appDef ->
+  jar.dependsOn ':' + appDef[0] + ':build'
+  autoFVT.dependsOn ':' + appDef[0] + ':build'
+}
+
+autoFVT.doLast {
+  
+  def server = 'checkpointSpringBootData40'
+  def appsDir = new File(autoFvtDir, 'publish/servers/' + server + '/apps')
+
+  println 'Auto FVT directory [ ' + autoFvtDir + ' ]'
+  println 'FAT server [ ' + server + ' ]'
+  println 'Auto FVT applications [ ' + appsDir + ' ]'
+
+  appDefs40.each { appDef ->
+    def appName = appDef[0]
+    def appExt = appDef[1]
+
+    println 'FAT application [ ' + appName + ' ] [ ' + appExt + ' ]'
+
+    copy {
+      from new File( '../' + appDef[0] + '/build/libs/' + appDef[0] + '-1.0.0' + appDef[1] )
+      into appsDir
+    }
+  }
+}

@@ -37,7 +37,7 @@ configurations {
     app23 'io.openliberty:java-apps:23.1.0'
     app24 'io.openliberty:java-apps:24.1.0'
     app25 'io.openliberty:java-apps:25.1.0'
-    app26 'io.openliberty:java-apps:26.0.0'
+    app26 'io.openliberty:java-apps:26.1.0'
     requiredLibs project(':com.ibm.ws.kernel.service')
  }
 

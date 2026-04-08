@@ -209,7 +209,7 @@ unauthorized.cancellation=N\u00e1stroj nelze zru\u0161it, proto\u017ee volaj\u00
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: Typ n\u00e1vratov\u00e9 hodnoty metody MCP n\u00e1stroje {1} mus\u00ed b\u00fdt objekt typu {0}.
-CWMCM0025E.unsupported.output.explanation=Poskytovan\u00fd typ n\u00e1vratov\u00e9 hodnoty n\u00e1stroje MCP nen\u00ed podporov\u00e1n.
+CWMCM0025E.unsupported.output.explanation=Uveden\u00fd typ n\u00e1vratov\u00e9 hodnoty n\u00e1stroje MCP nen\u00ed podporov\u00e1n. Vzhledem k tomu, \u017ee je parametr \u201estructured content\u201c nastaven na hodnotu \u201etrue\u201c, mus\u00ed b\u00fdt typ v\u00fdstupn\u00edho sch\u00e9matu objekt.
 CWMCM0025E.unsupported.output.useraction=Zadejte n\u00e1vratov\u00fd typ, kter\u00fd je objektem.
 
 # Used as exception message

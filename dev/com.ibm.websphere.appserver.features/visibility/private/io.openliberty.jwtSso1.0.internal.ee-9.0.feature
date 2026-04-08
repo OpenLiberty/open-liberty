@@ -9,7 +9,6 @@ visibility = private
   io.openliberty.org.eclipse.microprofile.jwt-2.0
 -bundles=\
   io.openliberty.security.common.internal, \
-  io.openliberty.security.jwtsso.internal, \
   io.openliberty.security.mp.jwt.internal
 kind=ga
 edition=core

@@ -9,6 +9,10 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty.pipeline.inbound;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.channel.internal.HttpMessages;
+
 import io.netty.buffer.CompositeByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
@@ -23,6 +27,8 @@ import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
 
 public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<HttpObject> {
+
+    private static final TraceComponent tc = Tr.register(LibertyHttpObjectAggregator.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private long maxContentLength = Long.MAX_VALUE;
 
@@ -41,9 +47,6 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
-        if (msg.decoderResult().isFinished() && msg.decoderResult().isFailure()) {
-            exceptionCaught(ctx, msg.decoderResult().cause());
-        }
         if (msg instanceof FullHttpRequest) {
             // Already have a Full HTTP Request so just need to forward here
             ctx.fireChannelRead(ReferenceCountUtil.retain(msg, 1));
@@ -54,6 +57,15 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
         }
         if (msg instanceof HttpRequest) {
             HttpRequest request = (HttpRequest) msg;
+            if(msg.decoderResult().isFinished() && msg.decoderResult().isFailure()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found http request with decoding failure!");
+                }
+                FullHttpRequest fullRequest = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri());
+                fullRequest.setDecoderResult(request.decoderResult());
+                ctx.fireChannelRead(fullRequest);
+                return;
+            }
             ctx.channel().attr(CURRENT_REQUEST).set(request);
 
             CompositeByteBuf content = ctx.alloc().compositeBuffer();
@@ -85,6 +97,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
                 if (msg instanceof LastHttpContent) {
                     HttpRequest request = ctx.channel().attr(CURRENT_REQUEST).get();
                     FullHttpRequest fullRequest = new DefaultFullHttpRequest(request.protocolVersion(), request.method(), request.uri(), content, request.headers(), ((LastHttpContent) msg).trailingHeaders());
+                    fullRequest.setDecoderResult(httpContent.decoderResult());
 
                     ctx.fireChannelRead(fullRequest);
 

@@ -25,8 +25,8 @@ import jakarta.data.messages.Messages;
 public interface NumericFunctionExpression<T, N extends Number & Comparable<N>> //
                 extends FunctionExpression<T, N>, NumericExpression<T, N> {
 
-    String ABS = "abs";
-    String LENGTH = "length";
+    String ABS = "ABS";
+    String LENGTH = "LENGTH";
     String NEG = "-";
 
     @Override

@@ -18,7 +18,7 @@
              xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
              version="3.2">
 
-    <persistence-unit name="HibernatePersistenceUnit">
+    <persistence-unit name="MyDataStore">
     	<provider>org.hibernate.jpa.HibernatePersistenceProvider</provider>
         <jta-data-source>java:comp/DefaultDataSource</jta-data-source>
         <properties>

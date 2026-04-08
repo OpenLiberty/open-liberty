@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package io.openliberty.checkpoint.session.cache.infinispan.container;
 
@@ -42,8 +39,7 @@ import componenttest.containers.SimpleLogConsumer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.JavaInfo;
@@ -64,34 +60,27 @@ import componenttest.topology.utils.HttpUtils;
 public class FATSuite extends TestContainerSuite {
 
     @ClassRule
-    public static RepeatTests repeat;
-
-    static {
-        if (JavaInfo.JAVA_VERSION >= 11) {
-            repeat = RepeatTests.withoutModificationInFullMode()
-                            .andWith(new JakartaEE9Action()
-                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.checkpointServer",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerA",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerB",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerA",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerB")
-                                            .fullFATOnly())
-                            .andWith(new JakartaEE10Action()
-                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.checkpointServer",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerA",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerB",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerA",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerB"));
-        } else {
-            repeat = RepeatTests.withoutModificationInFullMode()
-                            .andWith(new JakartaEE9Action()
-                                            .forServers("com.ibm.ws.session.cache.fat.infinispan.container.checkpointServer",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerA",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerB",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerA",
-                                                        "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerB"));
-        }
-    }
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.checkpointServer",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerB",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerB")
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.checkpointServer",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerB",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerB")
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .forServers("com.ibm.ws.session.cache.fat.infinispan.container.checkpointServer",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointServerB",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerA",
+                                                "com.ibm.ws.session.cache.fat.infinispan.container.checkpointTimeoutServerB"));
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

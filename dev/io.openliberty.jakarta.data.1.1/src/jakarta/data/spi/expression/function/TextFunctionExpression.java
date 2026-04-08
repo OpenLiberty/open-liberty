@@ -27,11 +27,11 @@ public interface TextFunctionExpression<T> extends //
                 FunctionExpression<T, String>, //
                 TextExpression<T> {
 
-    String CONCAT = "concat";
-    String LEFT = "left";
-    String LOWER = "lower";
-    String RIGHT = "right";
-    String UPPER = "upper";
+    String CONCAT = "CONCAT";
+    String LEFT = "LEFT";
+    String LOWER = "LOWER";
+    String RIGHT = "RIGHT";
+    String UPPER = "UPPER";
 
     @Override
     List<? extends ComparableExpression<? super T, ?>> arguments();

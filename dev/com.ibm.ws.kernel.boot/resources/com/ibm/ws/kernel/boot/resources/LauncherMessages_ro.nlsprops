@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -784,7 +784,15 @@ warning.manual.PPV.env.var.useraction=Pentru a re\u0163ine variabila de mediu PR
 
 error.read.server.env=CWWKE0970E: Nu am putut citi fi\u0219ierul server.env la loca\u021bia {}.
 error.read.server.env.explanation=E\u0219ecul de a citi fi\u0219ierul de tip " server.env .
-error.read.server.env.useraction=Imposibil de citit fi\u0219ierul de tip " server.env .  Verifica\u021bi permisiunile de fi\u0219iere \u0219i re\u00eencerca\u021bi opera\u021biunea.
+error.read.server.env.useraction=Nu se poate citi fi\u0219ierul \u201e server.env \u201d. Verifica\u021bi permisiunile fi\u0219ierului \u0219i \u00eencerca\u021bi din nou opera\u021biunea.
+
+warning.java2security.stopped=CWWKE0971W: Securitatea Java 2 este dezactivat\u0103 deoarece Jakarta EE 11 nu o accept\u0103.
+warning.java2security.stopped.explanation=\u00cen Jakarta EE 11 s-a eliminat suportul pentru Java 2 Security.
+warning.java2security.stopped.useraction=Dezactiva\u021bi securitatea Java 2 \u00een configura\u021bia serverului atunci c\u00e2nd utiliza\u021bi func\u021bionalit\u0103\u021bile Jakarta EE 11.
+
+info.java2security.restarted=CWWKE0972I: Securitatea Java 2 a fost reactivat\u0103 deoarece func\u021bionalit\u0103\u021bile Jakarta EE 11 au fost eliminate.
+info.java2security.restarted.explanation=Acest mesaj are doar scop informa\u0163ional.
+info.java2security.restarted.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
 
 info.serverStarting=Se porne\u015fte serverul {0}.
 info.serverStarted=Serverul {0} a pornit.

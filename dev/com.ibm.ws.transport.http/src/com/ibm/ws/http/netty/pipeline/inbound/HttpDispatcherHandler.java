@@ -11,6 +11,8 @@ package com.ibm.ws.http.netty.pipeline.inbound;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.nio.charset.StandardCharsets;
+import java.text.ParseException;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
@@ -26,6 +28,7 @@ import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.http.dispatcher.internal.channel.HttpRequestImpl;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.message.BodyQueue;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
@@ -50,6 +53,7 @@ import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.handler.flow.FlowControlHandler;
+import io.netty.handler.codec.TooLongFrameException;
 import io.netty.handler.codec.http.DefaultFullHttpResponse;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpContent;
@@ -88,9 +92,9 @@ import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObject> {
     private static final TraceComponent tc = Tr.register(HttpDispatcherHandler.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
-    private final HttpChannelConfig config;
     public static final String NAME = "httpDispatcherHandler";
 
+    NettyHttpChannelConfig config;
     private ChannelHandlerContext context;
 
     private final DefaultFullHttpResponse errorResponse;
@@ -119,7 +123,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private final Map<String, HttpInputStream> streamMap = new ConcurrentHashMap<>();
 
-    public HttpDispatcherHandler(HttpChannelConfig config) {
+    public HttpDispatcherHandler(NettyHttpChannelConfig config) {
         super(false);
         this.config = Objects.requireNonNull(config);
         this.errorResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.BAD_REQUEST);
@@ -171,7 +175,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     deliverToUpgradeOrPark(ctx, buf);
                     return;
                 }
-
                 final ByteBuf snapshot = buf.retainedSlice(buf.readerIndex(), buf.readableBytes());
                 earlyUpgradeBytes.add(snapshot);
 
@@ -185,6 +188,41 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 return;
             } finally {
                 ReferenceCountUtil.release(buf);
+        //         DefaultFullHttpResponse continueResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONTINUE);
+        //         HttpUtil.setContentLength(continueResponse, 0);
+        //         byte[] date = HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange());
+        //         continueResponse.headers().set(HttpHeaderKeys.HDR_DATE.getName(),
+        //                         new String(date, StandardCharsets.UTF_8));
+        //         context.writeAndFlush(continueResponse);
+        //     }
+        //     FullHttpRequest msg = request;
+        //     HttpDispatcher.getExecutorService().execute(new Runnable() {
+        //         @Override
+        //         public void run() {
+        //             try {
+        //                 newRequest(context, msg);
+        //             } catch (Throwable t) {
+        //                 try {
+        //                     exceptionCaught(context, t);
+        //                 } catch (Exception e) {
+        //                     context.close();
+        //                 }
+        //             } finally {
+        //                 ReferenceCountUtil.release(msg);
+        //             }
+        //         }
+        //     });
+        // } else {
+        //     if(context.channel().isActive()) {
+        //         if (request.decoderResult().cause() != null) {
+        //             sendErrorMessage(request.decoderResult().cause());
+        //         } else {
+        //             sendErrorMessage(new Exception("HTTP request decoding failure!"));
+        //         }
+        //     } else {
+        //         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //             Tr.debug(tc, "Failed decode request on closed channel: " + context.channel());
+        //         }
             }
         }
 
@@ -520,7 +558,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             }
 
             String protocol = ctx.channel().attr(NettyHttpConstants.PROTOCOL).get();
-            System.out.println(">>> Protocol was : " + protocol);
+            //System.out.println(">>> Protocol was : " + protocol);
             if ("WebSocket".equalsIgnoreCase(protocol)){
                 if (!ctx.channel().config().isAutoRead()){
                     Tr.debug(tc, "[UPGRADE-SYSOUT]: enable auto read for websoc");
@@ -535,7 +573,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
              }
             }
 
-            System.out.println(">>> Auto read set to : " + ctx.channel().config().isAutoRead());
+            //System.out.println(">>> Auto read set to : " + ctx.channel().config().isAutoRead());
 
 
             // if (!ctx.channel().config().isAutoRead()) {
@@ -604,12 +642,20 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 return;
             }
         } else if (cause instanceof IllegalArgumentException) {
-            if (ctx.channel().attr(NettyHttpConstants.THROW_FFDC).get() != null) {
-                ctx.channel().attr(NettyHttpConstants.THROW_FFDC).set(null);
-            } else if (cause.getMessage() == null || !cause.getMessage().contains("possibly HTTP/0.9")) {
-                FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", ctx);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Ignoring exceptionCaught while decoding request of IllegalArgumentException: " + cause);
             }
-            Tr.debug(tc, "IllegalArgumentException: " + cause);
+            // We assume the IllegalArgumentException comes from the Netty codec. From here we assume that the codecs
+            // will still send an http request but with a decoding exception. And we will use that to handle with an 
+            // appropriate response. Return for now
+            return;
+        } else if (cause instanceof ParseException) {
+            //Legacy doesnt throw ffdc on processNewInformation
+            if (context.channel().attr(NettyHttpConstants.THROW_FFDC).get() != null) {
+                context.channel().attr(NettyHttpConstants.THROW_FFDC).set(null);
+            } else {
+                FFDCFilter.processException(cause, HttpDispatcherHandler.class.getName() + ".exceptionCaught(ChannelHandlerContext, Throwable)", "1", context);
+            }
             sendErrorMessage(cause);
             return;
         } else if (cause instanceof TimeoutException) {

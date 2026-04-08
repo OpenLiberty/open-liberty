@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,8 +68,7 @@ public class PartitionReducerTest extends BatchFATHelper {
         }
     }
 
-    @ExpectedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException" })
-    @AllowedFFDC({ "java.lang.IllegalStateException" })
+    @AllowedFFDC({ "com.ibm.jbatch.container.exception.BatchContainerRuntimeException", "java.lang.IllegalStateException" })
     @Test
     public void testPartitionReducerMethodsForceFailure() throws Exception {
 

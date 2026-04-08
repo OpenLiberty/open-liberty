@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.jcache.internal.suite;
 
+import java.util.Locale;
+
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
@@ -18,6 +20,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.Machine;
 
 import componenttest.containers.TestContainerSuite;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -64,14 +67,23 @@ import io.openliberty.jcache.internal.fat.plugins.TestPluginHelper;
 })
 public class FATSuite extends TestContainerSuite {
 
-    /*
-     * Run EE10 tests in LITE mode and run all tests in FULL mode.
-     */
+    public static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests repeat;
+
+    static {
+        if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
+            repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
+        } else {
+            repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                            .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
+        }
+    }
 
     @BeforeClass
     public static void beforeSuite() throws Exception {

@@ -1,9 +1,12 @@
 -include= ~${workspace}/cnf/resources/bnd/feature.props
 symbolicName=io.openliberty.jakartaeePlatform-11.0
+singleton=true
 IBM-Process-Types: client, server
--features=io.openliberty.jakartaeePlatform-10.0
--bundles=io.openliberty.jakartaee.platform.v11, \
- com.ibm.ws.javaee.version
+-features=com.ibm.websphere.appserver.appmanager-1.0, \
+ com.ibm.websphere.appserver.eeCompatible-11.0
+# com.ibm.ws.security.java2sec is removed for EE 11
+-bundles=com.ibm.ws.app.manager.module, \
+ com.ibm.ws.javaee.platform.defaultresource
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

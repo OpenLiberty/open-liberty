@@ -103,6 +103,7 @@ public class SseClientTestServlet extends FATServlet {
     }
 
     @Test
+    @SkipForRepeat(MicroProfileActions.MP40_ID) // Skipping until Issue #33559 is resolved.
     public void testPublisherInteger(HttpServletRequest req, HttpServletResponse resp) throws Exception {
         try (SseClient client = builder.build(SseClient.class)) {
             GenericSubscriber<Integer> subscriber = new GenericSubscriber<>(3);

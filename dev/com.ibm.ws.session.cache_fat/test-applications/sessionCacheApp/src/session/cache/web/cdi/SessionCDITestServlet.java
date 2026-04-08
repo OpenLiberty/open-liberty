@@ -94,8 +94,24 @@ public class SessionCDITestServlet extends FATServlet {
         }
 
         if (cache != null) {
-            byte[] value0 = cache.get(key0);
-            byte[] value1 = cache.get(key1);
+            byte[] value0 = null;
+            byte[] value1 = null;
+
+            // Retry logic for slow machines where Hazelcast attribute propagation
+            // may not have completed yet, causing cache.get() to return null.
+            for (int attempt = 0; attempt < 3 && (value0 == null || value1 == null); attempt++) {
+                value0 = cache.get(key0);
+                value1 = cache.get(key1);
+                if (value0 == null || value1 == null) {
+                    try {
+                        System.out.println("Cache values not yet available, attempt " + (attempt + 1) + " of 3; retrying ...");
+                        TimeUnit.SECONDS.sleep(5);
+                    } catch (Exception e) {
+                        // We are likely on a slow machine, continue
+                    }
+                }
+            }
+
             cache.close();
 
             String strValue0 = Arrays.toString(value0);
@@ -108,7 +124,9 @@ public class SessionCDITestServlet extends FATServlet {
             responseWriter.write("bytes for WELD_S#0: " + strValue0);
             responseWriter.write("bytes for WELD_S#1: " + strValue1);
         } else {
-            System.out.println("Unable to find Cache persistence, testWeldSessionAttributes can not continue, skip test instead of build break."); 
+            System.out.println("Unable to find Cache persistence, testWeldSessionAttributes can not continue, skip test instead of build break.");
+            PrintWriter responseWriter = response.getWriter();
+            responseWriter.write("CACHE_UNAVAILABLE");
         }
     }
 }

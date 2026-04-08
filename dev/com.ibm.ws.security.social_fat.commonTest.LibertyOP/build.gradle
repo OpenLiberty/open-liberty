@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -104,7 +104,15 @@ autoFVT.doLast {
      into new File(autoFvtDir, 'publish/servers/' + server + '/')
      include 'allAlgKeyStore.p12'
      include 'allAlgTrustStore.p12'
+     include 'altAllAlgKeyStore.p12'
+     include 'altAllAlgTrustStore.p12'
     }
+
+    copy {
+      from project(':com.ibm.ws.security.fat.common').file('publish/shared/config')
+      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
+      include 'altAllAlgSSLSettings.xml'
+    }  
     
   }
     

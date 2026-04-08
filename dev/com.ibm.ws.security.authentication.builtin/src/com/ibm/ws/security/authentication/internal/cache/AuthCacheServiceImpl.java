@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -71,8 +71,8 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     @Override
     public void insert(Subject subject, String userid, @Sensitive String password) {
         try {
+            CacheContext cacheContext = new CacheContext(authCacheConfig, subject, userid, password);
             CacheObject cacheObject = new CacheObject(subject);
-            CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject, userid, password);
             commonInsert(cacheContext, cacheObject);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -86,8 +86,8 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     @Override
     public void insert(Subject subject, X509Certificate[] certChain) {
         try {
+            CacheContext cacheContext = new CacheContext(authCacheConfig, subject, certChain);
             CacheObject cacheObject = new CacheObject(subject);
-            CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject, certChain);
             commonInsert(cacheContext, cacheObject);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -103,8 +103,8 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
     @Override
     public void insert(Subject subject) {
         try {
+            CacheContext cacheContext = new CacheContext(authCacheConfig, subject);
             CacheObject cacheObject = new CacheObject(subject);
-            CacheContext cacheContext = new CacheContext(authCacheConfig, cacheObject);
             commonInsert(cacheContext, cacheObject);
         } catch (Exception e) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -190,7 +190,7 @@ public class AuthCacheServiceImpl implements AuthCacheService, UserRegistryChang
         if (cacheKey instanceof byte[]) {
             cacheKey = new ByteArray((byte[]) cacheKey);
         }
-        return (CacheObject) cache.get(cacheKey);
+        return cache.get(cacheKey);
     }
 
     protected void activate(ComponentContext componentContext, Map<String, Object> newProperties) {

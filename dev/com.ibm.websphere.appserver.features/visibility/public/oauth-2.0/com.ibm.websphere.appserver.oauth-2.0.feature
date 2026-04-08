@@ -27,7 +27,8 @@ Subsystem-Name: OAuth 2.0
   com.ibm.ws.security.common.jsonwebkey, \
   com.ibm.ws.org.json.simple.1.1.1, \
   com.ibm.ws.org.apache.httpcomponents, \
-  io.openliberty.org.apache.commons.logging
+  io.openliberty.org.apache.commons.logging, \
+  io.openliberty.security.common.jwt
 -jars=\
   com.ibm.websphere.appserver.api.oauth; location:=dev/api/ibm/, \
   com.ibm.websphere.appserver.spi.oauth; location:=dev/spi/ibm/, \

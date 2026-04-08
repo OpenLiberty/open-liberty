@@ -154,6 +154,7 @@ Service-Component: \
 	com.ibm.ws.logging.core,\
 	com.ibm.ws.security.authentication.tai;version=latest,\
 	com.ibm.ws.security.token;version=latest,\
+	io.openliberty.com.fasterxml.jackson;version=latest,\
 	io.openliberty.net.shibboleth.utilities.java.support;version=latest,\
 	io.openliberty.org.opensaml.opensaml.core;version=latest,\
 	io.openliberty.org.opensaml.opensaml.messaging.api;version=latest,\

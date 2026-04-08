@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2025 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,12 @@ package com.ibm.ws.security.openidconnect.client.jose4j.util;
 import java.nio.charset.StandardCharsets;
 import java.security.AccessController;
 import java.security.Key;
+import java.security.KeyException;
+import java.security.KeyStoreException;
 import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -354,6 +357,7 @@ public class Jose4jUtil {
                     OIDCClientAuthenticatorUtil.getIssuerIdentifier(clientConfig),
                     clientConfig.getClientId(),
                     clientConfig.getSignatureAlgorithm(),
+                    clientConfig.getAllowedSignatureAlgorithms(),
                     oidcClientRequest);
 
             return validator.parseJwtWithValidation(jwtString, jwtContext, (JsonWebSignature) jsonStruct);
@@ -372,17 +376,21 @@ public class Jose4jUtil {
         // If FIPS 140-3 is enabled, usage of the 'x5t' header for signature verification is disabled
         String x5t = CryptoUtils.isFips140_3Enabled() ? null : jsonStruct.getX509CertSha1ThumbprintHeaderValue();
         String x5tS256 = jsonStruct.getX509CertSha256ThumbprintHeaderValue();
+        String tokenAlg = jsonStruct.getAlgorithmHeaderValue();
+        String configuredSignatureAlgorithm = clientConfig.getSignatureAlgorithm();
+        String signatureAlgorithm = Constants.SIG_FROM_HEADER.equals(configuredSignatureAlgorithm) ? tokenAlg : configuredSignatureAlgorithm;
         Key key = null;
         Exception caughtException = null;
         try {
-            key = getVerifyKey(clientConfig, kid, x5t, x5tS256);
+            key = getVerifyKey(clientConfig, kid, x5t, x5tS256, signatureAlgorithm);
         } catch (Exception e) {
             caughtException = e;
         }
-        if (key == null && !SIGNATURE_ALG_NONE.equals(clientConfig.getSignatureAlgorithm())) {
-            Object[] objs = new Object[] { clientConfig.getSignatureAlgorithm(), "" };
+        // Check if 'none' is set as the selectedAlgorithm (either configured in the server or derived from the token)
+        if (key == null && !SIGNATURE_ALG_NONE.equals(signatureAlgorithm)) {
+            Object[] objs = new Object[] { signatureAlgorithm, "" };
             if (caughtException != null) {
-                objs = new Object[] { clientConfig.getSignatureAlgorithm(), caughtException.getLocalizedMessage() };
+                objs = new Object[] { signatureAlgorithm, caughtException.getLocalizedMessage() };
             }
             if (oidcClientRequest != null) {
                 oidcClientRequest.setRsFailMsg(OidcClientRequest.NO_KEY, Tr.formatMessage(tc, "OIDC_CLIENT_NO_VERIFYING_KEY", objs));
@@ -394,9 +402,8 @@ public class Jose4jUtil {
         return key;
     }
 
-    public Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t, String x5tS256) throws Exception {
+    public Key getVerifyKey(ConvergedClientConfig clientConfig, String kid, String x5t, String x5tS256, String signatureAlgorithm) throws Exception {
         Key keyValue = null;
-        String signatureAlgorithm = clientConfig.getSignatureAlgorithm();
         if (signatureAlgorithm == null) {
             return keyValue;
         }
@@ -405,10 +412,10 @@ public class Jose4jUtil {
             keyValue = new HmacKey(clientConfig.getSharedKey().getBytes(StandardCharsets.UTF_8));
         } else if (signatureAlgorithm.startsWith(SIGNATURE_ALG_RS) || signatureAlgorithm.startsWith(SIGNATURE_ALG_ES)) {
             if (clientConfig.getJwkEndpointUrl() != null || clientConfig.getJsonWebKey() != null) {
-                JwKRetriever retriever = createJwkRetriever(clientConfig);
+                JwKRetriever retriever = createJwkRetriever(clientConfig, signatureAlgorithm);
                 keyValue = retriever.getPublicKeyFromJwk(kid, x5t, x5tS256, "sig", clientConfig.getUseSystemPropertiesForHttpClientConnections());
             } else {
-                keyValue = clientConfig.getPublicKey();
+                keyValue = getPublicKeyFromKeystore(clientConfig, signatureAlgorithm);
             }
         } else if (SIGNATURE_ALG_NONE.equals(signatureAlgorithm)) {
             keyValue = null;
@@ -416,10 +423,65 @@ public class Jose4jUtil {
         return keyValue;
     }
 
-    public JwKRetriever createJwkRetriever(ConvergedClientConfig oidcClientConfig) {
+    Key getPublicKeyFromKeystore(ConvergedClientConfig clientConfig, String signatureAlgorithm) throws Exception {
+        String trustedAlias = null;
+        String trustStoreRef = clientConfig.getTrustStoreRef();
+        String configuredAlgorithm = clientConfig.getSignatureAlgorithm();
+        
+        // If signatureAlgorithm is set from the token header,
+        // first try to retrieve the public key using an algorithm-prefixed alias in the truststore
+        if (Constants.SIG_FROM_HEADER.equals(configuredAlgorithm)) {
+            try {
+                trustedAlias = getAlgorithmPrefixedAlias(signatureAlgorithm, trustStoreRef, clientConfig);
+                if (trustedAlias == null){
+                    trustedAlias = clientConfig.getTrustedAlias();
+                    if (tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Falling back to using configured trust alias " + trustedAlias + " in truststore: " + trustStoreRef);
+                    }
+                }
+            } catch (Exception e) {
+                String msg = Tr.formatMessage(tc, "OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES",
+                        new Object[] { trustStoreRef, e.getLocalizedMessage() });
+                throw new KeyStoreException(msg, e);
+            }
+        } else {
+            trustedAlias = clientConfig.getTrustedAlias();
+        }
+
+        return clientConfig.getPublicKey(trustedAlias);
+    }
+
+    String getAlgorithmPrefixedAlias(String algorithm, String trustStoreRef, ConvergedClientConfig clientConfig) throws Exception {
+        
+        Collection<String> aliases = clientConfig.getTrustedCertAliases(trustStoreRef);
+        
+        if (aliases == null || aliases.isEmpty()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No aliases found in truststore: " + trustStoreRef);
+            }
+            return null;
+        }
+        
+        // Find the first alias that starts with the algorithm
+        for (String alias : aliases) {
+            if (alias != null && alias.toLowerCase().startsWith(algorithm.toLowerCase())) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found algorithm-prefixed alias: " + alias + " for algorithm " + algorithm);
+                }
+                return alias;
+            }
+        }
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "No alias found starting with algorithm " + algorithm + " in truststore: " + trustStoreRef);
+        }
+        return null;
+    }
+
+    public JwKRetriever createJwkRetriever(ConvergedClientConfig oidcClientConfig, String signatureAlgorithm) {
         JwKRetriever retriever = null;
         if (oidcClientConfig != null) { // to support unittests, config cannot be null
-            retriever = new JwKRetriever(oidcClientConfig.getId(), oidcClientConfig.getSslRef(), oidcClientConfig.getJwkEndpointUrl(), oidcClientConfig.getJwkSet(), this.sslSupport, oidcClientConfig.isHostNameVerificationEnabled(), oidcClientConfig.getJwkClientId(), oidcClientConfig.getJwkClientSecret(), oidcClientConfig.getSignatureAlgorithm());
+            retriever = new JwKRetriever(oidcClientConfig.getId(), oidcClientConfig.getSslRef(), oidcClientConfig.getJwkEndpointUrl(), oidcClientConfig.getJwkSet(), this.sslSupport, oidcClientConfig.isHostNameVerificationEnabled(), oidcClientConfig.getJwkClientId(), oidcClientConfig.getJwkClientSecret(), signatureAlgorithm);
         }
         return retriever;
     }
@@ -558,7 +620,7 @@ public class Jose4jUtil {
         Key key = getSignatureVerificationKeyFromJsonWebStructure(jwStructure, clientConfig, oidcClientRequest);
 
         // Clock skew and issuer aren't needed to validate the signature
-        Jose4jValidator validator = new Jose4jValidator(key, 0L, null, clientConfig.getClientId(), clientConfig.getSignatureAlgorithm(), oidcClientRequest);
+        Jose4jValidator validator = new Jose4jValidator(key, 0L, null, clientConfig.getClientId(), clientConfig.getSignatureAlgorithm(), clientConfig.getAllowedSignatureAlgorithms(), oidcClientRequest);
         return validator.validateJwsSignature((JsonWebSignature) jwStructure, jwtContext.getJwt());
     }
 

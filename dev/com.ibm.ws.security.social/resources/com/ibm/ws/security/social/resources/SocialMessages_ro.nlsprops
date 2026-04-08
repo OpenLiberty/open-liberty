@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2024 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -139,6 +139,11 @@ INVALID_CONFIG_PARAM.useraction=Verifica\u0163i \u00een configura\u0163ie parame
 OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Clientul de logare social\u0103 [{0}] nu a reu\u015fit s\u0103 ob\u0163in\u0103 informa\u0163iile punctului final de furnizor OpenID Connect prin URL-ul punctului final de descoperire [{1}]. Actualiza\u0163i configura\u0163ia pentru logare social\u0103 (configura\u0163ia oidcLogin) cu URL-ul corect de descoperire HTTPS.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=Configura\u0163ia oidcLogin este stabilit\u0103 pentru descoperirea punctelor finale de furnizor OpenID Connect prin URL-ul de descoperire, dar procesul de descoperire a e\u015fuat. Clientul nu poate procesa cererile de autentificare dec\u00e2t dup\u0103 ce configura\u0163ia discoveryEndpoint este corectat\u0103 sau descoperirea este realizat\u0103 cu succes.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corecta\u0163i configura\u0163ia oidcLogin, pentru a v\u0103 asigura c\u0103 1) URL-ul punctului final de descoperire face referire la furnizorul OpenID Connect corect, 2) URL-ul punctului final de descoperire este HTTPS, 3) caracteristica SSL \u015fi elementele depozitului de chei sunt configurate corect cu furnizorul OpenID Connect \u015fi 4) punctul final de descoperire pentru furnizorul OpenID Connect este func\u0163ional.
+
+#0=social login client ID, 1="none"
+SOCIAL_LOGIN_NONE_ALG=CWWKS5392W: Adresa URL de redirec\u021bionare ( signatureAlgorithm ) a clientului de autentificare prin re\u021belele sociale [ {0} ] este setat\u0103 la [ {1} ].
+SOCIAL_LOGIN_NONE_ALG.explanation=Deoarece op\u021biunea \u201e signatureAlgorithm \u201d este setat\u0103 la \u201enone\u201d, se a\u0219teapt\u0103 un token f\u0103r\u0103 semn, ceea ce nu reprezint\u0103 un caz de utilizare obi\u0219nuit.
+SOCIAL_LOGIN_NONE_ALG.useraction=Dac\u0103 nu v\u0103 a\u0219tepta\u021bi ca tokenurile primite s\u0103 fie semnate, nu este necesar s\u0103 \u00eentreprinde\u021bi nicio ac\u021biune. Altfel, selecta\u0163i un signatureAlgorithm suportat cum ar fi RS256 sau HS256.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: Configurarea de logare social\u0103 [{0}] a fost procesat\u0103 cu succes.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=Configurarea indicat\u0103 de logare social\u0103 a fost procesat\u0103 cu succes.

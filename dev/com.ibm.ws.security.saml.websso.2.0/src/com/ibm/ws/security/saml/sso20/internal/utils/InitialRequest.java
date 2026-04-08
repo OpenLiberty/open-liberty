@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,6 +25,11 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonAutoDetect.Visibility;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonInclude.Include;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.common.encoder.Base64Coder;
@@ -34,22 +39,30 @@ import com.ibm.wsspi.webcontainer.servlet.IExtendedRequest;
 /**
  *
  */
-public class InitialRequest implements Serializable {
-
-    /**  */
-    private static final long serialVersionUID = 1L;
+@JsonInclude(Include.NON_EMPTY)
+@JsonAutoDetect(fieldVisibility = Visibility.NONE, getterVisibility = Visibility.NONE, setterVisibility = Visibility.NONE, creatorVisibility = Visibility.NONE, isGetterVisibility = Visibility.NONE)
+public class InitialRequest {
 
     private transient static final TraceComponent tc = Tr.register(InitialRequest.class,
                                                                    TraceConstants.TRACE_GROUP,
                                                                    TraceConstants.MESSAGE_BUNDLE);
 
+    // Serialized properties
+    @JsonProperty("reqUrl")
     String reqUrl = null; // the pure requestURL without queries or fragments. Can be compared when restore
+    @JsonProperty("requestURL")
     String requestURL = null; // The requestURL with query string
+    @JsonProperty("method")
     String method = null;
+    @JsonProperty("strInResponseToId")
     String strInResponseToId;
+    @JsonProperty("isFormLogoutExitPage")
     boolean isFormLogoutExitPage = false;
+    @JsonProperty("formLogoutExitPage")
     String formLogoutExitPage = null;
+    @JsonProperty("postParams")
     String postParams = "";
+    @JsonProperty("savedPostParams")
     HashMap savedPostParams = null;
 
     public static final String ATTRIB_HASH_MAP = "ServletRequestWrapperHashmap";
@@ -61,6 +74,12 @@ public class InitialRequest implements Serializable {
     private static final int OFFSET_DATA = 1;
     private static final Charset CHARSET_NAME = StandardCharsets.UTF_8;
     private static final int postParamSaveSize = 16000;
+
+    /**
+     * Jackson JSON constructor
+     */
+    public InitialRequest() {
+    }
 
     public InitialRequest(HttpServletRequest request, String reqUrl, String requestURL, String method, String inResponseTo, String formlogout,
                           HashMap savedPostParams) throws SamlException {
@@ -122,33 +141,6 @@ public class InitialRequest implements Serializable {
                     Tr.debug(tc, "An exception getting InputStreamData : ", new Object[] { e });
                 }
             }
-        }
-    }
-
-    private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException {
-        reqUrl = aInputStream.readUTF();
-        requestURL = aInputStream.readUTF();
-        method = aInputStream.readUTF();
-        strInResponseToId = aInputStream.readUTF();
-        isFormLogoutExitPage = aInputStream.readBoolean();
-        if (isFormLogoutExitPage) {
-            formLogoutExitPage = aInputStream.readUTF();
-        } else if (METHOD_POST.equalsIgnoreCase(this.method)) {
-            formLogoutExitPage = null;
-            postParams = aInputStream.readUTF();
-        }
-    }
-
-    private void writeObject(ObjectOutputStream aOutputStream) throws IOException {
-        aOutputStream.writeUTF(reqUrl);
-        aOutputStream.writeUTF(requestURL);
-        aOutputStream.writeUTF(method);
-        aOutputStream.writeUTF(strInResponseToId);
-        aOutputStream.writeBoolean(isFormLogoutExitPage);
-        if (isFormLogoutExitPage) {
-            aOutputStream.writeUTF(formLogoutExitPage);
-        } else if (METHOD_POST.equalsIgnoreCase(this.method)) {
-            aOutputStream.writeUTF(postParams);
         }
     }
 

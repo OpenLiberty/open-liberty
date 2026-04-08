@@ -30,9 +30,42 @@ The Program includes some or all of the following that IBM obtained
 under the Apache License, Version 2.0:
 
 @carbon/telemetry [telemetry-0.0.0-alpha.6.tgz],
-@swagger-api/apidom-ns-asyncapi-3 [apidom-ns-asyncapi-3-1.3.0.tgz],
-@swaggerexpert/cookie [cookie-2.0.2.tgz],
-@swaggerexpert/json-pointer [json-pointer-2.10.2.tgz], Apache Ant Core [ant],
+@swagger-api/apidom-ast [apidom-ast], @swagger-api/apidom-core [apidom-core],
+@swagger-api/apidom-error [apidom-error],
+@swagger-api/apidom-json-pointer [apidom-json-pointer],
+@swagger-api/apidom-ns-api-design-systems [apidom-ns-api-design-systems],
+@swagger-api/apidom-ns-arazzo-1 [apidom-ns-arazzo],
+@swagger-api/apidom-ns-asyncapi-2 [apidom-ns-asyncapi],
+@swagger-api/apidom-ns-asyncapi-3 [apidom-ns-asyncapi],
+@swagger-api/apidom-ns-json-schema-2019-09 [apidom-ns-json-schema],
+@swagger-api/apidom-ns-json-schema-2020-12 [apidom-ns-json-schema],
+@swagger-api/apidom-ns-json-schema-draft-4 [apidom-ns-json-schema-draft],
+@swagger-api/apidom-ns-json-schema-draft-6 [apidom-ns-json-schema-draft],
+@swagger-api/apidom-ns-json-schema-draft-7 [apidom-ns-json-schema-draft],
+@swagger-api/apidom-ns-openapi-2 [apidom-ns-openapi],
+@swagger-api/apidom-ns-openapi-3-0 [apidom-ns-openapi],
+@swagger-api/apidom-ns-openapi-3-1 [apidom-ns-openapi],
+@swagger-api/apidom-ns-openapi-3-2 [apidom-ns-openapi],
+@swagger-api/apidom-parser-adapter-api-design-systems-json [apidom-parser-adapter-api-design-systems-json],
+@swagger-api/apidom-parser-adapter-api-design-systems-yaml [apidom-parser-adapter-api-design-systems-yaml],
+@swagger-api/apidom-parser-adapter-arazzo-json-1 [apidom-parser-adapter-arazzo-json],
+@swagger-api/apidom-parser-adapter-arazzo-yaml-1 [apidom-parser-adapter-arazzo-yaml],
+@swagger-api/apidom-parser-adapter-asyncapi-json-2 [apidom-parser-adapter-asyncapi-json],
+@swagger-api/apidom-parser-adapter-asyncapi-json-3 [apidom-parser-adapter-asyncapi-json],
+@swagger-api/apidom-parser-adapter-asyncapi-yaml-2 [apidom-parser-adapter-asyncapi-yaml],
+@swagger-api/apidom-parser-adapter-asyncapi-yaml-3 [apidom-parser-adapter-asyncapi-yaml],
+@swagger-api/apidom-parser-adapter-json [apidom-parser-adapter-json],
+@swagger-api/apidom-parser-adapter-openapi-json-2 [apidom-parser-adapter-openapi-json],
+@swagger-api/apidom-parser-adapter-openapi-json-3-0 [apidom-parser-adapter-openapi-json],
+@swagger-api/apidom-parser-adapter-openapi-json-3-1 [apidom-parser-adapter-openapi-json],
+@swagger-api/apidom-parser-adapter-openapi-json-3-2 [apidom-parser-adapter-openapi-json],
+@swagger-api/apidom-parser-adapter-openapi-yaml-2 [apidom-parser-adapter-openapi-yaml],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-0 [apidom-parser-adapter-openapi-yaml],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-1 [apidom-parser-adapter-openapi-yaml],
+@swagger-api/apidom-parser-adapter-openapi-yaml-3-2 [apidom-parser-adapter-openapi-yaml],
+@swagger-api/apidom-parser-adapter-yaml-1-2 [apidom-parser-adapter-yaml],
+@swagger-api/apidom-reference [apidom-reference], @swaggerexpert/cookie [cookie],
+@swaggerexpert/json-pointer [json-pointer], Apache Ant Core [ant],
 Apache Ant Launcher [ant-launcher],
 Apache Aries JMX API [org.apache.aries.jmx.api],
 Apache Aries JMX Core [org.apache.aries.jmx.core],
@@ -322,37 +355,33 @@ Woodstox [woodstox-core-asl], Woodstox [woodstox-core],
 XML Commons Resolver Component [xml-resolver], XmlSchema Core [xmlschema-core],
 Zipkin Core Library [zipkin], Zipkin Reporter: Core [zipkin-reporter],
 Zipkin Sender: OkHttp 3 [zipkin-sender-okhttp3], acme4j Client [acme4j-client],
-acme4j Utils [acme4j-utils], asyncutil, b4a [b4a-1.7.3.tgz],
-bare-events [bare-events-2.8.0.tgz],
-carbon-components [carbon-components-10.44.0.tgz],
+acme4j Utils [acme4j-utils], asyncutil, b4a, bare-events, carbon-components,
 carbon-components [carbon-components-10.42.0-rc.0.min.js],
-classfilewriter [jboss-classfilewriter], dompurify [dompurify-3.2.6.tgz],
-error-prone annotations [error_prone_annotations],
-events-universal [events-universal-1.0.1.tgz], fastinfoset [FastInfoset],
-geronimo-annotation_1.1_spec, geronimo-ejb_3.1_spec-alt,
-geronimo-interceptor_1.1_spec, geronimo-validation,
-google-closure-compiler [google-closure-compiler-20251008.0.0.tgz],
-google-closure-compiler-java [google-closure-compiler-java-20251008.0.0.tgz],
-google-closure-compiler-linux [google-closure-compiler-linux-20251008.0.0.tgz],
-google-closure-compiler-linux-arm64 [google-closure-compiler-linux-arm64-20251008.0.0.tgz],
-google-closure-compiler-macos [google-closure-compiler-macos-20251008.0.0.tgz],
-google-closure-compiler-windows [google-closure-compiler-windows-20251008.0.0.tgz],
-guice, io.grpc:grpc-api [grpc-api], io.grpc:grpc-census [grpc-census],
+classfilewriter [jboss-classfilewriter], commons-weaver-privilizer,
+cxf-rt-security, cxf-rt-security-saml, cxf-rt-ws-security, dompurify,
+error-prone annotations [error_prone_annotations], events-universal,
+fastinfoset [FastInfoset], geronimo-annotation_1.1_spec,
+geronimo-ejb_3.1_spec-alt, geronimo-interceptor_1.1_spec, geronimo-validation,
+google-closure-compiler, google-closure-compiler-java,
+google-closure-compiler-linux, google-closure-compiler-linux-arm64,
+google-closure-compiler-macos, google-closure-compiler-windows, guice,
+io.grpc:grpc-api [grpc-api], io.grpc:grpc-census [grpc-census],
 io.grpc:grpc-context [grpc-context], io.grpc:grpc-core [grpc-core],
 io.grpc:grpc-netty [grpc-netty], io.grpc:grpc-protobuf [grpc-protobuf],
 io.grpc:grpc-protobuf-lite [grpc-protobuf-lite], io.grpc:grpc-stub [grpc-stub],
 io.grpc:grpc-util [grpc-util], jackson-databind, jackson-jr-objects,
-jaeger-client [jaeger-core], jansi, jasper-el, java-dataloader, javax.inject,
-jdeparser, jose4j, jsp.tld.standard,
+jaeger-client [jaeger-core], jansi, jasper-el, java-dataloader, java-support,
+javax.inject, jdeparser, jose4j, jsp.tld.standard,
 microProfile-fault-tolerance-api [microprofile-fault-tolerance-api],
 micrometer-commons, micrometer-core, micrometer-observation,
 micrometer-registry-prometheus, microprofile-fault-tolerance-api,
 microprofile-metrics-api, microprofile-opentracing-api,
 microprofile-rest-client-api, nekohtml, okhttp, okio [okio-jvm], okio,
-okio [okio-jvm], okio,
-openapi-path-templating [openapi-path-templating-2.2.1.tgz],
-openapi-server-url-templating [openapi-server-url-templating-1.3.0.tgz],
-org.apache.aries.blueprint, org.apache.aries.jndi.core, org.apache.bval.bundle,
+okio [okio-jvm], okio, openapi-path-templating, openapi-server-url-templating,
+opensaml-core, opensaml-messaging-api, opensaml-messaging-impl,
+opensaml-security-api, opensaml-security-impl, opensaml-storage-api,
+opensaml-xmlsec-api, opensaml-xmlsec-impl, org.apache.aries.blueprint,
+org.apache.aries.jndi.core, org.apache.bval.bundle,
 org.osgi:org.osgi.annotation.versioning [org.osgi.annotation.versioning],
 org.osgi:org.osgi.namespace.extender [org.osgi.namespace.extender],
 org.osgi:org.osgi.namespace.implementation [org.osgi.namespace.implementation],
@@ -370,13 +399,13 @@ org.osgi:org.osgi.util.function [org.osgi.util.function],
 org.osgi:org.osgi.util.promise [org.osgi.util.promise],
 org.osgi:osgi.annotation [osgi.annotation], org.osgi:osgi.core [osgi.core],
 perfmark:perfmark-api [perfmark-api], proto-google-common-protos, resolver,
-short-unique-id [short-unique-id-5.3.2.tgz], smallrye-reactive-converter-api,
+short-unique-id, smallrye-reactive-converter-api,
 smallrye-reactive-messaging-provider, smallrye-reactive-streams-operators,
-snappy-java, swagger-client [swagger-client-3.36.1.tgz],
-swagger-ui [swagger-ui-5.31.0.tgz], text-decoder [text-decoder-1.2.3.tgz],
-tomcat-el-api, tomcat-jasper-el, ts-toolbelt [ts-toolbelt-9.6.0.tgz],
-vertx-codegen, yoko-core, yoko-osgi, yoko-rmi-impl, yoko-rmi-spec,
-yoko-spec-corba, yoko-util
+snappy-java, swagger-client, swagger-ui, text-decoder, tomcat-el-api,
+tomcat-jasper-el, ts-toolbelt, vertx-codegen, wss4j-bindings, wss4j-policy,
+wss4j-ws-security-common, wss4j-ws-security-dom, wss4j-ws-security-policy-stax,
+wss4j-ws-security-stax, wss4j-ws-security-web, xmlsec, yoko-core, yoko-osgi,
+yoko-rmi-impl, yoko-rmi-spec, yoko-spec-corba, yoko-util
 
 
 Apache License
@@ -564,7 +593,7 @@ BSD Zero Clause license
 The Program includes some or all of the following that IBM obtained
 under the BSD Zero Clause license:
 
-tslib [tslib-2.8.1.tgz] (Copyright Microsoft Corporation)
+tslib (Copyright Microsoft Corporation)
 
 Permission to use, copy, modify, and/or distribute this software for any 
 purpose with or without fee is hereby granted.
@@ -588,11 +617,11 @@ under the BSD 2 Clause license:
 HdrHistogram (Copyright 2012-2013 2014, 2015, 2016 Gil Tene) (Copyright 2014 Matt Warren) (Copyright 2014 Michael Barker)
 Stax2 API [stax2-api] (Copyright 2005 Tatu Saloranta, tatu.saloranta@iki.fi)
 Stax2 API [stax2-api] (Copyright 2008 FasterXML LLC <info@fasterxml.com>)
-apg-lite [apg-lite-1.0.5.tgz] (Copyright 2023 Lowell D. Thomas<br>)
-configstore [configstore-5.0.1.tgz] (Copyright Google)
+apg-lite (Copyright 2023 Lowell D. Thomas<br>)
+configstore (Copyright Google)
 crac (Copyright 2017-2020 Copyright)
-d3 [d3-3.5.10.tgz] (Copyright 2010-2015 Michael Bostock)
-http-cache-semantics [http-cache-semantics-4.1.1.tgz] (Copyright 2016-2018 Kornel Lesi)
+d3 (Copyright 2010-2015 Michael Bostock)
+http-cache-semantics (Copyright 2016-2018 Kornel Lesi)
 zstd-jni(Copyright Not Found)
 
 Redistribution and use in source and binary forms, with or without
@@ -626,71 +655,65 @@ The Program includes some or all of the following that IBM obtained
 under the BSD 3 Clause license:
 
 ANTLR 4 Runtime [antlr4-runtime] (ANTLR) (Copyright 2012 Terence Parr and Sam Harwell) (Copyright 2012-2017 The ANTLR Project)
-Angus Activation Registries [angus-activation] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2021 Oracle and/or its affiliates)
+Angus Activation Registries [angus-activation] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2021 Oracle and/or its affiliates) (Eclipse Foundation)
 Angus Activation Registries [angus-activation] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2021-2023 Oracle and/or its affiliates) (Eclipse Foundation)
-Angus Activation Registries [angus-activation] (Copyright 2021-2023 Oracle and/or its affiliates)
 Codemodel Core [codemodel] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-Codemodel Core [codemodel] (Copyright 2010-2021 Oracle and/or its affiliates)
 Codemodel Core [codemodel] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-Codemodel Core [codemodel] (Copyright 2010-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 Codemodel Core [codemodel] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2018 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2022 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
-EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2025 Oracle and/or its affiliates) (Copyright Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
+EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2025 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Copyright Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
 Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
-GMBAL (API only) [gmbal-api-only] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2019-2021 Oracle and/or its affiliates)
+GMBAL (API only) [gmbal-api-only] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2019-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 Hamcrest Core [hamcrest-core] (Copyright 2000-2006 www.hamcrest.org) (Hamcrest)
 JAX-WS RI Runtime (jaxws-rt) [jaxws-rt] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAX-WS RI Tools (jaxws-tools) [jaxws-tools] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020-2022 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020-2023 Oracle and/or its affiliates) (Eclipse Foundation)
-JAXB Core [jaxb-core] (Copyright 2020-2022 Oracle and/or its affiliates)
-JAXB JXC [jaxb-jxc] (Copyright 2013-2020 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB JXC [jaxb-jxc] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB JXC [jaxb-jxc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB JXC [jaxb-jxc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-JAXB Runtime [jaxb-runtime] (Copyright 2013-2021 Oracle and/or its affiliates) (Eclipse Foundation)
-JAXB Runtime [jaxb-runtime] (Copyright 2013-2022 Oracle and/or its affiliates)
+JAXB Runtime [jaxb-runtime] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB Runtime [jaxb-runtime] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2018 Oracle)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-JAXB XJC [jaxb-xjc] (Copyright 2013-2021 Oracle and/or its affiliates) (Eclipse Foundation)
-JAXB XJC [jaxb-xjc] (Copyright 2013-2022 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB XJC [jaxb-xjc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB XJC [jaxb-xjc] (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
-Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Activation API jar [jakarta.activation-api] (Copyright 1997-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Activation [jakarta.activation] (Copyright 1997-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-Jakarta Activation [jakarta.activation] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
-Jakarta Activation [jakarta.activation] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
-Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2020 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates)
+Jakarta Activation [jakarta.activation] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+Jakarta Activation [jakarta.activation] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2020 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Persistence API [jakarta.persistence-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2018-2022 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Persistence [jakarta.persistence] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2007-2018 Oracle and/or its affiliates) (Copyright 2008-2018 Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2021 Oracle and) (Copyright 2011-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2021 Oracle and) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
+Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2021 Oracle and) (Copyright 2011-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 Jakarta SOAP Implementation [saaj-impl] (Copyright 2011-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
+Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
 Jakarta SOAP with Attachments API [jakarta.xml.soap-api] (Copyright 2013-2024 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
-Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation)
-Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates)
-Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2020 Oracle and/or its affiliates)
-Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates)
+Jakarta Web Services Metadata API [jakarta.jws-api] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2020 Oracle and/or its affiliates) (Eclipse Foundation)
+Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2022 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2023 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta XML Binding API [jakarta.xml.bind-api] (Copyright 2018 Oracle)
 Jakarta XML Binding API [jboss-jaxb-api_2.3_spec] (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates)
-Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Copyright 2019-2020 Eclipse Foundation) (Eclipse Foundation)
+Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta XML Web Services API [jakarta.xml.ws-api] (Copyright 1997-2024 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JavaBeans Activation Framework API jar [jakarta.activation-api] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -698,8 +721,8 @@ JavaBeans Activation Framework [jakarta.activation] (Copyright 1997-2018 Oracle 
 MIME streaming extension [mimepull] (Copyright 2012-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Old JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 Old JAXB JXC [jaxb-jxc] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-Old JAXB JXC [jaxb-jxc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Old JAXB JXC [jaxb-jxc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+Old JAXB JXC [jaxb-jxc] (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Old JAXB Runtime [jaxb-impl] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Old JAXB Runtime [jaxb-impl] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Old JAXB Runtime [jaxb-impl] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -709,33 +732,31 @@ Protocol Buffers [Core] [protobuf-java] (Copyright 2008 Google Inc)
 Protocol Buffers [Lite] [protobuf-javalite] (Copyright 2008 Google Inc)
 RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2020 Oracle and/or its affiliates) (Eclipse Foundation)
+RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2005-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 TXW2 Runtime [txw2] (Copyright 2005-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-TXW2 Runtime [txw2] (Copyright 2005-2020 Oracle and/or its affiliates) (Eclipse Foundation)
+TXW2 Runtime [txw2] (Copyright 2005-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2005-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2005-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2018 Oracle)
 XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 XSOM [xsom] (Copyright 2010-2024 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 asm (Copyright 2000-2011 INRIA) (OW2)
-asm (OW2)
+asm (Copyright (c) 2000-2011 INRIA\
 asm-analysis (OW2)
 asm-commons (OW2)
 asm-tree (OW2)
 asm-util (Copyright 2000-2011 INRIA) (OW2)
-dojo [dojo-1.13.10.tgz] (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2017 JS Foundation) (Copyright 2005-2017 The JS Foundation)
-highlight.js [highlight.js-10.7.3.tgz] (Copyright 2006 Ivan Sagalaev)
-ieee754 [ieee754-1.2.1.tgz] (Copyright 2008 Fair Oaks Labs, Inc)
+dojo (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2017 JS Foundation) (Copyright 2005-2017 The JS Foundation)
+highlight.js (Copyright 2006 Ivan Sagalaev)
+ieee754 (Copyright 2008 Fair Oaks Labs, Inc)
 istack common utility code runtime [istack-commons-runtime] (Copyright 1997-2018 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 istack common utility code runtime [istack-commons-runtime] (Copyright 1997-2019 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 istack common utility code runtime [istack-commons-runtime] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -746,12 +767,13 @@ istack common utility code tools [istack-commons-tools] (Copyright 1997-2022 Ora
 jakarta.xml.bind-api (Copyright 2017-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 management-api (Copyright 2011-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 org.eclipse.persistence.core(Copyright Not Found)
-ramda-adjunct [ramda-adjunct-5.1.0.tgz] (Copyright 2017-2019 Vladim)
-redux-immutable [redux-immutable-4.0.0.tgz] (Copyright 2016 Gajus Kuizinas (http://gajus.com/))
+ramda-adjunct (Copyright 2017-2019 Vladim)
+redux-immutable (Copyright 2016 Gajus Kuizinas (http://gajus.com/))
 relaxngDatatype (Copyright 2001 Thai Open Source Software Center Ltd)
-source-map [source-map-0.5.7.tgz] (Copyright 2009-2011 Mozilla Foundation and contributors)
-sprintf-js [sprintf-js-1.0.3.tgz] (Copyright 2014 Alexandru Marasteanu)
-warning [warning-3.0.0.tgz] (Copyright 2013-2015 Facebook, Inc)
+sha.js (Copyright 1998-2009 Paul Johnston) (Copyright 2013-2018 sha.js contributors)
+source-map (Copyright 2009-2011 Mozilla Foundation and contributors)
+sprintf-js (Copyright 2014 Alexandru Marasteanu)
+warning (Copyright 2013-2015 Facebook, Inc)
 
 Redistribution and use in source and binary forms, with or without
 modification, are permitted provided that the following conditions are met:
@@ -839,6 +861,7 @@ servlet.jsp.resources (https://github.com/javaee/servlet-spec)
 servlet.resources (https://github.com/javaee/servlet-spec)
 
 
+
 END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1 NOTICES AND INFORMATION
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -889,6 +912,7 @@ jsr181-api (https://github.com/javaee/javax.jws)
 policy http://www.oracle.com/
 saaj-impl http://www.oracle.com/
 xmlstreambuffer [streambuffer] http://xmlstreambuffer.java.net/
+
 
 
 END OF COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1.1 NOTICES AND INFORMATION
@@ -994,7 +1018,7 @@ javax.ws.rs-api https://www.eclipse.org/org/foundation/
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] https://github.com/eclipse-ee4j/ejb-api
 jboss-jakarta-jaxrs-api_spec [jboss-jaxrs-api_2.1_spec] http://www.jboss.org
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
-org.eclipse.yasson [yasson] http://www.oracle.com/
+org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
 
 
 
@@ -1470,25 +1494,23 @@ ISC License
 The Program includes some or all of the following that IBM obtained
 under the ISC License:
 
-at-least-node [at-least-node-1.0.0.tgz] (Copyright 2020 Ryan Zimmerman <opensrc@ryanzim.com>)
-cliui [cliui-7.0.4.tgz] (Copyright 2015 Contributors)
-fastq [fastq-1.19.0.tgz] (Copyright 2015-2020 Matteo Collina <matteo.collina@gmail.com>)
-get-caller-file [get-caller-file-2.0.5.tgz] (Copyright 2018 Stefan Penner)
-glob-parent [glob-parent-5.1.2.tgz] (Copyright 2015-2019 Elan Shanker)
-graceful-fs [graceful-fs-4.2.11.tgz] (Copyright 2011-2022 Isaac Z. Schlueter)
-inherits [inherits-2.0.4.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-minimatch [minimatch-7.4.6.tgz] (Copyright 2011-2023 Isaac Z. Schlueter and Contributors)
-once [once-1.4.0.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-picocolors [picocolors-1.1.1.tgz] (Copyright 2021-2024 Oleksii Raspopov)
-remove-trailing-separator [remove-trailing-separator-1.1.0.tgz] (Copyright 2017 Tomas Sardyha) (Copyright 2017.0 Tomas Sardyha)
-semver [semver-6.3.1.tgz] (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
-semver [semver-7.7.1.tgz] (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
-signal-exit [signal-exit-3.0.7.tgz] (Copyright 2015 Contributors)
-vinyl-sourcemaps-apply [vinyl-sourcemaps-apply-0.2.1.tgz](Copyright Not Found)
-wrappy [wrappy-1.0.2.tgz] (Copyright Isaac Z. Schlueter and Contributors)
-write-file-atomic [write-file-atomic-3.0.3.tgz] (Copyright 2015 Rebecca Turner)
-y18n [y18n-5.0.8.tgz] (Copyright 2015 Contributors)
-yargs-parser [yargs-parser-20.2.9.tgz] (Copyright 2016 Contributors)
+at-least-node (Copyright 2020 Ryan Zimmerman <opensrc@ryanzim.com>)
+cliui (Copyright 2015 Contributors)
+fastq (Copyright 2015-2020 Matteo Collina <matteo.collina@gmail.com>)
+get-caller-file (Copyright 2018 Stefan Penner)
+glob-parent (Copyright 2015-2019 Elan Shanker)
+graceful-fs (Copyright 2011-2022 Isaac Z. Schlueter)
+inherits (Copyright Isaac Z. Schlueter and Contributors)
+once (Copyright Isaac Z. Schlueter and Contributors)
+picocolors (Copyright 2021-2024 Oleksii Raspopov)
+remove-trailing-separator (Copyright 2017 Tomas Sardyha) (Copyright 2017.0 Tomas Sardyha)
+semver (Copyright Isaac Z. Schlueter and Contributors) (Copyright Isaac Z. Schlueter and Contributors)
+signal-exit (Copyright 2015 Contributors)
+vinyl-sourcemaps-apply(Copyright Not Found)
+wrappy (Copyright Isaac Z. Schlueter and Contributors)
+write-file-atomic (Copyright 2015 Rebecca Turner)
+y18n (Copyright 2015 Contributors)
+yargs-parser (Copyright 2016 Contributors)
 
 
 ISC License
@@ -1514,264 +1536,260 @@ MIT license
 The Program includes some or all of the following that IBM obtained
 under the MIT license:
 
-@babel/code-frame [code-frame-7.26.2.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/generator [generator-7.26.8.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/helper-string-parser [helper-string-parser-7.25.9.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/helper-validator-identifier [helper-validator-identifier-7.25.9.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/parser [parser-7.26.8.tgz] (Copyright 2012-2014 by various contributors)
-@babel/runtime [runtime-7.28.6.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/runtime-corejs3 [runtime-corejs3-7.28.6.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/template [template-7.26.8.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/traverse [traverse-7.26.8.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@babel/types [types-7.26.8.tgz] (Copyright 2014 Sebastian McKenzie and other contributors)
-@colors/colors [colors-1.6.0.tgz] (Copyright DABH (https://github.com/DABH)) (Copyright Marak Squires) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-@dabh/diagnostics [diagnostics-2.0.3.tgz] (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
-@jridgewell/gen-mapping [gen-mapping-0.3.8.tgz] (Copyright 2022 Justin Ridgewell <jridgewell@google.com>)
-@jridgewell/resolve-uri [resolve-uri-3.1.2.tgz] (Copyright 2019 Justin Ridgewell <jridgewell@google.com>)
-@jridgewell/set-array [set-array-1.2.1.tgz] (Copyright 2022 Justin Ridgewell <jridgewell@google.com>)
-@jridgewell/sourcemap-codec [sourcemap-codec-1.5.0.tgz] (Copyright 2015 Rich Harris)
-@jridgewell/trace-mapping [trace-mapping-0.3.25.tgz] (Copyright 2022 Justin Ridgewell <justin@ridgewell.name>)
-@nodelib/fs.scandir [fs.scandir-2.1.5.tgz] (Copyright Denis Malinochkin)
-@nodelib/fs.stat [fs.stat-2.0.5.tgz] (Copyright Denis Malinochkin)
-@nodelib/fs.walk [fs.walk-1.2.8.tgz] (Copyright Denis Malinochkin)
-@sindresorhus/is [is-4.6.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-@szmarczak/http-timer [http-timer-4.0.6.tgz] (Copyright 2018 Szymon Marczak)
-@tree-sitter-grammars/tree-sitter-yaml [tree-sitter-yaml-0.7.1.tgz] (Copyright 2019-2021 Ika) (Copyright 2024 tree-sitter-grammars contributors)
-@types/cacheable-request [cacheable-request-6.0.3.tgz] (Copyright Microsoft Corporation)
-@types/hast [hast-3.0.4.tgz] (Copyright Microsoft Corporation)
-@types/http-cache-semantics [http-cache-semantics-4.0.4.tgz] (Copyright Microsoft Corporation)
-@types/keyv [keyv-3.1.4.tgz] (Copyright Microsoft Corporation)
-@types/node [node-22.13.1.tgz] (Copyright Microsoft Corporation)
-@types/prismjs [prismjs-1.26.5.tgz] (Copyright Microsoft Corporation)
-@types/ramda [ramda-0.30.2.tgz] (Copyright Microsoft Corporation)
-@types/responselike [responselike-1.0.3.tgz] (Copyright Microsoft Corporation)
-@types/triple-beam [triple-beam-1.3.5.tgz] (Copyright Microsoft Corporation)
-@types/trusted-types [trusted-types-2.0.7.tgz] (Copyright Microsoft Corporation)
-@types/unist [unist-2.0.11.tgz] (Copyright Microsoft Corporation)
-@types/unist [unist-3.0.3.tgz] (Copyright Microsoft Corporation)
-@types/use-sync-external-store [use-sync-external-store-0.0.6.tgz] (Copyright Microsoft Corporation)
+@babel/code-frame [code-frame] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/generator [generator] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/helper-string-parser [helper-string-parser] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/helper-validator-identifier [helper-validator-identifier] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/parser [parser] (Copyright 2012-2014 by various contributors)
+@babel/runtime [runtime] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/runtime-corejs3 [runtime-corejs3] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/template [template] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/traverse [traverse] (Copyright 2014 Sebastian McKenzie and other contributors)
+@babel/types [types] (Copyright 2014 Sebastian McKenzie and other contributors)
+@colors/colors [colors] (Copyright DABH (https://github.com/DABH)) (Copyright Marak Squires) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+@dabh/diagnostics [diagnostics] (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
+@jridgewell/gen-mapping [gen-mapping] (Copyright 2022 Justin Ridgewell <jridgewell@google.com>)
+@jridgewell/resolve-uri [resolve-uri] (Copyright 2019 Justin Ridgewell <jridgewell@google.com>)
+@jridgewell/set-array [set-array] (Copyright 2022 Justin Ridgewell <jridgewell@google.com>)
+@jridgewell/sourcemap-codec [sourcemap-codec] (Copyright 2015 Rich Harris)
+@jridgewell/trace-mapping [trace-mapping] (Copyright 2022 Justin Ridgewell <justin@ridgewell.name>)
+@nodelib/fs.scandir [fs.scandir] (Copyright Denis Malinochkin)
+@nodelib/fs.stat [fs.stat] (Copyright Denis Malinochkin)
+@nodelib/fs.walk [fs.walk] (Copyright Denis Malinochkin)
+@sindresorhus/is [is] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+@szmarczak/http-timer [http-timer] (Copyright 2018 Szymon Marczak)
+@tree-sitter-grammars/tree-sitter-yaml [tree-sitter-yaml] (Copyright 2019-2021 Ika) (Copyright 2024 tree-sitter-grammars contributors)
+@types/cacheable-request [cacheable-request] (Copyright Microsoft Corporation)
+@types/hast [hast] (Copyright Microsoft Corporation)
+@types/http-cache-semantics [http-cache-semantics] (Copyright Microsoft Corporation)
+@types/keyv [keyv] (Copyright Microsoft Corporation)
+@types/node [node] (Copyright Microsoft Corporation)
+@types/prismjs [prismjs] (Copyright Microsoft Corporation)
+@types/ramda [ramda] (Copyright Microsoft Corporation)
+@types/responselike [responselike] (Copyright Microsoft Corporation)
+@types/triple-beam [triple-beam] (Copyright Microsoft Corporation)
+@types/trusted-types [trusted-types] (Copyright Microsoft Corporation)
+@types/unist [unist] (Copyright Microsoft Corporation)
+@types/use-sync-external-store [use-sync-external-store] (Copyright Microsoft Corporation)
 Animal Sniffer Annotations [animal-sniffer-annotations] (Codehaus) (Copyright 2009 codehaus.org)
 Animal Sniffer Annotations [animal-sniffer-annotations] (Copyright 2009 codehaus.org) (MojoHaus)
 Checker Qual [checker-compat-qual](Copyright Not Found)
 Checker Qual [checker-qual] (Copyright 2004 by the Checker Framework developers)
 SLF4J API Module [slf4j-api] (QOS.ch)
 SLF4J JDK14 Binding [slf4j-jdk14] (QOS.ch)
-ansi-regex [ansi-regex-5.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-ansi-styles [ansi-styles-4.3.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-argparse [argparse-1.0.10.tgz] (Copyright 2012 Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
-async [async-3.2.6.tgz] (Copyright 2010-2018 Caolan McMahon)
-autolinker [autolinker-3.16.2.tgz] (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
-available-typed-arrays [available-typed-arrays-1.0.7.tgz] (Copyright 2020 Inspect JS)
-balanced-match [balanced-match-3.0.1.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
-base64-js [base64-js-1.5.1.tgz] (Copyright 2014 Jameson Little)
-bootstrap [bootstrap-5.1.3.tgz] (Copyright 2011-2021 The Bootstrap Authors) (Copyright 2011-2021 Twitter, Inc) (Copyright 2011-2021 ode and documentation copyright) (Copyright and license" (#copyright-and-license))
-brace-expansion [brace-expansion-4.0.1.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
-braces [braces-3.0.3.tgz] (Copyright 2014 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
-buffer [buffer-6.0.3.tgz] (Copyright Feross Aboukhadijeh, and other contributors)
-cacheable-lookup [cacheable-lookup-5.0.4.tgz] (Copyright 2019 Szymon Marczak)
-cacheable-request [cacheable-request-7.0.4.tgz] (Copyright 2017 Luke Childs)
-call-bind [call-bind-1.0.8.tgz] (Copyright 2020 Jordan Harband)
-call-bind-apply-helpers [call-bind-apply-helpers-1.0.2.tgz] (Copyright 2024 Jordan Harband)
-call-bound [call-bound-1.0.4.tgz] (Copyright 2024 Jordan Harband)
-chalk [chalk-5.6.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-character-entities [character-entities-2.0.2.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
-character-entities-legacy [character-entities-legacy-3.0.0.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
-character-reference-invalid [character-reference-invalid-2.0.1.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
-ci-info [ci-info-2.0.0.tgz] (Copyright 2016-2018 Thomas Watson Steen)
-classnames [classnames-2.5.1.tgz] (Copyright 2018 Jed Watson)
-clone [clone-2.1.2.tgz] (Copyright 2015 Paul Vorbach)
-clone-response [clone-response-1.0.3.tgz] (Copyright 2017 Luke Childs) (Copyright Luke Childs)
-color [color-3.2.1.tgz] (Copyright 2012 Heather Arthur)
-color-convert [color-convert-1.9.3.tgz] (Copyright 2011-2016 Heather Arthur <fayearthur@gmail.com>) (Copyright 2011-2016 Heather Arthur and Josh Junon)
-color-convert [color-convert-2.0.1.tgz] (Copyright 2011-2016 Heather Arthur <fayearthur@gmail.com>) (Copyright 2011-2016 Heather Arthur and Josh Junon)
-color-name [color-name-1.1.3.tgz] (Copyright 2015 Dmitry Ivanov)
-color-name [color-name-1.1.4.tgz] (Copyright 2015 Dmitry Ivanov)
-color-string [color-string-1.9.1.tgz] (Copyright 2011 Heather Arthur <fayearthur@gmail.com>)
-colorspace [colorspace-1.1.4.tgz] (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
-comma-separated-tokens [comma-separated-tokens-2.0.3.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-copy-to-clipboard [copy-to-clipboard-3.3.3.tgz] (Copyright 2017 sudodoki <smd.deluzion@gmail.com>)
-core-js [core-js-3.48.0.tgz] (Copyright 2013-2025 Denis Pushkarev) (Copyright 2025-2026 CoreJS Company)
-core-js-pure [core-js-pure-3.48.0.tgz] (Copyright 2013-2025 Denis Pushkarev) (Copyright 2025-2026 CoreJS Company)
-crypto-random-string [crypto-random-string-2.0.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-css.escape [css.escape-1.5.1.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
-debug [debug-4.4.0.tgz] (Copyright 2014-2017 TJ Holowaychuk <tj@vision-media.ca>) (Copyright 2018-2021 Josh Junon)
-decode-named-character-reference [decode-named-character-reference-1.3.0.tgz] (Copyright Titus Wormer) (Copyright Titus Wormer <tituswormer@gmail.com>)
-decompress-response [decompress-response-6.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-deep-extend [deep-extend-0.6.0.tgz] (Copyright 2013-2018 Viacheslav Lotsmanov)
-deepmerge [deepmerge-4.3.1.tgz] (Copyright 2012 James Halliday, Josh Duff, and other contributors)
-defer-to-connect [defer-to-connect-2.0.1.tgz] (Copyright 2018 Szymon Marczak)
-define-data-property [define-data-property-1.1.4.tgz] (Copyright 2023 Jordan Harband)
-dot-prop [dot-prop-5.3.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-drange [drange-1.1.1.tgz] (Copyright 2014 David Tudury)
-dunder-proto [dunder-proto-1.0.1.tgz] (Copyright 2024 ECMAScript Shims)
-emoji-regex [emoji-regex-8.0.0.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
-enabled [enabled-2.0.0.tgz] (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
-end-of-stream [end-of-stream-1.4.4.tgz] (Copyright 2014 Mathias Buus)
-es-define-property [es-define-property-1.0.1.tgz] (Copyright 2024 Jordan Harband)
-es-errors [es-errors-1.3.0.tgz] (Copyright 2024 Jordan Harband)
-es-object-atoms [es-object-atoms-1.1.1.tgz] (Copyright 2024 Jordan Harband)
-escalade [escalade-3.2.0.tgz] (Copyright Luke Edwards) (Copyright Luke Edwards <luke.edwards05@gmail.com> (lukeed.com))
-fast-fifo [fast-fifo-1.3.2.tgz] (Copyright 2019 Mathias Buus)
-fast-glob [fast-glob-3.3.3.tgz] (Copyright Denis Malinochkin)
-fast-json-patch [fast-json-patch-3.1.1.tgz] (Copyright 2013-2020 Joachim Wester)
-fault [fault-1.0.4.tgz] (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
-fecha [fecha-4.2.3.tgz] (Copyright 1971-2030 td>) (Copyright 2014 rd,) (Copyright 2015 Taylor Hakes) (parse('November 4, 2005', 'longDate'); // new Date(2005, 10, 4))
-fill-range [fill-range-7.1.1.tgz] (Copyright 2014 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
-flatpickr [flatpickr-4.6.1.tgz] (Copyright 2017 Gregory Petrosyan)
-fn.name [fn.name-1.1.0.tgz] (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
-for-each [for-each-0.3.5.tgz] (Copyright 2012 Raynos)
-format [format-0.2.2.tgz] (Copyright 2010-2014 Sami Samhuri sami@samhuri.net)
-fs-extra [fs-extra-9.1.0.tgz] (Copyright 2011-2017 JP Richardson)
-function-bind [function-bind-1.1.2.tgz] (Copyright 2013 Raynos)
-get-intrinsic [get-intrinsic-1.3.0.tgz] (Copyright 2020 Jordan Harband)
-get-proto [get-proto-1.0.1.tgz] (Copyright 2025 Jordan Harband)
-get-stream [get-stream-5.2.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-globals [globals-11.12.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-gopd [gopd-1.2.0.tgz] (Copyright 2022 Jordan Harband)
-got [got-11.8.6.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+ansi-regex (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+ansi-styles (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+argparse (Copyright 2012 Vitaly Puzrin" (https://github.com/puzrin)) (Copyright 2012 [Vitaly Puzrin](https://github.com/puzrin)) (Copyright 2012 by Vitaly Puzrin)
+async (Copyright 2010-2018 Caolan McMahon)
+autolinker (Copyright 2014 Gregory Jacobs (http://greg-jacobs.com))
+available-typed-arrays (Copyright 2020 Inspect JS)
+base64-js (Copyright 2014 Jameson Little)
+bootstrap (Copyright 2011-2021 The Bootstrap Authors) (Copyright 2011-2021 Twitter, Inc) (Copyright 2011-2021 ode and documentation copyright) (Copyright and license" (#copyright-and-license))
+braces (Copyright 2014 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
+buffer (Copyright Feross Aboukhadijeh, and other contributors)
+cacheable-lookup (Copyright 2019 Szymon Marczak)
+cacheable-request (Copyright 2017 Luke Childs)
+call-bind (Copyright 2020 Jordan Harband)
+call-bind-apply-helpers (Copyright 2024 Jordan Harband)
+call-bound (Copyright 2024 Jordan Harband)
+chalk (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+character-entities (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+character-entities-legacy (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+character-reference-invalid (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+ci-info (Copyright 2016-2018 Thomas Watson Steen)
+classnames (Copyright 2018 Jed Watson)
+clone (Copyright 2015 Paul Vorbach)
+clone-response (Copyright 2017 Luke Childs) (Copyright Luke Childs)
+color (Copyright 2012 Heather Arthur)
+color-convert (Copyright 2011-2016 Heather Arthur <fayearthur@gmail.com>) (Copyright 2011-2016 Heather Arthur and Josh Junon)
+color-name (Copyright 2015 Dmitry Ivanov)
+color-string (Copyright 2011 Heather Arthur <fayearthur@gmail.com>)
+colorspace (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
+comma-separated-tokens (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+copy-to-clipboard (Copyright 2017 sudodoki <smd.deluzion@gmail.com>)
+core-js (Copyright 2013-2025 Denis Pushkarev) (Copyright 2025-2026 CoreJS Company)
+core-js-pure (Copyright 2013-2025 Denis Pushkarev) (Copyright 2025-2026 CoreJS Company)
+crypto-random-string (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+css.escape (Copyright Mathias Bynens <https://mathiasbynens.be/>)
+debug (Copyright 2014-2017 TJ Holowaychuk <tj@vision-media.ca>) (Copyright 2018-2021 Josh Junon)
+decode-named-character-reference (Copyright Titus Wormer) (Copyright Titus Wormer <tituswormer@gmail.com>)
+decompress-response (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+deep-extend (Copyright 2013-2018 Viacheslav Lotsmanov)
+deepmerge (Copyright 2012 James Halliday, Josh Duff, and other contributors)
+defer-to-connect (Copyright 2018 Szymon Marczak)
+define-data-property (Copyright 2023 Jordan Harband)
+dot-prop (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+drange (Copyright 2014 David Tudury)
+dunder-proto (Copyright 2024 ECMAScript Shims)
+emoji-regex (Copyright Mathias Bynens <https://mathiasbynens.be/>)
+enabled (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
+end-of-stream (Copyright 2014 Mathias Buus)
+es-define-property (Copyright 2024 Jordan Harband)
+es-errors (Copyright 2024 Jordan Harband)
+es-object-atoms (Copyright 2024 Jordan Harband)
+escalade (Copyright Luke Edwards) (Copyright Luke Edwards <luke.edwards05@gmail.com> (lukeed.com))
+fast-fifo (Copyright 2019 Mathias Buus)
+fast-glob (Copyright Denis Malinochkin)
+fast-json-patch (Copyright 2013-2020 Joachim Wester)
+fault (Copyright 2015 Titus Wormer <tituswormer@gmail.com>)
+fecha (Copyright 1971-2030 td>) (Copyright 2014 rd,) (Copyright 2015 Taylor Hakes) (parse('November 4, 2005', 'longDate'); // new Date(2005, 10, 4))
+fill-range (Copyright 2014 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
+flatpickr (Copyright 2017 Gregory Petrosyan)
+fn.name (Copyright 2015 Arnout Kazemier, Martijn Swaagman, the Contributors)
+for-each (Copyright 2012 Raynos)
+format (Copyright 2010-2014 Sami Samhuri sami@samhuri.net)
+fs-extra (Copyright 2011-2017 JP Richardson)
+function-bind (Copyright 2013 Raynos)
+get-intrinsic (Copyright 2020 Jordan Harband)
+get-proto (Copyright 2025 Jordan Harband)
+get-stream (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+globals (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+gopd (Copyright 2022 Jordan Harband)
+got (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
 graphql-java (Copyright 2015 Andreas Marek and Contributors) (Copyright 2015 Andreas Marek and Contributors Permission is hereby granted, free of charge, to any person obtaining)
-has-property-descriptors [has-property-descriptors-1.0.2.tgz] (Copyright 2022 Inspect JS)
-has-symbols [has-symbols-1.1.0.tgz] (Copyright 2016 Jordan Harband)
-has-tostringtag [has-tostringtag-1.0.2.tgz] (Copyright 2021 Inspect JS)
-hasown [hasown-2.0.2.tgz] (Copyright Jordan Harband and contributors)
-hast-util-parse-selector [hast-util-parse-selector-4.0.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-hastscript [hastscript-9.0.1.tgz] (Copyright Titus Wormer) (Copyright Titus Wormer <tituswormer@gmail.com>)
-http2-wrapper [http2-wrapper-1.0.3.tgz] (Copyright 2018 Szymon Marczak)
-immutable [immutable-3.8.2.tgz] (Copyright 2014 Facebook, Inc)
-imurmurhash [imurmurhash-0.1.4.tgz] (Copyright 2013 Gary Court, Jens Taylor)
-invariant [invariant-2.2.4.tgz] (Copyright 2013 Facebook, Inc)
-is-alphabetical [is-alphabetical-2.0.1.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-is-alphanumerical [is-alphanumerical-2.0.1.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-is-arrayish [is-arrayish-0.3.2.tgz] (Copyright 2015 JD Ballard)
-is-callable [is-callable-1.2.7.tgz] (Copyright 2015 Jordan Harband)
-is-decimal [is-decimal-2.0.1.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-is-extglob [is-extglob-2.1.1.tgz] (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](https://github.com/jonschlinkert))
-is-fullwidth-code-point [is-fullwidth-code-point-3.0.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-is-glob [is-glob-4.0.3.tgz] (Copyright 2014-2017 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
-is-hexadecimal [is-hexadecimal-2.0.1.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-is-number [is-number-7.0.0.tgz] (Copyright 2014 Jon Schlinkert) (Copyright 2018 Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2018 [Jon Schlinkert](https://github.com/jonschlinkert))
-is-obj [is-obj-2.0.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-is-stream [is-stream-2.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-is-typed-array [is-typed-array-1.1.15.tgz] (Copyright 2015 Jordan Harband)
-is-typedarray [is-typedarray-1.0.0.tgz] (Copyright Hugh Kennedy)
-isarray [isarray-2.0.5.tgz] (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
-jquery [jquery-3.5.1.min.js] (Copyright 2020 OpenJS Foundation and jQuery contributors)
-jquery [jquery-3.5.1.tgz] (Copyright JS Foundation and other contributors, https://js.foundation/)
-js-file-download [js-file-download-0.4.12.tgz] (Copyright 2017 Kenneth Jiang)
-js-tokens [js-tokens-4.0.0.tgz] (Copyright 2014-2015 2016, 2017, 2018 Simon Lydell) (Copyright 2014-2018 Simon Lydell)
-js-yaml [js-yaml-4.1.1.tgz] (Copyright 2011-2015 Vitaly Puzrin)
-jsesc [jsesc-3.1.0.tgz] (Copyright Mathias Bynens <https://mathiasbynens.be/>)
-json-buffer [json-buffer-3.0.1.tgz] (Copyright 2013 Dominic Tarr)
-jsonfile [jsonfile-6.1.0.tgz] (Copyright 2012-2015 JP Richardson <jprichardson@gmail.com>) (Copyright 2012-2016 JP Richardson)
-keyv [keyv-4.5.4.tgz] (Copyright Jared Wray)
-kuler [kuler-2.0.0.tgz] (Copyright 2014 Arnout Kazemier)
-lodash [lodash-4.17.23.tgz] (Copyright OpenJS Foundation and other contributors <https://openjsf.org/>)
-lodash.debounce [lodash.debounce-4.0.8.tgz] (Copyright jQuery Foundation and other contributors <https://jquery.org/>)
-logform [logform-2.7.0.tgz] (Copyright 2017 Charlie Robbins & the Contributors)
-loose-envify [loose-envify-1.4.0.tgz] (Copyright 2015 Andres Suarez <zertosh@gmail.com>)
-lowercase-keys [lowercase-keys-2.0.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-lowlight [lowlight-1.20.0.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-make-dir [make-dir-3.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-math-intrinsics [math-intrinsics-1.1.0.tgz] (Copyright 2024 ECMAScript Shims)
-merge2 [merge2-1.4.1.tgz] (Copyright 2014-2020 Teambition)
-micromatch [micromatch-4.0.8.tgz] (Copyright 2014 Jon Schlinkert) (Copyright 2024 Jon Schlinkert" (https://github.com/jonschlinkert))
-mimic-response [mimic-response-1.0.1.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-mimic-response [mimic-response-3.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-minim [minim-0.23.8.tgz] (Copyright 2014 Stephen Mizell)
-minimist [minimist-1.2.8.tgz](Copyright Not Found)
-ms [ms-2.1.3.tgz] (Copyright 2020 Vercel, Inc)
-neotraverse [neotraverse-0.6.18.tgz] (Copyright 2010 James Halliday and contributors)
-node-abort-controller [node-abort-controller-3.1.1.tgz] (Copyright 2019 Steve Faulkner)
-node-addon-api [node-addon-api-8.5.0.tgz] (Copyright 2017 Node.js API collaborators" (https://github.com/nodejs/node-addon-api#collaborators))
-node-domexception [node-domexception-1.0.0.tgz] (Copyright 2021 Jimmy WÃ¤rting)
-node-fetch-commonjs [node-fetch-commonjs-3.3.2.tgz] (Copyright 2016-2020 Node Fetch Team)
-node-gyp-build [node-gyp-build-4.8.4.tgz] (Copyright 2017 Mathias Buus)
-normalize-url [normalize-url-6.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-object-assign [object-assign-4.1.1.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-one-time [one-time-1.0.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-p-cancelable [p-cancelable-2.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-parse-entities [parse-entities-4.0.2.tgz] (Copyright Titus Wormer) (Copyright Titus Wormer <mailto:tituswormer@gmail.com>)
-picomatch [picomatch-2.3.1.tgz] (Copyright 2017 Jon Schlinkert) (Copyright 2017 Jon Schlinkert" (https://github.com/jonschlinkert))
-possible-typed-array-names [possible-typed-array-names-1.1.0.tgz] (Copyright 2024 Jordan Harband)
-process [process-0.11.10.tgz] (Copyright 2013 Roman Shtylman <shtylman@gmail.com>)
-prop-types [prop-types-15.8.1.tgz] (Copyright 2013 Facebook, Inc)
-property-information [property-information-7.1.0.tgz] (Copyright Facebook, Inc.) (Copyright Titus Wormer) (Copyright Titus Wormer <mailto:tituswormer@gmail.com>)
-pump [pump-3.0.2.tgz] (Copyright 2014 Mathias Buus)
-querystringify [querystringify-2.2.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-queue-microtask [queue-microtask-1.2.3.tgz] (Copyright Feross Aboukhadijeh)
-quick-lru [quick-lru-5.1.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-ramda [ramda-0.30.1.tgz] (Copyright 2013-2024 Scott Sauyet and Michael Hurley) (Copyright 2014 J. C. Phillipps)
-randexp [randexp-0.5.3.tgz] (Copyright 2011 by fent)
-randombytes [randombytes-2.1.0.tgz] (Copyright 2017 crypto-browserify)
-react [react-18.3.1.tgz] (Copyright Facebook, Inc. and its affiliates)
-react-copy-to-clipboard [react-copy-to-clipboard-5.1.0.tgz] (Copyright 2016 Nik Butenko)
-react-debounce-input [react-debounce-input-3.3.0.tgz] (Copyright 2016 Nik Butenko)
-react-dom [react-dom-18.3.1.tgz] (Copyright Facebook, Inc. and its affiliates)
-react-immutable-proptypes [react-immutable-proptypes-2.2.0.tgz] (Copyright 2015 James Burnett)
-react-immutable-pure-component [react-immutable-pure-component-2.2.2.tgz] (Copyright 2017 Piotr Tomasz Monarski)
-react-inspector [react-inspector-6.0.2.tgz] (Copyright 2017 Xiaoyi Chen)
-react-is [react-is-16.13.1.tgz] (Copyright Facebook, Inc. and its affiliates)
-react-redux [react-redux-9.2.0.tgz] (Copyright 2015 Dan Abramov)
-react-syntax-highlighter [react-syntax-highlighter-16.1.0.tgz] (Copyright 2019 Conor Hastings)
-readable-stream [readable-stream-3.6.2.tgz] (Copyright Node.js contributors)
-redux [redux-5.0.1.tgz] (Copyright 2015 Dan Abramov)
-refractor [refractor-5.0.0.tgz] (Copyright Lea Verou) (Copyright Titus Wormer) (Copyright Titus Wormer <tituswormer@gmail.com>)
-regenerator-runtime [regenerator-runtime-0.14.1.tgz] (Copyright 2014 Facebook, Inc)
-remarkable [remarkable-2.0.1.tgz] (Copyright 2014 Jon Schlinkert, Vitaly Puzrin) (Copyright 2014-2016 Jon Schlinkert)
-repeat-string [repeat-string-1.6.1.tgz] (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
-replace-ext [replace-ext-2.0.0.tgz] (Copyright 2014-2020 Blaine Bublitz <blaine.bublitz@gmail.com>, Eric Schoffstall <yo@contra.io> and o)
-require-directory [require-directory-2.1.1.tgz] (Copyright 2011 Troy Goode <troygoode@gmail.com>)
-requires-port [requires-port-1.0.0.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-reselect [reselect-5.1.1.tgz] (Copyright 2015-2018 Reselect Contributors)
-resolve-alpn [resolve-alpn-1.2.1.tgz] (Copyright 2018 Szymon Marczak)
-responselike [responselike-2.0.1.tgz] (Copyright 2017 Luke Childs) (Copyright Luke Childs)
-ret [ret-0.2.2.tgz] (Copyright 2011 by fent)
-reusify [reusify-1.0.4.tgz] (Copyright 2015 Matteo Collina)
-run-parallel [run-parallel-1.2.0.tgz] (Copyright Feross Aboukhadijeh)
-safe-buffer [safe-buffer-5.2.1.tgz] (Copyright Feross Aboukhadijeh)
-safe-stable-stringify [safe-stable-stringify-2.5.0.tgz] (Copyright Ruben Bridgewater)
-scheduler [scheduler-0.23.2.tgz] (Copyright Facebook, Inc. and its affiliates)
-serialize-error [serialize-error-8.1.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-set-function-length [set-function-length-1.2.2.tgz] (Copyright Jordan Harband and contributors)
-simple-swizzle [simple-swizzle-0.2.2.tgz] (Copyright 2015 Josh Junon)
-space-separated-tokens [space-separated-tokens-2.0.2.tgz] (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
-stack-trace [stack-trace-0.0.10.tgz] (Copyright 2011 Felix GeisendÃ¶rfer (felix@debuggable.com))
-stream-browserify [stream-browserify-3.0.0.tgz] (Copyright James Halliday)
-streamx [streamx-2.23.0.tgz] (Copyright 2019 Mathias Buus)
-string-width [string-width-4.2.3.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-string_decoder [string_decoder-1.3.0.tgz] (Copyright Node.js contributors)
-strip-ansi [strip-ansi-6.0.1.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-teex [teex-1.0.1.tgz] (Copyright 2020 Mathias Buus)
-text-hex [text-hex-1.0.0.tgz] (Copyright 2014-2015 Arnout Kazemier <opensource@3rd) (Copyright 2014-2015 Arnout Kazemier <opensource@3rd-Eden.com>)
-to-buffer [to-buffer-1.2.2.tgz] (Copyright 2016 Mathias Buus)
-to-regex-range [to-regex-range-5.0.1.tgz] (Copyright 2015 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
-toggle-selection [toggle-selection-1.0.6.tgz] (Copyright 2017.0 sudodoki)
-tree-sitter [tree-sitter-0.22.4.tgz] (Copyright 2014 maxbrunsfeld)
-tree-sitter-json [tree-sitter-json-0.24.8.tgz] (Copyright 2014 Max Brunsfeld)
-triple-beam [triple-beam-1.4.1.tgz] (Copyright 2017 winstonjs)
-ts-mixer [ts-mixer-6.0.4.tgz] (Copyright 2024 Tanner Nielsen)
-type-fest [type-fest-0.20.2.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com))
-typed-array-buffer [typed-array-buffer-1.0.3.tgz] (Copyright 2023 Jordan Harband)
-typedarray-to-buffer [typedarray-to-buffer-3.1.5.tgz] (Copyright Feross Aboukhadijeh) (Copyright Feross Aboukhadijeh" (http://feross.org))
-types-ramda [types-ramda-0.30.1.tgz] (Copyright 2013-2023 Scott Sauyet and Michael Hurley)
-undici-types [undici-types-6.20.0.tgz] (Copyright Matteo Collina and Undici contributors)
-unique-string [unique-string-2.0.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-universalify [universalify-2.0.1.tgz] (Copyright 2017 Ryan Zimmerman <opensrc@ryanzim.com>)
-unraw [unraw-3.0.0.tgz] (Copyright 2019 Ian Sanders)
-url-parse [url-parse-1.5.10.tgz] (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
-use-sync-external-store [use-sync-external-store-1.6.0.tgz] (Copyright Meta Platforms, Inc. and affiliates)
-util-deprecate [util-deprecate-1.0.2.tgz] (Copyright 2014 Nathan Rajlich "nathan@tootallnate.net" (mailto:nathan@tootallnate.net)) (Copyright 2014 Nathan Rajlich <nathan@tootallnate.net>)
-vinyl [vinyl-3.0.1.tgz] (Copyright 2013-2022 Blaine Bublitz <blaine.bublitz@gmail.com> and Eric Schoffstall)
-web-streams-polyfill [web-streams-polyfill-3.3.3.tgz] (Copyright 2016 Diwank Singh Tomer) (Copyright 2024 Mattias Buelens)
-web-tree-sitter [web-tree-sitter-0.24.5.tgz] (Copyright 2018-2024 Max Brunsfeld)
-which-typed-array [which-typed-array-1.1.20.tgz] (Copyright 2015 Jordan Harband)
-winston [winston-3.17.0.tgz] (Copyright 2010 Charlie Robbins)
-winston-transport [winston-transport-4.9.0.tgz] (Copyright 2015 Charlie Robbins & the contributors)
-wrap-ansi [wrap-ansi-7.0.0.tgz] (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
-xdg-basedir [xdg-basedir-4.0.0.tgz] (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
-xml [xml-1.0.1.tgz] (Copyright 2011-2016 Dylan Greene <dylang@gmail.com>)
-xml-but-prettier [xml-but-prettier-1.0.1.tgz] (Copyright 2015 Jonathan Persson)
-yargs [yargs-16.2.0.tgz] (Copyright 2010-2014 Contributors)
+has-property-descriptors (Copyright 2022 Inspect JS)
+has-symbols (Copyright 2016 Jordan Harband)
+has-tostringtag (Copyright 2021 Inspect JS)
+hasown (Copyright Jordan Harband and contributors)
+hast-util-parse-selector (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+hastscript (Copyright Titus Wormer) (Copyright Titus Wormer <tituswormer@gmail.com>)
+http2-wrapper (Copyright 2018 Szymon Marczak)
+immutable (Copyright 2014 Facebook, Inc)
+imurmurhash (Copyright 2013 Gary Court, Jens Taylor)
+invariant (Copyright 2013 Facebook, Inc)
+is-alphabetical (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-alphanumerical (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-arrayish (Copyright 2015 JD Ballard)
+is-callable (Copyright 2015 Jordan Harband)
+is-decimal (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-extglob (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](https://github.com/jonschlinkert))
+is-fullwidth-code-point (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+is-glob (Copyright 2014-2017 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
+is-hexadecimal (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+is-number (Copyright 2014 Jon Schlinkert) (Copyright 2018 Jon Schlinkert" (https://github.com/jonschlinkert)) (Copyright 2018 [Jon Schlinkert](https://github.com/jonschlinkert))
+is-obj (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+is-stream (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+is-typed-array (Copyright 2015 Jordan Harband)
+is-typedarray (Copyright Hugh Kennedy)
+isarray (Copyright 2013 Julian Gruber <julian@juliangruber.com>)
+jquery (Copyright 2020 OpenJS Foundation and jQuery contributors)
+jquery (Copyright JS Foundation and other contributors, https://js.foundation/)
+js-file-download (Copyright 2017 Kenneth Jiang)
+js-tokens (Copyright 2014-2015 2016, 2017, 2018 Simon Lydell) (Copyright 2014-2018 Simon Lydell)
+js-yaml (Copyright 2011-2015 Vitaly Puzrin)
+jsesc (Copyright Mathias Bynens <https://mathiasbynens.be/>)
+json-buffer (Copyright 2013 Dominic Tarr)
+jsonfile (Copyright 2012-2015 JP Richardson <jprichardson@gmail.com>) (Copyright 2012-2016 JP Richardson)
+keyv (Copyright Jared Wray)
+kuler (Copyright 2014 Arnout Kazemier)
+lodash (Copyright OpenJS Foundation and other contributors <https://openjsf.org/>)
+lodash.debounce (Copyright jQuery Foundation and other contributors <https://jquery.org/>)
+logform (Copyright 2017 Charlie Robbins & the Contributors)
+loose-envify (Copyright 2015 Andres Suarez <zertosh@gmail.com>)
+lowercase-keys (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+lowlight (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+make-dir (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+math-intrinsics (Copyright 2024 ECMAScript Shims)
+merge2 (Copyright 2014-2020 Teambition)
+micromatch (Copyright 2014 Jon Schlinkert) (Copyright 2024 Jon Schlinkert" (https://github.com/jonschlinkert))
+mimic-response (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+mimic-response (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+minim (Copyright 2014 Stephen Mizell)
+minimist(Copyright (c) Vadim Demedes vdemedes@gmail.com (vadimdemedes.com))
+ms (Copyright 2020 Vercel, Inc)
+neotraverse (Copyright 2010 James Halliday and contributors)
+node-abort-controller (Copyright 2019 Steve Faulkner)
+node-addon-api (Copyright 2017 Node.js API collaborators" https://github.com/nodejs/node-addon-api#collaborators)
+node-domexception (Copyright 2021 Jimmy WÃ¤rting)
+node-fetch-commonjs (Copyright 2016-2020 Node Fetch Team)
+node-gyp-build (Copyright 2017 Mathias Buus)
+normalize-url (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+object-assign (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+one-time (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
+p-cancelable (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+parse-entities (Copyright Titus Wormer) (Copyright Titus Wormer <mailto:tituswormer@gmail.com>)
+picomatch (Copyright 2017 Jon Schlinkert) (Copyright 2017 Jon Schlinkert" (https://github.com/jonschlinkert))
+possible-typed-array-names (Copyright 2024 Jordan Harband)
+process (Copyright 2013 Roman Shtylman <shtylman@gmail.com>)
+prop-types (Copyright 2013 Facebook, Inc)
+property-information (Copyright Facebook, Inc.) (Copyright Titus Wormer) (Copyright Titus Wormer <mailto:tituswormer@gmail.com>)
+pump (Copyright 2014 Mathias Buus)
+querystringify (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
+queue-microtask (Copyright Feross Aboukhadijeh)
+quick-lru (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+ramda (Copyright 2013-2024 Scott Sauyet and Michael Hurley) (Copyright 2014 J. C. Phillipps)
+randexp (Copyright 2011 by fent)
+randombytes (Copyright 2017 crypto-browserify)
+react (Copyright Facebook, Inc. and its affiliates)
+react-copy-to-clipboard (Copyright 2016 Nik Butenko)
+react-debounce-input (Copyright 2016 Nik Butenko)
+react-dom (Copyright Facebook, Inc. and its affiliates)
+react-immutable-proptypes (Copyright 2015 James Burnett)
+react-immutable-pure-component (Copyright 2017 Piotr Tomasz Monarski)
+react-inspector (Copyright 2017 Xiaoyi Chen)
+react-is (Copyright Facebook, Inc. and its affiliates)
+react-redux (Copyright 2015 Dan Abramov)
+react-syntax-highlighter (Copyright 2019 Conor Hastings)
+readable-stream (Copyright Node.js contributors)
+redux (Copyright 2015 Dan Abramov)
+refractor (Copyright Lea Verou) (Copyright Titus Wormer) (Copyright Titus Wormer <tituswormer@gmail.com>)
+regenerator-runtime (Copyright 2014 Facebook, Inc)
+remarkable (Copyright 2014 Jon Schlinkert, Vitaly Puzrin) (Copyright 2014-2016 Jon Schlinkert)
+repeat-string (Copyright 2014-2015 Jon Schlinkert) (Copyright 2014-2016 Jon Schlinkert) (Copyright 2016 Jon Schlinkert" (http://github.com/jonschlinkert)) (Copyright 2016 [Jon Schlinkert](http://github.com/jonschlinkert))
+replace-ext (Copyright 2014-2020 Blaine Bublitz <blaine.bublitz@gmail.com>, Eric Schoffstall <yo@contra.io> and o)
+require-directory (Copyright 2011 Troy Goode <troygoode@gmail.com>)
+requires-port (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
+reselect (Copyright 2015-2018 Reselect Contributors)
+resolve-alpn (Copyright 2018 Szymon Marczak)
+responselike (Copyright 2017 Luke Childs) (Copyright Luke Childs)
+ret (Copyright 2011 by fent)
+reusify (Copyright 2015 Matteo Collina)
+run-parallel (Copyright Feross Aboukhadijeh)
+safe-buffer (Copyright Feross Aboukhadijeh)
+safe-stable-stringify (Copyright Ruben Bridgewater)
+scheduler (Copyright Facebook, Inc. and its affiliates)
+serialize-error (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+set-function-length (Copyright Jordan Harband and contributors)
+sha.js (Copyright 1998-2009 Paul Johnston) (Copyright 2013-2018 sha.js contributors)
+simple-swizzle (Copyright 2015 Josh Junon)
+space-separated-tokens (Copyright 2016 Titus Wormer <tituswormer@gmail.com>)
+stack-trace (Copyright 2011 Felix GeisendÃ¶rfer (felix@debuggable.com))
+stream-browserify (Copyright James Halliday)
+streamx (Copyright 2019 Mathias Buus)
+string-width (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+string_decoder (Copyright Node.js contributors)
+strip-ansi (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+teex (Copyright 2020 Mathias Buus)
+text-hex (Copyright 2014-2015 Arnout Kazemier <opensource@3rd) (Copyright 2014-2015 Arnout Kazemier <opensource@3rd-Eden.com>)
+to-buffer (Copyright 2016 Mathias Buus)
+to-regex-range (Copyright 2015 Jon Schlinkert) (Copyright 2019 Jon Schlinkert" (https://github.com/jonschlinkert))
+toggle-selection (Copyright 2017.0 sudodoki)
+tree-sitter (Copyright 2014 maxbrunsfeld)
+tree-sitter-json (Copyright 2014 Max Brunsfeld)
+triple-beam (Copyright 2017 winstonjs)
+ts-mixer (Copyright 2024 Tanner Nielsen)
+type-fest (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https:/sindresorhus.com))
+typed-array-buffer (Copyright 2023 Jordan Harband)
+typedarray-to-buffer (Copyright Feross Aboukhadijeh) (Copyright Feross Aboukhadijeh" (http://feross.org))
+types-ramda (Copyright 2013-2023 Scott Sauyet and Michael Hurley)
+undici-types (Copyright Matteo Collina and Undici contributors)
+unique-string (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+universalify (Copyright 2017 Ryan Zimmerman <opensrc@ryanzim.com>)
+unraw (Copyright 2019 Ian Sanders)
+url-parse (Copyright 2015 Unshift.io, Arnout Kazemier,  the Contributors)
+use-sync-external-store (Copyright Meta Platforms, Inc. and affiliates)
+util-deprecate (Copyright 2014 Nathan Rajlich "nathan@tootallnate.net" (mailto:nathan@tootallnate.net)) (Copyright 2014 Nathan Rajlich <nathan@tootallnate.net>)
+vinyl (Copyright 2013-2022 Blaine Bublitz <blaine.bublitz@gmail.com> and Eric Schoffstall)
+web-streams-polyfill (Copyright 2016 Diwank Singh Tomer) (Copyright 2024 Mattias Buelens)
+web-tree-sitter (Copyright 2018-2024 Max Brunsfeld)
+which-typed-array (Copyright 2015 Jordan Harband)
+winston (Copyright 2010 Charlie Robbins)
+winston-transport (Copyright 2015 Charlie Robbins & the contributors)
+wrap-ansi (Copyright Sindre Sorhus <sindresorhus@gmail.com> (https://sindresorhus.com))
+xdg-basedir (Copyright Sindre Sorhus) (Copyright Sindre Sorhus <sindresorhus@gmail.com> (sindresorhus.com))
+xml (Copyright 2011-2016 Dylan Greene <dylang@gmail.com>)
+xml-but-prettier (Copyright 2015 Jonathan Persson)
+yargs (Copyright 2010-2014 Contributors)
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the "Software"),
@@ -1796,7 +1814,7 @@ Python License, Version 2
 The Program includes some or all of the following that IBM obtained
 under the Python License, Version 2:
 
-argparse [argparse-2.0.1.tgz]
+argparse
 
 
 

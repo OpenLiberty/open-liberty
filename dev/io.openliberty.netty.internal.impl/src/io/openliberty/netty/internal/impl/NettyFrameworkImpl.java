@@ -81,6 +81,9 @@ import io.openliberty.netty.internal.tcp.TCPConfigurationImpl;
 import io.openliberty.netty.internal.tcp.TCPUtils;
 import io.openliberty.netty.internal.udp.UDPUtils;
 
+import io.openliberty.netty.internal.tcp.LibertyNioServerSocketChannel;
+import io.openliberty.netty.internal.tcp.LibertyNioSocketChannel;
+
 /**
  * Liberty NettyFramework implementation bundle
  */
@@ -240,7 +243,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         } else if (useNativeIO && KQueue.isAvailable()){
             return KQueueServerSocketChannel.class;
         } else {
-            return NioServerSocketChannel.class;
+            return LibertyNioServerSocketChannel.class;
         }
     }
 
@@ -253,7 +256,7 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         } else if (useNativeIO && KQueue.isAvailable()){
             return KQueueSocketChannel.class;
         } else {
-            return NioSocketChannel.class;
+            return LibertyNioSocketChannel.class;
         }
     }
 

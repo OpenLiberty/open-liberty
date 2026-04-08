@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Ujist\u011bte se, \u017ee z\u00e1hlav\u00ed al
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: Webov\u00e9 \u0161ifrov\u00e1n\u00ed JSON (JWE) nen\u00ed platn\u00e9, proto\u017ee jeho \u0161ifrovac\u00ed kl\u00ed\u010d obsahu (CEK) byl za\u0161ifrov\u00e1n pomoc\u00ed algoritmu {0}. \u0160ifrovac\u00ed kl\u00ed\u010de obsahu mus\u00ed b\u00fdt za\u0161ifrov\u00e1ny pomoc\u00ed algoritmu {1}.
 JWE_ALGORITHM_MISMATCH.explanation=\u0160ifrovac\u00ed kl\u00ed\u010de obsahu mus\u00ed b\u00fdt za\u0161ifrov\u00e1ny pomoc\u00ed algoritmu uveden\u00e9ho ve zpr\u00e1v\u011b. \u0160ifrovac\u00ed kl\u00ed\u010de obsahu, kter\u00e9 jsou za\u0161ifrov\u00e1ny pomoc\u00ed jak\u00e9hokoli jin\u00e9ho \u0161ifrovac\u00edho algoritmu, nelze ov\u011b\u0159it.
 JWE_ALGORITHM_MISMATCH.useraction=Z\u00edskejte nov\u00fd token s \u0161ifrovac\u00edm kl\u00ed\u010dem obsahu, kter\u00fd je za\u0161ifrov\u00e1n pomoc\u00ed vy\u017eadovan\u00e9ho algoritmu, kter\u00fd je uveden ve zpr\u00e1v\u011b. P\u0159\u00edpadn\u011b aktualizujte konfiguraci JWT tak, aby povolovala tokeny se \u0161ifrovac\u00edmi kl\u00ed\u010di obsahu, kter\u00e9 jsou za\u0161ifrov\u00e1ny pomoc\u00ed jin\u00e9ho \u0161ifrovac\u00edho algoritmu.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Nelze na\u010d\u00edst polo\u017eky d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f z \u00falo\u017ei\u0161t\u011b [ {0} ]. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=P\u0159i pokusu syst\u00e9mu o na\u010dten\u00ed seznamu polo\u017eek d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f ze zadan\u00e9ho \u00falo\u017ei\u0161t\u011b d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f do\u0161lo k chyb\u011b. V konfiguraci mo\u017en\u00e1 chyb\u00ed \u00falo\u017ei\u0161t\u011b certifik\u00e1t\u016f, p\u0159\u00edpadn\u011b m\u016f\u017ee p\u0159\u00edstup k tomuto \u00falo\u017ei\u0161ti br\u00e1nit n\u011bjak\u00e1 chyba.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Zkontrolujte, zda je \u00falo\u017ei\u0161t\u011b certifik\u00e1t\u016f spr\u00e1vn\u011b nastaveno v konfiguraci serveru a zda je k n\u011bmu zaji\u0161t\u011bn p\u0159\u00edstup. Dal\u0161\u00ed informace o t\u00e9to chyb\u011b najdete v chybov\u00e9 zpr\u00e1v\u011b.
+
+

@@ -82,7 +82,9 @@ public class ArtifactDownloaderUtils {
         for (String url : featureURLs) {
             Future<?> future = executor.submit(() -> {
                 try {
-                    if (exists(url, envMap, repository) != HttpURLConnection.HTTP_OK) {
+                    int code = exists(url, envMap, repository);
+                    if (code != HttpURLConnection.HTTP_OK) {
+                        logger.fine("Unable to download feature from " + url + ". HTTP response code: " + code);
                         result.add(url);
                     }
                 } catch (IOException e) {

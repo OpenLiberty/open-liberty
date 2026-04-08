@@ -5,7 +5,7 @@ IBM-App-ForceRestart: install, \
 IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.ejbLiteCore-2.0))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.persistenceContainer-3.0)(osgi.identity=io.openliberty.persistenceContainer-3.1)(osgi.identity=io.openliberty.persistenceContainer-3.2)))"
 IBM-Install-Policy: when-satisfied
--bundles=com.ibm.ws.ejbcontainer.jpa.jakarta
+-bundles=com.ibm.ws.ejbcontainer.jpa
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

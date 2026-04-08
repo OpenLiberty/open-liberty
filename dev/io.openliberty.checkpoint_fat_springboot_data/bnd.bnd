@@ -32,5 +32,6 @@ fat.project: true
   com.ibm.ws.kernel.boot,\
   io.openliberty.org.testcontainers;version=latest,\
   io.openliberty.checkpoint.springboot.fat30.data.app;version=latest,\
+  io.openliberty.checkpoint.springboot.fat40.data.app;version=latest,\
   org.postgresql:postgresql;version=42.7.2
 

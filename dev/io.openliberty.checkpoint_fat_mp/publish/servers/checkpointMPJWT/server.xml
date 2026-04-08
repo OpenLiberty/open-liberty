@@ -28,5 +28,7 @@
     <variable id = "audience" name = "audience" value ="audience1" />
     <variable id = "clockSkew" name = "clockSkew" value ="500000" />
     <mpJwt id="myMpJwt" tokenHeader="Authorization" issuer="${issuer}" audiences="${audience}" publickeyAlgorithm="RS256" cookieName="Bearer" clockSkew="${clockSkew}" />
-            
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

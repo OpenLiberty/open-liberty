@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: Modulul pentru procesarea rolurilor de securitate
 JACC_NO_WEB_PLUGIN.explanation=Serviciul JACC nu poate procesa rolurile de securitate Web deoarece modulul necesar nu este disponibil.
 JACC_NO_WEB_PLUGIN.useraction=Examina\u0163i istoricele de furnizor JACC \u015fi istoricele de server pentru mai multe informa\u0163ii.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: Serviciul de autorizare Jakarta nu poate seta clasa furnizorului {0} {1} din aplica\u021bia {2} din cauza excep\u021biei {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=Serviciul de autorizare Jakarta nu poate seta clasa furnizorului din cauza excep\u021biei.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Consulta\u021bi jurnalele furnizorului \u0219i jurnalele serverului pentru mai multe informa\u021bii.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: Serviciul de autorizare Jakarta a configurat clasa de furnizor \u201e {0} \u201d {1} definit\u0103 \u00een aplica\u021bia {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Acest mesaj are doar scop informa\u0163ional.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: Serviciul de autorizare din Jakarta a eliminat clasa de furnizor \u201e {0} \u201d {1} definit\u0103 \u00een aplica\u021bia {2}.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Acest mesaj are doar scop informa\u0163ional.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Nu este necesar\u0103 nicio ac\u0163iune.

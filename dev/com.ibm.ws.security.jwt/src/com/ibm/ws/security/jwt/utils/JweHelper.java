@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -159,7 +159,7 @@ public class JweHelper {
     }
 
     static String getJwePayload(String jweString, JwtConsumerConfig config, MpConfigProperties mpConfigProps, JwtClaims jweHeaderParameters) throws Exception {
-        Key decryptionKey = getJweDecryptionKey(config, mpConfigProps, (String) jweHeaderParameters.getClaimValue("kid"));
+        Key decryptionKey = getJweDecryptionKey(config, mpConfigProps, (String) jweHeaderParameters.getClaimValue("kid"), (String) jweHeaderParameters.getClaimValue("alg"));
         if (decryptionKey == null) {
             String errorMsg = Tr.formatMessage(tc, "JWE_DECRYPTION_KEY_MISSING", new Object[] { JwtUtils.CFG_KEY_KEY_MANAGEMENT_KEY_ALIAS, config.getKeyManagementKeyAlias() });
             throw new InvalidTokenException(errorMsg);
@@ -238,24 +238,24 @@ public class JweHelper {
     }
 
     @Sensitive
-    static Key getJweDecryptionKey(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
+    static Key getJweDecryptionKey(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid, String alg) throws Exception {
         Key key = config.getJweDecryptionKey();
         if (key != null) {
             // Server configuration takes precedence over MP Config property values
             return key;
         }
-        return getJweDecryptionKeyFromMpConfigProps(config, mpConfigProps, kid);
+        return getJweDecryptionKeyFromMpConfigProps(config, mpConfigProps, kid, alg);
     }
 
     @Sensitive
-    private static Key getJweDecryptionKeyFromMpConfigProps(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid) throws Exception {
+    private static Key getJweDecryptionKeyFromMpConfigProps(JwtConsumerConfig config, MpConfigProperties mpConfigProps, String kid, String alg) throws Exception {
         if (mpConfigProps == null) {
             return null;
         }
         String keyLocation = mpConfigProps.get(MpConfigProperties.DECRYPT_KEY_LOCATION);
         checkDecryptKeyLocationForInlineKey(keyLocation);
         JwKRetriever jwkRetriever = new JwKRetriever(config.getJwkSet());
-        jwkRetriever.setSignatureAlgorithm(mpConfigProps.getConfiguredSignatureAlgorithm(config));
+        jwkRetriever.setAlgorithm(alg);
         jwkRetriever.setKeyLocation(keyLocation);
         return jwkRetriever.getPrivateKeyFromJwk(kid, config.getUseSystemPropertiesForHttpClientConnections());
     }

@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Warning: {0}: attempt to close connection w
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Warning: {0}: attempt to close connection caused exception {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Warning: {0}: attempt to close subscriber caused exception {1}
+
 broadcast_ignored_command_while_closing_connection=Warning: {0}: ignoring request to publish command while connection is closing.
 
 broadcast_listening_sleep_on_error=Warning: {0}: Exception {1} was thrown. The thread will sleep for {2} milliseconds before resuming listening.

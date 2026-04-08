@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,6 +21,8 @@ import static org.junit.Assert.fail;
 import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -66,7 +68,7 @@ public class Jose4jUtilTest extends CommonTestClass {
         }
 
         @Override
-        public JwKRetriever createJwkRetriever(ConvergedClientConfig config) {
+        public JwKRetriever createJwkRetriever(ConvergedClientConfig config, String signatureAlgorithm) {
             return jwKRetriever;
         }
 
@@ -366,14 +368,8 @@ public class Jose4jUtilTest extends CommonTestClass {
 
     @Test
     public void testGetVerifyKey_signatureAlgorithmNone() {
-        mockery.checking(new Expectations() {
-            {
-                one(clientConfig).getSignatureAlgorithm();
-                will(returnValue(SIGNATURE_ALG_NONE));
-            }
-        });
         try {
-            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256");
+            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256", SIGNATURE_ALG_NONE);
             assertNull("Expected a null key but received " + keyValue, keyValue);
         } catch (Exception e) {
             outputMgr.failWithThrowable("testGetVerifyKey", e);
@@ -382,24 +378,179 @@ public class Jose4jUtilTest extends CommonTestClass {
 
     @Test
     public void testGetVerifyKey_nullJwkEndpointUrl() throws Exception {
+        final String trustStoreRef = "myTrustStore";
+        final String trustedAlias = "myTrustedAlias";
+        
         mockery.checking(new Expectations() {
             {
-                one(clientConfig).getSignatureAlgorithm();
-                will(returnValue(SIGNATURE_ALG_RS256));
                 one(clientConfig).getJwkEndpointUrl();
                 will(returnValue(null));
                 one(clientConfig).getJsonWebKey();
                 will(returnValue(null));
-                one(clientConfig).getPublicKey();
+                one(clientConfig).getTrustStoreRef();
+                will(returnValue(trustStoreRef));
+                one(clientConfig).getSignatureAlgorithm();
+                will(returnValue(SIGNATURE_ALG_RS256));
+                one(clientConfig).getTrustedAlias();
+                will(returnValue(trustedAlias));
+                one(clientConfig).getPublicKey(trustedAlias);
                 will(returnValue(publicKey));
             }
         });
         try {
-            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256");
+            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256", SIGNATURE_ALG_RS256);
             assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
         } catch (Exception e) {
-            outputMgr.failWithThrowable("testGetVerifyKey", e);
+            outputMgr.failWithThrowable("testGetVerifyKey_fromHeader_withAlgorithmPrefixedAlias", e);
         }
+    }
+
+    @Test
+    public void testGetVerifyKey_fromHeader_withAlgorithmPrefixedAlias() throws Exception {
+        final String trustStoreRef = "myTrustStore";
+        final String algorithmPrefixedAlias = "RS256_myAlias";
+        final Collection<String> aliases = Arrays.asList("someAlias", algorithmPrefixedAlias, "anotherAlias");
+        
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getJwkEndpointUrl();
+                will(returnValue(null));
+                one(clientConfig).getJsonWebKey();
+                will(returnValue(null));
+                one(clientConfig).getTrustStoreRef();
+                will(returnValue(trustStoreRef));
+                one(clientConfig).getSignatureAlgorithm();
+                will(returnValue(Constants.SIG_FROM_HEADER));
+                one(clientConfig).getTrustedCertAliases(trustStoreRef);
+                will(returnValue(aliases));
+                one(clientConfig).getPublicKey(algorithmPrefixedAlias);
+                will(returnValue(publicKey));
+            }
+        });
+        try {
+            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256", SIGNATURE_ALG_RS256);
+            assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
+        } catch (Exception e) {
+            outputMgr.failWithThrowable("testGetVerifyKey_fromHeader_withAlgorithmPrefixedAlias", e);
+        }
+    }
+
+    @Test
+    public void testGetVerifyKey_fromHeader_withConfiguredAlias() throws Exception {
+        final String trustStoreRef = "myTrustStore";
+        final String algorithmPrefixedAlias = "configuredAlias";
+        final Collection<String> aliases = Arrays.asList("someAlias", "anotherAlias");
+        
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getJwkEndpointUrl();
+                will(returnValue(null));
+                one(clientConfig).getJsonWebKey();
+                will(returnValue(null));
+                one(clientConfig).getTrustStoreRef();
+                will(returnValue(trustStoreRef));
+                one(clientConfig).getSignatureAlgorithm();
+                will(returnValue(Constants.SIG_FROM_HEADER));
+                one(clientConfig).getTrustedCertAliases(trustStoreRef);
+                will(returnValue(null));
+                one(clientConfig).getTrustedAlias();
+                will(returnValue(algorithmPrefixedAlias));
+                one(clientConfig).getPublicKey(algorithmPrefixedAlias);
+                will(returnValue(publicKey));
+            }
+        });
+        try {
+            Object keyValue = util.getVerifyKey(clientConfig, "kid", "x5t", "x5t#S256", SIGNATURE_ALG_RS256);
+            assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
+        } catch (Exception e) {
+            outputMgr.failWithThrowable("testGetVerifyKey_fromHeader_withAlgorithmPrefixedAlias", e);
+        }
+    }
+
+    /************************************** getAlgorithmPrefixedAlias **************************************/
+
+    @Test
+    public void testGetAlgorithmPrefixedAlias_MatchingAlias() throws Exception {
+        final String algorithm = "RS256";
+        final String trustStoreRef = "myTrustStore";
+        final Collection<String> aliases = Arrays.asList("someAlias", "rs256_myKey", "anotherAlias");
+        
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTrustedCertAliases(trustStoreRef);
+                will(returnValue(aliases));
+            }
+        });
+        
+        String result = util.getAlgorithmPrefixedAlias(algorithm, trustStoreRef, clientConfig);
+        assertEquals("Expected to find rs256_myKey alias", "rs256_myKey", result);
+    }
+
+    @Test
+    public void testGetAlgorithmPrefixedAlias_returnsFirstMatch() throws Exception {
+        final String algorithm = "RS256";
+        final String trustStoreRef = "myTrustStore";
+        final Collection<String> aliases = Arrays.asList("rs256_key1", "rs256_key2", "rs256_key3");
+        
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTrustedCertAliases(trustStoreRef);
+                will(returnValue(aliases));
+            }
+        });
+        
+        String result = util.getAlgorithmPrefixedAlias(algorithm, trustStoreRef, clientConfig);
+        assertEquals("Expected to find the first matching alias", "rs256_key1", result);
+    }
+
+    @Test
+    public void testGetAlgorithmPrefixedAlias_noMatchingAlias() throws Exception {
+        final String algorithm = "RS256";
+        final String trustStoreRef = "myTrustStore";
+        final Collection<String> aliases = Arrays.asList("es256_key1", "rs384_key1", "someOtherAlias");
+        
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTrustedCertAliases(trustStoreRef);
+                will(returnValue(aliases));
+            }
+        });
+        
+        String result = util.getAlgorithmPrefixedAlias(algorithm, trustStoreRef, clientConfig);
+        assertNull("Expected null when no matching alias found", result);
+    }
+
+    @Test
+    public void testGetAlgorithmPrefixedAlias_nullAliases() throws Exception {
+        final String algorithm = "RS256";
+        final String trustStoreRef = "myTrustStore";
+        
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTrustedCertAliases(trustStoreRef);
+                will(returnValue(null));
+            }
+        });
+        
+        String result = util.getAlgorithmPrefixedAlias(algorithm, trustStoreRef, clientConfig);
+        assertNull("Expected null when aliases collection is null", result);
+    }
+
+    @Test
+    public void testGetAlgorithmPrefixedAlias_emptyAliases() throws Exception {
+        final String algorithm = "RS256";
+        final String trustStoreRef = "myTrustStore";
+        final Collection<String> aliases = Collections.emptyList();
+        
+        mockery.checking(new Expectations() {
+            {
+                one(clientConfig).getTrustedCertAliases(trustStoreRef);
+                will(returnValue(aliases));
+            }
+        });
+        
+        String result = util.getAlgorithmPrefixedAlias(algorithm, trustStoreRef, clientConfig);
+        assertNull("Expected null when aliases collection is empty", result);
     }
 
     @Test
@@ -410,8 +561,6 @@ public class Jose4jUtilTest extends CommonTestClass {
         final String use = "sig";
         mockery.checking(new Expectations() {
             {
-                one(clientConfig).getSignatureAlgorithm();
-                will(returnValue(SIGNATURE_ALG_RS256));
                 one(clientConfig).getJwkEndpointUrl();
                 will(returnValue(TEST_URL));
                 one(jwKRetriever).getPublicKeyFromJwk(KID, x5t, x5tS256, use, false);
@@ -421,7 +570,7 @@ public class Jose4jUtilTest extends CommonTestClass {
             }
         });
         try {
-            Object keyValue = util.getVerifyKey(clientConfig, KID, x5t, x5tS256);
+            Object keyValue = util.getVerifyKey(clientConfig, KID, x5t, x5tS256, SIGNATURE_ALG_RS256);
             assertEquals("Expected key:" + publicKey + " but received:" + keyValue + ".", publicKey, keyValue);
         } catch (Exception e) {
             outputMgr.failWithThrowable("testGetVerifyKey", e);

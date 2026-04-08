@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2025 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -120,6 +120,10 @@ public class OidcClientSignatureAlgTests extends CommonTest {
 
     }
 
+    public void genericSigAlgTest(String sigAlgForBuilder, String sigAlgForRP) throws Exception {
+        genericSigAlgTest(sigAlgForBuilder, sigAlgForRP, null);
+    }
+
     /**
      * All of the test cases in this class perform the same steps - the only real differences are:
      * 1) which builder will be used to create a JWT Token,
@@ -142,24 +146,33 @@ public class OidcClientSignatureAlgTests extends CommonTest {
      * @param sigAlgForRP
      *            - the signature algorithm that the RP will use - the test app names match filters in the RP config that cause
      *            the RP config to be used with the specified signature algorithm (ie: formlogin/simple/HS256)
+     * @param allowedSigAlgs
+     *            - list of allowed signature algorithms when RP uses FROM_HEADER configuration - when using FROM_HEADER the test app names
+     *              match filters in the RP config that cause the RP config to be used with the specified allioed signature algorithms
      * @throws Exception
      */
-    public void genericSigAlgTest(String sigAlgForBuilder, String sigAlgForRP) throws Exception {
-
+    public void genericSigAlgTest(String sigAlgForBuilder, String sigAlgForRP, List<String> allowedSigAlgs) throws Exception {
+    
         Log.info(thisClass, _testName, "********************************************************************************************************************");
         Log.info(thisClass, _testName,
-                "******** Testing with Jwt builder using signature algorithm: " + sigAlgForBuilder + " and RP using signature algorithm: " + sigAlgForRP + " ********");
-
-        Log.info(thisClass, _testName, "********************************************************************************************************************");
+                "******** Testing with Jwt builder using signature algorithm: " + sigAlgForBuilder + 
+                " and RP using signature algorithm: " + sigAlgForRP + 
+                (allowedSigAlgs != null ? " with allowed signature algorithms: " + allowedSigAlgs : "") + " ********");
+        Log.info(thisClass, _testName, "********************************************************************************************************************");        
         WebConversation wc = new WebConversation();
         TestSettings updatedTestSettings = testSettings.copyTestSettings();
         updatedTestSettings.setScope("openid profile");
-        //updatedTestSettings.addRequestParms();
-        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + sigAlgForRP));
+        
+        String urlPath = sigAlgForRP;
+        if (Constants.SIGALG_FROMHEADER.equals(adjustSigAlg(sigAlgForRP)) && allowedSigAlgs != null) {
+            // When using FROM_HEADER with a defined allowedSignatureAlgorithms list
+            // We 'box' the algorithm list with underscores and separate them with dashes (e.g., _HS256-HS384_).
+            // This specifies the correct auth filter, removing ambiguity
+            urlPath += "_" + String.join("-", allowedSigAlgs) + "_";
+        }
+        updatedTestSettings.setTestURL(testSettings.getTestURL().replace("SimpleServlet", "simple/" + urlPath));
         updatedTestSettings.setSignatureAlg(adjustSigAlg(sigAlgForBuilder));
-
-        List<validationData> expectations = signingUtils.setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, updatedTestSettings, Constants.LOGIN_USER);
-
+        List<validationData> expectations = signingUtils.setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, allowedSigAlgs, updatedTestSettings, Constants.LOGIN_USER);
         List<endpointSettings> parms = eSettings.addEndpointSettingsIfNotNull(null, "builderId", sigAlgForBuilder + "Builder");
 
         // Invoke the test TokenEndpoint stub.  It will invoke the Jwt Builder to create a JWT Token (using the builder specified in the builderId passed in via parms
@@ -177,7 +190,7 @@ public class OidcClientSignatureAlgTests extends CommonTest {
     private String adjustSigAlg(String rawAlg) {
 
         if (rawAlg != null) {
-            return rawAlg.replace("short_", "").replace("diff_", "");
+            return rawAlg.replace("short_", "").replace("diff_", "").replace("only_", "");
         }
         return rawAlg;
     }
@@ -572,4 +585,507 @@ public class OidcClientSignatureAlgTests extends CommonTest {
         genericSigAlgTest("short_" + Constants.SIGALG_ES512, Constants.SIGALG_ES512);
 
     }
+
+    /************** jwt builder using set algorithm / rp is using from_header option allowing various algorithms **************/
+    /* Show that a rp configured with from_header can ONLY verify JWTs signed with the allowed algorithms
+    /****************************************************************************************/
+
+    /**
+     * Test shows that the RP can consume a JWT signed with HS256 when configured with FROM_HEADER and allowing HS256
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenHS256_RPVerifyFromHeader_AllowSignHS256() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS256);
+        
+        genericSigAlgTest(Constants.SIGALG_HS256, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with HS384 when configured with FROM_HEADER and allowing HS384
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenHS384_RPVerifyFromHeader_AllowSignHS384() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS384);
+        
+        genericSigAlgTest(Constants.SIGALG_HS384, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with HS512 when configured with FROM_HEADER and allowing HS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenHS512_RPVerifyFromHeader_AllowSignHS512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS512);
+        
+        genericSigAlgTest(Constants.SIGALG_HS512, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with RS256 when configured with FROM_HEADER and allowing RS256
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRS256_RPVerifyFromHeader_AllowSignRS256() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS256);
+        
+        genericSigAlgTest(Constants.SIGALG_RS256, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with RS384 when configured with FROM_HEADER and allowing RS384
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRS384_RPVerifyFromHeader_AllowSignRS384() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS384);
+        
+        genericSigAlgTest(Constants.SIGALG_RS384, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with RS512 when configured with FROM_HEADER and allowing RS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRS512_RPVerifyFromHeader_AllowSignRS512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS512);
+        
+        genericSigAlgTest(Constants.SIGALG_RS512, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with ES256 when configured with FROM_HEADER and allowing ES256
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenES256_RPVerifyFromHeader_AllowSignES256() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES256);
+        
+        genericSigAlgTest(Constants.SIGALG_ES256, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with ES384 when configured with FROM_HEADER and allowing ES384
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenES384_RPVerifyFromHeader_AllowSignES384() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES384);
+        
+        genericSigAlgTest(Constants.SIGALG_ES384, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with ES512 when configured with FROM_HEADER and allowing ES512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenES512_RPVerifyFromHeader_AllowSignES512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES512);
+        
+        genericSigAlgTest(Constants.SIGALG_ES512, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with HS256 when configured with FROM_HEADER and allowing HS256
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithHS256_RPVerifyFromHeader_AllowSignHS256() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS256);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with HS384 when configured with FROM_HEADER and allowing HS384
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithHS384_RPVerifyFromHeader_AllowSignHS384() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS384);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with HS512 when configured with FROM_HEADER and allowing HS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithHS512_RPVerifyFromHeader_AllowSignHS512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with RS256 when configured with FROM_HEADER and allowing RS256
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithRS256_RPVerifyFromHeader_AllowSignRS256() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS256);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with RS384 when configured with FROM_HEADER and allowing RS384
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithRS384_RPVerifyFromHeader_AllowSignRS384() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS384);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with RS512 when configured with FROM_HEADER and allowing RS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithRS512_RPVerifyFromHeader_AllowSignRS512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with ES256 when configured with FROM_HEADER and allowing ES256
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithES256_RPVerifyFromHeader_AllowSignES256() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES256);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with ES384 when configured with FROM_HEADER and allowing ES384
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithES384_RPVerifyFromHeader_AllowSignES384() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES384);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with ES512 when configured with FROM_HEADER and allowing ES512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithES512_RPVerifyFromHeader_AllowSignES512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with HS256, HS384 and HS512 when configured with FROM_HEADER and allowing HS256, HS384, HS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenHSAlgs_RPVerifyFromHeader_AllowSignHSAlgs() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS256);
+        allowedAlgs.add(Constants.SIGALG_HS384);
+        allowedAlgs.add(Constants.SIGALG_HS512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_HSSIGALGS) {
+            genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        }
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with RS256, RS384 and RS512 when configured with FROM_HEADER and allowing RS256, RS384, RS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRSAlgs_RPVerifyFromHeader_AllowSignRSAlgs() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS256);
+        allowedAlgs.add(Constants.SIGALG_RS384);
+        allowedAlgs.add(Constants.SIGALG_RS512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_RSSIGALGS) {
+            genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        }
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with ES256, ES384 and ES512 when configured with FROM_HEADER and allowing ES256, ES384, ES512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenESAlgs_RPVerifyFromHeader_AllowSignESAlgs() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES256);
+        allowedAlgs.add(Constants.SIGALG_ES384);
+        allowedAlgs.add(Constants.SIGALG_ES512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_ESSIGALGS) {
+            genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with HS256, HS384 and HS512 when configured with FROM_HEADER and allowing HS256, HS384, HS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithHSAlgs_RPVerifyFromHeader_AllowSignHSAlgs() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS256);
+        allowedAlgs.add(Constants.SIGALG_HS384);
+        allowedAlgs.add(Constants.SIGALG_HS512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with RS256, RS384 and RS512 when configured with FROM_HEADER and allowing RS256, RS384, RS512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithRSAlgs_RPVerifyFromHeader_AllowSignRSAlgs() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_RS256);
+        allowedAlgs.add(Constants.SIGALG_RS384);
+        allowedAlgs.add(Constants.SIGALG_RS512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can NOT consume a JWT that is NOT signed with ES256, ES384 and ES512 when configured with FROM_HEADER and allowing ES256, ES384, ES512
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenNotWithESAlgs_RPVerifyFromHeader_AllowSignESAlgs() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_ES256);
+        allowedAlgs.add(Constants.SIGALG_ES384);
+        allowedAlgs.add(Constants.SIGALG_ES512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with HS256, RS384 and ES512 when using FROM_HEADER and allowing HS256, RS384, ES512
+     * 
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenWithAllowedAlgs_RPVerifyFromHeader_AllowSignHS256RS384ES512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS256);
+        allowedAlgs.add(Constants.SIGALG_RS384);
+        allowedAlgs.add(Constants.SIGALG_ES512);
+        
+        for (String builderSigAlg : allowedAlgs) {
+            genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        }
+    }
+
+    /**
+     * Test shows that the RP can not consume a JWT signed with non-allowed algorithms when using FROM_HEADER and allowing HS256, RS384, ES512
+     * 
+     * @throws Exception
+     */
+    @Mode(TestMode.LITE)
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenWithDisallowedAlgs_RPVerifyFromHeader_AllowHS256RS384ES512() throws Exception {
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add(Constants.SIGALG_HS256);
+        allowedAlgs.add(Constants.SIGALG_RS384);
+        allowedAlgs.add(Constants.SIGALG_ES512);
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            if (!allowedAlgs.contains(builderSigAlg)) {
+                genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+            }
+        }
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with all supported signature algorithms when using FROM_HEADER without defining an allowedSignatureAlgorithms
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenAllAlgs_RPVerifyFromHeader() throws Exception {
+        
+        for (String builderSigAlg : Constants.ALL_TEST_SIGALGS) {
+            genericSigAlgTest(builderSigAlg, "only_" + Constants.SIGALG_FROMHEADER);
+        }
+    }
+
+    /**
+     * Test shows that the RP can consume JWTs signed with RS256, RS384, and RS512 using the trustedAlias when configured with FROM_HEADER and allowing RS256, RS384 and RS512
+     * The configured trust store does not contain algorithm prefixed keys, so the configured alias (altrs256) is used for signature verification of each token
+     * The builders all sign with the same altrs256 private key, so all three tokens can be verified by the RP.
+     * 
+     * Note: For RS-based algorithms (RS256, RS384, RS512), the same RSA key can be used for signing with each algorithm.
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRSAlgs_RPVerifyFromHeader_AllowSignRSAlgs_useTrustAlias() throws Exception {
+    
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add("diff_" + Constants.SIGALG_RS256);
+        allowedAlgs.add("diff_" + Constants.SIGALG_RS384);
+        allowedAlgs.add("diff_" + Constants.SIGALG_RS512);
+
+        for (String builderSigAlg : allowedAlgs) {
+            genericSigAlgTest(builderSigAlg, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        }
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with RS256, but not RS384 and RS512 using the trustedAlias when configured with FROM_HEADER and allowing RS256, RS384 and RS512
+     * The configured trust store does not contain algorithm prefixed keys, so the configured fallback alias (altrs256) is used for signature verification of each token
+     * The RS256 builder signs using the altrs256 private key, which the RP can successfully verify
+     * The RS384 and RS512 builder sign with their standard keys and signature verification fails on the RP due to a key mismatch
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenRSAlgs_RPVerifyFromHeader_AllowSignRSAlgs_useTrustAlias_keyMismatch() throws Exception {
+
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add("diff_" + Constants.SIGALG_RS256);
+        allowedAlgs.add("diff_" + Constants.SIGALG_RS384);
+        allowedAlgs.add("diff_" + Constants.SIGALG_RS512);
+
+        genericSigAlgTest("diff_" + Constants.SIGALG_RS256, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        genericSigAlgTest(Constants.SIGALG_RS384, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        genericSigAlgTest(Constants.SIGALG_RS512, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
+    /**
+     * Test shows that the RP can consume a JWT signed with ES256, but not ES384 and ES512 using the trustedAlias when configured with FROM_HEADER and allowing ES256, ES384 and ES512
+     * The configured trust store does not contain algorithm prefixed keys, so the configured fallback alias (altes256) is used for signature verification of each token
+     * The ES256 builder signs using the altes256 (secp256r1) private key, which the RP can successfully verify
+     * The ES384 and ES512 builder sign with their standard keys (secp384r1 and secp521r1) and signature verification fails on the RP due to a key mismatch
+     * 
+     * Note: ES-based algorithms (ES256, ES384, ES512) each require algorithm-specific elliptic curve keys and cannot share the same key:
+     * - ES256 requires P-256 (secp256r1) curve
+     * - ES384 requires P-384 (secp384r1) curve
+     * - ES512 requires P-521 (secp521r1) curve
+     * 
+     * @throws Exception
+     */
+    @Test
+    public void OidcClientSignatureAlgTests_SignTokenESAlgs_RPVerifyFromHeader_AllowSignESAlgs_useTrustAlias_keyMismatch() throws Exception {
+
+        List<String> allowedAlgs = new ArrayList<>();
+        allowedAlgs.add("diff_" + Constants.SIGALG_ES256);
+        allowedAlgs.add("diff_" + Constants.SIGALG_ES384);
+        allowedAlgs.add("diff_" + Constants.SIGALG_ES512);
+
+        genericSigAlgTest("diff_" + Constants.SIGALG_ES256, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        genericSigAlgTest(Constants.SIGALG_ES384, Constants.SIGALG_FROMHEADER, allowedAlgs);
+        genericSigAlgTest(Constants.SIGALG_ES512, Constants.SIGALG_FROMHEADER, allowedAlgs);
+    }
+
 }

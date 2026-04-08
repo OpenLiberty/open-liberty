@@ -12,6 +12,7 @@ package io.openliberty.security.authorization.jacc.internal.web;
 import static org.osgi.service.component.annotations.ConfigurationPolicy.IGNORE;
 
 import java.lang.reflect.Constructor;
+import java.lang.reflect.Modifier;
 import java.util.Set;
 
 import org.osgi.service.component.annotations.Component;
@@ -117,13 +118,28 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
             // as required by the specification.
             if (wrapperCtor != null) {
                 return classType.cast(wrapperCtor.newInstance(factoryToWrap));
-            } else if (defaultCtor != null) {
+            }
+            if (defaultCtor != null) {
                 return classType.cast(defaultCtor.newInstance());
             }
-            return null;
+
+            // If the expected constructors signatures were not found, it either means that there were
+            // no constructors found or that the constructors that were found did not have the correct
+            // arguments signatures.  Provide appropriate exceptions that are specific to each scenario.
+            if (ctors.length == 0) {
+                // If the class is not public, it will also show no constructors
+                // Differentiate between the two in order to give the user additional
+                // information to help debug.
+                int classModifiers = loadedClass.getModifiers();
+                if ((classModifiers & Modifier.PUBLIC) == 0) {
+                    throw new IllegalAccessException("Class is not public");
+                }
+                throw new IllegalAccessException("No public constructors were found");
+            }
+            throw new IllegalArgumentException("Constructor with no arguments or with " + classType.getSimpleName() + " argument was not found");
         } catch (Throwable e) {
             Tr.error(tc, "JACC_AUTHORIZATION_MODULE_CREATION_FAILURE", classType.getSimpleName(), className, servletContext.getServletContextName(), e.toString());
+            return null;
         }
-        return null;
     }
 }

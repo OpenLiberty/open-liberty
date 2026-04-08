@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2023 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -122,10 +122,13 @@ public class BasicAuthCacheKeyProvider implements CacheKeyProvider {
 
     private void addKeys(Set<Object> keys, String realm, String userid, @Sensitive String hashedPassword) {
         String keyWithoutPassword = createLookupKey(realm, userid);
-        addKey(keys, keyWithoutPassword);
-        if (keyWithoutPassword != null && hashedPassword != null) {
-            String keyWithPassword = keyWithoutPassword + KEY_SEPARATOR + hashedPassword;
-            addKey(keys, keyWithPassword);
+        if (keyWithoutPassword != null) {
+            if (hashedPassword == null) {
+                addKey(keys, keyWithoutPassword);
+            } else {
+                String keyWithPassword = keyWithoutPassword + KEY_SEPARATOR + hashedPassword;
+                addKey(keys, keyWithPassword);
+            }
         }
     }
 

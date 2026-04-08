@@ -40,8 +40,10 @@ import componenttest.topology.impl.LibertyServer;
 @SuiteClasses({
                 AlwaysPassesTest.class,
                 BasicSpringBootTests.class,
-                BasicSpringBootWefluxTests.class,
-                BasicSpringBootFailStart.class
+                BasicSpringBootWebfluxTests.class,
+                BasicSpringBootFailStart.class,
+                BasicSpringBootTests40.class,
+                BasicSpringBootWebfluxTests40.class
 })
 
 public class FATSuite {

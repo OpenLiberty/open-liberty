@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,6 +35,7 @@ import javax.websocket.Extension.Parameter;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.netty.upgrade.NettyServletUpgradeHandler;
@@ -109,12 +110,16 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
     private final Map<String, List<String>> parameterMap = new HashMap<String, List<String>>();
 
     protected Map<String, Object> httpOptions;
+    protected NettyHttpChannelConfig nettyConfig;
 
     public NettyHttpRequestorWsoc10(WsocAddress endpointAddress, ClientEndpointConfig config, ParametersOfInterest things) {
         this.endpointAddress = endpointAddress;
         this.config = config;
         this.things = things;
-        httpOptions = WsocOutboundChain.getCurrentHttpOptions();
+        this.httpOptions = WsocOutboundChain.getCurrentHttpOptions();
+        this.nettyConfig = new NettyHttpChannelConfig.NettyConfigBuilder()
+                .with(NettyHttpChannelConfig.ConfigElement.TCP_OPTIONS, WsocOutboundChain.getCurrentTcpOptions())
+                .build();
     }
 
     @Override
@@ -157,7 +162,7 @@ public class NettyHttpRequestorWsoc10 implements HttpRequestor {
 
     @Override
     public void sendRequest(ParametersOfInterest poi) throws IOException, MessageSentException {
-        access.setTCPConnectionContext(new NettyTCPConnectionContext(connection, null));
+        access.setTCPConnectionContext(new NettyTCPConnectionContext(connection, null, nettyConfig));
         access.setDeviceConnLink(new NettyOutboundConnectionLink(connection));
 
         String uriPath = endpointAddress.getURI().getPath();

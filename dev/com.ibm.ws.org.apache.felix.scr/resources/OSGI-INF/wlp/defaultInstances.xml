@@ -12,6 +12,6 @@
  -->
 <server>
 
-	<org.apache.felix.scr.ScrService ds.info.service="true" ds.cache.metadata="true" />	
+	<org.apache.felix.scr.ScrService ds.info.service="true" ds.cache.metadata="true" ds.lock.timeout.milliseconds="30000" />
 
 </server>

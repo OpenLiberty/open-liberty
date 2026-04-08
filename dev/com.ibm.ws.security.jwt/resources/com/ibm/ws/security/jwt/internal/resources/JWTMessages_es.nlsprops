@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Aseg\u00farese de que la cabecera de algoritmo
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: El cifrado web JSON (JWE) no es v\u00e1lido porque su clave de cifrado de contenido (CEK) se ha cifrado con el algoritmo {0}. Las claves de cifrado de contenido tienen que cifrarse con el algoritmo {1}.
 JWE_ALGORITHM_MISMATCH.explanation=Las claves de cifrado de contenido tienen que estar cifradas con el algoritmo especificado en el mensaje. Las claves de cifrado de contenido cifradas con cualquier otro algoritmo de cifrado no se pueden validar.
 JWE_ALGORITHM_MISMATCH.useraction=Obtenga un token nuevo con una clave de cifrado de contenido que est\u00e9 cifrada con el algoritmo especificado en el mensaje. De forma alternativa, actualice la configuraci\u00f3n de JWT para permitir tokens con claves de cifrado de contenido cifradas con el otro algoritmo.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: No se pueden cargar las entradas de certificados de confianza del almac\u00e9n de confianza [ {0} ]. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=Se ha producido un error mientras el sistema intentaba recuperar la lista de entradas de certificados de confianza del almac\u00e9n de confianza especificado. Es posible que el almac\u00e9n de certificados no figure en la configuraci\u00f3n, o que haya alg\u00fan problema que impida el acceso al mismo.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Comprueba que el almac\u00e9n de certificados est\u00e9 correctamente configurado en la configuraci\u00f3n del servidor y que sea accesible. Consulte el mensaje de error para obtener m\u00e1s informaci\u00f3n sobre el fallo.
+
+

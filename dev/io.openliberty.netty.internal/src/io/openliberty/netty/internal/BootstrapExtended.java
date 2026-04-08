@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,10 @@ public class BootstrapExtended extends Bootstrap {
      *
      * @param config
      */
-    public void applyConfiguration(BootstrapConfiguration config) {
+    public BootstrapExtended applyConfiguration(BootstrapConfiguration config) {
         this.config = config;
         config.applyConfiguration(this);
+        return this;
     }
 
     /**
@@ -39,8 +40,9 @@ public class BootstrapExtended extends Bootstrap {
     /**
      * Set the base {@link ChannelInitializerWrapper} to use with this bootstrap
      */
-    public void setBaseInitializer(ChannelInitializerWrapper initializer) {
+    public BootstrapExtended setBaseInitializer(ChannelInitializerWrapper initializer) {
         this.initializer = initializer;
+        return this;
     }
 
     /**

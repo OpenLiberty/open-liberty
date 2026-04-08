@@ -91,8 +91,8 @@ Subsystem-Category: JakartaEE9Application
   io.openliberty.jakarta.enterpriseBeans-4.0, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=io.openliberty.ejbcontainer.v40.internal, \
- com.ibm.ws.ejbcontainer.timer.jakarta, \
- com.ibm.ws.ejbcontainer.async.jakarta
+ com.ibm.ws.ejbcontainer.timer, \
+ com.ibm.ws.ejbcontainer.async
 -jars=io.openliberty.ejbcontainer; location:=dev/api/ibm/
 -files=dev/api/ibm/javadoc/io.openliberty.ejbcontainer_1.0-javadoc.zip
 Subsystem-Name: Jakarta Enterprise Beans 4.0 Lite

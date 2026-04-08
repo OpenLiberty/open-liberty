@@ -19,6 +19,7 @@ import java.net.SocketTimeoutException;
 import java.nio.ByteBuffer;
 import java.util.Objects;
 import java.util.concurrent.CountDownLatch;
+import java.util.Optional;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
@@ -59,7 +60,9 @@ import io.netty.util.concurrent.EventExecutor;
 import java.util.concurrent.CompletableFuture;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioSocketChannel;
+
 import io.openliberty.http.netty.channel.ReadOnlySocket;
+import io.openliberty.http.options.TcpOption;
 
 /**
  *
@@ -81,17 +84,15 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private boolean jitAllocateAction = false;
 
     private volatile boolean aborted = false;
+    private int channelTimeout;
 
     private volatile Socket cachedSocket;
+    private NettyHttpChannelConfig config;
 
-    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel) {
+    public NettyTCPReadRequestContext(NettyTCPConnectionContext connectionContext, Channel nettyChannel, NettyHttpChannelConfig config) {
         this.connectionContext = connectionContext;
         this.nettyChannel = nettyChannel;
-
-        HttpChannelConfig config = nettyChannel.attr(NettyHttpConstants.HTTP_CONFIG).get();
-        if(config != null && config instanceof NettyHttpChannelConfig){
-            this.channelDefaultTimeout = (int) ((NettyHttpChannelConfig) config).get(TcpOption.INACTIVITY_TIMEOUT);
-        }
+        this.config = config;
     }
 
     @Override
@@ -112,7 +113,8 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     @Override
     public Socket getSocket() {
         if(cachedSocket == null){
-            cachedSocket = new ReadOnlySocket(nettyChannel);       
+            Optional<Socket> socket = Optional.ofNullable(this.nettyChannel.attr(NettyHttpConstants.SOCKET_HANDLE).get());
+            cachedSocket = socket.orElse(new ReadOnlySocket(nettyChannel));     
         }
         return cachedSocket;
     }
@@ -213,6 +215,39 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         if(numBytes == 0){
             return hasUpgradeHandler() ? upgradedImmediateDrain() : nonUpgradedImmediateDrain();
         }
+        
+        // try {
+        //     // Wait for the read operation to complete or timeout
+        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //         Tr.debug(this, tc, "Waiting on read for channel: " + nettyChannel);
+        //     }
+        //     if (timeout == NO_TIMEOUT)
+        //         return readFuture.get();
+        //     else if (timeout == USE_CHANNEL_TIMEOUT)
+        //         return readFuture.get((int)config.get(TcpOption.INACTIVITY_TIMEOUT), TimeUnit.MILLISECONDS);
+        //     else
+        //         return readFuture.get(timeout, TimeUnit.MILLISECONDS);
+        // } catch (InterruptedException e) {
+        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //         Tr.debug(this, tc, "Interrupted exception on channel: " + nettyChannel);
+        //     }
+        //     Thread.currentThread().interrupt();
+        //     throw new IOException("Thread interrupted while reading.", e);
+        // } catch (ExecutionException e) {
+        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //         Tr.debug(this, tc, "Exection exception on channel: " + nettyChannel);
+        //     }
+        //     Throwable cause = e.getCause();
+        //     if (cause instanceof IOException) {
+        //         throw (IOException) cause;
+        //     }
+        //     throw new IOException("Error occurred during read operation.", cause);
+        // } catch (TimeoutException e) {
+        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+        //         Tr.debug(this, tc, "Timeout exception on channel: " + nettyChannel);
+        //     }
+        //     throw new SocketTimeoutException("Read operation timed out.");
+        // }
 
         return hasUpgradeHandler() ? upgradedSyncRead(numBytes, timeout) : nonUpgradedSyncRead(numBytes, timeout);
     }

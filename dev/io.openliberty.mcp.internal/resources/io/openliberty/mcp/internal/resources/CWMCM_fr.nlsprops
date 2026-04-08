@@ -209,7 +209,7 @@ unauthorized.cancellation=L'outil ne peut pas \u00eatre annul\u00e9 car l'utilis
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: Le type de retour d' {0} s de la m\u00e9thode de l'outil MCP {1} doit \u00eatre un objet.
-CWMCM0025E.unsupported.output.explanation=Le type de retour de l'outil MCP fourni n'est pas pris en charge.
+CWMCM0025E.unsupported.output.explanation=Le type de retour de l'outil MCP fourni n'est pas pris en charge. \u00c9tant donn\u00e9 que le contenu structur\u00e9 est d\u00e9fini sur \u00ab true \u00bb, le type de sch\u00e9ma de sortie doit \u00eatre un objet.
 CWMCM0025E.unsupported.output.useraction=Fournir un type de retour qui est un objet.
 
 # Used as exception message

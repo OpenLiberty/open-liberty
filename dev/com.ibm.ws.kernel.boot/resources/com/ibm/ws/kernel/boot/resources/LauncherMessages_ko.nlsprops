@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -785,7 +785,15 @@ warning.manual.PPV.env.var.useraction=PREFERRED_PLATFORM_VERSION \ud658\uacbd \u
 
 error.read.server.env=CWWKE0970E: {} \uc704\uce58\uc5d0\uc11c server.env \ud30c\uc77c\uc744 \uc77d\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.
 error.read.server.env.explanation=server.env \ud30c\uc77c\uc744 \uc77d\ub294 \ub370 \uc2e4\ud328\ud588\uc2b5\ub2c8\ub2e4.
-error.read.server.env.useraction=server.env \ud30c\uc77c\uc744 \uc77d\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4.  \ud30c\uc77c \uad8c\ud55c\uc744 \ud655\uc778\ud558\uace0 \uc870\uc791\uc744 \uc7ac\uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+error.read.server.env.useraction=server.env \ud30c\uc77c\uc744 \uc77d\uc744 \uc218 \uc5c6\uc2b5\ub2c8\ub2e4. \ud30c\uc77c \uad8c\ud55c\uc744 \ud655\uc778\ud55c \ud6c4 \uc791\uc5c5\uc744 \ub2e4\uc2dc \uc2dc\ub3c4\ud558\uc2ed\uc2dc\uc624.
+
+warning.java2security.stopped=CWWKE0971W: Jakarta EE 11\uc740 Java 2 Security\ub97c \uc9c0\uc6d0\ud558\uc9c0 \uc54a\uc73c\ubbc0\ub85c \uc774 \uae30\ub2a5\uc774 \ube44\ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+warning.java2security.stopped.explanation=Jakarta EE 11\uc5d0\uc11c\ub294 Java 2 Security\uc5d0 \ub300\ud55c \uc9c0\uc6d0\uc774 \uc911\ub2e8\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+warning.java2security.stopped.useraction=Jakarta EE 11 \uae30\ub2a5\uc744 \uc0ac\uc6a9\ud560 \ub54c\ub294 \uc11c\ubc84 \uad6c\uc131\uc5d0\uc11c Java 2 \ubcf4\uc548\uc744 \ube44\ud65c\uc131\ud654\ud558\uc2ed\uc2dc\uc624.
+
+info.java2security.restarted=CWWKE0972I: Jakarta EE 11\uc758 \uae30\ub2a5\uc774 \uc81c\uac70\ub428\uc5d0 \ub530\ub77c Java 2 \ubcf4\uc548 \uae30\ub2a5\uc774 \ub2e4\uc2dc \ud65c\uc131\ud654\ub418\uc5c8\uc2b5\ub2c8\ub2e4.
+info.java2security.restarted.explanation=\uc774 \uba54\uc2dc\uc9c0\ub294 \uc815\ubcf4\ub97c \uc81c\uacf5\ud558\ub294 \uc6a9\ub3c4\ub85c\ub9cc \uc0ac\uc6a9\ub429\ub2c8\ub2e4.
+info.java2security.restarted.useraction=\uc870\uce58\uac00 \ud544\uc694\ud558\uc9c0 \uc54a\uc2b5\ub2c8\ub2e4.
 
 info.serverStarting={0} \uc11c\ubc84\ub97c \uc2dc\uc791\ud558\ub294 \uc911\uc785\ub2c8\ub2e4.
 info.serverStarted=\uc11c\ubc84 {0}\uc774(\uac00) \uc2dc\uc791\ub418\uc5c8\uc2b5\ub2c8\ub2e4.

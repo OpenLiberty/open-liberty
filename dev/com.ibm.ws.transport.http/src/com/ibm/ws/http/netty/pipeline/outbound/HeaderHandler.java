@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,8 @@
 package com.ibm.ws.http.netty.pipeline.outbound;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -22,6 +24,8 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
+import io.netty.handler.codec.http.HttpHeaderNames;
+import io.netty.handler.codec.http.HttpHeaderValues;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpResponseStatus;
@@ -64,24 +68,42 @@ public class HeaderHandler {
         if (!headers.contains(HttpHeaderKeys.HDR_DATE.getName())) {
             byte[] date = HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange());
             headers.set(HttpHeaderKeys.HDR_DATE.getName(),
-                            new String(date, StandardCharsets.UTF_8));
+                        new String(date, StandardCharsets.UTF_8));
         }
 
         // If HTTP 1.0 remove the Transfer-Encoding header if it exists.
         if (response.protocolVersion().equals(HttpVersion.HTTP_1_0)) {
             if (headers.contains(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName())) {
-                response.headers().remove(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName());
+                headers.remove(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName());
             }
         } else if (!HttpUtil.isContentLengthSet(response) && !headers.contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
             if (response.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)) {
+                headers.set(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName(), 0);
 
-                HttpUtil.setContentLength(response, 0);
-                HttpUtil.setTransferEncodingChunked(response, false);
+                //from HttpUtil.setTransferEncodingChunked false case
+                List<String> encodings = headers.getAll(HttpHeaderNames.TRANSFER_ENCODING);
+                if (!encodings.isEmpty()) {
+                    List<CharSequence> values = new ArrayList(encodings);
+                    Iterator<CharSequence> valuesIt = values.iterator();
 
+                    while (valuesIt.hasNext()) {
+                        CharSequence value = valuesIt.next();
+                        if (HttpHeaderValues.CHUNKED.contentEqualsIgnoreCase(value)) {
+                            valuesIt.remove();
+                        }
+                    }
+
+                    if (values.isEmpty()) {
+                        headers.remove(HttpHeaderNames.TRANSFER_ENCODING);
+                    } else {
+                        headers.set(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName(), values);
+                    }
+                }
             } else {
-                HttpUtil.setTransferEncodingChunked(response, true);
+                headers.set(HttpHeaderKeys.HDR_TRANSFER_ENCODING.getName(), HttpHeaderValues.CHUNKED);
+                headers.remove(HttpHeaderKeys.HDR_CONTENT_LENGTH.getName());
             }
-        }
+        } 
 
         if (config.removeServerHeader()) {
             if (headers.contains(HttpHeaderKeys.HDR_SERVER.getName())) {

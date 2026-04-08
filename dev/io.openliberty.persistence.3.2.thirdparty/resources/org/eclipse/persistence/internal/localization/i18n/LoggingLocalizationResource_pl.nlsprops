@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Ostrze\u017cenie: {0}: podj\u0119to pr\u00f
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Ostrze\u017cenie: {0}: pr\u00f3ba zamkni\u0119cia po\u0142\u0105czenia spowodowa\u0142a wyj\u0105tek {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Ostrze\u017cenie: {0} : pr\u00f3ba zamkni\u0119cia obiektu typu \u201esubscriber\u201d spowodowa\u0142a wyj\u0105tek {1}
+
 broadcast_ignored_command_while_closing_connection=Ostrze\u017cenie: {0}: \u017c\u0105danie opublikowania komendy podczas zamykania po\u0142\u0105czenia zostanie zignorowane.
 
 broadcast_listening_sleep_on_error=Ostrze\u017cenie: {0}: zosta\u0142 zg\u0142oszony wyj\u0105tek {1}. W\u0105tek zostanie u\u015bpiony na {2} ms, zanim nas\u0142uchiwanie zostanie wznowione.

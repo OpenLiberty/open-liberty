@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2022 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -12,9 +12,10 @@
  *******************************************************************************/
 package com.ibm.ws.security.authentication.internal.cache;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,7 +174,8 @@ public class AuthCacheServiceTest {
 
             Subject actualSubject = authCacheService.getSubject(getSSOTokenCacheKey(testSubject));
 
-            assertSame("The subject must be found in the cache by its SSO token.", testSubject, actualSubject);
+            assertEquals("The subject must be found in the cache by its SSO token.", testSubject, actualSubject);
+            assertNotSame("The subject must be a new instance when returned from the cache.", testSubject, actualSubject);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -220,7 +222,8 @@ public class AuthCacheServiceTest {
 
             Subject actualSubject = authCacheService.getSubject(basicAuthCacheKey);
 
-            assertSame("The subject must be found in the cache by its <realm>:<userid>:<hashedPassword>", testSubject, actualSubject);
+            assertEquals("The subject must be found in the cache by its <realm>:<userid>:<hashedPassword>.", testSubject, actualSubject);
+            assertNotSame("The subject must be a new instance when returned from the cache.", testSubject, actualSubject);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -251,8 +254,8 @@ public class AuthCacheServiceTest {
             Subject actualSubject = null;
             for (Object lookupKey : lookupKeys) {
                 actualSubject = authCacheService.getSubject(lookupKey);
-                assertSame("The subject must be found in the cache when using the " + lookupKey + " key.",
-                           testSubject, actualSubject);
+                assertEquals("The subject must be found in the cache when using the " + lookupKey + " key.", testSubject, actualSubject);
+                assertNotSame("The subject must be a new instance when returned from the cache.", testSubject, actualSubject);
             }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
@@ -289,7 +292,8 @@ public class AuthCacheServiceTest {
             authCacheService.insert(testSubject, testUser, testPassword);
             actualSubject = authCacheService.getSubject(basicAuthCacheKey);
 
-            assertSame("The subject must be found in the cache.", testSubject, actualSubject);
+            assertEquals("The subject must be found in the cache.", testSubject, actualSubject);
+            assertNotSame("The subject must be a new instance when returned from the cache.", testSubject, actualSubject);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -330,7 +334,8 @@ public class AuthCacheServiceTest {
 
             SingleSignonToken ssoToken = getSSOToken(testSubject);
             Subject actualSubject = authCacheService.getSubject(getSSOTokenCacheKey(ssoToken));
-            assertSame("The subject must still be found in the cache.", testSubject, actualSubject);
+            assertEquals("The subject must still be found in the cache.", testSubject, actualSubject);
+            assertNotSame("The subject must be a new instance when returned from the cache.", testSubject, actualSubject);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }
@@ -405,7 +410,8 @@ public class AuthCacheServiceTest {
 
             Subject actualSubject = authCacheService.getSubject(invalidSubjectLookupKey);
 
-            assertSame("The subject must still be found in the cache.", invalidSubject, actualSubject);
+            assertEquals("The subject must still be found in the cache.", invalidSubject, actualSubject);
+            assertNotSame("The subject must be a new instance when returned from the cache.", invalidSubject, actualSubject);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(methodName, t);
         }

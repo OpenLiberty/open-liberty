@@ -57,15 +57,15 @@ IBM-API-Package: javax.rmi; type="spec", \
 IBM-Process-Types: server, \
  client
 -features=com.ibm.websphere.appserver.channelfw-1.0
--bundles=com.ibm.ws.org.apache.yoko.corba.spec.1.5, \
- com.ibm.ws.org.apache.yoko.osgi.1.5, \
+-bundles=io.openliberty.yoko.spec.corba, \
+ io.openliberty.yoko.osgi, \
  io.openliberty.org.apache.bcel, \
  com.ibm.ws.org.apache.commons.lang3, \
- com.ibm.ws.org.apache.yoko.rmi.impl.1.5, \
- com.ibm.ws.org.apache.yoko.core.1.5, \
- com.ibm.ws.org.apache.yoko.util.1.5, \
+ io.openliberty.yoko.rmi.impl, \
+ io.openliberty.yoko.core, \
+ io.openliberty.yoko.util, \
  com.ibm.ws.transport.iiop, \
- com.ibm.ws.org.apache.yoko.rmi.spec.1.5
+ io.openliberty.yoko.rmi.spec
 -jars=\
  io.openliberty.corba.2.4; location:="dev/api/spec/,lib/"
 kind=ga

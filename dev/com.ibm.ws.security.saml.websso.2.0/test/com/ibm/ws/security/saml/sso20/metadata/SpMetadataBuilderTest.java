@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,6 +15,7 @@ package com.ibm.ws.security.saml.sso20.metadata;
 import java.io.IOException;
 import java.io.StringReader;
 import java.security.KeyStoreException;
+import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 import java.util.ArrayList;
@@ -94,6 +95,7 @@ public class SpMetadataBuilderTest {
     private static final SsoSamlService ssoService = mockery.mock(SsoSamlService.class, "ssoServiceSP");
     private static final SsoConfig ssoConfig = mockery.mock(SsoConfig.class, "ssoConfigSP");
     private static final X509Certificate xCertificate509 = mockery.mock(X509Certificate.class, "X509CertificateSP");
+    private static final PublicKey publicKey = mockery.mock(PublicKey.class, "publicKeySP");
     private static final org.opensaml.xmlsec.signature.X509Certificate x509CertificateSaml = mockery.mock(org.opensaml.xmlsec.signature.X509Certificate.class, "X509CertificateSamlSP");
     private static final X509Data x509Data = mockery.mock(X509Data.class, "x509Data");
     private final static XMLObjectProviderRegistry providerRegistry = mockery.mock(XMLObjectProviderRegistry.class);
@@ -279,7 +281,7 @@ public class SpMetadataBuilderTest {
                 will(returnValue(builderFactory));
                 
                 allowing(builderFactory).registerBuilder(with(any(QName.class)), with(any(XMLObjectBuilder.class)));
-                
+
             }
         });
         metadataDocument = loadXML(metadataAsString);
@@ -329,6 +331,10 @@ public class SpMetadataBuilderTest {
 
                 one(ssoService).getSignatureCertificate();
                 will(returnValue(xCertificate509));
+                allowing(xCertificate509).getPublicKey();
+                will(returnValue(publicKey));
+                allowing(publicKey).getAlgorithm();
+                will(returnValue("RSA"));
 
                 allowing(builderFactory).getBuilderOrThrow(with(any(Element.class)));
                 will(returnValue(XMLObjectBuilder));

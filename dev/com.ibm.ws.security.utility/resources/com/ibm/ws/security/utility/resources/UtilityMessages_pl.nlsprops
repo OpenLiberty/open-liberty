@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ encode.entriesDidNotMatch=Wpisy nie s\u0105 zgodne.
 encode.mutuallyExclusiveArgError=Plik wej\u015bciowy nie mo\u017ce okre\u015bla\u0107 zar\u00f3wno w\u0142a\u015bciwo\u015bci {0}, jak i {1}.
 encode.aesConfigFileEncryptionAmbiguous=B\u0141\u0104D: Nie mo\u017cna u\u017cy\u0107 pliku wej\u015bciowego, je\u015bli zawiera on zar\u00f3wno zmienne {0}, jak i {1}.
 encode.aesConfigFileMissingEncryptionVariables=Nie mo\u017cna zakodowa\u0107 has\u0142a; albo plik wej\u015bciowy nie zawiera zmiennych {0} lub {1}, albo plik wej\u015bciowy jest zniekszta\u0142cony.
+encode.aesKeyRequired=W przypadku stosowania szyfrowania AES nale\u017cy poda\u0107 jeden z nast\u0119puj\u0105cych argument\u00f3w: --key, --base64Key, --aesConfigFile, lub --keyring.
 
 password.enterText=Wprowad\u017a has\u0142o:
 password.reenterText=Wprowad\u017a ponownie has\u0142o:

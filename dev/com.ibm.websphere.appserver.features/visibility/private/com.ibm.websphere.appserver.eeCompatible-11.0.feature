@@ -3,8 +3,8 @@ symbolicName=com.ibm.websphere.appserver.eeCompatible-11.0
 visibility=private
 singleton=true
 Subsystem-Version: 11.0.0
--bundles=com.ibm.ws.javaee.version, \
-  io.openliberty.java17.internal
+-bundles=io.openliberty.jakartaee.platform.v11, \
+ com.ibm.ws.javaee.version
 kind=beta
 edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,6 +75,7 @@ public class ClientConstants {
     public final static String PROPAGATION_NONE = "none";
 
     public final static String ALGORITHM_NONE = "none";
+    public final static String ALGORITHM_FROM_HEADER = "FROM_HEADER";
 
     public final static String VALIDATION_INTROSPECT = "introspect";
     public final static String VALIDATION_USERINFO = "userinfo";

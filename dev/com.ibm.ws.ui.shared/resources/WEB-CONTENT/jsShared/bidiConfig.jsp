@@ -57,11 +57,11 @@
     }
     StringBuffer sb = new StringBuffer();
     for (Iterator iter = cm.getCookieStore().getCookies().iterator(); iter.hasNext(); ){
-        if (sb.length() == 0){
-            sb.append(iter.next());
-        } else {
-            sb.append("," + iter.next());
+        HttpCookie cookie = (HttpCookie) iter.next();
+        if (sb.length() > 0){
+            sb.append("; ");
         }
+        sb.append(cookie.getName()).append("=").append(cookie.getValue());
     }
     URL serverURL = null;
     try {

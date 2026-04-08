@@ -46,7 +46,7 @@ Subsystem-Name: Application Security 6.0 (Jakarta Security 4.0)
   io.openliberty.security.authentication.internal.filter, \
   io.openliberty.security.sso.internal, \
   io.openliberty.security.jaspic.2.0.internal, \
-  io.openliberty.security.common.jwt.internal
+  io.openliberty.security.common.jwt
 kind=beta
 edition=core
 -jars=io.openliberty.jaspic.spi; location:=dev/spi/ibm/

@@ -95,14 +95,6 @@ public class LibertyHttpRequestHandler extends ChannelDuplexHandler {
     public void channelRead(ChannelHandlerContext context, Object msg) throws Exception {
         if (msg instanceof FullHttpRequest) {
             FullHttpRequest request = (FullHttpRequest) msg;
-            if (!(request.decoderResult().isFinished() && request.decoderResult().isSuccess())) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Bad decode result, close connection. Cause: " + request.decoderResult().cause());
-                }
-                ReferenceCountUtil.safeRelease(request);
-                context.close();
-                return;
-            }
             if (closeAfterDrain || (hasMaxRequests && acceptedRequests >= maxRequests)) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(this, tc, "Pausing read for channel " + context.channel());

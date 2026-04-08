@@ -57,6 +57,16 @@ public class InstallException extends Exception {
     }
 
     /**
+     * Creates an Install Exception with a message and a cause.
+     *
+     * @param message Exception message
+     * @param cause   Exception cause
+     */
+    public InstallException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
      * Creates an Install Exception with a return code.
      *
      * @param message Exception message

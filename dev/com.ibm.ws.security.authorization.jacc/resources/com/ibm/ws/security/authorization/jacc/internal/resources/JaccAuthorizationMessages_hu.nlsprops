@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: A modul a webes biztons\u00e1gi szerepek feldolgo
 JACC_NO_WEB_PLUGIN.explanation=A JACC szolg\u00e1ltat\u00e1s nem tudja feldolgozni a webes biztons\u00e1gi szerepeket, mert a sz\u00fcks\u00e9ges modul nem \u00e9rhet\u0151 el.
 JACC_NO_WEB_PLUGIN.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a JACC szolg\u00e1ltat\u00f3 \u00e9s kiszolg\u00e1l\u00f3napl\u00f3kat.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: A Jakarta Authorization szolg\u00e1ltat\u00e1s nem tudja be\u00e1ll\u00edtani az {0} szolg\u00e1ltat\u00f3oszt\u00e1lyt ( {1} ) az {2} alkalmaz\u00e1sb\u00f3l a {3} kiv\u00e9tel miatt.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=A Jakarta Authorization szolg\u00e1ltat\u00e1s a kiv\u00e9tel miatt nem tudja be\u00e1ll\u00edtani a szolg\u00e1ltat\u00f3 oszt\u00e1lyt.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse \u00e1t a szolg\u00e1ltat\u00f3i \u00e9s a szerver napl\u00f3f\u00e1jljait.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: A Jakarta Authorization szolg\u00e1ltat\u00e1s konfigur\u00e1lta az {2} alkalmaz\u00e1sban defini\u00e1lt {0} szolg\u00e1ltat\u00f3oszt\u00e1lyt ( {1} ).
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Nincs teend\u0151.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: A Jakarta Authorization szolg\u00e1ltat\u00e1s elt\u00e1vol\u00edtotta az {2} alkalmaz\u00e1sban defini\u00e1lt {0} szolg\u00e1ltat\u00f3oszt\u00e1lyt ( {1} ).
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Ez az \u00fczenet csak inform\u00e1ci\u00f3s c\u00e9lt szolg\u00e1l.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Nincs teend\u0151.

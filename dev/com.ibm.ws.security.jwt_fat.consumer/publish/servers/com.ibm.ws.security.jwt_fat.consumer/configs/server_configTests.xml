@@ -729,8 +729,168 @@
 		trustStoreRef="trust_allSigAlg"
 		keyManagementKeyAlias="es384"
 	/>
+
+	<jwtConsumer 
+		id="FromHeaderRS256"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="RS256"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer 
+		id="FromHeaderRS384"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="RS384"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer 
+		id="FromHeaderRS512"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="RS512"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer 
+		id="FromHeaderES256"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="ES256"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer 
+		id="FromHeaderES384"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="ES384"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer 
+		id="FromHeaderES512"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="ES512"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer 
+		id="FromHeaderHS256"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="HS256"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="FromHeaderHS384"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="HS384"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="FromHeaderHS512"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="HS512"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="FromHeaderRSAlgs"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="RS256, RS384, RS512"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="FromHeaderESAlgs"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="ES256, ES384, ES512"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="FromHeaderHSAlgs"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="HS256, HS384, HS512"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="FromHeader"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="FromHeaderHS256RS384ES512"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="HS256, RS384, ES512"
+		sslRef="ssl_allSigAlg"
+		trustStoreRef="trust_allSigAlg"
+		sharedKey="someKeyvalue"
+	/>
+
+	<jwtConsumer
+		id="diff_FromHeaderRSAlgs"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="RS256, RS384, RS512"
+		sslRef="ssl_altAllSigAlg"
+		trustStoreRef="trust_altAllSigAlg"
+		trustedAlias="altrs256"
+	/>
+
+	<jwtConsumer
+		id="diff_FromHeaderESAlgs"
+		issuer="client01"
+		signatureAlgorithm="FROM_HEADER"
+		allowedSignatureAlgorithms="ES256, ES384, ES512"
+		sslRef="ssl_altAllSigAlg"
+		trustStoreRef="trust_altAllSigAlg"
+		trustedAlias="altes256"
+	/>
 				
 <include location="${shared.config.dir}/allAlgSSLSettings.xml" />
+<include location="${shared.config.dir}/altAllAlgSSLSettings.xml" />
 
 	<jwtBuilder
 		id="sigAlg_HS256"
@@ -812,6 +972,34 @@
 		signatureAlgorithm="PS512"
 		keyStoreRef="key_allSigAlg"
 		keyAlias="ps512" />
+
+	<jwtBuilder 
+		id="diff_sigAlg_RS256"
+		issuer="client01"
+		signatureAlgorithm="RS256"
+		keyStoreRef="key_altAllSigAlg"
+        keyAlias="altrs256" />
+
+	<jwtBuilder
+		id="diff_sigAlg_RS384"
+		issuer="client01"
+		signatureAlgorithm="RS384"
+		keyStoreRef="key_altAllSigAlg"
+	    keyAlias="altrs256" />
+
+	<jwtBuilder
+		id="diff_sigAlg_RS512"
+		issuer="client01"
+		signatureAlgorithm="RS512"
+		keyStoreRef="key_altAllSigAlg"
+	    keyAlias="altrs256" />
+
+	<jwtBuilder
+		id="diff_sigAlg_ES256"
+		issuer="client01"
+		signatureAlgorithm="ES256"
+		keyStoreRef="key_altAllSigAlg"
+	    keyAlias="altes256" />
 
 	<jwtBuilder
 		id="key_encrypt_good_RS256"

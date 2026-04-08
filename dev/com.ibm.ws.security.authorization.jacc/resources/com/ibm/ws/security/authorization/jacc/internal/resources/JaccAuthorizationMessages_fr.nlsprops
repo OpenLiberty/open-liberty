@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: Le module de traitement des r\u00f4les de s\u00e9
 JACC_NO_WEB_PLUGIN.explanation=Le service JACC ne peut pas traiter les r\u00f4les de s\u00e9curit\u00e9 Web car le module requis n'est pas disponible.
 JACC_NO_WEB_PLUGIN.useraction=Passez en revue les journaux du fournisseur JACC et les journaux du serveur pour plus d'informations.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: Le service d''autorisation Jakarta ne peut pas d\u00e9finir la classe de fournisseur {0} {1} \u00e0 partir de l''application {2} en raison de l''exception {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=Le service d'autorisation de Jakarta ne parvient pas \u00e0 d\u00e9finir la classe de fournisseur en raison de l'exception.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Consultez les journaux du fournisseur et ceux du serveur pour plus d'informations.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: Le service d''autorisation Jakarta a configur\u00e9 la classe de fournisseur {0} {1} d\u00e9finie dans l''application {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Aucune action n'est requise.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: Le service d''autorisation de Jakarta a supprim\u00e9 la classe de fournisseur \u00ab {0} \u00bb ( {1} ) d\u00e9finie dans l''application \u00ab {2} \u00bb.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Ce message est fourni \u00e0 titre d'information uniquement.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Aucune action n'est requise.

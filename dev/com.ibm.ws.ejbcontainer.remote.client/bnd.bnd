@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2022 IBM Corporation and others.
+# Copyright 2017,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -37,7 +37,7 @@ Private-Package: \
   com.ibm.ws.ejbcontainer.remote.client.internal.injection.EJBLinkClientReferenceFactoryImpl
 
 -buildpath: \
-	com.ibm.ws.org.apache.yoko.rmi.spec.1.5;version=latest,\
+	io.openliberty.yoko.rmi.spec;version=latest,\
 	com.ibm.websphere.appserver.spi.logging;version=latest,\
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\

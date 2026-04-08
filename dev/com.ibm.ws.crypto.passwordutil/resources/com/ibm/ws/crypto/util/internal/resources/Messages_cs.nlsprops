@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Ujis
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Jedna nebo v\u00edce hodnot hesel {0} ulo\u017een\u00fdch v konfiguraci serveru byly vygenerov\u00e1ny pomoc\u00ed star\u0161\u00edho algoritmu {1}. Pomoc\u00ed p\u0159\u00edkazu securityUtility encode znovu vygenerujte hesla {0} s nejnov\u011bj\u0161\u00edm algoritmem {2}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty nyn\u00ed pou\u017e\u00edv\u00e1 siln\u011bj\u0161\u00ed algoritmy pro nov\u011b generovan\u00e1 hesla {aes} a {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Ujist\u011bte se, \u017ee hodnoty hesel {aes} a {hash} jsou generov\u00e1ny pomoc\u00ed nejnov\u011bj\u0161\u00ed verze Liberty.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Jedno nebo v\u00edce va\u0161ich hesel za\u0161ifrovan\u00fdch pomoc\u00ed AES bylo za\u0161ifrov\u00e1no bez vlastn\u00edho \u0161ifrovac\u00edho kl\u00ed\u010de. Chcete-li zv\u00fd\u0161it bezpe\u010dnost ulo\u017een\u00fdch p\u0159ihla\u0161ovac\u00edch \u00fadaj\u016f, za\u0161ifrujte je znovu pomoc\u00ed vlastn\u00edho \u0161ifrovac\u00edho kl\u00ed\u010de. Tento kl\u00ed\u010d si pe\u010dliv\u011b ulo\u017ete na bezpe\u010dn\u00e9m m\u00edst\u011b.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=Hesla \u0161ifrovan\u00e1 algoritmem AES v konfiguraci serveru pou\u017e\u00edvaj\u00ed v\u00fdchoz\u00ed hodnotu \u201e wlp.password.encryption.key \u201c. Vlastn\u00ed \u0161ifrovac\u00ed kl\u00ed\u010d je bezpe\u010dn\u011bj\u0161\u00ed.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Vytvo\u0159te vlastn\u00ed \u0161ifrovac\u00ed kl\u00ed\u010d nastaven\u00edm prom\u011bnn\u00e9 ` wlp.password.encryption.key ` nebo ` wlp.aes.encryption.key ` a pot\u00e9 hesla znovu za\u0161ifrujte pomoc\u00ed p\u0159\u00edkazu ` securityUtility encode` s pou\u017eit\u00edm tohoto vlastn\u00edho kl\u00ed\u010de.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=D\u00e9lka kl\u00ed\u010de hodnoty zadan\u00e9 v prom\u011bnn\u00e9 wlp.aes.encryption.key mus\u00ed b\u00fdt 256 bit\u016f.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=Hodnota zadan\u00e1 v prom\u011bnn\u00e9 wlp.aes.encryption.key mus\u00ed b\u00fdt k\u00f3dov\u00e1na base64.

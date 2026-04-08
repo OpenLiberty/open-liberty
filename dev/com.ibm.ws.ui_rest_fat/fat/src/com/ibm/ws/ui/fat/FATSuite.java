@@ -78,7 +78,7 @@ public class FATSuite {
                                             .fullFATOnly())
                             .andWith(FeatureReplacementAction.EE9_FEATURES()
                                             .alwaysAddFeature("servlet-5.0")
-                                            .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                                            .liteFATOnly()) // Running all repeats in FULL mode causes the bucket to timeout occasionally.
                             .andWith(FeatureReplacementAction.EE10_FEATURES()
                                             .alwaysAddFeature("servlet-6.0")
                                             .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))

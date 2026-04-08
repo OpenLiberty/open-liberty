@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package suite.derby.suite5;
 
@@ -28,17 +25,17 @@ import tests.DBRotationTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-	//Ensure failures in @BeforeClass do not result in zero tests run
-	AlwaysPassesTest.class,
-	DBRotationTest.class,
+                //Ensure failures in @BeforeClass do not result in zero tests run
+                AlwaysPassesTest.class,
+                DBRotationTest.class,
 })
 public class FATSuite extends TxTestContainerSuite {
 
-	static {
-		DBRotationTest.setDerby();
-	}
+    static {
+        DBRotationTest.setDerby();
+    }
 
-	@ClassRule
+    @ClassRule
     public static TxTestDB p = new TxTestDB(DatabaseContainerType.Derby);
 
     @ClassRule

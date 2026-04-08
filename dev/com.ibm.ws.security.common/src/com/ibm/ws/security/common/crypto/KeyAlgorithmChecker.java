@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2022 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -34,6 +34,8 @@ public class KeyAlgorithmChecker {
     private static final Pattern RSA_PATTERN = Pattern.compile("RS[0-9]{3,}");
     private static final Pattern ESA_PATTERN = Pattern.compile("ES[0-9]{3,}");
     private static final Pattern ALG_PATTERN = Pattern.compile("[RHEP]S([0-9]{3,})", Pattern.CASE_INSENSITIVE);
+    private static final Pattern RSA_ENC_PATTERN = Pattern.compile("RSA1_5|RSA-OAEP(-[0-9]{3,})?");
+    private static final Pattern EC_ENC_PATTERN = Pattern.compile("ECDH-ES(\\+A[0-9]{3,}KW)?");
 
     public static int UNKNOWN_HASH_SIZE = 0;
 
@@ -160,6 +162,22 @@ public class KeyAlgorithmChecker {
             return false;
         }
         return isValidECKeyParameters(supportedSigAlg, (ECPrivateKey) key);
+    }
+
+    public static boolean isRSAEncryptionAlgorithm(String alg) {
+        if (alg == null) {
+            return false;
+        }
+        Matcher m = RSA_ENC_PATTERN.matcher(alg);
+        return m.matches();
+    }
+
+    public static boolean isECEncryptionAlgorithm(String alg) {
+        if (alg == null) {
+            return false;
+        }
+        Matcher m = EC_ENC_PATTERN.matcher(alg);
+        return m.matches();
     }
 
 }

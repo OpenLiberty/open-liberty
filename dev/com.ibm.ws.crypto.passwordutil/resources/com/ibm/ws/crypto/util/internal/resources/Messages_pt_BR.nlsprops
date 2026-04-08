@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Cert
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Um ou mais valores de senha {0} armazenados na configura\u00e7\u00e3o do servidor foram gerados com um algoritmo mais antigo {1}. Use o comando securityUtility encode para gerar novamente as senhas {0} com o algoritmo mais recente {2}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty agora usa algoritmos mais fortes para senhas rec\u00e9m-geradas {aes} e {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Certifique-se de que os valores de senha {aes} e {hash} sejam gerados com a vers\u00e3o mais recente do Liberty.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Uma ou mais das suas senhas criptografadas com AES foram criptografadas sem uma chave de criptografia personalizada. Para aumentar a seguran\u00e7a das suas credenciais armazenadas, criptografe-as novamente usando uma chave de criptografia personalizada. Certifique-se de guardar essa chave em um local seguro.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=As senhas criptografadas com AES na configura\u00e7\u00e3o do servidor utilizam o valor padr\u00e3o wlp.password.encryption.key. Uma chave de criptografia personalizada \u00e9 mais segura.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Defina uma chave de criptografia personalizada configurando a vari\u00e1vel ` wlp.password.encryption.key ` ou ` wlp.aes.encryption.key ` e, em seguida, recriptografe suas senhas usando o comando ` securityUtility encode` com sua chave personalizada.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=O comprimento da chave do valor especificado na vari\u00e1vel wlp.aes.encryption.key deve ser de 256 bits.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=O valor especificado na vari\u00e1vel wlp.aes.encryption.key deve ser codificado em base64.

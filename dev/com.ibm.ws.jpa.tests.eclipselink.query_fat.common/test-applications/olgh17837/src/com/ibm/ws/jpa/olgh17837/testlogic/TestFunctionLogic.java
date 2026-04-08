@@ -1207,7 +1207,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ?) || ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR('HELLO' || ' ') || 'WORLD'))", sql.remove(0));
             } else if (isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = ? || ? || ?)", sql.remove(0));
@@ -1219,7 +1221,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ?) || ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR('HELLO' || ' ') || 'WORLD'))", sql.remove(0));
             } else if (isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = ? || ? || ?)", sql.remove(0));
@@ -1232,7 +1236,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ?) || STRVAL2))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR('HELLO' || ' ') || STRVAL2))", sql.remove(0));
             } else if (isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = ? || ? || STRVAL2)", sql.remove(0));
@@ -1258,7 +1264,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ?) || ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR('HELLO' || ' ') || 'WORLD'))", sql.remove(0));
             } else if (isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = ? || ? || ?)", sql.remove(0));
@@ -1276,7 +1284,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR(? || ?) || ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = VARCHAR(VARCHAR('HELLO' || ' ') || 'WORLD'))", sql.remove(0));
             } else if (isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = ? || ? || ?)", sql.remove(0));
@@ -2239,7 +2249,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
@@ -2249,7 +2261,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
@@ -2269,7 +2283,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
@@ -2285,7 +2301,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?))", sql.remove(0));
@@ -2568,7 +2586,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?, ?))", sql.remove(0));
@@ -2580,7 +2600,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?, ?))", sql.remove(0));
@@ -2593,7 +2615,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?, ?))", sql.remove(0));
@@ -2617,7 +2641,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?, ?))", sql.remove(0));
@@ -2635,7 +2661,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?, ?))", sql.remove(0));
@@ -2655,7 +2683,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(LEADING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LTRIM(?, ?))", sql.remove(0));
@@ -3083,7 +3113,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH('HELLO WORLD'))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (11 = LENGTH('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH(?))", sql.remove(0));
@@ -3093,7 +3125,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH('HELLO WORLD'))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (11 = LENGTH('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH(?))", sql.remove(0));
@@ -3115,7 +3149,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH('HELLO WORLD'))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (11 = LENGTH('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH(?))", sql.remove(0));
@@ -3131,7 +3167,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH('HELLO WORLD'))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (11 = LENGTH('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (? = LENGTH(?))", sql.remove(0));
@@ -3734,7 +3772,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
@@ -3748,7 +3788,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
@@ -3763,7 +3805,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
@@ -3789,7 +3833,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
@@ -3809,7 +3855,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
@@ -3831,7 +3879,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('HI', 'ABCDEFGHIJKLMNOP'))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?))", sql.remove(0));
@@ -4292,7 +4342,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
@@ -4306,7 +4358,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
@@ -4321,7 +4375,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
@@ -4349,7 +4405,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
@@ -4369,7 +4427,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
@@ -4393,7 +4453,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = LOCATE('X', 'OXOOOOOXXOOOOOOXX', 3))", sql.remove(0));
             } else if (isOracle) {
                 Assert.assertEquals("SELECT INTVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = INSTR(?, ?, ?))", sql.remove(0));
@@ -4839,7 +4901,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LOWER(?))", sql.remove(0));
@@ -4849,7 +4913,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LOWER(?))", sql.remove(0));
@@ -4869,7 +4935,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LOWER(?))", sql.remove(0));
@@ -4885,7 +4953,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = LOWER(?))", sql.remove(0));
@@ -5167,7 +5237,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
@@ -5177,7 +5249,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
@@ -5197,7 +5271,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
@@ -5213,7 +5289,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?))", sql.remove(0));
@@ -5497,7 +5575,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?, ?))", sql.remove(0));
@@ -5509,7 +5589,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?, ?))", sql.remove(0));
@@ -5533,7 +5615,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?, ?))", sql.remove(0));
@@ -5551,7 +5635,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(TRAILING 'A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else if (isOracle || isPostgres) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = RTRIM(?, ?))", sql.remove(0));
@@ -5880,7 +5966,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = ?)",
+                                    sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = 36)",
                                     sql.remove(0));
             } else {
@@ -5892,7 +5981,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = ?)",
+                                    sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = 36)",
                                     sql.remove(0));
             } else {
@@ -5914,7 +6006,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = ?)",
+                                    sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = 36)",
                                     sql.remove(0));
             } else {
@@ -5932,7 +6027,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = ?)",
+                                    sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT 1 FROM OLGH17837ENTITY t0 WHERE ((SELECT COUNT(t1.ID) FROM COLTABLE1 t2, OLGH17837ENTITY t1 WHERE (t2.ent_id = t0.ID)) = 36)",
                                     sql.remove(0));
             } else {
@@ -6705,7 +6803,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR('HELLO WORLD', 1, 5))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
@@ -6715,7 +6815,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR('HELLO WORLD', 1, 5))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
@@ -6726,7 +6828,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR('HELLO WORLD', 1, 5))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
@@ -6750,7 +6854,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR('HELLO WORLD', 1, 5))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
@@ -6766,7 +6872,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR('HELLO WORLD', 1, 5))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
@@ -6784,7 +6892,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR('HELLO WORLD', 1, 5))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(?, ?, ?))", sql.remove(0));
@@ -7100,7 +7210,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT SUBSTR('HELLO WORLD', 1, 5), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, 1, 5), 1, 2))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
@@ -7110,7 +7222,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT SUBSTR('HELLO WORLD', 1, 5), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, 1, 5), 1, 2))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
@@ -7122,7 +7236,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT SUBSTR('HELLO WORLD', 1, 5), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, 1, 5), 1, 2))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
@@ -7148,7 +7264,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT SUBSTR('HELLO WORLD', 1, 5), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, 1, 5), 1, 2))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
@@ -7164,7 +7282,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT SUBSTR('HELLO WORLD', 1, 5), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, 1, 5), 1, 2))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
@@ -7186,7 +7306,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT SUBSTR('HELLO WORLD', 1, 5), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, 1, 5), 1, 2))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT SUBSTR(?, ?, ?), STRVAL2 FROM OLGH17837ENTITY WHERE (STRVAL1 = SUBSTR(SUBSTR(STRVAL2, ?, ?), ?, ?))", sql.remove(0));
@@ -7515,7 +7637,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
@@ -7525,7 +7649,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+            } else  if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
@@ -7545,7 +7671,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+            } else  if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
@@ -7561,7 +7689,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('  HELLO WORD '))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(?))", sql.remove(0));
@@ -7842,7 +7972,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -7852,7 +7984,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+             if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -7863,7 +7997,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -7885,7 +8021,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -7901,7 +8039,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -7920,7 +8060,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM ?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM('A' FROM 'AAAHELLO WORDAA'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = TRIM(? FROM ?))", sql.remove(0));
@@ -8312,7 +8454,10 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = 23)", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
@@ -8322,7 +8467,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = 23)", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
@@ -8344,7 +8491,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = 23)", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
@@ -8360,7 +8509,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)) {
+                Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT TRIM('  HELLO WORD '), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = 23)", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT TRIM(?), STRVAL1 FROM OLGH17837ENTITY WHERE (INTVAL1 = ?)", sql.remove(0));
@@ -8646,7 +8797,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             List<String> sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UPPER(?))", sql.remove(0));
@@ -8656,7 +8809,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UPPER(?))", sql.remove(0));
@@ -8676,7 +8831,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UPPER(?))", sql.remove(0));
@@ -8692,7 +8849,9 @@ public class TestFunctionLogic extends AbstractTestLogic {
             query.getResultList();
             sql = SQLCallListener.getAndClearCallList();
             Assert.assertEquals(1, sql.size());
-            if (isDB2Z || isDB2 || isDerby) {
+            if (isUsingJPA32Feature() && (isDB2Z || isDB2)){
+                Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE(?))", sql.remove(0));
+            } else if (isDB2Z || isDB2 || isDerby) {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UCASE('HELLO WORLD'))", sql.remove(0));
             } else {
                 Assert.assertEquals("SELECT STRVAL1 FROM OLGH17837ENTITY WHERE (STRVAL1 = UPPER(?))", sql.remove(0));

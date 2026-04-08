@@ -67,4 +67,6 @@
 	<authCache cacheRef="AuthCache" />
 	<webAppSecurity	loggedOutCookieCacheRef="LoggedOutCookieCache" trackLoggedOutSSOCookies="false" />
 
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

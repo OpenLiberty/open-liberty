@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: [{0}] \u7684\u8981\u6c42\
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=\u8981\u6c42\u5305\u542b\u5f62\u614b\u7570\u5e38\u7684 Cookie\u3002 Cookie \u4e2d\u7684\u4e3b\u6a5f\u540d\u7a31\u5fc5\u9808\u7b26\u5408\u73fe\u884c\u8981\u6c42\uff0c\u6216\u5fc5\u9808\u7b26\u5408\u5176\u4e2d\u4e00\u500b\u5bb9\u8a31\u7684\u7db2\u57df\u540d\u7a31\u3002 \u53ef\u4ee5\u5f9e\u4f7f\u7528\u8005\u4ee3\u7406\u7a0b\u5f0f\u5167\u4fee\u6539 Cookie\u3002
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=\u8acb\u9a57\u8b49 OpenID Connect \u63d0\u4f9b\u8005\u548c\u7528\u6236\u7aef\u914d\u7f6e\u3002 \u5982\u679c\u9810\u671f\u6709\u4e3b\u6a5f\u540d\u7a31\uff0c\u8acb\u5c07\u5176\u65b0\u589e\u81f3\u4f3a\u670d\u5668\u914d\u7f6e\u4e2d webAppSecurity \u5143\u7d20\u7684 wasReqURLRedirectDomainNames \u5c6c\u6027\u3002
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: \u7121\u6cd5\u5f9e [ {0} ] \u4fe1\u4efb\u5132\u5b58\u5eab\u8f09\u5165\u53d7\u4fe1\u4efb\u7684\u6191\u8b49\u689d\u76ee\u3002 {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=\u7cfb\u7d71\u5728\u5617\u8a66\u5f9e\u6307\u5b9a\u7684\u4fe1\u4efb\u5132\u5b58\u5eab\u4e2d\u64f7\u53d6\u53d7\u4fe1\u4efb\u6191\u8b49\u689d\u76ee\u6e05\u55ae\u6642\u767c\u751f\u932f\u8aa4\u3002 \u914d\u7f6e\u4e2d\u53ef\u80fd\u7f3a\u5c11\u4fe1\u4efb\u5132\u5b58\u5eab\uff0c\u6216\u8005\u53ef\u80fd\u6709\u554f\u984c\u5c0e\u81f4\u7121\u6cd5\u5b58\u53d6\u4fe1\u4efb\u5132\u5b58\u5eab\u3002
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=\u8acb\u78ba\u8a8d\u60a8\u7684\u4f3a\u670d\u5668\u8a2d\u5b9a\u4e2d\u5df2\u6b63\u78ba\u8a2d\u5b9a\u4fe1\u4efb\u5132\u5b58\u5eab\uff0c\u4e14\u8a72\u5132\u5b58\u5eab\u53ef\u4f9b\u5b58\u53d6\u3002 \u8acb\u67e5\u770b\u932f\u8aa4\u8a0a\u606f\uff0c\u4ee5\u53d6\u5f97\u6709\u95dc\u5931\u6557\u7684\u66f4\u591a\u8cc7\u8a0a\u3002
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

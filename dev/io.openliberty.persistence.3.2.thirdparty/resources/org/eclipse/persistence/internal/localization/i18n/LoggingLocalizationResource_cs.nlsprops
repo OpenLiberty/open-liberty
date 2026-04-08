@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Varov\u00e1n\u00ed: {0}: pokus zav\u0159\u0
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Varov\u00e1n\u00ed: {0}: pokus zav\u0159\u00edt p\u0159ipojen\u00ed zp\u016fsobil v\u00fdjimku {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Upozorn\u011bn\u00ed: {0} : p\u0159i pokusu o uzav\u0159en\u00ed odb\u011bratele do\u0161lo k v\u00fdjimce {1}
+
 broadcast_ignored_command_while_closing_connection=Varov\u00e1n\u00ed: {0}: ignoruje se po\u017eadavek na publikov\u00e1n\u00ed p\u0159\u00edkazu, zat\u00edmco se p\u0159ipojen\u00ed zav\u00edr\u00e1.
 
 broadcast_listening_sleep_on_error=Varov\u00e1n\u00ed: {0}: byla vyd\u00e1na v\u00fdjimka {1}. Podproces bude sp\u00e1t po dobu {2} ms, a pak znovu za\u010dne naslouchat.

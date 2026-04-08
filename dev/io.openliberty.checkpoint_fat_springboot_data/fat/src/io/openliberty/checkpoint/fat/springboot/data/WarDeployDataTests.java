@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -38,6 +38,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @CheckpointTest
 @MinimumJavaLevel(javaLevel = 17)
 public class WarDeployDataTests extends FATServletClient {
+    private static final String APP_NAME = "io.openliberty.checkpoint.springboot.fat30.data.app-1.0.0.war";
     @Rule
     public TestName testName = new TestName();
 
@@ -52,7 +53,7 @@ public class WarDeployDataTests extends FATServletClient {
             case testWarBeforeAppStart -> CheckpointPhase.BEFORE_APP_START;
             default -> throw new IllegalArgumentException("Unexpected value: " + getTestMethodSimpleName(testName));
         };
-        setUp(server, true, testPhase, testMethod.toString());
+        setUp(server, APP_NAME, true, testPhase, testMethod.toString());
     }
 
     @After

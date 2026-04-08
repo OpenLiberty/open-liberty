@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,18 +35,28 @@ public class SignatureEncryptionUserinfoUtils extends CommonTest {
     public static Class<?> thisClass = SignatureEncryptionUserinfoUtils.class;
 
     public List<validationData> setBasicSigningImplicitExpectations(String sigAlgForBuilder, String sigAlgForRP, TestSettings settings, String test_finalAction) throws Exception {
-        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, settings, test_finalAction, true);
+        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, null, settings, test_finalAction, true);
     }
 
     public List<validationData> setBasicSigningExpectations(String sigAlgForBuilder, String sigAlgForRP, TestSettings settings, String test_finalAction) throws Exception {
-        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, settings, test_finalAction, false);
+        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, null, settings, test_finalAction, false);
     }
 
     public List<validationData> setBasicSigningExpectations(String sigAlgForBuilder, String sigAlgForRP, TestSettings settings, String test_finalAction, boolean isImplicit) throws Exception {
+        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, null, settings, test_finalAction, isImplicit);
+    }
 
+    public List<validationData> setBasicSigningExpectations(String sigAlgForBuilder, String sigAlgForRP, List<String> allowedSigAlgs, TestSettings settings, String test_finalAction) throws Exception {
+        return setBasicSigningExpectations(sigAlgForBuilder, sigAlgForRP, allowedSigAlgs, settings, test_finalAction, false);
+    }
+
+    public List<validationData> setBasicSigningExpectations(String sigAlgForBuilder, String sigAlgForRP, List<String> allowedSigAlgs, TestSettings settings, String test_finalAction, boolean isImplicit) throws Exception {
+        
         List<validationData> expectations = null;
-        // if the signature alg in the build matches what's in the RP, the test should succeed - validate status codes and token content
-        if (sigAlgForBuilder.equals(sigAlgForRP)) {
+        // if the signature alg in the builder matches what's in the RP, the test should succeed - validate status codes and token content
+        // if the sig alg for the rp is FROM_HEADER and allowed algs is null (no restrictions), the test should succeed
+        // if the sig alg for the rp contains FROM_HEADER and the allowed algs contain the builder alg, the test should succeed
+        if (sigAlgForBuilder.equals(sigAlgForRP) || (sigAlgForRP.contains("FROM_HEADER") && (allowedSigAlgs == null || allowedSigAlgs.contains(sigAlgForBuilder)))) {
             expectations = vData.addSuccessStatusCodes(null);
             if (test_finalAction.equals(Constants.LOGIN_USER)) {
                 expectations = validationTools.addIdTokenStringValidation(vData, expectations, test_finalAction, Constants.RESPONSE_FULL, Constants.IDToken_STR);
@@ -62,18 +72,30 @@ public class SignatureEncryptionUserinfoUtils extends CommonTest {
             expectations = validationTools.addRequestParmsExpectations(expectations, _testName, test_finalAction, settings);
         } else {
             // validate that we get the correct error message(s) for tests that use the same sig alg, but have mis-matched keys
-            if (sigAlgForBuilder.contains(sigAlgForRP)) {
+            // If the allowed algs contain the builder alg as a partial substring match, then this is a key mismatch scenario
+            if (sigAlgForBuilder.contains(sigAlgForRP) || allowedSigAlgsStringContainBuilder(allowedSigAlgs, sigAlgForBuilder)) {
                 expectations = validationTools.add401Responses(test_finalAction);
-                expectations = validationTools.addMessageExpectation(testRPServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR + ".*client01.*" + sigAlgForRP + ".*");
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1756E_OIDC_IDTOKEN_SIGNATURE_VERIFY_ERR + ".*client01.*" + (sigAlgForRP.equals("FROM_HEADER") ? allowedSigAlgs : sigAlgForRP) + ".*");
             } else {
                 // create negative expectations when signature algorithms don't match
                 expectations = validationTools.add401Responses(test_finalAction);
-                expectations = validationTools.addMessageExpectation(testRPServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH + ".*client01.*" + sigAlgForRP + ".*" + sigAlgForBuilder + ".*");
+                expectations = validationTools.addMessageExpectation(testRPServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_MATCHES, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1761E_SIG_ALG_MISMATCH + ".*client01.*" + (sigAlgForRP.equals("FROM_HEADER") ? allowedSigAlgs : sigAlgForRP) + ".*" + sigAlgForBuilder + ".*");
                 expectations = validationTools.addMessageExpectation(testRPServer, expectations, test_finalAction, Constants.MESSAGES_LOG, Constants.STRING_CONTAINS, "Client messages.log should contain a message indicating that there is a signature mismatch", MessageConstants.CWWKS1706E_CLIENT_FAILED_TO_VALIDATE_ID_TOKEN);
             }
         }
 
         return expectations;
+    }
+
+    private boolean allowedSigAlgsStringContainBuilder(List<String> allowedSigAlgs, String sigAlgForBuilder) {
+        if (allowedSigAlgs != null) {
+            for (String allowedAlg : allowedSigAlgs) {
+                if (allowedAlg.contains(sigAlgForBuilder)) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
 }

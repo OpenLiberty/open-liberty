@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: A request to [{0}] is not
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=The request includes a malformed cookie. The hostname in the cookie must match the current request or must match one of the allowed domain names. The cookie might be modified from within the user agent.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Verify the OpenID Connect provider and client configurations. If the hostname is expected, add it to the wasReqURLRedirectDomainNames attribute of the webAppSecurity element in the server configuration.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: Cannot load trusted certificate entries from the [{0}] truststore. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=An error occurred while the system was attempting to retrieve the list of trusted certificate entries from the specified truststore. The truststore might be missing from the configuration, or an issue might be preventing access to the truststore.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=Verify that the truststore is configured correctly in your server configuration and that it is accessible. Check the error message for more information about the failure.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-
