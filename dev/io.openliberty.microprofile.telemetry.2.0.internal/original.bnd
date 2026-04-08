@@ -23,9 +23,7 @@ Private-Package: \
 	io.openliberty.microprofile.telemetry20.internal.info,\
 	io.openliberty.microprofile.telemetry20.internal.rest.javax,\
 	io.openliberty.microprofile.telemetry20.internal.connpool,\
-	io.openliberty.microprofile.telemetry20.internal.http,\
-	io.openliberty.microprofile.telemetry20.internal.mcp,\
-	io.openliberty.microprofile.telemetry20.internal.mcp.attributes
+	io.openliberty.microprofile.telemetry20.internal.http
 
 -dsannotations: \
   io.openliberty.microprofile.telemetry20.internal.cdi.SPIMetaData,\
@@ -33,5 +31,4 @@ Private-Package: \
   io.openliberty.microprofile.telemetry20.internal.rest.TelemetryServletContainerInitializer,\
   io.openliberty.microprofile.telemetry20.internal.rest.javax.TelemetryJaxRsProviderRegister,\
   io.openliberty.microprofile.telemetry20.internal.connpool.MPTelemetryConnectionPoolMetricsAdapterImpl,\
-  io.openliberty.microprofile.telemetry20.internal.http.MPTelemetryHTTPMetricsAdapterImpl,\
-  io.openliberty.microprofile.telemetry20.internal.mcp.MPTelemetryMcpMetricsAdapterImpl
+  io.openliberty.microprofile.telemetry20.internal.http.MPTelemetryHTTPMetricsAdapterImpl
