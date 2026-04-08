@@ -28,33 +28,35 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import jdbc.fat.v43.web.HandleListTestServlet;
-import jdbc.fat.v43.web.JDBC43TestServlet;
+import jdbc.fat.v43.singlethreadmodel.web.HandleListSingleThreadModelTestServlet;
+import jdbc.fat.v43.singlethreadmodel.web.JDBC43SingleThreadModelTestServlet;
 
 /**
- * This is the same test as JDBC43SingleThreadModelTest without using the
+ * This is the same test as JDBC43Test but using the
  * Servlet SingleThreadModel.
  */
 @RunWith(FATRunner.class)
-public class JDBC43Test extends FATServletClient {
-    private static final String APP_NAME = "app43";
-    private static final String SERVLET_NAME = "JDBC43TestServlet";
+@SkipForRepeat({ SkipForRepeat.EE10_OR_LATER_FEATURES }) // This test uses the Servlet SingleThreadModel which was removed in EE10.
+public class JDBC43SingleThreadModelTest extends FATServletClient {
+    private static final String APP_NAME = "app43SingleThreadModel";
+    private static final String SERVLET_NAME = "JDBC43SingleThreadModelTestServlet";
 
-    @Server("com.ibm.ws.jdbc.fat.v43")
+    @Server("com.ibm.ws.jdbc.fat.v43.singlethreadmodel")
     @TestServlets({
-                    @TestServlet(servlet = JDBC43TestServlet.class, contextRoot = APP_NAME),
-                    @TestServlet(servlet = HandleListTestServlet.class, contextRoot = APP_NAME)
+                    @TestServlet(servlet = JDBC43SingleThreadModelTestServlet.class, contextRoot = APP_NAME),
+                    @TestServlet(servlet = HandleListSingleThreadModelTestServlet.class, contextRoot = APP_NAME)
     })
     public static LibertyServer server;
 
     @BeforeClass
     public static void setUp() throws Exception {
-        ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.v43.web");
+        ShrinkHelper.defaultApp(server, APP_NAME, "jdbc.fat.v43.singlethreadmodel.web");
 
         RemoteFile derby = server.getFileFromLibertySharedDir("resources/derby/derby.jar");
 
@@ -92,7 +94,7 @@ public class JDBC43Test extends FATServletClient {
     }
 
     /**
-     * testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary - obtains an unshared connection in
+     * testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary_singleThreadModel - obtains an unshared connection in
      * one servlet method and uses it, but does not close it, instead allowing it to continue to execution operations
      * asynchronously via a completion stage. After the servlet method ends and goes out of scope, invokes a second
      * servlet method, which under a new scope, accesses the completion stage, joins it, and checks that the operations
@@ -102,13 +104,13 @@ public class JDBC43Test extends FATServletClient {
      * to avoid breaking these users when HandleList is put in place to clean up connections when requests go out of scope.
      */
     @Test
-    public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary() throws Exception {
+    public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary_singleThreadModel() throws Exception {
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1");
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart2");
     }
 
     /**
-     * testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary - obtains an unshared connection in
+     * testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary_singleThreadModel - obtains an unshared connection in
      * one servlet method and uses it, but does not commit it or close it, instead allowing it to continue to execution
      * operations under the same transaction asynchronously via a completion stage, which ultimately commits the transaction
      * if successful and closes the connection. After the servlet method ends and goes out of scope, invokes a second servlet method,
@@ -121,30 +123,30 @@ public class JDBC43Test extends FATServletClient {
      */
     @ExpectedFFDC("com.ibm.ws.LocalTransaction.RolledbackException")
     @Test
-    public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary() throws Exception {
+    public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary_singleThreadModel() throws Exception {
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1");
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2");
     }
 
     /**
-     * testHandleListClosesLeakedConnectionsFromSeparateRequests - make two separate servlet requests that each intentionally leak a connection,
+     * testHandleListClosesLeakedConnectionsFromSeparateRequests_singleThreadModel - make two separate servlet requests that each intentionally leak a connection,
      * using up all of the connections in the pool. Make a third servlet request that requires a connection and expect it to work because the
      * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
      */
     @Test
-    public void testHandleListClosesLeakedConnectionsFromSeparateRequests() throws Exception {
+    public void testHandleListClosesLeakedConnectionsFromSeparateRequests_singleThreadModel() throws Exception {
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakConnection");
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakConnection");
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSeparateRequests");
     }
 
     /**
-     * testHandleListClosesLeakedConnectionsFromSingleRequests - make a single servlet request that each intentionally leaks both of the
+     * testHandleListClosesLeakedConnectionsFromSingleRequests_singleThreadModel - make a single servlet request that each intentionally leaks both of the
      * connections from the pool. Make second servlet request that requires a connection and expect it to work because the
      * HandleList enabled the two leaked connections to be closed out and returned to the connection pool.
      */
     @Test
-    public void testHandleListClosesLeakedConnectionsFromSingleRequest() throws Exception {
+    public void testHandleListClosesLeakedConnectionsFromSingleRequest_singleThreadModel() throws Exception {
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakConnections");
         runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSingleRequest");
     }

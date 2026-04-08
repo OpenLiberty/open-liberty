@@ -7,12 +7,14 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package jdbc.fat.v43.web;
+package jdbc.fat.v43.singlethreadmodel.web;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import javax.annotation.Resource;
+import javax.servlet.ServletException;
+import javax.servlet.SingleThreadModel;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -23,15 +25,23 @@ import org.junit.Test;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
-@SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/HandleListTestServlet")
-public class HandleListTestServlet extends FATServlet {
+@SuppressWarnings({ "serial", "deprecation" })
+@WebServlet(urlPatterns = "/HandleListSingleThreadModelTestServlet")
+public class HandleListSingleThreadModelTestServlet extends FATServlet implements SingleThreadModel {
 
-    @Resource(lookup = "jdbc/poolOf1", shareable = false)
-    DataSource unsharablePool1DataSource;
+    private static final String SERVLET_NAME = "JDBC43SingleThreadModelTestServlet";
 
-    @Resource(lookup = "jdbc/poolOf2", shareable = false)
-    DataSource unsharablePool2DataSource;
+    // SingleThreadModel prevents resource injection, and JNDI lookups aren't enabled, so we use these static
+    // fields to store the data sources that were injected into the JDBC43SingleThreadModelTestServlet,
+    static DataSource unsharablePool1DataSource;
+    static DataSource unsharablePool2DataSource;
+
+    // Asks the JDBC43SingleThreadModelTestServlet to populate the above fields
+    private void populateDataSources(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        getServletContext()
+                        .getRequestDispatcher("/" + SERVLET_NAME + "?testMethod=populateDataSources")
+                        .include(request, response);
+    }
 
     /**
      * When HandleList is not enabled, an unshared connection cannot be used for another request which happens inline on the same thread.
@@ -39,6 +49,7 @@ public class HandleListTestServlet extends FATServlet {
     @ExpectedFFDC("com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException")
     @Test
     public void testUnsharedConnectionNotReassociatedAcrossServletRequests(HttpServletRequest request, HttpServletResponse response) throws Exception {
+        populateDataSources(request, response);
 
         Connection con = unsharablePool1DataSource.getConnection();
         try {
@@ -52,7 +63,7 @@ public class HandleListTestServlet extends FATServlet {
             // See if an inline servlet request can use it.
             // This would require parking the current handle before the inline servlet request and reassociating it back afterward.
             getServletContext()
-                            .getRequestDispatcher("/JDBC43TestServlet?testMethod=testUnsharedConnectionNotReassociatedAcrossServletRequestsInnerRequest")
+                            .getRequestDispatcher("/" + SERVLET_NAME + "?testMethod=testUnsharedConnectionNotReassociatedAcrossServletRequestsInnerRequest")
                             .include(request, response);
 
             ps.setString(1, "Haverhill Road NE");
@@ -87,7 +98,7 @@ public class HandleListTestServlet extends FATServlet {
         // See if an inline servlet request can use them.
         // This would require parking the current handles before the inline servlet request and reassociating them back afterward.
         getServletContext()
-                        .getRequestDispatcher("/JDBC43TestServlet?testMethod=testUnsharedConnectionReassociatedAcrossServletRequestsInnerRequest")
+                        .getRequestDispatcher("/" + SERVLET_NAME + "?testMethod=testUnsharedConnectionReassociatedAcrossServletRequestsInnerRequest")
                         .include(request, response);
 
         // Connections must continue to be usable afterward

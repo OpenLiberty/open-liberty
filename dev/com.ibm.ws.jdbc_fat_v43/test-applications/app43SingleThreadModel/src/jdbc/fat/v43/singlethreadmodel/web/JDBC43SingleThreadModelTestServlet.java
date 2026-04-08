@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2026 IBM Corporation and others.
+ * Copyright (c) 2020, 2023 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package jdbc.fat.v43.web;
+package jdbc.fat.v43.singlethreadmodel.web;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -67,8 +67,8 @@ import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
-@WebServlet(urlPatterns = "/JDBC43TestServlet")
-public class JDBC43TestServlet extends FATServlet {
+@WebServlet(urlPatterns = "/JDBC43SingleThreadModelTestServlet")
+public class JDBC43SingleThreadModelTestServlet extends FATServlet {
     /**
      * Array indices for beginRequest/endRequest tracking.
      */
@@ -160,6 +160,14 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
+     * Provides data sources to the HandleListSingleThreadModelTestServlet, which lacks access to resource injection due to SingleThreadModel.
+     */
+    public void populateDataSources() {
+        HandleListSingleThreadModelTestServlet.unsharablePool1DataSource = unsharablePool1DataSource;
+        HandleListSingleThreadModelTestServlet.unsharablePool2DataSource = unsharablePool2DataSource;
+    }
+
+    /**
      * Test that attempting to use the connection builder methods on an unwrapped connection are blocked.
      */
     @Test
@@ -184,7 +192,7 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
-     * Invoked by JDBC43Test as the first of a two part test that caches an unshared connection across servlet requests.
+     * Invoked by JDBC43SingleThreadModelTest as the first of a two part test that caches an unshared connection across servlet requests.
      */
     public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1() throws Exception {
         final Connection con = unsharablePool1DataSource.getConnection();
@@ -230,7 +238,7 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
-     * Invoked by JDBC43Test as the second of a two part test that caches an unshared connection across servlet requests.
+     * Invoked by JDBC43SingleThreadModelTest as the second of a two part test that caches an unshared connection across servlet requests.
      */
     public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart2() throws Exception {
         @SuppressWarnings("unchecked")
@@ -255,7 +263,7 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
-     * Invoked by JDBC43Test as the first of a two part test that caches an unshared connection across servlet requests.
+     * Invoked by JDBC43SingleThreadModelTest as the first of a two part test that caches an unshared connection across servlet requests.
      */
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1() throws Exception {
         // Use a data source where the HandleList is enabled
@@ -314,7 +322,7 @@ public class JDBC43TestServlet extends FATServlet {
     }
 
     /**
-     * Invoked by JDBC43Test as the second of a two part test that caches an unshared connection across servlet requests.
+     * Invoked by JDBC43SingleThreadModelTest as the second of a two part test that caches an unshared connection across servlet requests.
      */
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2() throws Exception {
         @SuppressWarnings("unchecked")

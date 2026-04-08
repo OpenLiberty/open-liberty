@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2018, 2021 IBM Corporation and others.
+    Copyright (c) 2018, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -17,7 +17,7 @@
 
   <include location="../fatTestPorts.xml"/>
 
-  <application location="app43.war"/>
+  <application location="app43SingleThreadModel.war"/>
 
   <authData id="user43Auth" user="user43" password="{xor}Lyg7a2w="/>
 
@@ -79,9 +79,9 @@
   </library>
 
   <javaPermission codebase="${server.config.dir}/drivers/d43driver.jar" className="java.security.AllPermission"/>
-  <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.sql.SQLPermission" name="callAbort"/>
-  <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.lang.RuntimePermission" name="modifyThread"/>
-  <javaPermission codebase="${server.config.dir}/apps/app43.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
+  <javaPermission codebase="${server.config.dir}/apps/app43SingleThreadModel.war" className="java.sql.SQLPermission" name="callAbort"/>
+  <javaPermission codebase="${server.config.dir}/apps/app43SingleThreadModel.war" className="java.lang.RuntimePermission" name="modifyThread"/>
+  <javaPermission codebase="${server.config.dir}/apps/app43SingleThreadModel.war" className="java.util.PropertyPermission" name="java.util.concurrent.ForkJoinPool.*" actions="read"/>
 
   <variable name="onError" value="FAIL"/>
 </server>
