@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -106,12 +106,12 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
         updateTrackers(opServer, rpServer, false);
 
         List<String> waitForMsgs = null;
-        opServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        opServer.startServerUsingExpandedConfiguration(getServerConfigFile("server_orig.xml"), waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
         opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
 
-        rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        rpServer.startServerUsingExpandedConfiguration(getServerConfigFile("server_orig.xml"), waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
         rpHttpBase = "http://localhost:" + rpServer.getBvtPort();
@@ -232,10 +232,10 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     /**
      * Build the map used to create openIdConfig.properties
      *
-     * @param appName - the appName that will be invoked and redirected to
-     * @param provider - the provider that the test uses (most use OP1)
+     * @param appName                    - the appName that will be invoked and redirected to
+     * @param provider                   - the provider that the test uses (most use OP1)
      * @param redirectToOriginalResource - flag indicating if redirectToOriginalResource should be set to true, false, or not set
-     * @param useSession - flag indicating if useSession should be set to true, false, or not set
+     * @param useSession                 - flag indicating if useSession should be set to true, false, or not set
      * @return - return a map of openIdConfig.properties values to be set
      * @throws Exception
      */
@@ -313,9 +313,9 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      * Build the name of the test app that the test will use - the name is bases on he parms passed in
      *
      * @param usesInjection - does the app inject openIdContext (the first part of the app name is based on this)
-     * @param redirect - is redirectToOriginalResource true/false/empty (meaning not set)
-     * @param useSession - is useSession true/false/empty (meaning not set)
-     * @param newAuth - is newAuthentication true/false/empty (meaning not set)
+     * @param redirect      - is redirectToOriginalResource true/false/empty (meaning not set)
+     * @param useSession    - is useSession true/false/empty (meaning not set)
+     * @param newAuth       - is newAuthentication true/false/empty (meaning not set)
      * @return - returns the built app name
      * @throws Exception
      */
@@ -364,9 +364,9 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
     /**
      * Invoke the app the first time and validate the response
      *
-     * @param webClient - the webClient to use for both attempts to access the protected app
-     * @param appRoot - the app to invoke
-     * @param requestCount - the number of times we expect to land on the test app
+     * @param webClient     - the webClient to use for both attempts to access the protected app
+     * @param appRoot       - the app to invoke
+     * @param requestCount  - the number of times we expect to land on the test app
      * @param callbackCount - the number of times we expect to land on the callback (number was set based on the value of the redirect flag)
      * @return - returns the page output
      * @throws Exception
@@ -511,8 +511,8 @@ public class AuthenticationTests extends CommonAnnotatedSecurityTests {
      * Compare the OpenIdContext reference between the first and second app invocations. The ref should be the same, but the content should be different. (the content is validated
      * as part of the normal test flow)
      *
-     * @param response1 - the response from the first call to the test app
-     * @param response2 - the response from the first call to the test app
+     * @param response1     - the response from the first call to the test app
+     * @param response2     - the response from the first call to the test app
      * @param usesInjection - flag indicating if injection is used - if it is NOT, there should be no openidContext
      * @throws Exception
      */

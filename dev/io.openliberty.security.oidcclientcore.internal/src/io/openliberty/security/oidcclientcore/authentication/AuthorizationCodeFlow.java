@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -95,9 +95,31 @@ public class AuthorizationCodeFlow extends AbstractFlow {
     }
 
     private String appendCodeAndStateParams(String originalRequestUrl, HttpServletRequest request) {
-        originalRequestUrl += "?" + CODE + "=" + request.getParameter(CODE);
-        originalRequestUrl += "&" + STATE + "=" + request.getParameter(STATE);
-        return originalRequestUrl;
+        // the stored URL has query params we need to preserve
+        String state = request.getParameter(STATE);
+        Storage storage = StorageFactory.instantiateStorage(request, null, oidcClientConfig.isUseSession());
+        String fullOriginalRequestUrl = storage.get(OidcStorageUtils.getOriginalReqUrlStorageKey(state));
+
+        String originalQueryParams = null;
+        if (fullOriginalRequestUrl != null && fullOriginalRequestUrl.contains("?")) {
+            originalQueryParams = fullOriginalRequestUrl.substring(fullOriginalRequestUrl.indexOf("?") + 1);
+        }
+
+        // build redirect URL with code and state
+        String separator = "?";
+        StringBuilder redirectUrl = new StringBuilder(originalRequestUrl);
+
+        // and now add the original query parameters first if they exist
+        if (originalQueryParams != null && !originalQueryParams.isEmpty()) {
+            redirectUrl.append(separator).append(originalQueryParams);
+            separator = "&";
+        }
+
+        // don't forget to add the OAUTH params back
+        redirectUrl.append(separator).append(CODE).append("=").append(request.getParameter(CODE));
+        redirectUrl.append("&").append(STATE).append("=").append(request.getParameter(STATE));
+
+        return redirectUrl.toString();
     }
 
     private void removeStoredState(Storage storage, String state) {

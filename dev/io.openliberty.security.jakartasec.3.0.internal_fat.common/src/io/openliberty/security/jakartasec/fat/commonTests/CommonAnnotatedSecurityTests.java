@@ -779,4 +779,15 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
 
     }
 
+    public static String getServerConfigFile(String origConfigFile){
+        String configFile = origConfigFile;
+        String repeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        String[] fileArray = configFile.split("\\.");
+        if (repeatAction.contains("EE11_FEATURES")){
+            configFile = fileArray[0] + "_ee11." + fileArray[1];
+        }
+
+        return configFile;
+    }
+
 }

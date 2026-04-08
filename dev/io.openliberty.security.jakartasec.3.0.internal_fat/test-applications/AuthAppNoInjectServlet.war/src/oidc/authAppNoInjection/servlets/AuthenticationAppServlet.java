@@ -71,9 +71,10 @@ public class AuthenticationAppServlet extends SimpleServlet {
             System.out.println("Already Authenticated");
         }
 
-        ServletOutputStream outputStream = response.getOutputStream();
-        recordAppInfo(request, outputStream);
-
+        if (!response.isCommitted()) {
+            ServletOutputStream outputStream = response.getOutputStream();
+            recordAppInfo(request, outputStream);
+        }
     }
 
 }
