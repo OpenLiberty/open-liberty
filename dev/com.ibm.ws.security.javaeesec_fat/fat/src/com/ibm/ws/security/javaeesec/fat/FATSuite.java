@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,12 +19,15 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
                 AlwaysPassesTest.class,
+
                 BasicAuthenticationMechanismTest.class,
                 RememberMeTest.class,
                 AutoApplySessionTest.class,
@@ -42,6 +45,7 @@ import componenttest.rules.repeater.RepeatTests;
                 //EJBModuleTestProtectedServlet.class,
                 EJBModuleTestUnprotectedServlet.class,
                 FeatureTest.class
+
 })
 
 /**
@@ -53,5 +57,5 @@ public class FATSuite {
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)).andWith(new JakartaEE10Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)).andWith(FeatureReplacementAction.EE11_FEATURES());
 }

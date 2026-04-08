@@ -4,12 +4,10 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
-
-import static com.ibm.ws.security.javaeesec.fat_helper.JavaEESecTestBase.assumeNotWindowsEe9;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;

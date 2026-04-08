@@ -198,7 +198,13 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * </OL>
      */
     @Test
-    @AllowedFFDC({ "javax.naming.AuthenticationException" })
+    /*
+     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
+     * When authentication fails and the system tries to render the error page, the response has already been partially committed
+     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
+     * MyFaces 4.0 just logs a warning
+     */
+    @AllowedFFDC({ "javax.naming.AuthenticationException" }) //
     public void testMultipleISCustomFormPostRedirectWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // retry the test 5 times when 500 is returned which indicates some EL expression error happened on
