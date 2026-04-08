@@ -7,30 +7,30 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.metrics50.mcp;
+package io.openliberty.mcp.internal.mpmetrics;
 
-import static io.openliberty.microprofile.metrics50.mcp.attributes.ErrorIncubatingAttributes.ERROR_TYPE;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.GenAiIncubatingAttributes.GEN_AI_OPERATION_NAME;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.GenAiIncubatingAttributes.GEN_AI_PROMPT_NAME;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.GenAiIncubatingAttributes.GEN_AI_TOOL_NAME;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.JsonrpcIncubatingAttributes.JSONRPC_PROTOCOL_VERSION;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.McpIncubatingAttributes.MCP_METHOD_NAME;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.McpIncubatingAttributes.MCP_PROTOCOL_VERSION;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.McpIncubatingAttributes.MCP_RESOURCE_URI;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.NetworkIncubatingAttributes.NETWORK_PROTOCOL_NAME;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.NetworkIncubatingAttributes.NETWORK_PROTOCOL_VERSION;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.NetworkIncubatingAttributes.NETWORK_TRANSPORT;
-import static io.openliberty.microprofile.metrics50.mcp.attributes.RpcIncubatingAttributes.RPC_RESPONSE_STATUS_CODE;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.ERROR_TYPE;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.GEN_AI_OPERATION_NAME;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.GEN_AI_PROMPT_NAME;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.GEN_AI_TOOL_NAME;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.JSONRPC_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.MCP_METHOD_NAME;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.MCP_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.MCP_RESOURCE_URI;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.NETWORK_PROTOCOL_NAME;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.NETWORK_PROTOCOL_VERSION;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.NETWORK_TRANSPORT;
+import static io.openliberty.mcp.internal.mpmetrics.tags.McpTagConstants.RPC_RESPONSE_STATUS_CODE;
 
 import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.eclipse.microprofile.metrics.Histogram;
 import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetadataBuilder;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Tag;
-import org.eclipse.microprofile.metrics.Timer;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
@@ -87,7 +87,8 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
 
         MetricRegistry vendorRegistry = sharedMetricRegistries.getOrCreate(MetricRegistry.VENDOR_SCOPE);
 
-        Metadata md = new MetadataBuilder().withName(Constants.MCP_SERVER_OPERATION_DURATION_NAME)
+        Metadata md = new MetadataBuilder().withUnit("nanoseconds")
+                .withName(Constants.MCP_SERVER_OPERATION_DURATION_NAME)
                 .withDescription(Constants.MCP_SERVER_OPERATION_DURATION_DESC).build();
 
         String appName = getApplicationName();
@@ -100,58 +101,58 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
                 x -> new ConcurrentHashMap<String, Tag[]>());
         Tag[] tags = attributesMap.computeIfAbsent(keyID, x -> retrieveTags(mcpStatAttributes));
 
-        Timer mcpTimer = vendorRegistry.timer(md, tags);
-        mcpTimer.update(duration);
+        Histogram mcpTimer = vendorRegistry.histogram(md, tags);
+        mcpTimer.update(duration.getNano());
         ;
 
     }
 
     private Tag[] retrieveTags(McpStatAttributes mcpStatAttributes) {
 
-        Tag mcpMethodNameTag = new Tag(MCP_METHOD_NAME.getKey().replace(".", "_"),
+        Tag mcpMethodNameTag = new Tag(MCP_METHOD_NAME,
                 mcpStatAttributes.getMcpMethodName());
 
         String errorType = mcpStatAttributes.getErrorType();
-        Tag errorTypeTag = new Tag(ERROR_TYPE.getKey().replace(".", "_"), (errorType == null ? "" : errorType));
+        Tag errorTypeTag = new Tag(ERROR_TYPE, (errorType == null ? "" : errorType));
 
         String genAiPromptName = mcpStatAttributes.getGenAiPromptName();
-        Tag genAiPromptNameTag = new Tag(GEN_AI_PROMPT_NAME.getKey().replace(".", "_"),
+        Tag genAiPromptNameTag = new Tag(GEN_AI_PROMPT_NAME,
                 (genAiPromptName == null ? "" : genAiPromptName));
 
         String genAiToolName = mcpStatAttributes.getGenAiToolName();
-        Tag genAiToolNameTag = new Tag(GEN_AI_TOOL_NAME.getKey().replace(".", "_"),
+        Tag genAiToolNameTag = new Tag(GEN_AI_TOOL_NAME,
                 (genAiToolName == null ? "" : genAiToolName));
 
         String rpcResponseStatusCode = mcpStatAttributes.getRpcResponseStatusCode();
-        Tag rpcResponseStatusCodeTag = new Tag(RPC_RESPONSE_STATUS_CODE.getKey().replace(".", "_"),
+        Tag rpcResponseStatusCodeTag = new Tag(RPC_RESPONSE_STATUS_CODE,
                 (rpcResponseStatusCode == null ? "" : rpcResponseStatusCode));
 
         String genAiOperationName = mcpStatAttributes.getGenAiOperationName();
-        Tag genAiOperationNameTag = new Tag(GEN_AI_OPERATION_NAME.getKey().replace(".", "_"),
+        Tag genAiOperationNameTag = new Tag(GEN_AI_OPERATION_NAME,
                 (genAiOperationName == null ? "" : genAiOperationName));
 
         String jsonrpcProtocolVersion = mcpStatAttributes.getJsonrpcProtocolVersion();
-        Tag jsonrpcProtocolVersionTag = new Tag(JSONRPC_PROTOCOL_VERSION.getKey().replace(".", "_"),
+        Tag jsonrpcProtocolVersionTag = new Tag(JSONRPC_PROTOCOL_VERSION,
                 (jsonrpcProtocolVersion == null ? "" : jsonrpcProtocolVersion));
 
         String mcpProtocolVersion = mcpStatAttributes.getMcpProtocolVersion();
-        Tag mcpProtocolVersionTag = new Tag(MCP_PROTOCOL_VERSION.getKey().replace(".", "_"),
+        Tag mcpProtocolVersionTag = new Tag(MCP_PROTOCOL_VERSION,
                 (mcpProtocolVersion == null ? "" : mcpProtocolVersion));
 
         String networkProtocolName = mcpStatAttributes.getNetworkProtocolName();
-        Tag networkProtocolNameTag = new Tag(NETWORK_PROTOCOL_NAME.getKey().replace(".", "_"),
+        Tag networkProtocolNameTag = new Tag(NETWORK_PROTOCOL_NAME,
                 (networkProtocolName == null ? "" : networkProtocolName));
 
         String networkProtocolVersion = mcpStatAttributes.getNetworkProtocolVersion();
-        Tag networkProtocolVersionTag = new Tag(NETWORK_PROTOCOL_VERSION.getKey().replace(".", "_"),
+        Tag networkProtocolVersionTag = new Tag(NETWORK_PROTOCOL_VERSION,
                 (networkProtocolVersion == null ? "" : networkProtocolVersion));
 
         String networkTransport = mcpStatAttributes.getNetworkTransport();
-        Tag networkTransportTag = new Tag(NETWORK_TRANSPORT.getKey().replace(".", "_"),
+        Tag networkTransportTag = new Tag(NETWORK_TRANSPORT,
                 (networkTransport == null ? "" : networkTransport));
 
         String mcpResourceUri = mcpStatAttributes.getMcpResourceUri();
-        Tag mcpResourceUriTag = new Tag(MCP_RESOURCE_URI.getKey().replace(".", "_"),
+        Tag mcpResourceUriTag = new Tag(MCP_RESOURCE_URI,
                 (mcpResourceUri == null ? "" : mcpResourceUri));
 
         Tag[] ret = new Tag[] { mcpMethodNameTag, errorTypeTag, genAiPromptNameTag, genAiToolNameTag,
