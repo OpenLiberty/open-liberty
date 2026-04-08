@@ -105,7 +105,8 @@ public class ZipkinOtelCollectorTest {
 
         // Configure exporter → collector (gRPC)
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
-        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none");
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging exporting
+        server.addEnvVar(TestConstants.ENV_OTEL_METRICS_EXPORTER, "none"); //Disable metrics exporting
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, otelCollectorContainer.getOtlpGrpcUrl());
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
         // Some older agents only honor the per-signal endpoint:
@@ -113,11 +114,12 @@ public class ZipkinOtelCollectorTest {
 
         // Service + BSP batching config
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
-        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100");
         server.addEnvVar(TestConstants.ENV_OTEL_BSP_MAX_EXPORT_BATCH_SIZE, "1");
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false");
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_SAMPLER, "always_on");
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "30000"); //Add delays and extend timeouts
+        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "5000");
         // Deploy app
         WebArchive spanTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
                                         .addPackage(TestResource.class.getPackage());

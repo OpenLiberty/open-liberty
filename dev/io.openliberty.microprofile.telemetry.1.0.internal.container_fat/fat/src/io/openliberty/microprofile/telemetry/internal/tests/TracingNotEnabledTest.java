@@ -87,8 +87,13 @@ public class TracingNotEnabledTest {
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, jaegerContainer.getOtlpGrpcUrl());
 
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, SERVICE_NAME);
-        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
+
+        server.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "30000"); //Add delays and extend timeouts
+        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "5000");
         // server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); // Do not enable tracing
+
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging exporting
+        server.addEnvVar(TestConstants.ENV_OTEL_METRICS_EXPORTER, "none"); //Disable metrics exporting
 
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")

@@ -84,6 +84,9 @@ public class MetricsApiOtelCollectorTest {
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "PrometheusOtelCollectorTest");
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false");
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "30000"); //Add delays and extend timeouts
+        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "5000");
+
         // Construct the test application
         WebArchive spanTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
                                         .addPackage(TestResource.class.getPackage());
@@ -144,20 +147,20 @@ public class MetricsApiOtelCollectorTest {
 
     /**
      * Gets metrics from otelcollector:3131/metrics in the prometheus format.
-     * For more info on the Prometheus metrics format: 
+     * For more info on the Prometheus metrics format:
      * https://github.com/prometheus/docs/blob/main/content/docs/instrumenting/exposition_formats.md#text-format-details
      */
     public void getApiMetrics(String name, String type, String value) throws Exception {
-        
+
         waitForApiMetrics();
-        
+
         String result = client.dumpMetrics();
         // Add null check for result before using it
         if (result == null) {
             fail("No metrics data returned from collector");
             return;
         }
-        
+
         List<String> splits = Arrays.asList(result.split("((?=# HELP))"));
         for (String s : splits) {
             if (s.contains(name)) {

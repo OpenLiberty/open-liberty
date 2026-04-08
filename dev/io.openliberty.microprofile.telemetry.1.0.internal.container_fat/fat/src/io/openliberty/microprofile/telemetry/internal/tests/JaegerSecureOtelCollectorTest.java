@@ -87,11 +87,13 @@ public class JaegerSecureOtelCollectorTest extends JaegerBaseTest {
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, otelCollectorContainer.getSecureOtlpGrpcUrl());
         server.addEnvVar(TestConstants.ENV_OTEL_SERVICE_NAME, "Test service");
-        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "100"); // Wait no more than 100ms to send traces to the server
         server.addEnvVar(TestConstants.ENV_OTEL_SDK_DISABLED, "false"); //Enable tracing
-        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging exporting
+        server.addEnvVar(TestConstants.ENV_OTEL_METRICS_EXPORTER, "none"); //Disable metrics exporting
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_CERTIFICATE, otelCollectorKeyPairs.certificateFilePath());
 
+        server.addEnvVar("OTEL_EXPORTER_OTLP_TIMEOUT", "30000"); //Add delays and extend timeouts
+        server.addEnvVar(TestConstants.ENV_OTEL_BSP_SCHEDULE_DELAY, "5000");
         // Construct the test application
         WebArchive jaegerTest = ShrinkWrap.create(WebArchive.class, "spanTest.war")
                                           .addPackage(TestResource.class.getPackage());
