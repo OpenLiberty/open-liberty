@@ -4832,8 +4832,53 @@ public abstract class QueryInfo {
             count++;
         }
 
+        if (count == 0)
+            throw Fail.emptyLifeCycleParam(this);
+
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "refresh");
+        return null;
+    }
+
+    /**
+     * Requests the removal of entities from the database.
+     * Removal might be delayed by the persistence context.
+     *
+     * @param arg the entity or array/Iterable/Stream of entities.
+     * @param em  the entity manager
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    Void remove(Object arg, EntityManager em) throws Exception {
+        arg = arg instanceof Stream //
+                        ? ((Stream<?>) arg).sequential().toList() //
+                        : arg;
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "remove", loggable(arg));
+
+        int removalsRequested = 0;
+
+        if (arg instanceof Iterable) {
+            for (Object e : ((Iterable<?>) arg)) {
+                removalsRequested++;
+                em.remove(entityNotNull(e));
+            }
+        } else if (entityParamType.isArray()) {
+            removalsRequested = Array.getLength(arg);
+            for (int i = 0; i < removalsRequested; i++)
+                em.remove(entityNotNull(Array.get(arg, i)));
+        } else {
+            removalsRequested = 1;
+            em.remove(entityNotNull(arg));
+        }
+
+        if (removalsRequested == 0)
+            throw Fail.emptyLifeCycleParam(this);
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "remove");
         return null;
     }
 

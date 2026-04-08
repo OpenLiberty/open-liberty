@@ -1337,6 +1337,57 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a stateful repository to remove entities.
+     */
+    @Test
+    public void testRemove() throws Exception {
+
+        // Populate with 9/23, 10/23, 11/23, and 12/23.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(9, 23),
+                                                Fraction.of(10, 23),
+                                                Fraction.of(11, 23),
+                                                Fraction.of(12, 23)));
+        try {
+            System.out.println("Remove 10/23 and 12/23 within the same tran");
+
+            tx.begin();
+            Fraction f10_23 = statefulFractions.fetch(10, 23).orElseThrow();
+            Fraction f12_23 = statefulFractions.fetch(12, 23).orElseThrow();
+            statefulFractionRepo.remove(f10_23, f12_23);
+            tx.commit();
+
+            Fraction f9_23 = statefulFractions.fetch(9, 23).orElseThrow();
+
+            assertEquals(true,
+                         statefulFractions.fetch(10, 23).isEmpty());
+
+            Fraction f11_23 = statefulFractions.fetch(11, 23).orElseThrow();
+
+            assertEquals(true,
+                         statefulFractions.fetch(12, 23).isEmpty());
+
+            // TODO once persistence context can be used outside of a transaction,
+            //System.out.println("Remove 11/23, fetched outside of tran");
+
+            //statefulFractionRepo.remove(f11_23);
+
+            //f9_23 = statefulFractions.fetch(9, 23).orElseThrow();
+
+            //assertEquals(true,
+            //             statefulFractions.fetch(11, 23).isEmpty());
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
+    }
+
+    /**
      * Use a repository method that imposes restrictions on a Query By Method Name
      * count method that has no constraints indicated by the method name.
      */

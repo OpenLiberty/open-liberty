@@ -606,6 +606,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case DETACH -> queryInfo.detach(args[0], em);
                     case PERSIST -> queryInfo.persist(args[0], em);
                     case REFRESH -> queryInfo.refresh(args[0], em);
+                    case REMOVE -> queryInfo.remove(args[0], em);
                     case RESOURCE_ACCESS -> getResource(queryInfo);
                     default -> throw new UnsupportedOperationException(queryType.operationName);
                 };
