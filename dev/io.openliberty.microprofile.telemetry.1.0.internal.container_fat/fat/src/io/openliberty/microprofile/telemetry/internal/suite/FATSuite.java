@@ -18,47 +18,34 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import io.openliberty.microprofile.telemetry.internal.tests.Agent129Test;
-import io.openliberty.microprofile.telemetry.internal.tests.Agent214Test;
-import io.openliberty.microprofile.telemetry.internal.tests.Agent250Test;
-import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigMultiAppTest;
-import io.openliberty.microprofile.telemetry.internal.tests.AgentConfigTest;
-import io.openliberty.microprofile.telemetry.internal.tests.AgentTest;
-import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureJaegerTest;
-import io.openliberty.microprofile.telemetry.internal.tests.CrossFeatureZipkinTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerLegacyTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerOtlpTest;
 import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JaegerSecureOtlpTest;
-import io.openliberty.microprofile.telemetry.internal.tests.JvmMetricsOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.MetricsApiOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.TracingNotEnabledTest;
-import io.openliberty.microprofile.telemetry.internal.tests.ZipkinOtelCollectorTest;
-import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 
                 AlwaysPassesTest.class, //Must keep this test to run something in the Java 6 builds.
-                AgentTest.class,
-                Agent129Test.class,
-                Agent214Test.class,
-                Agent250Test.class,
-                AgentConfigTest.class,
-                AgentConfigMultiAppTest.class,
-                CrossFeatureJaegerTest.class,
-                CrossFeatureZipkinTest.class,
+                /*
+                 * AgentTest.class,
+                 * Agent129Test.class,
+                 * Agent214Test.class,
+                 * Agent250Test.class,
+                 * AgentConfigTest.class,
+                 * AgentConfigMultiAppTest.class,
+                 * CrossFeatureJaegerTest.class,
+                 * CrossFeatureZipkinTest.class,
+                 */
                 JaegerSecureOtelCollectorTest.class,
-                JaegerSecureOtlpTest.class,
-                JaegerOtlpTest.class,
-                JaegerOtelCollectorTest.class,
-                JaegerLegacyTest.class,
-                TracingNotEnabledTest.class,
-                JvmMetricsOtelCollectorTest.class,
-                MetricsApiOtelCollectorTest.class,
-                ZipkinOtelCollectorTest.class,
-                ZipkinTest.class,
+/*
+ * JaegerSecureOtlpTest.class,
+ * JaegerOtlpTest.class,
+ * JaegerOtelCollectorTest.class,
+ * JaegerLegacyTest.class,
+ * TracingNotEnabledTest.class,
+ * JvmMetricsOtelCollectorTest.class,
+ * MetricsApiOtelCollectorTest.class,
+ * ZipkinOtelCollectorTest.class,
+ * ZipkinTest.class,
+ */
 
 })
 

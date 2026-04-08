@@ -8,9 +8,9 @@ receivers:
      http:
 
 exporters:
- logging:
- jaeger:
-   endpoint: "jaeger-all-in-one:14250"    
+ debug:
+ otlp/jaeger:
+   endpoint: "jaeger-all-in-one:4317"
    tls:
       insecure: true
 
@@ -26,4 +26,4 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging,jaeger]
+      exporters: [debug,otlp/jaeger]

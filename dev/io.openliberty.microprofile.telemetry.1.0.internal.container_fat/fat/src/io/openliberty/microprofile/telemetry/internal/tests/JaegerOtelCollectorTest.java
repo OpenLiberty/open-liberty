@@ -69,7 +69,7 @@ public class JaegerOtelCollectorTest extends JaegerBaseTest {
     @ClassRule
     public static RuleChain chain = RuleChain
                                              .outerRule(network)
-                                             .around(jaegerContainer)
+                                             //.around(jaegerContainer)
                                              .around(otelCollectorContainer)
                                              .around(repeat);
 

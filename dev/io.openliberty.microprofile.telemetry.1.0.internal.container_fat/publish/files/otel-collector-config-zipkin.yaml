@@ -5,7 +5,7 @@ receivers:
      http:
 
 exporters:
- logging:
+ debug:
  zipkin:
    endpoint: "http://zipkin-all-in-one:9411/api/v2/spans"
 
@@ -21,4 +21,4 @@ service:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [logging, zipkin]
+      exporters: [debug, zipkin]
