@@ -519,6 +519,25 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 HttpDispatcher.getExecutorService().execute(pending);
             }
 
+            String protocol = ctx.channel().attr(NettyHttpConstants.PROTOCOL).get();
+            System.out.println(">>> Protocol was : " + protocol);
+            if ("WebSocket".equalsIgnoreCase(protocol)){
+                if (!ctx.channel().config().isAutoRead()){
+                    Tr.debug(tc, "[UPGRADE-SYSOUT]: enable auto read for websoc");
+                    ctx.channel().config().setAutoRead(true);
+                }
+
+            }
+            else {
+                if(ctx.channel().config().isAutoRead()){
+                 Tr.debug(tc, "[UPGRADE-SYSOUT] onupgradeCommitted, ensuring autoread disabled");
+                 ctx.channel().config().setAutoRead(false);
+             }
+            }
+
+            System.out.println(">>> Auto read set to : " + ctx.channel().config().isAutoRead());
+
+
             // if (!ctx.channel().config().isAutoRead()) {
             //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             //         Tr.debug(tc, "onUpgradeCommitted: enabling autoRead for upgraded connection");
@@ -528,10 +547,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             //     Tr.debug(tc,"[UPGRADE-SYSOUT] onUpgradeCommitted setAutoRead(true) DONE autoRead(now)="
             //     + ctx.channel().config().isAutoRead());  
             // }
-            if(ctx.channel().config().isAutoRead()){
-                Tr.debug(tc, "[UPGRADE-SYSOUT] onupgradeCommitted, ensuring autoread disabled");
-                ctx.channel().config().setAutoRead(false);
-            }
+            //  if(ctx.channel().config().isAutoRead()){
+            //      Tr.debug(tc, "[UPGRADE-SYSOUT] onupgradeCommitted, ensuring autoread disabled");
+            //      ctx.channel().config().setAutoRead(false);
+            //  }
         } finally{
             try {
                 promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();

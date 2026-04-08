@@ -474,20 +474,25 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
 
                 io.netty.util.concurrent.ScheduledFuture<?> f = toRef.getAndSet(null);
-                if (f != null)
+                if (f != null){
                     try {
                         f.cancel(false);
                     } catch (Throwable ignore) {
                     }
+                }
                 //try {
-                    if (callback != null) {
-                        HttpDispatcher.getExecutorService().execute(() -> {
+
+                System.out.println("Setting buffer and calling complete if callback is nonnull: " + (callback!=null));
+                    
+                h.setToBuffer();
+                if (callback != null) {
+                    HttpDispatcher.getExecutorService().execute(() -> {
                             try {
                                 callback.complete(v, ctx);
                             } catch (Throwable ignore) {
                             }
-                        });
-                    }
+                    });
+                }
                // } 
             }
 
