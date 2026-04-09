@@ -69,12 +69,12 @@ public class SSOAuthenticatorRefreshTest {
 
     // Timing constants for token refresh tests
     // Configuration: expiration=2m, refreshThreshold=1m, maxLifetime=4m
-    private static final long REFRESH_THRESHOLD_WAIT_MS = 70000;  // 70 seconds - wait past 1m threshold
-    private static final long SHORT_EXPIRATION_WAIT_MS = 35000;   // 35 seconds - for short expiration tests
-    private static final long FULL_EXPIRATION_WAIT_MS = 130000;   // 130 seconds - wait past 2m expiration
-    private static final long CONFIG_UPDATE_WAIT_MS = 2000;       // 2 seconds - wait for config update
-    private static final long RAPID_REQUEST_DELAY_MS = 500;       // 500ms - delay between rapid requests
-    private static final long FRESH_TOKEN_DELAY_MS = 1000;        // 1 second - delay for fresh token
+    private static final long REFRESH_THRESHOLD_WAIT_MS = 70000; // 70 seconds - wait past 1m threshold
+    private static final long SHORT_EXPIRATION_WAIT_MS = 35000; // 35 seconds - for short expiration tests
+    private static final long FULL_EXPIRATION_WAIT_MS = 130000; // 130 seconds - wait past 2m expiration
+    private static final long CONFIG_UPDATE_WAIT_MS = 2000; // 2 seconds - wait for config update
+    private static final long RAPID_REQUEST_DELAY_MS = 500; // 500ms - delay between rapid requests
+    private static final long FRESH_TOKEN_DELAY_MS = 1000; // 1 second - delay for fresh token
 
     @Rule
     public final TestWatcher logger = new TestWatcher() {
@@ -447,6 +447,7 @@ public class SSOAuthenticatorRefreshTest {
         // Authenticate and get cookie
         HttpURLConnection conn1 = makeAuthenticatedRequest(servletUrl, null, "user1", "user1pwd");
         String cookie = extractLTPACookie(conn1);
+        Log.info(thisClass, testName, "Received cookie: " + cookie);
         assertNotNull("Should receive cookie", cookie);
         conn1.disconnect();
 
@@ -489,9 +490,9 @@ public class SSOAuthenticatorRefreshTest {
      * IMPORTANT: Caller MUST call disconnect() on the returned connection to prevent resource leaks.
      *
      * @param urlString the URL to request
-     * @param cookie optional LTPA cookie
-     * @param username the username for basic auth
-     * @param password the password for basic auth
+     * @param cookie    optional LTPA cookie
+     * @param username  the username for basic auth
+     * @param password  the password for basic auth
      * @return the HTTP connection (caller must call disconnect())
      * @throws IOException if the request fails
      */
@@ -524,7 +525,7 @@ public class SSOAuthenticatorRefreshTest {
      * IMPORTANT: Caller MUST call disconnect() on the returned connection to prevent resource leaks.
      *
      * @param urlString the URL to request
-     * @param cookie the LTPA cookie value
+     * @param cookie    the LTPA cookie value
      * @return the HTTP connection (caller must call disconnect())
      * @throws IOException if the request fails
      */
