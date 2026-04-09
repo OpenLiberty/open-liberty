@@ -47,7 +47,7 @@ import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import io.openliberty.mcp.internal.monitor.metrics.McpMetricAdapter;
 import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
-import io.openliberty.microprofile.metrics50.helper.Constants;
+import io.openliberty.mcp.internal.mpmetrics.constants.Constants;
 
 /**
  *
