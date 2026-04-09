@@ -6245,8 +6245,21 @@ public class LibertyServer implements LogMonitorClient {
      */
     @Deprecated
     public void updateLogOffset(String logFile, Long newLogOffset) {
+        Log.info(c, "updateLogOffset", ">>>>> CARL_DEBUG: Updating logOffset.put() to: " + newLogOffset + " for file: " + logFile);
+        Log.info(c, "updateLogOffset", ">>>>> CARL_DEBUG: BEFORE updateLogOffset.put(): ");
+        for (String name : logOffsets.keySet()) {
+            String key = name;
+            String value = logOffsets.get(key).toString();
+            Log.info(c, "updateLogOffset", ">>>>>>>>>>> " + key + " " + value);
+        }
         @SuppressWarnings("unused")
         Long oldLogOffset = logOffsets.put(logFile, newLogOffset);
+        Log.info(c, "updateLogOffset", ">>>>> CARL_DEBUG: AFTER updateLogOffset.put(): ");
+        for (String name : logOffsets.keySet()) {
+            String key = name;
+            String value = logOffsets.get(key).toString();
+            Log.info(c, "updateLogOffset", ">>>>>>>>>> " + key + " " + value);
+        }
     }
 
     /**
@@ -6418,6 +6431,8 @@ public class LibertyServer implements LogMonitorClient {
         String[] appNamesArray = appNames.toArray(new String[appNames.size()]);
 
         RemoteFile logFile = getDefaultLogFile();
+        Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: waitForConfigUpdateInLogUsingMark looking at file: ");
+        Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: " + logFile.getName());
 
         Set<String> startedAppNames = Collections.emptySet();
 
@@ -6428,6 +6443,8 @@ public class LibertyServer implements LogMonitorClient {
             for (offset = getMarkOffset(logFile.getAbsolutePath()); System.currentTimeMillis() - startTime < timeout
                                                                     && (!startedAppNames.containsAll(appNames)
                                                                         || watchFor.size() > 1); startedAppNames = getInstalledAppNames(appNamesArray)) {
+                Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Entering loop.");
+                Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Current offset from logMarks: " + offset + " for " + logFile.getName());
                 // Periodically print diagnostic info if waiting a long time
                 long waited = System.currentTimeMillis() - startTime;
                 if (++count % 10 == 0)
@@ -6495,6 +6512,13 @@ public class LibertyServer implements LogMonitorClient {
             Log.info(LibertyServer.class, methodName, "Last line searched:  [ " + lastLine + " ]");
             if (hitEof)
                 Log.info(LibertyServer.class, methodName, "Last line searching reached end of file, preceding last line was the last line of text seen.");
+
+            Log.info(LibertyServer.class, methodName, ">>>>> CARL DEBUG: for file: " + logFile.getAbsolutePath());
+            Log.info(LibertyServer.class, methodName, ">>>>> CARL_DEBUG: First line searched: [ " + firstLine + " ]");
+            Log.info(LibertyServer.class, methodName, ">>>>> CARL_DEBUG: Last line searched:  [ " + lastLine + " ]");
+            if (hitEof)
+                Log.info(LibertyServer.class, methodName, ">>>>> CARL_DEBUG: Last line searching reached end of file, preceding last line was the last line of text seen.");
+
         }
 
         // Check if we timed out
@@ -8023,6 +8047,7 @@ public class LibertyServer implements LogMonitorClient {
 
     @Override
     public void lmcUpdateLogOffset(String logFile, Long newLogOffset) {
+        Log.info(c, "lmcUpdateLogOffset", "Updating logOffset to: " + newLogOffset + " for file: " + logFile);
         updateLogOffset(logFile, newLogOffset);
     }
 

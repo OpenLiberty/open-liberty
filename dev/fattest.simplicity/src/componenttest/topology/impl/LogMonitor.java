@@ -95,6 +95,7 @@ public class LogMonitor {
      * @param log files to mark. If none are specified, the default log file is marked.
      */
     public void setMarkToEndOfLog(RemoteFile... logFiles) throws Exception {
+        Log.info(c, "setMarkToEndOfLog", ">>>>> CARL_DEBUG: Going through logfiles to set marks to end...");
         if (logFiles == null || logFiles.length == 0)
             logFiles = new RemoteFile[] { client.lmcGetDefaultLogFile() };
 
@@ -112,7 +113,8 @@ public class LogMonitor {
             }
 
             Long oldMarkOffset = logMarks.put(logFile.getAbsolutePath(), offset);
-            Log.info(c, "setMarkToEndOfLog", "old:" + oldMarkOffset + ", new:" + offset + ", " + logFile);
+//            Log.info(c, "setMarkToEndOfLog", "old:" + oldMarkOffset + ", new:" + offset + ", " + logFile);
+            Log.info(c, "setMarkToEndOfLog", ">>>>> CARL_DEBUG: Updating logMarks.put() old:" + oldMarkOffset + ", new:" + offset + " for file: " + logFile.getName());
         }
     }
 
@@ -127,9 +129,11 @@ public class LogMonitor {
         if (!logMarks.containsKey(logFile)) {
             Log.finer(c, method, "file does not exist in logMarks, set initial offset");
             logMarks.put(logFile, 0L);
+            Log.info(c, "getMarkOffset", ">>>>> CARL_DEBUG: Updating initial offset in logMarks for logFile: " + logFile);
         }
 
         Log.info(c, "getMarkOffset", "offset:" + logMarks.get(logFile) + ", " + logFile);
+        Log.info(c, "getMarkOffset", ">>>>> CARL_DEBUG: getMarkOffset from logMarks,  offset: " + logMarks.get(logFile) + " from logFile: " + logFile);
         return logMarks.get(logFile);
     }
 
@@ -196,6 +200,10 @@ public class LogMonitor {
         boolean hitEof = false;
         Long offset = getMarkOffset(outputFile.getAbsolutePath());
 
+        Log.info(c, "waitForStringInLogUsingMark",
+                 ">>>>> CARL_DEBUG: starting with offset " + offset + " Looking for the string " + regexp + " in the file: " + outputFile.getAbsolutePath());
+        Log.info(c, "waitForStringInLogUsingMark", "offset: " + offset);
+
         try {
             LogSearchResult newOffsetAndMatches;
             while (waited <= extendedTimeout) {
@@ -239,6 +247,14 @@ public class LogMonitor {
             Log.finer(c, "waitForStringInLogUsingMark", "Last line searched:  [ " + lastLine + " ]");
             if (hitEof)
                 Log.finer(c, "waitForStringInLogUsingMark", "Last line searching reached end of file, preceding last line was the last line of text seen.");
+
+            Log.info(c, "waitForStringInLogUsingMark",
+                     ">>>>> CARL_DEBUG: Started waiting for message matching regexp [ " + regexp + "] at " + formatter.format(new Date(startTime))
+                                                       + " and finished at " + formatter.format(new Date(endTime)));
+            Log.info(c, "waitForStringInLogUsingMark", ">>>>> CARL_DEBUG: First line searched: [ " + firstLine + " ]");
+            Log.info(c, "waitForStringInLogUsingMark", ">>>>> CARL_DEBUG: Last line searched:  [ " + lastLine + " ]");
+            if (hitEof)
+                Log.info(c, "waitForStringInLogUsingMark", ">>>>> CARL_DEBUG: Last line searching reached end of file, preceding last line was the last line of text seen.");
         }
         return null;
     }
