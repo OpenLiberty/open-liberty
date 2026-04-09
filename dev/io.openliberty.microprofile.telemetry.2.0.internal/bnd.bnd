@@ -39,8 +39,6 @@ Service-Component: \
 Import-Package: \
 	!io.openliberty.http.monitor,\
 	!io.openliberty.http.monitor.metrics,\
-	!io.openliberty.mcp.internal.monitor,\
-	!io.openliberty.mcp.internal.monitor.metrics,\
 	!com.ibm.ws.connectionpool.monitor.metrics,\
 	io.opentelemetry.api.common;version="[1.2,3)",\
 	io.openliberty.microprofile.telemetry.internal.common.resources,\
@@ -57,9 +55,6 @@ Import-Package: \
 DynamicImport-Package: \
     io.openliberty.http.monitor,\
     io.openliberty.http.monitor.metrics,\
-    io.openliberty.mcp.internal.monitoring,\
-    io.openliberty.mcp.internal.monitor,\
-    io.openliberty.mcp.internal.monitor.metrics,\
     com.ibm.ws.connectionpool.monitor.metrics
 
 # Export-Package and Private-Package specified in sub-bundles
@@ -87,8 +82,6 @@ DynamicImport-Package: \
 	io.opentelemetry.semconv:opentelemetry-semconv;version='1.25.0.alpha';strategy=exact,\
 	com.ibm.ws.kernel.boot.common;version=latest,\
 	io.openliberty.http.monitor,\
-	io.openliberty.mcp.internal;version=latest,\
-	io.openliberty.mcp.internal.monitor,\
 	io.opentelemetry.instrumentation:opentelemetry-resources;version='2.1.0.alpha',\
 	com.ibm.ws.connectionpool.monitor,\
 	com.ibm.ws.kernel.service

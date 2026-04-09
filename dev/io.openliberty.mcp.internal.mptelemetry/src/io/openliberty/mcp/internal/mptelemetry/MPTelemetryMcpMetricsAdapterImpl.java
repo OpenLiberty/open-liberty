@@ -7,20 +7,20 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.microprofile.telemetry20.internal.mcp;
+package io.openliberty.mcp.internal.mptelemetry;
 
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.ErrorIncubatingAttributes.ERROR_TYPE;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.GenAiIncubatingAttributes.GEN_AI_OPERATION_NAME;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.GenAiIncubatingAttributes.GEN_AI_PROMPT_NAME;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.GenAiIncubatingAttributes.GEN_AI_TOOL_NAME;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.JsonrpcIncubatingAttributes.JSONRPC_PROTOCOL_VERSION;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.McpIncubatingAttributes.MCP_METHOD_NAME;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.McpIncubatingAttributes.MCP_PROTOCOL_VERSION;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.McpIncubatingAttributes.MCP_RESOURCE_URI;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.NetworkIncubatingAttributes.NETWORK_PROTOCOL_NAME;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.NetworkIncubatingAttributes.NETWORK_PROTOCOL_VERSION;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.NetworkIncubatingAttributes.NETWORK_TRANSPORT;
-import static io.openliberty.microprofile.telemetry20.internal.mcp.attributes.RpcIncubatingAttributes.RPC_RESPONSE_STATUS_CODE;
+import static io.opentelemetry.semconv.incubating.ErrorIncubatingAttributes.ERROR_TYPE;
+import static io.opentelemetry.semconv.incubating.GenAiIncubatingAttributes.GEN_AI_OPERATION_NAME;
+import static io.opentelemetry.semconv.incubating.GenAiIncubatingAttributes.GEN_AI_PROMPT_NAME;
+import static io.opentelemetry.semconv.incubating.GenAiIncubatingAttributes.GEN_AI_TOOL_NAME;
+import static io.opentelemetry.semconv.incubating.JsonrpcIncubatingAttributes.JSONRPC_PROTOCOL_VERSION;
+import static io.opentelemetry.semconv.incubating.McpIncubatingAttributes.MCP_METHOD_NAME;
+import static io.opentelemetry.semconv.incubating.McpIncubatingAttributes.MCP_PROTOCOL_VERSION;
+import static io.opentelemetry.semconv.incubating.McpIncubatingAttributes.MCP_RESOURCE_URI;
+import static io.opentelemetry.semconv.incubating.NetworkIncubatingAttributes.NETWORK_PROTOCOL_NAME;
+import static io.opentelemetry.semconv.incubating.NetworkIncubatingAttributes.NETWORK_PROTOCOL_VERSION;
+import static io.opentelemetry.semconv.incubating.NetworkIncubatingAttributes.NETWORK_TRANSPORT;
+import static io.opentelemetry.semconv.incubating.RpcIncubatingAttributes.RPC_RESPONSE_STATUS_CODE;
 
 import java.time.Duration;
 import java.util.Arrays;
@@ -60,9 +60,9 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
 
     private static final TraceComponent tc = Tr.register(MPTelemetryMcpMetricsAdapterImpl.class);
 
-    private static final String INSTR_SCOPE = "io.openliberty.microprofile.telemetry20.internal.mcp";
+    private static final String INSTR_SCOPE = "io.openliberty.mcp.internal.mptelemetry";
 
-    private static final String NO_APP_NAME_IDENTIFIER = "io.openliberty.microprofile.telemetry20.internal.mcp.no.app.name";
+    private static final String NO_APP_NAME_IDENTIFIER = "io.openliberty.mcp.internal.mptelemetry.no.app.name";
 
     private static final double NANO_CONVERSION = 0.000000001;
     private static final Double[] BUCKET_BOUNDARIES = { 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0, 120.0, 300.0 };

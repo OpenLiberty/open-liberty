@@ -803,6 +803,11 @@
     </dependency>
     <dependency>
       <groupId>io.opentelemetry.semconv</groupId>
+      <artifactId>opentelemetry-semconv-incubating</artifactId>
+      <version>1.40.0-alpha</version>
+    </dependency>
+    <dependency>
+      <groupId>io.opentelemetry.semconv</groupId>
       <artifactId>opentelemetry-semconv</artifactId>
       <version>1.23.1-alpha</version>
     </dependency>
