@@ -1,0 +1,1 @@
+package io.openliberty.mcp.internal.mpmetrics.constants;

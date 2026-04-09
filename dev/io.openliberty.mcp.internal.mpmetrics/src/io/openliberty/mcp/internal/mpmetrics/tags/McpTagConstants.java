@@ -26,4 +26,9 @@ public final class McpTagConstants {
         public static final String NETWORK_PROTOCOL_VERSION = "network_protocol_version";
         public static final String NETWORK_TRANSPORT = "network_transport";
         public static final String RPC_RESPONSE_STATUS_CODE = "rpc_response_status_code";
+        
+        // MCP Metrics
+        public static final String MCP_SERVER_OPERATION_DURATION_NAME = "mcp.server.operation.duration";
+        public static final String MCP_SERVER_OPERATION_DURATION_DESC = "Duration of MCP operation calls.";
+
 }

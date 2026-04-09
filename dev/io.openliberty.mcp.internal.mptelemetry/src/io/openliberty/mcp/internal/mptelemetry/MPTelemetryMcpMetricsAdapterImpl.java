@@ -51,6 +51,7 @@ import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributesBuilder;
 import io.opentelemetry.api.metrics.DoubleHistogram;
 import io.opentelemetry.context.Context;
+import io.openliberty.mcp.internal.mptelemetry.constants.Constants;
 
 /**
  *
@@ -219,9 +220,9 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
             mcpHistogramMapLock.writeLock().lock();
             return threadUnsafeMcpHistogramMap.computeIfAbsent(otelInstance,
                                                                (OpenTelemetry openTelemetry) -> openTelemetry.getMeterProvider().get(INSTR_SCOPE)
-                                                                               .histogramBuilder(OpenTelemetryConstants.MCP_SERVER_OPERATION_DURATION_NAME)
+                                                                               .histogramBuilder(Constants.MCP_SERVER_OPERATION_DURATION_NAME)
                                                                                .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
-                                                                               .setDescription(OpenTelemetryConstants.MCP_SERVER_OPERATION_DURATION_DESC)
+                                                                               .setDescription(Constants.MCP_SERVER_OPERATION_DURATION_DESC)
                                                                                .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build());
         } finally {
             mcpHistogramMapLock.writeLock().unlock();
