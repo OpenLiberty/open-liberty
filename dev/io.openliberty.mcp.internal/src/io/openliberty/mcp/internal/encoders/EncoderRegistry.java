@@ -15,36 +15,29 @@ import java.util.List;
 import java.util.Optional;
 
 import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.internal.McpCdiExtension;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.annotation.Priority;
-import jakarta.enterprise.inject.spi.CDI;
 
 public class EncoderRegistry {
 
     private static final int DEFAULT_ENCODER_PRIORITY = 0;
     private List<ToolResponseEncoder<?>> toolResponseEncoders = new ArrayList<>();
     private List<ContentEncoder<?>> contentEncoders = new ArrayList<>();
+    private final EncoderRegistry globalRegistry;
 
-    // Module scoped registry accessible only to the current module
-    private static EncoderRegistry moduleInstance = null;
-    // Global registry for EAR/lib shared encoders accessible to all modules
-    private static EncoderRegistry globalInstance;
-
-    public static EncoderRegistry getModuleInstance() {
-        if (moduleInstance != null) {
-            return moduleInstance;
-        }
-        return CDI.current().select(McpCdiExtension.class).get().getCurrentEncoderRegistry();
+    /**
+     * Constructor for module registries (receives global reference)
+     */
+    public EncoderRegistry(EncoderRegistry globalRegistry) {
+        this.globalRegistry = globalRegistry;
     }
 
-    public static EncoderRegistry getGlobalInstance() {
-        if (globalInstance != null) {
-            return globalInstance;
-        }
-        globalInstance = new EncoderRegistry();
-        return globalInstance;
+    /**
+     * Constructor for the global registry (which no parent registry)
+     */
+    public EncoderRegistry() {
+        this.globalRegistry = null;
     }
 
     public void registerEncoders(List<ToolResponseEncoder<?>> toolResponseEncoders, List<ContentEncoder<?>> contentEncoders) {
@@ -80,9 +73,9 @@ public class EncoderRegistry {
         // Check local encoders first
         Optional<Encoder<?, ?>> encoder = findEncoderLocally(returnType);
 
-        // Fallback to global if not found and this isn't global
-        if (encoder.isEmpty() && this != EncoderRegistry.getGlobalInstance()) {
-            encoder = EncoderRegistry.getGlobalInstance().findEncoder(returnType);
+        // Fallback to global if not found and we have a global registry
+        if (encoder.isEmpty() && globalRegistry != null) {
+            encoder = globalRegistry.findEncoder(returnType);
         }
 
         return encoder;

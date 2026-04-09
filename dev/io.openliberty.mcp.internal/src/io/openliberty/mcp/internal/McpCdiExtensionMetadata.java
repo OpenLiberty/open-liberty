@@ -24,11 +24,13 @@ import jakarta.enterprise.inject.spi.Extension;
 public class McpCdiExtensionMetadata implements CDIExtensionMetadata {
 
     /**
-     * Tells Liberty's CDI runtime: "For every CDI-enabled module, instantiate McpCdiExtension and call its observer methods"
-     * Each module gets its own instance of McpCdiExtension
-     * This is how McpCdiExtension discovers tools and encoders in each module
+     * Tells Liberty's CDI runtime: "For every CDI-enabled application, make these classes CDI extensions"
+     * <p>
+     * CDI extensions can have observer methods to discover beans and types within the application.
+     * <p>
+     * This is how {@code McpCdiExtension} discovers tools and encoders in each module
      *
-     * @return Set containing McpCdiExtension.class - the CDI extension that will be instantiated per module
+     * @return Set containing CDI extension classes
      */
     @Override
     public Set<Class<? extends Extension>> getExtensions() {
@@ -36,10 +38,10 @@ public class McpCdiExtensionMetadata implements CDIExtensionMetadata {
     }
 
     /**
-     * Tells Liberty's CDI runtime: "Make these classes available as CDI beans in every module"
-     * These beans are automatically discovered and injectable in all modules
+     * Tells Liberty's CDI runtime: "Make these classes available as CDI beans in every application"
+     * These beans are automatically discovered and injectable in all applications
      *
-     * @return Set of classes that will be registered as CDI beans in every module
+     * @return Set of classes that will be registered as CDI beans in every application
      */
     @Override
     public Set<Class<?>> getBeanClasses() {

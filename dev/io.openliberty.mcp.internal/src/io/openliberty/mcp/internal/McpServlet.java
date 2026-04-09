@@ -92,6 +92,9 @@ public class McpServlet extends HttpServlet {
     @Inject
     ConverterRegistry converterRegistry;
 
+    @Inject
+    EncoderRegistry encoderRegistry;
+
     private Jsonb jsonb;
 
     @Override
@@ -307,7 +310,7 @@ public class McpServlet extends HttpServlet {
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
         RequestId requestId = request.id();
 
-        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, EncoderRegistry.getModuleInstance(), requestId);
+        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId);
     }
 
     public record ToolArgumentsImpl(Map<String, Object> args,

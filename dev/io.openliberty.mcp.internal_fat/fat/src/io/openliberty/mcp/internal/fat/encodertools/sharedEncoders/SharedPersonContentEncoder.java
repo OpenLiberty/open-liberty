@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.fat.tool.sharedEncoders;
+package io.openliberty.mcp.internal.fat.encodertools.sharedEncoders;
 
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.ContentEncoder;
@@ -17,28 +17,23 @@ import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
 /**
- * Shared encoders that can be placed in EAR/lib for use across multiple WAR modules.
+ * Shared encoder that can be placed in EAR/lib for use across multiple WAR modules.
  * 
- * IMPORTANT: This class contains ONLY encoder implementations, NO @Tool annotations.
+ * IMPORTANT: This class contains ONLY encoder implementation, NO @Tool annotations.
  * Tools with @Tool annotations require module association and cannot be in EAR libraries.
  */
-public class SharedEncoders {
+@ApplicationScoped
+public class SharedPersonContentEncoder implements ContentEncoder<Person> {
     private static final Jsonb jsonb = JsonbBuilder.create();
 
-    public record Person(String fistName, String lastName, int age) {}
+    @Override
+    public boolean supports(Class<?> runtimeType) {
+        return Person.class.isAssignableFrom(runtimeType);
+    }
 
-    @ApplicationScoped
-    public static class PersonContentEncoder implements ContentEncoder<Person> {
-
-        @Override
-        public boolean supports(Class<?> runtimeType) {
-            return Person.class.isAssignableFrom(runtimeType);
-        }
-
-        @Override
-        public Content encode(Person person) {
-            Person encodedPerson = new Person(person.fistName, "Encoded by PersonContentEncoder", person.age);
-            return new TextContent(jsonb.toJson(encodedPerson));
-        }
+    @Override
+    public Content encode(Person person) {
+        Person encodedPerson = new Person(person.fistName(), "Encoded by PersonContentEncoder", person.age());
+        return new TextContent(jsonb.toJson(encodedPerson));
     }
 }

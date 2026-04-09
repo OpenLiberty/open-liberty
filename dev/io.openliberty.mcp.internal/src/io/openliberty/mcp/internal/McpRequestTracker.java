@@ -26,7 +26,11 @@ import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.messaging.Cancellation;
 
 /**
- * This is a connection tracker bean. It keeps track of ongoing tool call requests
+ * This is a connection tracker, keeping track of ongoing tool call requests for a single module
+ * The current Module instance can be retrieved from McpRequestTrackers
+ *
+ * @see McpRequestTrackers
+ * @see McpCdiExtensionMetadata getBeanClasses()
  */
 
 public class McpRequestTracker {

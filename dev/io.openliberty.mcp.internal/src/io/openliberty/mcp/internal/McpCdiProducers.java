@@ -16,16 +16,13 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.inject.Produces;
 
 /**
- * Produces module-scoped CDI beans for MCP tool management and content encoding.
+ * Holds provider methods which produce CDI beans for MCP components.
  *
- * <p>When application code uses {@code @Inject} to request a {@link ToolManager} or
- * {@link EncoderRegistry}, CDI invokes the corresponding producer method in this class.
- * The produced beans are automatically scoped to the requesting module (WAR/EJB JAR),
- * with one instance created per module and cached for reuse.
+ * <p>Each {@code @Produces} method in this class adds a CDI bean. When CDI needs to create
+ * an instance of one of these beans, it invokes the corresponding method.
  *
- * <p><b>Lifecycle:</b> The {@code @Inject} annotation triggers CDI to call the producer method
- * on first use within each module. The {@code @ModuleScoped} annotation ensures the produced
- * instance is cached and reused for all subsequent injections within the same module.
+ * <p><b>Lifecycle:</b> The scope annotation on the method defines the scope of the created bean.
+ * CDI beans are created lazily and CDI will only call the method when it needs to create a bean instance.
  */
 @ApplicationScoped
 public class McpCdiProducers {

@@ -7,13 +7,13 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.fat.tool.ejbjar;
+package io.openliberty.mcp.internal.fat.encodertools.ejbjarEncoder;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.content.TextContent;
-import io.openliberty.mcp.internal.fat.tool.sharedEncoders.SharedEncoders.Person;
+import io.openliberty.mcp.internal.fat.encodertools.sharedEncoders.Person;
 import io.openliberty.mcp.tools.ToolManager;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.annotation.Priority;

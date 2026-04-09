@@ -29,92 +29,20 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.mcp.internal.fat.tool.ejbjar.EarToolBean;
-import io.openliberty.mcp.internal.fat.tool.sharedEncoders.SharedEncoders;
-import io.openliberty.mcp.internal.fat.tool.war1init.War1ToolBeanInitializedEvent;
-import io.openliberty.mcp.internal.fat.tool.war1startup.War1ToolBeanStartupEvent;
-import io.openliberty.mcp.internal.fat.tool.war2init.War2ToolBeanInitializedEvent;
-import io.openliberty.mcp.internal.fat.tool.war2startup.War2ToolBeanStartupEvent;
+import io.openliberty.mcp.internal.fat.encodertool.defaultEncoderTest1.DefaultEncoderModule;
+import io.openliberty.mcp.internal.fat.encodertools.ejbjarEncoder.EarToolBean;
+import io.openliberty.mcp.internal.fat.encodertools.moduleLevelEncoder.EncoderModuleTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 
 /**
- * Tests module-scoped tool and encoder isolation in Jakarta EE applications with MCP (Model Context Protocol).
+ * Tests tool and encoder isolation across WAR modules in an EAR.
  *
- * <p><b>Purpose:</b> Validates that tools and encoders registered in one web module are properly isolated
- * from other web modules, while shared encoders in EAR/lib are accessible to all modules. Ensures no
- * cross-contamination of tool and encoder registries across module boundaries.
- *
- * <p><b>Test Architecture:</b>
+ * <p>Verifies:
  * <ul>
- * <li>Deploys an EAR containing 4 WAR modules, 1 EJB JAR module, and 1 shared library</li>
- * <li>Each WAR registers tools using different mechanisms (CDI events)</li>
- * <li>Tests verify tools and encoders are scoped per module, not application-wide</li>
- * <li>Shared encoders in EAR/lib are accessible to all WAR modules</li>
+ * <li>Tools registered in one WAR are not visible in other WARs
+ * <li>Module-specific encoders override shared encoders from EAR/lib
+ * <li>EJB JAR tools and encoders are not accessible to WARs
  * </ul>
- *
- * <p><b>Module Structure:</b>
- *
- * <pre>
- * multi-module.ear
- * ├── war1WithInitializedEvent.war  - Tools via @Initialized(ApplicationScoped.class)
- * │                                    + Custom PersonContentEncoder (overrides shared)
- * │                                    + Custom CompanyContentEncoder (module-specific)
- * ├── war1WithBeanStartupEvent.war  - Tools via @Startup bean
- * ├── war2WithInitializedEvent.war  - Tools via @Initialized(ApplicationScoped.class)
- * ├── war2WithBeanStartupEvent.war  - Tools via @Startup bean
- * ├── mcpToolsEjb.jar               - EJB-based tools (NOT exposed to WARs)
- * │                                   + EJB encoders (NOT accessible to WARs)
- * └── lib/
- *     └── shared-encoders.jar       - Shared PersonContentEncoder (GLOBAL scope)
- *                                      Accessible to all WAR modules
- * </pre>
- *
- * <p><b>Test Coverage:</b>
- * <ul>
- * <li><b>Tool Isolation:</b>
- * <ul>
- * <li>Tools registered via @Initialized(ApplicationScoped.class) event</li>
- * <li>Tools registered via @Startup bean event</li>
- * <li>Both annotation-based (@Tool) and programmatic (ToolManager API) tool registration</li>
- * <li>EJB JAR tool exclusion from web module endpoints</li>
- * </ul>
- * </li>
- * <li><b>Encoder Isolation and Sharing:</b>
- * <ul>
- * <li>Shared encoders (EAR/lib) accessible to all WAR modules (GLOBAL scope)</li>
- * <li>Module-specific encoders isolated per WAR (MODULE scope)</li>
- * <li>Module encoders override shared encoders when present</li>
- * <li>EJB JAR encoders NOT accessible to WAR modules (class visibility constraint)</li>
- * </ul>
- * </li>
- * <li><b>Session Sharing:</b>
- * <ul>
- * <li>Each MCPSessionStore is ModuleScoped</li>
- * </ul>
- * </li>
- * </ul>
- *
- * <p><b>Encoder Scope Behavior:</b>
- * <ul>
- * <li><b>GLOBAL (EAR/lib):</b> Encoders in shared-encoders.jar are registered to the global
- * EncoderRegistry and accessible to all WAR modules that don't have their own encoder
- * for the same type</li>
- * <li><b>MODULE (WAR):</b> Encoders in WAR modules are registered to that module's
- * EncoderRegistry and take precedence over global encoders</li>
- * <li><b>EJB JAR:</b> Encoders in EJB JAR are NOT accessible to WAR modules due to
- * Jakarta EE class visibility rules (EJB classes not visible to WARs)</li>
- * </ul>
- *
- * <p><b>Related Requirements:</b>
- * <ul>
- * <li>One ToolRegistry per web module (not per application)</li>
- * <li>One EncoderRegistry per web module + one global EncoderRegistry for EAR/lib</li>
- * <li>Module-scoped CDI beans for programmatic tool registration</li>
- * <li>EncoderRegistry and ConverterRegistry module isolation with global fallback</li>
- * </ul>
- *
- * @see io.openliberty.mcp.ToolManager
- * @see io.openliberty.mcp.Tool
  */
 @RunWith(FATRunner.class)
 public class MultiModuleToolTestToolManager extends FATServletClient {
@@ -123,28 +51,18 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
     public static LibertyServer server;
 
     @Rule
-    public McpClient war1WithInitializedEvent = new McpClient(server, "/war1WithInitializedEvent");
+    public McpClient encoderModuleMCPClient = new McpClient(server, "/encoderModule");
 
     @Rule
-    public McpClient war1WithBeanStartupEvent = new McpClient(server, "/war1WithBeanStartupEvent");
-
-    @Rule
-    public McpClient war2WithInitializedEvent = new McpClient(server, "/war2WithInitializedEvent");
-
-    @Rule
-    public McpClient war2WithBeanStartupEvent = new McpClient(server, "/war2WithBeanStartupEvent");
+    public McpClient defaultEncoderModuleMCPClient = new McpClient(server, "/defaultEncoderModule");
 
     @BeforeClass
     public static void setup() throws Exception {
 
-        WebArchive war1WithInitializedEvent = ShrinkWrap.create(WebArchive.class, "war1WithInitializedEvent.war")
-                                                        .addClass(War1ToolBeanInitializedEvent.class);
-        WebArchive war1WithBeanStartupEvent = ShrinkWrap.create(WebArchive.class, "war1WithBeanStartupEvent.war")
-                                                        .addClass(War1ToolBeanStartupEvent.class);
-        WebArchive war2WithInitializedEvent = ShrinkWrap.create(WebArchive.class, "war2WithInitializedEvent.war")
-                                                        .addClass(War2ToolBeanInitializedEvent.class);
-        WebArchive war2WithBeanStartupEvent = ShrinkWrap.create(WebArchive.class, "war2WithBeanStartupEvent.war")
-                                                        .addClass(War2ToolBeanStartupEvent.class);
+        WebArchive encoderModule = ShrinkWrap.create(WebArchive.class, "encoderModule.war")
+                                             .addPackage(EncoderModuleTools.class.getPackage());
+        WebArchive defaultEncoderModule = ShrinkWrap.create(WebArchive.class, "defaultEncoderModule.war")
+                                                    .addPackage(DefaultEncoderModule.class.getPackage());
 
         // 1) EarToolBean cannot share its tools across WARs (they need module context)
         // 2) EarToolBean also has a Person Encoder with a high priority (5000), but it correctly is never used.
@@ -153,13 +71,11 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                                                .addClass(EarToolBean.class);
 
         JavaArchive sharedEncodersLib = ShrinkWrap.create(JavaArchive.class, "shared-encoders.jar")
-                                                  .addClass(SharedEncoders.class);
+                                                  .addPackage("io.openliberty.mcp.internal.fat.encodertools.sharedEncoders");
 
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "multi-module.ear")
-                                          .addAsModule(war1WithInitializedEvent)
-                                          .addAsModule(war1WithBeanStartupEvent)
-                                          .addAsModule(war2WithInitializedEvent)
-                                          .addAsModule(war2WithBeanStartupEvent)
+                                          .addAsModule(encoderModule)
+                                          .addAsModule(defaultEncoderModule)
                                           .addAsModule(ejbJavaArchive) // Cannot share classes with @Tool annotations across WARs (they need module context)
                                           .addAsLibrary(sharedEncodersLib); // Shared encoders are accessible to all WARs
 
@@ -192,10 +108,8 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testAllWarTools() throws Exception {
-        testTools("methodTool", "apiTool", "War1ToolBeanInitializedEvent", war1WithInitializedEvent);
-        testTools("methodTool", "apiTool", "War1ToolBeanStartupEvent", war1WithBeanStartupEvent);
-        testTools("methodTool", "apiTool", "War2ToolBeanInitializedEvent", war2WithInitializedEvent);
-        testTools("methodTool", "apiTool", "War2ToolBeanStartupEvent", war2WithBeanStartupEvent);
+        testTools("methodTool", "apiTool", "EncoderModule", encoderModuleMCPClient);
+        testTools("methodTool", "apiTool", "DefaultEncoderModule", defaultEncoderModuleMCPClient);
     }
 
     /**
@@ -278,7 +192,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      * <p><b>Test Scenario:</b>
      * <ul>
      * <li>EJB JAR module (mcpToolsEjb.jar) contains tools registered via @Tool and ToolManager API</li>
-     * <li>WAR module (war1WithInitializedEvent) attempts to invoke these EJB tools</li>
+     * <li>WAR module (encoderModule) attempts to invoke these EJB tools</li>
      * </ul>
      *
      * <p><b>Expected Behavior:</b>
@@ -295,7 +209,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testEJBJar() throws Exception {
-        String response1 = war1WithInitializedEvent.callMCP("""
+        String response1 = encoderModuleMCPClient.callMCP("""
                         {
                           "jsonrpc": "2.0",
                           "id": 1,
@@ -312,7 +226,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
         JSONAssert.assertEquals(expectedResponseString1, response1, true);
 
-        String response2 = war1WithInitializedEvent.callMCP("""
+        String response2 = encoderModuleMCPClient.callMCP("""
                         {
                           "jsonrpc": "2.0",
                           "id": 2,
@@ -332,7 +246,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
     /**
      * Encoders from EAR/lib (SharedEncoders) are accessible to all WAR modules without a custom encoder.
-     * Also tests a client that has a custom encoder (War1ToolBeanInitializedEvent)
+     * Also tests a client that has a custom encoder (PersonContentEncoder in EncoderModule)
      *
      * @throws Exception
      */
@@ -366,18 +280,12 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                         }
                         """;
 
-        // 3 modules (wars) should successfully encode Person using the shared encoder
-        String response1 = war1WithBeanStartupEvent.callMCP(request);
+        // Modules (wars) should successfully encode Person using the shared encoder if they don't have a custom one
+        String response1 = defaultEncoderModuleMCPClient.callMCP(request);
         JSONAssert.assertEquals(expectedResponseForSharedEncoder, response1, JSONCompareMode.NON_EXTENSIBLE);
 
-        String response2 = war1WithBeanStartupEvent.callMCP(request);
-        JSONAssert.assertEquals(expectedResponseForSharedEncoder, response2, JSONCompareMode.NON_EXTENSIBLE);
-
-        String response3 = war2WithInitializedEvent.callMCP(request);
-        JSONAssert.assertEquals(expectedResponseForSharedEncoder, response3, JSONCompareMode.NON_EXTENSIBLE);
-
-        //War1ToolBeanInitializedEvent has its own custom PersonContentEncoder
-        String response4 = war1WithInitializedEvent.callMCP(request);
+        //EncoderModule has its own custom PersonContentEncoder
+        String response2 = encoderModuleMCPClient.callMCP(request);
         String expectedResponseForCustomEncoder = """
                         {
                             "id": "1",
@@ -385,7 +293,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                             "result": {
                                 "content": [
                                     {
-                                        "text": "{\\"age\\":32,\\"fistName\\":\\"Jon\\",\\"lastName\\":\\"Encoded by PersonContentEncoder in War1ToolBeanInitializedEvent\\"}",
+                                        "text": "{\\"age\\":32,\\"fistName\\":\\"Jon\\",\\"lastName\\":\\"Encoded by PersonContentEncoder\\"}",
                                         "type": "text"
                                     }
                                 ],
@@ -393,14 +301,14 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                             }
                         }
                         """;
-        JSONAssert.assertEquals(expectedResponseForCustomEncoder, response4, JSONCompareMode.NON_EXTENSIBLE);
+        JSONAssert.assertEquals(expectedResponseForCustomEncoder, response2, JSONCompareMode.NON_EXTENSIBLE);
 
     }
 
     /**
      * Tests that module-specific encoders are properly isolated between WAR modules.
-     * - war1WithInitializedEvent has CompanyContentEncoder and can encode Company objects
-     * - war1WithBeanStartupEvent does NOT have CompanyContentEncoder and should fail to encode Company objects
+     * - encoderModule has CompanyContentEncoder and can encode Company objects
+     * - deafultEncoderModuleMCPClient does NOT have CompanyContentEncoder and should fail to encode Company objects
      *
      * @throws Exception
      */
@@ -409,13 +317,13 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      *
      * <p><b>Test Scenario:</b>
      * <ul>
-     * <li>war1WithInitializedEvent has CompanyContentEncoder and CAN encode Company objects</li>
+     * <li>encoderModule has CompanyContentEncoder and CAN encode Company objects</li>
      * <li>war1WithBeanStartupEvent does NOT have CompanyContentEncoder and CANNOT encode Company objects</li>
      * </ul>
      *
      * <p><b>Expected Behavior:</b>
      * <ul>
-     * <li>war1WithInitializedEvent: Returns Company with custom encoding: "IBM (encoded by War1)"</li>
+     * <li>encoderModule: Returns Company with custom encoding: "IBM (encoded by War1)"</li>
      * <li>war1WithBeanStartupEvent: Returns Company with default JSON encoding: "IBM"</li>
      * </ul>
      *
@@ -438,8 +346,8 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                         }
                         """;
 
-        // war1WithInitializedEvent should successfully encode Company
-        String response1 = war1WithInitializedEvent.callMCP(request);
+        // encoderModule should successfully encode Company
+        String response1 = encoderModuleMCPClient.callMCP(request);
         String expected1 = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"{\\"employees\\":350000,\\"industry\\":\\"Technology\\",\\"name\\":\\"IBM (encoded by War1)\\"}","type":"text"}],"isError":false}}
                         """;
@@ -458,7 +366,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                         }
                         """;
 
-        String response2 = war1WithBeanStartupEvent.callMCP(request2);
+        String response2 = defaultEncoderModuleMCPClient.callMCP(request2);
         // Should use default JSON encoder since CompanyContentEncoder is not available
         String expected2 = """
                         {"id":"3","jsonrpc":"2.0","result":{"content":[{"text":"{\\"employees\\":350000,\\"industry\\":\\"Technology\\",\\"name\\":\\"IBM\\"}","type":"text"}],"isError":false}}
@@ -482,7 +390,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                           }
                         }
                         """;
-        String response1 = war1WithInitializedEvent.callMCP(jsonRequestBody);
+        String response1 = encoderModuleMCPClient.callMCP(jsonRequestBody);
 
         String expectedResponse1 = """
                         {
@@ -492,7 +400,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
                             "content": [
                               {
                                 "type": "text",
-                                "text": "War1ToolBeanInitializedEvent"
+                                "text": "EncoderModule"
                               }
                             ],
                             "isError": false
@@ -503,7 +411,7 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
 
         boolean exceptionThrown = false;
         try {
-            war1WithBeanStartupEvent.callMCPWithSessionID(jsonRequestBody, war1WithInitializedEvent.getSessionId());
+            defaultEncoderModuleMCPClient.callMCPWithSessionID(jsonRequestBody, encoderModuleMCPClient.getSessionId());
         } catch (Exception e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("Invalid or Expired Session Id"));

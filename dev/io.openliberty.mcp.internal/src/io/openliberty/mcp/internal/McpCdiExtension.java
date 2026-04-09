@@ -179,7 +179,7 @@ public class McpCdiExtension implements Extension {
         }
 
         // Register global encoders (module = null)
-        EncoderRegistry globalInstance = EncoderRegistry.getGlobalInstance();
+        EncoderRegistry globalInstance = encoderRegistries.getGlobal();
         globalInstance.registerEncoders(toolEncoders.getOrDefault(null, new ArrayList<>()),
                                         contentEncoders.getOrDefault(null, new ArrayList<>()));
 
@@ -402,42 +402,6 @@ public class McpCdiExtension implements Extension {
     /**
      * Determines the J2EE module (J2EEName) that owns a CDI bean, or null if the bean has no module association.
      *
-     *
-     * <p><b>Why OSGi CDI_SERVICE works vs ComponentMetaDataAccessorImpl (thread-local):</b>
-     * <ul>
-     * <li><b>CDI_SERVICE (OSGi):</b> Maintains a persistent, class-based mapping of which module
-     * loaded each class. This mapping is established during application deployment and remains
-     * stable throughout the CDI lifecycle. Works reliably during:
-     * <ul>
-     * <li>@Observes ProcessManagedBean (bean discovery phase)</li>
-     * <li>@Observes AfterDeploymentValidation (registration phase)</li>
-     * <li>Runtime execution (tool invocation)</li>
-     * </ul>
-     * </li>
-     * <li><b>ComponentMetaDataAccessorImpl (thread-local):</b> Relies on thread-local context
-     * (ComponentMetaData) that varies based on which thread is executing and what operation
-     * is in progress. During CDI initialization:
-     * <ul>
-     * <li>Thread context may not be set or may point to wrong module</li>
-     * <li>Single McpCdiExtension instance processes beans from ALL modules</li>
-     * <li>Thread context during @Observes AfterDeploymentValidation is unpredictable</li>
-     * <li>Would return different modules for same bean depending on execution context</li>
-     * </ul>
-     * </li>
-     * </ul>
-     *
-     * <p><b>Beans without modules (return null):</b>
-     * <ul>
-     * <li>Beans from EAR/lib (shared across modules)</li>
-     * <li>Beans from Liberty runtime bundles (e.g., JsonTextContentEncoder)</li>
-     * </ul>
-     *
-     * <p>These beans are treated as "global" and registered to the GLOBAL encoder registry.
-     *
-     * <p><b>Key Architectural Insight:</b> In multi-module EAR applications, a single McpCdiExtension
-     * instance discovers beans from ALL modules. The CDI_SERVICE provides the only reliable way to
-     * determine which module each bean belongs to, as it uses class loader metadata rather than
-     * thread-local execution context.
      *
      * @param bean The CDI bean to check
      * @return The J2EEName of the bean's module, or null if the bean has no module

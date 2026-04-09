@@ -21,7 +21,7 @@ import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import jakarta.json.bind.Jsonb;
 
 /**
- *
+ * Manages tool registries, maintaining one registry per module.
  */
 public class ToolRegistries {
 
@@ -34,15 +34,31 @@ public class ToolRegistries {
         this.jsonb = jsonb;
     }
 
+    /**
+     * Retrieves the tool registry for the current thread's module context.
+     *
+     * @return the tool registry for the current module
+     */
     public ToolRegistry getCurrent() {
         ComponentMetaData component = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
         return getForModule(component.getModuleMetaData().getJ2EEName());
     }
 
+    /**
+     * Retrieves the tool registry for a specific module by name.
+     *
+     * @param moduleName the J2EE name of the module
+     * @return the tool registry for the specified module
+     */
     public ToolRegistry getForModule(J2EEName moduleName) {
         return registries.computeIfAbsent(moduleName, m -> new ToolRegistry(schemaRegistry, jsonb));
     }
 
+    /**
+     * Returns all tool registries across all modules.
+     *
+     * @return collection of all tool registries
+     */
     public Collection<ToolRegistry> getAll() {
         return registries.values();
     }
