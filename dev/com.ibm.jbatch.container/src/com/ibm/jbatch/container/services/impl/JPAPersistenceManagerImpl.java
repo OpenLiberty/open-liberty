@@ -13,6 +13,8 @@
 package com.ibm.jbatch.container.services.impl;
 
 import java.io.Writer;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
 import java.sql.SQLSyntaxErrorException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -182,6 +184,12 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
     private Integer partitionVersion = null;
 
     /**
+     * Cached database product name to determine if we're using Derby.
+     * Used to apply Derby-specific workarounds for lock timeout issues.
+     */
+    private volatile String databaseProductName = null;
+
+    /**
      * Most current versions of entities.
      */
     private static final int MAX_EXECUTION_VERSION = 3;
@@ -254,6 +262,45 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
         }
 
         logger.log(Level.INFO, "persistence.service.status", new Object[] { "JPA", "deactivated" });
+    }
+
+    /**
+     * Check if the current database is Derby.
+     * Derby has known issues with lock escalation during concurrent partition creation
+     * that can cause lock timeouts (ERROR 40XL1). This method detects Derby so we can
+     * apply pessimistic locking to serialize partition creation and prevent the deadlock.
+     *
+     * @param em EntityManager to use for database detection
+     * @return true if Derby, false otherwise
+     */
+    private boolean isDerbyDatabase(EntityManager em) {
+        if (databaseProductName == null) {
+            synchronized (this) {
+                if (databaseProductName == null) {
+                    try {
+                        // Get database metadata through JPA
+                        Connection conn = em.unwrap(Connection.class);
+                        DatabaseMetaData metaData = conn.getMetaData();
+                        databaseProductName = metaData.getDatabaseProductName();
+                        
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("Detected database: " + databaseProductName);
+                        }
+                    } catch (Exception e) {
+                        // If we can't determine the database, assume it's not Derby
+                        // This is safe because the pessimistic lock is only an optimization for Derby
+                        databaseProductName = "UNKNOWN";
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.log(Level.FINE, "Unable to determine database type, assuming non-Derby", e);
+                        }
+                    }
+                }
+            }
+        }
+        
+        // Derby product names: "Apache Derby", "Apache Derby Embedded", "Apache Derby Network Server"
+        return databaseProductName != null &&
+               databaseProductName.toLowerCase().contains("derby");
     }
 
     /* Interface methods */
@@ -1050,7 +1097,20 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             return new TranRequest<JobExecution>(em) {
                 @Override
                 public JobExecution call() {
-                    JobExecutionEntity exec = entityMgr.find(JobExecutionEntity.class, jobExecutionId);
+                    // Derby-specific workaround: Apply pessimistic locking to prevent deadlock
+                    // Derby deadlock occurs when:
+                    // - This method (job stop) reads JobExecution then updates JobInstance
+                    // - Step creation reads JobInstance then inserts StepThreadInstance
+                    // Pessimistic locking ensures consistent lock ordering to prevent deadlock cycle.
+                    LockModeType lockMode = null;
+                    if (isDerbyDatabase(entityMgr)) {
+                        lockMode = LockModeType.PESSIMISTIC_WRITE;
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("Applied PESSIMISTIC_WRITE lock mode for Derby to prevent deadlock during job status update");
+                        }
+                    }
+                    
+                    JobExecutionEntity exec = entityMgr.find(JobExecutionEntity.class, jobExecutionId, lockMode);
                     if (exec == null) {
                         throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
                     }
@@ -1572,7 +1632,19 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     if (jobInstance == null) {
                         throw new IllegalStateException("Didn't find JobInstanceEntity associated with step thread key value: " + instanceKey.getJobInstance());
                     }
-                    final JobExecutionEntity jobExecution = entityMgr.find(JobExecutionEntity.class, jobExecutionId);
+                    
+                    // Derby-specific workaround: Apply pessimistic locking to prevent lock timeout
+                    // Derby uses 2-phase locking where shared locks from find() can block exclusive locks
+                    // needed for INSERT with identity columns. This serializes concurrent top-level step creation.
+                    LockModeType lockMode = null;
+                    if (isDerbyDatabase(entityMgr)) {
+                        lockMode = LockModeType.PESSIMISTIC_READ;
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("Applied PESSIMISTIC_READ lock mode for Derby to prevent lock timeout during top-level step creation");
+                        }
+                    }
+                    
+                    final JobExecutionEntity jobExecution = entityMgr.find(JobExecutionEntity.class, jobExecutionId, lockMode);
                     if (jobExecution == null) {
                         throw new IllegalStateException("Didn't find JobExecutionEntity associated with value: " + jobExecutionId);
                     }
@@ -1668,6 +1740,18 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                                                                                                TopLevelStepExecutionEntity.class);
                     query.setParameter("jobExecId", jobExecutionId);
                     query.setParameter("stepName", instanceKey.getStepName());
+                    
+                    // Derby-specific workaround: Apply pessimistic locking to prevent lock timeout
+                    // Derby uses 2-phase locking where shared locks from SELECT block exclusive locks needed for INSERT.
+                    // This causes deadlocks when multiple partitions concurrently read the same TopLevelStepExecution
+                    // and then try to INSERT into STEPTHREADEXECUTION with UNIQUE constraints.
+                    if (isDerbyDatabase(entityMgr)) {
+                        query.setLockMode(LockModeType.PESSIMISTIC_READ);
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("Applied PESSIMISTIC_READ lock mode for Derby to prevent lock timeout during partition creation");
+                        }
+                    }
+                    
                     // getSingleResult() validates that there is only one match
                     final TopLevelStepExecutionEntity topLevelStepExecution = query.getSingleResult();
 
@@ -1814,6 +1898,18 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                                                                                                TopLevelStepExecutionEntity.class);
                     query.setParameter("jobExecId", jobExecutionId);
                     query.setParameter("stepName", stepThreadInstance.getStepName());
+                    
+                    // Derby-specific workaround: Apply pessimistic locking to prevent lock timeout
+                    // Derby uses 2-phase locking where shared locks from SELECT block exclusive locks needed for INSERT.
+                    // This causes deadlocks when multiple partitions concurrently read the same TopLevelStepExecution
+                    // and then try to INSERT into STEPTHREADEXECUTION with UNIQUE constraints.
+                    if (isDerbyDatabase(entityMgr)) {
+                        query.setLockMode(LockModeType.PESSIMISTIC_READ);
+                        if (logger.isLoggable(Level.FINE)) {
+                            logger.fine("Applied PESSIMISTIC_READ lock mode for Derby to prevent lock timeout during partition restart");
+                        }
+                    }
+                    
                     // getSingleResult() validates that there is only one match
                     final TopLevelStepExecutionEntity topLevelStepExecution = query.getSingleResult();
 
@@ -2195,7 +2291,18 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 @Override
                 public StepThreadExecutionEntity call() {
 
-                    StepThreadExecutionEntity stepExec = entityMgr.find(StepThreadExecutionEntity.class, runtimeStepExecution.getInternalStepThreadExecutionId());
+                    // For Derby: Use pessimistic write lock to prevent deadlock between concurrent
+                    // partition metric updates and partition creation. Without this, we can get:
+                    // - Thread A (update): holds JOBEXECUTION lock, waits for STEPTHREADEXECUTION
+                    // - Thread B (insert): holds STEPTHREADEXECUTION lock, waits for JOBEXECUTION (FK check)
+                    LockModeType lockMode = null;
+                    if (isDerbyDatabase(entityMgr)) {
+                        lockMode = LockModeType.PESSIMISTIC_WRITE;
+                    }
+                    
+                    StepThreadExecutionEntity stepExec = entityMgr.find(StepThreadExecutionEntity.class,
+                                                                         runtimeStepExecution.getInternalStepThreadExecutionId(),
+                                                                         lockMode);
                     if (stepExec == null) {
                         throw new IllegalStateException("StepThreadExecEntity with id =" + runtimeStepExecution.getInternalStepThreadExecutionId()
                                                         + " should be persisted at this point, but didn't find.");
@@ -2284,7 +2391,16 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             return new TranRequest<TopLevelStepExecutionEntity>(em) {
                 @Override
                 public TopLevelStepExecutionEntity call() {
-                    TopLevelStepExecutionEntity stepExec = entityMgr.find(TopLevelStepExecutionEntity.class, runtimeStepExecution.getInternalStepThreadExecutionId());
+                    // For Derby: Use pessimistic write lock to prevent deadlock between concurrent
+                    // partition metric updates and partition creation (same issue as updateStepExecution)
+                    LockModeType lockMode = null;
+                    if (isDerbyDatabase(entityMgr)) {
+                        lockMode = LockModeType.PESSIMISTIC_WRITE;
+                    }
+                    
+                    TopLevelStepExecutionEntity stepExec = entityMgr.find(TopLevelStepExecutionEntity.class,
+                                                                           runtimeStepExecution.getInternalStepThreadExecutionId(),
+                                                                           lockMode);
                     if (stepExec == null) {
                         throw new IllegalArgumentException("StepThreadExecEntity with id =" + runtimeStepExecution.getInternalStepThreadExecutionId()
                                                            + " should be persisted at this point, but didn't find.");
