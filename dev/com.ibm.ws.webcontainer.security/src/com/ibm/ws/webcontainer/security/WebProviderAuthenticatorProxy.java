@@ -352,22 +352,24 @@ public class WebProviderAuthenticatorProxy implements WebAuthenticator {
         WebAuthenticator authenticator = getSSOAuthenticator(webRequest, ssoCookieName);
 
         // Start timing
-        long startTime = System.nanoTime();
+        long startTime = 0;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            startTime = System.nanoTime();
+        }
         AuthenticationResult authResult = authenticator.authenticate(webRequest);
         if (authResult == null || authResult.getStatus() != AuthResult.SUCCESS) {
             authResult = new AuthenticationResult(AuthResult.CONTINUE, "SSO did not succeed, so continue ...");
         }
-
-        // End timing
-        long endTime = System.nanoTime();
-        // Calculate duration in milliseconds
-        long durationMs = (endTime - startTime) / 1_000_000;
-        // Or in seconds (with decimals)
-        double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
-
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "<request> handleSSO() took milliseconds: " + durationMs + " ms");
-            Tr.debug(tc, "<request> handleSSO() took seconds: ", durationSeconds);
+            // End timing
+            long endTime = System.nanoTime();
+            // Calculate duration in milliseconds
+            long durationMs = (endTime - startTime) / 1_000_000;
+            // Or in seconds (with decimals)
+            double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
+
+            Tr.debug(tc, "handleSSO() took milliseconds: " + durationMs + " seconds: " + durationSeconds);
         }
 
         return authResult;

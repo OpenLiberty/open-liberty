@@ -15,6 +15,7 @@ package com.ibm.ws.security.credentials.wscred;
 import java.nio.charset.StandardCharsets;
 import java.security.Permission;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -261,7 +262,8 @@ public class WSCredentialImpl implements WSCredential, ExpirableCredential {
                ",uniqueSecurityName=" + uniqueSecurityName +
                ",primaryGroupId=" + primaryGroupId +
                ",accessId=" + accessId +
-               ",groupIds=" + groupIds;
+               ",groupIds=" + groupIds +
+               ",expiration=" + new Date(expiration);
     }
 
     /** {@inheritDoc} */

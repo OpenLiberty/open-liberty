@@ -56,7 +56,7 @@
     <httpSession securityIntegrationEnabled="false"/>
 
     <!-- LTPA configuration for token refresh testing
-         - expiration: 2 minutes - short expiration for testing
+         - expiration: 3 minutes - short expiration for testing
          - refreshThreshold: 1 minute - token refreshes when 1m or less remaining
          - maxLifetime: 4 minutes - maximum token lifetime
          - This allows testing refresh behavior without long waits

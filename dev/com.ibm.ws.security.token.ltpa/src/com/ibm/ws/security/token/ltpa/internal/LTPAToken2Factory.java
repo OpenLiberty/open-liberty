@@ -219,9 +219,7 @@ public class LTPAToken2Factory implements TokenFactory {
         long durationMs = (endTime - startTime) / 1_000_000;
         // Or in seconds (with decimals)
         double durationSeconds = (endTime - startTime) / 1_000_000_000.0;
-
-        Tr.debug(tc, msg + "milliseconds: " + durationMs);
-        Tr.debug(tc, msg + "second: " + durationSeconds);
+        Tr.debug(tc, msg + "milliseconds: " + durationMs + " seconds: " + durationSeconds);
     }
 
 }

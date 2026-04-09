@@ -64,10 +64,10 @@ public class LTPATokenRefreshTest {
     private static LibertyServer server;
 
     // Timing constants for token refresh tests
-    // Configuration: expiration=2m, refreshThreshold=1m, maxLifetime=4m
-    private static final long REFRESH_THRESHOLD_WAIT_MS = 70000;  // 70 seconds - wait past 1m threshold
-    private static final long SHORT_EXPIRATION_WAIT_MS = 35000;   // 35 seconds - for short expiration tests
-    private static final long REQUEST_INTERVAL_MS = 5000;         // 5 seconds - interval between requests
+    // Configuration: expiration=3m, refreshThreshold=1m, maxLifetime=4m
+    private static final long REFRESH_THRESHOLD_WAIT_MS = 130000;  // 130 seconds (2m 10s) - wait past 1m threshold
+    private static final long SHORT_EXPIRATION_WAIT_MS = 70000;    // 70 seconds (1m 10s) - for short expiration tests
+    private static final long REQUEST_INTERVAL_MS = 5000;          // 5 seconds - interval between requests
 
     @Rule
     public final TestWatcher logger = new TestWatcher() {
@@ -121,13 +121,13 @@ public class LTPATokenRefreshTest {
      * Test that LTPA token is refreshed when it approaches the refresh threshold.
      *
      * Configuration:
-     * - Token expiration: 60 seconds
-     * - Refresh threshold: 50 seconds
-     * - Max lifetime: 120 seconds
+     * - Token expiration: 3 minutes (180 seconds)
+     * - Refresh threshold: 1 minute (60 seconds)
+     * - Max lifetime: 4 minutes (240 seconds)
      *
      * Expected behavior:
      * 1. Initial request creates a new LTPA token
-     * 2. Wait for token to approach refresh threshold (>10 seconds remaining)
+     * 2. Wait for token to approach refresh threshold (less than 1 minute remaining)
      * 3. Second request should trigger token refresh
      * 4. New LTPA cookie should be set in response
      */
@@ -148,7 +148,7 @@ public class LTPATokenRefreshTest {
         Log.info(thisClass, testName, "Initial LTPA cookie: " + maskCookie(initialCookie));
 
         // Step 2: Wait for token to approach refresh threshold
-        // With 60s expiration and 50s threshold, token should refresh after ~10s
+        // With 3m expiration and 1m threshold, token should refresh after ~2m
         Log.info(thisClass, testName, "Waiting " + REFRESH_THRESHOLD_WAIT_MS + "ms for token to approach refresh threshold...");
         Thread.sleep(REFRESH_THRESHOLD_WAIT_MS);
 
@@ -224,8 +224,8 @@ public class LTPATokenRefreshTest {
      * Test token refresh with short expiration time.
      *
      * Configuration:
-     * - Token expiration: 1 minute (60 seconds)
-     * - Refresh threshold: 0.5 minutes (30 seconds)
+     * - Token expiration: 2 minutes (120 seconds)
+     * - Refresh threshold: 1 minute (60 seconds)
      *
      * Expected behavior:
      * Token should refresh quickly after initial creation
@@ -252,7 +252,7 @@ public class LTPATokenRefreshTest {
         assertNotNull("Initial LTPA cookie should be set", initialCookie);
         Log.info(thisClass, testName, "Initial LTPA cookie: " + maskCookie(initialCookie));
 
-        // Wait for token to approach threshold (30s expiration, 25s threshold = 5s window)
+        // Wait for token to approach threshold (2m expiration, 1m threshold = 1m window)
         Log.info(thisClass, testName, "Waiting " + SHORT_EXPIRATION_WAIT_MS + "ms for token to approach refresh threshold...");
         Thread.sleep(SHORT_EXPIRATION_WAIT_MS);
 
