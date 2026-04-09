@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.fat.encodertool.defaultEncoderTest1;
+package io.openliberty.mcp.internal.fat.encodertools.defaultEncoderTest1;
 
 import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.fat.encodertools.sharedEncoders.Person;
@@ -46,7 +46,7 @@ public class DefaultEncoderModule {
 
     /**
      * Tool that returns a Company object - should use default JSON encoding because
-     * CompanyContentEncoder is only available in DefaultEncoderModule.
+     * CompanyContentEncoder is not available in DefaultEncoderModule.
      * Uses Company class from the same package.
      */
     @Tool(name = "testWar1SpecificEncoderIsolation", description = "Returns Company with default encoding - no custom encoder available")

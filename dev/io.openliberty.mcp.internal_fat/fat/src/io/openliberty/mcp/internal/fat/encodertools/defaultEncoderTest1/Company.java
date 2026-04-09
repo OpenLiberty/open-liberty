@@ -7,7 +7,7 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.fat.encodertool.defaultEncoderTest1;
+package io.openliberty.mcp.internal.fat.encodertools.defaultEncoderTest1;
 
 /**
  * Local Company record - same structure as War1SpecificEncoders.Company but different class.

@@ -29,7 +29,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.mcp.internal.fat.encodertool.defaultEncoderTest1.DefaultEncoderModule;
+import io.openliberty.mcp.internal.fat.encodertools.defaultEncoderTest1.DefaultEncoderModule;
 import io.openliberty.mcp.internal.fat.encodertools.ejbjarEncoder.EarToolBean;
 import io.openliberty.mcp.internal.fat.encodertools.moduleLevelEncoder.EncoderModuleTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
