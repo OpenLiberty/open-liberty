@@ -39,18 +39,4 @@ public class McpCdiProducers {
         return extension.getCurrentToolRegistry();
     }
 
-    /**
-     * Produces the module-scoped {@link EncoderRegistry} for custom content encoder registration.
-     * Invoked lazily on first injection within each module.
-     *
-     * @param extension The CDI extension managing encoder registries
-     * @return The EncoderRegistry instance for the current module
-     *
-     * @ModuleScoped
-     * @Produces
-     * private EncoderRegistry produceEncoderRegistry(McpCdiExtension extension) {
-     * return extension.getCurrentEncoderRegistry();
-     * }
-     */
-
 }

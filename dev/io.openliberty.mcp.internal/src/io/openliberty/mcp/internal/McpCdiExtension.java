@@ -70,7 +70,6 @@ public class McpCdiExtension implements Extension {
 
     private final List<Bean<?>> encoderBeans = new ArrayList<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
-    private EncoderRegistries encoderRegistries;
     private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
@@ -160,7 +159,7 @@ public class McpCdiExtension implements Extension {
      */
     void registerEncoders(BeanManager beanManager) {
         // we cannot inject into an extension so retrieve encoderRegistries via the beanManager
-        encoderRegistries = beanManager.createInstance().select(EncoderRegistries.class).get();
+        EncoderRegistries encoderRegistries = beanManager.createInstance().select(EncoderRegistries.class).get();
         CreationalContext<?> context = beanManager.createCreationalContext(null);
 
         // Group encoders by module (null = global)
@@ -384,10 +383,6 @@ public class McpCdiExtension implements Extension {
 
     public ToolRegistry getCurrentToolRegistry() {
         return toolRegistries.getCurrent();
-    }
-
-    public EncoderRegistry getCurrentEncoderRegistry() {
-        return encoderRegistries.getCurrent();
     }
 
     public SchemaRegistry getSchemaRegistry() {
