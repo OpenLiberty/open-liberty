@@ -111,6 +111,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             // Turn on half closure for H1
             ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
             ctx.channel().config().setAutoRead(false);
+            ctx.channel().read(); // First read out of the flow control handler
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configured pipeline with " + ctx.pipeline().names());
             }
