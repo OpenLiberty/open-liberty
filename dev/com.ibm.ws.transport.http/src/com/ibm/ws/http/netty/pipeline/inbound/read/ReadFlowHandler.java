@@ -13,6 +13,7 @@ import io.netty.handler.codec.http.HttpResponse;
 import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.flow.FlowControlHandler;
+import io.netty.handler.ssl.SslHandshakeCompletionEvent;
 import io.netty.util.AttributeKey;
 
 import com.ibm.websphere.ras.Tr;
@@ -295,6 +296,15 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             if(state.isRequestConsumed() && !state.isResponseInFlight()){
                 context.close();
                 return;
+
+            } else if (event == SslHandshakeCompletionEvent.SUCCESS) {
+                // on handshake success, do the first read for the request if not auto reading
+                if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+                    Tr.debug(tc, "Found successful SslHandshakeCompletionEvent, queueing read if auto read is disabled. AutoRead: " + context.channel().config().isAutoRead());
+                }
+                if (!context.channel().config().isAutoRead()) {
+                    context.read();
+                }
             }
         }
         super.userEventTriggered(context, event);
