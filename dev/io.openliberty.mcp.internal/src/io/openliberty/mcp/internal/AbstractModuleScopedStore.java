@@ -23,10 +23,6 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
  * Subclasses must implement {@link #createInstance(J2EEName)} to define how instances
  * are created for each module.
  * </p>
- * <p>
- * <b>Note:</b> This class is designed to work with CDI. Subclasses that are CDI beans
- * must have a no-arg constructor for CDI proxying to work correctly.
- * </p>
  *
  * @param <T> the type of instance managed per module
  */
@@ -68,10 +64,6 @@ public abstract class AbstractModuleScopedStore<T> {
      * <p>
      * This method is called once per module when an instance is first requested.
      * Implementations should create and configure the instance appropriately.
-     * </p>
-     * <p>
-     * <b>Important:</b> This method may be called during CDI proxy creation, so it should
-     * not rely on injected fields being initialized. Use lazy initialization if needed.
      * </p>
      *
      * @param moduleName the J2EE name of the module
