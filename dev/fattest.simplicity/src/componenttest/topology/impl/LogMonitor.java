@@ -112,9 +112,11 @@ public class LogMonitor {
                 input.close();
             }
 
+            Log.info(c, "setMarkToEndOfLog", ">>>>> CARL_DEBUG: All logMarks entries before running logMarks.put() : " + logMarks);
             Long oldMarkOffset = logMarks.put(logFile.getAbsolutePath(), offset);
-//            Log.info(c, "setMarkToEndOfLog", "old:" + oldMarkOffset + ", new:" + offset + ", " + logFile);
+            // Log.info(c, "setMarkToEndOfLog", "old:" + oldMarkOffset + ", new:" + offset + ", " + logFile);
             Log.info(c, "setMarkToEndOfLog", ">>>>> CARL_DEBUG: Updating logMarks.put() old:" + oldMarkOffset + ", new:" + offset + " for file: " + logFile.getName());
+            Log.info(c, "setMarkToEndOfLog", ">>>>> CARL_DEBUG: All logMarks entries after running logMarks.put() : " + logMarks);
         }
     }
 
