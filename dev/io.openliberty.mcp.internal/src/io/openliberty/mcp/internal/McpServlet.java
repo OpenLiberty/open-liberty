@@ -33,6 +33,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
+import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
@@ -81,6 +82,9 @@ public class McpServlet extends HttpServlet {
     BeanManager bm;
 
     @Inject
+    EncoderRegistries encoderRegistries;
+
+    @Inject
     McpSessionStores sessionStores;
 
     @Inject
@@ -91,9 +95,6 @@ public class McpServlet extends HttpServlet {
 
     @Inject
     ConverterRegistry converterRegistry;
-
-    @Inject
-    EncoderRegistry encoderRegistry;
 
     private Jsonb jsonb;
 
@@ -310,7 +311,7 @@ public class McpServlet extends HttpServlet {
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
         RequestId requestId = request.id();
 
-        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistry, requestId);
+        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistries.getCurrent(), requestId);
     }
 
     public record ToolArgumentsImpl(Map<String, Object> args,

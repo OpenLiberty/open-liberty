@@ -9,13 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
-
 import com.ibm.websphere.csi.J2EEName;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import jakarta.json.bind.Jsonb;
@@ -23,9 +17,8 @@ import jakarta.json.bind.Jsonb;
 /**
  * Manages tool registries, maintaining one registry per module.
  */
-public class ToolRegistries {
+public class ToolRegistries extends AbstractModuleScopedStore<ToolRegistry> {
 
-    private ConcurrentMap<J2EEName, ToolRegistry> registries = new ConcurrentHashMap<>();
     private final SchemaRegistry schemaRegistry;
     private final Jsonb jsonb;
 
@@ -34,32 +27,8 @@ public class ToolRegistries {
         this.jsonb = jsonb;
     }
 
-    /**
-     * Retrieves the tool registry for the current thread's module context.
-     *
-     * @return the tool registry for the current module
-     */
-    public ToolRegistry getCurrent() {
-        ComponentMetaData component = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        return getForModule(component.getModuleMetaData().getJ2EEName());
-    }
-
-    /**
-     * Retrieves the tool registry for a specific module by name.
-     *
-     * @param moduleName the J2EE name of the module
-     * @return the tool registry for the specified module
-     */
-    public ToolRegistry getForModule(J2EEName moduleName) {
-        return registries.computeIfAbsent(moduleName, m -> new ToolRegistry(schemaRegistry, jsonb));
-    }
-
-    /**
-     * Returns all tool registries across all modules.
-     *
-     * @return collection of all tool registries
-     */
-    public Collection<ToolRegistry> getAll() {
-        return registries.values();
+    @Override
+    protected ToolRegistry createInstance(J2EEName moduleName) {
+        return new ToolRegistry(schemaRegistry, jsonb);
     }
 }

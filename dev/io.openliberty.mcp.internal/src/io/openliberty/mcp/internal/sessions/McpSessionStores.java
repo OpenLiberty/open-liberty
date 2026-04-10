@@ -9,13 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.sessions;
 
-import java.util.Collection;
-import java.util.concurrent.ConcurrentHashMap;
-
 import com.ibm.websphere.csi.J2EEName;
-import com.ibm.ws.runtime.metadata.ComponentMetaData;
-import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 
+import io.openliberty.mcp.internal.AbstractModuleScopedStore;
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.McpRequestTrackers;
 import io.openliberty.mcp.internal.config.McpConfig;
@@ -30,24 +26,10 @@ import jakarta.inject.Inject;
  * MCP tools and resources.
  * </p>
  *
- * <h3>Usage Patterns:</h3>
- * <ul>
- * <li><b>{@link #getCurrent()}</b> - Retrieves the session store for the current
- * thread's module context. Use this in request-handling code where module
- * context is available.</li>
- * <li><b>{@link #getForModule(J2EEName)}</b> - Retrieves the session store for a
- * specific module by name. Use this when you need to access a specific module's
- * sessions from outside its context.</li>
- * <li><b>{@link #getAll()}</b> - Returns all active session stores across all modules.
- * Use for administrative operations or cleanup.</li>
- * </ul>
- *
  * @see McpSessionStore
- * @since 1.0
  */
-
 @ApplicationScoped
-public class McpSessionStores {
+public class McpSessionStores extends AbstractModuleScopedStore<McpSessionStore> {
 
     @Inject
     McpRequestTrackers requestTrackers;
@@ -55,19 +37,9 @@ public class McpSessionStores {
     @Inject
     McpConfig mcpConfig;
 
-    private ConcurrentHashMap<J2EEName, McpSessionStore> stores = new ConcurrentHashMap<>();
-
-    public McpSessionStore getCurrent() {
-        ComponentMetaData component = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        return getForModule(component.getModuleMetaData().getJ2EEName());
-    }
-
-    public McpSessionStore getForModule(J2EEName moduleName) {
+    @Override
+    protected McpSessionStore createInstance(J2EEName moduleName) {
         McpRequestTracker requestTracker = requestTrackers.getForModule(moduleName);
-        return stores.computeIfAbsent(moduleName, m -> new McpSessionStore(requestTracker, mcpConfig));
-    }
-
-    public Collection<McpSessionStore> getAll() {
-        return stores.values();
+        return new McpSessionStore(requestTracker, mcpConfig);
     }
 }

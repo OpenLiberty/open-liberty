@@ -70,7 +70,7 @@ public class McpCdiExtension implements Extension {
 
     private final List<Bean<?>> encoderBeans = new ArrayList<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
-    private EncoderRegistries encoderRegistries = new EncoderRegistries();
+    private EncoderRegistries encoderRegistries;
     private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
@@ -159,6 +159,8 @@ public class McpCdiExtension implements Extension {
      * @param beanManager The CDI BeanManager for obtaining encoder bean references
      */
     void registerEncoders(BeanManager beanManager) {
+        // we cannot inject into an extension so retrieve encoderRegistries via the beanManager
+        encoderRegistries = beanManager.createInstance().select(EncoderRegistries.class).get();
         CreationalContext<?> context = beanManager.createCreationalContext(null);
 
         // Group encoders by module (null = global)
@@ -230,7 +232,11 @@ public class McpCdiExtension implements Extension {
         }
 
         converterRegistry.registerConverters(converterMap, context);
-        getCurrentToolRegistry().setConverterRegistry(converterRegistry);
+        // Set on ALL module registries until ConverterRegistries are created
+        // see EncoderRegistries.java for the pattern to follow
+        for (ToolRegistry toolRegistry : toolRegistries.getAll()) {
+            toolRegistry.setConverterRegistry(converterRegistry);
+        }
     }
 
     private static void logCustomConverterRegistration(Bean<?> converterBean) {
