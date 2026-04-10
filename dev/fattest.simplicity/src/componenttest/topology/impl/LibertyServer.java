@@ -6424,6 +6424,7 @@ public class LibertyServer implements LogMonitorClient {
         // finishes it will be added below.
         if (waitForFeatureUpdateCompleted) {
             watchFor.add("CWWKF0008I:");
+            Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: waitForFeatureUpdateCompleted=true, explicitly adding CWWKF0008I to watch list");
         }
 
         if (appNames == null)
@@ -6433,6 +6434,8 @@ public class LibertyServer implements LogMonitorClient {
         RemoteFile logFile = getDefaultLogFile();
         Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: waitForConfigUpdateInLogUsingMark looking at file: ");
         Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: " + logFile.getName());
+        Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Initial watchFor list: " + watchFor);
+        Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Apps to wait for: " + appNames);
 
         Set<String> startedAppNames = Collections.emptySet();
 
@@ -6477,19 +6480,23 @@ public class LibertyServer implements LogMonitorClient {
                 } else {
                     String line = matches.get(0);
                     matchingLines.add(line);
+                    Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Found matching line: " + line);
 
                     // Indicates a feature updated was started.
                     if (line.contains("CWWKF0007I:")) {
+                        Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Detected CWWKF0007I (feature update started)");
                         // If we haven't already added the message id for the feature update to complete,
                         // do so now.
                         if (!waitForFeatureUpdateCompleted) {
                             watchFor.add("CWWKF0008I:"); // Feature update completed in X seconds.
+                            Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Dynamically adding CWWKF0008I to watch list (feature update completion)");
                         }
                     } else {
                         // Remove the corresponding regexp from the watchFor list
                         for (Iterator<String> it = watchFor.iterator(); it.hasNext();) {
                             String regexp = it.next();
                             if (Pattern.compile(regexp).matcher(line).find()) {
+                                Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Removing matched pattern from watchFor: " + regexp);
                                 it.remove();
                                 //There used to be a break here but if a user passed in a
                                 //pattern that overlapped with one of the ones above only
@@ -6497,6 +6504,7 @@ public class LibertyServer implements LogMonitorClient {
                             }
                         }
                     }
+                    Log.info(c, "waitForConfigUpdateInLogUsingMark", ">>>>> CARL_DEBUG: Remaining watchFor list: " + watchFor);
                 }
             }
             updateLogOffset(logFile.getAbsolutePath(), offset);
