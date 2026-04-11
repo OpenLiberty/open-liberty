@@ -87,8 +87,12 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(this, tc, "Configuring pipeline with HTTP 1.1 for incoming connection " + ctx.channel());
             }
+            int maxLineLength = Integer.MAX_VALUE;
+            if(httpConfig.getMessageSizeLimit() != -1 && httpConfig.getMessageSizeLimit() < Integer.MAX_VALUE) {
+                maxLineLength = (int)httpConfig.getMessageSizeLimit();
+            }
             ctx.pipeline().addAfter(LibertyNettyALPNHandler.NAME, HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC,
-                                    new HttpServerCodec(8192, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize()));
+                                    new HttpServerCodec(maxLineLength, Integer.MAX_VALUE, httpConfig.getIncomingBodyBufferSize()));
 
             if(ctx.pipeline().get(ReadFlowHandler.class) == null) {
                 ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);

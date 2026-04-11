@@ -18,6 +18,7 @@ final public class BodyQueue {
     private volatile boolean eos;
     private volatile Throwable error;
     private final ByteBufAllocator allocator;
+    private long bytesRead;
 
     private final Object signalLock = new Object();
     private long signal;
@@ -34,6 +35,7 @@ final public class BodyQueue {
 
     public void enqueueRetained(ByteBuf buf){
         queue.add(buf.retain());
+        bytesRead += buf.readableBytes();
         buffered.addAndGet(buf.readableBytes());
         signalChange();
     }
@@ -76,7 +78,9 @@ final public class BodyQueue {
         }
     }
 
-
+    public long bytesRead() {
+        return bytesRead;
+    }
 
     public void signalEos(){
         eos = true;

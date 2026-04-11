@@ -23,6 +23,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
@@ -69,6 +70,7 @@ import io.netty.handler.codec.http.HttpUtil;
 import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http.TooLongHttpHeaderException;
+import io.netty.handler.codec.http.TooLongHttpLineException;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Error;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
@@ -250,7 +252,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
             upgradingNow = false;
             streamingInitialized = false;
-            aggregatedBodyEnqueued = false; 
+            aggregatedBodyEnqueued = false;
 
             queue = new BodyQueue(ctx.alloc());
             earlyContents.clear();
@@ -289,6 +291,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         if (msg instanceof HttpContent) {
             HttpContent content = (HttpContent) msg;
+
+            int sizeOfCurrentChunk = content.content().readableBytes();
+            if (HttpConfigConstants.UNLIMITED != config.getMessageSizeLimit() && (sizeOfCurrentChunk > config.getMessageSizeLimit() ||
+                (queue.bytesRead() + sizeOfCurrentChunk) > config.getMessageSizeLimit())) {
+                throw new TooLongFrameException("Content length exceeded max of " + config.getMessageSizeLimit() + " bytes.");
+            }
 
             if (upgradingNow) {
                 content.retain();
@@ -690,14 +698,13 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             Tr.debug(tc, "Idle timeout; closing channel");
             if (cause instanceof ReadTimeoutException)
                 sendErrorMessage(cause);
+        } else if(cause instanceof TooLongFrameException) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
+            }
+            sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE, cause);
+            return;
         }
-
-        // } else if(cause instanceof TooLongFrameException) { 
-        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //         Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
-        //     }
-        //     sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE, cause);
-        //     return;
         clearPerRequestAttrs(ctx);
         ctx.close();
     }
@@ -715,7 +722,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Sending a 400 for throwable [" + cause + "]");
         }
-        loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
+        if (cause instanceof TooLongHttpLineException)
+            loadErrorPage(StatusCodes.ENTITY_TOO_LARGE.getHttpError());
+        else
+            loadErrorPage(StatusCodes.BAD_REQUEST.getHttpError());
         HttpUtil.setKeepAlive(errorResponse, false);
         this.context.writeAndFlush(errorResponse);
     }
