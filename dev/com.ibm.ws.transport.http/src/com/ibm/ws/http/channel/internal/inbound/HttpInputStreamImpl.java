@@ -629,7 +629,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
-    private boolean fillFromStreamingNetty() throws IOException{
+    public boolean fillFromStreamingNetty() throws IOException{
         if (queue == null){
             return false;
         }
