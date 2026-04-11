@@ -231,6 +231,20 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     @Override
     protected void channelRead0(ChannelHandlerContext ctx, HttpObject msg) throws Exception {
+        if (!(msg.decoderResult().isFinished() && msg.decoderResult().isSuccess())) {
+            if(context.channel().isActive()) {
+                if (msg.decoderResult().cause() != null) {
+                    sendErrorMessage(msg.decoderResult().cause());
+                } else {
+                    sendErrorMessage(new Exception("HTTP request decoding failure!"));
+                }
+            } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed decode request on closed channel: " + context.channel());
+                }
+            }
+            return;
+        }
         if (msg instanceof HttpRequest) {
             HttpRequest req = (HttpRequest) msg;
 
@@ -365,6 +379,20 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         commitScheduled.set(false);
         upgradeCommitted.set(false);
         commitTrigger.set(null);
+
+        // Verify if the request expects 100 continue
+        // At this point, the validation of the message size is already done by the aggregator
+        if (expect100) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Request contains [Expect: 100-continue]");
+            }
+            DefaultFullHttpResponse continueResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONTINUE);
+            HttpUtil.setContentLength(continueResponse, 0);
+            byte[] date = HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange());
+            continueResponse.headers().set(HttpHeaderKeys.HDR_DATE.getName(),
+                            new String(date, StandardCharsets.UTF_8));
+            context.writeAndFlush(continueResponse);
+        }
 
         link.initStreaming(ctx, request, config, isFullRequest);
 
