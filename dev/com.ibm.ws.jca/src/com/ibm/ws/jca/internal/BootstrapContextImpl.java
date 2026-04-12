@@ -38,6 +38,7 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Level;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -192,6 +193,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     private FutureMonitor futureMonitorSvc;
 
     /**
+     * Lock to serialize access to resource adapter configuration.
+     * Protects against modified() being called while configureOnActivate() is still running.
+     */
+    private final ReentrantLock configLock = new ReentrantLock();
+
+    /**
      * Countdown latch which is decremented upon deactivation.
      */
     private final CountDownLatch latch = new CountDownLatch(1);
@@ -209,12 +216,12 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     /**
      * Service properties, including the config properties for the resource adapter.
      */
-    private Dictionary<String, ?> properties;
+    private volatile Dictionary<String, ?> properties;
 
     /**
      * Map of property name to property descriptor.
      */
-    private final Map<String, PropertyDescriptor> propertyDescriptors = new HashMap<String, PropertyDescriptor>();
+    private final ConcurrentHashMap<String, PropertyDescriptor> propertyDescriptors = new ConcurrentHashMap<String, PropertyDescriptor>();
 
     /**
      * JCA service utilities.
@@ -333,42 +340,47 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
     }
 
     private void configureOnActivate() throws Exception {
+        configLock.lock();
         try {
-            beginContext(raMetaData);
-            resourceAdapter = configureResourceAdapter();
-        } finally {
-            endContext(raMetaData);
-        }
-
-        if (resourceAdapter != null) {
-            propagateThreadContext = !"(service.pid=com.ibm.ws.context.manager)".equals(properties.get("contextService.target"));
-            workManager = new WorkManagerImpl(this);
-
-            // Normally it's a bad practice to do this in activate. But here we have a requirement to keep the
-            // reference count until some subsequent processing occurs after deactivate.
-            contextSvc = Utils.priv.getService(componentContext, contextSvcRef);
-
-            jcasu = new JcaServiceUtilities();
-            raThreadContextDescriptor = captureRaThreadContext(contextSvc);
-            raClassLoader = resourceAdapterSvc.getClassLoader();
-            raClassLoader = raClassLoader == null ? null : classLoadingSvc.createThreadContextClassLoader(raClassLoader);
-
-            ArrayList<ThreadContext> threadContext = startTask(raThreadContextDescriptor);
             try {
                 beginContext(raMetaData);
+                resourceAdapter = configureResourceAdapter();
+            } finally {
+                endContext(raMetaData);
+            }
+
+            if (resourceAdapter != null) {
+                propagateThreadContext = !"(service.pid=com.ibm.ws.context.manager)".equals(properties.get("contextService.target"));
+                workManager = new WorkManagerImpl(this);
+
+                // Normally it's a bad practice to do this in activate. But here we have a requirement to keep the
+                // reference count until some subsequent processing occurs after deactivate.
+                contextSvc = Utils.priv.getService(componentContext, contextSvcRef);
+
+                jcasu = new JcaServiceUtilities();
+                raThreadContextDescriptor = captureRaThreadContext(contextSvc);
+                raClassLoader = resourceAdapterSvc.getClassLoader();
+                raClassLoader = raClassLoader == null ? null : classLoadingSvc.createThreadContextClassLoader(raClassLoader);
+
+                ArrayList<ThreadContext> threadContext = startTask(raThreadContextDescriptor);
                 try {
-                    ClassLoader previousClassLoader = jcasu.beginContextClassLoader(raClassLoader);
+                    beginContext(raMetaData);
                     try {
-                        resourceAdapter.start(this);
+                        ClassLoader previousClassLoader = jcasu.beginContextClassLoader(raClassLoader);
+                        try {
+                            resourceAdapter.start(this);
+                        } finally {
+                            jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
+                        }
                     } finally {
-                        jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
+                        endContext(raMetaData);
                     }
                 } finally {
-                    endContext(raMetaData);
+                    stopTask(raThreadContextDescriptor, threadContext);
                 }
-            } finally {
-                stopTask(raThreadContextDescriptor, threadContext);
             }
+        } finally {
+            configLock.unlock();
         }
     }
 
@@ -531,14 +543,27 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
      * @return configured resource adapter.
      * @throws Exception if an error occurs during configuration and onError=FAIL
      */
-    @FFDCIgnore(value = { NumberFormatException.class, Throwable.class })
     private ResourceAdapter configureResourceAdapter() throws Exception {
-        final boolean trace = TraceComponent.isAnyTracingEnabled();
-
         String resourceAdapterClassName = (String) properties.get(RESOURCE_ADAPTER_CLASS);
         if (resourceAdapterClassName == null)
             return null;
         ResourceAdapter instance = (ResourceAdapter) loadClass(resourceAdapterClassName).newInstance();
+
+        applyProperties(instance);
+
+        return instance;
+    }
+
+    /**
+     * Apply properties from the {@code properties} dictionary to the given ResourceAdapter instance.
+     * Iterates over PropertyDescriptors, matches keys to setters, converts types, and invokes them.
+     *
+     * @param instance the ResourceAdapter instance to configure
+     * @throws Exception if an error occurs during property application and onError=FAIL
+     */
+    @FFDCIgnore(value = { NumberFormatException.class, Throwable.class })
+    private void applyProperties(ResourceAdapter instance) throws Exception {
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
 
         // Assume all configured properties are invalid until we find them
         Set<String> invalidPropNames = new HashSet<String>();
@@ -621,7 +646,6 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
                 bvalHelper.validateInstance(raMetaData.getModuleMetaData(), resourceAdapterSvc.getClassLoader(), instance);
             }
         }
-        return instance;
     }
 
     @Override
@@ -637,6 +661,59 @@ public class BootstrapContextImpl implements BootstrapContext, ApplicationRecycl
             });
         } catch (PrivilegedActionException e) {
             throw (UnavailableException) e.getException();
+        }
+    }
+
+    /**
+     * DS method to handle configuration updates without deactivate/reactivate cycle.
+     * Called by OSGi DS when config admin updates the component configuration
+     * (e.g., when embedded RA properties from server.xml are merged after initial activation).
+     *
+     * If the resource adapter has already been started, re-applies properties to the
+     * existing instance so that late-arriving config values take effect immediately.
+     *
+     * @param context the updated component context with new properties
+     * @throws Exception if an error occurs while re-applying properties
+     */
+    protected void modified(ComponentContext context) throws Exception {
+        Dictionary<String, ?> newProps = context.getProperties();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(this, tc, "modified", newProps);
+
+        configLock.lock();
+        try {
+            componentContext = context;
+            properties = newProps;
+
+            if (resourceAdapter != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "modified: re-applying properties to already-started resource adapter", resourceAdapterID);
+
+                ArrayList<ThreadContext> threadContext = startTask(raThreadContextDescriptor);
+                try {
+                    beginContext(raMetaData);
+                    try {
+                        ClassLoader previousClassLoader = jcasu.beginContextClassLoader(raClassLoader);
+                        try {
+                            applyProperties(resourceAdapter);
+                        } finally {
+                            jcasu.endContextClassLoader(raClassLoader, previousClassLoader);
+                        }
+                    } finally {
+                        endContext(raMetaData);
+                    }
+                } catch (Exception e) {
+                    // Log the error but do not propagate — keep the RA running with its
+                    // previous configuration rather than letting DS deactivate the component.
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "modified: error re-applying properties, RA continues with previous config", e);
+                    FFDCFilter.processException(e, getClass().getName(), "modified");
+                } finally {
+                    stopTask(raThreadContextDescriptor, threadContext);
+                }
+            }
+        } finally {
+            configLock.unlock();
         }
     }
 
