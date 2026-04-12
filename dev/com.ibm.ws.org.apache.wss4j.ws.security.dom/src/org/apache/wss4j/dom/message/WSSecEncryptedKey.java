@@ -44,6 +44,8 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Text;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.SecretKey;
@@ -74,7 +76,12 @@ public class WSSecEncryptedKey extends WSSecBase {
     /**
      * Algorithm used to encrypt the ephemeral key
      */
-    private String keyEncAlgo = WSConstants.KEYTRANSPORT_RSAOAEP;
+    // Liberty Change Start: set FIPS default
+    private String keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
+                    ? WSConstants.KEYTRANSPORT_RSAOAEP_XENC11 
+                    : WSConstants.KEYTRANSPORT_RSAOAEP;
+    // Liberty Change End
+
     // Liberty Change Start: Backport 4.x
     /**
      * Key agreement method algorithm used to encrypt the transport key.
@@ -100,13 +107,17 @@ public class WSSecEncryptedKey extends WSSecBase {
      * Digest Algorithm to be used with RSA-OAEP. The default is SHA-1 (which is not
      * written out unless it is explicitly configured).
      */
-    private String digestAlgo;
+    // Liberty Change Start: set FIPS default
+    private String digestAlgo = CryptoUtils.isFips140_3Enabled() ? "SHA-256" : "SHA-1";
+    // Liberty Change End
 
     /**
      * MGF Algorithm to be used with RSA-OAEP. The default is MGF-SHA-1 (which is not
      * written out unless it is explicitly configured).
      */
-    private String mgfAlgo;
+    // Liberty Change Start: set FIPS default
+    private String mgfAlgo = CryptoUtils.isFips140_3Enabled() ? "MGF-SHA-256" : "MGF-SHA-1";
+    // Liberty Change End
 
     /**
      * xenc:EncryptedKey element
@@ -694,7 +705,6 @@ public class WSSecEncryptedKey extends WSSecBase {
                     || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)) {
                 oaepParameterSpec = XMLCipherUtil.constructOAEPParameters(keyEncAlgo, digestAlgo, mgfAlgo, null);
             }
-            
             if (oaepParameterSpec == null) {
                 cipher.init(Cipher.WRAP_MODE, encryptingKey);
             } else {
