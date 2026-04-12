@@ -358,6 +358,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         return io.netty.util.AsciiString.containsIgnoreCase(conn, "upgrade");
     }
 
+    private static boolean isH2(HttpRequest req) {
+        return req.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text());
+    }
+
     private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request) {
         final CharSequence ae = request.headers().get(HttpHeaderNames.ACCEPT_ENCODING);
         if (ae != null)
@@ -440,7 +444,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         }
         
 
-        if (upg) {
+        if (upg && !isH2(request)) {
             //upgradingNow = true;
             if(commitScheduled.compareAndSet(false, true)){
                HttpDispatcher.getExecutorService().execute(() -> link.ready()); 
