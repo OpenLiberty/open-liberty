@@ -35,23 +35,29 @@ public class McpMetricServlet extends FATServlet {
         Optional<MetricData> getMetricAttributes = getMetricData("mcp.server.operation.duration");
         assertTrue("mcp.server.operation.duration metric not found", getMetricAttributes.isPresent());
 
-        System.out.println(getMetricAttributes.get());
+        List<HistogramPointData> toolCallPoints = getMetricAttributes.get()
+                                                                     .getHistogramData()
+                                                                     .getPoints()
+                                                                     .stream()
+                                                                     .filter(point -> "tools/call".equals(
+                                                                                                          point.getAttributes().get(
+                                                                                                                                    AttributeKey.stringKey("mcp.method.name"))))
+                                                                     .toList();
 
-        List<HistogramPointData> basicToolAttributesList = getToolMetricAttributes(getMetricAttributes.get(), "basicTool");
-        assertTrue("No attributes with the tool name 'basicTool'", basicToolAttributesList.size() == 1);
-        // Test tool call count is correct
-        assertEquals(1, basicToolAttributesList.get(0).getCount());
+        assertEquals("Expected one aggregated tools/call point", 1, toolCallPoints.size());
 
-        Attributes basicToolAttributes = basicToolAttributesList.get(0).getAttributes();
-        // Test correct values for MCP histogram attributes
-        assertEquals("basicTool", basicToolAttributes.get(AttributeKey.stringKey("gen_ai.tool.name")));
-        assertEquals("2.0", basicToolAttributes.get(AttributeKey.stringKey("jsonrpc.protocol.version")));
-        assertEquals("tools/call", basicToolAttributes.get(AttributeKey.stringKey("mcp.method.name")));
-        assertEquals("V_2025_11_25", basicToolAttributes.get(AttributeKey.stringKey("mcp.protocol.version")));
-        assertEquals("HTTP", basicToolAttributes.get(AttributeKey.stringKey("network.protocol.name")));
-        assertEquals("1.1", basicToolAttributes.get(AttributeKey.stringKey("network.protocol.version")));
-        assertEquals("tcp", basicToolAttributes.get(AttributeKey.stringKey("network.transport")));
+        HistogramPointData point = toolCallPoints.get(0);
 
+        assertEquals(3, point.getCount());
+
+        Attributes attributes = point.getAttributes();
+        assertEquals("2.0", attributes.get(AttributeKey.stringKey("jsonrpc.protocol.version")));
+        assertEquals("tools/call", attributes.get(AttributeKey.stringKey("mcp.method.name")));
+        assertEquals("V_2025_11_25", attributes.get(AttributeKey.stringKey("mcp.protocol.version")));
+        assertEquals("HTTP", attributes.get(AttributeKey.stringKey("network.protocol.name")));
+        assertEquals("1.1", attributes.get(AttributeKey.stringKey("network.protocol.version")));
+        assertEquals("tcp", attributes.get(AttributeKey.stringKey("network.transport")));
+        assertEquals("ok", attributes.get(AttributeKey.stringKey("rpc.response.status_code")));
     }
 
     @Test
@@ -59,22 +65,29 @@ public class McpMetricServlet extends FATServlet {
         Optional<MetricData> getMetricAttributes = getMetricData("mcp.server.operation.duration");
         assertTrue("mcp.server.operation.duration metric not found", getMetricAttributes.isPresent());
 
-        List<HistogramPointData> advancedToolAttributesList = getToolMetricAttributes(getMetricAttributes.get(), "advancedTool");
-        assertTrue("No attributes with the tool name 'advancedTool'", advancedToolAttributesList.size() == 1);
+        List<HistogramPointData> toolCallPoints = getMetricAttributes.get()
+                                                                     .getHistogramData()
+                                                                     .getPoints()
+                                                                     .stream()
+                                                                     .filter(point -> "tools/call".equals(
+                                                                                                          point.getAttributes().get(
+                                                                                                                                    AttributeKey.stringKey("mcp.method.name"))))
+                                                                     .toList();
 
-        // Test tool call count is correct
-        assertEquals(2, advancedToolAttributesList.get(0).getCount());
+        assertEquals("Expected one aggregated tools/call point", 1, toolCallPoints.size());
 
-        Attributes advancedToolAttributes = advancedToolAttributesList.get(0).getAttributes();
-        // Test correct values for MCP histogram attributes
-        assertEquals("advancedTool", advancedToolAttributes.get(AttributeKey.stringKey("gen_ai.tool.name")));
-        assertEquals("2.0", advancedToolAttributes.get(AttributeKey.stringKey("jsonrpc.protocol.version")));
-        assertEquals("tools/call", advancedToolAttributes.get(AttributeKey.stringKey("mcp.method.name")));
-        assertEquals("V_2025_11_25", advancedToolAttributes.get(AttributeKey.stringKey("mcp.protocol.version")));
-        assertEquals("HTTP", advancedToolAttributes.get(AttributeKey.stringKey("network.protocol.name")));
-        assertEquals("1.1", advancedToolAttributes.get(AttributeKey.stringKey("network.protocol.version")));
-        assertEquals("tcp", advancedToolAttributes.get(AttributeKey.stringKey("network.transport")));
+        HistogramPointData point = toolCallPoints.get(0);
 
+        assertEquals(3, point.getCount());
+
+        Attributes attributes = point.getAttributes();
+        assertEquals("2.0", attributes.get(AttributeKey.stringKey("jsonrpc.protocol.version")));
+        assertEquals("tools/call", attributes.get(AttributeKey.stringKey("mcp.method.name")));
+        assertEquals("V_2025_11_25", attributes.get(AttributeKey.stringKey("mcp.protocol.version")));
+        assertEquals("HTTP", attributes.get(AttributeKey.stringKey("network.protocol.name")));
+        assertEquals("1.1", attributes.get(AttributeKey.stringKey("network.protocol.version")));
+        assertEquals("tcp", attributes.get(AttributeKey.stringKey("network.transport")));
+        assertEquals("ok", attributes.get(AttributeKey.stringKey("rpc.response.status_code")));
     }
 
     private Optional<MetricData> getMetricData(String metricName) {
@@ -82,14 +95,6 @@ public class McpMetricServlet extends FATServlet {
                      .stream()
                      .filter(metric -> metric.getName().equals(metricName))
                      .findFirst();
-    }
-
-    private List<HistogramPointData> getToolMetricAttributes(MetricData metricData, String toolName) {
-        return metricData.getHistogramData()
-                         .getPoints()
-                         .stream()
-                         .filter(point -> toolName.equals(point.getAttributes().get(AttributeKey.stringKey("gen_ai.tool.name"))))
-                         .toList();
     }
 
 }
