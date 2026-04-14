@@ -801,7 +801,7 @@
 				<property name="dataEncryptionAlgorithms">
 					<list>
 						<util:constant
-							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128" />
+							static-field="org.opensaml.xmlsec.encryption.support.EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES128_GCM" />
 					</list>
 				</property>
 				<property name="keyTransportEncryptionAlgorithms">
