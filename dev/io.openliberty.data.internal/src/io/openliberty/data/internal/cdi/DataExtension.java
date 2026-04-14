@@ -121,11 +121,20 @@ public class DataExtension implements Extension {
             repositoryAnnos.put(type, repository);
     }
 
-    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, BeanManager beanMgr) {
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event,
+                                   BeanManager beanMgr) {
         // Obtain the service that informed CDI of this extension.
-        BundleContext bundleContext = FrameworkUtil.getBundle(DataProvider.class).getBundleContext();
-        ServiceReference<DataProvider> ref = bundleContext.getServiceReference(DataProvider.class);
+        BundleContext bundleContext = FrameworkUtil //
+                        .getBundle(DataProvider.class) //
+                        .getBundleContext();
+        ServiceReference<DataProvider> ref = bundleContext //
+                        .getServiceReference(DataProvider.class);
         DataProvider provider = bundleContext.getService(ref);
+
+        // Register a RequestScoped bean to manage persistence context life cycle
+        if (provider.compat.atLeast(1, 1))
+            event.addBean().read(beanMgr //
+                            .createAnnotatedType(StatefulPersistenceContext.class));
 
         // Group entities by data access provider and class loader
         Map<FutureEMBuilder, FutureEMBuilder> entityGroups = new HashMap<>();

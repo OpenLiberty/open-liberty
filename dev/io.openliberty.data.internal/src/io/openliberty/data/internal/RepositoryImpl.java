@@ -22,7 +22,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.sql.SQLSyntaxErrorException;
-import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Deque;
 import java.util.HashMap;
@@ -32,7 +31,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.sql.DataSource;
@@ -59,8 +57,6 @@ import jakarta.persistence.OptimisticLockException;
 import jakarta.persistence.PersistenceException;
 import jakarta.persistence.Table;
 import jakarta.transaction.Status;
-import jakarta.transaction.Synchronization;
-import jakarta.transaction.Transaction;
 
 /**
  * Provides implementation of the methods of a repository interface.
@@ -83,12 +79,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private final EntityManagerBuilder builder;
 
-    /**
-     * Map of Transaction to EntityManager that allows stateful repositories to
-     * reuse the same EnityManager within a transaction.
-     */
-    private final Map<Transaction, EntityManager> entityManagerPerTx = //
-                    new ConcurrentHashMap<>();
     /**
      * Indicates if the bean for the repository has been disposed.
      */
@@ -379,42 +369,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
     }
 
     /**
-     * Obtains a shared EntityManager instance if running in a transaction
-     * and the repository is stateful. Otherwise create a new instance.
-     *
-     * @param stateful indicates a stateful repository.
-     * @return EntityManager and indicator of whether the EntityManager will be
-     *         automatically closed by the current transaction.
-     * @throws Exception if an error occurs.
-     */
-    private SimpleEntry<EntityManager, Boolean> getEntityManager(boolean stateful) //
-                    throws Exception {
-        boolean autoClosedByTx;
-        EntityManager em;
-
-        if (stateful) {
-            Transaction tx = provider.tranMgr.getTransaction();
-            if (tx == null) {
-                autoClosedByTx = false;
-                em = builder.createEntityManager();
-            } else {
-                autoClosedByTx = true;
-                em = entityManagerPerTx.get(tx);
-                if (em == null) {
-                    em = builder.createEntityManager();
-                    tx.registerSynchronization(new EntityManagerCleanup(tx));
-                    entityManagerPerTx.put(tx, em);
-                }
-            }
-        } else {
-            autoClosedByTx = false;
-            em = builder.createEntityManager();
-        }
-
-        return new SimpleEntry<>(em, autoClosedByTx);
-    }
-
-    /**
      * Used during introspection to report errors that occurred when processing
      * repository methods.
      *
@@ -436,15 +390,13 @@ public class RepositoryImpl<R> implements InvocationHandler {
      */
     private <T> T getResource(QueryInfo info) throws Exception {
         Object resource = null;
-        boolean resourceAutoClosedByTx = false;
+        boolean resourceAutoCloses = false;
         boolean stateful = info.producer.stateful();
         Class<?> type = info.method.getReturnType();
 
         if (EntityManager.class.equals(type)) {
-            SimpleEntry<EntityManager, Boolean> emAutoCloseable = //
-                            getEntityManager(stateful);
-            resource = emAutoCloseable.getKey();
-            resourceAutoClosedByTx = emAutoCloseable.getValue();
+            resource = builder.getEntityManager(stateful);
+            resourceAutoCloses = stateful;
         } else if (DataSource.class.equals(type)) {
             resource = builder.getDataSource(info.method, repositoryInterface);
         } else if (Connection.class.equals(type)) {
@@ -464,7 +416,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                       type.getName(),
                       Util.names(provider.compat.resourceAccessorTypes(stateful)));
 
-        if (!resourceAutoClosedByTx &&
+        if (!resourceAutoCloses &&
             resource instanceof AutoCloseable) {
             Deque<AutoCloseable> resources = defaultMethodResources.get();
             if (resources == null) {
@@ -511,9 +463,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
         writer.println(indent + "  provider: " + provider);
         writer.println(indent + "  repository: " + repositoryInterface.getName());
         writer.println(indent + "  validator: " + validator);
-        writer.println(indent + "  stateless entity manager per transaction:");
-        entityManagerPerTx.forEach((tx, em) -> writer //
-                        .println(indent + "    " + tx + " -> " + em));
     }
 
     /**
@@ -602,7 +551,6 @@ public class RepositoryImpl<R> implements InvocationHandler {
             }
 
             Object returnValue;
-            boolean emAutoClosedByTx = false;
             boolean failed = true;
             QueryType queryType = null;
             boolean startedTransaction = false;
@@ -634,12 +582,8 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     Tr.debug(this, tc, Util.txStatusToString(txStatus));
                 }
 
-                if (queryType != RESOURCE_ACCESS) {
-                    SimpleEntry<EntityManager, Boolean> emAutoCloseable = //
-                                    getEntityManager(stateful);
-                    em = emAutoCloseable.getKey();
-                    emAutoClosedByTx = emAutoCloseable.getValue();
-                }
+                if (queryType != RESOURCE_ACCESS)
+                    em = builder.getEntityManager(stateful);
 
                 returnValue = switch (queryType) {
                     case FIND, FIND_AND_DELETE -> queryInfo.find(em, txStatus, args);
@@ -652,6 +596,9 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case LC_UPDATE -> queryInfo.update(args[0], em);
                     case LC_UPDATE_MERGE -> queryInfo.findAndUpdate(args[0], em);
                     case DETACH -> queryInfo.detach(args[0], em);
+                    case PERSIST -> queryInfo.persist(args[0], em);
+                    case REFRESH -> queryInfo.refresh(args[0], em);
+                    case REMOVE -> queryInfo.remove(args[0], em);
                     case RESOURCE_ACCESS -> getResource(queryInfo);
                     default -> throw new UnsupportedOperationException(queryType.operationName);
                 };
@@ -706,7 +653,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                             provider.localTranCurrent.resume(suspendedLTC);
                         }
                     } finally {
-                        if (!emAutoClosedByTx && em != null)
+                        if (!stateful && em != null)
                             em.close();
                     }
                 }
@@ -732,26 +679,4 @@ public class RepositoryImpl<R> implements InvocationHandler {
         }
     }
 
-    /**
-     * Cleans up the state of the entityManagerPerTx map and closes the
-     * respective EntityManager instance after the transaction completes.
-     */
-    private class EntityManagerCleanup implements Synchronization {
-        private final Transaction tx;
-
-        private EntityManagerCleanup(Transaction tx) {
-            this.tx = tx;
-        }
-
-        @Override
-        public void afterCompletion(int status) {
-            EntityManager em = entityManagerPerTx.remove(tx);
-            if (em != null)
-                em.close();
-        }
-
-        @Override
-        public void beforeCompletion() {
-        }
-    }
 }

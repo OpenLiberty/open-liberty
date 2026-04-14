@@ -16,5 +16,5 @@ singleton=true
  com.ibm.ws.org.apache.cxf.rt.security.3.4.1, \
  com.ibm.ws.org.apache.cxf.rt.security.saml.3.4.1.jakarta, \
  io.openliberty.wssecurity
-kind=beta
+kind=ga
 edition=base

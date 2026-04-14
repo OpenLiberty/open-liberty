@@ -25,6 +25,9 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import jakarta.annotation.Resource;
@@ -62,11 +65,20 @@ import test.jakarta.data.v1_1.web.Fraction.Decimal;
 @WebServlet("/*")
 public class Data_1_1_Servlet extends FATServlet {
 
+    /**
+     * Maximum number of seconds that a test waits for an asynchronous
+     * operation to complete.
+     */
+    static final long TIMEOUT_S = TimeUnit.MINUTES.toSeconds(2);
+
     @Inject
     Advertisements ads;
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    StatefulFractionRepository statefulFractionRepo;
 
     @Inject
     StatefulFractions statefulFractions;
@@ -436,11 +448,14 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testDetach() throws Exception {
 
-        // TODO use stateful method to persist entities
-        // Populate with 5/23.
-        // Ensure deletion in the finally block.
-        fractions.supply(List.of(Fraction.of(5, 23)));
+        boolean removed = false;
         try {
+            // Populate with 5/23.
+            // Ensure deletion in the finally block.
+            tx.begin();
+            statefulFractionRepo.write(Fraction.of(5, 23));
+            tx.commit();
+
             System.out.println("Fetch 5/23 to detach, modify, and commit");
 
             tx.begin();
@@ -458,15 +473,18 @@ public class Data_1_1_Servlet extends FATServlet {
 
             assertEquals(BigDecimal.valueOf(2173, 4), // first 4 decimals of 5/23
                          f.decimal.truncated());
+
+            statefulFractionRepo.remove(f);
+            removed = true;
         } finally {
             if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
                 tx.rollback();
 
-            // TODO use stateful method to remove entities
             // Ensure no fractions with denominator of 23 or more are left around
-            fractions.discard(AtLeast.min(23),
-                              AtMost.max(Integer.MAX_VALUE),
-                              Restrict.unrestricted());
+            if (!removed)
+                fractions.discard(AtLeast.min(23),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
         }
     }
 
@@ -1175,11 +1193,11 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testPersistenceContext() throws Exception {
 
-        // TODO use stateful method to persist entities
         // Populate with 2/23 and 3/23.
         // Ensure deletion in the finally block.
-        fractions.supply(List.of(Fraction.of(2, 23),
-                                 Fraction.of(3, 23)));
+        statefulFractionRepo.persistAll(List.of(Fraction.of(2, 23),
+                                                Fraction.of(3, 23)));
+        boolean removed = false;
         try {
             System.out.println("Fetch 2/23 to modify and commit");
 
@@ -1204,21 +1222,26 @@ public class Data_1_1_Servlet extends FATServlet {
             f.decimal = Decimal.of(f.numerator, 23);
             tx.rollback();
 
+            Fraction f3_23 = statefulFractions.fetch(3, 23).orElseThrow();
             assertEquals(BigDecimal.valueOf(1304, 4),
-                         statefulFractions.fetch(3, 23).orElseThrow() //
-                                         .decimal.truncated());
+                         f3_23.decimal.truncated());
 
             assertEquals(true,
                          statefulFractions.fetch(1, 23).isEmpty());
+
+            Fraction f4_23 = statefulFractions.fetch(4, 23).orElseThrow();
+
+            statefulFractionRepo.remove(f3_23, f4_23);
+            removed = true;
         } finally {
             if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
                 tx.rollback();
 
-            // TODO use stateful method to remove entities
             // Ensure no fractions with denominator of 23 or more are left around
-            fractions.discard(AtLeast.min(23),
-                              AtMost.max(Integer.MAX_VALUE),
-                              Restrict.unrestricted());
+            if (!removed)
+                fractions.discard(AtLeast.min(23),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
         }
     }
 
@@ -1277,6 +1300,111 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.where(restriction)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Use a stateful repository to find an entity. Modify the entity. Use a
+     * repository Refresh method to restore the state of the entity from the
+     * database and verify that the previously modified entity attributes
+     * have been restored to their prior values.
+     */
+    @Test
+    public void testRefresh() throws Exception {
+
+        // Populate with 7/23 and 8/23.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(7, 23),
+                                                Fraction.of(8, 23)));
+        boolean removed = false;
+        try {
+            System.out.println("Fetch 7/23 to modify and refresh outside of tran");
+
+            Fraction f7_23 = statefulFractions.fetch(7, 23).orElseThrow();
+            f7_23.decimal = Decimal.of(7, 21);
+            f7_23.reduced = false;
+            statefulFractionRepo.restore(f7_23);
+            assertEquals(true,
+                         f7_23.reduced);
+            assertEquals(BigDecimal.valueOf(3043, 4), // first 4 decimals of 7/23
+                         f7_23.decimal.truncated());
+
+            System.out.println("Fetch 8/23 to modify and refresh within tran");
+
+            tx.begin();
+            Fraction f8_23 = statefulFractions.fetch(8, 23).orElseThrow();
+            f8_23.decimal = Decimal.of(8, 16);
+            f8_23.reduced = false;
+            statefulFractionRepo.restore(f8_23);
+            assertEquals(true,
+                         f8_23.reduced);
+            assertEquals(BigDecimal.valueOf(3478, 4), // first 4 decimals of 8/23
+                         f8_23.decimal.truncated());
+            tx.commit();
+
+            f8_23 = statefulFractions.fetch(8, 23).orElseThrow();
+
+            statefulFractionRepo.remove(f7_23, f8_23);
+            removed = true;
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // Ensure no fractions with denominator of 23 or more are left around
+            if (!removed)
+                fractions.discard(AtLeast.min(23),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
+        }
+    }
+
+    /**
+     * Use a stateful repository to remove entities.
+     */
+    @Test
+    public void testRemove() throws Exception {
+
+        // Populate with 9/23, 10/23, 11/23, and 12/23.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(9, 23),
+                                                Fraction.of(10, 23),
+                                                Fraction.of(11, 23),
+                                                Fraction.of(12, 23)));
+        try {
+            System.out.println("Remove 10/23 and 12/23 within the same tran");
+
+            tx.begin();
+            Fraction f10_23 = statefulFractions.fetch(10, 23).orElseThrow();
+            Fraction f12_23 = statefulFractions.fetch(12, 23).orElseThrow();
+            statefulFractionRepo.remove(f10_23, f12_23);
+            tx.commit();
+
+            Fraction f9_23 = statefulFractions.fetch(9, 23).orElseThrow();
+
+            assertEquals(true,
+                         statefulFractions.fetch(10, 23).isEmpty());
+
+            Fraction f11_23 = statefulFractions.fetch(11, 23).orElseThrow();
+
+            assertEquals(true,
+                         statefulFractions.fetch(12, 23).isEmpty());
+
+            System.out.println("Remove 11/23, fetched outside of tran");
+
+            statefulFractionRepo.remove(f11_23);
+
+            f9_23 = statefulFractions.fetch(9, 23).orElseThrow();
+
+            assertEquals(true,
+                         statefulFractions.fetch(11, 23).isEmpty());
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
     }
 
     /**
@@ -1579,6 +1707,62 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Invoke methods on a stateful repository while running on an unmanaged
+     * thread that is not part of any request scope.
+     */
+    @Test
+    public void testStatefulOnUnmanagedThread() throws Exception {
+
+        CompletableFuture.supplyAsync(() -> {
+            try {
+                boolean removed = false;
+                try {
+                    tx.begin();
+                    statefulFractionRepo.write(Fraction.of(13, 23));
+                    tx.commit();
+
+                    tx.begin();
+                    Fraction f = statefulFractions.fetch(13, 23).orElseThrow();
+                    f.decimal = Decimal.of(1, 23);
+                    statefulFractionRepo.restore(f);
+                    f.reduced = false;
+                    statefulFractions.flush();
+                    statefulFractions.detach(f);
+                    f.numerator = 1;
+                    tx.commit();
+
+                    tx.begin();
+                    f = statefulFractions.fetch(13, 23).orElseThrow();
+                    // first 4 decimals of 13/23
+                    assertEquals(BigDecimal.valueOf(5652, 4),
+                                 f.decimal.truncated());
+                    assertEquals(false,
+                                 f.reduced);
+                    assertEquals(13,
+                                 f.numerator);
+                    statefulFractionRepo.remove(f);
+                    tx.commit();
+                    removed = true;
+                } finally {
+                    if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                        tx.rollback();
+
+                    if (!removed)
+                        fractions.discard(AtLeast.min(23),
+                                          AtMost.max(Integer.MAX_VALUE),
+                                          Restrict.unrestricted());
+                }
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+            return "testStatefulOnUnmanagedThread async operations completed";
+        }).get(TIMEOUT_S, TimeUnit.SECONDS);
+
+    }
+
+    /**
      * Use a stateful repository to find an entity. Make updates to the entity.
      * Obtain the EntityManager via a resource accessor method and use it to
      * flush changes to the database. Then use a repository detach operation to
@@ -1589,10 +1773,10 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testStatefulResourceAccessor() throws Exception {
 
-        // TODO use stateful method to persist entities
         // Populate with 6/23.
         // Ensure deletion in the finally block.
-        fractions.supply(List.of(Fraction.of(6, 23)));
+        statefulFractionRepo.write(Fraction.of(6, 23));
+        boolean removed = false;
         try {
             System.out.println("Fetch 6/23 to modify, flush, detach, modify," +
                                " and commit");
@@ -1616,15 +1800,18 @@ public class Data_1_1_Servlet extends FATServlet {
 
             assertEquals(BigDecimal.valueOf(2608, 4), // first 4 decimals of 6/23
                          f.decimal.truncated());
+
+            statefulFractionRepo.remove(f);
+            removed = true;
         } finally {
             if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
                 tx.rollback();
 
-            // TODO use stateful method to remove entities
             // Ensure no fractions with denominator of 23 or more are left around
-            fractions.discard(AtLeast.min(23),
-                              AtMost.max(Integer.MAX_VALUE),
-                              Restrict.unrestricted());
+            if (!removed)
+                fractions.discard(AtLeast.min(23),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
         }
     }
 

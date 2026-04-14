@@ -15,7 +15,6 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.containers.TestContainerSuite;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -39,7 +38,7 @@ public class FATSuite extends TestContainerSuite {
      * for the JakartaEE9Action to replace in the server XMLs.
      */
     @ClassRule
-	public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
+	public static RepeatTests repeat = RepeatTests.withoutModification()
 			.andWith(FeatureReplacementAction.EE9_FEATURES().alwaysAddFeature("servlet-5.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
 			.andWith(FeatureReplacementAction.EE10_FEATURES().alwaysAddFeature("servlet-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
 			.andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("servlet-6.1"));

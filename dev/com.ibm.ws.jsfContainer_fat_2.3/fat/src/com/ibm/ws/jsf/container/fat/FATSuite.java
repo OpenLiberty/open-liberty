@@ -38,7 +38,6 @@ import com.ibm.ws.jsf.container.fat.tests.JSFContainerTest;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatActions.SEVersion;
@@ -82,7 +81,7 @@ public class FATSuite extends TestContainerSuite {
             //        Currently no testing is done with Java versions > 11 < 17.
             //    if the Java version is >= 17 EE11 will be lite mode and EmptyAction and EE11 will be full mode.
             if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
-                repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                repeat = RepeatTests.withoutModificationInFullMode()
                                 .andWith(FeatureReplacementAction.EE10_FEATURES()
                                                 .withMaxJavaLevel(SEVersion.JAVA11))
                                 .andWith(FeatureReplacementAction.EE11_FEATURES());
@@ -91,14 +90,14 @@ public class FATSuite extends TestContainerSuite {
                 // EE11 requires Java 17
                 // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
                 // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
-                repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+                repeat = RepeatTests.withoutModificationInFullMode()
                                 .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                                 .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                                 .andWith(FeatureReplacementAction.EE11_FEATURES());
             }
 
         } else {
-            repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+            repeat = RepeatTests.withoutModificationInFullMode()
                             .andWith(FeatureReplacementAction.EE9_FEATURES());
         }
     }

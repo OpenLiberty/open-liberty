@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2023 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package jdbc.fat.v43.web;
 
@@ -160,14 +157,6 @@ public class JDBC43TestServlet extends FATServlet {
         } catch (SQLException x) {
             throw new ServletException(x);
         }
-    }
-
-    /**
-     * Provides data sources to the HandleListTestServlet, which lacks access to resource injection due to SingleThreadModel.
-     */
-    public void populateDataSources() {
-        HandleListTestServlet.unsharablePool1DataSource = unsharablePool1DataSource;
-        HandleListTestServlet.unsharablePool2DataSource = unsharablePool2DataSource;
     }
 
     /**

@@ -20,7 +20,7 @@ javac.target: 17
 
 fat.project: true
 
-fat.test.container.images: icr.io/ibm-messaging/mq:9.3.2.0-r2
+fat.test.container.images: icr.io/ibm-messaging/mq:9.4.5.0-r2
 
 tested.features: \
   appauthentication-3.0, \

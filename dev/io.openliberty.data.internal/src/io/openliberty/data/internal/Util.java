@@ -688,7 +688,7 @@ public class Util {
      * @return a more readable value to log to trace.
      */
     @Trivial
-    static final String txStatusToString(int status) {
+    public static final String txStatusToString(int status) {
         return switch (status) {
             case Status.STATUS_ACTIVE -> "STATUS_ACTIVE (0)";
             case Status.STATUS_MARKED_ROLLBACK -> "STATUS_MARKED_ROLLBACK (1)";

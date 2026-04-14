@@ -31,7 +31,7 @@
   <AD id="runIfQueueFull"    type="Boolean" default="false" name="%runIfQueueFull" description="%runIfQueueFull.desc"/>
   <AD id="service.ranking"   type="Integer" default="0" name="internal" description="internal use only"/>
   <AD id="startTimeout"      type="String"  ibm:type="duration" required="false" name="%startTimeout" description="%startTimeout.desc"/>
-  <AD id="virtual"           type="Boolean" default="false" ibm:beta="true" name="%virtual" description="%virtual.desc"/>
+  <AD id="virtual"           type="Boolean" default="false" name="%virtual" description="%virtual.desc"/>
  </OCD>
 
 </metatype:MetaData>

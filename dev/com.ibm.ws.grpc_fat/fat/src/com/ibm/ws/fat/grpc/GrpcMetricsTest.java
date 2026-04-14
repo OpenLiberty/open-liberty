@@ -11,7 +11,6 @@
 package com.ibm.ws.fat.grpc;
 
 import static com.ibm.ws.fat.grpc.monitoring.GrpcMetricsTestUtils.checkMetric;
-
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -89,6 +88,9 @@ public class GrpcMetricsTest extends FATServletClient {
 
         LOG.info("GrpcMetricsTest : setUp() : start the grpc servers");
         GrpcClientOnly.useSecondaryHTTPPort();
+
+        GrpcClientOnly.saveServerConfiguration();
+        GrpcServerOnly.saveServerConfiguration();
     }
 
     @Before
@@ -100,6 +102,9 @@ public class GrpcMetricsTest extends FATServletClient {
     public void after() throws Exception {
         GrpcClientOnly.stopServer();
         GrpcServerOnly.stopServer();
+
+        GrpcClientOnly.restoreServerConfiguration();
+        GrpcServerOnly.restoreServerConfiguration();
     }
 
     /**

@@ -42,7 +42,7 @@ import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 @SkipIfSysProp(SkipIfSysProp.OS_ZOS)
 public abstract class JmsAbstractTests extends AbstractSpringTests {
 
-    private static final String mqVersion = "9.3.2.0-r2";
+    private static final String mqVersion = "9.4.5.0-r2";
     private static final int MQ_LISTENER_PORT = 1414;
 
     @SuppressWarnings("resource")

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016,2025 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -317,6 +317,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testDefaultHostWithAppPortRunLibertyUberJarWithSSL() throws Exception {
+        String method = "testDefaultHostWithAppPortRunLibertyUberJarWithSSL";
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
         RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
@@ -357,31 +358,55 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
 
+        String[] javaCmd;
         //Run libertyUberJar using java -jar command
-        Process proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
+        if (System.getProperty("os.name").equalsIgnoreCase("os/400")) {
+            // If this is running on IBM i, add the -XX:+EnableHCR option to not run in a separate JVM
+            javaCmd = new String[] { "java", "-XX:+EnableHCR", "-jar", libertyUberJar.getAbsolutePath() };
+        } else {
+            javaCmd = new String[] { "java", "-jar", libertyUberJar.getAbsolutePath() };
+        }
 
-        String line = null;
+        Process proc = Runtime.getRuntime().exec(javaCmd);
+        try {
+            String line = null;
+            line = readProcessLine(proc, method);
+
+            if (line == null) {
+                proc.destroy();
+                Log.info(getClass(), method, "Running the uber jar again because the last run wasn't successful");
+                proc = Runtime.getRuntime().exec(javaCmd);
+                line = readProcessLine(proc, method);
+            }
+
+            assertNotNull("The endpoint is not available", line);
+            assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
+
+            int start = line.indexOf("https");
+            String url = line.substring(start);
+
+            String result = sendHttpsGet(url, server);
+            assertNotNull(result);
+            assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
+        } finally {
+            proc.destroy();
+        }
+    }
+
+    private String readProcessLine(Process proc, String method) throws IOException {
+        String line;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
             line = readTimeout(reader);
-            Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
+            Log.info(getClass(), method, line);
             while (line != null) {
-                Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
+                Log.info(getClass(), method, line);
                 if (line.contains("CWWKT0016I")) {
                     break;
                 }
                 line = readTimeout(reader);
             }
         }
-        assertNotNull("The endpoint is not available", line);
-        assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
-
-        int start = line.indexOf("https");
-        String url = line.substring(start);
-
-        String result = sendHttpsGet(url, server);
-        assertNotNull(result);
-        assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
-        proc.destroy();
+        return line;
     }
 
     String readTimeout(BufferedReader reader) throws IOException {

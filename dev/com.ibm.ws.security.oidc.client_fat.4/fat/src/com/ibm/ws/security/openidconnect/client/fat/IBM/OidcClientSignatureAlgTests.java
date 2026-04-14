@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -56,6 +57,7 @@ import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsE
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
+@SkipJavaSemeruWithFipsEnabledRule
 public class OidcClientSignatureAlgTests extends CommonTest {
 
     public static Class<?> thisClass = OidcClientSignatureAlgTests.class;
@@ -70,8 +72,8 @@ public class OidcClientSignatureAlgTests extends CommonTest {
     public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
     protected static SignatureEncryptionUserinfoUtils signingUtils = new SignatureEncryptionUserinfoUtils();
 
-    @Rule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub");
+    @ClassRule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.openidconnect.client-1.0_fat.4.opWithStub");
 
     @SuppressWarnings("serial")
     @BeforeClass
@@ -99,11 +101,11 @@ public class OidcClientSignatureAlgTests extends CommonTest {
         String certType = Constants.X509_CERT;
 
         // Start the OIDC OP server
-        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.opWithStub", "op_server_sigAlg.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS,
+        testOPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.4.opWithStub", "op_server_sigAlg.xml", Constants.OIDC_OP, Constants.NO_EXTRA_APPS,
                 Constants.DO_NOT_USE_DERBY, opExtraMsgs, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         //Start the OIDC RP server and setup default values
-        testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.rp", "rp_server_withOpStub_sigAlg.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
+        testRPServer = commonSetUp("com.ibm.ws.security.openidconnect.client-1.0_fat.4.rp", "rp_server_withOpStub_sigAlg.xml", Constants.OIDC_RP, apps, Constants.DO_NOT_USE_DERBY,
                 Constants.NO_EXTRA_MSGS, Constants.OPENID_APP, Constants.IBMOIDC_TYPE, true, true, tokenType, certType);
 
         // override actions that generic tests should use - Need to skip consent form as httpunit

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2023 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -109,7 +106,11 @@ public class JakartaEE9Action extends JakartaEEAction {
 
     public static final Set<String> EE9_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE9_FEATURES_ARRAY)));
 
-    public JakartaEE9Action() {
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // This constructor is purposely not public to force people to use the JakartaEEAction class and                 //
+    // the FeatureReplacementAction.EE9_FEATURES() method instead of referencing this class directly                //
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    protected JakartaEE9Action() {
         // Remove the EE7 and EE8 features; replace them with the EE9 features
         super(EE9_FEATURE_SET);
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);

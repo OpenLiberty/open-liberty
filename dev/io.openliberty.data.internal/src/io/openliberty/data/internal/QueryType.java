@@ -110,7 +110,7 @@ public enum QueryType {
     // stateful repository life cycle method @Persist
     PERSIST("Persist", //
             Is.LIFE_CYCLE_METHOD, //
-            !Require.AUTO_START_TX, //
+            Require.AUTO_START_TX, //
             !Require.DETACH_ENTITIES, //
             !Require.RETURN_HIDDEN, //
             Require.STATEFUL),
@@ -142,7 +142,7 @@ public enum QueryType {
     // stateful repository life cycle method @Remove
     REMOVE("Remove", //
            Is.LIFE_CYCLE_METHOD, //
-           !Require.AUTO_START_TX, //
+           Require.AUTO_START_TX, //
            !Require.DETACH_ENTITIES, //
            !Require.RETURN_HIDDEN, //
            Require.STATEFUL),
@@ -168,7 +168,6 @@ public enum QueryType {
     /**
      * Indicate if we must automatically start a transaction before invoking
      * the repository operation if a transaction is not already present.
-     * For stateful entities, this will always be false.
      */
     public final boolean autoStartTransaction;
 

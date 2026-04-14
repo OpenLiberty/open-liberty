@@ -6,6 +6,6 @@ visibility = private
   com.ibm.websphere.appserver.servlet-6.1
 -bundles=\
   io.openliberty.webservices.handler
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

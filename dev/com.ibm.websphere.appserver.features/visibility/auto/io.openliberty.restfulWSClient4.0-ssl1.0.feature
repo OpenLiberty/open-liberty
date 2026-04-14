@@ -5,5 +5,5 @@
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.ssl-1.0))"
  -bundles=io.openliberty.restfulWS.internal.ssl.ee11
  IBM-Install-Policy: when-satisfied
- kind=beta
+ kind=ga
  edition=core

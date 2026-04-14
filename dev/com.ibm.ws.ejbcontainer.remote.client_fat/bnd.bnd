@@ -33,6 +33,7 @@ tested.features: \
 	cdi-4.1, \
 	connectors-2.1, \
 	enterpriseBeans-4.0, \
+	enterpriseBeansHome-4.0, \
 	enterpriseBeansRemote-4.0, \
 	servlet-4.0, \
 	servlet-5.0, \

@@ -26,7 +26,6 @@ import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh10;
 import com.ibm.ws.wssecurity.fat.utils.common.RepeatWithEE7cbh20;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -58,7 +57,7 @@ public class FATSuite {
     /*@formatter:off*/
     @ClassRule
     //issue 24772
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(new RepeatWithEE7cbh20().fullFATOnly())
                     .andWith(new RepeatWithEE7cbh10().liteFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES())

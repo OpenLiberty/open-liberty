@@ -40,7 +40,7 @@ public class FATSuite {
                                         .andWith(FeatureReplacementAction.EE9_FEATURES()
                                                          .liteFATOnly()) // Having all repeats in FULL mode causes bucket timeouts.
                                         .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                         .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                                                         .liteFATOnly())
                                         .andWith(FeatureReplacementAction.EE11_FEATURES());
     /*@formatter:on*/
 }

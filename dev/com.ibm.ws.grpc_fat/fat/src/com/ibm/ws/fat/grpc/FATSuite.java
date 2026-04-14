@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -58,7 +57,7 @@ public class FATSuite {
     static String[] ee11AddedFeatures = { "mpOpenAPI-4.0", "mpMetrics-5.1", "mpJwt-2.1", "mpConfig-3.1", "mpRestClient-4.0", "appSecurity-6.0" };
 
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE9_FEATURES()
                                     .removeFeatures(new HashSet<>(Arrays.asList(removedFeatures)))
                                     .addFeatures(new HashSet<>(Arrays.asList(addedFeatures)))

@@ -22,7 +22,7 @@
 	</featureManager>
 
 	<!-- Use the same keystore as the myTestClientCipher so the client already trusts the server cert -->
-	<keyStore id="defaultKeyStore" location="${wlp.install.dir}/usr/clients/myTestClientCipher/resources/security/key.p12"
+	<keyStore id="defaultKeyStore"
 		password="{xor}EzY9Oi0rJg==" type="PKCS12" />
 
 	<sslDefault sslRef="supportedClientAuthenticationSSLConfig" />
@@ -60,7 +60,7 @@
 		<iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="supportedClientAuthenticationSSLConfig" />
 	</iiopEndpoint>
 
-	<orb id="defaultOrb" iiopEndpointRef="myIiopEndpoint">
+	<orb id="defaultOrb" iiopEndpointRef="myIiopEndpoint" orbSSLInitTimeout="60">
 		<serverPolicy.csiv2>
 			<layers>
 				<transportLayer sslRef="supportedClientAuthenticationSSLConfig" />

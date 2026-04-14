@@ -227,7 +227,7 @@ public class DataProvider implements //
     /**
      * For suspending and resuming local transactions.
      */
-    final LocalTransactionCurrent localTranCurrent;
+    public final LocalTransactionCurrent localTranCurrent;
 
     /**
      * Configured interface/method/package names for logValues.
@@ -263,7 +263,7 @@ public class DataProvider implements //
     /**
      * The Liberty transaction manager.
      */
-    final EmbeddableWebSphereTransactionManager tranMgr;
+    public final EmbeddableWebSphereTransactionManager tranMgr;
 
     /**
      * Service that provides Jakarta Validation.
