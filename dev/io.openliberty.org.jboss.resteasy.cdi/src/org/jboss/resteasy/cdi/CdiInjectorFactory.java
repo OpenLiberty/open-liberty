@@ -5,6 +5,8 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -41,7 +43,7 @@ public class CdiInjectorFactory implements InjectorFactory
    private BeanManager manager;
    private InjectorFactory delegate = new InjectorFactoryImpl();
    private ResteasyCdiExtension extension;
-   private Map<Class<?>, Type> sessionBeanInterface;
+   private Map<Class<?>, Collection<Type>> sessionBeanInterface; // Liberty Change
 
    public CdiInjectorFactory()
    {
@@ -72,7 +74,7 @@ public class CdiInjectorFactory implements InjectorFactory
    @Override
    public PropertyInjector createPropertyInjector(ResourceClass resourceClass, ResteasyProviderFactory providerFactory)
    {
-      return new CdiPropertyInjector(delegate.createPropertyInjector(resourceClass, providerFactory), resourceClass.getClazz(), sessionBeanInterface, manager);
+      return new CdiPropertyInjector(delegate.createPropertyInjector(resourceClass, providerFactory), resourceClass.getClazz(), sessionBeanInterface, manager); // Liberty Change
    }
 
    @Override
@@ -106,13 +108,15 @@ public class CdiInjectorFactory implements InjectorFactory
       if (!manager.getBeans(clazz).isEmpty())
       {
          LogMessages.LOGGER.debug(Messages.MESSAGES.usingCdiConstructorInjector(clazz));
-         return new CdiConstructorInjector(clazz, manager);
+         return new CdiConstructorInjector(Collections.singleton(clazz), manager); // Liberty Change
       }
 
       if (sessionBeanInterface.containsKey(clazz))
       {
-         Type intfc = sessionBeanInterface.get(clazz);
-         LogMessages.LOGGER.debug(Messages.MESSAGES.usingInterfaceForLookup(intfc, clazz));
+         Collection<Type> intfc = sessionBeanInterface.get(clazz); // Liberty Change
+//         LogMessages.LOGGER.debug(Messages.MESSAGES.usingInterfaceForLookup(intfc, clazz)); // TODO: convert to collection
+         
+         // TODO: how do we handle multiple sessionBeanInterfaces?
          return new CdiConstructorInjector(intfc, manager);
       }
 

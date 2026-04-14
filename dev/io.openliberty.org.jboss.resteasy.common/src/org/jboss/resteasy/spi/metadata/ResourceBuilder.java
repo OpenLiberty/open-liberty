@@ -1,6 +1,8 @@
 package org.jboss.resteasy.spi.metadata;
 
 import static org.jboss.resteasy.spi.util.FindAnnotation.findAnnotation;
+import static org.jboss.resteasy.spi.util.Utils.getLocalInterfaces;
+import static org.jboss.resteasy.spi.util.Utils.methodsMatch;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.AccessibleObject;
@@ -928,10 +930,35 @@ public class ResourceBuilder
       {
          builder = createResourceClassBuilder(clazz);
       }
+      
+      // Liberty Change Start - lookup @Local interfaces and check them for JAX-RS annotations
+      Class<?>[] localInterfaces = getLocalInterfaces(clazz);
+      
+      // Methods must be unique anyway, so just just add to 1 big list
+      if (localInterfaces != null && localInterfaces.length > 0) {
+          for (Class<?> interfaceClass : localInterfaces) {
+              for (Method ifaceMethod : interfaceClass.getMethods()) {
+                  ifaceMethods.add(ifaceMethod);
+              }
+          }
+      }
+      // Liberty Change End
+      
       for (Method method : clazz.getMethods())
       {
-         if (!method.isSynthetic() && !method.getDeclaringClass().equals(Object.class))
-            processMethod(isLocator, builder, clazz, method);
+         if (!method.isSynthetic() && !method.getDeclaringClass().equals(Object.class)) {
+             // Liberty Change Start
+             if (ifaceMethods.size() > 0) {
+                 for (Method ifaceMethod : ifaceMethods) {
+                     if (methodsMatch(method, ifaceMethod)) {
+                         processMethod(isLocator, builder, clazz, method, ifaceMethod);
+                     } else {
+                         processMethod(isLocator, builder, clazz, method, null);
+                     }
+                 }
+             }
+             // Liberty Change End
+         }
 
       }
       if (!clazz.isInterface())
@@ -941,6 +968,8 @@ public class ResourceBuilder
       processSetters(builder, clazz);
       return applyProcessors(builder.buildClass());
    }
+   
+   private List<Method> ifaceMethods = new ArrayList<Method>(); // Liberty Change - must be unique anyway, just just add to 1 big list
 
    protected ResourceClassBuilder createResourceClassBuilder(Class<?> clazz) {
       ResourceClassBuilder builder;
@@ -1089,6 +1118,18 @@ public class ResourceBuilder
             return overriddenMethod;
          }
       }
+      
+      
+      // Liberty Change - check @Local interfaces: TODO
+      // Liberty Change Start
+      if (ifaceMethods.size() > 0) {
+          for (Method ifaceMethod : ifaceMethods) {
+              if (methodsMatch(implementation, ifaceMethod)) {
+                  return ifaceMethod;
+              }
+          }
+      }
+      // Liberty Change End
 
       return null;
    }
@@ -1207,12 +1248,12 @@ public class ResourceBuilder
    }
 
    protected void processMethod(boolean isLocator, ResourceClassBuilder resourceClassBuilder, Class<?> root,
-         Method implementation)
+         Method implementation, Method ifaceMethod)
    {
       Method method = getAnnotatedMethod(root, implementation);
       if (method != null)
       {
-         Set<String> httpMethods = getHttpMethods(method);
+         Set<String> httpMethods = getHttpMethods(method);       
 
          ResourceLocatorBuilder resourceLocatorBuilder;
 
@@ -1242,7 +1283,7 @@ public class ResourceBuilder
                else
                   resourceMethodBuilder.httpMethod(httpMethod);
             }
-            Produces produces = method.getAnnotation(Produces.class);
+            Produces produces = getAnnotation(Produces.class, method, ifaceMethod); // Liberty Change
             if (produces == null)
                produces = resourceClassBuilder.resourceClass.getClazz().getAnnotation(Produces.class);
             if (produces == null)
@@ -1250,7 +1291,7 @@ public class ResourceBuilder
             if (produces != null)
                resourceMethodBuilder.produces(produces.value());
 
-            Consumes consumes = method.getAnnotation(Consumes.class);
+            Consumes consumes = getAnnotation(Consumes.class, method, ifaceMethod); // Liberty Change
             if (consumes == null)
                consumes = resourceClassBuilder.resourceClass.getClazz().getAnnotation(Consumes.class);
             if (consumes == null)
@@ -1258,7 +1299,7 @@ public class ResourceBuilder
             if (consumes != null)
                resourceMethodBuilder.consumes(consumes.value());
          }
-         Path methodPath = method.getAnnotation(Path.class);
+         Path methodPath = getAnnotation(Path.class, method, ifaceMethod); // Liberty Change
          if (methodPath != null)
             resourceLocatorBuilder.path(methodPath.value());
          for (int i = 0; i < resourceLocatorBuilder.locator.params.length; i++)
@@ -1268,6 +1309,16 @@ public class ResourceBuilder
          resourceLocatorBuilder.buildMethod();
       }
    }
+   
+   // Liberty Change Start
+   private <T extends Annotation> T getAnnotation(Class<T> annotationClass, Method method, Method ifaceMethod) {
+      T annotation = method.getAnnotation(annotationClass);      
+      if (annotation == null && ifaceMethod != null) {
+          annotation = ifaceMethod.getAnnotation(annotationClass);
+      }
+      return annotation;
+  }
+   // Liberty Change End
 
    /**
     * Apply the list of {@link ResourceClassProcessor} to the supplied {@link ResourceClass}.

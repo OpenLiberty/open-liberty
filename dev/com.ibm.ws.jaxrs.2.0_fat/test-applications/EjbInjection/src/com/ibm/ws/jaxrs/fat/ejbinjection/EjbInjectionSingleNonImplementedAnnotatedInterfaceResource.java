@@ -13,11 +13,13 @@ import javax.annotation.Resource;
 import javax.ejb.Local;
 import javax.ejb.SessionContext;
 import javax.ejb.Stateless;
+import javax.ws.rs.Path;
 
 import com.ibm.ws.jaxrs.fat.ejbinjection.interfaces.annotated.EchoEJBJAXRSAnnotatedInterface;
 
 @Stateless
 @Local({ EchoEJBJAXRSAnnotatedInterface.class })
+@Path("singlenonimplementedannotatedinterface")
 public class EjbInjectionSingleNonImplementedAnnotatedInterfaceResource {
 
     @Resource

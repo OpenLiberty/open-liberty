@@ -12,7 +12,7 @@ package com.ibm.ws.jaxrs.fat.ejbinjection.interfaces.annotated;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 
-@Path("/test")
+//@Path("/singlenonimplementedannotatedinterface")
 public interface EchoEJBJAXRSAnnotatedInterface {
 
     @POST
