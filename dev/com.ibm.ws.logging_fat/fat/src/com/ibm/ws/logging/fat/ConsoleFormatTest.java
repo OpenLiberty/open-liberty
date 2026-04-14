@@ -542,8 +542,7 @@ public class ConsoleFormatTest {
 
     private static void setServerConfiguration(LibertyServer libertyServer, String consoleFormat, boolean useTraceSpec, boolean useIsoDateFormat,
                                                RemoteFile consoleLogFile) throws Exception {
-        libertyServer.setMarkToEndOfLog(consoleLogFile);
-
+        
         Logging loggingObj;
         ServerConfiguration serverConfig = libertyServer.getServerConfiguration();
         loggingObj = serverConfig.getLogging();
@@ -554,6 +553,13 @@ public class ConsoleFormatTest {
             loggingObj.setIsoDateFormat(useIsoDateFormat);
         }
         loggingObj.setConsoleFormat(consoleFormat);
+        
+        Thread.sleep(1000);
+        
+        libertyServer.setMarkToEndOfLog(consoleLogFile);
+
+        Thread.sleep(1000);
+
         libertyServer.updateServerConfiguration(serverConfig);
         libertyServer.waitForConfigUpdateInLogUsingMark(null);
     }
