@@ -236,6 +236,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         if (!(msg.decoderResult().isFinished() && msg.decoderResult().isSuccess())) {
             if(context.channel().isActive()) {
                 if (msg.decoderResult().cause() != null) {
+                    // Should we FFDC this?
+                    FFDCFilter.processException(msg.decoderResult().cause(), HttpDispatcherHandler.class.getName() + ".channelRead0(ChannelHandlerContext, HttpObject)", "1", context);
                     sendErrorMessage(msg.decoderResult().cause());
                 } else {
                     sendErrorMessage(new Exception("HTTP request decoding failure!"));
