@@ -209,7 +209,7 @@ unauthorized.cancellation=Das Tool kann nicht abgebrochen werden, da der aufrufe
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: Der R\u00fcckgabetyp \u201e {0} \u201c der MCP-Tool-Methode \u201e {1} \u201c muss ein Objekt sein.
-CWMCM0025E.unsupported.output.explanation=Der angegebene R\u00fcckgabetyp des MCP-Tools wird nicht unterst\u00fctzt.
+CWMCM0025E.unsupported.output.explanation=Der angegebene R\u00fcckgabetyp des MCP-Tools wird nicht unterst\u00fctzt. Da der Wert f\u00fcr \u201estructured content\u201c auf \u201etrue\u201c gesetzt ist, muss der Schematyp der Ausgabe ein Objekt sein.
 CWMCM0025E.unsupported.output.useraction=Geben Sie einen R\u00fcckgabetyp an, der ein Objekt ist.
 
 # Used as exception message

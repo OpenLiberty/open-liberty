@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2024 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -139,6 +139,11 @@ INVALID_CONFIG_PARAM.useraction=Verifique o par\u00e2metro ausente na configura\
 OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: O cliente de login social [{0}] falhou ao obter informa\u00e7\u00f5es sobre terminais do provedor de conex\u00e3o OpenID por meio da URL do endpoint de descoberta de [{1}]. Atualize a configura\u00e7\u00e3o para o Login Social (configura\u00e7\u00e3o de oidcLogin) com a URL do endpoint de descoberta HTTPS correta.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=A configura\u00e7\u00e3o de oidcLogin est\u00e1 definida para descobrir os terminais do provedor de conex\u00e3o OpenID por meio da URL de descoberta, mas o processo de descoberta falhou. O cliente n\u00e3o \u00e9 capaz de processar as solicita\u00e7\u00f5es de autentica\u00e7\u00e3o at\u00e9 que a configura\u00e7\u00e3o do discoveryEndpoint seja corrigida ou a descoberta seja bem-sucedida.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Corrija a configura\u00e7\u00e3o de oidcLogin para assegurar que 1) a URL do endpoint de descoberta refira-se ao provedor de conex\u00e3o OpenID correto, 2) a URL do endpoint de descoberta seja HTTPS e 3) os elementos de recurso SSL e keystore estejam configurados corretamente com confian\u00e7a para o provedor de conex\u00e3o OpenID 4) assegure-se que o endpoint de descoberta do provedor de conex\u00e3o OpenID esteja funcional.
+
+#0=social login client ID, 1="none"
+SOCIAL_LOGIN_NONE_ALG=CWWKS5392W: O endere\u00e7o signatureAlgorithm do cliente de login social [ {0} ] est\u00e1 definido como [ {1} ].
+SOCIAL_LOGIN_NONE_ALG.explanation=Como a op\u00e7\u00e3o ` signatureAlgorithm ` est\u00e1 definida como "none", espera-se um token sem assinatura, o que n\u00e3o \u00e9 um caso de uso comum.
+SOCIAL_LOGIN_NONE_ALG.useraction=Se voc\u00ea n\u00e3o espera que os tokens recebidos estejam assinados, n\u00e3o precisa fazer nada. Caso contr\u00e1rio, selecione um signatureAlgorithm suportado, como RS256 ou HS256.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: A configura\u00e7\u00e3o de login social [{0}] foi processada com \u00eaxito.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=A configura\u00e7\u00e3o de login social indicada foi processada com \u00eaxito.

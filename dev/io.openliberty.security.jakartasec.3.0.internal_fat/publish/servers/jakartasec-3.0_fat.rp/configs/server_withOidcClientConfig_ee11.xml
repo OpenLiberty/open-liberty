@@ -1,0 +1,64 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server description="Jakarta Security 4.0 Test Server">
+
+<!-- cdi12 enableImplicitBeanArchives="false"/ -->
+
+ 	<include location="${shared.config.dir}/rp_features_ee11.xml" />
+ 	<include location="${shared.config.dir}/rp_fatTestPorts.xml" />
+ 	<include location="${shared.config.dir}/allAlgSSLSettings.xml" />
+ 	<include location="${shared.config.dir}/RPMisc.xml" />
+ 
+ 	<sslDefault sslRef="ssl_allSigAlg" />
+ 	
+<featureManager>
+ 	<feature>openidConnectClient-1.0</feature>
+</featureManager>
+ 	
+ <!-- create an oidc client config that wouldn't work with the OP config that we have -->
+ <!-- with no filter, this client should be used for all apps that are not otherwise protected - this 
+ 		config would show that we didn't use the annotation and tried to use the server specified oidc client config -->
+ 	
+ 	    <openidConnectClient
+                id="rpClientWildcardProtected"
+                clientId="client_98"
+                clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+                discoveryEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP2/.well-known/openid-configuration"
+                authFilterRef="myAuthFilter01"
+        >
+        </openidConnectClient>
+
+       	<authFilter id="myAuthFilter01">
+                <requestUrl
+                        id="myRequestUrl"
+                        urlPattern="/rpClientProtected"
+                        matchType="notContain" />
+        </authFilter>
+
+ 	    <openidConnectClient
+                id="rpProtectedClient"
+                clientId="client_99"
+                clientSecret="mySharedKeyNowHasToBeLongerStrongerAndMoreSecureAndForHS512EvenLongerToBeStronger"
+                discoveryEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OP2/.well-known/openid-configuration"
+                authFilterRef="myAuthFilter02"
+        >
+        </openidConnectClient>
+
+        <authFilter id="myAuthFilter02">
+                <requestUrl
+                        id="myRequestUrl"
+                        urlPattern="/rpClientProtected"
+                        matchType="contains" />
+        </authFilter>
+ 
+</server>

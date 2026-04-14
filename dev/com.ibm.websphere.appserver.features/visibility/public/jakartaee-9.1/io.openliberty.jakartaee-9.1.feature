@@ -24,6 +24,7 @@ Subsystem-Name: Jakarta EE Platform 9.1
   io.openliberty.xmlWS-3.0, \
   io.openliberty.appClientSupport-2.0, \
   io.openliberty.enterpriseBeans-4.0, \
+  io.openliberty.enterpriseBeansHome-4.0, \
   io.openliberty.messaging-3.0, \
   io.openliberty.messagingServer-3.0, \
   io.openliberty.connectorsInboundSecurity-2.0, \

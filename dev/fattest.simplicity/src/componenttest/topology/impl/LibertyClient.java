@@ -787,6 +787,11 @@ public class LibertyClient {
         useEnvVars.setProperty("LOG_DIR", logsRoot);
         useEnvVars.setProperty("LOG_FILE", consoleFileName);
 
+        // default ltpa keys password for FAT tests
+        if (!useEnvVars.containsKey("ltpa_keys_password")) {
+            useEnvVars.setProperty("ltpa_keys_password", "WebAS");
+        }
+
         Log.info(c, method, "Using additional env props: " + useEnvVars.toString());
 
         Log.info(c, method, "Starting Client with command: " + cmd);
@@ -2807,6 +2812,13 @@ public class LibertyClient {
         RemoteFile remoteLogFile = machine.getFile(logFile);
         return findStringsInLogs(regexp, remoteLogFile);
     }
+    public List<String> findStringsInCopiedTraceLogs(String regexp, String filePath) throws Exception {
+        String logFile = pathToAutoFVTOutputClientsFolder + "/" + clientToUse + "-" + logStamp + "/" + filePath;
+        RemoteFile remoteLogFile = machine.getFile(logFile);
+        return findStringsInLogs(regexp, remoteLogFile);
+    }
+
+    
 
     /**
      * This method will search the output and trace files for this client

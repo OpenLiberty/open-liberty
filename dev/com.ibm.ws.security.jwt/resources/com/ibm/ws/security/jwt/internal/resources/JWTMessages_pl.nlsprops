@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Upewnij si\u0119, \u017ce nag\u0142\u00f3wek a
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: Szyfrowanie WWW JSON (JSON Web Encryption \u2013 JWE) jest niepoprawne, poniewa\u017c jego klucz szyfrowania tre\u015bci (Content Encryption Key \u2013 CEK) zosta\u0142 zaszyfrowany algorytmem {0}. Klucze szyfrowania tre\u015bci musz\u0105 by\u0107 szyfrowane algorytmem {1}.
 JWE_ALGORITHM_MISMATCH.explanation=Klucze szyfrowania tre\u015bci musz\u0105 by\u0107 szyfrowane algorytmem podanym w komunikacie. Klucze szyfrowania tre\u015bci zaszyfrowane ka\u017cdym innym algorytmem szyfrowania nie mog\u0105 by\u0107 sprawdzone.
 JWE_ALGORITHM_MISMATCH.useraction=Uzyskaj nowy token z kluczem szyfrowania tre\u015bci, kt\u00f3ry zosta\u0142 zaszyfrowany przy u\u017cyciu wymaganego algorytmu okre\u015blonego w komunikacie. Alternatywnie zaktualizuj konfiguracj\u0119 JWT, aby zezwala\u0107 na tokeny z kluczami szyfrowania tre\u015bci zaszyfrowanymi przy u\u017cyciu innego algorytmu szyfrowania.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Nie mo\u017cna za\u0142adowa\u0107 wpis\u00f3w certyfikat\u00f3w zaufanych z magazynu certyfikat\u00f3w [ {0} ]. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=Wyst\u0105pi\u0142 b\u0142\u0105d podczas pr\u00f3by pobrania listy wpis\u00f3w certyfikat\u00f3w zaufanych z podanego magazynu certyfikat\u00f3w. By\u0107 mo\u017ce w konfiguracji brakuje magazynu certyfikat\u00f3w lub wyst\u0105pi\u0142 problem uniemo\u017cliwiaj\u0105cy dost\u0119p do niego.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Sprawd\u017a, czy magazyn certyfikat\u00f3w jest poprawnie skonfigurowany w ustawieniach serwera i czy jest dost\u0119pny. Aby uzyska\u0107 wi\u0119cej informacji na temat b\u0142\u0119du, zapoznaj si\u0119 z komunikatem o b\u0142\u0119dzie.
+
+

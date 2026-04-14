@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,8 @@ import java.security.cert.X509Certificate;
 import java.security.interfaces.RSAPublicKey;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -81,6 +83,7 @@ public class ConsumerUtilTest {
     private static final String ENTRY4 = "entry4";
     private static final String HS256 = "HS256";
     private static final String RS256 = "RS256";
+    private static final String ES256 = "ES256";
     private static final String RSA_OAEP = "RSA-OAEP";
     private static final String RSA_OAEP_256 = "RSA-OAEP-256";
     private static final String URL = "http://localhost:80/context/sub";
@@ -366,6 +369,73 @@ public class ConsumerUtilTest {
         }
     }
 
+    /**
+     * Method under test: {@link ConsumerUtil#getSigningKey(JwtConsumerConfig)}
+     */
+    @Test
+    public void testGetSigningKey_FROM_HEADER_Valid() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+
+                    allowing(jwtConfig).getSignatureAlgorithm();
+                    will(returnValue(Constants.SIGNATURE_FROM_HEADER));
+                    one(jwtContext).getJoseObjects();
+                    will(returnValue(Arrays.asList(jws)));
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue(RS256));
+                    one(jwtConfig).getJwkEnabled();
+                    will(returnValue(false));
+                    allowing(jwtConfig).getTrustedAlias();
+                    will(returnValue(trustedAlias));
+                    one(jwtConfig).getTrustStoreRef();
+                    will(returnValue(trustStoreRef));
+                    allowing(kssRef).getService();
+                    will(returnValue(kss));
+                    one(kss).getTrustedCertEntriesInKeyStore(trustStoreRef);
+                    will(returnValue(Arrays.asList(trustedAlias)));
+                    one(kss).getX509CertificateFromKeyStore(trustStoreRef, trustedAlias);
+                    will(returnValue(cert));
+                    one(cert).getPublicKey();
+                    will(returnValue(rsaPublicKey));
+                    one(rsaPublicKey).getAlgorithm();
+                    will(returnValue("RSA"));
+                }
+            });
+            Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, NO_MP_CONFIG_PROPERTIES);
+            assertNotNull("Resulting key was null when it should not have been.", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test: {@link ConsumerUtil#getSigningKey(JwtConsumerConfig)}
+     */
+    @Test
+    public void testGetSigningKey_FROM_HEADER_ThrowsException() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    allowing(jwtConfig).getSignatureAlgorithm();
+                    will(returnValue(Constants.SIGNATURE_FROM_HEADER));
+                    one(jwtContext).getJoseObjects();
+                    will(returnValue(Arrays.asList(jws)));
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue(null));
+                }
+            });
+            try {
+                Key result = consumerUtil.getSigningKey(jwtConfig, jwtContext, NO_MP_CONFIG_PROPERTIES);
+                fail("Should have thrown Exception but did not. Got key: " + result);
+            } catch (InvalidTokenException e) {
+                validateException(e, MSG_JWT_MISSING_ALG_HEADER + ".*" + Constants.SIGNATURE_FROM_HEADER);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     /*********************************************
      * getSharedSecretKey
      *********************************************/
@@ -565,6 +635,165 @@ public class ConsumerUtilTest {
             Key result = consumerUtil.getPublicKey(trustedAlias, trustStoreRef, randomAlg);
             assertNotNull("Resulting key was null when it should not have been.", result);
 
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /*********************************************
+     * getAlgorithmPrefixedAlias
+     *********************************************/
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmPrefixedAlias(String, String)}
+     */
+    @Test
+    public void testGetAlgorithmPrefixedAlias_nullKeyStoreService() {
+        try {
+            ConsumerUtil testConsumerUtil = new ConsumerUtil(null);
+            try {
+                String result = testConsumerUtil.getAlgorithmPrefixedAlias(RS256, trustStoreRef);
+                fail("Should have thrown KeyStoreServiceException but did not. Got alias: " + result);
+            } catch (Exception e) {
+                validateException(e, MSG_JWT_TRUSTSTORE_SERVICE_NOT_AVAILABLE);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmPrefixedAlias(String, String)}
+     */
+    @Test
+    public void testGetAlgorithmPrefixedAlias_nullTrustStoreRef() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(kssRef).getService();
+                    will(returnValue(kss));
+                    one(sslSupportRef).getService();
+                    will(returnValue(null));
+                }
+            });
+            String result = consumerUtil.getAlgorithmPrefixedAlias(RS256, null);
+            assertNull("Result should be null when trustStoreRef is null and no default found.", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmPrefixedAlias(String, String)}
+     */
+    @Test
+    public void testGetAlgorithmPrefixedAlias_matchingAlias() {
+        try {
+            final Collection<String> aliases = Arrays.asList("someAlias", "rs256_Key", "anotherAlias");
+
+            mockery.checking(new Expectations() {
+                {
+                    one(kssRef).getService();
+                    will(returnValue(kss));
+                    one(kss).getTrustedCertEntriesInKeyStore(trustStoreRef);
+                    will(returnValue(aliases));
+                }
+            });
+            String result = consumerUtil.getAlgorithmPrefixedAlias(RS256, trustStoreRef);
+            assertEquals("Should return the alias that starts with the algorithm.", "rs256_Key", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmPrefixedAlias(String, String)}
+     */
+    @Test
+    public void testGetAlgorithmPrefixedAlias_returnsFirstMatch() {
+        try {
+            final Collection<String> aliases = Arrays.asList("rs256_key1", "rs256_key2", "rs256_key3");
+            mockery.checking(new Expectations() {
+                {
+                    one(kssRef).getService();
+                    will(returnValue(kss));
+                    one(kss).getTrustedCertEntriesInKeyStore(trustStoreRef);
+                    will(returnValue(aliases));
+                }
+            });
+            String result = consumerUtil.getAlgorithmPrefixedAlias(RS256, trustStoreRef);
+            assertEquals("Should return the first alias that starts with the algorithm.", "rs256_key1", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmPrefixedAlias(String, String)}
+     */
+    @Test
+    public void testGetAlgorithmPrefixedAlias_noMatchingAlias() {
+        try {
+            final Collection<String> aliases = Arrays.asList("es256_key1", "rs384_key1", "someOtherAlias");
+            mockery.checking(new Expectations() {
+                {
+                    one(kssRef).getService();
+                    will(returnValue(kss));
+                    one(kss).getTrustedCertEntriesInKeyStore(trustStoreRef);
+                    will(returnValue(aliases));
+                }
+            });
+            String result = consumerUtil.getAlgorithmPrefixedAlias(RS256, trustStoreRef);
+            assertNull("Result should be null when no alias starts with the algorithm.", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmPrefixedAlias(String, String)}
+     */
+    @Test
+    public void testGetAlgorithmPrefixedAlias_NullAliasesList() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(kssRef).getService();
+                    will(returnValue(kss));
+                    one(kss).getTrustedCertEntriesInKeyStore(trustStoreRef);
+                    will(returnValue(null));
+                }
+            });
+            String result = consumerUtil.getAlgorithmPrefixedAlias(RS256, trustStoreRef);
+            assertNull("Result should be null when no aliases found in truststore.", result);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#getAlgorithmPrefixedAlias(String, String)}
+     */
+    @Test
+    public void testGetAlgorithmPrefixedAlias_emptyAliasesList() {
+        try {
+            mockery.checking(new Expectations() {
+                {
+                    one(kssRef).getService();
+                    will(returnValue(kss));
+                    one(kss).getTrustedCertEntriesInKeyStore(trustStoreRef);
+                    will(returnValue(new ArrayList<String>()));
+                }
+            });
+            String result = consumerUtil.getAlgorithmPrefixedAlias(RS256, trustStoreRef);
+            assertNull("Result should be null when no aliases found in truststore.", result);
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
@@ -2419,14 +2648,14 @@ public class ConsumerUtilTest {
     public void testValidateAlgorithm_nullArgs() {
         try {
             // Nothing should happen
-            consumerUtil.validateAlgorithm((JwtContext) null, null);
-            consumerUtil.validateAlgorithm(jwtContext, null);
+            consumerUtil.validateAlgorithm((JwtContext) null, null, null);
+            consumerUtil.validateAlgorithm(jwtContext, null, null);
 
             String randomAlg = RandomUtils.getRandomSelection(RS256, HS256);
 
             // Null JwtContext argument
             try {
-                consumerUtil.validateAlgorithm((JwtContext) null, randomAlg);
+                consumerUtil.validateAlgorithm((JwtContext) null, randomAlg, null);
                 fail("Should have thrown InvalidTokenException but did not.");
             } catch (InvalidTokenException e) {
                 validateException(e, MSG_JWT_MISSING_ALG_HEADER + ".+\\[" + randomAlg + "\\]");
@@ -2443,6 +2672,7 @@ public class ConsumerUtilTest {
     @Test
     public void testValidateAlgorithm_algMismatch() {
         final String randomAlg = RandomUtils.getRandomSelection(RS256, HS256);
+        final String[] allowedSignatureAlgorithms = { RS256, HS256 };
         try {
             final List<JsonWebStructure> jwsList = new ArrayList<JsonWebStructure>();
             jwsList.add(jws);
@@ -2458,7 +2688,7 @@ public class ConsumerUtilTest {
                 }
             });
             try {
-                consumerUtil.validateAlgorithm(jwtContext, randomAlg);
+                consumerUtil.validateAlgorithm(jwtContext, randomAlg, allowedSignatureAlgorithms);
                 fail("Should have thrown InvalidTokenException but did not.");
             } catch (InvalidTokenException e) {
                 validateException(e,
@@ -2476,6 +2706,7 @@ public class ConsumerUtilTest {
     @Test
     public void testValidateAlgorithm_algMatch() {
         final String randomAlg = RandomUtils.getRandomSelection(RS256, HS256);
+        final String[] allowedSignatureAlgorithms = { RS256, HS256 }; 
         try {
             // Algorithms match
             final List<JsonWebStructure> jwsList = new ArrayList<JsonWebStructure>();
@@ -2489,8 +2720,93 @@ public class ConsumerUtilTest {
                     will(returnValue(randomAlg));
                 }
             });
-            consumerUtil.validateAlgorithm(jwtContext, randomAlg);
+            consumerUtil.validateAlgorithm(jwtContext, randomAlg, allowedSignatureAlgorithms);
 
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#validateAlgorithm(JwtContext, String, String[])}
+     */
+    @Test
+    public void testValidateAlgorithm_fromHeader_nullTokenAlg() {
+        try {
+            final List<JsonWebStructure> jwsList = new ArrayList<JsonWebStructure>();
+            jwsList.add(jws);
+            final String[] allowedAlgs = new String[] { RS256, HS256, ES256 };
+
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtContext).getJoseObjects();
+                    will(returnValue(jwsList));
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue(null));
+                }
+            });
+            try {
+                consumerUtil.validateAlgorithm(jwtContext, Constants.SIGNATURE_FROM_HEADER, allowedAlgs);
+                fail("Should have thrown InvalidTokenException but did not.");
+            } catch (InvalidTokenException e) {
+                validateException(e, MSG_JWT_MISSING_ALG_HEADER + ".*" + Constants.SIGNATURE_FROM_HEADER);
+            }
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#validateAlgorithm(JwtContext, String, String[])}
+     */
+    @Test
+    public void testValidateAlgorithm_fromHeader_tokenAlgInAllowedList() {
+        try {
+            final List<JsonWebStructure> jwsList = new ArrayList<JsonWebStructure>();
+            jwsList.add(jws);
+            final String[] allowedAlgs = new String[] { RS256, HS256, ES256 };
+
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtContext).getJoseObjects();
+                    will(returnValue(jwsList));
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue(RS256));
+                }
+            });
+            consumerUtil.validateAlgorithm(jwtContext, Constants.SIGNATURE_FROM_HEADER, allowedAlgs);
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Method under test:
+     * {@link ConsumerUtil#validateAlgorithm(JwtContext, String, String[])}
+     */
+    @Test
+    public void testValidateAlgorithm_fromHeader_tokenAlgNotInAllowedList() {
+        try {
+            final List<JsonWebStructure> jwsList = new ArrayList<JsonWebStructure>();
+            jwsList.add(jws);
+            final String[] allowedAlgs = new String[] { RS256, HS256, ES256 };
+            final String unsupportedAlg = "RS512";
+
+            mockery.checking(new Expectations() {
+                {
+                    one(jwtContext).getJoseObjects();
+                    will(returnValue(jwsList));
+                    one(jws).getAlgorithmHeaderValue();
+                    will(returnValue(unsupportedAlg));
+                }
+            });
+            try {
+                consumerUtil.validateAlgorithm(jwtContext, Constants.SIGNATURE_FROM_HEADER, allowedAlgs);
+                fail("Should have thrown InvalidTokenException but did not.");
+            } catch (InvalidTokenException e) {
+                validateException(e, MSG_JWT_ALGORITHM_MISMATCH + ".+\\[" + unsupportedAlg + "\\].+\\Q" + Arrays.toString(allowedAlgs) + "\\E.*");            }
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

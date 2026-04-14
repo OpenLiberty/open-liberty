@@ -493,7 +493,7 @@ unknown_bean_class=Nieznana klasa komponentu bean obiektu: {0}. Sprawd\u017a, cz
 
 unknown_entitybean_name=Nieznana nazwa komponentu bean obiektu: {0}
 
-unsupported_classfile_version=Klasa {0} zosta\u0142a skompilowana z nieobs\u0142ugiwanym pakietem JDK. Zg\u0142o\u015b ten problem zespo\u0142owi projektu Open Source EclipseLink.
+unsupported_classfile_version=Plik klasy \u201e {0} \u201d zosta\u0142 skompilowany przy u\u017cyciu nieobs\u0142ugiwanego \u015brodowiska JDK i nie mo\u017cna go odczyta\u0107. Obecna wersja ASM obs\u0142uguje JDK w wersji do {1}. Zaktualizuj zale\u017cno\u015bci ASM w pakiecie \u201e OW2 \u201d.
 
 wrap_convert_exception=Wyst\u0105pi\u0142 wyj\u0105tek podczas wywo\u0142ywania operacji {0} wzgl\u0119dem klasy konwertera {1} o warto\u015bci {2}
 

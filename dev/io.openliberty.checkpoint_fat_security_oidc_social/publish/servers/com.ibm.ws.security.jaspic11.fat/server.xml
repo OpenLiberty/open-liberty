@@ -44,4 +44,7 @@
 	<javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />
 	
 	<include location="../fatTestPorts.xml" />
+
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

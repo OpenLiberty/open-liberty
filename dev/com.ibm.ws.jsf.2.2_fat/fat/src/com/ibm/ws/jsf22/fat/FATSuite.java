@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2025 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -42,11 +42,11 @@ import com.ibm.ws.jsf22.fat.tests.JSFSimpleHtmlUnit;
 
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.faces.fat.selenium.util.internal.CustomDriver;
 import io.openliberty.faces.fat.selenium.util.internal.ExtendedWebDriver;
+
 /**
  * JSF 2.2 Tests
  *
@@ -97,13 +97,12 @@ public class FATSuite extends TestContainerSuite {
     // EE11 requires Java 17
     // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 
-    
     private static DockerImageName getChromeImage() {
         if (FATRunner.ARM_ARCHITECTURE) {
             return DockerImageName.parse("seleniarm/standalone-chromium:4.8.3").asCompatibleSubstituteFor("selenium/standalone-chrome");
@@ -114,12 +113,12 @@ public class FATSuite extends TestContainerSuite {
 
     public static ExtendedWebDriver getWebDriver() throws Exception {
         int retryCount = 3;
-        while(DRIVER == null && retryCount > 0) {
+        while (DRIVER == null && retryCount > 0) {
             Log.info(c, "getWebDriver", "Attempting to initialize WebDriver, attempts remaining: " + retryCount);
             try {
                 CHROME_CONTAINER = new BrowserWebDriverContainer<>(getChromeImage()).withCapabilities(new ChromeOptions())
-                            .withAccessToHost(true)
-                            .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+                                .withAccessToHost(true)
+                                .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
                 CHROME_CONTAINER.start();
                 DRIVER = new CustomDriver(new RemoteWebDriver(CHROME_CONTAINER.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
             } catch (Exception ex1) {
@@ -127,10 +126,11 @@ public class FATSuite extends TestContainerSuite {
                 retryCount--;
                 try {
                     Thread.sleep(10000); // wait for 10 seconds before retrying
-                } catch (InterruptedException ie) {}
+                } catch (InterruptedException ie) {
+                }
             }
         }
-        if(DRIVER == null) {
+        if (DRIVER == null) {
             throw new Exception("Failed to initialize WebDriver after multiple attempts! See log for details.");
         }
         return DRIVER;

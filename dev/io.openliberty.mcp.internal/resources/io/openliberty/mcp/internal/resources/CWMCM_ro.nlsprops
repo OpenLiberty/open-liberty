@@ -209,7 +209,7 @@ unauthorized.cancellation=Instrumentul nu poate fi anulat, deoarece utilizatorul
 # {0} = Parameter name
 # {1} = The qualified name of the tool
 CWMCM0025E.unsupported.output=CWMCM0025E: Tipul de returnare \u201e {0} \u201d al metodei instrumentului MCP \u201e {1} \u201d trebuie s\u0103 fie un obiect.
-CWMCM0025E.unsupported.output.explanation=Tipul de returnare al instrumentului MCP furnizat nu este acceptat.
+CWMCM0025E.unsupported.output.explanation=Tipul de returnare al instrumentului MCP furnizat nu este acceptat. Deoarece op\u021biunea \u201econ\u021binut structurat\u201d este setat\u0103 pe \u201etrue\u201d, tipul schemei de ie\u0219ire trebuie s\u0103 fie un obiect.
 CWMCM0025E.unsupported.output.useraction=Furniza\u021bi un tip de returnare care este un obiect.
 
 # Used as exception message

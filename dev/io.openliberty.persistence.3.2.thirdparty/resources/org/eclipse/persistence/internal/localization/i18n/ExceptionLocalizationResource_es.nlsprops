@@ -493,7 +493,7 @@ unknown_bean_class=Clase de bean de entidad desconocida: {0}, verifique que esta
 
 unknown_entitybean_name=Nombre de bean de entidad desconocido: {0}
 
-unsupported_classfile_version=La clase {0} se ha compilado con un JDK no soportado. Informe de este error al proyecto de c\u00f3digo abierto EclipseLink.
+unsupported_classfile_version=La clase \u00ab {0} \u00bb se ha compilado con un JDK no compatible y no se puede leer. La versi\u00f3n actual de ASM es compatible con JDK {1}. Actualizar las dependencias ASM de \u00ab OW2 \u00bb.
 
 wrap_convert_exception=Se ha producido una excepci\u00f3n al llamar a {0} en la clase de conversor {1} con el valor {2}
 

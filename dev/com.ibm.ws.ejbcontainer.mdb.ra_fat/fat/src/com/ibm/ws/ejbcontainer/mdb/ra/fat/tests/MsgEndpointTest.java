@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.mdb.ra.fat.tests;
 
@@ -36,8 +33,6 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -51,8 +46,22 @@ public class MsgEndpointTest extends FATServletClient {
     @Server("ejbcontainer.mdb.ra.fat.MsgEndpointServer")
     public static LibertyServer server;
 
+    /*@formatter:off*/
     @ClassRule
-    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES().fullFATOnly().forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer")).andWith(FeatureReplacementAction.EE8_FEATURES().forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer")).andWith(new JakartaEE9Action().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11).forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer")).andWith(new JakartaEE10Action().forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer"));
+    public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE7_FEATURES()
+                                                    .fullFATOnly()
+                                                    .forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer"))
+                                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                                    .forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer"))
+                                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)
+                                                    .forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer"))
+                                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)
+                                                    .forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer"))
+                                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                                    .forServers("ejbcontainer.mdb.ra.fat.MsgEndpointServer"));
+    /*@formatter:on*/
 
     @BeforeClass
     public static void setUp() throws Exception {

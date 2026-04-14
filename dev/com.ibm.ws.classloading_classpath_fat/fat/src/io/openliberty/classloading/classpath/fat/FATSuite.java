@@ -99,6 +99,7 @@ import test.bundle.api4.c.API_C4;
     AppParentDelegationSystemNullPackagesTest.class,
     AppParentDelegationSystemEmptyPackagesTest.class,
     AppParentDelegationSystemConfigPackagesTest.class,
+    AppParentDelegationJVMLibTest.class,
     ParentLastLibraryFeatureTests.class,
     ParentLastInconsistentResourceAdaptorTests.class,
     ParentLastInconsistentLibraryTests.class,
@@ -116,6 +117,7 @@ public class FATSuite {
     static final String PRIVATE_LIBRARY_TEST_SERVER = "privateLibraryTest";
     static final String LIB_FILESET_TEST_SERVER = "libPathTest";
     static final String APP_PARENT_TEST_SERVER = "appParentTest";
+    static final String JVM_LIB_TEST_SERVER = "jvmLibTest";
     static final String NATIVE_LIBRARY_TEST_SERVER = "nativeLibraryTest";
     static final String PARENT_LAST_LIBRARY_FEATURE_TEST_SERVER = "parentLastLibraryFeatureTest";
     static final String PARENT_LAST_LIBRARY_INCONSISTENT_SERVER = "parentLastLibraryInconsistentTest";

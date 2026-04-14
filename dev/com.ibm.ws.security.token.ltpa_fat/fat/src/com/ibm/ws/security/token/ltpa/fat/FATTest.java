@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.token.ltpa.fat;
@@ -23,9 +20,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.file.Paths;
 
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -41,10 +38,10 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.CheckForLeakedPasswords;
 import componenttest.annotation.ExpectedFFDC;
-import componenttest.annotation.ExpectedFFDCs;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 import componenttest.vulnerability.LeakedPasswordChecker;
@@ -128,6 +125,12 @@ public class FATTest {
 
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
+        // Transform the application for EE9+ that was copied
+        // from com.ibm.ws.webcontainer.security_test.servlets.
+        if (JakartaEEAction.isEE9OrLaterActive()) {
+            JakartaEEAction.transformApp(Paths.get(server.getServerRoot() + "/apps/ltpaTest.war"));
+        }
+
         server.addInstalledAppForValidation(APP_NAME);
     }
 
@@ -241,12 +244,11 @@ public class FATTest {
             replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR_AND_WRONG_PASSWORD, REPLACEMENT_LTPA_KEYS_PATH);
 
             assertNotNull("The LTPA configuration must not be reloaded.",
-                        server.waitForStringInLog("CWWKS4106E:.*"));
-
+                          server.waitForStringInLog("CWWKS4106E:.*"));
 
             // Verify EXPECTED_EXCEPTION_BAD_PADDING is thrown
             assertNotNull("The expected exception " + EXPECTED_EXCEPTION_BAD_PADDING + " was not thrown.",
-                        server.waitForStringInTrace(EXPECTED_EXCEPTION_BAD_PADDING));
+                          server.waitForStringInTrace(EXPECTED_EXCEPTION_BAD_PADDING));
 
             // Assert token can be created with old keys
             assertTokenCanBeCreated();
@@ -274,7 +276,7 @@ public class FATTest {
             replaceLTPAKeysFile(ALTERNATE_SERVER_XML_WITH_LTPA_FILE_MONITOR, CORRUPTED_LTPA_KEYS_PATH);
 
             assertNotNull("The LTPA configuration must not be reloaded.",
-                        server.waitForStringInLog("CWWKS4106E:.*"));
+                          server.waitForStringInLog("CWWKS4106E:.*"));
 
             // Assert token can be created with old keys
             assertTokenCanBeCreated();

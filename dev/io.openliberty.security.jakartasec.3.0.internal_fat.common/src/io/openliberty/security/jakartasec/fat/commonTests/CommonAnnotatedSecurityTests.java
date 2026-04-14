@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -777,6 +777,17 @@ public class CommonAnnotatedSecurityTests extends CommonSecurityFat {
             return true;
         }
 
+    }
+
+    public static String getServerConfigFile(String origConfigFile){
+        String configFile = origConfigFile;
+        String repeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        String[] fileArray = configFile.split("\\.");
+        if (repeatAction.contains("EE11_FEATURES")){
+            configFile = fileArray[0] + "_ee11." + fileArray[1];
+        }
+
+        return configFile;
     }
 
 }

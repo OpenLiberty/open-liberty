@@ -32,6 +32,7 @@ import com.ibm.ws.http.channel.internal.HttpResponseMessageImpl;
 import com.ibm.ws.http.channel.internal.HttpServiceContextImpl;
 import com.ibm.ws.http.channel.internal.values.ReturnCodes;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants;
 import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
@@ -101,7 +102,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
     private boolean suppress0ByteChunk = false;
     private long bytesWritten;
 
-    private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private io.netty.handler.codec.http.HttpResponse nettyResponse;
     private NettyRequestMessage requestMessage;
@@ -120,17 +120,15 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         init(tsc, link, vc, hcc);
     }
 
-    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc) {
+    public HttpInboundServiceContextImpl(ChannelHandlerContext context, VirtualConnection vc, NettyHttpChannelConfig config) {
         super();
-        nettyContext = context;
 
-        TCPConnectionContext tsc = new NettyTCPConnectionContext(context.channel(), vc);
+        TCPConnectionContext tsc = new NettyTCPConnectionContext(context.channel(), vc, config);
 
-        super.init(tsc, context);
+        super.init(tsc, context, config);
 
         this.setHeadersParsed();
         setVC(vc);
-
     }
 
     /**
@@ -196,10 +194,6 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
     public HttpResponse getNettyResponse() {
         return this.nettyResponse;
-    }
-
-    public ChannelHandlerContext getNettyContext() {
-        return this.nettyContext;
     }
 
     /*

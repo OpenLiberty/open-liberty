@@ -28,7 +28,6 @@ import com.ibm.ws.fat.wc.tests.WebAndWebFragmentServletMappingTests;
 import com.ibm.ws.fat.wc.tests.WebSphereServletEventListenerTest;
 import com.ibm.ws.fat.wc.tests.WebSphereSpiHttpRequestURLTest;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -70,7 +69,7 @@ public class FATSuite {
     // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
     // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());

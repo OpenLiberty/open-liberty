@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: Modul pro zpracov\u00e1n\u00ed rol\u00ed webov\u0
 JACC_NO_WEB_PLUGIN.explanation=Slu\u017eba JACC nem\u016f\u017ee zpracovat role webov\u00e9ho zabezpe\u010den\u00ed, proto\u017ee nen\u00ed k dispozici nezbytn\u00fd modul.
 JACC_NO_WEB_PLUGIN.useraction=Vyhledejte si dal\u0161\u00ed informace v protokolech poskytovatele JACC a protokolech serveru.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: Slu\u017eba Jakarta Authorization nem\u016f\u017ee nastavit t\u0159\u00eddu poskytovatele {0} {1} z aplikace {2} kv\u016fli v\u00fdjimce {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=Slu\u017eba Jakarta Authorization nem\u016f\u017ee nastavit t\u0159\u00eddu poskytovatele kv\u016fli v\u00fdjimce.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Pro v\u00edce informac\u00ed si prohl\u00e9dn\u011bte protokoly poskytovatele a protokoly serveru.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: Slu\u017eba Jakarta Authorization nakonfigurovala t\u0159\u00eddu poskytovatele {0} {1} definovanou v aplikaci {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: Slu\u017eba Jakarta Authorization odstranila t\u0159\u00eddu poskytovatele {0} {1} definovanou v aplikaci {2}.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Tato zpr\u00e1va je pouze informativn\u00ed.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.

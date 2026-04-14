@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxws.fat;
 
@@ -33,6 +30,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 
@@ -43,6 +42,7 @@ import componenttest.topology.utils.HttpUtils;
  * testing dynamic configuration and EnableLoggingInOutInterceptor
  */
 @RunWith(FATRunner.class)
+@Mode(TestMode.FULL)
 public class LoggingTest {
 
     @Server("LoggingServer")
@@ -51,6 +51,8 @@ public class LoggingTest {
     private static URL WSDL_URL;
 
     private static final String APP_NAME = "helloApp";
+
+    private static final long LOG_SEARCH_TIMEOUT = 30000L;
 
     private static final int CONN_TIMEOUT = 5;
 
@@ -115,12 +117,12 @@ public class LoggingTest {
         // Negative test proxy
         result = invokeServlet("proxy");
         assertTrue("Proxy without trace: Expected response is not received testing dynamic logging, obtained result: " + result, result.equals("Hello World"));
-        assertNull("Proxy without trace: Dynamic configuration failed!", server.waitForStringInLog("<return>Hello World</return>"));
+        assertNull("Proxy without trace: Dynamic configuration failed!", server.waitForStringInLog("<return>Hello World</return>", LOG_SEARCH_TIMEOUT));
 
         // Negative test dispatch
         result = invokeServlet("dispatch");
         assertTrue("Dispatch without trace: Expected response is not received testing dynamic logging, obtained result: " + result, result.equals("Dispatch invoke success: true"));
-        assertNull("Dispatch without trace: Dynamic configuration failed!", server.waitForStringInLog("<return>Hello World</return>"));
+        assertNull("Dispatch without trace: Dynamic configuration failed!", server.waitForStringInLog("<return>Hello World</return>", LOG_SEARCH_TIMEOUT));
 
         // *******************************************************************************************************
         // *** Test web service reference enableLoggingInOutInterceptor property enabled without trace enabled ***
@@ -153,7 +155,7 @@ public class LoggingTest {
         assertTrue("Proxy without web service reference enableLoggingInOutInterceptor property: Expected response is not received testing dynamic logging, obtained result: "
                    + result, result.equals("Hello World"));
         assertNull("Proxy without web service reference enableLoggingInOutInterceptor property: Dynamic configuration failed!",
-                   server.waitForStringInLog("<return>Hello World</return>"));
+                   server.waitForStringInLog("<return>Hello World</return>", LOG_SEARCH_TIMEOUT));
 
         // enableLoggingInOutInterceptor test dispatch
         result = invokeServlet("dispatch");
@@ -161,7 +163,7 @@ public class LoggingTest {
                    + result,
                    result.equals("Dispatch invoke success: true"));
         assertNull("Dispatch without web service reference enableLoggingInOutInterceptor property: Dynamic configuration failed!",
-                   server.waitForStringInLog("<return>Hello World</return>"));
+                   server.waitForStringInLog("<return>Hello World</return>", LOG_SEARCH_TIMEOUT));
 
         // ****************************************************************************************************
         // *** Test with endpoint info enableLoggingInOutInterceptor property enabled without trace enabled ***
@@ -194,14 +196,14 @@ public class LoggingTest {
         assertTrue("Proxy without endpoint info enableLoggingInOutInterceptor property: Expected response is not received testing dynamic logging, obtained result: "
                    + result, result.equals("Hello World"));
         assertNull("Proxy without endpoint info enableLoggingInOutInterceptor property: Dynamic configuration failed!",
-                   server.waitForStringInLog("<return>Hello World</return>"));
+                   server.waitForStringInLog("<return>Hello World</return>", LOG_SEARCH_TIMEOUT));
 
         // enableLoggingInOutInterceptor test dispatch endpoint property
         result = invokeServlet("dispatch");
         assertTrue("Dispatch without endpoint info enableLoggingInOutInterceptor property: Expected response is not received testing dynamic logging, obtained result:" + result,
                    result.equals("Dispatch invoke success: true"));
         assertNull("Dispatch without endpoint info enableLoggingInOutInterceptor property: Dynamic configuration failed!",
-                   server.waitForStringInLog("<return>Hello World</return>"));
+                   server.waitForStringInLog("<return>Hello World</return>", LOG_SEARCH_TIMEOUT));
 
         // *******************************************************************************************************************
         // *** Check back if we can enable endpoint info enableLoggingInOutInterceptor property back without trace enabled ***

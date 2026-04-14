@@ -77,6 +77,8 @@ broadcast_connection_already_closing=Avertissement : {0} : tentative de fermetur
 
 broadcast_exception_thrown_when_attempting_to_close_connection=Avertissement : {0} : la tentative de fermeture de la connexion a caus\u00e9 l''exception {1}
 
+broadcast_exception_thrown_when_attempting_to_close_subscriber=Avertissement : {0} : une tentative de fermeture de l''abonn\u00e9 a provoqu\u00e9 une exception {1}
+
 broadcast_ignored_command_while_closing_connection=Avertissement : {0} : la demande de publication de la commande est ignor\u00e9e pendant que la connexion est en cours de fermeture.
 
 broadcast_listening_sleep_on_error=Avertissement : {0} : L''exception {1} a \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9e. L''unit\u00e9 d''ex\u00e9cution va se mettre en pause pendant {2} millisecondes avant de reprendre l''\u00e9coute.

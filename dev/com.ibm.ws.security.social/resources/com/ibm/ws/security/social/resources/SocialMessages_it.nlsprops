@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2024 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -139,6 +139,11 @@ INVALID_CONFIG_PARAM.useraction=Controllare il parametro mancante nella configur
 OIDC_CLIENT_DISCOVERY_SSL_ERROR=CWWKS5391E: Il client di login social [{0}] non \u00e8 riuscito a ottenere le informazioni dell''endpoint del provider OpenID Connect tramite l''URL dell''endpoint di rilevamento [{1}]. Aggiornare la configurazione per il login social (configurazione oidcLogin) con l''URL dell''endpoint di rilevamento HTTPS corretto.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.explanation=La configurazione oidcLogin \u00e8 configurata per rilevare gli endpoint del provider OpenID Connect attraverso l'URL di rilevamento, ma il processo di rilevamento non \u00e8 riuscito. Il client non \u00e8 in grado di elaborare le richieste di autenticazione fino a quando la configurazione di discoveryEndpoint non viene corretta o il rilevamento ha esito positivo.
 OIDC_CLIENT_DISCOVERY_SSL_ERROR.useraction=Correggere la configurazione oidcLogin per assicurarsi che 1) l'URL dell'endpoint di rilevamento faccia riferimento al provider OpenID Connect corretto, 2) l'URL dell'endpoint di rilevamento sia HTTPS e 3) la funzione SSL e gli elementi keystore siano configurati correttamente con l'attendibilit\u00e0 per il provider OpenID Connect 4) assicurarsi che l'endpoint di rilevamento del provider OpenID Connect sia correttamente funzionante.
+
+#0=social login client ID, 1="none"
+SOCIAL_LOGIN_NONE_ALG=CWWKS5392W: L'' signatureAlgorithm e del client di accesso tramite social network [ {0} ] \u00e8 impostato su [ {1} ].
+SOCIAL_LOGIN_NONE_ALG.explanation=Poich\u00e9 l'opzione " signatureAlgorithm " \u00e8 impostata su "none", viene richiesto un token senza firma, il che non rappresenta un caso d'uso comune.
+SOCIAL_LOGIN_NONE_ALG.useraction=Se non prevedi che i token in entrata siano firmati, non devi fare nulla. Altrimenti, selezionare un signatureAlgorithm supportato come RS256 o HS256.
 
 SOCIAL_LOGIN_CONFIG_PROCESSED=CWWKS5400I: La configurazione del login social [{0}] \u00e8 stata elaborata correttamente.
 SOCIAL_LOGIN_CONFIG_PROCESSED.explanation=La configurazione del login social indicata \u00e8 stata elaborata correttamente.

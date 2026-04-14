@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2021 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -50,7 +50,7 @@ import com.ibm.websphere.ejbcontainer.test.tools.FATHelper;
 @Local(NextTimeoutPersistIntf.class)
 public class NextTimeoutPersistBean implements NextTimeoutPersistIntf {
 
-    public final static String CLASSNAME = NextTimeoutBean.class.getName();
+    public final static String CLASSNAME = NextTimeoutPersistBean.class.getName();
     private final static Logger svLogger = Logger.getLogger(CLASSNAME);
 
     public static Timer svTimer = null;
@@ -63,7 +63,7 @@ public class NextTimeoutPersistBean implements NextTimeoutPersistIntf {
     // Should be used after a Timer has triggered a CountDownLatch to insure
     // the @Timeout method, including the transaction, has completed and thus
     // updated (or even removed) the timer.
-    private static final long POST_INVOKE_DELAY = 700;
+    private static final long POST_INVOKE_DELAY = 1000;
 
     @Resource
     SessionContext ivSessionCtx;

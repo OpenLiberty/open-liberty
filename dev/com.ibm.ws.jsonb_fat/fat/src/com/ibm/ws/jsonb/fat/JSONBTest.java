@@ -96,6 +96,7 @@ public class JSONBTest extends FATServletClient {
         assertTrue(found, found.contains("410"));
 
         // Clean up the test by removing the jsonb-1.0 feature
+        server.setMarkToEndOfLog();
         config.getFeatureManager().getFeatures().remove("usr:testFeatureUsingJsonb-1.0");
         server.updateServerConfiguration(config);
         server.waitForConfigUpdateInLogUsingMark(Collections.emptySet());

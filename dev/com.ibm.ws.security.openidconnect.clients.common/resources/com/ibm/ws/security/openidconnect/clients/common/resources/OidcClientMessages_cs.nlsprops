@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Po\u017eadavek na [{0}] n
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=Po\u017eadavek obsahuje chybn\u00fd soubor cookie. N\u00e1zev hostitele v souboru cookie se mus\u00ed shodovat s aktu\u00e1ln\u00edm po\u017eadavkem, nebo mus\u00ed odpov\u00eddat jednomu z povolen\u00fdch n\u00e1zv\u016f dom\u00e9n. Soubor cookie m\u016f\u017ee b\u00fdt upraven v r\u00e1mci agenta u\u017eivatele.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Ov\u011b\u0159te poskytovatele OpenID Connect a konfigurace klienta. Pokud je o\u010dek\u00e1v\u00e1n n\u00e1zev hostitele, p\u0159idejte jej do atributu wasReqURLRedirectDomain Names v prvku webAppSecurity v konfiguraci serveru.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: Nelze na\u010d\u00edst polo\u017eky d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f z \u00falo\u017ei\u0161t\u011b [ {0} ]. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=P\u0159i pokusu syst\u00e9mu o na\u010dten\u00ed seznamu polo\u017eek d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f ze zadan\u00e9ho \u00falo\u017ei\u0161t\u011b d\u016fv\u011bryhodn\u00fdch certifik\u00e1t\u016f do\u0161lo k chyb\u011b. V konfiguraci mo\u017en\u00e1 chyb\u00ed \u00falo\u017ei\u0161t\u011b certifik\u00e1t\u016f, p\u0159\u00edpadn\u011b m\u016f\u017ee p\u0159\u00edstup k tomuto \u00falo\u017ei\u0161ti br\u00e1nit n\u011bjak\u00e1 chyba.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=Zkontrolujte, zda je \u00falo\u017ei\u0161t\u011b certifik\u00e1t\u016f spr\u00e1vn\u011b nastaveno v konfiguraci serveru a zda je k n\u011bmu zaji\u0161t\u011bn p\u0159\u00edstup. Dal\u0161\u00ed informace o t\u00e9to chyb\u011b najdete v chybov\u00e9 zpr\u00e1v\u011b.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

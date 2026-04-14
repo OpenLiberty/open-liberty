@@ -34,7 +34,6 @@ import com.ibm.ws.ui.fat.rest.v1.TooldataPersistenceTest;
 
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatActions.SEVersion;
 import componenttest.rules.repeater.RepeatTests;
@@ -72,13 +71,13 @@ public class FATSuite {
     static {
         boolean isWindows = System.getProperty("os.name").toLowerCase().startsWith("win");
         if (!isWindows) {
-            r = RepeatTests.with(new EmptyAction().fullFATOnly())
+            r = RepeatTests.withoutModificationInFullMode()
                             .andWith(new FeatureReplacementAction("restConnector-1.0", "restConnector-2.0")
                                             .withID("restConnector-2.0")
                                             .fullFATOnly())
                             .andWith(FeatureReplacementAction.EE9_FEATURES()
                                             .alwaysAddFeature("servlet-5.0")
-                                            .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                                            .liteFATOnly()) // Running all repeats in FULL mode causes the bucket to timeout occasionally.
                             .andWith(FeatureReplacementAction.EE10_FEATURES()
                                             .alwaysAddFeature("servlet-6.0")
                                             .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
@@ -87,7 +86,7 @@ public class FATSuite {
         } else {
             // On Windows only run each repeat scenario on lite or full mode so
             // that both do not run on Windows.
-            r = RepeatTests.with(new EmptyAction().fullFATOnly())
+            r = RepeatTests.withoutModificationInFullMode()
                             .andWith(new FeatureReplacementAction("restConnector-1.0", "restConnector-2.0")
                                             .withID("restConnector-2.0")
                                             .fullFATOnly())

@@ -51,11 +51,11 @@ client.quiesce.end=CWWKE1104I: Client quiesce complete.
 client.quiesce.end.explanation=The quiesce operation completed successfully.
 client.quiesce.end.useraction=No action is required.
 
-notifications.not.complete=CWWKE1105W: {0} runtime updates did not complete during the quiesce period. 
+notifications.not.complete=CWWKE1105W: {0} runtime updates did not complete during the quiesce period. The following runtime updates did not complete: {1}
 notifications.not.complete.explanation=One or more updates to features, configuration, or applications did not complete before the server shutdown.
 notifications.not.complete.useraction=No action is required. 
 
-quiesce.listeners.not.complete=CWWKE1106W: {0} shutdown operations did not complete during the quiesce period. 
+quiesce.listeners.not.complete=CWWKE1106W: {0} shutdown operations did not complete during the quiesce period. The following operations did not complete: {1}
 quiesce.listeners.not.complete.explanation=One or more operations that were initiated during the shutdown operation did not complete. 
 quiesce.listeners.not.complete.useraction=No action is required.
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,6 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
-import jakarta.data.repository.Select;
 
 /**
  * <p>Annotates a repository method parameter to indicate dividing
@@ -49,8 +48,9 @@ import jakarta.data.repository.Select;
  * from the {@link io.openliberty.data.repository.update} package.</p>
  *
  * <p>A parameter that is annotated with {@code Divide} must not be used in
- * combination with {@link Count}, {@link Delete}, {@link Exists}, {@link Find}, {@link Insert},
- * {@link OrderBy}, {@link Query}, {@link Save}, or {@link Select} annotations
+ * combination with {@link Count}, {@link Delete}, {@link Exists}, {@link Find},
+ * {@link Insert}, {@link OrderBy}, {@link Query}, {@link Save}, or
+ * {@link jakarta.data.repository.Select} annotations
  * or on {@code countBy}, {@code deleteBy}, {@code existsBy},
  * {@code find...By}, or {@code updateBy} methods.</p>
  */

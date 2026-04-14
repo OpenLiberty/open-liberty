@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2025 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -46,20 +46,47 @@ public class LTPAKeyFileUtilityImpl implements LTPAKeyFileUtility {
      * @throws Exception
      */
     protected final Properties generateLTPAKeys(byte[] keyPasswordBytes, final String realm) throws Exception {
+        return generateLTPAKeys(keyPasswordBytes, null, null, null, realm);
+    }
+
+    /**
+     * Generates the LTPA keys and stores them into a Properties object.
+     *
+     * In the case of generating new ltpa keys, pass null in sharedKeyBytes,
+     * privateKeyBytes, and publicKeyBytes to generate them.
+     *
+     * Otherwise, in the case of re-encrypting existing ltpa keys, pass the bytes in
+     * sharedKeyBytes, privateKeyBytes, and publicKeyBytes to reuse them.
+     *
+     * @param keyPasswordBytes
+     * @param sharedKeyBytes
+     * @param privateKeyBytes
+     * @param publicKeyBytes
+     * @param realm
+     * @return
+     * @throws Exception
+     */
+    protected final Properties generateLTPAKeys(byte[] keyPasswordBytes, byte[] sharedKeyBytes, byte[] privateKeyBytes, byte[] publicKeyBytes, final String realm) throws Exception {
         Properties expProps = null;
 
         try {
             KeyEncryptor encryptor = new KeyEncryptor(keyPasswordBytes);
-            LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
-            byte[] publicKey = pair.getPublic().getEncoded();
-            byte[] privateKey = pair.getPrivate().getEncoded();
-            byte[] encryptedPrivateKey = encryptor.encrypt(privateKey);
-            byte[] sharedKey = LTPACrypto.generateSharedKey(); // key length is 32 bytes (256 bits) for FIPS (AES), 24 bytes (192 bits) for non-FIPS (3DES)
-            byte[] encryptedSharedKey = encryptor.encrypt(sharedKey);
 
-            String tmpShared = Base64Coder.base64EncodeToString(encryptedSharedKey);
-            String tmpPrivate = Base64Coder.base64EncodeToString(encryptedPrivateKey);
-            String tmpPublic = Base64Coder.base64EncodeToString(publicKey);
+            if (publicKeyBytes == null && privateKeyBytes == null) {
+                LTPAKeyPair pair = LTPADigSignature.generateLTPAKeyPair();
+                publicKeyBytes = pair.getPublic().getEncoded();
+                privateKeyBytes = pair.getPrivate().getEncoded();
+            }
+            byte[] encryptedPrivateKeyBytes = encryptor.encrypt(privateKeyBytes);
+
+            if (sharedKeyBytes == null) {
+                sharedKeyBytes = LTPACrypto.generateSharedKey(); // key length is 32 bytes (256 bits) for FIPS (AES), 24 bytes (192 bits) for non-FIPS (3DES)
+            }
+            byte[] encryptedSharedKeyBytes = encryptor.encrypt(sharedKeyBytes);
+
+            String tmpShared = Base64Coder.base64EncodeToString(encryptedSharedKeyBytes);
+            String tmpPrivate = Base64Coder.base64EncodeToString(encryptedPrivateKeyBytes);
+            String tmpPublic = Base64Coder.base64EncodeToString(publicKeyBytes);
 
             expProps = new Properties();
 

@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2022 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
@@ -18,8 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
-import componenttest.rules.repeater.JakartaEE9Action;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -30,7 +26,7 @@ import componenttest.rules.repeater.RepeatTests;
                 MultipleModuleDBRunAsTest.class,
                 MultipleModuleGlobalClientCertTest.class,
                 MultipleModuleRunAsTest.class
-                /* This test list is short, but they are long running in FULL mode. */
+/* This test list is short, but they are long running in FULL mode. */
 })
 
 /**
@@ -42,5 +38,5 @@ public class FATSuite {
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(new JakartaEE9Action());
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode().andWith(FeatureReplacementAction.EE9_FEATURES());
 }

@@ -5,6 +5,8 @@
 
 	<include location="${shared.config.dir}/jwtBuilderClientBasicConfig.xml" />
 	<include location="${shared.config.dir}/jwtBuilderSigAlgConfig.xml" />
+	
+	<include location="${shared.config.dir}/altAllAlgSSLSettings.xml" />
 
 	<include location="${shared.config.dir}/goodBasicRegistry.xml" />
 

@@ -19,7 +19,7 @@ Subsystem-Name: Jakarta Data 1.0 Container
   io.openliberty.jakarta.data-1.0
 -bundles=\
   io.openliberty.data.internal.beandef
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

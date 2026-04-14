@@ -26,6 +26,7 @@ import com.ibm.ws.http.channel.internal.HttpConfigConstants;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
+import com.ibm.ws.http.netty.NettyHttpChannelConfig.ConfigElement;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.NettyHttpConstants;
@@ -69,17 +70,6 @@ import io.openliberty.netty.internal.tls.NettyTlsProvider;
 public class HttpPipelineInitializer extends ChannelInitializerWrapper {
 
     private static final TraceComponent tc = Tr.register(HttpPipelineInitializer.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
-
-    public enum ConfigElement {
-        HTTP_OPTIONS,
-        SSL_OPTIONS,
-        REMOTE_IP,
-        COMPRESSION,
-        SAMESITE,
-        HEADERS,
-        ACCESS_LOG, 
-        TCP_OPTIONS
-    }
 
     private final NettyChain chain;
     private final NettyHttpChannelConfig httpConfig;

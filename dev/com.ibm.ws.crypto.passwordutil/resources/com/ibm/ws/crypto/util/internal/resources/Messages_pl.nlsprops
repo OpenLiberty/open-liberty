@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Upew
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Co najmniej jedna warto\u015b\u0107 has\u0142a {0} przechowywana w konfiguracji serwera zosta\u0142a wygenerowana przy u\u017cyciu starszego algorytmu {1}. U\u017cyj polecenia securityUtility encode, aby ponownie wygenerowa\u0107 has\u0142a {0} przy u\u017cyciu najnowszego algorytmu {2}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty u\u017cywa teraz silniejszych algorytm\u00f3w dla nowo generowanych hase\u0142 {aes} i {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Upewnij si\u0119, \u017ce warto\u015bci hase\u0142 {aes} i {hash} zosta\u0142y wygenerowane przy u\u017cyciu najnowszej wersji Liberty.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Jedno lub wi\u0119cej z Twoich hase\u0142 zaszyfrowanych algorytmem AES zosta\u0142o zaszyfrowanych bez u\u017cycia niestandardowego klucza szyfruj\u0105cego. Aby zwi\u0119kszy\u0107 bezpiecze\u0144stwo zapisanych danych uwierzytelniaj\u0105cych, nale\u017cy je ponownie zaszyfrowa\u0107 przy u\u017cyciu niestandardowego klucza szyfruj\u0105cego. Pami\u0119taj, aby przechowywa\u0107 ten klucz w bezpiecznym miejscu.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=Has\u0142a zaszyfrowane algorytmem AES w konfiguracji serwera wykorzystuj\u0105 domy\u015bln\u0105 warto\u015b\u0107 \u201e wlp.password.encryption.key \u201d. Niestandardowy klucz szyfruj\u0105cy jest bezpieczniejszy.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Zdefiniuj niestandardowy klucz szyfruj\u0105cy, ustawiaj\u0105c zmienn\u0105 ` wlp.password.encryption.key ` lub ` wlp.aes.encryption.key `, a nast\u0119pnie ponownie zaszyfruj has\u0142a za pomoc\u0105 polecenia ` securityUtility encode`, u\u017cywaj\u0105c swojego niestandardowego klucza.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=D\u0142ugo\u015b\u0107 klucza warto\u015bci okre\u015blonej w zmiennej wlp.aes.encryption.key musi wynosi\u0107 256 bit\u00f3w.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=Warto\u015b\u0107 okre\u015blona w zmiennej wlp.aes.encryption.key musi by\u0107 zakodowana pod adresem base64.

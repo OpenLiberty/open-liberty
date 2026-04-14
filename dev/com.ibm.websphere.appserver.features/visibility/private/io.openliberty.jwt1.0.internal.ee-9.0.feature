@@ -6,7 +6,6 @@ visibility = private
   io.openliberty.servlet.internal-5.0; ibm.tolerates:="6.0, 6.1"
 -bundles=\
   io.openliberty.security.jwt.internal, \
-  io.openliberty.security.common.internal, \
-  io.openliberty.security.common.jwt.internal
+  io.openliberty.security.common.internal
 kind=ga
 edition=core

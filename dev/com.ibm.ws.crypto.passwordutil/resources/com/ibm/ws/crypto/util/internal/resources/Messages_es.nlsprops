@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Aseg
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Uno o m\u00e1s valores de contrase\u00f1a de {0} almacenados en la configuraci\u00f3n del servidor se generaron con un algoritmo m\u00e1s antiguo {1}. Utilice el comando de codificaci\u00f3n securityUtility para volver a generar las contrase\u00f1as de {0} con el algoritmo m\u00e1s reciente {2}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty ahora utiliza algoritmos m\u00e1s fuertes para las contrase\u00f1as de {aes} y {hash} reci\u00e9n generadas.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Aseg\u00farese de que los valores de las contrase\u00f1as de {aes} y {hash} se generen con la \u00faltima versi\u00f3n de Liberty.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Una o varias de tus contrase\u00f1as cifradas con AES se cifraron sin una clave de cifrado personalizada. Para mejorar la seguridad de tus credenciales almacenadas, vuelve a cifrarlas utilizando una clave de cifrado personalizada. Aseg\u00farate de guardar esta clave en un lugar seguro.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=Las contrase\u00f1as cifradas con AES en la configuraci\u00f3n del servidor utilizan el valor predeterminado \u00ab wlp.password.encryption.key \u00bb. Una clave de cifrado personalizada es m\u00e1s segura.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=Defina una clave de cifrado personalizada configurando la variable wlp.password.encryption.key o wlp.aes.encryption.key y, a continuaci\u00f3n, vuelva a cifrar sus contrase\u00f1as utilizando el comando de codificaci\u00f3n securityUtility con su clave personalizada.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=La longitud de la clave del valor especificado en la variable wlp.aes.encryption.key debe ser de 256 bits.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=El valor especificado en la variable wlp.aes.encryption.key debe estar codificado en base64.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2018 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,23 +145,28 @@ public class SslRefInfoImpl implements SslRefInfo {
     }
 
     /** {@inheritDoc} */
-    @FFDCIgnore({ SocialLoginException.class })
     @Override
     public PublicKey getPublicKey() throws SocialLoginException {
+        return getPublicKey(keyAliasName);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public PublicKey getPublicKey(String alias) throws SocialLoginException {
         if (this.jsseHelper == null) {
             init();
         }
         if (sslKeyStoreName != null) {
-            if (keyAliasName != null && keyAliasName.trim().isEmpty() == false) {
+            if (alias != null && alias.trim().isEmpty() == false) {
                 KeyStoreService keyStoreService = keyStoreServiceRef.getService();
                 if (keyStoreService == null) {
                     throw new SocialLoginException("KEYSTORE_SERVICE_NOT_FOUND", null, new Object[0]);
                 }
                 // TODO: Determine if the first public key should be used if a public key is not found for the key alias.
                 try {
-                    return keyStoreService.getCertificateFromKeyStore(sslKeyStoreName, keyAliasName).getPublicKey();
+                    return keyStoreService.getCertificateFromKeyStore(sslKeyStoreName, alias).getPublicKey();
                 } catch (GeneralSecurityException e) {
-                    throw new SocialLoginException("ERROR_LOADING_CERTIFICATE", e, new Object[] { keyAliasName, sslTrustStoreName, e.getLocalizedMessage() });
+                    throw new SocialLoginException("ERROR_LOADING_CERTIFICATE", e, new Object[] { alias, sslKeyStoreName, e.getLocalizedMessage() });
                 }
             } else {
                 Iterator<Entry<String, PublicKey>> publicKeysIterator = null;
@@ -169,7 +174,7 @@ public class SslRefInfoImpl implements SslRefInfo {
                     // Get first public key
                     publicKeysIterator = getPublicKeys().entrySet().iterator();
                 } catch (SocialLoginException e) {
-                    throw new SocialLoginException("ERROR_LOADING_GETTING_PUBLIC_KEYS", e, new Object[] { keyAliasName, sslTrustStoreName, e.getLocalizedMessage() });
+                    throw new SocialLoginException("ERROR_LOADING_GETTING_PUBLIC_KEYS", e, new Object[] { alias, sslTrustStoreName, e.getLocalizedMessage() });
                 }
                 if (publicKeysIterator.hasNext()) {
                     return publicKeysIterator.next().getValue();
@@ -231,4 +236,22 @@ public class SslRefInfoImpl implements SslRefInfo {
         return null;
     }
 
+    @Override
+    public java.util.Collection<String> getTrustedCertAliases(String trustStoreRef) throws SocialLoginException {
+        if (this.jsseHelper == null) {
+            init();
+        }
+        if (sslKeyStoreName != null) {
+            KeyStoreService keyStoreService = keyStoreServiceRef.getService();
+            if (keyStoreService == null) {
+                throw new SocialLoginException("KEYSTORE_SERVICE_NOT_FOUND", null, new Object[0]);
+            }
+            try {
+                return keyStoreService.getTrustedCertEntriesInKeyStore(trustStoreRef);
+            } catch (KeyStoreException e) {
+                throw new SocialLoginException("ERROR_LOADING_KEYSTORE_CERTIFICATES", e, new Object[] { trustStoreRef, e.getLocalizedMessage() });
+            }
+        }
+        return null;
+    }
 }

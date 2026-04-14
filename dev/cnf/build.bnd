@@ -1,14 +1,11 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2025 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
 #
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
 -include: \
@@ -150,7 +147,6 @@ build.bnd.plugins: \
   io.openliberty.security.jakartasec.2.0.internal;project=com.ibm.ws.security.javaeesec;source=none, \
   io.openliberty.security.jaspic.2.0.internal;project=com.ibm.ws.security.jaspic;source=none, \
   io.openliberty.security.jwt.internal;project=com.ibm.ws.security.jwt;source=none, \
-  io.openliberty.security.jwtsso.internal;project=com.ibm.ws.security.jwtsso;source=none, \
   io.openliberty.security.mp.jwt.cdi.internal;project=com.ibm.ws.security.mp.jwt.cdi;source=none, \
   io.openliberty.security.mp.jwt.internal;project=com.ibm.ws.security.mp.jwt;source=none, \
   io.openliberty.security.oauth.internal.2.0;project=com.ibm.ws.security.oauth;source=none, \

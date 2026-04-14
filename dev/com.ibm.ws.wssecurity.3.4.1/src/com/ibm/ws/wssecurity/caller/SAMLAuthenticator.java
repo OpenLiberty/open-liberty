@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.wssecurity.caller;
 
@@ -48,7 +45,7 @@ public class SAMLAuthenticator {
     }
 
     /**
-     * 
+     *
      * @return
      */
     //@FFDCIgnore({ SamlCallerTokenException.class })
@@ -68,8 +65,7 @@ public class SAMLAuthenticator {
             if (result.getStatus() != AuthResult.SUCCESS) {
                 if ("User".equalsIgnoreCase((String) callerConfig.get(CallerConstants.MAP_TO_UR))) {
                     Tr.error(tc, "error_authenticate_maptouser", new Object[] { user });
-                }
-                else {
+                } else {
                     Tr.error(tc, "error_authenticate", new Object[] { result.getReason() });
                 }
             }
@@ -118,7 +114,7 @@ public class SAMLAuthenticator {
         if ("User".equalsIgnoreCase(((String) callerConfig.get(CallerConstants.MAP_TO_UR)))) {
             isUserMapToUR = true;
         }
-        authResult = authHelper.loginWithUserName(null, null, user, subject, hashtable, isUserMapToUR);
+        authResult = authHelper.loginWithUserName(user, subject, hashtable, isUserMapToUR);
         return authResult;
 
     }
@@ -162,7 +158,7 @@ public class SAMLAuthenticator {
         // In the case disableLtpaToken is true, this needs to be true all the time
         // Otherwise, the SP_Toekn will not be created...
         // And yes, the isAllowCustomCacheKey did check disableLtpaToken, too.
-        if ((Boolean) callerConfig.get(CallerConstants.ALLOW_CACHE_KEY))/* (ssoConfig.isAllowCustomCacheKey()) */{
+        if ((Boolean) callerConfig.get(CallerConstants.ALLOW_CACHE_KEY))/* (ssoConfig.isAllowCustomCacheKey()) */ {
             // add cacheKey in case LTPA and subject lifetime are different
             String cache_key = mapAssertToSubject.getCustomCacheKeyValue();
             putValue(hashtable, AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, cache_key);

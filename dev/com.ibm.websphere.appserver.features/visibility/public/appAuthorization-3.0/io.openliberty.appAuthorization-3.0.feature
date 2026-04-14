@@ -15,7 +15,7 @@ Subsystem-Name: Jakarta Authorization 3.0
 -bundles=\
   io.openliberty.security.authorization.internal.jacc.common, \
   io.openliberty.security.authorization.internal.jacc.3.0
-kind=beta
+kind=ga
 edition=core
 WLP-Platform: jakartaee-11.0
 WLP-InstantOn-Enabled: true

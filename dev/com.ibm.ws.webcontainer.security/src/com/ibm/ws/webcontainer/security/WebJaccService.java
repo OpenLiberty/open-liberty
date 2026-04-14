@@ -103,9 +103,19 @@ public interface WebJaccService {
     public void resetPolicyContextHandlerInfo();
 
     /**
-     * Determines if a Policy is configured.  In EE 11, we create the WebJaccService always even if there
+     * Determines if a Policy is configured. In EE 11, we create the WebJaccService always even if there
      * isn't a PolicyFactory defined because it can be added dynamically by applications in their web.xml
      * or using the PolicyFactory.setPolicyFactory() method.
      */
     public boolean isPolicyConfigured();
+
+    /**
+     * Pre-Authorization 3.0 versions of the JACC/ Authorization liberty features did not allow for
+     * unauthenticated users to call the Authorization Policy to override the unauthenticated user
+     * behavior when there are roles defined. Until Authorization 3.0, the servlet rules were followed
+     * for JACC / Authorization behavior that if roles were defined a 401 was returned to the caller.
+     *
+     * @return
+     */
+    public boolean isUnauthenticatedAuthorizationCheckAllowed();
 }

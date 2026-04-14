@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -44,6 +44,7 @@ encode.entriesDidNotMatch=A bejegyz\u00e9sek nem egyeznek.
 encode.mutuallyExclusiveArgError=A bemeneti f\u00e1jl nem adhatja meg a {0} \u00e9s a {1} tulajdons\u00e1gokat.
 encode.aesConfigFileEncryptionAmbiguous=HIBA: A bemeneti f\u00e1jl nem haszn\u00e1lhat\u00f3, ha tartalmazza a {0} \u00e9s a {1} v\u00e1ltoz\u00f3kat is.
 encode.aesConfigFileMissingEncryptionVariables=Nem lehet k\u00f3dolni a jelsz\u00f3t; vagy a bemeneti f\u00e1jl nem tartalmazza a {0} vagy a {1} v\u00e1ltoz\u00f3kat, vagy a bemeneti f\u00e1jl rosszul form\u00e1zott.
+encode.aesKeyRequired=AES-titkos\u00edt\u00e1s haszn\u00e1lata eset\u00e9n az al\u00e1bbi param\u00e9terek egyik\u00e9t kell megadni: --key, --base64Key, --aesConfigFile, vagy --keyring.
 
 password.enterText=\u00cdrja be a jelsz\u00f3t:
 password.reenterText=Jelsz\u00f3 ism\u00e9telt be\u00edr\u00e1sa:

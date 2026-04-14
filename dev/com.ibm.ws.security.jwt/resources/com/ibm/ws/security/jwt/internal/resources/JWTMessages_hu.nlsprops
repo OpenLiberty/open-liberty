@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2023 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -403,3 +403,10 @@ JWE_MISSING_ALG_HEADER.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a
 JWE_ALGORITHM_MISMATCH=CWWKS6069E: A JSON Web Encryption (JWE) nem \u00e9rv\u00e9nyes, mert a Content Encryption Key (CEK) a {0} algoritmussal van titkos\u00edtva. A tartalom-titkos\u00edt\u00e1si kulcsokat a {1} algoritmussal kell titkos\u00edtani.
 JWE_ALGORITHM_MISMATCH.explanation=A Tartalomtitkos\u00edt\u00e1si kulcsokat az \u00fczenetben megadott algoritmus titkos\u00edtja. Az egy\u00e9b titkos\u00edt\u00e1si algoritmusokkal titkos\u00edtott tartalomtitkos\u00edt\u00e1si kulcsok nem \u00e9rv\u00e9nyes\u00edthet\u0151k.
 JWE_ALGORITHM_MISMATCH.useraction=Szerezzen be egy \u00faj tokent a Tartalom-titkos\u00edt\u00e1si kulccsal, amely az \u00fczenetben megadott k\u00f6telez\u0151 algoritmus haszn\u00e1lat\u00e1val titkos\u00edtott. Alternat\u00edv megold\u00e1sk\u00e9nt friss\u00edtse a JWT konfigur\u00e1ci\u00f3t, hogy enged\u00e9lyezze a tokenek a t\u00f6bbi titkos\u00edt\u00e1si algoritmus haszn\u00e1lat\u00e1val titkos\u00edtott tokeneket.
+
+# 0=Truststore reference, 1=Exception message
+JWT_ERROR_GETTING_CERT_ENTRIES=CWWKS6070E: Nem siker\u00fclt bet\u00f6lteni a megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1nybejegyz\u00e9seket a [ {0} ] bizalmi t\u00e1rol\u00f3b\u00f3l. {1}
+JWT_ERROR_GETTING_CERT_ENTRIES.explanation=Hiba t\u00f6rt\u00e9nt, amikor a rendszer megpr\u00f3b\u00e1lta lek\u00e9rni a megb\u00edzhat\u00f3 tan\u00fas\u00edtv\u00e1nyok list\u00e1j\u00e1t a megadott bizalmi t\u00e1rol\u00f3b\u00f3l. Lehet, hogy a konfigur\u00e1ci\u00f3b\u00f3l hi\u00e1nyzik a bizalmi t\u00e1rol\u00f3, vagy valamilyen probl\u00e9ma akad\u00e1lyozza a hozz\u00e1f\u00e9r\u00e9st a bizalmi t\u00e1rol\u00f3hoz.
+JWT_ERROR_GETTING_CERT_ENTRIES.useraction=Ellen\u0151rizze, hogy a szerverkonfigur\u00e1ci\u00f3ban a bizalmi t\u00e1rol\u00f3 megfelel\u0151en van-e be\u00e1ll\u00edtva, \u00e9s hogy el\u00e9rhet\u0151-e. A hiba ok\u00e1r\u00f3l tov\u00e1bbi inform\u00e1ci\u00f3kat a hiba\u00fczenetben tal\u00e1l.
+
+

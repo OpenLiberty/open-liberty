@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2015 IBM Corporation and others.
+# Copyright (c) 2015, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -80,3 +80,17 @@ JACC_NO_WEB_PLUGIN=CWWKS2864E: Il modulo per l'elaborazione dei ruoli di sicurez
 JACC_NO_WEB_PLUGIN.explanation=Il servizio JACC non \u00e8 in grado di elaborare i ruoli di sicurezza Web perch\u00e9 il modulo richiesto non \u00e8 disponibile.
 JACC_NO_WEB_PLUGIN.useraction=Esaminare i log del provider JACC e i log del server per ulteriori informazioni.
 
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE=CWWKS2865E: Il servizio di autorizzazione di Jakarta non \u00e8 in grado di impostare la classe provider {1} {0} {2} a causa dell''eccezione {3}.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.explanation=Il servizio di autorizzazione di Jakarta non \u00e8 in grado di impostare la classe del provider a causa dell'eccezione.
+JACC_AUTHORIZATION_MODULE_CREATION_FAILURE.useraction=Per ulteriori informazioni, consultare i registri del provider e quelli del server.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_CONFIGURED=CWWKS2866I: Il servizio di autorizzazione di Jakarta ha configurato la classe del provider {0} {1} definita nell''applicazione {2}.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+JACC_AUTHORIZATION_MODULE_CONFIGURED.useraction=Non \u00e8 richiesta alcuna azione.
+
+# {0} is PolicyFactory or PolicyConfigurationFactory
+JACC_AUTHORIZATION_MODULE_REMOVED=CWWKS2867I: Il servizio di autorizzazione di Jakarta ha rimosso la classe del provider {0} {1} definita nell''applicazione {2}.
+JACC_AUTHORIZATION_MODULE_REMOVED.explanation=Questo messaggio \u00e8 solo a scopo informativo.
+JACC_AUTHORIZATION_MODULE_REMOVED.useraction=Non \u00e8 richiesta alcuna azione.

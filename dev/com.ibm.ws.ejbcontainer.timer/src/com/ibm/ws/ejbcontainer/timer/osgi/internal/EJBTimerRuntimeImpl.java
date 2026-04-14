@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.ejbcontainer.timer.osgi.internal;
 
@@ -37,6 +34,7 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ejbcontainer.osgi.EJBPersistentTimerRuntime;
+import com.ibm.ws.ejbcontainer.osgi.EJBRuntimeConstants;
 import com.ibm.ws.ejbcontainer.osgi.EJBTimerRuntime;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 import com.ibm.wsspi.threadcontext.ThreadContextDescriptor;
@@ -66,12 +64,6 @@ public class EJBTimerRuntimeImpl implements EJBTimerRuntime {
     private final AtomicServiceReference<ScheduledExecutorService> persistentExecutorRef = new AtomicServiceReference<ScheduledExecutorService>(REFERENCE_PERSISTENT_EXECUTOR);
     private final AtomicServiceReference<EJBPersistentTimerRuntime> ejbPersistentTimerRuntimeServiceRef = new AtomicServiceReference<EJBPersistentTimerRuntime>(REFERENCE_EJB_PERSISTENT_TIMER_RUNTIME);
     private final AtomicServiceReference<WSContextService> nonPersistentContextServiceRef = new AtomicServiceReference<WSContextService>(REFERENCE_NON_PERSISTENT_CONTEXT_SERVICE);
-
-    /**
-     * This is the value of javax.enterprise.concurrent.ManagedTask.IDENTITY_NAME,
-     * but is hard-coded here to avoid a dependency on the concurrency feature.
-     */
-    private static final String MANAGEDTASK_IDENTITY_NAME = "javax.enterprise.concurrent.IDENTITY_NAME";
 
     /**
      * Late timer warning threshold in milliseconds, set from
@@ -268,7 +260,7 @@ public class EJBTimerRuntimeImpl implements EJBTimerRuntime {
             String taskOwner = j2eeName.getApplication() + "/" + j2eeName.getModule() + "/" + j2eeName.getComponent();
             String taskIdentity = taskOwner + "-" + methodName;
             Map<String, String> executionProperties = new HashMap<String, String>();
-            executionProperties.put(MANAGEDTASK_IDENTITY_NAME, taskIdentity);
+            executionProperties.put(EJBRuntimeConstants.getManagedTaskIdentityName(), taskIdentity);
             executionProperties.put(WSContextService.TASK_OWNER, taskOwner);
             Map<String, ?>[] requiredContexts = null;
             ThreadContextDescriptor tcDescriptor = contextService.captureThreadContext(executionProperties);

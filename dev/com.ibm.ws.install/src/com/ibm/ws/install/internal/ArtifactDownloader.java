@@ -103,7 +103,7 @@ public class ArtifactDownloader implements AutoCloseable {
         try {
             missingFeaturesURLs = ArtifactDownloaderUtils.getMissingFiles(URLtoMavenCoordMap.keySet(), envMap, repository);
         } catch (InterruptedException | ExecutionException e) {
-            throw new InstallException(e.getMessage());
+            throw new InstallException(e.getMessage(), e);
         }
 
         if (!missingFeaturesURLs.isEmpty()) {
@@ -154,7 +154,7 @@ public class ArtifactDownloader implements AutoCloseable {
                 fine("Remaining artifacts: " + futures.size());
                 Thread.sleep(ArtifactDownloaderUtils.THREAD_SLEEP);
             } catch (InterruptedException | ExecutionException e) {
-                throw new InstallException(e.getMessage());
+                throw new InstallException(e.getMessage(), e);
             }
         }
         progressBar.manuallyUpdate();
@@ -232,7 +232,7 @@ public class ArtifactDownloader implements AutoCloseable {
             download(mavenCoords, filetype, urlLocation, dLocation, checksumFormats, repository);
 
         } catch (IOException e) {
-            throw new InstallException(e.getMessage());
+            throw new InstallException(e.getMessage(), e);
         }
 
     }

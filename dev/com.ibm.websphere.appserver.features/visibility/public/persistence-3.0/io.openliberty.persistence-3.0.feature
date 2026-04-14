@@ -227,7 +227,7 @@ Subsystem-Name: Jakarta Persistence 3.0
   com.ibm.websphere.appserver.eeCompatible-9.0, \
   com.ibm.websphere.appserver.transaction-2.0
 -bundles=io.openliberty.persistence.3.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:3.0.0", \
- com.ibm.ws.jpa.container.eclipselink.jakarta
+ com.ibm.ws.jpa.container.eclipselink
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

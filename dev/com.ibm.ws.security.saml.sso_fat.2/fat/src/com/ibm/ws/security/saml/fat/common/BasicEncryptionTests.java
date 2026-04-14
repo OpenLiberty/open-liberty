@@ -237,12 +237,15 @@ public class BasicEncryptionTests extends SAMLCommonTest {
         updatedTestSettings.setSamlTokenValidationData(updatedTestSettings.getSamlTokenValidationData().getNameId(), updatedTestSettings.getSamlTokenValidationData().getIssuer(), updatedTestSettings.getSamlTokenValidationData().getInResponseTo(), SAMLConstants.BAD_TOKEN_EXCHANGE, updatedTestSettings.getSamlTokenValidationData().getEncryptionKeyUser(), updatedTestSettings.getSamlTokenValidationData().getRecipient(), SAMLConstants.AES128);
         
         String failureMessage = null;
-        if (!fips140_3Enabled) {
-            failureMessage = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+the signature method provided is weaker than the required.*";
-        } else {
+        // IBM Java 8
+        if (testSAMLServer.getServer().isIbmJdk8FIPS140_3EnabledAndSupported()) {
+            failureMessage = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+server is configured with FIPS 140-3 enabled mode, but the received SAML assertion is signed with RSA-SHA1.*";
+        } else if (testSAMLServer.getServer().isSemeruFIPS140_3EnabledAndSupported()) {
             // failureMessage = ".+The requested algorithm http://www.w3.org/2000/09/xmldsig#rsa-sha1 does not exist.*";
             failureMessage = SAMLMessageConstants.CWWKS5018E_SAML_RESPONSE_CANNOT_BE_DECODED + ".+Error unmarshalling message from input stream.*";
-            // failureMessage = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+server is configured with FIPS 140-3 enabled mode, but the received SAML assertion is signed with RSA-SHA1.*";
+        } else {
+            failureMessage = SAMLMessageConstants.CWWKS5007E_INTERNAL_SERVER_ERROR + ".+the signature method provided is weaker than the required.*";
+
         }
         String sp = SP_ENCRYPTION_SHA_1_SIGNATURE;
         String logMessage = "Did not find message: " + failureMessage;

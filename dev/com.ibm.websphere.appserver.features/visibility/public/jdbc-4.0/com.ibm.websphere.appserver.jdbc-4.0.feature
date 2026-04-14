@@ -13,6 +13,8 @@ Subsystem-Name: Java Database Connectivity 4.0
   com.ibm.websphere.appserver.jndi-1.0, \
   io.openliberty.jdbc4.0.internal.ee-6.0; ibm.tolerates:="9.0", \
   com.ibm.websphere.appserver.transaction-1.1; ibm.tolerates:="1.2,2.0"
+# TODO:  In the future can switch to use this instead, but requires updates to feature checker.
+#  io.openliberty.jdbc.internal.ee-6.0; ibm.tolerates:="9.0"
 -bundles=\
  com.ibm.ws.jdbc.4.0.feature,\
  com.ibm.ws.jdbc.metatype

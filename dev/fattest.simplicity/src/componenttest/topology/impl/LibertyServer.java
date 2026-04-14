@@ -1821,6 +1821,11 @@ public class LibertyServer implements LogMonitorClient {
         useEnvVars.setProperty("LOG_DIR", logsRoot);
         useEnvVars.setProperty("LOG_FILE", consoleFileName);
 
+        // default ltpa keys password for FAT tests
+        if (!useEnvVars.containsKey("ltpa_keys_password")) {
+            useEnvVars.setProperty("ltpa_keys_password", "WebAS");
+        }
+
         Log.info(c, methodName, "Using additional env props: " + useEnvVars);
 
         Log.finer(c, methodName, "Starting Server with command: " + cmd);
@@ -3583,17 +3588,6 @@ public class LibertyServer implements LogMonitorClient {
                                                      "opentracingFATServer4", //com.ibm.ws.opentracing.1.x_fat
 
                                                      "HungRequestTimingServer", //com.ibm.ws.request.timing.hung_fat
-
-                                                     "com.ibm.ws.rest.handler.config.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.openapi.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.audit.feature.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.appdef.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.jca.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.config.jms.fat", //com.ibm.ws.rest.handler.config_fat
-                                                     "com.ibm.ws.rest.handler.validator.jdbc.fat", //com.ibm.ws.rest.handler.validator_fat
-                                                     "com.ibm.ws.rest.handler.validator.jca.fat", //com.ibm.ws.rest.handler.validator_fat
-                                                     "com.ibm.ws.rest.handler.validator.jms.fat", //com.ibm.ws.rest.handler.validator_fat
-                                                     "com.ibm.ws.rest.handler.validator.openapi.fat", //com.ibm.ws.rest.handler.validator_fat
 
                                                      "com.ibm.ws.scaling.member.fat.member1", //com.ibm.ws.scaling.member_fat
                                                      "com.ibm.ws.scaling.member.fat.controller1", //com.ibm.ws.scaling.member_fat
@@ -6296,7 +6290,7 @@ public class LibertyServer implements LogMonitorClient {
         return subset;
     }
 
-    private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I: The server installed the following features:";
+    private static final String INSTALL_FEATURE_MESSAGE_PREFIX = "CWWKF0012I:";
 
     /**
      * Returns sets of the features which were installed at runtime startup, based on the CWWKF0012I message in messages.log.
@@ -7577,8 +7571,8 @@ public class LibertyServer implements LogMonitorClient {
      */
     public JMXConnector getJMXRestConnector(int port) throws Exception {
         final String userName = "theUser";
-        final String password = "thePassword";
-        final String keystorePassword = "Liberty";
+        final String password = "thePassword"; // pragma: allowlist secret
+        final String keystorePassword = "Liberty"; // pragma: allowlist secret
 
         return getJMXRestConnector(userName, password, keystorePassword, port);
     }

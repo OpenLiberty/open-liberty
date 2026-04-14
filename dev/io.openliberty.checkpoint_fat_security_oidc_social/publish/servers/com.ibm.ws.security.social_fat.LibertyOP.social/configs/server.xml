@@ -62,4 +62,7 @@
     <oauth2Login authorizationEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize" clientId="client01" clientSecret="${clientsecret}" id="oauth2Login1" scope="profile email" tokenEndpoint="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token" userApi="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/${oAuthOidcRSValidationEndpoint}" userApiType="${userApiType}" userNameAttribute="sub"/>
 
 	<variable name="clientsecret" value="secret1" />
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
     </server>

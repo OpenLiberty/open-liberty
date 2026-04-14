@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2024 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,12 +12,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.saml.sso20.internal.utils;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.ObjectInput;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.security.KeyStoreException;
 import java.security.PrivateKey;
 import java.security.cert.CertificateException;
@@ -26,6 +21,8 @@ import java.util.HashMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -42,6 +39,7 @@ public class InitialRequestUtil {
     private static final TraceComponent tc = Tr.register(InitialRequestUtil.class,
                                                          TraceConstants.TRACE_GROUP,
                                                          TraceConstants.MESSAGE_BUNDLE);
+    private static final ObjectMapper JSON_MAPPER = new ObjectMapper();
 
     /**
      * @param string
@@ -74,12 +72,12 @@ public class InitialRequestUtil {
         if (key != null) {
             byte[] encodedKey = key.getEncoded();
             if (encodedKey != null) {
-                key_alias_pass.concat(JsonUtils.convertToBase64(encodedKey));
+                key_alias_pass = key_alias_pass.concat(JsonUtils.convertToBase64(encodedKey));
             }
         } else {
             String default_ks_pass = ssoService.getDefaultKeyStorePassword();
             if (default_ks_pass != null) {
-                key_alias_pass.concat(default_ks_pass);
+                key_alias_pass = key_alias_pass.concat(default_ks_pass);
             }
         }
 
@@ -147,27 +145,12 @@ public class InitialRequestUtil {
      * @throws IOException
      * @throws ClassNotFoundException
      */
-    @FFDCIgnore({ IOException.class })
-    public InitialRequest handleDeserializingInitialRequest(String serializedInitialRequest) throws IOException, ClassNotFoundException {
+    public InitialRequest handleDeserializingInitialRequest(String serializedInitialRequest) throws IOException {
 
         InitialRequest ir = null;
         if (serializedInitialRequest != null) {
-            ByteArrayInputStream bis = new ByteArrayInputStream(JsonUtils.decodeFromBase64(serializedInitialRequest));
-            ObjectInput in = null;
-
-            try {
-                in = new ObjectInputStream(bis);
-                ir = (InitialRequest) in.readObject();
-
-            } finally {
-                try {
-                    if (in != null) {
-                        in.close();
-                    }
-                } catch (IOException ex) {
-                    // ignore close exception
-                }
-            }
+            byte[] decoded = JsonUtils.decodeFromBase64(serializedInitialRequest);
+            ir = JSON_MAPPER.readValue(decoded, InitialRequest.class);
         }
 
         return ir;
@@ -177,7 +160,7 @@ public class InitialRequestUtil {
      * @param relayState
      * @throws SamlException
      */
-    @FFDCIgnore({ IOException.class, ClassNotFoundException.class })
+    @FFDCIgnore({ IOException.class })
     public HttpRequestInfo recreateHttpRequestInfo(String relayState, HttpServletRequest request, HttpServletResponse response, SsoSamlService ssoService) throws SamlException {
         HttpRequestInfo requestInfo = null;
         String initialrequest_cookie_name = updateInitialRequestCookieNameWithRelayState(relayState);
@@ -195,8 +178,6 @@ public class InitialRequestUtil {
         InitialRequest ir = null;
         try {
             ir = handleDeserializingInitialRequest(serializedInitialRequest);
-        } catch (ClassNotFoundException e) {
-            throw new SamlException(e);
         } catch (IOException e) {
             throw new SamlException(e);
         }
@@ -228,46 +209,33 @@ public class InitialRequestUtil {
      * @param targetId2 
      * @param ssoService
      */
-    public String handleSerializingInitialRequest(HttpServletRequest req, HttpServletResponse resp, String sp_idp_initial, String shortRelayState, HttpRequestInfo requestInfo, SsoSamlService ssoService) {
+    public String handleSerializingInitialRequest(HttpServletRequest req, HttpServletResponse resp, String sp_idp_initial, String shortRelayState, HttpRequestInfo requestInfo, SsoSamlService ssoService) throws SamlException {
        
         InitialRequest ir = null;
         try {
             ir = createInitialRequestFromHttpRequestInfo(req, requestInfo);
         } catch (SamlException e) {
-            
+
         }      
         byte[] irBytes = null;
-        String irBytesStr = null;     
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
-        ObjectOutputStream out = null;
+        String irBytesStr = null;
         try {
-          try {
-            out = new ObjectOutputStream(bos);
-            out.writeObject(ir);
-            out.flush();
-            irBytes = bos.toByteArray();
-            if (irBytes != null) {
-                irBytesStr = JsonUtils.convertToBase64(irBytes);
-            }
-        } catch (IOException e) {
-           
-        }     
-         
-        } finally {
-          try {
-            bos.close();
-          } catch (IOException ex) {
-            
-          }
+            irBytes = JSON_MAPPER.writeValueAsBytes(ir);
+        } catch (JsonProcessingException e) {
+            throw new SamlException(e);
         }
-        if (irBytesStr != null) {
-            String relayState = sp_idp_initial + shortRelayState;
-            String initialrequest_cookie_name = updateInitialRequestCookieNameWithRelayState(relayState);
-            String initialrequest_cookie_value = digestInitialRequestCookieValue(irBytesStr, ssoService);
-            if (initialrequest_cookie_name != null && initialrequest_cookie_value != null) {
-                int cookieMaxAge = (int)ssoService.getConfig().getAuthnRequestTime()/1000; //seconds
-                RequestUtil.createCookie(req, resp, initialrequest_cookie_name, initialrequest_cookie_value, cookieMaxAge);
-            }        
+
+        if (irBytes != null) {
+            irBytesStr = JsonUtils.convertToBase64(irBytes);
+            if (irBytesStr != null) {
+                String relayState = sp_idp_initial + shortRelayState;
+                String initialrequest_cookie_name = updateInitialRequestCookieNameWithRelayState(relayState);
+                String initialrequest_cookie_value = digestInitialRequestCookieValue(irBytesStr, ssoService);
+                if (initialrequest_cookie_name != null && initialrequest_cookie_value != null) {
+                    int cookieMaxAge = (int)ssoService.getConfig().getAuthnRequestTime()/1000; //seconds
+                    RequestUtil.createCookie(req, resp, initialrequest_cookie_name, initialrequest_cookie_value, cookieMaxAge);
+                }
+            }
         }
         return irBytesStr;
     }

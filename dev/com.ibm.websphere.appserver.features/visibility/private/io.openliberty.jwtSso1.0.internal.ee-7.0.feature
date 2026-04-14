@@ -9,7 +9,6 @@ visibility = private
   com.ibm.websphere.appserver.org.eclipse.microprofile.jwt-1.0; ibm.tolerates:="1.2"
 -bundles=\
   com.ibm.ws.security.common, \
-  com.ibm.ws.security.jwtsso, \
   com.ibm.ws.security.mp.jwt
 kind=ga
 edition=core

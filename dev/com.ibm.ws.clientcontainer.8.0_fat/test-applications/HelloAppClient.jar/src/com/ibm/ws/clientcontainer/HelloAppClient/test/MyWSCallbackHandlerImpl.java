@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.clientcontainer.HelloAppClient.test;
 
@@ -29,13 +26,14 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
     private byte[] credToken;
     private java.util.Map appContext;
 
-    public MyWSCallbackHandlerImpl() {}
+    public MyWSCallbackHandlerImpl() {
+    }
 
     /**
      * <p>
      * Push the username and password to login module.
      * </p>
-     * 
+     *
      * @param userName The user name of the principal.
      * @param password The password in clear text.
      */
@@ -51,10 +49,10 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
      * to the current realm, you do not need to specify a realm or you can
      * specify the current realm.
      * </p>
-     * 
-     * @param userName The user name of the principal.
+     *
+     * @param userName  The user name of the principal.
      * @param realmName The realm name, if different from the current realm
-     * @param password The password in clear text.
+     * @param password  The password in clear text.
      */
     public MyWSCallbackHandlerImpl(String userName, String realmName, String password) {
         this.userName = "MYUSER";
@@ -69,7 +67,7 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
      * to the current realm, you do not need to specify a realm or you can
      * specify the current realm.
      * </p>
-     * 
+     *
      * <p>
      * If the realm you specify is different from the current realm and you
      * want to validate the userid/password at the new target realm during
@@ -84,10 +82,10 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
      * the target server must support CSIv2 in order for the userid/password
      * to be successfully sent.
      * </p>
-     * 
-     * @param userName The user name of the principal.
-     * @param realmName The realm name, if different from the current realm
-     * @param password The password in clear text.
+     *
+     * @param userName   The user name of the principal.
+     * @param realmName  The realm name, if different from the current realm
+     * @param password   The password in clear text.
      * @param appContext A java.util.Map containing naming properties to validate userid/password.
      */
     public MyWSCallbackHandlerImpl(String userName, String realmName, String password, java.util.Map appContext) {
@@ -103,7 +101,7 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
      * an opaque object. The credential token must be in the format recognized by
      * WebSphere Secure Association Service.
      * </p>
-     * 
+     *
      * @param credToken The credential token.
      */
     public MyWSCallbackHandlerImpl(byte[] credToken) {
@@ -115,15 +113,15 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
      * This implementation of <code>CallbackHandler</code> pushes the data specified in the
      * constructor to the login module.
      * </p>
-     * 
+     *
      * @param callbacks An array of <code>Callback</code> objects provided by the underlying
-     *            security service which contains the information
-     *            requested to be retrieved or displayed.
+     *                      security service which contains the information
+     *                      requested to be retrieved or displayed.
      * @exception IOException
-     *                If an input or output error occurs.
+     *                                             If an input or output error occurs.
      * @exception UnsupportedCallbackException
-     *                If the implementation of this method does not support one or more of the
-     *                <code>Callback</code>s specified in the callbacks parameter.
+     *                                             If the implementation of this method does not support one or more of the
+     *                                             <code>Callback</code>s specified in the callbacks parameter.
      */
     @Override
     public void handle(Callback[] callbacks) throws IOException, UnsupportedCallbackException {
@@ -165,7 +163,7 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
 
     /**
      * Create a copy of the specified byte array.
-     * 
+     *
      * @param credToken
      * @return A copy of the specified byte array, or null if the input was null.
      */
@@ -185,13 +183,13 @@ public class MyWSCallbackHandlerImpl implements CallbackHandler {
 
         return newCredToken;
     }
-    
+
     public void postConstruct() {
-    	System.out.println("I have been in postConstruct of the callback handler.");
+        System.out.println("I have been in postConstruct of the callback handler.");
     }
-    
+
     public void preDestroy() {
-    	System.out.println("I have been in preDestroy of the callback handler.");
+        System.out.println("I have been in preDestroy of the callback handler.");
     }
-    
+
 }

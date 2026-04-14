@@ -55,4 +55,6 @@
      -->
 	<authCache cacheRef="AuthCache" />
 
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

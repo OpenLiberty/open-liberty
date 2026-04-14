@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Nu este valid\u0103 o cer
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=Cererea include un cookie format gre\u0219it. Numele de gazd\u0103 din cookie trebuie s\u0103 se potriveasc\u0103 cu cererea curent\u0103 sau trebuie s\u0103 se potriveasc\u0103 cu unul dintre numele de domeniu permise. Cookie-ul ar putea fi modificat \u00een cadrul agentului de utilizator.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Verifica\u0163i furnizorul de OpenID Connect \u015fi configura\u0163iile de client. Dac\u0103 este a\u0219teptat numele de gazd\u0103, ad\u0103uga\u021bi-l \u00een atributul wasReqURLRedirectDomainNames al elementului webAppSecurity din configura\u021bia serverului.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: Nu se pot \u00eenc\u0103rca \u00eenregistr\u0103rile certificatelor de \u00eencredere din magazinul de certificate [ {0} ]. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=A ap\u0103rut o eroare \u00een timp ce sistemul \u00eencerca s\u0103 preia lista intr\u0103rilor de certificate de \u00eencredere din magazinul de certificate specificat. Este posibil ca truststore-ul s\u0103 lipseasc\u0103 din configura\u021bie sau ca o problem\u0103 s\u0103 \u00eempiedice accesul la acesta.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=Asigura\u021bi-v\u0103 c\u0103 truststore-ul este configurat corect \u00een set\u0103rile serverului \u0219i c\u0103 este accesibil. Consulta\u021bi mesajul de eroare pentru mai multe informa\u021bii despre eroare.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

@@ -263,4 +263,13 @@ public class DataIntrospectorTest extends FATServletClient {
                         "@By(\"address\") java.lang.String, jakarta.data.Limit, " +
                         "jakarta.data.Order<Voter>, jakarta.data.Limit) ");
     }
+
+    /**
+     * Verify that the Jakarta Data specification version is included in the
+     * introspector output.
+     */
+    @Test
+    public void testOutputContainsSpecVersion() {
+        assertLineFound("version: 1.0");
+    }
 }

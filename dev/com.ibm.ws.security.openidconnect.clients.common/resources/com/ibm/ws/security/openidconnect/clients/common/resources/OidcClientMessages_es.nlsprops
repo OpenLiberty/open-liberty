@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2013, 2023 IBM Corporation and others.
+# Copyright (c) 2013, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -312,7 +312,11 @@ MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE=CWWKS1554E: Una solicitud a [{0}] no 
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.explanation=La solicitud incluye una cookie mal formada. El nombre de host de la cookie debe coincidir con la solicitud actual o debe coincidir con uno de los nombres de dominio permitidos. La cookie se puede modificar desde dentro del agente de usuario.
 MALFORMED_URL_IN_ORIGIN_REQUEST_URL_COOKIE.useraction=Verifique el proveedor de OpenID Connect y las configuraciones del cliente. Si se espera el nombre de host, a\u00f1\u00e1dalo al atributo wasReqURLRedirectDomainNames del elemento webAppSecurity en la configuraci\u00f3n del servidor.
 
+# 0=Truststore reference, 1=Exception message
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES=CWWKS1555E: No se pueden cargar las entradas de certificados de confianza del almac\u00e9n de confianza [ {0} ]. {1}
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.explanation=Se ha producido un error mientras el sistema intentaba recuperar la lista de entradas de certificados de confianza del almac\u00e9n de confianza especificado. Es posible que el almac\u00e9n de certificados no figure en la configuraci\u00f3n, o que haya alg\u00fan problema que impida el acceso al mismo.
+OIDC_CLIENT_ERROR_GETTING_CERT_ENTRIES.useraction=Comprueba que el almac\u00e9n de certificados est\u00e9 correctamente configurado en la configuraci\u00f3n del servidor y que sea accesible. Consulte el mensaje de error para obtener m\u00e1s informaci\u00f3n sobre el fallo.
+
 #CWWKS1557 used in client bundle, do not use here.
 
 # STOP HERE, OIDC SERVER HAS RESERVED 1600 - 1649
-

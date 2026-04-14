@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package com.ibm.ws.jpa.tests.container_hibernate;
@@ -26,7 +23,6 @@ public class FATSuite {
                                                 "permission java.lang.RuntimePermission \"accessClassInPackage.com.sun.xml.internal.bind\";" };
 
 //    @ClassRule
-//    public static RepeatTests repeat = RepeatTests
-//                    .with(new EmptyAction().fullFATOnly())
+//    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
 //                    .andWith(FeatureReplacementAction.EE9_FEATURES());
 }

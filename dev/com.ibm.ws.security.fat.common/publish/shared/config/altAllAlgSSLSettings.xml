@@ -1,0 +1,22 @@
+<server>
+
+	<keyStore
+		id="trust_altAllSigAlg"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/altAllAlgTrustStore.p12" />
+
+	<keyStore
+		id="key_altAllSigAlg"
+		password="Liberty"
+		type="PKCS12"
+		location="${server.config.dir}/altAllAlgKeyStore.p12" />
+
+	<ssl
+		id="ssl_altAllSigAlg"
+		keyStoreRef="key_altAllSigAlg"
+		trustStoreRef="trust_altAllSigAlg"
+		clientAuthenticationSupported="true"
+		clientKeyAlias="ssl_default" />
+
+</server>

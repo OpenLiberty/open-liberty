@@ -21,14 +21,13 @@ import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
 		AlwaysPassesTest.class,
 		LogoutTokenCreationTests.class,
-
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
@@ -43,7 +42,7 @@ public class FATSuite {
 	 * amount of test runtime.
 	 */
 	@ClassRule
-	public static RepeatTests repeat = RepeatTests.with(new EmptyAction().liteFATOnly())
+	public static RepeatTests repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().liteFATOnly())
 			.andWith(new SecurityTestRepeatAction().onlyOnWindows().fullFATOnly())
 			.andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().alwaysAddFeature("servlet-5.0")
 					.fullFATOnly())

@@ -47,7 +47,7 @@ import jakarta.data.restrict.Restriction;
 /**
  * Repository for the Fraction entity
  */
-@Repository(dataStore = "java:app/env/data/dbref")
+@Repository(dataStore = "MyDataStore")
 public interface Fractions {
 
     Long count(Restriction<Fraction> filter);
@@ -69,6 +69,13 @@ public interface Fractions {
     long discard(@By("denominator") AtLeast<Integer> minDenominator,
                  @By("denominator") AtMost<Integer> maxDenominator,
                  Restriction<Fraction> filter);
+
+    boolean exists(Restriction<Fraction> filter);
+
+    Boolean existsByDenominatorGreaterThanAndDenominatorLessThan//
+    (int exclusiveMin,
+     int exclusiveMax,
+     Restriction<Fraction> filter);
 
     @Find
     @OrderBy(_Fraction.NUMERATOR)

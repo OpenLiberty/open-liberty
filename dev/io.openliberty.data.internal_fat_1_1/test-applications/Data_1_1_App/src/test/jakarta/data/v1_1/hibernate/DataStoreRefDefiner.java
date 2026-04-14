@@ -16,12 +16,14 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.PersistenceUnit;
 
 /**
- * Defines a persistence unit reference with the name
- * java:app/env/data/dbref name so that Jakarta Data repositories
- * will use it.
+ * TODO Remove this class once Liberty's Jakarta Persistence container
+ * integration code implements the requirement to automatically bind the
+ * EntityManagerFactory for a persistence unit in JNDI as
+ * java:module/persistence/{unit-name}/EntityManagerFactory and
+ * java:app/persistence/{unit-name}/EntityManagerFactory and
  */
 @ApplicationScoped
-@PersistenceUnit(name = "java:app/env/data/dbref",
-                 unitName = "HibernatePersistenceUnit")
+@PersistenceUnit(name = "java:module/persistence/MyDataStore/EntityManagerFactory",
+                 unitName = "MyDataStore")
 public class DataStoreRefDefiner {
 }

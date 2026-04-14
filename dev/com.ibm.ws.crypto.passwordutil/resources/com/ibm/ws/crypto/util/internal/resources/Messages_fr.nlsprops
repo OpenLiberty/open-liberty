@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2016, 2025 IBM Corporation and others.
+# Copyright (c) 2016, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,6 +65,9 @@ PASSWORDUTIL_EXCEPTION_FIPS140_3_HASH_SHA1_UNAVAILABLE_ALGORITHM.useraction=Assu
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING=CWWKS1864W: Une ou plusieurs valeurs de mot de passe d'' {0}, stock\u00e9es dans la configuration du serveur, ont \u00e9t\u00e9 g\u00e9n\u00e9r\u00e9es avec un algorithme plus ancien {1}. Utilisez la commande encode d'' securityUtility pour r\u00e9g\u00e9n\u00e9rer les mots de passe d'' {0} avec le dernier algorithme {2}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.explanation=Liberty utilise d\u00e9sormais des algorithmes plus puissants pour les mots de passe nouvellement g\u00e9n\u00e9r\u00e9s {aes} et {hash}.
 PASSWORDUTIL_WEAK_ALGORITHM_WARNING.useraction=Assurez-vous que les mots de passe {aes} et {hash} sont g\u00e9n\u00e9r\u00e9s avec la derni\u00e8re version d'' Liberty.
+PASSWORDUTIL_DEFAULT_KEY_WARNING=CWWKS1865W: Un ou plusieurs de vos mots de passe chiffr\u00e9s en AES ont \u00e9t\u00e9 chiffr\u00e9s sans cl\u00e9 de chiffrement personnalis\u00e9e. Pour renforcer la s\u00e9curit\u00e9 de vos identifiants enregistr\u00e9s, recr\u00e9ptez-les \u00e0 l'aide d'une cl\u00e9 de chiffrement personnalis\u00e9e. Veillez \u00e0 conserver cette cl\u00e9 en lieu s\u00fbr.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.explanation=Les mots de passe chiffr\u00e9s en AES dans la configuration du serveur utilisent la valeur par d\u00e9faut \u00ab wlp.password.encryption.key \u00bb. Une cl\u00e9 de chiffrement personnalis\u00e9e offre une meilleure s\u00e9curit\u00e9.
+PASSWORDUTIL_DEFAULT_KEY_WARNING.useraction=D\u00e9finissez une cl\u00e9 de chiffrement personnalis\u00e9e en configurant la variable wlp.password.encryption.key ou wlp.aes.encryption.key, puis rechiffrez vos mots de passe \u00e0 l'aide de la commande encode de securityUtility avec votre cl\u00e9 personnalis\u00e9e.
 
 AESKEYMANAGER_INVALID_KEYLENGTH_EXCEPTION=La longueur de la cl\u00e9 de la valeur sp\u00e9cifi\u00e9e dans la variable wlp.aes.encryption.key doit \u00eatre de 256 bits.
 AESKEYMANAGER_NOT_BASE64_EXCEPTION=La valeur sp\u00e9cifi\u00e9e dans la variable wlp.aes.encryption.key doit \u00eatre cod\u00e9e base64.

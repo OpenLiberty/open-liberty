@@ -4,5 +4,5 @@ visibility=private
 singleton=true
 -features= \
     io.openliberty.persistence-3.2
-kind=beta
+kind=ga
 edition=core

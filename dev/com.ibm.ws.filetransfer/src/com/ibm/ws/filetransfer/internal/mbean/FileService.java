@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -80,10 +80,13 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
     //Constants
     private static final String READ_LIST_CONFIGURATION = "readDir";
     private static final String WRITE_LIST_CONFIGURATION = "writeDir";
+    private static final String BLOCK_LIST_CONFIGURATION = "blockDir";
+    private static final String DISABLE_BLOCK_LIST_CONFIGURATION = "disableBlockList";
     private static final String EMPTY_PATH_STRING = "";
 
     private List<String> ReadList;
     private List<String> WriteList;
+    private List<String> BlockList;
 
     public FileService() throws NotCompliantMBeanException {
         super(FileServiceMXBean.class, true);
@@ -188,6 +191,32 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             WriteList = Collections.EMPTY_LIST;
         }
 
+        //block lists
+        Object blockListConfig = properties.get(BLOCK_LIST_CONFIGURATION);
+        Object disableBlockListConfig = properties.get(DISABLE_BLOCK_LIST_CONFIGURATION);
+        if (disableBlockListConfig instanceof Boolean && (Boolean)disableBlockListConfig) {
+            // Disable block list by setting to emtpy.
+            BlockList = Collections.EMPTY_LIST;
+        } else if (blockListConfig instanceof String[]) {
+            BlockList = normalizePaths((String[]) blockListConfig);
+        } else {
+            //Default is to block ${server.output.dir}/resources/security
+            BlockList = new ArrayList<String>();
+
+            WsLocationAdmin wsLocation = getWsLocationAdmin();
+
+            if (wsLocation == null) {
+                //in this case, we really cannot proceed without the location admin, so throw error.
+                throw new IOException(TraceNLS.getFormattedMessage(this.getClass(),
+                                                                   TraceConstants.MESSAGE_BUNDLE,
+                                                                   "OSGI_SERVICE_ERROR",
+                                                                   new Object[] { "WsLocationAdmin" },
+                                                                   "CWWKX7911E: OSGi service is not available."));
+            }
+
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
+        }
+
         //START DEBUG
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             StringBuffer sb = new StringBuffer();
@@ -208,12 +237,24 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             if (WriteList.isEmpty()) {
                 sb.append("empty");
             } else {
-                for (String writeLocation : ReadList) {
+                for (String writeLocation : WriteList) {
                     sb.append(writeLocation);
                     sb.append("   ");
                 }
             }
             Tr.debug(this, tc, "writeList: " + sb.toString());
+
+            //Log the blockList
+            sb = sb.delete(0, sb.length());
+            if (BlockList.isEmpty()) {
+                sb.append("empty");
+            } else {
+                for (String blockLocation : BlockList) {
+                    sb.append(blockLocation);
+                    sb.append("   ");
+                }
+            }
+            Tr.debug(this, tc, "blockList: " + sb.toString());
 
         } //END DEBUG
 
@@ -231,6 +272,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_READ_LIST, ReadList.toArray(new String[ReadList.size()]));
         publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_WRITE_LIST, WriteList.toArray(new String[WriteList.size()]));
+        publishAttributeChange(eventAdmin, FileServiceMXBean.ATTRIBUTE_NAME_BLOCK_LIST, BlockList.toArray(new String[BlockList.size()]));
     }
 
     @Reference(name = KEY_LOCATION_ADMIN, service = WsLocationAdmin.class)
@@ -285,6 +327,12 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
     /** {@inheritDoc} */
     @Override
+    public List<String> getBlockList() {
+        return BlockList;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public MetaData getMetaData(String path, String requestOptions) {
 
         if (path == null || EMPTY_PATH_STRING.equals(path)) {
@@ -294,8 +342,9 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         path = normalizePath(path);
 
-        if (!FileServiceUtil.isPathContained(getReadList(), path)
-            && !FileServiceUtil.isPathContained(getWriteList(), path)) {
+        if (FileServiceUtil.isPathContained(getBlockList(),path) 
+            || (!FileServiceUtil.isPathContained(getReadList(), path)
+            && !FileServiceUtil.isPathContained(getWriteList(), path))) {
             logAccessDenied(path);
             return null;
         }
@@ -359,7 +408,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             logInvalidPath(directory);
             return null;
         }
-        if (!FileServiceUtil.isPathContained(getReadList(), directory) && !FileServiceUtil.isPathContained(getWriteList(), directory)) {
+        if (FileServiceUtil.isPathContained(getBlockList(),directory) || (!FileServiceUtil.isPathContained(getReadList(), directory) && !FileServiceUtil.isPathContained(getWriteList(), directory))) {
             logAccessDenied(directory);
             return null;
         }
@@ -401,7 +450,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         // Validate source path
         String normalizedSourcePath = normalizePath(sourcePath);
-        if (!FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath)) {
+        if (FileServiceUtil.isPathContained(getBlockList(), normalizedSourcePath) || !FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath)) {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "ARCHIVE_CREATE_SOURCE_DENIED_WARNING", sourcePath);
             }
@@ -410,7 +459,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         // Validate target path
         String normalizedTargetPath = normalizePath(targetPath);
-        if (!FileServiceUtil.isPathContained(getWriteList(), normalizedTargetPath)) {
+        if (FileServiceUtil.isPathContained(getBlockList(), normalizedTargetPath) || !FileServiceUtil.isPathContained(getWriteList(), normalizedTargetPath)) {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "ARCHIVE_CREATE_TARGET_DENIED_WARNING", targetPath);
             }
@@ -444,7 +493,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         // Validate source path
         String normalizedSourcePath = normalizePath(sourcePath);
-        if (!(FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath) || FileServiceUtil.isPathContained(getWriteList(), normalizedSourcePath))) {
+        if (FileServiceUtil.isPathContained(getBlockList(), normalizedSourcePath) || !(FileServiceUtil.isPathContained(getReadList(), normalizedSourcePath) || FileServiceUtil.isPathContained(getWriteList(), normalizedSourcePath))) {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "ARCHIVE_EXPAND_SOURCE_DENIED_WARNING", sourcePath);
             }
@@ -453,7 +502,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
 
         // Validate target path
         String normalizedTargetPath = normalizePath(targetPath);
-        if (!FileServiceUtil.isPathContained(getWriteList(), normalizedTargetPath)) {
+        if (FileServiceUtil.isPathContained(getBlockList(), normalizedTargetPath) || !FileServiceUtil.isPathContained(getWriteList(), normalizedTargetPath)) {
             if (tc.isWarningEnabled()) {
                 Tr.warning(tc, "ARCHIVE_EXPAND_TARGET_DENIED_WARNING", targetPath);
             }

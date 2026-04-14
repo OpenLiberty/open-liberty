@@ -3,7 +3,7 @@ symbolicName=com.ibm.websphere.appserver.javaeePlatform7.0-jndi1.0
 visibility=private
 IBM-Process-Types: client, \
  server
-IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.eePlatform.7.0.internal-1.0))", \
+IBM-Provision-Capability: osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.eePlatform.7.0.internal-1.0)(osgi.identity=io.openliberty.jakartaeePlatform-11.0)))", \
  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.jndi-1.0))"
 -bundles=com.ibm.ws.javaee.platform.v7.jndi
 IBM-Install-Policy: when-satisfied

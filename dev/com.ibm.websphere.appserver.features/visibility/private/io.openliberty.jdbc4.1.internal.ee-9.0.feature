@@ -4,8 +4,7 @@ singleton=true
 -features=\
  com.ibm.websphere.appserver.transaction-2.0
 -bundles=\
- com.ibm.ws.jdbc.jakarta,\
- com.ibm.ws.jdbc.4.1.jakarta
+ com.ibm.ws.jdbc.jakarta
 kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -11,5 +11,5 @@ visibility = private
 -bundles=\
   com.ibm.ws.request.probe.audit.servlet.jakarta
 
-kind=beta
+kind=ga
 edition=core

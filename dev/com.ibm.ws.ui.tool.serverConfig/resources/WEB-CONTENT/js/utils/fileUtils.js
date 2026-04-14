@@ -222,7 +222,14 @@ var fileUtils = (function() {
             var variableResolvedPath = serverVariables[i].resolvedPath;
             if(variableResolvedPath !== null && variableResolvedPath !== undefined) {
                 if(filePath.indexOf(serverVariables[i].resolvedPath) === 0) {
-                    return "${" + serverVariables[i].name + "}" + filePath.substring(variableResolvedPath.length);
+                    // Check if this is a proper directory boundary match
+                    // The character after the matched path should be a path separator or end of string
+                    var nextCharIndex = variableResolvedPath.length;
+                    if(nextCharIndex >= filePath.length ||
+                       filePath.charAt(nextCharIndex) === '/' ||
+                       filePath.charAt(nextCharIndex) === '\\') {
+                        return "${" + serverVariables[i].name + "}" + filePath.substring(variableResolvedPath.length);
+                    }
                 }
             }
         }

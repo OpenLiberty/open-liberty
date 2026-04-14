@@ -135,4 +135,6 @@
         </primaryRealm>
     </federatedRepository>
 
+  <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

@@ -16,7 +16,6 @@ import java.util.function.Function;
 
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import jakarta.security.jacc.PolicyConfiguration;
 import jakarta.security.jacc.PolicyConfigurationFactory;
 import jakarta.security.jacc.PolicyContext;
 import jakarta.security.jacc.PolicyContextException;
@@ -44,21 +43,35 @@ public class JakartaPolicyConfigFactoryProxy extends PolicyConfigurationFactory 
     }
 
     @Override
-    public PolicyConfiguration getPolicyConfiguration() {
+    public JakartaPolicyConfigProxy getPolicyConfiguration() {
         String currentContextID = PolicyContext.getContextID();
         if (currentContextID == null) {
             return null;
         }
-        return configMap.get(currentContextID);
+        JakartaPolicyConfigProxy config = configMap.get(currentContextID);
+        if (config != null) {
+            config.ensureInitialized();
+        }
+        return config;
     }
 
     @Override
-    public PolicyConfiguration getPolicyConfiguration(String contextId) {
-        return configMap.get(contextId);
+    public JakartaPolicyConfigProxy getPolicyConfiguration(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("contextId is required to be non-null");
+        }
+        JakartaPolicyConfigProxy config = configMap.get(contextId);
+        if (config != null) {
+            config.ensureInitialized();
+        }
+        return config;
     }
 
     @Override
-    public PolicyConfiguration getPolicyConfiguration(String contextId, boolean remove) throws PolicyContextException {
+    public JakartaPolicyConfigProxy getPolicyConfiguration(String contextId, boolean remove) throws PolicyContextException {
+        if (contextId == null) {
+            throw new IllegalArgumentException("contextId is required to be non-null");
+        }
 
         // Do the fast check first for if it doesn't exist
         JakartaPolicyConfigProxy existingConfig = configMap.get(contextId);
@@ -99,8 +112,15 @@ public class JakartaPolicyConfigFactoryProxy extends PolicyConfigurationFactory 
 
     @Override
     public boolean inService(String contextId) {
+        if (contextId == null) {
+            throw new IllegalArgumentException("contextId is required to be non-null");
+        }
         JakartaPolicyConfigProxy policyConfig = configMap.get(contextId);
-        return policyConfig == null ? false : policyConfig.inService();
+        if (policyConfig != null) {
+            policyConfig.ensureInitialized();
+            return policyConfig.inService();
+        }
+        return false;
     }
 
     @FFDCIgnore(IllegalStateException.class)

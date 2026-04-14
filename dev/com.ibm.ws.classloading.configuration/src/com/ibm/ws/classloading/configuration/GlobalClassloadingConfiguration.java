@@ -14,6 +14,7 @@ package com.ibm.ws.classloading.configuration;
 
 import java.io.File;
 import java.io.IOException;
+import java.lang.management.ManagementFactory;
 import java.lang.reflect.Method;
 import java.net.URL;
 import java.util.Collections;
@@ -258,6 +259,10 @@ public class GlobalClassloadingConfiguration {
             // NOTE: returning a null set will cause nothing to be filtered;
             //       returning an empty set will cause everything to be filtered;
             //       returning a non-empty set will cause everything not in the set to be filtered.
+            if (usingBootclasspathJVMOption()) {
+                // if using -Xbootclasspath we cannot filter anything
+                return null;
+            }
             if (parentConfig == ParentConfig.PLATFORM) {
                 // A strange case where the user configured extra packages with PLATFORM;
                 // It is arguable that this should not be allowed since we do not believe
@@ -312,6 +317,18 @@ public class GlobalClassloadingConfiguration {
             }
 
             return result;
+        }
+
+        /**
+         * @return
+         */
+        private static boolean usingBootclasspathJVMOption() {
+            for (String jvmArg : ManagementFactory.getRuntimeMXBean().getInputArguments()) {
+                if (jvmArg.startsWith("-Xbootclasspath")) {
+                    return true;
+                }
+            }
+            return false;
         }
 
         /**
