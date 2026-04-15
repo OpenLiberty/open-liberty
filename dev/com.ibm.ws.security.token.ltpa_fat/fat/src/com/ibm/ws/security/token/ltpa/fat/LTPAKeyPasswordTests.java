@@ -101,7 +101,9 @@ public class LTPAKeyPasswordTests {
     public static void beforeClass() throws Exception {
         Log.info(thisClass, "beforeClass()", "entering");
 
-        if (server.isFIPS140_3EnabledAndSupported()) {
+        // With repeats, we run `beforeClass` for each one, however the value of paths as statics is kept, so once we have updated paths
+        // to include the fips directory we don't want to update them another time
+        if (server.isFIPS140_3EnabledAndSupported() && !LTPA_KEYS_MYKEYSTOREPASSWORD.startsWith(FIPS140_3_FOLDER)) {
             LTPA_KEYS_WEBAS = FIPS140_3_FOLDER + LTPA_KEYS_WEBAS;
             LTPA_KEYS_MYKEYSPASSWORD = FIPS140_3_FOLDER + LTPA_KEYS_MYKEYSPASSWORD;
             LTPA_KEYS_MYLTPAKEYSPASSWORD = FIPS140_3_FOLDER + LTPA_KEYS_MYLTPAKEYSPASSWORD;

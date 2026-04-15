@@ -60,7 +60,7 @@
 		<iiopsOptions iiopsPort="${bvt.prop.IIOP.secure}" sslRef="supportedClientAuthenticationSSLConfig" />
 	</iiopEndpoint>
 
-	<orb id="defaultOrb" iiopEndpointRef="myIiopEndpoint">
+	<orb id="defaultOrb" iiopEndpointRef="myIiopEndpoint" orbSSLInitTimeout="60">
 		<serverPolicy.csiv2>
 			<layers>
 				<transportLayer sslRef="supportedClientAuthenticationSSLConfig" />

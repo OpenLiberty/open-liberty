@@ -412,9 +412,14 @@ public class ClientSSLHandshakeTest extends CommonTest {
                         effectiveCiphers.subList(0, Math.min(5, effectiveCiphers.size())));
             }
             
-            // Verify we have a reasonable number of ciphers (the JDK effective list typically have 30+ ciphers)
-            assertTrue("Expected JDK default cipher list to have at least 20 ciphers, but found: " + effectiveCiphers.size(),
-                    effectiveCiphers.size() > 20);
+            // Verify we have a reasonable number of ciphers in the JDK effective list.
+            // FIPS mode restricts the available cipher suites, resulting in fewer ciphers
+            // compared to non-FIPS mode where the JDK typically provides more cipher options.
+            boolean isFipsEnabled = testServer.isFIPS140_3EnabledAndSupported();
+            int expectedMinCiphers = isFipsEnabled ? 10 : 30;
+            assertTrue("Expected JDK default cipher list to have at least " + expectedMinCiphers +
+                    " ciphers (FIPS=" + isFipsEnabled + "), but found: " + effectiveCiphers.size(),
+                    effectiveCiphers.size() >= expectedMinCiphers);
 
         } catch (Exception e) {
             Log.error(c, name.getMethodName(), e, "Unexpected exception was thrown.");

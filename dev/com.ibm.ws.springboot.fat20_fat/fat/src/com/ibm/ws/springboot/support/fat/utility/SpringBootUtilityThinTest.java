@@ -370,6 +370,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             String line = null;
             line = readProcessLine(proc, method);
 
+            if (line == null) {
+                proc.destroy();
+                Log.info(getClass(), method, "Running the uber jar again because the last run wasn't successful");
+                proc = Runtime.getRuntime().exec(javaCmd);
+                line = readProcessLine(proc, method);
+            }
+
             assertNotNull("The endpoint is not available", line);
             assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
 

@@ -21,6 +21,11 @@ public class Jakartasec40TestConstants {
     public static final String WEB_APP_SECURITY_CONFIGURATION_UPDATED = "CWWKS9112A";
     public static final String SERVER_CONFIG_UPDATE_MESSAGES_REGEX = "CWWKG0017I.*|CWWKG0018I.*"; // CWWKG0017I: successfully updated, CWWKG0018I: not updated
 
+    // Identity Store Handler
+    public static final String ID_STORE_FOUND_MSG = "Found identity store: %s";
+    public static final String ID_STORE_VALIDATION_SUCCESS_MSG = "Validation successful with store: %s";
+    public static final String ID_STORE_VALIDATION_FAIL_MSG = "Validation failed with store: %s";
+
     // Test credentials
     public static final String VALID_PASSWORD = "reallysecretpassw0rd";
     public static final String INVALID_PASSWORD = "bad_password";
@@ -60,6 +65,14 @@ public class Jakartasec40TestConstants {
 
     // XOR, but bad encoding
     public static final String PASSWORD_XOR_INVALID = "{xor}LLTxlkwjljsdforbg=";
+
+    /**
+     * Multiple Identity Stores - Database store users
+     */
+    public static final String DB_USER_ALICE = "alice";
+    public static final String DB_USER_RORY = "rory";
+    public static final String DB_USER_CHARLIE = "charlie";
+    public static final String DB_PASSWORD = "dbpassw0rd123";
 
     /**
      * Multiple HAMs
