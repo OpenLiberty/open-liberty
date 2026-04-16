@@ -11,6 +11,7 @@ package com.ibm.ws.http.netty.pipeline.inbound;
 
 import java.net.InetSocketAddress;
 import java.util.Map;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.text.ParseException;
 import java.util.Objects;
@@ -84,9 +85,12 @@ import io.openliberty.http.netty.timeout.TimeoutHandler;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
+import com.ibm.ws.http.netty.pipeline.inbound.read.FlowState;
 
-
-
+import io.openliberty.netty.internal.impl.QuiesceHandler;
+import java.io.EOFException;
+import io.netty.channel.socket.DuplexChannelConfig;
+import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 /**
  * Dispatcher: wires upgrade and hands off body streaming to BodyQueue (HTTP) or UpgradeHandler (post-101).
@@ -113,6 +117,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     private volatile boolean upgradingNow;
     private volatile boolean streamingInitialized;
+    private volatile boolean shutdownReceived = false;
 
     // NEW: per-request marker to avoid double-enqueue when FullHttpRequest is used
     private boolean aggregatedBodyEnqueued;
@@ -142,10 +147,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     @Override
     public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
-        Tr.debug(tc,"[UPGRADE-SYSOUT] userEventTriggered: evt=" +
-            (evt == null ? "null" : evt.getClass().getName()) +
-            " autoRead=" + ctx.channel().config().isAutoRead() +
-            " pipeline=" + ctx.pipeline().names());
+
         if (evt instanceof Upgrade101CommittedEvent) {
             Tr.debug(tc,"[UPGRADE-SYSOUT] >>> Upgrade101CommittedEvent RECEIVED <<< autoRead(before)="
                 + ctx.channel().config().isAutoRead()
@@ -155,15 +157,21 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 + " pipeline(before)=" + ctx.pipeline().names());
             commitTrigger.compareAndSet(null, CommitTrigger.FLUSH_OBSERVER);
             upgradingNow = true;
-            //if (commitScheduled.compareAndSet(false, true)) {
                 onUpgradeCommitted(ctx);
-            //} 
             return;
         }
-        // else if(evt instanceof ChannelInputShutdownEvent || evt instanceof ChannelInputShutdownReadComplete) {
-        //     Tr.debug(tc, "[USER-EVENT-SHUTDOWN-SYSOUT] userEventTriggered, closing context due to shutdown on connection");
-        //     ctx.close();
-        // }
+
+        if (evt instanceof ChannelInputShutdownEvent){
+            FlowState state = ReadFlowHandler.state(ctx);
+            if(queue!=null && !queue.isEos() && !state.isRequestConsumed()){
+                ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
+                queue.wakeReaders();
+            }
+        }
+
+        if (evt == QuiesceHandler.QUIESCE_EVENT) {
+            ctx.channel().attr(NettyHttpConstants.QUIESCING).set(Boolean.TRUE);
+        }
         super.userEventTriggered(ctx, evt);
     }
 
@@ -190,41 +198,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 return;
             } finally {
                 ReferenceCountUtil.release(buf);
-        //         DefaultFullHttpResponse continueResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONTINUE);
-        //         HttpUtil.setContentLength(continueResponse, 0);
-        //         byte[] date = HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange());
-        //         continueResponse.headers().set(HttpHeaderKeys.HDR_DATE.getName(),
-        //                         new String(date, StandardCharsets.UTF_8));
-        //         context.writeAndFlush(continueResponse);
-        //     }
-        //     FullHttpRequest msg = request;
-        //     HttpDispatcher.getExecutorService().execute(new Runnable() {
-        //         @Override
-        //         public void run() {
-        //             try {
-        //                 newRequest(context, msg);
-        //             } catch (Throwable t) {
-        //                 try {
-        //                     exceptionCaught(context, t);
-        //                 } catch (Exception e) {
-        //                     context.close();
-        //                 }
-        //             } finally {
-        //                 ReferenceCountUtil.release(msg);
-        //             }
-        //         }
-        //     });
-        // } else {
-        //     if(context.channel().isActive()) {
-        //         if (request.decoderResult().cause() != null) {
-        //             sendErrorMessage(request.decoderResult().cause());
-        //         } else {
-        //             sendErrorMessage(new Exception("HTTP request decoding failure!"));
-        //         }
-        //     } else {
-        //         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //             Tr.debug(tc, "Failed decode request on closed channel: " + context.channel());
-        //         }
             }
         }
 
@@ -319,10 +292,14 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 return;
             }
 
+            boolean notifyAsync = false;
             try {
                 ByteBuf data = content.content();
-                if (data.isReadable())
+                if (data.isReadable()){
                     queue.enqueueRetained(data);
+
+                    notifyAsync = true;
+                }
                 if (content instanceof LastHttpContent) {
                     HttpHeaders trailers = ((LastHttpContent) content).trailingHeaders();
                     if (!trailers.isEmpty()) {
@@ -332,24 +309,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                     queue.signalEos();
                     if (this.link != null)
                         this.link.setBodyComplete();
+                    notifyAsync = true;
                 }
-                // if (!ctx.channel().config().isAutoRead() && queue.wantsInput()) {
-                //     ReadFlowHandler.setBodyReadWanted(ctx, true);
-                // }
             } finally {
                 ReferenceCountUtil.release(content);
+            }
+
+            if(notifyAsync){
+                firePendingAsyncRead(ctx);
             }
             return;
         }
     }
-
-    // @Override
-    // public void channelReadComplete(ChannelHandlerContext ctx) throws Exception {
-    //     if (!ctx.channel().config().isAutoRead() && !upgradingNow && queue != null && queue.wantsInput()) {
-    //         ReadFlowHandler.setBodyReadWanted(ctx, true);
-    //     }
-    //     super.channelReadComplete(ctx);
-    // }
 
     //TODO -> Utils candidate
     private static boolean isUpgrade(HttpRequest req) {
@@ -365,6 +336,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private void beginStreamingRequest(ChannelHandlerContext ctx, HttpRequest request) {
+         ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+
         final CharSequence ae = request.headers().get(HttpHeaderNames.ACCEPT_ENCODING);
         if (ae != null)
             ctx.channel().attr(NettyHttpConstants.ACCEPT_ENCODING).set(ae.toString());
@@ -483,9 +456,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
         streamingInitialized = true;
 
-        // if (!ctx.channel().config().isAutoRead() && queue.wantsInput()){
-        //     ReadFlowHandler.setBodyReadWanted(ctx, true);
-        // }
         HttpDispatcher.getExecutorService().execute(() -> link.ready());
     }
 
@@ -615,22 +585,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
              }
             }
 
-            //System.out.println(">>> Auto read set to : " + ctx.channel().config().isAutoRead());
-
-
-            // if (!ctx.channel().config().isAutoRead()) {
-            //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            //         Tr.debug(tc, "onUpgradeCommitted: enabling autoRead for upgraded connection");
-            //         //Tr.debug(tc,"onUpgradeCommitted: enabling autoRead for upgraded connection");
-            //     }
-            //     ctx.channel().config().setAutoRead(true);
-            //     Tr.debug(tc,"[UPGRADE-SYSOUT] onUpgradeCommitted setAutoRead(true) DONE autoRead(now)="
-            //     + ctx.channel().config().isAutoRead());  
-            // }
-            //  if(ctx.channel().config().isAutoRead()){
-            //      Tr.debug(tc, "[UPGRADE-SYSOUT] onupgradeCommitted, ensuring autoread disabled");
-            //      ctx.channel().config().setAutoRead(false);
-            //  }
         } finally{
             try {
                 promise = ctx.channel().attr(NettyHttpConstants.UPGRADE_READY_PROMISE).get();
@@ -645,10 +599,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 }
             }
             upgradingNow = false;
-            Tr.debug(tc,"[UPGRADE-SYSOUT] onUpgradeCommitted EXIT autoRead(final)="
-            + ctx.channel().config().isAutoRead()
-            + " pipeline(after)=" + ctx.pipeline().names()
-            + " hasNettyServletUpgradeHandler=" + (ctx.pipeline().get(NettyServletUpgradeHandler.class) != null));
         }
     }
 
@@ -711,6 +661,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             sendErrorMessage(StatusCodes.ENTITY_TOO_LARGE, cause);
             return;
         }
+
+
         clearPerRequestAttrs(ctx);
         ctx.close();
     }
@@ -798,8 +750,11 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private static void clearPerRequestAttrs(ChannelHandlerContext ctx) {
+        ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
         ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
         ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+        ctx.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+        ctx.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
         if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
             ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
         }
@@ -807,6 +762,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
     @Override
     public void channelInactive(ChannelHandlerContext context) throws Exception {
+
         upgradingNow = false;
 
         //If there was an upgrade promise, we need to fail it.
@@ -825,6 +781,12 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         HttpContent content;
         while((content = earlyContents.poll()) != null) {
             content.release();
+        }
+
+        if (queue != null && !queue.isEos()) {
+            queue.wakeReaders();
+
+            firePendingAsyncReadError(context);
         }
         clearPerRequestAttrs(context);
         super.channelInactive(context);
@@ -958,4 +920,19 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
 
+    private void firePendingAsyncRead(ChannelHandlerContext ctx) {
+        Runnable pending = ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+        if (pending != null) {
+            System.out.println("QUIESCE-PROOF firePendingAsyncRead task. ");
+            HttpDispatcher.getExecutorService().execute(pending);
+        }
+    }
+
+    private void firePendingAsyncReadError(ChannelHandlerContext ctx) {
+        Runnable error = ctx.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).getAndSet(null);
+        if (error != null) {
+            HttpDispatcher.getExecutorService().execute(error);
+        }
+        ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+    } 
 }

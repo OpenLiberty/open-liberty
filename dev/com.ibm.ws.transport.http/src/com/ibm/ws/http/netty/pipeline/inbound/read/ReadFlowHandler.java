@@ -19,6 +19,9 @@ import io.netty.util.AttributeKey;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.netty.internal.impl.QuiesceHandler;
+import com.ibm.ws.http.netty.NettyHttpConstants;
+
 /**
  * Netty handler that handles read gating when Netty's auto-read is disabled. It 
  * tracks the state of each connection to determine when to invoke the 
@@ -152,14 +155,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             }
         }
 
-        if(message instanceof HttpRequest && state.isResponseInFlight()){
-            System.out.println("FLOW_VIOLATION: new HttpRequest while responseInFlight= true" 
-                + " channel=" + context.channel() 
-                + " keepAlive=" + state.isKeepAliveAllowed() 
-                + " readPending = " + state.isReadPending()
-                + " stopped= " + state.stoppedReading()); 
-        }
-
         if(message instanceof HttpRequest){
             state.setResponseInFlight(true);
             HttpRequest request = (HttpRequest) message;
@@ -230,7 +225,9 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
             HttpResponse response = (HttpResponse) message;
             int code = response.status().code();
             boolean informational = (code >= 100 && code < 200 && code != 101);
-            state.setKeepAliveAllowed(HttpUtil.isKeepAlive(response));
+
+            boolean responseKeepAlive = HttpUtil.isKeepAlive(response);
+            state.setKeepAliveAllowed(responseKeepAlive && !state.isQuiescing());
 
             boolean noBodyExpected = state.isHeadRequest() || !isResponseBodyPermitted(code)
                 || (HttpUtil.getContentLength(response,-1) == 0 && !HttpUtil.isTransferEncodingChunked(response));
@@ -248,6 +245,11 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                             return;
                         }
 
+                        if (!state.isKeepAliveAllowed()) {
+                            context.close();
+                            return;
+                        }
+
                         verifyNeedRead(context, state);
                     });
                 }
@@ -259,6 +261,11 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                 state.setResponseInFlight(false);
 
                 if(state.isPeerInputShutdown()){
+                    context.close();
+                    return;
+                }
+
+                if (!state.isKeepAliveAllowed()) {
                     context.close();
                     return;
                 }
@@ -279,8 +286,31 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
      */
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
+        FlowState state = state(context);
+
+        if (event == QuiesceHandler.QUIESCE_EVENT) {
+            state.setQuiescing(true);
+            context.channel().attr(NettyHttpConstants.QUIESCING).set(Boolean.TRUE);
+
+            state.setKeepAliveAllowed(false);
+
+
+            // Idle keep-alive connection: close it now.
+            if (state.isRequestConsumed() && !state.isResponseInFlight()) {
+                state.setReadPending(false);
+                state.setReadAgain(false);
+                state.setStopReading(true);
+                state.setBodyReadWanted(false);
+                context.close();
+                return;
+            }
+
+            super.userEventTriggered(context, event);
+            return;
+        }
+        
         if (event instanceof ChannelInputShutdownEvent || event instanceof ChannelInputShutdownReadComplete) {
-            FlowState state = state(context);
+            //FlowState state = state(context);
             state.setPeerInputShutdown(true);
 
             state.setReadPending(false);
@@ -293,11 +323,19 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                                 " , responseInFlight=" + state.isResponseInFlight() + " , channel="+ context.channel());
             }
 
+            boolean quiescing = state.isQuiescing();
+
+            if (quiescing){
+                super.userEventTriggered(context, event);
+                return;
+            }
+
             if(state.isRequestConsumed() && !state.isResponseInFlight()){
                 context.close();
                 return;
 
-            } else if (event == SslHandshakeCompletionEvent.SUCCESS) {
+            } 
+        } else if (event == SslHandshakeCompletionEvent.SUCCESS) {
                 // on handshake success, do the first read for the request if not auto reading
                 if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
                     Tr.debug(tc, "Found successful SslHandshakeCompletionEvent, queueing read if auto read is disabled. AutoRead: " + context.channel().config().isAutoRead());
@@ -305,7 +343,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
                 if (!context.channel().config().isAutoRead()) {
                     context.read();
                 }
-            }
         }
         super.userEventTriggered(context, event);
     }
@@ -414,4 +451,6 @@ public final class ReadFlowHandler extends ChannelDuplexHandler{
         if (status == 101 || status == 204 || status == 304) return false;
         return !(status >= 100 && status < 200);
     }
+
+    
 }

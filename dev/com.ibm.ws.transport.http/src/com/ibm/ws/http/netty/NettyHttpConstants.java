@@ -50,6 +50,13 @@ public class NettyHttpConstants {
     public static final AttributeKey<Boolean> UPGRADED = AttributeKey.valueOf("httpUpgraded");
     public static final AttributeKey<HttpChannelConfig> HTTP_CONFIG = AttributeKey.valueOf("httpConfig");
     public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE = AttributeKey.valueOf("upgradeReadyPromise");
+    public static final AttributeKey<Boolean> QUIESCING = AttributeKey.valueOf("quiescing");
+    public static final AttributeKey<Boolean> INPUT_SHUTDOWN_PENDING = AttributeKey.valueOf("shutdownPending");
+    public static final AttributeKey<Boolean> ASYNC_STREAM_READ =
+        AttributeKey.valueOf("httpAsyncStreamRead");
+    public static final AttributeKey<Runnable> ASYNC_READ_ERROR_CALLBACK =
+        AttributeKey.valueOf("httpAsyncReadErrorCallback");
+    
     public static final String VC_HTTP_INPUT_STREAM = "nettyInputStream";
     public static final String VC_HTTP2_STREAM_ID = "http2StreamId";
     

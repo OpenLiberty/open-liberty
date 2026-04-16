@@ -100,6 +100,8 @@ import io.netty.util.Attribute;
 import io.netty.util.AttributeKey;
 import io.netty.util.ReferenceCountUtil;
 
+import io.openliberty.netty.internal.impl.QuiesceState;
+
 /**
  * Connection link object that the HTTP dispatcher provides to CHFW
  * for an individual connection.
@@ -291,6 +293,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
 
     public void nettyClose(VirtualConnection conn, Exception e) {
+        Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_ENTER"
+        + " link=" + System.identityHashCode(this)
+        + " vc=" + conn
+        + " ch=" + qpNettyChannelId()
+        + " hasKeepAlive=" + (nettyContext != null && nettyContext.pipeline().get("httpKeepAlive") != null)
+        + " hasUpgradeHandler=" + (nettyContext != null && nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null)
+        + " ex=" + e
+        + " " + qpBodyState());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Close called , vc ->" + this.vc + " hc: " + this.hashCode());
@@ -317,6 +327,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         final FullHttpRequest requestReference = (this.nettyRequest !=null) ? this.nettyRequest:this.nettyHeaderOnly;
         if (requestReference !=null && requestReference.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=FATAL_UPGRADE_CLOSE"
+        + " link=" + System.identityHashCode(this)
+        + " ch=" + qpNettyChannelId());
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Doing nothing on close since Netty request is HTTP2 enabled. Codec will handle shutdown");
             }
@@ -333,6 +346,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (fatalUpgrade) {
+            Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=ERROR_CLOSE"
+        + " link=" + System.identityHashCode(this)
+        + " ch=" + qpNettyChannelId()
+        + " ex=" + e);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "nettyClose: closing upgraded connection due to fatal upgrade error flag");
             }
@@ -345,6 +362,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         // Needed to match channel behavior. Related to HttpOptions' ignoreWriteAfterCommit config.
         if (e != null) {
+            Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=ERROR_CLOSE"
+        + " link=" + System.identityHashCode(this)
+        + " ch=" + qpNettyChannelId()
+        + " ex=" + e);
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Closing connection. Error occurred -> " + e.getMessage());
             }
@@ -360,6 +381,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
 
                 if(deferCloseNonUpgrade()){
+                    
                     if(vc!=null){
                         vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "DEFERRED_NON_UPGRADED_STREAMS");
                     }
@@ -381,6 +403,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         
 
         if (nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
+           
             if (this.isc != null) {
                 if (!this.isc.isBodyComplete()) {
                     deferClear.set(true);
@@ -392,13 +415,31 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "nettyClose: upgraded connection; not closing channel");
             }
+
+             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=UPGRADED_NO_CHANNEL_CLOSE"
+        + " link=" + System.identityHashCode(this)
+        + " ch=" + qpNettyChannelId()
+        + " " + qpBodyState());
             return;
         }
 
-        if (nettyContext.pipeline().get("httpKeepAlive") == null) {
+        boolean quiescing = QuiesceState.isQuiesceInProgress();
+        System.out.println("[QUIESCE-PROOF] NETTY_CLOSE_QUIESCE_CHECK"
+    + " link=" + System.identityHashCode(this)
+    + " ch=" + qpNettyChannelId()
+    + " quiescing=" + quiescing);
+
+        if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing) {
+            Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=NO_KEEPALIVE_CLOSE_CHANNEL"
+        + " link=" + System.identityHashCode(this)
+        + " ch=" + qpNettyChannelId());
             this.nettyContext.channel().close();
         }else {
 
+            Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=KEEPALIVE_NO_CHANNEL_CLOSE"
+        + " link=" + System.identityHashCode(this)
+        + " ch=" + qpNettyChannelId()
+        + " " + qpBodyState());
             if (this.isc != null && !this.isc.isBodyComplete()) {
                 deferClear.set(true);
             } else if (this.isc != null) {
@@ -414,6 +455,17 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public void close(VirtualConnection conn, Exception e) {
+        Tr.debug(tc, "[QUIESCE-PROOF] CLOSE_ENTER"
+        + " link=" + System.identityHashCode(this)
+        + " vcField=" + this.vc
+        + " vcArg=" + conn
+        + " ch=" + qpNettyChannelId()
+        + " usingNetty=" + usingNetty
+        + " ex=" + e
+        + " decrementNeeded=" + decrementNeeded.get()
+        + " closeCompleted=" + closeCompleted.get()
+        + " linkIsReady=" + linkIsReady
+        + " " + qpBodyState());
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "close ENTER, vc ->" + this.vc + " hc: " + this.hashCode());
@@ -543,6 +595,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
+        Tr.debug(tc, "[QUIESCE-PROOF] CLOSE_TO_NETTY_CLOSE"
+        + " link=" + System.identityHashCode(this)
+        + " vc=" + vc
+        + " ch=" + qpNettyChannelId());
         if (usingNetty) {
             nettyClose(vc, e);
         }
@@ -563,6 +619,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "close EXIT");
         }
+        
     }
 
     /*
@@ -570,6 +627,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public void destroy(Exception e) {
+        Tr.debug(tc, "[QUIESCE-PROOF] DESTROY_ENTER"
+        + " link=" + System.identityHashCode(this)
+        + " vc=" + getVC()
+        + " ch=" + qpNettyChannelId()
+        + " ex=" + e
+        + " decrementNeeded(before)=" + decrementNeeded.get()
+        + " closeCompleted=" + closeCompleted.get());
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Destroy with exc=" + e);
         }
@@ -616,6 +680,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
             }
         }
+
+        Tr.debug(tc, "[QUIESCE-PROOF] DESTROY_AFTER_FLAG"
+        + " link=" + System.identityHashCode(this)
+        + " upgraded=" + upgraded
+        + " decrementNeeded(after)=" + decrementNeeded.get()
+        + " ch=" + qpNettyChannelId());
 
         super.destroy();
         this.isc = null;
@@ -781,6 +851,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         this.myChannel.incrementActiveConns();
+        Tr.debug(tc, "[QUIESCE-PROOF] READY_ENTER"
+        + " link=" + System.identityHashCode(this)
+        + " vc=" + inVC
+        + " ch=" + qpNettyChannelId());
         init(inVC);
         this.isc = (HttpInboundServiceContextImpl) getDeviceLink().getChannelAccessor();
         this.remoteAddress = isc.getRemoteAddr();
@@ -789,6 +863,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         //HttpDispatcherLink can be reused but ready(VirtualConnection) is always called to get a current VirtualConnection.
         //If thats true, don't need to clean up this connectionID
         this.connectionId = connectionCounter.getAndIncrement();
+        Tr.debug(tc, "[QUIESCE-PROOF] READY_CONNID"
+        + " link=" + System.identityHashCode(this)
+        + " connId=" + connectionId
+        + " vc=" + inVC
+        + " ch=" + qpNettyChannelId()
+        + " linkIsReady=" + linkIsReady);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "ready , connection id [" + connectionId + "] for this [" + this + "]");
@@ -1966,5 +2046,27 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             });
         });
         return true;
+    }
+
+    private String qpNettyChannelId() {
+        try {
+            return (nettyContext != null && nettyContext.channel() != null)
+                    ? String.valueOf(nettyContext.channel().id())
+                    : "null";
+        } catch (Throwable t) {
+            return "err:" + t.getClass().getSimpleName();
+        }
+    }
+
+    private String qpBodyState() {
+        try {
+            if (isc == null) {
+                return "isc=null";
+            }
+            return "bodyComplete=" + isc.isBodyComplete()
+                    + ", readDataAvailable=" + isc.isReadDataAvailable();
+        } catch (Throwable t) {
+            return "bodyStateErr=" + t.getClass().getSimpleName();
+        }
     }
 }

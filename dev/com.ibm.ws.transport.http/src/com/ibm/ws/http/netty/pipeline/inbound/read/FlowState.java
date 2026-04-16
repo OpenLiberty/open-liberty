@@ -23,6 +23,7 @@ public class FlowState {
     private volatile boolean headRequest;
     private volatile boolean keepAliveAllowed;
     private volatile boolean peerInputShutdown;
+    private volatile boolean quiescing;
     private volatile boolean readAgain;
     private volatile boolean readPending;
     private volatile boolean requestConsumed;
@@ -37,6 +38,7 @@ public class FlowState {
         this.headRequest = false;
         this.keepAliveAllowed = true;
         this.peerInputShutdown = false;
+        this.quiescing = false;
         this.readAgain = false;
         this.readPending = false;
         this.requestConsumed = true;
@@ -69,6 +71,10 @@ public class FlowState {
      */
     public boolean isPeerInputShutdown() {
         return peerInputShutdown;
+    }
+
+    public boolean isQuiescing(){
+        return quiescing;
     }
 
     public boolean isReadAgain(){
@@ -117,6 +123,10 @@ public class FlowState {
 
     public void setPeerInputShutdown(boolean peerInputShutdown) {
         this.peerInputShutdown = peerInputShutdown;
+    }
+
+    public void setQuiescing(boolean quiescing){
+        this.quiescing = quiescing;
     }
 
     public void setReadAgain(boolean readAgain){

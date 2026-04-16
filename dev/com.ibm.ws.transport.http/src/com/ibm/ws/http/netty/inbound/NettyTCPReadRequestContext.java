@@ -64,6 +64,8 @@ import io.netty.channel.socket.nio.NioSocketChannel;
 import io.openliberty.http.netty.channel.ReadOnlySocket;
 import io.openliberty.http.options.TcpOption;
 
+
+
 /**
  *
  */
@@ -144,12 +146,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 }
             }
         }
-        // if (in == null) {
-        //     Object stream = nettyChannel.attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
-        //     if (stream instanceof HttpInputStreamImpl) {
-        //         in = (HttpInputStreamImpl) stream;
-        //     }
-        // }
+
         if (in == null) {
             throw new IOException("HTTP input stream not initialized for channel " + nettyChannel);
         }
@@ -192,9 +189,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 }
             }
 
-
-
-
         }
 
         if (timeout == IMMED_TIMEOUT) {
@@ -215,39 +209,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         if(numBytes == 0){
             return hasUpgradeHandler() ? upgradedImmediateDrain() : nonUpgradedImmediateDrain();
         }
-        
-        // try {
-        //     // Wait for the read operation to complete or timeout
-        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //         Tr.debug(this, tc, "Waiting on read for channel: " + nettyChannel);
-        //     }
-        //     if (timeout == NO_TIMEOUT)
-        //         return readFuture.get();
-        //     else if (timeout == USE_CHANNEL_TIMEOUT)
-        //         return readFuture.get((int)config.get(TcpOption.INACTIVITY_TIMEOUT), TimeUnit.MILLISECONDS);
-        //     else
-        //         return readFuture.get(timeout, TimeUnit.MILLISECONDS);
-        // } catch (InterruptedException e) {
-        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //         Tr.debug(this, tc, "Interrupted exception on channel: " + nettyChannel);
-        //     }
-        //     Thread.currentThread().interrupt();
-        //     throw new IOException("Thread interrupted while reading.", e);
-        // } catch (ExecutionException e) {
-        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //         Tr.debug(this, tc, "Exection exception on channel: " + nettyChannel);
-        //     }
-        //     Throwable cause = e.getCause();
-        //     if (cause instanceof IOException) {
-        //         throw (IOException) cause;
-        //     }
-        //     throw new IOException("Error occurred during read operation.", cause);
-        // } catch (TimeoutException e) {
-        //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-        //         Tr.debug(this, tc, "Timeout exception on channel: " + nettyChannel);
-        //     }
-        //     throw new SocketTimeoutException("Read operation timed out.");
-        // }
 
         return hasUpgradeHandler() ? upgradedSyncRead(numBytes, timeout) : nonUpgradedSyncRead(numBytes, timeout);
     }
@@ -391,7 +352,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     }
 
     @Override
-    //@FFDCIgnore(EOFException.class)
     public VirtualConnection read(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
         if (aborted) {
             if (callback != null) {
@@ -423,19 +383,14 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         if (logicalUpg && !handlerReady) {
-            final Runnable pending = () -> {
-                
-                    read(numBytes, callback, forceQueue, timeout);
-   
-            };
-            nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(pending);
+            final Runnable success = installAsyncHttpReadCallbacks(numBytes, callback, effectiveTimeout);
 
 
             if (effectiveTimeout != IMMED_TIMEOUT && effectiveTimeout != ABORT_TIMEOUT) {
                 awaitUpgradePipeline(effectiveTimeout);
             }
             if(hasUpgradeHandler()){
-                HttpDispatcher.getExecutorService().execute(pending);
+                HttpDispatcher.getExecutorService().execute(success);
             }
             return null;
         }
@@ -449,20 +404,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         ensureBuffersOrJIT(numBytes, true);
 
-        Runnable r = () -> {
-            try {
-                read(numBytes, effectiveTimeout);
-                if (callback != null) {
-                    callback.complete(vc, this);
-                }
-            } catch (Throwable t) {
-                if (callback != null) {
-                    callback.error(vc, this, (t instanceof EOFException) ? (EOFException) t : new EOFException(t.toString()));
-                }
-            } 
-        };
-
-        nettyChannel.attr(com.ibm.ws.http.netty.NettyHttpConstants.ASYNC_READ_CALLBACK).set(r);
+        Runnable success = installAsyncHttpReadCallbacks(numBytes, callback, effectiveTimeout);
 
         if(!isLogicallyUpgraded()){
             try {
@@ -473,6 +415,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     if (pending != null)
                         HttpDispatcher.getExecutorService().execute(pending);
                 }
+                nettyChannel.attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
             } catch (IOException ignore) { }
 
             requestRead();
@@ -497,7 +440,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         }
 
         final long need = Math.max(1L, numBytes); 
-        //requestRead();
 
         final io.netty.util.concurrent.EventExecutor el = nettyChannel.eventLoop();
         final java.util.concurrent.atomic.AtomicReference<io.netty.util.concurrent.ScheduledFuture<?>> toRef = new java.util.concurrent.atomic.AtomicReference<>(null);
@@ -515,9 +457,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                     } catch (Throwable ignore) {
                     }
                 }
-                //try {
-
-                System.out.println("Setting buffer and calling complete if callback is nonnull: " + (callback!=null));
                     
                 h.setToBuffer();
                 if (callback != null) {
@@ -528,7 +467,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                             }
                     });
                 }
-               // } 
             }
 
             @Override
@@ -539,7 +477,6 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                         f.cancel(false);
                     } catch (Throwable ignore) {
                     }
-                //try {
                     if (callback != null) {
                         HttpDispatcher.getExecutorService().execute(() -> {
                             try {
@@ -548,34 +485,13 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                             }
                         });
                     }
-               // } 
             }
         };
 
         h.setReadListener((callback!=null) ? wrapped : null);
-    
-        // if (callback != null)
-        //     h.setReadListener(wrapped); 
 
-
-        // if (h.containsQueuedData() && h.queuedDataSize() >= need) {
-        //     long copied = h.setToBuffer();
-        //     if (!forceQueue) {
-        //         return vc; 
-        //     } else {
-        //         if (callback != null) {
-        //             HttpDispatcher.getExecutorService().execute(() -> {
-        //           //      try {
-        //                     callback.complete(vc, this);
-        //           //     } 
-        //             });
-        //         } 
-        //         return null;
-        //     }
-        // }
 
         h.queueAsyncRead(need);
-        //requestRead();
 
         final int t = normalizeTimeout(timeout);
         if (t != NO_TIMEOUT) {
@@ -869,16 +785,65 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         } catch (Exception e){
             return false;
         }
+    }
 
-        // long wait = (timeout == NO_TIMEOUT) ? 250L : Math.max(1L, Math.min(250L, timeout));
-        // try{    
-        //     promise.get(wait, TimeUnit.MILLISECONDS);
-        //     return true;
-        // }catch (TimeoutException te){
-        //     return false;
-        // }catch (Exception e){
-        //     return false;
-        // }
+    private Runnable installAsyncHttpReadCallbacks(long numBytes,
+                                               TCPReadCompletedCallback callback,
+                                               int effectiveTimeout) {
+        Runnable success = () -> {
+            nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.TRUE);
+            try {
+                read(numBytes, effectiveTimeout);
+                boolean inputShutdownPending = Boolean.TRUE.equals(nettyChannel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get());
+                if (callback != null) {
+                    if(inputShutdownPending){
+                        callback.error(vc, this, new EOFException("Peer input shutdown before request body completed. local="
+                                    + nettyChannel.localAddress() + " remote=" + nettyChannel.remoteAddress()));
+                    } else{
+                        callback.complete(vc, this);
+                    }
+                    
+                }
+            } catch (Throwable t) {
+                if (callback != null) {
+                    callback.error(
+                        vc,
+                        this,
+                        (t instanceof EOFException) ? (EOFException) t : new EOFException(t.toString())
+                    );
+                }
+            } finally {
+                nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
+                nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+                nettyChannel.attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+                nettyChannel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+            }
+        };
+
+        Runnable error = () -> {
+            try {
+                if (callback != null) {
+                    callback.error(
+                        vc,
+                        this,
+                        new EOFException(
+                            "Peer input shutdown before request body completed. local="
+                                + nettyChannel.localAddress()
+                                + " remote="
+                                + nettyChannel.remoteAddress()
+                        )
+                    );
+                }
+            } finally {
+                nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
+                nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+                nettyChannel.attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+            }
+        };
+
+        nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(success);
+        nettyChannel.attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(error);
+        return success;
     }
 
 }

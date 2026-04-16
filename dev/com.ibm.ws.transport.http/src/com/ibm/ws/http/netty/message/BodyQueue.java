@@ -96,5 +96,8 @@ final public class BodyQueue {
         return error;
     }
 
+    public void wakeReaders(){
+        signalChange();
+    }
 
 }

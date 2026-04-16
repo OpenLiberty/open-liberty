@@ -37,6 +37,8 @@ import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpUtil;
 import io.openliberty.http.netty.compression.HttpContentDecompressor;
 
+import com.ibm.ws.http.netty.NettyHttpConstants;
+
 /**
  * Wrapper for an incoming HTTP request message body that provides the input
  * stream interface.
@@ -661,9 +663,25 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     return false;
                 }
 
+                // Throwable error = queue.error();
+                // if(error != null){
+                //     if(error instanceof IOException){
+                //         throw (IOException) error;
+                //     }
+                //     throw new IOException("Error while reading body", error);
+                // }
                 Throwable error = queue.error();
-                if(error != null){
-                    if(error instanceof IOException){
+                if (error != null) {
+                    if (context != null
+                            && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())) {
+                        try {
+                            ReadFlowHandler.setBodyReadWanted(context, false);
+                        } catch (Throwable ignore) {
+                        }
+                        return false;
+                    }
+
+                    if (error instanceof IOException) {
                         throw (IOException) error;
                     }
                     throw new IOException("Error while reading body", error);
@@ -674,7 +692,20 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     readRequested = true;
                 }
 
+                if(context != null && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get())){
+                    return false;
+                }
+
                 try{
+                    boolean inputShutdownPending = context != null && Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get());
+                    if(inputShutdownPending){
+                        if(this.context!=null){
+                            try{
+                                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                            } catch (Throwable ignore){}
+                        }
+                        return false;
+                    }
                     token = queue.awaitChange(token);
                 } catch (InterruptedException ie){
                     Thread.currentThread().interrupt();
@@ -749,6 +780,24 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             } finally {
                 fragment.release();
             }
+        }
+    }
+
+    public void signalEOS(){
+        
+        BodyQueue q = this.queue;
+        if (q != null){
+            q.signalEos();
+        }
+
+        if(this.context != null){
+            try{
+                ReadFlowHandler.setBodyReadWanted(this.context, false);
+            } catch(Throwable ignore){}
+        }
+
+        if(TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
+            Tr.debug(tc, "signaled EOS to waiting body readers");
         }
     }
 }
