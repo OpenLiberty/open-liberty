@@ -9,7 +9,9 @@
  *******************************************************************************/
 package io.openliberty.security.jakartasec.handlers;
 
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArraySet;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -20,19 +22,23 @@ import com.ibm.websphere.ras.TraceComponent;
  *
  * This enables proper HAM isolation in Jakarta Security 4.0 (EE11) which is
  * the expectation.
+ *
+ * Supports multiple modules registering the same HAM class (e.g., FormAuthenticationMechanism
+ * in multiple WARs within the same EAR).
  */
 public class HAMModuleRegistry {
 
     private static final TraceComponent tc = Tr.register(HAMModuleRegistry.class);
 
-    // Map: applicationName -> (hamSimpleClassName -> moduleName)
-    // i.e. multipleModule -> (FormAuthenticationMechanism -> JavaEESecMultipleISForm.war)
-    private static final ConcurrentHashMap<String, ConcurrentHashMap<String, String>> registry = new ConcurrentHashMap<>();
+    // Map: applicationName -> (hamSimpleClassName -> Set<moduleName>)
+    // i.e. multipleModule2 -> (FormAuthenticationMechanism -> {JavaEESecMultipleISForm.war, JavaEESecMultipleISForm2.war})
+    private static final ConcurrentHashMap<String, ConcurrentHashMap<String, Set<String>>> registry = new ConcurrentHashMap<>();
 
     /**
      * Register a HAM class with its module name for a specific application.
+     * Supports multiple modules registering the same HAM class.
      *
-     * @param applicationName The application name (e.g., "multipleModule")
+     * @param applicationName The application name (e.g., "multipleModule2")
      * @param hamClass        The HAM implementation class
      * @param moduleName      The module (WAR) name where this HAM is defined
      */
@@ -50,23 +56,40 @@ public class HAMModuleRegistry {
         // we really need a simple class name here instead of one wrapped in proxies, etc ...
         // makes the lookup API/contract more explicit
         String hamSimpleName = hamClass.getSimpleName();
-        registry.computeIfAbsent(applicationName, k -> new ConcurrentHashMap<>()).put(hamSimpleName, moduleName);
+
+        // Get or create the app-level map
+        ConcurrentHashMap<String, Set<String>> appRegistry = registry.computeIfAbsent(applicationName, k -> new ConcurrentHashMap<>());
+
+        // Get or create the set of modules for this HAM class, and add the module
+        Set<String> modules = appRegistry.computeIfAbsent(hamSimpleName, k -> new CopyOnWriteArraySet<>());
+        modules.add(moduleName);
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Registered HAM [" + hamSimpleName +
                          "] linked to module [" + moduleName + "] against app [" + applicationName + "].");
+            Tr.debug(tc, "Registry for app [" + applicationName + "] HAM [" + hamSimpleName + "] now has " +
+                         modules.size() + " module(s): " + modules);
         }
     }
 
     /**
-     * Get the module name for a HAM class in a specific application.
-     * Handles CDI proxy classes by extracting the simple class name.
+     * Get the module name for a HAM class in a specific application and module context.
+     * When multiple modules register the same HAM class, returns the module name that matches
+     * the requested module, or null if the HAM is not registered for that module.
      *
      * @param applicationName The application name
      * @param hamClassName    The HAM class name (may be a CDI proxy)
-     * @return The module name, or null if not found
+     * @param requestedModule The module name being requested (for multi-module disambiguation)
+     * @return The module name if the HAM is registered for that module, or null if not found
      */
-    public static String getModuleName(String applicationName, String hamClassName) {
+    public static String getModuleName(String applicationName, String hamClassName, String requestedModule) {
+
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Fetching module name for application ["
+                         + applicationName + "], ham class name ["
+                         + hamClassName + "] and requested module ["
+                         + requestedModule + "].");
+        }
         if (applicationName == null || hamClassName == null) {
             return null;
         }
@@ -75,16 +98,60 @@ public class HAMModuleRegistry {
         // e.g., "CustomFormAuthenticationMechanism$Proxy$_$$_WeldClientProxy" -> "CustomFormAuthenticationMechanism"
         String hamSimpleName = extractSimpleClassName(hamClassName);
 
-        ConcurrentHashMap<String, String> appRegistry = registry.get(applicationName);
-        String moduleName = appRegistry != null ? appRegistry.get(hamSimpleName) : null;
-
-        if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "Lookup HAM [" + hamClassName + "] " +
-                         " (extracted [" + hamSimpleName + "])" +
-                         " in app [" + applicationName + "] linked to module [" + moduleName + "].");
+        ConcurrentHashMap<String, Set<String>> appRegistry = registry.get(applicationName);
+        if (appRegistry == null) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No registry found for app [" + applicationName + "]");
+            }
+            return null;
         }
 
-        return moduleName;
+        Set<String> modules = appRegistry.get(hamSimpleName);
+        if (modules == null || modules.isEmpty()) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No modules registered for HAM [" + hamSimpleName + "] in app [" + applicationName + "]");
+            }
+            return null;
+        }
+
+        // If requested module is specified and found in the set, return it
+        if (requestedModule != null && modules.contains(requestedModule)) {
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Lookup HAM [" + hamClassName + "] (extracted [" + hamSimpleName + "]) " +
+                             "in app [" + applicationName + "] for module [" + requestedModule + "]: FOUND");
+            }
+            return requestedModule;
+        }
+
+        // If only one module registered this HAM, return it (backward compatibility)
+        if (modules.size() == 1) {
+            String singleModule = modules.iterator().next();
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Lookup HAM [" + hamClassName + "] (extracted [" + hamSimpleName + "]) " +
+                             "in app [" + applicationName + "]: single module [" + singleModule + "]");
+            }
+            return singleModule;
+        }
+
+        // Multiple modules registered, but requested module not found
+        if (tc.isDebugEnabled()) {
+            Tr.debug(tc, "Lookup HAM [" + hamClassName + "] (extracted [" + hamSimpleName + "]) " +
+                         "in app [" + applicationName + "] for module [" + requestedModule + "]: NOT FOUND. " +
+                         "Available modules: " + modules);
+        }
+        return null;
+    }
+
+    /**
+     * Get the module name for a HAM class in a specific application.
+     * Backward compatibility method - delegates to the new method with null requestedModule.
+     *
+     * @param applicationName The application name
+     * @param hamClassName    The HAM class name (may be a CDI proxy)
+     * @return The module name, or null if not found or ambiguous
+     */
+    public static String getModuleName(String applicationName, String hamClassName) {
+        return getModuleName(applicationName, hamClassName, null);
     }
 
     /**

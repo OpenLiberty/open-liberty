@@ -390,7 +390,20 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
                                                     String overrideHttpAuthMethod) {
         Class<?> hamClass = httpAuthenticationMechanismInstance.getClass();
         String hamClassName = hamClass.getSimpleName();
-        String hamModuleName = HAMModuleRegistry.getModuleName(applicationName, hamClassName);
+        String hamModuleName = HAMModuleRegistry.getModuleName(applicationName, hamClassName, moduleName);
+
+        // Handle empty string module name: treat as null for FormHAM (backward compat),
+        // but keep as-is for CustomFormHAM (module-specific, should be filtered)
+        boolean isFormHAM = hamClassName.startsWith("FormAuthenticationMechanism");
+        boolean isCustomFormHAM = hamClassName.startsWith("CustomFormAuthenticationMechanism");
+
+        if (hamModuleName != null && hamModuleName.isEmpty() && isFormHAM && !isCustomFormHAM) {
+            // FormAuthenticationMechanism with empty module name should be treated as unregistered (null)
+            // This allows it to be available globally for backward compatibility
+            hamModuleName = null;
+        }
+        // CustomFormAuthenticationMechanism with empty module name stays as-is (empty string)
+        // This ensures it gets filtered out when ModMatch=false (module-specific behavior)
 
         // Debug output for complex server.xml config scenarios
         if (tc.isDebugEnabled()) {
@@ -400,8 +413,6 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
                          ", filterAppHAMs: " + filterAppHAMs);
 
             // Single line output for ease of debug analysis
-            boolean isFormHAM = hamClassName.startsWith("FormAuthenticationMechanism");
-            boolean isCustomFormHAM = hamClassName.startsWith("CustomFormAuthenticationMechanism");
             boolean moduleMatch = (hamModuleName != null && hamModuleName.equals(moduleName));
             boolean inRegistry = (hamModuleName != null);
             boolean globalFormFailover = (isGlobalAuthOverride && allowFailOverToFormLogin && !allowFailOverToAppDefined);
@@ -439,8 +450,6 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
         } else {
             // Check for global Form failover scenario
             boolean globalFormFailover = isGlobalAuthOverride && allowFailOverToFormLogin && !allowFailOverToAppDefined;
-            boolean isFormHAM = hamClassName.startsWith("FormAuthenticationMechanism");
-            boolean isCustomFormHAM = hamClassName.startsWith("CustomFormAuthenticationMechanism");
 
             // Global Form failover: filter CustomFormAuthenticationMechanism, allow FormAuthenticationMechanism cross-module
             // FormHAM will have been updated with global login metadata (like globalLogin.jsp or similar)

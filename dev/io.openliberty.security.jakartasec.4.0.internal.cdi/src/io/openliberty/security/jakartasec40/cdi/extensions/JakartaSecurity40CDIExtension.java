@@ -240,12 +240,30 @@ public class JakartaSecurity40CDIExtension implements Extension {
             String moduleName = null;
             try {
                 String location = annotatedClass.getProtectionDomain().getCodeSource().getLocation().getFile();
-                // Extract module name from the file path (e.g., /path/to/module.war)
-                int lastSlash = location.lastIndexOf('/');
-                if (lastSlash >= 0) {
-                    moduleName = location.substring(lastSlash + 1);
+                // Remove trailing slashes (common for expanded WARs/EARs)
+                while (location.endsWith("/")) {
+                    location = location.substring(0, location.length() - 1);
+                }
+                
+                // For expanded WARs, location might be .../module.war/WEB-INF/classes
+                // Extract the WAR name by looking for .war in the path
+                int warIndex = location.indexOf(".war");
+                if (warIndex > 0) {
+                    // Find the start of the WAR name (after the last slash before .war)
+                    int startIndex = location.lastIndexOf('/', warIndex);
+                    if (startIndex >= 0) {
+                        moduleName = location.substring(startIndex + 1, warIndex + 4); // +4 to include ".war"
+                    } else {
+                        moduleName = location.substring(0, warIndex + 4);
+                    }
                 } else {
-                    moduleName = location;
+                    // Fallback: extract from the last path component
+                    int lastSlash = location.lastIndexOf('/');
+                    if (lastSlash >= 0) {
+                        moduleName = location.substring(lastSlash + 1);
+                    } else {
+                        moduleName = location;
+                    }
                 }
             } catch (Exception e) {
                 if (tc.isDebugEnabled()) {
