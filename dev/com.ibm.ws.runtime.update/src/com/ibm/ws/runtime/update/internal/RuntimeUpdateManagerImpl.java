@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -324,10 +325,10 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
      * references. Calls are queued to a small thread pool, which is then stopped.
      * All invocations are then allowed to complete.
      *
-     * @param listenerRefs Collection of {@code ServiceReference}s for {@code ServerQuiesceListener}s
+     * @param allListeners Collection of {@code ServiceReference}s for {@code ServerQuiesceListener}s
      */
 
-    private void quiesceListeners(Collection<ServiceReference<ServerQuiesceListener>> listenerRefs) {
+    private void quiesceListeners(Collection<ServiceReference<ServerQuiesceListener>> allListeners) {
         // Make a copy of existing notifications: we can't hold the lock around notifications
         // to iterate while waiting for the existing notifications to complete because that would
         // lock-out cleanupNotifications.
@@ -336,17 +337,20 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             existingNotifications.putAll(notifications);
         }
 
-        if (listenerRefs.isEmpty() && existingNotifications.isEmpty())
+        if (allListeners.isEmpty() && existingNotifications.isEmpty())
             return;
 
-        ThreadQuiesce tq = (ThreadQuiesce) executorService;
-        int quiesceTimeout = tq.getQuiesceTimeout();
-
-        if (isServer())
-            Tr.audit(tc, "quiesce.begin", quiesceTimeout);
-        else
-            Tr.audit(tc, "client.quiesce.begin", quiesceTimeout);
-
+        // split the listeners into phase1 (bells) and phase2 (all others)
+        Collection<ServiceReference<ServerQuiesceListener>> phase2 = allListeners;
+        Collection<ServiceReference<ServerQuiesceListener>> phase1 = new ArrayList<>();
+        Iterator<ServiceReference<ServerQuiesceListener>> iPhase2 = phase2.iterator();
+        while (iPhase2.hasNext()) {
+            ServiceReference<ServerQuiesceListener> next = iPhase2.next();
+            if (next.getProperty("liberty.bell") != null) {
+                phase1.add(next);
+                iPhase2.remove();
+            }
+        }
         // If there are RuntimeUpdateNotifications outstanding, submit a thread to wait on them
         if (!existingNotifications.isEmpty()) {
             executorService.execute(new Runnable() {
@@ -364,10 +368,34 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             });
         }
 
-        FutureCollection quiesceListenerFutures = new FutureCollection();
+        ThreadQuiesce tq = (ThreadQuiesce) executorService;
+        int quiesceTimeout = tq.getQuiesceTimeout();
 
+        if (isServer())
+            Tr.audit(tc, "quiesce.begin", quiesceTimeout);
+        else
+            Tr.audit(tc, "client.quiesce.begin", quiesceTimeout);
+
+        FutureCollection quiesceListenerFutures = new FutureCollection();
         // Queue the notification of each listener (unbounded queue)
         final ConcurrentLinkedQueue<ServerQuiesceListener> listeners = new ConcurrentLinkedQueue<ServerQuiesceListener>();
+
+        callQuiesceListeners(phase1, quiesceListenerFutures, listeners);
+        // Wait for bell listeners to complete;
+        // NOTE that we do not officially enter quiesce until phase 2.
+        // This does mean that we could wait up to 2x(quiesceTimeout)
+        if (!quiesceListenerFutures.isComplete(System.currentTimeMillis(), quiesceTimeout)) {
+            if (tc.isDebugEnabled())
+                Tr.debug(tc, "Quiesce listeners from bells did not complete.");
+        }
+        if (tc.isDebugEnabled())
+            Tr.debug(tc, "About to begin quiesce of executor service threads.");
+        callQuiesceListeners(phase2, quiesceListenerFutures, listeners);
+        reportIncompleteQuiesce(quiesceListenerFutures, listeners, tq, quiesceTimeout, existingNotifications);
+    }
+
+    void callQuiesceListeners(Collection<ServiceReference<ServerQuiesceListener>> listenerRefs, final FutureCollection quiesceListenerFutures,
+                              final ConcurrentLinkedQueue<ServerQuiesceListener> listeners) {
         for (ServiceReference<ServerQuiesceListener> ref : listenerRefs) {
             final ServerQuiesceListener listener = bundleCtx.getService(ref);
             if (listener != null) {
@@ -395,12 +423,12 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
 
             }
         }
+    }
 
-        if (tc.isDebugEnabled())
-            Tr.debug(tc, "About to begin quiesce of executor service threads.");
+    private void reportIncompleteQuiesce(FutureCollection quiesceListenerFutures, ConcurrentLinkedQueue<ServerQuiesceListener> listeners, ThreadQuiesce tq, int quiesceTimeout,
+                                         final Map<String, RuntimeUpdateNotification> existingNotifications) {
 
         // Notify the executor service that we are quiescing
-
         long startTime = System.currentTimeMillis();
         if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime, quiesceTimeout)) {
             if (isServer())
