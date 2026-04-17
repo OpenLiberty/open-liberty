@@ -31,7 +31,7 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/EjbInjectionClientTestServlet")
 public class EjbInjectionClientTestServlet extends FATServlet {
 
-    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/ejbinjection/";
+    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/EjbInjection/";
 
     private Client client;
 
