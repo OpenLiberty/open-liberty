@@ -102,12 +102,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            String[] ignoredFailuresRegExps = new String[0];
-            // For EE11 onwards we expect these warnings and exceptions, but not in EE10 and lower
-            if (JakartaEEAction.isEE11Active()) {
-                ignoredFailuresRegExps = new String[]{"SRVE8115W", "SRVE8094W", "SRVE0777E"};
-            }
-            myServer.stopServer(ignoredFailuresRegExps);
+            stopServer();
         } finally {
             if (ldapServer != null) {
                 ldapServer.stop();
@@ -201,14 +196,9 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
-     *
-     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
-     * When authentication fails and the system tries to render the error page, the response has already been partially committed
-     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
-     * MyFaces 4.0 just logs a warning
      */
-    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" }) //
     @Test
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostRedirectWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // retry the test 5 times when 500 is returned which indicates some EL expression error happened on
@@ -318,14 +308,9 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
-     *
-     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
-     * When authentication fails and the system tries to render the error page, the response has already been partially committed
-     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
-     * MyFaces 4.0 just logs a warning
      */
-    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" }) //
     @Test
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     public void testMultipleISCustomFormPostForwardWith2ndISonly_RetryAllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         // retry the test 5 times when 500 is returned which indicates some EL expression error happened on
@@ -371,7 +356,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-/* ------------------------ support methods ---------------------- */
+    /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
         Pattern p = Pattern.compile("[\\s\\S]*id=.*(javax.faces.ViewState|jakarta.faces.ViewState).*value=\"(.*?)\"[\\s\\S]*");
         Matcher m = p.matcher(form);
@@ -400,15 +385,19 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
 
     private static void startServer() throws Exception {
         WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base",
-                                               "web.war.servlets.customform.post.redirect", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1",
-                                               "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
+                "web.war.servlets.customform.post.redirect", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1",
+                "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform.post.forward",
-                                               "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
-                                               "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
+                "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
+                "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.addInstalledAppForValidation(APP_REDIRECT_NAME);
         myServer.addInstalledAppForValidation(APP_FORWARD_NAME);
         myServer.startServer(true);
+    }
+
+    private static void stopServer() throws Exception {
+        myServer.stopServer();
     }
 
     private void restartTestEnv() throws Exception {
