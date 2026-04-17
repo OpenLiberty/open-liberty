@@ -216,7 +216,7 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
                                                                  null));
         //We expect 1, default signature just checks for greater than 0
         assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteFacesNode, responseStatus, requestMethod));
-
+        assertTrue("Force failure to keep logs.", false);
     }
 
 }
