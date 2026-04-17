@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,15 +59,8 @@ public class JcdiWrappedJspApplicationContextImpl extends JspApplicationContextI
         if (context == null) {
             throw new IllegalArgumentException("ServletContext was null");
         }
-        JspApplicationContext appCtx = JspFactory.getDefaultFactory().getJspApplicationContext(context);        
-        JspApplicationContextImpl impl = (JspApplicationContextImpl) appCtx;        
-        // PM05903 Start
-        if ( WCCustomProperties.THROW_EXCEPTION_FOR_ADDELRESOLVER 
-            && context.getAttribute("com.ibm.ws.jsp.servletContextListeners.contextInitialized")!= null) {          
-                impl.listenersContextInitialized = true;            
-        }//PM05903 End
-        
-        return new JcdiWrappedJspApplicationContextImpl (impl);
+        JspApplicationContextImpl impl = JspApplicationContextImpl.getInstance(context);
+        return new JcdiWrappedJspApplicationContextImpl(impl);
     }
     
 }

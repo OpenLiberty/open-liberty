@@ -103,10 +103,24 @@ public class JspApplicationContextImpl implements JspApplicationContext {
         if (context == null) {
             throw new IllegalArgumentException("ServletContext was null");
         }
-        JspApplicationContextImpl impl = (JspApplicationContextImpl) context.getAttribute(KEY);
+        
+        // Use context-specific key to avoid cross-module contamination in multi-module EAR applications
+        String contextPath = context.getContextPath();
+        String contextSpecificKey = KEY + "." + contextPath;
+        
+        JspApplicationContextImpl impl = null;
+        Object cached = context.getAttribute(contextSpecificKey);
+        
+        // Verify the cached instance is from the same classloader before casting
+        // to avoid ClassCastException in multi-module EAR applications
+        ClassLoader classLoader = JspApplicationContextImpl.class.getClassLoader();
+        if (cached != null && cached.getClass().getClassLoader() == classLoader) {
+            impl = (JspApplicationContextImpl) cached;
+        }
+        
         if (impl == null) {
             impl = new JspApplicationContextImpl();
-            context.setAttribute(KEY, impl);
+            context.setAttribute(contextSpecificKey, impl);
         }
         //PM05903 Start
         if (WCCustomProperties.THROW_EXCEPTION_FOR_ADDELRESOLVER
