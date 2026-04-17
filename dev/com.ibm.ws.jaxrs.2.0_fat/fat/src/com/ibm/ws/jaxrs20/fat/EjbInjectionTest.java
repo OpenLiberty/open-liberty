@@ -28,7 +28,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class EjbInjectionTest extends FATServletClient {
 
-    private static final String appName = "ejbinjection";
+    private static final String appName = "EjbInjection";
 
     @Server("com.ibm.ws.jaxrs.fat.ejbinjection")
     @TestServlet(servlet = EjbInjectionClientTestServlet.class, contextRoot = appName)
