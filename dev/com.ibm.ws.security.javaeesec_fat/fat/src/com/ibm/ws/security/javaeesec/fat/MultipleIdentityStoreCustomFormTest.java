@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
@@ -14,7 +14,6 @@ import java.util.regex.Pattern;
 
 import javax.servlet.http.HttpServletResponse;
 
-import componenttest.rules.repeater.JakartaEEAction;
 import org.apache.http.client.params.ClientPNames;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.apache.http.params.BasicHttpParams;
@@ -83,13 +82,13 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         ldapServer.start();
 
         WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
-                                               "web.war.servlets.customform.get.redirect",
-                                               "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
-                                               "web.war.identitystores.ldap");
+                "web.war.servlets.customform.get.redirect",
+                "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
+                "web.war.identitystores.ldap");
         WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform",
-                                               "web.war.servlets.customform.get.forward",
-                                               "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
-                                               "web.war.identitystores.ldap");
+                "web.war.servlets.customform.get.forward",
+                "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly",
+                "web.war.identitystores.ldap");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.startServer(true);
         myServer.addInstalledAppForValidation(APP_REDIRECT_NAME);
@@ -102,12 +101,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
     @AfterClass
     public static void tearDown() throws Exception {
         try {
-            String[] ignoredFailuresRegExps = new String[0];
-            // For EE11 onwards we expect these warnings and exceptions, but not in EE10 and lower
-            if (JakartaEEAction.isEE11Active()) {
-                ignoredFailuresRegExps = new String[]{"SRVE8115W", "SRVE8094W", "SRVE0777E"};
-            }
-            myServer.stopServer(ignoredFailuresRegExps);
+            myServer.stopServer();
         } finally {
             if (ldapServer != null) {
                 ldapServer.stop();
@@ -200,7 +194,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         verifyRealm(response, "localhost:" + portNumber);
         verifyNotInGroups(response, "group:127.0.0.1:" + portNumber + "/"); // make sure that there is no realm name from the second IdentityStore.
         verifyGroups(response,
-                     "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
+                "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -236,7 +230,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         verifyRealm(response, "localhost:" + portNumber);
         verifyNotInGroups(response, "group:127.0.0.1:" + portNumber + "/"); // make sure that there is no realm name from the second IdentityStore.
         verifyGroups(response,
-                     "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
+                "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -280,13 +274,8 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Redirect to the error page.
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
-     *
-     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
-     * When authentication fails and the system tries to render the error page, the response has already been partially committed
-     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
-     * MyFaces 4.0 just logs a warning
      */
-    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISCustomFormRedirectWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -366,7 +355,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         verifyRealm(response, "localhost:" + portNumber);
         verifyNotInGroups(response, "group:127.0.0.1:" + portNumber + "/"); // make sure that there is no realm name from the second IdentityStore.
         verifyGroups(response,
-                     "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
+                "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -383,13 +372,8 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Veirfy the list of groups contains the group name of 1st and 3rd groups only
      * <LI> Veirfy the list of groups does not contain the group name of 1st identitystore.
      * </OL>
-     *
-     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
-     * When authentication fails and the system tries to render the error page, the response has already been partially committed
-     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
-     * MyFaces 4.0 just logs a warning
      */
-    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISCustomFormForwardWith1stISfail2ndISsuccess_AllowedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -407,7 +391,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         verifyRealm(response, "localhost:" + portNumber);
         verifyNotInGroups(response, "group:127.0.0.1:" + portNumber + "/"); // make sure that there is no realm name from the second IdentityStore.
         verifyGroups(response,
-                     "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
+                "group:localhost:" + portNumber + "/grantedgroup2, group:localhost:" + portNumber + "/anothergroup1, group:localhost:" + portNumber + "/grantedgroup");
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
@@ -451,13 +435,8 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
      * <LI> Redirect to the error page.
      * <LI> Veirfy the CWWKS1652A message is logged.
      * </OL>
-     *
-     * MyFaces 4.1 (EE11) is stricter about response buffer management than MyFaces 4.0 (EE10)
-     * When authentication fails and the system tries to render the error page, the response has already been partially committed
-     * MyFaces 4.1 throws an IllegalStateException when trying to set the buffer size
-     * MyFaces 4.0 just logs a warning
      */
-    @AllowedFFDC({ "javax.naming.AuthenticationException", "java.lang.IllegalStateException", "jakarta.servlet.ServletException", "java.io.IOException" })
+    @AllowedFFDC({ "javax.naming.AuthenticationException" })
     @Test
     public void testMultipleISCustomFormForwardWith1st2ndFail_DeniedAccess() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
@@ -474,7 +453,7 @@ public class MultipleIdentityStoreCustomFormTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-/* ------------------------ support methods ---------------------- */
+    /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
         Pattern p = Pattern.compile("[\\s\\S]*id=.*(javax.faces.ViewState|jakarta.faces.ViewState).*value=\"(.*?)\"[\\s\\S]*");
         Matcher m = p.matcher(form);
