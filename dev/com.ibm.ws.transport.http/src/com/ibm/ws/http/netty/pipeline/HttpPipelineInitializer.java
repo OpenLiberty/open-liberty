@@ -258,6 +258,29 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                     timeoutHandler.markProtocol(pipeline, ProtocolName.HTTP1);
                 }
 
+                // Add H1 handlers
+                // TODO we should decide if the TimeoutHandler is optional or not for this check
+                if(pipeline.get(ReadFlowHandler.class) == null){
+                    pipeline.addBefore((timeoutHandler != null) ? TimeoutHandler.NAME : HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
+                }
+                if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
+                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
+                }
+
+                ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
+      
+
+                Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
+
+                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
+
+                // Add flow control handler after sending the message to hold up any other objects coming up but not
+                // the first http request that reached this handler
+
+                if(pipeline.get(FlowControlHandler.class) == null){
+                    pipeline.addBefore(HTTP_KEEP_ALIVE_HANDLER_NAME, FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
+                }
+
                 // Remove non-H1 handlers
                 if (pipeline.get("h2cUpgradeHandler") != null) {
                     pipeline.remove("h2cUpgradeHandler");
@@ -268,28 +291,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
                 if (pipeline.get("upgradeCheckHandler") != null) {
                     pipeline.remove("upgradeCheckHandler");
                 }
-
-                // Add H1 handlers
-                
-                
-                if(pipeline.get(ReadFlowHandler.class) == null){
-                    pipeline.addBefore(HttpDispatcherHandler.NAME, ReadFlowHandler.NAME, ReadFlowHandler.INSTANCE);
-                }
-                if(pipeline.get(HttpServerKeepAliveHandler.class) == null){
-                    pipeline.addBefore(ReadFlowHandler.NAME, HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
-                }
-                if(pipeline.get(FlowControlHandler.class) == null){
-                    pipeline.addBefore(HTTP_KEEP_ALIVE_HANDLER_NAME, FLOW_CONTROL_HANDLER_NAME, new FlowControlHandler());
-                }
-                
-                ctx.channel().attr(NettyHttpConstants.PROTOCOL).set(ProtocolName.HTTP1.name());
-      
-
-                Tr.debug(tc, "Pipeline before H1 fallback after no H2C: "+ ctx.pipeline());
-
-                ctx.fireChannelRead(ReferenceCountUtil.retain(msg));
-
-                ctx.channel().read(); // First read out of the flow control handler
 
             }
 
