@@ -99,4 +99,33 @@ public class CDIHelper {
         }
         return elProcessor;
     }
+
+    /**
+     * Get only the beans visible from the war serving the current request.
+     */
+    @SuppressWarnings("unchecked")
+    public static <T> Set<T> getBeansFromCurrentModuleViaInstance(Class<T> beanClass) {
+        Set<T> beanInstances = new HashSet<T>();
+
+        if (cdiService == null) {
+            return beanInstances;
+        }
+
+        BeanManager beanManager = cdiService.getCurrentModuleBeanManager();
+        if (beanManager == null) {
+            return beanInstances;
+        }
+
+        // look up beans from the instance objhect, add to set and return
+        javax.enterprise.inject.Instance<Object> instance = beanManager.createInstance();
+        if (instance != null) {
+            javax.enterprise.inject.Instance<T> typedInstance = instance.select(beanClass);
+            for (T bean : typedInstance) {
+                beanInstances.add(bean);
+            }
+        }
+
+        return beanInstances;
+    }
+
 }

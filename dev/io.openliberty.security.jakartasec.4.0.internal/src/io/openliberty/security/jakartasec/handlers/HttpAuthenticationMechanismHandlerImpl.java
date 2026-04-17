@@ -288,13 +288,30 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
         Tr.debug(tc, getApplicationName(), msg.toString());
     }
 
+    protected void scanAuthenticationMechanisms(Set<MultiHttpAuthenticationMechanism> multiHttpAuthenticationMechanisms) {
+        CDI cdi = getCDI();
+
+        if (cdi != null) {
+            // module scoping, get only HAMs from the current WAR/module
+            for (HttpAuthenticationMechanism mechanism : CDIHelper.getBeansFromCurrentModuleViaInstance(HttpAuthenticationMechanism.class)) {
+                MultiHttpAuthenticationMechanism multiMechanism = new MultiHttpAuthenticationMechanism(mechanism);
+                multiHttpAuthenticationMechanisms.add(multiMechanism);
+
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Found HAM from current module: " +
+                                 multiMechanism.getSimpleName());
+                }
+            }
+        }
+    }
+
     /**
      * Scans for all available HttpAuthenticationMechanism implementations.
      *
      * @param multiHttpAuthenticationMechanisms The set to populate with found mechanisms
      */
     @SuppressWarnings({ "unchecked", "rawtypes" })
-    protected void scanAuthenticationMechanisms(Set<MultiHttpAuthenticationMechanism> multiHttpAuthenticationMechanisms) {
+    protected void scanAuthenticationMechanisms1(Set<MultiHttpAuthenticationMechanism> multiHttpAuthenticationMechanisms) {
 
         Instance<HttpAuthenticationMechanism> httpAuthenticationMechanismInstances = null;
         CDI cdi = getCDI();
@@ -302,6 +319,8 @@ public class HttpAuthenticationMechanismHandlerImpl implements HttpAuthenticatio
         if (cdi != null) {
             httpAuthenticationMechanismInstances = cdi.select(HttpAuthenticationMechanism.class);
         }
+
+        Tr.debug(tc, "DAVE: module name is [" + getModuleName() + "].");
 
         if (httpAuthenticationMechanismInstances != null) {
             for (HttpAuthenticationMechanism httpAuthenticationMechanismInstance : httpAuthenticationMechanismInstances) {
