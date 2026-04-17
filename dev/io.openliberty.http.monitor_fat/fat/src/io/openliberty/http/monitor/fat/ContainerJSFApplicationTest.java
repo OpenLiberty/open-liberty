@@ -32,6 +32,7 @@ import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
+import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
@@ -154,10 +155,13 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
         /*
          * Load with .xhtml extension
          */
+        Log.info(c, "cjsf_testXHTMLext", "CARL_DEBUG: ContainerJSFApplicationTest - About to create first WebClient and make request to: " + routeXHTML);
         WebClient webClient1 = new WebClient();
         String urlXHTML = "http://" + server.getHostname() + ":"
                           + server.getHttpDefaultPort() + routeXHTML;
+        Log.info(c, "cjsf_testXHTMLext", "CARL_DEBUG: ContainerJSFApplicationTest - Making first request to URL: " + urlXHTML);
         HtmlPage page = (HtmlPage) webClient1.getPage(urlXHTML);
+        Log.info(c, "cjsf_testXHTMLext", "CARL_DEBUG: ContainerJSFApplicationTest - First request completed successfully");
 
         //Expected count 3 : 1 xhtml, 2 resource
         assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null,
@@ -170,7 +174,9 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
         WebClient webClient2 = new WebClient();
         String urlJSF = "http://" + server.getHostname() + ":"
                         + server.getHttpDefaultPort() + routeJSF;
+        Log.info(c, "cjsf_testXHTMLext", "CARL_DEBUG: ContainerJSFApplicationTest - Making second request to URL: " + urlJSF);
         page = (HtmlPage) webClient2.getPage(urlJSF);
+        Log.info(c, "cjsf_testXHTMLext", "CARL_DEBUG: ContainerJSFApplicationTest - Second request completed successfully");
 
         //Expected count 5 : + 2 resource loading (since xhtml loaded resources first, they continue to load form the /[jakarta.javax].faces.resource/*.xhtml path
         assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null,
@@ -185,7 +191,9 @@ public class ContainerJSFApplicationTest extends BaseTestClass {
         WebClient webClient3 = new WebClient();
         String urlFaces = "http://" + server.getHostname() + ":"
                           + server.getHttpDefaultPort() + routeFaces;
+        Log.info(c, "cjsf_testXHTMLext", "CARL_DEBUG: ContainerJSFApplicationTest - Making third request to URL: " + urlFaces);
         page = (HtmlPage) webClient3.getPage(urlFaces);
+        Log.info(c, "cjsf_testXHTMLext", "CARL_DEBUG: ContainerJSFApplicationTest - Third request completed successfully");
 
         //Expected count 7 : + 2 resource loading (since xhtml loaded resources first, they continue to load form the /[jakarta.javax].faces.resource/*.xhtml path
         assertTrueRetryWithTimeout(() -> validateMpTelemetryHttp(SERVICE_NAME, getContainerCollectorMetrics(container), expectedRouteXHTML, responseStatus, requestMethod, null,
