@@ -37,7 +37,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
  *
  */
 @RunWith(FATRunner.class)
-@AllowedFFDC({ "javax.management.InstanceNotFoundException", "java.lang.IllegalStateException" })
+@AllowedFFDC({ "javax.management.InstanceNotFoundException", "java.lang.IllegalStateException", "java.lang.IllegalArgumentException" })
 public class ConfigTest {
 
     final static String SERVER_NAME_ONLY_START_CONFIG = "OnlyStartupCheckHealthServer";
@@ -46,7 +46,8 @@ public class ConfigTest {
 
     final static String SERVER_NAME_BAD_START_CONFIG = "BadStartupCheckIntervalHealthServer";
 
-    private static final String[] IGNORED_AND_EXPECTED_FAILURES = { "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E", "CWMMH01012W", "CWMMH01011W", "CWMMH01010W" };
+    private static final String[] IGNORED_AND_EXPECTED_FAILURES = { "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E", "CWMMH01012W", "CWMMH01011W", "CWMMH01010W",
+                                                                    "CWWKG0075E" };
 
     public static final int APP_STARTUP_TIMEOUT = 120 * 1000;
 
