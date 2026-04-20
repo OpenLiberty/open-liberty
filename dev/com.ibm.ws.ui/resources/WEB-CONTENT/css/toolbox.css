@@ -33,6 +33,8 @@
 
 @import url("../../../../com.ibm.ws.ui.shared/resources/WEB-CONTENT/cssShared/dialog.css");
 
+@import url("identity.css");
+
 @font-face {
     font-family: "IBM Plex Sans Regular";
     src: url("../fonts/IBMPlexSans-Regular.woff");
