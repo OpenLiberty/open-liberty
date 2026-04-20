@@ -7,18 +7,30 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.config;
+package io.openliberty.mcp.internal.monitor;
 
-public interface McpConfig {
-    boolean stateless();
+public interface McpSessionStatisticsMXBean {
 
-    String moduleName();
+	/*
+	 * MCP Attributes
+	 */
 
-    String path();
+	public String getErrorType();
 
-    String servicePid();
+	public String getJsonrpcProtocolVersion();
 
-    default double sessionTimeoutMinutes() {
-        return 10.0;
-    }
+	public String getMcpProtocolVersion() ;
+
+	public String getNetworkProtocolName() ;
+
+	public String getNetworkProtocolVersion() ;
+
+	public String getNetworkTransport() ;
+	
+	/*
+	 * Metric values
+	 */
+	public long getCount();
+
+	public double getDuration();
 }

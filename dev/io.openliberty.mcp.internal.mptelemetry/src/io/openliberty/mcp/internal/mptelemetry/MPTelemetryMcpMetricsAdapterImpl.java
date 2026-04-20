@@ -43,7 +43,8 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 import io.openliberty.mcp.internal.monitor.metrics.McpMetricAdapter;
-import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.OpenTelemetry;
@@ -76,11 +77,14 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
     private static Map<String, Map<String, Attributes>> appNameToAttributesMap = new ConcurrentHashMap<String, Map<String, Attributes>>();
 
     //All access to threadUnsafeHTTPHistogramMap must be synchronized using httpHistogramMapLock
-    private final WeakHashMap<OpenTelemetry, DoubleHistogram> threadUnsafeMcpHistogramMap = new WeakHashMap<OpenTelemetry, DoubleHistogram>();
-    private final ReadWriteLock mcpHistogramMapLock = new ReentrantReadWriteLock();
+    private final WeakHashMap<OpenTelemetry, DoubleHistogram> threadUnsafeMcpOperationHistogramMap = new WeakHashMap<OpenTelemetry, DoubleHistogram>();
+    private final ReadWriteLock mcpOperationHistogramMapLock = new ReentrantReadWriteLock();
+    
+    private final WeakHashMap<OpenTelemetry, DoubleHistogram> threadUnsafeMcpSessionHistogramMap = new WeakHashMap<OpenTelemetry, DoubleHistogram>();
+    private final ReadWriteLock mcpSessionHistogramMapLock = new ReentrantReadWriteLock();
 
     @Override
-    public void updateMcpMetrics(McpStatAttributes mcpStatAttributes, Duration duration) {
+    public void updateMcpOperationMetrics(McpOperationStatAttributes mcpStatAttributes, Duration duration) {
 
         OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 
@@ -103,7 +107,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
             }
         }
 
-        DoubleHistogram mcpHistogram = getMcpHistogram(otelInstance);
+        DoubleHistogram mcpHistogram = getMcpOperationHistogram(otelInstance);
 
         Context ctx = Context.current();
 
@@ -116,25 +120,14 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
 
         // Key is the mcpStasID generated for each httpStatsAttribute
         Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
-        Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveAttributes(mcpStatAttributes));
+        Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveOperationAttributes(mcpStatAttributes));
 
         mcpHistogram.record(seconds, attributes, ctx);
 
     }
 
-    private String getApplicationName() {
-        ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
-        if (metaData != null) {
-            J2EEName name = metaData.getJ2EEName();
-            if (name != null) {
-                return name.getApplication();
-            }
-        }
-        return null;
 
-    }
-
-    private Attributes retrieveAttributes(McpStatAttributes mcpStatAttributes) {
+    private Attributes retrieveOperationAttributes(McpOperationStatAttributes mcpStatAttributes) {
 
         AttributesBuilder attributesBuilder = Attributes.builder();
         attributesBuilder.put(MCP_METHOD_NAME, mcpStatAttributes.getMcpMethodName());
@@ -205,28 +198,154 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
      *
      * However we cannot share it across multiple instances of OpenTelemetry
      */
-    private DoubleHistogram getMcpHistogram(OpenTelemetry otelInstance) {
+    private DoubleHistogram getMcpOperationHistogram(OpenTelemetry otelInstance) {
 
         try {
-            mcpHistogramMapLock.readLock().lock();
-            if (threadUnsafeMcpHistogramMap.containsKey(otelInstance)) {
-                return threadUnsafeMcpHistogramMap.get(otelInstance);
+            mcpOperationHistogramMapLock.readLock().lock();
+            if (threadUnsafeMcpOperationHistogramMap.containsKey(otelInstance)) {
+                return threadUnsafeMcpOperationHistogramMap.get(otelInstance);
             }
         } finally {
-            mcpHistogramMapLock.readLock().unlock();
+            mcpOperationHistogramMapLock.readLock().unlock();
         }
 
         try {
-            mcpHistogramMapLock.writeLock().lock();
-            return threadUnsafeMcpHistogramMap.computeIfAbsent(otelInstance,
+            mcpOperationHistogramMapLock.writeLock().lock();
+            return threadUnsafeMcpOperationHistogramMap.computeIfAbsent(otelInstance,
                                                                (OpenTelemetry openTelemetry) -> openTelemetry.getMeterProvider().get(INSTR_SCOPE)
                                                                                .histogramBuilder(Constants.MCP_SERVER_OPERATION_DURATION_NAME)
                                                                                .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
                                                                                .setDescription(Constants.MCP_SERVER_OPERATION_DURATION_DESC)
                                                                                .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build());
         } finally {
-            mcpHistogramMapLock.writeLock().unlock();
+            mcpOperationHistogramMapLock.writeLock().unlock();
         }
+    }
+    
+    
+    @Override
+    public void updateMcpSessionMetrics(McpSessionStatAttributes mcpStatAttributes, Duration duration) {
+
+        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
+
+        /*
+         * Even if the HTTP call is served by the server/runtime, the "appName" can be non null.
+         * The AppName is retrieved through a ServletContext property and the "appname" can be the originating bundle.
+         * This would not be "registered" as an appname with the Otel runtime and will return null.
+         * We will then below retrieve a server/runtime instance.
+         *
+         */
+        if (otelInstance == null) {
+            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
+            if (otelInstance == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,
+                             String.format("Unable to resolve an OpenTelemetry instance for the McpStatAttributes [%s]", mcpStatAttributes.toString()));
+                }
+                //do nothing - return
+                return;
+            }
+        }
+
+        DoubleHistogram mcpHistogram = getMcpSessionHistogram(otelInstance);
+
+        Context ctx = Context.current();
+
+        double seconds = duration.toNanos() * NANO_CONVERSION;
+
+        String appName = getApplicationName();
+        appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
+
+        String keyID = mcpStatAttributes.getMcpStat_ID();
+
+        // Key is the mcpStasID generated for each httpStatsAttribute
+        Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
+        Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveSessionAttributes(mcpStatAttributes));
+
+        mcpHistogram.record(seconds, attributes, ctx);
+
+    }
+
+
+    private Attributes retrieveSessionAttributes(McpSessionStatAttributes mcpStatAttributes) {
+
+        AttributesBuilder attributesBuilder = Attributes.builder();
+
+        String errorType = mcpStatAttributes.getErrorType();
+        if (errorType != null) {
+            attributesBuilder.put(ERROR_TYPE, errorType);
+        }
+
+        String jsonrpcProtocolVersion = mcpStatAttributes.getJsonrpcProtocolVersion();
+        if (jsonrpcProtocolVersion != null) {
+            attributesBuilder.put(JSONRPC_PROTOCOL_VERSION, jsonrpcProtocolVersion);
+        }
+
+        String mcpProtocolVersion = mcpStatAttributes.getMcpProtocolVersion();
+        if (mcpProtocolVersion != null) {
+            attributesBuilder.put(MCP_PROTOCOL_VERSION, mcpProtocolVersion);
+        }
+
+        String networkProtocolName = mcpStatAttributes.getNetworkProtocolName();
+        if (networkProtocolName != null) {
+            attributesBuilder.put(NETWORK_PROTOCOL_NAME, networkProtocolName);
+        }
+
+        String networkProtocolVersion = mcpStatAttributes.getNetworkProtocolVersion();
+        if (networkProtocolVersion != null) {
+            attributesBuilder.put(NETWORK_PROTOCOL_VERSION, networkProtocolVersion);
+        }
+
+        String networkTransport = mcpStatAttributes.getNetworkTransport();
+        if (networkTransport != null) {
+            attributesBuilder.put(NETWORK_TRANSPORT, networkTransport);
+        }
+
+        return attributesBuilder.build();
+    }
+
+    /*
+     * We can re-use the (histogram) Meter created here.
+     * The Meter is built using the same static values each time.
+     * The instrument that is recorded/updated is distinct for each
+     * http-route/response/method combination (corresponds with resolved attributes).
+     *
+     * However we cannot share it across multiple instances of OpenTelemetry
+     */
+    private DoubleHistogram getMcpSessionHistogram(OpenTelemetry otelInstance) {
+
+        try {
+            mcpSessionHistogramMapLock.readLock().lock();
+            if (threadUnsafeMcpSessionHistogramMap.containsKey(otelInstance)) {
+                return threadUnsafeMcpSessionHistogramMap.get(otelInstance);
+            }
+        } finally {
+            mcpSessionHistogramMapLock.readLock().unlock();
+        }
+
+        try {
+            mcpSessionHistogramMapLock.writeLock().lock();
+            return threadUnsafeMcpSessionHistogramMap.computeIfAbsent(otelInstance,
+                                                               (OpenTelemetry openTelemetry) -> openTelemetry.getMeterProvider().get(INSTR_SCOPE)
+                                                                               .histogramBuilder(Constants.MCP_SERVER_SESSION_DURATION_NAME)
+                                                                               .setUnit(OpenTelemetryConstants.OTEL_SECONDS_UNIT)
+                                                                               .setDescription(Constants.MCP_SERVER_SESSION_DURATION_DESC)
+                                                                               .setExplicitBucketBoundariesAdvice(BUCKET_BOUNDARIES_LIST).build());
+        } finally {
+            mcpSessionHistogramMapLock.writeLock().unlock();
+        }
+    }
+    
+    private String getApplicationName() {
+        ComponentMetaData metaData = com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+        if (metaData != null) {
+            J2EEName name = metaData.getJ2EEName();
+            if (name != null) {
+                return name.getApplication();
+            }
+        }
+        return null;
+
     }
 
     /** {@inheritDoc} */

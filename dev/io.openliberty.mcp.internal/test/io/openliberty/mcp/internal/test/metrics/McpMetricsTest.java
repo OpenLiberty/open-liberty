@@ -16,7 +16,8 @@ import static org.junit.Assert.assertSame;
 import org.junit.After;
 import org.junit.Test;
 
-import io.openliberty.mcp.internal.metrics.McpMetrics;
+import io.openliberty.mcp.internal.metrics.McpOperationMetrics;
+import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitorHolder;
 
@@ -32,14 +33,14 @@ public class McpMetricsTest {
         RecordingMonitor monitor = new RecordingMonitor();
         McpStatsMonitorHolder.set(monitor);
 
-        McpMetrics metrics = new McpMetrics();
+        McpOperationMetrics metrics = new McpOperationMetrics();
         metrics.setMethodName("initialize");
 
-        McpMetrics.operationStarted(metrics);
+        McpOperationMetrics.operationStarted(metrics);
 
-        assertEquals(1, monitor.startCalls);
-        assertSame(metrics, monitor.startedMetrics);
-        assertEquals(0, monitor.endCalls);
+        assertEquals(1, monitor.startOperationCalls);
+        assertSame(metrics, monitor.startedOperationMetrics);
+        assertEquals(0, monitor.endOperationCalls);
     }
 
     @Test
@@ -47,25 +48,25 @@ public class McpMetricsTest {
         RecordingMonitor monitor = new RecordingMonitor();
         McpStatsMonitorHolder.set(monitor);
 
-        McpMetrics metrics = new McpMetrics();
+        McpOperationMetrics metrics = new McpOperationMetrics();
         metrics.setMethodName("tools/list");
         metrics.setOutcome("ok", null);
 
-        McpMetrics.operationEnded(metrics);
+        McpOperationMetrics.operationEnded(metrics);
 
-        assertEquals(1, monitor.endCalls);
-        assertSame(metrics, monitor.endedMetrics);
-        assertEquals(0, monitor.startCalls);
+        assertEquals(1, monitor.endOperationCalls);
+        assertSame(metrics, monitor.endedOperationMetrics);
+        assertEquals(0, monitor.startOperationCalls);
     }
 
     @Test
     public void operationStartedDoesNothingWhenMonitorMissing() {
         McpStatsMonitorHolder.clear();
 
-        McpMetrics metrics = new McpMetrics();
+        McpOperationMetrics metrics = new McpOperationMetrics();
         metrics.setMethodName("initialize");
 
-        McpMetrics.operationStarted(metrics);
+        McpOperationMetrics.operationStarted(metrics);
 
         // no exception = pass
         assertNotNull(metrics);
@@ -75,32 +76,106 @@ public class McpMetricsTest {
     public void operationEndedDoesNothingWhenMonitorMissing() {
         McpStatsMonitorHolder.clear();
 
-        McpMetrics metrics = new McpMetrics();
+        McpOperationMetrics metrics = new McpOperationMetrics();
         metrics.setMethodName("initialize");
         metrics.setOutcome("ok", null);
 
-        McpMetrics.operationEnded(metrics);
+        McpOperationMetrics.operationEnded(metrics);
+
+        // no exception = pass
+        assertNotNull(metrics);
+    }
+
+    @Test
+    public void sessionStartedDelegatesToMonitor() {
+        RecordingMonitor monitor = new RecordingMonitor();
+        McpStatsMonitorHolder.set(monitor);
+
+        McpSessionMetrics metrics = new McpSessionMetrics();
+
+        McpSessionMetrics.sessionStarted(metrics);
+
+        assertEquals(1, monitor.startSessionCalls);
+        assertSame(metrics, monitor.startedSessionMetrics);
+        assertEquals(0, monitor.endSessionCalls);
+    }
+
+    @Test
+    public void sessionEndedDelegatesToMonitor() {
+        RecordingMonitor monitor = new RecordingMonitor();
+        McpStatsMonitorHolder.set(monitor);
+
+        McpSessionMetrics metrics = new McpSessionMetrics();
+        metrics.setErrorType(null);
+
+        McpSessionMetrics.sessionEnded(metrics);
+
+        assertEquals(1, monitor.endSessionCalls);
+        assertSame(metrics, monitor.endedSessionMetrics);
+        assertEquals(0, monitor.startSessionCalls);
+    }
+
+    @Test
+    public void sessionStartedDoesNothingWhenMonitorMissing() {
+        McpStatsMonitorHolder.clear();
+
+        McpSessionMetrics metrics = new McpSessionMetrics();
+
+        McpSessionMetrics.sessionStarted(metrics);
+
+        // no exception = pass
+        assertNotNull(metrics);
+    }
+
+    @Test
+    public void sessionEndedDoesNothingWhenMonitorMissing() {
+        McpStatsMonitorHolder.clear();
+
+        McpSessionMetrics metrics = new McpSessionMetrics();
+
+        McpSessionMetrics.sessionEnded(metrics);
 
         // no exception = pass
         assertNotNull(metrics);
     }
 
     private static class RecordingMonitor implements McpStatsMonitor {
-        int startCalls;
-        int endCalls;
-        McpMetrics startedMetrics;
-        McpMetrics endedMetrics;
+        int startOperationCalls;
+        int endOperationCalls;
+        McpOperationMetrics startedOperationMetrics;
+        McpOperationMetrics endedOperationMetrics;
+
+        int startSessionCalls;
+        int endSessionCalls;
+        McpSessionMetrics startedSessionMetrics;
+        McpSessionMetrics endedSessionMetrics;
 
         @Override
-        public void recordOperationStart(McpMetrics metrics) {
-            startCalls++;
-            startedMetrics = metrics;
+        public void recordOperationStart(McpOperationMetrics metrics) {
+            startOperationCalls++;
+            startedOperationMetrics = metrics;
         }
 
         @Override
-        public void recordOperationEnd(McpMetrics metrics) {
-            endCalls++;
-            endedMetrics = metrics;
+        public void recordOperationEnd(McpOperationMetrics metrics) {
+            endOperationCalls++;
+            endedOperationMetrics = metrics;
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void recordSessionStart(McpSessionMetrics metrics) {
+            startSessionCalls++;
+            startedSessionMetrics = metrics;
+
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public void recordSessionEnd(McpSessionMetrics metrics) {
+            endSessionCalls++;
+            endedSessionMetrics = metrics;
+
         }
     }
 }

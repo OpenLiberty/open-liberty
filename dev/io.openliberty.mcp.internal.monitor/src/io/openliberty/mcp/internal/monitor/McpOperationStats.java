@@ -12,13 +12,13 @@ package io.openliberty.mcp.internal.monitor;
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 import com.ibm.websphere.monitor.meters.StatisticsReading;
 
-import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
 
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
 
-public class McpStats extends Meter implements McpStatsMXBean {
+public class McpOperationStats extends Meter implements McpOperationStatsMXBean {
 	private final String mcpMethodName;
     
     /*
@@ -40,7 +40,7 @@ public class McpStats extends Meter implements McpStatsMXBean {
 	private Counter toolCallCount;
 	private StatisticsMeter toolCallRunDuration;
 	
-	public McpStats(McpStatAttributes mcpStatAttributes) {
+	public McpOperationStats(McpOperationStatAttributes mcpStatAttributes) {
 		this.mcpMethodName = mcpStatAttributes.getMcpMethodName();
 		this.errorType = mcpStatAttributes.getErrorType();
 		this.genAiPromptName = mcpStatAttributes.getGenAiPromptName();

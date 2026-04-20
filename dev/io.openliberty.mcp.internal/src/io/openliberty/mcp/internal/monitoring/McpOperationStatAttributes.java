@@ -15,11 +15,11 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-public class McpStatAttributes {
+public class McpOperationStatAttributes {
 
         private final String mcpStat_ID;
 
-        private static final TraceComponent tc = Tr.register(McpStatAttributes.class);
+        private static final TraceComponent tc = Tr.register(McpOperationStatAttributes.class);
 
         /*
          * Mandatory fields - Technically networkProtocolName is optional as per http semantics
@@ -67,7 +67,7 @@ public class McpStatAttributes {
 		 * @param networkTransport
 		 * @param mcpResourceUri
 		 */
-		public McpStatAttributes(Builder builder) throws IllegalStateException {
+		public McpOperationStatAttributes(Builder builder) throws IllegalStateException {
 			if (!builder.validate()) {
               throw new IllegalStateException("Invalid MCP Stats attributes");
 			};
@@ -283,9 +283,9 @@ public class McpStatAttributes {
                  * @throws IllegalStateException
                  */
                 @FFDCIgnore(value = { IllegalStateException.class })
-                public McpStatAttributes build() {
+                public McpOperationStatAttributes build() {
                         try {
-                                return new McpStatAttributes(this);
+                                return new McpOperationStatAttributes(this);
                         } catch (IllegalStateException ise) {
                                 //do nothing
                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

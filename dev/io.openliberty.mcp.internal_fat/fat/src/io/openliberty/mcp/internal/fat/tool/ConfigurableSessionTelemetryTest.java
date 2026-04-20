@@ -10,6 +10,8 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -19,7 +21,6 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.skyscreamer.jsonassert.JSONAssert;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
@@ -32,11 +33,11 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
-public class TelemetryTest extends FATServletClient {
+public class ConfigurableSessionTelemetryTest extends FATServletClient {
 
-    private final static String APP_NAME = "telemetryTest";
+    private final static String APP_NAME = "ConfigurableSessionTelemetryTest";
 
-    @Server("mcp-server-telemetry")
+    @Server("mcp-server-telemetry-session-config")
     public static LibertyServer server;
 
     @Rule
@@ -74,7 +75,7 @@ public class TelemetryTest extends FATServletClient {
                                                   "META-INF/microprofile-config.properties")
                                    .addAsServiceProvider(AutoConfigurationCustomizerProvider.class,
                                                          PullExporterAutoConfigurationCustomizerProvider.class);
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
         server.startServer();
     }
 
@@ -84,31 +85,20 @@ public class TelemetryTest extends FATServletClient {
     }
 
     @Test
-    public void testToolCallMetrics() throws Exception {
-        String response = client.callMCP(BASIC_TOOL_REQUEST);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Hello from this basic tool"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
+    public void testCustomSessionTimeoutWithMetrics() throws Exception {
+        Thread.sleep(1500);
 
-        client.callMCP(ADVANCED_TOOL_REQUEST);
-        client.callMCP(ADVANCED_TOOL_REQUEST);
+        try {
+            client.deleteSession();
+            fail("Expected session to be timed out, but delete succeeded");
+        } catch (Exception e) {
+            assertTrue("Expected session not found error",
+                       e.getMessage().contains("Session not found") ||
+                                                           e.getMessage().contains("404"));
+            client.setSessionDeleted(true);
+        }
 
-        // Run servlet tests to see if metrics are collected correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpMetricServlet", "testBasicToolCallMetrics");
-        FATServletClient.runTest(server, APP_NAME + "/McpMetricServlet", "testAdvancedToolCallMetrics");
-    }
-
-    @Test
-    public void testSessionDurationMetrics() throws Exception {
-        // Perform some operations within the session
-        client.callMCP(BASIC_TOOL_REQUEST);
-        client.callMCP(ADVANCED_TOOL_REQUEST);
-
-        // Delete the session to trigger sessionEnded metric recording
-        client.deleteSession();
-
-        FATServletClient.runTest(server, APP_NAME + "/McpMetricServlet", "testSessionDurationMetrics");
+        FATServletClient.runTest(server, APP_NAME + "/McpMetricServlet", "testSessionTimeoutMetrics");
     }
 
 }

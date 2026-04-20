@@ -29,7 +29,6 @@ import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
-
 /**
  * A client for testing the MCP server, which takes care of setting up a session, passing
  * through the correct headers on each request and deleting the session after the test.
@@ -214,6 +213,21 @@ public class McpClient extends ExternalResource {
             try {
                 new HttpRequest(server, getMcpPath())
                                                      .requestProp(MCP_SESSION_ID, sessionId)
+                                                     .method("DELETE")
+                                                     .run(String.class);
+
+                this.sessionDeleted = true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void deleteSession(String mcpSessionId) {
+        if (mode.equals(StateMode.STATEFUL)) {
+            try {
+                new HttpRequest(server, getMcpPath())
+                                                     .requestProp(MCP_SESSION_ID, mcpSessionId)
                                                      .method("DELETE")
                                                      .run(String.class);
 
@@ -420,6 +434,10 @@ public class McpClient extends ExternalResource {
         combinedResponse.put("result", combinedResult);
 
         return combinedResponse.toString();
+    }
+
+    public void setSessionDeleted(boolean deleted) {
+        this.sessionDeleted = deleted;
     }
 
 }
