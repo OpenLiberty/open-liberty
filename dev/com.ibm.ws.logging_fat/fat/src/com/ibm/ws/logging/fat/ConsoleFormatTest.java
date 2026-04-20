@@ -375,6 +375,7 @@ public class ConsoleFormatTest {
     @Test
     @AllowedFFDC
     public void testSimpleConsoleFormatWithException() throws Exception {
+        restoreServer();
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
@@ -556,7 +557,6 @@ public class ConsoleFormatTest {
         loggingObj.setConsoleFormat(consoleFormat);
         libertyServer.setMarkToEndOfLog(consoleLogFile);
         libertyServer.updateServerConfiguration(serverConfig);
-        Thread.sleep(1000);
         libertyServer.waitForConfigUpdateInLogUsingMark(null);
     }
 
