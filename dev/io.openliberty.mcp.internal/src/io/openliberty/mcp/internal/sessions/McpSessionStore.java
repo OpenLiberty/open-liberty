@@ -18,6 +18,7 @@ import java.util.concurrent.ConcurrentMap;
 
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.config.McpConfig;
+import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -35,7 +36,6 @@ public class McpSessionStore {
     @Inject
     McpConfig mcpConfig;
 
-    private static final Duration SESSION_TIMEOUT = Duration.ofMinutes(10);
     private final ConcurrentMap<String, McpSession> sessions = new ConcurrentHashMap<>();
 
     public boolean isStateless() {
@@ -47,14 +47,16 @@ public class McpSessionStore {
      *
      * @return the newly generated session ID
      */
-    public String createSession(Principal userId) {
+    public String createSession(Principal userId, McpSessionMetrics metrics) {
 
         if (isStateless()) {
             return null;
         }
 
         String sessionId = UUID.randomUUID().toString();
-        sessions.put(sessionId, new McpSession(sessionId, userId));
+        McpSession mcpSession = new McpSession(sessionId, userId, metrics);
+        sessions.put(sessionId, mcpSession);
+        metrics.setMcpSession(mcpSession);
         return sessionId;
     }
 
@@ -102,7 +104,18 @@ public class McpSessionStore {
      * Removes any sessions that have expired based on the session timeout duration.
      */
     public void cleanupOldSessions() {
+        Duration sessionTimeout = Duration.ofMillis((long) (mcpConfig.sessionTimeoutMinutes() * 60 * 1000));
+        System.out.println("Here is the mcp config session timeout: " + sessionTimeout.toSeconds());
         Instant now = Instant.now();
-        sessions.entrySet().removeIf(entry -> Duration.between(entry.getValue().getLastAccessed(), now).compareTo(SESSION_TIMEOUT) > 0);
+        sessions.entrySet().removeIf(entry -> {
+            boolean expired = Duration.between(entry.getValue().getLastAccessed(), now)
+                                      .compareTo(sessionTimeout) > 0;
+            if (expired) {
+                McpSessionMetrics metrics = entry.getValue().getMetrics();
+                metrics.setErrorType("timeout");
+                McpSessionMetrics.sessionEnded(metrics);
+            }
+            return expired;
+        });
     }
 }

@@ -60,7 +60,10 @@ public class McpConfigurationComponent {
         Object statelessObj = properties.get("stateless");
         boolean stateless = statelessObj != null ? Boolean.parseBoolean(String.valueOf(statelessObj)) : false;
 
-        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid);
+        Object timeoutObj = properties.get("sessionTimeoutMinutes");
+        double sessionTimeoutMinutes = timeoutObj != null ? Double.parseDouble(String.valueOf(timeoutObj)) : 10.0;
+
+        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, sessionTimeoutMinutes);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "McpConfigurationComponent activated: servicePid=" + servicePid);

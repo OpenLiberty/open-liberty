@@ -45,7 +45,8 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 import io.openliberty.mcp.internal.monitor.metrics.McpMetricAdapter;
-import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 import io.openliberty.mcp.internal.mpmetrics.constants.Constants;
 
@@ -79,7 +80,7 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
     }
 
     @Override
-    public void updateMcpMetrics(McpStatAttributes mcpStatAttributes, Duration duration) {
+    public void updateMcpOperationMetrics(McpOperationStatAttributes mcpStatAttributes, Duration duration) {
 
         if (sharedMetricRegistries == null) {
             return;
@@ -99,7 +100,7 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
         // Key is the HttpStasID generated for each httpStatsAttribute
         Map<String, Tag[]> attributesMap = appNameToTagsMap.computeIfAbsent(appName,
                 x -> new ConcurrentHashMap<String, Tag[]>());
-        Tag[] tags = attributesMap.computeIfAbsent(keyID, x -> retrieveTags(mcpStatAttributes));
+        Tag[] tags = attributesMap.computeIfAbsent(keyID, x -> retrieveOperationTags(mcpStatAttributes));
 
         Histogram mcpTimer = vendorRegistry.histogram(md, tags);
         mcpTimer.update(duration.getNano());
@@ -107,7 +108,7 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
 
     }
 
-    private Tag[] retrieveTags(McpStatAttributes mcpStatAttributes) {
+    private Tag[] retrieveOperationTags(McpOperationStatAttributes mcpStatAttributes) {
 
         Tag mcpMethodNameTag = new Tag(MCP_METHOD_NAME,
                 mcpStatAttributes.getMcpMethodName());
@@ -158,6 +159,67 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
         Tag[] ret = new Tag[] { mcpMethodNameTag, errorTypeTag, genAiPromptNameTag, genAiToolNameTag,
                 rpcResponseStatusCodeTag, genAiOperationNameTag, jsonrpcProtocolVersionTag, mcpProtocolVersionTag,
                 networkProtocolNameTag, networkProtocolVersionTag, networkTransportTag, mcpResourceUriTag };
+
+        return ret;
+    }
+    
+    @Override
+    public void updateMcpSessionMetrics(McpSessionStatAttributes mcpStatAttributes, Duration duration) {
+
+        if (sharedMetricRegistries == null) {
+            return;
+        }
+
+        MetricRegistry vendorRegistry = sharedMetricRegistries.getOrCreate(MetricRegistry.VENDOR_SCOPE);
+
+        Metadata md = new MetadataBuilder().withUnit("nanoseconds")
+                .withName(Constants.MCP_SERVER_SESSION_DURATION_NAME)
+                .withDescription(Constants.MCP_SERVER_SESSION_DURATION_DESC).build();
+
+        String appName = getApplicationName();
+        appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
+
+        String keyID = mcpStatAttributes.getMcpStat_ID();
+
+        // Key is the HttpStasID generated for each httpStatsAttribute
+        Map<String, Tag[]> attributesMap = appNameToTagsMap.computeIfAbsent(appName,
+                x -> new ConcurrentHashMap<String, Tag[]>());
+        Tag[] tags = attributesMap.computeIfAbsent(keyID, x -> retrieveSessionTags(mcpStatAttributes));
+
+        Histogram mcpTimer = vendorRegistry.histogram(md, tags);
+        mcpTimer.update(duration.getNano());
+        ;
+
+    }
+
+    private Tag[] retrieveSessionTags(McpSessionStatAttributes mcpStatAttributes) {
+
+        String errorType = mcpStatAttributes.getErrorType();
+        Tag errorTypeTag = new Tag(ERROR_TYPE, (errorType == null ? "" : errorType));
+
+        String jsonrpcProtocolVersion = mcpStatAttributes.getJsonrpcProtocolVersion();
+        Tag jsonrpcProtocolVersionTag = new Tag(JSONRPC_PROTOCOL_VERSION,
+                (jsonrpcProtocolVersion == null ? "" : jsonrpcProtocolVersion));
+
+        String mcpProtocolVersion = mcpStatAttributes.getMcpProtocolVersion();
+        Tag mcpProtocolVersionTag = new Tag(MCP_PROTOCOL_VERSION,
+                (mcpProtocolVersion == null ? "" : mcpProtocolVersion));
+
+        String networkProtocolName = mcpStatAttributes.getNetworkProtocolName();
+        Tag networkProtocolNameTag = new Tag(NETWORK_PROTOCOL_NAME,
+                (networkProtocolName == null ? "" : networkProtocolName));
+
+        String networkProtocolVersion = mcpStatAttributes.getNetworkProtocolVersion();
+        Tag networkProtocolVersionTag = new Tag(NETWORK_PROTOCOL_VERSION,
+                (networkProtocolVersion == null ? "" : networkProtocolVersion));
+
+        String networkTransport = mcpStatAttributes.getNetworkTransport();
+        Tag networkTransportTag = new Tag(NETWORK_TRANSPORT,
+                (networkTransport == null ? "" : networkTransport));
+
+
+        Tag[] ret = new Tag[] { errorTypeTag, jsonrpcProtocolVersionTag, mcpProtocolVersionTag,
+                networkProtocolNameTag, networkProtocolVersionTag, networkTransportTag, };
 
         return ret;
     }

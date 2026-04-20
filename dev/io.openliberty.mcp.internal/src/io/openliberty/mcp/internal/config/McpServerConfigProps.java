@@ -20,7 +20,8 @@ package io.openliberty.mcp.internal.config;
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
                                    String path,
-                                   String servicePid) implements McpConfig {
+                                   String servicePid,
+                                   double sessionTimeoutMinutes) implements McpConfig {
     public static final String FALLBACK_PATH = "/mcp";
-    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null);
+    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, 10);
 }

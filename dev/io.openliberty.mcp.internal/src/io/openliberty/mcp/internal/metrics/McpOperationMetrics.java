@@ -22,7 +22,7 @@ import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 /**
  *
  */
-public final class McpMetrics {
+public final class McpOperationMetrics {
     private ExecutionRequestId executionRequestId;
     private McpTransport transport;
 
@@ -34,9 +34,9 @@ public final class McpMetrics {
     private String status;
     private String errorType;
 
-    private static final TraceComponent tc = Tr.register(McpMetrics.class);
+    private static final TraceComponent tc = Tr.register(McpOperationMetrics.class);
 
-    public McpMetrics() {
+    public McpOperationMetrics() {
         this.startTimeNanos = System.nanoTime();
         this.startTIme = Instant.now();
     }
@@ -131,7 +131,7 @@ public final class McpMetrics {
         this.errorType = errorType;
     }
 
-    public static void operationStarted(McpMetrics metrics) {
+    public static void operationStarted(McpOperationMetrics metrics) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "operationStarted hook called for method: " + metrics.getMethodName());
         }
@@ -147,7 +147,7 @@ public final class McpMetrics {
         monitor.recordOperationStart(metrics);
     }
 
-    public static void operationEnded(McpMetrics metrics) {
+    public static void operationEnded(McpOperationMetrics metrics) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "operationEnded hook called for method: " + metrics.getMethodName());
         }

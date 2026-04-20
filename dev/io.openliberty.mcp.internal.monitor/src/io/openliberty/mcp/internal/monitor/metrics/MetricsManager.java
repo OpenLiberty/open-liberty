@@ -24,7 +24,8 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
 
 @Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
 public class MetricsManager {
@@ -63,7 +64,7 @@ private static MetricsManager instance;
      * @param httpStatAttributes
      * @param duration
      */
-	public void updateMcpToolDurationMetrics(McpStatAttributes mcpStatsAttribute , Duration duration) {
+	public void updateMcpOperationDurationMetrics(McpOperationStatAttributes mcpStatsAttribute , Duration duration) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 	        Tr.debug(tc, "Forwarding metrics to " + mcpMetricRuntimes.size() + " adapters");
 	    }
@@ -72,7 +73,25 @@ private static MetricsManager instance;
         	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 	            Tr.debug(tc, "Adapter: " + adapter.getClass().getName());
 	        }
-            adapter.updateMcpMetrics(mcpStatsAttribute, duration);
+            adapter.updateMcpOperationMetrics(mcpStatsAttribute, duration);
+        }
+	}
+	
+	/**
+     * 
+     * @param httpStatAttributes
+     * @param duration
+     */
+	public void updateMcpSessionDurationMetrics(McpSessionStatAttributes mcpStatsAttribute , Duration duration) {
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	        Tr.debug(tc, "Forwarding metrics to " + mcpMetricRuntimes.size() + " adapters");
+	    }
+
+        for (McpMetricAdapter adapter : mcpMetricRuntimes) {
+        	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+	            Tr.debug(tc, "Adapter: " + adapter.getClass().getName());
+	        }
+            adapter.updateMcpSessionMetrics(mcpStatsAttribute, duration);
         }
 	}
 

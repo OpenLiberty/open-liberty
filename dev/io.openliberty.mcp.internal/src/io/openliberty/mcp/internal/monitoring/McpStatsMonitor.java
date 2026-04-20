@@ -9,7 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.monitoring;
 
-import io.openliberty.mcp.internal.metrics.McpMetrics;
+import io.openliberty.mcp.internal.metrics.McpOperationMetrics;
+import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 
 /**
  *
@@ -17,7 +18,11 @@ import io.openliberty.mcp.internal.metrics.McpMetrics;
 
 public interface McpStatsMonitor {
 
-    void recordOperationStart(McpMetrics metrics);
+    void recordOperationStart(McpOperationMetrics metrics);
 
-    void recordOperationEnd(McpMetrics metrics);
+    void recordOperationEnd(McpOperationMetrics metrics);
+
+    void recordSessionStart(McpSessionMetrics metrics);
+
+    void recordSessionEnd(McpSessionMetrics metrics);
 }

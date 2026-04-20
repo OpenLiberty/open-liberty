@@ -40,7 +40,8 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
 import io.openliberty.mcp.internal.meta.MetaImpl;
-import io.openliberty.mcp.internal.metrics.McpMetrics;
+import io.openliberty.mcp.internal.metrics.McpOperationMetrics;
+import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
@@ -237,14 +238,14 @@ public class McpServlet extends HttpServlet {
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         /*
-         * Create opertation Context
+         * Create operation Context
          */
-        McpMetrics optCtx = new McpMetrics();
+        McpOperationMetrics optCtx = new McpOperationMetrics();
         optCtx.setMethodName("sessions/delete");
 
         String status = "ok";
         String errorType = null;
-
+        String sessionId = "";
         try {
 
             if (isServerStateless()) {
@@ -252,7 +253,7 @@ public class McpServlet extends HttpServlet {
                 return;
             }
 
-            final String sessionId = req.getHeader(McpTransport.MCP_SESSION_ID_HEADER);
+            sessionId = req.getHeader(McpTransport.MCP_SESSION_ID_HEADER);
 
             if (sessionId == null) {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing Mcp-Session-Id");
@@ -260,8 +261,10 @@ public class McpServlet extends HttpServlet {
             }
 
             if (sessionStore.isValid(sessionId)) {
+                McpSessionMetrics.sessionEnded(sessionStore.getSession(sessionId).getMetrics());
                 sessionStore.deleteSession(sessionId);
                 resp.setStatus(HttpServletResponse.SC_OK);
+
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
             }
@@ -278,10 +281,9 @@ public class McpServlet extends HttpServlet {
 
     @FFDCIgnore(ToolCallException.class)
     private void callTool(McpTransport transport) {
-        McpMetrics metrics = new McpMetrics();
+        McpOperationMetrics metrics = new McpOperationMetrics();
         metrics.setMethodName("tools/call");
         metrics.setTransport(transport);
-        McpMetrics.operationStarted(metrics);
 
         String status = "ok";
         String errorType = null;
@@ -296,7 +298,7 @@ public class McpServlet extends HttpServlet {
         if (params != null && params.getName() != null) {
             metrics.setToolName(params.getName());
         }
-
+        McpOperationMetrics.operationStarted(metrics);
         McpRequest request = transport.getMcpRequest();
 
         try {
@@ -342,7 +344,7 @@ public class McpServlet extends HttpServlet {
             // For async requests, metrics must end in the async completion callback.
             if (!asyncOperation) {
                 metrics.setOutcome(status, errorType);
-                McpMetrics.operationEnded(metrics);
+                McpOperationMetrics.operationEnded(metrics);
             }
         }
     }
@@ -382,7 +384,7 @@ public class McpServlet extends HttpServlet {
                                               ExecutionRequestId requestId,
                                               McpToolCallParams params,
                                               ToolArguments toolArgs,
-                                              McpMetrics metrics) {
+                                              McpOperationMetrics metrics) {
 
         if (requestId != null) {
             requestTracker.registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
@@ -418,7 +420,7 @@ public class McpServlet extends HttpServlet {
                          }
 
                          metrics.setOutcome(status, errorType);
-                         McpMetrics.operationEnded(metrics);
+                         McpOperationMetrics.operationEnded(metrics);
                      } finally {
                          cleanup(requestId);
                      }
@@ -481,10 +483,10 @@ public class McpServlet extends HttpServlet {
         /*
          * Create opertation Context
          */
-        McpMetrics metrics = new McpMetrics();
+        McpOperationMetrics metrics = new McpOperationMetrics();
         metrics.setMethodName("tools/list");
         metrics.setTransport(transport);
-        McpMetrics.operationStarted(metrics);
+        McpOperationMetrics.operationStarted(metrics);
 
         String status = "ok";
         String errorType = null;
@@ -531,7 +533,7 @@ public class McpServlet extends HttpServlet {
             throw e;
         } finally {
             metrics.setOutcome(status, errorType);
-            McpMetrics.operationEnded(metrics);
+            McpOperationMetrics.operationEnded(metrics);
 
         }
     }
@@ -558,11 +560,11 @@ public class McpServlet extends HttpServlet {
      */
     @FFDCIgnore(NoSuchElementException.class)
     private void initialize(McpTransport transport) throws IOException {
-        McpMetrics metrics = new McpMetrics();
-        metrics.setMethodName("initialize");
-        metrics.setTransport(transport);
-        McpMetrics.operationStarted(metrics);
-
+        McpOperationMetrics operationMetrics = new McpOperationMetrics();
+        operationMetrics.setMethodName("initialize");
+        operationMetrics.setTransport(transport);
+        McpOperationMetrics.operationStarted(operationMetrics);
+        McpSessionMetrics sessionMetrics = new McpSessionMetrics();
         String status = "ok";
         String errorType = null;
 
@@ -586,8 +588,9 @@ public class McpServlet extends HttpServlet {
             }
             Principal userId = transport.getUser();
 
-            String sessionId = sessionStore.createSession(userId);
-
+            sessionMetrics.setTransport(transport);
+            String sessionId = sessionStore.createSession(userId, sessionMetrics);
+            McpSessionMetrics.sessionStarted(sessionMetrics);
             ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
 
             // TODO: provide a way for the user to set server info
@@ -600,8 +603,8 @@ public class McpServlet extends HttpServlet {
             status = "error";
             errorType = e.getClass().getSimpleName();
         } finally {
-            metrics.setOutcome(status, errorType);
-            McpMetrics.operationEnded(metrics);
+            operationMetrics.setOutcome(status, errorType);
+            McpOperationMetrics.operationEnded(operationMetrics);
         }
     }
 
@@ -617,10 +620,10 @@ public class McpServlet extends HttpServlet {
     }
 
     private void cancelRequest(McpTransport transport) throws IOException {
-        McpMetrics metrics = new McpMetrics();
+        McpOperationMetrics metrics = new McpOperationMetrics();
         metrics.setMethodName("cancel");
         metrics.setTransport(transport);
-        McpMetrics.operationStarted(metrics);
+        McpOperationMetrics.operationStarted(metrics);
 
         String status = "ok";
         String errorType = null;
@@ -665,7 +668,7 @@ public class McpServlet extends HttpServlet {
             throw e;
         } finally {
             metrics.setOutcome(status, errorType);
-            McpMetrics.operationEnded(metrics);
+            McpOperationMetrics.operationEnded(metrics);
         }
     }
 
