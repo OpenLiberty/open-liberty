@@ -105,7 +105,8 @@ public class ZipkinOtelCollectorTest {
 
         // Configure exporter → collector (gRPC)
         server.addEnvVar(TestConstants.ENV_OTEL_TRACES_EXPORTER, "otlp");
-        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none");
+        server.addEnvVar(TestConstants.ENV_OTEL_LOGS_EXPORTER, "none"); //Disable logging exporting
+        server.addEnvVar(TestConstants.ENV_OTEL_METRICS_EXPORTER, "none"); //Disable metrics exporting
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_ENDPOINT, otelCollectorContainer.getOtlpGrpcUrl());
         server.addEnvVar(TestConstants.ENV_OTEL_EXPORTER_OTLP_PROTOCOL, "grpc");
         // Some older agents only honor the per-signal endpoint:

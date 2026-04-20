@@ -27,9 +27,8 @@ import org.junit.rules.RuleChain;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.Network;
 
-import com.ibm.websphere.simplicity.ShrinkHelper;
-
 import com.ibm.websphere.simplicity.OperatingSystem;
+import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
@@ -53,10 +52,10 @@ public class JvmMetricsOtelCollectorTest {
 
     public static Network network = Network.newNetwork();
     public static OtelCollectorContainer otelCollectorContainer = new OtelCollectorContainer(new File("lib/LibertyFATTestFiles/otel-collector-config-metrics.yaml"), 3131)
-                                                                                                                                                                   .withNetwork(network)
-                                                                                                                                                                   .withNetworkAliases("otel-collector-metrics")
-                                                                                                                                                                   .withLogConsumer(new SimpleLogConsumer(JvmMetricsOtelCollectorTest.class,
-                                                                                                                                                                                                          "otelCol"));
+                                                                                                                                                                          .withNetwork(network)
+                                                                                                                                                                          .withNetworkAliases("otel-collector-metrics")
+                                                                                                                                                                          .withLogConsumer(new SimpleLogConsumer(JvmMetricsOtelCollectorTest.class,
+                                                                                                                                                                                                                 "otelCol"));
     public static RepeatTests repeat = TelemetryActions.telemetry20Repeats(SERVER_NAME);
 
     @ClassRule
@@ -101,7 +100,7 @@ public class JvmMetricsOtelCollectorTest {
 
         //JVM Metrics are not found on AIX. Upstream issue: https://bugs.openjdk.org/browse/JDK-8030957
         OperatingSystem os = server.getMachine().getOperatingSystem();
-        if(os == OperatingSystem.AIX){
+        if (os == OperatingSystem.AIX) {
             return;
         }
 
