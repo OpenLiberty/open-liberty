@@ -29,6 +29,8 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
+import io.openliberty.mcp.internal.fat.convertertools.customConverterModule.CustomConverterModuleTools;
+import io.openliberty.mcp.internal.fat.convertertools.sharedConvertersModule.SharedConvertersModuleTools;
 import io.openliberty.mcp.internal.fat.encodertools.defaultEncoderTest1.DefaultEncoderModule;
 import io.openliberty.mcp.internal.fat.encodertools.ejbjarEncoder.EarToolBean;
 import io.openliberty.mcp.internal.fat.encodertools.moduleLevelEncoder.EncoderModuleTools;
@@ -56,6 +58,12 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
     @Rule
     public McpClient defaultEncoderModuleMCPClient = new McpClient(server, "/defaultEncoderModule");
 
+    @Rule
+    public McpClient customConverterModuleClient = new McpClient(server, "/customConverterModule");
+
+    @Rule
+    public McpClient sharedConvertersModuleClient = new McpClient(server, "/sharedConvertersModule");
+
     @BeforeClass
     public static void setup() throws Exception {
 
@@ -64,24 +72,86 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
         WebArchive defaultEncoderModule = ShrinkWrap.create(WebArchive.class, "defaultEncoderModule.war")
                                                     .addPackage(DefaultEncoderModule.class.getPackage());
 
+        // Converter test modules
+        WebArchive customConverterModule = ShrinkWrap.create(WebArchive.class, "customConverterModule.war")
+                                                .addPackage(CustomConverterModuleTools.class.getPackage());
+        WebArchive sharedConvertersModule = ShrinkWrap.create(WebArchive.class, "sharedConvertersModule.war")
+                                                .addPackage(SharedConvertersModuleTools.class.getPackage());
+
         // 1) EarToolBean cannot share its tools across WARs (they need module context)
         // 2) EarToolBean also has a Person Encoder with a high priority (5000), but it correctly is never used.
+        // 3) EarToolBean also has a Company Converter that should NOT be accessible to WAR modules
         // This is by design as EJB JAR classes are NOT visible to WAR modules
         JavaArchive ejbJavaArchive = ShrinkWrap.create(JavaArchive.class, "mcpToolsEjb.jar")
-                                               .addClass(EarToolBean.class);
+                                               .addClass(EarToolBean.class)
+                                               .addPackage("io.openliberty.mcp.internal.fat.convertertools.ejbjarConverter");
 
         JavaArchive sharedEncodersLib = ShrinkWrap.create(JavaArchive.class, "shared-encoders.jar")
                                                   .addPackage("io.openliberty.mcp.internal.fat.encodertools.sharedEncoders");
 
+        JavaArchive sharedConvertersLib = ShrinkWrap.create(JavaArchive.class, "shared-converters.jar")
+                                                    .addPackage("io.openliberty.mcp.internal.fat.convertertools.sharedConverters");
+
         EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "multi-module.ear")
                                           .addAsModule(encoderModule)
                                           .addAsModule(defaultEncoderModule)
+                                          .addAsModule(customConverterModule)
+                                          .addAsModule(sharedConvertersModule)
                                           .addAsModule(ejbJavaArchive) // Cannot share classes with @Tool annotations across WARs (they need module context)
-                                          .addAsLibrary(sharedEncodersLib); // Shared encoders are accessible to all WARs
+                                          .addAsLibrary(sharedEncodersLib) // Shared encoders are accessible to all WARs
+                                          .addAsLibrary(sharedConvertersLib); // Shared converters are accessible to all WARs
 
         ShrinkHelper.exportDropinAppToServer(server, ear, SERVER_ONLY);
 
         server.startServer();
+    }
+
+    private static String toolCallRequest(String id, String toolName) {
+        return String.format("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "%s",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "%s"
+                          }
+                        }
+                        """, id, toolName);
+    }
+
+    private static String textResponse(String id, String text) {
+        return String.format("""
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "%s",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "%s"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """, id, text);
+    }
+
+    private static String errorResponse(String id, String toolName) {
+        return String.format("""
+                        {"id":"%s","jsonrpc":"2.0","error":{"code":-32602,"data":["Method %s not found"],"message":"Invalid params"}}
+                        """, id, toolName);
+    }
+
+    // High-level assertion helpers that combine call + assertion
+    private static void assertToolReturnsText(McpClient client, String id, String toolName, String expectedText) throws Exception {
+        String response = client.callMCP(toolCallRequest(id, toolName));
+        JSONAssert.assertEquals(textResponse(id, expectedText), response, JSONCompareMode.STRICT);
+    }
+
+    private static void assertToolNotFound(McpClient client, String id, String toolName) throws Exception {
+        String response = client.callMCP(toolCallRequest(id, toolName));
+        JSONAssert.assertEquals(errorResponse(id, toolName), response, JSONCompareMode.STRICT);
     }
 
     /**
@@ -108,82 +178,10 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testAllWarTools() throws Exception {
-        testTools("methodTool", "apiTool", "EncoderModule", encoderModuleMCPClient);
-        testTools("methodTool", "apiTool", "DefaultEncoderModule", defaultEncoderModuleMCPClient);
-    }
-
-    /**
-     * Helper method to test tool registration and invocation for a specific WAR module.
-     *
-     * <p>Tests both annotation-based (@Tool) and programmatic (ToolManager API) tool registration
-     * by invoking two tools and verifying their responses match expected values.
-     *
-     * @param methodToolName Name of the annotation-based tool (registered via @Tool annotation)
-     * @param apiToolName Name of the programmatic tool (registered via ToolManager.newTool() API)
-     * @param toolResponse Expected response text from both tools
-     * @param client McpClient configured for the specific WAR module endpoint
-     * @throws Exception if MCP communication fails or assertions fail
-     */
-    private void testTools(String methodToolName, String apiToolName, String toolResponse, McpClient client) throws Exception {
-        // Test annotation-based tool (@Tool on method)
-        String response1 = client.callMCP(String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "%s"
-                          }
-                        }
-                        """, methodToolName));
-
-        String expectedResponse1 = String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "%s"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """, toolResponse);
-
-        JSONAssert.assertEquals(expectedResponse1, response1, JSONCompareMode.STRICT);
-
-        // Test programmatic tool (ToolManager API)
-        String response2 = client.callMCP(String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "%s"
-                          }
-                        }
-                        """, apiToolName));
-
-        String expectedResponse2 = String.format("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "%s"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """, toolResponse);
-
-        JSONAssert.assertEquals(expectedResponse2, response2, JSONCompareMode.STRICT);
+        assertToolReturnsText(encoderModuleMCPClient, "1", "methodTool", "EncoderModule");
+        assertToolReturnsText(encoderModuleMCPClient, "2", "apiTool", "EncoderModule");
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "3", "methodTool", "DefaultEncoderModule");
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "4", "apiTool", "DefaultEncoderModule");
     }
 
     /**
@@ -209,39 +207,8 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testEJBJar() throws Exception {
-        String response1 = encoderModuleMCPClient.callMCP("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "ejbJarMethodTool"
-                          }
-                        }
-                        """);
-
-        String expectedResponseString1 = """
-                        {"id":1,"jsonrpc":"2.0","error":{"code":-32602,"data":["Method ejbJarMethodTool not found"],"message":"Invalid params"}}
-                                                """;
-
-        JSONAssert.assertEquals(expectedResponseString1, response1, true);
-
-        String response2 = encoderModuleMCPClient.callMCP("""
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "ejbJarApiTool"
-                          }
-                        }
-                        """);
-
-        String expectedResponseString2 = """
-                        {"id":2,"jsonrpc":"2.0","error":{"code":-32602,"data":["Method ejbJarApiTool not found"],"message":"Invalid params"}}
-                        """;
-
-        JSONAssert.assertEquals(expectedResponseString2, response2, true);
+        assertToolNotFound(encoderModuleMCPClient, "1", "ejbJarMethodTool");
+        assertToolNotFound(encoderModuleMCPClient, "2", "ejbJarApiTool");
     }
 
     /**
@@ -252,66 +219,11 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testSharedEncoderAccessibleToAllModules() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "1",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testContentEncoderSharing",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String expectedResponseForSharedEncoder = """
-                        {
-                            "id": "1",
-                            "jsonrpc": "2.0",
-                            "result": {
-                                "content": [
-                                    {
-                                        "text": "{\\"age\\":32,\\"fistName\\":\\"Jon\\",\\"lastName\\":\\"Encoded by PersonContentEncoder\\"}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "isError": false
-                            }
-                        }
-                        """;
-
-        // Modules (wars) should successfully encode Person using the shared encoder if they don't have a custom one
-        String response1 = defaultEncoderModuleMCPClient.callMCP(request);
-        JSONAssert.assertEquals(expectedResponseForSharedEncoder, response1, JSONCompareMode.NON_EXTENSIBLE);
-
-        //EncoderModule has its own custom PersonContentEncoder
-        String response2 = encoderModuleMCPClient.callMCP(request);
-        String expectedResponseForCustomEncoder = """
-                        {
-                            "id": "1",
-                            "jsonrpc": "2.0",
-                            "result": {
-                                "content": [
-                                    {
-                                        "text": "{\\"age\\":32,\\"fistName\\":\\"Jon\\",\\"lastName\\":\\"Encoded by PersonContentEncoder\\"}",
-                                        "type": "text"
-                                    }
-                                ],
-                                "isError": false
-                            }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponseForCustomEncoder, response2, JSONCompareMode.NON_EXTENSIBLE);
-
+        String expected = "{\\\"age\\\":32,\\\"fistName\\\":\\\"Jon\\\",\\\"lastName\\\":\\\"Encoded by PersonContentEncoder\\\"}";
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "1", "testContentEncoderSharing", expected);
+        assertToolReturnsText(encoderModuleMCPClient, "1", "testContentEncoderSharing", expected);
     }
 
-    /**
-     * Tests that module-specific encoders are properly isolated between WAR modules.
-     * - encoderModule has CompanyContentEncoder and can encode Company objects
-     * - deafultEncoderModuleMCPClient does NOT have CompanyContentEncoder and should fail to encode Company objects
-     *
-     * @throws Exception
-     */
     /**
      * Tests that module-specific encoders are properly isolated between WAR modules.
      *
@@ -334,44 +246,10 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testModuleSpecificEncoderIsolation() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "2",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testWar1SpecificEncoder",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        // encoderModule should successfully encode Company
-        String response1 = encoderModuleMCPClient.callMCP(request);
-        String expected1 = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"{\\"employees\\":350000,\\"industry\\":\\"Technology\\",\\"name\\":\\"IBM (encoded by War1)\\"}","type":"text"}],"isError":false}}
-                        """;
-        JSONAssert.assertEquals(expected1, response1, JSONCompareMode.NON_EXTENSIBLE);
-
-        // war1WithBeanStartupEvent should fail - no Company encoder available
-        String request2 = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": "3",
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testWar1SpecificEncoderIsolation",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response2 = defaultEncoderModuleMCPClient.callMCP(request2);
-        // Should use default JSON encoder since CompanyContentEncoder is not available
-        String expected2 = """
-                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"text":"{\\"employees\\":350000,\\"industry\\":\\"Technology\\",\\"name\\":\\"IBM\\"}","type":"text"}],"isError":false}}
-                        """;
-        JSONAssert.assertEquals(expected2, response2, JSONCompareMode.NON_EXTENSIBLE);
+        assertToolReturnsText(encoderModuleMCPClient, "2", "testWar1SpecificEncoder",
+                              "{\\\"employees\\\":350000,\\\"industry\\\":\\\"Technology\\\",\\\"name\\\":\\\"IBM (encoded by War1)\\\"}");
+        assertToolReturnsText(defaultEncoderModuleMCPClient, "3", "testWar1SpecificEncoderIsolation",
+                              "{\\\"employees\\\":350000,\\\"industry\\\":\\\"Technology\\\",\\\"name\\\":\\\"IBM\\\"}");
     }
 
     /**
@@ -380,43 +258,46 @@ public class MultiModuleToolTestToolManager extends FATServletClient {
      */
     @Test
     public void testSharingOfSessionIDs() throws Exception {
-        String jsonRequestBody = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "methodTool"
-                          }
-                        }
-                        """;
-        String response1 = encoderModuleMCPClient.callMCP(jsonRequestBody);
-
-        String expectedResponse1 = """
-                        {
-                          "jsonrpc": "2.0",
-                          "id": 1,
-                          "result": {
-                            "content": [
-                              {
-                                "type": "text",
-                                "text": "EncoderModule"
-                              }
-                            ],
-                            "isError": false
-                          }
-                        }
-                        """;
-        JSONAssert.assertEquals(expectedResponse1, response1, JSONCompareMode.NON_EXTENSIBLE);
+        assertToolReturnsText(encoderModuleMCPClient, "1", "methodTool", "EncoderModule");
 
         boolean exceptionThrown = false;
         try {
-            defaultEncoderModuleMCPClient.callMCPWithSessionID(jsonRequestBody, encoderModuleMCPClient.getSessionId());
+            defaultEncoderModuleMCPClient.callMCPWithSessionID(toolCallRequest("1", "methodTool"), encoderModuleMCPClient.getSessionId());
         } catch (Exception e) {
             exceptionThrown = true;
             assertTrue(e.getMessage().contains("Invalid or Expired Session Id"));
         }
         assertTrue("Expected Invalid or Expired Session Id error, but got none", exceptionThrown);
+    }
 
+    /**
+     * Tests that built-in converters are accessible to all WAR modules.
+     */
+    @Test
+    public void testBuiltInConvertersAccessibleToAllModules() throws Exception {
+        assertToolReturnsText(customConverterModuleClient, "1", "testBuiltInStringConverter", "Jupiter");
+        assertToolReturnsText(customConverterModuleClient, "2", "testBuiltInIntConverter", "2025");
+        assertToolReturnsText(sharedConvertersModuleClient, "3", "testBuiltInStringConverter", "Mars");
+        assertToolReturnsText(sharedConvertersModuleClient, "4", "testBuiltInIntConverter", "2026");
+    }
+
+    /**
+     * Tests that shared converters from EAR/lib are accessible to all WAR modules.
+     */
+    @Test
+    public void testSharedConverterAccessibleToAllModules() throws Exception {
+        assertToolReturnsText(customConverterModuleClient, "1", "testPersonConverter", "{\\\"age\\\":30,\\\"name\\\":\\\"John\\\"}");
+        assertToolReturnsText(sharedConvertersModuleClient, "2", "testPersonConverter", "{\\\"age\\\":25,\\\"name\\\":\\\"Jane\\\"}");
+    }
+
+    /**
+     * Tests that module-specific converters override shared converters from EAR/lib.
+     */
+    @Test
+    public void testModuleConverterOverridesSharedConverter() throws Exception {
+        assertToolReturnsText(customConverterModuleClient, "1", "testCityConverter",
+                              "{\\\"country\\\":\\\"UK\\\",\\\"name\\\":\\\"Module1-London\\\",\\\"population\\\":9000000}");
+        assertToolReturnsText(sharedConvertersModuleClient, "2", "testCityConverter",
+                              "{\\\"country\\\":\\\"France\\\",\\\"name\\\":\\\"Paris\\\",\\\"population\\\":2000000}");
     }
 }

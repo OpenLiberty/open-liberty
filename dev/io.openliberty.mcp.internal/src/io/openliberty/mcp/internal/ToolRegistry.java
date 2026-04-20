@@ -128,6 +128,10 @@ public class ToolRegistry implements ToolManager {
         this.converterRegistry = converterRegistry;
     }
 
+    public ConverterRegistry getConverterRegistry() {
+        return converterRegistry;
+    }
+
     public class ToolDefinitionImpl implements ToolDefinition {
 
         private final String name;

@@ -12,27 +12,56 @@ package io.openliberty.mcp.internal;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
+import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.spi.CreationalContext;
 
-@ApplicationScoped
 public class ConverterRegistry {
 
     private static final int DEFAULT_CONVERTER_PRIORITY = 0;
 
     private Map<Type, List<DefaultValueConverter<?>>> convertersMap;
     private CreationalContext<?> context;
+    private final ConverterRegistry globalRegistry;
 
-    public void registerConverters(Map<Type, List<DefaultValueConverter<?>>> convertersMap, CreationalContext<?> context) {
-        this.convertersMap = convertersMap;
+    /**
+     * Constructor for module registries (receives global reference)
+     */
+    public ConverterRegistry(ConverterRegistry globalRegistry) {
+        this.globalRegistry = globalRegistry;
+        this.convertersMap = new HashMap<>();
+    }
+
+    /**
+     * Constructor for the global registry (no parent registry)
+     * Automatically registers built-in converters for primitive types.
+     * Built-in converters are ONLY in the global registry - modules access them via fallback.
+     */
+    public ConverterRegistry() {
+        this.globalRegistry = null;
+        this.convertersMap = new HashMap<>();
+        
+        // Register built-in converters ONLY in global registry (not CDI beans, framework-provided)
+        for (Map.Entry<Type, DefaultValueConverter<?>> entry : BuiltinDefaultValueConverters.CONVERTERS.entrySet()) {
+            convertersMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(entry.getValue());
+        }
+    }
+
+    public void registerConverters(Map<Type, List<DefaultValueConverter<?>>> newConverters, CreationalContext<?> context) {
         this.context = context;
+        
+        // Merge new converters into existing map (preserving built-in converters)
+        for (Map.Entry<Type, List<DefaultValueConverter<?>>> entry : newConverters.entrySet()) {
+            this.convertersMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).addAll(entry.getValue());
+        }
+        
         sortConverters();
     }
 
@@ -51,6 +80,21 @@ public class ConverterRegistry {
     }
 
     public Optional<DefaultValueConverter<?>> getConverter(Type type) {
+        // Check local converters first
+        Optional<DefaultValueConverter<?>> converter = getConverterLocally(type);
+
+        // Fallback to global if not found and we have a global registry
+        if (converter.isEmpty() && globalRegistry != null) {
+            converter = globalRegistry.getConverter(type);
+        }
+
+        return converter;
+    }
+
+    /**
+     * Search for converter in this registry's local converters only (no fallback)
+     */
+    private Optional<DefaultValueConverter<?>> getConverterLocally(Type type) {
         List<DefaultValueConverter<?>> convertersForType = convertersMap.get(type);
         return Optional.ofNullable(convertersForType != null ? convertersForType.get(0) : null);
     }

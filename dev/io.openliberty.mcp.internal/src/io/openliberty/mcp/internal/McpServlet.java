@@ -94,7 +94,7 @@ public class McpServlet extends HttpServlet {
     McpCdiExtension cdiExtension;
 
     @Inject
-    ConverterRegistry converterRegistry;
+    ConverterRegistries converterRegistries;
 
     private Jsonb jsonb;
 
@@ -307,7 +307,7 @@ public class McpServlet extends HttpServlet {
      * @return
      */
     private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params) {
-        Map<String, Object> args = params.getArguments(jsonb, converterRegistry);
+        Map<String, Object> args = params.getArguments(jsonb, converterRegistries.getCurrent());
         Meta meta = new MetaImpl(params.getMeta(), jsonb);
         RequestId requestId = request.id();
 
