@@ -49,6 +49,7 @@ import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
 import io.openliberty.mcp.internal.fat.tool.AuthCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
+import io.openliberty.mcp.internal.fat.tool.ConfigurableSessionTelemetryTest;
 import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
@@ -59,7 +60,8 @@ import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
-import io.openliberty.mcp.internal.fat.tool.TelemetryTest;
+import io.openliberty.mcp.internal.fat.tool.TelemetryOperationsTest;
+import io.openliberty.mcp.internal.fat.tool.TelemetrySessionsTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
@@ -77,6 +79,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 BeanLifecycleTest.class,
                 CancellationTest.class,
                 ConfigurableMcpPathTest.class,
+                ConfigurableSessionTelemetryTest.class,
                 DefaultValueTest.class,
                 DeploymentProblemTest.class,
                 DynamicMcpPathUpdateTest.class,
@@ -96,7 +99,8 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
                 StatelessModeTest.class,
-                TelemetryTest.class,
+                TelemetryOperationsTest.class,
+                TelemetrySessionsTest.class,
                 ToolErrorHandlingTest.class,
                 ToolManagerTest.class,
                 ToolTest.class,

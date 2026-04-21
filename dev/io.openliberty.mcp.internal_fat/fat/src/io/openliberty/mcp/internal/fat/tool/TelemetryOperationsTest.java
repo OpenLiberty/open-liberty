@@ -10,6 +10,7 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertTrue;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -32,7 +33,7 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
-public class TelemetryTest extends FATServletClient {
+public class TelemetryOperationsTest extends FATServletClient {
 
     private final static String APP_NAME = "telemetryTest";
 
@@ -83,6 +84,47 @@ public class TelemetryTest extends FATServletClient {
         server.stopServer("CWWKS9113E");
     }
 
+    private static final String TOOLS_LIST_REQUEST = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 3,
+                      "method": "tools/list",
+                      "params": {}
+                    }
+                    """;
+
+    private static final String PING_REQUEST = """
+                    {
+                      "jsonrpc": "2.0",
+                      "id": 4,
+                      "method": "ping",
+                      "params": {}
+                    }
+                    """;
+
+    @Test
+    public void testInitializeAndInitializedMetrics() throws Exception {
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testInitializeMetrics");
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testInitializedMetrics");
+    }
+
+    @Test
+    public void testToolsListMetrics() throws Exception {
+        String response = client.callMCP(TOOLS_LIST_REQUEST);
+        assertTrue("Tools list should succeed", response.contains("\"result\""));
+
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testToolsListMetrics");
+    }
+
+    @Test
+    public void testPingMetrics() throws Exception {
+        // Call ping
+        String response = client.callMCP(PING_REQUEST);
+        assertTrue("Ping should succeed", response.contains("\"result\""));
+
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testPingMetrics");
+    }
+
     @Test
     public void testToolCallMetrics() throws Exception {
         String response = client.callMCP(BASIC_TOOL_REQUEST);
@@ -95,8 +137,50 @@ public class TelemetryTest extends FATServletClient {
         client.callMCP(ADVANCED_TOOL_REQUEST);
 
         // Run servlet tests to see if metrics are collected correctly
-        FATServletClient.runTest(server, APP_NAME + "/McpMetricServlet", "testBasicToolCallMetrics");
-        FATServletClient.runTest(server, APP_NAME + "/McpMetricServlet", "testAdvancedToolCallMetrics");
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testBasicToolCallMetrics");
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testAdvancedToolCallMetrics");
     }
+
+    @Test
+    public void testCancelRequestSuccessMetrics() throws Exception {
+        // Send a normal cancel notification - should succeed
+        String cancelRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/cancelled",
+                          "params": {
+                            "requestId": "999",
+                            "reason": "User requested cancellation"
+                          }
+                        }
+                        """;
+
+        client.callMCPNotification(cancelRequest);
+
+        // Run servlet test to verify successful cancel metrics
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestSuccessMetrics");
+    }
+
+//    @Test
+//    @ExpectedFFDC({ "jakarta.json.bind.JsonbException", "io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException" })
+//    public void testCancelRequestErrorMetrics() throws Exception {
+//        String cancelRequestWithError = """
+//                        {
+//                          "jsonrpc": "2.0",
+//                          "method": "notifications/cancelled",
+//                          "params": {
+//                            "requestId": null,
+//                            "reason": "This should cause an error"
+//                          }
+//                        }
+//                        """;
+//
+//        try {
+//            client.callMCPNotification(cancelRequestWithError);
+//        } catch (Exception e) {
+//        }
+//
+//        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestErrorMetrics");
+//    }
 
 }

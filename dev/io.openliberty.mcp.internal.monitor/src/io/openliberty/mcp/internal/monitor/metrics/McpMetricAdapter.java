@@ -11,7 +11,8 @@ package io.openliberty.mcp.internal.monitor.metrics;
 
 import java.time.Duration;
 
-import io.openliberty.mcp.internal.monitoring.McpStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
 
 
 
@@ -27,6 +28,14 @@ public interface McpMetricAdapter {
 	 * @param httpStatAttributes. Class = McpStatAttributes
 	 * @param duration
 	 */
-	public void updateMcpMetrics(McpStatAttributes mcpStatAttributes, Duration duration);
+	public void updateMcpOperationMetrics(McpOperationStatAttributes mcpStatAttributes, Duration duration);
+	
+	/**
+	 * Given the HttpStatAttributes, update the mcp metric of the respective Metrics runtime
+	 * 
+	 * @param httpStatAttributes. Class = McpStatAttributes
+	 * @param duration
+	 */
+	public void updateMcpSessionMetrics(McpSessionStatAttributes mcpStatAttributes, Duration duration);
 
 }
