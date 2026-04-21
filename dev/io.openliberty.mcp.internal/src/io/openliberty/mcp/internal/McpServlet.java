@@ -214,7 +214,7 @@ public class McpServlet extends HttpServlet {
         }
 
         try {
-            if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
+            if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
                 status = "error";
                 errorType = "DuplicateRequestId";
                 throw new JSONRPCException(
