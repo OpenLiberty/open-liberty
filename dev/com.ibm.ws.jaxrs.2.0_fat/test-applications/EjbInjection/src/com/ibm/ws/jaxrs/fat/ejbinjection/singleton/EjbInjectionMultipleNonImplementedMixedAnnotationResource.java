@@ -25,7 +25,7 @@ import com.ibm.ws.jaxrs.fat.ejbinjection.interfaces.annotated.MixedAnnotationInt
  */
 @Stateless
 @Local({MixedAnnotationInterfaceA.class, MixedAnnotationInterfaceB.class})
-@Path("ejbinjection/multiplenonimplementedmixed")
+@Path("multiplenonimplementedmixed")
 public class EjbInjectionMultipleNonImplementedMixedAnnotationResource {
 
     /**
