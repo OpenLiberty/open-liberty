@@ -58,6 +58,7 @@ import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
+import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
 import io.openliberty.mcp.internal.fat.tool.TelemetryOperationsTest;
@@ -71,6 +72,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+
                 AsyncToolsTest.class,
                 AsyncToolCancellationTest.class,
                 AsyncToolsErrorHandlingTest.class,
@@ -89,10 +91,11 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 GenericToolTest.class,
                 InactiveCdiTest.class,
                 IntrospectorMultiAppTest.class,
-//                LocaleTest.class, // Commented out test until message translation is updated
+                // LocaleTest.class, // Commented out test until message translation is updated
                 LifecycleTest.class,
                 McpUrlPathTest.class,
                 MultiAppIsolationTest.class,
+                MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
                 ProtocolVersionTest.class,
@@ -121,6 +124,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 AdminsRoleAllowedTestsStateless.class,
                 // Conformance Tests
                 ConformanceTests.class
+
 })
 
 public class FATSuite extends TestContainerSuite {

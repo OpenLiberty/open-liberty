@@ -46,7 +46,7 @@ public class ToolRegistry implements ToolManager {
         if (staticInstance != null) {
             return staticInstance;
         }
-        return CDI.current().select(McpCdiExtension.class).get().getToolRegistry();
+        return CDI.current().select(McpCdiExtension.class).get().getCurrentToolRegistry();
     }
 
     /**

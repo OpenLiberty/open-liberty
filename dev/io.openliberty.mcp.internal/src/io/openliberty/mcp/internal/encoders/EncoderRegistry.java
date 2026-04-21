@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.encoders;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -17,14 +18,27 @@ import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.annotation.Priority;
-import jakarta.enterprise.context.ApplicationScoped;
 
-@ApplicationScoped
 public class EncoderRegistry {
 
     private static final int DEFAULT_ENCODER_PRIORITY = 0;
-    private List<ToolResponseEncoder<?>> toolResponseEncoders;
-    private List<ContentEncoder<?>> contentEncoders;
+    private List<ToolResponseEncoder<?>> toolResponseEncoders = new ArrayList<>();
+    private List<ContentEncoder<?>> contentEncoders = new ArrayList<>();
+    private final EncoderRegistry globalRegistry;
+
+    /**
+     * Constructor for module registries (receives global reference)
+     */
+    public EncoderRegistry(EncoderRegistry globalRegistry) {
+        this.globalRegistry = globalRegistry;
+    }
+
+    /**
+     * Constructor for the global registry (which no parent registry)
+     */
+    public EncoderRegistry() {
+        this.globalRegistry = null;
+    }
 
     public void registerEncoders(List<ToolResponseEncoder<?>> toolResponseEncoders, List<ContentEncoder<?>> contentEncoders) {
         this.toolResponseEncoders = toolResponseEncoders;
@@ -56,7 +70,21 @@ public class EncoderRegistry {
     }
 
     public Optional<Encoder<?, ?>> findEncoder(Class<?> returnType) {
+        // Check local encoders first
+        Optional<Encoder<?, ?>> encoder = findEncoderLocally(returnType);
 
+        // Fallback to global if not found and we have a global registry
+        if (encoder.isEmpty() && globalRegistry != null) {
+            encoder = globalRegistry.findEncoder(returnType);
+        }
+
+        return encoder;
+    }
+
+    /**
+     * Search for encoder in this registry's local encoders only (no fallback)
+     */
+    private Optional<Encoder<?, ?>> findEncoderLocally(Class<?> returnType) {
         for (ToolResponseEncoder<?> encoder : toolResponseEncoders) {
             if (encoder.supports(returnType)) {
                 return Optional.of(encoder);
