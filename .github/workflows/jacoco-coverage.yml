@@ -44,6 +44,11 @@ jobs:
     - name: Grant execute permission for gradlew
       run: chmod +x dev/gradlew
       
+    - name: Initialize cnf workspace
+      run: |
+        cd dev
+        ./gradlew cnf:initialize
+      
     - name: Run tests with coverage
       run: |
         cd dev
