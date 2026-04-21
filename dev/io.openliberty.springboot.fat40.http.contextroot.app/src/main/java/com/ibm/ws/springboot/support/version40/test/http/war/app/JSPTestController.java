@@ -10,7 +10,7 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
-package com.ibm.ws.springboot.support.version20.test.http.war.app;
+package com.ibm.ws.springboot.support.version40.test.http.war.app;
 
 import java.util.Date;
 import java.util.Map;
