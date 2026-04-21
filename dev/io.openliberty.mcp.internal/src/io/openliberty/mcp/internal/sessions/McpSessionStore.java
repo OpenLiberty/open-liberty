@@ -96,6 +96,12 @@ public class McpSessionStore {
 
         if (session != null) {
             requestTracker.cancelSessionRequests(session.getSessionId());
+
+            // Record session end metrics
+            McpSessionMetrics metrics = session.getMetrics();
+            if (metrics != null) {
+                McpSessionMetrics.sessionEnded(metrics);
+            }
         }
     }
 

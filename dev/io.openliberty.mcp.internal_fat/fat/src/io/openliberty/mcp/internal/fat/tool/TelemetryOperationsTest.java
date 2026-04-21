@@ -161,26 +161,25 @@ public class TelemetryOperationsTest extends FATServletClient {
         FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestSuccessMetrics");
     }
 
-//    @Test
-//    @ExpectedFFDC({ "jakarta.json.bind.JsonbException", "io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException" })
-//    public void testCancelRequestErrorMetrics() throws Exception {
-//        String cancelRequestWithError = """
-//                        {
-//                          "jsonrpc": "2.0",
-//                          "method": "notifications/cancelled",
-//                          "params": {
-//                            "requestId": null,
-//                            "reason": "This should cause an error"
-//                          }
-//                        }
-//                        """;
-//
-//        try {
-//            client.callMCPNotification(cancelRequestWithError);
-//        } catch (Exception e) {
-//        }
-//
-//        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestErrorMetrics");
-//    }
+    @Test
+    public void testCancelRequestErrorMetrics() throws Exception {
+        String cancelRequestWithError = """
+                        {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/cancelled",
+                          "params": {
+                            "requestId": "fake-request-id",
+                            "reason": "This should cause auth an error"
+                          }
+                        }
+                        """;
+
+        try {
+            client.callMCPWithSessionID(cancelRequestWithError, "fakeSessionId");
+        } catch (Exception e) {
+        }
+
+        FATServletClient.runTest(server, APP_NAME + "/McpOperationMetricServlet", "testCancelRequestErrorMetrics");
+    }
 
 }

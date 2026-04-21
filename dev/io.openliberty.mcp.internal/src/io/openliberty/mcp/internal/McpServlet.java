@@ -230,7 +230,7 @@ public class McpServlet extends HttpServlet {
         McpRequest request = transport.getMcpRequest();
 
         try {
-            if (requestId != null && requestTracker.isOngoingRequest(requestId)) {
+            if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
                 status = "error";
                 errorType = "DuplicateRequestId";
                 throw new JSONRPCException(
@@ -511,15 +511,14 @@ public class McpServlet extends HttpServlet {
             // TODO store client capabilities
             // TODO store client info
 
-            // TODO store client capabilities
-            // TODO store client info
-
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "Client initializing: " + params.getClientInfo(), params.getCapabilities());
             }
             Principal userId = transport.getUser();
 
-            String sessionId = sessionStores.getCurrent().createSession(userId);
+            String sessionId = sessionStores.getCurrent().createSession(userId, sessionMetrics);
+            sessionMetrics.setTransport(transport);
+            McpSessionMetrics.sessionStarted(sessionMetrics);
 
             ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
 
@@ -590,50 +589,41 @@ public class McpServlet extends HttpServlet {
         String status = "ok";
         String errorType = null;
 
-        McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
-        RequestId mcpReqId = notificationParams.getRequestId();
-        McpSessionId sessionId = transport.getSessionId();
-        Principal userId = transport.getUser();
         try {
+            McpNotificationParams notificationParams = transport.getMcpRequest().getParams(McpNotificationParams.class, jsonb);
+            RequestId mcpReqId = notificationParams.getRequestId();
+            McpSessionId sessionId = transport.getSessionId();
+            Principal userId = transport.getUser();
+
             if (sessionId == null) {
                 transport.sendEmptyResponse();
                 return;
-            } else {
-                var session = sessionStores.getCurrent().getSession(sessionId.value());
-                if (session == null || !Objects.equals(session.getUserId(), userId)) {
-                    transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")));
-    
-                    return;
-                } else {
-                    var session = sessionStore.getSession(sessionId.value());
-                    if (session == null || !Objects.equals(session.getUserId(), userId)) {
-                        transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")));
-                        return;
-                    }
-                }
-    
-                ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId, userId);
-                Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
-    
+            }
+
+            var session = sessionStores.getCurrent().getSession(sessionId.value());
+            if (session == null || !Objects.equals(session.getUserId(), userId)) {
+                transport.sendAuthError(new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")));
+                status = "error";
+                errorType = "AuthenticationException";
+                return;
+            }
+
+            ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId, userId);
+            Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                 Tr.event(this, tc, "Cancellation requested for " + requestId);
             }
-    
+
             Cancellation cancellation = requestTrackers.getCurrent().getOngoingRequestCancellation(requestId);
             if (cancellation != null) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(this, tc, "Cancellation requested for " + requestId);
+                    Tr.event(this, tc, "Cancelling task");
                 }
-    
-                Cancellation cancellation = requestTracker.getOngoingRequestCancellation(requestId);
-                if (cancellation != null) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Cancelling task");
-                    }
-                    ((CancellationImpl) cancellation).cancel(reason);
-                }
-                transport.sendEmptyResponse();
+                ((CancellationImpl) cancellation).cancel(reason);
             }
+            transport.sendEmptyResponse();
+
         } catch (RuntimeException e) {
             status = "error";
             if (errorType == null) {
@@ -645,7 +635,6 @@ public class McpServlet extends HttpServlet {
             McpOperationMetrics.operationEnded(metrics);
         }
     }
-        }
 
     private ExecutionRequestId createOngoingRequestId(McpTransport transport) {
         McpSessionId sessionId = transport.getSessionId();

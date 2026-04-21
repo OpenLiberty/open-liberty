@@ -21,8 +21,8 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
-import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.api.common.Attributes;
+import io.opentelemetry.api.common.AttributeKey;
 import io.opentelemetry.sdk.metrics.data.HistogramPointData;
 import io.opentelemetry.sdk.metrics.data.MetricData;
 import jakarta.servlet.annotation.WebServlet;
@@ -119,7 +119,7 @@ public class McpOperationMetricServlet extends FATServlet {
         assertTrue("Expected at least 1 successful cancel request", point.getCount() >= 1);
 
         Attributes attributes = point.getAttributes();
-        assertEquals("cancel", getStringAttribute(attributes, "mcp.method.name"));
+        assertEquals("notifications/cancelled", getStringAttribute(attributes, "mcp.method.name"));
         assertInvariantOperationAttributes(attributes);
         assertEquals("ok", getStringAttribute(attributes, "rpc.response.status_code"));
         assertNull("Did not expect error.type for successful cancel",
@@ -127,25 +127,25 @@ public class McpOperationMetricServlet extends FATServlet {
         assertTimingAttributes(point);
     }
 
-//    @Test
-//    public void testCancelRequestErrorMetrics() {
-//        Optional<HistogramPointData> errorPoint = findCancelOperationPoint("error");
-//
-//        if (errorPoint.isPresent()) {
-//            HistogramPointData point = errorPoint.get();
-//            Attributes attributes = point.getAttributes();
-//
-//            assertEquals("cancel", getStringAttribute(attributes, "mcp.method.name"));
-//            assertInvariantOperationAttributes(attributes);
-//            assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
-//            assertNotNull("Expected error.type for failed cancel",
-//                          getStringAttribute(attributes, "error.type"));
-//            assertTimingAttributes(point);
-//        } else {
-//            assertTrue("At least success case should exist",
-//                       findCancelOperationPoint("ok").isPresent());
-//        }
-//    }
+    @Test
+    public void testCancelRequestErrorMetrics() {
+        Optional<HistogramPointData> errorPoint = findCancelOperationPoint("error");
+
+        if (errorPoint.isPresent()) {
+            HistogramPointData point = errorPoint.get();
+            Attributes attributes = point.getAttributes();
+
+            assertEquals("notifications/cancelled", getStringAttribute(attributes, "mcp.method.name"));
+            assertInvariantOperationAttributes(attributes);
+            assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+            assertNotNull("Expected error.type for failed cancel",
+                          getStringAttribute(attributes, "error.type"));
+            assertTimingAttributes(point);
+        } else {
+            assertTrue("At least success case should exist",
+                       findCancelOperationPoint("ok").isPresent());
+        }
+    }
 
     // Helper method to get cancel operation with specific status
     private HistogramPointData getCancelOperationPoint(String status, String errorType) {
@@ -156,7 +156,7 @@ public class McpOperationMetricServlet extends FATServlet {
                                                       .getHistogramData()
                                                       .getPoints()
                                                       .stream()
-                                                      .filter(point -> "cancel".equals(getStringAttribute(point.getAttributes(), "mcp.method.name")))
+                                                      .filter(point -> "notifications/cancelled".equals(getStringAttribute(point.getAttributes(), "mcp.method.name")))
                                                       .filter(point -> status.equals(getStringAttribute(point.getAttributes(), "rpc.response.status_code")))
                                                       .filter(point -> {
                                                           String actualErrorType = getStringAttribute(point.getAttributes(), "error.type");
@@ -180,7 +180,7 @@ public class McpOperationMetricServlet extends FATServlet {
                      .getHistogramData()
                      .getPoints()
                      .stream()
-                     .filter(point -> "cancel".equals(getStringAttribute(point.getAttributes(), "mcp.method.name")))
+                     .filter(point -> "notifications/cancelled".equals(getStringAttribute(point.getAttributes(), "mcp.method.name")))
                      .filter(point -> status.equals(getStringAttribute(point.getAttributes(), "rpc.response.status_code")))
                      .findFirst();
     }
