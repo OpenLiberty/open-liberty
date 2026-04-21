@@ -237,11 +237,6 @@ public class McpServlet extends HttpServlet {
 
     @Override
     protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws IOException {
-        /*
-         * Create operation Context
-         */
-        McpOperationMetrics optCtx = new McpOperationMetrics();
-        optCtx.setMethodName("sessions/delete");
 
         String status = "ok";
         String errorType = null;
@@ -274,8 +269,6 @@ public class McpServlet extends HttpServlet {
                 errorType = e.getClass().getSimpleName();
             }
             throw e;
-        } finally {
-            optCtx.setOutcome(status, errorType);
         }
     }
 
@@ -609,19 +602,51 @@ public class McpServlet extends HttpServlet {
     }
 
     private void initialized(McpTransport transport) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Client initialized");
+        McpOperationMetrics metrics = new McpOperationMetrics();
+        metrics.setMethodName("notifications/initialized");
+        metrics.setTransport(transport);
+        McpOperationMetrics.operationStarted(metrics);
+        String status = "ok";
+        String errorType = null;
+        try {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(this, tc, "Client initialized");
+            }
+            transport.sendEmptyResponse();
+        } catch (RuntimeException e) {
+            status = "error";
+            errorType = e.getClass().getSimpleName();
+            throw e;
+        } finally {
+            metrics.setOutcome(status, errorType);
+            McpOperationMetrics.operationEnded(metrics);
         }
-        transport.sendEmptyResponse();
     }
 
     private void ping(McpTransport transport) {
-        transport.sendResponse(new Object());
+        McpOperationMetrics metrics = new McpOperationMetrics();
+        metrics.setMethodName("ping");
+        metrics.setTransport(transport);
+        McpOperationMetrics.operationStarted(metrics);
+
+        String status = "ok";
+        String errorType = null;
+
+        try {
+            transport.sendResponse(new Object());
+        } catch (RuntimeException e) {
+            status = "error";
+            errorType = e.getClass().getSimpleName();
+            throw e;
+        } finally {
+            metrics.setOutcome(status, errorType);
+            McpOperationMetrics.operationEnded(metrics);
+        }
     }
 
     private void cancelRequest(McpTransport transport) throws IOException {
         McpOperationMetrics metrics = new McpOperationMetrics();
-        metrics.setMethodName("cancel");
+        metrics.setMethodName("notifications/cancelled");
         metrics.setTransport(transport);
         McpOperationMetrics.operationStarted(metrics);
 

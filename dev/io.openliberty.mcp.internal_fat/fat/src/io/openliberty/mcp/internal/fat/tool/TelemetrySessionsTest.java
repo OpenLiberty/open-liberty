@@ -10,8 +10,6 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.StringAsset;
@@ -33,11 +31,11 @@ import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.opentelemetry.sdk.autoconfigure.spi.AutoConfigurationCustomizerProvider;
 
 @RunWith(FATRunner.class)
-public class ConfigurableSessionTelemetryTest extends FATServletClient {
+public class TelemetrySessionsTest extends FATServletClient {
 
-    private final static String APP_NAME = "ConfigurableSessionTelemetryTest";
+    private final static String APP_NAME = "telemetryTest";
 
-    @Server("mcp-server-telemetry-session-config")
+    @Server("mcp-server-telemetry")
     public static LibertyServer server;
 
     @Rule
@@ -75,7 +73,7 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
                                                   "META-INF/microprofile-config.properties")
                                    .addAsServiceProvider(AutoConfigurationCustomizerProvider.class,
                                                          PullExporterAutoConfigurationCustomizerProvider.class);
-        ShrinkHelper.exportAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();
     }
 
@@ -85,20 +83,15 @@ public class ConfigurableSessionTelemetryTest extends FATServletClient {
     }
 
     @Test
-    public void testCustomSessionTimeoutWithMetrics() throws Exception {
-        Thread.sleep(1500);
+    public void testSessionDurationMetrics() throws Exception {
+        // Perform some operations within the session
+        client.callMCP(BASIC_TOOL_REQUEST);
+        client.callMCP(ADVANCED_TOOL_REQUEST);
 
-        try {
-            client.deleteSession();
-            fail("Expected session to be timed out, but delete succeeded");
-        } catch (Exception e) {
-            assertTrue("Expected session not found error",
-                       e.getMessage().contains("Session not found") ||
-                                                           e.getMessage().contains("404"));
-            client.setSessionDeleted(true);
-        }
+        // Delete the session to trigger sessionEnded metric recording
+        client.deleteSession();
 
-        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionTimeoutMetrics");
+        FATServletClient.runTest(server, APP_NAME + "/McpSessionMetricServlet", "testSessionDurationMetrics");
     }
 
 }
