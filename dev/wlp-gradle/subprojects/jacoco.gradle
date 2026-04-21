@@ -18,20 +18,28 @@
 plugins.apply 'jacoco'
 
 /**
+ * Add Maven Central repository for JaCoCo dependencies
+ * to avoid Artifactory authentication issues
+ */
+repositories {
+    mavenCentral()
+}
+
+/**
  * Define dependencies for the Jacoco Ant plugin that is used to
  * generate coverage reports since Artifactory doesn't have the
  * POM and therefore can't resolve secondary dependencies.
  */
 dependencies {
-    jacocoAnt "org.jacoco:org.jacoco.agent:0.8.4",
-            "org.jacoco:org.jacoco.ant:0.8.4",
-            "org.jacoco:org.jacoco.core:0.8.4",
-            "org.jacoco:org.jacoco.report:0.8.4",
-            "org.ow2.asm:asm-all:5.2"
+    jacocoAnt "org.jacoco:org.jacoco.agent:0.8.11",
+            "org.jacoco:org.jacoco.ant:0.8.11",
+            "org.jacoco:org.jacoco.core:0.8.11",
+            "org.jacoco:org.jacoco.report:0.8.11",
+            "org.ow2.asm:asm:9.6"
 }
 
 jacoco {
-    toolVersion = "0.8.4"
+    toolVersion = "0.8.11"
 }
 
 test {
