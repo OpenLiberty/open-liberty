@@ -38,7 +38,7 @@ public class Utils {
     }
     
     /*
-     * Use reflection to get @jakarta.ejb.Local interfaces without an EJB dependency.
+     * Use reflection to get @jakarta.ejb.Local or @javax.ejb.Local interfaces without an EJB dependency.
      */
     public static Class<?>[] getLocalInterfaces(Class<?> clazz) {
         // Use reflection since we don't have an EJB dependency at compile time.
@@ -67,7 +67,8 @@ public class Utils {
     
     private static Annotation getLocalAnnotation(Class<?> clazz) {
         for (Annotation anno : clazz.getAnnotations()) {
-            if (anno.annotationType().getName().equals("jakarta.ejb.Local")) {
+            String annotationName = anno.annotationType().getName();
+            if (annotationName.equals("jakarta.ejb.Local") || annotationName.equals("javax.ejb.Local")) {
                 return anno;
             }
         }

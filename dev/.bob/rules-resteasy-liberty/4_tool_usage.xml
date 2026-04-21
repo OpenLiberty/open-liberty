@@ -1,0 +1,250 @@
+<resteasy_liberty_tool_usage>
+  <overview>
+    Specialized guidance for using Bob's tools effectively when working with 
+    RESTeasy, Open Liberty, Jakarta EE, and MicroProfile codebases.
+  </overview>
+
+  <search_strategies>
+    <strategy name="finding_osgi_services">
+      <description>Locate OSGi service implementations and registrations</description>
+      <patterns>
+        <pattern regex="@Component.*service\s*=">Declarative Services components</pattern>
+        <pattern regex="registerService\(">Programmatic service registrations</pattern>
+        <pattern regex="@Reference">Service injection points</pattern>
+      </patterns>
+    </strategy>
+
+    <strategy name="finding_cdi_beans">
+      <description>Locate CDI beans and injection points</description>
+      <patterns>
+        <pattern regex="@(ApplicationScoped|RequestScoped|SessionScoped|Dependent)">CDI bean definitions</pattern>
+        <pattern regex="@Inject">Injection points</pattern>
+        <pattern regex="@Produces">Producer methods</pattern>
+      </patterns>
+    </strategy>
+
+    <strategy name="finding_jaxrs_resources">
+      <description>Locate JAX-RS resources and endpoints</description>
+      <patterns>
+        <pattern regex="@Path\(">JAX-RS resource classes and methods</pattern>
+        <pattern regex="@(GET|POST|PUT|DELETE|PATCH)\s">HTTP method handlers</pattern>
+        <pattern regex="@Provider">JAX-RS providers</pattern>
+      </patterns>
+    </strategy>
+
+    <strategy name="finding_feature_dependencies">
+      <description>Locate Liberty feature manifests and dependencies</description>
+      <patterns>
+        <pattern regex="Subsystem-SymbolicName:" file_pattern="*.mf">Feature manifests</pattern>
+        <pattern regex="-features=" file_pattern="*.mf">Feature dependencies</pattern>
+        <pattern regex="IBM-API-Package:" file_pattern="*.mf">API package exports</pattern>
+      </patterns>
+    </strategy>
+
+    <strategy name="finding_microprofile_usage">
+      <description>Locate MicroProfile annotations and implementations</description>
+      <patterns>
+        <pattern regex="@ConfigProperty">MicroProfile Config usage</pattern>
+        <pattern regex="@(Liveness|Readiness|Startup)">Health check implementations</pattern>
+        <pattern regex="@(Counted|Timed|Gauge|Metered)">Metrics annotations</pattern>
+        <pattern regex="@(Retry|Timeout|CircuitBreaker|Bulkhead|Fallback)">Fault tolerance</pattern>
+      </patterns>
+    </strategy>
+  </search_strategies>
+
+  <file_reading_strategies>
+    <strategy name="understanding_bundle_structure">
+      <description>Read files to understand OSGi bundle organization</description>
+      <sequence>
+        <step order="1" file="MANIFEST.MF or bnd.bnd">Bundle metadata, imports, exports</step>
+        <step order="2" file="Bundle activator class">Initialization and service registration</step>
+        <step order="3" file="DS component files">Service dependencies and lifecycle</step>
+      </sequence>
+    </strategy>
+
+    <strategy name="understanding_feature_composition">
+      <description>Read files to understand Liberty feature structure</description>
+      <sequence>
+        <step order="1" file="subsystem.mf">Feature dependencies and bundles</step>
+        <step order="2" file="Bundle activators">Feature initialization</step>
+        <step order="3" file="API classes">Public API surface</step>
+      </sequence>
+    </strategy>
+
+    <strategy name="tracing_cdi_injection">
+      <description>Trace CDI injection chains to understand dependencies</description>
+      <approach>
+        <step>Start with injection point (@Inject annotation)</step>
+        <step>Find bean definition (class with scope annotation)</step>
+        <step>Check for producer methods if not a direct bean</step>
+        <step>Follow transitive dependencies</step>
+        <step>Verify bean discovery (beans.xml or implicit)</step>
+      </approach>
+    </strategy>
+  </file_reading_strategies>
+
+  <code_modification_strategies>
+    <strategy name="modifying_osgi_manifests">
+      <description>Update OSGi bundle manifests safely</description>
+      <guidelines>
+        <guideline>Always read the entire manifest first</guideline>
+        <guideline>Preserve existing imports and exports</guideline>
+        <guideline>Use proper version ranges</guideline>
+        <guideline>Maintain alphabetical ordering of packages</guideline>
+      </guidelines>
+      <tool_preference>Use apply_diff for targeted changes, avoid write_to_file</tool_preference>
+    </strategy>
+
+    <strategy name="adding_cdi_beans">
+      <description>Add new CDI beans or modify existing ones</description>
+      <guidelines>
+        <guideline>Use write_to_file for new bean classes</guideline>
+        <guideline>Use apply_diff for adding methods to existing beans</guideline>
+        <guideline>Use insert_content for adding imports</guideline>
+        <guideline>Always include proper scope annotations</guideline>
+      </guidelines>
+    </strategy>
+
+    <strategy name="modifying_jaxrs_resources">
+      <description>Add or modify JAX-RS endpoints</description>
+      <guidelines>
+        <guideline>Use apply_diff for adding endpoints to existing resources</guideline>
+        <guideline>Use write_to_file for new resource classes</guideline>
+        <guideline>Include proper HTTP method annotations</guideline>
+        <guideline>Include @Produces/@Consumes annotations</guideline>
+      </guidelines>
+    </strategy>
+
+    <strategy name="updating_feature_manifests">
+      <description>Modify Liberty feature manifests</description>
+      <guidelines>
+        <guideline>Always read the manifest first</guideline>
+        <guideline>Use apply_diff for adding dependencies or bundles</guideline>
+        <guideline>Maintain proper formatting with backslash continuations</guideline>
+        <guideline>Keep features and bundles in logical order</guideline>
+      </guidelines>
+    </strategy>
+  </code_modification_strategies>
+
+  <debugging_workflows>
+    <workflow name="classloader_issues">
+      <description>Debug ClassNotFoundException or NoClassDefFoundError</description>
+      <steps>
+        <step number="1">Search for the missing class in the codebase</step>
+        <step number="2">Check which bundle exports the package</step>
+        <step number="3">Verify the consuming bundle imports the package</step>
+        <step number="4">Add missing import if needed</step>
+      </steps>
+    </workflow>
+
+    <workflow name="cdi_injection_failures">
+      <description>Debug CDI injection issues</description>
+      <steps>
+        <step number="1">Find the injection point</step>
+        <step number="2">Search for bean definition</step>
+        <step number="3">Verify bean has proper scope annotation</step>
+        <step number="4">Check for beans.xml or bean-discovery-mode</step>
+        <step number="5">Look for producer methods if direct bean not found</step>
+      </steps>
+    </workflow>
+
+    <workflow name="jaxrs_endpoint_not_found">
+      <description>Debug 404 errors for JAX-RS endpoints</description>
+      <steps>
+        <step number="1">Find the resource class with @Path annotation</step>
+        <step number="2">Check Application class registration</step>
+        <step number="3">Verify resource is registered in Application</step>
+        <step number="4">Check for CDI scope on resource class</step>
+      </steps>
+    </workflow>
+
+    <workflow name="osgi_service_not_available">
+      <description>Debug OSGi service availability issues</description>
+      <steps>
+        <step number="1">Search for service registration (@Component or registerService)</step>
+        <step number="2">Check bundle activation state</step>
+        <step number="3">Verify service dependencies are satisfied</step>
+        <step number="4">Check for circular dependencies</step>
+        <step number="5">Review bundle manifest for missing imports</step>
+      </steps>
+    </workflow>
+  </debugging_workflows>
+
+  <command_execution_strategies>
+    <strategy name="building_bundles">
+      <description>Build OSGi bundles using Gradle or Maven</description>
+      <commands>
+        <command>./gradlew :com.ibm.ws.example:build</command>
+        <command>mvn clean install -pl com.ibm.ws.example</command>
+      </commands>
+    </strategy>
+
+    <strategy name="running_tests">
+      <description>Execute tests for Liberty features and bundles</description>
+      <commands>
+        <command>./gradlew :com.ibm.ws.example_fat:buildandrun</command>
+        <command>./gradlew :com.ibm.ws.example:test</command>
+      </commands>
+    </strategy>
+  </command_execution_strategies>
+
+  <best_practices>
+    <practice name="read_before_modifying">
+      Always read files before modifying them to understand the current state
+      and ensure your changes are compatible
+    </practice>
+
+    <practice name="use_targeted_searches">
+      Use specific regex patterns to find exactly what you need rather than
+      broad searches that return too many results
+    </practice>
+
+    <practice name="follow_dependency_chain">
+      When analyzing code, follow dependencies systematically:
+      OSGi imports → Service references → CDI injection → Implementation
+    </practice>
+
+    <practice name="verify_changes_build">
+      After making changes, use execute_command to build and verify there are
+      no compilation errors or manifest issues
+    </practice>
+
+    <practice name="check_multiple_files">
+      Use read_file with multiple files to understand relationships between
+      components in a single operation (up to 5 files at once)
+    </practice>
+
+    <practice name="use_line_ranges">
+      When reading large files, use line ranges to focus on relevant sections
+      and avoid loading unnecessary content
+    </practice>
+  </best_practices>
+
+  <common_file_locations>
+    <location type="osgi_manifests">
+      <path>*/META-INF/MANIFEST.MF</path>
+      <path>*/bnd.bnd</path>
+    </location>
+
+    <location type="feature_manifests">
+      <path>com.ibm.websphere.appserver.features/visibility/*/com.ibm.websphere.appserver.*.feature</path>
+    </location>
+
+    <location type="cdi_beans">
+      <path>*/src/*/java/**/*.java</path>
+      <pattern>@(ApplicationScoped|RequestScoped|SessionScoped)</pattern>
+    </location>
+
+    <location type="jaxrs_resources">
+      <path>*/src/*/java/**/*.java</path>
+      <pattern>@Path</pattern>
+    </location>
+
+    <location type="test_files">
+      <path>*_fat/fat/src/**/*Test.java</path>
+      <path>*/src/test/java/**/*Test.java</path>
+    </location>
+  </common_file_locations>
+</resteasy_liberty_tool_usage>
+
+<!-- Made with Bob -->

@@ -7,6 +7,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -81,11 +82,17 @@ public class CdiInjectorFactory implements InjectorFactory
    public ConstructorInjector createConstructor(ResourceConstructor constructor, ResteasyProviderFactory providerFactory)
    {
       Class<?> clazz = constructor.getConstructor().getDeclaringClass();
+      
+      LogMessages.LOGGER.debug("CdiInjectorFactory.createConstructor called for class: " + clazz.getName());
 
       ConstructorInjector injector = cdiConstructor(clazz);
-      if (injector != null) return injector;
+      if (injector != null) {
+         LogMessages.LOGGER.debug("  Returning CdiConstructorInjector for " + clazz.getName());
+         return injector;
+      }
 
       LogMessages.LOGGER.debug(Messages.MESSAGES.noCDIBeansFound(clazz));
+      LogMessages.LOGGER.debug("  Returning delegate constructor injector for " + clazz.getName());
       return delegate.createConstructor(constructor, providerFactory);
    }
 
@@ -115,9 +122,7 @@ public class CdiInjectorFactory implements InjectorFactory
       {
          Collection<Type> intfc = sessionBeanInterface.get(clazz); // Liberty Change
 //         LogMessages.LOGGER.debug(Messages.MESSAGES.usingInterfaceForLookup(intfc, clazz)); // TODO: convert to collection
-         
-         // TODO: how do we handle multiple sessionBeanInterfaces?
-         return new CdiConstructorInjector(intfc, manager);
+         return new CdiConstructorInjector(intfc, manager); // Liberty Change
       }
 
       return null;

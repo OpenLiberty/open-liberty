@@ -1,0 +1,780 @@
+<resteasy_liberty_best_practices>
+  <overview>
+    Framework-specific best practices for working with RESTeasy, Open Liberty, 
+    Jakarta EE, and MicroProfile. These guidelines ensure code quality, 
+    maintainability, and proper integration across frameworks.
+  </overview>
+
+  <osgi_bundle_practices>
+    <practice priority="critical">
+      <name>Proper Package Imports and Exports</name>
+      <description>
+        Always declare explicit package imports and exports in bundle manifests.
+        Avoid using wildcards or version ranges that are too broad.
+      </description>
+      <rationale>
+        Explicit declarations prevent classloader issues and make dependencies clear.
+        Proper versioning ensures compatibility across Liberty versions.
+      </rationale>
+      <good_example><![CDATA[
+Import-Package: 
+  javax.ws.rs;version="[2.1,3)",
+  javax.ws.rs.core;version="[2.1,3)",
+  org.jboss.resteasy.spi;version="[4.0,5)",
+  javax.enterprise.inject;version="[2.0,3)"
+
+Export-Package: 
+  com.ibm.ws.jaxrs.resteasy;version="1.0.0"
+      ]]></good_example>
+      <bad_example><![CDATA[
+Import-Package: *
+Export-Package: com.ibm.ws.jaxrs.*
+      ]]></bad_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Bundle Activator Lifecycle Management</name>
+      <description>
+        Implement proper start() and stop() methods in bundle activators.
+        Clean up resources in stop() to prevent memory leaks.
+      </description>
+      <good_example><![CDATA[
+public class Activator implements BundleActivator {
+    private ServiceRegistration<?> registration;
+    
+    @Override
+    public void start(BundleContext context) throws Exception {
+        // Register services
+        registration = context.registerService(
+            MyService.class.getName(), 
+            new MyServiceImpl(), 
+            null
+        );
+    }
+    
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        // Unregister services
+        if (registration != null) {
+            registration.unregister();
+            registration = null;
+        }
+    }
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>OSGi Service Dependencies</name>
+      <description>
+        Use declarative services (DS) annotations for service dependencies.
+        Handle dynamic service availability properly.
+      </description>
+      <good_example><![CDATA[
+@Component(service = MyService.class)
+public class MyServiceImpl implements MyService {
+    
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL)
+    private volatile OptionalService optionalService;
+    
+    @Reference
+    private RequiredService requiredService;
+    
+    @Activate
+    protected void activate(ComponentContext context) {
+        // Initialization
+    }
+    
+    @Deactivate
+    protected void deactivate(ComponentContext context) {
+        // Cleanup
+    }
+}
+      ]]></good_example>
+    </practice>
+  </osgi_bundle_practices>
+
+  <cdi_integration_practices>
+    <practice priority="critical">
+      <name>Proper Bean Scopes</name>
+      <description>
+        Choose appropriate CDI scopes based on bean lifecycle requirements.
+        Avoid using @ApplicationScoped for stateful beans.
+      </description>
+      <scope_guidelines>
+        <scope name="@ApplicationScoped">
+          Use for: Stateless services, configuration holders, caches
+          Thread safety: Must be thread-safe
+          Lifecycle: Lives for entire application
+        </scope>
+        <scope name="@RequestScoped">
+          Use for: Request-specific data, JAX-RS resources
+          Thread safety: Not required (single thread per instance)
+          Lifecycle: Created per HTTP request
+        </scope>
+        <scope name="@SessionScoped">
+          Use for: User session data
+          Thread safety: Must be thread-safe
+          Lifecycle: Lives for HTTP session duration
+        </scope>
+        <scope name="@Dependent">
+          Use for: Utility objects, short-lived helpers
+          Thread safety: Depends on usage
+          Lifecycle: Tied to injecting bean
+        </scope>
+      </scope_guidelines>
+      <good_example><![CDATA[
+@ApplicationScoped
+public class ConfigurationService {
+    // Stateless, thread-safe service
+    private final ConcurrentHashMap<String, String> cache = new ConcurrentHashMap<>();
+}
+
+@RequestScoped
+public class UserContextHolder {
+    // Request-specific data, no thread safety needed
+    private String userId;
+    private Map<String, Object> attributes = new HashMap<>();
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>CDI Producer Methods</name>
+      <description>
+        Use producer methods for objects that require special initialization
+        or are not CDI beans themselves.
+      </description>
+      <good_example><![CDATA[
+@ApplicationScoped
+public class ResourceProducer {
+    
+    @Produces
+    @RequestScoped
+    public EntityManager createEntityManager(EntityManagerFactory emf) {
+        return emf.createEntityManager();
+    }
+    
+    @Disposes
+    public void closeEntityManager(@Disposes EntityManager em) {
+        if (em.isOpen()) {
+            em.close();
+        }
+    }
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Injection Point Validation</name>
+      <description>
+        Validate injection points at deployment time using CDI extensions.
+        Fail fast if required dependencies are missing.
+      </description>
+      <good_example><![CDATA[
+public class ValidationExtension implements Extension {
+    
+    public void validateInjectionPoints(@Observes AfterDeploymentValidation event) {
+        // Validate that all required services are available
+        // Fail deployment if critical dependencies are missing
+    }
+}
+      ]]></good_example>
+    </practice>
+  </cdi_integration_practices>
+
+  <jaxrs_implementation_practices>
+    <practice priority="critical">
+      <name>Resource Class Design</name>
+      <description>
+        Keep JAX-RS resource classes focused and stateless.
+        Use CDI for dependency injection, not manual instantiation.
+      </description>
+      <good_example><![CDATA[
+@Path("/users")
+@RequestScoped
+public class UserResource {
+    
+    @Inject
+    private UserService userService;
+    
+    @Inject
+    private SecurityContext securityContext;
+    
+    @GET
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getUser(@PathParam("id") String id) {
+        User user = userService.findById(id);
+        if (user == null) {
+            return Response.status(Status.NOT_FOUND).build();
+        }
+        return Response.ok(user).build();
+    }
+}
+      ]]></good_example>
+      <bad_example><![CDATA[
+@Path("/users")
+public class UserResource {
+    // Don't create services manually
+    private UserService userService = new UserServiceImpl();
+    
+    // Don't store state in resource classes
+    private String lastUserId;
+}
+      ]]></bad_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Exception Mapping</name>
+      <description>
+        Implement ExceptionMapper for consistent error handling.
+        Map framework exceptions to appropriate HTTP responses.
+      </description>
+      <good_example><![CDATA[
+@Provider
+public class ValidationExceptionMapper 
+    implements ExceptionMapper<ValidationException> {
+    
+    @Override
+    public Response toResponse(ValidationException exception) {
+        ErrorResponse error = new ErrorResponse(
+            "VALIDATION_ERROR",
+            exception.getMessage(),
+            exception.getViolations()
+        );
+        return Response.status(Status.BAD_REQUEST)
+                      .entity(error)
+                      .build();
+    }
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Provider Ordering</name>
+      <description>
+        Use @Priority to control provider execution order.
+        Lower numbers execute first for filters, last for interceptors.
+      </description>
+      <good_example><![CDATA[
+@Provider
+@Priority(Priorities.AUTHENTICATION)
+public class AuthenticationFilter implements ContainerRequestFilter {
+    @Override
+    public void filter(ContainerRequestContext requestContext) {
+        // Authentication logic
+    }
+}
+
+@Provider
+@Priority(Priorities.AUTHORIZATION)
+public class AuthorizationFilter implements ContainerRequestFilter {
+    @Override
+    public void filter(ContainerRequestContext requestContext) {
+        // Authorization logic (runs after authentication)
+    }
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="medium">
+      <name>Async Resource Methods</name>
+      <description>
+        Use async processing for long-running operations.
+        Properly manage thread pools and timeouts.
+      </description>
+      <good_example><![CDATA[
+@Path("/async")
+public class AsyncResource {
+    
+    @Inject
+    private ManagedExecutorService executor;
+    
+    @GET
+    @Path("/process")
+    public void processAsync(@Suspended AsyncResponse response) {
+        response.setTimeout(30, TimeUnit.SECONDS);
+        response.setTimeoutHandler(ar -> 
+            ar.resume(Response.status(Status.SERVICE_UNAVAILABLE).build())
+        );
+        
+        executor.submit(() -> {
+            try {
+                Result result = performLongOperation();
+                response.resume(Response.ok(result).build());
+            } catch (Exception e) {
+                response.resume(e);
+            }
+        });
+    }
+}
+      ]]></good_example>
+    </practice>
+  </jaxrs_implementation_practices>
+
+  <microprofile_practices>
+    <practice priority="high">
+      <name>Config Property Injection</name>
+      <description>
+        Use MicroProfile Config for externalized configuration.
+        Provide sensible defaults and document required properties.
+      </description>
+      <good_example><![CDATA[
+@ApplicationScoped
+public class ServiceConfiguration {
+    
+    @Inject
+    @ConfigProperty(name = "service.endpoint.url")
+    private String endpointUrl;
+    
+    @Inject
+    @ConfigProperty(name = "service.timeout", defaultValue = "5000")
+    private int timeoutMs;
+    
+    @Inject
+    @ConfigProperty(name = "service.retries", defaultValue = "3")
+    private int maxRetries;
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Health Check Implementation</name>
+      <description>
+        Implement health checks for critical dependencies.
+        Distinguish between liveness and readiness probes.
+      </description>
+      <good_example><![CDATA[
+@Liveness
+@ApplicationScoped
+public class ServiceLivenessCheck implements HealthCheck {
+    @Override
+    public HealthCheckResponse call() {
+        // Check if service is alive (not deadlocked, etc.)
+        return HealthCheckResponse.up("service-liveness");
+    }
+}
+
+@Readiness
+@ApplicationScoped
+public class DatabaseReadinessCheck implements HealthCheck {
+    @Inject
+    private DataSource dataSource;
+    
+    @Override
+    public HealthCheckResponse call() {
+        try (Connection conn = dataSource.getConnection()) {
+            return HealthCheckResponse.up("database");
+        } catch (SQLException e) {
+            return HealthCheckResponse.down("database");
+        }
+    }
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="medium">
+      <name>Metrics Annotations</name>
+      <description>
+        Use MicroProfile Metrics to expose application metrics.
+        Choose appropriate metric types for different measurements.
+      </description>
+      <good_example><![CDATA[
+@ApplicationScoped
+public class UserService {
+    
+    @Counted(name = "user_lookups", description = "Number of user lookups")
+    @Timed(name = "user_lookup_time", description = "User lookup duration")
+    public User findById(String id) {
+        // Implementation
+    }
+    
+    @Gauge(name = "active_users", unit = MetricUnits.NONE)
+    public long getActiveUserCount() {
+        return activeUsers.size();
+    }
+}
+      ]]></good_example>
+    </practice>
+  </microprofile_practices>
+
+  <liberty_feature_practices>
+    <practice priority="critical">
+      <name>Feature Manifest Structure</name>
+      <description>
+        Create well-structured feature manifests with clear dependencies.
+        Use subsystem content for proper feature composition.
+      </description>
+      <good_example><![CDATA[
+Subsystem-SymbolicName: com.example.myfeature-1.0
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-ShortName: myFeature-1.0
+IBM-API-Package: com.example.api; type="api"
+
+IBM-Feature-Version: 2
+
+-features=\
+  com.ibm.websphere.appserver.servlet-4.0,\
+  com.ibm.websphere.appserver.cdi-2.0,\
+  com.ibm.websphere.appserver.jaxrs-2.1
+
+-bundles=\
+  com.example.myfeature.bundle
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>API Package Visibility</name>
+      <description>
+        Clearly define which packages are API vs. internal.
+        Use IBM-API-Package to expose public APIs.
+      </description>
+      <guideline>
+        API packages: Stable, versioned, documented
+        SPI packages: For extension points
+        Internal packages: Implementation details, may change
+      </guideline>
+    </practice>
+  </liberty_feature_practices>
+
+  <error_handling_practices>
+    <practice priority="critical">
+      <name>Framework Exception Handling</name>
+      <description>
+        Handle framework-specific exceptions appropriately.
+        Don't swallow exceptions that indicate serious problems.
+      </description>
+      <good_example><![CDATA[
+try {
+    // OSGi service lookup
+    ServiceReference<?> ref = context.getServiceReference(MyService.class);
+    if (ref == null) {
+        throw new ServiceUnavailableException("MyService not available");
+    }
+    MyService service = (MyService) context.getService(ref);
+    // Use service
+} catch (InvalidSyntaxException e) {
+    // Log and handle invalid service filter
+    logger.error("Invalid service filter", e);
+    throw new IllegalStateException("Configuration error", e);
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Resource Cleanup</name>
+      <description>
+        Always clean up resources in finally blocks or try-with-resources.
+        Unregister services and close connections properly.
+      </description>
+      <good_example><![CDATA[
+ServiceRegistration<?> registration = null;
+try {
+    registration = context.registerService(
+        MyService.class.getName(), 
+        new MyServiceImpl(), 
+        null
+    );
+    // Use service
+} finally {
+    if (registration != null) {
+        try {
+            registration.unregister();
+        } catch (IllegalStateException e) {
+            // Already unregistered, ignore
+        }
+    }
+}
+      ]]></good_example>
+    </practice>
+  </error_handling_practices>
+
+  <threading_practices>
+    <practice priority="critical">
+      <name>Thread Safety in Shared Beans</name>
+      <description>
+        Ensure thread safety for @ApplicationScoped and @SessionScoped beans.
+        Use proper synchronization or concurrent collections.
+      </description>
+      <good_example><![CDATA[
+@ApplicationScoped
+public class CacheService {
+    // Thread-safe concurrent map
+    private final ConcurrentHashMap<String, Object> cache = 
+        new ConcurrentHashMap<>();
+    
+    // Atomic operations
+    private final AtomicLong hitCount = new AtomicLong();
+    
+    public Object get(String key) {
+        Object value = cache.get(key);
+        if (value != null) {
+            hitCount.incrementAndGet();
+        }
+        return value;
+    }
+}
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Managed Executor Usage</name>
+      <description>
+        Use Liberty's ManagedExecutorService for async operations.
+        Don't create your own thread pools.
+      </description>
+      <good_example><![CDATA[
+@ApplicationScoped
+public class AsyncProcessor {
+    
+    @Resource
+    private ManagedExecutorService executor;
+    
+    public CompletableFuture<Result> processAsync(Request request) {
+        return CompletableFuture.supplyAsync(
+            () -> process(request),
+            executor
+        );
+    }
+}
+      ]]></good_example>
+    </practice>
+  </threading_practices>
+
+  <common_pitfalls>
+    <pitfall>
+      <name>Classloader Issues</name>
+      <description>
+        Classes not visible across bundle boundaries
+      </description>
+      <solution>
+        Check Import-Package declarations and ensure proper package exports.
+        Verify bundle wiring with OSGi console commands.
+      </solution>
+    </pitfall>
+
+    <pitfall>
+      <name>CDI Scope Mismatches</name>
+      <description>
+        Injecting shorter-scoped bean into longer-scoped bean
+      </description>
+      <solution>
+        Use CDI proxies or Instance&lt;T&gt; for dynamic lookup.
+        Match bean scopes appropriately.
+      </solution>
+    </pitfall>
+
+    <pitfall>
+      <name>Service Circular Dependencies</name>
+      <description>
+        OSGi services with circular dependencies fail to start
+      </description>
+      <solution>
+        Break circular dependencies by using optional references or events.
+        Redesign service boundaries if necessary.
+      </solution>
+    </pitfall>
+
+    <pitfall>
+      <name>Configuration Property Not Found</name>
+      <description>
+        MicroProfile Config property injection fails
+      </description>
+      <solution>
+        Provide default values or make properties optional.
+        Check property sources and precedence.
+      </solution>
+    </pitfall>
+  </common_pitfalls>
+
+  <code_review_checklist>
+    <category name="OSGi">
+      <item>Bundle manifest has explicit imports and exports</item>
+      <item>Service lifecycle is properly managed</item>
+      <item>No circular service dependencies</item>
+      <item>Proper use of declarative services</item>
+    </category>
+
+    <category name="CDI">
+      <item>Appropriate bean scopes used</item>
+      <item>Thread safety for shared scopes</item>
+      <item>Proper injection point declarations</item>
+      <item>Producer/disposer methods paired correctly</item>
+    </category>
+
+    <category name="JAX-RS">
+      <item>Resource classes are stateless</item>
+      <item>Exception mappers handle all error cases</item>
+      <item>Provider ordering is correct</item>
+      <item>Async processing uses managed executors</item>
+    </category>
+
+    <category name="MicroProfile">
+      <item>Config properties have defaults or are documented</item>
+      <item>Health checks distinguish liveness vs readiness</item>
+      <item>Metrics use appropriate types</item>
+    </category>
+
+    <category name="General">
+      <item>Resources are properly cleaned up</item>
+      <item>Error handling is comprehensive</item>
+      <item>Logging provides useful diagnostic information</item>
+      <item>Code follows Liberty coding conventions</item>
+    </category>
+  </code_review_checklist>
+
+  <overlay_file_best_practices>
+    <practice priority="critical">
+      <name>Source Attribution</name>
+      <description>
+        Always include a source attribution comment linking to the specific commit
+        in the RESTEasy repository. This enables tracking of upstream changes and
+        understanding the provenance of overlay files.
+      </description>
+      <format>
+        // Source: https://github.com/resteasy/resteasy/blob/{commit-hash}/{module}/src/main/java/{package-path}/{filename}
+      </format>
+      <rationale>
+        Commit-based links are immutable and provide exact version tracking,
+        unlike tag-based links which can change if tags are moved.
+      </rationale>
+    </practice>
+
+    <practice priority="critical">
+      <name>Copyright Headers</name>
+      <description>
+        All overlay files must include the standard IBM EPL-2.0 copyright header
+        before the source attribution comment.
+      </description>
+      <good_example><![CDATA[
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+// Source: https://github.com/resteasy/resteasy/blob/abc123.../resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/Utils.java
+package org.jboss.resteasy.spi.util;
+      ]]></good_example>
+    </practice>
+
+    <practice priority="high">
+      <name>Version Consistency</name>
+      <description>
+        Ensure overlay files match the RESTEasy version specified in the bundle's
+        bnd.bnd file. Mixing versions can lead to compatibility issues.
+      </description>
+      <verification>
+        Always check the resteasy-version property in bnd.bnd before pulling
+        overlay files to ensure you're using the correct version tag.
+      </verification>
+    </practice>
+
+    <practice priority="high">
+      <name>Module Identification</name>
+      <description>
+        Correctly identify which RESTEasy module contains the file you need.
+        RESTEasy is split into multiple Maven modules (resteasy-core, resteasy-core-spi,
+        resteasy-client, resteasy-cdi, etc.).
+      </description>
+      <tip>
+        Use package prefixes as a guide:
+        - org.jboss.resteasy.spi.* → resteasy-core-spi
+        - org.jboss.resteasy.core.* → resteasy-core
+        - org.jboss.resteasy.client.* → resteasy-client
+        - org.jboss.resteasy.cdi.* → resteasy-cdi
+      </tip>
+    </practice>
+
+    <practice priority="critical">
+      <name>Mark Liberty Changes with Standard Comments</name>
+      <description>
+        All Liberty-specific modifications to overlay files MUST be marked with
+        standard Liberty Change comments. This is required for tracking differences
+        from upstream RESTEasy code.
+      </description>
+      <comment_format>
+        <single_line>
+          Use for single-line changes:
+          // Liberty Change
+        </single_line>
+        <multi_line>
+          Use for multi-line changes:
+          // Liberty Change Start
+          [modified code]
+          // Liberty Change End
+        </multi_line>
+      </comment_format>
+      <examples>
+        <example type="single_line"><![CDATA[
+// Original RESTEasy code:
+private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+// Modified for Liberty:
+private ClassLoader classLoader = getLibertyClassLoader(); // Liberty Change
+        ]]></example>
+        <example type="multi_line"><![CDATA[
+// Original RESTEasy code:
+public void initialize() {
+    loadProviders();
+    registerDefaults();
+}
+
+// Modified for Liberty:
+public void initialize() {
+    // Liberty Change Start
+    if (isLibertyEnvironment()) {
+        loadLibertyProviders();
+    } else {
+        loadProviders();
+    }
+    // Liberty Change End
+    registerDefaults();
+}
+        ]]></example>
+      </examples>
+      <rationale>
+        These markers make it easy to:
+        - Identify all Liberty-specific changes when updating to newer RESTEasy versions
+        - Understand what needs to be preserved during updates
+        - Generate diffs showing only Liberty modifications
+        - Review changes for correctness and necessity
+      </rationale>
+    </practice>
+
+    <practice priority="medium">
+      <name>Document Why Changes Were Made</name>
+      <description>
+        In addition to marking changes, add explanatory comments describing
+        why the Liberty-specific change was necessary.
+      </description>
+      <suggestion>
+        Combine Liberty Change markers with explanatory comments:
+        // Liberty Change: Use Liberty's class loading to support OSGi bundles
+      </suggestion>
+    </practice>
+
+    <practice priority="medium">
+      <name>Update Tracking</name>
+      <description>
+        When updating an existing overlay file to a newer RESTEasy version,
+        review the changes between versions to ensure Liberty modifications
+        are preserved or adapted as needed.
+      </description>
+      <workflow>
+        1. Note the old commit hash from the source attribution
+        2. Get the new commit hash for the updated version
+        3. Compare the two versions on GitHub
+        4. Reapply any Liberty-specific modifications
+        5. Update the source attribution comment
+      </workflow>
+    </practice>
+  </overlay_file_best_practices>
+</resteasy_liberty_best_practices>
+
+<!-- Made with Bob -->

@@ -1,0 +1,340 @@
+<resteasy_overlay_workflow>
+  <overview>
+    Liberty does not contain the entire RESTEasy codebase, only files that need to be 
+    overridden to make Liberty-specific changes. These are called "overlay files".
+    This workflow guides you through pulling in new overlay files from the RESTEasy 
+    upstream repository.
+  </overview>
+
+  <key_concepts>
+    <concept name="overlay_files">
+      <description>
+        Files copied from RESTEasy upstream that Liberty needs to modify for integration.
+        These files maintain a reference to their source commit for tracking purposes.
+      </description>
+    </concept>
+    
+    <concept name="version_tracking">
+      <description>
+        Each bundle's bnd.bnd file contains a resteasy-version property (e.g., resteasy-version=4.7.2.Final)
+        that indicates which RESTEasy release the bundle is based on.
+      </description>
+    </concept>
+    
+    <concept name="source_attribution">
+      <description>
+        Each overlay file should include a comment linking to the specific commit version 
+        of the file in the RESTEasy repository.
+      </description>
+    </concept>
+  </key_concepts>
+
+  <workflow_steps>
+    <step number="1">
+      <title>Identify RESTEasy Version</title>
+      <description>
+        Determine which version of RESTEasy the bundle uses by examining its bnd.bnd file.
+      </description>
+      <actions>
+        <action>Read the bundle's bnd.bnd file</action>
+        <action>Locate the resteasy-version property</action>
+        <action>Note the version for use in subsequent steps</action>
+      </actions>
+    </step>
+
+    <step number="2">
+      <title>Identify File to Overlay</title>
+      <description>
+        Determine the exact file path in the RESTEasy repository that needs to be overlaid.
+      </description>
+      <mapping_rules>
+        <rule>Package path remains the same</rule>
+        <rule>RESTEasy uses Maven structure: src/main/java/</rule>
+        <rule>Liberty uses OSGi structure: src/</rule>
+        <rule>Determine which RESTEasy module contains the file</rule>
+      </mapping_rules>
+    </step>
+
+    <step number="3">
+      <title>Find Latest Commit for the File</title>
+      <description>
+        Locate the specific commit hash for the file in the RESTEasy release tag.
+      </description>
+      <instructions>
+        <instruction>Navigate to the RESTEasy GitHub repository</instruction>
+        <instruction>Switch to the tag matching the version</instruction>
+        <instruction>Navigate to the file location in the appropriate module</instruction>
+        <instruction>Get the permalink with commit hash</instruction>
+      </instructions>
+    </step>
+
+    <step number="4">
+      <title>Create Package Directory if Needed</title>
+      <description>
+        Ensure the package directory structure exists in the Liberty bundle.
+      </description>
+      <actions>
+        <action>Check if the package directory exists</action>
+        <action>Create the full directory path if needed</action>
+      </actions>
+    </step>
+
+    <step number="5">
+      <title>Fetch File Content from GitHub</title>
+      <description>
+        Retrieve the raw content of the file from the RESTEasy repository using execute_command with curl.
+      </description>
+      <raw_url_format>
+        https://raw.githubusercontent.com/resteasy/resteasy/{commit-hash}/{module}/src/main/java/{package-path}/{filename}
+      </raw_url_format>
+      <actions>
+        <action>Convert the GitHub blob URL to a raw content URL by replacing 'blob' with 'raw.githubusercontent.com'</action>
+        <action>Use execute_command with curl to fetch the content</action>
+        <action>Store the fetched content for the next step</action>
+      </actions>
+      <example><![CDATA[
+<execute_command>
+<command>curl -s "https://raw.githubusercontent.com/resteasy/resteasy/abc123def456/resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/Utils.java"</command>
+</execute_command>
+      ]]></example>
+      <note>
+        The -s flag makes curl silent (no progress bar). The output will be the file content.
+      </note>
+    </step>
+
+    <step number="6">
+      <title>Create File with Source Attribution</title>
+      <description>
+        Create the overlay file with proper copyright header and source attribution using write_to_file.
+      </description>
+      <file_structure>
+        <line>IBM Copyright header (EPL-2.0 format)</line>
+        <line>Source attribution comment with GitHub permalink</line>
+        <line>Original file content from RESTEasy (from step 5)</line>
+      </file_structure>
+      <implementation>
+        Combine the copyright header, source attribution, and fetched content into a single file.
+        Use write_to_file tool to create the file in the correct location.
+      </implementation>
+      <example><![CDATA[
+<write_to_file>
+<path>io.openliberty.org.jboss.resteasy.common/src/org/jboss/resteasy/spi/util/NewFile.java</path>
+<content>
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+// Source: https://github.com/resteasy/resteasy/blob/abc123def456/resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/NewFile.java
+package org.jboss.resteasy.spi.util;
+
+[... content fetched from GitHub in step 5 ...]
+</content>
+<line_count>150</line_count>
+</write_to_file>
+      ]]></example>
+    </step>
+
+    <step number="7">
+      <title>Verify the Overlay File</title>
+      <description>
+        Confirm the file was created correctly.
+      </description>
+      <verification_checklist>
+        <item>File exists in correct location</item>
+        <item>Copyright header is present</item>
+        <item>Source attribution comment includes full GitHub permalink</item>
+        <item>Package declaration matches directory structure</item>
+        <item>File content is complete</item>
+      </verification_checklist>
+    </step>
+  </workflow_steps>
+
+  <resteasy_module_mapping>
+    <module name="resteasy-core-spi">
+      <packages>org.jboss.resteasy.spi.*</packages>
+    </module>
+    <module name="resteasy-core">
+      <packages>org.jboss.resteasy.core.*, org.jboss.resteasy.plugins.*, org.jboss.resteasy.specimpl.*</packages>
+    </module>
+    <module name="resteasy-client">
+      <packages>org.jboss.resteasy.client.*</packages>
+    </module>
+    <module name="resteasy-cdi">
+      <packages>org.jboss.resteasy.cdi.*</packages>
+    </module>
+  </resteasy_module_mapping>
+
+  <liberty_change_markers>
+    <overview>
+      All Liberty-specific modifications to overlay files MUST be marked with
+      standard Liberty Change comments. This is critical for tracking differences
+      from upstream RESTEasy code.
+    </overview>
+    
+    <comment_formats>
+      <single_line>
+        <format>// Liberty Change</format>
+        <usage>Use for single-line modifications</usage>
+        <example><![CDATA[
+private ClassLoader classLoader = getLibertyClassLoader(); // Liberty Change
+        ]]></example>
+      </single_line>
+      
+      <multi_line>
+        <format>
+          // Liberty Change Start
+          [modified code]
+          // Liberty Change End
+        </format>
+        <usage>Use for multi-line modifications</usage>
+        <example><![CDATA[
+// Liberty Change Start
+if (isLibertyEnvironment()) {
+    loadLibertyProviders();
+} else {
+    loadProviders();
+}
+// Liberty Change End
+        ]]></example>
+      </multi_line>
+    </comment_formats>
+    
+    <when_to_mark>
+      <scenario>Adding new code not in upstream RESTEasy</scenario>
+      <scenario>Modifying existing RESTEasy code for Liberty compatibility</scenario>
+      <scenario>Removing or commenting out RESTEasy code</scenario>
+      <scenario>Changing method signatures or return types</scenario>
+      <scenario>Adding Liberty-specific imports or dependencies</scenario>
+    </when_to_mark>
+    
+    <benefits>
+      <benefit>Easy identification of Liberty changes when updating to newer RESTEasy versions</benefit>
+      <benefit>Clear understanding of what needs to be preserved during updates</benefit>
+      <benefit>Ability to generate diffs showing only Liberty modifications</benefit>
+      <benefit>Better code review and maintenance</benefit>
+    </benefits>
+  </liberty_change_markers>
+
+  <best_practices>
+    <practice>Always use the full commit hash in source attribution</practice>
+    <practice>Verify the correct RESTEasy module for the file</practice>
+    <practice>Mark all Liberty-specific modifications with Liberty Change comments</practice>
+    <practice>Preserve any Liberty-specific modifications when updating</practice>
+    <practice>Document why the overlay is needed and why changes were made</practice>
+  </best_practices>
+
+  <complete_example>
+    <title>Complete Example: Adding FindAnnotation.java to io.openliberty.org.jboss.resteasy.common</title>
+    <scenario>
+      User wants to add org.jboss.resteasy.spi.util.FindAnnotation.java as an overlay file
+    </scenario>
+    
+    <step_by_step>
+      <step number="1">
+        <description>Read bnd.bnd to get RESTEasy version</description>
+        <tool_use><![CDATA[
+<read_file>
+<args>
+  <file>
+    <path>io.openliberty.org.jboss.resteasy.common/bnd.bnd</path>
+    <line_range>1-30</line_range>
+  </file>
+</args>
+</read_file>
+        ]]></tool_use>
+        <result>Find: resteasy-version=4.7.2.Final</result>
+      </step>
+
+      <step number="2">
+        <description>Identify the file location in RESTEasy</description>
+        <analysis>
+          Package: org.jboss.resteasy.spi.util
+          Module: resteasy-core-spi (based on package prefix)
+          Path: resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/FindAnnotation.java
+        </analysis>
+      </step>
+
+      <step number="3">
+        <description>Navigate to GitHub and get commit hash</description>
+        <instructions>
+          1. Go to https://github.com/resteasy/resteasy
+          2. Switch to tag 4.7.2.Final
+          3. Navigate to resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/FindAnnotation.java
+          4. Click the file to view it
+          5. Copy the permalink URL (contains commit hash)
+          Example result: https://github.com/resteasy/resteasy/blob/a1b2c3d4e5f6.../resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/FindAnnotation.java
+        </instructions>
+      </step>
+
+      <step number="4">
+        <description>Create package directory if needed</description>
+        <tool_use><![CDATA[
+<execute_command>
+<command>mkdir -p io.openliberty.org.jboss.resteasy.common/src/org/jboss/resteasy/spi/util</command>
+</execute_command>
+        ]]></tool_use>
+      </step>
+
+      <step number="5">
+        <description>Fetch the file content from GitHub</description>
+        <tool_use><![CDATA[
+<execute_command>
+<command>curl -s "https://raw.githubusercontent.com/resteasy/resteasy/a1b2c3d4e5f6/resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/FindAnnotation.java"</command>
+</execute_command>
+        ]]></tool_use>
+        <note>Store the output content for the next step</note>
+      </step>
+
+      <step number="6">
+        <description>Create the overlay file with headers and content</description>
+        <tool_use><![CDATA[
+<write_to_file>
+<path>io.openliberty.org.jboss.resteasy.common/src/org/jboss/resteasy/spi/util/FindAnnotation.java</path>
+<content>
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+// Source: https://github.com/resteasy/resteasy/blob/a1b2c3d4e5f6/resteasy-core-spi/src/main/java/org/jboss/resteasy/spi/util/FindAnnotation.java
+package org.jboss.resteasy.spi.util;
+
+[... paste the content fetched from curl in step 5 ...]
+</content>
+<line_count>120</line_count>
+</write_to_file>
+        ]]></tool_use>
+      </step>
+
+      <step number="7">
+        <description>Verify the file was created correctly</description>
+        <tool_use><![CDATA[
+<read_file>
+<args>
+  <file>
+    <path>io.openliberty.org.jboss.resteasy.common/src/org/jboss/resteasy/spi/util/FindAnnotation.java</path>
+    <line_range>1-20</line_range>
+  </file>
+</args>
+</read_file>
+        ]]></tool_use>
+        <verification>
+          - Copyright header present
+          - Source attribution comment with full GitHub URL
+          - Package declaration matches directory structure
+        </verification>
+      </step>
+    </step_by_step>
+  </complete_example>
+</resteasy_overlay_workflow>
+
+<!-- Made with Bob -->

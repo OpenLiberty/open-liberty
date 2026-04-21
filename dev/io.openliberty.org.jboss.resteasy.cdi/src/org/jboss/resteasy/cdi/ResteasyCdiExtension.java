@@ -31,8 +31,10 @@ import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.lang.reflect.Method;
 import javax.decorator.Decorator;
 import javax.enterprise.context.ApplicationScoped;
@@ -240,7 +242,7 @@ public class ResteasyCdiExtension implements Extension
        // Liberty Change Start - lookup @Local interfaces and check them for JAX-RS annotations
        final Class<?> beanClass = bean.getBeanClass();
        Class<?>[] localInterfaces = getLocalInterfaces(beanClass);
-       Collection<Type> interfaces = new ArrayList<>();
+       Set<Type> interfaces = new HashSet<>(); // Use Set to avoid duplicates
        
        if (localInterfaces != null && localInterfaces.length > 0) {
            boolean found = false;
@@ -260,7 +262,7 @@ public class ResteasyCdiExtension implements Extension
          {
             Class<?> clazz = (Class<?>) type;
             if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) { // Liberty Change
-               interfaces.add(type);
+               interfaces.add(type); // Set will automatically prevent duplicates
                LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass)); // Liberty Change
             }
          }
@@ -268,6 +270,19 @@ public class ResteasyCdiExtension implements Extension
 
       // Liberty Change Start
       if (!interfaces.isEmpty()) {
+          // Always add the bean class itself as a lookup type
+          // This is critical for EJBs where the bean class might not be in bean.getTypes()
+          interfaces.add(beanClass);
+          LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(beanClass, beanClass));
+          
+          // Add all non-interface types from bean.getTypes() as potential lookup types
+          // This is needed for EJBs where other types in the bean's type closure might be injectable
+          for (Type type : bean.getTypes()) {
+              if (!(type instanceof Class<?> && ((Class<?>) type).isInterface())) {
+                  interfaces.add(type);
+                  LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass));
+              }
+          }
           sessionBeanInterface.put(bean.getBeanClass(), interfaces);
       } else {
           LogMessages.LOGGER.debug(Messages.MESSAGES.noLookupInterface(beanClass));
