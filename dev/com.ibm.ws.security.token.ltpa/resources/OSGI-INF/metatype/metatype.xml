@@ -47,9 +47,31 @@
         <AD id="expirationDifferenceAllowed" name="internal" description="internal use only"
             required="false" type="String" ibm:type="duration(ms)" 
             default="3000ms" /> 
-        <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys" 
-           	required="false" type="String" 
-            ibm:flat="true" cardinality="2147483647"/>        
+        <AD id="validationKeys" ibm:type="pid" ibm:reference="com.ibm.ws.security.token.ltpa.validationKeys"
+            	required="false" type="String"
+            ibm:flat="true" cardinality="2147483647"/>
+        <AD id="pqcEnabled" name="%pqcEnabled" description="%pqcEnabled.desc"
+            required="false" type="Boolean"
+            default="false" />
+        <AD id="pqcAlgorithm" name="%pqcAlgorithm" description="%pqcAlgorithm.desc"
+            required="false" type="String"
+            default="ML-DSA-65">
+            <Option label="%pqcAlgorithm.ML-DSA-44" value="ML-DSA-44"/>
+            <Option label="%pqcAlgorithm.ML-DSA-65" value="ML-DSA-65"/>
+            <Option label="%pqcAlgorithm.ML-DSA-87" value="ML-DSA-87"/>
+        </AD>
+        <AD id="pqcValidationMode" name="%pqcValidationMode" description="%pqcValidationMode.desc"
+            required="false" type="String"
+            default="hybrid">
+            <Option label="%pqcValidationMode.hybrid" value="hybrid"/>
+            <Option label="%pqcValidationMode.pqc-required" value="pqc-required"/>
+            <Option label="%pqcValidationMode.classical-only" value="classical-only"/>
+        </AD>
+        <AD id="pqcKeysFileName" name="%pqcKeysFileName" description="%pqcKeysFileName.desc"
+            required="false" type="String" ibm:type="location(file)"
+            default="${server.output.dir}/resources/security/ltpa-pqc.keys" />
+        <AD id="pqcKeysPassword" name="%pqcKeysPassword" description="%pqcKeysPassword.desc"
+            required="false" type="String" ibm:type="password" />
     </OCD>
 
     <Designate pid="com.ibm.ws.security.token.ltpa.LTPAConfiguration">
