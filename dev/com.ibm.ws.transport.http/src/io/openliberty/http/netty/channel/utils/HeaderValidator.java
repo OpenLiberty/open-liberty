@@ -11,6 +11,8 @@ package io.openliberty.http.netty.channel.utils;
 
 import java.util.regex.Pattern;
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.netty.NettyHeaderUtils;
+import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 
 /**
  * Processes and validates HTTP header names and values in compliance with 
@@ -81,9 +83,9 @@ public class HeaderValidator {
             }
             String normalized = (token == null) ? "": token.trim();
     
-            if(!disabledUntilRFE && type == FieldType.NAME){
-            normalized = normalized.toLowerCase();
-        }
+            if(type == FieldType.NAME && !token.isEmpty()){
+               normalized = normalizeHeaderName(normalized);
+            }
         
         return validate(normalized, type, config);
 
@@ -163,5 +165,34 @@ public class HeaderValidator {
         return sb.toString();
     }
 
+    /**
+     * Normalize a header name to match the standard casing defined in HttpHeaderKeys.
+     * This ensures consistency between CHFW and Netty header handling.
+     * 
+     * For standard headers (e.g., "content-type", "CONTENT-TYPE"), this returns the 
+     * properly cased version ("Content-Type"). For custom headers, it returns the 
+     * casing from the first occurrence, matching CHFW behavior.
+     * 
+     * @param headerName The header name to normalize (case-insensitive)
+     * @return The normalized header name with proper casing, or the original name if null
+     */
+    private static String normalizeHeaderName(String headerName) {
+        if (headerName == null) {
+            return null;
+        }
+        
+        // Use HttpHeaderKeys.find to get the normalized header name
+        // This leverages the same matcher logic that CHFW uses
+        HttpHeaderKeys key = HttpHeaderKeys.find(headerName, true);
+        
+        if (key != null) {
+            // Return the properly cased name from the HttpHeaderKeys constant
+            return key.getName();
+        }
+        
+        // If not found (shouldn't happen with returnNullForInvalidName=true), 
+        // return the original name
+        return headerName;
+    }
     
 }

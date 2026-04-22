@@ -22,6 +22,7 @@ import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.channel.internal.inbound.HttpInboundServiceContextImpl;
 import com.ibm.ws.http.dispatcher.internal.HttpDispatcher;
+import com.ibm.ws.http.netty.NettyHeaderUtils;
 import com.ibm.wsspi.genericbnf.HeaderField;
 import com.ibm.wsspi.genericbnf.HeaderKeys;
 import com.ibm.wsspi.http.HttpCookie;
@@ -381,7 +382,8 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setHeader(String header, String value) {
-        headers.set(header.trim(), value.trim());
+        String normalizedName = HeaderValidator.process(header.trim(), FieldType.NAME, config);
+        headers.set(normalizedName, value.trim());
     }
 
     @Override
