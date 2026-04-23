@@ -9,8 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import java.util.Map;
-
 import com.ibm.websphere.csi.J2EEName;
 
 import jakarta.annotation.PreDestroy;
@@ -47,9 +45,7 @@ public class ConverterRegistries extends AbstractModuleScopedStore<ConverterRegi
     @PreDestroy
     public void cleanup() {
         // Destroy any @Dependent beans for each ConverterRegistry
-        for (Map.Entry<J2EEName, ConverterRegistry> entry : instances.entrySet()) {
-            entry.getValue().cleanup();
-        }
+        getAll().forEach(ConverterRegistry::cleanup);
         globalRegistry.cleanup();
     }
 }

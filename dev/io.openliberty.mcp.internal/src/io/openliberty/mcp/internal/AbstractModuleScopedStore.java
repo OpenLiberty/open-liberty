@@ -30,7 +30,7 @@ import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
  */
 public abstract class AbstractModuleScopedStore<T> {
 
-    protected final ConcurrentMap<J2EEName, T> instances = new ConcurrentHashMap<>();
+    private final ConcurrentMap<J2EEName, T> instances = new ConcurrentHashMap<>();
 
     /**
      * Retrieves the instance for the current thread's module context.
