@@ -27,7 +27,6 @@ import io.openliberty.mcp.internal.config.McpConfig;
 public class McpSessionStore {
 
     private McpRequestTracker requestTracker;
-    private McpConfig mcpConfig;
 
     private final ConcurrentMap<String, McpSession> sessions = new ConcurrentHashMap<>();
 
