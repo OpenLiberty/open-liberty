@@ -173,24 +173,18 @@ public class McpCdiExtension implements Extension {
             } else if (encoder instanceof ContentEncoder<?> ce) {
                 contentEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(ce);
             }
-            logRegistration("encoder", bean, module);
+            traceRegistration("encoder", bean, module);
         }
 
-        // Register global encoders (module = null)
-        EncoderRegistry globalInstance = encoderRegistries.getGlobal();
-        globalInstance.registerEncoders(toolEncoders.getOrDefault(null, new ArrayList<>()),
-                                        contentEncoders.getOrDefault(null, new ArrayList<>()));
+        // Register encoders (global and module-specific)
+        Set<J2EEName> allModules = new HashSet<>();
+        allModules.addAll(toolEncoders.keySet());
+        allModules.addAll(contentEncoders.keySet());
 
-        // Register module-specific encoders
-        Set<J2EEName> modules = new HashSet<>();
-        modules.addAll(toolEncoders.keySet());
-        modules.addAll(contentEncoders.keySet());
-        modules.remove(null); // Already handled global
-
-        for (J2EEName module : modules) {
-            EncoderRegistry moduleInstance = encoderRegistries.getForModule(module);
-            moduleInstance.registerEncoders(toolEncoders.getOrDefault(module, new ArrayList<>()),
-                                            contentEncoders.getOrDefault(module, new ArrayList<>()));
+        for (J2EEName module : allModules) {
+            EncoderRegistry registry = (module == null) ? encoderRegistries.getGlobal() : encoderRegistries.getForModule(module);
+            registry.registerEncoders(toolEncoders.getOrDefault(module, new ArrayList<>()),
+                                      contentEncoders.getOrDefault(module, new ArrayList<>()));
         }
 
         context.release();
@@ -213,22 +207,13 @@ public class McpCdiExtension implements Extension {
             convertersByModule.computeIfAbsent(module, k -> new HashMap<>())
                               .computeIfAbsent(converterType, k -> new ArrayList<>())
                               .add(converter);
-            logRegistration("converter", bean, module);
+            traceRegistration("converter", bean, module);
         }
 
-        // Register global converters (module = null) - built-in converters already registered in constructor
-        ConverterRegistry globalRegistry = converterRegistries.getGlobal();
-        if (convertersByModule.containsKey(null)) {
-            globalRegistry.registerConverters(convertersByModule.get(null), context);
-        }
-
-        // Register module-specific converters
-        Set<J2EEName> modules = new HashSet<>(convertersByModule.keySet());
-        modules.remove(null); // Already handled global
-
-        for (J2EEName module : modules) {
-            ConverterRegistry moduleRegistry = converterRegistries.getForModule(module);
-            moduleRegistry.registerConverters(convertersByModule.get(module), context);
+        for (Map.Entry<J2EEName, Map<Type, List<DefaultValueConverter<?>>>> entry : convertersByModule.entrySet()) {
+            J2EEName module = entry.getKey();
+            ConverterRegistry registry = (module == null) ? converterRegistries.getGlobal() : converterRegistries.getForModule(module);
+            registry.registerConverters(entry.getValue(), context);
         }
 
         // Wire converter registries to tool registries
@@ -245,12 +230,12 @@ public class McpCdiExtension implements Extension {
      * @param bean The CDI bean being registered
      * @param moduleName The module name (null for global/EAR-lib scope)
      */
-    private static void logRegistration(String type, Bean<?> bean, J2EEName moduleName) {
+    private static void traceRegistration(String type, Bean<?> bean, J2EEName moduleName) {
         if (TraceComponent.isAnyTracingEnabled()) {
             String scope = (moduleName == null) ? "GLOBAL (EAR/lib)" : "MODULE (" + moduleName + ")";
             String beanName = bean.getName() != null ? bean.getName() : bean.getBeanClass().getSimpleName();
             if (tc.isDebugEnabled()) {
-                Tr.debug(McpCdiExtension.class, tc, "Registered " + type + " [" + scope + "]: " + beanName, bean);
+                Tr.event(McpCdiExtension.class, tc, "Registered " + type + " [" + scope + "]: " + beanName, bean);
             } else if (tc.isEventEnabled()) {
                 Tr.event(McpCdiExtension.class, tc, "Registered " + type + " [" + scope + "]: " + beanName);
             }

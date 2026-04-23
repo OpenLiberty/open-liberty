@@ -63,13 +63,8 @@ public abstract class AbstractModuleScopedStore<T> {
 
     /**
      * Returns an unmodifiable view of the internal mappings.
-     * <p>
-     * <b>Map Structure:</b> The map structure cannot be modified (no put/remove/clear).
-     *  Attempts throw {@link UnsupportedOperationException}.     
-     * </p>
      *
      * @return unmodifiable map of module names to instances
-     * @throws UnsupportedOperationException if caller attempts to modify the map structure
      */
     public Map<J2EEName, T> getAllMappings() {
         return Collections.unmodifiableMap(instances);
