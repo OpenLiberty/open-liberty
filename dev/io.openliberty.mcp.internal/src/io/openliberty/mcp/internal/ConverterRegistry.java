@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
-import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.spi.CreationalContext;
 
@@ -47,7 +46,7 @@ public class ConverterRegistry {
     public ConverterRegistry() {
         this.globalRegistry = null;
         this.convertersMap = new HashMap<>();
-        
+
         // Register built-in converters ONLY in global registry (not CDI beans, framework-provided)
         for (Map.Entry<Type, DefaultValueConverter<?>> entry : BuiltinDefaultValueConverters.CONVERTERS.entrySet()) {
             convertersMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).add(entry.getValue());
@@ -56,12 +55,12 @@ public class ConverterRegistry {
 
     public void registerConverters(Map<Type, List<DefaultValueConverter<?>>> newConverters, CreationalContext<?> context) {
         this.context = context;
-        
+
         // Merge new converters into existing map (preserving built-in converters)
         for (Map.Entry<Type, List<DefaultValueConverter<?>>> entry : newConverters.entrySet()) {
             this.convertersMap.computeIfAbsent(entry.getKey(), k -> new ArrayList<>()).addAll(entry.getValue());
         }
-        
+
         sortConverters();
     }
 
@@ -103,10 +102,10 @@ public class ConverterRegistry {
         convertersMap.computeIfAbsent(type, k -> new ArrayList<>()).add(converter);
     }
 
-    @PreDestroy
     public void cleanup() {
-        // Destroy any @Dependent beans
-        context.release();
+        if (context != null) {
+            context.release();
+        }
     }
 
 }

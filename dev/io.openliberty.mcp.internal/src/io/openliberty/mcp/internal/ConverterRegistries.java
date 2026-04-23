@@ -9,8 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import java.util.Map;
+
 import com.ibm.websphere.csi.J2EEName;
 
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
@@ -39,6 +42,15 @@ public class ConverterRegistries extends AbstractModuleScopedStore<ConverterRegi
     @Override
     protected ConverterRegistry createInstance(J2EEName moduleName) {
         return new ConverterRegistry(globalRegistry);
+    }
+
+    @PreDestroy
+    public void cleanup() {
+        // Destroy any @Dependent beans for each ConverterRegistry
+        for (Map.Entry<J2EEName, ConverterRegistry> entry : instances.entrySet()) {
+            entry.getValue().cleanup();
+        }
+        globalRegistry.cleanup();
     }
 }
 
