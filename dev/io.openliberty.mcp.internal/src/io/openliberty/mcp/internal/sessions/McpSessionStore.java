@@ -19,7 +19,6 @@ import java.util.concurrent.ConcurrentMap;
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
-import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
 /**
@@ -30,7 +29,6 @@ import jakarta.inject.Inject;
 public class McpSessionStore {
 
     private McpRequestTracker requestTracker;
-    private McpConfig mcpConfig;
 
     @Inject
     McpConfig mcpConfig;
