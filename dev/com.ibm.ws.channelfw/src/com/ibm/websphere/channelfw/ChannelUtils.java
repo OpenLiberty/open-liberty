@@ -926,8 +926,9 @@ public final class ChannelUtils extends ChannelUtilsBase {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Quick check to see if chains stopped immediately");
         }
-        // Remove stopped chains.
-        listener.cleanUpChains(quiesceTimeout);
+        // Remove stopped chains.  
+        // This might be a problem because it's waiting here - not spinning up a new thread to do the waiting.  
+        listener.waitForChainsToStop(quiesceTimeout);
     }
 
     /**
