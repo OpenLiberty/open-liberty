@@ -183,8 +183,8 @@ public class McpCdiExtension implements Extension {
 
         for (J2EEName module : allModules) {
             EncoderRegistry registry = (module == null) ? encoderRegistries.getGlobal() : encoderRegistries.getForModule(module);
-            registry.registerEncoders(toolEncoders.getOrDefault(module, new ArrayList<>()),
-                                      contentEncoders.getOrDefault(module, new ArrayList<>()));
+            registry.registerEncoders(toolEncoders.getOrDefault(module, Collections.emptyList()),
+                                      contentEncoders.getOrDefault(module, Collections.emptyList()));
         }
 
         context.release();
