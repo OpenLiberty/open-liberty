@@ -193,6 +193,7 @@ public class McpServlet extends HttpServlet {
             if (sessionStores.getCurrent().isValid(sessionId)) {
                 sessionStores.getCurrent().deleteSession(sessionId);
                 resp.setStatus(HttpServletResponse.SC_OK);
+
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND, "Session not found");
             }
