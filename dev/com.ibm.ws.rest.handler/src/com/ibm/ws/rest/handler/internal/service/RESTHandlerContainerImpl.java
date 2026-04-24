@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2019 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,6 +13,8 @@
 package com.ibm.ws.rest.handler.internal.service;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -404,6 +406,91 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
         return registeredKeys.iterator();
     }
 
+    /**
+     * Return false if the request should be rejected, true otherwise.
+     */
+    private boolean cFilter(RESTRequest request) {
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "check for " + request.getURL() + ": request method is " + request.getMethod());
+        }
+        if (!request.getMethod().equals("POST")) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "check: accepting non-POST request");
+            }
+            return true;
+        }
+
+        String origin = request.getHeader("Origin");
+        if (origin == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "check: accepting request with no Origin header");
+            }
+            return true;
+        }
+
+        String type = request.getContentType();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "check: Content type is " + type);
+        }
+        if (type != null && !type.equals("application/x-www-form-urlencoded") && !type.equals("multipart/form-data") 
+        && !type.equals("text/plain")) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "check: accepting content type");
+            }
+            return true;
+        }
+
+        String siteHeader = request.getHeader("Sec-Fetch-Site");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "check: Sec-Fetch-Site header is  " + siteHeader);
+        }
+        if (siteHeader != null && (siteHeader.equals("none") || siteHeader.equals("same-origin"))) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "check: accepting Sec-Fetch-Site header");
+            }
+            return true;
+        }
+
+        // Sec-Fetch-Site=same-origin will only be true if the scheme and port match.
+        // Attempt to allow for requests with different scheme/port, so accept
+        // requests where the host in 'Origin' or 'Referer' matches the host from
+        // the request URL
+        String scriptHost = null;
+        try {
+            URL url = new URL(origin);
+            scriptHost = url.getHost();
+        } catch (MalformedURLException e) {
+             // Nothing to do here
+        }
+
+        if (scriptHost == null) {
+            String referer = request.getHeader("Referer");
+            System.err.println("referer header is " + referer);
+            if (referer != null) {
+                try {
+                    URL url = new URL(referer);
+                    scriptHost = url.getHost();
+                } catch (MalformedURLException e) {
+                    // Nothing to do here
+                }
+            }
+        }
+        if (scriptHost != null) {
+            String urlHost = request.getRemoteHost();
+            System.err.println("host from request is " + urlHost);
+            if (urlHost.equals(scriptHost)) {
+                System.err.println("host from Origin or Referer matches host from request");
+                return true;
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Rejecting request");
+        }
+        return false;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -413,6 +500,19 @@ public class RESTHandlerContainerImpl implements RESTHandlerContainer {
     @FFDCIgnore({ RESTHandlerInternalError.class, RESTHandlerUserError.class, RESTHandlerMethodNotAllowedError.class, RESTHandlerUnsupportedMediaType.class,
                   RESTHandlerJsonException.class, RESTHandlerForbiddenError.class })
     public boolean handleRequest(RESTRequest request, RESTResponse response) throws IOException {
+
+        // TODO  possible have the debug statement as an translated error message with code to help
+        // users identify and deal with false postives.
+        if (!cFilter(request)) {
+            response.sendError(403, "Invalid request");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Auditing REST request for " + request.getMethod() + " at " + request.getCompleteURL() + " for " + request.getUserPrincipal() + ". Returned status: "
+                             + response.getStatus());
+            }
+            Audit.audit(Audit.EventID.SECURITY_REST_HANDLER_AUTHZ, request, response, response.getStatus());
+            return true;
+        }
+
         final String requestURL = request.getContextPath() + request.getPath();
         final HandlerInfo handlerInfo = getHandler(requestURL);
         final boolean isRouting = DefaultRoutingHelper.containsLegacyRoutingContext(request) || DefaultRoutingHelper.containsRoutingContext(request);
