@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1284,6 +1284,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         throw new IllegalStateException("enterState");
                     case STOPPED:
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STOPPED);
+                        // Reset the update flag so that subsequent starts are treated as starts, not updates
+                        _update.set(false);
                         flushQueuedActions();
                         ApplicationDependency stoppedFuture;
                         while ((stoppedFuture = _notifyAppStopped.poll()) != null) {
