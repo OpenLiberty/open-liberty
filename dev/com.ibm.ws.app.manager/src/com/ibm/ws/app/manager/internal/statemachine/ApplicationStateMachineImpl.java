@@ -694,6 +694,7 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private final AtomicReference<ResolveFileAction> _rfa = new AtomicReference<ResolveFileAction>();
     private final AtomicReference<ApplicationInstallInfo> _appInstallInfo = new AtomicReference<ApplicationInstallInfo>();
     private final AtomicBoolean _update = new AtomicBoolean();
+    private final AtomicReference<StateChangeAction> _lastAction = new AtomicReference<StateChangeAction>();
 
     private final AtomicReference<ApplicationConfig> _appConfig = new AtomicReference<ApplicationConfig>();
     private final AtomicReference<ApplicationConfig> _nextAppConfig = new AtomicReference<ApplicationConfig>();
@@ -1196,6 +1197,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
     private void performAction(StateChangeAction action) {
 
         assertNonInterruptible();
+        // Track the action that led to the current state transition
+        _lastAction.set(action);
         final InternalState currentState = getInternalState();
 
         final InternalState nextState;
@@ -1284,8 +1287,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         throw new IllegalStateException("enterState");
                     case STOPPED:
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STOPPED);
-                        // Reset the update flag so that subsequent starts are treated as starts, not updates
-                        _update.set(false);
+                        // Reset the update flag only for explicit STOP actions, not for RESTART/CONFIGURE
+                        // This ensures stop()->start() sends "application.start" but updates still send "application.update"
+                        if (_lastAction.get() == StateChangeAction.STOP) {
+                            _update.set(false);
+                        }
                         flushQueuedActions();
                         ApplicationDependency stoppedFuture;
                         while ((stoppedFuture = _notifyAppStopped.poll()) != null) {
