@@ -1997,13 +1997,23 @@ public final class JAXRSUtils {
     }
 
     public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Message m) {
-        Thread.dumpStack(); // temporary patch, dump stack when this error occurs
+        // TFOLGH33409 Enhanced Debug Patch V2 - Use Tr.error() for guaranteed log output
+        Tr.error(tc, "========== TFOLGH33409 DEBUG START (JAX-RS 2.0) ==========");
+        Tr.error(tc, "DEBUG: Method called with 4 parameters (enhanced V2)");
+        Tr.error(tc, "DEBUG: name=" + name);
+        Tr.error(tc, "DEBUG: class=" + (cls != null ? cls.getName() : "NULL"));
+        Tr.error(tc, "DEBUG: contentType=" + (ct != null ? ct.toString() : "NULL"));
+        Tr.error(tc, "DEBUG: Message object: " + (m == null ? "NULL" : "NOT NULL"));
         
-        // Debug patch: Extract and log message content
+        Thread.dumpStack(); // Stack trace showing execution path
+        
+        // Extract and log message content if present
         if (m != null) {
+            Tr.error(tc, "DEBUG: Attempting to extract message content...");
             try {
                 InputStream is = m.getContent(InputStream.class);
                 if (is != null) {
+                    Tr.error(tc, "DEBUG: InputStream obtained, reading content...");
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
                     IOUtils.copy(is, baos);
                     byte[] messageBytes = baos.toByteArray();
@@ -2013,16 +2023,29 @@ public final class JAXRSUtils {
                     
                     // Log the message content
                     String messageContent = new String(messageBytes, StandardCharsets.UTF_8);
-                    System.out.println("DEBUG: Message content that failed to deserialize:");
-                    System.out.println(messageContent);
-                    System.out.println("DEBUG: Message content length: " + messageBytes.length + " bytes");
+                    Tr.error(tc, "DEBUG: Message content length: " + messageBytes.length + " bytes");
+                    Tr.error(tc, "DEBUG: Message content that failed to deserialize:");
+                    Tr.error(tc, messageContent);
                 } else {
-                    System.out.println("DEBUG: No InputStream content available in Message");
+                    Tr.error(tc, "DEBUG: InputStream is NULL - cannot read content");
                 }
             } catch (Exception e) {
-                System.out.println("DEBUG: Failed to extract message content: " + e.getMessage());
+                Tr.error(tc, "DEBUG: Exception extracting message: " + e.getClass().getName());
+                Tr.error(tc, "DEBUG: Exception message: " + e.getMessage());
+                try {
+                    java.io.StringWriter sw = new java.io.StringWriter();
+                    java.io.PrintWriter pw = new java.io.PrintWriter(sw);
+                    e.printStackTrace(pw);
+                    Tr.error(tc, "DEBUG: Exception stack trace:\n" + sw.toString());
+                } catch (Exception ex) {
+                    Tr.error(tc, "DEBUG: Failed to log exception stack trace");
+                }
             }
+        } else {
+            Tr.error(tc, "DEBUG: Message is NULL - cannot extract content");
         }
+        
+        Tr.error(tc, "========== TFOLGH33409 DEBUG END ==========");
         
         org.apache.cxf.common.i18n.Message errorMsg =
             new org.apache.cxf.common.i18n.Message(name, BUNDLE, cls.getName(), mediaTypeToString(ct));
