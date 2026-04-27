@@ -371,12 +371,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         try {
             String line = null;
             line = readProcessLine(proc, method);
-
+            boolean doubleRun = false;
             if (line == null) {
                 proc.destroy();
                 Log.info(getClass(), method, "Running the uber jar again because the last run wasn't successful");
                 proc = Runtime.getRuntime().exec(javaCmd);
                 line = readProcessLine(proc, method);
+                doubleRun = true;
             }
 
             assertNotNull("The endpoint is not available", line);
@@ -388,6 +389,9 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             String result = sendHttpsGet(url, server);
             assertNotNull(result);
             assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
+            if (doubleRun) {
+                assertTrue("Simulated Failure", false);
+            }
         } finally {
             proc.destroy();
         }
