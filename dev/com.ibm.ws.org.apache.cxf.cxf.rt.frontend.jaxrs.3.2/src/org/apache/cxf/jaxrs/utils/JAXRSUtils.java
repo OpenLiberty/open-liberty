@@ -2262,7 +2262,17 @@ public final class JAXRSUtils {
     }
 
     public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Message m) {
+        return logMessageHandlerProblem(name, cls, ct, m, null);
+    }
+
+    public static String logMessageHandlerProblem(String name, Class<?> cls, MediaType ct, Message m, Throwable cause) {
         Thread.dumpStack(); // temporary patch, dump stack when this error occurs
+        
+        // Debug patch: Log the cause exception if present
+        if (cause != null) {
+            System.out.println("DEBUG: Cause exception:");
+            cause.printStackTrace(System.out);
+        }
         
         // Debug patch: Extract and log message content
         if (m != null) {
