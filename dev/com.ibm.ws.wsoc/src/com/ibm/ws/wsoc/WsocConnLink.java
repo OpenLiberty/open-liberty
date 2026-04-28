@@ -15,6 +15,7 @@ package com.ibm.ws.wsoc;
 import java.io.IOException;
 import java.net.SocketTimeoutException;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 import javax.servlet.http.HttpSession;
 import javax.websocket.CloseReason;
@@ -32,6 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.dispatcher.internal.channel.HttpDispatcherLink;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 import com.ibm.ws.threadContext.ComponentMetaDataAccessorImpl;
 import com.ibm.ws.transport.access.TransportConnectionAccess;
@@ -705,9 +707,11 @@ public class WsocConnLink {
             }
             waitToClose();
             signalClose();
+            waitForDispatcherFinish();
             deviceConnLink.close(vConnection, null);
         } else {
             waitToClose();
+            waitForDispatcherFinish();
             close(cr, true, false);
         }
 
@@ -1421,5 +1425,20 @@ public class WsocConnLink {
         }
         Thread.currentThread().setContextClassLoader(it.getOriginalCL());
     }
+
+    private void waitForDispatcherFinish() {
+        if (vConnection != null) {
+            HttpDispatcherLink hdLink = (HttpDispatcherLink) vConnection.getStateMap().get(HttpDispatcherLink.LINK_ID);
+            if (hdLink != null) {
+                if (!hdLink.awaitFinishComplete(5, TimeUnit.SECONDS)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "waitForDispatcherFinish: timeout waiting for finish() to complete");
+                    }
+                }
+            }
+        }
+    }
+
+    
 
 }

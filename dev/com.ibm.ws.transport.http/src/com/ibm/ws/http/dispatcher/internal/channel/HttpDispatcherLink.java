@@ -22,12 +22,15 @@ import java.security.PrivilegedAction;
 import java.util.Arrays;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -156,6 +159,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
     private final AtomicBoolean closeCompleted = new AtomicBoolean(false);
 
+    private final AtomicInteger activeFinishOperations = new AtomicInteger(0);
+
+    private final CountDownLatch finishCompleteLatch = new CountDownLatch(1);
+
     // Servlet 6.0
     private static AtomicInteger connectionCounter = new AtomicInteger(1);
     private int connectionId;
@@ -164,6 +171,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private ChannelHandlerContext nettyContext;
     private FullHttpRequest nettyRequest;
     private ConnectionLink nettyConnectionLink;
+
+    //To track if the connection is destroyed by another thread and to prevent the connection objects in endup in a invalid state - OLGH33931
+    //private volatile boolean destroyed = false;
+    private final AtomicBoolean destroyStarted = new AtomicBoolean(false);
 
     /**
      * Constructor.
@@ -312,6 +323,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.vc == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close, Connection must be already closed since vc is null");
+                Tr.debug(tc,
+                        "Getting the values of the atomic booleans for the connection decrement: decrementNeeded: "
+                                + decrementNeeded.get() + " closeCompleted: " + closeCompleted.get() + " hc: "
+                                + this.hashCode());
             }
             // closeCompleted check is for the close, destroy, close order scenario.
             // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error.
@@ -456,6 +471,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Destroy with exc=" + e);
         }
 
+        //destroyStarted.set(true);  // Signal to finish() that teardown is in progress
         linkIsReady = false;
 
         String upgraded = null;
@@ -487,7 +503,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // set decrementNeeded to true only for wsoc upgrade requests
-        if (upgraded != null && !getHttpInboundLink2().isDirectHttp2Link(vc)) {
+        boolean isH2HttpLink = isc.isH2Connection();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isH2HttpLink: " + isH2HttpLink);
+        }
+        if (upgraded != null && !isH2HttpLink) {
             if (this.decrementNeeded.compareAndSet(false, true)) { // i.e. this is called first
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "decrementNeeded set to true");
@@ -495,6 +515,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
+        //destroyed = true; // SA - To track destroying connection objects
         super.destroy();
         this.isc = null;
         this.remoteAddress = null;
@@ -1377,12 +1398,33 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @Override
     public void finish(Exception e) {
 
+        /* if (destroyed || this.isc == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                Tr.event(tc, "finish() called on destroyed connection, returning early");
+            }
+            return; // SA - Trying to Returning early to Prevent calling closeStreams() on destroyed ISC
+        } */
+
+        activeFinishOperations.incrementAndGet();
         final HttpInboundServiceContextImpl finalSc = this.isc;
         Exception error = e;
+        boolean doCloseStreams = false;
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
+        try {
+
+        // If destroy() is already tearing down this connection, skip stream
+        // operations — the ISC state may already be cleared or in the process
+        // of being cleared, which would cause spurious IOExceptions.
+        /* if (destroyStarted.get()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, destroy already started; skipping stream close");
+            }
+            close(getVirtualConnection(), error);
+            return;
+        } */
 
         // If servlet upgrade processing is being used, then don't close the socket here
         if (vc != null) {
@@ -1406,7 +1448,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 WebConnCanCloseSync.lock();
                 try {
                     if (WebConnCanClose) {
-                        error = closeStreams();
+                        doCloseStreams = true;
+                        //error = closeStreams();
                     }
                 } finally {
                     WebConnCanCloseSync.unlock();
@@ -1416,13 +1459,27 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             WebConnCanCloseSync.lock();
             try {
                 if (WebConnCanClose) {
-                    error = closeStreams();
+                    doCloseStreams = true;
+                    //error = closeStreams();
                 }
             } finally {
                 WebConnCanCloseSync.unlock();
             }
         }
-
+        if(doCloseStreams) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, Calling closeStreams()");
+            }
+            error = closeStreams();
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, closeStreams() returned error=" + error);
+            }
+        }
+    } finally {
+        if(activeFinishOperations.decrementAndGet() == 0) {
+            finishCompleteLatch.countDown();
+        }
+    }
         close(getVirtualConnection(), error);
     }
 
@@ -1791,6 +1848,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         return connectionId;
+    }
+
+    public boolean awaitFinishComplete(long timeout, TimeUnit unit) {
+        try {
+            return finishCompleteLatch.await(timeout, unit);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            return false;
+        }
     }
 
 
