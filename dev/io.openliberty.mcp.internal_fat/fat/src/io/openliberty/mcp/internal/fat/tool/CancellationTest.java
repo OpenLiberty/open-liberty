@@ -10,6 +10,8 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.util.concurrent.Callable;
 import java.util.concurrent.CountDownLatch;
@@ -19,6 +21,7 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -46,18 +49,30 @@ public class CancellationTest extends FATServletClient {
     private static ExecutorService executor;
 
     @Rule
-    public McpClient client = new McpClient(server, "/cancellationTest");
+    public McpClient clientWithTool = new McpClient(server, "/cancellationTest");
+
+    @Rule
+    public McpClient clientOnWrongURL = new McpClient(server, "/clientOnWrongURL");
 
     @Rule
     public ToolStatusClient toolStatus = new ToolStatusClient(server, "/cancellationTest");
 
     @BeforeClass
     public static void setup() throws Exception {
-        WebArchive war = ShrinkWrap.create(WebArchive.class, "cancellationTest.war")
-                                   .addPackage(CancellationTools.class.getPackage())
-                                   .addPackage(ToolStatus.class.getPackage());
 
-        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        WebArchive war1 = ShrinkWrap.create(WebArchive.class, "cancellationTest.war")
+                                    .addPackage(CancellationTools.class.getPackage())
+                                    .addPackage(ToolStatus.class.getPackage());
+
+        WebArchive war2 = ShrinkWrap.create(WebArchive.class, "clientOnWrongURL.war")
+                                    .addPackage(CancellationTools.class.getPackage())
+                                    .addPackage(ToolStatus.class.getPackage());
+
+        EnterpriseArchive ear = ShrinkWrap.create(EnterpriseArchive.class, "multi-module.ear")
+                                          .addAsModule(war1)
+                                          .addAsModule(war2);
+
+        ShrinkHelper.exportDropinAppToServer(server, ear, SERVER_ONLY);
 
         server.startServer();
 
@@ -96,7 +111,7 @@ public class CancellationTest extends FATServletClient {
                                 }
                                 """;
 
-                return client.callMCP(request);
+                return clientWithTool.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -116,7 +131,7 @@ public class CancellationTest extends FATServletClient {
                         """;
         toolStatus.awaitStarted(LATCH_NAME);
 
-        client.callMCPNotification(cancellationRequestNotification);
+        clientWithTool.callMCPNotification(cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 
@@ -124,6 +139,55 @@ public class CancellationTest extends FATServletClient {
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testCancellationToolFromWrongClient() throws Exception {
+        final String LATCH_NAME = "strId";
+
+        Callable<String> threadCallingTool = () -> {
+            try {
+                String request = """
+                                  {
+                                  "jsonrpc": "2.0",
+                                  "id": "2",
+                                  "method": "tools/call",
+                                  "params": {
+                                    "name": "cancellationTool",
+                                    "arguments": {
+                                      "latchName": "strId"
+                                    }
+                                  }
+                                }
+                                """;
+
+                return clientWithTool.callMCP(request);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        Future<String> future = executor.submit(threadCallingTool);
+
+        String cancellationRequestNotification = """
+                          {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/cancelled",
+                          "params": {
+                            "requestId": "2",
+                            "reason": "no longer needed"
+                          }
+                        }
+                        """;
+        toolStatus.awaitStarted(LATCH_NAME);
+        clientOnWrongURL.callMCPNotification(cancellationRequestNotification);
+
+        try {
+            String response = future.get(10, TimeUnit.SECONDS);
+            fail("Expected TimeoutException because cancellation from wrong client should have no effect across different modules");
+        } catch (java.util.concurrent.TimeoutException e) {
+            assertTrue("Test passed: TimeoutException caught as expected - cancellation from wrong client had no effect", true);
+        }
     }
 
     @Test
@@ -149,7 +213,7 @@ public class CancellationTest extends FATServletClient {
                                 """;
                 //make sure this tread executes first
                 latch.countDown();
-                return client.callMCP(request);
+                return clientWithTool.callMCP(request);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -172,7 +236,7 @@ public class CancellationTest extends FATServletClient {
         latch.await();
         toolStatus.awaitStarted(LATCH_NAME);
 
-        client.callMCPNotification(cancellationRequestNotification);
+        clientWithTool.callMCPNotification(cancellationRequestNotification);
 
         String response = future.get(10, TimeUnit.SECONDS);
 
@@ -197,7 +261,7 @@ public class CancellationTest extends FATServletClient {
                         }
                         """;
 
-        String response = client.callMCP(request);
+        String response = clientWithTool.callMCP(request);
 
         String expectedResponseString = """
                         {"id":"3","jsonrpc":"2.0","result":{"content":[{"type":"text", "text": "If this String is returned, then the tool was not cancelled"}],"isError":false}}
