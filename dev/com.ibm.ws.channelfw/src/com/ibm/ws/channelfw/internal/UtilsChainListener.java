@@ -78,16 +78,16 @@ public class UtilsChainListener {
             return;
         }
         
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Quick check: " + waitingChainNames.size() + " chain(s) may still be quiescing");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Quick check: " + waitingChainNames.size() + " chain(s) may still be quiescing");
         }
         
         // Remove any chains that already stopped
         removeStoppedChains();
         
         if (waitingChainNames.isEmpty()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "All chains already stopped");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "All chains already stopped");
             }
             return;
         }
@@ -101,8 +101,8 @@ public class UtilsChainListener {
             final long pollInterval = 100;   // Poll every 100ms
             long elapsedTime = 0;
             
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "Polling for up to " + maxWaitTime + "ms for chains to stop");
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Polling for up to " + maxWaitTime + "ms for chains to stop");
             }
             
             while (elapsedTime < maxWaitTime && !waitingChainNames.isEmpty()) {
@@ -118,8 +118,8 @@ public class UtilsChainListener {
             }
         }
         
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "After quick check: " + waitingChainNames.size() + " chain(s) still quiescing");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "After quick check: " + waitingChainNames.size() + " chain(s) still quiescing");
         }
     }
 
@@ -152,8 +152,8 @@ public class UtilsChainListener {
             return;
         }
         
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Waiting for " + waitingChainNames.size() + " chain(s) to stop");
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Waiting for " + waitingChainNames.size() + " chain(s) to stop");
         }
 
         long startTime = System.nanoTime();
@@ -178,11 +178,11 @@ public class UtilsChainListener {
             
         } while (true);        
         
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             if (waitingChainNames.isEmpty()) {
-                Tr.event(this, tc, "All chains stopped after " + elapsedTime + " ns");
+                Tr.debug(this, tc, "All chains stopped after " + elapsedTime + " ns");
             } else {
-                Tr.event(this, tc, "Timeout expired, " + waitingChainNames.size() + " chain(s) still running");
+                Tr.debug(this, tc, "Timeout expired, " + waitingChainNames.size() + " chain(s) still running");
             }
         }
     }
