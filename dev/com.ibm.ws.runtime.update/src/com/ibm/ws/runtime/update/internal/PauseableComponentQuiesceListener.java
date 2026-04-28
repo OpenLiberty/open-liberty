@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,6 +17,7 @@ import java.util.Collection;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -34,7 +35,12 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 public class PauseableComponentQuiesceListener implements ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(PauseableComponentQuiesceListener.class);
-    private BundleContext bundleContext = null;
+    private final BundleContext bundleContext;
+
+    @Activate
+    public PauseableComponentQuiesceListener(BundleContext ctx) {
+        this.bundleContext = ctx;
+    }
 
     /*
      * (non-Javadoc)
@@ -43,30 +49,26 @@ public class PauseableComponentQuiesceListener implements ServerQuiesceListener 
      */
     @Override
     public void serverStopping() {
-        if (bundleContext != null) {
-            try {
-                Collection<ServiceReference<PauseableComponent>> refs = bundleContext.getServiceReferences(PauseableComponent.class, null);
-                for (ServiceReference<PauseableComponent> ref : refs) {
 
-                    PauseableComponent pc = bundleContext.getService(ref);
-                    if (pc != null && !pc.isPaused()) {
-                        try {
-                            pc.pause();
-                        } catch (PauseableComponentException ex) {
-                            Tr.warning(tc, "warn.did.not.pause.on.shutdown", ex.getMessage());
-                        }
+        try {
+            Collection<ServiceReference<PauseableComponent>> refs = bundleContext.getServiceReferences(PauseableComponent.class, null);
+            for (ServiceReference<PauseableComponent> ref : refs) {
+
+                PauseableComponent pc = bundleContext.getService(ref);
+                if (pc != null && !pc.isPaused()) {
+                    try {
+                        pc.pause();
+                    } catch (PauseableComponentException ex) {
+                        Tr.warning(tc, "warn.did.not.pause.on.shutdown", ex.getMessage());
+                    } catch (Throwable t) {
+                        // auto-ffdc but still call the rest of the pauseable components
                     }
                 }
-            } catch (InvalidSyntaxException e) {
-                // Should never happen, FFDC and return
-                return;
             }
+        } catch (InvalidSyntaxException e) {
+            // Should never happen, FFDC and return
+            return;
         }
-
-    }
-
-    protected void activate(BundleContext ctx) {
-        this.bundleContext = ctx;
     }
 
 }
