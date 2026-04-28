@@ -26,4 +26,7 @@
 
     <include location="../fatTestPorts.xml"/>
 
+    <javaPermission className="java.lang.RuntimePermission" name="setFactory" action="*"/>
+    <javaPermission className="java.security.SecurityPermission" name="putProviderProperty" action="*"/>
+
 </server>
