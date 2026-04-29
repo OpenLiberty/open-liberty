@@ -632,6 +632,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     }
 
     public boolean fillFromStreamingNetty() throws IOException{
+        return fillFromStreamingNetty(true);
+    }
+
+    public boolean fillFromStreamingNetty(boolean waitForInput) throws IOException{
         if (queue == null){
             return false;
         }
@@ -706,6 +710,15 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                         }
                         return false;
                     }
+                    if(!waitForInput){
+                        if(this.context!=null){
+                            try{
+                                ReadFlowHandler.setBodyReadWanted(this.context, false);
+                            } catch (Throwable ignore){}
+                        }
+                        return false;
+                    }
+
                     token = queue.awaitChange(token);
                 } catch (InterruptedException ie){
                     Thread.currentThread().interrupt();

@@ -479,11 +479,14 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                             HttpDispatcher.getExecutorService().submit(() -> {
                                 if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null) {
                                     // Check if the connection was closed by the peer here to do an error callback
-                                    if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class).peerClosedConnection()) {
-                                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                            Tr.debug(this, tc, "Listener called on done async promise for connection that was closed by peer for channel: " + nettyChannel);
-                                        }
-                                        callback.error(vc, null, new IOException("Broken pipe!"));
+                                    // if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class).peerClosedConnection()) {
+                                    //     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    //         Tr.debug(this, tc, "Listener called on done async promise for connection that was closed by peer for channel: " + nettyChannel);
+                                    //     }
+                                    //     callback.error(vc, null, new IOException("Broken pipe!"));
+                                    //     return;
+                                    // }
+                                    if (failCallbackIfUpgradeClosing(callback, null)){
                                         return;
                                     }
                                 }
@@ -592,5 +595,23 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
         }
         nettyChannel.attr(UPGRADE_COMMIT_EVENT_FIRED).set(Boolean.TRUE);
         nettyChannel.pipeline().fireUserEventTriggered(HttpDispatcherHandler.UPGRADE_101_COMMITTED_EVENT);
+    }
+
+    private boolean failCallbackIfUpgradeClosing(TCPWriteCompletedCallback callback, TCPWriteRequestContext contextForError){
+        NettyServletUpgradeHandler upgradeHandler = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
+        if (upgradeHandler == null){
+            return false;
+        }
+
+        if (upgradeHandler.serverQuiescingConnection()){
+            callback.error(vc, contextForError, new IOException("Connection closed: Server is quiescing"));
+            return true;
+        }
+
+        if (upgradeHandler.peerClosedConnection()){
+            callback.error(vc, contextForError, new IOException("Broken pipe!"));
+            return true;
+        }
+        return false;
     }
 }

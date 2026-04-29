@@ -308,16 +308,22 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
-        // Read until consumed data to read for other request if not already read
-        if (!this.isc.isBodyComplete()) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Body not fully read for request. Consuming until finished.");
-            }
-            HttpInputStreamImpl body = this.request.getBody();
-            try {
-                body.fillFromStreamingNetty();
-            } catch (Exception e2) {
-                e2.printStackTrace();
+        boolean quiescing = QuiesceState.isQuiesceInProgress();
+        boolean forceCloseForUnreadBody = false;
+        boolean keepAliveHandlerPresent = nettyContext.pipeline().get("httpKeepAlive") != null;
+
+        if(this.isc != null && !this.isc.isBodyComplete()){
+            forceCloseForUnreadBody = true;
+            if(!quiescing && keepAliveHandlerPresent && this.request != null){
+                HttpInputStreamImpl body = this.request.getBody();
+                try{
+                    body.fillFromStreamingNetty(false);
+                    forceCloseForUnreadBody = !this.isc.isBodyComplete();
+                } catch (Exception e2) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Unable to drain immediately available request  body data before close: " + e2);
+                    }
+                }
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -423,13 +429,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        boolean quiescing = QuiesceState.isQuiesceInProgress();
-        System.out.println("[QUIESCE-PROOF] NETTY_CLOSE_QUIESCE_CHECK"
-    + " link=" + System.identityHashCode(this)
-    + " ch=" + qpNettyChannelId()
-    + " quiescing=" + quiescing);
 
-        if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing) {
+        if (!keepAliveHandlerPresent || quiescing || forceCloseForUnreadBody) {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=NO_KEEPALIVE_CLOSE_CHANNEL"
         + " link=" + System.identityHashCode(this)
         + " ch=" + qpNettyChannelId());

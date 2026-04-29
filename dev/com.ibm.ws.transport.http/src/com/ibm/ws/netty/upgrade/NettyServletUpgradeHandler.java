@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,6 +47,7 @@ import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
 import io.netty.util.concurrent.ScheduledFuture;
 import io.openliberty.netty.internal.impl.QuiesceState;
+import io.openliberty.netty.internal.impl.QuiesceHandler;
 
 import io.netty.util.ReferenceCountUtil;
 
@@ -79,6 +80,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     private TCPReadRequestContext readContext;
 
     private final AtomicBoolean readPending = new AtomicBoolean(false);
+    private final AtomicBoolean serverClosingForQuiesce = new AtomicBoolean(false);
 
 
     public NettyServletUpgradeHandler(Channel channel) {
@@ -93,6 +95,15 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     @Override
     public void userEventTriggered(ChannelHandlerContext context, Object event) throws Exception {
+
+        if (event == QuiesceHandler.QUIESCE_EVENT) {
+            serverClosingForQuiesce.set(true);
+            signalReadReady();
+            errorAsyncReadForQuiesce();
+            context.close();
+            return;
+        }
+
         // java.io.EOFException: Connection closed: Read failed.  Possible end of stream encountered. local=ip:port remote=ip:port
         if (!peerClosed.get() && (event instanceof ChannelInputShutdownEvent || event instanceof ChannelInputShutdownReadComplete)) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -434,6 +445,31 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
 
     public void setTCPReadContext(TCPReadRequestContext tcpReadContext) {
         this.readContext = tcpReadContext;
+    }
+
+    public boolean serverQuiescingConnection(){
+        return serverClosingForQuiesce.get();
+    }
+
+    private void errorAsyncReadForQuiesce(){
+        if (isReadingAsync && callback != null){
+            isReadingAsync = false;
+            TCPReadCompletedCallback cb = callback;
+            callback = null;
+            ExecutorService executor = HttpDispatcher.getExecutorService();
+            if (executor != null){
+                executor.execute(() -> {
+                    try{
+                        cb.error(vc, readContext, quiesceEOFException());
+                    } catch (Exception ignore){}
+                });
+            }
+        }
+    }
+
+    private EOFException quiesceEOFException(){
+        return new EOFException("Connection closed: Server is quiescing. Local="
+            + channel.localAddress() + " remote=" + channel.remoteAddress());
     }
 
 }
