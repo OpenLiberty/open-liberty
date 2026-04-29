@@ -36,6 +36,8 @@ public class WLPDynamicPolicy extends Policy {
         prefixes.add("jrt:/java");
         prefixes.add("jrt:/openj9");
         prefixes.add("jrt:/openjceplus");
+        prefixes.add("jrt:/ibm.crypto.hdwrcca");
+        prefixes.add("jrt:/ibm.crypto.zsecurity");
         JDK_MODULE_PREFIXES = Collections.unmodifiableSet(prefixes);
     }
 
