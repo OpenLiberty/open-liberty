@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,10 @@ import jakarta.data.repository.Insert;
 import jakarta.data.repository.Repository;
 
 @DataSourceDefinition(name = "java:app/jdbc/DataSourceDef",
-                      className = "org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource",
-                      databaseName = "memory:testdb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "ejbuser2",
-                      password = "ejbpwd2",
-                      properties = "createDatabase=create")
+                      password = "ejbpwd2")
 @Repository(dataStore = "java:app/jdbc/DataSourceDef")
 public interface EJBAppDSDRepo extends DataRepository<EJBAppEntity, String> {
 

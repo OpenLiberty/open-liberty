@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,11 +39,14 @@ task cleanBeforeRun(type: Delete) {
   delete new File(autoFvtDir, 'results')
 }
 
-// See derby/java support matrix https://db.apache.org/derby/derby_downloads.html
 ext {
+    // See derby/java support matrix https://db.apache.org/derby/derby_downloads.html
     derbyJava8PlusVersion = '10.11.1.1' // TODO update to 10.14.2.0
     derbyJava17PlusVersion = '10.16.1.1'
     derbyJava21PlusVersion = '10.17.1.0' // Unused for now
+    
+    h2Java8Version = '2.1.214'
+    h2Version = '2.4.240'
 }
 
 configurations {
@@ -53,6 +56,8 @@ configurations {
   testcontainers { transitive = false; }
   derby
   derbyJava17Plus { transitive = false; }
+  h2
+  h2Java8
   jakartaTransformer { transitive = false; }
   jakartaTransformerPreJava17 { transitive = false; }
   jakartaTransformerJava17Plus { transitive = false; }
@@ -64,6 +69,10 @@ dependencies {
   derbyJava17Plus "org.apache.derby:derby:${derbyJava17PlusVersion}",
               "org.apache.derby:derbytools:${derbyJava17PlusVersion}",
               "org.apache.derby:derbyshared:${derbyJava17PlusVersion}"
+
+  h2Java8 "com.h2database:h2:${h2Java8Version}"
+
+  h2 "com.h2database:h2:${h2Version}"
 
   jdbcDrivers 'com.ibm.db2:jcc:12.1.0.0',
         'org.postgresql:postgresql:42.7.2',
@@ -145,6 +154,20 @@ task addDerbyJava17Plus(type: Copy) {
     rename 'derby-.*.jar', 'derby.jar'
     rename 'derbyshared-.*.jar', 'derbyshared.jar'
     rename 'derbytools-.*.jar', 'derbytools.jar'
+}
+
+task addH2Java8(type: Copy) {
+  mustRunAfter jar
+  from configurations.h2Java8
+  into new File(autoFvtDir, 'publish/shared/resources/h2Java8')
+  rename 'h2-.*.jar', 'h2.jar'
+}
+
+task addH2(type: Copy) {
+  mustRunAfter jar
+  from configurations.h2
+  into new File(autoFvtDir, 'publish/shared/resources/h2')
+  rename 'h2-.*.jar', 'h2.jar'
 }
 
 task copyJdbcDrivers(type: Copy) {

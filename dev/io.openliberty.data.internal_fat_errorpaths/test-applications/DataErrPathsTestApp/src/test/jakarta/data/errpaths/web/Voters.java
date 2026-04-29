@@ -43,7 +43,7 @@ import jakarta.data.repository.Update;
  * Some methods are valid.
  * Others have errors, as indicated.
  */
-@Repository(dataStore = "java:app/jdbc/DerbyDataSource")
+@Repository(dataStore = "java:app/jdbc/H2DataSource")
 public interface Voters extends BasicRepository<Voter, Integer> {
     static record NameAndZipCode(String name, int zipCode) {
     }

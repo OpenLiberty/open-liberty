@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,6 +61,18 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
     protected static final String KEY_WEB_JACC_SERVICE = "webJaccService";
     private final AtomicServiceReference<WebJaccService> webJaccService = new AtomicServiceReference<WebJaccService>(KEY_WEB_JACC_SERVICE);
 
+    private WebDeclaredRolesService rolesService;
+
+    public void setDeclaredRolesService(WebDeclaredRolesService rolesService) {
+        this.rolesService = rolesService;
+    }
+
+    public void unsetDeclaredRolesService(WebDeclaredRolesService rolesService) {
+        if (rolesService == this.rolesService) {
+            this.rolesService = null;
+        }
+    }
+
     protected void setWebJaccService(ServiceReference<WebJaccService> reference) {
         webJaccService.setReference(reference);
     }
@@ -92,13 +104,18 @@ public class ServletStartedListener implements WebAppInitializationCollaborator 
             SecurityMetadata securityMetadataFromDD = getSecurityMetadata(webAppConfig);
             updateSecurityMetadata(securityMetadataFromDD, webAppConfig);
             setModuleSecurityMetaData(moduleContainer, securityMetadataFromDD);
+
+            String appName = webAppConfig.getApplicationName();
+            String moduleName = webAppConfig.getModuleName();
+            rolesService.addDeclaredRoles(appName, moduleName, securityMetadataFromDD.getRoles());
+
             if (com.ibm.ws.webcontainer.osgi.WebContainer.getServletContainerSpecLevel() >= 31) {
                 notifyDeployOfUncoveredMethods(webAppConfig);
             }
             if (checkDynamicAnnotation(webAppConfig)) {
                 WebJaccService js = webJaccService.getService();
                 if (js != null) {
-                    js.propagateWebConstraints(webAppConfig.getApplicationName(), webAppConfig.getModuleName(), webAppConfig);
+                    js.propagateWebConstraints(appName, moduleName, webAppConfig);
                 }
             }
         } catch (UnableToAdaptException e) {

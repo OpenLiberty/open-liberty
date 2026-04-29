@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,6 +31,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
@@ -182,8 +183,9 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @Component(service = { ApplicationStateListener.class, DeferredMetaDataFactory.class, EJBRuntimeImpl.class, ServerQuiesceListener.class },
            configurationPid = "com.ibm.ws.ejbcontainer.runtime",
            configurationPolicy = ConfigurationPolicy.REQUIRE,
-           property = { "deferredMetaData=EJB"}) //EJB must shut down after CDI but the default service ranking achieves that. This is because EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)
-                                                 //The default service.ranking of zero satisfies this requirement.
+           // EJB must shut down after CDI but the default service ranking achieves that. This is because EJBs can have a cdi application scope and according to the CDI spec "jakarta.enterprise.event.Shutdown is not after @BeforeDestroyed(ApplicationScoped.class)
+           // The default service.ranking of zero satisfies this requirement.
+           property = { "deferredMetaData=EJB" })
 public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationStateListener, DeferredMetaDataFactory, ServerQuiesceListener {
     private static final String CLASS_NAME = EJBRuntimeImpl.class.getName();
     private static final TraceComponent tc = Tr.register(EJBRuntimeImpl.class);
@@ -264,6 +266,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private static final String CUSTOM_BINDINGS_ON_ERROR = "customBindingsOnError";
 
     private final CheckpointPhase checkpointPhase;
+
+    private final ConcurrentHashMap<J2EEName, EJBModuleMetaDataImpl> moduleMetaDatas = new ConcurrentHashMap<J2EEName, EJBModuleMetaDataImpl>();
 
     public EJBRuntimeImpl() {
         checkpointPhase = CheckpointPhase.getPhase();
@@ -1028,7 +1032,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     @Override
     protected void fireMetaDataCreated(EJBModuleMetaDataImpl mmd) {
-        // Nothing (except log metadata dump).  This is done by the application handler.
+        // Save MMD for MetaData Service access and log metadata dump.
+        // Firing the event is done by the application handler.
+        moduleMetaDatas.put(mmd.getJ2EEName(), mmd);
         if (TraceComponent.isAnyTracingEnabled() & tc.isDebugEnabled())
             Tr.debug(tc, mmd.toDumpString());
     }
@@ -1128,6 +1134,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
         } catch (WsRuntimeFwException t) {
             Tr.error(tc, "ERROR_STARTING_MODULE_CNTR4002E", name, appName, t);
             destroyContextClassLoader(mmd);
+            moduleMetaDatas.remove(mmd.getJ2EEName());
             throw new EJBRuntimeException(t);
         }
     }
@@ -1300,6 +1307,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                     metaDataService.fireComponentMetaDataDestroyed(bmd);
                 }
             }
+            moduleMetaDatas.remove(mmd.getJ2EEName());
         }
     }
 
@@ -1965,14 +1973,12 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
                 return null;
             }
         } else if (parts.length == 3) {
-            List<HomeRecord> hrs = container.getHomeOfHomes().getAllHomeRecords();
-            for (HomeRecord hr : hrs) {
-                J2EEName j2eeName = hr.getJ2EEName();
-                if (parts[1].equals(j2eeName.getApplication()) && parts[2].equals(j2eeName.getModule())) {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "Found bean in module : " + j2eeName);
-                    return new OSGiEJBModuleComponentMetaData(hr.getEJBModuleMetaData());
-                }
+            J2EEName moduleName = j2eeNameFactory.create(parts[1], parts[2], null); // ignore parts[0] which is the prefix: EJB
+            EJBModuleMetaDataImpl mmd = moduleMetaDatas.get(moduleName);
+            if (mmd != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "Found module : " + moduleName);
+                return new OSGiEJBModuleComponentMetaData(mmd);
             }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "Module not found : " + parts[1] + ", " + parts[2]);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -44,9 +44,9 @@ dependencies {
     'org.mock-server:mockserver-core:5.11.2',
     'org.mock-server:mockserver-logging:5.3.0',
     'org.mock-server:mockserver-netty:5.11.2',
-    'org.bouncycastle:bcprov-jdk18on:1.82',
-    'org.bouncycastle:bcpkix-jdk18on:1.82',
-    'org.bouncycastle:bcutil-jdk18on:1.82'
+    'org.bouncycastle:bcprov-jdk18on:1.84',
+    'org.bouncycastle:bcpkix-jdk18on:1.84',
+    'org.bouncycastle:bcutil-jdk18on:1.84'
 }
 
 task addThirdPartyJerseyClient(type: Copy) {

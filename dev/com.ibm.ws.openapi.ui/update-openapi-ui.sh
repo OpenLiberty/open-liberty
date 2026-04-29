@@ -59,7 +59,7 @@ rm -r src/original
 mkdir src/original
 cd swagger-ui-src/src
 # Copy all scss files, so we can rebuild with changed colours
-find . -iname *.scss -printf %P\\n | xargs cp -t ../../src/original --parents
+find . -iname '*.scss' -exec rsync -R {} ../../src/original/ \;
 # Copy URL sanitization utilities
 cp core/utils/url.js ../../src/original --parents
 cd ../..

@@ -76,8 +76,6 @@ public class Constants {
     public static final String SSLPROP_USE_DEFAULTCERTS = "com.ibm.ws.ssl.trustDefaultCerts";
     public static final String SSLPROP_ENFORCE_CIPHER_ORDER = "com.ibm.ws.ssl.enforceCipherOrder";
 
-    private static boolean issuedBetaMessage = false;
-
     public static final String SSLPROP_AUTOACCEPT_SERVER_CERT = "com.ibm.ssl.autoaccept.server.certificates";
     public static final String SSLPROP_AUTOSTORE_SERVER_CERT = "com.ibm.ssl.autostore.server.certificates";
     public static final String SSLPROP_AUTOACCEPT_SERVER_CERT_FROM = "com.ibm.ssl.autoaccept.server.certificates.from";
@@ -511,9 +509,27 @@ public class Constants {
                 continue;
             }
             if (mod.startsWith("+")) {
-                addCiphers.add(mod.substring(1));
+                String cipher = mod.substring(1);
+                if (cipher.isEmpty() && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "parseCipherModifiers: '+' detected but no cipher suite provided after");
+                }
+                addCiphers.add(cipher);
             } else if (mod.startsWith("-")) {
-                removeCiphers.add(mod.substring(1));
+                String pattern = mod.substring(1);
+                if (pattern.isEmpty() && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "parseCipherModifiers: '-' detected but no cipher suite provided after");
+                } else if (pattern.contains("*") && TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    // Check if wildcard is in the middle
+                    int firstStar = pattern.indexOf("*");
+                    int lastStar = pattern.lastIndexOf("*");
+                    boolean hasMiddleWildcard = (firstStar > 0 && lastStar < pattern.length() - 1) || (firstStar != lastStar);
+                    
+                    if (hasMiddleWildcard) {
+                        Tr.debug(tc, "parseCipherModifiers: Pattern '-" + pattern +
+                                 "' contains wildcard in middle, will default to the effective jdk list");
+                    }
+                }
+                removeCiphers.add(pattern);
             } else {
                 customCiphers.add(mod);
             }
@@ -564,18 +580,8 @@ public class Constants {
      * @param enabledCiphers the enabled cipher string
      * @return the adjusted cipher list
      */
-    @Deprecated
     public static String[] adjustSupportedCiphers(String[] supportedCiphers, String enabledCiphers) {
-        if (!ProductInfo.getBetaEdition()) {
-            throw new UnsupportedOperationException("This method is not supported in the non-beta edition of the product.");
-        }
-        else{
-            if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class " + Constants.class.getName() + " for the first time.");
-                issuedBetaMessage = !issuedBetaMessage;
-            }
-        }
-        
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
             Tr.entry(tc, "adjustSupportedCiphers", new Object[] { convertCipherListToString(supportedCiphers), enabledCiphers });
         }

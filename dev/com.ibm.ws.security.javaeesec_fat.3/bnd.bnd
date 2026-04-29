@@ -15,7 +15,28 @@
 bVersion=1.0
 
 fat.project: true
-tested.features: expressionLanguage-4.0, appsecurity-4.0, servlet-5.0, cdi-3.0, faces-3.0, pages-3.0
+tested.features: \
+    expressionLanguage-4.0,\
+    appsecurity-4.0,\
+    servlet-5.0,\
+    cdi-3.0,\
+    faces-3.0,\
+    pages-3.0,\
+    expressionlanguage-5.0,\
+    appsecurity-5.0,\
+    jsonp-2.1,\
+    cdi-4.0,\
+    servlet-6.0,\
+    faces-4.0,\
+    pages-3.1,\
+    expressionlanguage-6.0,\
+    appsecurity-6.0,\
+    jsonp-2.1,\
+    cdi-4.1,\
+    servlet-6.1,\
+    faces-4.1,\
+    pages-4.0
+
 #fat.test.mode=full
 
 src: \

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -32,7 +32,6 @@ import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.output.OutputFrame;
 import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.ImageNameSubstitutor;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -189,10 +188,9 @@ public abstract class LogstashCollectorTest {
         return APP_URL;
     }
 
-    //TODO switch to use public.ecr.aws/elastic/logstash:7.16.3
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
-    private static final String IMAGE_NAME = ImageNameSubstitutor.instance() //
-                    .apply(DockerImageName.parse("elastic/logstash:7.16.3")).asCanonicalNameString();
+    private static final String IMAGE_NAME = DockerImageName.parse("public.ecr.aws/elastic/logstash:8.19.14") //
+                    .asCompatibleSubstituteFor("logstash:8.19.14") //
+                    .asCanonicalNameString();
 
     // Can be added to the FATSuite to make the resource lifecycle bound to the entire
     // FAT bucket. Or, you can add this to any JUnit test class and the container will

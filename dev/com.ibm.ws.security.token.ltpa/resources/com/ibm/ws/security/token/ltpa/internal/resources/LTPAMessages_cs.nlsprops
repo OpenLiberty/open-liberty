@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2025 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -91,3 +91,19 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Pokud je nakonfigurov\u00e1n 
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Ov\u011b\u0159ovac\u00ed kl\u00ed\u010de {0} mus\u00ed b\u00fdt regenerov\u00e1ny pomoc\u00ed kryptografick\u00fdch algoritm\u016f, kter\u00e9 nejsou certifikov\u00e1ny podle FIPS 140-3.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Ov\u011b\u0159ovac\u00ed kl\u00ed\u010de LTPA vytvo\u0159en\u00e9 se zapnut\u00fdm syst\u00e9mem FIPS 140-3 sel\u017eou, pokud je syst\u00e9m FIPS 140-3 zak\u00e1z\u00e1n.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=K vytvo\u0159en\u00ed valida\u010dn\u00edch kl\u00ed\u010d\u016f neschv\u00e1len\u00fdch FIPS, pokud je FIPS 140-3 zak\u00e1z\u00e1n, pou\u017eijte p\u0159\u00edkaz securityUtility createLTPAKeys.
+
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: Chyba konfigurace LTPA. V prvku <ltpa /> nen\u00ed nakonfigurov\u00e1n atribut ` keysPassword `, nen\u00ed nastavena prom\u011bnn\u00e1 prost\u0159ed\u00ed `ltpa_keys_password` a nen\u00ed nastavena prom\u011bnn\u00e1 prost\u0159ed\u00ed `keystore_password`.
+LTPA_KEYS_PASSWORD_ERROR.explanation=Konfigurace LTPA vy\u017eaduje heslo pro ukl\u00e1d\u00e1n\u00ed a \u010dten\u00ed kl\u00ed\u010d\u016f LTPA.
+LTPA_KEYS_PASSWORD_ERROR.useraction=Nastavte atribut ` keysPassword ` v prvku <ltpa /> nebo zadejte heslo nastaven\u00edm prom\u011bnn\u00fdch prost\u0159ed\u00ed `ltpa_keys_password` nebo `keystore_password`.
+
+LTPA_KEYS_REENCRYPT=CWWKS4119I: Kl\u00ed\u010de LTPA slu\u017eby \u201e {0} \u201c se znovu \u0161ifruj\u00ed pomoc\u00ed prom\u011bnn\u00e9 prost\u0159ed\u00ed \u201ekeystore_password\u201c.
+LTPA_KEYS_REENCRYPT.explanation=Kl\u00ed\u010de LTPA se znovu \u0161ifruj\u00ed pomoc\u00ed hesla \u201ekeystore_password\u201c, proto\u017ee v\u00fdchoz\u00ed hodnota atributu LTPA \u201e keysPassword \u201c byla odstran\u011bna z d\u016fvodu zv\u00fd\u0161en\u00ed bezpe\u010dnosti.
+LTPA_KEYS_REENCRYPT.useraction=Nen\u00ed pot\u0159eba \u017e\u00e1dn\u00e1 akce.
+
+LTPA_KEYS_REENCRYPT_SUCCESS=CWWKS4120I: Kl\u00ed\u010de LTPA pro {0} se poda\u0159ilo znovu za\u0161ifrovat pomoc\u00ed prom\u011bnn\u00e9 prost\u0159ed\u00ed \u201ekeystore_password\u201c.
+LTPA_KEYS_REENCRYPT_SUCCESS.explanation=Kl\u00ed\u010de LTPA jsou znovu za\u0161ifrov\u00e1ny pomoc\u00ed prom\u011bnn\u00e9 prost\u0159ed\u00ed \u201ekeystore_password\u201c.
+LTPA_KEYS_REENCRYPT_SUCCESS.useraction=Pokud sd\u00edl\u00edte kl\u00ed\u010de LTPA mezi servery v jedn\u00e9 lokalit\u011b, je nutn\u00e9 tyto kl\u00ed\u010de aktualizovat i na ostatn\u00edch serverech, aby je mohly i nad\u00e1le \u010d\u00edst. Nastavte atribut ` keysPassword ` v p\u0159\u00edslu\u0161n\u00e9m <ltpa /> prvku nebo atribut `password` v p\u0159\u00edslu\u0161n\u00e9m <validationKeys /> prvku na hodnotu prom\u011bnn\u00e9 prost\u0159ed\u00ed `keystore_password` tohoto serveru. Prom\u011bnn\u00e1 prost\u0159ed\u00ed \u201ekeystore_password\u201c se obvykle definuje v souboru ` server.env `.
+
+LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Nepoda\u0159ilo se znovu za\u0161ifrovat kl\u00ed\u010de LTPA slu\u017eby {0}. V\u00fdjimka: {1}
+LTPA_KEYS_REENCRYPT_ERROR.explanation=Kl\u00ed\u010de LTPA nebylo mo\u017en\u00e9 znovu za\u0161ifrovat. Dal\u0161\u00ed informace viz v\u00fdjimka v t\u00e9to zpr\u00e1v\u011b.
+LTPA_KEYS_REENCRYPT_ERROR.useraction=Ujist\u011bte se, \u017ee soubor s kl\u00ed\u010di LTPA a jeho adres\u00e1\u0159 nejsou nastaveny jako pouze pro \u010dten\u00ed. Pokud soubor kl\u00ed\u010d\u016f LTPA a jeho adres\u00e1\u0159 nejsou nastaveny jako pouze pro \u010dten\u00ed, dal\u0161\u00ed informace najdete ve v\u00fdjimce uveden\u00e9 ve zpr\u00e1v\u011b.

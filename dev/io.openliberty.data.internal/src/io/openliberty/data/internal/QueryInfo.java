@@ -427,28 +427,20 @@ public abstract class QueryInfo {
     /**
      * Adds Sort criteria to the end of the tracked list of sort criteria.
      *
-     * @param ignoreCase if ordering is to be independent of case.
-     * @param attribute  name of attribute (@OrderBy value, Sort property,
-     *                       or parsed from OrderBy method name keyword).
-     * @param descending if ordering is to be in descending order
+     * @param orderBy OrderBy annotation from a repository method.
      */
     @Trivial
-    private void addSort(boolean ignoreCase, String attribute, boolean descending) {
+    private void addSort(OrderBy orderBy) {
         if (entityInfo.idClassAttributeAccessors == null ||
-            !ID.equalsIgnoreCase(attribute)) {
-            String name = getAttributeName(attribute, true);
-
-            sorts.add(ignoreCase ? //
-                            descending ? //
-                                            Sort.descIgnoreCase(name) : //
-                                            Sort.ascIgnoreCase(name) : //
-                            descending ? //
-                                            Sort.desc(name) : //
-                                            Sort.asc(name));
+            !ID.equalsIgnoreCase(orderBy.value())) {
+            String expression = getAttributeName(orderBy.value(), true);
+            sorts.add(createSort(expression, orderBy));
         } else {
             // Expand ID(THIS) for composite IdClass into separate attributes
-            for (String name : entityInfo.idClassAttributeAccessors.keySet())
-                addSort(ignoreCase, name, descending);
+            for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                name = getAttributeName(name, true);
+                sorts.add(createSort(name, orderBy));
+            }
         }
     }
 
@@ -1113,6 +1105,29 @@ public abstract class QueryInfo {
         setParameters(query, args, deferredConstraints, addedJPQLParams);
         return query;
     }
+
+    /**
+     * Creates a new Sort instance equivalent to the behavior of the given
+     * OrderBy annotation.
+     *
+     * @param expression usually an entity attribute name but might be
+     *                       another type of expression instead.
+     * @param orderBy    annotation found on a repository method.
+     * @return the new Sort instance.
+     */
+    protected abstract <T> Sort<T> createSort(String expression, OrderBy orderBy);
+
+    /**
+     * Creates a new Sort instance with the corresponding entity attribute name
+     * or expression, with all other fields copied from the given Sort instance.
+     *
+     * @param expression usually an entity attribute name but might be
+     *                       another type of expression instead.
+     * @param sort       the Sort from which to copy.
+     * @return an otherwise identical Sort instance, but with the corresponding
+     *         entity attribute name or expression.
+     */
+    protected abstract <T> Sort<T> createSort(String expression, Sort<T> sort);
 
     /**
      * Deletes entities that were found by a find-and-delete operation.
@@ -2955,6 +2970,10 @@ public abstract class QueryInfo {
             if (sort.isAscending())
                 q.append(" DESC");
         }
+
+        String nullOrdering = getNullOrdering(sort, sameDirection);
+        if (nullOrdering != null)
+            q.append(" NULLS ").append(nullOrdering);
     }
 
     /**
@@ -3249,6 +3268,17 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Returns Sort.nullOrdering as a String if FIRST or LAST, otherwise null.
+     *
+     * @param sort          sort criteria.
+     * @param sameDirection indicates to interpret the Sort in the normal direction.
+     *                          Otherwise reverses it (for cursor pagination in the
+     *                          previous page direction).
+     * @return "FIRST", "LAST", or null.
+     */
+    protected abstract String getNullOrdering(Sort<?> sort, boolean sameDirection);
+
+    /**
      * Value (representing a JPQL or JCQL query) from the Query annotation or
      * from the similar Jakarta Persistence annotation that supplies JPQL to a
      * repository method.
@@ -3257,25 +3287,6 @@ public abstract class QueryInfo {
      *         method does not have a query annotation.
      */
     protected abstract String getQueryAnnoValue();
-
-    /**
-     * Creates a Sort instance with the corresponding entity attribute name
-     * or returns the existing instance if it already matches.
-     *
-     * @param name name provided by the user to sort by.
-     * @param sort the Sort to add.
-     * @return a Sort instance with the corresponding entity attribute name.
-     */
-    @Trivial
-    private <T> Sort<T> getWithAttributeName(String name, Sort<T> sort) {
-        name = getAttributeName(name, true);
-        if (name == sort.property())
-            return sort;
-        else
-            return sort.isAscending() //
-                            ? sort.ignoreCase() ? Sort.ascIgnoreCase(name) : Sort.asc(name) //
-                            : sort.ignoreCase() ? Sort.descIgnoreCase(name) : Sort.desc(name);
-    }
 
     /**
      * Identifies the repository method type based on life cycle annotations.
@@ -3443,7 +3454,7 @@ public abstract class QueryInfo {
                     }
 
                 for (int i = 0; i < orderBy.length; i++)
-                    addSort(orderBy[i].ignoreCase(), orderBy[i].value(), orderBy[i].descending());
+                    addSort(orderBy[i]);
 
                 if (sortPositions.length == 0) {
                     sortPositions = NONE_STATIC_SORT_ONLY;
@@ -4237,6 +4248,105 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Makes entities be managed by a persistence context.
+     *
+     * @param arg the entity or array/Iterable/Stream of entity
+     * @param em  the entity manager
+     * @return the managed entities, using the return type that is required by the
+     *         Merge method signature.
+     * @throws Exception if an error occurs.
+     */
+    @Trivial
+    Object merge(Object arg, EntityManager em) throws Exception {
+        arg = arg instanceof Stream //
+                        ? ((Stream<?>) arg).sequential().toList() //
+                        : arg;
+
+        final boolean trace = TraceComponent.isAnyTracingEnabled();
+        if (trace && tc.isEntryEnabled())
+            Tr.entry(this, tc, "merge", loggable(arg));
+
+        boolean resultVoid = void.class.equals(singleType) ||
+                             Void.class.equals(singleType);
+        ArrayList<Object> results;
+
+        boolean hasSingularEntityParam = false;
+        int count = 0;
+        if (entityParamType.isArray()) {
+            int length = Array.getLength(arg);
+            results = resultVoid ? null : new ArrayList<>(length);
+            for (; count < length; count++) {
+                Object merged = em.merge(entityNotNull(Array.get(arg, count)));
+                if (results != null)
+                    results.add(merged);
+            }
+        } else if (arg instanceof Iterable) {
+            results = resultVoid ? null : new ArrayList<>();
+            for (Object e : ((Iterable<?>) arg)) {
+                count++;
+                Object merged = em.merge(entityNotNull(e));
+                if (results != null)
+                    results.add(merged);
+            }
+        } else {
+            count = 1;
+            hasSingularEntityParam = true;
+            results = resultVoid ? null : new ArrayList<>(1);
+            Object merged = em.merge(entityNotNull(arg));
+            if (results != null)
+                results.add(merged);
+        }
+
+        if (count == 0)
+            throw Fail.emptyLifeCycleParam(this);
+
+        Class<?> returnType = method.getReturnType();
+        Object returnValue;
+        if (resultVoid) {
+            returnValue = null;
+        } else {
+            if (returnArrayType != null) {
+                Object[] newArray = (Object[]) Array.newInstance(returnArrayType,
+                                                                 results.size());
+                returnValue = results.toArray(newArray);
+            } else {
+                if (multiType == null)
+                    if (results.size() == 1)
+                        returnValue = results.get(0);
+                    else if (results.isEmpty())
+                        returnValue = null;
+                    else
+                        throw Fail.resultSizeMismatch(this, "@Merge", results.size(),
+                                                      hasSingularEntityParam);
+                else if (multiType.isInstance(results))
+                    returnValue = results;
+                else if (Stream.class.equals(multiType))
+                    returnValue = results.stream();
+                else if (Iterable.class.isAssignableFrom(multiType))
+                    returnValue = convertToIterable(results, multiType, null, null);
+                else if (Iterator.class.equals(multiType))
+                    returnValue = results.iterator();
+                else
+                    throw Fail.returnTypeInvalid(this, "Merge", hasSingularEntityParam,
+                                                 null, results.get(0).getClass());
+            }
+        }
+
+        if (CompletableFuture.class.equals(returnType) ||
+            CompletionStage.class.equals(returnType)) {
+            // useful for @Asynchronous
+            returnValue = CompletableFuture.completedFuture(returnValue);
+        } else if (!resultVoid && !returnType.isInstance(returnValue)) {
+            throw Fail.returnTypeInvalid(this, "Merge", hasSingularEntityParam,
+                                         null, results.get(0).getClass());
+        }
+
+        if (trace && tc.isEntryEnabled())
+            Tr.exit(this, tc, "merge", loggable(returnValue));
+        return returnValue;
+    }
+
+    /**
      * Requires a single result.
      *
      * @param results list of results that is expected to have exactly 1 result.
@@ -4417,7 +4527,8 @@ public abstract class QueryInfo {
                 }
             }
 
-            addSort(ignoreCase, attribute, descending);
+            String name = getAttributeName(attribute, true);
+            sorts.add(new Sort<>(name, !descending, ignoreCase));
 
             if (iNext > 0)
                 iNext += (iNext == desc ? 4 : 3);
@@ -5470,15 +5581,21 @@ public abstract class QueryInfo {
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         while (addIt.hasNext()) {
             Sort<Object> sort = addIt.next();
-            if (sort == null)
+            if (sort == null) {
                 throw new IllegalArgumentException("Sort: null");
-            // IdClass is split up so that it can be possible to create a cursor
-            // that corresponds to sort criteria
-            else if (hasIdClass && ID.equalsIgnoreCase(sort.property()))
-                for (String name : entityInfo.idClassAttributeAccessors.keySet())
-                    combined.add(getWithAttributeName(getAttributeName(name, true), sort));
-            else
-                combined.add(getWithAttributeName(sort.property(), sort));
+            } else if (hasIdClass && ID.equalsIgnoreCase(sort.property())) {
+                // IdClass is split up so that it can be possible to create a cursor
+                // that corresponds to sort criteria
+                for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                    name = getAttributeName(name, true);
+                    sort = name == sort.property() ? sort : createSort(name, sort);
+                    combined.add(sort);
+                }
+            } else {
+                String name = getAttributeName(sort.property(), true);
+                sort = name == sort.property() ? sort : createSort(name, sort);
+                combined.add(sort);
+            }
         }
         return combined;
     }
@@ -5499,15 +5616,21 @@ public abstract class QueryInfo {
         if (combined == null && additional.length > 0)
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort<Object> sort : additional) {
-            if (sort == null)
+            if (sort == null) {
                 throw new IllegalArgumentException("Sort: null");
-            // IdClass is split up so that it can be possible to create a cursor
-            // that corresponds to sort criteria
-            else if (hasIdClass && ID.equalsIgnoreCase(sort.property()))
-                for (String name : entityInfo.idClassAttributeAccessors.keySet())
-                    combined.add(getWithAttributeName(getAttributeName(name, true), sort));
-            else
-                combined.add(getWithAttributeName(sort.property(), sort));
+            } else if (hasIdClass && ID.equalsIgnoreCase(sort.property())) {
+                // IdClass is split up so that it can be possible to create a cursor
+                // that corresponds to sort criteria
+                for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
+                    name = getAttributeName(name, true);
+                    sort = name == sort.property() ? sort : createSort(name, sort);
+                    combined.add(sort);
+                }
+            } else {
+                String name = getAttributeName(sort.property(), true);
+                sort = name == sort.property() ? sort : createSort(name, sort);
+                combined.add(sort);
+            }
         }
         return combined;
     }

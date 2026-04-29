@@ -391,6 +391,9 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
                 s.append(sort.isAscending() //
                                 ? sort.ignoreCase() ? " ASC IgnoreCase" : " ASC" //
                                 : sort.ignoreCase() ? " DESC IgnoreCase" : " DESC");
+                String nullOrdering = queryInfo.getNullOrdering(sort, true);
+                if (nullOrdering != null)
+                    s.append(" NULLS ").append(nullOrdering);
             }
 
         s.append(") @").append(Integer.toHexString(hashCode()));

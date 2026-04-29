@@ -1,0 +1,107 @@
+<!--
+  ~ Copyright (c) 2026 IBM Corporation and others.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Eclipse Public License 2.0
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.eclipse.org/legal/epl-2.0/
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0
+  -->
+
+<server>
+    <featureManager>
+        <feature>webProfile-11.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webContainer deferServletLoad="false"/>
+
+	<basicRegistry id="basic" realm="authz">
+        <user name="user0" password="user0pwd" />
+        <user name="user1" password="user1pwd" />
+        <user name="user2" password="user2pwd" />
+        <group name="CDIRole1">
+            <member name="user2"/>
+        </group>
+        <group name="CDIRole2">
+            <member name="user1"/>
+        </group>
+        <group name="CDIRole3">
+            <member name="user1"/>
+            <member name="user2"/>
+        </group>
+        <group name="CDIRole4">
+            <member name="user0"/>
+            <member name="user1"/>
+        </group>
+        <group name="WebRole1">
+            <member name="user1"/>
+        </group>
+        <group name="WebRole2">
+            <member name="user2"/>
+        </group>
+        <group name="WebRole3">
+            <member name="user0"/>
+            <member name="user1"/>
+        </group>
+        <group name="WebRole4">
+            <member name="user0"/>
+            <member name="user1"/>
+            <member name="user2"/>
+        </group>
+        <group name="EJBRole1">
+            <member name="user0"/>
+            <member name="user1"/>
+            <member name="user2"/>
+        </group>
+        <group name="EJBRole2">
+            <member name="user0"/>
+            <member name="user1"/>
+        </group>
+        <group name="EJBRole3">
+            <member name="user2"/>
+        </group>
+        <group name="EJBRole4">
+            <member name="user1"/>
+        </group>
+        <group name="RestRole1">
+            <member name="user0"/>
+            <member name="user1"/>
+        </group>
+        <group name="RestRole2">
+            <member name="user0"/>
+            <member name="user1"/>
+            <member name="user2"/>
+        </group>
+        <group name="RestRole3">
+            <member name="user1"/>
+        </group>
+        <group name="RestRole4">
+            <member name="user2"/>
+        </group>
+        <group name="WebServicesRole1">
+            <member name="user2"/>
+        </group>
+        <group name="WebServicesRole2">
+            <member name="user1"/>
+        </group>
+        <group name="WebServicesRole3">
+            <member name="user0"/>
+            <member name="user1"/>
+            <member name="user2"/>
+        </group>
+        <group name="WebServicesRole4">
+            <member name="user0"/>
+            <member name="user1"/>
+        </group>
+        <group name="AllAuthenticated">
+            <member name="user0"/>
+            <member name="user1"/>
+            <member name="user2"/>
+        </group>
+	</basicRegistry>
+
+	<application type="war" id="annotationTest" name="annotationTest" location="${server.config.dir}/apps/annotationTest.war"/>
+
+</server>

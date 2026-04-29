@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2023 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,39 +15,97 @@ package jakarta.data;
 import jakarta.data.messages.Messages;
 
 /**
- * Method signatures copied from jakarta.data.repository.Sort from the Jakarta Data repo.
+ * Method signatures copied from jakarta.data.Sort from the Jakarta Data repo.
  */
 public record Sort<T>(String property,
                 boolean isAscending,
-                boolean ignoreCase) {
+                boolean ignoreCase,
+                Nulls nullOrdering) {
+
+    public enum Nulls {
+        FIRST,
+        LAST,
+        UNSPECIFIED
+    }
 
     public Sort {
         Messages.requireNonNull(property, "property");
+        Messages.requireNonNull(nullOrdering, "nullOrdering");
     }
 
-    public static <T> Sort<T> asc(String property) {
-        return new Sort<>(property, true, false);
+    public Sort(String property, boolean isAscending, boolean ignoreCase) {
+        this(property, //
+             isAscending, //
+             ignoreCase, //
+             Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> ascIgnoreCase(String property) {
-        return new Sort<>(property, true, true);
+    public static <T> Sort<T> asc(String attribute) {
+        return new Sort<>(attribute, //
+                        true, //
+                        false, //
+                        Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> desc(String property) {
-        return new Sort<>(property, false, false);
+    public static <T> Sort<T> ascIgnoreCase(String attribute) {
+        return new Sort<>(attribute, //
+                        true, //
+                        true, //
+                        Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> descIgnoreCase(String property) {
-        return new Sort<>(property, false, true);
+    public static <T> Sort<T> desc(String attribute) {
+        return new Sort<>(attribute, //
+                        false, //
+                        false, //
+                        Nulls.UNSPECIFIED);
     }
 
-    public static <T> Sort<T> of(String property, Direction direction, boolean ignoreCase) {
-        Messages.requireNonNull(direction, "direction");
-
-        return new Sort<>(property, direction.equals(Direction.ASC), ignoreCase);
+    public static <T> Sort<T> descIgnoreCase(String attribute) {
+        return new Sort<>(attribute, //
+                        false, //
+                        true, //
+                        Nulls.UNSPECIFIED);
     }
 
     public boolean isDescending() {
         return !isAscending;
+    }
+
+    public Sort<T> nullsFirst() {
+        return new Sort<>(property, //
+                        isAscending, //
+                        ignoreCase, //
+                        Nulls.FIRST);
+    }
+
+    public Sort<T> nullsLast() {
+        return new Sort<>(property, //
+                        isAscending, //
+                        ignoreCase, //
+                        Nulls.LAST);
+    }
+
+    public static <T> Sort<T> of(String attribute,
+                                 Direction direction,
+                                 boolean ignoreCase) {
+        Messages.requireNonNull(direction, "direction");
+
+        return new Sort<>(attribute, //
+                        Direction.ASC.equals(direction), //
+                        ignoreCase, //
+                        Nulls.UNSPECIFIED);
+    }
+
+    public static <T> Sort<T> of(String attribute,
+                                 Direction direction,
+                                 boolean ignoreCase,
+                                 Nulls nullOrdering) {
+        Messages.requireNonNull(direction, "direction");
+
+        return new Sort<>(attribute, //
+                        Direction.ASC.equals(direction), //
+                        ignoreCase, //
+                        nullOrdering);
     }
 }

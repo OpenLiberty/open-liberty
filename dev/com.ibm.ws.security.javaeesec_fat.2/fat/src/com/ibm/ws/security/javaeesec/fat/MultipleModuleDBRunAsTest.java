@@ -164,7 +164,7 @@ public class MultipleModuleDBRunAsTest extends JavaEESecTestBase {
     @Test
     public void testMultipleModuleWarsAllRunAsWithDB() throws Exception {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
 
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirectrunas",

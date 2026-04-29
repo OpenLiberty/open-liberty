@@ -91,7 +91,7 @@ public class MultipleModuleGlobalClientCertTest extends JavaEESecTestBase {
     public static void setUp() throws Exception {
         ldapServer = new LocalLdapServer();
         ldapServer.start();
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
         // create module1, form login, redirect, ldap1. grouponly.
         WCApplicationHelper.createWar(myServer, TEMP_DIR, WAR1_NAME, true, JAR_NAME, false, "web.jar.base", "web.war.servlets.form.get.redirect",
                                       "web.war.identitystores.ldap.ldap1", "web.war.identitystores.custom.grouponly", "web.war.identitystores.custom.realm1");

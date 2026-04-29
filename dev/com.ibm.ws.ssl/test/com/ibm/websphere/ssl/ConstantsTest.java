@@ -18,12 +18,6 @@ import org.junit.Test;
 
 public class ConstantsTest {
 
-    @Before
-    public void assumeBetaEdition() {
-    // Skip these tests unless the beta edition toggle is enabled.
-    Assume.assumeTrue(ProductInfo.getBetaEdition());
-    }
-
     @Test
     public void testRemoveModifier() {
         String[] ciphers = new String[] { "TLS_ECDHE_ECDSA_WITH_AES_256_GCM_SHA384" };

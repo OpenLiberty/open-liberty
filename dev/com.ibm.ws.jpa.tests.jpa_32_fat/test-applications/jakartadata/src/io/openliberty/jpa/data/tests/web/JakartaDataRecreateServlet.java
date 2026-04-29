@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,6 +30,10 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
@@ -71,6 +75,7 @@ import io.openliberty.jpa.data.tests.models.Line;
 import io.openliberty.jpa.data.tests.models.Line.Point;
 import io.openliberty.jpa.data.tests.models.NaturalNumber;
 import io.openliberty.jpa.data.tests.models.Package;
+import io.openliberty.jpa.data.tests.models.PartialDateEntity;
 import io.openliberty.jpa.data.tests.models.Participant;
 import io.openliberty.jpa.data.tests.models.Person;
 import io.openliberty.jpa.data.tests.models.Prime;
@@ -105,6 +110,9 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @PersistenceContext(unitName = "RecreatePersistenceUnit")
     private EntityManager em;
+
+    @PersistenceContext(unitName = "RecreatePersistenceUnitH2")
+    private EntityManager emH2;
 
     @Resource
     private UserTransaction tx;
@@ -937,7 +945,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-   //@Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
+    //@Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
     public void testOLGH29073_WHERECLAUSE() throws Exception {
         deleteAllEntities(City.class);
 
@@ -957,7 +965,7 @@ public class JakartaDataRecreateServlet extends FATServlet {
             long version1 = em.createQuery("SELECT VERSION(c) FROM City c WHERE ID(c) = ?1", Long.class)
                             .setParameter(1, new CityId("Rochester", "Minnesota"))
                             .getSingleResult();
-            
+
             rochesters = em.createQuery("SELECT ID(THIS) FROM City WHERE (name=?1) ORDER BY population DESC")
                             .setParameter(1, "Rochester")
                             .getResultList();
@@ -2540,6 +2548,82 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     /**
+     * Test partial date types (Year, MonthDay, YearMonth) with H2 database.
+     * This test verifies that EclipseLink can properly persist and retrieve
+     * partial date types when using H2 instead of Derby.
+     */
+    @Test
+    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/34694") //TODO fix me
+    public void testOLGH34694() throws Exception {
+        deleteAllEntitiesH2(PartialDateEntity.class);
+
+        // Create and persist entities with partial date types
+        PartialDateEntity entity2022 = new PartialDateEntity(Year.of(2022), MonthDay.of(Month.OCTOBER, 24), YearMonth.of(2022, Month.JANUARY), "Data for 2022");
+        PartialDateEntity entity2023 = new PartialDateEntity(Year.of(2023), MonthDay.of(Month.SEPTEMBER, 10), YearMonth.of(2023, Month.FEBRUARY), "Data for 2023");
+        PartialDateEntity entity2024 = new PartialDateEntity(Year.of(2024), MonthDay.of(Month.NOVEMBER, 1), YearMonth.of(2024, Month.MARCH), "Data for 2024");
+        PartialDateEntity entity2025 = new PartialDateEntity(Year.of(2025), MonthDay.of(Month.FEBRUARY, 14), YearMonth.of(2025, Month.APRIL), "Data for 2025");
+
+        tx.begin();
+        try {
+            emH2.persist(entity2022);
+            emH2.persist(entity2023);
+            emH2.persist(entity2024);
+            emH2.persist(entity2025);
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+            throw e; // unexpected
+        }
+
+        List<PartialDateEntity> found;
+        tx.begin();
+        try {
+            // Try to read back the entities - this is where EclipseLink fails
+            // with ConversionException when trying to convert BigDecimal to OffsetDateTime data
+
+            found = emH2.createQuery("FROM PartialDateEntity ORDER BY YEARVALUE").getResultList();
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
+                tx.rollback();
+            }
+            throw e;
+        }
+
+        // If we get here without exception, verify the data
+        assertNotNull("Entity list should be found", found);
+        assertEquals(4, found.size());
+
+        PartialDateEntity found2022 = found.get(0);
+        assertEquals(Year.of(2022), found2022.year);
+        assertEquals(MonthDay.of(Month.OCTOBER, 24), found2022.bestDay);
+        assertEquals(YearMonth.of(2022, Month.JANUARY), found2022.bestMonth);
+        assertEquals("Data for 2022", found2022.description);
+    }
+
+    @Test
+    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/34730") //TODO fix me
+    public void testOLGH34730() throws Exception {
+        deleteAllEntitiesH2(Item.class);
+
+        Item apple = Item.of("testOLGH34730", "apple", 7.00f);
+
+        tx.begin();
+        try {
+            emH2.persist(apple);
+            tx.commit();
+        } catch (Exception e) {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
+                tx.rollback();
+            }
+
+            // ERROR: org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "BINARY VARYING to NUMERIC" [22018-240]
+            throw e;
+        }
+
+    }
+
+    /**
      * Utility method to drop all entities from table.
      *
      * Order to tests is not guaranteed and thus we should be pessimistic and
@@ -2567,6 +2651,21 @@ public class JakartaDataRecreateServlet extends FATServlet {
     private void deleteAllEntities(Class<?> clazz) throws Exception {
         tx.begin();
         em.createQuery("DELETE FROM " + clazz.getSimpleName())
+                        .executeUpdate();
+        tx.commit();
+    }
+
+    /**
+     * Utility method to drop all entities from table using H2 EntityManager.
+     *
+     * Order to tests is not guaranteed and thus we should be pessimistic and
+     * delete all entities when we reuse an entity between tests.
+     *
+     * @param clazz - the entity class
+     */
+    private void deleteAllEntitiesH2(Class<?> clazz) throws Exception {
+        tx.begin();
+        emH2.createQuery("DELETE FROM " + clazz.getSimpleName())
                         .executeUpdate();
         tx.commit();
     }

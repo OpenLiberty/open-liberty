@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,6 +49,7 @@ public class DataStoreTest extends FATServletClient {
      */
     private static final String[] EXPECTED_ERROR_MESSAGES = //
                     new String[] {
+                                   "CWWJP9991W.*MBeanServerFactory", // TODO remove once #29521 is fixed
                                    "CWWKD1063E.*PersistenceUnitRepo"
                     };
 
@@ -62,6 +63,11 @@ public class DataStoreTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
+
+        WebArchive H2InitApp = ShrinkWrap.create(WebArchive.class,
+                                                 "H2InitApp.war")
+                        .addPackage("test.jakarta.data.datastore.initapp");
+        ShrinkHelper.exportAppToServer(server, H2InitApp);
 
         JavaArchive DataRepoGlobalLib = ShrinkWrap.create(JavaArchive.class,
                                                           "DataRepoGlobalLib.jar")

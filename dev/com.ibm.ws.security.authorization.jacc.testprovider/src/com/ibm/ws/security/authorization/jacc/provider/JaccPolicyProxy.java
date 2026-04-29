@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,24 +19,19 @@ import java.security.Permission;
 import java.security.PermissionCollection;
 import java.security.Policy;
 import java.security.ProtectionDomain;
+import java.util.Arrays;
 
 import javax.security.jacc.EJBMethodPermission;
 import javax.security.jacc.EJBRoleRefPermission;
-import javax.security.jacc.PolicyContext;
-import javax.security.jacc.PolicyContextException;
 import javax.security.jacc.WebResourcePermission;
 import javax.security.jacc.WebRoleRefPermission;
 import javax.security.jacc.WebUserDataPermission;
 
-import com.ibm.websphere.ras.Tr;
-import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 
-public class JaccPolicyProxy extends Policy {
+public class JaccPolicyProxy extends Policy implements AuthzPolicy {
     private static Policy policy = null;
     private ProtectionDomain self = null;
-    private JaccProvider jaccProvider = null;
-    private static final TraceComponent tc = Tr.register(JaccPolicyProxy.class);
 
     static {
         /**
@@ -111,114 +106,10 @@ public class JaccPolicyProxy extends Policy {
     public boolean implies(ProtectionDomain pd, Permission p) {
         boolean result = false;
         if ((self == pd) && (self != null)) { // self always true
-            result = true;
-        } else if (p instanceof WebResourcePermission) {
-            WSPolicyConfigurationImpl pc = getPolicyConfiguration();
-            // If there is no policy configuration, the application doesn't
-            // have any security constraints.  In that case return true.
-            if (pc == null) {
-                return true;
-            }
-            if (pd.getPrincipals() == null || pd.getPrincipals().length < 1) {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Checking the unchecked list");
-                if (jaccProvider.checkUncheckedPerm(pc, p)) {
-                    return true;
-                } else {
-                    return jaccProvider.isEveryoneGranted(pc, p, PolicyContext.getContextID());
-                }
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Checking the excluded list");
-                if (jaccProvider.checkExcludedPerm(pc, p)) {
-                    return false;
-                } else {
-                    if (tc.isDebugEnabled())
-                        Tr.debug(tc, "Checking the role list");
-                    return jaccProvider.checkRolePerm(pc, p, PolicyContext.getContextID());
-                }
-            }
-        } else if (p instanceof WebUserDataPermission) {
-            WSPolicyConfigurationImpl pc = getPolicyConfiguration();
-            // If there is no policy configuration, the application doesn't
-            // have any security constraints.  In that case return true.
-            if (pc == null) {
-                return true;
-            }
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Checking the excluded list");
-            if (jaccProvider.checkExcludedPerm(pc, p)) {
-                return false;
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Not in the excluded list: Checking for unchecked");
-                return jaccProvider.checkUncheckedPerm(pc, p);
-            }
-        } else if (p instanceof WebRoleRefPermission || p instanceof EJBRoleRefPermission) {
-            WSPolicyConfigurationImpl pc = getPolicyConfiguration();
-            // If there is no policy configuration, the application doesn't
-            // have any security constraints.  In that case return true.
-            if (pc == null) {
-                return true;
-            }
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Checking the role list");
-            return jaccProvider.checkRolePerm(pc, p, PolicyContext.getContextID());
-        } else if (p instanceof EJBMethodPermission) {
-            WSPolicyConfigurationImpl pc = getPolicyConfiguration();
-            // If there is no policy configuration, the application doesn't
-            // have any security constraints.  In that case return true.
-            if (pc == null) {
-                return true;
-            }
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Checking the excluded list");
-            if (jaccProvider.checkExcludedPerm(pc, p)) {
-                return false;
-            } else {
-                if (tc.isDebugEnabled())
-                    Tr.debug(tc, "Checking the unchecked list");
-                if (jaccProvider.checkUncheckedPerm(pc, p)) {
-                    return true;
-                } else {
-                    return jaccProvider.checkRolePerm(pc, p, PolicyContext.getContextID());
-                }
-            }
-        } else {
-            result = policy.implies(pd, p);
-        }
-        return result;
-    }
-
-    private WSPolicyConfigurationImpl getPolicyConfiguration() {
-        //get contextID;
-        String contextID = PolicyContext.getContextID();
-        WSPolicyConfigurationImpl pc = null;
-        pc = AllPolicyConfigs.getInstance().getPolicyConfig(contextID);
-
-        if (pc == null) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "Cannot get the policy configuration object. exit value:false");
-            return null;
+            return true;
         }
 
-        boolean inService = false;
-        try {
-            inService = pc.inService();
-        } catch (PolicyContextException pce) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "security.jacc.provider.inservice", new Object[] { pce });
-        }
-
-        if (!inService) {
-            if (tc.isDebugEnabled())
-                Tr.debug(tc, "The policy configuration object is not in the commit state. exit value:false");
-            return null;
-        }
-
-        if (jaccProvider == null) {
-            jaccProvider = JaccProvider.getInstance();
-        }
-        return pc;
+        Boolean defaultChecks = implies(Arrays.asList(pd.getPrincipals()), p);
+        return defaultChecks != null ? defaultChecks : policy.implies(pd, p);
     }
 }
