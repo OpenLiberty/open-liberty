@@ -173,6 +173,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             cl.cancel();
         }
         final boolean checkForUnprocessedConfigChange = _nextAppConfig.getAndSet(appConfig) != null;
+        // Mark this as an update since we're reconfiguring the application
+        _update.set(true);
 
         addAppStartingFutures(appStartingFutures);
         updateStartAfterFutures(startAfterFutures);
@@ -1284,9 +1286,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                         throw new IllegalStateException("enterState");
                     case STOPPED:
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STOPPED);
-                        // Reset the update flag only when there's no pending config update
-                        // If _nextAppConfig is null, this is a simple stop (not part of an update/restart)
-                        // This ensures stop()->start() sends "application.start" but updates still send "application.update"
+                        // Reset update flag when fully stopped with no pending config changes
+                        // This ensures a subsequent start (not part of update/restart) sends "application.start"
                         if (_nextAppConfig.get() == null) {
                             _update.set(false);
                         }
@@ -1365,7 +1366,8 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
                             ApplicationInstallInfo aii = new ApplicationInstallInfo(_appConfig.get(), _appContainer.getAndSet(null), _resolvedLocation.getAndSet(null), _handler.get(), ApplicationStateMachineImpl.this);
                             _appInstallInfo.set(aii); // capture the handler so we call the same one for stopping.
                             startCallback = new StartActionCallback();
-                            startAction = new StartAction(_appConfig.get(), _update.getAndSet(true), _appMonitor, aii, startCallback, _futureMonitor, _configurator);
+                            // Use current value of _update flag (don't automatically set to true)
+                            startAction = new StartAction(_appConfig.get(), _update.get(), _appMonitor, aii, startCallback, _futureMonitor, _configurator);
                             _currentAction.set(startAction);
                         }
                         _asmHelper.switchApplicationState(_appConfig.get(), ApplicationState.STARTING);
