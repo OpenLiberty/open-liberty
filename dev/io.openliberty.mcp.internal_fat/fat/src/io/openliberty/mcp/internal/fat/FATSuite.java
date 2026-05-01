@@ -61,6 +61,7 @@ import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
+import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
 import io.openliberty.mcp.internal.fat.tool.TelemetryOperationsTest;
 import io.openliberty.mcp.internal.fat.tool.TelemetrySessionsTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
@@ -93,6 +94,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 IntrospectorMultiAppTest.class,
                 // LocaleTest.class, // Commented out test until message translation is updated
                 LifecycleTest.class,
+                McpMonitorTest.class,
                 McpUrlPathTest.class,
                 MultiAppIsolationTest.class,
                 MultiModuleToolTestToolManager.class,
