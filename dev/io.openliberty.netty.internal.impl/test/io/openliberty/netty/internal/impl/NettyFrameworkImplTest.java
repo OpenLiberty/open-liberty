@@ -74,9 +74,21 @@ public class NettyFrameworkImplTest {
         // Skip test if beta edition is not set
         Assume.assumeTrue(ProductInfo.getBetaEdition());
         testChannels = new ArrayList<Channel>();
+        Map<String, Object> config = new HashMap<>();
+        config.put(NettyConstants.SCALER_MIN_THREADS_PROPERTY, NettyConstants.SCALER_MIN_THREADS);
+        config.put(NettyConstants.SCALER_MAX_THREADS_PROPERTY, NettyConstants.SCALER_MAX_THREADS);
+        config.put(NettyConstants.SCALER_WINDOW_PROPERTY, NettyConstants.SCALER_WINDOW);
+        config.put(NettyConstants.SCALER_DOWN_THRESHOLD_PROPERTY, NettyConstants.SCALER_DOWN_THRESHOLD);
+        config.put(NettyConstants.SCALER_UP_THRESHOLD_PROPERTY, NettyConstants.SCALER_UP_THRESHOLD);
+        config.put(NettyConstants.SCALER_UP_STEP_PROPERTY, NettyConstants.SCALER_UP_STEP);
+        config.put(NettyConstants.SCALER_DOWN_STEP_PROPERTY, NettyConstants.SCALER_DOWN_STEP);
+        config.put(NettyConstants.SCALER_CYCLES_PROPERTY, NettyConstants.SCALER_CYCLES);
+        config.put(NettyConstants.SCALER_METRICS_WINDOW_PROPERTY, NettyConstants.SCALER_METRICS_WINDOW);
+        config.put(NettyConstants.USE_NATIVE_TRANSPORT, false);
+
         framework = new NettyFrameworkImpl();
         framework.setExecutorService(GlobalEventExecutor.INSTANCE);
-        framework.activate(null, null);
+        framework.activate(null, config);
         options = new HashMap<String, Object>();
     }
 
