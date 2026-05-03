@@ -510,7 +510,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             removeIfPresent(p, HttpServerKeepAliveHandler.class);
 
             // Ensure the upgrade handler is present directly before HTTP_DISPATCHER
-            NettyServletUpgradeHandler upgrade = p.get(NettyServletUpgradeHandler.class);
+            NettyServletUpgradeHandler upgrade = NettyServletUpgradeHandler.get(ctx.channel());
             if (upgrade == null) {
                 if (p.get("HTTP_DISPATCHER") != null) {
                     p.addBefore("HTTP_DISPATCHER", NettyServletUpgradeHandler.NAME,
@@ -518,7 +518,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
                 } else {
                     p.addLast(NettyServletUpgradeHandler.NAME, new NettyServletUpgradeHandler(ctx.channel()));
                 }
-                upgrade = p.get(NettyServletUpgradeHandler.class);
+                upgrade = NettyServletUpgradeHandler.get(ctx.channel());
             }
 
             final ChannelHandlerContext upgCtx = p.context(NettyServletUpgradeHandler.class);

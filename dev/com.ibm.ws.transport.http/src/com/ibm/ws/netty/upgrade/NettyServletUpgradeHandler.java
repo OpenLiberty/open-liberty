@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -45,6 +45,7 @@ import io.netty.channel.CoalescingBufferQueue;
 import io.netty.channel.VoidChannelPromise;
 import io.netty.channel.socket.ChannelInputShutdownEvent;
 import io.netty.channel.socket.ChannelInputShutdownReadComplete;
+import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
 import io.openliberty.netty.internal.impl.QuiesceState;
 
@@ -58,6 +59,7 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
     private static final TraceComponent tc = Tr.register(NettyServletUpgradeHandler.class);
 
     public static final String NAME = "NettyServletUpgradeHandler";
+    private static final AttributeKey<NettyServletUpgradeHandler> HANDLER_KEY = AttributeKey.valueOf("nettyServletUpgradeHandler");
 
     private final Channel channel;
     private ChannelHandlerContext context;
@@ -86,9 +88,26 @@ public class NettyServletUpgradeHandler extends ChannelDuplexHandler {
         this.queue = new CoalescingBufferQueue(channel);        
     }
 
+    public static NettyServletUpgradeHandler get(Channel channel){
+        return channel.attr(HANDLER_KEY).get();
+    }
+
+    public static boolean isPresent(Channel channel){
+        return get(channel) != null;
+    }
+
     @Override
     public void handlerAdded(ChannelHandlerContext context) throws Exception {
         this.context = context;
+        context.channel().attr(HANDLER_KEY).set(this);
+    }
+
+    @Override
+    public void handlerRemoved(ChannelHandlerContext context) throws Exception{
+        if(context.channel().attr(HANDLER_KEY).get() == this){
+            context.channel().attr(HANDLER_KEY).set(null);
+        }
+        super.handlerRemoved(context);
     }
 
     @Override

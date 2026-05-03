@@ -3061,13 +3061,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
-        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
+        final boolean switchingProtocols = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
+        boolean shouldSkipWriteOnUpgrade = switchingProtocols
                                            && !"HTTP2".equals(nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get());
         // On upgrade but haven't written headers
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
             sendNettyHeaders();
         }
-        else if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        else if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) 
+            && (!switchingProtocols || NettyServletUpgradeHandler.get(this.nettyContext.channel()) == null)) {
 
             addBytesWritten(GenericUtils.sizeOf(buffers));
 
@@ -3386,13 +3388,15 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
         }
 
-        boolean shouldSkipWriteOnUpgrade = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS)
+        final boolean switchingProtocols = nettyResponse.status().equals(HttpResponseStatus.SWITCHING_PROTOCOLS);
+        boolean shouldSkipWriteOnUpgrade = switchingProtocols
                                            && !nettyContext.channel().attr(NettyHttpConstants.PROTOCOL).get().equals("HTTP2");
         // On upgrade but haven't written headers
         if(shouldSkipWriteOnUpgrade && sendHeaders) {
             sendNettyHeaders();
         }
-        else if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) && this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        else if (!shouldSkipWriteOnUpgrade && Objects.nonNull(buffers) 
+            && (!switchingProtocols || NettyServletUpgradeHandler.get(this.nettyContext.channel()) == null)) {
 
             addBytesWritten(GenericUtils.sizeOf(buffers));
 
@@ -3408,7 +3412,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             }
 
             nettyWrite(sendHeaders, true);
-        } else if (this.nettyContext.channel().pipeline().get(NettyServletUpgradeHandler.class) == null) {
+        } else if (!switchingProtocols || NettyServletUpgradeHandler.get(this.nettyContext.channel()) == null) {
             // Skip writing data and send headers and last http content only
             if(sendHeaders){
                 sendNettyHeaders();

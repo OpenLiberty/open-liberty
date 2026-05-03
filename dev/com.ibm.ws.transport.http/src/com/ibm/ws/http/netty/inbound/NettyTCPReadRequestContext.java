@@ -593,11 +593,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     }
 
     private boolean hasUpgradeHandler() {
-        return nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null;
+        return NettyServletUpgradeHandler.isPresent(nettyChannel);
     }
 
     private NettyServletUpgradeHandler ensureUpgradeHandler() {
-        NettyServletUpgradeHandler h = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
+        NettyServletUpgradeHandler h = NettyServletUpgradeHandler.get(nettyChannel);
         if(h != null) return h;
 
         // //TODO lazy initialization due to wsoc not triggering upgrade event. Find missing location to throw event .
@@ -752,7 +752,7 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
             return;
         }
 
-        NettyServletUpgradeHandler upgradeHandler = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
+        NettyServletUpgradeHandler upgradeHandler = NettyServletUpgradeHandler.get(nettyChannel);
         if(upgradeHandler != null){
             Tr.debug(tc, "[READGATE] requestRead via NettyServletUpgradeHandler");
             upgradeHandler.requestReadIfNeeded();
