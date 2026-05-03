@@ -967,6 +967,193 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a merge operation on a stateful repository to make an unmanaged
+     * entity into a managed entity.
+     */
+    @Test
+    public void testMerge() throws Exception {
+
+        // Populate with 15/23.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.write(Fraction.of(15, 23));
+
+        boolean removed = false;
+        try {
+            System.out.println("Update an unmanaged instance and merge");
+            Fraction f = Fraction.of(15, 23);
+            f.denominator = 21;
+            f.reduced = false;
+            f = statefulFractionRepo.manage(f);
+
+            assertEquals(21,
+                         f.denominator);
+            assertEquals(false,
+                         f.reduced);
+            assertEquals("Fifteen Twenty-thirds",
+                         f.name);
+            assertEquals(BigDecimal.valueOf(6521, 4), // first 4 decimals of 15/23
+                         f.decimal.truncated());
+
+            f.decimal = Decimal.of(15, 21);
+
+            if (isHibernatePersistence()) {
+                statefulFractions.manager().flush();
+            } else {
+                tx.begin();
+                statefulFractions.manager().flush();
+                tx.commit();
+            }
+
+            assertEquals(true,
+                         statefulFractions.fetch(15, 23).isEmpty());
+
+            tx.begin();
+            f = statefulFractions.fetch(15, 21).orElseThrow();
+            statefulFractions.detach(f);
+            f.reduced = true;
+            f = statefulFractionRepo.manage(f);
+            f.denominator = 23;
+            tx.commit();
+
+            f = statefulFractions.fetch(15, 23).orElseThrow();
+
+            assertEquals(23,
+                         f.denominator);
+            assertEquals(true,
+                         f.reduced);
+            assertEquals("Fifteen Twenty-thirds",
+                         f.name);
+            assertEquals(BigDecimal.valueOf(7142, 4), // first 4 decimals of 15/21
+                         f.decimal.truncated());
+            assertEquals(true,
+                         statefulFractions.fetch(15, 21).isEmpty());
+
+            statefulFractionRepo.remove(f);
+            removed = true;
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // Ensure no fractions with denominator of 21 or more are left around
+            if (!removed)
+                fractions.discard(AtLeast.min(21),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
+        }
+    }
+
+    /**
+     * Use a multiple merge operation on a stateful repository to make multiple
+     * unmanaged enities into managed entities.
+     */
+    @Test
+    public void testMergeMultiple() throws Exception {
+
+        // Populate with 16/23 and 17/23.
+        // Ensure deletion in the finally block.
+        statefulFractionRepo.persistAll(List.of(Fraction.of(16, 23),
+                                                Fraction.of(17, 23)));
+
+        boolean removed = false;
+        try {
+            // unmanaged due to detach:
+            Fraction f16 = statefulFractions.fetch(16, 23).orElseThrow();
+            statefulFractions.detach(f16);
+            f16.reduced = false;
+
+            // unmanaged due to creating instance:
+            Fraction f17 = Fraction.of(17, 23);
+            f17.reduced = false;
+
+            Fraction[] managed = statefulFractionRepo.multiMerge(f16, f17);
+
+            assertEquals(16,
+                         managed[0].numerator);
+            assertEquals(23,
+                         managed[0].denominator);
+            assertEquals(false,
+                         managed[0].reduced);
+            assertEquals("Sixteen Twenty-thirds",
+                         managed[0].name);
+            assertEquals(BigDecimal.valueOf(6956, 4), // first 4 decimals of 16/23
+                         managed[0].decimal.truncated());
+
+            assertEquals(17,
+                         managed[1].numerator);
+            assertEquals(23,
+                         managed[1].denominator);
+            assertEquals(false,
+                         managed[1].reduced);
+            assertEquals("Seventeen Twenty-thirds",
+                         managed[1].name);
+            assertEquals(BigDecimal.valueOf(7391, 4), // first 4 decimals of 17/23
+                         managed[1].decimal.truncated());
+
+            if (isHibernatePersistence()) {
+                statefulFractions.manager().flush();
+            } else {
+                tx.begin();
+                statefulFractions.manager().flush();
+                tx.commit();
+            }
+
+            f16 = managed[0];
+            f17 = managed[1];
+            statefulFractions.detach(f16);
+
+            tx.begin();
+            statefulFractions.detach(f17);
+
+            f16.decimal = Decimal.of(16, 22);
+            f17.reduced = true;
+
+            managed = statefulFractionRepo.multiMerge(f16, f17);
+
+            f17 = managed[1];
+            f17.decimal = Decimal.of(17, 22);
+            tx.commit();
+
+            f16 = statefulFractions.fetch(16, 23).orElseThrow();
+
+            assertEquals(16,
+                         f16.numerator);
+            assertEquals(23,
+                         f16.denominator);
+            assertEquals(false,
+                         f16.reduced);
+            assertEquals("Sixteen Twenty-thirds",
+                         f16.name);
+            assertEquals(BigDecimal.valueOf(7272, 4), // first 4 decimals of 16/22
+                         f16.decimal.truncated());
+
+            f17 = statefulFractions.fetch(17, 23).orElseThrow();
+
+            assertEquals(17,
+                         f17.numerator);
+            assertEquals(23,
+                         f17.denominator);
+            assertEquals(true,
+                         f17.reduced);
+            assertEquals("Seventeen Twenty-thirds",
+                         f17.name);
+            assertEquals(BigDecimal.valueOf(7727, 4), // first 4 decimals of 17/22
+                         f17.decimal.truncated());
+
+            statefulFractionRepo.remove(f16, f17);
+            removed = true;
+        } finally {
+            if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
+                tx.rollback();
+
+            // Ensure no fractions with denominator of 23 or more are left around
+            if (!removed)
+                fractions.discard(AtLeast.min(23),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
+        }
+    }
+
+    /**
      * Attempt to use the static metamodel to create an expression for a
      * negative length prefix of an entity attribute value. Verify that
      * IllegalArgumentException is raised for the negative length and that
@@ -1715,7 +1902,6 @@ public class Data_1_1_Servlet extends FATServlet {
 
         CompletableFuture.supplyAsync(() -> {
             try {
-                boolean removed = false;
                 try {
                     tx.begin();
                     statefulFractionRepo.write(Fraction.of(13, 23));
@@ -1731,26 +1917,14 @@ public class Data_1_1_Servlet extends FATServlet {
                     f.numerator = 1;
                     tx.commit();
 
+                    f.numerator = 13;
+                    f.denominator = 26;
                     tx.begin();
-                    f = statefulFractions.fetch(13, 23).orElseThrow();
-                    // first 4 decimals of 13/23
-                    assertEquals(BigDecimal.valueOf(5652, 4),
-                                 f.decimal.truncated());
-                    assertEquals(false,
-                                 f.reduced);
-                    assertEquals(13,
-                                 f.numerator);
-                    statefulFractionRepo.remove(f);
+                    f = statefulFractionRepo.manage(f); // merge operation
                     tx.commit();
-                    removed = true;
                 } finally {
                     if (tx.getStatus() != Status.STATUS_NO_TRANSACTION)
                         tx.rollback();
-
-                    if (!removed)
-                        fractions.discard(AtLeast.min(23),
-                                          AtMost.max(Integer.MAX_VALUE),
-                                          Restrict.unrestricted());
                 }
             } catch (RuntimeException x) {
                 throw x;
@@ -1760,6 +1934,30 @@ public class Data_1_1_Servlet extends FATServlet {
             return "testStatefulOnUnmanagedThread async operations completed";
         }).get(TIMEOUT_S, TimeUnit.SECONDS);
 
+        boolean removed = false;
+        tx.begin();
+        try {
+            assertEquals(true,
+                         statefulFractions.fetch(13, 23).isEmpty());
+
+            Fraction f = statefulFractions.fetch(13, 26).orElseThrow();
+            assertEquals(false,
+                         f.reduced);
+            assertEquals(13,
+                         f.numerator);
+            assertEquals(26,
+                         f.denominator);
+            assertEquals(BigDecimal.valueOf(5652, 4), // first 4 decimals of 13/23
+                         f.decimal.truncated());
+            statefulFractionRepo.remove(f);
+            tx.commit();
+            removed = true;
+        } finally {
+            if (!removed)
+                fractions.discard(AtLeast.min(23),
+                                  AtMost.max(Integer.MAX_VALUE),
+                                  Restrict.unrestricted());
+        }
     }
 
     /**

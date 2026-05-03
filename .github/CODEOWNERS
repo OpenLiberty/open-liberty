@@ -1,0 +1,5 @@
+/.github/CODEOWNERS     @OpenLiberty/admin
+
+# AI enablement related files and folders
+/.bob/                  @OpenLiberty/ai-enablement-reviewers
+AGENTS.md               @OpenLiberty/ai-enablement-reviewers

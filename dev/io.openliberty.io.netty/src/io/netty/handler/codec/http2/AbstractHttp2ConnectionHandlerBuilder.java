@@ -13,7 +13,6 @@
  * License for the specific language governing permissions and limitations
  * under the License.
  */
-
 package io.netty.handler.codec.http2;
 
 import io.netty.channel.Channel;
@@ -113,12 +112,13 @@ public abstract class AbstractHttp2ConnectionHandlerBuilder<T extends Http2Conne
     private int maxDecodedRstFramesSecondsPerWindow = 30;
     private Integer maxEncodedRstFramesPerWindow;
     private int maxEncodedRstFramesSecondsPerWindow = 30;
-    
+    private int maxSmallContinuationFrames = Http2CodecUtil.DEFAULT_MAX_SMALL_CONTINUATION_FRAME;
+
     //Liberty Options
     private int limitFieldSize = 32768;
     private int limitNumHeaders = 500;
     private long maxHeaderBlockSize = 51200;
-    
+
     /**
      * Sets the {@link Http2Settings} to use for the initial connection settings exchange.
      */
@@ -465,10 +465,34 @@ public abstract class AbstractHttp2ConnectionHandlerBuilder<T extends Http2Conne
      * {@code 0} for any of the parameters means no protection should be applied.
      */
     protected B encoderEnforceMaxRstFramesPerWindow(int maxRstFramesPerWindow, int secondsPerWindow) {
-        enforceNonCodecConstraints("decoderEnforceMaxRstFramesPerWindow");
+        enforceNonCodecConstraints("encoderEnforceMaxRstFramesPerWindow");
         this.maxEncodedRstFramesPerWindow = checkPositiveOrZero(
                 maxRstFramesPerWindow, "maxRstFramesPerWindow");
         this.maxEncodedRstFramesSecondsPerWindow = checkPositiveOrZero(secondsPerWindow, "secondsPerWindow");
+        return self();
+    }
+
+    /**
+     * Returns the maximum number of small CONTINUATION frames per HEADERS block that are allowed
+     * before the connection is closed. Small is defined as 8 KiB, half the minimum allowed HTTP2 frame size.
+     * This setting is to protect against the remote peer flooding us with such frames.
+     *
+     * {@code 0} means no protection is in place.
+     */
+    protected int decoderEnforceMaxSmallContinuationFrames() {
+        return maxSmallContinuationFrames;
+    }
+
+    /**
+     * Returns the maximum number of small CONTINUATION frames per HEADERS block that are allowed
+     * before the connection is closed. Small is defined as 8 KiB, half the minimum allowed HTTP2 frame size.
+     * This setting is to protect against the remote peer flooding us with such frames.
+     * {@code 0} means no protection should be applied.
+     */
+    protected B decoderEnforceMaxSmallContinuationFrames(int maxSmallContinuationFrames) {
+        enforceNonCodecConstraints("maxSmallContinuationFrames");
+        this.maxSmallContinuationFrames = checkPositiveOrZero(
+                maxSmallContinuationFrames, "maxSmallContinuationFrames");
         return self();
     }
 

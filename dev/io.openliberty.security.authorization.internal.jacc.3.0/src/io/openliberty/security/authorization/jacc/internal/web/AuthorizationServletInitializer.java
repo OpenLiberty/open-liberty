@@ -82,11 +82,9 @@ public class AuthorizationServletInitializer implements ServletContainerInitiali
                 if (configFactory != null) {
                     PolicyConfigurationFactory.setPolicyConfigurationFactory(configFactory);
                     configFactoryAdded = true;
-                    Tr.info(tc, "JACC_AUTHORIZATION_MODULE_CONFIGURED", "PolicyConfigurationFactory", configFactoryName, servletContext.getServletContextName());
                     JakartaPolicyConfigFactoryProxy configFactoryProxy = JakartaPolicyConfigFactoryProxy.getInstance();
-                    if (configFactoryProxy != null) {
-                        configFactoryProxy.ensurePolicyConfigInitialized();
-                    }
+                    configFactoryProxy.ensurePolicyConfigInitialized();
+                    Tr.info(tc, "JACC_AUTHORIZATION_MODULE_CONFIGURED", "PolicyConfigurationFactory", configFactoryName, servletContext.getServletContextName());
                 }
             }
 

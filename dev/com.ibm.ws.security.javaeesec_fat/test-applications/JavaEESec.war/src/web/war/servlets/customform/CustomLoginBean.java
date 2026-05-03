@@ -66,6 +66,12 @@ public class CustomLoginBean {
         System.out.println("username : " + username + ", password : " + password);
         status = securityContext.authenticate(getRequest(facesContext), getResponse(facesContext), AuthenticationParameters.withParams().credential(credential));
         System.out.println("AuthenticationStatus : " + status);
+
+        if (status == AuthenticationStatus.SEND_CONTINUE) {
+            facesContext.responseComplete();
+        } else if (status == AuthenticationStatus.SEND_FAILURE && getResponse(facesContext).isCommitted()) {
+            facesContext.responseComplete();
+        }
     }
 
     private HttpServletRequest getRequest(FacesContext facesContext) {

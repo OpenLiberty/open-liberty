@@ -356,7 +356,7 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Exiting " + getCurrentTestName());
     }
 
-/* ------------------------ support methods ---------------------- */
+    /* ------------------------ support methods ---------------------- */
     protected String getViewState(String form) {
         Pattern p = Pattern.compile("[\\s\\S]*id=.*(javax.faces.ViewState|jakarta.faces.ViewState).*value=\"(.*?)\"[\\s\\S]*");
         Matcher m = p.matcher(form);
@@ -385,11 +385,11 @@ public class MultipleIdentityStoreCustomFormPostTest extends JavaEESecTestBase {
 
     private static void startServer() throws Exception {
         WCApplicationHelper.addWarToServerApps(myServer, WAR_REDIRECT_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base",
-                                               "web.war.servlets.customform.post.redirect", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1",
-                                               "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
+                "web.war.servlets.customform.post.redirect", "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1",
+                "web.war.identitystores.ldap.ldap2", "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         WCApplicationHelper.addWarToServerApps(myServer, WAR_FORWARD_NAME, true, WAR_RESOURCE_LOCATION, JAR_NAME, false, "web.jar.base", "web.war.servlets.customform.post.forward",
-                                               "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
-                                               "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
+                "web.war.servlets.customform", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap.ldap2",
+                "web.war.identitystores.custom.grouponly", "web.war.identitystores.ldap");
         myServer.setServerConfigurationFile(XML_NAME);
         myServer.addInstalledAppForValidation(APP_REDIRECT_NAME);
         myServer.addInstalledAppForValidation(APP_FORWARD_NAME);

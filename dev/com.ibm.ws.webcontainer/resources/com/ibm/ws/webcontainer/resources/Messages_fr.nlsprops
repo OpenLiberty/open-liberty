@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Impossible de charger le fichier
 failed.to.load.converter.properties.useraction=V\u00e9rifiez que le fichier sp\u00e9cifi\u00e9 existe et que son format est conforme aux sp\u00e9cifications de java.utils.Properties.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: setBufferSize() appel\u00e9e apr\u00e8s la premi\u00e8re \u00e9criture dans le flux de sortie/\u00e9diteur (writer)
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) est appel\u00e9 une fois que la premi\u00e8re \u00e9criture ou la r\u00e9ponse a \u00e9t\u00e9 valid\u00e9e
 setbuffer.size.called.after.write.explanation=Une tentative de d\u00e9finition de la taille de la m\u00e9moire tampon des r\u00e9ponses a \u00e9t\u00e9 effectu\u00e9e apr\u00e8s la validation de la r\u00e9ponse. Il s'agit d'une erreur d'application.
 setbuffer.size.called.after.write.useraction=Supprimez l'appel setBufferSize() ou d\u00e9placez-le avant la validation de la r\u00e9ponse.
 

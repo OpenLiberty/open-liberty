@@ -44,29 +44,24 @@
         <timerService persistentExecutorRef="Howdy"/>
     </ejbContainer>
     
-    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
-    <library id="DerbyLib" filesetRef="DerbyFileset"/>
-    <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    <jdbcDriver id="H2Driver" libraryRef="H2Lib"/>
+    <library id="H2Lib" filesetRef="H2Fileset"/>
+    <fileset id="H2Fileset" dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
 
-    <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="DerbyEmbedded">
-        <properties databaseName="memory:ejbInjectionFat" createDatabase="create"/>
+    <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="H2Driver">
+        <properties.h2 URL="jdbc:h2:mem:ejbInjectionFat;DB_CLOSE_DELAY=-1"/>
     </dataSource>
-	
+ 
     <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codebase="${server.config.dir}/lib/global/com.ibm.ws.ejbcontainer.fat_tools.jar" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
     <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
     <javaPermission codebase="${server.config.dir}/lib/global/io.openliberty.ejbcontainer.jakarta.fat_tools.jar" className="java.util.PropertyPermission" name="line.separator" actions="read"/>
     
-    <!-- Permissions required by Derby -->
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="newMBeanServer"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanPermission" name="*" actions="registerMBean,unregisterMBean"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="javax.management.MBeanTrustPermission" name="register"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="createClassLoader"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
+    <!-- Permissions required by H2 -->
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.util.PropertyPermission" name="*" actions="read"/>
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.io.FilePermission" name="ALL FILES" actions="read,write"/>
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.lang.RuntimePermission" name="getClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.lang.RuntimePermission" name="setContextClassLoader"/>
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.lang.RuntimePermission" name="shutdownHooks"/>
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
 </server>

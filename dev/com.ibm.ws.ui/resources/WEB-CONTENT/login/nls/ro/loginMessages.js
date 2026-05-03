@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ define({
 	"LOGIN_TITLE": "Liberty Admin Center",
 	"LOGIN_USER": "Nume de utilizator",
 	"LOGIN_PASSWORD": "Parolă",
-	"LOGIN_COPYRIGHT": "Copyright (c) 2013, 2016 IBM Corporation și alții. Toate drepturile rezervate.\nAcest program și materialele care îl însoțesc sunt disponibile în baza termenilor din Eclipse Public License 2.0, care însoțește această distribuție și este disponibilă la http://www.eclipse.org/legal/epl-2.0/",
+	"LOGIN_COPYRIGHT": "Drepturi de autor (c) 2013, 2026 IBM Corporation și alții. Toate drepturile rezervate.\nAcest program și materialele care îl însoțesc \nsunt disponibile în baza termenilor din Eclipse Public License 2.0, \ncare însoțește această distribuție și este disponibilă la \nhttp://www.eclipse.org/legal/epl-2.0/",
 	"LOGIN_ERROR_MESSAGE": "Eroare de logare: nu este cunoscut numele de utilizator şi/sau parola",
 	"ACCESS_ERROR_MESSAGE": "Eroare de acces: contul de utilizator nu este autorizat să acceseze Admin Center"
 });

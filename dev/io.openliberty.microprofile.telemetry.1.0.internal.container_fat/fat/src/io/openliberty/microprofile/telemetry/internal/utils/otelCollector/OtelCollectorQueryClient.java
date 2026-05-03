@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -61,29 +61,29 @@ public class OtelCollectorQueryClient {
         metricsFound.put("JvmMemoryUsedAfterLastGc", false);
         metricsFound.put("JvmMemoryLimit", false);
         metricsFound.put("JvmThreadCount", false);
-        //Finds each expected JVM metric in the OpenTelemetry Collector output
+        //Finds each expected JVM metric in the OpenTelemetry Collector output. Names have slightly changed since OpenTelemetry Collector 0.40.0. E.g. jvm_class_unloaded ->  jvm_class_unloaded_total
         for (String s : splits) {
             if (s.contains("jvm_class_count Number of classes currently loaded.")) {
                 metricsFound.put("JvmClassCount", true);
-            } else if (s.contains("jvm_class_loaded Number of classes loaded since JVM start.")) {
+            } else if (s.contains("jvm_class_loaded_total Number of classes loaded since JVM start.")) {
                 metricsFound.put("JvmClassLoaded", true);
-            } else if (s.contains("jvm_class_unloaded Number of classes unloaded since JVM start.")) {
+            } else if (s.contains("jvm_class_unloaded_total Number of classes unloaded since JVM start.")) {
                 metricsFound.put("JvmClassUnloaded", true);
             } else if (s.contains("jvm_cpu_count Number of processors available to the Java virtual machine.")) {
                 metricsFound.put("JvmCpuCount", true);
-            } else if (s.contains("jvm_cpu_time CPU time used by the process as reported by the JVM.")) {
+            } else if (s.contains("jvm_cpu_time_seconds_total CPU time used by the process as reported by the JVM.")) {
                 metricsFound.put("JvmCpuTime", true);
-            } else if (s.contains("jvm_cpu_recent_utilization Recent CPU utilization for the process as reported by the JVM.")) {
+            } else if (s.contains("jvm_cpu_recent_utilization_ratio Recent CPU utilization for the process as reported by the JVM.")) {
                 metricsFound.put("JvmCpuRecentUtilization", true);
-            } else if (s.contains("jvm_gc_duration Duration of JVM garbage collection actions.")) {
+            } else if (s.contains("jvm_gc_duration_seconds Duration of JVM garbage collection actions.")) {
                 metricsFound.put("JvmGcDuration", true);
-            } else if (s.contains("jvm_memory_committed Measure of memory committed.")) {
+            } else if (s.contains("jvm_memory_committed_bytes Measure of memory committed.")) {
                 metricsFound.put("JvmMemoryCommitted", true);
             } else if (s.contains("jvm_thread_count Number of executing platform threads")) {
                 metricsFound.put("JvmThreadCount", true);
-            } else if (s.contains("jvm_memory_used_after_last_gc Measure of memory used, as measured after the most recent garbage collection event on this pool.")) {
+            } else if (s.contains("jvm_memory_used_after_last_gc_bytes Measure of memory used, as measured after the most recent garbage collection event on this pool.")) {
                 metricsFound.put("JvmMemoryUsedAfterLastGc", true);
-            } else if (s.contains("jvm_memory_limit Measure of max obtainable memory.")) {
+            } else if (s.contains("jvm_memory_limit_bytes Measure of max obtainable memory.")) {
                 metricsFound.put("JvmMemoryLimit", true);
             }
         }

@@ -51,11 +51,11 @@ client.quiesce.end=CWWKE1104I: Opera\u00e7\u00e3o de quiesce do cliente conclu\u
 client.quiesce.end.explanation=A opera\u00e7\u00e3o de quiesce foi conclu\u00edda com sucesso.
 client.quiesce.end.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 
-notifications.not.complete=CWWKE1105W: As atualiza\u00e7\u00f5es de tempo de execu\u00e7\u00e3o {0} n\u00e3o foram conclu\u00eddas durante o per\u00edodo do modo quiesce. 
+notifications.not.complete=CWWKE1105W: As atualiza\u00e7\u00f5es de tempo de execu\u00e7\u00e3o {0} n\u00e3o foram conclu\u00eddas durante o per\u00edodo do modo quiesce. As seguintes atualiza\u00e7\u00f5es de tempo de execu\u00e7\u00e3o n\u00e3o foram conclu\u00eddas: {1}
 notifications.not.complete.explanation=Uma ou mais atualiza\u00e7\u00f5es para recursos, configura\u00e7\u00e3o ou aplicativos n\u00e3o foram conclu\u00eddas antes do encerramento do servidor.
 notifications.not.complete.useraction=Nenhuma a\u00e7\u00e3o \u00e9 necess\u00e1ria. 
 
-quiesce.listeners.not.complete=CWWKE1106W: {0} opera\u00e7\u00f5es de encerramento n\u00e3o foram conclu\u00eddas durante o per\u00edodo do modo quiesce. 
+quiesce.listeners.not.complete=CWWKE1106W: {0} opera\u00e7\u00f5es de encerramento n\u00e3o foram conclu\u00eddas durante o per\u00edodo do modo quiesce. As seguintes opera\u00e7\u00f5es n\u00e3o foram conclu\u00eddas: {1}
 quiesce.listeners.not.complete.explanation=Uma ou mais opera\u00e7\u00f5es que foram iniciadas durante a opera\u00e7\u00e3o de encerramento n\u00e3o foram conclu\u00eddas. 
 quiesce.listeners.not.complete.useraction=Nenhuma a\u00e7\u00e3o necess\u00e1ria.
 

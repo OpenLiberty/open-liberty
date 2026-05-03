@@ -27,13 +27,11 @@
   </data>
 
   <application location="DataErrPathsTestApp.war">
-    <classloader commonLibraryRef="DerbyLib"/>
+    <classloader commonLibraryRef="H2Lib"/>
   </application>
 
-  <library id="DerbyLib">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  <library id="H2Lib">
+    <file name="${shared.resource.dir}/h2/h2.jar"/>
   </library>
-
-  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
 
 </server>

@@ -51,22 +51,6 @@ import com.ibm.ws.transport.iiop.security.config.tss.OptionsKey;
  */
 public class SSLConfig {
     
-    /**
-     * Helper method to check if beta edition is enabled.
-     * Checks the JVM system property that indicates beta edition, which is set by the server.
-     */
-    private static boolean isBetaEdition() {
-        try {
-            return AccessController.doPrivileged(new PrivilegedExceptionAction<Boolean>() {
-                @Override
-                public Boolean run() {
-                    return Boolean.getBoolean("com.ibm.ws.beta.edition");
-                }
-            });
-        } catch (Exception e) {
-            return false;
-        }
-    }
     private static final TraceComponent tc = Tr.register(SSLConfig.class);
 
     private static final OptionsKey NO_PROTECTION = new OptionsKey(NoProtection.value, NoProtection.value);
@@ -107,21 +91,9 @@ public class SSLConfig {
     public String[] getCipherSuites(String sslAliasName, String[] candidateCipherSuites, Properties props) throws SSLException {
 
         String enabledCipherString = props.getProperty(Constants.SSLPROP_ENABLED_CIPHERS);
-        if(isBetaEdition()){
-            String[] requested = Constants.adjustSupportedCiphers(candidateCipherSuites, enabledCipherString);
-            OptionsKey options = getAssociationOptions(sslAliasName, props);
-            return filter(candidateCipherSuites, requested, options);
-        }
-        else{
-            if (enabledCipherString != null) {
-                String[] requested = enabledCipherString.split("[,\\s]+");
-                OptionsKey options = getAssociationOptions(sslAliasName, props);
-                return filter(candidateCipherSuites, requested, options);
-            } else {
-                String securityLevelString = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-                return Constants.adjustSupportedCiphersToSecurityLevel(candidateCipherSuites, securityLevelString);
-            }
-        }
+        String[] requested = Constants.adjustSupportedCiphers(candidateCipherSuites, enabledCipherString);
+        OptionsKey options = getAssociationOptions(sslAliasName, props);
+        return filter(candidateCipherSuites, requested, options);
         
     }
 
@@ -210,13 +182,6 @@ public class SSLConfig {
         String clientAuthSupportedString = props.getProperty(Constants.SSLPROP_CLIENT_AUTHENTICATION_SUPPORTED);
         short clientAuthSupported = ("true".equalsIgnoreCase(clientAuthSupportedString) || isClientAuthRequired) ? EstablishTrustInClient.value : 0;
 
-        if(!isBetaEdition()){
-            String securityLevelString = props.getProperty(Constants.SSLPROP_SECURITY_LEVEL);
-            if (Constants.SECURITY_LEVEL_LOW.equals(securityLevelString)) {
-                return new OptionsKey((short) (Integrity.value | EstablishTrustInTarget.value | clientAuthSupported), (short) (Integrity.value | clientAuthRequired));
-            }
-        }
-
         return new OptionsKey((short) (Integrity.value | Confidentiality.value | EstablishTrustInTarget.value
                                        | clientAuthSupported), (short) (Integrity.value | Confidentiality.value | clientAuthRequired));
     }
@@ -226,14 +191,8 @@ public class SSLConfig {
 
     // FIPS 140-3: The following was assessed for FIPS 140-3 compliance and no changes were required.
     // since the encryption and hashing algorithms are only being used to set filter criteria and in both cases the filter criteria aren't used (Options.strong is never set)
-    static final Pattern p;
-    static {
-        if (isBetaEdition()) {
-            p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?(_WITH_)?(AES|RC4|DES40|3DES|NULL|CHACHA20)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
-        } else {
-            p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)?(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?(_WITH_)?(AES|RC4|DES40|3DES|NULL)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
-        }
-    }
+    static final Pattern p = Pattern.compile("(?:(SSL)|(TLS))_([A-Z0-9]*)(_anon)?(_[a-zA-Z0-9]*)??(_EXPORT)?(_WITH_)?(AES|RC4|DES40|3DES|NULL|CHACHA20)(?:_(\\d*))?([_a-zA-Z0-9]*)?_(?:(?:(SHA)(\\d*))|(MD5))");
+
     //[1 null, 2 TLS, 3 ECDHE, 4 null, 5 _ECDSA, 6 null, 8 AES, 9 128, 10 _CBC, 11 SHA, 12 256, 13 null]
     
     private static final int SSL_INDEX = 1;

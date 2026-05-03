@@ -1,21 +1,45 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2025 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
-# SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
-#	com.ibm.ws.security.jaspic.1.1, \
+# SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
 fat.project: true
-tested.features: expressionLanguage-4.0, mpconfig-1.4, appsecurity-4.0, servlet-5.0, jsonp-2.0, cdi-3.0, ejblite-4.0, jaxrsclient-3.0, pages-3.0, jaxrs-3.0, enterprisebeanslite-4.0, faces-3.0, restfulwsclient-3.0, restfulws-3.0
+tested.features: \
+    expressionLanguage-4.0,\
+    mpconfig-1.4,\
+    appsecurity-4.0,\
+    servlet-5.0,\
+    jsonp-2.0,\
+    cdi-3.0,\
+    ejblite-4.0,\
+    jaxrsclient-3.0,\
+    pages-3.0,\
+    jaxrs-3.0,\
+    enterprisebeanslite-4.0,\
+    faces-3.0,\
+    pages-3.1,\
+    restfulwsclient-3.0,\
+    restfulws-3.0,\
+    expressionlanguage-5.0,\
+    appsecurity-5.0,\
+    jsonp-2.1,\
+    cdi-4.0,\
+    servlet-6.0,\
+    expressionlanguage-6.0,\
+    faces-4.1,\
+    appsecurity-6.0,\
+    jsonp-2.1,\
+    cdi-4.1,\
+    servlet-6.1,\
+    faces-4.0,\
+    pages-4.0,\
 #fat.test.mode=full
 
 src: \
@@ -75,7 +99,8 @@ src: \
 	com.ibm.ws.security.authentication;version=latest,\
 	com.ibm.ws.security.jaas.common;version=latest,\
 	com.ibm.ws.security.javaeesec.cdi;version=latest,\
-	com.ibm.ws.security.javaeesec_fat;version=latest
+	com.ibm.ws.security.javaeesec_fat;version=latest,\
+	io.openliberty.security.javaeesec.internal
 
 # Copy in FIPS keys
 ltpa.fips.enabled: true

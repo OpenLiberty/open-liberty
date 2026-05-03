@@ -11,15 +11,15 @@
 
     <iiopEndpoint id="defaultIiopEndpoint" iiopPort="${bvt.prop.IIOP}" iiopsPort="${bvt.prop.IIOP.secure}"/>
 
-    <jdbcDriver id="DerbyEmbedded" libraryRef="DerbyLib"/>
-    <library id="DerbyLib" filesetRef="DerbyFileset"/>
-    <fileset id="DerbyFileset" dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+    <jdbcDriver id="H2Driver" libraryRef="H2Lib"/>
+    <library id="H2Lib" filesetRef="H2Fileset"/>
+    <fileset id="H2Fileset" dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
 
-    <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="DerbyEmbedded">
-        <properties databaseName="memory:ejbInjectionFat" createDatabase="create"/>
+    <dataSource id="jdbc/TestDataSource" jndiName="jdbc/TestDataSource" jdbcDriverRef="H2Driver">
+        <properties.h2 URL="jdbc:h2:mem:ejbInjectionFat;DB_CLOSE_DELAY=-1"/>
     </dataSource>
-	
+ 
     <javaPermission className="org.osgi.framework.AdminPermission" name="*" actions="class,resolve"/>
     <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 </server>

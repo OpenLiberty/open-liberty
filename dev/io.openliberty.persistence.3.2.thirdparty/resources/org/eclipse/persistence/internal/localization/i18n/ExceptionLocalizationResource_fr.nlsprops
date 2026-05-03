@@ -493,7 +493,7 @@ unknown_bean_class=Classe de bean d''entit\u00e9 inconnue : {0}; v\u00e9rifiez q
 
 unknown_entitybean_name=Nom de bean d''entit\u00e9 inconnu : {0}
 
-unsupported_classfile_version=La classe \u00ab {0} \u00bb a \u00e9t\u00e9 compil\u00e9e avec un JDK non pris en charge et ne peut pas \u00eatre lue. La version actuelle d''ASM prend en charge les versions JDK allant jusqu''\u00e0 la version {1}. Mettre \u00e0 jour les d\u00e9pendances ASM d'' OW2.
+unsupported_classfile_version=La classe \u00ab {0} \u00bb a \u00e9t\u00e9 compil\u00e9e avec un JDK non pris en charge et ne peut pas \u00eatre lue. La version actuelle d''ASM prend en charge au maximum l'' {1} JDK. Mettre \u00e0 jour les d\u00e9pendances ASM d'' OW2.
 
 wrap_convert_exception=Une exception s''est produite lors de l''appel de {0} sur la classe de convertisseur {1} avec la valeur {2}
 

@@ -55,13 +55,14 @@ echo "Swagger UI version: $SWAGGER_UI_VERSION"
 # Copy select files from Swagger UI source
 rm -fr swagger-ui-src
 git clone --depth 1 -b v${SWAGGER_UI_VERSION} -c advice.detachedHead=false https://github.com/swagger-api/swagger-ui.git swagger-ui-src
-rm -r src/original
-mkdir src/original
+rm -rf src/original
+mkdir -p src/original
 cd swagger-ui-src/src
 # Copy all scss files, so we can rebuild with changed colours
-find . -iname *.scss -printf %P\\n | xargs cp -t ../../src/original --parents
+find . -iname '*.scss' -exec rsync -dR {} ../../src/original/ \;
 # Copy URL sanitization utilities
-cp core/utils/url.js ../../src/original --parents
+mkdir -p ../../src/original/core/utils
+cp core/utils/url.js ../../src/original/core/utils/url.js
 cd ../..
 rm -rf swagger-ui-src
 

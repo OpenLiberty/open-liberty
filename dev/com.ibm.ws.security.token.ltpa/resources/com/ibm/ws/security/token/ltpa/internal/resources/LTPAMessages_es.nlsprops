@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2025 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -91,3 +91,19 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utilice el comando securityUt
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Las claves de validaci\u00f3n de {0} deben regenerarse utilizando algoritmos criptogr\u00e1ficos que no cuenten con la certificaci\u00f3n FIPS 140-3.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Las claves de validaci\u00f3n LTPA que se crean con FIPS 140-3 activado fallan cuando FIPS 140-3 est\u00e1 desactivado.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utilice el comando securityUtility createLTPAKeys para crear las claves de validaci\u00f3n no aprobadas por FIPS cuando FIPS 140-3 est\u00e9 desactivado.
+
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: Error de configuraci\u00f3n de LTPA. No se ha configurado el atributo \u00ab keysPassword \u00bb en el <ltpa /> elemento, no se ha definido la variable de entorno \u00abltpa_keys_password\u00bb y tampoco se ha definido la variable de entorno \u00abkeystore_password\u00bb.
+LTPA_KEYS_PASSWORD_ERROR.explanation=La configuraci\u00f3n de LTPA requiere una contrase\u00f1a para almacenar y leer las claves LTPA.
+LTPA_KEYS_PASSWORD_ERROR.useraction=Configure el atributo \u00ab keysPassword \u00bb en el <ltpa /> elemento, o establezca las variables de entorno \u00abltpa_keys_password\u00bb o \u00abkeystore_password\u00bb para proporcionar una contrase\u00f1a.
+
+LTPA_KEYS_REENCRYPT=CWWKS4119I: Las claves LTPA de {0} se est\u00e1n volviendo a cifrar utilizando la variable de entorno \u00abkeystore_password\u00bb.
+LTPA_KEYS_REENCRYPT.explanation=Las claves LTPA se est\u00e1n volviendo a cifrar utilizando la \u00abkeystore_password\u00bb, ya que se ha eliminado el valor predeterminado del atributo \u00ab keysPassword \u00bb de LTPA para mejorar la seguridad.
+LTPA_KEYS_REENCRYPT.useraction=No se requiere ninguna acci\u00f3n.
+
+LTPA_KEYS_REENCRYPT_SUCCESS=CWWKS4120I: Se han vuelto a cifrar correctamente las claves LTPA de {0} utilizando la variable de entorno \u00abkeystore_password\u00bb.
+LTPA_KEYS_REENCRYPT_SUCCESS.explanation=Las claves LTPA se vuelven a cifrar utilizando la variable de entorno \u00abkeystore_password\u00bb.
+LTPA_KEYS_REENCRYPT_SUCCESS.useraction=Si comparte las claves LTPA entre servidores ubicados en una misma ubicaci\u00f3n, deber\u00e1 actualizar los dem\u00e1s servidores para que puedan seguir leyendo dichas claves LTPA. Establezca el atributo \u00ab keysPassword \u00bb en el elemento <ltpa /> correspondiente, o el atributo \u00abpassword\u00bb en el elemento <validationKeys /> correspondiente, con el valor de la variable de entorno \u00abkeystore_password\u00bb de este servidor. La variable de entorno \u00abkeystore_password\u00bb suele definirse en el archivo \u00ab server.env \u00bb.
+
+LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: No se han podido volver a cifrar las claves LTPA de {0}. Excepci\u00f3n: {1}
+LTPA_KEYS_REENCRYPT_ERROR.explanation=No se pudieron volver a cifrar las claves LTPA. Para obtener m\u00e1s informaci\u00f3n, consulte la excepci\u00f3n del mensaje.
+LTPA_KEYS_REENCRYPT_ERROR.useraction=Aseg\u00farate de que el archivo de claves LTPA y su directorio no sean de solo lectura. Si el archivo de claves LTPA y su directorio no son de solo lectura, consulte la excepci\u00f3n que aparece en el mensaje para obtener m\u00e1s informaci\u00f3n.

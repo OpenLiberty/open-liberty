@@ -116,7 +116,7 @@ public class DataIntrospectorTest extends FATServletClient {
     @Test
     public void testOutputContainsDatabaseStore() {
         assertLineFound("    for databaseStore application[DataErrPathsTestApp]" +
-                        "/databaseStore[java:app/jdbc/DerbyDataSource]");
+                        "/databaseStore[java:app/jdbc/H2DataSource]");
 
         assertLineFound("    for databaseStore application[DataErrPathsTestApp]" +
                         "/module[DataErrPathsTestApp.war]" +
@@ -131,7 +131,7 @@ public class DataIntrospectorTest extends FATServletClient {
     public void testOutputContainsDataStore() {
         assertLineFound("        dataStore: AbsentFromConfig");
         assertLineFound("        dataStore: java:app/env/WrongPersistenceUnitRef");
-        assertLineFound("        dataStore: java:app/jdbc/DerbyDataSource");
+        assertLineFound("        dataStore: java:app/jdbc/H2DataSource");
         assertLineFound("        dataStore: java:comp/DefaultDataSource");
         assertLineFound("        dataStore: java:comp/jdbc/InvalidDatabase");
         assertLineFound("        dataStore: java:module/env/DoesNotExist");
@@ -240,7 +240,7 @@ public class DataIntrospectorTest extends FATServletClient {
     public void testOutputContainsRepositoryAnnotation() {
         // fields of the annotation could be printed in any order
         assertLineContains("      @Repository(");
-        assertLineContains("dataStore=\"java:app/jdbc/DerbyDataSource\"");
+        assertLineContains("dataStore=\"java:app/jdbc/H2DataSource\"");
     }
 
     /**

@@ -1,0 +1,28 @@
+#*******************************************************************************
+# Copyright (c) 2022, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+
+Bundle-Name: GraphQL-Java Base
+Bundle-SymbolicName: com.ibm.ws.com.graphql.java
+Bundle-Description: Provides GraphQL base code as a bundle
+
+-includeresource: \
+  @\${repo;com.graphql-java:graphql-java;20.9}!/!(graphql/com/google/common/**),\
+  @\${repo;com.graphql-java:java-dataloader;3.2.0}
+
+Export-Package: \
+  !graphql.com.google.common.*,\
+  graphql.*;version=20.9,\
+  org.dataloader.*;version=3.2.0
+
+Import-Package: \
+  !sun.misc,\
+  !com.google.common.util.concurrent,\
+  graphql.com.google.common.collect;version="[20.9, 21)",\
+  *

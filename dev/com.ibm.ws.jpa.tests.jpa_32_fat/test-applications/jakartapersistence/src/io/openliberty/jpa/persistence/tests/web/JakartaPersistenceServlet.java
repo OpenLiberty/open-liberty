@@ -42,12 +42,14 @@ import io.openliberty.jpa.persistence.tests.models.Book;
 import io.openliberty.jpa.persistence.tests.models.DateTimeEntity;
 import io.openliberty.jpa.persistence.tests.models.DocumentEntity;
 import io.openliberty.jpa.persistence.tests.models.Employee;
+import io.openliberty.jpa.persistence.tests.models.EmployeeSalaryDTO;
 import io.openliberty.jpa.persistence.tests.models.Event;
 import io.openliberty.jpa.persistence.tests.models.Organization;
 import io.openliberty.jpa.persistence.tests.models.Participant;
 import io.openliberty.jpa.persistence.tests.models.Person;
 import io.openliberty.jpa.persistence.tests.models.Priority;
 import io.openliberty.jpa.persistence.tests.models.Product;
+import io.openliberty.jpa.persistence.tests.models.SimpleEmployee;
 import io.openliberty.jpa.persistence.tests.models.Ticket;
 import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
@@ -1903,6 +1905,45 @@ public class JakartaPersistenceServlet extends FATServlet {
             tx.commit();
             
             assertEquals("", r1.getContent());
+        } catch (Exception e) {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
+                tx.rollback();
+            }
+            throw e;
+        }
+    }
+
+    @Test
+    @SkipIfSysProp({
+        DB_SQLServer,
+        DB_Oracle
+    })
+    public void testConstructorExpressionWithCasePrimitiveLong() throws Exception {
+        deleteAllEntities(SimpleEmployee.class);
+
+        SimpleEmployee emp1 = new SimpleEmployee("Tony", 35000L);
+        SimpleEmployee emp2 = new SimpleEmployee("Chris", 75000L);
+
+        tx.begin();
+        em.persist(emp1);
+        em.persist(emp2);
+        tx.commit();
+
+        try {
+            tx.begin();
+            EmployeeSalaryDTO result1 = em.createQuery(
+                                    "SELECT NEW io.openliberty.jpa.persistence.tests.models.EmployeeSalaryDTO(" +
+                                    "e.salary, " +
+                                    "CASE WHEN e.salary > 50000 THEN e.salary ELSE 0 END" +
+                                    ") FROM SimpleEmployee e WHERE e.name = :name", EmployeeSalaryDTO.class)
+                                    .setParameter("name", "Tony")
+                                    .getSingleResult();
+
+            assertNotNull(result1);
+            assertEquals(35000L, result1.salary());
+            assertEquals("Adjusted salary should be 0 (below threshold)", 0L, result1.adjustedSalary());
+
+            tx.commit();
         } catch (Exception e) {
             if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
                 tx.rollback();

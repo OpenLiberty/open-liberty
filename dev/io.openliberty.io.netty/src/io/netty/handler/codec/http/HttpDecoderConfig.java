@@ -272,6 +272,7 @@ public final class HttpDecoderConfig implements Cloneable {
     public boolean isStrictLineParsing() {
         return strictLineParsing;
     }
+
     /**
      * The RFC 9112 specification for the HTTP protocol says that the initial start-line, and the following header
      * field-lines, must be separated by a Carriage Return (CR) and Line Feed (LF) octet pair, but also offers that

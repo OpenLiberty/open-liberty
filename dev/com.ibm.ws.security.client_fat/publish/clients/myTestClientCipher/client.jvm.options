@@ -14,4 +14,3 @@
 #In JDK22, the console no longer returns null when there is no console
 #Using java.base restores the existing console behavior from previous JDK versions. 
 -Djdk.console=java.base
--Dcom.ibm.ws.beta.edition=true

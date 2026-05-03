@@ -1,17 +1,16 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.security.authentication.helper;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Hashtable;
 
 import javax.security.auth.Subject;
@@ -29,32 +28,30 @@ public class AuthenticateUserHelper {
 
     /**
      * Authenticate the given user and return an authenticated Subject.
-     * 
+     *
      * @param authenticationService service to authenticate a user, must not be null
-     * @param userName the user to authenticate, must not be null
-     * @param jaasEntryName the optional JAAS configuration entry name. The system.DEFAULT JAAS entry name will be used if null or empty String is passed
+     * @param userName              the user to authenticate, must not be null
+     * @param jaasEntryName         the optional JAAS configuration entry name. The system.DEFAULT JAAS entry name will be used if null or empty String is passed
      * @return the authenticated subject
      * @throws AuthenticationException if there was a problem authenticating the user, or if the userName or authenticationService is null
      */
     public Subject authenticateUser(AuthenticationService authenticationService, String userName,
-                                    String jaasEntryName) throws AuthenticationException
-    {
+                                    String jaasEntryName) throws AuthenticationException {
         return authenticateUser(authenticationService, userName, jaasEntryName, null);
     }
 
     /**
      * Authenticate the given user and return an authenticated Subject.
-     * 
+     *
      * @param authenticationService service to authenticate a user, must not be null
-     * @param userName the user to authenticate, must not be null
-     * @param jaasEntryName the optional JAAS configuration entry name. The system.DEFAULT JAAS entry name will be used if null or empty String is passed
-     * @param customCacheKey The custom cache key to look up the subject
+     * @param userName              the user to authenticate, must not be null
+     * @param jaasEntryName         the optional JAAS configuration entry name. The system.DEFAULT JAAS entry name will be used if null or empty String is passed
+     * @param customCacheKey        The custom cache key to look up the subject
      * @return the authenticated subject
      * @throws AuthenticationException if there was a problem authenticating the user, or if the userName or authenticationService is null
      */
     public Subject authenticateUser(AuthenticationService authenticationService, String userName,
-                                    String jaasEntryName, String customCacheKey) throws AuthenticationException
-    {
+                                    String jaasEntryName, String customCacheKey) throws AuthenticationException {
         validateInput(authenticationService, userName);
         if (jaasEntryName == null || jaasEntryName.trim().isEmpty())
             jaasEntryName = JaasLoginConfigConstants.SYSTEM_DEFAULT;
@@ -67,8 +64,7 @@ public class AuthenticateUserHelper {
      * Create the partial subject that can be used to authenticate the user with.
      */
     protected Subject createPartialSubject(String username, AuthenticationService authenticationService, String customCacheKey) {
-        Subject partialSubject = null;
-        partialSubject = new Subject();
+        Subject partialSubject = new Subject();
         Hashtable<String, Object> hashtable = new Hashtable<String, Object>();
         hashtable.put(AttributeNameConstants.WSCREDENTIAL_USERID, username);
         // only set the property in the hashtable if the public property is not already set;
@@ -81,16 +77,23 @@ public class AuthenticateUserHelper {
             hashtable.put(AttributeNameConstants.WSCREDENTIAL_CACHE_KEY, customCacheKey);
         }
 
-        partialSubject.getPublicCredentials().add(hashtable);
+        AccessController.doPrivileged(new PrivilegedAction<Void>() {
+
+            @Override
+            public Void run() {
+                partialSubject.getPublicCredentials().add(hashtable);
+                return null;
+            }
+        });
 
         return partialSubject;
     }
 
     /**
      * Validate that the input parameters are not null.
-     * 
+     *
      * @param authenticationService the service to authenticate a user
-     * @param username the user to authenticate
+     * @param username              the user to authenticate
      * @throws AuthenticationException when either input is null
      */
     private void validateInput(AuthenticationService authenticationService, String username) throws AuthenticationException {

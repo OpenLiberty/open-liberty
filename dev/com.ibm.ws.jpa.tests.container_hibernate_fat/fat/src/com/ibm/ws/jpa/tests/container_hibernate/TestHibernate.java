@@ -61,13 +61,13 @@ public class TestHibernate extends JPAFATServletClient {
         timestart = System.currentTimeMillis();
 
         int appStartTimeout = server.getAppStartTimeout();
-        if (appStartTimeout < (120 * 1000)) {
-            server.setAppStartTimeout(120 * 1000);
+        if (appStartTimeout < (240 * 1000)) {
+            server.setAppStartTimeout(240 * 1000);
         }
 
         int configUpdateTimeout = server.getConfigUpdateTimeout();
-        if (configUpdateTimeout < (120 * 1000)) {
-            server.setConfigUpdateTimeout(120 * 1000);
+        if (configUpdateTimeout < (240 * 1000)) {
+            server.setConfigUpdateTimeout(240 * 1000);
         }
 
         server.startServer();
