@@ -43,9 +43,9 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         super(context);
     }
 
-    public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
-        super(context, request);
-    }
+    // public HttpInputStreamEE7(HttpInboundServiceContext context, FullHttpRequest request) {
+    //     super(context, request);
+    // }
 
     /*
      * (non-Javadoc)
@@ -83,6 +83,18 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
 
     @FFDCIgnore(BodyCompleteException.class)
     public boolean asyncCheckBuffers(InterChannelCallback callback) {
+        // Prefer streaming buffer first
+        try {
+            if (streaming && checkBuffer()) {
+                return true;
+            }
+        } catch (IOException ioe) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "asyncCheckBuffers(streaming) checkBuffer exception: " + ioe);
+            }
+        }
+
+
 
         try {
             VirtualConnection vc = isc.getRequestBodyBuffer(callback, false);
@@ -120,6 +132,34 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
             if (isClosed()) {
                 return true;
             }
+            if (streaming) {
+                // If we still have buffered bytes, we are not finished.
+                if (available() > 0) {
+                    return false;
+                }
+                if (queue != null && queue.isEos()) {
+                    this.readChannelComplete = true;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "isFinished(streaming): queue EOS and no buffered data; returning true");
+                    }
+                    return true;
+                }
+                if (readChannelComplete) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "isFinished(streaming): EOS reached and no buffered data; returning true");
+                    }
+                    return true;
+                }
+                if (!autoRead && queue != null && queue.wantsInput() && context != null) {
+                    context.channel().read();
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "isFinished(streaming): more input expected; returning false");
+                }
+                return false;
+            }
+
+
             if (available() <= 0) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "There is no data currently available in the buffer");
