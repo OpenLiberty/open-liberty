@@ -14,6 +14,9 @@ package com.ibm.ws.crypto.ltpakeyutil;
 
 import java.security.MessageDigest;
 
+import javax.crypto.SecretKey;
+import javax.crypto.SecretKeyFactory;
+
 import com.ibm.ws.common.crypto.CryptoUtils;
 
 /**
@@ -23,9 +26,11 @@ import com.ibm.ws.common.crypto.CryptoUtils;
 public class KeyEncryptor {
 
 	private static final boolean fipsEnabled = CryptoUtils.isFips140_3Enabled();
-	private static final int size = (fipsEnabled ? 32 : 24);
-	private static final String CIPHER = CryptoUtils.getCipher();
+	private static final String CKDS_KEY_LABEL = "LTPA_AES";
+	
 	private final byte[] key;
+	private final int size;
+	private final String cipher;
 
 	/**
 	 * A KeyEncryptor constructor.
@@ -33,15 +38,81 @@ public class KeyEncryptor {
 	 * @param password The key password
 	 */
 	public KeyEncryptor(byte[] password) throws Exception {
-		MessageDigest md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM);
-		byte[] digest = md.digest(password);
-		key = new byte[size];
-		System.arraycopy(digest, 0, key, 0, digest.length);
-		if (!fipsEnabled) {
-			key[20] = (byte) 0x00;
-			key[21] = (byte) 0x00;
-			key[22] = (byte) 0x00;
-			key[23] = (byte) 0x00;
+		byte[] derivedKey = null;
+		int keySize;
+		boolean usingCKDS = false;
+		
+		// Try to retrieve key from z/OS CKDS if on z/OS
+		if (CryptoUtils.isZOS()) {
+			derivedKey = getAesKeyFromCKDS();
+			if (derivedKey != null) {
+				usingCKDS = true;
+			}
+		}
+		
+		// Determine key size based on whether CKDS key was retrieved or FIPS mode
+		if (usingCKDS) {
+			keySize = 32; // CKDS keys should be AES-256
+		} else {
+			keySize = (fipsEnabled ? 32 : 24);
+		}
+		
+		// Fall back to normal key derivation if CKDS retrieval failed or not on z/OS
+		if (derivedKey == null) {
+			MessageDigest md = MessageDigest.getInstance(CryptoUtils.MESSAGE_DIGEST_ALGORITHM);
+			byte[] digest = md.digest(password);
+			derivedKey = new byte[keySize];
+			System.arraycopy(digest, 0, derivedKey, 0, digest.length);
+			if (!fipsEnabled) {
+				derivedKey[20] = (byte) 0x00;
+				derivedKey[21] = (byte) 0x00;
+				derivedKey[22] = (byte) 0x00;
+				derivedKey[23] = (byte) 0x00;
+			}
+		}
+		
+		this.key = derivedKey.clone();
+		this.size = keySize;
+		this.cipher = usingCKDS ? CryptoUtils.AES_CBC_CIPHER : CryptoUtils.getCipher();
+	}
+
+	/**
+	 * Retrieve an AES key from z/OS CKDS using the IBMJCECCA provider.
+	 * This method checks if the CKDS key is available and retrieves it if possible.
+	 *
+	 * @return The raw key bytes from CKDS, or null if CKDS is not available or retrieval fails
+	 */
+	private byte[] getAesKeyFromCKDS() {
+		try {
+			// Use IBMJCECCA provider to retrieve key from z/OS CKDS
+			SecretKeyFactory aesKeyFactory = SecretKeyFactory.getInstance("AES", CryptoUtils.IBMJCECCA_NAME);
+			
+			// Create KeyLabelKeySpec using reflection to avoid compile-time dependency
+			// KeyLabelKeySpec is only available on z/OS with IBMJCECCA provider
+			Class<?> keyLabelKeySpecClass = Class.forName("com.ibm.crypto.provider.KeyLabelKeySpec");
+			Object spec = keyLabelKeySpecClass.getConstructor(String.class).newInstance(CKDS_KEY_LABEL);
+			
+			// Generate the secret key from the key label
+			SecretKey secretKey = aesKeyFactory.generateSecret((java.security.spec.KeySpec) spec);
+			
+			// Extract the raw key bytes
+			byte[] ckdsKey = secretKey.getEncoded();
+			
+			// Validate key length is 32 bytes (AES-256)
+			if (ckdsKey == null || ckdsKey.length != 32) {
+				System.out.println("Warning: CKDS key length (" + (ckdsKey != null ? ckdsKey.length : 0) +
+						") does not match expected AES-256 size (32 bytes). Falling back to password-based key derivation.");
+				return null;
+			}
+			
+			System.out.println("Successfully retrieved LTPA key from z/OS CKDS with label: " + CKDS_KEY_LABEL);
+			return ckdsKey;
+			
+		} catch (Exception e) {
+			// Provider not available, class not found, key label doesn't exist, or other error
+			// Fall back to normal key derivation
+			System.out.println("CKDS key retrieval failed, falling back to password-based key derivation. Reason: " + e.getMessage());
+			return null;
 		}
 	}
 
@@ -52,7 +123,7 @@ public class KeyEncryptor {
 	 * @return The decrypted key
 	 */
 	public byte[] decrypt(byte[] encryptedKey) throws Exception {
-		return LTPACrypto.decrypt(encryptedKey, key, CIPHER);
+		return LTPACrypto.decrypt(encryptedKey, key, cipher);
 	}
 
 	/**
@@ -62,6 +133,6 @@ public class KeyEncryptor {
 	 * @return The encrypted key
 	 */
 	public byte[] encrypt(byte[] key) throws Exception {
-		return LTPACrypto.encrypt(key, this.key, CIPHER);
+		return LTPACrypto.encrypt(key, this.key, cipher);
 	}
 }
