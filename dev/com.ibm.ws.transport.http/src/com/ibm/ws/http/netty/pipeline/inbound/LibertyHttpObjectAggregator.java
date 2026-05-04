@@ -49,7 +49,7 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
 
     public LibertyHttpObjectAggregator(long maxContentLength, com.ibm.ws.http.netty.NettyHttpChannelConfig config) {
         if (maxContentLength <= 0) {
-            throw new IllegalArgumentException("maxContentLength must be a positive integer.");
+            throw new IllegalArgumentException("maxContentLength must be a positive integer or -1 for unlimited.");
         }
         this.maxContentLength = maxContentLength;
         this.config = config;
@@ -120,9 +120,12 @@ public class LibertyHttpObjectAggregator extends SimpleChannelInboundHandler<Htt
                 HttpContent httpContent = (HttpContent) msg;
                 int sizeOfCurrentChunk = httpContent.content().readableBytes();
 
-                if (sizeOfCurrentChunk > maxContentLength ||
-                    (content.readableBytes() + sizeOfCurrentChunk) > maxContentLength) {
-                    throw new TooLongFrameException("Content length exceeded max of " + maxContentLength + " bytes.");
+                // Skip content length checks when maxContentLength is Long.MAX_VALUE (-1, per the config -- unlimited)
+                if (maxContentLength != Long.MAX_VALUE) {
+                    if (sizeOfCurrentChunk > maxContentLength ||
+                        (content.readableBytes() + sizeOfCurrentChunk) > maxContentLength) {
+                        throw new TooLongFrameException("Content length exceeded max of " + maxContentLength + " bytes.");
+                    }
                 }
 
                 content.addComponent(true, httpContent.content().retain());
