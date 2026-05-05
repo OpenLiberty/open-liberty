@@ -1,0 +1,253 @@
+<resteasy_liberty_workflow>
+  <mode_overview>
+    This mode provides expert guidance for working with RESTeasy, Open Liberty, Jakarta EE, 
+    and MicroProfile codebases. It combines deep framework knowledge with practical 
+    implementation patterns to help analyze, debug, and enhance enterprise Java applications.
+  </mode_overview>
+
+  <initialization_steps>
+    <step number="1">
+      <action>Understand the context and scope</action>
+      <details>
+        Identify the specific area of work:
+        - RESTeasy integration (JAX-RS providers, filters, interceptors)
+        - Open Liberty features (OSGi bundles, feature manifests)
+        - Jakarta EE components (Servlets, CDI beans, EJBs, JPA entities)
+        - MicroProfile implementations (Config, Metrics, Health, OpenAPI, etc.)
+        - Cross-framework integration issues
+      </details>
+    </step>
+    
+    <step number="2">
+      <action>Gather relevant codebase context</action>
+      <tools>
+        <tool>search_files - Find related implementations across the codebase</tool>
+        <tool>list_code_definition_names - Understand class structures and relationships</tool>
+        <tool>read_file - Examine specific implementations in detail</tool>
+      </tools>
+      <focus_areas>
+        <area>Bundle activators and OSGi service registration</area>
+        <area>CDI extension points and integration</area>
+        <area>JAX-RS resource classes and providers</area>
+        <area>Feature manifest files and dependencies</area>
+        <area>Configuration files (server.xml, bootstrap.properties)</area>
+      </focus_areas>
+    </step>
+
+    <step number="3">
+      <action>Analyze framework integration points</action>
+      <details>
+        Understand how components interact:
+        - How RESTeasy integrates with Liberty's servlet container
+        - CDI bean discovery and injection mechanisms
+        - OSGi service dependencies and lifecycle
+        - Feature enablement and class loading
+        - Configuration property resolution
+      </details>
+    </step>
+  </initialization_steps>
+
+  <main_workflows>
+    <workflow type="code_analysis">
+      <phase name="discovery">
+        <description>Locate and understand existing implementations</description>
+        <steps>
+          <step>Use search_files to find relevant classes and patterns</step>
+          <step>Read feature manifests to understand dependencies</step>
+          <step>Examine OSGi bundle metadata (MANIFEST.MF, bnd.bnd)</step>
+          <step>Review CDI extension implementations</step>
+          <step>Check JAX-RS application and provider configurations</step>
+        </steps>
+      </phase>
+
+      <phase name="analysis">
+        <description>Deep dive into implementation details</description>
+        <steps>
+          <step>Trace request flow through filters and interceptors</step>
+          <step>Analyze CDI bean lifecycle and scopes</step>
+          <step>Review OSGi service registration and consumption</step>
+          <step>Examine exception handling and error responses</step>
+          <step>Check thread safety and concurrency patterns</step>
+        </steps>
+      </phase>
+
+      <phase name="documentation">
+        <description>Document findings and recommendations</description>
+        <steps>
+          <step>Explain architectural patterns and design decisions</step>
+          <step>Identify potential issues or improvements</step>
+          <step>Provide framework-specific best practices</step>
+          <step>Suggest optimization opportunities</step>
+        </steps>
+      </phase>
+    </workflow>
+
+    <workflow type="implementation">
+      <phase name="planning">
+        <description>Design the implementation approach</description>
+        <steps>
+          <step>Identify affected components and dependencies</step>
+          <step>Determine required OSGi imports and exports</step>
+          <step>Plan CDI integration points</step>
+          <step>Design JAX-RS resource structure</step>
+          <step>Consider backward compatibility</step>
+        </steps>
+      </phase>
+
+      <phase name="implementation">
+        <description>Write or modify code following framework patterns</description>
+        <steps>
+          <step>Implement OSGi bundle activators if needed</step>
+          <step>Create or modify CDI beans with proper scopes</step>
+          <step>Implement JAX-RS resources, providers, or filters</step>
+          <step>Add MicroProfile annotations as appropriate</step>
+          <step>Update feature manifests and dependencies</step>
+          <step>Add proper logging and error handling</step>
+        </steps>
+      </phase>
+
+      <phase name="integration">
+        <description>Ensure proper integration with existing code</description>
+        <steps>
+          <step>Verify OSGi service wiring</step>
+          <step>Test CDI injection points</step>
+          <step>Validate JAX-RS endpoint registration</step>
+          <step>Check configuration property resolution</step>
+          <step>Ensure proper class loading and visibility</step>
+        </steps>
+      </phase>
+
+      <phase name="validation">
+        <description>Verify the implementation works correctly</description>
+        <steps>
+          <step>Review for framework-specific best practices</step>
+          <step>Check for common pitfalls (classloader issues, CDI scope problems)</step>
+          <step>Verify thread safety and resource management</step>
+          <step>Ensure proper error handling and logging</step>
+          <step>Validate against Jakarta EE/MicroProfile specifications</step>
+        </steps>
+      </phase>
+    </workflow>
+
+    <workflow type="debugging">
+      <phase name="problem_identification">
+        <description>Understand the issue and its symptoms</description>
+        <steps>
+          <step>Gather error messages and stack traces</step>
+          <step>Identify which framework layer is involved</step>
+          <step>Check server logs for relevant messages</step>
+          <step>Review recent changes that might be related</step>
+        </steps>
+      </phase>
+
+      <phase name="root_cause_analysis">
+        <description>Trace the issue to its source</description>
+        <common_issues>
+          <issue>ClassNotFoundException or NoClassDefFoundError - Check OSGi imports/exports</issue>
+          <issue>CDI deployment errors - Verify bean discovery and injection points</issue>
+          <issue>JAX-RS endpoint not found - Check application path and resource registration</issue>
+          <issue>Configuration not applied - Verify property sources and precedence</issue>
+          <issue>Service not available - Check OSGi service lifecycle and dependencies</issue>
+        </common_issues>
+        <steps>
+          <step>Examine relevant bundle manifests and feature definitions</step>
+          <step>Check CDI bean archives and extensions</step>
+          <step>Review JAX-RS application configuration</step>
+          <step>Verify service component declarations</step>
+          <step>Trace through framework initialization code</step>
+        </steps>
+      </phase>
+
+      <phase name="resolution">
+        <description>Fix the issue and verify the solution</description>
+        <steps>
+          <step>Apply targeted fixes based on root cause</step>
+          <step>Update dependencies or configurations as needed</step>
+          <step>Add defensive code or validation where appropriate</step>
+          <step>Improve error messages for future debugging</step>
+          <step>Document the issue and solution</step>
+        </steps>
+      </phase>
+    </workflow>
+
+    <workflow type="optimization">
+      <phase name="profiling">
+        <description>Identify performance bottlenecks</description>
+        <areas_to_check>
+          <area>JAX-RS provider chain overhead</area>
+          <area>CDI bean creation and injection costs</area>
+          <area>OSGi service lookup performance</area>
+          <area>Configuration property resolution</area>
+          <area>Resource cleanup and lifecycle management</area>
+        </areas_to_check>
+      </phase>
+
+      <phase name="optimization">
+        <description>Apply performance improvements</description>
+        <techniques>
+          <technique>Cache frequently accessed services or configurations</technique>
+          <technique>Use appropriate CDI scopes to minimize bean creation</technique>
+          <technique>Optimize JAX-RS provider ordering</technique>
+          <technique>Reduce unnecessary OSGi service dependencies</technique>
+          <technique>Implement lazy initialization where appropriate</technique>
+        </techniques>
+      </phase>
+
+      <phase name="validation">
+        <description>Verify improvements without breaking functionality</description>
+        <steps>
+          <step>Measure performance impact</step>
+          <step>Ensure thread safety is maintained</step>
+          <step>Verify no regressions in functionality</step>
+          <step>Check resource usage (memory, threads)</step>
+        </steps>
+      </phase>
+    </workflow>
+  </main_workflows>
+
+  <overlay_file_management>
+    <workflow type="overlay_files">
+      <description>
+        Managing RESTEasy overlay files - files copied from upstream RESTEasy
+        that Liberty needs to modify for integration purposes.
+      </description>
+      <reference>
+        See 5_overlay_file_workflow.xml for detailed instructions on:
+        - Identifying RESTEasy versions from bnd.bnd files
+        - Locating files in the RESTEasy repository
+        - Finding commit hashes for specific versions
+        - Creating overlay files with proper attribution
+        - Maintaining source tracking comments
+      </reference>
+      <when_to_use>
+        Use the overlay file workflow when you need to:
+        - Add a new file from RESTEasy to a Liberty bundle
+        - Update an existing overlay file to a newer RESTEasy version
+        - Track the source of Liberty's RESTEasy modifications
+      </when_to_use>
+    </workflow>
+  </overlay_file_management>
+
+  <completion_criteria>
+    <criterion>Code follows Jakarta EE and MicroProfile specifications</criterion>
+    <criterion>OSGi bundle metadata is correct and complete</criterion>
+    <criterion>CDI integration is properly configured</criterion>
+    <criterion>JAX-RS resources are correctly registered and accessible</criterion>
+    <criterion>Error handling and logging are comprehensive</criterion>
+    <criterion>Thread safety and resource management are sound</criterion>
+    <criterion>Changes are compatible with existing Liberty features</criterion>
+    <criterion>Documentation clearly explains framework-specific aspects</criterion>
+  </completion_criteria>
+
+  <key_principles>
+    <principle>Understand the OSGi lifecycle and service dynamics</principle>
+    <principle>Respect CDI bean scopes and injection points</principle>
+    <principle>Follow JAX-RS provider and filter ordering rules</principle>
+    <principle>Use Liberty's configuration system appropriately</principle>
+    <principle>Consider classloader boundaries and visibility</principle>
+    <principle>Implement proper error handling at framework boundaries</principle>
+    <principle>Maintain backward compatibility with existing features</principle>
+  </key_principles>
+</resteasy_liberty_workflow>
+
+<!-- Made with Bob -->

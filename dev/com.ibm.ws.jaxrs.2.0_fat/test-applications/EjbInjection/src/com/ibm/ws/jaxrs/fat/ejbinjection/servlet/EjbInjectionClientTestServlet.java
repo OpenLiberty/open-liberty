@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -95,6 +95,17 @@ public class EjbInjectionClientTestServlet extends FATServlet {
     }
 
     @Test
+    public void testSingleNonImplementedAnnotatedInterfaceInjection() {
+        String message = "Hello, World!";
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("singlenonimplementedannotatedinterface/echo")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .post(Entity.entity(message, MediaType.TEXT_PLAIN));
+        assertEquals(200, response.getStatus());
+        assertEquals(message, response.readEntity(String.class));
+    }
+
+    @Test
     public void testMultipleAnnotatedInterfacesInjection() {
         Response response = client.target(URI_CONTEXT_ROOT)
                         .path("multipleannotatedinterfaces/greet")
@@ -109,6 +120,99 @@ public class EjbInjectionClientTestServlet extends FATServlet {
                         .get();
         assertEquals(200, response2.getStatus());
         assertEquals("Goodbye, World!", response2.readEntity(String.class));
+    }
+
+    @Test
+    public void testMultipleNonImplementedAnnotatedInterfacesInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("multiplenonimplementedannotatedinterfaces/greet")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello, World!", response.readEntity(String.class));
+
+        Response response2 = client.target(URI_CONTEXT_ROOT)
+                        .path("multiplenonimplementedannotatedinterfaces/farewell")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response2.getStatus());
+        assertEquals("Goodbye, World!", response2.readEntity(String.class));
+    }
+
+    @Test
+    public void testSingleImplementedMixedAnnotationInjection() {
+        // Test method with annotations from interface
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("singleimplementedmixed/interfaceAnnotated")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Single Implemented Mixed - Interface Annotated Method", response.readEntity(String.class));
+
+        // Test method with annotations from class
+        Response response2 = client.target(URI_CONTEXT_ROOT)
+                        .path("singleimplementedmixed/classmethod")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response2.getStatus());
+        assertEquals("Single Implemented Mixed - Class Annotated Method", response2.readEntity(String.class));
+    }
+
+    @Test
+    public void testSingleNonImplementedMixedAnnotationInjection() {
+        // Test method with annotations from interface
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("singlenonimplementedmixed/interfaceAnnotated")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Single Non-Implemented Mixed - Interface Annotated Method", response.readEntity(String.class));
+
+        // Test method with annotations from class
+        Response response2 = client.target(URI_CONTEXT_ROOT)
+                        .path("singlenonimplementedmixed/classmethod")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response2.getStatus());
+        assertEquals("Single Non-Implemented Mixed - Class Annotated Method", response2.readEntity(String.class));
+    }
+
+    @Test
+    public void testMultipleImplementedMixedAnnotationInjection() {
+        // Test method with annotations from interface
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("multipleimplementedmixed/methodA")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Multiple Implemented Mixed - Method A (from interface)", response.readEntity(String.class));
+
+        // Test method with annotations from class
+        Response response2 = client.target(URI_CONTEXT_ROOT)
+                        .path("multipleimplementedmixed/methodB")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response2.getStatus());
+        assertEquals("Multiple Implemented Mixed - Method B (from class)", response2.readEntity(String.class));
+    }
+
+    @Test
+    public void testMultipleNonImplementedMixedAnnotationInjection() {
+        // Test method with annotations from interface
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("multiplenonimplementedmixed/methodA")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Multiple Non-Implemented Mixed - Method A (from interface)", response.readEntity(String.class));
+
+        // Test method with annotations from class
+        Response response2 = client.target(URI_CONTEXT_ROOT)
+                        .path("multiplenonimplementedmixed/methodB")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response2.getStatus());
+        assertEquals("Multiple Non-Implemented Mixed - Method B (from class)", response2.readEntity(String.class));
     }
 
 }

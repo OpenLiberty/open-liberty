@@ -1,0 +1,387 @@
+<resteasy_liberty_examples>
+  <overview>
+    Real-world examples and complete workflows for common tasks when working with
+    RESTeasy, Open Liberty, Jakarta EE, and MicroProfile codebases.
+  </overview>
+
+  <example name="adding_new_jaxrs_endpoint">
+    <scenario>
+      User wants to add a new REST endpoint to an existing JAX-RS resource class
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Find the existing resource class</action>
+        <tool>search_files</tool>
+        <details>Search for @Path annotation to locate resource classes</details>
+      </step>
+      <step number="2">
+        <action>Read the resource class to understand structure</action>
+        <tool>read_file</tool>
+        <details>Examine existing endpoints, injected services, and patterns</details>
+      </step>
+      <step number="3">
+        <action>Add the new endpoint method</action>
+        <tool>apply_diff</tool>
+        <details>Insert new method with proper annotations before closing brace</details>
+      </step>
+      <step number="4">
+        <action>Verify the changes compile</action>
+        <tool>execute_command</tool>
+        <details>Run build command to ensure no compilation errors</details>
+      </step>
+    </workflow>
+    <key_considerations>
+      <consideration>Ensure proper HTTP method annotation (@GET, @POST, etc.)</consideration>
+      <consideration>Include @Produces/@Consumes for content negotiation</consideration>
+      <consideration>Use CDI injection for services, not manual instantiation</consideration>
+      <consideration>Follow existing error handling patterns</consideration>
+    </key_considerations>
+  </example>
+
+  <example name="debugging_cdi_injection_failure">
+    <scenario>
+      Application fails to start with CDI deployment error about unsatisfied dependency
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Identify the failing injection point from error message</action>
+        <details>Look for "Unsatisfied dependency" or "No bean found" in logs</details>
+      </step>
+      <step number="2">
+        <action>Search for the bean definition</action>
+        <tool>search_files</tool>
+        <details>Search for class name with CDI scope annotations</details>
+      </step>
+      <step number="3">
+        <action>Verify bean has proper scope annotation</action>
+        <tool>read_file</tool>
+        <details>Check for @ApplicationScoped, @RequestScoped, etc.</details>
+      </step>
+      <step number="4">
+        <action>Check for beans.xml if needed</action>
+        <tool>search_files</tool>
+        <details>Some beans require explicit discovery configuration</details>
+      </step>
+      <step number="5">
+        <action>Look for producer methods if direct bean not found</action>
+        <tool>search_files</tool>
+        <details>Search for @Produces with the bean type</details>
+      </step>
+      <step number="6">
+        <action>Fix the issue</action>
+        <tool>apply_diff or write_to_file</tool>
+        <details>Add missing scope annotation or create producer method</details>
+      </step>
+    </workflow>
+    <common_causes>
+      <cause>Missing scope annotation on bean class</cause>
+      <cause>Bean in package not scanned by CDI</cause>
+      <cause>Circular dependency between beans</cause>
+      <cause>Qualifier mismatch between injection point and bean</cause>
+    </common_causes>
+  </example>
+
+  <example name="adding_osgi_bundle_dependency">
+    <scenario>
+      Need to add a new package import to an OSGi bundle manifest
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Read the current manifest</action>
+        <tool>read_file</tool>
+        <details>Understand existing imports and structure</details>
+      </step>
+      <step number="2">
+        <action>Determine the correct version range</action>
+        <details>Check the exporting bundle's version</details>
+      </step>
+      <step number="3">
+        <action>Add the import to the manifest</action>
+        <tool>apply_diff</tool>
+        <details>Insert in alphabetical order with proper version range</details>
+      </step>
+      <step number="4">
+        <action>Verify the bundle builds</action>
+        <tool>execute_command</tool>
+        <details>Build the bundle to check for manifest errors</details>
+      </step>
+    </workflow>
+    <best_practices>
+      <practice>Use version ranges like [2.0,3) for major version compatibility</practice>
+      <practice>Keep imports alphabetically sorted for maintainability</practice>
+      <practice>Avoid wildcards in package imports</practice>
+      <practice>Document why each import is needed</practice>
+    </best_practices>
+  </example>
+
+  <example name="implementing_microprofile_health_check">
+    <scenario>
+      Add a health check to monitor database connectivity
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Create new health check class</action>
+        <tool>write_to_file</tool>
+        <details>Implement HealthCheck interface with @Readiness annotation</details>
+      </step>
+      <step number="2">
+        <action>Inject required dependencies</action>
+        <details>Use @Inject for DataSource or other services</details>
+      </step>
+      <step number="3">
+        <action>Implement the call() method</action>
+        <details>Test connectivity and return appropriate status</details>
+      </step>
+      <step number="4">
+        <action>Test the health check</action>
+        <tool>execute_command</tool>
+        <details>Start server and check /health/ready endpoint</details>
+      </step>
+    </workflow>
+    <implementation_notes>
+      <note>Use @Readiness for dependencies required before accepting traffic</note>
+      <note>Use @Liveness for detecting deadlocks or unrecoverable states</note>
+      <note>Include meaningful data in HealthCheckResponse for debugging</note>
+      <note>Keep health checks fast - they're called frequently</note>
+    </implementation_notes>
+  </example>
+
+  <example name="creating_liberty_feature">
+    <scenario>
+      Create a new Liberty feature that bundles related functionality
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Create feature manifest file</action>
+        <tool>write_to_file</tool>
+        <details>Define subsystem with symbolic name and dependencies</details>
+      </step>
+      <step number="2">
+        <action>List required feature dependencies</action>
+        <details>Include all features this feature depends on</details>
+      </step>
+      <step number="3">
+        <action>List bundles to include</action>
+        <details>Add all OSGi bundles that make up this feature</details>
+      </step>
+      <step number="4">
+        <action>Define API packages</action>
+        <details>Use IBM-API-Package for public APIs</details>
+      </step>
+      <step number="5">
+        <action>Build and test the feature</action>
+        <tool>execute_command</tool>
+        <details>Build feature and test in Liberty server</details>
+      </step>
+    </workflow>
+    <manifest_structure>
+      <field name="Subsystem-SymbolicName">Unique identifier for feature</field>
+      <field name="Subsystem-Version">Feature version</field>
+      <field name="IBM-ShortName">User-friendly name for server.xml</field>
+      <field name="IBM-API-Package">Public API packages with types</field>
+      <field name="-features">Comma-separated list of dependencies</field>
+      <field name="-bundles">Comma-separated list of OSGi bundles</field>
+    </manifest_structure>
+  </example>
+
+  <example name="adding_microprofile_config_property">
+    <scenario>
+      Add a new configurable property to a service using MicroProfile Config
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Find the service class</action>
+        <tool>search_files or read_file</tool>
+        <details>Locate the class that needs configuration</details>
+      </step>
+      <step number="2">
+        <action>Add @ConfigProperty injection</action>
+        <tool>apply_diff</tool>
+        <details>Inject property with name and optional default value</details>
+      </step>
+      <step number="3">
+        <action>Document the property</action>
+        <details>Add comments explaining purpose and valid values</details>
+      </step>
+      <step number="4">
+        <action>Add property to configuration file</action>
+        <tool>write_to_file or apply_diff</tool>
+        <details>Add to microprofile-config.properties or server.xml</details>
+      </step>
+    </workflow>
+    <configuration_sources>
+      <source priority="400">System properties</source>
+      <source priority="300">Environment variables</source>
+      <source priority="100">microprofile-config.properties</source>
+      <source priority="0">server.xml variables</source>
+    </configuration_sources>
+  </example>
+
+  <example name="implementing_jaxrs_exception_mapper">
+    <scenario>
+      Create exception mapper for consistent error responses
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Create exception mapper class</action>
+        <tool>write_to_file</tool>
+        <details>Implement ExceptionMapper interface with @Provider</details>
+      </step>
+      <step number="2">
+        <action>Implement toResponse method</action>
+        <details>Convert exception to appropriate HTTP response</details>
+      </step>
+      <step number="3">
+        <action>Register in JAX-RS application</action>
+        <tool>apply_diff</tool>
+        <details>Add to Application.getClasses() if needed</details>
+      </step>
+      <step number="4">
+        <action>Test exception handling</action>
+        <details>Verify correct status codes and error messages</details>
+      </step>
+    </workflow>
+    <error_response_structure>
+      <field name="code">Machine-readable error code</field>
+      <field name="message">Human-readable error message</field>
+      <field name="details">Additional context (optional)</field>
+      <field name="timestamp">When error occurred</field>
+    </error_response_structure>
+  </example>
+
+  <example name="debugging_classloader_issue">
+    <scenario>
+      ClassNotFoundException when trying to use a class from another bundle
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Identify the missing class from stack trace</action>
+        <details>Note the full package and class name</details>
+      </step>
+      <step number="2">
+        <action>Find which bundle exports the class</action>
+        <tool>search_files</tool>
+        <details>Search for Export-Package in MANIFEST.MF files</details>
+      </step>
+      <step number="3">
+        <action>Check consuming bundle's imports</action>
+        <tool>read_file</tool>
+        <details>Read MANIFEST.MF of bundle that needs the class</details>
+      </step>
+      <step number="4">
+        <action>Add missing import if not present</action>
+        <tool>apply_diff</tool>
+        <details>Add Import-Package with proper version range</details>
+      </step>
+      <step number="5">
+        <action>Rebuild and verify</action>
+        <tool>execute_command</tool>
+        <details>Build bundle and test that class is now accessible</details>
+      </step>
+    </workflow>
+    <troubleshooting_tips>
+      <tip>Check if package is exported by any bundle</tip>
+      <tip>Verify version ranges are compatible</tip>
+      <tip>Look for split packages (same package in multiple bundles)</tip>
+      <tip>Check for optional imports that might not be resolved</tip>
+    </troubleshooting_tips>
+  </example>
+
+  <example name="adding_microprofile_metrics">
+    <scenario>
+      Add metrics to track service performance and usage
+    </scenario>
+    <workflow>
+      <step number="1">
+        <action>Identify methods to instrument</action>
+        <details>Choose key operations to monitor</details>
+      </step>
+      <step number="2">
+        <action>Add metric annotations</action>
+        <tool>apply_diff</tool>
+        <details>Add @Counted, @Timed, or @Gauge annotations</details>
+      </step>
+      <step number="3">
+        <action>Inject MetricRegistry if needed</action>
+        <details>For programmatic metric registration</details>
+      </step>
+      <step number="4">
+        <action>Test metrics endpoint</action>
+        <tool>execute_command</tool>
+        <details>Check /metrics endpoint for new metrics</details>
+      </step>
+    </workflow>
+    <metric_types>
+      <type name="Counter">Monotonically increasing value (requests, errors)</type>
+      <type name="Gauge">Current value that can go up or down (queue size)</type>
+      <type name="Timer">Duration and rate of events (method execution time)</type>
+      <type name="Histogram">Statistical distribution of values</type>
+      <type name="Meter">Rate of events over time</type>
+    </metric_types>
+  </example>
+
+  <common_patterns_summary>
+    <pattern name="read_understand_modify">
+      <description>Always read files first to understand context before modifying</description>
+      <steps>
+        <step>Use search_files to locate relevant files</step>
+        <step>Use read_file to understand current implementation</step>
+        <step>Use apply_diff for targeted modifications</step>
+        <step>Use execute_command to verify changes build</step>
+      </steps>
+    </pattern>
+
+    <pattern name="trace_dependencies">
+      <description>Follow dependency chains to understand integration</description>
+      <steps>
+        <step>Start with injection point or usage</step>
+        <step>Find bean or service definition</step>
+        <step>Check OSGi imports/exports if crossing bundles</step>
+        <step>Verify CDI scopes and lifecycle</step>
+      </steps>
+    </pattern>
+
+    <pattern name="incremental_changes">
+      <description>Make small, verifiable changes rather than large rewrites</description>
+      <steps>
+        <step>Make one logical change at a time</step>
+        <step>Build and test after each change</step>
+        <step>Commit working changes before proceeding</step>
+      </steps>
+    </pattern>
+  </common_patterns_summary>
+
+  <quick_reference>
+    <task name="Find JAX-RS resources">
+      <search>@Path\(</search>
+      <file_pattern>*.java</file_pattern>
+    </task>
+
+    <task name="Find CDI beans">
+      <search>@(ApplicationScoped|RequestScoped|SessionScoped)</search>
+      <file_pattern>*.java</file_pattern>
+    </task>
+
+    <task name="Find OSGi services">
+      <search>@Component.*service\s*=</search>
+      <file_pattern>*.java</file_pattern>
+    </task>
+
+    <task name="Find feature manifests">
+      <search>Subsystem-SymbolicName:</search>
+      <file_pattern>*.mf</file_pattern>
+    </task>
+
+    <task name="Find health checks">
+      <search>@(Liveness|Readiness|Startup)</search>
+      <file_pattern>*.java</file_pattern>
+    </task>
+
+    <task name="Find config properties">
+      <search>@ConfigProperty</search>
+      <file_pattern>*.java</file_pattern>
+    </task>
+  </quick_reference>
+</resteasy_liberty_examples>
+
+<!-- Made with Bob -->

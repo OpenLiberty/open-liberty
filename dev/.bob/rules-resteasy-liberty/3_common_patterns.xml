@@ -1,0 +1,1136 @@
+<resteasy_liberty_common_patterns>
+  <overview>
+    Common code patterns and templates for RESTeasy, Open Liberty, Jakarta EE, 
+    and MicroProfile development. These patterns represent proven solutions to 
+    recurring problems in enterprise Java applications.
+  </overview>
+
+  <osgi_patterns>
+    <pattern name="bundle_activator_with_service_tracker">
+      <description>
+        Track OSGi services dynamically with proper lifecycle management
+      </description>
+      <use_case>
+        When you need to react to services appearing and disappearing at runtime
+      </use_case>
+      <code><![CDATA[
+public class MyBundleActivator implements BundleActivator {
+    private ServiceTracker<MyService, MyService> serviceTracker;
+    
+    @Override
+    public void start(BundleContext context) throws Exception {
+        serviceTracker = new ServiceTracker<MyService, MyService>(
+            context, 
+            MyService.class, 
+            new ServiceTrackerCustomizer<MyService, MyService>() {
+                @Override
+                public MyService addingService(ServiceReference<MyService> reference) {
+                    MyService service = context.getService(reference);
+                    // Service became available
+                    handleServiceAdded(service);
+                    return service;
+                }
+                
+                @Override
+                public void modifiedService(ServiceReference<MyService> reference, 
+                                           MyService service) {
+                    // Service properties changed
+                    handleServiceModified(service);
+                }
+                
+                @Override
+                public void removedService(ServiceReference<MyService> reference, 
+                                          MyService service) {
+                    // Service going away
+                    handleServiceRemoved(service);
+                    context.ungetService(reference);
+                }
+            }
+        );
+        serviceTracker.open();
+    }
+    
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        if (serviceTracker != null) {
+            serviceTracker.close();
+        }
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="declarative_services_component">
+      <description>
+        Use OSGi Declarative Services for cleaner service management
+      </description>
+      <use_case>
+        Preferred approach for most OSGi service implementations
+      </use_case>
+      <code><![CDATA[
+@Component(
+    service = MyService.class,
+    configurationPolicy = ConfigurationPolicy.REQUIRE,
+    property = {
+        "service.vendor=IBM",
+        "service.ranking:Integer=100"
+    }
+)
+public class MyServiceImpl implements MyService {
+    
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE,
+               policy = ReferencePolicy.DYNAMIC)
+    private volatile List<Plugin> plugins = new CopyOnWriteArrayList<>();
+    
+    @Reference
+    private ConfigurationService configService;
+    
+    @Activate
+    protected void activate(ComponentContext context, Map<String, Object> properties) {
+        // Component activation
+        String configValue = (String) properties.get("my.config.key");
+        initialize(configValue);
+    }
+    
+    @Modified
+    protected void modified(Map<String, Object> properties) {
+        // Configuration changed
+        reconfigure(properties);
+    }
+    
+    @Deactivate
+    protected void deactivate() {
+        // Cleanup
+        shutdown();
+    }
+    
+    // Dynamic reference methods
+    protected void addPlugin(Plugin plugin) {
+        plugins.add(plugin);
+    }
+    
+    protected void removePlugin(Plugin plugin) {
+        plugins.remove(plugin);
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="osgi_service_filter">
+      <description>
+        Filter OSGi services based on properties
+      </description>
+      <use_case>
+        When you need specific service implementations based on properties
+      </use_case>
+      <code><![CDATA[
+@Component(service = ServiceConsumer.class)
+public class ServiceConsumer {
+    
+    @Reference(
+        target = "(service.type=premium)",
+        cardinality = ReferenceCardinality.OPTIONAL
+    )
+    private volatile PremiumService premiumService;
+    
+    @Reference(
+        target = "(&(service.type=standard)(service.region=us-east))"
+    )
+    private volatile StandardService standardService;
+    
+    public void processRequest(Request request) {
+        if (premiumService != null && request.isPremium()) {
+            premiumService.process(request);
+        } else {
+            standardService.process(request);
+        }
+    }
+}
+      ]]></code>
+    </pattern>
+  </osgi_patterns>
+
+  <cdi_patterns>
+    <pattern name="cdi_extension_for_custom_injection">
+      <description>
+        Create custom CDI extension for specialized injection
+      </description>
+      <use_case>
+        When you need to inject non-CDI objects or add custom validation
+      </use_case>
+      <code><![CDATA[
+public class CustomInjectionExtension implements Extension {
+    
+    public void processInjectionPoints(@Observes ProcessInjectionPoint<?, ?> event) {
+        InjectionPoint ip = event.getInjectionPoint();
+        
+        if (ip.getAnnotated().isAnnotationPresent(CustomInject.class)) {
+            // Validate custom injection point
+            validateCustomInjection(ip);
+        }
+    }
+    
+    public void afterBeanDiscovery(@Observes AfterBeanDiscovery event, 
+                                   BeanManager beanManager) {
+        // Add custom beans programmatically
+        event.addBean()
+            .types(CustomService.class)
+            .scope(ApplicationScoped.class)
+            .createWith(ctx -> createCustomService())
+            .destroyWith((service, ctx) -> destroyCustomService(service));
+    }
+    
+    public void afterDeploymentValidation(@Observes AfterDeploymentValidation event,
+                                         BeanManager beanManager) {
+        // Validate deployment
+        Set<Bean<?>> beans = beanManager.getBeans(RequiredService.class);
+        if (beans.isEmpty()) {
+            event.addDeploymentProblem(
+                new IllegalStateException("RequiredService not found")
+            );
+        }
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="cdi_producer_with_qualifier">
+      <description>
+        Use qualifiers to distinguish between multiple implementations
+      </description>
+      <use_case>
+        When you have multiple implementations of the same interface
+      </use_case>
+      <code><![CDATA[
+// Define qualifiers
+@Qualifier
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER})
+public @interface Database {
+    DatabaseType value();
+}
+
+public enum DatabaseType {
+    PRIMARY, SECONDARY, CACHE
+}
+
+// Producer methods
+@ApplicationScoped
+public class DataSourceProducer {
+    
+    @Produces
+    @Database(DatabaseType.PRIMARY)
+    @ApplicationScoped
+    public DataSource createPrimaryDataSource() {
+        return createDataSource("jdbc/primary");
+    }
+    
+    @Produces
+    @Database(DatabaseType.SECONDARY)
+    @ApplicationScoped
+    public DataSource createSecondaryDataSource() {
+        return createDataSource("jdbc/secondary");
+    }
+    
+    @Produces
+    @Database(DatabaseType.CACHE)
+    @ApplicationScoped
+    public DataSource createCacheDataSource() {
+        return createDataSource("jdbc/cache");
+    }
+}
+
+// Injection
+@ApplicationScoped
+public class DataService {
+    
+    @Inject
+    @Database(DatabaseType.PRIMARY)
+    private DataSource primaryDb;
+    
+    @Inject
+    @Database(DatabaseType.SECONDARY)
+    private DataSource secondaryDb;
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="cdi_event_observer">
+      <description>
+        Use CDI events for loose coupling between components
+      </description>
+      <use_case>
+        When components need to react to events without direct dependencies
+      </use_case>
+      <code><![CDATA[
+// Event class
+public class UserCreatedEvent {
+    private final String userId;
+    private final Instant timestamp;
+    
+    public UserCreatedEvent(String userId) {
+        this.userId = userId;
+        this.timestamp = Instant.now();
+    }
+    
+    // Getters
+}
+
+// Event producer
+@ApplicationScoped
+public class UserService {
+    
+    @Inject
+    private Event<UserCreatedEvent> userCreatedEvent;
+    
+    public User createUser(UserRequest request) {
+        User user = new User(request);
+        // Save user
+        
+        // Fire event
+        userCreatedEvent.fire(new UserCreatedEvent(user.getId()));
+        
+        return user;
+    }
+}
+
+// Event observers
+@ApplicationScoped
+public class EmailNotificationService {
+    
+    public void onUserCreated(@Observes UserCreatedEvent event) {
+        // Send welcome email
+        sendWelcomeEmail(event.getUserId());
+    }
+}
+
+@ApplicationScoped
+public class AuditService {
+    
+    public void onUserCreated(@Observes @Priority(100) UserCreatedEvent event) {
+        // Log audit entry (high priority)
+        logAudit("USER_CREATED", event.getUserId());
+    }
+}
+
+// Async observer
+@ApplicationScoped
+public class AnalyticsService {
+    
+    public void onUserCreated(@ObservesAsync UserCreatedEvent event) {
+        // Process analytics asynchronously
+        updateAnalytics(event);
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="cdi_interceptor">
+      <description>
+        Create custom interceptors for cross-cutting concerns
+      </description>
+      <use_case>
+        For logging, security, transaction management, etc.
+      </use_case>
+      <code><![CDATA[
+// Interceptor binding
+@InterceptorBinding
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.METHOD})
+public @interface Audited {
+    String value() default "";
+}
+
+// Interceptor implementation
+@Audited
+@Interceptor
+@Priority(Interceptor.Priority.APPLICATION)
+public class AuditInterceptor {
+    
+    @Inject
+    private AuditService auditService;
+    
+    @AroundInvoke
+    public Object audit(InvocationContext context) throws Exception {
+        String methodName = context.getMethod().getName();
+        String className = context.getTarget().getClass().getSimpleName();
+        
+        Audited annotation = context.getMethod().getAnnotation(Audited.class);
+        String auditMessage = annotation.value().isEmpty() 
+            ? methodName 
+            : annotation.value();
+        
+        long startTime = System.currentTimeMillis();
+        try {
+            Object result = context.proceed();
+            long duration = System.currentTimeMillis() - startTime;
+            
+            auditService.logSuccess(className, auditMessage, duration);
+            return result;
+        } catch (Exception e) {
+            auditService.logFailure(className, auditMessage, e);
+            throw e;
+        }
+    }
+}
+
+// Usage
+@ApplicationScoped
+public class UserService {
+    
+    @Audited("User creation")
+    public User createUser(UserRequest request) {
+        // Implementation
+    }
+    
+    @Audited
+    public void deleteUser(String userId) {
+        // Implementation
+    }
+}
+      ]]></code>
+    </pattern>
+  </cdi_patterns>
+
+  <jaxrs_patterns>
+    <pattern name="jaxrs_application_configuration">
+      <description>
+        Configure JAX-RS application with custom providers
+      </description>
+      <use_case>
+        Setting up JAX-RS application with filters, interceptors, and providers
+      </use_case>
+      <code><![CDATA[
+@ApplicationPath("/api")
+public class RestApplication extends Application {
+    
+    @Override
+    public Set<Class<?>> getClasses() {
+        Set<Class<?>> classes = new HashSet<>();
+        
+        // Resources
+        classes.add(UserResource.class);
+        classes.add(OrderResource.class);
+        
+        // Providers
+        classes.add(JacksonJsonProvider.class);
+        classes.add(ValidationExceptionMapper.class);
+        classes.add(AuthenticationFilter.class);
+        classes.add(CorsFilter.class);
+        
+        return classes;
+    }
+    
+    @Override
+    public Map<String, Object> getProperties() {
+        Map<String, Object> props = new HashMap<>();
+        props.put("jersey.config.server.wadl.disableWadl", "true");
+        return props;
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="jaxrs_filter_chain">
+      <description>
+        Implement filter chain for authentication and authorization
+      </description>
+      <use_case>
+        Securing REST endpoints with authentication and authorization
+      </use_case>
+      <code><![CDATA[
+// Authentication filter
+@Provider
+@Priority(Priorities.AUTHENTICATION)
+public class AuthenticationFilter implements ContainerRequestFilter {
+    
+    @Inject
+    private TokenValidator tokenValidator;
+    
+    @Override
+    public void filter(ContainerRequestContext requestContext) {
+        String authHeader = requestContext.getHeaderString(HttpHeaders.AUTHORIZATION);
+        
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            requestContext.abortWith(
+                Response.status(Status.UNAUTHORIZED)
+                    .entity("Missing or invalid authorization header")
+                    .build()
+            );
+            return;
+        }
+        
+        String token = authHeader.substring("Bearer ".length());
+        try {
+            UserPrincipal principal = tokenValidator.validate(token);
+            SecurityContext securityContext = new CustomSecurityContext(principal);
+            requestContext.setSecurityContext(securityContext);
+        } catch (TokenValidationException e) {
+            requestContext.abortWith(
+                Response.status(Status.UNAUTHORIZED)
+                    .entity("Invalid token")
+                    .build()
+            );
+        }
+    }
+}
+
+// Authorization filter
+@Provider
+@Priority(Priorities.AUTHORIZATION)
+public class AuthorizationFilter implements ContainerRequestFilter {
+    
+    @Override
+    public void filter(ContainerRequestContext requestContext) {
+        SecurityContext securityContext = requestContext.getSecurityContext();
+        
+        if (securityContext == null || securityContext.getUserPrincipal() == null) {
+            requestContext.abortWith(
+                Response.status(Status.FORBIDDEN)
+                    .entity("Authentication required")
+                    .build()
+            );
+            return;
+        }
+        
+        // Check method-level security annotations
+        ResourceInfo resourceInfo = getResourceInfo(requestContext);
+        RolesAllowed rolesAllowed = resourceInfo.getResourceMethod()
+            .getAnnotation(RolesAllowed.class);
+        
+        if (rolesAllowed != null) {
+            boolean authorized = Arrays.stream(rolesAllowed.value())
+                .anyMatch(securityContext::isUserInRole);
+            
+            if (!authorized) {
+                requestContext.abortWith(
+                    Response.status(Status.FORBIDDEN)
+                        .entity("Insufficient permissions")
+                        .build()
+                );
+            }
+        }
+    }
+}
+
+// Custom security context
+public class CustomSecurityContext implements SecurityContext {
+    private final UserPrincipal principal;
+    
+    public CustomSecurityContext(UserPrincipal principal) {
+        this.principal = principal;
+    }
+    
+    @Override
+    public Principal getUserPrincipal() {
+        return principal;
+    }
+    
+    @Override
+    public boolean isUserInRole(String role) {
+        return principal.getRoles().contains(role);
+    }
+    
+    @Override
+    public boolean isSecure() {
+        return true;
+    }
+    
+    @Override
+    public String getAuthenticationScheme() {
+        return "Bearer";
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="jaxrs_exception_hierarchy">
+      <description>
+        Comprehensive exception mapping for REST APIs
+      </description>
+      <use_case>
+        Consistent error responses across the API
+      </use_case>
+      <code><![CDATA[
+// Base exception mapper
+@Provider
+public class BaseExceptionMapper implements ExceptionMapper<Exception> {
+    
+    @Inject
+    private Logger logger;
+    
+    @Override
+    public Response toResponse(Exception exception) {
+        logger.error("Unhandled exception", exception);
+        
+        ErrorResponse error = new ErrorResponse(
+            "INTERNAL_ERROR",
+            "An unexpected error occurred",
+            null
+        );
+        
+        return Response.status(Status.INTERNAL_SERVER_ERROR)
+                      .entity(error)
+                      .build();
+    }
+}
+
+// Validation exception mapper
+@Provider
+public class ValidationExceptionMapper 
+    implements ExceptionMapper<ConstraintViolationException> {
+    
+    @Override
+    public Response toResponse(ConstraintViolationException exception) {
+        List<String> violations = exception.getConstraintViolations().stream()
+            .map(v -> v.getPropertyPath() + ": " + v.getMessage())
+            .collect(Collectors.toList());
+        
+        ErrorResponse error = new ErrorResponse(
+            "VALIDATION_ERROR",
+            "Request validation failed",
+            violations
+        );
+        
+        return Response.status(Status.BAD_REQUEST)
+                      .entity(error)
+                      .build();
+    }
+}
+
+// Business exception mapper
+@Provider
+public class BusinessExceptionMapper implements ExceptionMapper<BusinessException> {
+    
+    @Override
+    public Response toResponse(BusinessException exception) {
+        ErrorResponse error = new ErrorResponse(
+            exception.getErrorCode(),
+            exception.getMessage(),
+            exception.getDetails()
+        );
+        
+        Status status = mapToHttpStatus(exception.getErrorCode());
+        
+        return Response.status(status)
+                      .entity(error)
+                      .build();
+    }
+    
+    private Status mapToHttpStatus(String errorCode) {
+        switch (errorCode) {
+            case "NOT_FOUND": return Status.NOT_FOUND;
+            case "CONFLICT": return Status.CONFLICT;
+            case "FORBIDDEN": return Status.FORBIDDEN;
+            default: return Status.BAD_REQUEST;
+        }
+    }
+}
+
+// Error response DTO
+public class ErrorResponse {
+    private String code;
+    private String message;
+    private List<String> details;
+    private Instant timestamp;
+    
+    public ErrorResponse(String code, String message, List<String> details) {
+        this.code = code;
+        this.message = message;
+        this.details = details;
+        this.timestamp = Instant.now();
+    }
+    
+    // Getters and setters
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="jaxrs_async_processing">
+      <description>
+        Implement async REST endpoints with proper timeout handling
+      </description>
+      <use_case>
+        Long-running operations that shouldn't block request threads
+      </use_case>
+      <code><![CDATA[
+@Path("/async")
+@RequestScoped
+public class AsyncResource {
+    
+    @Inject
+    private ManagedExecutorService executor;
+    
+    @Inject
+    private LongRunningService service;
+    
+    @GET
+    @Path("/process/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void processAsync(@PathParam("id") String id,
+                            @Suspended AsyncResponse response) {
+        
+        // Set timeout
+        response.setTimeout(30, TimeUnit.SECONDS);
+        
+        // Set timeout handler
+        response.setTimeoutHandler(asyncResponse -> {
+            ErrorResponse error = new ErrorResponse(
+                "TIMEOUT",
+                "Request processing timed out",
+                null
+            );
+            asyncResponse.resume(
+                Response.status(Status.SERVICE_UNAVAILABLE)
+                    .entity(error)
+                    .build()
+            );
+        });
+        
+        // Process asynchronously
+        executor.submit(() -> {
+            try {
+                Result result = service.process(id);
+                response.resume(Response.ok(result).build());
+            } catch (BusinessException e) {
+                response.resume(e);
+            } catch (Exception e) {
+                ErrorResponse error = new ErrorResponse(
+                    "PROCESSING_ERROR",
+                    "Failed to process request",
+                    null
+                );
+                response.resume(
+                    Response.status(Status.INTERNAL_SERVER_ERROR)
+                        .entity(error)
+                        .build()
+                );
+            }
+        });
+    }
+    
+    @POST
+    @Path("/batch")
+    @Produces(MediaType.APPLICATION_JSON)
+    public CompletionStage<Response> processBatch(List<Request> requests) {
+        return CompletableFuture.supplyAsync(() -> {
+            List<Result> results = requests.stream()
+                .map(service::process)
+                .collect(Collectors.toList());
+            
+            return Response.ok(results).build();
+        }, executor);
+    }
+}
+      ]]></code>
+    </pattern>
+  </jaxrs_patterns>
+
+  <microprofile_patterns>
+    <pattern name="microprofile_config_with_converter">
+      <description>
+        Custom config converter for complex types
+      </description>
+      <use_case>
+        When you need to inject complex configuration objects
+      </use_case>
+      <code><![CDATA[
+// Custom type
+public class DatabaseConfig {
+    private String url;
+    private String username;
+    private int maxConnections;
+    
+    // Constructor, getters, setters
+}
+
+// Converter
+public class DatabaseConfigConverter implements Converter<DatabaseConfig> {
+    
+    @Override
+    public DatabaseConfig convert(String value) {
+        // Parse JSON or custom format
+        // Example: "url=jdbc:...,username=admin,maxConnections=10"
+        Map<String, String> props = parseProperties(value);
+        
+        DatabaseConfig config = new DatabaseConfig();
+        config.setUrl(props.get("url"));
+        config.setUsername(props.get("username"));
+        config.setMaxConnections(Integer.parseInt(props.get("maxConnections")));
+        
+        return config;
+    }
+}
+
+// Register converter in META-INF/services/org.eclipse.microprofile.config.spi.Converter
+// com.example.DatabaseConfigConverter
+
+// Usage
+@ApplicationScoped
+public class DataService {
+    
+    @Inject
+    @ConfigProperty(name = "database.config")
+    private DatabaseConfig dbConfig;
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="microprofile_health_checks">
+      <description>
+        Comprehensive health check implementation
+      </description>
+      <use_case>
+        Kubernetes liveness and readiness probes
+      </use_case>
+      <code><![CDATA[
+// Liveness check
+@Liveness
+@ApplicationScoped
+public class ApplicationLivenessCheck implements HealthCheck {
+    
+    @Inject
+    private ApplicationState appState;
+    
+    @Override
+    public HealthCheckResponse call() {
+        boolean isAlive = !appState.isDeadlocked() && !appState.isShuttingDown();
+        
+        return HealthCheckResponse.named("application-liveness")
+            .status(isAlive)
+            .withData("uptime", appState.getUptimeSeconds())
+            .withData("threads", Thread.activeCount())
+            .build();
+    }
+}
+
+// Readiness check
+@Readiness
+@ApplicationScoped
+public class ApplicationReadinessCheck implements HealthCheck {
+    
+    @Inject
+    private DataSource dataSource;
+    
+    @Inject
+    private CacheService cacheService;
+    
+    @Override
+    public HealthCheckResponse call() {
+        HealthCheckResponseBuilder builder = HealthCheckResponse
+            .named("application-readiness");
+        
+        boolean ready = true;
+        
+        // Check database
+        try (Connection conn = dataSource.getConnection()) {
+            builder.withData("database", "UP");
+        } catch (SQLException e) {
+            builder.withData("database", "DOWN: " + e.getMessage());
+            ready = false;
+        }
+        
+        // Check cache
+        if (cacheService.isAvailable()) {
+            builder.withData("cache", "UP");
+        } else {
+            builder.withData("cache", "DOWN");
+            ready = false;
+        }
+        
+        return builder.status(ready).build();
+    }
+}
+
+// Startup check
+@Startup
+@ApplicationScoped
+public class ApplicationStartupCheck implements HealthCheck {
+    
+    @Inject
+    private InitializationService initService;
+    
+    @Override
+    public HealthCheckResponse call() {
+        boolean initialized = initService.isInitialized();
+        
+        return HealthCheckResponse.named("application-startup")
+            .status(initialized)
+            .withData("initialization-time", initService.getInitTimeMs())
+            .build();
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="microprofile_metrics_custom">
+      <description>
+        Custom metrics with tags and metadata
+      </description>
+      <use_case>
+        Detailed application monitoring and observability
+      </use_case>
+      <code><![CDATA[
+@ApplicationScoped
+public class OrderService {
+    
+    @Inject
+    @Metric(name = "orders_created_total", absolute = true)
+    private Counter ordersCreated;
+    
+    @Inject
+    @Metric(name = "order_processing_time", absolute = true)
+    private Timer processingTime;
+    
+    @Inject
+    private MetricRegistry registry;
+    
+    @PostConstruct
+    public void init() {
+        // Register custom metrics with tags
+        registry.counter(
+            Metadata.builder()
+                .withName("orders_by_status")
+                .withDescription("Number of orders by status")
+                .withType(MetricType.COUNTER)
+                .build(),
+            new Tag("status", "pending")
+        );
+    }
+    
+    public Order createOrder(OrderRequest request) {
+        Timer.Context context = processingTime.time();
+        try {
+            Order order = processOrder(request);
+            ordersCreated.inc();
+            
+            // Update status-specific counter
+            Counter statusCounter = registry.counter(
+                "orders_by_status",
+                new Tag("status", order.getStatus())
+            );
+            statusCounter.inc();
+            
+            return order;
+        } finally {
+            context.stop();
+        }
+    }
+    
+    @Gauge(name = "active_orders", unit = MetricUnits.NONE, absolute = true)
+    public long getActiveOrderCount() {
+        return countActiveOrders();
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="microprofile_fault_tolerance">
+      <description>
+        Comprehensive fault tolerance with fallback and circuit breaker
+      </description>
+      <use_case>
+        Resilient service calls with automatic recovery
+      </use_case>
+      <code><![CDATA[
+@ApplicationScoped
+public class ExternalServiceClient {
+    
+    @Inject
+    private RestClient restClient;
+    
+    @Inject
+    private CacheService cache;
+    
+    @Retry(
+        maxRetries = 3,
+        delay = 1000,
+        delayUnit = ChronoUnit.MILLIS,
+        jitter = 200,
+        retryOn = {ServiceUnavailableException.class, TimeoutException.class}
+    )
+    @Timeout(value = 5, unit = ChronoUnit.SECONDS)
+    @CircuitBreaker(
+        requestVolumeThreshold = 10,
+        failureRatio = 0.5,
+        delay = 10000,
+        successThreshold = 3
+    )
+    @Fallback(fallbackMethod = "getDataFromCache")
+    @Bulkhead(value = 10, waitingTaskQueue = 20)
+    public Data fetchData(String id) {
+        return restClient.getData(id);
+    }
+    
+    public Data getDataFromCache(String id) {
+        Data cached = cache.get(id);
+        if (cached != null) {
+            return cached;
+        }
+        throw new DataNotFoundException("Data not available: " + id);
+    }
+    
+    // Async with fault tolerance
+    @Asynchronous
+    @Retry(maxRetries = 2)
+    @Timeout(value = 10, unit = ChronoUnit.SECONDS)
+    public CompletionStage<List<Data>> fetchMultipleData(List<String> ids) {
+        return CompletableFuture.supplyAsync(() -> 
+            ids.stream()
+                .map(this::fetchData)
+                .collect(Collectors.toList())
+        );
+    }
+}
+      ]]></code>
+    </pattern>
+  </microprofile_patterns>
+
+  <integration_patterns>
+    <pattern name="resteasy_cdi_integration">
+      <description>
+        Integrate RESTeasy with CDI for dependency injection in JAX-RS resources
+      </description>
+      <use_case>
+        Standard pattern for RESTeasy applications in Liberty
+      </use_case>
+      <code><![CDATA[
+// CDI-enabled JAX-RS resource
+@Path("/users")
+@RequestScoped
+public class UserResource {
+    
+    @Inject
+    private UserService userService;
+    
+    @Inject
+    private SecurityContext securityContext;
+    
+    @Context
+    private UriInfo uriInfo;
+    
+    @GET
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response listUsers(@QueryParam("page") @DefaultValue("0") int page,
+                             @QueryParam("size") @DefaultValue("20") int size) {
+        List<User> users = userService.findAll(page, size);
+        return Response.ok(users).build();
+    }
+}
+
+// CDI extension for RESTeasy integration
+public class ResteasyIntegrationExtension implements Extension {
+    
+    public void processAnnotatedType(@Observes ProcessAnnotatedType<?> event) {
+        AnnotatedType<?> type = event.getAnnotatedType();
+        
+        // Ensure JAX-RS resources are CDI beans
+        if (type.isAnnotationPresent(Path.class)) {
+            if (!hasScope(type)) {
+                // Add @RequestScoped if no scope defined
+                event.configureAnnotatedType()
+                    .add(RequestScoped.Literal.INSTANCE);
+            }
+        }
+    }
+}
+      ]]></code>
+    </pattern>
+
+    <pattern name="liberty_feature_integration">
+      <description>
+        Integrate custom feature with Liberty's feature manager
+      </description>
+      <use_case>
+        Creating Liberty features that depend on other features
+      </use_case>
+      <code><![CDATA[
+// Feature bundle activator
+public class MyFeatureActivator implements BundleActivator {
+    
+    private ServiceRegistration<?> registration;
+    
+    @Override
+    public void start(BundleContext context) throws Exception {
+        // Wait for required services
+        ServiceTracker<ServletContainerInitializer, ServletContainerInitializer> tracker =
+            new ServiceTracker<>(context, ServletContainerInitializer.class, null);
+        tracker.open();
+        
+        // Register feature service
+        Dictionary<String, Object> props = new Hashtable<>();
+        props.put("service.vendor", "IBM");
+        props.put("feature.name", "myFeature-1.0");
+        
+        registration = context.registerService(
+            MyFeatureService.class.getName(),
+            new MyFeatureServiceImpl(),
+            props
+        );
+    }
+    
+    @Override
+    public void stop(BundleContext context) throws Exception {
+        if (registration != null) {
+            registration.unregister();
+        }
+    }
+}
+
+// Feature manifest (subsystem.mf)
+/*
+Subsystem-SymbolicName: com.example.myfeature-1.0
+Subsystem-Version: 1.0.0
+Subsystem-Type: osgi.subsystem.feature
+IBM-ShortName: myFeature-1.0
+IBM-API-Package: com.example.api; type="api"
+
+-features=\
+  com.ibm.websphere.appserver.servlet-4.0,\
+  com.ibm.websphere.appserver.cdi-2.0
+
+-bundles=\
+  com.example.myfeature.bundle
+*/
+      ]]></code>
+    </pattern>
+  </integration_patterns>
+
+  <testing_patterns>
+    <pattern name="arquillian_integration_test">
+      <description>
+        Integration testing with Arquillian and Liberty
+      </description>
+      <use_case>
+        Testing CDI, JAX-RS, and other Jakarta EE components
+      </use_case>
+      <code><![CDATA[
+@RunWith(Arquillian.class)
+public class UserServiceIT {
+    
+    @Deployment
+    public static WebArchive createDeployment() {
+        return ShrinkWrap.create(WebArchive.class, "test.war")
+            .addClasses(UserService.class, UserRepository.class, User.class)
+            .addAsWebInfResource(EmptyAsset.INSTANCE, "beans.xml")
+            .addAsResource("META-INF/persistence.xml");
+    }
+    
+    @Inject
+    private UserService userService;
+    
+    @Test
+    public void testCreateUser() {
+        UserRequest request = new UserRequest("john.doe", "john@example.com");
+        User user = userService.createUser(request);
+        
+        assertNotNull(user.getId());
+        assertEquals("john.doe", user.getUsername());
+    }
+}
+      ]]></code>
+    </pattern>
+  </testing_patterns>
+</resteasy_liberty_common_patterns>
+
+<!-- Made with Bob -->
