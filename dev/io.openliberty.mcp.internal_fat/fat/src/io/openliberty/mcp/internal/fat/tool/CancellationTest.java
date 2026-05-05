@@ -10,7 +10,6 @@
 package io.openliberty.mcp.internal.fat.tool;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.concurrent.Callable;
@@ -186,7 +185,7 @@ public class CancellationTest extends FATServletClient {
             String response = future.get(10, TimeUnit.SECONDS);
             fail("Expected TimeoutException because cancellation from wrong client should have no effect across different modules");
         } catch (java.util.concurrent.TimeoutException e) {
-            assertTrue("Test passed: TimeoutException caught as expected - cancellation from wrong client had no effect", true);
+            //Test passed: TimeoutException caught as expected - cancellation from wrong client had no effect
         }
     }
 
