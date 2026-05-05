@@ -173,8 +173,11 @@ class ApplicationStateMachineImpl extends ApplicationStateMachine implements App
             cl.cancel();
         }
         final boolean checkForUnprocessedConfigChange = _nextAppConfig.getAndSet(appConfig) != null;
-        // Mark this as an update since we're reconfiguring the application
-        _update.set(true);
+        // Mark as update only if there was already a pending config change (reconfiguration)
+        // or if the app has been started before (indicated by _update already being true)
+        if (checkForUnprocessedConfigChange || _update.get()) {
+            _update.set(true);
+        }
 
         addAppStartingFutures(appStartingFutures);
         updateStartAfterFutures(startAfterFutures);
