@@ -34,23 +34,10 @@ public class McpMetricServlet extends FATServlet {
     InMemoryMetricReader reader = PullExporterAutoConfigurationCustomizerProvider.exporter;
 
     @Test
-    public void testBasicToolCallMetrics() {
+    public void testToolCallMetrics() {
         HistogramPointData point = getAggregatedToolsCallPoint();
 
         // Aggregated tools/call point currently includes
-        assertEquals("Expected aggregated tools/call count to be 3", 3, point.getCount());
-
-        Attributes attributes = point.getAttributes();
-        assertInvariantToolCallAttributes(attributes);
-        assertSuccessAttributes(attributes);
-        assertTimingAttributes(point);
-    }
-
-    @Test
-    public void testAdvancedToolCallMetrics() {
-        HistogramPointData point = getAggregatedToolsCallPoint();
-
-        // Same aggregated tools/call point
         assertEquals("Expected aggregated tools/call count to be 3", 3, point.getCount());
 
         Attributes attributes = point.getAttributes();
@@ -84,8 +71,6 @@ public class McpMetricServlet extends FATServlet {
     }
 
     private void assertInvariantToolCallAttributes(Attributes attributes) {
-        System.out.println("DEVAL: checking invariant attributes");
-
         assertEquals("2.0", getStringAttribute(attributes, "jsonrpc.protocol.version"));
         assertEquals("tools/call", getStringAttribute(attributes, "mcp.method.name"));
         assertEquals("HTTP", getStringAttribute(attributes, "network.protocol.name"));
@@ -94,8 +79,6 @@ public class McpMetricServlet extends FATServlet {
     }
 
     private void assertSuccessAttributes(Attributes attributes) {
-        System.out.println("DEVAL: checking success attributes");
-
         assertEquals("ok", getStringAttribute(attributes, "rpc.response.status_code"));
         assertNull("Did not expect error.type for successful tool calls",
                    getStringAttribute(attributes, "error.type"));
@@ -112,7 +95,6 @@ public class McpMetricServlet extends FATServlet {
 
     private void assertProtocolAttributes(Attributes attributes) {
         String mcpProtocolVersion = getStringAttribute(attributes, "mcp.protocol.version");
-        System.out.println("DEVAL: mcp.protocol.version = " + mcpProtocolVersion);
         assertNotNull("Expected mcp.protocol.version to be present", mcpProtocolVersion);
         assertEquals("V_" + TestConstants.VALUE_MCP_PROTOCOL_VERSION.replace('-', '_'), mcpProtocolVersion);
     }

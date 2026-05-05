@@ -21,8 +21,8 @@ import org.junit.Test;
 
 import componenttest.app.FATServlet;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
-import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.api.common.AttributeKey;
+import io.opentelemetry.api.common.Attributes;
 import io.opentelemetry.sdk.metrics.data.HistogramPointData;
 import io.opentelemetry.sdk.metrics.data.MetricData;
 import jakarta.servlet.annotation.WebServlet;
@@ -231,8 +231,6 @@ public class McpOperationMetricServlet extends FATServlet {
     }
 
     private void assertInvariantToolCallAttributes(Attributes attributes) {
-        System.out.println("DEVAL: checking invariant attributes");
-
         assertEquals("2.0", getStringAttribute(attributes, "jsonrpc.protocol.version"));
         assertEquals("tools/call", getStringAttribute(attributes, "mcp.method.name"));
         assertEquals("HTTP", getStringAttribute(attributes, "network.protocol.name"));
@@ -241,8 +239,6 @@ public class McpOperationMetricServlet extends FATServlet {
     }
 
     private void assertSuccessAttributes(Attributes attributes) {
-        System.out.println("DEVAL: checking success attributes");
-
         assertEquals("ok", getStringAttribute(attributes, "rpc.response.status_code"));
         assertNull("Did not expect error.type for successful tool calls",
                    getStringAttribute(attributes, "error.type"));
@@ -259,7 +255,6 @@ public class McpOperationMetricServlet extends FATServlet {
 
     private void assertProtocolAttributes(Attributes attributes) {
         String mcpProtocolVersion = getStringAttribute(attributes, "mcp.protocol.version");
-        System.out.println("DEVAL: mcp.protocol.version = " + mcpProtocolVersion);
         assertNotNull("Expected mcp.protocol.version to be present", mcpProtocolVersion);
         assertEquals("V_" + TestConstants.VALUE_MCP_PROTOCOL_VERSION.replace('-', '_'), mcpProtocolVersion);
     }
