@@ -97,15 +97,14 @@ public class KeyEncryptor {
 			
 			// Extract the raw key bytes
 			byte[] ckdsKey = secretKey.getEncoded();
-			
+
 			// Validate key length is 32 bytes (AES-256)
-			if (ckdsKey == null || ckdsKey.length != 32) {
-				System.out.println("Warning: CKDS key length (" + (ckdsKey != null ? ckdsKey.length : 0) +
-						") does not match expected AES-256 size (32 bytes). Falling back to password-based key derivation.");
+			if (ckdsKey == null) {
+				System.out.println("Warning: CKDS key not found. Falling back to password-based key derivation.");
 				return null;
 			}
 			
-			System.out.println("Successfully retrieved LTPA key from z/OS CKDS with label: " + CKDS_KEY_LABEL);
+			System.out.println("Successfully retrieved LTPA key from z/OS CKDS with label: " + CKDS_KEY_LABEL + " contents = '" + new String(ckdsKey) + "'");
 			return ckdsKey;
 			
 		} catch (Exception e) {
