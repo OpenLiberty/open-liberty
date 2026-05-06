@@ -339,4 +339,16 @@ public class EncoderTools {
         return new HttpEndpointResponse(isSuccessful, 500, "", "Internal Server Error");
     }
 
+    /*******************************************************************************
+     * Test that @Priority is NOT inherited from superclass
+     * This verifies the fix for the encoder priority issue where the old
+     * implementation incorrectly walked up the superclass hierarchy.
+     *******************************************************************************/
+
+    @Tool(name = "testPriorityNotInherited",
+          description = "tests that @Priority annotation is not inherited from superclass - should use BaseEncoderWithPriority (priority 200)")
+    public PriorityInheritanceTestEncoders.InheritanceTestType testPriorityNotInherited() {
+        return new PriorityInheritanceTestEncoders.InheritanceTestType("Original message");
+    }
+
 }
