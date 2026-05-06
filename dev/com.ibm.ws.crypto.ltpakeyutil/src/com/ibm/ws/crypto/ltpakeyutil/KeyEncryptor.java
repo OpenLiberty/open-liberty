@@ -26,7 +26,7 @@ import com.ibm.ws.common.crypto.CryptoUtils;
 public class KeyEncryptor {
 
 	private static final boolean fipsEnabled = CryptoUtils.isFips140_3Enabled();
-	private static final String CKDS_KEY_LABEL = "LTPA_AES";
+	private static final String CKDS_KEY_LABEL = "LTPAAES";
 	
 	private final byte[] key;
 	private final int size;
@@ -89,7 +89,7 @@ public class KeyEncryptor {
 			
 			// Create KeyLabelKeySpec using reflection to avoid compile-time dependency
 			// KeyLabelKeySpec is only available on z/OS with IBMJCECCA provider
-			Class<?> keyLabelKeySpecClass = Class.forName("com.ibm.crypto.provider.KeyLabelKeySpec");
+			Class<?> keyLabelKeySpecClass = Class.forName("com.ibm.crypto.hdwrCCA.provider.KeyLabelKeySpec");
 			Object spec = keyLabelKeySpecClass.getConstructor(String.class).newInstance(CKDS_KEY_LABEL);
 			
 			// Generate the secret key from the key label
