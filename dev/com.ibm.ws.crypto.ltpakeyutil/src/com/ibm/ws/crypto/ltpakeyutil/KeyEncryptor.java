@@ -31,6 +31,7 @@ public class KeyEncryptor {
 	private final byte[] key;
 	private final int size;
 	private final String cipher;
+	private final boolean usingCKDS;
 
 	/**
 	 * A KeyEncryptor constructor.
@@ -40,18 +41,18 @@ public class KeyEncryptor {
 	public KeyEncryptor(byte[] password) throws Exception {
 		byte[] derivedKey = null;
 		int keySize;
-		boolean usingCKDS = false;
+		boolean ckdsKey = false;
 		
 		// Try to retrieve key from z/OS CKDS if on z/OS
 		if (CryptoUtils.isZOS()) {
 			derivedKey = getAesKeyFromCKDS();
 			if (derivedKey != null) {
-				usingCKDS = true;
+				ckdsKey = true;
 			}
 		}
 		
 		// Determine key size based on whether CKDS key was retrieved or FIPS mode
-		if (usingCKDS) {
+		if (ckdsKey) {
 			keySize = 32; // CKDS keys should be AES-256
 		} else {
 			keySize = (fipsEnabled ? 32 : 24);
@@ -73,7 +74,8 @@ public class KeyEncryptor {
 		
 		this.key = derivedKey.clone();
 		this.size = keySize;
-		this.cipher = usingCKDS ? CryptoUtils.AES_CBC_CIPHER : CryptoUtils.getCipher();
+		this.cipher = ckdsKey ? CryptoUtils.AES_CBC_CIPHER : CryptoUtils.getCipher();
+		this.usingCKDS = ckdsKey;
 	}
 
 	/**
@@ -122,6 +124,10 @@ public class KeyEncryptor {
 	 * @return The decrypted key
 	 */
 	public byte[] decrypt(byte[] encryptedKey) throws Exception {
+		// Use IBMJCECCA provider for CKDS keys to ensure hardware crypto operations
+		if (usingCKDS) {
+			return LTPACrypto.decrypt(encryptedKey, key, cipher, CryptoUtils.IBMJCECCA_NAME);
+		}
 		return LTPACrypto.decrypt(encryptedKey, key, cipher);
 	}
 
@@ -132,6 +138,10 @@ public class KeyEncryptor {
 	 * @return The encrypted key
 	 */
 	public byte[] encrypt(byte[] key) throws Exception {
+		// Use IBMJCECCA provider for CKDS keys to ensure hardware crypto operations
+		if (usingCKDS) {
+			return LTPACrypto.encrypt(key, this.key, cipher, CryptoUtils.IBMJCECCA_NAME);
+		}
 		return LTPACrypto.encrypt(key, this.key, cipher);
 	}
 }
