@@ -33,6 +33,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
+import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
@@ -95,6 +96,9 @@ public class McpServlet extends HttpServlet {
 
     @Inject
     ConverterRegistries converterRegistries;
+
+    @Inject
+    McpConfig mcpConfig;
 
     private Jsonb jsonb;
 
@@ -413,8 +417,12 @@ public class McpServlet extends HttpServlet {
 
         ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
 
-        // TODO: provide a way for the user to set server info
-        ServerInfo info = new ServerInfo("test-server", "Test Server", "0.1");
+        // Use configured mcpServerInfo with sensible defaults
+        String serverName = mcpConfig.mcpServerInfoName() != null ? mcpConfig.mcpServerInfoName() : io.openliberty.mcp.internal.config.McpServerConfigProps.DEFAULT_MCP_SERVER_NAME;
+        String serverTitle = mcpConfig.mcpServerInfoTitle() != null ? mcpConfig.mcpServerInfoTitle() : io.openliberty.mcp.internal.config.McpServerConfigProps.DEFAULT_MCP_SERVER_TITLE;
+        String serverVersion = mcpConfig.mcpServerInfoVersion() != null ? mcpConfig.mcpServerInfoVersion() : io.openliberty.mcp.internal.config.McpServerConfigProps.DEFAULT_MCP_SERVER_VERSION;
+        String serverDescription = mcpConfig.mcpServerInfoDescription() != null ? mcpConfig.mcpServerInfoDescription() : io.openliberty.mcp.internal.config.McpServerConfigProps.DEFAULT_MCP_SERVER_DESCRIPTION;
+        ServerInfo info = new ServerInfo(serverName, serverTitle, serverVersion, serverDescription);
         McpInitializeResult result = new McpInitializeResult(version, caps, info, null);
 
         transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId);

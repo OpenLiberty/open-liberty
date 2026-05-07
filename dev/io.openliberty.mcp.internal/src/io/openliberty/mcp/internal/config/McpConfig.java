@@ -17,4 +17,12 @@ public interface McpConfig {
     String path();
 
     String servicePid();
+
+    String mcpServerInfoName();
+
+    String mcpServerInfoTitle();
+
+    String mcpServerInfoVersion();
+
+    String mcpServerInfoDescription();
 }

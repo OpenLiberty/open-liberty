@@ -60,7 +60,12 @@ public class McpConfigurationComponent {
         Object statelessObj = properties.get("stateless");
         boolean stateless = statelessObj != null ? Boolean.parseBoolean(String.valueOf(statelessObj)) : false;
 
-        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid);
+        String mcpServerInfoName = (String) properties.get("mcpServerInfoName");
+        String mcpServerInfoTitle = (String) properties.get("mcpServerInfoTitle");
+        String mcpServerInfoVersion = (String) properties.get("mcpServerInfoVersion");
+        String mcpServerInfoDescription = (String) properties.get("mcpServerInfoDescription");
+
+        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, mcpServerInfoName, mcpServerInfoTitle, mcpServerInfoVersion, mcpServerInfoDescription);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(this, tc, "McpConfigurationComponent activated: servicePid=" + servicePid);

@@ -16,11 +16,23 @@ package io.openliberty.mcp.internal.config;
  * @param moduleName The name of the module the application is running in
  * @param path The endpoint path for the mcp server
  * @param servicePid The service PID
+ * @param mcpServerInfoName The name identifier for this MCP server
+ * @param mcpServerInfoTitle A human-readable title for this MCP server
+ * @param mcpServerInfoVersion The version string for this MCP server
  */
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
                                    String path,
-                                   String servicePid) implements McpConfig {
+                                   String servicePid,
+                                   String mcpServerInfoName,
+                                   String mcpServerInfoTitle,
+                                   String mcpServerInfoVersion,
+                                   String mcpServerInfoDescription) implements McpConfig {
     public static final String FALLBACK_PATH = "/mcp";
-    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null);
+    public static final String DEFAULT_MCP_SERVER_NAME = "liberty-mcp-server";
+    public static final String DEFAULT_MCP_SERVER_TITLE = "Open Liberty MCP Server";
+    public static final String DEFAULT_MCP_SERVER_VERSION = "1.0";
+    public static final String DEFAULT_MCP_SERVER_DESCRIPTION = "Allows developers to expose the business logic of applications, making it discoverable, understandable, and usable by AI applications.";
+    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, DEFAULT_MCP_SERVER_NAME, DEFAULT_MCP_SERVER_TITLE,
+                                                                                       DEFAULT_MCP_SERVER_VERSION, DEFAULT_MCP_SERVER_DESCRIPTION);
 }

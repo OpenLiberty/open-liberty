@@ -20,5 +20,5 @@ public record McpInitializeResult(McpProtocolVersion protocolVersion,
                                   ServerInfo serverInfo,
                                   String instructions) {
 
-    public record ServerInfo(String name, String title, String version) {}
+    public record ServerInfo(String name, String title, String version, String description) {}
 }

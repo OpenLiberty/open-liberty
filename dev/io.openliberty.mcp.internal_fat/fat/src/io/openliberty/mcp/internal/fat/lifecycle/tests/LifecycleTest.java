@@ -95,9 +95,10 @@ public class LifecycleTest {
                               }
                             },
                             "serverInfo": {
-                              "name": "test-server",
-                              "title": "Test Server",
-                              "version": "0.1"
+                              "name": "liberty-mcp-server",
+                              "title": "Open Liberty MCP Server",
+                              "version": "1.0",
+                              "description": "Allows developers to expose the business logic of applications, making it discoverable, understandable, and usable by AI applications."
                             }
                           }
                         }
