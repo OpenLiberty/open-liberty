@@ -11,19 +11,21 @@ package io.openliberty.mcp.internal.encoders;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
-import jakarta.annotation.Priority;
 
 public class EncoderRegistry {
 
     private static final int DEFAULT_ENCODER_PRIORITY = 0;
     private List<ToolResponseEncoder<?>> toolResponseEncoders = new ArrayList<>();
     private List<ContentEncoder<?>> contentEncoders = new ArrayList<>();
+    private Map<Object, Integer> encoderPriorities = new HashMap<>();
     private final EncoderRegistry globalRegistry;
 
     /**
@@ -40,9 +42,12 @@ public class EncoderRegistry {
         this.globalRegistry = null;
     }
 
-    public void registerEncoders(List<ToolResponseEncoder<?>> toolResponseEncoders, List<ContentEncoder<?>> contentEncoders) {
+    public void registerEncoders(List<ToolResponseEncoder<?>> toolResponseEncoders,
+                                 List<ContentEncoder<?>> contentEncoders,
+                                 Map<Object, Integer> encoderPriorities) {
         this.toolResponseEncoders = toolResponseEncoders;
         this.contentEncoders = contentEncoders;
+        this.encoderPriorities = encoderPriorities;
         sortEncoders();
     }
 
@@ -50,23 +55,8 @@ public class EncoderRegistry {
      * Sort the registered encoders by priority (highest first, descending)
      */
     private void sortEncoders() {
-        toolResponseEncoders.sort(Comparator.<ToolResponseEncoder<?>> comparingInt(toolResponseEncoder -> getPriority(toolResponseEncoder)).reversed());
-        contentEncoders.sort(Comparator.<ContentEncoder<?>> comparingInt(contentEncoder -> getPriority(contentEncoder)).reversed());
-    }
-
-    private int getPriority(Object encoder) {
-        int result = DEFAULT_ENCODER_PRIORITY;
-        Class<?> encoderClass = encoder.getClass();
-
-        while (encoderClass != null && encoderClass != Object.class) {
-            Priority priority = encoderClass.getAnnotation(Priority.class);
-            if (priority != null) {
-                result = priority.value();
-                break;
-            }
-            encoderClass = encoderClass.getSuperclass();
-        }
-        return result;
+        toolResponseEncoders.sort(Comparator.<ToolResponseEncoder<?>> comparingInt(encoder -> encoderPriorities.getOrDefault(encoder, DEFAULT_ENCODER_PRIORITY)).reversed());
+        contentEncoders.sort(Comparator.<ContentEncoder<?>> comparingInt(encoder -> encoderPriorities.getOrDefault(encoder, DEFAULT_ENCODER_PRIORITY)).reversed());
     }
 
     public Optional<Encoder<?, ?>> findEncoder(Class<?> returnType) {

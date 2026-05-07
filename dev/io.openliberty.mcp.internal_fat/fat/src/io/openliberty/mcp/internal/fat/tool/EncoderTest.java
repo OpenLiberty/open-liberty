@@ -453,4 +453,46 @@ public class EncoderTest extends FATServletClient {
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
+    /**
+     * Test that @Priority annotation is NOT inherited from superclass.
+     * This verifies the fix where priority is now captured from ProcessManagedBean.getAnnotatedBeanClass()
+     * instead of walking the superclass hierarchy at runtime.
+     *
+     *
+     * The encoder with highest priority (BaseEncoderWithPriority) should be used.
+     */
+    @Test
+    public void testPriorityNotInheritedFromSuperclass() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testPriorityNotInherited",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        // Should use BaseEncoderWithPriority (priority 200), not SubclassEncoderNoPriority
+        // which would incorrectly inherit priority 200 with the old buggy implementation
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\\"message\\\":\\\"Encoded by BaseEncoderWithPriority (priority 200)\\\"}"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
 }
