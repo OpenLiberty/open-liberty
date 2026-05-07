@@ -34,7 +34,8 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyWriter | \
   META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
   META-INF/services/jakarta.ws.rs.ext.Providers | \
-  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext
+  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext | \
+  META-INF/services/org.jboss.resteasy.spi.Registry
 
 -cdiannotations:
 
@@ -87,7 +88,7 @@ Export-Package: \
   org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.registry;version=${resteasy-version}, \
   org.jboss.resteasy.core.request;version=${resteasy-version}, \
-  org.jboss.resteasy.core;version=${resteasy-version}, \
+  org.jboss.resteasy.core;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.microprofile.config;version=${resteasy-version}, \
   org.jboss.resteasy.mock;version=${resteasy-version}, \
   org.jboss.resteasy.plugins.delegates;version=${resteasy-version}, \

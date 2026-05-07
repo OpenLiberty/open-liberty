@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -38,7 +38,7 @@ import io.openliberty.restfulWS.client.internal.AsyncClientExecutorHelper;
 public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl {
 
     private static AsyncClientExecutorHelper executorHelper;
-    
+
     public static void setAsyncClientExecutorHelper(AsyncClientExecutorHelper helper) {
         executorHelper = helper;
     }
@@ -80,7 +80,7 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
 
         if (resetProxy) {
            // Reset proxy by setting it to null
-           defaultProxy(null, -1, null);
+           defaultProxy(null);
         }
 
         ExecutorService executor = getExecutorService();
