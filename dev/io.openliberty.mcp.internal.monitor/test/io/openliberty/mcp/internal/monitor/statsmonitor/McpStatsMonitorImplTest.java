@@ -27,20 +27,22 @@ public class McpStatsMonitorImplTest {
     }
 
     @Test
-    public void activateRegistersHolder() {
+    public void constructorRegistersHolder() {
         McpStatsMonitorImpl impl = new McpStatsMonitorImpl();
 
-        impl.activate();
-
+        // Constructor should automatically register in holder
         assertSame(impl, McpStatsMonitorHolder.get());
     }
 
     @Test
-    public void deactivateClearsHolder() {
+    public void holderCanBeCleared() {
         McpStatsMonitorImpl impl = new McpStatsMonitorImpl();
 
-        impl.activate();
-        impl.deactivate();
+        // Verify it's registered
+        assertSame(impl, McpStatsMonitorHolder.get());
+        
+        // Clear the holder
+        McpStatsMonitorHolder.clear();
 
         assertNull(McpStatsMonitorHolder.get());
     }

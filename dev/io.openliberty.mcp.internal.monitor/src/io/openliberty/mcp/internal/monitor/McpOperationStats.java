@@ -11,28 +11,37 @@ package io.openliberty.mcp.internal.monitor;
 
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 import com.ibm.websphere.monitor.meters.StatisticsReading;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
 
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
 
+/**
+ * Records statistics for MCP (Model Context Protocol) operations.
+ * <p>
+ * This class tracks metrics for individual MCP operations, including call counts and durations.
+ * A new instance is created for each unique combination of operation attributes (method name,
+ * tool name, error type, etc.). All instances are managed by {@link McpStatsMonitorImpl}.
+ * <p>
+ * The statistics are exposed via JMX through the {@link McpOperationStatsMXBean} interface
+ * and can be consumed by monitoring systems like MicroProfile Metrics and MicroProfile Telemetry.
+ */
 public class McpOperationStats extends Meter implements McpOperationStatsMXBean {
+    private static final TraceComponent tc = Tr.register(McpOperationStats.class);
+
 	private final String mcpMethodName;
     
     /*
-     * Conditionally required as per HTTP Semantics Convention
-     */ 
+     * Conditionally required fields for MCP operations
+     */
     private final String errorType, genAiPromptName, genAiToolName, rpcResponseStatusCode;
     
     /*
-     * Optional fields.
-     * We are unable to facilitate capturing Exceptions
-     * But we will leave it here.
-     * Additional Context : We can capture  exceptions thrown by servlets
-     * by surrounding the the chainFilter with try catch. But we have no way
-     * of capturing application exception of Jaxrs/restfulws exceptions
+     * Optional protocol and network attributes for the MCP operation
      */
     private final String genAiOperationName, jsonrpcProtocolVersion, mcpProtocolVersion, networkProtocolName, networkProtocolVersion, networkTransport, mcpResourceUri;
 	
@@ -55,11 +64,11 @@ public class McpOperationStats extends Meter implements McpOperationStatsMXBean 
 		this.mcpResourceUri = mcpStatAttributes.getMcpResourceUri();
 		
 		toolCallCount = new Counter();
-		toolCallCount.setDescription("Total calls of an MCP tool");
+		toolCallCount.setDescription(Tr.formatMessage(tc, "mcp.operation.count.description"));
 		
 		toolCallRunDuration = new StatisticsMeter();
-		toolCallRunDuration.setDescription("Duration of tool call operations");
-		toolCallRunDuration.setUnit("seconds");
+		toolCallRunDuration.setDescription(Tr.formatMessage(tc, "mcp.operation.duration.description"));
+		toolCallRunDuration.setUnit(Tr.formatMessage(tc, "mcp.metric.unit.nanoseconds"));
 
 	}
 

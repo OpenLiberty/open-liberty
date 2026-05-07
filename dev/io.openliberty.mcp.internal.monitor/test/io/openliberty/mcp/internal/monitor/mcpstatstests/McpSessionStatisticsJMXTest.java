@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.openliberty.mcp.internal.monitor.McpSessionStatistics;
-import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 
 /**
  * Test class for McpSessionStatistics JMX bean functionality.
@@ -107,8 +107,8 @@ public class McpSessionStatisticsJMXTest {
         mbs.registerMBean(mcpSessionStats, objectName);
 
         // Update session metrics
-        mcpSessionStats.incrementToolCallCountBy(3);
-        mcpSessionStats.addToolTimeStat(5_000_000_000L); // 5 seconds in nanos
+        mcpSessionStats.incrementSessionCountBy(3);
+        mcpSessionStats.addSessionDurationStat(5_000_000_000L); // 5 seconds in nanos
 
         // Read updated values through JMX
         Long count = (Long) mbs.getAttribute(objectName, "Count");
@@ -167,9 +167,9 @@ public class McpSessionStatisticsJMXTest {
         mbs.registerMBean(mcpSessionStats, objectName);
 
         // Add multiple session duration measurements
-        mcpSessionStats.addToolTimeStat(1_000_000_000L); // 1 second
-        mcpSessionStats.addToolTimeStat(2_000_000_000L); // 2 seconds
-        mcpSessionStats.addToolTimeStat(3_000_000_000L); // 3 seconds
+        mcpSessionStats.addSessionDurationStat(1_000_000_000L); // 1 second
+        mcpSessionStats.addSessionDurationStat(2_000_000_000L); // 2 seconds
+        mcpSessionStats.addSessionDurationStat(3_000_000_000L); // 3 seconds
 
         // Total should be 6 seconds
         Double duration = (Double) mbs.getAttribute(objectName, "Duration");

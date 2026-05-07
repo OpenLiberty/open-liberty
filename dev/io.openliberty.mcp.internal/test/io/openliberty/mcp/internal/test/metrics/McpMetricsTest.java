@@ -177,5 +177,11 @@ public class McpMetricsTest {
             endedSessionMetrics = metrics;
 
         }
+
+        /** {@inheritDoc} */
+        @Override
+        public void removeStatsForApp(String appName) {
+            // No-op for test mock
+        }
     }
 }

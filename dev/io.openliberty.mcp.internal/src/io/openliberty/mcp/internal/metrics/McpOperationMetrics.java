@@ -17,10 +17,38 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.internal.McpTransport;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitorHolder;
+import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 
 /**
+ * Captures metrics data for individual MCP (Model Context Protocol) operations.
  *
+ * <p>This class tracks timing and metadata for discrete MCP operations such as tool calls,
+ * prompts, resource requests, and protocol messages. Each operation represents a single
+ * request-response cycle within an MCP session.
+ *
+ * <p>Key responsibilities:
+ * <ul>
+ *   <li>Recording operation start time for duration calculation</li>
+ *   <li>Tracking operation-specific metadata (method name, tool name, status, errors)</li>
+ *   <li>Forwarding metrics to the monitoring system via {@link McpStatsMonitor}</li>
+ *   <li>Supporting both successful and failed operation outcomes</li>
+ * </ul>
+ *
+ * <p>Usage pattern:
+ * <pre>
+ * McpOperationMetrics metrics = new McpOperationMetrics();
+ * metrics.setMethodName("tools/call");
+ * metrics.setToolName("calculator");
+ * metrics.setTransport(transport);
+ * McpOperationMetrics.operationStarted(metrics);
+ * // ... perform operation ...
+ * metrics.setOutcome("ok", null); // or setOutcome("error", "timeout")
+ * McpOperationMetrics.operationEnded(metrics);
+ * </pre>
+ *
+ * @see McpStatsMonitor
+ * @see McpOperationStatAttributes
  */
 public final class McpOperationMetrics {
     private ExecutionRequestId executionRequestId;
@@ -33,6 +61,9 @@ public final class McpOperationMetrics {
     private String toolName;
     private String status;
     private String errorType;
+    private String appName;
+
+    private McpOperationStatAttributes.Builder attributesBuilder;
 
     private static final TraceComponent tc = Tr.register(McpOperationMetrics.class);
 
@@ -41,8 +72,23 @@ public final class McpOperationMetrics {
         this.startTIme = Instant.now();
     }
 
+    public McpOperationStatAttributes.Builder getAttributesBuilder() {
+        return attributesBuilder;
+    }
+
+    public void setAttributesBuilder(McpOperationStatAttributes.Builder builder) {
+        this.attributesBuilder = builder;
+    }
+
     /**
-     * @return the startTimeNanos
+     * @return the start time in nanoseconds
+     */
+    public long getStartTimeNanos() {
+        return startTimeNanos;
+    }
+
+    /**
+     * @return the duration in nanoseconds from start to now
      */
     public long getDurationNanos() {
         return System.nanoTime() - startTimeNanos;
@@ -117,6 +163,16 @@ public final class McpOperationMetrics {
 
     public void setTransport(McpTransport transport) {
         this.transport = transport;
+        if (transport != null) {
+            this.appName = transport.getAppName();
+        }
+    }
+
+    /**
+     * @return the appName
+     */
+    public String getAppName() {
+        return appName;
     }
 
     /**
@@ -137,14 +193,11 @@ public final class McpOperationMetrics {
         }
 
         McpStatsMonitor monitor = McpStatsMonitorHolder.get();
-        if (monitor == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Monitor is null in operationStarted");
-            }
-            return;
+        if (monitor != null) {
+            monitor.recordOperationStart(metrics);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Monitor is null in operationStarted");
         }
-
-        monitor.recordOperationStart(metrics);
     }
 
     public static void operationEnded(McpOperationMetrics metrics) {
@@ -153,13 +206,10 @@ public final class McpOperationMetrics {
         }
 
         McpStatsMonitor monitor = McpStatsMonitorHolder.get();
-        if (monitor == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Monitor is null in operationEnded");
-            }
-            return;
+        if (monitor != null) {
+            monitor.recordOperationEnd(metrics);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Monitor is null in operationEnded");
         }
-
-        monitor.recordOperationEnd(metrics);
     }
 }

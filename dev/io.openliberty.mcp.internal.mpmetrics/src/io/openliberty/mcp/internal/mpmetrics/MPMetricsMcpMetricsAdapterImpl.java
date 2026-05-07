@@ -45,8 +45,8 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 import io.openliberty.mcp.internal.monitor.metrics.McpMetricAdapter;
-import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
-import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 import io.openliberty.microprofile.metrics50.SharedMetricRegistries;
 import io.openliberty.mcp.internal.mpmetrics.constants.Constants;
 
@@ -65,8 +65,8 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
     private static final long NANO_CONVERSION = (long) 0.000000001;
 
     /**
-     * Mapping between application name to a map of HTTP stats ID mapped to
-     * MicroProfile Metrics' Tags i.e. Map<appName, Map<HttpStatID, Tags>>
+     * Mapping between application name to a map of MCP stats ID mapped to
+     * MicroProfile Metrics' Tags i.e. Map<appName, Map<McpStatID, Tags>>
      */
     private static Map<String, Map<String, Tag[]>> appNameToTagsMap = new ConcurrentHashMap<String, Map<String, Tag[]>>();
 
@@ -95,9 +95,9 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
         String appName = getApplicationName();
         appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
 
-        String keyID = mcpStatAttributes.getMcpStat_ID();
+        String keyID = mcpStatAttributes.toString();
 
-        // Key is the HttpStasID generated for each httpStatsAttribute
+        // Key is the McpStatsID generated for each mcpStatsAttribute
         Map<String, Tag[]> attributesMap = appNameToTagsMap.computeIfAbsent(appName,
                 x -> new ConcurrentHashMap<String, Tag[]>());
         Tag[] tags = attributesMap.computeIfAbsent(keyID, x -> retrieveOperationTags(mcpStatAttributes));
@@ -179,9 +179,9 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
         String appName = getApplicationName();
         appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
 
-        String keyID = mcpStatAttributes.getMcpStat_ID();
+        String keyID = mcpStatAttributes.toString();
 
-        // Key is the HttpStasID generated for each httpStatsAttribute
+        // Key is the McpStatsID generated for each mcpStatsAttribute
         Map<String, Tag[]> attributesMap = appNameToTagsMap.computeIfAbsent(appName,
                 x -> new ConcurrentHashMap<String, Tag[]>());
         Tag[] tags = attributesMap.computeIfAbsent(keyID, x -> retrieveSessionTags(mcpStatAttributes));
@@ -263,6 +263,18 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, String.format(
                     "Detected that application %s has stopped. Removed a corresponding Map<String, Attributes> entry? [%b]",
+                    appName, (map != null)));
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeMetricsForApp(String appName) {
+        Map<String, Tag[]> map = appNameToTagsMap.remove(appName);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, String.format(
+                    "Removing metrics for application %s. Removed a corresponding Map<String, Tag[]> entry? [%b]",
                     appName, (map != null)));
         }
     }

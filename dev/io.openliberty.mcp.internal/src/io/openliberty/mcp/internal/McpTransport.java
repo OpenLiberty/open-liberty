@@ -62,6 +62,7 @@ public class McpTransport {
     private McpProtocolVersion version;
     private McpSession sessionInfo;
     private static final AtomicInteger TIMEOUT_SECONDS = new AtomicInteger(30); //Make this configurable
+    private String appName;
 
     public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb) throws IOException {
         this.req = req;
@@ -94,6 +95,7 @@ public class McpTransport {
             throw new HttpResponseException(HttpServletResponse.SC_BAD_REQUEST, excpetionMesaage);
         }
         this.mcpRequest = toRequest();
+        this.appName = extractAppName();
         final String sessionIdHeader = req.getHeader(MCP_SESSION_ID_HEADER);
 
         if (sessionIdHeader == null) {
@@ -343,6 +345,29 @@ public class McpTransport {
             }
         }
         return false;
+    }
+
+    /**
+     * Extracts the application name from the servlet context path.
+     * This is used to track which application's MBeans should be cleaned up on unload.
+     *
+     * @return the application name, or "unknown-app" if it cannot be determined
+     */
+    private String extractAppName() {
+        String contextPath = req.getServletContext().getContextPath();
+        if (contextPath != null && !contextPath.isEmpty() && !"/".equals(contextPath)) {
+            return contextPath.startsWith("/") ? contextPath.substring(1) : contextPath;
+        }
+        return "unknown-app";
+    }
+
+    /**
+     * Returns the application name associated with this transport.
+     *
+     * @return the application name
+     */
+    public String getAppName() {
+        return appName;
     }
 
     /**

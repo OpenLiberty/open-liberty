@@ -72,6 +72,14 @@ public class McpMonitorMetricsServlet extends FATServlet {
         Set<ObjectName> mbeans = mbs.queryNames(query, null);
 
         assertNotNull("Operation MBeans should not be null", mbeans);
+        
+        // Debug: Print all MBeans found
+        System.out.println("=== DEBUG: Found " + mbeans.size() + " operation MBeans ===");
+        for (ObjectName mbean : mbeans) {
+            System.out.println("MBean: " + mbean.toString());
+        }
+        System.out.println("=== END DEBUG ===");
+        
         assertTrue("Expected MCP operation MBeans to exist", !mbeans.isEmpty());
 
         boolean foundEcho = false;

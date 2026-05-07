@@ -25,4 +25,12 @@ public interface McpStatsMonitor {
     void recordSessionStart(McpSessionMetrics metrics);
 
     void recordSessionEnd(McpSessionMetrics metrics);
+    
+    /**
+     * Removes all statistics (MBeans, metrics, and internal data structures) for the specified application.
+     * This method is called when an application is unloaded to prevent memory leaks.
+     *
+     * @param appName the name of the application whose statistics should be removed
+     */
+    void removeStatsForApp(String appName);
 }

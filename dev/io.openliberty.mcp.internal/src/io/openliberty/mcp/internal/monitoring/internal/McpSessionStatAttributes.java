@@ -7,8 +7,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.monitoring;
+package io.openliberty.mcp.internal.monitoring.internal;
 
+import java.util.Objects;
 import java.util.Optional;
 
 import com.ibm.websphere.ras.Tr;
@@ -16,8 +17,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
 public class McpSessionStatAttributes {
-
-    private final String mcpStat_ID;
 
     private static final TraceComponent tc = Tr.register(McpSessionStatAttributes.class);
 
@@ -32,14 +31,13 @@ public class McpSessionStatAttributes {
     private final String jsonrpcProtocolVersion, mcpProtocolVersion, networkProtocolName, networkProtocolVersion, networkTransport;
 
     /**
-     * Constructor for HttpStatsAttributes. This should not be called directly, but
+     * Constructor for McpSessionStatAttributes. This should not be called directly, but
      * should be instantiated through {@link Builder#build()}
      *
      * @param builder see {@link Builder}
      * @throws IllegalStateException if the builder's validation fails
      */
     /**
-     * @param httpStat_ID
      * @param errorType
      * @param jsonrpcProtocolVersion
      * @param mcpProtocolVersion
@@ -57,20 +55,6 @@ public class McpSessionStatAttributes {
         this.networkProtocolName = (builder.networkProtocolName.isPresent() ? builder.networkProtocolName.get() : null);
         this.networkProtocolVersion = (builder.networkProtocolVersion.isPresent() ? builder.networkProtocolVersion.get() : null);
         this.networkTransport = (builder.networkTransport.isPresent() ? builder.networkTransport.get() : null);
-
-        StringBuilder mcpStatIDBuilder = new StringBuilder("session");
-        if (this.errorType != null) {
-            mcpStatIDBuilder.append("_").append(this.errorType);
-        }
-
-        this.mcpStat_ID = mcpStatIDBuilder.toString();
-    }
-
-    /**
-     * @return the httpStat_ID
-     */
-    public String getMcpStat_ID() {
-        return mcpStat_ID;
     }
 
     /**
@@ -122,12 +106,44 @@ public class McpSessionStatAttributes {
         return networkTransport;
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Generates a JMX-safe identifier string by concatenating all non-null attribute values with underscores.
+     * This string is used as the key for MBean registration in the Liberty monitoring framework.
+     * The underscore separates different attributes, but attribute values are preserved as-is.
+     *
+     * @return a string representation suitable for use as a JMX ObjectName property value
+     */
     @Override
     public String toString() {
-        return "McpSessionStatAttributes [mcpStat_ID=" + mcpStat_ID + ", errorType=" + errorType + ", jsonrpcProtocolVersion=" + jsonrpcProtocolVersion
-               + ", mcpProtocolVersion=" + mcpProtocolVersion + ", networkProtocolName=" + networkProtocolName + ", networkProtocolVersion=" + networkProtocolVersion
-               + ", networkTransport=" + networkTransport + "]";
+        return String.join("_",
+            java.util.stream.Stream.of(
+                errorType, jsonrpcProtocolVersion, mcpProtocolVersion,
+                networkProtocolName, networkProtocolVersion, networkTransport
+            )
+            .filter(s -> s != null)
+            .toArray(String[]::new)
+        );
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(errorType, jsonrpcProtocolVersion, mcpProtocolVersion,
+                networkProtocolName, networkProtocolVersion, networkTransport);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null || getClass() != obj.getClass())
+            return false;
+        McpSessionStatAttributes other = (McpSessionStatAttributes) obj;
+        return Objects.equals(errorType, other.errorType)
+                && Objects.equals(jsonrpcProtocolVersion, other.jsonrpcProtocolVersion)
+                && Objects.equals(mcpProtocolVersion, other.mcpProtocolVersion)
+                && Objects.equals(networkProtocolName, other.networkProtocolName)
+                && Objects.equals(networkProtocolVersion, other.networkProtocolVersion)
+                && Objects.equals(networkTransport, other.networkTransport);
     }
 
     public static Builder builder() {
@@ -139,7 +155,7 @@ public class McpSessionStatAttributes {
         private String mcpMethodName;
 
         /*
-         * Conditionally required as per HTTP Semantics Convention
+         * Conditionally required fields for MCP sessions
          */
         private Optional<String> errorType = Optional.empty();
 
@@ -164,11 +180,11 @@ public class McpSessionStatAttributes {
         Builder() {}
 
         /**
-         * Builds an instance of {@link HttpStatAttributes} with values from this
+         * Builds an instance of {@link McpSessionStatAttributes} with values from this
          * builder. Will validate and throw an {@link IllegalStateException} if the
          * required fields are not filled.
          *
-         * @return Instance of {@link HttpStatAttributes}
+         * @return Instance of {@link McpSessionStatAttributes}
          * @throws IllegalStateException
          */
         @FFDCIgnore(value = { IllegalStateException.class })
@@ -178,7 +194,7 @@ public class McpSessionStatAttributes {
             } catch (IllegalStateException ise) {
                 //do nothing
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, String.format("Invalid HTTP Stats attributes : \n %s", toString()));
+                    Tr.debug(tc, String.format("Invalid MCP Stats attributes : \n %s", toString()));
                 }
             }
             return null;
@@ -228,3 +244,5 @@ public class McpSessionStatAttributes {
 
     }
 }
+
+// Made with Bob

@@ -7,5 +7,5 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mcpServer-1.0))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.mcp.internal.mptelemetry
-kind=ga
+kind=beta
 edition=core

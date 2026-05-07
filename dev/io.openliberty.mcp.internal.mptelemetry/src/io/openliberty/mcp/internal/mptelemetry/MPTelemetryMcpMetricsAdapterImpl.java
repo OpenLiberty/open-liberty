@@ -43,8 +43,8 @@ import com.ibm.ws.container.service.state.StateChangeException;
 import com.ibm.ws.runtime.metadata.ComponentMetaData;
 
 import io.openliberty.mcp.internal.monitor.metrics.McpMetricAdapter;
-import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
-import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 import io.openliberty.microprofile.telemetry.internal.common.constants.OpenTelemetryConstants;
 import io.openliberty.microprofile.telemetry.internal.interfaces.OpenTelemetryAccessor;
 import io.opentelemetry.api.OpenTelemetry;
@@ -71,8 +71,8 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
     private static final List<Double> BUCKET_BOUNDARIES_LIST = Arrays.asList(BUCKET_BOUNDARIES);
 
     /**
-     * Mapping between application name to a map of HTTP stats ID mapped to OpenTelemetry attributes
-     * i.e. Map<appName, Map<HttpStatID, Attributes>>
+     * Mapping between application name to a map of MCP stats ID mapped to OpenTelemetry attributes
+     * i.e. Map<appName, Map<McpStatID, Attributes>>
      */
     private static Map<String, Map<String, Attributes>> appNameToAttributesMap = new ConcurrentHashMap<String, Map<String, Attributes>>();
 
@@ -89,7 +89,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 
         /*
-         * Even if the HTTP call is served by the server/runtime, the "appName" can be non null.
+         * Even if the MCP call is served by the server/runtime, the "appName" can be non null.
          * The AppName is retrieved through a ServletContext property and the "appname" can be the originating bundle.
          * This would not be "registered" as an appname with the Otel runtime and will return null.
          * We will then below retrieve a server/runtime instance.
@@ -116,9 +116,9 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         String appName = getApplicationName();
         appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
 
-        String keyID = mcpStatAttributes.getMcpStat_ID();
+        String keyID = mcpStatAttributes.toString();
 
-        // Key is the mcpStasID generated for each httpStatsAttribute
+        // Key is the mcpStatsID generated for each mcpStatsAttribute
         Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
         Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveOperationAttributes(mcpStatAttributes));
 
@@ -194,7 +194,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
      * We can re-use the (histogram) Meter created here.
      * The Meter is built using the same static values each time.
      * The instrument that is recorded/updated is distinct for each
-     * http-route/response/method combination (corresponds with resolved attributes).
+     * MCP method/tool/status combination (corresponds with resolved attributes).
      *
      * However we cannot share it across multiple instances of OpenTelemetry
      */
@@ -229,7 +229,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 
         /*
-         * Even if the HTTP call is served by the server/runtime, the "appName" can be non null.
+         * Even if the MCP call is served by the server/runtime, the "appName" can be non null.
          * The AppName is retrieved through a ServletContext property and the "appname" can be the originating bundle.
          * This would not be "registered" as an appname with the Otel runtime and will return null.
          * We will then below retrieve a server/runtime instance.
@@ -256,9 +256,9 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         String appName = getApplicationName();
         appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
 
-        String keyID = mcpStatAttributes.getMcpStat_ID();
+        String keyID = mcpStatAttributes.toString();
 
-        // Key is the mcpStasID generated for each httpStatsAttribute
+        // Key is the mcpStatsID generated for each mcpStatsAttribute
         Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
         Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveSessionAttributes(mcpStatAttributes));
 
@@ -308,7 +308,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
      * We can re-use the (histogram) Meter created here.
      * The Meter is built using the same static values each time.
      * The instrument that is recorded/updated is distinct for each
-     * http-route/response/method combination (corresponds with resolved attributes).
+     * MCP session attribute combination (corresponds with resolved attributes).
      *
      * However we cannot share it across multiple instances of OpenTelemetry
      */
@@ -378,6 +378,17 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc,
                      String.format("Detected that application %s has stopped. Removed a corresponding Map<String, Attributes> entry? [%b]", appName, (map != null)));
+        }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void removeMetricsForApp(String appName) {
+        Map<String, Attributes> map = appNameToAttributesMap.remove(appName);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc,
+                     String.format("Removing metrics for application %s. Removed a corresponding Map<String, Attributes> entry? [%b]", appName, (map != null)));
         }
     }
 }

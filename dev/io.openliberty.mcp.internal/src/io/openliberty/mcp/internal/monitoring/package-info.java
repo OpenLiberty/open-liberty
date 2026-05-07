@@ -8,7 +8,10 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 /**
- *
+ * This package contains the exported API for MCP monitoring.
+ * <p>
+ * Internal implementation classes have been moved to the {@code io.openliberty.mcp.internal.monitoring.internal} subpackage.
+ * Only the {@link io.openliberty.mcp.internal.monitoring.McpStatsMonitor} interface is part of the exported API.
  */
 @com.ibm.websphere.ras.annotation.TraceOptions(messageBundle = "io.openliberty.mcp.internal.resources.CWMCM", traceGroup = "MCP")
 @org.osgi.annotation.versioning.Version("1.0")

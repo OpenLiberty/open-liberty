@@ -8,8 +8,13 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 /**
- *
+ * Internal implementation classes for MCP monitoring.
+ * 
+ * <p>This package contains internal implementation details that should not be
+ * used directly by other bundles. These classes are subject to change without notice.
  */
-@com.ibm.websphere.ras.annotation.TraceOptions(messageBundle = "io.openliberty.mcp.internal.monitor.resources.CWMCM", traceGroup = "MCP")
+@com.ibm.websphere.ras.annotation.TraceOptions(messageBundle = "io.openliberty.mcp.internal.resources.CWMCM", traceGroup = "MCP")
 @org.osgi.annotation.versioning.Version("1.0")
-package io.openliberty.mcp.internal.monitor;
+package io.openliberty.mcp.internal.monitoring.internal;
+
+// Made with Bob

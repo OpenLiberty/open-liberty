@@ -39,7 +39,7 @@ public class McpMonitorTest extends FATServletClient {
 
     private final static String APP_NAME = "mcpMonitorTest";
 
-    @Server("mcp-server-monitor")
+    @Server("mcp-server-monitor-only")
     public static LibertyServer server;
 
     @Rule

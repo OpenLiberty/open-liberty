@@ -24,12 +24,12 @@ Import-Package: \
 
 
 Export-Package: \
-	io.openliberty.mcp.internal.monitor;thread-context=true,\
+	io.openliberty.mcp.internal.monitor,\
 	io.openliberty.mcp.internal.monitor.metrics
 
 -dsannotations: \
   io.openliberty.mcp.internal.monitor.metrics.MetricsManager,\
-  io.openliberty.mcp.internal.monitor.McpStatsMonitorImpl
+  io.openliberty.mcp.internal.monitor.McpMonitorAppStateListener
 
 Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonitorImpl
 
@@ -42,5 +42,6 @@ Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonit
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
 	com.ibm.ws.logging.core;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
 	io.openliberty.mcp.internal;version=latest
 -testpath: com.ibm.ws.componenttest.2.0

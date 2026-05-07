@@ -24,7 +24,7 @@ WS-TraceGroup: MCP
 
 Export-Package: \
 	io.openliberty.mcp.internal.*;thread-context=true;version=${bVersion},\
-	io.openliberty.mcp.internal.monitoring;thread-context=true;version=${bVersion}
+	io.openliberty.mcp.internal.monitoring;version=${bVersion}
 
 Import-Package: \
     jakarta.annotation.*;version='[2.1.0,4.0.0)',\

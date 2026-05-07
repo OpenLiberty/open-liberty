@@ -11,9 +11,11 @@ package io.openliberty.mcp.internal.monitor;
 
 import com.ibm.websphere.monitor.meters.StatisticsMeter;
 import com.ibm.websphere.monitor.meters.StatisticsReading;
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
-import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
@@ -21,18 +23,15 @@ import com.ibm.websphere.monitor.meters.Meter;
 
 public class McpSessionStatistics extends Meter implements McpSessionStatisticsMXBean {
     
+    private static final TraceComponent tc = Tr.register(McpSessionStatistics.class);
+    
     /*
-     * Conditionally required as per HTTP Semantics Convention
-     */ 
+     * Conditionally required fields for MCP sessions
+     */
     private final String errorType;
     
     /*
-     * Optional fields.
-     * We are unable to facilitate capturing Exceptions
-     * But we will leave it here.
-     * Additional Context : We can capture  exceptions thrown by servlets
-     * by surrounding the the chainFilter with try catch. But we have no way
-     * of capturing application exception of Jaxrs/restfulws exceptions
+     * Optional protocol and network attributes for the MCP session
      */
     private final String jsonrpcProtocolVersion, mcpProtocolVersion, networkProtocolName, networkProtocolVersion, networkTransport;
 	
@@ -48,20 +47,21 @@ public class McpSessionStatistics extends Meter implements McpSessionStatisticsM
 		this.networkProtocolVersion = mcpStatAttributes.getNetworkProtocolVersion();
 		this.networkTransport = mcpStatAttributes.getNetworkTransport();
 		
+		// Total number of MCP sessions that have been created
 		sessionCount = new Counter();
-		sessionCount.setDescription("MCP sessions");
+		sessionCount.setDescription(Tr.formatMessage(tc, "mcp.session.count.description"));
 		
 		sessionDuration = new StatisticsMeter();
-		sessionDuration.setDescription("Duration of session");
-		sessionDuration.setUnit("seconds");
+		sessionDuration.setDescription(Tr.formatMessage(tc, "mcp.session.duration.description"));
+		sessionDuration.setUnit(Tr.formatMessage(tc, "mcp.metric.unit.nanoseconds"));
 
 	}
 
-	public void incrementToolCallCountBy(int i) {
+	public void incrementSessionCountBy(int i) {
 		sessionCount.incrementBy(i);
 	}
 	
-	public void addToolTimeStat(long time) {
+	public void addSessionDurationStat(long time) {
 		sessionDuration.addDataPoint(time);
 	}
 

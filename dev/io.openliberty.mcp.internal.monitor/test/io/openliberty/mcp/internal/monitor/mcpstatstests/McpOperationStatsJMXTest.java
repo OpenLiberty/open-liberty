@@ -25,7 +25,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import io.openliberty.mcp.internal.monitor.McpOperationStats;
-import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
 
 /**
  * Test class for McpOperationStats JMX bean functionality.

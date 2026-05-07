@@ -24,12 +24,18 @@
 	    id="moduleName" 
 	    required="false" 
 	    type="String"/>
-	<AD name="%path.name" 
+	<AD name="%path.name"
 	    description="%path.description"
-	    id="path" 
-	    required="false" 
-	    type="String" 
+	    id="path"
+	    required="false"
+	    type="String"
 	    default="/mcp"/>
+	<AD name="%sessionTimeoutMinutes.name"
+	    description="%sessionTimeoutMinutes.description"
+	    id="sessionTimeoutMinutes"
+	    required="false"
+	    type="Double"
+	    default="10.0"/>
 </OCD>
 
 </metatype:MetaData>

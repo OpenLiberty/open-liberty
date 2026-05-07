@@ -15,13 +15,39 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.McpTransport;
-import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitorHolder;
+import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 import io.openliberty.mcp.internal.sessions.McpSession;
 
 /**
+ * Captures metrics data for an MCP (Model Context Protocol) session lifecycle.
  *
+ * <p>This class tracks timing and metadata for MCP sessions from initialization through termination.
+ * Sessions represent the overall connection lifecycle between an MCP client and server, which may
+ * encompass multiple individual operations.
+ *
+ * <p>Key responsibilities:
+ * <ul>
+ *   <li>Recording session start time for duration calculation</li>
+ *   <li>Tracking session-level errors (e.g., timeout, connection failure)</li>
+ *   <li>Forwarding metrics to the monitoring system via {@link McpStatsMonitor}</li>
+ *   <li>Building session attributes for metrics collection</li>
+ * </ul>
+ *
+ * <p>Usage pattern:
+ * <pre>
+ * McpSessionMetrics metrics = new McpSessionMetrics();
+ * metrics.setMcpSession(session);
+ * metrics.setTransport(transport);
+ * McpSessionMetrics.sessionStarted(metrics);
+ * // ... session operations ...
+ * metrics.setErrorType("timeout"); // if error occurred
+ * McpSessionMetrics.sessionEnded(metrics);
+ * </pre>
+ *
+ * @see McpStatsMonitor
+ * @see McpSessionStatAttributes
  */
 public final class McpSessionMetrics {
     private McpSession mcpSession;
@@ -31,6 +57,7 @@ public final class McpSessionMetrics {
     private Instant startTIme;
 
     private String errorType;
+    private String appName;
 
     private static final TraceComponent tc = Tr.register(McpSessionMetrics.class);
 
@@ -79,6 +106,16 @@ public final class McpSessionMetrics {
 
     public void setTransport(McpTransport transport) {
         this.transport = transport;
+        if (transport != null) {
+            this.appName = transport.getAppName();
+        }
+    }
+
+    /**
+     * @return the appName
+     */
+    public String getAppName() {
+        return appName;
     }
 
     /**
@@ -90,14 +127,11 @@ public final class McpSessionMetrics {
 
     public static void sessionStarted(McpSessionMetrics metrics) {
         McpStatsMonitor monitor = McpStatsMonitorHolder.get();
-        if (monitor == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Monitor is null in sessionStarted");
-            }
-            return;
+        if (monitor != null) {
+            monitor.recordSessionStart(metrics);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Monitor is null in sessionStarted");
         }
-
-        monitor.recordSessionStart(metrics);
     }
 
     public static void sessionEnded(McpSessionMetrics metrics) {
@@ -106,14 +140,11 @@ public final class McpSessionMetrics {
         }
 
         McpStatsMonitor monitor = McpStatsMonitorHolder.get();
-        if (monitor == null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Monitor is null in sessionEnded");
-            }
-            return;
+        if (monitor != null) {
+            monitor.recordSessionEnd(metrics);
+        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Monitor is null in sessionEnded");
         }
-
-        monitor.recordSessionEnd(metrics);
     }
 
     /**

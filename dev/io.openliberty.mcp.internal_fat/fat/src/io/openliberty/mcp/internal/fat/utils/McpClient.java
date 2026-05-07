@@ -27,6 +27,8 @@ import org.junit.rules.ExternalResource;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
+import com.ibm.websphere.simplicity.log.Log;
+
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpRequest;
 /**
@@ -49,6 +51,8 @@ import componenttest.topology.utils.HttpRequest;
  */
 public class McpClient extends ExternalResource {
 
+    private static final Class<?> c = McpClient.class;
+    
     private final LibertyServer server;
     private final String contextRoot;
     private final StateMode mode;
@@ -119,6 +123,23 @@ public class McpClient extends ExternalResource {
 
     private String getMcpPath() {
         return contextRoot + path;
+    }
+
+    /**
+     * Initialize the MCP client by sending an initialize request and setting up the session.
+     * This method can be called directly when you need to reinitialize after session deletion.
+     *
+     * @throws Exception if initialization fails
+     */
+    public void initialize() throws Exception {
+        try {
+            before();
+        } catch (Throwable t) {
+            if (t instanceof Exception) {
+                throw (Exception) t;
+            }
+            throw new Exception("Initialization failed", t);
+        }
     }
 
     /** {@inheritDoc} */
@@ -199,7 +220,14 @@ public class McpClient extends ExternalResource {
                                                      .method("DELETE")
                                                      .run(String.class);
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                // If we get a 404 with "Context Root Not Found", the app was undeployed
+                // This is expected in cleanup scenarios, so just log and continue
+                if (e.getMessage() != null && e.getMessage().contains("404") &&
+                    e.getMessage().contains("Context Root Not Found")) {
+                    Log.info(c, "after", "Session already deleted (app undeployed) - this is expected in cleanup");
+                } else {
+                    throw new RuntimeException(e);
+                }
             }
         }
     }
@@ -218,7 +246,16 @@ public class McpClient extends ExternalResource {
 
                 this.sessionDeleted = true;
             } catch (Exception e) {
-                throw new RuntimeException(e);
+                // If we get a 404 with "Context Root Not Found", the app was undeployed
+                // This is expected in some test scenarios, so just mark as deleted and continue
+                if (e.getMessage() != null && e.getMessage().contains("404") &&
+                    e.getMessage().contains("Context Root Not Found")) {
+                    Log.info(c, "deleteSession", "Session already deleted (app undeployed) - this is expected");
+                    this.sessionDeleted = true;
+                } else {
+                    // For other errors (like session timeout), rethrow so tests can verify
+                    throw new RuntimeException(e);
+                }
             }
         }
     }

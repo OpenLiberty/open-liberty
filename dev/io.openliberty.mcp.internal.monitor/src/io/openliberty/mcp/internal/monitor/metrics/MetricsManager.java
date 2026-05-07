@@ -24,12 +24,11 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.internal.monitoring.McpOperationStatAttributes;
-import io.openliberty.mcp.internal.monitoring.McpSessionStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
+import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, service = MetricsManager.class)
 public class MetricsManager {
-private static MetricsManager instance;
 
 	private static final TraceComponent tc = Tr.register(MetricsManager.class);
 
@@ -37,32 +36,12 @@ private static MetricsManager instance;
     private volatile List<McpMetricAdapter> mcpMetricRuntimes;
 
 
-    @Activate
-    public void activate() {
-    	instance = this;
-    }
-
-    @Deactivate
-    public void deactivate() {
-
-    	instance = null;
-    }
-
-    public static MetricsManager getInstance() {
-    	if (instance != null) {
-        	return instance;
-    	} 
-
-    	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()){
-        	Tr.debug(tc, "No RestMetricManager Instance available ");
-    	}
-    	return null;
-    }
 
     /**
-     * 
-     * @param httpStatAttributes
-     * @param duration
+     * Updates MCP operation duration metrics across all registered metric adapters.
+     *
+     * @param mcpStatsAttribute the MCP operation attributes
+     * @param duration the operation duration
      */
 	public void updateMcpOperationDurationMetrics(McpOperationStatAttributes mcpStatsAttribute , Duration duration) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -78,10 +57,11 @@ private static MetricsManager instance;
 	}
 	
 	/**
-     * 
-     * @param httpStatAttributes
-     * @param duration
-     */
+	    * Updates MCP session duration metrics across all registered metric adapters.
+	    *
+	    * @param mcpStatsAttribute the MCP session attributes
+	    * @param duration the session duration
+	    */
 	public void updateMcpSessionDurationMetrics(McpSessionStatAttributes mcpStatsAttribute , Duration duration) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
 	        Tr.debug(tc, "Forwarding metrics to " + mcpMetricRuntimes.size() + " adapters");
@@ -93,6 +73,25 @@ private static MetricsManager instance;
 	        }
             adapter.updateMcpSessionMetrics(mcpStatsAttribute, duration);
         }
-	}
+ }
+ 
+ /**
+  * Removes all metrics associated with the specified application.
+  * This method is called when an application is unloaded to clean up metrics and prevent memory leaks.
+  *
+  * @param appName The name of the application being unloaded
+  */
+ public void removeMetricsForApp(String appName) {
+  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+         Tr.debug(tc, "Removing metrics for application: " + appName + " across " + mcpMetricRuntimes.size() + " adapters");
+     }
+
+        for (McpMetricAdapter adapter : mcpMetricRuntimes) {
+         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+             Tr.debug(tc, "Cleaning up metrics in adapter: " + adapter.getClass().getName());
+         }
+            adapter.removeMetricsForApp(appName);
+        }
+ }
 
 }

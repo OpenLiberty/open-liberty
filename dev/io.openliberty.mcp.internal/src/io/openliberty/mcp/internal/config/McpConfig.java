@@ -18,7 +18,5 @@ public interface McpConfig {
 
     String servicePid();
 
-    default double sessionTimeoutMinutes() {
-        return 10.0;
-    }
+    double sessionTimeoutMinutes();
 }

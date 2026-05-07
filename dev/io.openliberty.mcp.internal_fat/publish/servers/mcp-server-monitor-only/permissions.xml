@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <!-- Permissions for monitorCleanupTest.war -->
+    <javaPermission codebase="${server.config.dir}/dropins/monitorCleanupTest.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${server.config.dir}/dropins/monitorCleanupTest.war" className="javax.management.MBeanPermission" name="*" actions="*"/>
+    <javaPermission codebase="${server.config.dir}/dropins/monitorCleanupTest.war" className="javax.management.MBeanTrustPermission" name="register"/>
+    
+    <!-- Permissions for mcpMonitorTest.war -->
+    <javaPermission codebase="${server.config.dir}/dropins/mcpMonitorTest.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
+    <javaPermission codebase="${server.config.dir}/dropins/mcpMonitorTest.war" className="javax.management.MBeanPermission" name="*" actions="*"/>
+    <javaPermission codebase="${server.config.dir}/dropins/mcpMonitorTest.war" className="javax.management.MBeanTrustPermission" name="register"/>
+</server>
+
+<!-- Made with Bob -->
