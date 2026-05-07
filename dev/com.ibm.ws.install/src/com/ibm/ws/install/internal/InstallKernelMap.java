@@ -937,21 +937,33 @@ public class InstallKernelMap implements Map {
             }
 
             boolean isInstallServerFeature = (Boolean) this.get(InstallConstants.IS_INSTALL_SERVER_FEATURE);
-            if (!isInstallServerFeature) {
-                Collection<String> featuresAlreadyPresent = new ArrayList<String>();
-                for (ProvisioningFeatureDefinition feature : installedFeatures) {
-                    if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
-                        alreadyInstalled += 1;
-                        if (feature.getIbmShortName() == null) {
-                            featuresAlreadyPresent.add(feature.getFeatureName());
-                        } else {
-                            featuresAlreadyPresent.add(feature.getIbmShortName());
-                        }
-                    }
+            
+            // Store the original size before any modifications for the "all already installed" check
+            int originalFeatureToInstallSize = featureToInstall.size();
+            
+            // Check for already installed features
+            Collection<String> featuresAlreadyPresent = new ArrayList<String>();
+            
+            for (ProvisioningFeatureDefinition feature : installedFeatures) {
+                if (containsIgnoreCase(featureToInstall, feature.getIbmShortName()) || featureToInstall.contains(feature.getFeatureName())) {
+                    alreadyInstalled += 1;
+                    String featureName = feature.getIbmShortName() == null ? feature.getFeatureName() : feature.getIbmShortName();
+                    featuresAlreadyPresent.add(featureName);
                 }
-                if (alreadyInstalled == featureToInstall.size()) {
-                    throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
-                }
+            }
+            
+            // For installServerFeatures, filter out already-installed user features from the list to resolve
+            // This prevents the resolver from trying to fetch user features that are already present
+            if (isInstallServerFeature) {
+                Collection<String> filtered = filterOutInstalledUserFeatures(featureToInstall, installedFeatures);
+                featureToInstall.clear();
+                featureToInstall.addAll(filtered);
+            }
+            
+            // For installFeature (not installServerFeatures), throw error if all features are already installed
+            // Use the original size before user features were filtered out
+            if (!isInstallServerFeature && alreadyInstalled == originalFeatureToInstallSize) {
+                throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED", featuresAlreadyPresent);
             }
 
             boolean isFeatureUtility = (Boolean) this.get(InstallConstants.IS_FEATURE_UTILITY);
@@ -2442,6 +2454,71 @@ public class InstallKernelMap implements Map {
 
         return OK;
 
+    }
+
+    /**
+     * Filter out already-installed user features from the list of features to install.
+     * This prevents the resolver from attempting to fetch user features that are already
+     * present in the Liberty usr directory.
+     *
+     * @param featuresToInstall Collection of feature names to install
+     * @param installedFeatures Collection of already installed feature definitions
+     * @return Filtered collection with user features removed if they're already installed
+     */
+    Collection<String> filterOutInstalledUserFeatures(
+            Collection<String> featuresToInstall,
+            Collection<ProvisioningFeatureDefinition> installedFeatures) {
+        
+        // Collect names of installed user features
+        Collection<String> userFeaturesInstalled = new ArrayList<String>();
+        for (ProvisioningFeatureDefinition feature : installedFeatures) {
+            // User features have bundle repository type "usr"
+            if ("usr".equals(feature.getBundleRepositoryType())) {
+                if (feature.getIbmShortName() != null) {
+                    userFeaturesInstalled.add(feature.getIbmShortName());
+                }
+                userFeaturesInstalled.add(feature.getFeatureName());
+            }
+        }
+        
+        // If no user features are installed, return original list
+        if (userFeaturesInstalled.isEmpty()) {
+            return new ArrayList<String>(featuresToInstall);
+        }
+        
+        // Filter out installed user features
+        List<String> result = new ArrayList<String>();
+        for (String featureToCheck : featuresToInstall) {
+            boolean isInstalledUserFeature = false;
+            
+            // Handle various feature name formats:
+            // - "usr:featureName"
+            // - "featureName:featureName" (e.g., "ibmProcessServer:ibmProcessServer")
+            // - "featureName"
+            String featureNameOnly = featureToCheck;
+            if (featureToCheck.contains(":")) {
+                String[] parts = featureToCheck.split(":", 2);
+                if (parts.length == 2) {
+                    featureNameOnly = parts[1];
+                }
+            }
+            
+            // Check if this matches an installed user feature
+            for (String installedUserFeature : userFeaturesInstalled) {
+                if (featureToCheck.equalsIgnoreCase(installedUserFeature) ||
+                    featureNameOnly.equalsIgnoreCase(installedUserFeature)) {
+                    isInstalledUserFeature = true;
+                    fine("Skipping already installed user feature: " + featureToCheck);
+                    break;
+                }
+            }
+            
+            if (!isInstalledUserFeature) {
+                result.add(featureToCheck);
+            }
+        }
+        
+        return result;
     }
 
 }
