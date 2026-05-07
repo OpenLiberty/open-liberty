@@ -11,6 +11,7 @@ package com.ibm.ws.sip.stack.transport.netty;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLEngine;
 
@@ -24,9 +25,14 @@ import com.ibm.ws.sip.stack.transport.*;
 import com.ibm.ws.sip.stack.util.SipStackUtil;
 
 import io.netty.channel.Channel;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelPipeline;
 import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
+import io.netty.handler.timeout.IdleState;
+import io.netty.handler.timeout.IdleStateEvent;
+import io.netty.handler.timeout.IdleStateHandler;
 import io.openliberty.netty.internal.*;
 import io.openliberty.netty.internal.exception.NettyException;
 import jain.protocol.ip.sip.ListeningPoint;
@@ -184,8 +190,73 @@ public class GenericTCPChain extends GenericChain {
                 SslHandler handler = GenericEndpointImpl.getTlsProvider().getInboundSSLContext(currentConfig.sslOptions, ep.getHost(), Integer.toString(ep.getPort()), ch);
                 pipeline.addFirst("ssl", handler);
             }
+            int inactivityTimeout = getInitialReadTimeoutMillis();
+            if (inactivityTimeout > 0) {
+                pipeline.addLast("sipInitialReadIdleStateHandler", new IdleStateHandler(inactivityTimeout, 0, 0, TimeUnit.MILLISECONDS));
+                pipeline.addLast("sipInitialReadTimeoutHandler", new SipInitialReadTimeoutHandler(inactivityTimeout));
+            }
             pipeline.addLast("decoder", new SipMessageBufferStreamDecoder());
             pipeline.addLast("handler", new SipStreamHandler());
+        }
+
+        private int getInitialReadTimeoutMillis() {
+            Object value = currentConfig.tcpOptions.get("inactivityTimeout");
+            if (value == null) {
+                return 0;
+            }
+            if (value instanceof Number) {
+                return ((Number) value).intValue();
+            }
+            return Integer.parseInt(value.toString().trim());
+        }
+    }
+
+    private static final class SipInitialReadTimeoutHandler extends ChannelInboundHandlerAdapter {
+
+        private final int timeoutMillis;
+        private boolean firstReadObserved;
+
+        private SipInitialReadTimeoutHandler(int timeoutMillis) {
+            this.timeoutMillis = timeoutMillis;
+        }
+
+        @Override
+        public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
+            if (!firstReadObserved) {
+                firstReadObserved = true;
+                removeHandlers(ctx);
+            }
+            ctx.fireChannelRead(msg);
+        }
+
+        @Override
+        public void userEventTriggered(ChannelHandlerContext ctx, Object evt) throws Exception {
+            if (!firstReadObserved && evt instanceof IdleStateEvent) {
+                IdleStateEvent idleEvent = (IdleStateEvent) evt;
+                if (idleEvent.state() == IdleState.READER_IDLE) {
+                    if (c_logger.isTraceDebugEnabled()) {
+                        c_logger.traceDebug("SIP initial read inactivity timeout on channel " + ctx.channel() + " after " + timeoutMillis + " ms");
+                    }
+                    ctx.close();
+                    return;
+                }
+            }
+            super.userEventTriggered(ctx, evt);
+        }
+
+        @Override
+        public void channelInactive(ChannelHandlerContext ctx) throws Exception {
+            removeHandlers(ctx);
+            super.channelInactive(ctx);
+        }
+
+        private void removeHandlers(ChannelHandlerContext ctx) {
+            if (ctx.pipeline().context("sipInitialReadTimeoutHandler") != null) {
+                ctx.pipeline().remove("sipInitialReadTimeoutHandler");
+            }
+            if (ctx.pipeline().context("sipInitialReadIdleStateHandler") != null) {
+                ctx.pipeline().remove("sipInitialReadIdleStateHandler");
+            }
         }
     }
 
