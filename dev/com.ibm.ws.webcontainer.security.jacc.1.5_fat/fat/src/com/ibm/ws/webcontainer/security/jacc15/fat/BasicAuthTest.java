@@ -46,7 +46,6 @@ public class BasicAuthTest extends CommonServletTestScenarios {
     private static BasicAuthClient myClient;
     private static SSLBasicAuthClient mySSLClient;
     private static String appName = "basicauth";
-    private static String serverConfigurationFile = DEFAULT_CONFIG_FILE;
 
     // TestName should be an instance level Rule, not a ClassRule, but static references are made to it,
     // so we will create it as a static field, then keep a reference to it from a non-static field which

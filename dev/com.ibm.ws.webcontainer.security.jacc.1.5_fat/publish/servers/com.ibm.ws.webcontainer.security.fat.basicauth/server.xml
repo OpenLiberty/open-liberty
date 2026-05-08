@@ -66,11 +66,11 @@
         </application-bnd>
 	</application>
 
-	<application type="ear" id="basicauthXML" name="basicauthXML" location="basicauthXML.ear">
-	</application>
+<!--	<application type="ear" id="basicauthXML" name="basicauthXML" location="basicauthXML.ear">-->
+<!--	</application>-->
 
-	<application type="ear" id="basicauthXMI" name="basicauthXMI" location="basicauthXMI.ear" >
-	</application>
+<!--	<application type="ear" id="basicauthXMI" name="basicauthXMI" location="basicauthXMI.ear" >-->
+<!--	</application>-->
 
 	<include location="../fatTestPorts.xml" />
 	<javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getCallerSubject"/>
