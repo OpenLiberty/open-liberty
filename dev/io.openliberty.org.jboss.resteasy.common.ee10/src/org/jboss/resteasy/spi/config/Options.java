@@ -1,24 +1,13 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2022 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+   * Copyright The RESTEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.spi.config;
 
+import java.nio.file.Path;
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -26,6 +15,7 @@ import java.util.function.Supplier;
 import jakarta.ws.rs.sse.SseEventSink;
 
 import org.jboss.resteasy.resteasy_jaxrs.i18n.LogMessages;
+import org.jboss.resteasy.spi.ResteasyConfiguration;
 import org.jboss.resteasy.spi.util.Functions;
 
 /**
@@ -55,6 +45,18 @@ public class Options<T> {
             Functions.singleton(() -> Threshold.of(5L, SizeUnit.MEGABYTE)));
 
     /**
+     * An option for the chunk size of the {@link org.jboss.resteasy.spi.EntityOutputStream} to write to a
+     * file. The entity will be processed and written in chunks to the file. A value of {@code -1} indicates the file
+     * should be directly written to.
+     * <p>
+     * The default is 8192.
+     * </p>
+     */
+    public static final Options<Integer> ENTITY_FILE_BUFFER_SIZE = new Options<>("dev.resteasy.entity.file.buffer.size",
+            Integer.class,
+            Functions.singleton(() -> 8192));
+
+    /**
      * An option for the threshold of the {@link org.jboss.resteasy.spi.EntityOutputStream} to write to a
      * file. A value of {@code -1} indicates no threshold limit.
      * <p>
@@ -64,6 +66,31 @@ public class Options<T> {
     public static final Options<Threshold> ENTITY_FILE_THRESHOLD = new Options<>("dev.resteasy.entity.file.threshold",
             Threshold.class,
             Functions.singleton(() -> Threshold.of(50L, SizeUnit.MEGABYTE)));
+
+    /**
+     * An option used to override the temporary directory where entities that exceed the {@link #ENTITY_MEMORY_THRESHOLD}
+     * are stored.
+     * <p>
+     * The default is the {@code java.io.tmpdir} system property.
+     * </p>
+     */
+    public static final Options<Path> ENTITY_TMP_DIR = new Options<>("dev.resteasy.entity.tmpdir",
+            Path.class,
+            Functions.singleton(() -> Path.of(defaultTmpDir()).toAbsolutePath()));
+
+    /**
+     * An option for defining the {@link javax.net.ssl.SSLContext#getInstance(String) SSLContext} algorithm for the
+     * {@linkplain jakarta.ws.rs.client.Client REST client}.
+     * <p>
+     * The default is TLS.
+     * </p>
+     *
+     * @since 6.2.12
+     */
+    public static final Options<String> CLIENT_SSL_CONTEXT_ALGORITHM = new Options<>(
+            "dev.resteasy.client.ssl.context.algorithm",
+            String.class,
+            () -> "TLS");
 
     /**
      * An option which allows which HTTP status code should be sent when the {@link SseEventSink#close()} is invoked.
@@ -95,6 +122,18 @@ public class Options<T> {
      */
     public T getValue() {
         return getProperty(key, name, dftValue);
+    }
+
+    /**
+     * Resolves the value from the configuration
+     *
+     * @param configuration a {@linkplain ResteasyConfiguration configuration} used to resolve default values, if
+     *                      {@code null} a default resolver will be used
+     *
+     * @return the value or the default value which may be {@code null}
+     */
+    public T getValue(final ResteasyConfiguration configuration) {
+        return getProperty(configuration, key, name, dftValue);
     }
 
     /**
@@ -141,12 +180,32 @@ public class Options<T> {
         return getProperty(name, returnType).orElseGet(dft);
     }
 
+    /**
+     * Checks the {@link Configuration} for the property returning the value or the given default.
+     *
+     * @param configuration the optional configuration used for the lookup
+     * @param name          the name of the property
+     * @param returnType    the type of the property
+     * @param dft           the default value if the property was not found
+     *
+     * @return the value found in the configuration or the default value
+     */
+    private static <T> T getProperty(final ResteasyConfiguration configuration, final String name, final Class<T> returnType,
+            final Supplier<T> dft) {
+        return getProperty(configuration, name, returnType).orElseGet(dft);
+    }
+
     private static <T> Optional<T> getProperty(final String name, final Class<T> returnType) {
+        return getProperty(null, name, returnType);
+    }
+
+    private static <T> Optional<T> getProperty(final ResteasyConfiguration configuration, final String name,
+            final Class<T> returnType) {
         // If the MicroProfile Config is available, we might not have Converters for these types. If an error occurs
         // attempting to get the value, log it, but return an empty optional.
         try {
             return ConfigurationFactory.getInstance()
-                    .getConfiguration()
+                    .getConfiguration(configuration)
                     .getOptionalValue(name, returnType);
         } catch (SecurityException e) {
             throw e;
@@ -154,5 +213,12 @@ public class Options<T> {
             LogMessages.LOGGER.tracef(e, "Failed to get property for %s of type %s.", name, returnType);
         }
         return Optional.empty();
+    }
+
+    private static String defaultTmpDir() {
+        if (System.getSecurityManager() == null) {
+            return System.getProperty("java.io.tmpdir");
+        }
+        return AccessController.doPrivileged((PrivilegedAction<String>) () -> System.getProperty("java.io.tmpdir"));
     }
 }
