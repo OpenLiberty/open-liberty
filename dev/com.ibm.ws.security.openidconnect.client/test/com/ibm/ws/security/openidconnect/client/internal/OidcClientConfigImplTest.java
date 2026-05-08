@@ -4,11 +4,11 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.client.internal;
@@ -805,6 +805,58 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         }
     }
 
+    @Test
+    public void testGetServeProtectedResourceMetadata_defaultValue() {
+        try {
+            // Test that the default value is false
+            assertFalse("serveProtectedResourceMetadata should default to false", oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testGetServeProtectedResourceMetadata_setToTrue() {
+        try {
+            final Map<String, Object> props = createProps(false);
+            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, true);
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            assertTrue("serveProtectedResourceMetadata should be true", oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    @Test
+    public void testGetServeProtectedResourceMetadata_setToFalse() {
+        try {
+            final Map<String, Object> props = createProps(false);
+            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, false);
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            assertFalse("serveProtectedResourceMetadata should be false", oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     public Map<String, Object> createProps(boolean value) {
         final Map<String, Object> props = new Hashtable<String, Object>();
 
@@ -836,7 +888,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         props.put(OidcClientConfigImpl.CFG_KEY_AUTO_AUTHORIZE_PARAM, AUTO_AUTHORIZE_PARAM);
         props.put(OidcClientConfigImpl.CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, value);
         props.put(OidcClientConfigImpl.CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, value);
-        props.put(OidcClientConfigImpl.CFG_KEY_ALLOW_CUSTOM_CACHE_KEY , value);
+        props.put(OidcClientConfigImpl.CFG_KEY_ALLOW_CUSTOM_CACHE_KEY, value);
         props.put(OidcClientConfigImpl.CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT, value);
         props.put(OidcClientConfigImpl.CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE, ACR_VALUES);
         props.put(OidcClientConfigImpl.CFG_KEY_AUTH_FILTER_REF, authFilterId);
