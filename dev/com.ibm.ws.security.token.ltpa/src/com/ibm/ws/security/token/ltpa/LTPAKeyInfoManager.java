@@ -330,6 +330,9 @@ public class LTPAKeyInfoManager {
         } else {
             byte[] keyEncoded = Base64Coder.base64DecodeString(secretKeyStr);
             secretKey = encryptor.decrypt(keyEncoded);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Decrypted secret key length: " + (secretKey != null ? secretKey.length : "null") + " bytes");
+            }
         }
         // Private key
         if ((privateKeyStr == null) || (privateKeyStr.length() == 0)) {
