@@ -18,7 +18,6 @@ import java.security.PrivilegedExceptionAction;
 import java.security.PublicKey;
 import java.security.cert.CertificateException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Dictionary;
 import java.util.HashMap;
 import java.util.List;
@@ -179,6 +178,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
     public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
     public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
+    public static final String CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA = "serveProtectedResourceMetadata";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -312,6 +312,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean tokenReuse = false;
 
     private List<String> tokenOrderToFetchCallerClaims;
+    private boolean serveProtectedResourceMetadata = false;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
@@ -562,12 +563,14 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         accessTokenCacheTimeout = configUtils.getLongConfigAttribute(props, CFG_KEY_ACCESS_TOKEN_CACHE_TIMEOUT, accessTokenCacheTimeout);
         pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
         tokenRequestOriginHeader = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER);
+        serveProtectedResourceMetadata = configUtils.getBooleanConfigAttribute(props, CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, serveProtectedResourceMetadata);
+
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
         // checkValidationEndpointUrl();
 
         // validateAuthzTokenEndpoints(); //TODO: update tests to expect the error if the validation here fails
-        String tokens = configUtils.getConfigAttributeWithDefaultValue(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS, "IDToken");     
+        String tokens = configUtils.getConfigAttributeWithDefaultValue(props, CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS, "IDToken");
         tokenOrderToFetchCallerClaims = split(tokens);
         if (discovery) {
             logDiscoveryMessage("OIDC_CLIENT_DISCOVERY_COMPLETE");
@@ -644,6 +647,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "pkceCodeChallengeMethod:" + pkceCodeChallengeMethod);
             Tr.debug(tc, "tokenRequestOriginHeader:" + tokenRequestOriginHeader);
             Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims);
+            Tr.debug(tc, "serveProtectedResourceMetadata:" + serveProtectedResourceMetadata);
         }
 
     }
@@ -1951,20 +1955,25 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     @Override
+    public boolean getServeProtectedResourceMetadata() {
+        return serveProtectedResourceMetadata;
+    }
+
+    @Override
     public List<String> getTokenOrderToFetchCallerClaims() {
         return tokenOrderToFetchCallerClaims;
     }
 
-    List<String> split(String str) {    
+    List<String> split(String str) {
         List<String> rvalue = new ArrayList<String>();
-            if (str.contains(" ")) {
-                StringTokenizer st = new StringTokenizer(str, " ");
-                while (st.hasMoreElements()) {
-                    rvalue.add(st.nextToken());
-                }
-            } else {
-                rvalue.add(str);
+        if (str.contains(" ")) {
+            StringTokenizer st = new StringTokenizer(str, " ");
+            while (st.hasMoreElements()) {
+                rvalue.add(st.nextToken());
             }
+        } else {
+            rvalue.add(str);
+        }
         return rvalue;
     }
 }
