@@ -1,20 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2021 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright The RESTEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.spi.config;
@@ -131,6 +117,7 @@ public class DefaultConfiguration implements Configuration {
 
     private static class Resolver implements Function<String, String> {
         private final ResteasyConfiguration config;
+        private final ThreadLocal<Boolean> entered = ThreadLocal.withInitial(() -> Boolean.FALSE);
 
         private Resolver(final ResteasyConfiguration config) {
             this.config = config;
@@ -138,32 +125,43 @@ public class DefaultConfiguration implements Configuration {
 
         @Override
         public String apply(final String name) {
-            //Liberty change start
-            String value = config == null ? null : config.getInitParameter(name);
-            if (value == null) {
-                if (System.getSecurityManager() == null) {
-                    value = System.getProperty(name);
-                    if (value == null) {
-                        value = System.getenv(name);
-                        if (value == null && config != null) {
-                            value = config.getInitParameter(name);
-                        }
-                    }
-                    return value;
-                }
-                return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
-                    String value2 = System.getProperty(name);
-                    if (value2 == null) {
-                        value2 = System.getenv(name);
-                        if (value2 == null && config != null) {
-                            value2 = config.getInitParameter(name);
-                        }
-                    }
-                    return value2;
-                });
+		    // Check for recursion, if we're back here assume null
+            if (entered.get()) {
+                return null;
             }
-            return value;
+            try{
+                entered.set(Boolean.TRUE);
+
+                //Liberty change start
+                String value = config == null ? null : config.getInitParameter(name);
+                if (value == null) {
+                    if (System.getSecurityManager() == null) {
+                        value = System.getProperty(name);
+                        if (value == null) {
+                            value = System.getenv(name);
+                            if (value == null && config != null) {
+                                value = config.getInitParameter(name);
+                            }
+                        }
+                        return value;
+                    }
+                    return AccessController.doPrivileged((PrivilegedAction<String>) () -> {
+                        String value2 = System.getProperty(name);
+                        if (value2 == null) {
+                            value2 = System.getenv(name);
+                            if (value2 == null && config != null) {
+                                value2 = config.getInitParameter(name);
+                            }
+                        }
+                        return value2;
+                    });
+                }
+                //Liberty change end
+
+                return value;
+            } finally {
+                entered.remove();
+            }
         }
-        //Liberty change end
     }
 }
