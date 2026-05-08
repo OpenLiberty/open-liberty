@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,14 +71,15 @@ public class LibertyResteasyClientBuilderImpl extends ResteasyClientBuilderImpl 
         }
 
         boolean resetProxy = false;
-        if (this.defaultProxy == null) {
-           resetProxy = true;
-           // check for proxy config parameters
-           setProxyIfNeeded(config);
+        if (getDefaultProxyHostname() == null) {
+            resetProxy = true;
+            // check for proxy config parameters
+            setProxyIfNeeded(config);
         }
 
         if (resetProxy) {
-           this.defaultProxy = null;
+            // Reset proxy by setting it to null
+            defaultProxy(null);
         }
 
         ExecutorService executor = getExecutorService();
