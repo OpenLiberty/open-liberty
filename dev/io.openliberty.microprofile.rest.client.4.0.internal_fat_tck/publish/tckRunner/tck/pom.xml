@@ -127,7 +127,7 @@
         <dependency>
             <groupId>io.openliberty.org.jboss.resteasy</groupId>
             <artifactId>common</artifactId>
-            <version>6.2.8.Final</version>
+            <version>6.2.16.Final</version>
             <scope>system</scope>
             <systemPath>${io.openliberty.org.jboss.resteasy.common.ee10_}</systemPath>
         </dependency>
@@ -159,7 +159,7 @@
         <dependency>
             <groupId>io.openliberty.org.jboss.resteasy</groupId>
             <artifactId>jaxb.provider</artifactId>
-            <version>6.2.8.Final</version>
+            <version>6.2.16.Final</version>
             <scope>system</scope>
             <systemPath>${io.openliberty.org.jboss.resteasy.jaxb.provider.ee10_}</systemPath>
         </dependency>
