@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2025 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -631,7 +631,22 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         }
     }
 
+    protected boolean isMultiReadOfPostDataEnabled() {
+        return enableMultiReadofPostData || dataAlreadyReadFromChannel;
+    }
+
+    public boolean fillFromStreamingNettyIfAvailable() throws IOException{
+        if (this.buffer != null && this.buffer.hasRemaining()){
+            return true;
+        }
+        return fillFromStreamingNetty(false);
+    }
+
     public boolean fillFromStreamingNetty() throws IOException{
+        return fillFromStreamingNetty(true);
+    }
+
+    public boolean fillFromStreamingNetty(boolean waitForInput) throws IOException{
         if (queue == null){
             return false;
         }
@@ -685,6 +700,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                         throw (IOException) error;
                     }
                     throw new IOException("Error while reading body", error);
+                }
+
+                if (!waitForInput){
+                    return false;
                 }
 
                 if(!readRequested && !autoRead && queue.wantsInput() && context != null){
