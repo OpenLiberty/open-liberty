@@ -107,8 +107,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
             }
         }
 
-
-
         try {
             VirtualConnection vc = isc.getRequestBodyBuffer(callback, false);
 
@@ -140,14 +138,15 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
 
         Runnable success = () -> {
             try {
-                callback.complete(NettyVirtualConnectionImpl.DUMMY_NETTY_VC);
+                callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
             } finally {
                 context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
             }
         };
         Runnable error = () -> {
             try {
-                callback.error(NettyVirtualConnectionImpl.DUMMY_NETTY_VC, new EOFException("Peer input shutdown before request body completed."));
+                callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, 
+                    new EOFException("Peer input shutdown before request body completed."));
             } finally {
                 context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
             }
