@@ -15,6 +15,7 @@ package com.ibm.wsspi.http.ee7;
 import java.io.EOFException;
 import java.io.IOException;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -90,16 +91,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         // Prefer streaming buffer first
         try {
             if (streaming){
-                if (isMultiReadOfPostDataEnabled()){
-                    return checkBuffer();
-                }
-                if (fillFromStreamingNettyIfAvailable()){
-                    return true;
-                }
-                if (queue != null && queue.isEos()){
-                    return true;
-                }
-                return armStreamingReadCallback(callback);
+                return asyncCheckStreamingNettyBuffers(callback);
             }
         } catch (IOException ioe) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -136,34 +128,85 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
             return false;
         }
 
-        Runnable success = () -> {
+        AtomicBoolean delivered = new AtomicBoolean();
+        Runnable[] successRef = new Runnable[1];
+        successRef[0] = () -> {
+            if (delivered.get()){
+                return;
+            }
             try {
-                callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
-            } finally {
-                context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+                if (!isStreamingReadReady()){
+                    context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(successRef[0]);
+                    if (!isStreamingReadReady()){
+                        ReadFlowHandler.setBodyReadWanted(context, true);
+                        return;
+                    }
+                }
+                if (delivered.compareAndSet(false, true)){
+                    clearStreamingReadCallback();
+                    callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+                }
+            } catch (IOException ioe){
+                if (delivered.compareAndSet(false, true)){
+                    clearStreamingReadCallback();
+                    callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
+                }
+            } catch (RuntimeException rte){
+               if (delivered.compareAndSet(false, true)){
+                    clearStreamingReadCallback();
+                    callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, rte);
+                }
+                throw rte; 
             }
         };
         Runnable error = () -> {
+            if (!delivered.compareAndSet(false, true)){
+                return;
+            }
             try {
                 callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, 
-                    new EOFException("Peer input shutdown before request body completed."));
+                    new EOFException("Peer input shutdown before request body completed"));
             } finally {
-                context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+                clearStreamingReadCallback();
             }
         };
-
-        context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(success);
+        context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(successRef[0]);
         context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(error);
         
-        if (fillFromStreamingNettyIfAvailable() || (queue != null && queue.isEos())) {
-            context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
-            context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+        if (isStreamingReadReady()){
+            delivered.set(true);
+            clearStreamingReadCallback();
             return true;
         }
         
         ReadFlowHandler.setBodyReadWanted(context, true);
         return false;
     }
+
+    public boolean asyncCheckStreamingNettyBuffers(InterChannelCallback callback) throws IOException {
+        if (!streaming){
+            return false;
+        }
+        
+        if (isMultiReadOfPostDataEnabled()){
+            return checkBuffer();
+        }
+        if (isStreamingReadReady()){
+            return true;
+        }
+        return armStreamingReadCallback(callback);
+    }
+
+    private boolean isStreamingReadReady() throws IOException {
+        return fillFromStreamingNettyIfAvailable() || (queue != null && queue.isEos());
+    }
+
+    private void clearStreamingReadCallback() {
+        context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+        context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+    }
+
+    
 
     public boolean isFinished() {
         boolean isFinished = false;

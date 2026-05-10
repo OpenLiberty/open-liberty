@@ -9,9 +9,11 @@
  *******************************************************************************/
 package com.ibm.ws.http.channel.internal.inbound;
 
+import java.io.EOFException;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -38,6 +40,7 @@ import com.ibm.ws.http.netty.NettyVirtualConnectionImpl;
 import com.ibm.ws.http.netty.inbound.NettyTCPConnectionContext;
 import com.ibm.ws.http.netty.message.NettyRequestMessage;
 import com.ibm.ws.http.netty.message.NettyResponseMessage;
+import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 import com.ibm.wsspi.bytebuffer.WsByteBuffer;
 import com.ibm.wsspi.channelfw.ConnectionLink;
 import com.ibm.wsspi.channelfw.InterChannelCallback;
@@ -63,6 +66,7 @@ import com.ibm.wsspi.http.channel.values.SchemeValues;
 import com.ibm.wsspi.http.channel.values.StatusCodes;
 import com.ibm.wsspi.http.channel.values.TransferEncodingValues;
 import com.ibm.wsspi.http.channel.values.VersionValues;
+import com.ibm.wsspi.http.ee7.HttpInputStreamEE7;
 import com.ibm.wsspi.http.logging.DebugLog;
 import com.ibm.wsspi.tcpchannel.TCPConnectionContext;
 
@@ -195,6 +199,64 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
     public HttpResponse getNettyResponse() {
         return this.nettyResponse;
+    }
+
+    private VirtualConnection getNettyRequestBodyBuffer(InterChannelCallback callback, boolean bForce){
+        HttpInputStreamImpl body = this.nettyContext.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).get();
+        if (body == null){
+            VirtualConnection vc = getVC();
+            if (vc != null && vc.getStateMap() != null){
+                Object candidate = vc.getStateMap().get(NettyHttpConstants.VC_HTTP_INPUT_STREAM);
+                if (candidate instanceof HttpInputStreamImpl){
+                    body = (HttpInputStreamImpl)candidate;
+                }
+            }
+        }
+
+        if (body instanceof HttpInputStreamEE7){
+            try{
+                if (((HttpInputStreamEE7) body).asyncCheckStreamingNettyBuffers(callback)){
+                    if (bForce){
+                        callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+                        return null;
+                    }
+                    return NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC;
+                }
+            } catch (IOException ioe){
+                callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
+            }
+            return null;
+        }
+        armNettyRequestBodyCallback(callback);
+        return null;
+    }
+
+    private void armNettyRequestBodyCallback(InterChannelCallback callback){
+        AtomicBoolean delivered = new AtomicBoolean();
+        Runnable success = () -> {
+            if (!delivered.compareAndSet(false, true)){
+                return;
+            }
+            clearNettyRequestBodyCallback();
+            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+        };
+        Runnable error = () -> {
+            if (!delivered.compareAndSet(false, true)){
+                return;
+        }
+        clearNettyRequestBodyCallback();
+        callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, 
+               new IOException("Peer input shutdown before request body completed."));
+        };
+
+        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(success);
+        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(error);
+        ReadFlowHandler.setBodyReadWanted(this.nettyContext, true);
+    }
+
+    private void clearNettyRequestBodyCallback(){
+        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
     }
 
     /*
@@ -1729,8 +1791,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         // Netty involved so need to just call it complete
         if (Objects.nonNull(this.nettyContext)) {
-            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
-            return null;
+            return getNettyRequestBodyBuffer(callback, bForce);
         }
 
         boolean isError = false;
