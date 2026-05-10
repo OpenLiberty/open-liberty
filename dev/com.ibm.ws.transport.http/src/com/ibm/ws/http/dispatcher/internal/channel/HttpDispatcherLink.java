@@ -28,6 +28,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
+import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -155,6 +156,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     private final AtomicBoolean decrementNeeded = new AtomicBoolean(false);
 
     private final AtomicBoolean closeCompleted = new AtomicBoolean(false);
+
+    private final AtomicBoolean connectionCountDecremneted = new AtomicBoolean(false); //Dedicated variable to track connection count decrement
 
     // Servlet 6.0
     private static AtomicInteger connectionCounter = new AtomicInteger(1);
@@ -309,18 +312,31 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "close ENTER, vc ->" + this.vc + " hc: " + this.hashCode());
         }
 
-        if (this.vc == null) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "close ENTRY" + dumpState("ENTRY") + " exception=" + e);
+        }
+
+        // Referecing this.vc in a local variable to protect against concurrent nullification by destroy()
+        VirtualConnection finalVc = this.vc;
+
+        if (finalVc == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close, Connection must be already closed since vc is null");
+                Tr.debug(tc, "Getting the values of the atomic booleans for the connection decrement: decrementNeeded: "+decrementNeeded.get() +" closeCompleted: "+closeCompleted.get() +" hc: " + this.hashCode());
             }
             // closeCompleted check is for the close, destroy, close order scenario.
             // Without this check, this second close (after the destroy) would decrement the connection again and produce a quiesce error.
             if (this.decrementNeeded.compareAndSet(true, false) & !closeCompleted.get()) {
                 //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "close, decrementNeeded is true: decrement active connection");
+                Tr.debug(tc, "close, decrementNeeded is true: decrement active connection");
                 }
                 this.myChannel.decrementActiveConns();
+                connectionCountDecremneted.set(true);
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "close EXIT (vc was null)");
             }
 
             return;
@@ -329,7 +345,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         // This is added for Upgrade Servlet3.1 WebConnection
         // The only API available from connectionLink are close and destroy ,
         // so we will have to use close API from SRTConnectionContext31 and call closeStreams.
-        String closeNonUpgraded = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+        String closeNonUpgraded = (String) (finalVc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
         if (closeNonUpgraded != null && closeNonUpgraded.equalsIgnoreCase("true")) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close, CLOSE_NON_UPGRADED_STREAMS");
@@ -347,7 +363,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
 
                 currentBuffer = null;
-                vc.getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, newBuffer);
+                finalVc.getStateMap().put(TransportConstants.NOT_UPGRADED_UNREAD_DATA, newBuffer);
             }
 
             Exception errorinClosing = this.closeStreams();
@@ -356,7 +372,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 Tr.debug(tc, "close, Error closing in streams" + errorinClosing);
             }
 
-            vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
+            finalVc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "CLOSED_NON_UPGRADED_STREAMS");
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close EXIT");
@@ -365,7 +381,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             return;
         }
 
-        String upgradedListener = (String) (this.vc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
+        String upgradedListener = (String) (finalVc.getStateMap().get(TransportConstants.UPGRADED_LISTENER));
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "close, upgradedListener ->" + upgradedListener);
         }
@@ -379,10 +395,13 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 //The first one will come in, check this new variable, then set it to false. The false will cause
                 //the other close to not happen.
 
-                String fromWebConnection = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));//Add a new variable here
+                String fromWebConnection = (String) (finalVc.getStateMap().get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION));//Add a new variable here
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc,"close, Set closeCalledFromWebConnection=true and reset StateMap CLOSE_UPGRADED_WEBCONNECTION flag to false");
+                }
                 if (fromWebConnection != null && fromWebConnection.equalsIgnoreCase("true")) {
                     closeCalledFromWebConnection = true;
-                    this.vc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");//Add a new variable here
+                    finalVc.getStateMap().put(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION, "false");//Add a new variable here
                 }
             }
 
@@ -400,37 +419,66 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         } else {
             if (upgradedListener == null) {
-                String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
+                String toClose = (String) (finalVc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
+                boolean acquiredWebConnCanClose = false;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "close, UPGRADED_WEB_CONNECTION_NEEDS_CLOSE=" + toClose);
+                }
                 if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
                     // want to close down at least once, and only once, for this type of upgraded connection
-                    WebConnCanCloseSync.lock();
-                    try {
-                        if (WebConnCanClose) {
-                            // fall through to close logic after setting flag to only fall through once
-                            // want to call close outside of the sync to avoid deadlocks.
-                            WebConnCanClose = false;
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "close, Upgraded Web Connection closing Dispatcher Link");
+                    try{
+                        //switching to tryLock - because of a potential deadlock where 
+                        // hdl.finish acquires WebConCanCloseSync lock -> closeStreams -> HttpServiceContextImpl.sendFullOutgoing() -> H2HttpInboundLinkWrap.writeFramesSync() -> H2HttpInboundLinkWrap.writeFramesSync() needs H2StreamProcessor lock
+                        // H2StreamProcessor.processNextFrame() acquires H2StreamProcessor lock -> H2StreamProcessor.readWriteTransitionState() -> H2InboundLink.closeConnectionLink() -> HttpDispatcherLink.close() needs WebConnCanCloseSync lock 
+                        acquiredWebConnCanClose = WebConnCanCloseSync.tryLock(5,TimeUnit.SECONDS);
+                    
+                        if(acquiredWebConnCanClose){
+                            if (WebConnCanClose) {
+                                // fall through to close logic after setting flag to only fall through once
+                                // want to call close outside of the sync to avoid deadlocks.
+                                WebConnCanClose = false;
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "close, Upgraded Web Connection closing Dispatcher Link");
+                                }
+                            } else {
+                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                    Tr.debug(tc, "close EXIT, Upgraded Web Connection already called close; returning");
+                                }
+                                return;
                             }
                         } else {
                             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "close EXIT, Upgraded Web Connection already called close; returning");
+                                Tr.debug(tc, "close EXIT, Could not acquire WebConnCanCloseSync lock - avoiding potential deadlock");
                             }
                             return;
                         }
+                    } catch(InterruptedException ie){
+                        //
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "close, Interrupted while waiting to acquire WebConnCanCloseSync lock ");
+                        }
                     } finally {
-                        WebConnCanCloseSync.unlock();
+                        if(acquiredWebConnCanClose){
+                            WebConnCanCloseSync.unlock();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "close, Released WebConnCanCloseSync lock");
+                            }
+                        }   
                     }
+                    
                 }
             }
         }
 
+        
+
         if (usingNetty) {
-            nettyClose(vc, e);
+            nettyClose(finalVc, e);
         }
 
         // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
         else if (myChannel.getStop0Called() == false) {
+
             try {
                 super.close(conn, e);
             } finally {
@@ -438,8 +486,15 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     Tr.debug(tc, "close, decrement active connection count");
                 }
                 this.myChannel.decrementActiveConns();
+                connectionCountDecremneted.set(true);
+
             }
             closeCompleted.compareAndSet(false, true);
+
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+           Tr.debug(tc, "close EXIT" + dumpState("EXIT"));
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -456,11 +511,18 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Destroy with exc=" + e);
         }
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "destroy ENTRY" + dumpState("ENTRY") + " exception=" + e);
+        }
+
         linkIsReady = false;
 
         String upgraded = null;
         // if this was an http upgrade connection, then tell it to close also.
         VirtualConnection vc = getVC();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "destroy, Retrieved vc=" + (vc != null ? vc.hashCode() : "null"));
+        }
         if (vc != null) {
             upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
             if ("true".equalsIgnoreCase(upgraded)) {
@@ -469,6 +531,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     if (webConnectionObject instanceof TransportConnectionAccess) {
                         TransportConnectionAccess tWebConn = (TransportConnectionAccess) webConnectionObject;
                         try {
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "destroy, Calling tWebConn.close()");
+                            }
                             tWebConn.close();
                         } catch (Exception webConnectionCloseException) {
                             //continue closing other resources
@@ -487,12 +552,24 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // set decrementNeeded to true only for wsoc upgrade requests
-        if (upgraded != null && !getHttpInboundLink2().isDirectHttp2Link(vc)) {
+        boolean isH2HttpLink = isc.isH2Connection();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isH2HttpLink: " + isH2HttpLink);
+        }
+        if (upgraded != null && !isH2HttpLink) {
             if (this.decrementNeeded.compareAndSet(false, true)) { // i.e. this is called first
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "decrementNeeded set to true");
                 }
             }
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "destroy, NOT setting decrementNeeded: upgraded=" + upgraded);
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "destroy, Calling super.destroy() and nulling references");
         }
 
         super.destroy();
@@ -501,6 +578,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         this.request = null;
         this.response = null;
         this.sslinfo = null;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "destroy EXIT" + dumpState("EXIT"));
+        }
     }
 
     /**
@@ -648,6 +729,8 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.debug(tc, "Received HTTP connection: " + inVC + " hc: " + this.hashCode() + " , this link: " + this);
             Tr.debug(tc, "increment active connection count");
         }
+
+        this.connectionCountDecremneted.set(false); // Reset the decrement flag for this new request
 
         this.myChannel.incrementActiveConns();
         init(inVC);
@@ -1377,6 +1460,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
     @Override
     public void finish(Exception e) {
 
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+           Tr.debug(tc, "finish ENTRY" + dumpState("ENTRY") + " exception=" + e);
+        }
+
         final HttpInboundServiceContextImpl finalSc = this.isc;
         Exception error = e;
 
@@ -1384,9 +1471,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             Tr.event(tc, "Finishing conn; " + finalSc + " error=" + e);
         }
 
+        //boolean attemptCloseStreams = false;
+
         // If servlet upgrade processing is being used, then don't close the socket here
         if (vc != null) {
             String upgraded = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_CONNECTION));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, UPGRADED_CONNECTION=" + upgraded);
+            }
             if (upgraded != null) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Connection Not closed because Servlet Upgrade detected.");
@@ -1400,30 +1492,74 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         if (vc != null) { // This is added for Upgrade Servlet3.1 WebConnection
             String webconn = (String) (this.vc.getStateMap().get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS));
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, CLOSE_NON_UPGRADED_STREAMS=" + webconn);
+            }
             if (webconn != null && webconn.equalsIgnoreCase("CLOSED_NON_UPGRADED_STREAMS")) {
                 vc.getStateMap().put(TransportConstants.CLOSE_NON_UPGRADED_STREAMS, "null");
             } else {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "finish, Acquired WebConnCanCloseSync lock, WebConnCanClose=" + WebConnCanClose);
+                }
                 WebConnCanCloseSync.lock();
                 try {
                     if (WebConnCanClose) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "finish, Calling closeStreams()");
+                        }
+                        //attemptCloseStreams = true;
                         error = closeStreams();
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "finish, closeStreams() returned error=" + error);
+                        }
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "finish, Skipping closeStreams() because WebConnCanClose=false");
+                        }
                     }
                 } finally {
                     WebConnCanCloseSync.unlock();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "finish, Released WebConnCanCloseSync lock");
+                    }
                 }
             }
         } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "finish, vc is null, acquired WebConnCanCloseSync lock, WebConnCanClose=" + WebConnCanClose);
+            }
             WebConnCanCloseSync.lock();
             try {
                 if (WebConnCanClose) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "finish, Calling closeStreams() (vc null path)");
+                    }
+                    //attemptCloseStreams = true;
                     error = closeStreams();
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "finish, closeStreams() returned error=" + error);
+                    }
                 }
             } finally {
                 WebConnCanCloseSync.unlock();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                   Tr.debug(tc, "finish, Released WebConnCanCloseSync lock");
+                }
             }
+        }
+        /* if(attemptCloseStreams){
+            error = closeStreams();
+        } */
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "finish, Calling close() with error=" + error);
         }
 
         close(getVirtualConnection(), error);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "finish EXIT" + dumpState("EXIT"));
+        }
     }
 
     /**
@@ -1516,6 +1652,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 error = ex;
             }
         }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "closeStreams EXIT, returning error=" + error);
+        }
         return error;
     }
 
@@ -1556,6 +1695,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         @Override
         @FFDCIgnore(Throwable.class)
         public void run() {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "TaskWrapper.run ENTRY" + ic.dumpState("TaskWrapper.run ENTRY") + 
+                 " classifiedExecutor=" + (classifiedExecutor != null ? classifiedExecutor.getClass().getName() : "null"));
+            }
             try {
                 if (this.classifiedExecutor != null) {
                     DecoratedExecutorThread.setExecutor(this.classifiedExecutor);
@@ -1566,27 +1709,52 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                     Tr.event(tc, "Unhandled exception during dispatch (bad container); " + t);
                     Tr.event(tc, "stack trace: \n" + Arrays.toString(t.getStackTrace()));
                 }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "TaskWrapper.run, Exception caught, ic.linkIsReady=" + ic.linkIsReady);
+                }
                 // if the link is ready and not destroyed, try sending a response
                 if (ic.linkIsReady) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "TaskWrapper.run, Sending INTERNAL_ERROR response");
+                    }
                     if (t instanceof Exception) {
                         ic.sendResponse(StatusCodes.INTERNAL_ERROR, (Exception) t, true);
                     } else {
                         ic.sendResponse(StatusCodes.INTERNAL_ERROR, new Exception("Dispatch error", t), true);
                     }
                 }
+                
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "TaskWrapper.run, decrementNeeded result=" + ic.decrementNeeded.get());
+                }
 
                 if (ic.decrementNeeded.compareAndSet(true, false)) {
+                    Tr.debug(tc, "TaskWrapper.run, decrementNeeded was true: decrement active connection");
                     //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "decrementNeeded is true: decrement active connection");
                     }
                     ic.myChannel.decrementActiveConns();
+                    ic.connectionCountDecremneted.set(true);
+                }
+
+                if (ic.connectionCountDecremneted.compareAndSet(false, true)) {
+                    Tr.debug(tc, "TaskWrapper.run, decrementNeeded was true: decrement active connection");
+                    //  ^ set back to false in case close is called more than once after destroy is called (highly unlikely)
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "connectionCountDecremneted is false: decrement active connection");
+                    }
+                    ic.myChannel.decrementActiveConns();
+                    //ic.connectionCountDecremneted.set(true);
                 }
 
             } finally {
                 if (this.classifiedExecutor != null) {
                     DecoratedExecutorThread.removeExecutor();
                 }
+            }
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "TaskWrapper.run EXIT" + ic.dumpState("TaskWrapper.run EXIT"));
             }
         }
     }
@@ -1791,6 +1959,60 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         return connectionId;
+    }
+
+    /**
+     * Check if close has been completed
+     * 
+     * @return true if close completed
+     */
+    protected boolean isCloseCompleted() {
+        return this.closeCompleted.get();
+    }
+
+    /**
+     * Helper method to dump complete state for debugging
+     */
+    private String dumpState(String context) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("\n=== HttpDispatcherLink State [").append(context).append("] ===\n");
+        sb.append("  connectionId: ").append(connectionId).append("\n");
+        sb.append("  this.hashCode: ").append(this.hashCode()).append("\n");
+        sb.append("  thread: ").append(Thread.currentThread().getId())
+                .append(":").append(Thread.currentThread().getName()).append("\n");
+        sb.append("  vc: ").append(vc != null ? vc.hashCode() : "null").append("\n");
+        sb.append("  linkIsReady: ").append(linkIsReady).append("\n");
+        sb.append("  closeCompleted: ").append(closeCompleted.get()).append("\n");
+        sb.append("  decrementNeeded: ").append(decrementNeeded.get()).append("\n");
+        sb.append(" connectionCountDecremneted: ").append(connectionCountDecremneted.get()).append("\n");
+        sb.append("  WebConnCanClose: ").append(WebConnCanClose).append("\n");
+        sb.append("  isc: ").append(isc != null ? isc.hashCode() : "null").append("\n");
+        sb.append("  request: ").append(request != null ? request.hashCode() : "null").append("\n");
+        sb.append("  response: ").append(response != null ? response.hashCode() : "null").append("\n");
+        sb.append("  myChannel: ").append(myChannel != null ? myChannel.hashCode() : "null").append("\n");
+
+        /* if (vc != null) {
+            try {
+                Map<Object, Object> stateMap = vc.getStateMap();
+                sb.append("  StateMap entries:\n");
+                synchronized (stateMap) {
+                    sb.append("    UPGRADED_CONNECTION: ").append(stateMap.get(TransportConstants.UPGRADED_CONNECTION))
+                            .append("\n");
+                    sb.append("    UPGRADED_LISTENER: ").append(stateMap.get(TransportConstants.UPGRADED_LISTENER))
+                            .append("\n");
+                    sb.append("    CLOSE_NON_UPGRADED_STREAMS: ")
+                            .append(stateMap.get(TransportConstants.CLOSE_NON_UPGRADED_STREAMS)).append("\n");
+                    sb.append("    CLOSE_UPGRADED_WEBCONNECTION: ")
+                            .append(stateMap.get(TransportConstants.CLOSE_UPGRADED_WEBCONNECTION)).append("\n");
+                    sb.append("    UPGRADED_WEB_CONNECTION_NEEDS_CLOSE: ")
+                            .append(stateMap.get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE)).append("\n");
+                }
+            } catch (Exception e) {
+                sb.append("    Error reading StateMap: ").append(e.getMessage()).append("\n");
+            }
+        } */
+        sb.append("=====================================\n");
+        return sb.toString();
     }
 
 

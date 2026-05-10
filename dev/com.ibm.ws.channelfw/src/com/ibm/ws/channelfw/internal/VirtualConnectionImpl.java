@@ -69,7 +69,9 @@ public class VirtualConnectionImpl implements VirtualConnection {
     @Override
     public Map<Object, Object> getStateMap() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getStateMap, currentState [" + this.currentState + "], stateMap [" + this.stateStore + "]");
+            //Tr.debug(tc, "getStateMap, currentState [" + this.currentState + "], stateMap [" + this.stateStore + "]");
+            Tr.debug(tc, "getStateMap, currentState [" + this.currentState + "], stateMap size [" + (this.stateStore != null ? this.stateStore.size() : "null") + "]");
+
         }
         return this.stateStore;
     }
