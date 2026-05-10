@@ -308,7 +308,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "close ENTER, vc ->" + this.vc + " hc: " + this.hashCode());
         }
-
+        
         if (this.vc == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "close, Connection must be already closed since vc is null");
@@ -401,6 +401,11 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         } else {
             if (upgradedListener == null) {
                 String toClose = (String) (vc.getStateMap().get(TransportConstants.UPGRADED_WEB_CONNECTION_NEEDS_CLOSE));
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Close called on stream ID : "+getStreamId());
+                }
+                
+                
                 if ((toClose != null) && (toClose.compareToIgnoreCase("true") == 0)) {
                     // want to close down at least once, and only once, for this type of upgraded connection
                     WebConnCanCloseSync.lock();
@@ -486,11 +491,44 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             }
         }
 
-        // set decrementNeeded to true only for wsoc upgrade requests
-        if (upgraded != null && !getHttpInboundLink2().isDirectHttp2Link(vc)) {
+        // set decrementNeeded to true only for wsoc upgrade requests        
+        HttpInboundLink link = getHttpInboundLink2();
+        boolean isH2HttpLink = (link instanceof H2HttpInboundLinkWrap) ? true : false;
+        boolean isH2HttpLink2 = isc.isH2Connection();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "isH2HttpLink: "+isH2HttpLink);
+            Tr.debug(tc, "isH2HttpLink2: "+isH2HttpLink2);
+        }
+        if (upgraded != null && !isH2HttpLink) {
             if (this.decrementNeeded.compareAndSet(false, true)) { // i.e. this is called first
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "decrementNeeded set to true");
+                }
+            }
+        }
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Close not completed check - "+closeCompleted.get());
+        }
+
+        //Check if the close on the connection is completed before proceeding
+        if(isH2HttpLink2 && !closeCompleted.get()){
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Close not completed - waiting breifly");
+            }
+             //brief wait to see if close completes
+            for(int i = 0; i < 10 && !closeCompleted.get(); i++) {
+                try{
+                    Thread.sleep(1);
+                } catch(InterruptedException ie){
+                    Thread.currentThread().interrupt();
+                    break;
+                }
+            }
+            // Check if the close on the connection is completed after the wait
+            if(!closeCompleted.get()) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Close not completed during the wait period. Proceeding with the destroy");
                 }
             }
         }
@@ -1792,7 +1830,6 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
 
         return connectionId;
     }
-
 
 
 }
