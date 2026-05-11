@@ -90,7 +90,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
     public boolean asyncCheckBuffers(InterChannelCallback callback) {
         // Prefer streaming buffer first
         try {
-            if (streaming){
+            if (streaming) {
                 return asyncCheckStreamingNettyBuffers(callback);
             }
         } catch (IOException ioe) {
@@ -123,6 +123,19 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         return false;
     }
 
+    public boolean asyncCheckStreamingNettyBuffers(InterChannelCallback callback) throws IOException {
+        if (!streaming) {
+            return false;
+        }
+        if (isMultiReadOfPostDataEnabled()) {
+            return checkBuffer();
+        }
+        if (isStreamingReadReady()){
+            return true;
+        }
+        return armStreamingReadCallback(callback);
+    }
+
     private boolean armStreamingReadCallback(InterChannelCallback callback) throws IOException{
         if (context == null || callback == null){
             return false;
@@ -131,27 +144,27 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         AtomicBoolean delivered = new AtomicBoolean();
         Runnable[] successRef = new Runnable[1];
         successRef[0] = () -> {
-            if (delivered.get()){
+            if (delivered.get()) {
                 return;
             }
             try {
                 if (!isStreamingReadReady()){
                     context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(successRef[0]);
-                    if (!isStreamingReadReady()){
+                    if (!isStreamingReadReady()) {
                         ReadFlowHandler.setBodyReadWanted(context, true);
                         return;
                     }
                 }
-                if (delivered.compareAndSet(false, true)){
+                if (delivered.compareAndSet(false, true)) {
                     clearStreamingReadCallback();
                     callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
                 }
-            } catch (IOException ioe){
-                if (delivered.compareAndSet(false, true)){
+            } catch (IOException ioe) {
+                if (delivered.compareAndSet(false, true)) {
                     clearStreamingReadCallback();
                     callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
                 }
-            } catch (RuntimeException rte){
+            } catch (RuntimeException rte) {
                if (delivered.compareAndSet(false, true)){
                     clearStreamingReadCallback();
                     callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, rte);
@@ -160,7 +173,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
             }
         };
         Runnable error = () -> {
-            if (!delivered.compareAndSet(false, true)){
+            if (!delivered.compareAndSet(false, true)) {
                 return;
             }
             try {
@@ -174,39 +187,24 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(error);
         
         if (isStreamingReadReady()){
-            delivered.set(true);
-            clearStreamingReadCallback();
-            return true;
+            if (delivered.compareAndSet(false, true)){
+                clearStreamingReadCallback();
+                return true;
+            }
+            return false;
         }
-        
         ReadFlowHandler.setBodyReadWanted(context, true);
         return false;
     }
 
-    public boolean asyncCheckStreamingNettyBuffers(InterChannelCallback callback) throws IOException {
-        if (!streaming){
-            return false;
-        }
-        
-        if (isMultiReadOfPostDataEnabled()){
-            return checkBuffer();
-        }
-        if (isStreamingReadReady()){
-            return true;
-        }
-        return armStreamingReadCallback(callback);
-    }
-
     private boolean isStreamingReadReady() throws IOException {
-        return fillFromStreamingNettyIfAvailable() || (queue != null && queue.isEos());
+        return isStreamingReadReadyForCallback();
     }
 
     private void clearStreamingReadCallback() {
         context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
         context.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
     }
-
-    
 
     public boolean isFinished() {
         boolean isFinished = false;
@@ -225,7 +223,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 if (available() > 0) {
                     return false;
                 }
-                if (queue != null && queue.isEos()) {
+                if (isStreamingEndReadyForCallback()) {
                     this.readChannelComplete = true;
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "isFinished(streaming): queue EOS and no buffered data; returning true");

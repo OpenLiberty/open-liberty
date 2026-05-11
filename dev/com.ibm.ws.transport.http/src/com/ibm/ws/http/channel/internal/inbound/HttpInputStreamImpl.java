@@ -85,6 +85,8 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
     private volatile long remainingContentLength = -1L;
     private volatile boolean isChunked = false;
+    private final Object streamingReadLock = new Object();
+    private volatile boolean streamingTransferInProgress = false; 
 
     public HttpInputStreamImpl(HttpInboundServiceContext context) {
         this.isc = context;
@@ -117,6 +119,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
         this.remainingContentLength = contentLength;
         this.isChunked = chunked;
+        this.streamingTransferInProgress = false;
 
         this.bytesRead = 0L;   
         this.decodedBytesRead = 0L;          
@@ -636,10 +639,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     }
 
     public boolean fillFromStreamingNettyIfAvailable() throws IOException{
-        if (this.buffer != null && this.buffer.hasRemaining()){
-            return true;
+        synchronized (streamingReadLock){
+            if (this.buffer != null && this.buffer.hasRemaining()){
+                return true;
+            }
+            return fillFromStreamingNettyLocked(false);
         }
-        return fillFromStreamingNetty(false);
     }
 
     public boolean fillFromStreamingNetty() throws IOException{
@@ -647,6 +652,12 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
     }
 
     public boolean fillFromStreamingNetty(boolean waitForInput) throws IOException{
+        synchronized (streamingReadLock){
+            return fillFromStreamingNettyLocked(waitForInput);
+        }
+    }
+
+    private boolean fillFromStreamingNettyLocked(boolean waitForInput) throws IOException{
         if (queue == null){
             return false;
         }
@@ -667,8 +678,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         boolean readRequested = false;
 
         while(true){
+            streamingTransferInProgress = true; 
             ByteBuf fragment = queue.poll();
             if (fragment == null){
+                streamingTransferInProgress = false; 
                 if (queue.isEos()){
                     this.readChannelComplete = true;
                     if (this.context != null){
@@ -678,13 +691,6 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     return false;
                 }
 
-                // Throwable error = queue.error();
-                // if(error != null){
-                //     if(error instanceof IOException){
-                //         throw (IOException) error;
-                //     }
-                //     throw new IOException("Error while reading body", error);
-                // }
                 Throwable error = queue.error();
                 if (error != null) {
                     if (context != null
@@ -738,6 +744,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
 
             try{
                 int len = fragment.readableBytes();
+                boolean fixedLengthComplete = false;
 
                 this.rawBytesRead += len;
                 this.bytesRead = this.rawBytesRead;
@@ -745,14 +752,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 if(!isChunked && remainingContentLength >= 0){
                     remainingContentLength -= len;
                     if (remainingContentLength <= 0){
-                        this.readChannelComplete = true;
-                        if (this.context != null){
-                            ReadFlowHandler.setBodyReadWanted(this.context, false);
-                            ReadFlowHandler.markRequestConsumed(this.context);
-                        }
-                        if(!queue.isEos()){
-                            queue.signalEos();
-                        }
+                        fixedLengthComplete = true; 
                     }
                 }
 
@@ -789,16 +789,51 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 if(out !=null && out.hasRemaining()){
                     this.buffer = out;
                     this.decodedBytesProduced += this.buffer.remaining();
+                    if (fixedLengthComplete){
+                        completeStreamingFixedLengthRequest();
+                    }
                     return true;
                 } 
+                if (fixedLengthComplete){
+                    completeStreamingFixedLengthRequest();
+                }
                 //No data produced, compression might need more data
                 token = queue.signalToken();
                 readRequested = false;
                 continue; //fetch another fragment
 
             } finally {
+                streamingTransferInProgress = false;
                 fragment.release();
             }
+        }
+    }
+
+    private void completeStreamingFixedLengthRequest() {
+        this.readChannelComplete = true;
+        if (this.context != null){
+            ReadFlowHandler.setBodyReadWanted(this.context, false);
+            ReadFlowHandler.markRequestConsumed(this.context);
+        }
+        if(!queue.isEos()){
+            queue.signalEos();
+        }
+    }
+
+    protected boolean isStreamingEndReadyForCallback(){
+        synchronized (streamingReadLock){
+            return isStreamingEndReadyForCallbackLocked();
+        }
+    }
+
+    private boolean isStreamingEndReadyForCallbackLocked(){
+        return queue != null && queue.isEos() && !streamingTransferInProgress 
+            && (this.buffer == null || !this.buffer.hasRemaining());
+    }
+
+    protected boolean isStreamingReadReadyForCallback() throws IOException {
+        synchronized (streamingReadLock) {
+            return fillFromStreamingNettyLocked(false) || isStreamingEndReadyForCallbackLocked();
         }
     }
 

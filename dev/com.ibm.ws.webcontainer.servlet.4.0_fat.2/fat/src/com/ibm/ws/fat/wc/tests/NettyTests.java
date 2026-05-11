@@ -28,6 +28,7 @@ import java.net.URL;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -53,6 +54,7 @@ import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -84,9 +86,24 @@ public class NettyTests {
         ShrinkHelper.defaultDropinApp(server, APP_NAME_REQUEST_NETTY + ".war", "netty.servlet.request.servlets");
         ShrinkHelper.defaultDropinApp(server, APP_NAME_READLISTENER_NETTY + ".war", "netty.readlistener.servlets", "netty.readlistener.listeners");
         ShrinkHelper.defaultDropinApp(server, APP_NAME_SERVERPUSH_NETTY + ".war", "netty.server.push.servlets");
+        transformTCKDropinsForJakartaRepeats();
 
         // Start the server and use the class name so we can find logs easily.
         server.startServer(NettyTests.class.getSimpleName() + ".log");
+    }
+
+    private static void transformTCKDropinsForJakartaRepeats() {
+        if (!JakartaEEAction.isEE9OrLaterActive()){
+            return;
+        }
+        transformTCKDropin(APP_NAME_COOKIE_TCK);
+        transformTCKDropin(APP_NAME_REQEST_TCK);
+        transformTCKDropin(APP_NAME_READLISTENER_TCK);
+        transformTCKDropin(APP_NAME_SERVERPUSH_TCK);
+    }
+
+    private static void transformTCKDropin(String appName){
+        JakartaEEAction.transformApp(Paths.get(server.getServerRoot(), "dropins", appName + ".war"));
     }
 
     @AfterClass
