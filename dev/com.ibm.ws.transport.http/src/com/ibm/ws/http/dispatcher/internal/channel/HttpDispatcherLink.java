@@ -595,7 +595,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         if (usingNetty) {
-            nettyClose(finalVc, e);
+            nettyClose(this.vc, e);
         }
 
         // don't call close, if the channel has already seen the stop(0) signal, or else this will cause race conditions in the channels below us.
@@ -1653,16 +1653,16 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
                 }
             }
         } finally {
-          if (releaseNettyRequest && this.nettyRequest != null){
-            ReferenceCountUtil.release(this.nettyRequest);
-            this.nettyRequest = null;
-            if(isH2){
-                if(activeFinishOperations.decrementAndGet() == 0) {
-                finishCompleteLatch.countDown();
+            if (releaseNettyRequest && this.nettyRequest != null){
+                ReferenceCountUtil.release(this.nettyRequest);
+                this.nettyRequest = null;
+                if(isH2){
+                    if(activeFinishOperations.decrementAndGet() == 0) {
+                    finishCompleteLatch.countDown();
+                    }
                 }
             } 
         }
-
         close(getVirtualConnection(), error);
     }
 

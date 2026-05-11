@@ -47,6 +47,7 @@ import io.netty.handler.codec.http.LastHttpContent;
 import io.netty.handler.codec.http2.Http2DataFrame;
 import io.netty.handler.codec.http2.Http2HeadersFrame;
 import io.netty.util.AsciiString;
+import io.netty.util.AttributeKey;
 import io.netty.util.concurrent.ScheduledFuture;
 import io.openliberty.http.netty.timeout.exception.H2IdleTimeoutException;
 import io.openliberty.http.netty.timeout.exception.PersistTimeoutException;
@@ -88,7 +89,6 @@ public class TimeoutHandler extends ChannelDuplexHandler {
     private static final AttributeKey<Runnable> READ_OP_CALLBACK = AttributeKey.valueOf("readOpCallback");
 
     public TimeoutHandler(NettyHttpChannelConfig config) {
-
         this(config, false);
     }
 
