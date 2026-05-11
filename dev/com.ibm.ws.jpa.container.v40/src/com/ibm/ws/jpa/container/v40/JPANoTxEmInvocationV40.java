@@ -20,13 +20,16 @@ import jakarta.persistence.ConnectionConsumer;
 import jakarta.persistence.ConnectionFunction;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityHandler;
 import jakarta.persistence.FindOption;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.LockOption;
 import jakarta.persistence.RefreshOption;
 import jakarta.persistence.Statement;
 import jakarta.persistence.StatementOrTypedQuery;
+import jakarta.persistence.StatementReference;
 import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.sql.ResultSetMapping;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaSelect;
@@ -63,8 +66,43 @@ public class JPANoTxEmInvocationV40 extends JPANoTxEmInvocation{
     }
 
     @Override
+    public <T> TypedQuery<T> createNativeQuery(String sqlString, ResultSetMapping<T> resultSetMapping) {
+        return ivEm.createNativeQuery(sqlString, resultSetMapping);
+    }
+
+    @Override
     public StatementOrTypedQuery createNativeQuery(String sqlString, String resultSetMapping) {
         return ivEm.createNativeQuery(sqlString, resultSetMapping);
+    }
+
+    @Override
+    public Statement createNativeStatement(String sqlString) {
+        return ivEm.createNativeStatement(sqlString);
+    }
+
+    @Override
+    public Statement createStatement(StatementReference reference) {
+        return ivEm.createStatement(reference);
+    }
+
+    @Override
+    public Statement createStatement(String qlString) {
+        return ivEm.createStatement(qlString);
+    }
+
+    @Override
+    public Statement createNamedStatement(String name) {
+        return ivEm.createNamedStatement(name);
+    }
+
+    @Override
+    public <T> TypedQuery<T> createQuery(String qlString, EntityGraph<T> entityGraph) {
+        return ivEm.createQuery(qlString, entityGraph);
+    }
+
+    @Override
+    public Statement createStatement(jakarta.persistence.criteria.CriteriaStatement<?> statement) {
+        return ivEm.createStatement(statement);
     }
 
     public Statement createQuery(jakarta.persistence.criteria.CriteriaUpdate<?> updateQuery) {
@@ -111,6 +149,11 @@ public class JPANoTxEmInvocationV40 extends JPANoTxEmInvocation{
     }
 
     @Override
+    public <T> EntityGraph<T> getEntityGraph(Class<T> rootType, String graphName) {
+        return ivEm.getEntityGraph(rootType, graphName);
+    }
+
+    @Override
     public <T> List<EntityGraph<? super T>> getEntityGraphs(Class<T> arg0) {
         return ivEm.getEntityGraphs(arg0);
     }
@@ -141,8 +184,38 @@ public class JPANoTxEmInvocationV40 extends JPANoTxEmInvocation{
     }
 
     @Override
-    public <T> T find(EntityGraph<T> entityGraph, Object primaryKey, LockModeType lockMode, FindOption... options) {
-        return ivEm.find(entityGraph, primaryKey, lockMode, options);
+    public <T> T get(Class<T> entityClass, Object id) {
+        return ivEm.get(entityClass, id);
+    }
+
+    @Override
+    public <T> T get(Class<T> entityClass, Object id, FindOption... options) {
+        return ivEm.get(entityClass, id, options);
+    }
+
+    @Override
+    public <T> T get(EntityGraph<T> graph, Object id, FindOption... options) {
+        return ivEm.get(graph, id, options);
+    }
+
+    @Override
+    public <T> List<T> getMultiple(Class<T> entityClass, List<?> primaryKeys, FindOption... options) {
+        return ivEm.getMultiple(entityClass, primaryKeys, options);
+    }
+
+    @Override
+    public <T> List<T> getMultiple(EntityGraph<T> entityGraph, List<?> primaryKeys, FindOption... options) {
+        return ivEm.getMultiple(entityGraph, primaryKeys, options);
+    }
+
+    @Override
+    public <T> List<T> findMultiple(Class<T> entityClass, List<?> primaryKeys, FindOption... options) {
+        return ivEm.findMultiple(entityClass, primaryKeys, options);
+    }
+
+    @Override
+    public <T> List<T> findMultiple(EntityGraph<T> entityGraph, List<?> primaryKeys, FindOption... options) {
+        return ivEm.findMultiple(entityGraph, primaryKeys, options);
     }
 
     @Override
@@ -173,11 +246,6 @@ public class JPANoTxEmInvocationV40 extends JPANoTxEmInvocation{
     @Override
     public void refresh(Object entity, RefreshOption... options) {
         ivEm.refresh(entity, options);
-    }
-
-    @Override
-    public void refresh(Object entity, LockModeType lockMode, RefreshOption... options) {
-        ivEm.refresh(entity, lockMode, options);
     }
 
     @Override

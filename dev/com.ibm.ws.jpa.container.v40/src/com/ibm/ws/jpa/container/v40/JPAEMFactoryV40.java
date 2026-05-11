@@ -12,18 +12,26 @@
  *******************************************************************************/
 package com.ibm.ws.jpa.container.v40;
 
+import java.lang.annotation.Annotation;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Consumer;
 
+import jakarta.persistence.EntityAgent;
 import jakarta.persistence.EntityGraph;
+import jakarta.persistence.EntityHandler;
+import jakarta.persistence.EntityListenerRegistration;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.Query;
 import jakarta.persistence.SchemaManager;
+import jakarta.persistence.Statement;
+import jakarta.persistence.StatementReference;
 import jakarta.persistence.SynchronizationType;
+import jakarta.persistence.TypedQuery;
 import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.PersistenceUnitTransactionType;
+import jakarta.persistence.sql.ResultSetMapping;
 
 
 import com.ibm.websphere.csi.J2EEName;
@@ -32,7 +40,7 @@ import com.ibm.ws.jpa.management.JPAEMFactory;
 
 
 @SuppressWarnings("serial")
-public class JPAEMFactoryV40 extends JPAEMFactory {
+public class JPAEMFactoryV40 extends JPAEMFactory{
     public JPAEMFactoryV40(JPAPuId puId, J2EEName j2eeName, EntityManagerFactory emf) {
         super(puId, j2eeName, emf);
     }
@@ -52,6 +60,21 @@ public class JPAEMFactoryV40 extends JPAEMFactory {
     @Override
     public void addNamedQuery(String arg0, Query arg1) {
         ivFactory.addNamedQuery(arg0, arg1);
+    }
+
+    @Override
+    public <R> TypedQueryReference<R> addNamedQuery(String name, TypedQuery<R> query) {
+        return ivFactory.addNamedQuery(name, query);
+    }
+
+    @Override
+    public EntityAgent createEntityAgent(Map<?, ?> properties) {
+        return ivFactory.createEntityAgent(properties);
+    }
+
+    @Override
+    public EntityAgent createEntityAgent() {
+        return ivFactory.createEntityAgent();
     }
 
     @Override
@@ -90,12 +113,43 @@ public class JPAEMFactoryV40 extends JPAEMFactory {
     }
     
     @Override
+    public <H extends EntityHandler> void runInTransaction(Class<H> handlerClass, Consumer<H> work) {
+        ivFactory.runInTransaction(handlerClass, work);
+    }
+
+    @Override
     public void runInTransaction(Consumer<EntityManager> work) {
     	 ivFactory.runInTransaction(work);
     }
+
     @Override
     public <R> R callInTransaction(Function<EntityManager, R> work) {
      	 return ivFactory.callInTransaction(work);
      }
+
+    @Override
+    public <R, H extends EntityHandler> R callInTransaction(Class<H> handlerClass, Function<H, R> work) {
+        return ivFactory.callInTransaction(handlerClass, work);
+    }
+
+    @Override
+    public <E> EntityListenerRegistration addListener(Class<E> entityClass, Class<? extends Annotation> annotation, Consumer<? super E> listener) {
+        return ivFactory.addListener(entityClass, annotation, listener);
+    }
+
+    @Override
+    public <R> Map<String, ResultSetMapping<R>> getResultSetMappings(Class<R> resultType) {
+        return ivFactory.getResultSetMappings(resultType);
+    }
+
+    @Override
+    public Map<String, StatementReference> getNamedStatements() {
+        return ivFactory.getNamedStatements();
+    }
+
+    @Override
+    public StatementReference addNamedStatement(String name, Statement statement) {
+        return ivFactory.addNamedStatement(name, statement);
+    }
 
 }

@@ -24,16 +24,20 @@ import jakarta.persistence.ConnectionConsumer;
 import jakarta.persistence.ConnectionFunction;
 import jakarta.persistence.EntityGraph;
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityHandler;
 import jakarta.persistence.FindOption;
 import jakarta.persistence.LockModeType;
 import jakarta.persistence.LockOption;
 import jakarta.persistence.RefreshOption;
 import jakarta.persistence.Statement;
 import jakarta.persistence.StatementOrTypedQuery;
+import jakarta.persistence.StatementReference;
 import jakarta.persistence.StoredProcedureQuery;
+import jakarta.persistence.sql.ResultSetMapping;
 import jakarta.persistence.TypedQuery;
 import jakarta.persistence.TypedQueryReference;
 import jakarta.persistence.criteria.CriteriaSelect;
+import jakarta.persistence.criteria.CriteriaStatement;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -95,8 +99,83 @@ public class JPATxEntityManagerV40 extends JPATxEntityManager {
     }
 
     @Override
+    public <T> TypedQuery<T> createNativeQuery(String sqlString, ResultSetMapping<T> resultSetMapping) {
+        return getEMInvocationInfo(false).createNativeQuery(sqlString, resultSetMapping);
+    }
+
+    @Override
+    public Statement createNativeStatement(String sqlString) {
+        return getEMInvocationInfo(false).createNativeStatement(sqlString);
+    }
+
+    @Override
+    public Statement createStatement(StatementReference reference) {
+        return getEMInvocationInfo(false).createStatement(reference);
+    }
+
+    @Override
+    public Statement createStatement(String qlString) {
+        return getEMInvocationInfo(false).createStatement(qlString);
+    }
+
+    @Override
+    public Statement createNamedStatement(String name) {
+        return getEMInvocationInfo(false).createNamedStatement(name);
+    }
+
+    @Override
     public StatementOrTypedQuery createNativeQuery(String sqlString, String resultSetMapping) {
         return getEMInvocationInfo(false).createNativeQuery(sqlString, resultSetMapping);
+    }
+
+    @Override
+    public Statement createStatement(CriteriaStatement<?> statement) {
+        return getEMInvocationInfo(false).createStatement(statement);
+    }
+
+    @Override
+    public <T> TypedQuery<T> createQuery(String qlString, EntityGraph<T> entityGraph) {
+        return getEMInvocationInfo(false).createQuery(qlString, entityGraph);
+    }
+
+    @Override
+    public <T> T get(Class<T> entityClass, Object id) {
+        return getEMInvocationInfo(true).get(entityClass, id);
+    }
+
+    @Override
+    public <T> T get(Class<T> entityClass, Object id, FindOption... options) {
+        return getEMInvocationInfo(true).get(entityClass, id, options);
+    }
+
+    @Override
+    public <T> T get(EntityGraph<T> graph, Object id, FindOption... options) {
+        return getEMInvocationInfo(true).get(graph, id, options);
+    }
+
+    @Override
+    public <T> List<T> getMultiple(Class<T> entityClass, List<?> primaryKeys, FindOption... options) {
+        return getEMInvocationInfo(true).getMultiple(entityClass, primaryKeys, options);
+    }
+
+    @Override
+    public <T> List<T> getMultiple(EntityGraph<T> entityGraph, List<?> primaryKeys, FindOption... options) {
+        return getEMInvocationInfo(true).getMultiple(entityGraph, primaryKeys, options);
+    }
+
+    @Override
+    public <T> List<T> findMultiple(Class<T> entityClass, List<?> primaryKeys, FindOption... options) {
+        return getEMInvocationInfo(true).findMultiple(entityClass, primaryKeys, options);
+    }
+
+    @Override
+    public <T> List<T> findMultiple(EntityGraph<T> entityGraph, List<?> primaryKeys, FindOption... options) {
+        return getEMInvocationInfo(true).findMultiple(entityGraph, primaryKeys, options);
+    }
+
+    @Override
+    public Statement createQuery(CriteriaStatement<?> statement) {
+        return getEMInvocationInfo(false).createQuery(statement);
     }
 
     public Statement createQuery(jakarta.persistence.criteria.CriteriaUpdate<?> updateQuery) {
@@ -115,6 +194,11 @@ public class JPATxEntityManagerV40 extends JPATxEntityManager {
     @Override
     public EntityGraph<?> createEntityGraph(String arg0) {
         return getEMInvocationInfo(false).createEntityGraph(arg0);
+    }
+
+    @Override
+    public <T> EntityGraph<T> getEntityGraph(Class<T> rootType, String graphName) {
+        return getEMInvocationInfo(false).getEntityGraph(rootType, graphName);
     }
 
     @Override
@@ -173,11 +257,6 @@ public class JPATxEntityManagerV40 extends JPATxEntityManager {
     }
 
     @Override
-    public <T> T find(EntityGraph<T> entityGraph, Object primaryKey, LockModeType lockMode, FindOption... options) {
-        return getEMInvocationInfo(true).find(entityGraph, primaryKey, lockMode, options);
-    }
-
-    @Override
     public CacheRetrieveMode getCacheRetrieveMode() {
         return getEMInvocationInfo(false).getCacheRetrieveMode();
     }
@@ -205,11 +284,6 @@ public class JPATxEntityManagerV40 extends JPATxEntityManager {
     @Override
     public void refresh(Object entity, RefreshOption... options) {
         getEMInvocationInfo(true).refresh(entity, options);
-    }
-
-    @Override
-    public void refresh(Object entity, LockModeType lockMode, RefreshOption... options) {
-        getEMInvocationInfo(true).refresh(entity, lockMode, options);
     }
 
     @Override
