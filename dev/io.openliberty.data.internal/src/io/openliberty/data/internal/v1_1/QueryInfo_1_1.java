@@ -54,6 +54,8 @@ import io.openliberty.data.repository.update.Assign;
 import io.openliberty.data.repository.update.Divide;
 import io.openliberty.data.repository.update.Multiply;
 import io.openliberty.data.repository.update.SubtractFrom;
+import jakarta.data.Sort;
+import jakarta.data.Sort.Nulls;
 import jakarta.data.constraint.AtLeast;
 import jakarta.data.constraint.AtMost;
 import jakarta.data.constraint.Between;
@@ -77,6 +79,7 @@ import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
@@ -335,6 +338,26 @@ public class QueryInfo_1_1 extends QueryInfo {
     private static StringBuilder appendParam(StringBuilder q, boolean lower, int num) {
         q.append(lower ? "LOWER(?" : '?').append(num);
         return lower ? q.append(')') : q;
+    }
+
+    @Override
+    @Trivial
+    protected <T> Sort<T> createSort(String expression, OrderBy orderBy) {
+        return new Sort<T>( //
+                        expression, //
+                        !orderBy.descending(), //
+                        orderBy.ignoreCase(), //
+                        orderBy.nullOrdering());
+    }
+
+    @Override
+    @Trivial
+    protected <T> Sort<T> createSort(String expression, Sort<T> sort) {
+        return new Sort<T>( //
+                        expression, //
+                        sort.isAscending(), //
+                        sort.ignoreCase(), //
+                        sort.nullOrdering());
     }
 
     /**
@@ -733,6 +756,22 @@ public class QueryInfo_1_1 extends QueryInfo {
         if (trace && tc.isEntryEnabled())
             Tr.exit(this, tc, "getDeferredConstraints", deferred.keySet());
         return deferred;
+    }
+
+    @Override
+    @Trivial
+    protected String getNullOrdering(Sort<?> sort, boolean sameDirection) {
+        switch (sort.nullOrdering()) {
+            case FIRST:
+                return sameDirection ? Nulls.FIRST.name() : Nulls.LAST.name();
+            case LAST:
+                return sameDirection ? Nulls.LAST.name() : Nulls.FIRST.name();
+            case UNSPECIFIED:
+                return null;
+            default:
+                throw new IllegalStateException("Sort.nullOrdering: " +
+                                                sort.nullOrdering());
+        }
     }
 
     @Override

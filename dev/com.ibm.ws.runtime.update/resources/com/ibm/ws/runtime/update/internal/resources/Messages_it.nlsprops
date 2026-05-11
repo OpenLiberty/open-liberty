@@ -51,11 +51,11 @@ client.quiesce.end=CWWKE1104I: Esecuzione del quiesce del client completata.
 client.quiesce.end.explanation=L'operazione di esecuzione del quiesce \u00e8 stata completata correttamente.
 client.quiesce.end.useraction=Non sono richieste azioni.
 
-notifications.not.complete=CWWKE1105W: {0} aggiornamenti del runtime non sono stati completati durante il periodo di quiesce. 
+notifications.not.complete=CWWKE1105W: {0} aggiornamenti del runtime non sono stati completati durante il periodo di quiesce. I seguenti aggiornamenti di runtime non sono stati completati: {1}
 notifications.not.complete.explanation=Uno o pi\u00f9 aggiornamenti alle funzioni, alla configurazione o alle applicazioni non sono stati completati prima della chiusura del server.
 notifications.not.complete.useraction=Non \u00e8 richiesta alcuna azione. 
 
-quiesce.listeners.not.complete=CWWKE1106W: {0} operazioni di arresto non sono state completate durante il periodo di quiesce. 
+quiesce.listeners.not.complete=CWWKE1106W: {0} operazioni di arresto non sono state completate durante il periodo di quiesce. Le seguenti operazioni non sono state completate: {1}
 quiesce.listeners.not.complete.explanation=Una o pi\u00f9 operazioni che sono state avviate durante l'operazione di chiusura non sono state completate. 
 quiesce.listeners.not.complete.useraction=Non sono richieste azioni.
 

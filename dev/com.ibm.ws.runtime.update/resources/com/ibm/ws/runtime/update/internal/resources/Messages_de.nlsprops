@@ -51,11 +51,11 @@ client.quiesce.end=CWWKE1104I: Clientstilllegung abgeschlossen.
 client.quiesce.end.explanation=Die Stilllegungsoperation wurde erfolgreich abgeschlossen.
 client.quiesce.end.useraction=Es ist keine Aktion erforderlich.
 
-notifications.not.complete=CWWKE1105W: {0} Laufzeitupdates wurden nicht innerhalb des Stilllegungszeitraums abgeschlossen. 
+notifications.not.complete=CWWKE1105W: {0} Laufzeitupdates wurden nicht innerhalb des Stilllegungszeitraums abgeschlossen. Die folgenden Laufzeit-Updates konnten nicht abgeschlossen werden: {1}
 notifications.not.complete.explanation=Mindestens ein Update f\u00fcr Features, Konfigurationen oder Anwendungen wurde vor dem Systemabschluss nicht abgeschlossen.
 notifications.not.complete.useraction=Es ist keine Aktion erforderlich.
 
-quiesce.listeners.not.complete=CWWKE1106W: {0} Systemabschlussoperationen wurden nicht innerhalb des Stilllegungszeitraums abgeschlossen. 
+quiesce.listeners.not.complete=CWWKE1106W: {0} Systemabschlussoperationen wurden nicht innerhalb des Stilllegungszeitraums abgeschlossen. Die folgenden Vorg\u00e4nge wurden nicht abgeschlossen: {1}
 quiesce.listeners.not.complete.explanation=Mindestens eine der w\u00e4hrend des Systemabschlusses eingeleiteten Operationen wurde nicht abgeschlossen. 
 quiesce.listeners.not.complete.useraction=Es ist keine Aktion erforderlich.
 

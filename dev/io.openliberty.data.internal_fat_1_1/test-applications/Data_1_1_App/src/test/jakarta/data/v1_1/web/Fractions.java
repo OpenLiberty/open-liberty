@@ -36,6 +36,7 @@ import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
+import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
 import jakarta.data.repository.OrderBy;
@@ -49,6 +50,13 @@ import jakarta.data.restrict.Restriction;
  */
 @Repository(dataStore = "MyDataStore")
 public interface Fractions {
+
+    @Find
+    @First(10)
+    @Select(_Fraction.NUMERATOR)
+    List<Integer> atMost10Numerators(int denominator,
+                                     Restriction<Fraction> filter,
+                                     Order<Fraction> sortBy);
 
     Long count(Restriction<Fraction> filter);
 
@@ -76,6 +84,11 @@ public interface Fractions {
     (int exclusiveMin,
      int exclusiveMax,
      Restriction<Fraction> filter);
+
+    @Query("WHERE denominator = ?1 AND numerator < denominator")
+    @First
+    @OrderBy(value = _Fraction.NUMERATOR, descending = true)
+    Optional<Fraction> greatestLessThan1(int denominator);
 
     @Find
     @OrderBy(_Fraction.NUMERATOR)

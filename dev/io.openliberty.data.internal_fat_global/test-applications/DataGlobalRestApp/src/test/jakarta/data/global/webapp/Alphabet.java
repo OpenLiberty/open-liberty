@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,11 +27,10 @@ import jakarta.data.repository.Repository;
  * resource reference that that is defined by this application.
  */
 @DataSourceDefinition(name = "java:global/jdbc/WebAppDataSource",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testwebdb;DB_CLOSE_DELAY=-1",
                       user = "dbuser2",
-                      password = "dbpwd2",
-                      properties = "createDatabase=create")
+                      password = "dbpwd2")
 @Resource(name = "java:global/env/jdbc/WebAppDataSourceRef",
           lookup = "java:global/jdbc/WebAppDataSource")
 @Repository(dataStore = "java:global/env/jdbc/WebAppDataSourceRef")

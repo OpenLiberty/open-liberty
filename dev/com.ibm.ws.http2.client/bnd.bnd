@@ -1,10 +1,10 @@
 #*******************************************************************************
-# Copyright (c) 2018, 2024 IBM Corporation and others.
+# Copyright (c) 2018, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
 # http://www.eclipse.org/legal/epl-2.0/
-# 
+#
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
@@ -72,4 +72,4 @@ Import-Package: \
 	com.ibm.ws.channelfw;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
 	io.openliberty.io.netty,\
-	io.netty.buffer
+	io.netty:netty-buffer;version=4.2.12.Final

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,11 +31,10 @@ import javax.sql.DataSource;
 import test.jakarta.data.datastore.lib.ServerDSEntity;
 
 @DataSourceDefinition(name = "java:module/jdbc/DataSourceDef",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "ejbuser1",
-                      password = "ejbpwd1",
-                      properties = "createDatabase=create")
+                      password = "ejbpwd1")
 @Stateless
 public class DataStoreTestEJB {
 
@@ -84,7 +83,7 @@ public class DataStoreTestEJB {
             assertEquals("ejbuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM EJBModuleDSDEntity WHERE id=64";
+            String sql = "SELECT val FROM EJBModuleDSDEntity WHERE id=64";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -111,7 +110,7 @@ public class DataStoreTestEJB {
             assertEquals("defaultuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM DefDSEntity WHERE id=62";
+            String sql = "SELECT val FROM DefDSEntity WHERE id=62";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -144,7 +143,7 @@ public class DataStoreTestEJB {
             assertEquals("resrefuser3",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id='ninety-seven'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id='ninety-seven'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);

@@ -11,6 +11,7 @@ com.ibm.ws.concurrent.persistent_fat_timers
 com.ibm.ws.couchdb_fat
 com.ibm.ws.gvt.rest_fat
 com.ibm.ws.install.featureUtility_fat
+com.ibm.ws.jbatch.open.partition_fat
 com.ibm.ws.jdbc_fat
 com.ibm.ws.jdbc_fat_db2
 com.ibm.ws.jdbc_fat_krb5

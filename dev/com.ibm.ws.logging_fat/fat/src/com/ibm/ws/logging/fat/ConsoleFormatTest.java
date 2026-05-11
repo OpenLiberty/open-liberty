@@ -244,6 +244,10 @@ public class ConsoleFormatTest {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
+
+            // Restart the default server so the bootstrap properties is restored, to ensure other tests are run correctly.
+            Log.info(c, "testSimpleFormatSetInBootstrapProperties", "Restarting the server...");
+            restoreServer();
         }
     }
 
@@ -279,6 +283,10 @@ public class ConsoleFormatTest {
             // Restore the initial contents of bootstrap.properties
             FileOutputStream out = getFileOutputStreamForRemoteFile(bootstrapFile, false);
             writeProperties(initialBootstrapProps, out);
+
+            // Restart the default server so the bootstrap properties is restored, to ensure other tests are run correctly.
+            Log.info(c, "testSimpleFormatSetInBootstrapProperties", "Restarting the server...");
+            restoreServer();
         }
     }
 
@@ -370,25 +378,36 @@ public class ConsoleFormatTest {
         // Retrieve the consoleLogFile RemoteFile
         RemoteFile consoleLogFile = server.getConsoleLogFile();
 
+        // Get the console log format before updating.
+        String initialConsoleFormat = server.getServerConfiguration().getLogging().getConsoleFormat();
+        if (initialConsoleFormat == null) {
+            initialConsoleFormat = "";
+        }
+
         // Set the consoleFormat="simple", traceSpec=off, isoDateFormat=false in server.xml
         setServerConfiguration(server, SIMPLE_FORMAT, false, false, consoleLogFile);
 
-        // Verify if the server was successfully updated
-        String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
-        assertNotNull("Message CWWKG0017I did not appear.", line);
+        // If the initial format is already SIMPLE_FORMAT, then look for the message CWWKG0017I, otherwise look for the message CWWKG0018I.
+        if(!initialConsoleFormat.equals(SIMPLE_FORMAT)) {
+            String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
+            assertNotNull("Message CWWKG0017I did not appear.", line);
+        } else {
+            String line = server.waitForStringInLogUsingMark("CWWKG0018I", consoleLogFile);
+            assertNotNull("Message CWWKG0018I did not appear.", line);
+        }
 
         // Run application to generate SystemOut and SystemErr messages
         hitWebPage("broken-servlet", "BrokenWithABadlyWrittenThrowableServlet", true, null);
 
         // Verify if the exception appeared and is in the simple format
-        line = server.waitForStringInLog("An exception occurred: java.lang.Throwable:", consoleLogFile);
+        String line = server.waitForStringInLog("An exception occurred: java.lang.Throwable:", consoleLogFile);
         Log.info(c, "testSimpleConsoleFormatWithException", "The exception message in simple format : " + line);
         assertNotNull("The exception message did not appear in the console.log file", line);
         assertTrue("The exception message is not in the simple console format.", isStringinSimpleFormat(line));
 
         // Verify if the exception is complete, and not trimmed and/or suppressed
         List<String> lines = server.findStringsInLogs(INTERNAL_CLASSES_REGEXP, consoleLogFile);
-        assertTrue("The SystemErr message is not in the  simple console format.", lines.isEmpty());
+        assertTrue("The SystemErr message is not in the simple console format.", lines.isEmpty());
     }
 
     /*
@@ -548,6 +567,7 @@ public class ConsoleFormatTest {
         loggingObj.setConsoleFormat(consoleFormat);
         libertyServer.setMarkToEndOfLog(consoleLogFile);
         libertyServer.updateServerConfiguration(serverConfig);
+        Thread.sleep(1000);
         libertyServer.waitForConfigUpdateInLogUsingMark(null);
     }
 

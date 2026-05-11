@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -49,11 +49,10 @@ import test.jakarta.data.datastore.web.lib.WebLibEntity;
 import test.jakarta.data.datastore.web.lib.WebLibRepo;
 
 @DataSourceDefinition(name = "java:app/jdbc/DataSourceDef",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "servletuser1",
-                      password = "servletpwd1",
-                      properties = "createDatabase=create")
+                      password = "servletpwd1")
 @SuppressWarnings("serial")
 @WebServlet("/*")
 public class DataStoreTestServlet extends FATServlet {
@@ -153,7 +152,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("defaultuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM DefDSEntity WHERE id = 25";
+            String sql = "SELECT val FROM DefDSEntity WHERE id = 25";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -172,7 +171,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("defaultuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM DefDSEntity2 WHERE id = 25";
+            String sql = "SELECT val FROM DefDSEntity2 WHERE id = 25";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -441,7 +440,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("serveruser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id = 'eighty-seven'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id = 'eighty-seven'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -471,7 +470,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("serveruser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id = 'forty-one'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id = 'forty-one'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);
@@ -502,7 +501,7 @@ public class DataStoreTestServlet extends FATServlet {
             assertEquals("resrefuser1",
                          con.getMetaData().getUserName().toLowerCase());
 
-            String sql = "SELECT value FROM ServerDSEntity WHERE id='ninety-three'";
+            String sql = "SELECT val FROM ServerDSEntity WHERE id='ninety-three'";
             ResultSet result = con
                             .createStatement()
                             .executeQuery(sql);

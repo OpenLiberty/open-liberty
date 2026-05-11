@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.authentication.cache;
 
@@ -16,7 +13,9 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.security.AccessController;
 import java.security.Principal;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -68,7 +67,12 @@ public class CacheObject implements Serializable {
             isReadOnly = subject.isReadOnly();
             principals = Collections.unmodifiableSet(new HashSet<Principal>(subject.getPrincipals()));
             publicCredentials = Collections.unmodifiableSet(new HashSet<Object>(subject.getPublicCredentials()));
-            privateCredentials = Collections.unmodifiableSet(new HashSet<Object>(subject.getPrivateCredentials()));
+            privateCredentials = AccessController.doPrivileged(new PrivilegedAction<Set<Object>>() {
+                @Override
+                public Set<Object> run() {
+                    return Collections.unmodifiableSet(new HashSet<Object>(subject.getPrivateCredentials()));
+                }
+            });
         }
     }
 

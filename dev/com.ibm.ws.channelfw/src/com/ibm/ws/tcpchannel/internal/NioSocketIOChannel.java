@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2006 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.tcpchannel.internal;
 
@@ -84,6 +81,13 @@ public class NioSocketIOChannel extends SocketIOChannel {
         long dataRead = 0;
 
         if (wsBuffArray.length == 1) {
+            // Add null check to prevent NPE from race condition
+            if (wsBuffArray[0] == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "wsBuffArray[0] is null, likely due to concurrent JIT buffer cleanup. Returning early.");
+                }
+                return dataRead;
+            }
 
             if ((!wsBuffArray[0].isDirect()) && (wsBuffArray[0].hasArray())) {
                 // To avoid lots of casting use a local var.

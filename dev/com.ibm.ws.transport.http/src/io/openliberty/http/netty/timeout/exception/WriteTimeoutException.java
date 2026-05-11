@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 public class WriteTimeoutException extends TimeoutException {
 
     private static final long serialVersionUID = 1;
-    private static final String errorCode = "SOME_CODE";
+    private static final String errorCode = "write.timeout";
 
     public WriteTimeoutException(long duration, TimeUnit unit){
         super(errorCode, duration, unit);

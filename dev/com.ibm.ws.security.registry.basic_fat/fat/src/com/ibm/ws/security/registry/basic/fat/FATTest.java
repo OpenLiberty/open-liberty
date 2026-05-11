@@ -238,14 +238,14 @@ public class FATTest {
                 expectedErrors.add(CWWKS1864W_WEAK_ALGORITHM_WARNING);
                 CWWKS1864wAlreadyLoggedForAES = true;
             }
+        }
 
-            //Note: CWWKS1865W will be output after CWWKS1864W
-            if (!!!CWWKS1865wAlreadyLoggedForAES) {
-                assertNotNull("AES password without custom encryption key should cause CWWKS1865W",
-                              server.waitForStringInLog(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING));
-                expectedErrors.add(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING);
-                CWWKS1865wAlreadyLoggedForAES = true;
-            }
+        //Note: CWWKS1865W will be output after CWWKS1864W
+        if (!!!CWWKS1865wAlreadyLoggedForAES) {
+            assertNotNull("AES password without custom encryption key should cause CWWKS1865W",
+                    server.waitForStringInLog(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING));
+            expectedErrors.add(CWWKS1865W_AES_NO_CUSTOM_KEY_WARNING);
+            CWWKS1865wAlreadyLoggedForAES = true;
         }
 
         String password = "superAES256password";

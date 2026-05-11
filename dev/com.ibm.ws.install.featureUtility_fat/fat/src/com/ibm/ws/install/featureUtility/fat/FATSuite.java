@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class
+	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class, FindActionTest.class
 
 })
 public class FATSuite extends TestContainerSuite {

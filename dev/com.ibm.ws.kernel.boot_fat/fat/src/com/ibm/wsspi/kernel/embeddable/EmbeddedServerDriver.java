@@ -290,7 +290,7 @@ public class EmbeddedServerDriver implements ServerEventListener {
         }
 
         for (String resourceName : expectResourceFailure) {
-            checkBootstrapAccess("/simpleApp/bootstrapAccess?resosurcename=" + resourceName + "&expectFailure=" + true);
+            checkBootstrapAccess("/simpleApp/bootstrapAccess?resourcename=" + resourceName + "&expectFailure=" + true);
         }
     }
 

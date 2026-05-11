@@ -493,7 +493,7 @@ unknown_bean_class=Nezn\u00e1m\u00e1 t\u0159\u00edda objektu entity bean: {0}. O
 
 unknown_entitybean_name=Nezn\u00e1m\u00fd n\u00e1zev objektu entity bean: {0}
 
-unsupported_classfile_version=T\u0159\u00edda \u201e {0} \u201c byla zkompilov\u00e1na pomoc\u00ed nepodporovan\u00e9ho JDK a nelze ji na\u010d\u00edst. Aktu\u00e1ln\u00ed verze ASM podporuje a\u017e JDK {1}. Aktualizujte z\u00e1vislosti ASM v bal\u00ed\u010dku \u201e OW2 \u201c.
+unsupported_classfile_version=T\u0159\u00edda \u201e {0} \u201c byla zkompilov\u00e1na pomoc\u00ed nepodporovan\u00e9ho JDK a nelze ji na\u010d\u00edst. Aktu\u00e1ln\u00ed verze ASM podporuje maxim\u00e1ln\u011b JDK {1}. Aktualizujte z\u00e1vislosti ASM v bal\u00ed\u010dku \u201e OW2 \u201c.
 
 wrap_convert_exception=V\u00fdjimka p\u0159i vol\u00e1n\u00ed {0} u t\u0159\u00eddy p\u0159evodn\u00edku {1} s hodnotou {2}
 

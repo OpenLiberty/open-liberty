@@ -1,5 +1,5 @@
 # *******************************************************************************
-# Copyright (c) 2019 IBM Corporation and others.
+# Copyright (c) 2019,2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -596,26 +596,25 @@ components:
           configElementName: "containerAuthData"
           uid: "dataSource[DefaultDataSource]/containerAuthData[default-0]"
           password: "******"
-          user: "derbyuser1"
+          user: "h2user1"
         enableConnectionCasting: false
         jdbcDriverRef:
           configElementName: "jdbcDriver"
           uid: "dataSource[DefaultDataSource]/jdbcDriver[default-0]"
           libraryRef:
             configElementName: "library"
-            uid: "Derby"
-            id: "Derby"
+            uid: "H2"
+            id: "H2"
             apiTypeVisibility: "spec,ibm-api,api,stable"
             fileRef:
               - configElementName: "file"
-                uid: "library[Derby]/file[default-0]"
-                name: "/Users/myself/drivers/derby/derby.jar"
+                uid: "library[H2]/file[default-0]"
+                name: "/Users/myself/drivers/h2/h2.jar"
         statementCacheSize: 10,
         syncQueryTimeoutWithTransactionTimeout: false,
         transactional: true,
-        properties.derby.embedded:
-          createDatabase: "create"
-          databaseName: "memory:derbydb"
+        properties.h2:
+          URL: "jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1"
         api:
           - "/ibm/api/validation/dataSource/DefaultDataSource"
     validation.cloudantDatabase.result:

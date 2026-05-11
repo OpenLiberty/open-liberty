@@ -1,0 +1,119 @@
+<!--
+  ~ Copyright (c) 2026 IBM Corporation and others.
+  ~ All rights reserved. This program and the accompanying materials
+  ~ are made available under the terms of the Eclipse Public License 2.0
+  ~ which accompanies this distribution, and is available at
+  ~ http://www.eclipse.org/legal/epl-2.0/
+  ~
+  ~ SPDX-License-Identifier: EPL-2.0
+  -->
+
+<server>
+    <featureManager>
+        <feature>webProfile-11.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webContainer deferServletLoad="false"/>
+
+	<basicRegistry id="basic" realm="authz">
+		<user name="user0" password="user0pwd" />
+		<user name="user1" password="user1pwd" />
+		<group name="group1">
+			<member name="user0" />
+			<member name="user1" />
+		</group>
+		<user name="user2" password="user2pwd" />
+		<group name="group2">
+			<member name="user1" />
+			<member name="user2" />
+		</group>
+		<user name="user3" password="user3pwd" />
+		<group name="group3">
+			<member name="user3" />
+		</group>
+		<user name="user4" password="user4 pwd" />
+		<group name="group4">
+			<member name="user4" />
+		</group>
+		<user name="user5" password="user5pwd " />
+		<group name="group5">
+			<member name="user5" />
+		</group>
+		<user name="user6" password="user6pwd" />
+	</basicRegistry>
+
+	<application type="war" id="annotationTest" name="annotationTest" location="${server.config.dir}/apps/annotationTest.war">
+        <application-bnd>
+            <security-role name="CDIRole1">
+                <user name="user2"/>
+            </security-role>
+            <security-role name="CDIRole2">
+                <user name="user1"/>
+            </security-role>
+            <security-role name="CDIRole3">
+                <group name="group2"/>
+            </security-role>
+            <security-role name="CDIRole4">
+                <group name="group1"/>
+            </security-role>
+            <security-role name="WebRole1">
+                <user name="user1"/>
+            </security-role>
+            <security-role name="WebRole2">
+                <user name="user2"/>
+            </security-role>
+            <security-role name="WebRole3">
+                <group name="group1"/>
+            </security-role>
+            <security-role name="WebRole4">
+                <group name="group1"/>
+                <group name="group2"/>
+            </security-role>
+            <security-role name="EJBRole1">
+                <group name="group1"/>
+                <group name="group2"/>
+            </security-role>
+            <security-role name="EJBRole2">
+                <group name="group1"/>
+            </security-role>
+            <security-role name="EJBRole3">
+                <user name="user2"/>
+            </security-role>
+            <security-role name="EJBRole4">
+                <user name="user1"/>
+            </security-role>
+            <security-role name="RestRole1">
+                <group name="group1"/>
+            </security-role>
+            <security-role name="RestRole2">
+                <group name="group1"/>
+                <group name="group2"/>
+            </security-role>
+            <security-role name="RestRole3">
+                <user name="user1"/>
+            </security-role>
+            <security-role name="RestRole4">
+                <user name="user2"/>
+            </security-role>
+            <security-role name="WebServicesRole1">
+                <user name="user2"/>
+            </security-role>
+            <security-role name="WebServicesRole2">
+                <user name="user1"/>
+            </security-role>
+            <security-role name="WebServicesRole3">
+                <group name="group1"/>
+                <group name="group2"/>
+            </security-role>
+            <security-role name="WebServicesRole4">
+                <group name="group1"/>
+            </security-role>
+            <security-role name="AllAuthenticated">
+                <special-subject type="ALL_AUTHENTICATED_USERS"/>
+            </security-role>
+        </application-bnd>
+	</application>
+
+</server>

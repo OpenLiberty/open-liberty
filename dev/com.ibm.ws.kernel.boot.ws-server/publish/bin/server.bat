@@ -545,23 +545,70 @@ goto:eof
   @REM set LOG_DIR=
   set LOG_FILE=
 
+  @REM Return if JAVA_HOME already processed 
+  if defined JAVA_HOME_PROCESSED goto:eof
+  set JAVA_HOME_PROCESSED=1
+
   if NOT defined JAVA_HOME (
-    if NOT defined JRE_HOME (
-      if NOT defined WLP_DEFAULT_JAVA_HOME (
-        @REM Use whatever java is on the path
-        set JAVA_CMD_QUOTED="java"
-      ) else (
+    if defined JRE_HOME (
+      set JAVA_HOME=!JRE_HOME!
+      set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+    ) else (
+      if defined WLP_DEFAULT_JAVA_HOME (
         if "!WLP_DEFAULT_JAVA_HOME:~0,17!" == "@WLP_INSTALL_DIR@" (
           set WLP_DEFAULT_JAVA_HOME=!WLP_INSTALL_DIR!!WLP_DEFAULT_JAVA_HOME:~17!
         )
-        set JAVA_CMD_QUOTED="!WLP_DEFAULT_JAVA_HOME!\bin\java"
+        set JAVA_HOME=!WLP_DEFAULT_JAVA_HOME!
+        set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+      ) else (
+        @REM Use whatever java is on the path
+        set JAVA_CMD_QUOTED="java"
       )
-    ) else (
-      set JAVA_CMD_QUOTED="%JRE_HOME%\bin\java"
     )
   ) else (
-    if exist "%JAVA_HOME%\jre\bin\java.exe" set JAVA_HOME=!JAVA_HOME!\jre
+    @REM For older JDKs with separate JRE directory, adjust JAVA_HOME to point to JRE
+    @REM Only append \jre if JAVA_HOME doesn't already end with "jre"
+    for %%i in ("!JAVA_HOME!") do set JAVA_PARENT_NAME=%%~nxi
+    if /I NOT "!JAVA_PARENT_NAME!"=="jre" (
+      if exist "!JAVA_HOME!\jre\bin\java.exe" (
+        set JAVA_HOME=!JAVA_HOME!\jre
+      )
+    )
     set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+  )
+
+  @REM If JAVA_HOME is still not set, attempt to detect it from the java command in PATH
+  if NOT defined JAVA_HOME (
+    @REM Try to find java.exe in PATH and derive JAVA_HOME from it
+    for %%i in (java.exe) do set JAVA_PATH=%%~$PATH:i
+    if defined JAVA_PATH (
+      @REM Get the directory containing java.exe
+      for %%i in ("!JAVA_PATH!") do set JAVA_BIN_DIR=%%~dpi
+      @REM Remove trailing backslash
+      set JAVA_BIN_DIR=!JAVA_BIN_DIR:~0,-1!
+      @REM Get parent directory (should be JAVA_HOME or JAVA_HOME\jre)
+      for %%i in ("!JAVA_BIN_DIR!") do set JAVA_HOME=%%~dpi
+      @REM Remove trailing backslash
+      set JAVA_HOME=!JAVA_HOME:~0,-1!
+      @REM Check if we're in a jre subdirectory and adjust if needed
+      for %%i in ("!JAVA_HOME!") do set JAVA_PARENT_NAME=%%~nxi
+      if /I "!JAVA_PARENT_NAME!" == "jre" (
+        @REM We're in JAVA_HOME\jre\bin, go up one more level
+        for %%i in ("!JAVA_HOME!") do set JAVA_HOME=%%~dpi
+        set JAVA_HOME=!JAVA_HOME:~0,-1!
+      )
+      @REM Validate that JAVA_HOME looks reasonable (has lib directory or release file)
+      if NOT exist "!JAVA_HOME!\lib" (
+        if NOT exist "!JAVA_HOME!\release" (
+          @REM Not a valid JAVA_HOME, unset it
+          set JAVA_HOME=
+        ) else (
+          set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+        )
+      ) else (
+        set JAVA_CMD_QUOTED="!JAVA_HOME!\bin\java"
+      )
+    )
   )
 
   @REM Use OPENJ9_JAVA_OPTIONS if defined, otherwise use IBM_JAVA_OPTIONS

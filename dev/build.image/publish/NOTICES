@@ -115,6 +115,8 @@ Apache Kafka [kafka-clients],
 Apache MyFaces Buildtools Maven2 Builder Annotations [myfaces-builder-annotations],
 Apache MyFaces Core 4.0 - API [myfaces-api],
 Apache MyFaces Core 4.0 - Impl [myfaces-impl],
+Apache MyFaces Core 4.1 - API [myfaces-api],
+Apache MyFaces Core 4.1 - Impl [myfaces-impl],
 Apache MyFaces JSF-2.3 Core API [myfaces-api],
 Apache MyFaces JSF-2.3 Core Impl [myfaces-impl],
 Apache MyFaces JSF-3.0 Core API [myfaces-api],
@@ -122,6 +124,7 @@ Apache MyFaces JSF-3.0 Core Impl [myfaces-impl], Apache Neethi [neethi],
 Apache Velocity [velocity], Apache Velocity - Engine [velocity-engine-core],
 Bean Validation API [validation-api], Bouncy Castle OpenPGP APIs [bcpg-jdk18on],
 CDI APIs [cdi-api], CDI APIs [jakarta.enterprise.cdi-api],
+CDI EL integration API [jakarta.enterprise.cdi-el-api],
 CDI Language Model [jakarta.enterprise.lang-model],
 CDI Lite Extension Translator [weld-lite-extension-translator],
 ClassMate [classmate], Commons BeanUtils [commons-beanutils],
@@ -137,14 +140,17 @@ Hibernate Validator Engine [hibernate-validator],
 Hibernate Validator Portable Extension [hibernate-validator-cdi],
 IntelliJ IDEA Annotations [annotations], J2ObjC Annotations [j2objc-annotations],
 JASYPT: Java Simplified Encryption [jasypt], JBoss Logging 3 [jboss-logging],
+JBoss Logging I18n Annotation Processor [jboss-logging-processor],
+JBoss Logging I18n Annotations [jboss-logging-annotations],
 JCL 1.2 implemented over SLF4J [jcl-over-slf4j], JSON.simple [json-simple],
 JSR107 API and SPI [cache-api], JTA 1.1 [geronimo-jta_1.1_spec],
 Jackson-annotations [jackson-annotations], Jackson-core [jackson-core],
 Jackson-dataformat-YAML [jackson-dataformat-yaml],
 Jakarta Batch API [jakarta.batch-api],
 Jakarta Bean Validation API [jakarta.validation-api],
-Jakarta CDI [jakarta.enterprise.cdi-api],
-Jakarta Dependency Injection [jakarta.inject-api], Jandex: Core [jandex],
+Jakarta CDI [jakarta.enterprise.cdi-api], Jakarta Data API [jakarta.data-api],
+Jakarta Dependency Injection [jakarta.inject-api],
+Jakarta Validation API [jakarta.validation-api], Jandex: Core [jandex],
 Java Annotation Indexer [jandex],
 Java Concurrency Tools Core Library [jctools-core], Joda time [joda-time],
 Joda-Time [joda-time], Kotlin Stdlib [kotlin-stdlib],
@@ -362,7 +368,7 @@ io.grpc:grpc-netty [grpc-netty], io.grpc:grpc-protobuf [grpc-protobuf],
 io.grpc:grpc-protobuf-lite [grpc-protobuf-lite], io.grpc:grpc-stub [grpc-stub],
 io.grpc:grpc-util [grpc-util], jackson-databind, jackson-jr-objects,
 jaeger-client [jaeger-core], jansi, jasper-el, java-dataloader, java-support,
-javax.inject, jose4j, jsp.tld.standard,
+javax.inject, jdeparser, jose4j, jsp.tld.standard,
 microProfile-fault-tolerance-api [microprofile-fault-tolerance-api],
 micrometer-commons, micrometer-core, micrometer-observation,
 micrometer-registry-prometheus, microprofile-fault-tolerance-api,
@@ -654,6 +660,7 @@ Codemodel Core [codemodel] (Copyright 2010-2023 Oracle and/or its affiliates) (C
 DTD Parser [dtd-parser] (Copyright 1998-2018 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2022 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
+EclipseLink Core [org.eclipse.persistence.core] (Copyright 2007 Eclipse Foundation, Inc. and its licensors) (Copyright 2019-2025 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Copyright Oracle and/or its affiliates) (Eclipse.org - EclipseLink Project)
 Extended StAX API [stax-ex] (Copyright 1997-2020 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2019 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2021 Oracle and) (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
 Extended StAX API [stax-ex] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2017 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -672,11 +679,13 @@ JAXB Runtime [jaxb-runtime] (Copyright 2013-2019 Oracle and/or its affiliates) (
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB Runtime [jaxb-runtime] (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2018 Oracle)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB XJC [jaxb-xjc] (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -735,6 +744,7 @@ XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 O
 XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+XSOM [xsom] (Copyright 2010-2024 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 asm (Copyright 2000-2011 INRIA) (OW2)
 asm (Copyright (c) 2000-2011 INRIA\
 asm-analysis (OW2)
@@ -956,7 +966,9 @@ JSON-B API [jakarta.json.bind-api] https://www.eclipse.org
 JSON-P Default Provider [jakarta.json] https://github.com/eclipse-ee4j/jsonp
 Jakarta Annotations API [jakarta.annotation-api] https://projects.eclipse.org/projects/ee4j.ca
 Jakarta Authentication [jakarta.authentication-api] https://github.com/eclipse-ee4j/authentication
+Jakarta Authentication [jakarta.authentication-api] https://github.com/jakartaee/authentication
 Jakarta Authorization [jakarta.authorization-api] https://github.com/eclipse-ee4j/authorization
+Jakarta Authorization [jakarta.authorization-api] https://github.com/jakartaee/authorization
 Jakarta Concurrency [jakarta.enterprise.concurrent-api] https://github.com/jakartaee/concurrency
 Jakarta Enterprise Beans API [jakarta.ejb-api] https://github.com/eclipse-ee4j/ejb-api
 Jakarta Enterprise Beans API [jakarta.ejb-api] https://github.com/jakartaee/enterprise-beans
@@ -971,8 +983,11 @@ Jakarta Mail API [jakarta.mail] https://repo.maven.apache.org/maven2/com/sun/mai
 Jakarta Mail API jar [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/1.6.8
 Jakarta Mail API jar [jakarta.mail-api] https://repo.maven.apache.org/maven2/jakarta/mail/jakarta.mail-api/2.0.2
 Jakarta Messaging API [jakarta.jms-api] https://projects.eclipse.org/projects/ee4j.jms
+Jakarta Persistence API [jakarta.persistence-api] https://github.com/jakartaee/persistence
 Jakarta RESTful WS API [jakarta.ws.rs-api] https://github.com/eclipse-ee4j/jaxrs-api
+Jakarta RESTful WS API [jakarta.ws.rs-api] https://github.com/jakartaee/rest
 Jakarta Security [jakarta.security.enterprise-api] https://projects.eclipse.org/projects/ee4j
+Jakarta Security [jakarta.security.enterprise-api] https://projects.eclipse.org/projects/ee4j/
 Jakarta Server Pages API [jakarta.servlet.jsp-api] https://projects.eclipse.org/projects/ee4j.jsp
 Jakarta Servlet [jakarta.servlet-api] https://projects.eclipse.org/projects/ee4j.servlet
 Jakarta Standard Tag Library API [jakarta.servlet.jsp.jstl-api] https://projects.eclipse.org/projects/ee4j.jstl
@@ -999,7 +1014,6 @@ javax.ws.rs-api https://www.eclipse.org/org/foundation/
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] https://github.com/eclipse-ee4j/ejb-api
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
 org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
-
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION

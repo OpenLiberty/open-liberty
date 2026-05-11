@@ -26,4 +26,11 @@ fat.project: true
 	com.ibm.ws.componenttest.2.0;version=latest,\
 	com.ibm.ws.security.authorization.jacc.testprovider;version=latest,\
 	io.openliberty.security.authorization.jacc.testprovider;version=latest,\
-	io.openliberty.security.authorization.internal.jacc.3.0;version=latest
+	io.openliberty.security.authorization.internal.jacc.3.0;version=latest,\
+	io.openliberty.jakarta.annotation.3.0;version=latest,\
+	io.openliberty.jakarta.cdi.4.1;version=latest,\
+	io.openliberty.jakarta.enterpriseBeans.4.0;version=latest,\
+	io.openliberty.jakarta.security.4.0;version=latest,\
+	io.openliberty.jakarta.authorization.3.0;version=latest,\
+	com.ibm.websphere.appserver.api.basics,\
+	io.openliberty.jakarta.restfulWS.4.0

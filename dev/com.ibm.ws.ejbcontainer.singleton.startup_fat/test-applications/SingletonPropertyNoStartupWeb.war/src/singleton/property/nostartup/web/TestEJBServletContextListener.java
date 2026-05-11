@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2025 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -48,13 +48,8 @@ public class TestEJBServletContextListener implements ServletContextListener {
         svLogger.info("---> Waiting application");
         TestData.awaitNoStartupBarrier();
 
-        try {
-            svLogger.info("---> Waiting 10 seconds");
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            //This should never never happen
-            System.out.println("Thread.sleep failed... severe error.");
-        }
+        svLogger.info("---> Waiting 10 seconds");
+        TestData.accurateSleep(10000);
 
         svLogger.info("---> helperBean = " + ivHelperBean);
         if (ivHelperBean != null) {

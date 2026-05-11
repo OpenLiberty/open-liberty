@@ -12,12 +12,9 @@ package com.ibm.ws.http.netty.pipeline;
 import java.util.EnumMap;
 import java.util.EnumSet;
 import java.util.Map;
-import java.util.Set;
 import java.util.Objects;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.SSLEngine;
-import javax.net.ssl.SSLSessionContext;
 
 import com.ibm.websphere.channelfw.EndPointInfo;
 import com.ibm.websphere.ras.Tr;
@@ -27,9 +24,8 @@ import com.ibm.ws.http.channel.internal.HttpMessages;
 import com.ibm.ws.http.netty.NettyChain;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpChannelConfig.ConfigElement;
-import com.ibm.ws.http.netty.NettyHttpChannelConfig.NettyConfigBuilder;
-import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.NettyHttpConstants;
+import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyNettyALPNHandler;
 import com.ibm.ws.http.netty.pipeline.http2.LibertyUpgradeCodec;
 import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
@@ -38,11 +34,9 @@ import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
-import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.channel.ChannelOption;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.FixedRecvByteBufAllocator;
-import io.netty.channel.RecvByteBufAllocator;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.flow.FlowControlHandler;
 import io.netty.handler.codec.http.HttpMessage;
@@ -50,10 +44,7 @@ import io.netty.handler.codec.http.HttpServerCodec;
 import io.netty.handler.codec.http.HttpServerKeepAliveHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler.PriorKnowledgeUpgradeEvent;
-import io.netty.handler.ssl.SslContext;
 import io.netty.handler.ssl.SslHandler;
-import io.netty.handler.ssl.ApplicationProtocolConfig.Protocol;
-import io.netty.handler.stream.ChunkedWriteHandler;
 import io.netty.handler.timeout.WriteTimeoutHandler;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.channel.LoggingRecvByteBufAllocator;
@@ -339,9 +330,6 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
             }
         }
 
-        if (pipeline.get(TimeoutHandler.class) == null) {
-            pipeline.addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, new TimeoutHandler(httpConfig));
-        }
         if (httpConfig.useForwardingHeaders()) {
             pipeline.addBefore(HttpDispatcherHandler.NAME, RemoteIpHandler.NAME, new RemoteIpHandler(httpConfig));
         }

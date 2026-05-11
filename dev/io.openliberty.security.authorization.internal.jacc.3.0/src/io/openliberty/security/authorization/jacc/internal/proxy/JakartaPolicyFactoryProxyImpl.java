@@ -10,7 +10,6 @@
 package io.openliberty.security.authorization.jacc.internal.proxy;
 
 import java.security.Permission;
-import java.util.Set;
 
 import javax.security.auth.Subject;
 

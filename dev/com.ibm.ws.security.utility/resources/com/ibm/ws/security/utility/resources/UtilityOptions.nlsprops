@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -77,10 +77,11 @@ encode.option-key.key=\
 \ \ \ \ --key=[key]
 encode.option-desc.key=\
 \tSpecify a key to be used when encoding using AES. This string will be\n\
-\thashed to produce an encryption key, which is used to encrypt and\n\
-\tdecrypt the password. The key can be provided to the server by\n\
-\tdefining the variable wlp.password.encryption.key whose value is the\n\
-\tkey. If this option is not provided a default key shall be used.
+\tused to derive an AES encryption key, which is used to encrypt and\n\
+\tdecrypt the password. The key can be provided to the server by defining\n\
+\tthe variable wlp.password.encryption.key whose value is the\n\
+\tkey. Starting in 26.0.0.3, a default key is no longer used. Instead,\n\
+\tspecify one of the following arguments: --key, --base64Key, --aesConfigFile, or --keyring.
 encode.option-key.base64Key=\
 \ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\

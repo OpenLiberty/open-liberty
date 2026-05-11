@@ -24,15 +24,16 @@ import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArraySet;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
-import java.util.concurrent.Phaser;
 import java.util.concurrent.RejectedExecutionException;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -46,7 +47,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
-import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.kernel.boot.internal.KernelUtils;
 import com.ibm.ws.kernel.feature.ServerStarted;
 import com.ibm.ws.kernel.service.util.AvailableProcessorsListener;
@@ -156,7 +156,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      */
     ThreadFactory threadFactory = null;
 
-    private boolean serverStopping = false;
+    private volatile boolean serverStopping = false;
 
     @Reference(cardinality = ReferenceCardinality.OPTIONAL,
                policy = ReferencePolicy.DYNAMIC,
@@ -337,20 +337,32 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
          */
         @Override
         public void run() {
-            phaser.register();
+            activeThreadCount.incrementAndGet();
             Thread currentThread = Thread.currentThread();
             ClassLoader beforeContextCL = getContextClassLoader(currentThread);
             try {
                 this.wrappedTask.run();
             } finally {
                 setContextClassLoaderIfChanged(currentThread, beforeContextCL);
-                phaser.arriveAndDeregister();
+
+                // Decrement and check if quiescing
+                // Order matters here.  Need to decrement first and then
+                // check for quiesceLatch to avoid race condition
+                if (activeThreadCount.decrementAndGet() == 0) {
+                    // If we are quiescing and this is the last active thread,
+                    // call the quiesceLatch
+                    CountDownLatch latch = quiesceLatch;
+                    if (latch != null) {
+                        latch.countDown();
+                    }
+                }
             }
         }
     }
 
     // Used to keep track of the number of threads that are not finished
-    protected final Phaser phaser = new Phaser(1);
+    protected final AtomicInteger activeThreadCount = new AtomicInteger(0);
+    volatile CountDownLatch quiesceLatch = null;
 
     private class CallableWrapper<T> implements Callable<T> {
         private final Callable<T> callable;
@@ -366,14 +378,25 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
          */
         @Override
         public T call() throws Exception {
-            phaser.register();
+            activeThreadCount.incrementAndGet();
             Thread currentThread = Thread.currentThread();
             ClassLoader beforeContextCL = getContextClassLoader(currentThread);
             try {
                 return this.callable.call();
             } finally {
                 setContextClassLoaderIfChanged(currentThread, beforeContextCL);
-                phaser.arriveAndDeregister();
+
+                // Decrement and check if quiescing
+                // Order matters here.  Need to decrement first and then
+                // check for quiesceLatch to avoid race condition
+                if (activeThreadCount.decrementAndGet() == 0) {
+                    // If we are quiescing and this is the last active thread,
+                    // call the quiesceLatch
+                    CountDownLatch latch = quiesceLatch;
+                    if (latch != null) {
+                        latch.countDown();
+                    }
+                }
             }
         }
     }
@@ -619,20 +642,26 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
      * @see com.ibm.ws.threading.ThreadQuiesce#quiesceThreads()
      */
     @Override
-    @FFDCIgnore(TimeoutException.class)
     public boolean quiesceThreads() {
         this.serverStopping = true;
 
-        try {
-            // Wait for all pre-quiesce work to complete.
-            phaser.arriveAndDeregister();
-            phaser.awaitAdvanceInterruptibly(0, quiesceTimeout, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            //FFDC and fail quiesce notification
-            return false;
-        } catch (TimeoutException e) {
-            // If we time out, quiesce has failed. This is normal, so no FFDC.
-            return false;
+        // Wait for all pre-quiesce work to complete.
+        // Order matters: Set latch BEFORE checking count to ensure
+        // any task that decrements to 0 after this point will see the latch
+        // and signal it. If count is already 0, we return immediately.
+        quiesceLatch = new CountDownLatch(1);
+        if (activeThreadCount.get() != 0) {
+            try {
+                // Wait for all active threads to finish.  The last thread that finishes
+                // will call the latch.
+                if (!quiesceLatch.await(quiesceTimeout, TimeUnit.SECONDS)) {
+                    // If we time out, quiesce has failed.
+                    return false;
+                }
+            } catch (InterruptedException e) {
+                //FFDC and fail quiesce notification
+                return false;
+            }
         }
 
         return true;
@@ -640,11 +669,7 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
 
     @Override
     public int getActiveThreads() {
-        int count = phaser.getUnarrivedParties();
-        if (this.serverStopping)
-            return count;
-
-        return count - 1;
+        return activeThreadCount.get();
     }
 
     @Override

@@ -5,6 +5,8 @@
     	<feature>mpMetrics-5.1</feature>
     </featureManager>
 
+    <httpSession useSeparateSessionInvalidatorThreadPool="false" delayInvalidationAlarmDuringServerStartup="90"/>
+
     <include location="../fatTestPorts.xml" />
 
     <quickStartSecurity userName="theUser" userPassword="thePassword"/>

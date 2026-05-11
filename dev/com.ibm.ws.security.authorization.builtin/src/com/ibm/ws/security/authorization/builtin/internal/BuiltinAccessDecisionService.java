@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,6 +19,11 @@ import javax.security.auth.Subject;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.Version;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -29,6 +34,7 @@ import com.ibm.ws.security.authorization.AccessDecisionService;
  * Built-in access decision service which implements a role-based authorization
  * model.
  */
+@Component(name = "accessDecisionService", service = AccessDecisionService.class, property = "service.vendor=IBM")
 public class BuiltinAccessDecisionService implements AccessDecisionService {
     private static final TraceComponent tc = Tr.register(BuiltinAccessDecisionService.class);
 
@@ -41,6 +47,7 @@ public class BuiltinAccessDecisionService implements AccessDecisionService {
     // '_starstar_' will represent if ** was specified as a defined role
     private static final String STARSTAR_ROLE = "_starstar_";
 
+    @Reference(name = "version", cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
     public synchronized void setVersion(ServiceReference<JavaEEVersion> reference) {
         eeVersionRef = reference;
         eeVersion = Version.parseVersion((String) reference.getProperty("version"));
@@ -53,10 +60,8 @@ public class BuiltinAccessDecisionService implements AccessDecisionService {
         }
     }
 
-    private boolean isEEVersionAtLeast7()
-    {
-        if ((eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0) ||
-            (eeVersion.compareTo(JavaEEVersion.VERSION_8_0) >= 0)) {
+    private boolean isEEVersionAtLeast7() {
+        if ((eeVersion.compareTo(JavaEEVersion.VERSION_7_0) >= 0)) {
             return true;
         }
         return false;
@@ -75,7 +80,7 @@ public class BuiltinAccessDecisionService implements AccessDecisionService {
          * New for Servlet 3.1 "**" means all authenticated users. The subject
          * is checked prior to isGranted() being called. So return true if the
          * subject is not null and if "**" is a required role.
-         * 
+         *
          * If "_starstar_" is passed in that means a user had defined a role called
          * "**". We need to convert "_starstar_" back to "**" before the check
          * against assignedRoles.

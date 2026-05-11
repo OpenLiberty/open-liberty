@@ -43,6 +43,7 @@ import jakarta.data.page.PageRequest;
 import jakarta.data.repository.By;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
+import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
@@ -173,6 +174,13 @@ public class Data_1_1 implements DataVersionCompatibility {
     @Trivial
     public Annotation getExistsAnnotation(Method method) {
         return method.getAnnotation(Exists.class);
+    }
+
+    @Override
+    @Trivial
+    public Integer getFirstAnnotationValue(Method method) {
+        First first = method.getAnnotation(First.class);
+        return first == null ? null : first.value();
     }
 
     @Override

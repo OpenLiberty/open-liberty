@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.annocache.util.internal;
 
@@ -156,7 +153,14 @@ public final class UtilImpl_ReadBufferFull implements UtilImpl_ReadBuffer {
                 " from [ " + getPath() + " ]");
         }
 
-        System.arraycopy(buffer, bufferPos, bytes, offset, len);
+        // Manual copy for small arrays (faster than System.arraycopy overhead)
+        if (len <= 8) {
+            for (int i = 0; i < len; i++) {
+                bytes[offset + i] = buffer[bufferPos + i];
+            }
+        } else {
+            System.arraycopy(buffer, bufferPos, bytes, offset, len);
+        }
         bufferPos += len;
         bufferAvail -= len;
         return;

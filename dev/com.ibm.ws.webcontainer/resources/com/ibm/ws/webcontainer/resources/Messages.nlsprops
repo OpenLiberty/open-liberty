@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Could not load the specified fil
 failed.to.load.converter.properties.useraction=Be sure the specified file existsand is in the correct format according to java.utils.Properties.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: setBufferSize() called after first write to Output Stream/Writer
+setbuffer.size.called.after.write=SRVE0157E: setBufferSize() called after first write or response is committed
 setbuffer.size.called.after.write.explanation=An attempt was made to set the response buffer size after the response was already committed. This is an application error.
 setbuffer.size.called.after.write.useraction=Remove the setBufferSize() call or move it to a position before the response commit.
 

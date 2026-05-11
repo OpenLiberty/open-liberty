@@ -23,6 +23,9 @@ import static org.junit.Assert.assertTrue;
 import java.time.LocalDateTime;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -42,12 +45,15 @@ import io.openliberty.jpa.persistence.tests.models.Book;
 import io.openliberty.jpa.persistence.tests.models.DateTimeEntity;
 import io.openliberty.jpa.persistence.tests.models.DocumentEntity;
 import io.openliberty.jpa.persistence.tests.models.Employee;
+import io.openliberty.jpa.persistence.tests.models.EmployeeSalaryDTO;
 import io.openliberty.jpa.persistence.tests.models.Event;
 import io.openliberty.jpa.persistence.tests.models.Organization;
+import io.openliberty.jpa.persistence.tests.models.PartialDateEntity;
 import io.openliberty.jpa.persistence.tests.models.Participant;
 import io.openliberty.jpa.persistence.tests.models.Person;
 import io.openliberty.jpa.persistence.tests.models.Priority;
 import io.openliberty.jpa.persistence.tests.models.Product;
+import io.openliberty.jpa.persistence.tests.models.SimpleEmployee;
 import io.openliberty.jpa.persistence.tests.models.Ticket;
 import io.openliberty.jpa.persistence.tests.models.TicketStatus;
 import io.openliberty.jpa.persistence.tests.models.User;
@@ -1903,6 +1909,90 @@ public class JakartaPersistenceServlet extends FATServlet {
             tx.commit();
             
             assertEquals("", r1.getContent());
+        } catch (Exception e) {
+            if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
+                tx.rollback();
+            }
+            throw e;
+        }
+    }
+    
+    @Test
+    public void testYearConversionError() throws Exception {
+        PartialDateEntity entity2022 = new PartialDateEntity();
+        entity2022.setYear(Year.of(2022));
+        entity2022.setBestDay(MonthDay.of(12, 25));
+        entity2022.setBestMonth(YearMonth.of(2022, 12));
+        entity2022.setDescription("Year 2022");
+
+        PartialDateEntity entity2023 = new PartialDateEntity();
+        entity2023.setYear(Year.of(2023));
+        entity2023.setBestDay(MonthDay.of(7, 4));
+        entity2023.setBestMonth(YearMonth.of(2023, 7));
+        entity2023.setDescription("Year 2023");
+
+        PartialDateEntity entity2024 = new PartialDateEntity();
+        entity2024.setYear(Year.of(2024));
+        entity2024.setBestDay(MonthDay.of(1, 1));
+        entity2024.setBestMonth(YearMonth.of(2024, 1));
+        entity2024.setDescription("Year 2024");
+
+        PartialDateEntity entity2025 = new PartialDateEntity();
+        entity2025.setYear(Year.of(2025));
+        entity2025.setBestDay(MonthDay.of(10, 31));
+        entity2025.setBestMonth(YearMonth.of(2025, 10));
+        entity2025.setDescription("Year 2025");
+        
+        tx.begin();
+        em.persist(entity2022);
+        em.persist(entity2023);
+        em.persist(entity2024);
+        em.persist(entity2025);
+        tx.commit();
+        em.clear();
+
+        try {
+            List<PartialDateEntity> found = em.createQuery("FROM PartialDateEntity ORDER BY YEARVALUE", PartialDateEntity.class)
+                                            .getResultList();
+            
+            assertNotNull(found);
+            assertEquals(Year.of(2022), found.get(0).getYear());
+            assertEquals(Year.of(2023), found.get(1).getYear());
+            assertEquals(Year.of(2024), found.get(2).getYear());
+            assertEquals(Year.of(2025), found.get(3).getYear());
+            
+        } catch (Exception e) {
+            throw e;
+        }
+    }
+
+    @Test
+    public void testConstructorExpressionWithCasePrimitiveLong() throws Exception {
+        deleteAllEntities(SimpleEmployee.class);
+
+        SimpleEmployee emp1 = new SimpleEmployee("Tony", 35000L);
+        SimpleEmployee emp2 = new SimpleEmployee("Chris", 75000L);
+
+        tx.begin();
+        em.persist(emp1);
+        em.persist(emp2);
+        tx.commit();
+
+        try {
+            tx.begin();
+            EmployeeSalaryDTO result1 = em.createQuery(
+                                    "SELECT NEW io.openliberty.jpa.persistence.tests.models.EmployeeSalaryDTO(" +
+                                    "e.salary, " +
+                                    "CASE WHEN e.salary > 50000 THEN e.salary ELSE 0 END" +
+                                    ") FROM SimpleEmployee e WHERE e.name = :name", EmployeeSalaryDTO.class)
+                                    .setParameter("name", "Tony")
+                                    .getSingleResult();
+
+            assertNotNull(result1);
+            assertEquals(35000L, result1.salary());
+            assertEquals("Adjusted salary should be 0 (below threshold)", 0L, result1.adjustedSalary());
+
+            tx.commit();
         } catch (Exception e) {
             if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
                 tx.rollback();

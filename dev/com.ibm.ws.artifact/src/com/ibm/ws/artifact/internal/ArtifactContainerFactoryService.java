@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2013 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.artifact.internal;
 
@@ -257,14 +254,20 @@ public class ArtifactContainerFactoryService implements ArtifactContainerFactory
                         if (handlesEntries instanceof String) {
                             values.add((String) handlesEntries);
                         } else if (handlesEntries instanceof String[]) {
-                            List<String> s = Arrays.asList((String[]) handlesEntries);
-                            values.addAll(s);
+                            for (String value : (String[]) handlesEntries) {
+                                values.add(value);
+                            }
+                        } else {
+                            // no values to add, do not create container.
+                            return null;
                         }
                         //compare list against name
                         String name = e.getName();
+                        int nameLength = name.length();
                         for (String s : values) {
                             // endsWith ignore case
-                            if (name.regionMatches(true, name.length() - s.length(), s, 0, s.length())) {
+                            int sLength = s.length();
+                            if (name.regionMatches(true, nameLength - sLength, s, 0, sLength)) {
                                 //hit, send to cfh.
                                 return cfh.createContainer(cacheDir, parent, e, e);
                             }

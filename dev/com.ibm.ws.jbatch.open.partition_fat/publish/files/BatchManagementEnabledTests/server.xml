@@ -17,12 +17,12 @@
 
     <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
 
-	<library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
-	</library>
+	<library id="dbRotationLib">
+    	<fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+  	</library>
 
-	<dataSource id="batchDB" jndiName="jdbc/batch">
-		<jdbcDriver libraryRef="DerbyLib" />
+	<dataSource id="batchDB" jndiName="jdbc/batch" fat.modify="true">
+		<jdbcDriver libraryRef="dbRotationLib" />
 	    <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
        	is required beyond a single server start, configure the databaseName with a file location such as:
        	databaseName="${shared.config.dir}/data/derbydb" -->

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,7 +129,13 @@ public class DDLGenTest extends FATServletClient {
 
                     preamble = "set schema " + user;
                     break;
-                case Derby: // Working - uses user instead of admin when executing ddl statements
+                case H2: // Working - admin user will set schema to user
+                         // Additional user is created by H2Container on start
+                    try (Connection con = testContainer.createConnection(""); Statement stmt = con.createStatement()) {
+                        stmt.executeUpdate("create schema if not exists " + user + " authorization " + user);
+                    }
+                    break;
+                case Derby: // Unnecessary
                     break;
                 case DerbyClient: // Unnecessary
                     break;

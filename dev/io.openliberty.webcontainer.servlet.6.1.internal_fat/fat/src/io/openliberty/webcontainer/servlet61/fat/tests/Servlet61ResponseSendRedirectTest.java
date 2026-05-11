@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,7 +72,6 @@ public class Servlet61ResponseSendRedirectTest {
     public static void testCleanup() throws Exception {
         LOG.info("testCleanUp : stop server");
 
-        // Stop the server
         if (server != null && server.isStarted()) {
             server.stopServer();
         }
@@ -400,6 +399,47 @@ public class Servlet61ResponseSendRedirectTest {
 
                 assertTrue("Not expect 302 status code. Found [" + sc + "]", sc != 302);
                 assertTrue("Cannot find PASSES result from response.", responseText.contains("PASSES"));
+            }
+        }
+    }
+
+    /**
+     * Test sendRedirect() then response.setBufferSize() which causes IllegalStateException.
+     *
+     * This test causes SRVE0157E but handled by application
+     */
+    @Test
+    public void test_sendRedirect_setBufferSize() throws Exception {
+        LOG.info("====== <test_sendRedirect_setBufferSize> ======");
+
+        String url = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/" + TEST_APP_NAME + "/" + SERVLET_MAPPING;
+        HttpGet getMethod = new HttpGet(url);
+
+        getMethod.addHeader("runTest", "testSendRedirect_setBufferSize");
+
+        try (final CloseableHttpClient client = HttpClientBuilder.create().disableRedirectHandling().build()) {
+            try (final CloseableHttpResponse response = client.execute(getMethod)) {
+                int sc = response.getCode();
+                String headerValue = null;
+                Header[] headers = response.getHeaders();
+                String responseText = EntityUtils.toString(response.getEntity());
+
+                LOG.info("\n" + "Response Status: [" + sc + "]");
+                LOG.info("\n" + "Response Text: \n[" + responseText + "]");
+
+                assertTrue("The response code is [" + sc + "] ; expecting [302]", sc == 302);
+
+                for (Header header : headers) {
+                    LOG.info("Found Header: [" + header + "]");
+                    if (header.getName().equals("Location")) {
+                        headerValue = header.getValue();
+                        LOG.info("[Location] header; value [" + headerValue + "] ; Expecting value [" + REDIRECT_LOCATION + "]");
+                        assertTrue("Expected Location header not found ", headerValue.equals(REDIRECT_LOCATION));
+                        break;
+                    }
+                }
+
+                assertTrue("Expecting body not found ", responseText.equalsIgnoreCase(RESP_DEFAULT_HYPER_TEXT_URL_BODY));
             }
         }
     }

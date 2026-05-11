@@ -144,6 +144,12 @@ public class Data_1_0 implements DataVersionCompatibility {
 
     @Override
     @Trivial
+    public Integer getFirstAnnotationValue(Method method) {
+        return null;
+    }
+
+    @Override
+    @Trivial
     public String[] getSelections(AnnotatedElement element) {
         return NO_SELECTIONS;
     }

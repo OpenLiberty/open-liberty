@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2025 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -69,7 +69,8 @@ public class VirtualConnectionImpl implements VirtualConnection {
     @Override
     public Map<Object, Object> getStateMap() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "getStateMap, currentState [" + this.currentState + "], stateMap [" + this.stateStore + "]");
+            Map<Object, Object> stateStoreSnapshot = new HashMap<>(this.stateStore);
+            Tr.debug(tc, "getStateMap, currentState [" + this.currentState + "], stateMap [" + stateStoreSnapshot + "]");
         }
         return this.stateStore;
     }

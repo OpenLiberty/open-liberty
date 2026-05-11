@@ -1,30 +1,41 @@
 /*
  * Copyright 1999,2004 The Apache Software Foundation.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *      http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ *
  * Created for feature LIDB4147-9 "Integrate Unified Expression Language"  2006/08/14  Scott Johnson
  * defect  388930 "Incorrect ELContext may be used"  2006/09/06  Scott Johnson
- * 
+ *
  */
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
 // CHANGE HISTORY
 // Defect       Date        Modified By         Description
 //--------------------------------------------------------------------------------------
-// PM05903	03/02/10    anupag		AddELResolver in servlet is allowed.
-// PI31922     12/19/14    hwibell             Allow multiple expression factories to be used on a server.
-//
+// PM05903	  03/02/10    anupag		AddELResolver in servlet is allowed.
+// PI31922    12/19/14    hwibell       Allow multiple expression factories to be used on a server.
+// OLGH34664  04/22/26	  volosied      Fix ClassCastException
 package org.apache.jasper.runtime;
 
+import java.security.AccessController;
+import java.security.PrivilegedAction;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
@@ -46,7 +57,7 @@ import com.ibm.wsspi.webcontainer.WCCustomProperties;
 
 /**
  * Implementation of JspApplicationContext
- * 
+ *
  * @author Jacob Hookom
  */
 public class JspApplicationContextImpl implements JspApplicationContext {
@@ -76,14 +87,13 @@ public class JspApplicationContextImpl implements JspApplicationContext {
          * is loaded. This is not the desirable behavior as expressionFactory should be set for each
          * application. expressionFactory will point to either expression factory based on the custom
          * property 'com.ibm.ws.jsp.allowExpressionFactoryPerApp'.
-         * 
+         *
          * This issue was addressed by the Japser project bug 52998 (https://issues.apache.org/bugzilla/show_bug.cgi?id=52998).
          */
         if (!WCCustomProperties.ALLOW_EXPRESSION_FACTORY_PER_APP) {
             logger.logp(Level.FINE, KEY, "JspApplicationContextImpl", "Setting expressionFactory to the expression factory of the first loaded application.");
             expressionFactory = staticExpressionFactory;
-        }
-        else {
+        } else {
             logger.logp(Level.FINE, KEY, "JspApplicationContextImpl", "Setting expressionFactory to a new instance of ExpressionFactory.");
             expressionFactory = ExpressionFactory.newInstance();
         }
@@ -102,16 +112,36 @@ public class JspApplicationContextImpl implements JspApplicationContext {
         if (context == null) {
             throw new IllegalArgumentException("ServletContext was null");
         }
-        JspApplicationContextImpl impl = (JspApplicationContextImpl) context.getAttribute(KEY);
+
+        // Use context-specific key to avoid cross-module contamination in multi-module EAR applications
+        String contextPath = context.getContextPath();
+        String contextSpecificKey = KEY + "." + contextPath;
+
+        Object cached = context.getAttribute(contextSpecificKey);
+
+        JspApplicationContextImpl impl = AccessController.doPrivileged(new PrivilegedAction<JspApplicationContextImpl>() {
+
+            @Override
+            public JspApplicationContextImpl run() {
+                // Verify the cached instance is from the same classloader before casting
+                // to avoid ClassCastException in multi-module EAR applications
+                ClassLoader classLoader = JspApplicationContextImpl.class.getClassLoader();
+                if (cached != null && cached.getClass().getClassLoader() == classLoader) {
+                    return (JspApplicationContextImpl) cached;
+                }
+                return null;
+            }
+        });
+
         if (impl == null) {
             impl = new JspApplicationContextImpl();
-            context.setAttribute(KEY, impl);
+            context.setAttribute(contextSpecificKey, impl);
         }
         //PM05903 Start
         if (WCCustomProperties.THROW_EXCEPTION_FOR_ADDELRESOLVER
             && context.getAttribute("com.ibm.ws.jsp.servletContextListeners.contextInitialized") != null) {
             impl.listenersContextInitialized = true;
-        }//PM05903 End
+        } //PM05903 End
 
         return impl;
     }
@@ -138,8 +168,7 @@ public class JspApplicationContextImpl implements JspApplicationContext {
     private ELResolver createELResolver() {
         this.instantiated = true;
         if (this.resolver == null) {
-            CompositeELResolver r = new JasperELResolver(this.resolvers,
-                            expressionFactory.getStreamELResolver());
+            CompositeELResolver r = new JasperELResolver(this.resolvers, expressionFactory.getStreamELResolver());
             this.resolver = r;
         }
         return this.resolver;
@@ -151,8 +180,7 @@ public class JspApplicationContextImpl implements JspApplicationContext {
             throw new IllegalArgumentException("ELResolver was null");
         }
         if (this.instantiated || this.listenersContextInitialized) { //PM05903
-            throw new IllegalStateException(
-                            "cannot call addELResolver after the first request has been made");
+            throw new IllegalStateException("cannot call addELResolver after the first request has been made");
         }
         this.resolvers.add(resolver);
     }

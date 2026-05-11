@@ -21,6 +21,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -73,6 +74,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private String application = SPRING_BOOT_20_APP_BASE;
     private RemoteFile sharedResourcesDir;
     private RemoteFile appsDir;
+    private String extractedWLP;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -160,7 +162,11 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             properties.put("server.ssl.key-store-password", "secret");
             properties.put("server.ssl.key-password", "secret");
         }
-        properties.put("com.ibm.ws.logging.trace.specification", "*=info:com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil=all");
+        properties.put("com.ibm.ws.logging.trace.specification", "*=info"
+                                                                 + ":com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil=all"
+                                                                 + ":com.ibm.ws.kernel.filemonitor*=all"
+                                                                 + ":com.ibm.ws.app.manager.*=all"
+                                                                 + ":com.ibm.ws.app.manager.springboot*=all");
         return properties;
     }
 
@@ -368,13 +374,25 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         Process proc = Runtime.getRuntime().exec(javaCmd);
         try {
             String line = null;
-            line = readProcessLine(proc, method);
+            line = readProcessLine(proc, method, "CWWKT0016I");
 
             if (line == null) {
                 proc.destroy();
                 Log.info(getClass(), method, "Running the uber jar again because the last run wasn't successful");
                 proc = Runtime.getRuntime().exec(javaCmd);
-                line = readProcessLine(proc, method);
+                line = readProcessLine(proc, method, "CWWKT0016I");
+            }
+
+            // Printing trace logs to understand why the application has not started
+            if (line == null) {
+                if (extractedWLP != null) {
+                    String extractedTraceLogsLocation = extractedWLP + "/usr/servers/" + server.getServerName() + "/logs/trace.log";
+                    Log.info(getClass(), method, "==============================================BELOW ARE THE WLP TRACE LOGS EXTRACTED FROM " + extractedTraceLogsLocation);
+                    printTrace(extractedTraceLogsLocation, method);
+                    Log.info(getClass(), method, "========================================================================================================================");
+                } else {
+                    Log.warning(getClass(), "Extraced WLP location not found in logs");
+                }
             }
 
             assertNotNull("The endpoint is not available", line);
@@ -391,15 +409,28 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         }
     }
 
-    private String readProcessLine(Process proc, String method) throws IOException {
+    private void printTrace(String extractedTraceLogsLocation, String method) {
+        String line;
+        try (BufferedReader reader = new BufferedReader(new FileReader(extractedTraceLogsLocation))) {
+            while ((line = reader.readLine()) != null) {
+                Log.info(getClass(), method, line);
+            }
+        } catch (Exception e) {
+            Log.error(getClass(), method, e);
+        }
+    }
+
+    private String readProcessLine(Process proc, String method, String message) throws IOException {
         String line;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
             line = readTimeout(reader);
             Log.info(getClass(), method, line);
             while (line != null) {
                 Log.info(getClass(), method, line);
-                if (line.contains("CWWKT0016I")) {
+                if (line.contains(message)) {
                     break;
+                } else if (line.contains("Extracting files to")) {
+                    extractedWLP = line.substring(line.indexOf("/"), line.length());
                 }
                 line = readTimeout(reader);
             }

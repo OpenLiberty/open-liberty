@@ -9,6 +9,7 @@
  *******************************************************************************/
 package com.ibm.ws.security.javaeesec.fat;
 
+import componenttest.rules.repeater.*;
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
@@ -38,5 +39,5 @@ public class FATSuite {
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode().andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)).andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)).andWith(FeatureReplacementAction.EE11_FEATURES());
 }

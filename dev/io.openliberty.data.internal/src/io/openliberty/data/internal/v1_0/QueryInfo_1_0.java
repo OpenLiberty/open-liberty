@@ -31,8 +31,10 @@ import io.openliberty.data.internal.QueryInfo;
 import io.openliberty.data.internal.QueryType;
 import io.openliberty.data.internal.Util;
 import io.openliberty.data.internal.cdi.RepositoryProducer;
+import jakarta.data.Sort;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
@@ -107,6 +109,24 @@ public class QueryInfo_1_0 extends QueryInfo {
     }
 
     @Override
+    @Trivial
+    protected <T> Sort<T> createSort(String expression, OrderBy orderBy) {
+        return new Sort<T>( //
+                        expression, //
+                        !orderBy.descending(), //
+                        orderBy.ignoreCase());
+    }
+
+    @Override
+    @Trivial
+    protected <T> Sort<T> createSort(String expression, Sort<T> sort) {
+        return new Sort<>( //
+                        expression, //
+                        sort.isAscending(), //
+                        sort.ignoreCase());
+    }
+
+    @Override
     protected int generateConstraint(StringBuilder q,
                                      Object constraint,
                                      int jpqlParamCount,
@@ -129,6 +149,12 @@ public class QueryInfo_1_0 extends QueryInfo {
     protected Map<Integer, Object> getDeferredConstraints(boolean alwaysDefer,
                                                           Object[] methodParams) {
         return Collections.emptyMap();
+    }
+
+    @Override
+    @Trivial
+    protected String getNullOrdering(Sort<?> sort, boolean sameDirection) {
+        return null;
     }
 
     @Override

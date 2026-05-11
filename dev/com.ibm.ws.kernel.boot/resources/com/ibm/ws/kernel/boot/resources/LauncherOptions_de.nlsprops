@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -123,7 +123,7 @@ option-key.os=\ \ \ \ --os=Wert,Wert,...
 option-desc.os=\tGibt die Betriebssysteme an, die der gepackte Server unterst\u00fctzen\n\tsoll. Geben Sie eine durch Kommas getrennte Liste an. Der \n\tStandardwert ist any, d. h., der Server muss unter jedem von der \n\tQuelle unterst\u00fctzten Betriebssystem implementierbar sein. Um\n\tanzugeben, dass ein Betriebssystem nicht unterst\u00fctzt wird, stellen\n\tSie diesem Betriebssystem ein Minuszeichen ("-") voran. Eine \n\tListe der Betriebssystemwerte finden Sie auf der OSGi Alliance-Website\n\tunter der folgenden URL: \n\thttp://www.osgi.org/Specifications/Reference#os                      \n\tDiese Option gilt nur f\u00fcr die Paketoperation und kann nur mit der \n\tOption --include=minify verwendet werden. Wenn Sie ein Betriebssystem\n\tausschlie\u00dfen, ist es nicht m\u00f6glich, es sp\u00e4ter durch Wiederholung einer \n\tminify-Operation wieder in das Archiv einzuschlie\u00dfen. 
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
-option-desc.no-password=\tInaktiviert die Generierung des Standard-Keystore-Kennworts.
+option-desc.no-password=\tDie Generierung des Standardpassworts f\u00fcr den Keystore und des Standardpassworts f\u00fcr die LTPA-Schl\u00fcssel deaktivieren.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="Serverstammordner im Archiv"
 option-desc.package.server-root=\tGibt den Namen des Stammordners des Servers in der Archivdatei an. 

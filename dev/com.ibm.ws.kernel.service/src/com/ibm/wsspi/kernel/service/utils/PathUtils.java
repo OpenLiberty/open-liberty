@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.wsspi.kernel.service.utils;
 
@@ -145,7 +142,7 @@ public class PathUtils {
             String osName = System.getProperty("os.name", "unknown");
             String userName = System.getProperty("user.name", "unknown");
             FFDCFilter.processException(e, PathUtils.class.getName(), "isOsCaseSensitive",
-                                       new Object[] { "java.io.tmpdir=" + tmpDir, "os.name=" + osName, "user.name=" + userName });
+                                        new Object[] { "java.io.tmpdir=" + tmpDir, "os.name=" + osName, "user.name=" + userName });
             return false;
         } finally {
             if (caseSensitiveFile != null) {
@@ -682,16 +679,16 @@ public class PathUtils {
         @Trivial
         public int compare(String o1, String o2) {
             int len1 = o1.length(), l2 = o2.length();
-            int minLen = Math.min(len1, l2);
+            int minLen = len1 <= l2 ? len1 : l2;
             for (int i = 0; i < minLen; i++) {
                 char c1 = o1.charAt(i), c2 = o2.charAt(i);
-                if (c1 == c2)
-                    continue;
-                if (c1 == PATH_SEPARATOR)
-                    return CMP_LT;
-                if (c2 == PATH_SEPARATOR)
-                    return CMP_GT;
-                return c1 - c2;
+                if (c1 != c2) {
+                    if (c1 == PATH_SEPARATOR)
+                        return CMP_LT;
+                    if (c2 == PATH_SEPARATOR)
+                        return CMP_GT;
+                    return c1 - c2;
+                }
             }
             // Strings differ in length only - shorter string should come first
             return len1 - l2;
@@ -776,14 +773,13 @@ public class PathUtils {
      */
     public static String getName(String pathAndName) {
         int i = pathAndName.lastIndexOf('/');
-        int l = pathAndName.length();
         if (i == -1) {
             return pathAndName;
-        } else if (l == i) {
-            return "/";
-        } else {
-            return pathAndName.substring(i + 1);
         }
+        if (pathAndName.length() == i) {
+            return "/";
+        }
+        return pathAndName.substring(i + 1);
     }
 
     /**

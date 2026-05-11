@@ -19,4 +19,7 @@ public class HttpGenerics {
      */
     public static final int NOT_SET = -1;
 
+    // Warning code variable to indicate no warning logging should occur
+    public static final String NO_WARNING_CODE_SET = "";
+
 }

@@ -103,14 +103,26 @@ public class ConsumerImpl implements Consumer {
                 throw new RuntimeException("null person.id=" + personId);
             }
             System.err.println("loaded person " + p.getId());
-            PersistenceUtil util = Persistence.getPersistenceUtil();
-            System.err.println("PersistenceUtil = " + util.getClass());
-            if (util.isLoaded(p, "cars")) {
-                throw new RuntimeException("Cars should not have been eagerly loaded.");
+            java.util.List<Car> cars = p.getCars();
+
+            if (!(cars instanceof org.eclipse.persistence.indirection.IndirectList)) {
+                throw new RuntimeException("Expected EclipseLink IndirectList but got: " + cars.getClass());
             }
-            System.err.println("calling person.getCars()");
-            p.getCars().get(0);
-            return p.getCars().size();
+
+            org.eclipse.persistence.indirection.IndirectList indirect =
+                            (org.eclipse.persistence.indirection.IndirectList) cars;
+
+            if (indirect.isInstantiated()) {
+                throw new RuntimeException("Cars collection was instantiated before first access.");
+            }
+
+            cars.get(0);
+
+            if (!indirect.isInstantiated()) {
+                throw new RuntimeException("Cars collection was not instantiated after access.");
+            }
+
+            return cars.size();
         } finally {
             em.close();
         }

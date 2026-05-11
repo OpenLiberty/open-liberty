@@ -142,6 +142,8 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
         Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
 
+        assumeNotWindowsEe9Plus();
+
         // create ejbinwarservlet.war,
         WCApplicationHelper.createWar(myServer, TEMP_DIR, EJB_REALM1_WAR_NAME, true, EJB_BEAN_JAR_NAME, true, "web.jar.base", "web.ejb.jar.bean",
                                       "web.war.ejb.annotated.servlet.realm1", "web.war.identitystores.ldap.ldap1", "web.war.identitystores.ldap");
@@ -221,7 +223,7 @@ public class EJBModuleRealmTest extends JavaEESecTestBase {
         String queryString;
         //create app and setup server
         Log.info(logClass, getCurrentTestName(), "-----Entering " + getCurrentTestName());
-        assumeNotWindowsEe9();
+        assumeNotWindowsEe9Plus();
 
         Log.info(logClass, getCurrentTestName(), "-----Creating EAR app.");
 

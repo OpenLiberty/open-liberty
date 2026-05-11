@@ -23,7 +23,7 @@ import javax.security.enterprise.credential.BasicAuthenticationCredential;
 import javax.security.enterprise.credential.UsernamePasswordCredential;
 import javax.security.enterprise.identitystore.CredentialValidationResult;
 import javax.security.enterprise.identitystore.IdentityStore;
-import javax.security.enterprise.identitystore.IdentityStorePermission;
+import io.openliberty.security.jakartasec.identitystore.permissions.IdentityStorePermissionService;
 
 @Named("web.DummyIdentityStore")
 @ApplicationScoped
@@ -55,10 +55,8 @@ public class DummyIdentityStore implements IdentityStore {
 
     @Override
     public Set<String> getCallerGroups(CredentialValidationResult validationResult) {
-        SecurityManager security = System.getSecurityManager();
-        if (security != null) {
-            security.checkPermission(new IdentityStorePermission("getGroups"));
-        }
+        // Use Service to check permissions with EE11 removing the IdentityStorePermission
+        IdentityStorePermissionService.checkPermission("getGroups");
         Set<String> groups = new HashSet<String>();
         groups.add("group1");
         return groups;

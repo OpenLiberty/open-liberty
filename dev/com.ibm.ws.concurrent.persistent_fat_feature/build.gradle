@@ -12,7 +12,7 @@
  *******************************************************************************/
 
 
-addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries.dependsOn addH2Java8
 
 task copyFeatureBundle(type: Copy) {
   dependsOn jar

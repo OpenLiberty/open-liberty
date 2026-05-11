@@ -3278,7 +3278,7 @@ public class H2FATDriverServlet extends FATServlet {
         }
         String testName = "testBadPRI";
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
-        Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
+        Http2Client h2Client = new Http2Client(request.getParameter("hostName"), Integer.parseInt(request.getParameter("port")), blockUntilConnectionIsDone, defaultTimeoutToSendFrame, 10000L);
 
         h2Client.sendUpgradeHeader(HEADERS_ONLY_URI);
         h2Client.sendClientPreface("Bad-PRI");

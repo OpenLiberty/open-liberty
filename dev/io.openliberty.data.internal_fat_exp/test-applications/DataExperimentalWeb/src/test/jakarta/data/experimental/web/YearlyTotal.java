@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,9 @@ import java.time.MonthDay;
 import java.time.Year;
 import java.time.YearMonth;
 
+import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -39,8 +41,9 @@ public class YearlyTotal {
     //@Column(columnDefinition = "VARCHAR(50)")
     public CharSequence comments;
 
-    // avoid collision with Derby reserved word YEAR
+    // avoid collision with H2 reserved word YEAR
     @Column(name = "YEARVALUE")
+    @Convert(converter = YearConverter.class)
     @Id
     public Year year;
 
@@ -66,6 +69,26 @@ public class YearlyTotal {
                ", buffer: " + buffer +
                ", builder: " + builder +
                ", comments: " + comments;
+    }
+
+    // TODO remove once EclipseLink issue https://github.com/OpenLiberty/open-liberty/issues/34694 is fixed
+    static class YearConverter implements AttributeConverter<Year, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(Year year) {
+            if (year == null)
+                return null;
+
+            return year.getValue();
+        }
+
+        @Override
+        public Year convertToEntityAttribute(Integer i) {
+            if (i == null)
+                return null;
+
+            return Year.of(i);
+        }
     }
 
 }

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2025 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -91,3 +91,19 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utiliza\u021bi comanda securi
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: Cheile de validare {0} trebuie regenerate folosind algoritmi criptografici care nu sunt certifica\u021bi FIPS 140-3.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=Cheile de validare LTPA care sunt create cu FIPS 140-3 activat e\u0219ueaz\u0103 atunci c\u00e2nd FIPS 140-3 este dezactivat.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=Utiliza\u021bi comanda securityUtility createLTPAKeys pentru a crea chei de validare neaprobate de FIPS atunci c\u00e2nd FIPS 140-3 este dezactivat.
+
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: Eroare de configurare LTPA. Atributul \u201e keysPassword \u201d nu este configurat pentru elementul <ltpa /> respectiv, variabila de mediu \u201eltpa_keys_password\u201d nu este setat\u0103, iar variabila de mediu \u201ekeystore_password\u201d nu este setat\u0103.
+LTPA_KEYS_PASSWORD_ERROR.explanation=Configura\u021bia LTPA necesit\u0103 o parol\u0103 pentru stocarea \u0219i citirea cheilor LTPA.
+LTPA_KEYS_PASSWORD_ERROR.useraction=Configura\u021bi atributul keysPassword \u00een elementul <ltpa /> , sau seta\u021bi variabilele de mediu \u201eltpa_keys_password\u201d sau \u201ekeystore_password\u201d pentru a introduce o parol\u0103.
+
+LTPA_KEYS_REENCRYPT=CWWKS4119I: Cheile LTPA ale serviciului \u201e {0} \u201d sunt recriptate utiliz\u00e2nd variabila de mediu \u201ekeystore_password\u201d.
+LTPA_KEYS_REENCRYPT.explanation=Cheile LTPA sunt recriptate folosind \u201ekeystore_password\u201d, deoarece valoarea implicit\u0103 a atributului LTPA \u201e keysPassword \u201d a fost eliminat\u0103 pentru a spori securitatea.
+LTPA_KEYS_REENCRYPT.useraction=Nu este necesar\u0103 nicio ac\u0163iune.
+
+LTPA_KEYS_REENCRYPT_SUCCESS=CWWKS4120I: Cheile LTPA ale {0} au fost recriptate cu succes folosind variabila de mediu \u201ekeystore_password\u201d.
+LTPA_KEYS_REENCRYPT_SUCCESS.explanation=Cheile LTPA sunt recriptate folosind variabila de mediu \u201ekeystore_password\u201d.
+LTPA_KEYS_REENCRYPT_SUCCESS.useraction=Dac\u0103 partaja\u021bi cheile LTPA \u00eentre serverele aflate \u00eentr-o loca\u021bie comun\u0103, celelalte servere trebuie actualizate pentru a putea citi \u00een continuare aceste chei LTPA. Seta\u021bi atributul \u201e keysPassword \u201d din elementul <ltpa /> corespunz\u0103tor sau atributul \u201epassword\u201d din elementul <validationKeys /> corespunz\u0103tor la valoarea variabilei de mediu \u201ekeystore_password\u201d de pe acest server. Variabila de mediu \u201ekeystore_password\u201d este de obicei definit\u0103 \u00een fi\u0219ierul \u201e server.env \u201d.
+
+LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Nu s-a reu\u0219it recriptarea cheilor LTPA ale {0}. Excep\u0163ie: {1}
+LTPA_KEYS_REENCRYPT_ERROR.explanation=Cheile LTPA nu au putut fi recriptate. Pentru informa\u0163ii suplimentare, vede\u0163i excep\u0163ia din mesaj.
+LTPA_KEYS_REENCRYPT_ERROR.useraction=Asigura\u021bi-v\u0103 c\u0103 fi\u0219ierul cu cheile LTPA \u0219i directorul acestuia nu sunt setate ca fiind numai pentru citire. Dac\u0103 fi\u0219ierul cu cheile LTPA \u0219i directorul acestuia nu sunt doar pentru citire, consulta\u021bi excep\u021bia din mesaj pentru mai multe informa\u021bii.

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2021 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -56,6 +56,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHostManager;
@@ -1000,5 +1001,195 @@ public class PluginGeneratorTest {
         }
         // rename generated file to leave a clean space for the next test, but keep the file for debug
         testfile.renameTo(new File(testClassesDir + "/serverRole-plugin-cfg.xml"));
+    }
+
+    /*
+     * Test generation of XML file and check values of OutboundInterfacesList and OutboundBindStrict properties
+     * This test enables beta edition to validate beta-guarded code
+     */
+    @Test
+    public void testOutboundInterfaceProperties() throws Exception {
+        /* Enable beta edition for this test */
+        String originalBetaProperty = System.getProperty("com.ibm.ws.beta.edition");
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        try {
+            System.setProperty("com.ibm.ws.beta.edition", "true");
+        
+            setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        // set expectations specific for this test
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        // set config values for this test
+        config.put("outboundInterfacesList", "192.168.1.10,eth0,10.0.0.5");
+        config.put("outboundBindStrict", new Boolean(true));
+
+            PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+            pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+            /* check that the config file was created */
+            assertTrue(testfile.exists());
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            Document dom = null;
+            try {
+                /* Using factory get an instance of document builder */
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                /* parse using builder to get DOM representation of the XML file */
+                dom = db.parse(testfile);
+                Element docEle = dom.getDocumentElement();
+                /* get a nodelist of Property elements */
+                NodeList nl = docEle.getElementsByTagName("Property");
+            
+                boolean foundOutboundInterfacesList = false;
+                boolean foundOutboundBindStrict = false;
+            
+                /* iterate through Property elements to find our new properties */
+                for (int i = 0; i < nl.getLength(); i++) {
+                    Node node = nl.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) node;
+                        String name = eElement.getAttribute("Name");
+                        String value = eElement.getAttribute("Value");
+                    
+                        if ("OutboundInterfacesList".equals(name)) {
+                            foundOutboundInterfacesList = true;
+                            assertEquals("192.168.1.10,eth0,10.0.0.5", value);
+                        } else if ("OutboundBindStrict".equals(name)) {
+                            foundOutboundBindStrict = true;
+                            assertEquals("true", value);
+                        }
+                    }
+                }
+            
+                assertTrue("OutboundInterfacesList property should be present in XML", foundOutboundInterfacesList);
+                assertTrue("OutboundBindStrict property should be present in XML", foundOutboundBindStrict);
+
+            } catch (ParserConfigurationException pce) {
+                pce.printStackTrace();
+            } catch (SAXException se) {
+                se.printStackTrace();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        } finally {
+            /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+            if (testfile.exists() && !testfile.renameTo(new File(testClassesDir + "/outboundinterface-plugin-cfg.xml"))) {
+                System.err.println("Failed to rename test file: " + testfile.getAbsolutePath());
+            }
+            /* Restore original beta property */
+            if (originalBetaProperty != null) {
+                System.setProperty("com.ibm.ws.beta.edition", originalBetaProperty);
+            } else {
+                System.clearProperty("com.ibm.ws.beta.edition");
+            }
+        }
+    }
+
+    /*
+     * Test generation of XML file with default OutboundBindStrict (false) and no OutboundInterfacesList
+     * This test enables beta edition to validate beta-guarded code
+     */
+    @Test
+    public void testOutboundInterfacePropertiesDefaults() throws Exception {
+        /* Enable beta edition for this test */
+        String originalBetaProperty = System.getProperty("com.ibm.ws.beta.edition");
+        File testfile = new File(testClassesDir + "/plugin-cfg.xml");
+        try {
+            System.setProperty("com.ibm.ws.beta.edition", "true");
+        
+            setCommonVHostExpectations();
+        setXMLGenerateExpectations();
+        setCommonExpectations();
+
+        // set expectations specific for this test
+        context.checking(new Expectations() {
+            {
+                allowing(mockLocationAdmin).getServerOutputResource("plugin-cfg.xml");
+                will(returnValue(mockWsResource));
+                allowing(mockWsResource).putStream();
+                will(returnValue(new FileOutputStream(new File(testClassesDir + "/plugin-cfg.xml"))));
+                allowing(mockWsResource).asFile();
+                will(returnValue((new File(testClassesDir + "/plugin-cfg.xml"))));
+            }
+        });
+
+        Map<String, Object> config = new HashMap<String, Object>();
+        setDefaultConfig(config);
+        // Do not set outboundInterfacesList or outboundBindStrict to test defaults
+
+            PluginGenerator pluginGen = new PluginGenerator(config, mockLocationAdmin, mockBundleContext);
+            pluginGen.generateXML("userSpecifiedWebserverLocation", "userSpecifiedServerName", mockWebContainer, mockSessionManager, mockVhostMgr, mockLocationAdmin, false, null);
+
+            /* check that the config file was created */
+            assertTrue(testfile.exists());
+
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            Document dom = null;
+            try {
+                /* Using factory get an instance of document builder */
+                DocumentBuilder db = dbf.newDocumentBuilder();
+                /* parse using builder to get DOM representation of the XML file */
+                dom = db.parse(testfile);
+                Element docEle = dom.getDocumentElement();
+                /* get a nodelist of Property elements */
+                NodeList nl = docEle.getElementsByTagName("Property");
+            
+                boolean foundOutboundInterfacesList = false;
+                boolean foundOutboundBindStrict = false;
+            
+                /* iterate through Property elements to find our new properties */
+                for (int i = 0; i < nl.getLength(); i++) {
+                    Node node = nl.item(i);
+                    if (node.getNodeType() == Node.ELEMENT_NODE) {
+                        Element eElement = (Element) node;
+                        String name = eElement.getAttribute("Name");
+                        String value = eElement.getAttribute("Value");
+                    
+                        if ("OutboundInterfacesList".equals(name)) {
+                            foundOutboundInterfacesList = true;
+                        } else if ("OutboundBindStrict".equals(name)) {
+                            foundOutboundBindStrict = true;
+                            /* Default should be false */
+                            assertEquals("false", value);
+                        }
+                    }
+                }
+            
+                assertFalse("OutboundInterfacesList property should not be present when not configured", foundOutboundInterfacesList);
+                assertTrue("OutboundBindStrict property should always be present with default value", foundOutboundBindStrict);
+
+            } catch (ParserConfigurationException pce) {
+                pce.printStackTrace();
+            } catch (SAXException se) {
+                se.printStackTrace();
+            } catch (IOException ioe) {
+                ioe.printStackTrace();
+            }
+        } finally {
+            /* rename generated file to leave a clean space for the next test, but keep the file for debug */
+            if (testfile.exists() && !testfile.renameTo(new File(testClassesDir + "/outboundinterface-defaults-plugin-cfg.xml"))) {
+                System.err.println("Failed to rename test file: " + testfile.getAbsolutePath());
+            }
+            /* Restore original beta property */
+            if (originalBetaProperty != null) {
+                System.setProperty("com.ibm.ws.beta.edition", originalBetaProperty);
+            } else {
+                System.clearProperty("com.ibm.ws.beta.edition");
+            }
+        }
     }
 }

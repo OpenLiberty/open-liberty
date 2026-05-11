@@ -122,8 +122,9 @@ task addHibernatePermissions() {
         // Ignore all lines inside the tagged section
       }
 
-      // overwrite the file with the updated lines
-      java.nio.file.Files.write(path, updated)
+      // overwrite the file with the updated lines, preserving Unix line endings
+      String content = updated.join('\n') + '\n'
+      java.nio.file.Files.write(path, content.getBytes(java.nio.charset.StandardCharsets.UTF_8))
     }
   }
 }
@@ -149,7 +150,8 @@ task addGeneratedSources() {
         from 'build/libs/generated/sources/annotationProcessor/java/main'
         into generated_src
       }
-      println "Copied generated sources to source folder for version control"
+      ant.fixcrlf(srcdir: generated_src, eol: 'lf', includes: '**/*.java')
+      println "Copied generated sources to source folder for version control and updated line endings to Unix format (LF)"
     }
 }
 

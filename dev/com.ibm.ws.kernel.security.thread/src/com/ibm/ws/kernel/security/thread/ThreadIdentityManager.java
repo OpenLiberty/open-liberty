@@ -4,11 +4,8 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.kernel.security.thread;
 
@@ -52,6 +49,8 @@ public class ThreadIdentityManager {
 
     private static final Object emptyToken = Collections.EMPTY_MAP;
 
+    private static volatile boolean hasThreadIdentityServices = false;
+
     /**
      * Add a ThreadIdentityService reference. This method is called by
      * ThreadIdentityManagerConfigurator when a ThreadIdentityService shows
@@ -61,7 +60,10 @@ public class ThreadIdentityManager {
      */
     public static void addThreadIdentityService(ThreadIdentityService tis) {
         if (tis != null) {
-            threadIdentityServices.add(tis);
+            synchronized (ThreadIdentityManager.class) {
+                hasThreadIdentityServices = true;
+                threadIdentityServices.add(tis);
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "A ThreadIdentityService implementation was added.", tis.getClass().getName());
             }
@@ -93,7 +95,12 @@ public class ThreadIdentityManager {
      */
     public static void removeThreadIdentityService(ThreadIdentityService tis) {
         if (tis != null) {
-            threadIdentityServices.remove(tis);
+            synchronized (ThreadIdentityManager.class) {
+                threadIdentityServices.remove(tis);
+                if (threadIdentityServices.isEmpty()) {
+                    hasThreadIdentityServices = false;
+                }
+            }
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "A ThreadIdentityService implementation was removed.", tis.getClass().getName());
             }
@@ -121,7 +128,10 @@ public class ThreadIdentityManager {
      * ThreadIdentityManagerConfigurator when the ThreadIdentityService service tracker is closed.
      */
     public static void removeAllThreadIdentityServices() {
-        threadIdentityServices.clear();
+        synchronized (ThreadIdentityManager.class) {
+            threadIdentityServices.clear();
+            hasThreadIdentityServices = false;
+        }
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "All the ThreadIdentityService implementations were removed.");
         }
@@ -155,9 +165,11 @@ public class ThreadIdentityManager {
      * @return true if application thread identity is enabled; false otherwise.
      */
     public static boolean isAppThreadIdentityEnabled() {
-        for (ThreadIdentityService tis : threadIdentityServices) {
-            if (tis.isAppThreadIdentityEnabled()) {
-                return true;
+        if (hasThreadIdentityServices) {
+            for (ThreadIdentityService tis : threadIdentityServices) {
+                if (tis.isAppThreadIdentityEnabled()) {
+                    return true;
+                }
             }
         }
         return false;
@@ -239,6 +251,9 @@ public class ThreadIdentityManager {
      * @throws ThreadIdentityException
      */
     public static Object setAppThreadIdentity(Subject subject) throws ThreadIdentityException {
+        if (!hasThreadIdentityServices) {
+            return null;
+        }
         LinkedHashMap<ThreadIdentityService, Object> token = null;
         for (ThreadIdentityService tis : threadIdentityServices) {
             if (tis.isAppThreadIdentityEnabled()) {
@@ -322,6 +337,11 @@ public class ThreadIdentityManager {
      *         This token must be passed to the subsequent reset call.
      */
     public static Object runAsServer() {
+        // most times there are no services, so can skip out fast and avoid the
+        // thread local and iterator calls.
+        if (!hasThreadIdentityServices) {
+            return emptyToken;
+        }
         LinkedHashMap<ThreadIdentityService, Object> token = null;
 
         if (!checkForRecursionAndSet()) {

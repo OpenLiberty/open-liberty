@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2020 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -121,7 +121,6 @@ public final class ApplicationStateCoordinator {
     }
 
     public static String[] getSlowlyStartingApps() {
-        TimeUnit unit = TimeUnit.SECONDS;
         try {
             while (true) {
                 if (waitForStartingAppPidsLatch.await(1, TimeUnit.SECONDS)) {
@@ -136,27 +135,15 @@ public final class ApplicationStateCoordinator {
             //autoFFDC
         }
         if (appConfigurator != null) {
-            long endTime = System.nanoTime() + unit.toNanos(getApplicationStartTimeout());
             try {
-                do {
-                    if (unconfiguredApps.await(1, TimeUnit.SECONDS)) {
-                        break;
-                    }
-                } while (System.nanoTime() < endTime);
-
+                unconfiguredApps.await(getApplicationStartTimeout(), TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // Auto FFDC
             }
 
             appConfigurator.readyForAppsToStart();
-            endTime = System.nanoTime() + unit.toNanos(getApplicationStartTimeout());
             try {
-                do {
-                    if (unstartedApps.await(1, TimeUnit.SECONDS)) {
-                        break;
-                    }
-                } while (System.nanoTime() < endTime);
-
+                unstartedApps.await(getApplicationStartTimeout(), TimeUnit.SECONDS);
             } catch (InterruptedException e) {
                 // Auto FFDC
             }
@@ -185,19 +172,12 @@ public final class ApplicationStateCoordinator {
     }
 
     public static String[] getSlowlyStoppingApps() {
-        TimeUnit unit = TimeUnit.SECONDS;
         if (appConfigurator == null) {
             return null;
         }
         appConfigurator.readyForAppsToStop();
-        long endTime = System.nanoTime() + unit.toNanos(getApplicationStopTimeout());
         try {
-            do {
-                if (unstoppedApps.await(1, TimeUnit.SECONDS)) {
-                    break;
-                }
-            } while (System.nanoTime() < endTime);
-
+            unstoppedApps.await(getApplicationStopTimeout(), TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             // Auto FFDC
         }

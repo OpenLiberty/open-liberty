@@ -201,7 +201,7 @@ public class UIOauthTest {
 
         //Check the Modal head element as we need it later
         WebElement oauthModalHead = authModal.findElement(By.cssSelector("div.modal-ux-header"));
-        assertThat("Authorization header has appeared", oauthModalHead.findElement(By.cssSelector("h3")).getText(), Matchers.containsString("Available authorizations"));
+        assertThat("Authorization header has appeared", oauthModalHead.getAttribute("textContent"), Matchers.equalTo("Available authorizations"));
 
         // Get the OAuth Authentication container - As we only have OAuth Enabled it is the only one we have
         WebElement authContainer = authModal.findElement(By.cssSelector("div.auth-container"));

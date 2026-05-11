@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 repositories.clear()
@@ -53,9 +50,9 @@ configurations {
 }
 
 dependencies {
-    library "com.fasterxml.jackson.core:jackson-annotations:2.15.2"
-    library "com.fasterxml.jackson.core:jackson-core:2.15.2"
-    library "com.fasterxml.jackson.core:jackson-databind:2.15.2"
+    library "com.fasterxml.jackson.core:jackson-annotations:2.21"
+    library "com.fasterxml.jackson.core:jackson-core:2.21.2"
+    library "com.fasterxml.jackson.core:jackson-databind:2.21.2"
     library "com.google.javascript:closure-compiler:v20160315"
     library "com.github.mwiede:jsch:2.27.0"
     library "com.sun.xml.bind:jaxb-impl:2.3.9"
@@ -109,9 +106,9 @@ dependencies {
 
 def dependencyToPath = [
   "com.ibm.ws.componenttest:infra.buildtasks-core:7.0.2": "lib/buildtasks/infra.buildtasks-core_7.0.2.jar",
-  "com.fasterxml.jackson.core:jackson-annotations:2.15.2": "lib/buildtasks/jackson-annotations-2.15.2.jar",
-  "com.fasterxml.jackson.core:jackson-core:2.15.2": "lib/buildtasks/jackson-core-2.15.2.jar",
-  "com.fasterxml.jackson.core:jackson-databind:2.15.2": "lib/buildtasks/jackson-databind-2.15.2.jar",
+  "com.fasterxml.jackson.core:jackson-annotations:2.21": "lib/buildtasks/jackson-annotations-2.21.jar",
+  "com.fasterxml.jackson.core:jackson-core:2.21.2": "lib/buildtasks/jackson-core-2.21.2.jar",
+  "com.fasterxml.jackson.core:jackson-databind:2.21.2": "lib/buildtasks/jackson-databind-2.21.2.jar",
   "com.github.mwiede:jsch:2.27.0": "lib/buildtasks/jsch-2.27.0.jar",
   "com.sun.xml.bind:jaxb-impl:2.3.9": "lib/buildtasks/jaxb-impl-2.3.9.jar",
   "javax.xml.bind:activation:1.0.2": "lib/buildtasks/jaxb-activation.jar",

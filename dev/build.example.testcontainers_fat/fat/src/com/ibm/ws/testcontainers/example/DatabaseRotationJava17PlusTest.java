@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,14 +20,10 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
-import componenttest.annotation.Server;
-import componenttest.annotation.TestServlet;
 import componenttest.app.JavaInfo;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
-import componenttest.topology.impl.LibertyServer;
-import web.dbrotation.DbRotationServlet;
 
 /**
  * Functional test that could not be accomplished via unit testing.
@@ -37,12 +33,6 @@ import web.dbrotation.DbRotationServlet;
  */
 @RunWith(FATRunner.class)
 public class DatabaseRotationJava17PlusTest {
-
-    public static final String APP_NAME = "app";
-
-    @Server("build.example.testcontainers.dbrotation")
-    @TestServlet(servlet = DbRotationServlet.class, contextRoot = APP_NAME)
-    public static LibertyServer server;
 
     @Test
     public void containerAcceptedAtOrAboveJava17() {
@@ -55,7 +45,7 @@ public class DatabaseRotationJava17PlusTest {
                  + "by calling create() post-java17 but did: " + e.getMessage());
         }
 
-        assumeTrue(System.getProperty("fat.bucket.db.type").equals("derby"));
+        assumeTrue("derby".equals(System.getProperty("fat.bucket.db.type")));
 
         try {
             JdbcDatabaseContainer<?> jdbcContainer = DatabaseContainerFactory.createLatest();
@@ -78,7 +68,7 @@ public class DatabaseRotationJava17PlusTest {
                        e.getMessage().startsWith("Cannot initialize a container of type"));
         }
 
-        assumeTrue(System.getProperty("fat.bucket.db.type").equals("derby"));
+        assumeTrue("derby".equals(System.getProperty("fat.bucket.db.type")));
 
         //Attempt to call createLatest()
         try {

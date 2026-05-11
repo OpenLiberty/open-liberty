@@ -139,6 +139,15 @@ public interface DataVersionCompatibility {
     Annotation getExistsAnnotation(Method method);
 
     /**
+     * Obtains the value of the First annotation if present on the method.
+     * Otherwise null.
+     *
+     * @param method repository method. Must not be null.
+     * @return First annotation value if present, otherwise null.
+     */
+    Integer getFirstAnnotationValue(Method method);
+
+    /**
      * Obtains the values of Select annotations if present on the method
      * or record component. The order for values is the same as the order in
      * which the annotations are listed. Otherwise a size 0 array.

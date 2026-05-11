@@ -20,6 +20,7 @@ Subsystem-Name: MicroProfile GraphQL 1.0
   io.openliberty.jandex.internal-2.0
 -bundles= \
  com.ibm.ws.com.graphql.java, \
+ com.ibm.ws.com.graphql.java.javaee, \
  com.ibm.ws.io.smallrye.graphql, \
  com.ibm.ws.org.jboss.logging
 #already provided by kernel...

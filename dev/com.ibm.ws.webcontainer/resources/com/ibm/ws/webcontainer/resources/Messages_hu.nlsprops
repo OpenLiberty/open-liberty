@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Nem t\u00f6lthet\u0151 be a mega
 failed.to.load.converter.properties.useraction=Gy\u0151z\u0151dj\u00f6n meg r\u00f3la, hogy a megadott f\u00e1jl l\u00e9tezik, \u00e9s hogy a java.utils.Properties szerint helyes a form\u00e1tuma.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: A setBufferSize() met\u00f3dus ker\u00fclt megh\u00edv\u00e1sra az els\u0151 \u00edr\u00e1s ut\u00e1n a kimeneti adatfolyamba/\u00edr\u00f3eszk\u00f6zbe
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) az els\u0151 \u00edr\u00e1si m\u0171velet vagy v\u00e1lasz v\u00e9gleges\u00edt\u00e9se ut\u00e1n h\u00edv\u00f3dik meg
 setbuffer.size.called.after.write.explanation=K\u00eds\u00e9rlet t\u00f6rt\u00e9nt a v\u00e1laszpuffer m\u00e9ret\u00e9nek be\u00e1ll\u00edt\u00e1s\u00e1ra a v\u00e1lasz v\u00e9grehajt\u00e1sa ut\u00e1n. Ez egy alkalmaz\u00e1shiba.
 setbuffer.size.called.after.write.useraction=T\u00e1vol\u00edtsa el a setBufferSize() h\u00edv\u00e1st vagy helyezze \u00e1t a v\u00e1lasz v\u00e9gleges\u00edt\u00e9se el\u0151tti poz\u00edci\u00f3ba.
 

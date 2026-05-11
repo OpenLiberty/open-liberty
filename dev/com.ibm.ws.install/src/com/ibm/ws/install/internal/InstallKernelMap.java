@@ -1414,7 +1414,7 @@ public class InstallKernelMap implements Map {
     }
 
     private Path getM2Path() {
-//        return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
+        //        return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
         return Paths.get(System.getProperty("user.home"), ".m2", "repository", "");
 
     }
@@ -1485,8 +1485,17 @@ public class InstallKernelMap implements Map {
             }
         }
 
-        if (workingRepos.isEmpty()) {
-            workingRepos.add(MAVEN_CENTRAL_REPOSITORY);
+        // if no working repo is found, use maven central
+        try {
+            Properties properties = RepositoryConfigUtils.loadRepoProperties();
+
+            if (workingRepos.isEmpty() && RepositoryConfigUtils.isWlpRepoEnabled(properties)) {
+                workingRepos.add(MAVEN_CENTRAL_REPOSITORY);
+            } else {
+                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_CONNECT_REPOS"));
+            }
+        } catch (InstallException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -2123,35 +2132,35 @@ public class InstallKernelMap implements Map {
 
     // log message types
     private void info(String msg) {
-//        if (isWindows) {
-//            logger.info(msg);
-//        } else {
-//            progressBar.clearProgress(); // Erase line content
+        //        if (isWindows) {
+        //            logger.info(msg);
+        //        } else {
+        //            progressBar.clearProgress(); // Erase line content
         logger.info(msg);
-//            progressBar.display();
-//        }
+        //            progressBar.display();
+        //        }
 
     }
 
     private void fine(String msg) {
-//        if (isWindows) {
-//            logger.fine(msg);
-//        } else {
-//            progressBar.clearProgress(); // Erase line content
+        //        if (isWindows) {
+        //            logger.fine(msg);
+        //        } else {
+        //            progressBar.clearProgress(); // Erase line content
         logger.fine(msg);
-//            progressBar.display();
-//        }
+        //            progressBar.display();
+        //        }
     }
 
     private void severe(String msg) {
-//        if (isWindows) {
-//            logger.severe(msg);
-//        } else {
-//            System.out.print("\033[2K"); // Erase line content
-//        progressBar.clearProgress(); // Erase line content
+        //        if (isWindows) {
+        //            logger.severe(msg);
+        //        } else {
+        //            System.out.print("\033[2K"); // Erase line content
+        //        progressBar.clearProgress(); // Erase line content
         logger.severe(msg);
-//        progressBar.display();
-//        }
+        //        progressBar.display();
+        //        }
 
     }
 

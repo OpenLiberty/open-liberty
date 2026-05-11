@@ -33,3 +33,11 @@
 
 # Ignore direnv files - for quickly switching between JDK levels between projects
 .envrc
+
+# Ignore IBM Bob files aside from an allow list. Developers may create additional custom repository-level IBM Bob functionality as needed and add it to the allow list(s).
+.bob/*
+!.bob/rules/
+.bob/rules/*
+
+# Allow list of IBM Bob rules. Rules added here are intended for use by everyone, so be intentional about any rules that are added.
+!.bob/rules/contributing.md

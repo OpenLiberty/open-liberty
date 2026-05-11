@@ -15,8 +15,7 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.RepeatTests;
+import componenttest.rules.repeater.*;
 
 @RunWith(Suite.class)
 @SuiteClasses({
@@ -46,5 +45,5 @@ public class FATSuite {
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode().andWith(FeatureReplacementAction.EE9_FEATURES());
+    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly()).andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11)).andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17)).andWith(FeatureReplacementAction.EE11_FEATURES());
 }

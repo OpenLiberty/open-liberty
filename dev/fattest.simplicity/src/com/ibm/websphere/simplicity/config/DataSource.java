@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2021 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -26,6 +26,7 @@ import com.ibm.websphere.simplicity.config.dsprops.Properties_db2_i_toolbox;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_db2_jcc;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_client;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
+import com.ibm.websphere.simplicity.config.dsprops.Properties_h2;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_informix;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_informix_jcc;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_microsoft_sqlserver;
@@ -112,6 +113,9 @@ public class DataSource extends ConfigElement {
 
     @XmlElement(name = DataSourceProperties.GENERIC)
     private ConfigElementList<Properties> genericProps;
+
+    @XmlElement(name = DataSourceProperties.H2)
+    private ConfigElementList<Properties_h2> h2Props;
 
     @XmlElement(name = DataSourceProperties.INFORMIX_JCC)
     private ConfigElementList<Properties_informix_jcc> informixJccProps;
@@ -210,6 +214,8 @@ public class DataSource extends ConfigElement {
             return DataSourceProperties.GENERIC;
         else if (informixJccProps != null)
             return DataSourceProperties.INFORMIX_JCC;
+        else if (h2Props != null)
+            return DataSourceProperties.H2;
         else if (informixJdbcProps != null)
             return DataSourceProperties.INFORMIX_JDBC;
         else if (oracleProps != null)
@@ -242,6 +248,8 @@ public class DataSource extends ConfigElement {
             nestedPropElements.addAll(this.derbyNetClientProps);
         if (this.genericProps != null)
             nestedPropElements.addAll(this.genericProps);
+        if (this.h2Props != null)
+            nestedPropElements.addAll(this.h2Props);
         if (this.informixJccProps != null)
             nestedPropElements.addAll(this.informixJccProps);
         if (this.informixJdbcProps != null)
@@ -274,6 +282,8 @@ public class DataSource extends ConfigElement {
             this.derbyNetClientProps.clear();
         if (this.genericProps != null)
             this.genericProps.clear();
+        if (this.h2Props != null)
+            this.h2Props.clear();
         if (this.informixJccProps != null)
             this.informixJccProps.clear();
         if (this.informixJdbcProps != null)
@@ -323,6 +333,12 @@ public class DataSource extends ConfigElement {
 
     public ConfigElementList<Properties_derby_embedded> getProperties_derby_embedded() {
         return this.derbyEmbeddedProps == null ? (derbyEmbeddedProps = new ConfigElementList<Properties_derby_embedded>()) : derbyEmbeddedProps;
+    }
+
+    public ConfigElementList<Properties_h2> getProperties_h2() {
+        if (h2Props == null)
+            h2Props = new ConfigElementList<Properties_h2>();
+        return h2Props;
     }
 
     public ConfigElementList<Properties_informix_jcc> getProperties_informix_jcc() {
@@ -748,6 +764,16 @@ public class DataSource extends ConfigElement {
             // TODO finish setting the properties
             db2JccProps = new ConfigElementList<Properties_db2_jcc>();
             db2JccProps.add(properties);
+            throw new Exception("Database or driver not yet supported");
+        } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_H2.getPropertyName()) &&
+                   database_drivername.equalsIgnoreCase(BootstrapProperty.DB_H2_DRIVER.getPropertyName())) {
+            // TODO H2 is not yet supported as a specified database
+            Properties_h2 properties = new Properties_h2();
+            properties.setPassword(database_password1);
+            properties.setURL("jdbc:h2:" + database_name);
+            properties.setUser(database_user1);
+            h2Props = new ConfigElementList<Properties_h2>();
+            h2Props.add(properties);
             throw new Exception("Database or driver not yet supported");
         } else if (database_vendorname.equalsIgnoreCase(BootstrapProperty.DB_INFORMIX.getPropertyName())
                    && database_drivername.equalsIgnoreCase(BootstrapProperty.DB_DB2_JCC_DRIVER.getPropertyName())) {

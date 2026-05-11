@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,14 +9,19 @@
  *******************************************************************************/
 package io.openliberty.http.netty.timeout.exception;
 
+import java.net.SocketAddress;
 import java.util.concurrent.TimeUnit;
 
 public class ReadTimeoutException extends TimeoutException{
 
     private static final long   serialVersionUID = 1L;
-    private static final String warningCode = "SOMECODE";  
+    private static final String warningCode = "read.timeout";
 
     public ReadTimeoutException(long duration, TimeUnit unit){
         super(warningCode, duration, unit);
+    }
+
+    public ReadTimeoutException(long duration, TimeUnit unit, SocketAddress localAddress, SocketAddress remoteAddress){
+        super(warningCode, duration, unit, localAddress, remoteAddress);
     }
 }

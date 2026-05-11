@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2025 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -91,3 +91,19 @@ LTPA_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=A securityUtility createLTPAK
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE=CWWKS4117W: A {0} \u00e9rv\u00e9nyes\u00edt\u00e9si kulcsokat olyan kriptogr\u00e1fiai algoritmusokkal kell \u00fajrateremteni, amelyek nem rendelkeznek FIPS 140-3 tan\u00fas\u00edtv\u00e1nnyal.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.explanation=A FIPS 140-3 enged\u00e9lyez\u00e9s\u00e9vel l\u00e9trehozott LTPA \u00e9rv\u00e9nyes\u00edt\u00e9si kulcsok nem m\u0171k\u00f6dnek, ha a FIPS 140-3 ki van kapcsolva.
 LTPA_FIPS_VALIDATION_KEYS_NEED_TO_REGENERATE.useraction=A securityUtility createLTPAKeys paranccsal hozhatja l\u00e9tre a nem FIPS \u00e1ltal j\u00f3v\u00e1hagyott \u00e9rv\u00e9nyes\u00edt\u00e9si kulcsokat, ha a FIPS 140-3 ki van kapcsolva.
+
+LTPA_KEYS_PASSWORD_ERROR=CWWKS4118E: LTPA konfigur\u00e1ci\u00f3s hiba. Az ` keysPassword ` attrib\u00fatum nincs be\u00e1ll\u00edtva az <ltpa /> `element` elemen, az `ltpa_keys_password` k\u00f6rnyezeti v\u00e1ltoz\u00f3 nincs be\u00e1ll\u00edtva, \u00e9s a `keystore_password` k\u00f6rnyezeti v\u00e1ltoz\u00f3 sincs be\u00e1ll\u00edtva.
+LTPA_KEYS_PASSWORD_ERROR.explanation=Az LTPA-konfigur\u00e1ci\u00f3hoz jelsz\u00f3 sz\u00fcks\u00e9ges az LTPA-kulcsok t\u00e1rol\u00e1s\u00e1hoz \u00e9s olvas\u00e1s\u00e1hoz.
+LTPA_KEYS_PASSWORD_ERROR.useraction=\u00c1ll\u00edtsa be az ` keysPassword ` attrib\u00fatumot az <ltpa /> `element` elemben, vagy adja meg a jelsz\u00f3t az `ltpa_keys_password` vagy a `keystore_password` k\u00f6rnyezeti v\u00e1ltoz\u00f3k be\u00e1ll\u00edt\u00e1s\u00e1val.
+
+LTPA_KEYS_REENCRYPT=CWWKS4119I: Az {0} LTPA-kulcsok \u00fajratitkos\u00edt\u00e1s\u00e1ra a \u201ekeystore_password\u201d k\u00f6rnyezeti v\u00e1ltoz\u00f3 haszn\u00e1lat\u00e1val ker\u00fcl sor.
+LTPA_KEYS_REENCRYPT.explanation=Az LTPA-kulcsokat a \u201ekeystore_password\u201d haszn\u00e1lat\u00e1val \u00fajratitkos\u00edtj\u00e1k, mivel a biztons\u00e1g n\u00f6vel\u00e9se \u00e9rdek\u00e9ben elt\u00e1vol\u00edtott\u00e1k az LTPA \u201e keysPassword \u201d attrib\u00fatum alap\u00e9rtelmezett \u00e9rt\u00e9k\u00e9t.
+LTPA_KEYS_REENCRYPT.useraction=Nincs teend\u0151.
+
+LTPA_KEYS_REENCRYPT_SUCCESS=CWWKS4120I: A \u201ekeystore_password\u201d k\u00f6rnyezeti v\u00e1ltoz\u00f3 haszn\u00e1lat\u00e1val sikeresen \u00fajratitkos\u00edtottam az {0} LTPA-kulcsait.
+LTPA_KEYS_REENCRYPT_SUCCESS.explanation=Az LTPA-kulcsokat a \u201ekeystore_password\u201d k\u00f6rnyezeti v\u00e1ltoz\u00f3 felhaszn\u00e1l\u00e1s\u00e1val \u00fajra titkos\u00edtj\u00e1k.
+LTPA_KEYS_REENCRYPT_SUCCESS.useraction=Ha egy k\u00f6z\u00f6s helysz\u00ednen l\u00e9v\u0151 szerverek k\u00f6z\u00f6tt osztja meg az LTPA-kulcsokat, akkor a t\u00f6bbi szervert is friss\u00edteni kell, hogy azok tov\u00e1bbra is el tudj\u00e1k olvasni ezeket az LTPA-kulcsokat. \u00c1ll\u00edtsa be a megfelel\u0151 <ltpa /> elem \u201e keysPassword \u201d attrib\u00fatum\u00e1t, illetve a megfelel\u0151 <validationKeys /> elem \u201epassword\u201d attrib\u00fatum\u00e1t a szerver \u201ekeystore_password\u201d k\u00f6rnyezeti v\u00e1ltoz\u00f3j\u00e1nak \u00e9rt\u00e9k\u00e9re. A \u201ekeystore_password\u201d k\u00f6rnyezeti v\u00e1ltoz\u00f3t \u00e1ltal\u00e1ban az ` server.env ` f\u00e1jlban hat\u00e1rozz\u00e1k meg.
+
+LTPA_KEYS_REENCRYPT_ERROR=CWWKS4121E: Az {0} LTPA-kulcsok \u00fajratitkos\u00edt\u00e1sa nem siker\u00fclt. Kiv\u00e9tel: {1}
+LTPA_KEYS_REENCRYPT_ERROR.explanation=Az LTPA-kulcsokat nem lehetett \u00fajra titkos\u00edtani. Tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt tekintse meg az \u00fczenetben szerepl\u0151 kiv\u00e9telt.
+LTPA_KEYS_REENCRYPT_ERROR.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy az LTPA-kulcsf\u00e1jl \u00e9s a hozz\u00e1 tartoz\u00f3 k\u00f6nyvt\u00e1r nem csak olvashat\u00f3. Ha az LTPA kulcsf\u00e1jl \u00e9s a hozz\u00e1 tartoz\u00f3 k\u00f6nyvt\u00e1r nem csak olvashat\u00f3, akkor tov\u00e1bbi inform\u00e1ci\u00f3k\u00e9rt olvassa el az \u00fczenetben szerepl\u0151 kiv\u00e9telt.

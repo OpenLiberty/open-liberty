@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023,2025 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,7 +26,7 @@ import jakarta.validation.constraints.Size;
 /**
  * Repository for a Jakarta Persistence entity with bean validation annotations.
  */
-@Repository(dataStore = "java:module/jdbc/DerbyDataSource")
+@Repository(dataStore = "java:module/jdbc/H2DataSource")
 public interface Creatures extends BasicRepository<@Valid Creature, @Positive Long> {
 
     int countById(Long id);
