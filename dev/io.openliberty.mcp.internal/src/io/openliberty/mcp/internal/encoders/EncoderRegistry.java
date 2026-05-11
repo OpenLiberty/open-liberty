@@ -22,7 +22,7 @@ import io.openliberty.mcp.tools.ToolResponseEncoder;
 
 public class EncoderRegistry {
 
-    private static final int DEFAULT_ENCODER_PRIORITY = 0;
+    public static final int DEFAULT_ENCODER_PRIORITY = 0;
     private List<ToolResponseEncoder<?>> toolResponseEncoders = new ArrayList<>();
     private List<ContentEncoder<?>> contentEncoders = new ArrayList<>();
     private Map<Object, Integer> encoderPriorities = new HashMap<>();

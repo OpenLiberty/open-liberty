@@ -9,8 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
+import static io.openliberty.mcp.internal.encoders.EncoderRegistry.DEFAULT_ENCODER_PRIORITY;
+
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -71,7 +74,6 @@ public class McpCdiExtension implements Extension {
     private final List<Bean<?>> encoderBeans = new ArrayList<>();
     private final Map<Bean<?>, Integer> encoderPriorities = new HashMap<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
-    private final Integer DEFAULT_ENCODER_PRIORITY = 0;
     private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
 
     private SchemaRegistry schemas = new SchemaRegistry();
@@ -109,22 +111,21 @@ public class McpCdiExtension implements Extension {
 
     void discoverEncoderBeans(@Observes ProcessManagedBean<?> processManagedBean) {
         AnnotatedType<?> type = processManagedBean.getAnnotatedBeanClass();
-        Class<?> javaClass = processManagedBean.getAnnotatedBeanClass().getJavaClass();
-        if (Encoder.class.isAssignableFrom(javaClass)) {
+
+        if (Encoder.class.isAssignableFrom(type.getJavaClass())) {
             Bean<?> bean = processManagedBean.getBean();
             encoderBeans.add(bean);
 
-            // Capture priority from the annotated bean class (not the runtime proxy)
             Priority priority = type.getAnnotation(Priority.class);
-            int priorityValue = (priority != null) ? priority.value() : DEFAULT_ENCODER_PRIORITY;
+            int priorityValue = priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
             encoderPriorities.put(bean, priorityValue);
         }
     }
 
-    void discoverConverterBeans(@Observes ProcessManagedBean<?> processManagedBean) {
-        Class<?> javaClass = processManagedBean.getAnnotatedBeanClass().getJavaClass();
+    void discoverConverterBeans(@Observes ProcessManagedBean<?> pmb) {
+        Class<?> javaClass = pmb.getAnnotatedBeanClass().getJavaClass();
         if (DefaultValueConverter.class.isAssignableFrom(javaClass)) {
-            TypeUtility.getDefaultValueConverterType(javaClass).ifPresent(type -> converterBeans.put(processManagedBean.getBean(), type));
+            TypeUtility.getDefaultValueConverterType(javaClass).ifPresent(type -> converterBeans.put(pmb.getBean(), type));
         }
     }
 
@@ -187,26 +188,22 @@ public class McpCdiExtension implements Extension {
                 contentEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(ce);
                 encoderInstancePrioritiesByModule.computeIfAbsent(module, k -> new HashMap<>()).put(encoder, priority);
             }
+
             traceRegistration("encoder", bean, module);
         }
 
-        // Register global encoders (module = null)
-        EncoderRegistry globalInstance = encoderRegistries.getGlobal();
-        globalInstance.registerEncoders(toolEncoders.getOrDefault(null, new ArrayList<>()),
-                                        contentEncoders.getOrDefault(null, new ArrayList<>()),
-                                        encoderInstancePrioritiesByModule.getOrDefault(null, new HashMap<>()));
+        // Register encoders (global and module-specific)
+        Set<J2EEName> allModules = new HashSet<>();
+        allModules.addAll(toolEncoders.keySet());
+        allModules.addAll(contentEncoders.keySet());
 
-        // Register module-specific encoders
-        Set<J2EEName> modules = new HashSet<>();
-        modules.addAll(toolEncoders.keySet());
-        modules.addAll(contentEncoders.keySet());
-        modules.remove(null); // Already handled global
+        for (J2EEName module : allModules) {
+            EncoderRegistry registry = module == null ? encoderRegistries.getGlobal() : encoderRegistries.getForModule(module);
 
-        for (J2EEName module : modules) {
-            EncoderRegistry moduleInstance = encoderRegistries.getForModule(module);
-            moduleInstance.registerEncoders(toolEncoders.getOrDefault(module, new ArrayList<>()),
-                                            contentEncoders.getOrDefault(module, new ArrayList<>()),
-                                            encoderInstancePrioritiesByModule.getOrDefault(module, new HashMap<>()));
+            registry.registerEncoders(
+                                      toolEncoders.getOrDefault(module, Collections.emptyList()),
+                                      contentEncoders.getOrDefault(module, Collections.emptyList()),
+                                      encoderInstancePrioritiesByModule.getOrDefault(module, Collections.emptyMap()));
         }
 
         context.release();

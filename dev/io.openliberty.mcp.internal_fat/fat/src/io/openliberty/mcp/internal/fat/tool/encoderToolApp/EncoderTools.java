@@ -339,16 +339,59 @@ public class EncoderTools {
         return new HttpEndpointResponse(isSuccessful, 500, "", "Internal Server Error");
     }
 
-    /*******************************************************************************
-     * Test that @Priority is NOT inherited from superclass
-     * This verifies the fix for the encoder priority issue where the old
-     * implementation incorrectly walked up the superclass hierarchy.
-     *******************************************************************************/
+    public record InheritanceTestType(String message) {}
 
-    @Tool(name = "testPriorityNotInherited",
-          description = "tests that @Priority annotation is not inherited from superclass - should use BaseEncoderWithPriority (priority 200)")
-    public PriorityInheritanceTestEncoders.InheritanceTestType testPriorityNotInherited() {
-        return new PriorityInheritanceTestEncoders.InheritanceTestType("Original message");
+    @Priority(400)
+    // This base class does not need to be an encoder.
+    // A @Priority annotation on a superclass should not affect the priority of an encoder.
+    public static class BaseEncoderWithPriority {}
+
+    /**
+     * Subclass encoder WITHOUT @Priority annotation.
+     *
+     * This encoder should get the default priority, not priority 400 from
+     * BaseEncoderWithPriority.
+     */
+    @ApplicationScoped
+    public static class SubclassEncoderNoPriority extends BaseEncoderWithPriority implements ContentEncoder<InheritanceTestType> {
+
+        @Override
+        public boolean supports(Class<?> runtimeType) {
+            return InheritanceTestType.class.isAssignableFrom(runtimeType);
+        }
+
+        @Override
+        public Content encode(InheritanceTestType value) {
+            InheritanceTestType encodedValue = new InheritanceTestType("Encoded by SubclassEncoderNoPriority (should be priority 0, not inherited 400)");
+            return new TextContent(jsonb.toJson(encodedValue));
+        }
     }
 
+    /**
+     * Subclass encoder WITH its own @Priority(50) annotation.
+     *
+     * This encoder should use its own direct priority 50. It should not inherit
+     * priority 400 from BaseEncoderWithPriority.
+     */
+    @ApplicationScoped
+    @Priority(50)
+    public static class SubclassEncoderWithOwnPriority extends BaseEncoderWithPriority implements ContentEncoder<InheritanceTestType> {
+
+        @Override
+        public boolean supports(Class<?> runtimeType) {
+            return InheritanceTestType.class.isAssignableFrom(runtimeType);
+        }
+
+        @Override
+        public Content encode(InheritanceTestType value) {
+            InheritanceTestType encodedValue = new InheritanceTestType("Encoded by BaseEncoderWithPriority (priority 200)");
+            return new TextContent(jsonb.toJson(encodedValue));
+        }
+    }
+
+    @Tool(name = "testPriorityNotInherited",
+          description = "tests that @Priority annotation is not inherited from superclass")
+    public InheritanceTestType testPriorityNotInherited() {
+        return new InheritanceTestType("Original message");
+    }
 }
