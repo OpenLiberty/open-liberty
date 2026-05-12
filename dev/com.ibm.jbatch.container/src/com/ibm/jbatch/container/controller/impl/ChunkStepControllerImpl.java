@@ -1075,9 +1075,16 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
         int timeout = DEFAULT_TRAN_TIMEOUT_SECONDS; // default as per spec.
         if (p != null && !p.isEmpty()) {
 
-            String propertyTimeOut = p.getProperty("javax.transaction.global.timeout");
+            // Check Jakarta property first (preferred for Jakarta EE 9+)
+            String propertyTimeOut = p.getProperty("jakarta.transaction.global.timeout");
+            
+            // Fall back to javax property for backward compatibility
+            if (propertyTimeOut == null || propertyTimeOut.isEmpty()) {
+                propertyTimeOut = p.getProperty("javax.transaction.global.timeout");
+            }
+            
             if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE, "javax.transaction.global.timeout = {0}", propertyTimeOut == null ? "<null>" : propertyTimeOut);
+                logger.log(Level.FINE, "transaction.global.timeout = {0}", propertyTimeOut == null ? "<null>" : propertyTimeOut);
             }
             if (propertyTimeOut != null && !propertyTimeOut.isEmpty()) {
                 timeout = Integer.parseInt(propertyTimeOut, 10);
