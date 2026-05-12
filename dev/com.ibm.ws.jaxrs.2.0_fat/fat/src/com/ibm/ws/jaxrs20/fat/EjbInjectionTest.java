@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,7 +28,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class EjbInjectionTest extends FATServletClient {
 
-    private static final String appName = "ejbinjection";
+    private static final String appName = "EjbInjection";
 
     @Server("com.ibm.ws.jaxrs.fat.ejbinjection")
     @TestServlet(servlet = EjbInjectionClientTestServlet.class, contextRoot = appName)
@@ -38,6 +38,7 @@ public class EjbInjectionTest extends FATServletClient {
     public static void setup() throws Exception {
         // Build an application and export it to the dropins directory
         ShrinkHelper.defaultDropinApp(server, appName, "com.ibm.ws.jaxrs.fat.ejbinjection",
+                                                       "com.ibm.ws.jaxrs.fat.ejbinjection.ejbs",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.interfaces",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.interfaces.annotated",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.servlet");
