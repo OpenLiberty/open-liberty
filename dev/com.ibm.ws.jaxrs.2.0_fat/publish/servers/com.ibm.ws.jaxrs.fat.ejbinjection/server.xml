@@ -9,5 +9,4 @@
     <cdi12 enableImplicitBeanArchives="true"/>
   	<include location="../fatTestPorts.xml"/>
   	<javaPermission className="java.util.PropertyPermission" name="bvt.prop.HTTP_default" actions="read"/>
-    <logging traceSpecification="**=info:JCDI=all:com.ibm.ws.cdi*=all:org.jboss.*=all:Injection=all"/>
 </server>
