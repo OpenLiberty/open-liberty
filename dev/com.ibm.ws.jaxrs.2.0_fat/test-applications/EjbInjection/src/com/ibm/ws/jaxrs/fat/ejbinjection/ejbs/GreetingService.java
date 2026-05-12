@@ -24,9 +24,10 @@ public class GreetingService {
     public String greet(String name) {
         return "Hello from EJB service, " + name + "!";
     }
-    
+
     public String farewell(String name) {
         return "Goodbye from EJB service, " + name + "!";
     }
 }
 
+// Made with Bob

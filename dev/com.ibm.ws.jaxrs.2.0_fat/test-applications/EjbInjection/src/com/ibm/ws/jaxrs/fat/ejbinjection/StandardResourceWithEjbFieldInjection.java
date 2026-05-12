@@ -42,4 +42,4 @@ public class StandardResourceWithEjbFieldInjection {
     }
 }
 
-
+// Made with Bob

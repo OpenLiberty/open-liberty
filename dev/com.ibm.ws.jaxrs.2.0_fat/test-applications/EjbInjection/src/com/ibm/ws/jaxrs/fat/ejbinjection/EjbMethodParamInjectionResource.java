@@ -47,3 +47,4 @@ public class EjbMethodParamInjectionResource {
     }
 }
 
+// Made with Bob

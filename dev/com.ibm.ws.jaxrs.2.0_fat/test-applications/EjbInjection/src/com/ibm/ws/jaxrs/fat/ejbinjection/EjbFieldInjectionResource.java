@@ -43,3 +43,4 @@ public class EjbFieldInjectionResource {
     }
 }
 
+// Made with Bob
