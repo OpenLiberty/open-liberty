@@ -801,6 +801,10 @@ public class SlowRequestTiming {
         server.setServerConfigurationFile("server_sampleRate2.xml");
         waitForConfigurationUpdate();
 
+        //Wait for requestTiming subsystem to apply new configuration
+        CommonTasks.writeLogMsg(Level.INFO, "**** Waiting for requestTiming subsystem to apply new settings...");
+        Thread.sleep(5000); // Allow time for requestTiming to reinitialize with new sampleRate and threshold
+
         //Step 3 - Create 2 requests of 4 seconds each and verify that it works like sampleRate 2.
         createRequest("?sleepTime=4000");
         createRequest("?sleepTime=4000");
