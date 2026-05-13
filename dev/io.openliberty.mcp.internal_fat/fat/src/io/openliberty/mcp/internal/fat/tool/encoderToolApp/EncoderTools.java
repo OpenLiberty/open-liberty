@@ -384,7 +384,7 @@ public class EncoderTools {
 
         @Override
         public Content encode(InheritanceTestType value) {
-            InheritanceTestType encodedValue = new InheritanceTestType("Encoded by BaseEncoderWithPriority (priority 200)");
+            InheritanceTestType encodedValue = new InheritanceTestType("Encoded by BaseEncoderWithPriority (priority 50)");
             return new TextContent(jsonb.toJson(encodedValue));
         }
     }
@@ -393,5 +393,54 @@ public class EncoderTools {
           description = "tests that @Priority annotation is not inherited from superclass")
     public InheritanceTestType testPriorityNotInherited() {
         return new InheritanceTestType("Original message");
+    }
+
+    /*******************************************************************************
+     * Test that a CDI base ToolResponseEncoder with the highest priority is selected
+     *******************************************************************************/
+
+    public record CdiBasePriorityTestType(String message) {}
+
+    /**
+     * This base class IS a CDI bean and IS an encoder.
+     * It has the highest direct @Priority, so it should be selected.
+     */
+    @ApplicationScoped
+    @Priority(400)
+    public static class CdiBaseEncoderWithHighestPriority implements ToolResponseEncoder<CdiBasePriorityTestType> {
+
+        @Override
+        public boolean supports(Class<?> runtimeType) {
+            return CdiBasePriorityTestType.class.isAssignableFrom(runtimeType);
+        }
+
+        @Override
+        public ToolResponse encode(CdiBasePriorityTestType value) {
+            CdiBasePriorityTestType encodedValue = new CdiBasePriorityTestType("Encoded by CdiBaseEncoderWithHighestPriority (priority 400)");
+
+            return ToolResponse.success(new TextContent(jsonb.toJson(encodedValue)));
+        }
+    }
+
+    /**
+     * This child class is also a CDI encoder, but it has lower priority.
+     * It should NOT be selected because the base encoder has priority 400.
+     */
+    @ApplicationScoped
+    @Priority(50)
+    public static class CdiSubclassEncoderWithLowerPriority extends CdiBaseEncoderWithHighestPriority {
+
+        @Override
+        public ToolResponse encode(CdiBasePriorityTestType value) {
+            CdiBasePriorityTestType encodedValue = new CdiBasePriorityTestType("Encoded by CdiSubclassEncoderWithLowerPriority (priority 50)");
+
+            return ToolResponse.success(new TextContent(jsonb.toJson(encodedValue)));
+        }
+    }
+
+    @Tool(name = "testCdiBasePriorityHighest",
+          description = "tests that a CDI base ToolResponseEncoder with the highest priority is selected")
+    public CdiBasePriorityTestType testCdiBasePriorityHighest() {
+        return new CdiBasePriorityTestType("Original message");
     }
 }

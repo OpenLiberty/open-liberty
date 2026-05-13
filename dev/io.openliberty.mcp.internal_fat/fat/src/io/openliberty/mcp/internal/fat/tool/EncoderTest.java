@@ -486,7 +486,43 @@ public class EncoderTest extends FATServletClient {
                             "content": [
                               {
                                 "type":"text",
-                                "text":"{\\\"message\\\":\\\"Encoded by BaseEncoderWithPriority (priority 200)\\\"}"
+                                "text":"{\\\"message\\\":\\\"Encoded by BaseEncoderWithPriority (priority 50)\\\"}"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testCdiBasePriorityHighest() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testCdiBasePriorityHighest",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+
+        // The CDI base encoder has @Priority(400), while the subclass has @Priority(50),
+        // so the base encoder should be selected.
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"{\\\"message\\\":\\\"Encoded by CdiBaseEncoderWithHighestPriority (priority 400)\\\"}"
                               }
                             ],
                             "isError": false
