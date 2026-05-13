@@ -2457,66 +2457,70 @@ public class InstallKernelMap implements Map {
     }
 
     /**
-     * Filter out already-installed user features from the list of features to install.
-     * This prevents the resolver from attempting to fetch user features that are already
-     * present in the Liberty usr directory.
+     * Filter out already-installed product extension features from the list of features to install.
+     * This prevents the resolver from attempting to fetch product extension features (user features
+     * and custom extensions) that are already present in the Liberty installation.
+     *
+     * Product extension features have a non-null bundle repository type (e.g., "usr" for the default
+     * user extension, or a custom extension name like "ibmProcessServer").
      *
      * @param featuresToInstall Collection of feature names to install
      * @param installedFeatures Collection of already installed feature definitions
-     * @return Filtered collection with user features removed if they're already installed
+     * @return Filtered collection with product extension features removed if they're already installed
      */
-    Collection<String> filterOutInstalledUserFeatures(
-            Collection<String> featuresToInstall,
-            Collection<ProvisioningFeatureDefinition> installedFeatures) {
-        
-        // Collect names of installed user features
-        Collection<String> userFeaturesInstalled = new ArrayList<String>();
-        for (ProvisioningFeatureDefinition feature : installedFeatures) {
-            // User features have bundle repository type "usr"
-            if ("usr".equals(feature.getBundleRepositoryType())) {
-                if (feature.getIbmShortName() != null) {
-                    userFeaturesInstalled.add(feature.getIbmShortName());
-                }
-                userFeaturesInstalled.add(feature.getFeatureName());
-            }
-        }
-        
-        // If no user features are installed, return original list
-        if (userFeaturesInstalled.isEmpty()) {
-            return new ArrayList<String>(featuresToInstall);
-        }
-        
-        // Filter out installed user features
-        List<String> result = new ArrayList<String>();
-        for (String featureToCheck : featuresToInstall) {
-            boolean isInstalledUserFeature = false;
-            
-            // Handle various feature name formats:
-            // - "usr:featureName"
-            // - "featureName:featureName" (e.g., "ibmProcessServer:ibmProcessServer")
-            // - "featureName"
-            String featureNameOnly = featureToCheck;
-            if (featureToCheck.contains(":")) {
-                String[] parts = featureToCheck.split(":", 2);
-                if (parts.length == 2) {
-                    featureNameOnly = parts[1];
-                }
-            }
-            
-            // Check if this matches an installed user feature
-            for (String installedUserFeature : userFeaturesInstalled) {
-                if (featureToCheck.equalsIgnoreCase(installedUserFeature) ||
-                    featureNameOnly.equalsIgnoreCase(installedUserFeature)) {
-                    isInstalledUserFeature = true;
-                    fine("Skipping already installed user feature: " + featureToCheck);
-                    break;
-                }
-            }
-            
-            if (!isInstalledUserFeature) {
-                result.add(featureToCheck);
-            }
-        }
+   Collection<String> filterOutInstalledUserFeatures(
+           Collection<String> featuresToInstall,
+           Collection<ProvisioningFeatureDefinition> installedFeatures) {
+       
+       // Collect names of installed product extension features
+       Collection<String> productExtensionFeaturesInstalled = new ArrayList<String>();
+       for (ProvisioningFeatureDefinition feature : installedFeatures) {
+           // Product extension features have a non-null bundle repository type
+           // This includes "usr" (default user extension) and custom extension names
+           String bundleRepoType = feature.getBundleRepositoryType();
+           if (bundleRepoType != null && !bundleRepoType.isEmpty()) {
+               if (feature.getIbmShortName() != null) {
+                   productExtensionFeaturesInstalled.add(feature.getIbmShortName());
+               }
+               productExtensionFeaturesInstalled.add(feature.getFeatureName());
+           }
+       }
+       
+       // If no product extension features are installed, return original list
+       if (productExtensionFeaturesInstalled.isEmpty()) {
+           return new ArrayList<String>(featuresToInstall);
+       }
+       
+       // Filter out installed product extension features
+       List<String> result = new ArrayList<String>();
+       for (String featureToCheck : featuresToInstall) {
+           boolean isInstalledProductExtensionFeature = false;
+           
+           // Handle various feature name formats:
+           // - "extensionName:featureName" (e.g., "usr:myFeature" or "ibmProcessServer:ibmProcessServer")
+           // - "featureName"
+           String featureNameOnly = featureToCheck;
+           if (featureToCheck.contains(":")) {
+               String[] parts = featureToCheck.split(":", 2);
+               if (parts.length == 2) {
+                   featureNameOnly = parts[1];
+               }
+           }
+           
+           // Check if this matches an installed product extension feature
+           for (String installedFeature : productExtensionFeaturesInstalled) {
+               if (featureToCheck.equalsIgnoreCase(installedFeature) ||
+                   featureNameOnly.equalsIgnoreCase(installedFeature)) {
+                   isInstalledProductExtensionFeature = true;
+                   fine("Skipping already installed product extension feature: " + featureToCheck);
+                   break;
+               }
+           }
+           
+           if (!isInstalledProductExtensionFeature) {
+               result.add(featureToCheck);
+           }
+       }
         
         return result;
     }

@@ -280,10 +280,11 @@ public class InstallKernelMapTest {
         when(mockUserFeature.getFeatureName()).thenReturn("com.example.myUserFeature");
         when(mockUserFeature.getBundleRepositoryType()).thenReturn("usr");
 
-        // Test different name format variations
+        // Test different name format variations:
+        // - "extensionName:featureName" where extensionName is "usr"
+        // - plain "featureName"
         Collection<String> testFormats = Arrays.asList(
             "usr:myUserFeature",
-            "myUserFeature:myUserFeature",
             "myUserFeature"
         );
 
@@ -296,6 +297,38 @@ public class InstallKernelMapTest {
             assertEquals("Should have 1 feature remaining for format: " + format, 1, result.size());
             assertTrue("servlet-5.0 should remain", result.contains("servlet-5.0"));
         }
+    }
+
+    /**
+     * Test filtering of features from custom product extensions (not just "usr").
+     * Custom product extensions have their own bundle repository type.
+     */
+    @Test
+    public void testCustomProductExtensionFeature() {
+        InstallKernelMap ikm = new InstallKernelMap();
+
+        // Mock a feature from a custom product extension named "ibmProcessServer"
+        ProvisioningFeatureDefinition mockCustomFeature = mock(ProvisioningFeatureDefinition.class);
+        when(mockCustomFeature.getIbmShortName()).thenReturn("ibmProcessServer");
+        when(mockCustomFeature.getFeatureName()).thenReturn("com.ibm.bpm.ibmProcessServer");
+        when(mockCustomFeature.getBundleRepositoryType()).thenReturn("ibmProcessServer");
+
+        // Test format: "extensionName:featureName" where both happen to be "ibmProcessServer"
+        Collection<String> toInstall = new ArrayList<>(Arrays.asList(
+            "ibmProcessServer:ibmProcessServer",
+            "servlet-5.0",
+            "ejb-3.2"
+        ));
+
+        Collection<String> result = ikm.filterOutInstalledUserFeatures(
+            toInstall, Arrays.asList(mockCustomFeature));
+
+        // The custom product extension feature should be filtered out
+        assertFalse("ibmProcessServer:ibmProcessServer should be filtered out",
+                    result.contains("ibmProcessServer:ibmProcessServer"));
+        assertEquals("Should have 2 features remaining", 2, result.size());
+        assertTrue("servlet-5.0 should remain", result.contains("servlet-5.0"));
+        assertTrue("ejb-3.2 should remain", result.contains("ejb-3.2"));
     }
 
     /**
