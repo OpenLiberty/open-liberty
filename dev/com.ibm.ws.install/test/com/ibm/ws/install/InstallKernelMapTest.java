@@ -223,9 +223,9 @@ public class InstallKernelMapTest {
         when(mockUserFeature.getFeatureName()).thenReturn("com.ibm.bpm.ibmProcessServer");
         when(mockUserFeature.getBundleRepositoryType()).thenReturn("usr");
 
-        // Features to install: user feature + Liberty features
+        // Features to install: product extension feature + Liberty features
         Collection<String> toInstall = new ArrayList<>(Arrays.asList(
-            "ibmProcessServer:ibmProcessServer", // Already installed user feature
+            "ibmProcessServer:ibmProcessServer", // Already installed product extension feature
             "servlet-5.0",                        // Liberty feature
             "ejb-3.2"                             // Liberty feature
         ));
