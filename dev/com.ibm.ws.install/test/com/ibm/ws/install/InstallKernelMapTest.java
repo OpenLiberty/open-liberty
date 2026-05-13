@@ -382,6 +382,7 @@ public class InstallKernelMapTest {
      * Test the exact ibmProcessServer scenario from the reported bug.
      * This reproduces the issue where Docker builds with Artifactory mirrors
      * would fail with CWWKF1402E when ibmProcessServer was already installed.
+     * ibmProcessServer is a custom product extension, not the default "usr" extension.
      */
     @Test
     public void testIbmProcessServerScenario() {
@@ -390,7 +391,7 @@ public class InstallKernelMapTest {
         ProvisioningFeatureDefinition mockUserFeature = mock(ProvisioningFeatureDefinition.class);
         when(mockUserFeature.getIbmShortName()).thenReturn("ibmProcessServer");
         when(mockUserFeature.getFeatureName()).thenReturn("ibmProcessServer:ibmProcessServer");
-        when(mockUserFeature.getBundleRepositoryType()).thenReturn("usr");
+        when(mockUserFeature.getBundleRepositoryType()).thenReturn("ibmProcessServer");
 
         Collection<String> toInstall = new ArrayList<>(Arrays.asList(
             "ibmProcessServer:ibmProcessServer", "ejbHome-3.2", "webProfile-8.0"
