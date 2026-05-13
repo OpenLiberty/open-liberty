@@ -9,9 +9,10 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclient.wellknown.internal;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
@@ -23,10 +24,10 @@ public class OAuthProtectedResourceMetadataServletTest {
 
         OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/unknown");
 
-        assertThat(response.isFound(), is(false));
-        assertThat(response.getContentType(), is(nullValue()));
-        assertThat(response.getCharacterEncoding(), is(nullValue()));
-        assertThat(response.getBody(), is(nullValue()));
+        assertFalse(response.isFound());
+        assertNull(response.getContentType());
+        assertNull(response.getCharacterEncoding());
+        assertNull(response.getBody());
     }
 
     @Test
@@ -40,10 +41,10 @@ public class OAuthProtectedResourceMetadataServletTest {
 
         OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/mcp");
 
-        assertThat(response.isFound(), is(true));
-        assertThat(response.getContentType(), is("application/json"));
-        assertThat(response.getCharacterEncoding(), is("UTF-8"));
-        assertThat(response.getBody(), is("{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}"));
+        assertTrue(response.isFound());
+        assertEquals("application/json", response.getContentType());
+        assertEquals("UTF-8", response.getCharacterEncoding());
+        assertEquals("{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}", response.getBody());
     }
 
     @Test
@@ -60,9 +61,9 @@ public class OAuthProtectedResourceMetadataServletTest {
 
         OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("mcp");
 
-        assertThat(resolvedPath[0], is("/mcp"));
-        assertThat(response.isFound(), is(true));
-        assertThat(response.getBody(), is("{}"));
+        assertEquals("/mcp", resolvedPath[0]);
+        assertTrue(response.isFound());
+        assertEquals("{}", response.getBody());
     }
 }
 
