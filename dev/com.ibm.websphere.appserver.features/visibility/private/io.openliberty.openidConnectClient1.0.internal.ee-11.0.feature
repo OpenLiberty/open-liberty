@@ -8,6 +8,7 @@ visibility = private
 -bundles=\
   io.openliberty.security.openidconnect.internal.client, \
   io.openliberty.security.openidconnect.internal.clients.common, \
-  io.openliberty.security.oidcclientcore.internal.jakarta
-kind=ga
+  io.openliberty.security.oidcclientcore.internal.jakarta, \
+  io.openliberty.security.oidcclient.wellknown.internal.jakarta
+kind=beta
 edition=core

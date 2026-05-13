@@ -1,0 +1,78 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+package io.openliberty.security.oidcclient.wellknown.internal.jakarta;
+
+public class OAuthProtectedResourceMetadataHandler {
+
+    public MetadataResponse handle(String pathInfo) {
+        String protectedResourcePath = toProtectedResourcePath(pathInfo);
+        String metadataJson = resolveMetadataJson(protectedResourcePath);
+
+        if (metadataJson == null) {
+            return MetadataResponse.notFound();
+        }
+
+        return MetadataResponse.json(metadataJson);
+    }
+
+    protected String toProtectedResourcePath(String pathInfo) {
+        if (pathInfo == null || pathInfo.isEmpty() || "/".equals(pathInfo)) {
+            return "/";
+        }
+        if (pathInfo.startsWith("/")) {
+            return pathInfo;
+        }
+        return "/" + pathInfo;
+    }
+
+    protected String resolveMetadataJson(String protectedResourcePath) {
+        return null;
+    }
+
+    public static class MetadataResponse {
+        private final boolean found;
+        private final String contentType;
+        private final String characterEncoding;
+        private final String body;
+
+        private MetadataResponse(boolean found, String contentType, String characterEncoding, String body) {
+            this.found = found;
+            this.contentType = contentType;
+            this.characterEncoding = characterEncoding;
+            this.body = body;
+        }
+
+        public static MetadataResponse notFound() {
+            return new MetadataResponse(false, null, null, null);
+        }
+
+        public static MetadataResponse json(String body) {
+            return new MetadataResponse(true, "application/json", "UTF-8", body);
+        }
+
+        public boolean isFound() {
+            return found;
+        }
+
+        public String getContentType() {
+            return contentType;
+        }
+
+        public String getCharacterEncoding() {
+            return characterEncoding;
+        }
+
+        public String getBody() {
+            return body;
+        }
+    }
+}
+
+// Made with Bob
