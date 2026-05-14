@@ -85,7 +85,8 @@ Include-Resource: \
 
 -dsannotations=com.ibm.ws.security.openidconnect.client.internal.OidcClientWebappConfigImpl,\
     com.ibm.ws.security.openidconnect.client.internal.OidcClientConfigImpl,\
-    com.ibm.ws.security.openidconnect.client.web.OidcBackchannelLogoutServlet
+    com.ibm.ws.security.openidconnect.client.web.OidcBackchannelLogoutServlet,\
+    com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver
 
 -buildpath: \
 	com.ibm.websphere.appserver.spi.logging;version=latest,\

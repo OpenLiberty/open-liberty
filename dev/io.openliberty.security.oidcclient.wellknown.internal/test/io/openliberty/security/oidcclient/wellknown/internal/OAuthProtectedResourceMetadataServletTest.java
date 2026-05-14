@@ -66,5 +66,3 @@ public class OAuthProtectedResourceMetadataServletTest {
         assertEquals("{}", response.getBody());
     }
 }
-
-// Made with Bob
