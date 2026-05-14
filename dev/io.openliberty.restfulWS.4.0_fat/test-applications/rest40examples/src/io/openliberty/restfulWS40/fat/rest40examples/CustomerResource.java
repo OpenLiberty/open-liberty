@@ -56,7 +56,7 @@ public class CustomerResource {
     // NEW in REST 4.0: JSON Merge Patch support (RFC 7396)
     @PATCH
     @Path("/{id}")
-    @Consumes("application/merge-patch+json")
+    @Consumes(MediaType.APPLICATION_MERGE_PATCH_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public Response patchCustomer(
             @PathParam("id") Long id,

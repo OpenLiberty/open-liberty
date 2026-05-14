@@ -151,7 +151,7 @@ public class Rest40ExamplesTestServlet extends FATServlet {
             String patchJson = "{\"email\":\"john.doe@newdomain.com\"}";
             WebTarget patchTarget = client.target(baseUrl + "/customers/1");
             Response patchResp = patchTarget.request(MediaType.APPLICATION_JSON)
-                .method("PATCH", Entity.entity(patchJson, "application/merge-patch+json"));
+                .method("PATCH", Entity.entity(patchJson, MediaType.APPLICATION_MERGE_PATCH_JSON));
 
             assertEquals(200, patchResp.getStatus());
 
