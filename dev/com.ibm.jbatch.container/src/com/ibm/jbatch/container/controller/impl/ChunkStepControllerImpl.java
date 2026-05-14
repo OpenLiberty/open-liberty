@@ -1073,18 +1073,35 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
         logger.entering(sourceClass, "initStepTransactionTimeout");
         Properties p = runtimeStepExecution.getProperties();
         int timeout = DEFAULT_TRAN_TIMEOUT_SECONDS; // default as per spec.
+        String propertyTimeOut = null;
+        String propertyKeyUsed = null;
+        
         if (p != null && !p.isEmpty()) {
-
-            // Check Jakarta property first (preferred for Jakarta EE 9+)
-            String propertyTimeOut = p.getProperty("jakarta.transaction.global.timeout");
+            // Detect EE level by checking if BatchStatus class is in jakarta namespace
+            boolean isJakartaEE = BatchStatus.class.getName().startsWith("jakarta");
             
-            // Fall back to javax property for backward compatibility
+            // For EE9+, check jakarta property first
+            if (isJakartaEE) {
+                propertyTimeOut = p.getProperty("jakarta.transaction.global.timeout");
+                if (propertyTimeOut != null && !propertyTimeOut.isEmpty()) {
+                    propertyKeyUsed = "jakarta.transaction.global.timeout";
+                }
+            }
+            
+            // If we didn't find jakarta property (or we're on EE8), check javax property
             if (propertyTimeOut == null || propertyTimeOut.isEmpty()) {
                 propertyTimeOut = p.getProperty("javax.transaction.global.timeout");
+                if (propertyTimeOut != null && !propertyTimeOut.isEmpty()) {
+                    propertyKeyUsed = "javax.transaction.global.timeout";
+                }
             }
             
             if (logger.isLoggable(Level.FINE)) {
-                logger.log(Level.FINE, "transaction.global.timeout = {0}", propertyTimeOut == null ? "<null>" : propertyTimeOut);
+                if (propertyKeyUsed != null) {
+                    logger.log(Level.FINE, "Found transaction timeout property ''{0}'' = {1}", new Object[]{propertyKeyUsed, propertyTimeOut});
+                } else {
+                    logger.log(Level.FINE, "No transaction timeout property found, using default");
+                }
             }
             if (propertyTimeOut != null && !propertyTimeOut.isEmpty()) {
                 timeout = Integer.parseInt(propertyTimeOut, 10);
