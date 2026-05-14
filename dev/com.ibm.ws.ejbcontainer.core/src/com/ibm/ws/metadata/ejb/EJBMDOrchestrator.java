@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2006, 2023 IBM Corporation and others.
+ * Copyright (c) 2006, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.metadata.ejb;
 
+import static com.ibm.ejs.container.ContainerConfigConstants.deactivateOnQuiesce;
+import static com.ibm.ejs.container.ContainerConfigConstants.destroyOnQuiesce;
 import static com.ibm.ejs.container.ContainerProperties.AllowCachedTimerDataFor;
 import static com.ibm.ejs.container.ContainerProperties.AllowCustomFinderSQLForUpdate;
 import static com.ibm.ejs.container.ContainerProperties.DefaultSessionAccessTimeout;
@@ -7288,6 +7290,38 @@ public abstract class EJBMDOrchestrator {
         bmd.methodsExposedOnRemoteHomeInterface = remoteHomeMethods;
         bmd.allPublicMethodsOnBean = allPublicMethods;
         bmd.methodsToMethodInfos = methodInfoMap;
+
+        //-----------------------------------------------------------------------
+        // Save custom env-entry configuration properties if present
+        // ----------------------------------------------------------------------
+
+        // Custom env-entry properties support a value being provided in ibm-*-bnd.xml
+        // or server.xml without actually defining a resource reference (env-entry).
+        // This is accomplished by saving the binding value now; otherwise the value
+        // may come from ejb-jar.xml, but that will need to be determined later since
+        // it may involve a JNDI lookup (which isn't available at this time)
+
+        if (bmd.isSingletonSessionBean()) {
+            // Configuring a singleton bean to quiesce is done by adding an env-entry
+            // with the following name: io.openliberty.ejb.destroyOnQuiesce.<bean name>
+            String quiescePropertyName = destroyOnQuiesce + bmd.j2eeName.getComponent();
+            String value = envEntryValues != null ? envEntryValues.get(quiescePropertyName) : null;
+            if (value != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "found custom property " + quiescePropertyName + " : " + value);
+                bmd.quiesce = Boolean.valueOf(value);
+            }
+        } else if (bmd.isMessageDrivenBean()) {
+            // Configuring a message-driven bean to quiesce is done by adding an env-entry
+            // with the following name: io.openliberty.ejb.deactivateOnQuiesce.<bean name>
+            String quiescePropertyName = deactivateOnQuiesce + bmd.j2eeName.getComponent();
+            String value = envEntryValues != null ? envEntryValues.get(quiescePropertyName) : null;
+            if (value != null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "found custom property " + quiescePropertyName + " : " + value);
+                bmd.quiesce = Boolean.valueOf(value);
+            }
+        }
 
         //-----------------------------------------------------------------------
         // Create and populate ComponentNameSpaceConfiguration
