@@ -233,8 +233,9 @@ public class SseEventSourceImpl implements SseEventSource {
     }
 
     private void runOnErrorConsumers(final Throwable t) {
-        // Ensure the onComplete callbacks do not get invoked
-        completeListenersInvoked.set(true);
+        // Liberty change - JAX-RS 2.1 spec requires both error and completion listeners
+        // to be invoked. Do NOT set completeListenersInvoked to true here.
+        // Upstream RESTEASY-3498 prevents completion listeners from running.
         onErrorConsumers.forEach(onError -> onError.accept(t));
     }
 
@@ -314,13 +315,12 @@ public class SseEventSourceImpl implements SseEventSource {
                     eventInput = clientResponse.readEntity(SseEventInputImpl.class);
                     //if 200<= response code <300 and response contentType is null, fail the connection.
                     if (eventInput == null) {
-                        if (alwaysReconnect) {
-                            reconnect(this.reconnectDelay);
-                        } else {
-                            // Run the onComplete callback, then close as something went wrong
-                            runCompleteConsumers();
-                            internalClose();
-                        }
+                        // Liberty change - treat non-SSE content type as an unrecoverable error
+                        // that should invoke both error and completion listeners per JAX-RS spec
+                        String contentType = clientResponse.getHeaderString("Content-Type");
+                        IllegalStateException ex = new IllegalStateException(
+                            "Expected SSE content type (text/event-stream) but received: " + contentType);
+                        onUnrecoverableError(ex);
                         return;
                     }
                     // Success, read the event data
