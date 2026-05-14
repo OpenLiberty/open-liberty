@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+
+    Contributors:
+        IBM Corporation - initial API and implementation
+-->
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xmlns="http://java.sun.com/xml/ns/j2ee" xmlns:javaee="http://java.sun.com/xml/ns/javaee"
+		 xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd"
+		 xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd"
+		 id="WebApp_ID" version="2.4">
+
+	<display-name>OAuth Protected Resource Metadata</display-name>
+
+	<servlet>
+		<description>OAuth Protected Resource Metadata Servlet</description>
+		<display-name>OAuth Protected Resource Metadata Servlet</display-name>
+		<servlet-name>ProtectedResourceMetadataServlet</servlet-name>
+		<servlet-class>com.ibm.ws.security.oauth.protectedresource.metadata.internal.ProtectedResourceMetadataServlet</servlet-class>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>ProtectedResourceMetadataServlet</servlet-name>
+		<url-pattern>/*</url-pattern>
+	</servlet-mapping>
+
+	<security-constraint>
+		<web-resource-collection>
+			<web-resource-name>OAuth Protected Resource Metadata</web-resource-name>
+			<url-pattern>/*</url-pattern>
+			<http-method>GET</http-method>
+		</web-resource-collection>
+	</security-constraint>
+
+</web-app>
+
+<!-- Made with Bob -->
