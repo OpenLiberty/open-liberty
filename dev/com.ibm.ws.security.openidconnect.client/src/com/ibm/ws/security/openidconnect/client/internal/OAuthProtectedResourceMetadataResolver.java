@@ -40,11 +40,22 @@ public class OAuthProtectedResourceMetadataResolver {
 
     private static final ConcurrentServiceReferenceSet<OidcClientConfig> oidcClientConfigRef = new ConcurrentServiceReferenceSet<OidcClientConfig>("oidcClientConfigService");
 
+    /**
+     * Binds an OIDC client configuration service so it can participate in protected resource
+     * metadata resolution.
+     *
+     * @param reference service reference for a registered {@link OidcClientConfig}
+     */
     @Reference(name = "oidcClientConfigService", service = OidcClientConfig.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
     protected void setOidcClientConfigService(ServiceReference<OidcClientConfig> reference) {
         oidcClientConfigRef.addReference(reference);
     }
 
+    /**
+     * Unbinds an OIDC client configuration service when it is no longer available.
+     *
+     * @param reference service reference for the removed {@link OidcClientConfig}
+     */
     protected void unsetOidcClientConfigService(ServiceReference<OidcClientConfig> reference) {
         oidcClientConfigRef.removeReference(reference);
     }
@@ -63,6 +74,13 @@ public class OAuthProtectedResourceMetadataResolver {
         return createMetadataJson(matchingConfig, protectedResourcePath);
     }
 
+    /**
+     * Finds the first registered OIDC client configuration that applies to the requested
+     * protected resource path.
+     *
+     * @param protectedResourcePath normalized protected resource path beginning with {@code /}
+     * @return the matching OIDC client configuration, or {@code null} if none match
+     */
     OidcClientConfig getMatchingConfig(String protectedResourcePath) {
         Iterator<ServiceAndServiceReferencePair<OidcClientConfig>> servicesWithRefs = oidcClientConfigRef.getServicesWithReferences();
         while (servicesWithRefs.hasNext()) {
@@ -75,6 +93,18 @@ public class OAuthProtectedResourceMetadataResolver {
         return null;
     }
 
+    /**
+     * Determines whether the supplied OIDC client configuration protects the requested resource
+     * path.
+     * <p>
+     * Explicit configured resources are checked first. If none are configured or none match, the
+     * configuration context path is used as a fallback.
+     * </p>
+     *
+     * @param config OIDC client configuration to evaluate
+     * @param protectedResourcePath normalized protected resource path beginning with {@code /}
+     * @return {@code true} if the configuration matches the requested path
+     */
     boolean matches(OidcClientConfig config, String protectedResourcePath) {
         String[] configuredResources = config.getResources();
         if (configuredResources != null) {
@@ -89,6 +119,15 @@ public class OAuthProtectedResourceMetadataResolver {
         return matchesResource(contextPath, protectedResourcePath);
     }
 
+    /**
+     * Compares a configured resource path with the requested protected resource path after
+     * normalizing the configured value.
+     *
+     * @param configuredPath configured resource or context path from the OIDC client
+     *            configuration
+     * @param protectedResourcePath normalized protected resource path from the request
+     * @return {@code true} if the paths match
+     */
     boolean matchesResource(String configuredPath, String protectedResourcePath) {
         if (configuredPath == null || configuredPath.isEmpty()) {
             return false;
@@ -96,6 +135,13 @@ public class OAuthProtectedResourceMetadataResolver {
         return normalizePath(configuredPath).equals(protectedResourcePath);
     }
 
+    /**
+     * Normalizes a path into the canonical form used for protected resource matching.
+     *
+     * @param path raw configured or requested path
+     * @return {@code "/"} for null, empty, or root paths; otherwise the path with a leading
+     *         {@code /}
+     */
     String normalizePath(String path) {
         if (path == null || path.isEmpty() || "/".equals(path)) {
             return "/";
@@ -103,6 +149,14 @@ public class OAuthProtectedResourceMetadataResolver {
         return path.startsWith("/") ? path : "/" + path;
     }
 
+    /**
+     * Creates the OAuth 2.0 protected resource metadata JSON document for the supplied OIDC
+     * client configuration and protected resource path.
+     *
+     * @param config matching OIDC client configuration
+     * @param protectedResourcePath normalized protected resource path beginning with {@code /}
+     * @return serialized JSON metadata document
+     */
     String createMetadataJson(OidcClientConfig config, String protectedResourcePath) {
         JSONObject metadata = new JSONObject();
         metadata.put("resource", protectedResourcePath);
@@ -121,6 +175,17 @@ public class OAuthProtectedResourceMetadataResolver {
         return metadata.toString();
     }
 
+    /**
+     * Determines the best authorization server URL to publish for the supplied OIDC client
+     * configuration.
+     * <p>
+     * The resolver prefers the issuer identifier, then falls back to the discovery endpoint URL,
+     * and finally to the authorization endpoint URL.
+     * </p>
+     *
+     * @param config matching OIDC client configuration
+     * @return authorization server URL, or {@code null} if none can be determined
+     */
     String getAuthorizationServer(OidcClientConfig config) {
         String issuer = config.getIssuerIdentifier();
         if (issuer != null && !issuer.isEmpty()) {
