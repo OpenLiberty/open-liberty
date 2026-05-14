@@ -309,25 +309,29 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
         // Resolve enableEndpoints config (beta feature only)
         if (ProductInfo.getBetaEdition()) {
-            // Try server config first (Boolean), then fall back to env var (String)
-            Boolean enableEndpointsConfig = (Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS);
-
-            // If server config not set, check environment variable
-            if (enableEndpointsConfig == null) {
-                String envConfig = System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS);
-                if (envConfig != null && !envConfig.trim().isEmpty()) {
-                    String trimmedEnvConfig = envConfig.trim();
-                    // Only parse if it's a valid boolean string (case-insensitive)
-                    // Invalid values are ignored, allowing default (true) to be used
-                    if (trimmedEnvConfig.equalsIgnoreCase("true") || trimmedEnvConfig.equalsIgnoreCase("false")) {
-                        enableEndpointsConfig = Boolean.valueOf(trimmedEnvConfig);
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Invalid value for " + HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS +
-                                    ": '" + trimmedEnvConfig + "'. Must be 'true' or 'false'. Using default value (true).");
-                        }
+            Boolean enableEndpointsConfig = null;
+            
+            // Check environment variable first
+            String envConfig = System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS);
+            if (envConfig != null && !envConfig.trim().isEmpty()) {
+                String trimmedEnvConfig = envConfig.trim();
+                // Only parse if it's a valid boolean string (case-insensitive)
+                // Invalid values are ignored, allowing server config or default (true) to be used
+                if (trimmedEnvConfig.equalsIgnoreCase("true") || trimmedEnvConfig.equalsIgnoreCase("false")) {
+                    enableEndpointsConfig = Boolean.valueOf(trimmedEnvConfig);
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Invalid value for " + HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS +
+                                ": '" + trimmedEnvConfig + "'. Must be 'true' or 'false'. Using server config or default value (true).");
                     }
                 }
+            }
+            
+            // If env var not set, check server config
+            // Note: properties.get() may return default value even if not explicitly set in server.xml
+            // We check env var first to allow it to override the default
+            if (enableEndpointsConfig == null) {
+                enableEndpointsConfig = (Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS);
             }
 
             // Process the resolved config value

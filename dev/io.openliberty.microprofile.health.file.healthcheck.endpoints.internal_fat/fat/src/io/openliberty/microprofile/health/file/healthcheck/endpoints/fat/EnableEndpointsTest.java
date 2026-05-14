@@ -24,10 +24,12 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -44,6 +46,8 @@ public class EnableEndpointsTest {
 
     private static final String SERVER_NAME = "EnableEndpointsServer";
     private static final String NO_FILE_HEALTH_CHECK_SERVER_NAME = "EnableEndpointsNoFileHealthCheckServer";
+    private static final String ENV_VAR_SERVER_NAME = "EnableEndpointsEnvVarServer";
+    private static final String APP_NAME = "FileHealthCheckApp";
     private static final String[] IGNORED_FAILURES = { "CWMMH01013W", "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E" };
     private static final String[] HEALTH_ENDPOINTS = { "/health", "/health/ready", "/health/live", "/health/started" };
     private static final String[] ENDPOINT_NAMES = { "Health", "Ready", "Live", "Started" };
@@ -58,7 +62,7 @@ public class EnableEndpointsTest {
                                               "HealthCheckLivenessServlet.*Initialization successful)";
 
     @ClassRule
-    public static RepeatTests r = MicroProfileActions.repeat(SERVER_NAME,
+    public static RepeatTests r = MicroProfileActions.repeat(FeatureReplacementAction.ALL_SERVERS,
                                                              MicroProfileActions.MP61, // mpHealth-4.0 w/ EE9
                                                              MicroProfileActions.MP70_EE10, // mpHealth-4.0 FULL EE10
                                                              MicroProfileActions.MP70_EE11, // mpHealth-4.0 FULL EE11
@@ -71,10 +75,17 @@ public class EnableEndpointsTest {
     @Server(NO_FILE_HEALTH_CHECK_SERVER_NAME)
     public static LibertyServer noFileHealthCheckServer;
 
+    @Server(ENV_VAR_SERVER_NAME)
+    public static LibertyServer envVarServer;
+
     @BeforeClass
     public static void beforeClass() throws Exception {
-        // No application deployment needed - we're only testing health endpoints
-        Log.info(EnableEndpointsTest.class, "beforeClass", "Test setup complete");
+        // Deploy the test application to all servers
+        ShrinkHelper.defaultDropinApp(server, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+        ShrinkHelper.defaultDropinApp(noFileHealthCheckServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+        ShrinkHelper.defaultDropinApp(envVarServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+
+        Log.info(EnableEndpointsTest.class, "beforeClass", "Test application deployed to all servers");
     }
 
     /**
@@ -92,12 +103,14 @@ public class EnableEndpointsTest {
     public void afterTest() throws Exception {
         stopServerIfStarted(server);
         stopServerIfStarted(noFileHealthCheckServer);
+        stopServerIfStarted(envVarServer);
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
         stopServerIfStarted(server);
         stopServerIfStarted(noFileHealthCheckServer);
+        stopServerIfStarted(envVarServer);
     }
 
     private static void stopServerIfStarted(LibertyServer testServer) throws Exception {
@@ -142,6 +155,29 @@ public class EnableEndpointsTest {
                       noFileHealthCheckServer.waitForStringInLog("CWMMH01013W"));
 
         verifyEndpointsAndWAB(noFileHealthCheckServer, false, true);
+    }
+
+    /**
+     * Test enableEndpoints configuration via environment variable.
+     *
+     * Verifies:
+     * 1. Server starts successfully with MP_HEALTH_ENABLE_ENDPOINTS=false environment variable
+     * 2. File-based health checks still work (files created and updated)
+     * 3. HTTP health endpoints return 404 (disabled)
+     * 4. Environment variable is properly read and processed
+     */
+    @Test
+    public void testEnableEndpointsViaEnvVar() throws Exception {
+        // Set environment variable before starting server
+        envVarServer.addEnvVar("MP_HEALTH_ENABLE_ENDPOINTS", "false");
+
+        startServerAndWait(envVarServer);
+
+        File serverRootDir = new File(envVarServer.getServerRoot());
+        Log.info(getClass(), "testEnableEndpointsViaEnvVar", "Server root: " + serverRootDir.getAbsolutePath());
+
+        verifyHealthFilesCreated(serverRootDir);
+        verifyEndpointsAndWAB(envVarServer, true, false);
     }
 
     private void verifyHealthFilesCreated(File serverRootDir) throws InterruptedException {
