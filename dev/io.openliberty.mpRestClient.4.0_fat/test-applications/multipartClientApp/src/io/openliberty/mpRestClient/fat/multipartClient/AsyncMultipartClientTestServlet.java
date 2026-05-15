@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,25 +52,26 @@ import componenttest.app.FATServlet;
 public class AsyncMultipartClientTestServlet extends FATServlet {
     Logger LOG = Logger.getLogger(AsyncMultipartClientTestServlet.class.getName());
 
-    private RestClientBuilder builder;
+    private URL baseUrl;
 
     @Override
     public void init() throws ServletException {
         String baseUrlStr = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_secondary") + "/multipart";
         LOG.info("baseUrl = " + baseUrlStr);
-        URL baseUrl;
         try {
             baseUrl = new URL(baseUrlStr);
         } catch (MalformedURLException ex) {
             throw new ServletException(ex);
         }
-        builder = RestClientBuilder.newBuilder()
-                        .baseUrl(baseUrl);
+    }
+
+    private RestClientBuilder newBuilder() {
+        return RestClientBuilder.newBuilder().baseUrl(baseUrl);
     }
 
     @Test
     public void testAsyncUploadSingleFile(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        try (AsyncFileManagerClient client = builder.build(AsyncFileManagerClient.class)) {
+        try (AsyncFileManagerClient client = newBuilder().build(AsyncFileManagerClient.class)) {
             final byte[] content;
             try (InputStream in = AsyncMultipartClientTestServlet.class.getResourceAsStream("/multipart/test-file1.txt")) {
                 assertNotNull("Could not find /multipart/test-file1.txt", in);
@@ -101,7 +102,7 @@ public class AsyncMultipartClientTestServlet extends FATServlet {
 
     @Test
     public void testAsyncUploadMultipleFiles(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        try (AsyncFileManagerClient client = builder.build(AsyncFileManagerClient.class)) {
+        try (AsyncFileManagerClient client = newBuilder().build(AsyncFileManagerClient.class)) {
             final Map<String, byte[]> entityPartContent = new LinkedHashMap<>(2);
             try (InputStream in = AsyncMultipartClientTestServlet.class.getResourceAsStream("/multipart/test-file1.txt")) {
                 assertNotNull("Could not find /multipart/test-file1.txt", in);
@@ -155,7 +156,7 @@ public class AsyncMultipartClientTestServlet extends FATServlet {
 
     @Test
     public void testAsyncUploadSingleFileAsGenericEntity(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        try (AsyncFileManagerClient client = builder.build(AsyncFileManagerClient.class)) {
+        try (AsyncFileManagerClient client = newBuilder().build(AsyncFileManagerClient.class)) {
             final byte[] content;
             try (InputStream in = AsyncMultipartClientTestServlet.class.getResourceAsStream("/multipart/test-file1.txt")) {
                 assertNotNull("Could not find /multipart/test-file1.txt", in);
@@ -187,7 +188,7 @@ public class AsyncMultipartClientTestServlet extends FATServlet {
 
     @Test
     public void testAsyncUploadMultipleFilesAsGenericEntity(HttpServletRequest req, HttpServletResponse resp) throws Exception {
-        try (AsyncFileManagerClient client = builder.build(AsyncFileManagerClient.class)) {
+        try (AsyncFileManagerClient client = newBuilder().build(AsyncFileManagerClient.class)) {
             final Map<String, byte[]> entityPartContent = new LinkedHashMap<>(2);
             try (InputStream in = AsyncMultipartClientTestServlet.class.getResourceAsStream("/multipart/test-file1.txt")) {
                 assertNotNull("Could not find /multipart/test-file1.txt", in);
