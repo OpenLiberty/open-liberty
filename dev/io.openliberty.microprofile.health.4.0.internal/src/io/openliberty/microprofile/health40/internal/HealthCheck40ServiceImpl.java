@@ -320,10 +320,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
                 if (trimmedEnvConfig.equalsIgnoreCase("true") || trimmedEnvConfig.equalsIgnoreCase("false")) {
                     enableEndpointsConfig = Boolean.valueOf(trimmedEnvConfig);
                 } else {
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Invalid value for " + HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS +
-                                ": '" + trimmedEnvConfig + "'. Must be 'true' or 'false'. Using server config or default value (true).");
-                    }
+                    Tr.warning(tc, "enable.endpoints.env.var.invalid.value.CWMMH01014W", trimmedEnvConfig);
                 }
             }
             
