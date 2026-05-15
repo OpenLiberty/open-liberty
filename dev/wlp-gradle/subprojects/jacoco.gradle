@@ -18,11 +18,26 @@
 plugins.apply 'jacoco'
 
 /**
- * Add Maven Central repository for JaCoCo dependencies
- * to avoid Artifactory authentication issues
+ * Configure repositories for JaCoCo dependencies.
+ * Prefer Artifactory when configured, fall back to Maven Central otherwise.
+ * This follows the standard Open Liberty repository pattern.
  */
 repositories {
-    mavenCentral()
+    if (isUsingArtifactory) {
+        maven {
+            credentials {
+                username = userProps.getProperty("artifactory.download.user")
+                password = userProps.getProperty("artifactory.download.token")
+            }
+            url = "https://" + userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-open-liberty"
+            metadataSources {
+                mavenPom()
+                artifact()
+            }
+        }
+    } else {
+        mavenCentral()
+    }
 }
 
 /**
