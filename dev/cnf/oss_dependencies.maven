@@ -857,6 +857,7 @@ org.json:json:20080701
 org.jsoup:jsoup:1.7.2
 org.jvnet.staxex:stax-ex:1.7.7
 org.latencyutils:LatencyUtils:2.0.3
+org.mcp-java:mcp-server-api:1.0.0-Beta3
 org.mock-server:mockserver-client-java:3.10.7
 org.mock-server:mockserver-client-java:5.11.2
 org.mock-server:mockserver-core:3.10.7

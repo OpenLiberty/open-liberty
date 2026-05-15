@@ -9,8 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.convertertools.customConverterModule;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.internal.fat.convertertools.sharedConverters.City;
 import io.openliberty.mcp.internal.fat.convertertools.sharedConverters.Person;
 import jakarta.enterprise.context.ApplicationScoped;

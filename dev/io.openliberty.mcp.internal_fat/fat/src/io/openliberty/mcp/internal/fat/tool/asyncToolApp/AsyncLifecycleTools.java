@@ -12,8 +12,8 @@ package io.openliberty.mcp.internal.fat.tool.asyncToolApp;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Logger;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.PreDestroy;

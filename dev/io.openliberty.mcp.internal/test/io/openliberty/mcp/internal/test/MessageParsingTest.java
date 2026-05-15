@@ -21,8 +21,8 @@ import java.util.Map;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mcpjava.server.tools.Tool;
 
-import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.Capabilities.ClientCapabilities;
 import io.openliberty.mcp.internal.Capabilities.Elicitation;
 import io.openliberty.mcp.internal.Capabilities.Roots;

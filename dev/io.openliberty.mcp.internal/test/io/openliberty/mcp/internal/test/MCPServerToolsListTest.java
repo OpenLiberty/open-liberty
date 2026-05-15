@@ -14,17 +14,17 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+import org.mcpjava.server.tools.ToolResponse;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.internal.ToolDescription;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.testutils.TestUtils;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
 
@@ -465,7 +465,7 @@ public class MCPServerToolsListTest {
     }
 
     @Tool(name = "contentTest", title = "Test Content Response", description = "tests Content Response")
-    public List<Content> contentTest(@ToolArg(name = "name", description = "name") String name) {
+    public List<ContentBlock> contentTest(@ToolArg(name = "name", description = "name") String name) {
         return null;
         //comment
     }

@@ -19,7 +19,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.internal.RequestMethod;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.MCPRequestValidationException;
-import io.openliberty.mcp.request.RequestId;
 import jakarta.json.Json;
 import jakarta.json.JsonException;
 import jakarta.json.JsonNumber;

@@ -20,6 +20,8 @@ import java.util.NoSuchElementException;
 import java.util.concurrent.CompletionStage;
 import java.util.stream.Collectors;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Sensitive;
@@ -31,14 +33,13 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.McpRequest;
+import io.openliberty.mcp.internal.requests.RequestId;
 import io.openliberty.mcp.internal.responses.McpErrorResponse;
 import io.openliberty.mcp.internal.responses.McpResponse;
 import io.openliberty.mcp.internal.responses.McpResultResponse;
 import io.openliberty.mcp.internal.sessions.McpSession;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.internal.sessions.McpSessionStore;
-import io.openliberty.mcp.request.RequestId;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.json.JsonException;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbException;
@@ -320,7 +321,7 @@ public class McpTransport {
                 }
             } catch (Exception e) {
                 Tr.error(tc, "CWMCM0016E.error.sending.response.exception", e);
-                sendResponse(ToolResponse.error(Tr.formatMessage(tc, "internal.server.error")));
+                sendResponse(ToolResponse.ofError(Tr.formatMessage(tc, "internal.server.error")));
             } finally {
                 asyncContext.complete();
             }

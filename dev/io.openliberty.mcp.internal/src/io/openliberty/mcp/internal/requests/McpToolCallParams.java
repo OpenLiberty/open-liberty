@@ -51,7 +51,7 @@ public class McpToolCallParams {
     private JsonObject arguments;
 
     @JsonbProperty("_meta")
-    private JsonObject meta;
+    private Map<String, Object> meta;
 
     private Map<String, Object> parsedArguments;
 
@@ -79,11 +79,11 @@ public class McpToolCallParams {
         return parsedArguments;
     }
 
-    public JsonObject getMeta() {
+    public Map<String, Object> getMeta() {
         return meta;
     }
 
-    public void setMeta(JsonObject meta) {
+    public void setMeta(Map<String, Object> meta) {
         this.meta = meta;
     }
 

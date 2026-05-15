@@ -20,9 +20,9 @@ import java.util.List;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mcpjava.server.tools.Tool;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
-import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.Literals;
 import io.openliberty.mcp.internal.ToolRegistry;

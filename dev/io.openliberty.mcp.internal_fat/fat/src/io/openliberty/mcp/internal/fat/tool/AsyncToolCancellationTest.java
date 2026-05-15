@@ -45,7 +45,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
     @Server("mcp-server-async-auth")
     public static LibertyServer server;
     private static ExecutorService executor;
-    private static final String EXPECTED_ERROR = "OperationCancellationException";
+    private static final String EXPECTED_ERROR = "OperationCancelledException";
 
     @Rule
     public McpClient client = new McpClient(server, "/asyncToolCancellationTest", StateMode.STATEFUL, "BobTheAdmin", "testpassword");
@@ -123,8 +123,8 @@ public class AsyncToolCancellationTest extends FATServletClient {
     }
 
     @Test
-    public void testOperationCancellationExceptionNotLoggedAsError() throws Exception {
-        final String latchName = "testOperationCancellationExceptionNotLoggedAsError";
+    public void testOperationCancelledExceptionNotLoggedAsError() throws Exception {
+        final String latchName = "testOperationCancelledExceptionNotLoggedAsError";
 
         Callable<String> threadCallingTool = () -> {
             try {
@@ -136,7 +136,7 @@ public class AsyncToolCancellationTest extends FATServletClient {
                                   "params": {
                                     "name": "asyncCancellationTool",
                                     "arguments": {
-                                      "latchName": "testOperationCancellationExceptionNotLoggedAsError"
+                                      "latchName": "testOperationCancelledExceptionNotLoggedAsError"
                                     }
                                   }
                                 }
@@ -173,11 +173,11 @@ public class AsyncToolCancellationTest extends FATServletClient {
         JSONAssert.assertEquals(expectedResponseString, response, true);
 
         // Verify that the internal server error message (CWMCM0010E) was NOT logged
-        // This error message is only logged for non-business exceptions, and OperationCancellationException
+        // This error message is only logged for non-business exceptions, and OperationCancelledException
         // should be handled specially without logging
         String errorLog = server.waitForStringInLog("CWMCM0010E.*asyncCancellationTool", 2000);
         if (errorLog != null) {
-            throw new AssertionError("OperationCancellationException should not be logged as an error. Found: " + errorLog);
+            throw new AssertionError("OperationCancelledException should not be logged as an error. Found: " + errorLog);
         }
     }
 }

@@ -9,8 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.deploymentErrorApps;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.messaging.Cancellation;
+import org.mcpjava.server.Cancellation;
+import org.mcpjava.server.tools.Tool;
+
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped

@@ -55,6 +55,7 @@ import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 /**
  *
@@ -90,7 +91,8 @@ public class ToolTest extends FATServletClient {
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "toolTest.war")
-                                   .addPackage(BasicTools.class.getPackage());
+                                   .addPackage(BasicTools.class.getPackage())
+                                   .addClass(TestConstants.class);
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
 
@@ -435,7 +437,7 @@ public class ToolTest extends FATServletClient {
                             "content": [
                               {
                                 "annotations": {
-                                  "audience": "assistant",
+                                  "audience": ["assistant"],
                                   "lastModified": "2025-08-26T08:40:00Z",
                                   "priority": 0.5
                                 },
@@ -461,7 +463,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "imageContentTool",
                             "arguments": {
-                              "imageData": "base64-encoded-image"
+                              "imageData": "aGkJ"
                             }
                           }
                         }
@@ -476,7 +478,7 @@ public class ToolTest extends FATServletClient {
                             "result": {
                               "content": [
                                 {
-                                  "data": "base64-encoded-image",
+                                  "data": "aGkJ",
                                   "mimeType": "image/png",
                                   "type": "image"
                                 }
@@ -499,7 +501,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "imageContentToolWithContentAnnotation",
                             "arguments": {
-                              "imageData": "base64-encoded-image"
+                              "imageData": "aGkK"
                             }
                           }
                         }
@@ -515,11 +517,11 @@ public class ToolTest extends FATServletClient {
                               "content": [
                                 {
                                   "annotations": {
-                                    "audience": "user",
+                                    "audience": ["user"],
                                     "lastModified": "2025-08-26T08:40:00Z",
                                     "priority": 0.8
                                   },
-                                  "data": "base64-encoded-image",
+                                  "data": "aGkK",
                                   "mimeType": "image/png",
                                   "type": "image"
                                 }
@@ -542,7 +544,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "audioContentTool",
                             "arguments": {
-                              "audioData": "base64-encoded-audio"
+                              "audioData": "aGkK"
                             }
                           }
                         }
@@ -556,7 +558,7 @@ public class ToolTest extends FATServletClient {
                            "result": {
                              "content": [
                                {
-                                 "data": "base64-encoded-audio",
+                                 "data": "aGkK",
                                  "mimeType": "audio/mpeg",
                                  "type": "audio"
                                }
@@ -579,7 +581,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "audioContentToolWithContentAnnotation",
                             "arguments": {
-                              "audioData": "base64-encoded-audio"
+                              "audioData": "aGkK"
                             }
                           }
                         }
@@ -594,11 +596,11 @@ public class ToolTest extends FATServletClient {
                             "content": [
                               {
                                 "annotations": {
-                                  "audience": "assistant",
+                                  "audience": ["assistant"],
                                   "lastModified": "2025-08-26T08:40:00Z",
                                   "priority": 0.3
                                 },
-                                "data": "base64-encoded-audio",
+                                "data": "aGkK",
                                 "mimeType": "audio/mpeg",
                                 "type": "audio"
                               }
@@ -628,6 +630,7 @@ public class ToolTest extends FATServletClient {
                         """;
         String response = client.callMCP(request);
 
+        // Note: base64 encoding of literal strings "base64-encoded-image" and "base64-encoded-audio"
         String expectedResponseString = """
                         {
                           "id": 1,
@@ -635,8 +638,8 @@ public class ToolTest extends FATServletClient {
                           "result": {
                             "content": [
                               { "text": "Echo: Hello", "type": "text" },
-                              { "data": "base64-encoded-image", "mimeType": "image/png", "type": "image" },
-                              { "data": "base64-encoded-audio", "mimeType": "audio/mpeg", "type": "audio" }
+                              { "data": "YmFzZTY0LWVuY29kZWQtaW1hZ2U=", "mimeType": "image/png", "type": "image" },
+                              { "data": "YmFzZTY0LWVuY29kZWQtYXVkaW8=", "mimeType": "audio/mpeg", "type": "audio" }
                             ],
                             "isError": false
                           }
@@ -669,13 +672,13 @@ public class ToolTest extends FATServletClient {
                           "result": {
                             "content": [
                               { "text": "Echo: Hello", "type": "text" },
-                              { "data": "base64-encoded-image", "mimeType": "image/png", "type": "image" },
-                              { "data": "base64-encoded-audio", "mimeType": "audio/mpeg", "type": "audio" }
+                              { "data": "%s", "mimeType": "image/png", "type": "image" },
+                              { "data": "%s", "mimeType": "audio/mpeg", "type": "audio" }
                             ],
                             "isError": false
                           }
                         }
-                         """;
+                         """.formatted(TestConstants.TEST_IMAGE_DATA_64, TestConstants.TEST_AUDIO_DATA_64);
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }

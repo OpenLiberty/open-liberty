@@ -9,10 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal;
 
-import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.mcpjava.server.Cancellation;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -23,7 +24,6 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
-import io.openliberty.mcp.messaging.Cancellation;
 
 /**
  * This is a connection tracker, keeping track of ongoing tool call requests for a single module
@@ -91,7 +91,7 @@ public class McpRequestTracker {
         for (ExecutionRequestId id : requests) {
             Cancellation cancellation = ongoingRequests.remove(id);
             if (cancellation instanceof CancellationImpl impl) {
-                impl.cancel(Optional.of("Session cancelled"));
+                impl.cancel("Session cancelled");
             }
         }
     }

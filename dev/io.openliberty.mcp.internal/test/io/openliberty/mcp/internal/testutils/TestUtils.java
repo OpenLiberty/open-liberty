@@ -18,8 +18,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.mcpjava.server.tools.Tool;
+
 import io.openliberty.mcp.annotations.DefaultValueConverter;
-import io.openliberty.mcp.annotations.Tool;
 import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;

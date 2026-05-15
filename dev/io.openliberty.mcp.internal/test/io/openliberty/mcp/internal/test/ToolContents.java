@@ -9,204 +9,228 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.test;
 
+import static java.util.Collections.emptyMap;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.is;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertThat;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Map;
+import java.util.Optional;
 
 import org.junit.Test;
+import org.mcpjava.server.Role;
+import org.mcpjava.server.content.Annotations;
+import org.mcpjava.server.content.AudioContent;
+import org.mcpjava.server.content.ImageContent;
+import org.mcpjava.server.content.TextContent;
 
-import io.openliberty.mcp.content.AudioContent;
-import io.openliberty.mcp.content.Content.Annotations;
-import io.openliberty.mcp.content.ImageContent;
-import io.openliberty.mcp.content.Role;
-import io.openliberty.mcp.content.TextContent;
-import io.openliberty.mcp.meta.MetaKey;
+import io.openliberty.mcp.internal.content.RoleAdapter;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
+import jakarta.json.bind.JsonbConfig;
 
 public class ToolContents {
+
+    // Test data
+    /** 1x1 red png */
+    public static final byte[] TEST_IMAGE_DATA = Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==");
+    /** Minimal wav header */
+    public static final byte[] TEST_AUDIO_DATA = Base64.getDecoder().decode("UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQAAAAA=");
 
     // Text Content
     @Test
     public void testTextConvenienceConstructor() {
-        TextContent content = new TextContent("Hello world");
+        TextContent content = TextContent.of("Hello world");
 
         assertEquals("Hello world", content.text());
-        assertNull(content._meta());
-        assertNull(content.annotations());
-        assertEquals(TextContent.Type.TEXT, content.type());
-        assertSame(content, content.asText());
+        assertThat(content.metadata().entrySet(), is(empty()));
+        assertEquals(Optional.empty(), content.annotations());
     }
 
     @Test
     public void testTextContentWithNullMetaAndAnnotation() {
-        TextContent content = new TextContent("Hello world", null, null);
+        TextContent content = TextContent.builder("Hello world")
+                                         .build();
 
         assertEquals("Hello world", content.text());
-        assertNull(content._meta());
-        assertNull(content.annotations());
-        assertEquals(TextContent.Type.TEXT, content.type());
-        assertSame(content, content.asText());
+        assertThat(content.metadata().entrySet(), is(empty()));
+        assertEquals(Optional.empty(), content.annotations());
     }
 
     @Test
     public void testTextContentWithMetaAndAnnotation() {
-        Map<MetaKey, Object> meta = Map.of();
-        Annotations annotations = new Annotations(Role.USER, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                          .format(DateTimeFormatter.ISO_INSTANT),
-                                                  0.5);
-        TextContent content = new TextContent("Hello world", meta, annotations);
+        Map<String, Object> meta = Map.of();
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.USER)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .build();
+        TextContent content = TextContent.builder("Hello world")
+                                         .setMetadata(meta)
+                                         .setAnnotations(annotations)
+                                         .build();
 
         assertEquals("Hello world", content.text());
-        assertEquals(meta, content._meta());
-        assertEquals(annotations, content.annotations());
-        assertEquals(TextContent.Type.TEXT, content.type());
-        assertSame(content, content.asText());
+        assertEquals(meta, content.metadata());
+        assertEquals(Optional.of(annotations), content.annotations());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testTextContentNullTextThrowsException() {
-        new TextContent(null);
+        TextContent.of(null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testTextContentNullWithMetaThrowsException() {
-        Map<MetaKey, Object> meta = Map.of();
-        Annotations annotations = new Annotations(Role.USER, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                          .format(DateTimeFormatter.ISO_INSTANT),
-                                                  0.5);
-        new TextContent(null, meta, annotations);
+        Map<String, Object> meta = Map.of();
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.USER)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .build();
+        TextContent.builder(null)
+                   .setAnnotations(annotations)
+                   .setMetadata(meta)
+                   .build();
     }
 
     // Audio Content
     @Test
     public void testAudioContentConvienienceConstructor() {
-        AudioContent content = new AudioContent("base64-encoded-audio", "audio/mpeg");
+        AudioContent content = AudioContent.of(TEST_AUDIO_DATA, "audio/mpeg");
 
-        assertEquals("base64-encoded-audio", content.data());
+        assertEquals(TEST_AUDIO_DATA, content.data());
         assertEquals("audio/mpeg", content.mimeType());
-        assertNull(content._meta());
-        assertNull(content.annotations());
-        assertEquals(AudioContent.Type.AUDIO, content.type());
-        assertSame(content, content.asAudio());
+        assertThat(content.metadata().entrySet(), is(empty()));
+        assertEquals(Optional.empty(), content.annotations());
     }
 
     @Test
     public void testAudioContentWithNullMetaAndAnnotation() {
-        AudioContent content = new AudioContent("base64-encoded-audio", "audio/mpeg", null, null);
+        AudioContent content = AudioContent.builder(TEST_AUDIO_DATA, "audio/mpeg")
+                                           .build();
 
-        assertEquals("base64-encoded-audio", content.data());
+        assertEquals(TEST_AUDIO_DATA, content.data());
         assertEquals("audio/mpeg", content.mimeType());
-        assertNull(content._meta());
-        assertNull(content.annotations());
-        assertEquals(TextContent.Type.AUDIO, content.type());
-        assertSame(content, content.asAudio());
+        assertThat(content.metadata().entrySet(), is(empty()));
+        assertEquals(Optional.empty(), content.annotations());
     }
 
     @Test
     public void testAudioContentWithMetaAndAnnotation() {
-        Map<MetaKey, Object> meta = Map.of();
-        Annotations annotations = new Annotations(Role.USER, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                          .format(DateTimeFormatter.ISO_INSTANT),
-                                                  0.5);
-        AudioContent content = new AudioContent("base64-encoded-audio", "audio/mpeg", meta, annotations);
+        Map<String, Object> meta = Map.of();
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.USER)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .setPriority(0.5)
+                                             .build();
+        AudioContent content = AudioContent.builder(TEST_AUDIO_DATA, "audio/mpeg")
+                                           .setMetadata(meta)
+                                           .setAnnotations(annotations)
+                                           .build();
 
-        assertEquals("base64-encoded-audio", content.data());
+        assertEquals(TEST_AUDIO_DATA, content.data());
         assertEquals("audio/mpeg", content.mimeType());
-        assertEquals(meta, content._meta());
-        assertEquals(annotations, content.annotations());
-        assertEquals(TextContent.Type.AUDIO, content.type());
-        assertSame(content, content.asAudio());
+        assertEquals(meta, content.metadata());
+        assertEquals(Optional.of(annotations), content.annotations());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testAudioContentNullDataThrowsException() {
-        new AudioContent(null, "audio/mpeg");
+        AudioContent.of(null, "audio/mpeg");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testAudioContentNullMimeThrowsException() {
-        new AudioContent("base64-encoded-audio", null);
+        AudioContent.of(TEST_AUDIO_DATA, null);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testAudioContentNullDataAndMimeWithMetaThrowsException() {
-        Map<MetaKey, Object> meta = Map.of();
-        Annotations annotations = new Annotations(Role.USER, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                          .format(DateTimeFormatter.ISO_INSTANT),
-                                                  0.5);
-        new AudioContent(null, null, meta, annotations);
+        Map<String, Object> meta = Map.of();
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.USER)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .setPriority(0.5)
+                                             .build();
+        AudioContent.builder(null, null)
+                    .setMetadata(meta)
+                    .setAnnotations(annotations)
+                    .build();
     }
 
     // Image Content
     @Test
     public void testImageContentConvienienceConstructor() {
-        ImageContent content = new ImageContent("base64-encoded-image", "image/png");
+        ImageContent content = ImageContent.of(TEST_IMAGE_DATA, "image/png");
 
-        assertEquals("base64-encoded-image", content.data());
+        assertEquals(TEST_IMAGE_DATA, content.data());
         assertEquals("image/png", content.mimeType());
-        assertNull(content._meta());
-        assertNull(content.annotations());
-        assertEquals(AudioContent.Type.IMAGE, content.type());
-        assertSame(content, content.asImage());
+        assertEquals(emptyMap(), content.metadata());
+        assertEquals(Optional.empty(), content.annotations());
     }
 
     @Test
     public void testImageContentWithNullMetaAndAnnotation() {
-        ImageContent content = new ImageContent("base64-encoded-image", "image/png", null, null);
+        ImageContent content = ImageContent.builder(TEST_IMAGE_DATA, "image/png")
+                                           .build();
 
-        assertEquals("base64-encoded-image", content.data());
+        assertEquals(TEST_IMAGE_DATA, content.data());
         assertEquals("image/png", content.mimeType());
-        assertNull(content._meta());
-        assertNull(content.annotations());
-        assertEquals(AudioContent.Type.IMAGE, content.type());
-        assertSame(content, content.asImage());
+        assertEquals(emptyMap(), content.metadata());
+        assertEquals(Optional.empty(), content.annotations());
     }
 
     @Test
     public void testImageContentWithMetaAndAnnotation() {
-        Map<MetaKey, Object> meta = Map.of();
-        Annotations annotations = new Annotations(Role.ASSISTANT, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                               .format(DateTimeFormatter.ISO_INSTANT),
-                                                  0.5);
-        ImageContent content = new ImageContent("base64-encoded-image", "image/png", meta, annotations);
+        Map<String, Object> meta = Map.of();
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.ASSISTANT)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .setPriority(0.5)
+                                             .build();
+        ImageContent content = ImageContent.builder(TEST_IMAGE_DATA, "image/png")
+                                           .setMetadata(meta)
+                                           .setAnnotations(annotations)
+                                           .build();
 
-        assertEquals("base64-encoded-image", content.data());
+        assertEquals(TEST_IMAGE_DATA, content.data());
         assertEquals("image/png", content.mimeType());
-        assertEquals(meta, content._meta());
-        assertEquals(annotations, content.annotations());
-        assertEquals(AudioContent.Type.IMAGE, content.type());
-        assertSame(content, content.asImage());
+        assertEquals(emptyMap(), content.metadata());
+        assertEquals(Optional.of(annotations), content.annotations());
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testImageContentNullDataThrowsException() {
-        new ImageContent(null, "image/png");
+        ImageContent.of(null, "image/png");
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testImageContentNullMimeThrowsException() {
-        new ImageContent("base64-encoded-image", null);
+        ImageContent.builder(TEST_IMAGE_DATA, null).build();
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test(expected = NullPointerException.class)
     public void testImageContentNullDataAndMimeWithMetaThrowsException() {
-        Map<MetaKey, Object> meta = Map.of();
-        Annotations annotations = new Annotations(Role.ASSISTANT, ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                               .format(DateTimeFormatter.ISO_INSTANT),
-                                                  0.5);
-        new ImageContent(null, null, meta, annotations);
+        Map<String, Object> meta = Map.of();
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.ASSISTANT)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .setPriority(0.5)
+                                             .build();
+        ImageContent.builder(null, null)
+                    .setMetadata(meta)
+                    .setAnnotations(annotations)
+                    .build();
     }
 
     // Role Enum Serialization Test
     @Test
     public void testRoleEnumSerialization() {
-        Jsonb jsonb = JsonbBuilder.create();
+        JsonbConfig config = new JsonbConfig().withAdapters(new RoleAdapter());
+        Jsonb jsonb = JsonbBuilder.create(config);
 
         Role role = Role.ASSISTANT;
         String roleEnumJSON = jsonb.toJson(role);

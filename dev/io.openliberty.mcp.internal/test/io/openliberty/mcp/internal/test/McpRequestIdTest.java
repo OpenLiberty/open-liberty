@@ -24,7 +24,7 @@ import org.skyscreamer.jsonassert.JSONAssert;
 import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
-import io.openliberty.mcp.request.RequestId;
+import io.openliberty.mcp.internal.requests.RequestId;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;

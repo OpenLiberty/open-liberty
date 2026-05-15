@@ -24,11 +24,13 @@ import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+import org.mcpjava.server.tools.ToolResponse;
+
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
-import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
@@ -42,7 +44,6 @@ import io.openliberty.mcp.tools.ToolManager;
 import io.openliberty.mcp.tools.ToolManager.ToolAnnotations;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.enterprise.inject.spi.AnnotatedParameter;
 import jakarta.enterprise.inject.spi.Bean;
@@ -135,12 +136,12 @@ public record ToolMetadata(String name,
         boolean hasContentListReturn = unwrappedOutputType instanceof ParameterizedType pt
                                        && (List.class.isAssignableFrom((Class<?>) pt.getRawType())
                                            && pt.getActualTypeArguments()[0] instanceof Class<?>)
-                                       && Content.class.isAssignableFrom((Class<?>) pt.getActualTypeArguments()[0]);
+                                       && ContentBlock.class.isAssignableFrom((Class<?>) pt.getActualTypeArguments()[0]);
 
         boolean hasOutputSchema = annotation.structuredContent()
                                   && !hasContentListReturn
                                   && !ToolResponse.class.isAssignableFrom(unwrappedOutputClass)
-                                  && !Content.class.isAssignableFrom(unwrappedOutputClass)
+                                  && !ContentBlock.class.isAssignableFrom(unwrappedOutputClass)
                                   && !String.class.isAssignableFrom(unwrappedOutputClass);
 
         if (!hasOutputSchema && ToolResponse.class.isAssignableFrom(unwrappedOutputClass) && annotation.structuredContent()

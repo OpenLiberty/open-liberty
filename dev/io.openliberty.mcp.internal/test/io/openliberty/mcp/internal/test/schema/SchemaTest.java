@@ -19,12 +19,12 @@ import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolMetadata.ToolMethodArgument;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
