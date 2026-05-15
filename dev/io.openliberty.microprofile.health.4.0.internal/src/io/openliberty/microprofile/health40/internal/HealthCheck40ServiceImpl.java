@@ -524,8 +524,17 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             processCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_CHECK_INTERVAL));
             processStartupCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_STARTUP_CHECK_INTERVAL));
             
-            // processEnableEndpointsConfig returns true if the value changed
-            boolean enableEndpointsChanged = processEnableEndpointsConfig((Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS));
+            // Process enableEndpoints config (beta feature only)
+            boolean enableEndpointsChanged = false;
+            if (ProductInfo.getBetaEdition()) {
+                // processEnableEndpointsConfig returns true if the value changed
+                enableEndpointsChanged = processEnableEndpointsConfig((Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS));
+            } else {
+                // Not in beta edition - skip enableEndpoints configuration entirely
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "enableEndpoints configuration skipped in @Modified - feature only available in beta edition");
+                }
+            }
 
             // Only execute WAB update if enableEndpoints actually changed
             if (enableEndpointsChanged) {
