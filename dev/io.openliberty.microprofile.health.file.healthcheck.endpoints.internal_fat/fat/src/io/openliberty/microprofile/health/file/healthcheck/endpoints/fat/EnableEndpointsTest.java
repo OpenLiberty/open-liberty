@@ -16,21 +16,25 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.HttpURLConnection;
+import java.util.concurrent.TimeUnit;
 
+import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
 import com.ibm.websphere.simplicity.config.MPHealthElement;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
@@ -54,7 +58,9 @@ public class EnableEndpointsTest {
     private static final String ENV_VAR_INVALID_VALUE_SERVER_NAME = "EnableEndpointsEnvVarInvalidValueServer";
     private static final String DYNAMIC_ENABLE_SERVER_NAME = "EnableEndpointsDynamicEnableServer";
     private static final String APP_NAME = "FileHealthCheckApp";
-    private static final String[] IGNORED_FAILURES = { "CWMMH01013W", "CWMMH01014W", "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E", "CWWKG0011W", "CWWKG0081E", "CWWKG0083W" };
+    private static final String FAIL_LIVE_APP_WAR = "FailingHealthCheckApp.war";
+    private static final String[] IGNORED_FAILURES = { "CWMMH01013W", "CWMMH01014W", "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E", "CWWKG0011W", "CWWKG0081E",
+                                                       "CWWKG0083W" };
     private static final String[] HEALTH_ENDPOINTS = { "/health", "/health/ready", "/health/live", "/health/started" };
     private static final String[] ENDPOINT_NAMES = { "Health", "Ready", "Live", "Started" };
 
@@ -96,20 +102,6 @@ public class EnableEndpointsTest {
     @Server(DYNAMIC_ENABLE_SERVER_NAME)
     public static LibertyServer dynamicEnableServer;
 
-    @BeforeClass
-    public static void beforeClass() throws Exception {
-        // Deploy the test application to all servers
-        ShrinkHelper.defaultDropinApp(disabledEndpointsServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
-        ShrinkHelper.defaultDropinApp(noFileHealthCheckServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
-        ShrinkHelper.defaultDropinApp(envVarServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
-        ShrinkHelper.defaultDropinApp(envVarNoFileHealthCheckServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
-        ShrinkHelper.defaultDropinApp(invalidValueServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
-        ShrinkHelper.defaultDropinApp(envVarInvalidValueServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
-        ShrinkHelper.defaultDropinApp(dynamicEnableServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
-
-        Log.info(EnableEndpointsTest.class, "beforeClass", "Test application deployed to all servers");
-    }
-
     /**
      * Start a server and wait for it to be ready.
      *
@@ -124,12 +116,6 @@ public class EnableEndpointsTest {
     @After
     public void afterTest() throws Exception {
         stopAllServers();
-    }
-
-    @AfterClass
-    public static void afterClass() throws Exception {
-        // Servers are already stopped by @After method after each test
-        // No additional cleanup needed
     }
 
     private static void stopAllServers() throws Exception {
@@ -289,6 +275,55 @@ public class EnableEndpointsTest {
     }
 
     /**
+     * Test with failing health checks and disabled endpoints.
+     *
+     * Verifies:
+     * 1. Server starts with enableEndpoints=false and failing liveness health check
+     * 2. Health files DON'T exist (because health checks are failing)
+     * 3. HTTP endpoints return 404 (because they're disabled)
+     * 4. This demonstrates that both features work independently
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testEnableEndpointsWithFailingHealthCheck() throws Exception {
+        // Deploy application with failing liveness health check
+        WebArchive testWAR = ShrinkWrap
+                        .create(WebArchive.class, FAIL_LIVE_APP_WAR)
+                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
+                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app")
+                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app.live.fail");
+
+        ShrinkHelper.exportDropinAppToServer(disabledEndpointsServer, testWAR, DeployOptions.SERVER_ONLY);
+
+        startServerAndWait(disabledEndpointsServer);
+
+        File serverRootDir = new File(disabledEndpointsServer.getServerRoot());
+        Log.info(getClass(), "testEnableEndpointsWithFailingHealthCheck", "Server root: " + serverRootDir.getAbsolutePath());
+
+        // Wait for application to start
+        assertNotNull("Application should start successfully",
+                      disabledEndpointsServer.waitForStringInLog("CWWKZ0001I.*" + FAIL_LIVE_APP_WAR.replace(".war", "")));
+
+        // Verify health files DON'T exist because health checks are failing
+        File healthDir = HealthFileUtils.getHealthDirFile(serverRootDir);
+        File liveFile = HealthFileUtils.getLiveFile(serverRootDir);
+
+        // Wait for health check interval to pass (checkInterval is 5s in server config)
+        // Wait 7 seconds to allow at least one health check cycle plus buffer
+        TimeUnit.SECONDS.sleep(7);
+
+        assertTrue("Health directory should not exist or live file should not exist when health checks fail",
+                   !healthDir.exists() || !liveFile.exists());
+
+        // Verify endpoints return 404 (disabled)
+        verifyEndpointsStatus(disabledEndpointsServer, true);
+
+        // Verify WAB messages don't appear (endpoints disabled)
+        java.util.List<String> wabMessages = disabledEndpointsServer.findStringsInLogs(WAB_PATTERN);
+        assertTrue("WAB messages should not appear when endpoints disabled", wabMessages.isEmpty());
+    }
+
+    /**
      * Test dynamic configuration update: enable to disable.
      *
      * Verifies:
@@ -371,7 +406,8 @@ public class EnableEndpointsTest {
     private void verifyEndpointsAndWAB(LibertyServer testServer, boolean expectDisabled, boolean expectWABMessages) throws Exception {
         verifyEndpointsStatus(testServer, expectDisabled);
 
-        String wabMessage = testServer.waitForStringInLog(WAB_PATTERN);
+        // Use a short timeout (5 seconds) to avoid waiting indefinitely for messages that won't appear
+        String wabMessage = testServer.waitForStringInLog(WAB_PATTERN, 5000);
         if (expectWABMessages) {
             assertNotNull("WAB messages should appear when endpoints enabled", wabMessage);
         } else {
