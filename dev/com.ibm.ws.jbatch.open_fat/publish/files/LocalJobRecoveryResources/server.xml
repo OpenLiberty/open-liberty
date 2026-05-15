@@ -18,14 +18,13 @@
 	<!-- Increased 3x due to filesystem access on our poor build/test infrastructure taking more than the default 2 minutes -->
 	<transaction totalTranLifetimeTimeout="6m"/>
 
-	<library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	<library id="H2Lib">
+	    <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
 	</library>
 
 	<dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
-		<jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="${server.config.dir}/../resources/LocalRecoveryDB"
-			createDatabase="create" user="user" password="pass" />
+		<jdbcDriver libraryRef="H2Lib" />
+	       <properties.h2 URL="jdbc:h2:${server.config.dir}/../resources/LocalRecoveryDB;DB_CLOSE_DELAY=-1;MODE=LEGACY;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
 	</dataSource>
 	
 	<!-- ssl keystore to enable SSL port for batch rest connector -->
@@ -46,6 +45,6 @@
 	</authorization-roles>
 	
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+	<javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 
 </server>

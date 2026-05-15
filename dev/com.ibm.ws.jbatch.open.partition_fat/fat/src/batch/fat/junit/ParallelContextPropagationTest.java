@@ -41,8 +41,10 @@ public class ParallelContextPropagationTest extends BatchFATHelper {
         server = LibertyServerFactory.getLibertyServer("batchFAT");
         BatchFATHelper.setConfig(DFLT_SERVER_XML, testClass);
 
-        DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, FATSuite.jdbcContainer);
-        server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(FATSuite.jdbcContainer).getDriverName());
+        DatabaseContainerUtil.build(server, FATSuite.jdbcContainer)
+                        .withDatabaseProperties()
+                        .withDriverVariable()
+                        .modify();
 
         BatchRestUtils.updateDatabaseStoreIfNecessary(server, DatabaseContainerType.valueOf(FATSuite.jdbcContainer));
 
@@ -56,7 +58,7 @@ public class ParallelContextPropagationTest extends BatchFATHelper {
     @AfterClass
     public static void tearDown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("DSRA8020E");
         }
     }
 

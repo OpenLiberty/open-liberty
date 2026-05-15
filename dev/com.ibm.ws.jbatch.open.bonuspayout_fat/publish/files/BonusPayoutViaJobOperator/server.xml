@@ -13,29 +13,23 @@
 
     <databaseStore id="BatchDatabaseStore" dataSourceRef="BonusPayout" schema="JBATCH" tablePrefix="" />
 
-	<library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	<library id="H2Lib">
+	    <file name="${shared.resource.dir}/h2/h2.jar"/>
 	</library>
-	
-	<!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
-    is required beyond a single server start, configure the databaseName with a file location such as:
-   	databaseName="${shared.config.dir}/data/derbydb" -->
 
 	<!--  Both use the same DB -->
 	<dataSource id="BonusPayoutNoTran" jndiName="jdbc/BonusPayoutNoTranDS" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-		<jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:BonusPayoutDB"
-			createDatabase="create" user="user" password="pass" />
+		<jdbcDriver libraryRef="H2Lib" />
+	       <properties.h2 URL="jdbc:h2:mem:BonusPayoutDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH\;CREATE SCHEMA IF NOT EXISTS BONUSPAYOUT;NON_KEYWORDS=VALUE" user="user" password="pass" />
 	</dataSource>
 
 	<dataSource id="BonusPayout" jndiName="jdbc/BonusPayoutDS" type="javax.sql.XADataSource">
-		<jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:BonusPayoutDB"
-			createDatabase="create" user="user" password="pass" />
+		<jdbcDriver libraryRef="H2Lib" />
+	       <properties.h2 URL="jdbc:h2:mem:BonusPayoutDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH\;CREATE SCHEMA IF NOT EXISTS BONUSPAYOUT;NON_KEYWORDS=VALUE" user="user" password="pass" />
 	</dataSource>
 
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/h2/h2.jar"/>
     <javaPermission className="java.security.AllPermission" codebase="${server.config.dir}/dropins/BonusPayout.war"/>
 
 </server>

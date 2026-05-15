@@ -11,7 +11,7 @@ package batch.fat.junit;
 
 import java.sql.Connection;
 import java.sql.Statement;
-
+import java.util.Optional;
 
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
@@ -23,6 +23,7 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import componenttest.containers.TestContainerSuite;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 
@@ -48,11 +49,17 @@ public class FATSuite extends TestContainerSuite {
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());
 
+    private static H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withDatabaseName("BatchDB")
+                    .withConfig("INIT", "CREATE SCHEMA IF NOT EXISTS JBATCH")
+                    .withConfig("NON_KEYWORDS", "VALUE");
+
     @ClassRule
-    public static JdbcDatabaseContainer<?> jdbcContainer = DatabaseContainerFactory.create();
+    public static JdbcDatabaseContainer<?> jdbcContainer = DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     @BeforeClass
     public static void setupDatabase() {
+        // Create JBATCH schema for Postgres (H2 uses INIT config in URL)
         if (DatabaseContainerType.valueOf(jdbcContainer) == DatabaseContainerType.Postgres) {
             try (Connection con = jdbcContainer.createConnection(""); Statement stmt = con.createStatement()) {
                 stmt.execute("CREATE SCHEMA IF NOT EXISTS JBATCH");

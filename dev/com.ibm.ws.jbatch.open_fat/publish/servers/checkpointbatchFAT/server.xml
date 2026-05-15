@@ -12,19 +12,17 @@
 
     <databaseStore id="BatchDatabaseStore" dataSourceRef="BatchDB" schema="JBATCH" tablePrefix="" />
 
-	<library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
+	<library id="H2Lib">
+	    <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
 	</library>
 
 
 	<dataSource id="BatchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
-		<jdbcDriver libraryRef="DerbyLib" />
-        <properties.derby.embedded databaseName="memory:RUNTIMEDB"
-			createDatabase="create" user="user" password="pass" />
+		<jdbcDriver libraryRef="H2Lib" />
+	       <properties.h2 URL="jdbc:h2:mem:RUNTIMEDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
 	</dataSource>
 
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+	<javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 
 </server>
-

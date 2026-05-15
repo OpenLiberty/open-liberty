@@ -12,17 +12,16 @@
     <batchPersistence jobStoreRef="BatchDatabaseStore" />
     <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
 
-    <library id="DerbyLib">
-        <file name="${shared.resource.dir}/derby/derby.jar"/>
+    <library id="H2Lib">
+        <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
     </library>
 
     <dataSource id="batchDB" jndiName="jdbc/batch">
-        <jdbcDriver libraryRef="DerbyLib" />
-        <!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
-       	is required beyond a single server start, configure the databaseName with a file location such as:
-       	databaseName="${shared.config.dir}/data/derbydb" -->
-        <properties.derby.embedded databaseName="memory:RUNTIMEDB"
-            createDatabase="create" user="user" password="pass" />
+        <jdbcDriver libraryRef="H2Lib" />
+        <!-- The following configures in-memory H2.  For H2 on disk, which is needed if the database
+       	is required beyond a single server start, configure the URL with a file location such as:
+       	URL="jdbc:h2:file:${shared.config.dir}/data/h2db" -->
+        <properties.h2 URL="jdbc:h2:mem:BatchDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
     </dataSource>
 
     <!-- ssl keystore to enable SSL port for batch rest connector -->
@@ -41,7 +40,7 @@
 
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
     <javaPermission className="java.lang.RuntimePermission" name="*" actions="accessClassInPackage.com.sun.xml.internal.bind.v2.runtime.reflect"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/h2Java8/h2.jar"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="wssecurity.getRunAsSubject"/>
     <javaPermission className="javax.security.auth.AuthPermission" name="doAs"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission"  name='* * "*"' actions="read" />

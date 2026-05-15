@@ -15,18 +15,17 @@
 
     <logging maxFileSize="100" maxFiles="4" traceSpecification="*=info:test=all:com.ibm.jbatch.*=all:com.ibm.ws.jbatch.*=all:EJBContainer=all:Injection=all:JCDI=all:MetaData=all:com.ibm.jbatch.*=all:com.ibm.ws.cdi*=all:com.ibm.ws.jbatch.*=all:org.jboss.weld*=all"/>
     
-    <library id="DerbyLib">
-	    <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
-	</library>
+    <library id="H2Lib">
+     <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
+ </library>
 
-	<!-- Data source for batch tables -->
-	<dataSource id="DefaultDataSource">
-		<jdbcDriver libraryRef="DerbyLib" />
-		<properties.derby.embedded databaseName="memory:BatchDB"
-			createDatabase="create" user="user" password="pass" />
-	</dataSource>
-	
-	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+ <!-- Data source for batch tables -->
+ <dataSource id="DefaultDataSource">
+ 	<jdbcDriver libraryRef="H2Lib" />
+ 	<properties.h2 URL="jdbc:h2:mem:BatchDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH;NON_KEYWORDS=VALUE" user="user" password="pass" />
+ </dataSource>
+ 
+ <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+ <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 
 </server>

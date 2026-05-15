@@ -38,8 +38,6 @@ public class BatchUserTranTest {
     @BeforeClass
     public static void setup() throws Exception {
 
-        FatUtils.checkJava7();
-
         server = LibertyServerFactory.getLibertyServer("com.ibm.ws.jbatch.nosecurity.fat");
         BatchAppUtils.addDropinsBatchSecurityWar(server);
         BatchAppUtils.addDropinsDbServletAppWar(server);

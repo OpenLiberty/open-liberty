@@ -1249,6 +1249,8 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     if (execution == null) {
                         throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
                     }
+
+                    em.refresh(execution);
                     return execution;
                 }
             }.runInNewOrExistingGlobalTran();
@@ -2785,6 +2787,11 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                  */
                 retVal = call();
 
+                        // Explicit flush for embedded database compatibility
+        if (newTran) {
+            entityMgr.flush();
+        }
+
             } catch (Throwable t) {
                 rollbackIfNewTranWasStarted(t);
             }
@@ -3132,7 +3139,9 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                 final String causeClassName = cause.getClass().getCanonicalName();
                 logger.fine("Next chained RemotablePartition persistence exception: exc class = " + causeClassName + "; causeMsg = " + causeMsg);
                 if ((cause instanceof SQLSyntaxErrorException || causeClassName.contains("SqlSyntaxErrorException")
-			|| causeClassName.contains("SQLServerException")) &&
+   || causeClassName.contains("SQLServerException")
+   || causeClassName.contains("JdbcSQLSyntaxErrorException")
+   || causeClassName.contains("JdbcSQLException")) &&
                     causeMsg != null &&
                     (causeMsg.contains("REMOTABLEPARTITION") || causeMsg.contains("ORA-00942"))) {
                     // The table isn't there.

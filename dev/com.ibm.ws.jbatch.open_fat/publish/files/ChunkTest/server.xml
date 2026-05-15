@@ -14,34 +14,34 @@
 
     <databaseStore id="BatchDatabaseStore" dataSourceRef="batchDB" schema="JBATCH" tablePrefix="" />
 
-    <!-- The derby driver -->
-    <library id="DerbyLib">
-	    <file name="${shared.resource.dir}/derby/derby.jar"/>
-	</library>
-	
-	<!-- The following configures in-memory Derby.  For Derby on disk, which is needed if the database
-   	is required beyond a single server start, configure the databaseName with a file location such as:
-   	databaseName="${shared.config.dir}/data/derbydb" -->
+    <!-- The H2 driver -->
+    <library id="H2Lib">
+        <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
+    </library>
+ 
+ <!-- The following configures in-memory H2.  For H2 on disk, which is needed if the database
+    is required beyond a single server start, configure the databaseName with a file location such as:
+    databaseName="${shared.config.dir}/data/h2db" -->
 
-    <!-- Derby datasource used for batch tables-->
+    <!-- H2 datasource used for batch tables-->
     <dataSource id="batchDB" jndiName="jdbc/batch" type="javax.sql.XADataSource">
-        <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:ChunkBatchDB" user="user" password="pass" />
+        <jdbcDriver libraryRef="H2Lib"/>
+        <properties.h2 URL="jdbc:h2:mem:ChunkBatchDB;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS JBATCH\;CREATE SCHEMA IF NOT EXISTS APP;NON_KEYWORDS=VALUE" user="user" password="pass" />
     </dataSource>
 
-    <!-- Derby datasource used by chunk tests, transactional -->
+    <!-- H2 datasource used by chunk tests, transactional -->
     <dataSource jndiName="jdbc/myds" type="javax.sql.XADataSource">
-        <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:ChunkTestTwoResources" user="user" password="pass" />
+        <jdbcDriver libraryRef="H2Lib"/>
+        <properties.h2 URL="jdbc:h2:mem:ChunkTestTwoResources;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS APP;NON_KEYWORDS=VALUE" user="user" password="pass" />
     </dataSource>
 
-    <!-- Derby datasource used by chunk tests, non-transactional -->
+    <!-- H2 datasource used by chunk tests, non-transactional -->
     <dataSource jndiName="jdbc/mydsNonTran" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-        <jdbcDriver libraryRef="DerbyLib"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:ChunkTestTwoResourcesNonTran" user="user" password="pass" />
+        <jdbcDriver libraryRef="H2Lib"/>
+        <properties.h2 URL="jdbc:h2:mem:ChunkTestTwoResourcesNonTran;DB_CLOSE_DELAY=-1;INIT=CREATE SCHEMA IF NOT EXISTS APP;NON_KEYWORDS=VALUE" user="user" password="pass" />
     </dataSource>
 
-	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+ <javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
+ <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 
 </server>
