@@ -25,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.MPHealthElement;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.Server;
@@ -47,8 +49,12 @@ public class EnableEndpointsTest {
     private static final String SERVER_NAME = "EnableEndpointsServer";
     private static final String NO_FILE_HEALTH_CHECK_SERVER_NAME = "EnableEndpointsNoFileHealthCheckServer";
     private static final String ENV_VAR_SERVER_NAME = "EnableEndpointsEnvVarServer";
+    private static final String ENV_VAR_NO_FILE_HEALTH_CHECK_SERVER_NAME = "EnableEndpointsEnvVarNoFileHealthCheckServer";
+    private static final String INVALID_VALUE_SERVER_NAME = "EnableEndpointsInvalidValueServer";
+    private static final String ENV_VAR_INVALID_VALUE_SERVER_NAME = "EnableEndpointsEnvVarInvalidValueServer";
+    private static final String DYNAMIC_ENABLE_SERVER_NAME = "EnableEndpointsDynamicEnableServer";
     private static final String APP_NAME = "FileHealthCheckApp";
-    private static final String[] IGNORED_FAILURES = { "CWMMH01013W", "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E" };
+    private static final String[] IGNORED_FAILURES = { "CWMMH01013W", "CWMMH01014W", "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E", "CWWKG0011W", "CWWKG0081E", "CWWKG0083W" };
     private static final String[] HEALTH_ENDPOINTS = { "/health", "/health/ready", "/health/live", "/health/started" };
     private static final String[] ENDPOINT_NAMES = { "Health", "Ready", "Live", "Started" };
 
@@ -70,7 +76,7 @@ public class EnableEndpointsTest {
                                                              HealthActions.MP41_MPHEALTH40); //mpHealth-4.0 FULL EE8
 
     @Server(SERVER_NAME)
-    public static LibertyServer server;
+    public static LibertyServer disabledEndpointsServer;
 
     @Server(NO_FILE_HEALTH_CHECK_SERVER_NAME)
     public static LibertyServer noFileHealthCheckServer;
@@ -78,12 +84,28 @@ public class EnableEndpointsTest {
     @Server(ENV_VAR_SERVER_NAME)
     public static LibertyServer envVarServer;
 
+    @Server(ENV_VAR_NO_FILE_HEALTH_CHECK_SERVER_NAME)
+    public static LibertyServer envVarNoFileHealthCheckServer;
+
+    @Server(INVALID_VALUE_SERVER_NAME)
+    public static LibertyServer invalidValueServer;
+
+    @Server(ENV_VAR_INVALID_VALUE_SERVER_NAME)
+    public static LibertyServer envVarInvalidValueServer;
+
+    @Server(DYNAMIC_ENABLE_SERVER_NAME)
+    public static LibertyServer dynamicEnableServer;
+
     @BeforeClass
     public static void beforeClass() throws Exception {
         // Deploy the test application to all servers
-        ShrinkHelper.defaultDropinApp(server, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+        ShrinkHelper.defaultDropinApp(disabledEndpointsServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
         ShrinkHelper.defaultDropinApp(noFileHealthCheckServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
         ShrinkHelper.defaultDropinApp(envVarServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+        ShrinkHelper.defaultDropinApp(envVarNoFileHealthCheckServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+        ShrinkHelper.defaultDropinApp(invalidValueServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+        ShrinkHelper.defaultDropinApp(envVarInvalidValueServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
+        ShrinkHelper.defaultDropinApp(dynamicEnableServer, APP_NAME, "io.openliberty.microprofile.health.file.healthcheck.app");
 
         Log.info(EnableEndpointsTest.class, "beforeClass", "Test application deployed to all servers");
     }
@@ -101,16 +123,23 @@ public class EnableEndpointsTest {
 
     @After
     public void afterTest() throws Exception {
-        stopServerIfStarted(server);
-        stopServerIfStarted(noFileHealthCheckServer);
-        stopServerIfStarted(envVarServer);
+        stopAllServers();
     }
 
     @AfterClass
     public static void afterClass() throws Exception {
-        stopServerIfStarted(server);
+        // Servers are already stopped by @After method after each test
+        // No additional cleanup needed
+    }
+
+    private static void stopAllServers() throws Exception {
+        stopServerIfStarted(disabledEndpointsServer);
         stopServerIfStarted(noFileHealthCheckServer);
         stopServerIfStarted(envVarServer);
+        stopServerIfStarted(envVarNoFileHealthCheckServer);
+        stopServerIfStarted(invalidValueServer);
+        stopServerIfStarted(envVarInvalidValueServer);
+        stopServerIfStarted(dynamicEnableServer);
     }
 
     private static void stopServerIfStarted(LibertyServer testServer) throws Exception {
@@ -129,13 +158,13 @@ public class EnableEndpointsTest {
      */
     @Test
     public void testEnableEndpointsFalse() throws Exception {
-        startServerAndWait(server);
+        startServerAndWait(disabledEndpointsServer);
 
-        File serverRootDir = new File(server.getServerRoot());
+        File serverRootDir = new File(disabledEndpointsServer.getServerRoot());
         Log.info(getClass(), "testEnableEndpointsFalse", "Server root: " + serverRootDir.getAbsolutePath());
 
         verifyHealthFilesCreated(serverRootDir);
-        verifyEndpointsAndWAB(server, true, false);
+        verifyEndpointsAndWAB(disabledEndpointsServer, true, false);
     }
 
     /**
@@ -178,6 +207,150 @@ public class EnableEndpointsTest {
 
         verifyHealthFilesCreated(serverRootDir);
         verifyEndpointsAndWAB(envVarServer, true, false);
+    }
+
+    /**
+     * Test warning message when MP_HEALTH_ENABLE_ENDPOINTS=false via ENV var but file-based health checks are not enabled.
+     *
+     * Verifies:
+     * 1. Server starts successfully with MP_HEALTH_ENABLE_ENDPOINTS=false environment variable but no checkInterval/startupCheckInterval
+     * 2. Warning message CWMMH01013W appears in logs
+     * 3. HTTP health endpoints still work (return 200/503, not 404) since file-based health checks are disabled
+     * 4. WAB initialization messages appear (endpoints are enabled despite ENV var)
+     */
+    @Test
+    public void testEnableEndpointsViaEnvVarWithoutFileHealthCheck() throws Exception {
+        // Set environment variable before starting server
+        envVarNoFileHealthCheckServer.addEnvVar("MP_HEALTH_ENABLE_ENDPOINTS", "false");
+
+        startServerAndWait(envVarNoFileHealthCheckServer);
+
+        assertNotNull("Warning CWMMH01013W should appear when MP_HEALTH_ENABLE_ENDPOINTS=false without file-based health checks",
+                      envVarNoFileHealthCheckServer.waitForStringInLog("CWMMH01013W"));
+
+        verifyEndpointsAndWAB(envVarNoFileHealthCheckServer, false, true);
+    }
+
+    /**
+     * Test invalid value for enableEndpoints server config attribute.
+     *
+     * Verifies:
+     * 1. Server starts with invalid value "invalid" for enableEndpoints attribute
+     * 2. Configuration warning CWWKG0011W appears in logs (invalid value)
+     * 3. Configuration error CWWKG0081E appears in logs (validation failed)
+     * 4. Server defaults to true (endpoints enabled)
+     * 5. File-based health checks work (files created and updated)
+     * 6. HTTP health endpoints work (return 200/503, not 404)
+     * 7. WAB initialization messages appear (endpoints are enabled)
+     */
+    @Test
+    public void testEnableEndpointsInvalidValue() throws Exception {
+        startServerAndWait(invalidValueServer);
+
+        // Verify configuration error messages appear
+        assertNotNull("Warning CWWKG0011W should appear for invalid enableEndpoints value",
+                      invalidValueServer.waitForStringInLog("CWWKG0011W"));
+        assertNotNull("Error CWWKG0081E should appear for invalid enableEndpoints value",
+                      invalidValueServer.waitForStringInLog("CWWKG0081E"));
+
+        // Verify server defaults to true (endpoints enabled)
+        File serverRootDir = new File(invalidValueServer.getServerRoot());
+        Log.info(getClass(), "testEnableEndpointsInvalidValue", "Server root: " + serverRootDir.getAbsolutePath());
+
+        verifyHealthFilesCreated(serverRootDir);
+        verifyEndpointsAndWAB(invalidValueServer, false, true);
+    }
+
+    /**
+     * Test invalid environment variable value for MP_HEALTH_ENABLE_ENDPOINTS.
+     *
+     * Verifies:
+     * 1. Warning message CWMMH01014W appears for invalid ENV variable value
+     * 2. Server defaults to true (endpoints enabled) when ENV var is invalid
+     * 3. File-based health checks work correctly
+     */
+    @Test
+    public void testEnableEndpointsEnvVarInvalidValue() throws Exception {
+        // Set invalid environment variable value before starting server
+        envVarInvalidValueServer.addEnvVar("MP_HEALTH_ENABLE_ENDPOINTS", "invalid_value");
+
+        startServerAndWait(envVarInvalidValueServer);
+
+        // Verify warning message appears for invalid ENV variable value
+        assertNotNull("Warning CWMMH01014W should appear for invalid MP_HEALTH_ENABLE_ENDPOINTS value",
+                      envVarInvalidValueServer.waitForStringInLog("CWMMH01014W"));
+
+        // Verify server defaults to true (endpoints enabled)
+        File serverRootDir = new File(envVarInvalidValueServer.getServerRoot());
+        Log.info(getClass(), "testEnableEndpointsEnvVarInvalidValue", "Server root: " + serverRootDir.getAbsolutePath());
+
+        verifyHealthFilesCreated(serverRootDir);
+        verifyEndpointsAndWAB(envVarInvalidValueServer, false, true);
+    }
+
+    /**
+     * Test dynamic configuration update: enable to disable.
+     *
+     * Verifies:
+     * 1. Server starts with enableEndpoints=true (endpoints enabled)
+     * 2. Dynamically update to enableEndpoints=false
+     * 3. Endpoints become disabled (return 404)
+     * 4. File-based health checks continue to work
+     */
+    @Test
+    public void testDynamicUpdateEnableToDisable() throws Exception {
+        startServerAndWait(dynamicEnableServer);
+
+        File serverRootDir = new File(dynamicEnableServer.getServerRoot());
+        Log.info(getClass(), "testDynamicUpdateEnableToDisable", "Server root: " + serverRootDir.getAbsolutePath());
+
+        // Verify initial state: endpoints enabled
+        verifyHealthFilesCreated(serverRootDir);
+        verifyEndpointsAndWAB(dynamicEnableServer, false, true);
+
+        // Dynamically update configuration to disable endpoints
+        dynamicEnableServer.setMarkToEndOfLog();
+        ServerConfiguration config = dynamicEnableServer.getServerConfiguration();
+        MPHealthElement mpHealth = config.getMPHealthElement();
+        mpHealth.setEnableEndpoints("false");
+        dynamicEnableServer.updateServerConfiguration(config);
+        dynamicEnableServer.waitForConfigUpdateInLogUsingMark(null);
+
+        // Verify endpoints are now disabled
+        verifyEndpointsAndWAB(dynamicEnableServer, true, false);
+    }
+
+    /**
+     * Test dynamic configuration update: disable to enable.
+     *
+     * Verifies:
+     * 1. Server starts with enableEndpoints=false (endpoints disabled)
+     * 2. Dynamically update to enableEndpoints=true
+     * 3. Endpoints become enabled (return 200/503)
+     * 4. File-based health checks continue to work
+     */
+    @Test
+    public void testDynamicUpdateDisableToEnable() throws Exception {
+        // Start with enableEndpoints=false (using the disabledEndpointsServer configuration)
+        startServerAndWait(disabledEndpointsServer);
+
+        File serverRootDir = new File(disabledEndpointsServer.getServerRoot());
+        Log.info(getClass(), "testDynamicUpdateDisableToEnable", "Server root: " + serverRootDir.getAbsolutePath());
+
+        // Verify initial state: endpoints disabled
+        verifyHealthFilesCreated(serverRootDir);
+        verifyEndpointsAndWAB(disabledEndpointsServer, true, false);
+
+        // Dynamically update configuration to enable endpoints
+        disabledEndpointsServer.setMarkToEndOfLog();
+        ServerConfiguration config = disabledEndpointsServer.getServerConfiguration();
+        MPHealthElement mpHealth = config.getMPHealthElement();
+        mpHealth.setEnableEndpoints("true");
+        disabledEndpointsServer.updateServerConfiguration(config);
+        disabledEndpointsServer.waitForConfigUpdateInLogUsingMark(null);
+
+        // Verify endpoints are now enabled
+        verifyEndpointsAndWAB(disabledEndpointsServer, false, true);
     }
 
     private void verifyHealthFilesCreated(File serverRootDir) throws InterruptedException {

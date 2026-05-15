@@ -1,0 +1,27 @@
+<server description="Server for testing invalid enableEndpoints value">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>mpHealth-4.0</feature>
+        <feature>mpConfig-3.1</feature>
+        <feature>cdi-4.0</feature>
+        <feature>jsonp-2.1</feature>
+        <feature>servlet-6.0</feature>
+    </featureManager>
+    
+    <!-- Invalid value for enableEndpoints - should trigger CWWKG0011W and CWWKG0081E, default to true -->
+    <mpHealth checkInterval="5s" startupCheckInterval="1s" enableEndpoints="invalid" />
+    	
+	<logging traceSpecification="*=info:HEALTH=all"/>
+	
+    <webContainer deferServletLoad="false"/>
+
+	<httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+		<tcpOptions portOpenRetries="60" />                   
+	</httpEndpoint>
+	
+</server>
+
+<!-- Made with Bob -->
