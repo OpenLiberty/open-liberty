@@ -123,7 +123,7 @@ public class ToolCallEventTraceTest extends FATServletClient {
                         }
                         """;
         client.callMCP(request);
-        String traceMsg = "The following error was returned to the user: '{code=-32603, message='Internal error', data=[Could not call privateEcho]}'";
+        String traceMsg = "The following error was returned to the user: 'JSONRPCException {code=-32603, message='Internal error', data=[Could not call privateEcho]}'";
         assertTrue("Expected event trace not found: " + traceMsg, !server.findStringsInLogsAndTrace(Pattern.quote(traceMsg)).isEmpty());
     }
 
