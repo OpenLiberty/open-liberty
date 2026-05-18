@@ -43,6 +43,7 @@ import io.openliberty.mcp.internal.fat.security.PermitAllTests;
 import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
+import io.openliberty.mcp.internal.fat.tool.AsyncToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolsErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
@@ -60,6 +61,7 @@ import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
+import io.openliberty.mcp.internal.fat.tool.ToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
@@ -71,6 +73,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
 @SuiteClasses({
 
                 AsyncToolsTest.class,
+                AsyncToolCallEventTraceTest.class,
                 AsyncToolCancellationTest.class,
                 AsyncToolsErrorHandlingTest.class,
                 AsyncToolLifecycleTest.class,
@@ -82,6 +85,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 DeploymentProblemTest.class,
                 DynamicMcpPathUpdateTest.class,
                 EncoderTest.class,
+                ToolCallEventTraceTest.class,
                 ExceptionLoggingTest.class,
                 HttpTest.class,
                 GenericToolTest.class,

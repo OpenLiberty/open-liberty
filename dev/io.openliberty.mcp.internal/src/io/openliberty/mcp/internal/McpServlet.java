@@ -134,10 +134,30 @@ public class McpServlet extends HttpServlet {
             }
             callRequest(transport);
         } catch (JSONRPCException e) {
+            String jsonRpcErrorMsg = "JSONRPCException ";
+            if (e.getErrorCode() != null) {
+                jsonRpcErrorMsg += "{code=" + e.getErrorCode().getCode()
+                                   + ", message='" + e.getErrorCode().getMessage()
+                                   + "', data=" + String.valueOf(e.getData()) + "}";
+            } else {
+                jsonRpcErrorMsg += "{data=" + String.valueOf(e.getData()) + "}";
+            }
+
+            traceEvent("The following error was returned to the user: '" + jsonRpcErrorMsg + "'");
             transport.sendJsonRpcException(e);
         } catch (HttpResponseException e) {
+            String errorMsg = "HTTP " + e.getStatusCode();
+            if (e.getMessage() != null) {
+                errorMsg += " - " + e.getMessage();
+            }
+            traceEvent("The following error was returned to the user: '" + errorMsg + "'");
             transport.sendHttpException(e);
         } catch (Exception e) {
+            String errorMsg = e.getClass().getSimpleName();
+            if (e.getMessage() != null) {
+                errorMsg += ": " + e.getMessage();
+            }
+            traceEvent("The following error was returned to the user: '" + errorMsg + "'");
             transport.sendError(e);
         }
     }
@@ -185,6 +205,7 @@ public class McpServlet extends HttpServlet {
 
     @FFDCIgnore(ToolCallException.class)
     private void callTool(McpTransport transport) {
+        traceEvent("A tool call request has arrived");
         ExecutionRequestId requestId = createOngoingRequestId(transport);
         McpToolCallParams params = transport.getParams(McpToolCallParams.class);
         McpRequest request = transport.getMcpRequest();
@@ -196,9 +217,7 @@ public class McpServlet extends HttpServlet {
 
         try {
             if (params.getMetadata() == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
-                }
+                traceEvent("Attempt to call non-existant tool: " + params.getName());
                 throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS, List.of("Method " + params.getName() + " not found"));
             }
 
@@ -212,6 +231,9 @@ public class McpServlet extends HttpServlet {
         } catch (ToolCallException e) {
             // Catch validation errors that occur before calling the tool and should result in a tool call error response
             ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
+            if (response.isError()) {
+                traceEvent("The tool method '" + params.getName() + "' returned the following error to the user: '" + extractToolResponseValue(response) + "'");
+            }
             transport.sendResponse(response);
             return;
         }
@@ -231,6 +253,7 @@ public class McpServlet extends HttpServlet {
         ToolResponse response;
         try {
             var handler = params.getMetadata().handler();
+            traceEvent("The tool method '" + params.getName() + "' is about to be called");
             response = handler.apply(toolArgs);
         } catch (McpResponseException e) {
             // These exceptions indicate a specific response should be used
@@ -245,6 +268,11 @@ public class McpServlet extends HttpServlet {
             cleanup(requestId);
         }
         response = removeStructuredContentIfNotSupported(response, transport);
+        if (response.isError()) {
+            traceEvent("The tool method '" + params.getName() + "' returned the following error to the user: '" + extractToolResponseValue(response) + "'");
+        } else {
+            traceEvent("The tool method '" + params.getName() + "' returned: '" + extractToolResponseValue(response) + "'");
+        }
         transport.sendResponse(response);
     }
 
@@ -260,6 +288,7 @@ public class McpServlet extends HttpServlet {
 
         var handler = params.getMetadata().asyncHandler();
 
+        traceEvent("The tool method '" + params.getName() + "' is about to be called");
         CompletionStage<ToolResponse> response = callHandlerAndCatchException(handler, toolArgs);
         response = response.thenApply(r -> removeStructuredContentIfNotSupported(r, transport))
                            .exceptionally(throwable -> {
@@ -275,6 +304,16 @@ public class McpServlet extends HttpServlet {
                                                                                        params.getName());
                                }
                            });
+
+        response = response.whenComplete((r, throwable) -> {
+            if (throwable == null && r != null) {
+                if (r.isError()) {
+                    traceEvent("The tool method '" + params.getName() + "' returned the following error to the user: '" + extractToolResponseValue(r) + "'");
+                } else {
+                    traceEvent("The tool method '" + params.getName() + "' returned: '" + extractToolResponseValue(r) + "'");
+                }
+            }
+        });
 
         transport.sendResultAsync(response)
                  .whenComplete((result, throwable) -> cleanup(requestId));
@@ -404,9 +443,7 @@ public class McpServlet extends HttpServlet {
         // TODO store client capabilities
         // TODO store client info
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Client initializing: " + params.getClientInfo(), params.getCapabilities());
-        }
+        traceEvent("Client initializing: " + params.getClientInfo(), params.getCapabilities());
         Principal userId = transport.getUser();
 
         String sessionId = sessionStores.getCurrent().createSession(userId);
@@ -422,9 +459,7 @@ public class McpServlet extends HttpServlet {
     }
 
     private void initialized(McpTransport transport) {
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Client initialized");
-        }
+        traceEvent("Client initialized");
         transport.sendEmptyResponse();
     }
 
@@ -452,15 +487,11 @@ public class McpServlet extends HttpServlet {
         ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId, userId);
         Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-            Tr.event(this, tc, "Cancellation requested for " + requestId);
-        }
+        traceEvent("Cancellation requested for " + requestId);
 
         Cancellation cancellation = requestTrackers.getCurrent().getOngoingRequestCancellation(requestId);
         if (cancellation != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                Tr.event(this, tc, "Cancelling task");
-            }
+            traceEvent("Cancelling task");
             ((CancellationImpl) cancellation).cancel(reason);
         }
         transport.sendEmptyResponse();
@@ -486,6 +517,44 @@ public class McpServlet extends HttpServlet {
      */
     private boolean isServerStateless() {
         return Boolean.parseBoolean(getServletConfig().getInitParameter(STATELESS_INIT_PARAM));
+    }
+
+    /**
+     * Logs an event trace message if event tracing is enabled.
+     *
+     * @param message the message to log
+     * @param inserts optional additional objects to include in the trace
+     */
+    private void traceEvent(String message, Object... inserts) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+            Tr.event(this, tc, message, inserts);
+        }
+    }
+
+    /**
+     * Extracts the most relevant value from a ToolResponse for logging purposes.
+     * <p>
+     * This method prioritises structured content over text content, and extracts
+     * plain text from single TextContent objects for cleaner log output.
+     *
+     * @param response the ToolResponse to extract a value from
+     * @return the structured content if present, the text from a single TextContent,
+     * the full content list if multiple items exist, or the response itself
+     * if no content is available
+     */
+    private Object extractToolResponseValue(ToolResponse response) {
+        if (response.structuredContent() != null) {
+            return response.structuredContent();
+        }
+        if (response.content() != null && !response.content().isEmpty()) {
+            // Extract text from TextContent objects
+            List<? extends Content> contentList = response.content();
+            if (contentList.size() == 1 && contentList.get(0) instanceof TextContent textContent) {
+                return textContent.text();
+            }
+            return response.content();
+        }
+        return response;
     }
 
 }
