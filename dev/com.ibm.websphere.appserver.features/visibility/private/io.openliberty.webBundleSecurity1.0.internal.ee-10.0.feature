@@ -5,7 +5,7 @@ singleton=true
 visibility = private
 
 -features=\
-  io.openliberty.servlet.internal-6.0; ibm.tolerates:="6.1", \
+  io.openliberty.servlet.internal-6.0; ibm.tolerates:="6.1, 6.2", \
   com.ibm.websphere.appserver.security-2.0
 
 -bundles= io.openliberty.webcontainer.security.internal; start-phase:=SERVICE_EARLY, \

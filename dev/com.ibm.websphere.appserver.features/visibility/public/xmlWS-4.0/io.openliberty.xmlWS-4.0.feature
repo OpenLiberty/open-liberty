@@ -38,8 +38,8 @@ IBM-SPI-Package: \
  com.ibm.wsspi.anno.targets, \
  com.ibm.wsspi.anno.util, \
  com.ibm.ws.anno.classsource.specification
--features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0", \
-  io.openliberty.xmlws4.0.internal.ee-10.0; ibm.tolerates:="11.0", \
+-features=com.ibm.websphere.appserver.eeCompatible-10.0; ibm.tolerates:="11.0, 12.0", \
+  io.openliberty.xmlws4.0.internal.ee-10.0; ibm.tolerates:="11.0, 12.0", \
   io.openliberty.xmlws.common-4.0
 -bundles=\
  com.ibm.ws.javaee.ddmodel.ws, \
@@ -70,4 +70,4 @@ edition=base
 WLP-AlsoKnownAs: jaxws-4.0
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
-WLP-Platform: jakartaee-10.0,jakartaee-11.0
+WLP-Platform: jakartaee-10.0,jakartaee-11.0,jakartaee-12.0

@@ -10,7 +10,7 @@ IBM-API-Package: \
 IBM-ShortName: messagingSecurity-3.0
 WLP-AlsoKnownAs: wasJmsSecurity-3.0
 Subsystem-Name: Messaging Server 3.0 Security
--features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
+-features=com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0, 12.0", \
   io.openliberty.messagingServer-3.0, \
   com.ibm.websphere.appserver.security-2.0
 -bundles=com.ibm.ws.messaging.utils, \
@@ -19,5 +19,5 @@ Subsystem-Name: Messaging Server 3.0 Security
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
-WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0
+WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0,jakartaee-12.0
 WLP-InstantOn-Enabled: true

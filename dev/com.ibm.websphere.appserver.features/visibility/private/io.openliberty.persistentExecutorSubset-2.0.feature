@@ -5,8 +5,8 @@ visibility=private
   io.openliberty.jakarta.annotation-2.0; ibm.tolerates:="2.1, 3.0", \
   com.ibm.websphere.appserver.contextService-1.0, \
   io.openliberty.persistenceService-2.0, \
-  com.ibm.websphere.appserver.transaction-2.0, \
-  io.openliberty.jakarta.concurrency-2.0; ibm.tolerates:="3.0, 3.1"
+  com.ibm.websphere.appserver.transaction-2.0; ibm.tolerates:="2.1", \
+  io.openliberty.jakarta.concurrency-2.0; ibm.tolerates:="3.0, 3.1, 3.2"
 -bundles=com.ibm.ws.javaee.platform.defaultresource, \
  com.ibm.ws.resource, \
  com.ibm.ws.concurrent.persistent.jakarta

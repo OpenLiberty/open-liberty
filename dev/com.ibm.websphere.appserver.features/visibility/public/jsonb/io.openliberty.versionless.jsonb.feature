@@ -3,7 +3,7 @@ symbolicName=io.openliberty.versionless.jsonb
 visibility=public
 IBM-ShortName: jsonb
 Subsystem-Name: jsonb
--features=io.openliberty.internal.versionless.jsonb-1.0; ibm.tolerates:="2.0,3.0"
+-features=io.openliberty.internal.versionless.jsonb-1.0; ibm.tolerates:="2.0,3.0,3.1"
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

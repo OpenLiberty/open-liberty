@@ -2,8 +2,8 @@
 symbolicName=io.openliberty.cdi4.1-concurrent3.1
 visibility=private
 IBM-Provision-Capability: \
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.cdi-4.1)))", \
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.concurrent-3.1)))"
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.cdi-4.1)(osgi.identity=io.openliberty.cdi-5.0)))", \
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.concurrent-3.1)(osgi.identity=io.openliberty.concurrent-3.2)))"
 -bundles=\
   io.openliberty.concurrent.internal.cdi
 IBM-Install-Policy: when-satisfied
