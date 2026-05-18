@@ -134,16 +134,15 @@ public class McpServlet extends HttpServlet {
             }
             callRequest(transport);
         } catch (JSONRPCException e) {
-            String code = null;
-            String msg = null;
+            String jsonRpcErrorMsg = "JSONRPCException ";
             if (e.getErrorCode() != null) {
-                code = Integer.toString(e.getErrorCode().getCode());
-                msg = e.getErrorCode().getMessage();
+                jsonRpcErrorMsg += "{code=" + e.getErrorCode().getCode()
+                                   + ", message='" + e.getErrorCode().getMessage()
+                                   + "', data=" + String.valueOf(e.getData()) + "}";
+            } else {
+                jsonRpcErrorMsg += "{data=" + String.valueOf(e.getData()) + "}";
             }
-            String jsonRpcErrorMsg = "JSONRPCException "
-                                     + "{code=" + code
-                                     + ", message='" + msg
-                                     + "', data=" + String.valueOf(e.getData()) + "}";
+
             traceEvent("The following error was returned to the user: '" + jsonRpcErrorMsg + "'");
             transport.sendJsonRpcException(e);
         } catch (HttpResponseException e) {
