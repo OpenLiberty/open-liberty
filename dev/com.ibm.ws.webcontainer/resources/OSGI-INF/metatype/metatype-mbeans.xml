@@ -77,9 +77,9 @@
         <AD name="%plugin.ignoreAffinityRequests.name" description="%plugin.ignoreAffinityRequests.desc"
                 id="ignoreAffinityRequests" required="false" default="true" type="Boolean" />
         <AD name="%plugin.outboundInterfacesList.name" description="%plugin.outboundInterfacesList.desc"
-                id="outboundInterfacesList" required="false" type="String" ibm:beta="true" />
+                id="outboundInterfacesList" required="false" type="String" />
         <AD name="%plugin.outboundBindStrict.name" description="%plugin.outboundBindStrict.desc"
-                id="outboundBindStrict" required="false" type="Boolean" default="false" ibm:beta="true" />
+                id="outboundBindStrict" required="false" type="Boolean" default="false" />
     </OCD>
 
     <Designate pid="com.ibm.ws.generatePluginConfig">
