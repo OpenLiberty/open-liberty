@@ -13,7 +13,7 @@ import com.ibm.websphere.monitor.meters.StatisticsMeter;
 import com.ibm.websphere.monitor.meters.StatisticsReading;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-
+import io.openliberty.mcp.monitor.McpOperationStatsMXBean;
 import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
 
 import com.ibm.websphere.monitor.meters.Counter;
@@ -57,7 +57,7 @@ public class McpOperationStats extends Meter implements McpOperationStatsMXBean 
 		this.rpcResponseStatusCode = mcpStatAttributes.getRpcResponseStatusCode();
 		this.genAiOperationName = mcpStatAttributes.getGenAiOperationName();
 		this.jsonrpcProtocolVersion = mcpStatAttributes.getJsonrpcProtocolVersion();
-		this.mcpProtocolVersion = mcpStatAttributes.getMcpMethodName();
+		this.mcpProtocolVersion = mcpStatAttributes.getMcpProtocolVersion();
 		this.networkProtocolName = mcpStatAttributes.getNetworkProtocolName();
 		this.networkProtocolVersion = mcpStatAttributes.getNetworkProtocolVersion();
 		this.networkTransport = mcpStatAttributes.getNetworkTransport();
