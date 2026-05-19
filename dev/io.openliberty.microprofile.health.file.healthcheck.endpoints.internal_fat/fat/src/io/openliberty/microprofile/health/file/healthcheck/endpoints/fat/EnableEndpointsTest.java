@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
+import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -57,7 +58,6 @@ public class EnableEndpointsTest {
     private static final String INVALID_VALUE_SERVER_NAME = "EnableEndpointsInvalidValueServer";
     private static final String ENV_VAR_INVALID_VALUE_SERVER_NAME = "EnableEndpointsEnvVarInvalidValueServer";
     private static final String DYNAMIC_ENABLE_SERVER_NAME = "EnableEndpointsDynamicEnableServer";
-    private static final String APP_NAME = "FileHealthCheckApp";
     private static final String FAIL_LIVE_APP_WAR = "FailingHealthCheckApp.war";
     private static final String[] IGNORED_FAILURES = { "CWMMH01013W", "CWMMH01014W", "CWMMH0052W", "CWMMH0054W", "CWMMH0053W", "CWMMH0050E", "CWWKG0011W", "CWWKG0081E",
                                                        "CWWKG0083W" };
@@ -111,6 +111,13 @@ public class EnableEndpointsTest {
         testServer.startServer();
         testServer.waitForStringInLogUsingMark("CWWKF0011I");
         assertTrue("Server should be started: " + testServer.getServerName(), testServer.isStarted());
+    }
+
+    @Before
+    public void before() throws Exception {
+        // Remove any apps that were installed in previous test cases.
+        disabledEndpointsServer.removeAllInstalledAppsForValidation();
+        disabledEndpointsServer.deleteAllDropinApplications();
     }
 
     @After
@@ -339,6 +346,10 @@ public class EnableEndpointsTest {
         File serverRootDir = new File(dynamicEnableServer.getServerRoot());
         Log.info(getClass(), "testDynamicUpdateEnableToDisable", "Server root: " + serverRootDir.getAbsolutePath());
 
+        // Wait for health check interval to pass (checkInterval is 5s in server config)
+        // Wait 7 seconds to allow at least one health check cycle plus buffer
+        TimeUnit.SECONDS.sleep(7);
+
         // Verify initial state: endpoints enabled
         verifyHealthFilesCreated(serverRootDir);
         verifyEndpointsAndWAB(dynamicEnableServer, false, true);
@@ -404,15 +415,16 @@ public class EnableEndpointsTest {
      * @param expectWABMessages true if WAB messages should appear, false if they should not
      */
     private void verifyEndpointsAndWAB(LibertyServer testServer, boolean expectDisabled, boolean expectWABMessages) throws Exception {
-        verifyEndpointsStatus(testServer, expectDisabled);
-
         // Use a short timeout (5 seconds) to avoid waiting indefinitely for messages that won't appear
         String wabMessage = testServer.waitForStringInLog(WAB_PATTERN, 5000);
         if (expectWABMessages) {
             assertNotNull("WAB messages should appear when endpoints enabled", wabMessage);
         } else {
-            assertNull("WAB messages should not appear when endpoints disabled", wabMessage);
+            assertNull("WAB messages should NOT appear when endpoints disabled", wabMessage);
         }
+
+        // Verify endpoints
+        verifyEndpointsStatus(testServer, expectDisabled);
     }
 
     private void verifyEndpointsStatus(LibertyServer testServer, boolean expectDisabled) throws Exception {
@@ -423,7 +435,7 @@ public class EnableEndpointsTest {
                 assertEquals(ENDPOINT_NAMES[i] + " endpoint should return 404 when disabled",
                              HttpURLConnection.HTTP_NOT_FOUND, responseCode);
             } else {
-                assertTrue(ENDPOINT_NAMES[i] + " endpoint should not return 404, got: " + responseCode,
+                assertTrue(ENDPOINT_NAMES[i] + " endpoint should NOT return 404, got: " + responseCode,
                            responseCode != HttpURLConnection.HTTP_NOT_FOUND);
                 assertTrue(ENDPOINT_NAMES[i] + " endpoint should return 200 or 503, got: " + responseCode,
                            responseCode == HttpURLConnection.HTTP_OK || responseCode == HttpURLConnection.HTTP_UNAVAILABLE);
