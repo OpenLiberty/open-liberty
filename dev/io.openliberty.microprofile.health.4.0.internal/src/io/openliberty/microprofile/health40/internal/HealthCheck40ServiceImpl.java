@@ -757,7 +757,6 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         }
 
         apps = appTracker.getAllAppNames();
-
         return apps;
     }
 
