@@ -7,30 +7,9 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.monitor;
-
-public interface McpSessionStatisticsMXBean {
-
-	/*
-	 * MCP Attributes
-	 */
-
-	public String getErrorType();
-
-	public String getJsonrpcProtocolVersion();
-
-	public String getMcpProtocolVersion() ;
-
-	public String getNetworkProtocolName() ;
-
-	public String getNetworkProtocolVersion() ;
-
-	public String getNetworkTransport() ;
-	
-	/*
-	 * Metric values
-	 */
-	public long getCount();
-
-	public double getDuration();
-}
+/**
+ *
+ */
+@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "MCP")
+@org.osgi.annotation.versioning.Version("1.0")
+package io.openliberty.mcp.monitor;

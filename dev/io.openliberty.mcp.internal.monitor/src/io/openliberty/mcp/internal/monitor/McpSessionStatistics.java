@@ -16,7 +16,7 @@ import com.ibm.websphere.ras.TraceComponent;
 
 import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
 import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
-
+import io.openliberty.mcp.monitor.McpSessionStatisticsMXBean;
 import com.ibm.websphere.monitor.meters.Counter;
 import com.ibm.websphere.monitor.meters.Meter;
 
