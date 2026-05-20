@@ -169,7 +169,6 @@ public class TestEnableDisableFeaturesTest {
         Log.info(c, testName, "------- added testJDBCApp to dropins -----");
     }
 
-    
     @Test
     public void testEDF2() throws Exception {
         currentServ = serverEDF2;
