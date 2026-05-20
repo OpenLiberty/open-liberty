@@ -38,7 +38,7 @@ import org.testcontainers.containers.VncRecordingContainer.VncRecordingFormat;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-// import com.ibm.ws.fat.util.Props;
+import com.ibm.ws.fat.util.Props;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
