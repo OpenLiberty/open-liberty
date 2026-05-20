@@ -310,20 +310,20 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         // Resolve enableEndpoints config (beta feature only)
         if (ProductInfo.getBetaEdition()) {
             Boolean enableEndpointsConfig = null;
-            
+
             // Check environment variable first
             String envConfig = System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS);
             if (envConfig != null && !envConfig.trim().isEmpty()) {
                 String trimmedEnvConfig = envConfig.trim();
-                // Only parse if it's a valid boolean string (case-insensitive)
-                // Invalid values are ignored, allowing server config or default (true) to be used
+                // Boolean.valueOf() returns true only if value is "true" (case-insensitive), false otherwise
+                // For invalid values (not "true" or "false"), show warning and use default by not setting enableEndpointsConfig
                 if (trimmedEnvConfig.equalsIgnoreCase("true") || trimmedEnvConfig.equalsIgnoreCase("false")) {
                     enableEndpointsConfig = Boolean.valueOf(trimmedEnvConfig);
                 } else {
                     Tr.warning(tc, "enable.endpoints.env.var.invalid.value.CWMMH01014W", trimmedEnvConfig);
                 }
             }
-            
+
             // If env var not set, check server config
             // Note: properties.get() may return default value even if not explicitly set in server.xml
             // We check env var first to allow it to override the default
@@ -523,7 +523,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         if (isValidSystemForFileHealthCheck) {
             processCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_CHECK_INTERVAL));
             processStartupCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_STARTUP_CHECK_INTERVAL));
-            
+
             // Process enableEndpoints config (beta feature only)
             boolean enableEndpointsChanged = false;
             if (ProductInfo.getBetaEdition()) {
@@ -532,7 +532,7 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
             } else {
                 // Not in beta edition - skip enableEndpoints configuration entirely
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "enableEndpoints configuration skipped in @Modified - feature only available in beta edition");
+                    Tr.debug(tc, "enableEndpoints configuration skipped in Modified - feature only available in beta edition");
                 }
             }
 

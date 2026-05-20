@@ -16,7 +16,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.net.HttpURLConnection;
-import java.util.concurrent.TimeUnit;
+import java.util.List;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -316,8 +316,9 @@ public class EnableEndpointsTest {
         File liveFile = HealthFileUtils.getLiveFile(serverRootDir);
 
         // Wait for health check interval to pass (checkInterval is 5s in server config)
-        // Wait 7 seconds to allow at least one health check cycle plus buffer
-        TimeUnit.SECONDS.sleep(7);
+        // Wait for health check interval to pass (checkInterval is 5s in server config),
+        // which will run the scheduler to create the health files.
+        dynamicEnableServer.waitForStringInTrace(".*HealthCheck40ServiceImpl\\$StartedFileCreateProcess > run Entry.*");
 
         assertTrue("Health directory should not exist or live file should not exist when health checks fail",
                    !healthDir.exists() || !liveFile.exists());
@@ -326,7 +327,7 @@ public class EnableEndpointsTest {
         verifyEndpointsStatus(disabledEndpointsServer, true);
 
         // Verify WAB messages don't appear (endpoints disabled)
-        java.util.List<String> wabMessages = disabledEndpointsServer.findStringsInLogs(WAB_PATTERN);
+        List<String> wabMessages = disabledEndpointsServer.findStringsInLogs(WAB_PATTERN);
         assertTrue("WAB messages should not appear when endpoints disabled", wabMessages.isEmpty());
     }
 
@@ -346,9 +347,9 @@ public class EnableEndpointsTest {
         File serverRootDir = new File(dynamicEnableServer.getServerRoot());
         Log.info(getClass(), "testDynamicUpdateEnableToDisable", "Server root: " + serverRootDir.getAbsolutePath());
 
-        // Wait for health check interval to pass (checkInterval is 5s in server config)
-        // Wait 7 seconds to allow at least one health check cycle plus buffer
-        TimeUnit.SECONDS.sleep(7);
+        // Wait for health check interval to pass (checkInterval is 5s in server config),
+        // which will run the scheduler to create the health files.
+        dynamicEnableServer.waitForStringInTrace(".*HealthCheck40ServiceImpl\\$StartedFileCreateProcess > run Entry.*");
 
         // Verify initial state: endpoints enabled
         verifyHealthFilesCreated(serverRootDir);
