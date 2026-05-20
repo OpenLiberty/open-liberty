@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -728,6 +728,8 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String BEARER = "Bearer";
     public static final String AUTHORIZATION = "Authorization";
     public static final String INVALID_GRANT_TYPE_MSG = "unsupported_grant_type";
+    public static final String RESOURCE_METADATA = "resource_metadata";
+    public static final String PROTECTED_RESOURCE_WELL_KNOWN_URI = ".well-known/oauth-protected-resource";
 
     public static final String SAML_CLIENT_APP = "samlclient";
 

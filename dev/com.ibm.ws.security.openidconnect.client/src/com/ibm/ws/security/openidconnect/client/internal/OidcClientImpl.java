@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2024 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,6 +24,7 @@ import javax.security.auth.Subject;
 import javax.security.auth.login.CredentialExpiredException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 import javax.servlet.http.HttpServletResponse;
 
 import org.osgi.framework.ServiceReference;
@@ -313,7 +314,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         req.setAttribute(ClientConstants.ATTRIB_OIDC_CLIENT_REQUEST, oidcClientRequest);
         ProviderAuthenticationResult result = authenticate(req, res, provider, referrerURLCookieHandler, beforeSso, oidcClientConfig, oidcClientRequest);
         // handle the result when it's OAuthChallengeReply
-        handleOauthChallenge(res, result);
+        handleOauthChallenge(req, res, result, oidcClientConfig);
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "OIDC _SSO RP PROCESS HAS ENDED.");
         }
@@ -435,7 +436,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     }
 
     @Override
-    public void logoutIfSessionInvalidated(HttpServletRequest req) {       
+    public void logoutIfSessionInvalidated(HttpServletRequest req) {
         String selectByProviderHint = null;
         boolean selectByIssuer = false;
         //select provider only through auth filter or generic configuration. Do not look at request header or parameters here
@@ -446,7 +447,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
             }
             return;
         }
-        
+
         OidcClientConfig oidcClientConfig = oidcClientConfigRef.getService(provider);
         OidcSessionInfo sessionInfo = OidcSessionInfo.getSessionInfo(req, oidcClientConfig);
         if (sessionInfo == null) {
@@ -584,7 +585,7 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
      * @return
      */
     protected String getProviderConfig(Iterator<OidcClientConfig> oidcClientConfigs, String reqProviderHint, HttpServletRequest req) {
-        return getProviderConfig(reqProviderHint, true, req); //select provider by provider hint , issuer, auth filter 
+        return getProviderConfig(reqProviderHint, true, req); //select provider by provider hint , issuer, auth filter
     }
 
     protected String getProviderConfigCurrent(Iterator<OidcClientConfig> oidcClientConfigs,
@@ -1032,10 +1033,18 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
     }
 
     /**
-     * @param response
-     * @param result
+     * Handle OAuth challenge with optional resource_metadata URL support (RFC 9728)
+     *
+     * @param req
+     *                             the HTTP servlet request
+     * @param rsp
+     *                             the HTTP servlet response
+     * @param oidcResult
+     *                             the authentication result
+     * @param oidcClientConfig
+     *                             the OIDC client configuration
      */
-    void handleOauthChallenge(HttpServletResponse rsp, ProviderAuthenticationResult oidcResult) {
+    void handleOauthChallenge(HttpServletRequest req, HttpServletResponse rsp, ProviderAuthenticationResult oidcResult, OidcClientConfig oidcClientConfig) {
         if (oidcResult.getStatus() == AuthResult.CONTINUE || oidcResult.getStatus() == AuthResult.REDIRECT_TO_PROVIDER) {
             // do not handle these statuses
             return;
@@ -1052,8 +1061,21 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
         if (errorDescription != null) {
             try {
-                OAuth20ProviderUtils.handleOAuthChallenge(rsp, oidcResult, errorDescription);
+                // Construct the resource_metadata URL if serving protected resource metadata is enabled
+                String resourceMetadataUrl = null;
+                if (oidcClientConfig != null && oidcClientConfig.getServeProtectedResourceMetadata()) {
+                    resourceMetadataUrl = constructResourceMetadataUrl(req, oidcClientConfig);
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Derived resource_metadata URL: " + resourceMetadataUrl);
+                    }
+                }
+
+                OAuth20ProviderUtils.handleOAuthChallenge(rsp, oidcResult, errorDescription, resourceMetadataUrl);
             } catch (IOException ioe) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "handleOauthChallenge() has failed :" + ioe, ioe);
+                }
+
                 // TODO error handling further
                 //
                 // Since this is a part of error handling.
@@ -1064,7 +1086,148 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         }
     }
 
-    //@Override
+    /**
+     * Construct the resource_metadata URL from the request URL.
+     * According to RFC 9728, the resource_metadata URL should point to the
+     * protected resource metadata endpoint.
+     *
+     * The base URI is found by starting at the beginning of the URL (no path) and
+     * walking forward one path segment at a time until the auth filter selection
+     * matches that of the original request. This prevents a client from forcing
+     * excessive lookups by supplying a deeply-nested URL.
+     *
+     * Algorithm:
+     * 1. Determine which auth filter accepts the original request.
+     * 2. Strip the path completely and check whether that base URL is still
+     * accepted by the same filter.
+     * (a) If yes, use the base URL (no path suffix).
+     * (b) If no, re-add one path segment at a time until the filter accepts
+     * the candidate URL, then use that as the base URI.
+     * 3. Build: <scheme>://<host>[:<port>]/.well-known/oauth-protected-resource[<path>]
+     *
+     * @param req
+     *                             the HTTP servlet request
+     * @param oidcClientConfig
+     *                             the OIDC client configuration
+     * @return the resource_metadata URL, or null if it cannot be derived
+     */
+    private String constructResourceMetadataUrl(HttpServletRequest req, OidcClientConfig oidcClientConfig) {
+        if (req == null) {
+            return null;
+        }
+
+        try {
+            String scheme = req.getScheme();
+            String serverName = req.getServerName();
+            int serverPort = req.getServerPort();
+
+            // Build the scheme+host+port prefix (no path)
+            StringBuilder hostPrefix = new StringBuilder();
+            hostPrefix.append(scheme).append("://").append(serverName);
+            if ((scheme.equals("http") && serverPort != 80) ||
+                    (scheme.equals("https") && serverPort != 443)) {
+                hostPrefix.append(":").append(serverPort);
+            }
+            String baseOrigin = hostPrefix.toString();
+
+            // Determine the path to use as the resource identifier base
+            String resourcePath = findResourceMetadataBasePath(req, oidcClientConfig, baseOrigin);
+
+            // Build: <origin>/.well-known/oauth-protected-resource[<path>]
+            StringBuilder metadataUrl = new StringBuilder(baseOrigin);
+            metadataUrl.append("/.well-known/oauth-protected-resource");
+            if (resourcePath != null && !resourcePath.isEmpty() && !resourcePath.equals("/")) {
+                metadataUrl.append(resourcePath);
+            }
+
+            return metadataUrl.toString();
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Failed to derive resource_metadata URL", e);
+            }
+            return null;
+        }
+    }
+
+    /**
+     * Find the shortest path prefix of the original request URI such that the
+     * auth filter for the candidate URL is the same as for the original request.
+     *
+     * Starting from no path at all, segments are added back one at a time from the
+     * original request URI until the filter accepts the candidate URL.
+     *
+     * @param req
+     *                             the original HTTP servlet request
+     * @param oidcClientConfig
+     *                             the OIDC client configuration (may be null)
+     * @param baseOrigin
+     *                             the scheme+host+port string with no trailing slash
+     * @return the path to append to the origin, or null / empty string if no path is needed
+     */
+    private String findResourceMetadataBasePath(HttpServletRequest req, OidcClientConfig oidcClientConfig, String baseOrigin) {
+        // Without an auth filter we cannot narrow the base URI, so fall back to the full request URI.
+        if (oidcClientConfig == null) {
+            return req.getRequestURI();
+        }
+
+        String authFilterId = oidcClientConfig.getAuthFilterId();
+        if (authFilterId == null || authFilterId.isEmpty()) {
+            return req.getRequestURI();
+        }
+
+        AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
+        if (authFilter == null) {
+            return req.getRequestURI();
+        }
+
+        // Split the original path into segments
+        String requestUri = req.getRequestURI();
+        String[] segments = requestUri == null ? new String[0] : requestUri.split("/");
+        // segments[0] is always "" because the URI starts with "/"; real segments start at index 1.
+
+        // Try with no path first (base origin only)
+        if (!authFilter.isAccepted(new PathOverrideRequestWrapper(req, baseOrigin, ""))) {
+            // Walk forward adding one segment at a time until the filter matches
+            StringBuilder candidatePath = new StringBuilder();
+            for (int i = 1; i < segments.length; i++) {
+                candidatePath.append("/").append(segments[i]);
+                if (authFilter.isAccepted(new PathOverrideRequestWrapper(req, baseOrigin, candidatePath.toString()))) {
+                    return candidatePath.toString();
+                }
+            }
+            // If nothing matched, fall back to the full request URI
+            return requestUri;
+        }
+
+        // Base origin (no path) is already accepted, no path suffix needed
+        return null;
+    }
+
+    /**
+     * HttpServletRequest wrapper that overrides getRequestURL() and
+     * getRequestURI() to point to a candidate URL during auth-filter probing.
+     */
+    private static final class PathOverrideRequestWrapper extends HttpServletRequestWrapper {
+        private final String overrideUrl;
+        private final String overridePath;
+
+        PathOverrideRequestWrapper(HttpServletRequest wrapped, String baseOrigin, String path) {
+            super(wrapped);
+            this.overridePath = path;
+            this.overrideUrl = baseOrigin + path;
+        }
+
+        @Override
+        public StringBuffer getRequestURL() {
+            return new StringBuffer(overrideUrl);
+        }
+
+        @Override
+        public String getRequestURI() {
+            return overridePath;
+        }
+    }
+
     @Override
     public boolean postLogout(HttpServletRequest arg0, HttpServletResponse arg1) {
         // TODO Auto-generated method stub

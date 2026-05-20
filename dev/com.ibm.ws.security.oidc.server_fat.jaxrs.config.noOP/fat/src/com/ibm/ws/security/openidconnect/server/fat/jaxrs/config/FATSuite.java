@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,9 @@ import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonAltRemoteLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPAudiences1ServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPEncryptionRSServerTests;
+import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPNoResourceMetadataBetaRSServerTests;
+import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPResourceMetadataBetaRSServerTests;
+import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPResourceMetadataNonBetaRSServerTests;
 import com.ibm.ws.security.openidconnect.server.fat.jaxrs.config.noOP.NoOPSignatureRSServerTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
@@ -38,8 +41,12 @@ import componenttest.rules.repeater.RepeatTests;
         // for now, test without an OP since our OP can not create JWEs
         // (these tests start a second server named "OP", but it contains no OP function, just jwt builders)
         NoOPSignatureRSServerTests.class,
-        NoOPEncryptionRSServerTests.class
-
+        NoOPEncryptionRSServerTests.class,
+        
+        // RFC 9728 Protected Resource Metadata
+        NoOPResourceMetadataBetaRSServerTests.class,
+        NoOPResourceMetadataNonBetaRSServerTests.class,
+        NoOPNoResourceMetadataBetaRSServerTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
