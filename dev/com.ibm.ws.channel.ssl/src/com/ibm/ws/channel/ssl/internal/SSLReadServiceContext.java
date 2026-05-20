@@ -177,13 +177,6 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
             int loopCount = 0;
             long encryptedBytesAvailable = 0;
             long bufferSize = 0;
-            
-            // DEBUG: Track loop iterations to detect infinite loop
-            long loopStartTime = System.currentTimeMillis();
-            int totalLoopIterations = 0;
-            int consecutiveUnderflowCount = 0;
-            int lastNetBufferPosition = -1;
-            int lastBytesConsumed = -1;
 
             // If bytesProduced > 0, then some date was left over in unconsumedDecData but it
             // wasn't enough. The data is currently between pos and lim, but now we need to
@@ -217,36 +210,13 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
             while ((bytesProduced < bytesRequested) || (bytesRequested == 0L)) {
                 // Adjust counter to know when first pass of loop took place.
                 loopCount++;
-                totalLoopIterations++;
-                
-                // DEBUG: Detect potential infinite loop
-                if (totalLoopIterations > 100) {
-                    long elapsedTime = System.currentTimeMillis() - loopStartTime;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "POTENTIAL INFINITE LOOP DETECTED: iterations=" + totalLoopIterations
-                                     + " elapsed=" + elapsedTime + "ms"
-                                     + " consecutiveUnderflows=" + consecutiveUnderflowCount
-                                     + " encryptedBytesAvailable=" + encryptedBytesAvailable
-                                     + " bytesProduced=" + bytesProduced
-                                     + " bytesRequested=" + bytesRequested
-                                     + " netBuffer=" + (netBuffer != null ? SSLUtils.getBufferTraceInfo(netBuffer) : "null"));
-                    }
-                    if (totalLoopIterations > 1000) {
-                        throw new IOException("Infinite loop detected in SSL read: " + totalLoopIterations
-                                            + " iterations, consecutiveUnderflows=" + consecutiveUnderflowCount);
-                    }
-                }
 
                 // Bypass a new read if data is available and this is the first loop iteration.
                 // Future loop will require a read since as the JSSE's UNDERFLOW will indicate.
                 if ((encryptedBytesAvailable > 0) && (loopCount == 1)) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "No read needed.  Encrypted bytes already available: "
-                                     + encryptedBytesAvailable
-                                     + " loopCount=" + loopCount
-                                     + " totalIterations=" + totalLoopIterations
-                                     + " netBufferPos=" + (netBuffer != null ? netBuffer.position() : -1)
-                                     + " netBufferLim=" + (netBuffer != null ? netBuffer.limit() : -1));
+                                     + encryptedBytesAvailable);
                     }
                 } else {
                     // Shift limit to capacity for all buffers to maximize room to read,
@@ -305,46 +275,16 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
                 // Set the position to the mark, noting the beginning of the data just read.
                 this.netBuffer.limit(this.netBuffer.position());
                 this.netBuffer.position(netBufferMark);
-                
-                // DEBUG: Track buffer state before decrypt
-                int netBufferPosBefore = this.netBuffer.position();
-                int netBufferLimBefore = this.netBuffer.limit();
 
                 // decrypt the resulting message.
                 Exception exception = decryptMessage(false);
-                
-                // DEBUG: Track buffer state after decrypt
-                int netBufferPosAfter = this.netBuffer.position();
-                int netBufferLimAfter = this.netBuffer.limit();
-                int bytesConsumedThisIteration = netBufferPosAfter - netBufferPosBefore;
-                
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, bytesProduced + " bytes produced of "
-                                 + bytesRequested + " bytes requested"
-                                 + " | netBuffer: pos " + netBufferPosBefore + "->" + netBufferPosAfter
-                                 + ", lim " + netBufferLimBefore + "->" + netBufferLimAfter
-                                 + ", consumed=" + bytesConsumedThisIteration
-                                 + ", exception=" + (exception != null ? exception.getClass().getSimpleName() : "null"));
+                                 + bytesRequested + " bytes requested");
                 }
 
                 // Calculate how much encrypted data is still available, for use in future iterations.
                 encryptedBytesAvailable = this.netBuffer.remaining();
-                
-                // DEBUG: Track if buffer position changed
-                if (bytesConsumedThisIteration == 0 && exception instanceof ReadNeededInternalException) {
-                    consecutiveUnderflowCount++;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "BUFFER_UNDERFLOW with 0 bytes consumed! consecutiveCount=" + consecutiveUnderflowCount
-                                     + " encryptedBytesAvailable=" + encryptedBytesAvailable
-                                     + " loopCount=" + loopCount
-                                     + " totalIterations=" + totalLoopIterations);
-                    }
-                } else {
-                    consecutiveUnderflowCount = 0;
-                }
-                
-                lastNetBufferPosition = netBufferPosAfter;
-                lastBytesConsumed = bytesConsumedThisIteration;
 
                 if (exception == null) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -361,40 +301,8 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
 
                 else if (exception instanceof ReadNeededInternalException) {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "More data needs to be read, loop to another read"
-                                     + " | consecutiveUnderflows=" + consecutiveUnderflowCount
-                                     + " | bytesConsumed=" + lastBytesConsumed
-                                     + " | encryptedBytesAvail=" + encryptedBytesAvailable
-                                     + " | loopCount=" + loopCount
-                                     + " | totalIterations=" + totalLoopIterations);
+                        Tr.debug(tc, "More data needs to be read, loop to another read");
                     }
-                    
-                    // DEBUG: Detect stuck condition - BUFFER_UNDERFLOW with no bytes consumed
-                    if (consecutiveUnderflowCount > 5) {
-                        String errorMsg = "POTENTIAL BUG: Consecutive BUFFER_UNDERFLOW without progress detected!"
-                                        + " consecutiveCount=" + consecutiveUnderflowCount
-                                        + " encryptedBytesAvailable=" + encryptedBytesAvailable
-                                        + " lastBytesConsumed=" + lastBytesConsumed
-                                        + " netBuffer=" + SSLUtils.getBufferTraceInfo(netBuffer)
-                                        + " loopCount=" + loopCount
-                                        + " totalIterations=" + totalLoopIterations
-                                        + " Environment: " + System.getProperty("os.name", "unknown")
-                                        + " Container: " + (System.getenv("KUBERNETES_SERVICE_HOST") != null ? "K8s/OpenShift" : "non-container");
-                        
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, errorMsg);
-                        }
-                        
-                        // After 10 consecutive underflows with no progress, force a read
-                        if (consecutiveUnderflowCount > 10 && lastBytesConsumed == 0) {
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "FORCING network read to break potential infinite loop");
-                            }
-                            // Reset loopCount to force a network read on next iteration
-                            loopCount = 2;
-                        }
-                    }
-                    
                     if (0L == this.bytesRequested) {
                         break;
                     }
@@ -1425,20 +1333,6 @@ public class SSLReadServiceContext extends SSLBaseServiceContext implements TCPR
                     // source bytes available to make a complete packet.
                     // More data needs to be read into the input buffer. Alert
                     // calling method to keep reading.
-                    
-                    // DEBUG: Enhanced logging for BUFFER_UNDERFLOW
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "BUFFER_UNDERFLOW detected:"
-                                     + " bytesConsumed=" + result.bytesConsumed()
-                                     + " bytesProduced=" + result.bytesProduced()
-                                     + " netBuffer.remaining=" + netBuffer.remaining()
-                                     + " netBuffer.position=" + netBuffer.position()
-                                     + " netBuffer.limit=" + netBuffer.limit()
-                                     + " handshakeStatus=" + result.getHandshakeStatus()
-                                     + " packetSize=" + getConnLink().getPacketBufferSize()
-                                     + " appBufferSize=" + getConnLink().getAppBufferSize());
-                    }
-                    
                     exception = readNeededInternalException;
                     // No error here. Just inform caller.
                     break;
