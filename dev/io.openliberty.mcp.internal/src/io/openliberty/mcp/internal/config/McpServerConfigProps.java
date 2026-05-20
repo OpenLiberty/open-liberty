@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.config;
 
+import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
+
 /**
  * Holds configuration data for an application-level MCPserver defined in the server.xml
  *
@@ -16,11 +18,31 @@ package io.openliberty.mcp.internal.config;
  * @param moduleName The name of the module the application is running in
  * @param path The endpoint path for the mcp server
  * @param servicePid The service PID
+ * @param serverInfo The server info configuration
  */
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
                                    String path,
-                                   String servicePid) implements McpConfig {
+                                   String servicePid,
+                                   ServerInfo serverInfo) implements McpConfig {
     public static final String FALLBACK_PATH = "/mcp";
-    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null);
+
+    // Default serverInfo values from metatype.xml
+    public static final String DEFAULT_SERVER_NAME = "mcp-server";
+    public static final String DEFAULT_SERVER_VERSION = "1.0.0";
+
+    // Default ServerInfo with defaults (name and version only, title and description are null)
+    public static final ServerInfo DEFAULT_SERVER_INFO = new ServerInfo(DEFAULT_SERVER_NAME, null, DEFAULT_SERVER_VERSION, null);
+
+    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, null);
+
+    @Override
+    public ServerInfo serverInfo() {
+        if (serverInfo != null) {
+            return serverInfo;
+        }
+        // When serverInfo is null, return metatype defaults
+        // This should not happen as McpConfigurationComponent.parseServerInfo() now always returns a ServerInfo
+        return DEFAULT_SERVER_INFO;
+    }
 }

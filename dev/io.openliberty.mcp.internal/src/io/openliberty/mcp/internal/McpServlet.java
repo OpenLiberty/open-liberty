@@ -33,6 +33,7 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import io.openliberty.mcp.content.Content;
 import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
+import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
@@ -95,6 +96,9 @@ public class McpServlet extends HttpServlet {
 
     @Inject
     ConverterRegistries converterRegistries;
+
+    @Inject
+    McpConfig mcpConfig;
 
     private Jsonb jsonb;
 
@@ -450,8 +454,7 @@ public class McpServlet extends HttpServlet {
 
         ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
 
-        // TODO: provide a way for the user to set server info
-        ServerInfo info = new ServerInfo("test-server", "Test Server", "0.1");
+        ServerInfo info = mcpConfig.serverInfo();
         McpInitializeResult result = new McpInitializeResult(version, caps, info, null);
 
         transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId);
