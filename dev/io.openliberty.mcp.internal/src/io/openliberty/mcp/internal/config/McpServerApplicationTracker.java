@@ -236,22 +236,36 @@ public class McpServerApplicationTracker {
      */
     public McpServerConfigProps getConfigForModule(String appName, String moduleName) {
         List<McpServerConfigProps> configProps = appNameToMcpConfigProps.get(appName);
+
         if (configProps == null || configProps.isEmpty()) {
             return DEFAULT_CONFIG;
         }
+
         McpServerConfigProps result = null;
+
         for (McpServerConfigProps configProp : configProps) {
-            //Exact module name match
-            if (moduleName != null && moduleName.equals(configProp.moduleName())) {
-                result = configProp;
-                break;
+            if (moduleNamesMatch(configProp.moduleName(), moduleName)) {
+                return configProp;
             }
-            //no module name specified - use default for all modules
+
+            // no module name specified - use default for all modules
             if (configProp.moduleName() == null) {
                 result = configProp;
             }
         }
         return result != null ? result : DEFAULT_CONFIG;
+    }
+
+    private boolean moduleNamesMatch(String configuredModuleName, String runtimeModuleName) {
+        if (configuredModuleName == null || runtimeModuleName == null) {
+            return false;
+        }
+
+        if (configuredModuleName.equals(runtimeModuleName)) {
+            return true;
+        }
+
+        return runtimeModuleName.equals(configuredModuleName + ".war");
     }
 
 }

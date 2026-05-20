@@ -54,6 +54,7 @@ import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
+import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
@@ -86,6 +87,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 CustomServerInfoTest.class,
                 DefaultValueTest.class,
                 DeploymentProblemTest.class,
+                DualConfigurableMcpPathTest.class,
                 DynamicMcpPathUpdateTest.class,
                 EncoderTest.class,
                 ToolCallEventTraceTest.class,
