@@ -55,5 +55,25 @@ instrument.classesExcludes: jakarta/data/*.class
 
 publish.wlp.jar.suffix: dev/api/spec
 
+DynamicImport-Package: \
+  jakarta.persistence,\
+  jakarta.persistence.criteria,\
+  jakarta.persistence.metamodel,\
+  jakarta.persistence.query,\
+  jakarta.persistence.spi,\
+  jakarta.persistence.sql
+
+Import-Package: \
+  !jakarta.persistence,\
+  !jakarta.persistence.criteria,\
+  !jakarta.persistence.metamodel,\
+  !jakarta.persistence.query,\
+  !jakarta.persistence.spi,\
+  !jakarta.persistence.sql,\
+  com.ibm.websphere.ras,com.ibm.websphere.ras.annotation,\
+  com.ibm.ws.ras.instrument.annotation;version="[1.0,2)"
+
+#TODO remove persistence and the above import packages
 -buildpath: \
+  io.openliberty.jakarta.persistence.3.2,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest
