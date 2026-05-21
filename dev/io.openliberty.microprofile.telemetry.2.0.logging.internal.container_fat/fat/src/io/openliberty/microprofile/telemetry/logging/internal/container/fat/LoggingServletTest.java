@@ -96,7 +96,7 @@ public class LoggingServletTest {
      */
     @Test
     public void testMessageLogs() throws Exception { 
-        assertTrue("The server was not started successfully.", server.isStarted());
+        assertTrue("The server was not started successfully.", server.isStarted());   
 
         TestUtils.isContainerStarted("LogsExporter", container);
 
