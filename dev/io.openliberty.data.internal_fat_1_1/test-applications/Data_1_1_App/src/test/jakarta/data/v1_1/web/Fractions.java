@@ -39,6 +39,7 @@ import jakarta.data.repository.Find;
 import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
+import jakarta.data.repository.JakartaQuery; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
@@ -115,6 +116,15 @@ public interface Fractions {
            "\t\tnumerator, denominator - numerator)" +
            "\tWHERE numerator=?1 AND denominator=?2")
     Optional<Ratio> singleRatio(int numerator, int denominator);
+
+    @JakartaQuery("""
+                     FROM Fraction f
+                    WHERE SQRT(f.decimal.value) BETWEEN ?1 AND ?2
+                    """)
+    List<Fraction> squareRootBetween(double min,
+                                     double max,
+                                     Restriction<Fraction> filter,
+                                     Order<Fraction> order);
 
     @Query("SELECT numerator, denominator - numerator")
     Stream<Ratio> streamOfRatios();

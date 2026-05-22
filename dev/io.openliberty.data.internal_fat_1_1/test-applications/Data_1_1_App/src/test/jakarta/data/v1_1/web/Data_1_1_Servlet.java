@@ -851,6 +851,34 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that is annotated JakartaQuery that has
+     * both Restriction and Order parameters.
+     */
+    @Test
+    public void testJakartaQueryWithRestrictionAndOrder() {
+
+        Restriction<Fraction> ninthsAndTenths = //
+                        Restrict.any(_Fraction.denominator.equalTo(9),
+                                     _Fraction.denominator.equalTo(10));
+
+        assertEquals(List.of("One Ninth",
+                             "Two Ninths",
+                             "Two Tenths",
+                             "Three Ninths",
+                             "Three Tenths",
+                             "Four Ninths",
+                             "Four Tenths"),
+                     fractions.squareRootBetween(0.33,
+                                                 0.67,
+                                                 ninthsAndTenths,
+                                                 Order.by(_Fraction.numerator.asc(),
+                                                          _Fraction.denominator.asc()))
+                                     .stream()
+                                     .map(f -> f.name)
+                                     .toList());
+    }
+
+    /**
      * Supply LEFT and RIGHT expressions to a repository method.
      */
     @Test
