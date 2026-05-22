@@ -11,7 +11,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
     <featureManager>
         <feature>servlet-4.0</feature>
         <feature>sessionCache-1.0</feature>
@@ -20,26 +19,25 @@
         <feature>mpReactiveStreams-1.0</feature>
     </featureManager>
     
-
     <logging traceSpecification="*=info=enabled:com.ibm.ws.session*=all=enabled:org.jgroups=all:org.infinispan.remoting.transport.jgroups=all"
              consoleLogLevel="INFO"
              traceFormat="BASIC"
              maxFileSize="20"
              maxFiles="10" />
-
+    
     <include location="../fatTestPorts.xml"/>
     
     <httpEndpoint id="defaultHttpEndpoint"
                   httpPort="${bvt.prop.HTTP_default}"
                   httpsPort="${bvt.prop.HTTP_default.secure}"/>    
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false" invalidationTimeout="10m"/>
-
+    
     <library id="InfinispanLib">
         <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
     </library>
-
-    <!-- Test Scenario 3: Multi-pod with prefix "pod1_" -->
-    <httpSessionCache libraryRef="InfinispanLib" writeContents="GET_AND_SET_ATTRIBUTES" uri="file:///${shared.resource.dir}/infinispan/infinispan-com-ibm-configuration.xml" cacheNamePrefix="pod1_">
+    
+    <!-- Test Scenario 4: Empty string prefix (should behave like default) -->
+    <httpSessionCache libraryRef="InfinispanLib" writeContents="GET_AND_SET_ATTRIBUTES" uri="file:///${shared.resource.dir}/infinispan/infinispan-com-ibm-configuration.xml" cacheNamePrefix="">
         <properties/>
     </httpSessionCache>
     
@@ -51,6 +49,4 @@
     <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanPermission" actions="queryNames"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
-
 </server>
-
