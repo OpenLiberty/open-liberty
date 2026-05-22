@@ -35,7 +35,6 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
-import jakarta.data.repository.Query;
 
 /**
  * This class consists of methods that raise exceptions.
@@ -410,7 +409,7 @@ public class Fail {
                   info.method.getName(),
                   info.repositoryInterface.getName(),
                   all,
-                  info.method.getAnnotation(Query.class).value(),
+                  info.getQueryAnnoValue(),
                   "@Param(\"" + first + "\")",
                   "String " + first);
     }
@@ -629,7 +628,7 @@ public class Fail {
                   info.jpqlParamCount - methodNPCount,
                   methodNPCount,
                   allNamedParams,
-                  info.method.getAnnotation(Query.class).value(),
+                  info.getQueryAnnoValue(),
                   ':' + firstNamedParam,
                   "@Param(\"" + firstNamedParam + "\")",
                   firstNamedParamType.getSimpleName() + ' ' + firstNamedParam);
@@ -1166,7 +1165,7 @@ public class Fail {
                       info.method.getName(),
                       info.repositoryInterface.getName(),
                       extraParamNames,
-                      info.method.getAnnotation(Query.class).value(),
+                      info.getQueryAnnoValue(),
                       ':' + firstExtraParam);
         else
             throw exc(MappingException.class,
@@ -1175,7 +1174,7 @@ public class Fail {
                       info.repositoryInterface.getName(),
                       extraParamNames,
                       qlParamNames,
-                      info.method.getAnnotation(Query.class).value());
+                      info.getQueryAnnoValue());
     }
 
     /**

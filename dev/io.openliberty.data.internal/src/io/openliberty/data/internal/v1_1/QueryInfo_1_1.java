@@ -82,6 +82,7 @@ import jakarta.data.metamodel.NavigableAttribute;
 import jakarta.data.repository.Delete;
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.Is;
+import jakarta.data.repository.JakartaQuery;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
@@ -938,7 +939,9 @@ public class QueryInfo_1_1 extends QueryInfo {
     protected String getQueryAnnoValue() {
         if (methodTypeAnno instanceof Query query)
             return query.value();
-        // else TODO query annotation(s) from Jakarta Persistence
+        else if (methodTypeAnno instanceof JakartaQuery query)
+            return query.value();
+        // TODO NativeQuery?
         else
             return null;
     }

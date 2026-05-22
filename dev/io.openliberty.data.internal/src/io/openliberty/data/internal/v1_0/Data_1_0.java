@@ -48,7 +48,6 @@ public class Data_1_0 implements DataVersionCompatibility {
      * Annotations for repository query operations that accept a JPQL query.
      */
     private static final Set<Class<? extends Annotation>> JPQL_QUERY_ANNOS = //
-                    // TODO add new Jakarta Persistence anno
                     Set.of(Query.class);
 
     /**

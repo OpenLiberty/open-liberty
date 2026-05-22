@@ -45,6 +45,7 @@ import jakarta.data.repository.Delete;
 import jakarta.data.repository.Find;
 import jakarta.data.repository.First;
 import jakarta.data.repository.Insert;
+import jakarta.data.repository.JakartaQuery; // TODO replace with Persistence 4.0 annotation once available
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Select;
@@ -66,8 +67,8 @@ public class Data_1_1 implements DataVersionCompatibility {
      * Annotations for repository query operations that accept a JPQL query.
      */
     private static final Set<Class<? extends Annotation>> JPQL_QUERY_ANNOS = //
-                    // TODO add new Jakarta Persistence anno
-                    Set.of(Query.class);
+                    Set.of(JakartaQuery.class,
+                           Query.class);
 
     /**
      * Annotations that represent lifecycle operations that are allowed for

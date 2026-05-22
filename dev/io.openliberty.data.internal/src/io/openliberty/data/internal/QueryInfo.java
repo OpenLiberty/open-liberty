@@ -3371,9 +3371,8 @@ public abstract class QueryInfo {
     protected abstract String getNullOrdering(Sort<?> sort, boolean sameDirection);
 
     /**
-     * Value (representing a JPQL or JCQL query) from the Query annotation or
-     * from the similar Jakarta Persistence annotation that supplies JPQL to a
-     * repository method.
+     * Value from the Query annotation of Jakarta Data or from the JakartaQuery
+     * annotatioh of Jakarta Persistence that supplies JPQL to a repository method.
      *
      * @return JPQL or JCQL value of a query annotation. Null if the repository
      *         method does not have a query annotation.
