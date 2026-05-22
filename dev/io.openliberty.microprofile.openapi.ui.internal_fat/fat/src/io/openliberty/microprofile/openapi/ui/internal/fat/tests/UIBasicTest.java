@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.microprofile.openapi.ui.internal.fat.tests;
 
+
 import static componenttest.selenium.SeleniumWaits.waitForElement;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
