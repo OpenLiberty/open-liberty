@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -82,6 +82,7 @@ public class CacheStoreService implements Introspector, SessionStoreService {
     private static final String CONFIG_KEY_PROPERTIES = "properties";
     private static final Set<String> sessionCacheAttributes = new HashSet<>(Arrays.asList("appInCacheName",
                                                                                           "cacheSeparator",
+                                                                                          "cacheNamePrefix",
                                                                                           "scheduleInvalidationFirstHour",
                                                                                           "scheduleInvalidationSecondHour",
                                                                                           "writeContents",
@@ -103,6 +104,12 @@ public class CacheStoreService implements Introspector, SessionStoreService {
 
     final AtomicReference<ServiceReference<?>> monitorRef = new AtomicReference<ServiceReference<?>>();
 
+    
+    /**
+     * Optional prefix to prepend to Liberty-generated cache names.
+     * Empty string means no prefix (default behavior for backward compatibility).
+     */
+    volatile String cacheNamePrefix = "";
     SerializationService serializationService;
     private CacheManagerService cacheManagerService;
 
@@ -145,6 +152,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
         Object scheduleInvalidationFirstHour = configurationProperties.get("scheduleInvalidationFirstHour");
         Object scheduleInvalidationSecondHour = configurationProperties.get("scheduleInvalidationSecondHour");
         Object writeContents = configurationProperties.get("writeContents");
+        Object prefix = configurationProperties.get("cacheNamePrefix");
+        cacheNamePrefix = (prefix instanceof String) ? (String) prefix : "";
         Object writeFrequency = configurationProperties.get("writeFrequency");
 
         // httpSessionCache writeContents accepts ONLY_SET_ATTRIBUTES in place of ONLY_UPDATED_ATTRIBUTES to better reflect the behavior provided
@@ -482,8 +491,8 @@ public class CacheStoreService implements Introspector, SessionStoreService {
                 // detailed information per cache
                 for (String cacheName : cacheNames) {
                     out.println();
-                    boolean isMetaCache = cacheName.startsWith("com.ibm.ws.session.meta.");
-                    boolean isAttrCache = cacheName.startsWith("com.ibm.ws.session.attr.");
+                    boolean isMetaCache = cacheName.contains("com.ibm.ws.session.meta.");
+                    boolean isAttrCache = cacheName.contains("com.ibm.ws.session.attr.");
                     out.println("Cache " + cacheName + ":");
                     Cache<?, ?> cache = isMetaCache ? cacheManager.getCache(cacheName, String.class, ArrayList.class)
                                       : isAttrCache ? cacheManager.getCache(cacheName, String.class, byte[].class)
