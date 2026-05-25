@@ -2602,7 +2602,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/34730") //TODO fix me
     public void testOLGH34730() throws Exception {
         deleteAllEntitiesH2(Item.class);
 
@@ -2616,11 +2615,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
             if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
                 tx.rollback();
             }
-
-            // ERROR: org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "BINARY VARYING to NUMERIC" [22018-240]
             throw e;
         }
-
     }
 
     /**
