@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc.external;
 
@@ -41,8 +38,11 @@ public class WebSocketContainerExt implements WebSocketContainer {
     // config parameters that are owned at the Container level
     long defaultAsyncSendTimeout = 0; // don't timeout async sends unless told to do so by the user/app    
     long defaultMaxSessionIdleTimeout = -1; // default is no session timeout
-    int defaultMaxBinaryMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation 
-    int defaultMaxTextMessageBufferSize = (int) Constants.DEFAULT_MAX_MSG_SIZE; // the max message size if not overridden by the annotated endpoint annotation
+
+    // No spec defined limits, but we need to have some limits to prevent OOM errors.
+    // Default buffer size for processing binary messages, can be overridden by user/app
+    int defaultMaxBinaryMessageBufferSize = 32 * 1024; 
+    int defaultMaxTextMessageBufferSize = 32 * 1024;
 
     @Override
     public long getDefaultAsyncSendTimeout() {

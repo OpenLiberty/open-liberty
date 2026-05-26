@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.wsoc;
 
@@ -57,6 +54,8 @@ public class MessageReader {
     int payloadCountOfBuffers = 0;
     int messageCompletePayloadSize = 0;
 
+    long cumulativePayloadSize = 0;
+
     // since control messages can occur inside Read Message, we need separate buffers at the message layer
     WsByteBuffer[] payloadBuffers_Control = null;
     int payloadCountOfBuffers_Control = 0;
@@ -88,7 +87,6 @@ public class MessageReader {
     }
 
     public void reset() {
-
         if (nextMessageBuf == null) {
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "reset called - no left over buffers.");
@@ -105,7 +103,8 @@ public class MessageReader {
         firstFrameOpcodeType = null;
         payloadCountOfBuffers = 0;
         messageCompletePayloadSize = 0;
-
+        cumulativePayloadSize = 0;
+        
         if (countOfIOFrames > 0) {
             for (int i = 0; i < countOfIOFrames; i++) {
                 if (fpList[i] != null) {
@@ -187,7 +186,10 @@ public class MessageReader {
             }
         }
 
-        processMaxMessageSize(frameProcessor.getPayloadLength());
+        if (frameState == FrameState.PAYLOAD_COMPLETE) {
+            processMaxMessageSize(frameProcessor.getPayloadLength(), cumulativePayloadSize += frameProcessor.getPayloadLength());
+        }
+
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "frameSequenceState after: " + frameSequenceState);
@@ -550,25 +552,37 @@ public class MessageReader {
      * handle the incoming message. If the incoming whole message exceeds this limit, then the implementation generates an error and closes the connection using the reason that the
      * message was too big.
      */
-    private void processMaxMessageSize(long payLoadSize) throws MaxMessageException {
+    private void processMaxMessageSize(long payLoadSize, long cumulativePayloadSize) throws MaxMessageException {
+        // Control frames are not subject to maxMessageSize validation
+        if (firstFrameOpcodeType == OpcodeType.CONNECTION_CLOSE
+            || firstFrameOpcodeType == OpcodeType.PING
+            || firstFrameOpcodeType == OpcodeType.PONG) {
+            return;
+        }
+
         AnnotatedEndpoint ae = null;
         Long maxMessageSize = Constants.DEFAULT_MAX_MSG_SIZE;
+        Long maxMessageBufferSize = 0L;
 
         if (!(connLink.getEndpoint() instanceof AnnotatedEndpoint)) {
             if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_FIRST
                 || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_LAST) {
-                maxMessageSize = (long) connLink.getMaxBinaryMessageBufferSize();
+                maxMessageBufferSize = (long) connLink.getMaxBinaryMessageBufferSize();
             } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_FIRST
                        || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_LAST) {
-                maxMessageSize = (long) connLink.getMaxTextMessageBufferSize();
+                maxMessageBufferSize = (long) connLink.getMaxTextMessageBufferSize();
             }
 
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "processMaxMessageSize: Not AE. payLoadSize passed in: " + payLoadSize + " maxMessageSize: " + maxMessageSize);
+                Tr.debug(tc, "processMaxMessageSize: Not AE. payLoadSize passed in: payLoadSize: " + payLoadSize + " cumulativePayloadSize: " + cumulativePayloadSize + " maxMessageSize: " + maxMessageSize + " maxMessageBufferSize: " + maxMessageBufferSize);
+            }
+
+            if(maxMessageBufferSize > maxMessageSize) {
+                maxMessageSize = maxMessageBufferSize;
             }
 
             // TODO: will have to use English message for now, needs to be translated in the next release
-            if ((maxMessageSize != -1) && (payLoadSize > maxMessageSize)) {
+            if (cumulativePayloadSize > maxMessageSize) {
                 // String reasonPhrase = Tr.formatMessage(tc, "invalid.message.toobig", "MessageHandler", payLoadSize, maxMessageSize, "onMessage");
                 // also, this message needs be less than 123, the max for a control frame.
                 String reasonPhrase = "Invalid incoming WebSocket message. Message is too big. Message size: " +
@@ -578,7 +592,6 @@ public class MessageReader {
             return;
         } else {
             ae = (AnnotatedEndpoint) connLink.getEndpoint();
-
         }
 
         MethodData methodData = null;
@@ -600,16 +613,21 @@ public class MessageReader {
             // if user did not define a max size with an annotation, get the size from the session
             if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_FIRST
                 || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_LAST) {
-                maxMessageSize = (long) connLink.getMaxBinaryMessageBufferSize();
+                maxMessageBufferSize = (long) connLink.getMaxBinaryMessageBufferSize();
             } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_FIRST
                        || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_LAST) {
-                maxMessageSize = (long) connLink.getMaxTextMessageBufferSize();
+                maxMessageBufferSize = (long) connLink.getMaxTextMessageBufferSize();
             }
         }
 
         if (tc.isDebugEnabled()) {
-            Tr.debug(tc, "processMaxMessageSize: Is AE. payLoadSize passed in: " + payLoadSize + " maxMessageSize: " + maxMessageSize);
+            Tr.debug(tc, "processMaxMessageSize: Is AE. payLoadSize passed in: payLoadSize: " + payLoadSize + " cumulativePayloadSize: " + cumulativePayloadSize + " maxMessageSize: " + maxMessageSize + " maxMessageBufferSize: " + maxMessageBufferSize);
         }
+
+        if(maxMessageBufferSize > maxMessageSize) {
+            maxMessageSize = maxMessageBufferSize;
+        }
+
         Class<?> inputType = methodData.getMessageType();
 
         //if message is in parts, don't check for maxMessageSize, per API doc
@@ -623,8 +641,9 @@ public class MessageReader {
         } else if (inputType.equals(InputStream.class)) { //if message is InputStream type, don't check for maxMessageSize, per API doc
             return;
         }
+
         //if payload size is greater than maxMessageSize, throw MaxMessageException which calls onClose() method of ServerEndpoint config
-        if ((maxMessageSize != -1) && (payLoadSize > maxMessageSize)) {
+        if (cumulativePayloadSize > maxMessageSize) {
             if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE) {
                 epMethodHelper = ae.getOnMessageBinaryMethod();
             } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE) {
@@ -632,12 +651,10 @@ public class MessageReader {
             }
             String reasonPhrase = Tr.formatMessage(tc,
                                                    "invalid.message.toobig",
-                                                   epMethodHelper.getMethod().getDeclaringClass().getName(), payLoadSize, maxMessageSize,
+                                                   epMethodHelper.getMethod().getDeclaringClass().getName(), cumulativePayloadSize, maxMessageSize,
                                                    epMethodHelper.getMethod().getName());
 
             throw new MaxMessageException(reasonPhrase);
-        } else {
-            return;
         }
     }
 }
