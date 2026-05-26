@@ -17,10 +17,7 @@ Bundle-Name: Test bundle providing a quiesce listener
 Bundle-SymbolicName: test.server.quiesce
 Bundle-Description: Test bundle providing a server quiesce listener; version=${bVersion}
 
-Import-Package: \
-  com.ibm.ws.kernel.launch.service;version="[1.0,2)", \
-  com.ibm.ws.threading;version="[1.0,2)", \
-  *
+Import-Package: *
 
 Include-Resource:\
  OSGI-INF/metatype/metatype.xml=test-bundles/test.server.quiesce/resources/OSGI-INF/metatype/metatype.xml
@@ -30,8 +27,7 @@ Private-Package: \
   test.server.quiesce
   
 -dsannotations: \
-  test.server.quiesce.TestQuiesceListener,\
-  test.server.quiesce.TestPauseableComponent
+  test.server.quiesce.TestQuiesceListener
 
 
  

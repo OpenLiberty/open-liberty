@@ -36,25 +36,4 @@
         <Object ocdref="test.server.quiesce"/>
     </Designate>
     
-    <OCD name="internal" description="internal" 
-         id="test.server.pauseable" ibm:alias="testServerPauseable">
-    
-        <AD name="internal" description="internal" 
-            id="throwException" required="false" type="Boolean" default="false" />  
-    
-        <AD name="internal" description="internal" 
-            id="takeForever" required="false" type="Boolean" default="false" />  
-                        
-        <AD name="internal" description="internal" 
-            id="startThreadsAfterPause" required="false" type="Boolean" default="false" />  
-            
-        <AD name="internal" description="internal"
-            id="startThreadsWhileRunning" required="false" type="Boolean" default="false"/>
-            
-    </OCD>
-  
-    <Designate pid="test.server.pauseable">
-        <Object ocdref="test.server.pauseable"/>
-    </Designate>
-    
 </metatype:MetaData>

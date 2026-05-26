@@ -1,8 +1,0 @@
-Subsystem-ManifestVersion: 1
-Subsystem-SymbolicName: pauseableInternal-1.0;visibility:=public
-Subsystem-Version: 1.0.0
-Subsystem-Type: osgi.subsystem.feature
-IBM-Feature-Version: 2
-IBM-API-Package: com.ibm.ws.kernel.launch.service; type="internal", \
- com.ibm.ws.threading; type="internal"
-
