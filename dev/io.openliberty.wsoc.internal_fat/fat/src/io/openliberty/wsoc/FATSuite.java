@@ -16,13 +16,14 @@ import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
-
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
+
 import io.openliberty.wsoc.tests.BasicTest;
 import io.openliberty.wsoc.tests.Cdi12Test;
 import io.openliberty.wsoc.tests.Cdi20Test;
 import io.openliberty.wsoc.tests.Cdi20TxTest;
+import io.openliberty.wsoc.tests.FragmentedMessageTest;
 import io.openliberty.wsoc.tests.MiscellaneousTest;
 import io.openliberty.wsoc.tests.SecureTest;
 import io.openliberty.wsoc.tests.TraceTest;
@@ -44,7 +45,8 @@ import io.openliberty.wsoc.tests.WebSocket11Test;
                 Cdi20TxTest.class,
                 MiscellaneousTest.class,
                 SecureTest.class,
-                TraceTest.class
+                TraceTest.class,
+                FragmentedMessageTest.class 
 })
 public class FATSuite {
 
