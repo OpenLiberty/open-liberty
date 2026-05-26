@@ -230,7 +230,7 @@ public class McpServerApplicationTracker {
      * be found
      *
      * @param appName The name of the application defined in the server.xml under `<application name="appName" location="app.war">`
-     * @param moduleName The name of the module defined in the server.xml under `<mcpServer moduleName="myModule" path="/mcp"`
+     * @param moduleName The name of the module from runtime (may include .war suffix for EAR deployments)
      * @return the McpServerConfigProps for the given application. If no `<mcpServer>` property was set in the server.xml
      * or if a configuration for particular module could not be found, returns {@link McpServerConfigProps.DEFAULT_CONFIG}
      */
@@ -241,10 +241,13 @@ public class McpServerApplicationTracker {
             return DEFAULT_CONFIG;
         }
 
+        String normalizedModuleName = normalizeModuleName(moduleName);
         McpServerConfigProps result = null;
 
         for (McpServerConfigProps configProp : configProps) {
-            if (moduleNamesMatch(configProp.moduleName(), moduleName)) {
+            String configuredModuleName = normalizeModuleName(configProp.moduleName());
+
+            if (normalizedModuleName != null && normalizedModuleName.equals(configuredModuleName)) {
                 return configProp;
             }
 
@@ -253,19 +256,42 @@ public class McpServerApplicationTracker {
                 result = configProp;
             }
         }
+
         return result != null ? result : DEFAULT_CONFIG;
     }
 
-    private boolean moduleNamesMatch(String configuredModuleName, String runtimeModuleName) {
-        if (configuredModuleName == null || runtimeModuleName == null) {
-            return false;
+    /**
+     * Normalizes a module name by removing the .war suffix if present.
+     *
+     * <p><b>Background:</b> This handles a J2EE specification behavior where module names are reported differently
+     * depending on deployment type:
+     * <ul>
+     * <li><b>Standalone WAR:</b> {@code ComponentMetaData.getJ2EEName().getModule()} returns {@code "myModule"} (no extension)</li>
+     * <li><b>WAR in EAR:</b> The same call returns {@code "myModule.war"} (with extension)</li>
+     * </ul>
+     *
+     * <p>The extension is included for EAR deployments because EARs can contain multiple module types (WAR, EJB-JAR, etc.),
+     * and the runtime uses the file extension to distinguish between them.
+     *
+     * <p>Meanwhile, in server.xml configuration, the convention is to specify module names without the extension:
+     * {@code <mcpServer moduleName="myModule">}, following standard Liberty configuration patterns.
+     *
+     * <p>This method normalizes module names by removing the .war suffix if present, allowing proper matching
+     * regardless of deployment type.
+     *
+     * @param moduleName The module name to normalize (may be null, may include .war suffix)
+     * @return The normalized module name without .war suffix, or null if input was null
+     */
+    private String normalizeModuleName(String moduleName) {
+        if (moduleName == null) {
+            return null;
         }
 
-        if (configuredModuleName.equals(runtimeModuleName)) {
-            return true;
+        if (moduleName.endsWith(".war")) {
+            return moduleName.substring(0, moduleName.length() - ".war".length());
         }
 
-        return runtimeModuleName.equals(configuredModuleName + ".war");
+        return moduleName;
     }
 
 }
