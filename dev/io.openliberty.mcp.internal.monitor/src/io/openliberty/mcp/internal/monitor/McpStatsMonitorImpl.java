@@ -27,6 +27,7 @@ import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 
 import java.time.Duration;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -53,10 +54,11 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	private static final ConcurrentHashMap<String, Set<McpSessionStatAttributes>> appNameToSessionStats = new ConcurrentHashMap<>();
 
 	@PublishedMetric
-	public MeterCollection<McpOperationStats> mcpOperationStatsCollection = new MeterCollection<McpOperationStats>("McpOperationMetrics", this);
-	
+	public MeterCollection<McpOperationStatistics> mcpOperationStatsCollection = new MeterCollection<McpOperationStatistics>("McpOperation", this);
+
 	@PublishedMetric
 	public MeterCollection<McpSessionStatistics> mcpSessionStatsCollection = new MeterCollection<McpSessionStatistics>("McpSession", this);
+	
 	/**
 	 * Generates a unique String ID for MeterCollection from operation stat attributes.
 	 * MeterCollection requires String keys for JMX ObjectName registration. The toString() method
@@ -83,17 +85,18 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
      * @param appName Can be null (would mean its from these probes -- ergo server, don't have to worry about unloading)
      */
 	public void updateMcpOperationStatDuration(McpOperationStatAttributes.Builder builder, Duration duration, String appName) {
-
 		McpOperationStatAttributes mcpStatsAttributes;
 		
 		mcpStatsAttributes = builder.build();
-		if (mcpStatsAttributes == null) return;
+		if (mcpStatsAttributes == null) {
+			return;
+		}
 		
 		/*
 		 * Create and/or update MBean
 		 */
 		String statId = generateOperationStatId(mcpStatsAttributes);
-		McpOperationStats mcpStats = mcpOperationStatsCollection.get(statId);
+		McpOperationStatistics mcpStats = mcpOperationStatsCollection.get(statId);
 		if (mcpStats == null) {
 			mcpStats = initializeMcpOperationStat(mcpStatsAttributes, statId, appName);
 			//Shutdown by the monitor-1.0 filter - shows over
@@ -119,11 +122,12 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
      * @param appName Can be null (would mean its from these probes -- ergo server, don't have to worry about unloading)
      */
 	public void updateMcpSessionStatDuration(McpSessionStatAttributes.Builder builder, Duration duration, String appName) {
-
 		McpSessionStatAttributes mcpStatsAttributes;
 		
 		mcpStatsAttributes = builder.build();
-		if (mcpStatsAttributes == null) return;
+		if (mcpStatsAttributes == null) {
+			return;
+		}
 		
 		/*
 		 * Create and/or update MBean
@@ -148,9 +152,9 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 		});
 	}
 
-	private McpOperationStats initializeMcpOperationStat(McpOperationStatAttributes statAttri, String statId, String appName) {
+	private McpOperationStatistics initializeMcpOperationStat(McpOperationStatAttributes statAttri, String statId, String appName) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(tc, "initializeMcpOperationStat", statAttri);
+			Tr.debug(this, tc, "initializeMcpOperationStat", statAttri);
 		}
 		
 		synchronized(this) {
@@ -161,9 +165,9 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 				return mcpOperationStatsCollection.get(statId);
 			}
 
-			McpOperationStats mcpMetricStats = new McpOperationStats(statAttri);
+			McpOperationStatistics mcpMetricStats = new McpOperationStatistics(statAttri);
 			mcpOperationStatsCollection.put(statId, mcpMetricStats);
-			
+
 			//Shut down by monitor-1.0 filter attribute
 			if (mcpOperationStatsCollection.get(statId) == null) {
 				return null;
@@ -185,7 +189,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	
 	private McpSessionStatistics initializeMcpSessionStat(McpSessionStatAttributes statAttri, String statId, String appName) {
 		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-			Tr.debug(tc, "initializeMcpSessionStat", statAttri);
+			Tr.debug(this, tc, "initializeMcpSessionStat", statAttri);
 		}
 		
 		synchronized(this) {
@@ -198,7 +202,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 
 			McpSessionStatistics mcpMetricStats = new McpSessionStatistics(statAttri);
 			mcpSessionStatsCollection.put(statId, mcpMetricStats);
-			
+
 			//Shut down by monitor-1.0 filter attribute
 			if (mcpSessionStatsCollection.get(statId) == null) {
 				return null;
@@ -256,16 +260,105 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 			});
 			
 			if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-				Tr.debug(tc, "Removed " + removedCount + " statistics for application: " + appName);
+				Tr.debug(this, tc, "Removed " + removedCount + " statistics for application: " + appName);
 			}
+		}
+	}
+	
+	/**
+	 * Removes all MBeans when MCP monitoring is disabled, but keeps the tracking data
+	 * so MBeans can be re-registered if monitoring is re-enabled.
+	 * This is different from removeStatsForApp which is called when an app is unloaded.
+	 */
+	public void removeAllMBeansForMonitoringDisabled() {
+		int removedCount = 0;
+		
+		// Remove all operation MBeans but keep tracking data
+		for (Set<McpOperationStatAttributes> operationStats : appNameToOperationStats.values()) {
+			if (operationStats != null) {
+				for (McpOperationStatAttributes statAttri : operationStats) {
+					String statId = generateOperationStatId(statAttri);
+					mcpOperationStatsCollection.remove(statId);
+					removedCount++;
+				}
+			}
+		}
+		
+		// Remove all session MBeans but keep tracking data
+		for (Set<McpSessionStatAttributes> sessionStats : appNameToSessionStats.values()) {
+			if (sessionStats != null) {
+				for (McpSessionStatAttributes statAttri : sessionStats) {
+					String statId = generateSessionStatId(statAttri);
+					mcpSessionStatsCollection.remove(statId);
+					removedCount++;
+				}
+			}
+		}
+		
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(this, tc, "Removed " + removedCount + " MBeans when MCP monitoring was disabled (tracking data preserved for re-registration)");
+		}
+		
+		// Notify metrics adapters to clean up their metrics
+		metricsManagerService.run(metricsManager -> {
+			for (String appName : appNameToOperationStats.keySet()) {
+				metricsManager.removeMetricsForApp(appName);
+			}
+			return null;
+		});
+	}
+	
+	/**
+	 * Re-registers all MBeans for all tracked applications.
+	 * This is called when MCP monitoring is re-enabled after being disabled.
+	 */
+	public void reregisterAllMBeans() {
+		int registeredCount = 0;
+		
+		// Re-register operation statistics MBeans for all apps
+		for (Map.Entry<String, Set<McpOperationStatAttributes>> entry : appNameToOperationStats.entrySet()) {
+			String appName = entry.getKey();
+			Set<McpOperationStatAttributes> operationStats = entry.getValue();
+			
+			if (operationStats != null) {
+				for (McpOperationStatAttributes statAttri : operationStats) {
+					String statId = generateOperationStatId(statAttri);
+					// Always re-register since MBeans were removed when monitoring was disabled
+					McpOperationStatistics stat = initializeMcpOperationStat(statAttri, statId, appName);
+					if (stat != null) {
+						registeredCount++;
+					}
+				}
+			}
+		}
+		
+		// Re-register session statistics MBeans for all apps
+		for (Map.Entry<String, Set<McpSessionStatAttributes>> entry : appNameToSessionStats.entrySet()) {
+			String appName = entry.getKey();
+			Set<McpSessionStatAttributes> sessionStats = entry.getValue();
+			
+			if (sessionStats != null) {
+				for (McpSessionStatAttributes statAttri : sessionStats) {
+					String statId = generateSessionStatId(statAttri);
+					// Always re-register since MBeans were removed when monitoring was disabled
+					McpSessionStatistics stat = initializeMcpSessionStat(statAttri, statId, appName);
+					if (stat != null) {
+						registeredCount++;
+					}
+				}
+			}
+		}
+		
+		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+			Tr.debug(this, tc, "Re-registered " + registeredCount + " MBeans after MCP monitoring was re-enabled");
 		}
 	}
 
 	/**
-	 * Constructor called by the monitoring framework when this class is instantiated.
-	 * Sets this instance in the holder to allow the io.openliberty.mcp.internal bundle
-	 * to access it without creating a cyclic dependency.
-	 */
+		* Constructor called by the monitoring framework when this class is instantiated.
+		* Sets this instance in the holder to allow the io.openliberty.mcp.internal bundle
+		* to access it without creating a cyclic dependency.
+		*/
 	/**
 	 * Instance block to create singleton.
 	 * The "Liberty-Monitoring-Components" in the bnd.bnd
@@ -301,6 +394,19 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	}
 	
 	/**
+	 * Returns a set of all application names currently being tracked for statistics.
+	 * This combines both operation and session statistics tracking.
+	 *
+	 * @return Set of application names
+	 */
+	public static Set<String> getTrackedAppNames() {
+		Set<String> allAppNames = new HashSet<>();
+		allAppNames.addAll(appNameToOperationStats.keySet());
+		allAppNames.addAll(appNameToSessionStats.keySet());
+		return allAppNames;
+	}
+	
+	/**
 	 * Clear the singleton instance. This is primarily for testing purposes.
 	 */
 	static void clearInstance() {
@@ -313,7 +419,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	@Override
 	public void recordOperationStart(McpOperationMetrics metrics) {
 	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	        Tr.debug(tc, "Recording operation start for method: " + metrics.getMethodName());
+	        Tr.debug(this, tc, "Recording operation start for method: " + metrics.getMethodName());
 	    }
 
 	    McpOperationStatAttributes.Builder builder = McpOperationStatAttributes.builder();
@@ -333,7 +439,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	            }
 
 	            if (metrics.getTransport().getProtocolVersion() != null) {
-	                builder.withMcpProtocolVersion(Optional.of(metrics.getTransport().getProtocolVersion().toString()));
+	                builder.withMcpProtocolVersion(Optional.of(metrics.getTransport().getProtocolVersion().getVersion()));
 	            }
 
 	            if (metrics.getTransport().getReq() != null) {
@@ -350,7 +456,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	            builder.withNetworkTransport(Optional.of("tcp"));
 	        } catch (Exception e) {
 	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                Tr.debug(tc, "Error extracting transport information: " + e.getMessage());
+	                Tr.debug(this, tc, "Error extracting transport information: " + e.getMessage());
 	            }
 	        }
 	    }
@@ -363,15 +469,15 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	@Override
 	public void recordOperationEnd(McpOperationMetrics metrics) {
 	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	        Tr.debug(tc, "Recording operation end for method: " + metrics.getMethodName());
-	        Tr.debug(tc, "MCP status=" + metrics.getStatus() + ", errorType=" + metrics.getErrorType());
+	        Tr.debug(this, tc, "Recording operation end for method: " + metrics.getMethodName());
+	        Tr.debug(this, tc, "MCP status=" + metrics.getStatus() + ", errorType=" + metrics.getErrorType());
 	    }
 
 	    McpOperationStatAttributes.Builder builder = metrics.getAttributesBuilder();
 	    
 	    if (builder == null) {
 	        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	            Tr.debug(tc, "Missing MCP monitor state. Operation start may not have been recorded.");
+	            Tr.debug(this, tc, "Missing MCP monitor state. Operation start may not have been recorded.");
 	        }
 	        return;
 	    }
@@ -393,7 +499,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	@Override
 	public void recordSessionStart(McpSessionMetrics metrics) {
 	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && metrics.getMcpSession() != null) {
-	        Tr.debug(tc, "Recording session start for session: " + metrics.getMcpSession().getSessionId());
+	        Tr.debug(this, tc, "Recording session start for session: " + metrics.getMcpSession().getSessionId());
 	    }
 
 	    McpSessionStatAttributes.Builder builder = McpSessionStatAttributes.builder();
@@ -408,7 +514,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	            }
 
 	            if (metrics.getTransport().getProtocolVersion() != null) {
-	                builder.withMcpProtocolVersion(Optional.of(metrics.getTransport().getProtocolVersion().toString()));
+	                builder.withMcpProtocolVersion(Optional.of(metrics.getTransport().getProtocolVersion().getVersion()));
 	            }
 
 	            if (metrics.getTransport().getReq() != null) {
@@ -425,7 +531,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	            builder.withNetworkTransport(Optional.of("tcp"));
 	        } catch (Exception e) {
 	            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	                Tr.debug(tc, "Error extracting transport information: " + e.getMessage());
+	                Tr.debug(this, tc, "Error extracting transport information: " + e.getMessage());
 	            }
 	        }
 	    }
@@ -436,7 +542,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 	@Override
 	public void recordSessionEnd(McpSessionMetrics metrics) {
 	    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	        Tr.debug(tc, "MCP errorType=" + metrics.getErrorType());
+	        Tr.debug(this, tc, "MCP errorType=" + metrics.getErrorType());
 
 	    }
 
@@ -444,7 +550,7 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
 
 	       if (builder == null || metrics.getStartTIme() == null) {
 	           if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	               Tr.debug(tc, "Missing MCP monitor state. Operation start may not have been recorded.");
+	               Tr.debug(this, tc, "Missing MCP monitor state. Operation start may not have been recorded.");
 	           }
 	           return;
 	       }

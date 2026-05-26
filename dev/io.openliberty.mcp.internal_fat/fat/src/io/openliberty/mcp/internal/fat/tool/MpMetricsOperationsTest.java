@@ -176,7 +176,7 @@ public class MpMetricsOperationsTest extends FATServletClient {
     }
 
     private void assertProtocolAttributes(List<MetricEntry> mcpMetrics) {
-        String expectedMcpProtocolVersion = "V_" + TestConstants.VALUE_MCP_PROTOCOL_VERSION.replace('-', '_');
+        String expectedMcpProtocolVersion = TestConstants.VALUE_MCP_PROTOCOL_VERSION;
         List<MetricEntry> metricsWithExpectedMcpProtocolVersion = MpMetricsParser.getMetricsByTags(mcpMetrics,
                                                                                                    Map.of("mcp_protocol_version", expectedMcpProtocolVersion));
         assertTrue("Expected all MCP mpMetrics to have the MCP Protocol Version " + expectedMcpProtocolVersion, metricsWithExpectedMcpProtocolVersion.size() == mcpMetrics.size());

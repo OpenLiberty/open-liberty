@@ -22,7 +22,6 @@ WS-TraceGroup: MCP
 Import-Package: \
 	*
 
-
 Export-Package: \
 	io.openliberty.mcp.internal.monitor,\
 	io.openliberty.mcp.internal.monitor.metrics

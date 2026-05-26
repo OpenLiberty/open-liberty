@@ -86,7 +86,7 @@ public class McpMonitorTest extends FATServletClient {
     @AfterClass
     public static void teardown() throws Exception {
         if (server != null && server.isStarted()) {
-            server.stopServer();
+            server.stopServer("CWMCM0010E"); // Expected: Tool threw non-business exception
         }
     }
 
@@ -187,5 +187,168 @@ public class McpMonitorTest extends FATServletClient {
         // Verify tool name attribute
         FATServletClient.runTest(server, APP_NAME + "/McpMonitorMetricsServlet",
                                  "testToolNameAttribute");
+    }
+
+    /**
+     * Test that error metrics are recorded for business errors (ToolCallException)
+     */
+    @Test
+    public void testBusinessErrorMetrics() throws Exception {
+        String businessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 10,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "businessErrorTool",
+                            "arguments": {"input": "bad-value"}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(businessErrorRequest);
+        assertTrue("Response should contain error", response.contains("isError"));
+
+        // Verify error metrics were recorded with correct error type
+        FATServletClient.runTest(server, APP_NAME + "/McpMonitorMetricsServlet",
+                                 "testBusinessErrorMetrics");
+    }
+
+    /**
+     * Test that error metrics are recorded for non-business errors (RuntimeException)
+     */
+    @Test
+    public void testNonBusinessErrorMetrics() throws Exception {
+        String nonBusinessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 11,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "nonBusinessErrorTool",
+                            "arguments": {"input": "trigger-error"}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(nonBusinessErrorRequest);
+        assertTrue("Response should contain error", response.contains("isError"));
+
+        // Verify error metrics were recorded with correct error type
+        FATServletClient.runTest(server, APP_NAME + "/McpMonitorMetricsServlet",
+                                 "testNonBusinessErrorMetrics");
+    }
+
+    /**
+     * Test that error metrics are recorded for async business errors
+     */
+    @Test
+    public void testAsyncBusinessErrorMetrics() throws Exception {
+        String asyncBusinessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 12,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "asyncBusinessErrorTool",
+                            "arguments": {"input": "bad-value"}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(asyncBusinessErrorRequest);
+        assertTrue("Response should contain error", response.contains("isError"));
+
+        // Verify async error metrics were recorded correctly
+        FATServletClient.runTest(server, APP_NAME + "/McpMonitorMetricsServlet",
+                                 "testAsyncBusinessErrorMetrics");
+    }
+
+    /**
+     * Test that error metrics are recorded for async non-business errors
+     */
+    @Test
+    public void testAsyncNonBusinessErrorMetrics() throws Exception {
+        String asyncNonBusinessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 13,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "asyncNonBusinessErrorTool",
+                            "arguments": {"input": "trigger-error"}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(asyncNonBusinessErrorRequest);
+        assertTrue("Response should contain error", response.contains("isError"));
+
+        // Verify async error metrics were recorded correctly
+        FATServletClient.runTest(server, APP_NAME + "/McpMonitorMetricsServlet",
+                                 "testAsyncNonBusinessErrorMetrics");
+    }
+
+    /**
+     * Test that error metrics are recorded for async failed CompletionStage
+     */
+    @Test
+    public void testAsyncFailedStageErrorMetrics() throws Exception {
+        String asyncFailedStageRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 14,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "asyncFailedStageTool",
+                            "arguments": {"input": "trigger-error"}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(asyncFailedStageRequest);
+        assertTrue("Response should contain error", response.contains("isError"));
+
+        // Verify async failed stage error metrics were recorded correctly
+        FATServletClient.runTest(server, APP_NAME + "/McpMonitorMetricsServlet",
+                                 "testAsyncFailedStageErrorMetrics");
+    }
+
+    /**
+     * Test that error type attribute is correctly set for different error types
+     */
+    @Test
+    public void testErrorTypeAttributeVariety() throws Exception {
+        // Call business error tool
+        String businessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 15,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "businessErrorTool",
+                            "arguments": {"input": "bad"}
+                          }
+                        }
+                        """;
+        client.callMCP(businessErrorRequest);
+
+        // Call non-business error tool
+        String nonBusinessErrorRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 16,
+                          "method": "tools/call",
+                          "params": {
+                            "name": "nonBusinessErrorTool",
+                            "arguments": {"input": "error"}
+                          }
+                        }
+                        """;
+        client.callMCP(nonBusinessErrorRequest);
+
+        // Verify different error types are tracked separately
+        FATServletClient.runTest(server, APP_NAME + "/McpMonitorMetricsServlet",
+                                 "testErrorTypeAttributeVariety");
     }
 }

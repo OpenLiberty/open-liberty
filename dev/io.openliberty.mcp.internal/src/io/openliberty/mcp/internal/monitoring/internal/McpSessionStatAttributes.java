@@ -116,19 +116,17 @@ public class McpSessionStatAttributes {
     @Override
     public String toString() {
         return String.join("_",
-            java.util.stream.Stream.of(
-                errorType, jsonrpcProtocolVersion, mcpProtocolVersion,
-                networkProtocolName, networkProtocolVersion, networkTransport
-            )
-            .filter(s -> s != null)
-            .toArray(String[]::new)
-        );
+                           java.util.stream.Stream.of(
+                                                      errorType, jsonrpcProtocolVersion, mcpProtocolVersion,
+                                                      networkProtocolName, networkProtocolVersion, networkTransport)
+                                                  .filter(s -> s != null)
+                                                  .toArray(String[]::new));
     }
 
     @Override
     public int hashCode() {
         return Objects.hash(errorType, jsonrpcProtocolVersion, mcpProtocolVersion,
-                networkProtocolName, networkProtocolVersion, networkTransport);
+                            networkProtocolName, networkProtocolVersion, networkTransport);
     }
 
     @Override
@@ -139,11 +137,11 @@ public class McpSessionStatAttributes {
             return false;
         McpSessionStatAttributes other = (McpSessionStatAttributes) obj;
         return Objects.equals(errorType, other.errorType)
-                && Objects.equals(jsonrpcProtocolVersion, other.jsonrpcProtocolVersion)
-                && Objects.equals(mcpProtocolVersion, other.mcpProtocolVersion)
-                && Objects.equals(networkProtocolName, other.networkProtocolName)
-                && Objects.equals(networkProtocolVersion, other.networkProtocolVersion)
-                && Objects.equals(networkTransport, other.networkTransport);
+               && Objects.equals(jsonrpcProtocolVersion, other.jsonrpcProtocolVersion)
+               && Objects.equals(mcpProtocolVersion, other.mcpProtocolVersion)
+               && Objects.equals(networkProtocolName, other.networkProtocolName)
+               && Objects.equals(networkProtocolVersion, other.networkProtocolVersion)
+               && Objects.equals(networkTransport, other.networkTransport);
     }
 
     public static Builder builder() {
@@ -194,7 +192,7 @@ public class McpSessionStatAttributes {
             } catch (IllegalStateException ise) {
                 //do nothing
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, String.format("Invalid MCP Stats attributes : \n %s", toString()));
+                    Tr.debug(this, tc, String.format("Invalid MCP Stats attributes : \n %s", toString()));
                 }
             }
             return null;

@@ -9,7 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.monitor;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import org.osgi.service.component.ComponentContext;
@@ -23,9 +25,9 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.app.deploy.ApplicationInfo;
 import com.ibm.ws.container.service.state.ApplicationStateListener;
 import com.ibm.ws.container.service.state.StateChangeException;
-import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
+import io.openliberty.mcp.internal.monitoring.McpStatsMonitorHolder;
 
 /**
  * Application state listener that monitors MCP application lifecycle events.
@@ -51,9 +53,9 @@ import io.openliberty.mcp.internal.monitoring.McpStatsMonitor;
  * @see McpStatsMonitor
  * @see ApplicationStateListener
  */
-@Component(service = { ApplicationStateListener.class }, 
-           configurationPid = "com.ibm.ws.monitor.internal.MonitoringFrameworkExtender", 
-           configurationPolicy = ConfigurationPolicy.OPTIONAL, 
+@Component(service = { ApplicationStateListener.class },
+           configurationPid = "com.ibm.ws.monitor.internal.MonitoringFrameworkExtender",
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
            immediate = true)
 public class McpMonitorAppStateListener implements ApplicationStateListener {
 
@@ -61,13 +63,16 @@ public class McpMonitorAppStateListener implements ApplicationStateListener {
     
     private static final TraceComponent tc = Tr.register(McpMonitorAppStateListener.class);
     
-    private static final ServiceCaller<McpStatsMonitor> mcpStatsMonitorService = new ServiceCaller<>(McpMonitorAppStateListener.class, McpStatsMonitor.class);
-    
     /**
      * Indicates whether MCP monitoring is enabled based on the monitor-1.0 filter configuration.
      * By default, without any monitor-1.0 filters configured, all monitor components are enabled.
      */
     private static volatile boolean isMcpEnabled = true;
+    
+    /**
+     * Tracks whether the component has been activated. Used to prevent cleanup during initial activation.
+     */
+    private volatile boolean activated = false;
     
     /**
      * Returns whether MCP monitoring is currently enabled.
@@ -113,7 +118,7 @@ public class McpMonitorAppStateListener implements ApplicationStateListener {
     public void applicationStopped(ApplicationInfo appInfo) {
         if (!isMcpEnabled) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "MCP monitoring is disabled, skipping cleanup for: " + appInfo.getDeploymentName());
+                Tr.debug(this, tc, "MCP monitoring is disabled, skipping cleanup for: " + appInfo.getDeploymentName());
             }
             return;
         }
@@ -121,14 +126,14 @@ public class McpMonitorAppStateListener implements ApplicationStateListener {
         String appName = appInfo.getDeploymentName();
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Application stopped, cleaning up MCP statistics for: " + appName);
+            Tr.debug(this, tc, "Application stopped, cleaning up MCP statistics for: " + appName);
         }
         
-        // Use ServiceCaller to access McpStatsMonitor and trigger cleanup
-        mcpStatsMonitorService.run(monitor -> {
+        // Get the monitor instance from the holder
+        McpStatsMonitor monitor = McpStatsMonitorHolder.get();
+        if (monitor != null) {
             monitor.removeStatsForApp(appName);
-            return null;
-        });
+        }
     }
     
     /**
@@ -141,18 +146,64 @@ public class McpMonitorAppStateListener implements ApplicationStateListener {
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) {
         resolveMonitorFilter(properties);
+        activated = true;
     }
 
     /**
      * Called when the component configuration is modified.
      * Re-evaluates the monitor filter to update the enabled state.
-     * 
+     * If MCP monitoring is disabled, triggers cleanup of all MCP monitoring resources.
+     *
      * @param context The component context
      * @param properties The updated configuration properties
      */
     @Modified
     protected void modified(ComponentContext context, Map<String, Object> properties) {
+        boolean wasEnabled = isMcpEnabled;
         resolveMonitorFilter(properties);
+        
+        // If MCP monitoring was just disabled, remove MBeans but preserve tracking data
+        // Only perform cleanup if component has been fully activated
+        if (activated && wasEnabled && !isMcpEnabled) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "MCP monitoring disabled, removing MBeans but preserving tracking data");
+            }
+            
+            // Remove MBeans but keep tracking data for potential re-registration
+            McpStatsMonitor monitor = McpStatsMonitorHolder.get();
+            if (monitor != null) {
+                monitor.removeAllMBeansForMonitoringDisabled();
+            }
+        } else if (activated && !wasEnabled && isMcpEnabled) {
+            // If MCP monitoring was just re-enabled, re-register MBeans for existing applications
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "MCP monitoring re-enabled, re-registering MBeans for existing applications");
+            }
+            
+            // Re-register MBeans asynchronously to avoid blocking the config update thread
+            // and to allow the monitoring framework time to process the filter change
+            Thread reregisterThread = new Thread(() -> {
+                McpStatsMonitor monitor = McpStatsMonitorHolder.get();
+                if (monitor != null) {
+                    // Retry up to 5 times with 200ms delay between attempts
+                    // This gives the monitoring framework time to process the filter change
+                    for (int attempt = 1; attempt <= 5; attempt++) {
+                        monitor.reregisterAllMBeans();
+                        
+                        // Check if any MBeans were successfully registered
+                        // If so, we're done. If not, wait and retry.
+                        try {
+                            Thread.sleep(200);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                            break;
+                        }
+                    }
+                }
+            }, "MCP-MBean-Reregistration");
+            reregisterThread.setDaemon(true);
+            reregisterThread.start();
+        }
     }
     
     /**
@@ -164,23 +215,18 @@ public class McpMonitorAppStateListener implements ApplicationStateListener {
      * @param properties The configuration properties containing the filter
      */
     private void resolveMonitorFilter(Map<String, Object> properties) {
-        String filter;
+        String filter = (String) properties.get(MONITORING_GROUP_FILTER);
 
-        if ((filter = (String) properties.get(MONITORING_GROUP_FILTER)) != null && filter.length() != 0) {
-            // Check if MCP is explicitly listed in the filter
-            if (filter.length() > 0) {
-                isMcpEnabled = Stream.of(filter.split(",")).anyMatch(item -> item.equals("MCP"));
-            } else {
-                // Empty filter means all monitor components are enabled
-                isMcpEnabled = true;
-            }
-        } else if (filter == null) {
-            // No filter configured means all monitor components are enabled by default
+        if (filter == null || filter.isEmpty()) {
+            // No filter or empty filter means all monitor components are enabled by default
             isMcpEnabled = true;
+        } else {
+            // Check if MCP is explicitly listed in the filter
+            isMcpEnabled = Stream.of(filter.split(",")).anyMatch(item -> item.equals("MCP"));
         }
         
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, String.format("MCP monitoring enabled: [%s]", isMcpEnabled));
+            Tr.debug(this, tc, String.format("MCP monitoring enabled: [%s]", isMcpEnabled));
         }
     }
 }

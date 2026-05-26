@@ -33,4 +33,19 @@ public interface McpStatsMonitor {
      * @param appName the name of the application whose statistics should be removed
      */
     void removeStatsForApp(String appName);
+    
+    /**
+     * Re-registers all MBeans for all tracked applications.
+     * This method is called when MCP monitoring is re-enabled after being disabled,
+     * to restore monitoring for applications that were already running.
+     */
+    void reregisterAllMBeans();
+    
+    /**
+     * Removes all MBeans when monitoring is disabled, but preserves tracking data.
+     * This method is called when MCP monitoring is disabled via configuration change,
+     * allowing MBeans to be re-registered if monitoring is re-enabled without
+     * requiring applications to be restarted.
+     */
+    void removeAllMBeansForMonitoringDisabled();
 }

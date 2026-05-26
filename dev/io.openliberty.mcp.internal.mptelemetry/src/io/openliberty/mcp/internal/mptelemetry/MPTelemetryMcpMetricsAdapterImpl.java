@@ -31,6 +31,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 
@@ -57,7 +58,8 @@ import io.openliberty.mcp.internal.mptelemetry.constants.Constants;
 /**
  *
  */
-@Component(service = { McpMetricAdapter.class, ApplicationStateListener.class }, configurationPolicy = ConfigurationPolicy.IGNORE)
+@Component(service = { McpMetricAdapter.class, ApplicationStateListener.class },
+        configurationPolicy = ConfigurationPolicy.IGNORE)
 public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, ApplicationStateListener {
 
     private static final TraceComponent tc = Tr.register(MPTelemetryMcpMetricsAdapterImpl.class);
@@ -66,7 +68,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
 
     private static final String NO_APP_NAME_IDENTIFIER = "io.openliberty.mcp.internal.mptelemetry.no.app.name";
 
-    private static final double NANO_CONVERSION = 0.000000001;
+    private static final double NANO_CONVERSION = 0.000_000_001;
     private static final Double[] BUCKET_BOUNDARIES = { 0.01, 0.02, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0, 5.0, 10.0, 30.0, 60.0, 120.0, 300.0 };
     private static final List<Double> BUCKET_BOUNDARIES_LIST = Arrays.asList(BUCKET_BOUNDARIES);
 
@@ -83,47 +85,37 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
     private final WeakHashMap<OpenTelemetry, DoubleHistogram> threadUnsafeMcpSessionHistogramMap = new WeakHashMap<OpenTelemetry, DoubleHistogram>();
     private final ReadWriteLock mcpSessionHistogramMapLock = new ReentrantReadWriteLock();
 
+    @Activate
+    public void activate() {
+        Tr.info(tc, "MPTelemetryMcpMetricsAdapterImpl component activated");
+    }
+
     @Override
     public void updateMcpOperationMetrics(McpOperationStatAttributes mcpStatAttributes, Duration duration) {
+        try {
+            OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 
-        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
+            DoubleHistogram mcpHistogram = getMcpOperationHistogram(otelInstance);
 
-        /*
-         * Even if the MCP call is served by the server/runtime, the "appName" can be non null.
-         * The AppName is retrieved through a ServletContext property and the "appname" can be the originating bundle.
-         * This would not be "registered" as an appname with the Otel runtime and will return null.
-         * We will then below retrieve a server/runtime instance.
-         *
-         */
-        if (otelInstance == null) {
-            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
-            if (otelInstance == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc,
-                             String.format("Unable to resolve an OpenTelemetry instance for the McpStatAttributes [%s]", mcpStatAttributes.toString()));
-                }
-                //do nothing - return
-                return;
+            Context ctx = Context.current();
+
+            double seconds = duration.toNanos() * NANO_CONVERSION;
+
+            String appName = getApplicationName();
+            appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
+
+            String keyID = mcpStatAttributes.toString();
+
+            // Key is the mcpStatsID generated for each mcpStatsAttribute
+            Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
+            Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveOperationAttributes(mcpStatAttributes));
+
+            mcpHistogram.record(seconds, attributes, ctx);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Error updating MCP operation metrics", e);
             }
         }
-
-        DoubleHistogram mcpHistogram = getMcpOperationHistogram(otelInstance);
-
-        Context ctx = Context.current();
-
-        double seconds = duration.toNanos() * NANO_CONVERSION;
-
-        String appName = getApplicationName();
-        appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
-
-        String keyID = mcpStatAttributes.toString();
-
-        // Key is the mcpStatsID generated for each mcpStatsAttribute
-        Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
-        Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveOperationAttributes(mcpStatAttributes));
-
-        mcpHistogram.record(seconds, attributes, ctx);
-
     }
 
 
@@ -225,45 +217,30 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
     
     @Override
     public void updateMcpSessionMetrics(McpSessionStatAttributes mcpStatAttributes, Duration duration) {
+        try {
+            OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
 
-        OpenTelemetry otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
+            DoubleHistogram mcpHistogram = getMcpSessionHistogram(otelInstance);
 
-        /*
-         * Even if the MCP call is served by the server/runtime, the "appName" can be non null.
-         * The AppName is retrieved through a ServletContext property and the "appname" can be the originating bundle.
-         * This would not be "registered" as an appname with the Otel runtime and will return null.
-         * We will then below retrieve a server/runtime instance.
-         *
-         */
-        if (otelInstance == null) {
-            otelInstance = OpenTelemetryAccessor.getOpenTelemetryInfo().getOpenTelemetry();
-            if (otelInstance == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc,
-                             String.format("Unable to resolve an OpenTelemetry instance for the McpStatAttributes [%s]", mcpStatAttributes.toString()));
-                }
-                //do nothing - return
-                return;
+            Context ctx = Context.current();
+
+            double seconds = duration.toNanos() * NANO_CONVERSION;
+
+            String appName = getApplicationName();
+            appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
+
+            String keyID = mcpStatAttributes.toString();
+
+            // Key is the mcpStatsID generated for each mcpStatsAttribute
+            Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
+            Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveSessionAttributes(mcpStatAttributes));
+
+            mcpHistogram.record(seconds, attributes, ctx);
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Error updating MCP session metrics", e);
             }
         }
-
-        DoubleHistogram mcpHistogram = getMcpSessionHistogram(otelInstance);
-
-        Context ctx = Context.current();
-
-        double seconds = duration.toNanos() * NANO_CONVERSION;
-
-        String appName = getApplicationName();
-        appName = appName == null ? NO_APP_NAME_IDENTIFIER : appName;
-
-        String keyID = mcpStatAttributes.toString();
-
-        // Key is the mcpStatsID generated for each mcpStatsAttribute
-        Map<String, Attributes> attributesMap = appNameToAttributesMap.computeIfAbsent(appName, x -> new ConcurrentHashMap<String, Attributes>());
-        Attributes attributes = attributesMap.computeIfAbsent(keyID, x -> retrieveSessionAttributes(mcpStatAttributes));
-
-        mcpHistogram.record(seconds, attributes, ctx);
-
     }
 
 
@@ -376,7 +353,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         Map<String, Attributes> map = appNameToAttributesMap.remove(appName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc,
+            Tr.debug(this,tc,
                      String.format("Detected that application %s has stopped. Removed a corresponding Map<String, Attributes> entry? [%b]", appName, (map != null)));
         }
     }
@@ -387,7 +364,7 @@ public class MPTelemetryMcpMetricsAdapterImpl implements McpMetricAdapter, Appli
         Map<String, Attributes> map = appNameToAttributesMap.remove(appName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc,
+            Tr.debug(this, tc,
                      String.format("Removing metrics for application %s. Removed a corresponding Map<String, Attributes> entry? [%b]", appName, (map != null)));
         }
     }

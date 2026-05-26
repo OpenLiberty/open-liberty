@@ -183,5 +183,17 @@ public class McpMetricsTest {
         public void removeStatsForApp(String appName) {
             // No-op for test mock
         }
+        
+        /** {@inheritDoc} */
+        @Override
+        public void reregisterAllMBeans() {
+            // No-op for test mock
+        }
+        
+        /** {@inheritDoc} */
+        @Override
+        public void removeAllMBeansForMonitoringDisabled() {
+            // No-op for test mock
+        }
     }
 }

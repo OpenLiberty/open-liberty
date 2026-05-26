@@ -31,10 +31,11 @@ import org.eclipse.microprofile.metrics.Metadata;
 import org.eclipse.microprofile.metrics.MetadataBuilder;
 import org.eclipse.microprofile.metrics.MetricRegistry;
 import org.eclipse.microprofile.metrics.Tag;
-import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -70,18 +71,19 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
      */
     private static Map<String, Map<String, Tag[]>> appNameToTagsMap = new ConcurrentHashMap<String, Map<String, Tag[]>>();
 
-    @Activate
-    public void activate() {
-    }
-
-    @Reference
+    @Reference(cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
     public void setSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
         MPMetricsMcpMetricsAdapterImpl.sharedMetricRegistries = sharedMetricRegistry;
     }
 
+    public void unsetSharedMetricRegistries(SharedMetricRegistries sharedMetricRegistry) {
+        if (MPMetricsMcpMetricsAdapterImpl.sharedMetricRegistries == sharedMetricRegistry) {
+            MPMetricsMcpMetricsAdapterImpl.sharedMetricRegistries = null;
+        }
+    }
+
     @Override
     public void updateMcpOperationMetrics(McpOperationStatAttributes mcpStatAttributes, Duration duration) {
-
         if (sharedMetricRegistries == null) {
             return;
         }
@@ -165,7 +167,6 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
     
     @Override
     public void updateMcpSessionMetrics(McpSessionStatAttributes mcpStatAttributes, Duration duration) {
-
         if (sharedMetricRegistries == null) {
             return;
         }
@@ -261,7 +262,7 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
         Map<String, Tag[]> map = appNameToTagsMap.remove(appName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, String.format(
+            Tr.debug(this, tc, String.format(
                     "Detected that application %s has stopped. Removed a corresponding Map<String, Attributes> entry? [%b]",
                     appName, (map != null)));
         }
@@ -273,7 +274,7 @@ public class MPMetricsMcpMetricsAdapterImpl implements McpMetricAdapter, Applica
         Map<String, Tag[]> map = appNameToTagsMap.remove(appName);
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, String.format(
+            Tr.debug(this,tc, String.format(
                     "Removing metrics for application %s. Removed a corresponding Map<String, Tag[]> entry? [%b]",
                     appName, (map != null)));
         }

@@ -147,6 +147,93 @@ public class McpOperationMetricServlet extends FATServlet {
         }
     }
 
+    @Test
+    public void testBusinessErrorToolMetrics() {
+        HistogramPointData point = getToolCallPointWithStatus("businessErrorTool", "error");
+        
+        assertTrue("Expected at least 1 businessErrorTool call with error status", point.getCount() >= 1);
+        
+        Attributes attributes = point.getAttributes();
+        assertEquals("businessErrorTool", getStringAttribute(attributes, "gen_ai.tool.name"));
+        assertInvariantToolCallAttributes(attributes);
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertNotNull("Expected error.type for business error", getStringAttribute(attributes, "error.type"));
+        assertTimingAttributes(point);
+    }
+
+    @Test
+    public void testNonBusinessErrorToolMetrics() {
+        HistogramPointData point = getToolCallPointWithStatus("nonBusinessErrorTool", "error");
+        
+        assertTrue("Expected at least 1 nonBusinessErrorTool call with error status", point.getCount() >= 1);
+        
+        Attributes attributes = point.getAttributes();
+        assertEquals("nonBusinessErrorTool", getStringAttribute(attributes, "gen_ai.tool.name"));
+        assertInvariantToolCallAttributes(attributes);
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertNotNull("Expected error.type for non-business error", getStringAttribute(attributes, "error.type"));
+        assertTimingAttributes(point);
+    }
+
+    private HistogramPointData getToolCallPointWithStatus(String toolName, String status) {
+        Optional<MetricData> metric = getMetricData("mcp.server.operation.duration");
+        assertTrue("mcp.server.operation.duration metric not found", metric.isPresent());
+
+        List<HistogramPointData> toolCallPoints = metric.get()
+                                                        .getHistogramData()
+                                                        .getPoints()
+                                                        .stream()
+                                                        .filter(point -> "tools/call".equals(getStringAttribute(point.getAttributes(), "mcp.method.name")))
+                                                        .filter(point -> toolName.equals(getStringAttribute(point.getAttributes(), "gen_ai.tool.name")))
+                                                        .filter(point -> status.equals(getStringAttribute(point.getAttributes(), "rpc.response.status_code")))
+                                                        .toList();
+
+        assertTrue("Expected at least one point for " + toolName + " with status " + status, !toolCallPoints.isEmpty());
+        return toolCallPoints.get(0);
+    }
+
+    @Test
+    public void testAsyncBusinessErrorToolMetrics() {
+        HistogramPointData point = getToolCallPointWithStatus("asyncBusinessErrorTool", "error");
+        
+        assertTrue("Expected at least 1 asyncBusinessErrorTool call with error status", point.getCount() >= 1);
+        
+        Attributes attributes = point.getAttributes();
+        assertEquals("asyncBusinessErrorTool", getStringAttribute(attributes, "gen_ai.tool.name"));
+        assertInvariantToolCallAttributes(attributes);
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertNotNull("Expected error.type for async business error", getStringAttribute(attributes, "error.type"));
+        assertTimingAttributes(point);
+    }
+
+    @Test
+    public void testAsyncNonBusinessErrorToolMetrics() {
+        HistogramPointData point = getToolCallPointWithStatus("asyncNonBusinessErrorTool", "error");
+        
+        assertTrue("Expected at least 1 asyncNonBusinessErrorTool call with error status", point.getCount() >= 1);
+        
+        Attributes attributes = point.getAttributes();
+        assertEquals("asyncNonBusinessErrorTool", getStringAttribute(attributes, "gen_ai.tool.name"));
+        assertInvariantToolCallAttributes(attributes);
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertNotNull("Expected error.type for async non-business error", getStringAttribute(attributes, "error.type"));
+        assertTimingAttributes(point);
+    }
+
+    @Test
+    public void testAsyncFailedStageToolMetrics() {
+        HistogramPointData point = getToolCallPointWithStatus("asyncFailedStageTool", "error");
+        
+        assertTrue("Expected at least 1 asyncFailedStageTool call with error status", point.getCount() >= 1);
+        
+        Attributes attributes = point.getAttributes();
+        assertEquals("asyncFailedStageTool", getStringAttribute(attributes, "gen_ai.tool.name"));
+        assertInvariantToolCallAttributes(attributes);
+        assertEquals("error", getStringAttribute(attributes, "rpc.response.status_code"));
+        assertNotNull("Expected error.type for async failed stage error", getStringAttribute(attributes, "error.type"));
+        assertTimingAttributes(point);
+    }
+
     // Helper method to get cancel operation with specific status
     private HistogramPointData getCancelOperationPoint(String status, String errorType) {
         Optional<MetricData> metric = getMetricData("mcp.server.operation.duration");
@@ -256,7 +343,7 @@ public class McpOperationMetricServlet extends FATServlet {
     private void assertProtocolAttributes(Attributes attributes) {
         String mcpProtocolVersion = getStringAttribute(attributes, "mcp.protocol.version");
         assertNotNull("Expected mcp.protocol.version to be present", mcpProtocolVersion);
-        assertEquals("V_" + TestConstants.VALUE_MCP_PROTOCOL_VERSION.replace('-', '_'), mcpProtocolVersion);
+        assertEquals(TestConstants.VALUE_MCP_PROTOCOL_VERSION, mcpProtocolVersion);
     }
 
     private String getStringAttribute(Attributes attributes, String key) {

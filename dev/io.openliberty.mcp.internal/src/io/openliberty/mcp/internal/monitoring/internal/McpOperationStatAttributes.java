@@ -183,15 +183,13 @@ public class McpOperationStatAttributes {
     @Override
     public String toString() {
         return String.join("_",
-            java.util.stream.Stream.of(
-                mcpMethodName, genAiToolName, errorType, genAiPromptName,
-                rpcResponseStatusCode, genAiOperationName, jsonrpcProtocolVersion,
-                mcpProtocolVersion, networkProtocolName, networkProtocolVersion,
-                networkTransport, mcpResourceUri
-            )
-            .filter(s -> s != null)
-            .toArray(String[]::new)
-        );
+                           java.util.stream.Stream.of(
+                                                      mcpMethodName, genAiToolName, errorType, genAiPromptName,
+                                                      rpcResponseStatusCode, genAiOperationName, jsonrpcProtocolVersion,
+                                                      mcpProtocolVersion, networkProtocolName, networkProtocolVersion,
+                                                      networkTransport, mcpResourceUri)
+                                                  .filter(s -> s != null)
+                                                  .toArray(String[]::new));
     }
 
     @Override
@@ -276,7 +274,7 @@ public class McpOperationStatAttributes {
             } catch (IllegalStateException ise) {
                 //do nothing
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, String.format("Invalid MCP Stats attributes : \n %s", toString()));
+                    Tr.debug(this, tc, String.format("Invalid MCP Stats attributes : \n %s", toString()));
                 }
             }
             return null;

@@ -20,6 +20,8 @@ javac.target: 17
 WS-TraceGroup: MCP
 
 Private-Package: \
+	io.openliberty.mcp.internal.mptelemetry,\
+	io.openliberty.mcp.internal.mptelemetry.*,\
 	io.opentelemetry.semconv.incubating
 
 Import-Package: \
@@ -27,15 +29,6 @@ Import-Package: \
 	io.opentelemetry.api.common;version="[1.2,3)",\
 	io.openliberty.microprofile.telemetry.internal.common.resources,\
 	*
-
-DynamicImport-Package: \
-    io.openliberty.mcp.internal.monitoring,\
-    io.openliberty.mcp.internal.monitor,\
-    io.openliberty.mcp.internal.monitor.metrics
-    
-    
-Export-Package: \
-	io.openliberty.mcp.internal.mptelemetry
 	
 
 -dsannotations-inherit: true
@@ -61,4 +54,7 @@ Export-Package: \
 	io.opentelemetry.semconv:opentelemetry-semconv-incubating;version='1.40.0.alpha',\
 	io.openliberty.io.opentelemetry.internal.2.1
 	
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file
+
 # opentelemetry-semconv-incubating must come before io.openliberty.io.opentelemetry in buildpath order

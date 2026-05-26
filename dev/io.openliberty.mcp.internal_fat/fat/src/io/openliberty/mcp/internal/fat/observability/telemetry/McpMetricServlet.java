@@ -96,7 +96,7 @@ public class McpMetricServlet extends FATServlet {
     private void assertProtocolAttributes(Attributes attributes) {
         String mcpProtocolVersion = getStringAttribute(attributes, "mcp.protocol.version");
         assertNotNull("Expected mcp.protocol.version to be present", mcpProtocolVersion);
-        assertEquals("V_" + TestConstants.VALUE_MCP_PROTOCOL_VERSION.replace('-', '_'), mcpProtocolVersion);
+        assertEquals(TestConstants.VALUE_MCP_PROTOCOL_VERSION, mcpProtocolVersion);
     }
 
     private String getStringAttribute(Attributes attributes, String key) {

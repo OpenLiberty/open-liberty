@@ -28,10 +28,10 @@ import io.openliberty.mcp.internal.monitor.McpSessionStatistics;
 import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 
 /**
- * Test class for McpSessionStatistics JMX bean functionality.
+ * Test class for McpSessionStats JMX bean functionality.
  * Verifies that JMX beans can be registered and expose correct session attributes.
  */
-public class McpSessionStatisticsJMXTest {
+public class McpSessionStatsJMXTest {
 
     private McpSessionStatAttributes testAttributes;
     private McpSessionStatistics mcpSessionStats;

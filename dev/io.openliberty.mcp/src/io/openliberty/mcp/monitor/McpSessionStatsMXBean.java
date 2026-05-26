@@ -18,7 +18,7 @@ package io.openliberty.mcp.monitor;
  * The values are intended to be consumed through JMX by administrators,
  * monitoring tools, and applications that need to observe MCP server behavior.
  */
-public interface McpSessionStatisticsMXBean {
+public interface McpSessionStatsMXBean {
 
     /**
      * Returns the error type associated with the session.

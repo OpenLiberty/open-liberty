@@ -63,8 +63,12 @@ public class InMemoryMetricReader implements MetricReader {
     }
 
     public Collection<MetricData> getMcpMetricData() {
-        return collectionRegistration.collectAllMetrics().stream()
+        Collection<MetricData> allMetrics = collectionRegistration.collectAllMetrics();
+        
+        Collection<MetricData> mcpMetrics = allMetrics.stream()
                                      .filter(metric -> metric.getName().contains("mcp")) //We are testing mcp metrics, ignore JVM, HTTP, etc metrics
                                      .collect(toList());
+        
+        return mcpMetrics;
     }
 }

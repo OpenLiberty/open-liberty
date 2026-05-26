@@ -11,15 +11,13 @@ package io.openliberty.mcp.internal.monitor.metrics;
 
 import java.time.Duration;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
-import org.osgi.service.component.annotations.Activate;
-import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.component.annotations.ReferenceCardinality;
 import org.osgi.service.component.annotations.ReferencePolicy;
-import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -27,15 +25,22 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
 import io.openliberty.mcp.internal.monitoring.internal.McpSessionStatAttributes;
 
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, immediate = true, service = MetricsManager.class)
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = MetricsManager.class)
 public class MetricsManager {
 
-	private static final TraceComponent tc = Tr.register(MetricsManager.class);
-
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
-    private volatile List<McpMetricAdapter> mcpMetricRuntimes;
-
-
+    private static final TraceComponent tc = Tr.register(MetricsManager.class);
+    
+    // Use CopyOnWriteArrayList for thread-safe dynamic service tracking
+    private final List<McpMetricAdapter> mcpMetricAdapters = new CopyOnWriteArrayList<>();
+    
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    protected void addMcpMetricAdapter(McpMetricAdapter adapter) {
+        mcpMetricAdapters.add(adapter);
+    }
+    
+    protected void removeMcpMetricAdapter(McpMetricAdapter adapter) {
+        mcpMetricAdapters.remove(adapter);
+    }
 
     /**
      * Updates MCP operation duration metrics across all registered metric adapters.
@@ -43,55 +48,43 @@ public class MetricsManager {
      * @param mcpStatsAttribute the MCP operation attributes
      * @param duration the operation duration
      */
-	public void updateMcpOperationDurationMetrics(McpOperationStatAttributes mcpStatsAttribute , Duration duration) {
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	        Tr.debug(tc, "Forwarding metrics to " + mcpMetricRuntimes.size() + " adapters");
-	    }
-
-        for (McpMetricAdapter adapter : mcpMetricRuntimes) {
-        	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	            Tr.debug(tc, "Adapter: " + adapter.getClass().getName());
-	        }
+    public void updateMcpOperationDurationMetrics(McpOperationStatAttributes mcpStatsAttribute, Duration duration) {
+        for (McpMetricAdapter adapter : mcpMetricAdapters) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Forwarding operation metrics to adapter: " + adapter.getClass().getName());
+            }
             adapter.updateMcpOperationMetrics(mcpStatsAttribute, duration);
         }
-	}
-	
-	/**
-	    * Updates MCP session duration metrics across all registered metric adapters.
-	    *
-	    * @param mcpStatsAttribute the MCP session attributes
-	    * @param duration the session duration
-	    */
-	public void updateMcpSessionDurationMetrics(McpSessionStatAttributes mcpStatsAttribute , Duration duration) {
-		if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	        Tr.debug(tc, "Forwarding metrics to " + mcpMetricRuntimes.size() + " adapters");
-	    }
+    }
 
-        for (McpMetricAdapter adapter : mcpMetricRuntimes) {
-        	if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-	            Tr.debug(tc, "Adapter: " + adapter.getClass().getName());
-	        }
+    /**
+     * Updates MCP session duration metrics across all registered metric adapters.
+     *
+     * @param mcpStatsAttribute the MCP session attributes
+     * @param duration the session duration
+     */
+    public void updateMcpSessionDurationMetrics(McpSessionStatAttributes mcpStatsAttribute, Duration duration) {
+        for (McpMetricAdapter adapter : mcpMetricAdapters) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Forwarding session metrics to adapter: " + adapter.getClass().getName());
+            }
             adapter.updateMcpSessionMetrics(mcpStatsAttribute, duration);
         }
- }
- 
- /**
-  * Removes all metrics associated with the specified application.
-  * This method is called when an application is unloaded to clean up metrics and prevent memory leaks.
-  *
-  * @param appName The name of the application being unloaded
-  */
- public void removeMetricsForApp(String appName) {
-  if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-         Tr.debug(tc, "Removing metrics for application: " + appName + " across " + mcpMetricRuntimes.size() + " adapters");
-     }
+    }
 
-        for (McpMetricAdapter adapter : mcpMetricRuntimes) {
-         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-             Tr.debug(tc, "Cleaning up metrics in adapter: " + adapter.getClass().getName());
-         }
+    /**
+     * Removes all metrics associated with the specified application.
+     * This method is called when an application is unloaded to clean up metrics and prevent memory leaks.
+     *
+     * @param appName The name of the application being unloaded
+     */
+    public void removeMetricsForApp(String appName) {
+        for (McpMetricAdapter adapter : mcpMetricAdapters) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Cleaning up metrics for app " + appName + " in adapter: " + adapter.getClass().getName());
+            }
             adapter.removeMetricsForApp(appName);
         }
- }
+    }
 
 }

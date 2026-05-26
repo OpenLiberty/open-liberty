@@ -212,10 +212,6 @@ public class McpServlet extends HttpServlet {
         metrics.setMethodName("tools/call");
         metrics.setTransport(transport);
 
-        String status = "ok";
-        String errorType = null;
-        boolean asyncOperation = false;
-
         ExecutionRequestId requestId = createOngoingRequestId(transport);
         if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
             metrics.setExecutionRequestId(requestId);
@@ -232,8 +228,6 @@ public class McpServlet extends HttpServlet {
 
         try {
             if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {
-                status = "error";
-                errorType = "DuplicateRequestId";
                 throw new JSONRPCException(
                                            JSONRPCErrorCode.INVALID_PARAMS,
                                            Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
@@ -243,8 +237,6 @@ public class McpServlet extends HttpServlet {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(this, tc, "Attempt to call non-existant tool: " + params.getName());
                 }
-                status = "error";
-                errorType = "ToolNotFound";
                 throw new JSONRPCException(
                                            JSONRPCErrorCode.INVALID_PARAMS,
                                            List.of("Method " + params.getName() + " not found"));
@@ -255,26 +247,14 @@ public class McpServlet extends HttpServlet {
             if (params.getMetadata().returnsCompletionStage()) {
                 // Important: build tool args here so ToolCallException is handled in one place
                 ToolArguments toolArgs = createToolArguments(request, params);
-                asyncOperation = true;
                 callToolAndSendResponseAsync(transport, requestId, params, toolArgs, metrics);
             } else {
-                callToolAndSendResponseSync(transport, requestId, request, params);
+                callToolAndSendResponseSync(transport, requestId, request, params, metrics);
             }
 
         } catch (ToolCallException e) {
-            status = "error";
-            errorType = e.getClass().getSimpleName();
-
             ToolResponse response = ToolResponses.createBusinessErrorResponse(e);
-            transport.sendResponse(response);
-            return;
-        } finally {
-            // For sync requests, end metrics here.
-            // For async requests, metrics must end in the async completion callback.
-            if (!asyncOperation) {
-                metrics.setOutcome(status, errorType);
-                McpOperationMetrics.operationEnded(metrics);
-            }
+            sendResponseAndEndMetrics(transport, response, metrics);
         }
     }
 
@@ -282,7 +262,8 @@ public class McpServlet extends HttpServlet {
     private void callToolAndSendResponseSync(McpTransport transport,
                                              ExecutionRequestId requestId,
                                              McpRequest mcpRequest,
-                                             McpToolCallParams params) {
+                                             McpToolCallParams params,
+                                             McpOperationMetrics metrics) {
 
         ToolArguments toolArgs = createToolArguments(mcpRequest, params);
         if (requestId != null) {
@@ -306,7 +287,7 @@ public class McpServlet extends HttpServlet {
             cleanup(requestId);
         }
         response = removeStructuredContentIfNotSupported(response, transport);
-        transport.sendResponse(response);
+        sendResponseAndEndMetrics(transport, response, metrics);
     }
 
     private void callToolAndSendResponseAsync(McpTransport transport,
@@ -336,6 +317,9 @@ public class McpServlet extends HttpServlet {
                                }
                            });
 
+        // Capture the response to check isError() before sending
+        CompletionStage<ToolResponse> capturedResponse = response.thenApply(r -> r);
+        
         transport.sendResultAsync(response)
                  .whenComplete((result, throwable) -> {
                      try {
@@ -343,9 +327,33 @@ public class McpServlet extends HttpServlet {
                          String errorType = null;
 
                          if (throwable != null) {
+                             // Error during async operation
                              status = "error";
                              Throwable actual = throwable instanceof CompletionException ? throwable.getCause() : throwable;
-                             errorType = actual != null ? actual.getClass().getSimpleName() : "UnknownAsyncError";
+                             
+                             // Use low-cardinality error types per MCP Semantic Conventions
+                             if (actual instanceof JSONRPCException jsonRpcEx) {
+                                 // For JSON-RPC errors, use the enum name (e.g., "PARSE_ERROR", "INVALID_PARAMS")
+                                 errorType = jsonRpcEx.getErrorCode().name();
+                             } else {
+                                 // For other unexpected errors, use generic internal_error
+                                 errorType = "internal_error";
+                             }
+                         } else {
+                             // Check if the response itself is an error (tool returned error response)
+                             try {
+                                 ToolResponse toolResponse = capturedResponse.toCompletableFuture().get();
+                                 if (toolResponse.isError()) {
+                                     status = "error";
+                                     // Use low-cardinality error type per MCP Semantic Conventions
+                                     errorType = "tool_error";
+                                 }
+                             } catch (Exception e) {
+                                 // If we can't get the response, log but don't fail metrics
+                                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                     Tr.debug(tc, "Could not check response error status for metrics", e);
+                                 }
+                             }
                          }
 
                          metrics.setOutcome(status, errorType);
@@ -395,6 +403,24 @@ public class McpServlet extends HttpServlet {
                                     Meta meta,
                                     EncoderRegistry encoderRegistry,
                                     RequestId requestId) implements ToolArguments {}
+
+    /**
+     * Sends the response and ends metrics recording based on the response's error status.
+     * This ensures metrics accurately reflect whether the operation succeeded or failed.
+     * 
+     * @param transport the transport to send the response through
+     * @param response the tool response to send
+     * @param metrics the metrics object to update and end
+     */
+    private void sendResponseAndEndMetrics(McpTransport transport, ToolResponse response, McpOperationMetrics metrics) {
+        String status = response.isError() ? "error" : "ok";
+        String errorType = response.isError() ? "tool_error" : null;
+        
+        metrics.setOutcome(status, errorType);
+        McpOperationMetrics.operationEnded(metrics);
+        
+        transport.sendResponse(response);
+    }
 
     private void cleanup(ExecutionRequestId requestId) {
         if (requestId != null && requestTrackers.getCurrent().isOngoingRequest(requestId)) {

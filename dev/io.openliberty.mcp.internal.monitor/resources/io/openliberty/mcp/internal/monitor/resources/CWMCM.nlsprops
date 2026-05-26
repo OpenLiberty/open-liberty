@@ -18,4 +18,3 @@ mcp.session.count.description=Total number of MCP sessions
 mcp.session.duration.description=Duration of MCP session
 mcp.operation.count.description=Total calls of an MCP tool
 mcp.operation.duration.description=Duration of MCP tool call operations
-mcp.metric.unit.nanoseconds=nanoseconds

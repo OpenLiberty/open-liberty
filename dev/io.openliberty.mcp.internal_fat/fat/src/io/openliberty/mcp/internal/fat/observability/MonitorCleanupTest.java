@@ -14,6 +14,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.Collections;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -23,6 +25,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
+import com.ibm.websphere.simplicity.config.Monitor;
+import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -160,8 +164,92 @@ public class MonitorCleanupTest extends FATServletClient {
         client1.deleteSession();
         
         // 11. Verify no error messages in logs
-        assertFalse("Should not have memory leak warnings", 
+        assertFalse("Should not have memory leak warnings",
                    server.findStringsInLogs(".*memory.*leak.*").isEmpty() == false);
+    }
+    
+    /**
+     * Tests that MCP monitoring resources are properly cleaned up when MCP is removed
+     * from the monitor filter configuration.
+     *
+     * <p>This test verifies the dynamic configuration cleanup workflow:
+     * <ol>
+     *   <li>Deploy app with MCP monitoring enabled (filter includes "MCP")</li>
+     *   <li>Generate metrics by invoking tools</li>
+     *   <li>Verify MBeans exist</li>
+     *   <li>Update server.xml to remove "MCP" from monitor filter</li>
+     *   <li>Verify all MCP MBeans are removed</li>
+     *   <li>Re-enable MCP monitoring and verify it works again</li>
+     * </ol>
+     */
+    @Test
+    public void testMonitoringCleanupOnFilterChange() throws Exception {
+        // 1. Deploy application
+        WebArchive war = ShrinkWrap.create(WebArchive.class, APP_NAME + ".war")
+                                   .addPackage(BasicTools.class.getPackage())
+                                   .addClass(MBeanCheckerServlet.class);
+        ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        assertNotNull("Application should start successfully",
+                     server.waitForStringInLog("CWWKZ0001I.*" + APP_NAME));
+        
+        // 2. Add monitor filter with MCP enabled
+        server.setMarkToEndOfLog();
+        ServerConfiguration config = server.getServerConfiguration();
+        Monitor monitor = new Monitor();
+        monitor.setFilter("HTTP,MCP");
+        config.getMonitors().add(monitor);
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        
+        // 3. Initialize client and generate metrics
+        client1.initialize();
+        String toolRequest = """
+                {
+                  "jsonrpc": "2.0",
+                  "id": "1",
+                  "method": "tools/call",
+                  "params": {
+                    "name": "add",
+                    "arguments": {
+                      "num1": 10,
+                      "num2": 20
+                    }
+                  }
+                }
+                """;
+        client1.callMCP(toolRequest);
+        
+        // 4. Verify MBeans are registered
+        FATServletClient.runTest(server, APP_NAME + "/MBeanCheckerServlet", "testOperationMBeansRegistered");
+        
+        // 5. Update monitor filter to remove MCP
+        server.setMarkToEndOfLog();
+        config = server.getServerConfiguration();
+        monitor = config.getMonitors().get(0);
+        monitor.setFilter("HTTP");  // Remove MCP from filter
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        
+        // 6. Verify MBeans are removed (cleanup triggered by @Modified method)
+        FATServletClient.runTest(server, APP_NAME + "/MBeanCheckerServlet", "testOperationMBeansNotRegistered");
+        
+        // 7. Re-enable MCP monitoring
+        server.setMarkToEndOfLog();
+        config = server.getServerConfiguration();
+        monitor = config.getMonitors().get(0);
+        monitor.setFilter("HTTP,MCP");  // Add MCP back to filter
+        server.updateServerConfiguration(config);
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME));
+        
+        // 8. Generate metrics again to verify monitoring works after re-enabling
+        client1.callMCP(toolRequest);
+        
+        // 9. Verify MBeans are registered again
+        FATServletClient.runTest(server, APP_NAME + "/MBeanCheckerServlet", "testOperationMBeansRegistered");
+        
+        // Cleanup
+        server.removeDropinsApplications(APP_NAME + ".war");
+        client1.deleteSession();
     }
     
 }

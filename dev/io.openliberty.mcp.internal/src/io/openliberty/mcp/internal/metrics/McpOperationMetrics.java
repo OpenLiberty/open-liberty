@@ -29,13 +29,14 @@ import io.openliberty.mcp.internal.requests.ExecutionRequestId;
  *
  * <p>Key responsibilities:
  * <ul>
- *   <li>Recording operation start time for duration calculation</li>
- *   <li>Tracking operation-specific metadata (method name, tool name, status, errors)</li>
- *   <li>Forwarding metrics to the monitoring system via {@link McpStatsMonitor}</li>
- *   <li>Supporting both successful and failed operation outcomes</li>
+ * <li>Recording operation start time for duration calculation</li>
+ * <li>Tracking operation-specific metadata (method name, tool name, status, errors)</li>
+ * <li>Forwarding metrics to the monitoring system via {@link McpStatsMonitor}</li>
+ * <li>Supporting both successful and failed operation outcomes</li>
  * </ul>
  *
  * <p>Usage pattern:
+ *
  * <pre>
  * McpOperationMetrics metrics = new McpOperationMetrics();
  * metrics.setMethodName("tools/call");
@@ -201,15 +202,19 @@ public final class McpOperationMetrics {
     }
 
     public static void operationEnded(McpOperationMetrics metrics) {
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "operationEnded hook called for method: " + metrics.getMethodName());
         }
 
         McpStatsMonitor monitor = McpStatsMonitorHolder.get();
+
         if (monitor != null) {
             monitor.recordOperationEnd(metrics);
-        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Monitor is null in operationEnded");
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Monitor is null in operationEnded");
+            }
         }
     }
 }

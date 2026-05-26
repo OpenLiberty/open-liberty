@@ -6,13 +6,10 @@
     <feature>mcpServer-1.0</feature>
     <feature>componenttest-2.0</feature>
     <feature>monitor-1.0</feature>
-    <feature>mpMetrics-5.1</feature>
   </featureManager>
 
   <include location="../fatTestPorts.xml" />
   <include location="permissions.xml" />
-  
-  <mpMetrics authentication="false"/>
   
 </server>
 

@@ -39,7 +39,7 @@ public class MBeanCheckerServlet extends FATServlet {
      */
     @Test
     public void testOperationMBeansRegistered() throws Exception {
-        boolean registered = checkMBeanRegistered("WebSphere:type=McpOperationStats,*");
+        boolean registered = checkMBeanRegistered("WebSphere:type=McpOperationStatistics,*");
         assertTrue("MCP operation MBeans should be registered after tool invocation", registered);
     }
 
@@ -49,7 +49,7 @@ public class MBeanCheckerServlet extends FATServlet {
      */
     @Test
     public void testOperationMBeansNotRegistered() throws Exception {
-        boolean registered = checkMBeanRegistered("WebSphere:type=McpOperationStats,*");
+        boolean registered = checkMBeanRegistered("WebSphere:type=McpOperationStatistics,*");
         assertFalse("MCP operation MBeans should be removed after app unload", registered);
     }
 
@@ -59,7 +59,7 @@ public class MBeanCheckerServlet extends FATServlet {
      */
     @Test
     public void testSessionMBeansNotRegistered() throws Exception {
-        boolean registered = checkMBeanRegistered("WebSphere:type=McpSession,*");
+        boolean registered = checkMBeanRegistered("WebSphere:type=McpSessionStatistics,*");
         assertFalse("MCP session MBeans should be removed after app unload", registered);
     }
 

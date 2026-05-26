@@ -36,7 +36,7 @@ public class McpMonitorMetricsServlet extends FATServlet {
     private static final long serialVersionUID = 1L;
 
     private static final String MBEAN_DOMAIN = "WebSphere";
-    private static final String MBEAN_TYPE_OPERATION = "McpOperationStats";
+    private static final String MBEAN_TYPE_OPERATION = "McpOperationStatistics";
     private static final String MBEAN_TYPE_SESSION = "McpSessionStatistics";
 
     /**
@@ -45,14 +45,6 @@ public class McpMonitorMetricsServlet extends FATServlet {
     @Test
     public void testOperationMetricsRecorded() throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-        Set<ObjectName> allMBeans = mbs.queryNames(null, null);
-        for (ObjectName name : allMBeans) {
-            String value = name.toString();
-            if (value.contains("Mcp") || value.contains("mcp") || value.contains("WebSphere")) {
-                System.out.println(value);
-            }
-        }
 
         ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
         Set<ObjectName> mbeans = mbs.queryNames(query, null);
@@ -72,14 +64,6 @@ public class McpMonitorMetricsServlet extends FATServlet {
         Set<ObjectName> mbeans = mbs.queryNames(query, null);
 
         assertNotNull("Operation MBeans should not be null", mbeans);
-        
-        // Debug: Print all MBeans found
-        System.out.println("=== DEBUG: Found " + mbeans.size() + " operation MBeans ===");
-        for (ObjectName mbean : mbeans) {
-            System.out.println("MBean: " + mbean.toString());
-        }
-        System.out.println("=== END DEBUG ===");
-        
         assertTrue("Expected MCP operation MBeans to exist", !mbeans.isEmpty());
 
         boolean foundEcho = false;
@@ -105,14 +89,6 @@ public class McpMonitorMetricsServlet extends FATServlet {
     @Test
     public void testSessionMetricsRecorded() throws Exception {
         MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
-
-        Set<ObjectName> allMBeans = mbs.queryNames(null, null);
-        for (ObjectName name : allMBeans) {
-            String value = name.toString();
-            if (value.contains("Session") || value.contains("session") || value.contains("Mcp") || value.contains("mcp")) {
-                System.out.println(value);
-            }
-        }
 
         ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_SESSION + ",*");
         Set<ObjectName> mbeans = mbs.queryNames(query, null);
@@ -220,5 +196,160 @@ public class McpMonitorMetricsServlet extends FATServlet {
 
         // Tool name should be part of the MBean identification
         assertTrue("Should find MBean for echo tool", foundEchoTool);
+    }
+    /**
+     * Test that business error metrics are recorded correctly
+     */
+    @Test
+    public void testBusinessErrorMetrics() throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> mbeans = mbs.queryNames(query, null);
+
+        assertTrue("Operation MBeans should exist", mbeans.size() > 0);
+
+        // Check that at least one MBean references the businessErrorTool
+        boolean foundBusinessErrorTool = false;
+        for (ObjectName mbean : mbeans) {
+            String name = mbean.toString();
+            if (name.contains("businessErrorTool")) {
+                foundBusinessErrorTool = true;
+                System.out.println("Found business error tool MBean: " + name);
+                break;
+            }
+        }
+
+        assertTrue("Should find MBean for businessErrorTool", foundBusinessErrorTool);
+    }
+
+    /**
+     * Test that non-business error metrics are recorded correctly
+     */
+    @Test
+    public void testNonBusinessErrorMetrics() throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> mbeans = mbs.queryNames(query, null);
+
+        assertTrue("Operation MBeans should exist", mbeans.size() > 0);
+
+        // Check that at least one MBean references the nonBusinessErrorTool
+        boolean foundNonBusinessErrorTool = false;
+        for (ObjectName mbean : mbeans) {
+            String name = mbean.toString();
+            if (name.contains("nonBusinessErrorTool")) {
+                foundNonBusinessErrorTool = true;
+                System.out.println("Found non-business error tool MBean: " + name);
+                break;
+            }
+        }
+
+        assertTrue("Should find MBean for nonBusinessErrorTool", foundNonBusinessErrorTool);
+    }
+
+    /**
+     * Test that async business error metrics are recorded correctly
+     */
+    @Test
+    public void testAsyncBusinessErrorMetrics() throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> mbeans = mbs.queryNames(query, null);
+
+        assertTrue("Operation MBeans should exist", mbeans.size() > 0);
+
+        // Check that at least one MBean references the asyncBusinessErrorTool
+        boolean foundAsyncBusinessErrorTool = false;
+        for (ObjectName mbean : mbeans) {
+            String name = mbean.toString();
+            if (name.contains("asyncBusinessErrorTool")) {
+                foundAsyncBusinessErrorTool = true;
+                System.out.println("Found async business error tool MBean: " + name);
+                break;
+            }
+        }
+
+        assertTrue("Should find MBean for asyncBusinessErrorTool", foundAsyncBusinessErrorTool);
+    }
+
+    /**
+     * Test that async non-business error metrics are recorded correctly
+     */
+    @Test
+    public void testAsyncNonBusinessErrorMetrics() throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> mbeans = mbs.queryNames(query, null);
+
+        assertTrue("Operation MBeans should exist", mbeans.size() > 0);
+
+        // Check that at least one MBean references the asyncNonBusinessErrorTool
+        boolean foundAsyncNonBusinessErrorTool = false;
+        for (ObjectName mbean : mbeans) {
+            String name = mbean.toString();
+            if (name.contains("asyncNonBusinessErrorTool")) {
+                foundAsyncNonBusinessErrorTool = true;
+                System.out.println("Found async non-business error tool MBean: " + name);
+                break;
+            }
+        }
+
+        assertTrue("Should find MBean for asyncNonBusinessErrorTool", foundAsyncNonBusinessErrorTool);
+    }
+
+    /**
+     * Test that async failed stage error metrics are recorded correctly
+     */
+    @Test
+    public void testAsyncFailedStageErrorMetrics() throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> mbeans = mbs.queryNames(query, null);
+
+        assertTrue("Operation MBeans should exist", mbeans.size() > 0);
+
+        // Check that at least one MBean references the asyncFailedStageTool
+        boolean foundAsyncFailedStageTool = false;
+        for (ObjectName mbean : mbeans) {
+            String name = mbean.toString();
+            if (name.contains("asyncFailedStageTool")) {
+                foundAsyncFailedStageTool = true;
+                System.out.println("Found async failed stage tool MBean: " + name);
+                break;
+            }
+        }
+
+        assertTrue("Should find MBean for asyncFailedStageTool", foundAsyncFailedStageTool);
+    }
+
+    /**
+     * Test that different error types are tracked with distinct attributes
+     */
+    @Test
+    public void testErrorTypeAttributeVariety() throws Exception {
+        MBeanServer mbs = ManagementFactory.getPlatformMBeanServer();
+
+        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
+        Set<ObjectName> mbeans = mbs.queryNames(query, null);
+
+        assertTrue("Operation MBeans should exist", mbeans.size() > 0);
+
+        // Verify we have MBeans for different error tools
+        int errorToolCount = 0;
+        for (ObjectName mbean : mbeans) {
+            String name = mbean.toString();
+            if (name.contains("ErrorTool") || name.contains("errorTool") || 
+                name.contains("FailedStage") || name.contains("failedStage")) {
+                errorToolCount++;
+                System.out.println("Found error tool MBean: " + name);
+            }
+        }
+
+        assertTrue("Should find multiple error tool MBeans", errorToolCount >= 3);
     }
 }

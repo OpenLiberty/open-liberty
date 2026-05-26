@@ -24,7 +24,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import io.openliberty.mcp.internal.monitor.McpOperationStats;
+import io.openliberty.mcp.internal.monitor.McpOperationStatistics;
 import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttributes;
 
 /**
@@ -34,7 +34,7 @@ import io.openliberty.mcp.internal.monitoring.internal.McpOperationStatAttribute
 public class McpOperationStatsJMXTest {
 
     private McpOperationStatAttributes testAttributes;
-    private McpOperationStats mcpStats;
+    private McpOperationStatistics mcpStats;
     private MBeanServer mbs;
     private ObjectName objectName;
 
@@ -52,9 +52,9 @@ public class McpOperationStatsJMXTest {
                 .withNetworkTransport(Optional.of("tcp"))
                 .build();
 
-        mcpStats = new McpOperationStats(testAttributes);
+        mcpStats = new McpOperationStatistics(testAttributes);
         mbs = ManagementFactory.getPlatformMBeanServer();
-        objectName = new ObjectName("io.openliberty.mcp.test:type=McpOperationStats,name=test");
+        objectName = new ObjectName("io.openliberty.mcp.test:type=McpOperationStatistics,name=test");
     }
 
     @After
@@ -133,9 +133,9 @@ public class McpOperationStatsJMXTest {
         McpOperationStatAttributes minimalAttrs = McpOperationStatAttributes.builder()
                 .withMcpMethodName("initialize")
                 .build();
-        McpOperationStats minimalStats = new McpOperationStats(minimalAttrs);
+        McpOperationStatistics minimalStats = new McpOperationStatistics(minimalAttrs);
 
-        ObjectName minimalName = new ObjectName("io.openliberty.mcp.test:type=McpOperationStats,name=minimal");
+        ObjectName minimalName = new ObjectName("io.openliberty.mcp.test:type=McpOperationStatistics,name=minimal");
         mbs.registerMBean(minimalStats, minimalName);
 
         try {

@@ -28,21 +28,14 @@ Import-Package: \
 	org.eclipse.microprofile.config; version="[3.0,4)",\
 	*
 	
-DynamicImport-Package: \
-    io.openliberty.mcp.internal.monitoring,\
-    io.openliberty.mcp.internal.monitor,\
-    io.openliberty.mcp.internal.monitor.metrics
-
-
-Export-Package: \
-	io.openliberty.mcp.internal.mpmetrics
-	
 
 -dsannotations-inherit: true
 -dsannotations: \
 	io.openliberty.mcp.internal.mpmetrics.MPMetricsMcpMetricsAdapterImpl
 	
 Private-Package: \
+	io.openliberty.mcp.internal.mpmetrics,\
+	io.openliberty.mcp.internal.mpmetrics.*,\
 	com.ibm.ws.microprofile.metrics.resources,\
 	io.openliberty.microprofile.metrics50.internal,\
 	com.ibm.ws.microprofile.metrics.exceptions
