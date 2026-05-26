@@ -22,8 +22,6 @@
     <httpEndpoint id="defaultHttpEndpoint"
                   httpPort="${bvt.prop.HTTP_secondary}"
                   httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
-    
-    <include location="../fatTestPorts.xml"/>
 
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false"/>
 
