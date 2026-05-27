@@ -20,7 +20,7 @@ configurations {
 dependencies {
   usrFeatures 'test.featureUtility_fat:userFeature:1.0@zip'
   usrEsa 'test.featureUtility_fat:usertest.with.api:1.0@esa'
-  features1 'test.featureUtility_fat:Archive:1.0@zip'
+  features1 'test.featureUtility_fat:Archive:3.0@zip'
   features2 'test.featureUtility_fat:Archive:2.0@zip'
 }
 

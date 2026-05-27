@@ -43,8 +43,9 @@ public class InstallVersionlessServerTest extends FeatureUtilityToolTest {
 
     @Before
     public void beforeSetUp() throws Exception {
-	copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
-	writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo2);
+        copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
+        writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo2);
+        writeToProps(minifiedRoot + "/etc/repositories.properties", "useDefaultRepository", "false");
     }
 
     @After

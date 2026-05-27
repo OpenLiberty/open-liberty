@@ -45,6 +45,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 	public void beforeSetUp() throws Exception {
 		copyFileToMinifiedRoot("etc", "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
 		writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
+        writeToProps(minifiedRoot + "/etc/repositories.properties", "useDefaultRepository", "false");
 	}
 
 	@After

@@ -192,7 +192,7 @@ public abstract class FeatureUtilityToolTest {
         featureUtilityProps = new Properties();
         try {
             RemoteFile rf = server.getMachine().getFile(remoteFileName);
-            os = rf.openForWriting(true);
+            os = rf.openForWriting(true); // append to the end of the file
             featureUtilityProps.setProperty(property, value);
             Log.info(c, "writeToProps", "Set the " + property + " to : " + value);
             featureUtilityProps.store(os, null);

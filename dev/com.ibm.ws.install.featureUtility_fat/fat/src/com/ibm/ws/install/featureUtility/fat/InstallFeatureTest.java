@@ -95,6 +95,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         copyFileToMinifiedRoot("etc",
             "publish/propertyFiles/publishRepoOverrideProps/featureUtility.properties");
         writeToProps(minifiedRoot + "/etc/featureUtility.properties", "featureLocalRepo", mavenLocalRepo1);
+        writeToProps(minifiedRoot + "/etc/repositories.properties", "useDefaultRepository", "false");
     }
 
     @After
