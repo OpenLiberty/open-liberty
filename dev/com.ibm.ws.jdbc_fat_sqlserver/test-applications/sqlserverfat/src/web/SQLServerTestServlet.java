@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019,2023 IBM Corporation and others.
+ * Copyright (c) 2019,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -225,9 +225,10 @@ public class SQLServerTestServlet extends FATServlet {
 
     // Test XA transaction timeout
     // Expected XAER_NOTA (-4) when transaction manager tries to roll back XAResource that already rolled back in the database upon transaction timeout
+    // Allow java.lang.IllegalStateException that occurs if connection abort is processed before rollback completes
     @Test
     @Mode(TestMode.FULL)
-    @AllowedFFDC("javax.transaction.xa.XAException")
+    @AllowedFFDC({ "javax.transaction.xa.XAException", "java.lang.IllegalStateException" })
     public void testTransactionTimeout() throws Exception {
         boolean committed = false;
         tran.setTransactionTimeout(8);
