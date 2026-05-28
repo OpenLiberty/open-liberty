@@ -12,6 +12,8 @@ package io.openliberty.mcp.internal.fat.serverinfo;
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.Collections;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -174,6 +176,101 @@ public class CustomServerInfoTest {
                         """;
 
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    /**
+     * Test that verifies serverInfo configuration can be dynamically updated
+     * and the changes are reflected in the initialize response
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testDynamicServerInfoUpdate() throws Exception {
+        // Verify initial serverInfo values from server.xml
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "method": "initialize",
+                          "params": {
+                            "protocolVersion": "2025-11-25",
+                            "clientInfo": {
+                              "name": "test-client",
+                              "version": "1.0"
+                            },
+                            "capabilities": {}
+                          }
+                        }
+                        """;
+
+        String initialResponse = customClient.callMCP(request);
+
+        String expectedInitialResponse = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": 1,
+                          "result": {
+                            "protocolVersion": "2025-11-25",
+                            "capabilities": {
+                              "tools": {
+                                "listChanged": false
+                              }
+                            },
+                            "serverInfo": {
+                              "name": "my-custom-server",
+                              "title": "My Custom MCP Server",
+                              "version": "2.5.0",
+                              "description": "My custom description"
+                            }
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedInitialResponse, initialResponse, JSONCompareMode.STRICT);
+
+        server.setMarkToEndOfLog();
+
+        // Mark the session as deleted since config changes will invalidate it
+        // This prevents the cleanup code from trying to delete an already-invalid session
+        customClient.markSessionDeleted();
+
+        // Dynamically update the serverInfo configuration by replacing the server.xml
+        server.setServerConfigurationFile("server_updated_info.xml");
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("fullyCustomServerInfoTest"));
+
+        // Re-initialize the session after config update since the old session was invalidated
+        // Create a new client which will automatically establish a new session
+        McpClient newClient = new McpClient(server, "/fullyCustomServerInfoTest");
+        newClient.initializeSession();
+
+        try {
+            String updatedResponse = newClient.callMCP(request);
+
+            String expectedUpdatedResponse = """
+                            {
+                              "jsonrpc": "2.0",
+                              "id": 1,
+                              "result": {
+                                "protocolVersion": "2025-11-25",
+                                "capabilities": {
+                                  "tools": {
+                                    "listChanged": false
+                                  }
+                                },
+                                "serverInfo": {
+                                  "name": "updated-server-name",
+                                  "title": "Updated Server Title",
+                                  "version": "3.0.0",
+                                  "description": "Updated server description"
+                                }
+                              }
+                            }
+                            """;
+
+            JSONAssert.assertEquals(expectedUpdatedResponse, updatedResponse, JSONCompareMode.STRICT);
+        } finally {
+            // Clean up the new client's session
+            newClient.cleanupSession();
+        }
     }
 
 }

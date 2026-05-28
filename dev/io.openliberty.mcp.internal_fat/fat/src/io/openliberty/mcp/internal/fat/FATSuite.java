@@ -42,7 +42,6 @@ import io.openliberty.mcp.internal.fat.security.NoClassAnnotationTestsStateless;
 import io.openliberty.mcp.internal.fat.security.PermitAllTests;
 import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
-import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolCallEventTraceTest;

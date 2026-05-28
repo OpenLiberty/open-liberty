@@ -209,6 +209,39 @@ public class McpClient extends ExternalResource {
         return this.sessionId;
     }
 
+    /**
+     * Mark the session as deleted without actually deleting it.
+     * This is useful when the session has already been invalidated (e.g., by server config changes)
+     * and you want to prevent the cleanup code from trying to delete it.
+     */
+    public void markSessionDeleted() {
+        this.sessionDeleted = true;
+    }
+
+    /**
+     * Initialize a new session. This is useful when you need to re-establish a session
+     * after it has been invalidated (e.g., by server config changes).
+     */
+    public void initializeSession() throws Exception {
+        try {
+            before();
+        } catch (Throwable t) {
+            if (t instanceof Exception) {
+                throw (Exception) t;
+            } else {
+                throw new RuntimeException(t);
+            }
+        }
+    }
+
+    /**
+     * Clean up the current session. This is useful when you need to manually clean up
+     * a session that was initialized with initializeSession().
+     */
+    public void cleanupSession() {
+        after();
+    }
+
     public void deleteSession() {
         if (mode.equals(StateMode.STATEFUL)) {
             try {

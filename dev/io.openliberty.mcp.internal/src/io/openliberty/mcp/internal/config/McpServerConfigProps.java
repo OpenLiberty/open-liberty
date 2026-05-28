@@ -15,16 +15,17 @@ import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
  * Holds configuration data for an application-level MCPserver defined in the server.xml
  *
  * @param stateless The boolean value indicating if the sever is running in stateless mode
- * @param moduleName The name of the module the application is running in
+ * @param moduleName The name of the module the application is running in (optional, can be null)
  * @param path The endpoint path for the mcp server
- * @param servicePid The service PID
- * @param serverInfo The server info configuration
+ * @param servicePid The service PID (optional, can be null)
+ * @param serverInfo The server info configuration (optional, can be null; name and version are required and will use defaults if not provided, title and description are optional)
  */
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
                                    String path,
                                    String servicePid,
                                    ServerInfo serverInfo) implements McpConfig {
+
     public static final String FALLBACK_PATH = "/mcp";
 
     // Default serverInfo values from metatype.xml
@@ -36,13 +37,34 @@ public record McpServerConfigProps(boolean stateless,
 
     public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, null);
 
+    /**
+     * Compact constructor that validates and applies defaults for required fields.
+     * Only name and version are required in ServerInfo (title and description are optional).
+     * If serverInfo is null, DEFAULT_SERVER_INFO is used.
+     * If serverInfo is provided but name or version are null, defaults are applied.
+     */
+    public McpServerConfigProps {
+        // If serverInfo is null, use DEFAULT_SERVER_INFO
+        if (serverInfo == null) {
+            serverInfo = DEFAULT_SERVER_INFO;
+        } else {
+            String name = serverInfo.name();
+            String version = serverInfo.version();
+
+            // Apply defaults if required fields are null
+            if (name == null || version == null) {
+                serverInfo = new ServerInfo(
+                                            name != null ? name : DEFAULT_SERVER_NAME,
+                                            serverInfo.title(),
+                                            version != null ? version : DEFAULT_SERVER_VERSION,
+                                            serverInfo.description());
+            }
+        }
+    }
+
     @Override
     public ServerInfo serverInfo() {
-        if (serverInfo != null) {
-            return serverInfo;
-        }
-        // When serverInfo is null, return metatype defaults
-        // This should not happen as McpConfigurationComponent.parseServerInfo() now always returns a ServerInfo
-        return DEFAULT_SERVER_INFO;
+        // serverInfo is never null after construction (defaults applied in constructor)
+        return serverInfo;
     }
 }

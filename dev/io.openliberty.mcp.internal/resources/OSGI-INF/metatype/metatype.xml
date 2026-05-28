@@ -35,6 +35,8 @@
 	    id="info"
 	    ibm:type="pid"
 	    ibm:reference="io.openliberty.mcp.internal.config.info"
+	    ibm:flat="true"
+	    cardinality="1"
 	    required="false"
 	    type="String"/>
 </OCD>
