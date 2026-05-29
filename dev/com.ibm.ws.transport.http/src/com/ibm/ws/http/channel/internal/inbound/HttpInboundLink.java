@@ -515,6 +515,10 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
             Tr.debug(tc, "Discrimination will be called");
         }
 
+        Long webSocketBufferSize = Long.valueOf(getChannel().getHttpConfig().getWebSocketBufferSize());
+        getVirtualConnection().getStateMap().put("com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.websocketBufferSize", webSocketBufferSize);
+        System.out.println("WSOC DEBUG HttpInboundLink stored websocketBufferSize on VC state map value=" + webSocketBufferSize + " vc=" + getVirtualConnection());
+
         // 363633 - on z/OS we need store store some information for Proxy use
         if (getChannel().getHttpConfig().runningOnZOS()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

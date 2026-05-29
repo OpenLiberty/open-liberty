@@ -41,8 +41,22 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     // No spec defined limits, but we need to have some limits to prevent OOM errors.
     // Default buffer size for processing binary messages, can be overridden by user/app
-    int defaultMaxBinaryMessageBufferSize = 32 * 1024; 
-    int defaultMaxTextMessageBufferSize = 32 * 1024;
+    int defaultMaxBinaryMessageBufferSize = 32 * 1024;  // default is actually set by HttpChannelConfig
+    int defaultMaxTextMessageBufferSize = 32 * 1024;  // default is actually set by HttpChannelConfig
+    private boolean defaultMaxBinaryMessageBufferSizeSetByUser = false;
+    private boolean defaultMaxTextMessageBufferSizeSetByUser = false;
+
+    public void initializeDefaultsFromConfiguredBufferSize(Integer webSocketBufferSize) {
+        if (webSocketBufferSize == null) {
+            return;
+        }
+        if (!defaultMaxBinaryMessageBufferSizeSetByUser) {
+            defaultMaxBinaryMessageBufferSize = webSocketBufferSize.intValue();
+        }
+        if (!defaultMaxTextMessageBufferSizeSetByUser) {
+            defaultMaxTextMessageBufferSize = webSocketBufferSize.intValue();
+        }
+    }
 
     @Override
     public long getDefaultAsyncSendTimeout() {
@@ -72,6 +86,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
     @Override
     public void setDefaultMaxBinaryMessageBufferSize(int max) {
         defaultMaxBinaryMessageBufferSize = max;
+        defaultMaxBinaryMessageBufferSizeSetByUser = true;
     }
 
     @Override
@@ -82,6 +97,7 @@ public class WebSocketContainerExt implements WebSocketContainer {
     @Override
     public void setDefaultMaxTextMessageBufferSize(int max) {
         defaultMaxTextMessageBufferSize = max;
+        defaultMaxTextMessageBufferSizeSetByUser = true;
     }
 
     /*

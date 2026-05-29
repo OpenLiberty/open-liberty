@@ -75,6 +75,7 @@ public class HttpConfigConstants {
      * controls the size of each buffer being used.
      */
     public static final String PROPNAME_INCOMING_BODY_BUFFSIZE = "incomingBodyBufferSize";
+    public static final String PROPNAME_WEBSOCKET_BUFFER_SIZE = "websocketBufferSize";
 
     /**
      * This timeout value controls the allowed idle time on
