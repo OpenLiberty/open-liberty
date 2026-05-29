@@ -119,8 +119,8 @@ public class ContainerEnvVarTest extends LogstashCollectorTest {
         boolean foundHostEnv = false;
         boolean foundServerEnv = false;
 
-        String stringHost = waitForStringInContainerOutput("TEST_HOST_NAME");
-        String stringServer = waitForStringInContainerOutput("TEST_SERVER_NAME");
+        String stringHost = pollForStringInContainerOutput("TEST_HOST_NAME", 60000);
+        String stringServer = pollForStringInContainerOutput("TEST_SERVER_NAME", 60000);
 
         Log.info(c, "containerEnvVarTest", "stringHost: " + stringHost);
         Log.info(c, "containerEnvVarTest", "stringServer: " + stringServer);
@@ -150,7 +150,7 @@ public class ContainerEnvVarTest extends LogstashCollectorTest {
         // assertNotNull("Cannot find CWWKT0016I from messages.log", server.waitForStringInLogUsingMark("CWWKT0016I", 10000));
 
         // Wait for CWWKT0016I in Logstash container output
-        waitForStringInContainerOutput("CWWKT0016I");
+        assertNotNull("Cannot find CWWKT0016I in container output", pollForStringInContainerOutput("CWWKT0016I", 60000));
     }
 
     @Override

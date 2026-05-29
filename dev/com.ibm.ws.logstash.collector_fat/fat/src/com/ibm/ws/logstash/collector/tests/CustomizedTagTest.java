@@ -19,6 +19,7 @@ import static org.junit.Assert.fail;
 import java.io.File;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import org.json.JSONObject;
 import org.junit.After;
@@ -235,7 +236,30 @@ public class CustomizedTagTest extends LogstashCollectorTest {
         server.startServer();
         // Wait for Liberty server to connect to Logstash server
         // TRAS0218I: The logstash collector is connected to the logstash server on the specified host {0} and port number {1}.
-        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLog("TRAS0218I", 60000));
+        assertNotNull("Cannot find TRAS0218I from messages.log", pollForLogMessage(server, "TRAS0218I", 60000));
+    }
+
+    // Static polling method for use in static contexts
+    private static String pollForLogMessage(LibertyServer libertyServer, String message, long timeoutMs) {
+        long endTime = System.currentTimeMillis() + timeoutMs;
+        
+        while (System.currentTimeMillis() < endTime) {
+            String line = libertyServer.waitForStringInLog(message, 1000);
+            if (line != null) {
+                return line;
+            }
+            
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.info(c, "pollForLogMessage", "Polling interrupted: " + e.getMessage());
+                return null;
+            }
+        }
+        
+        // One final check after timeout
+        return libertyServer.waitForStringInLog(message, 1000);
     }
 
     private boolean isGCSupported() {

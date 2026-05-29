@@ -90,11 +90,12 @@ public abstract class LogstashCollectorTest {
         Log.info(c, "setConfig entry", conf);
         getServer().setMarkToEndOfLog();
         getServer().setServerConfigurationFile(conf);
-        assertNotNull("Cannot find CWWKG0016I from messages.log", getServer().waitForStringInLogUsingMark("CWWKG0016I", 60000));
+        // assertNotNull("Cannot find CWWKG0016I from messages.log", getServer().waitForStringInLogUsingMark("CWWKG0016I", 60000));
+        assertNotNull("Cannot find CWWKG0016I from messages.log", pollForLogMessage("CWWKG0016I", 60000));
         String line = getServer().waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 60000);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I from messages.log", line);
-        waitForStringInContainerOutput("CWWKG0017I|CWWKG0018I"); // waits for server configuration to finish updating (CWWKG0017I)
-        waitForStringInContainerOutput("CWWKZ0003I"); // waits for application to finish updating (CWWKZ0003I)
+        assertNotNull("Cannot find CWWKG0017I or CWWKG0018I in container output", pollForStringInContainerOutput("CWWKG0017I|CWWKG0018I", 60000)); // waits for server configuration to finish updating (CWWKG0017I)
+        assertNotNull("Cannot find CWWKZ0003I in container output", pollForStringInContainerOutput("CWWKZ0003I", 60000)); // waits for application to finish updating (CWWKZ0003I)
         Log.info(c, "setConfig exit", conf);
     }
 
@@ -448,6 +449,69 @@ public abstract class LogstashCollectorTest {
                      + "</server>\n";
 
         Files.write(outputFile.toPath(), xml.getBytes(StandardCharsets.UTF_8));
+    }
+
+    // Poll the server logs for a specific message with retry logic.
+    protected String pollForLogMessage(String message, long timeoutMs) {
+        long endTime = System.currentTimeMillis() + timeoutMs;
+        
+        while (System.currentTimeMillis() < endTime) {
+            String line = getServer().waitForStringInLogUsingMark(message, 1000);
+            if (line != null) {
+                return line;
+            }
+            
+            try {
+                Thread.sleep(1000); // Wait for 1 second before checking again
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.info(c, "pollForLogMessage", "Polling interrupted: " + e.getMessage());
+                return null;
+            }
+        }
+        
+        // One final check after timeout
+        return getServer().waitForStringInLog(message, 1000);
+    }
+
+    // Poll the container output for a specific message with retry logic.
+    protected static String pollForStringInContainerOutput(String regex, long timeoutMs) {
+        Log.info(c, "pollForStringInContainerOutput", "looking for " + regex);
+        Pattern pattern = Pattern.compile(regex);
+        long endTime = System.currentTimeMillis() + timeoutMs;
+        
+        while (System.currentTimeMillis() < endTime) {
+            String result = findStringInContainerOutputWithPattern(pattern);
+            if (result != null) {
+                Log.info(c, "pollForStringInContainerOutput", "Found: " + regex);
+                return result;
+            }
+            
+            try {
+                Thread.sleep(1000); // Wait for 1 second before checking again
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.info(c, "pollForStringInContainerOutput", "Polling interrupted: " + e.getMessage());
+                return null;
+            }
+        }
+        
+        // One final check after timeout
+        Log.info(c, "pollForStringInContainerOutput", "Timed out and could not find any lines containing: " + regex);
+        return findStringInContainerOutputWithPattern(pattern);
+    }
+
+    // Helper method to find a string in container output using a compiled pattern
+    private static String findStringInContainerOutputWithPattern(Pattern pattern) {
+        Iterator<String> it = logstashOutput.iterator();
+        while (it.hasNext()) {
+            String line = it.next();
+            Matcher matcher = pattern.matcher(line);
+            if (matcher.find()) {
+                return line;
+            }
+        }
+        return null;
     }
 
 }
