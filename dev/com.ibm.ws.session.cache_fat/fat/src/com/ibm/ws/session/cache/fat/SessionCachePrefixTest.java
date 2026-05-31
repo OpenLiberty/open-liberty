@@ -61,9 +61,9 @@ public class SessionCachePrefixTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        appCustom = new SessionCacheApp(serverCustom, false, "session.cache.web", "session.cache.web.listener1");
-        appEmpty = new SessionCacheApp(serverEmpty, false, "session.cache.web", "session.cache.web.listener1");
-        appSpecial = new SessionCacheApp(serverSpecial, false, "session.cache.web", "session.cache.web.listener1");
+        appCustom = new SessionCacheApp(serverCustom, true, "session.cache.web", "session.cache.web.listener1");
+        appEmpty = new SessionCacheApp(serverEmpty, true, "session.cache.web", "session.cache.web.listener1");
+        appSpecial = new SessionCacheApp(serverSpecial, true, "session.cache.web", "session.cache.web.listener1");
 
         String sessionCacheConfigFile = "httpSessionCache_1.xml";
         if (RepeatTestFilter.isRepeatActionActive(CacheManagerRepeatAction.ID)) {
