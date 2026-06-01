@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -106,9 +103,9 @@ public class FeatureReplacementAction implements RepeatTestAction {
         featuresWithNameChangeOnEE9 = Collections.unmodifiableMap(featureNameMapping);
     }
 
-    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.JAVA_VERSION >= 11;
-    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.JAVA_VERSION >= 17;
-    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_21 = (action) -> JavaInfo.JAVA_VERSION >= 21;
+    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.BOOTSTRAP_JAVA_VERSION >= 11;
+    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.BOOTSTRAP_JAVA_VERSION >= 17;
+    public static final Predicate<FeatureReplacementAction> GREATER_THAN_OR_EQUAL_JAVA_21 = (action) -> JavaInfo.BOOTSTRAP_JAVA_VERSION >= 21;
 
     public static EmptyAction NO_REPLACEMENT() {
         return new EmptyAction();
@@ -514,11 +511,11 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     public boolean checkEnabled() {
-        if (JavaInfo.forCurrentVM().majorVersion() < minJavaLevel.majorVersion()) {
+        if (JavaInfo.BOOTSTRAP_JAVA_VERSION < minJavaLevel.majorVersion()) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too low.");
             return false;
         }
-        if (maxJavaLevel != null && JavaInfo.forCurrentVM().majorVersion() > maxJavaLevel.majorVersion()) {
+        if (maxJavaLevel != null && JavaInfo.BOOTSTRAP_JAVA_VERSION > maxJavaLevel.majorVersion()) {
             Log.info(c, "isEnabled", "Skipping action '" + toString() + "' because the java level is too high.");
             return false;
         }

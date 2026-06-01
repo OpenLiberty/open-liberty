@@ -7950,16 +7950,6 @@ public class LibertyServer implements LogMonitorClient {
         updateServerConfiguration(config);
     }
 
-    @SuppressWarnings("deprecation")
-    public boolean isIBMJVM() {
-        return javaInfo.vendor() == JavaInfo.Vendor.IBM;
-    }
-
-    @SuppressWarnings("deprecation")
-    public boolean isOracleJVM() {
-        return javaInfo.vendor() == JavaInfo.Vendor.SUN_ORACLE;
-    }
-
     public void useSecondaryHTTPPort() {
         setHttpDefaultPort(getHttpSecondaryPort());
         setHttpDefaultSecurePort(getHttpSecondarySecurePort());

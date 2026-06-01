@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2025 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.oauth_oidc.fat.commonTest;
 
@@ -373,12 +370,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
                 }
             }
 
-            boolean overrideForConsul = false;
-            if (!useDerby && useMongo && JavaInfo.JAVA_VERSION == 7) { // Added Java 7 back in, need to do this to connect to Consul for MongoDB
-                overrideForConsul = true;
-            }
-
-            setupSSLClient(overrideForConsul);
+            setupSSLClient();
 
             /*
              * reconfigExpectations = new FATDataHelpers().addExpectation(null,
@@ -528,7 +520,7 @@ public class CommonTest extends com.ibm.ws.security.fat.common.CommonTest {
      * Perform setup for testing with SSL connections: TrustManager, hostname
      * verifier, ...
      */
-    private static void setupSSLClient(boolean overrideForConsul) {
+    private static void setupSSLClient() {
 
         String thisMethod = "setupSSLCLient";
 
