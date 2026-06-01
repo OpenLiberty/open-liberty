@@ -18,7 +18,7 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import io.openliberty.microprofile.health.file.healthcheck.fat.utils.HealthFileUtils;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 
 @RunWith(Suite.class)
 @SuiteClasses({
