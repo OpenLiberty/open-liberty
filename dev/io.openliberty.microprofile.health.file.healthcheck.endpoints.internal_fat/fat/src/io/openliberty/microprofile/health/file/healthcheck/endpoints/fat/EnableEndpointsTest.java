@@ -41,8 +41,8 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
-import io.openliberty.microprofile.health.file.healthcheck.endpoints.fat.utils.HealthFileUtils;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 
 /**
  * Test for enableEndpoints configuration attribute.
