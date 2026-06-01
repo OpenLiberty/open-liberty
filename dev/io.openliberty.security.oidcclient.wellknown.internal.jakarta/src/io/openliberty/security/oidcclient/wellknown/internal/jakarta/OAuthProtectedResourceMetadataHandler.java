@@ -46,7 +46,7 @@ public class OAuthProtectedResourceMetadataHandler {
         if (pathInfo.startsWith("/")) {
             return pathInfo;
         }
-        return "/" + pathInfo;
+        return "/".concat(pathInfo);
     }
 
     /**

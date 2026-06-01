@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-package com.ibm.ws.security.authentication.filter.internal;
+package com.ibm.ws.security.authentication.filter;
 
 import java.util.List;
 
@@ -19,7 +19,7 @@ import java.util.List;
  * Internal interface to expose AuthFilterConfig data for protected resource metadata.
  * This interface should only be used internally and is not part of the public API.
  */
-public interface IAuthenticationFilterInternal {
+public interface IAuthenticationFilter {
 
     /**
      * Get the authentication filter ID.
@@ -34,5 +34,5 @@ public interface IAuthenticationFilterInternal {
      *
      * @return list of Properties containing URL patterns, or null if not configured
      */
-    List<String> getRequestUrlProperties();
+    List<String> getRequestUrlPatterns();
 }

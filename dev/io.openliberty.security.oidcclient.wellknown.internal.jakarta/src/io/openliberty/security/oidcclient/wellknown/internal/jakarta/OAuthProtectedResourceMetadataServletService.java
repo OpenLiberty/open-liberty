@@ -28,34 +28,37 @@ import jakarta.servlet.http.HttpServletRequest;
 @Component(name = "io.openliberty.security.oidcclient.wellknown.internal.jakarta.OAuthProtectedResourceMetadataServletService", service = {}, property = { "service.vendor=IBM" })
 public class OAuthProtectedResourceMetadataServletService extends OAuthProtectedResourceMetadataServlet {
 
-    private static final long serialVersionUID = 1L;
+	 private static final long serialVersionUID = 1L;
 
-    private volatile OAuthProtectedResourceMetadataResolver metadataResolver;
+	    private volatile OAuthProtectedResourceMetadataResolver metadataResolver;
 
-    @Reference
-    protected void setMetadataResolver(OAuthProtectedResourceMetadataResolver metadataResolver) {
-        this.metadataResolver = metadataResolver;
-    }
+	    @Reference
+	    protected void setMetadataResolver(OAuthProtectedResourceMetadataResolver metadataResolver) {
+	        this.metadataResolver = metadataResolver;
+	    }
 
-    protected void unsetMetadataResolver(OAuthProtectedResourceMetadataResolver metadataResolver) {
-        if (this.metadataResolver == metadataResolver) {
-            this.metadataResolver = null;
-        }
-    }
+	    protected void unsetMetadataResolver(OAuthProtectedResourceMetadataResolver metadataResolver) {
+	        if (this.metadataResolver == metadataResolver) {
+	            this.metadataResolver = null;
+	        }
+	    }
 
-    /**
-     * Resolves metadata for the requested protected resource path.
-     *
-     * @param request the current HTTP request
-     * @param protectedResourcePath the normalized protected resource path
-     * @return the metadata JSON to return, or {@code null} when the path is unknown
-     */
-    @Override
-    protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
-        OAuthProtectedResourceMetadataResolver resolver = metadataResolver;
-        if (resolver == null) {
-            return null;
-        }
-        return resolver.resolveMetadataJson(protectedResourcePath);
-    }
+	    /**
+	     * Resolves metadata for the requested protected resource path.
+	     *
+	     * @param request the current HTTP request
+	     * @param protectedResourcePath the normalized protected resource path
+	     * @return the metadata JSON to return, or {@code null} when the path is unknown
+	     */
+	    @Override
+	    protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
+	        OAuthProtectedResourceMetadataResolver resolver = metadataResolver;
+
+	        if (resolver == null) {
+	            return null;
+	        }
+
+	        String resourceUrl = buildResourceUrl(request, protectedResourcePath);
+	        return resolver.resolveMetadataJson(protectedResourcePath, resourceUrl);
+	    }
 }

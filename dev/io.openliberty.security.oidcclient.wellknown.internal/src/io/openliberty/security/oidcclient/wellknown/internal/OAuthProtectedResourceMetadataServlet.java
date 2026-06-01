@@ -29,10 +29,11 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Handles metadata discovery requests for protected resources hosted on this Liberty server.
+     * Handles a metadata discovery request for a protected resource path beneath the servlet
+     * context.
      *
-     * @param request current HTTP request
-     * @param response current HTTP response
+     * @param request the HTTP request targeting a protected resource metadata endpoint
+     * @param response the HTTP response to populate
      * @throws IOException if the response cannot be written
      */
     @Override
@@ -50,13 +51,12 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
     }
 
     /**
-     * Creates a per-request handler that bridges servlet request context into the metadata
-     * resolution hook.
+     * Creates the request-scoped handler used to translate the path info and resolve metadata.
      *
-     * @param request current HTTP request
-     * @return handler for the current request
+     * @param request the current HTTP request
+     * @return a handler bound to the current request
      */
-    protected OAuthProtectedResourceMetadataHandler createHandler(HttpServletRequest request) {
+    protected OAuthProtectedResourceMetadataHandler createHandler(final HttpServletRequest request) {
         return new OAuthProtectedResourceMetadataHandler() {
             @Override
             protected String resolveMetadataJson(String protectedResourcePath) {
@@ -66,21 +66,50 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
     }
 
     /**
-     * Resolves protected resource metadata for the requested protected resource path.
+     * Resolves the metadata JSON for the supplied protected resource path.
      * <p>
-     * Subclasses supply the actual metadata lookup logic. Returning {@code null} indicates that
-     * no metadata should be served for the requested protected resource, which results in a
-     * {@code 404} response.
-     * </p>
+     * Subclasses override this method to bridge from the servlet layer to the runtime OIDC
+     * client configuration and metadata generation logic.
      *
-     * @param request current HTTP request
-     * @param protectedResourcePath normalized protected resource path, such as {@code /mcp}
-     * @return metadata JSON to return to the client, or {@code null} if the protected resource
-     *         is unknown or not enabled for metadata serving
+     * @param request the current HTTP request
+     * @param protectedResourcePath the normalized protected resource path, beginning with {@code /}
+     * @return the metadata JSON to return, or {@code null} if the path has no metadata
      */
     protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
         return null;
     }
+
+    /**
+     * Builds the absolute protected resource URL from the current metadata request.
+     * <p>
+     * Example:
+     * </p>
+     *
+     * <pre>
+     * Metadata request:
+     *   https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected
+     *
+     * Protected resource URL:
+     *   https://localhost:9443/myApp/protected
+     * </pre>
+     *
+     * @param request current HTTP request
+     * @param protectedResourcePath normalized protected resource path, such as {@code /myApp/protected}
+     * @return absolute protected resource URL
+     */
+    protected String buildResourceUrl(HttpServletRequest request, String protectedResourcePath) {
+        String requestUrl = request.getRequestURL().toString();
+        String requestUri = request.getRequestURI();
+
+        int requestUriIndex = requestUrl.indexOf(requestUri);
+        if (requestUriIndex >= 0) {
+            return requestUrl.substring(0, requestUriIndex).concat(protectedResourcePath);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.getScheme()).append("://").append(request.getServerName())
+          .append(":").append(request.getServerPort()).append(protectedResourcePath);
+        return sb.toString();
+    }
 }
 
-// Made with Bob

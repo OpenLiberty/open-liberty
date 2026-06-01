@@ -47,17 +47,19 @@ public class OAuthProtectedResourceMetadataServletService extends OAuthProtected
     /**
      * Resolves metadata for the requested protected resource path.
      *
-     * @param request current HTTP request
-     * @param protectedResourcePath normalized protected resource path
-     * @return metadata JSON for the protected resource, or {@code null} if no metadata is
-     *         currently available
+     * @param request the current HTTP request
+     * @param protectedResourcePath the normalized protected resource path
+     * @return the metadata JSON to return, or {@code null} when the path is unknown
      */
-    @Override
-    protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
-        OAuthProtectedResourceMetadataResolver resolver = metadataResolver;
-        if (resolver == null) {
-            return null;
-        }
-        return resolver.resolveMetadataJson(protectedResourcePath);
-    }
+	@Override
+	protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
+		OAuthProtectedResourceMetadataResolver resolver = metadataResolver;
+
+		if (resolver == null) {
+			return null;
+		}
+
+		String resourceUrl = buildResourceUrl(request, protectedResourcePath);
+		return resolver.resolveMetadataJson(protectedResourcePath, resourceUrl);
+	}
 }

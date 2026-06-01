@@ -77,6 +77,39 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
     protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
         return null;
     }
+    
+    /**
+     * Builds the absolute protected resource URL from the current metadata request.
+     * <p>
+     * Example:
+     * </p>
+     *
+     * <pre>
+     * Metadata request:
+     *   https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected
+     *
+     * Protected resource URL:
+     *   https://localhost:9443/myApp/protected
+     * </pre>
+     *
+     * @param request current HTTP request
+     * @param protectedResourcePath normalized protected resource path, such as {@code /myApp/protected}
+     * @return absolute protected resource URL
+     */
+    protected String buildResourceUrl(HttpServletRequest request, String protectedResourcePath) {
+        String requestUrl = request.getRequestURL().toString();
+        String requestUri = request.getRequestURI();
+
+        int requestUriIndex = requestUrl.indexOf(requestUri);
+        if (requestUriIndex >= 0) {
+            return requestUrl.substring(0, requestUriIndex).concat(protectedResourcePath);
+        }
+
+        StringBuilder sb = new StringBuilder();
+        sb.append(request.getScheme()).append("://").append(request.getServerName())
+          .append(":").append(request.getServerPort()).append(protectedResourcePath);
+        return sb.toString();
+    }
 }
 
 // Made with Bob
