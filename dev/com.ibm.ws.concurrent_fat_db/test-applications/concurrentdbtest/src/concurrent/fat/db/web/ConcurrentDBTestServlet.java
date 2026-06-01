@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2026 IBM Corporation and others.
+ * Copyright (c) 2017,2020 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- *
+ * 
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,7 +44,6 @@ import jakarta.transaction.UserTransaction;
 
 import javax.sql.DataSource;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import componenttest.app.FATDatabaseServlet;
@@ -368,7 +367,6 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
      * Run a task on the same thread in the middle of an LTC. The LTC should be temporarily suspended, and afterwards resumed.
      */
     @Test
-    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/33035") //TODO this test currently fails now that an XA datasource is actually being used.
     public void testLTCSuspendAndResume() throws Exception {
         Connection con = dataSource.getConnection();
         try {
@@ -408,7 +406,7 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
         try {
             ResultSet result = con.createStatement().executeQuery("SELECT MYVALUE FROM MYTABLE WHERE MYKEY = 'testLTCSuspendAndResume'");
             if (result.next())
-                throw new Exception("Updates should have been rolled back, value was: " + result.getObject("MYVALUE"));
+                throw new Exception("Updates should have been rolled back");
         } finally {
             con.commit();
             con.close();
@@ -420,7 +418,6 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
      * the one from Jakarta Concurrency must take precedence when Jakarta Concurrency is enabled.
      */
     @Test
-    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/33035") //TODO this test currently fails now that an XA datasource is actually being used.
     public void testPrecedenceOfTransactionConstant() throws Exception {
         Map<String, String> execProps = new TreeMap<String, String>();
         execProps.put(ManagedTask.TRANSACTION.replace("jakarta", "javax"), ManagedTask.SUSPEND);
