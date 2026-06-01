@@ -284,7 +284,6 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
      * Have a task run in the transaction that is already on the thread of execution. Roll it back.
      */
     @Test
-    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/33035") //TODO this test currently fails now that an XA datasource is actually being used.
     public void testLTCOfExecutionThread() throws Exception {
         Connection con = dataSource.getConnection();
         try {
@@ -330,7 +329,6 @@ public class ConcurrentDBTestServlet extends FATDatabaseServlet {
      * Schedule a task that does work in an LTC, rolls it back, and then starts a global transaction.
      */
     @Test
-    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/33035") //TODO this test currently fails now that an XA datasource is actually being used.
     public void testLTCRollbackAndStartGlobalTran() throws Exception {
         Future<Integer> future = scheduledExecutor.schedule(new Callable<Integer>() {
             @Override
