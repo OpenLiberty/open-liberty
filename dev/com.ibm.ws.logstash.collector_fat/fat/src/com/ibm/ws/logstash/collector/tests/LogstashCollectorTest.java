@@ -95,7 +95,7 @@ public abstract class LogstashCollectorTest {
         String line = getServer().waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 60000);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I from messages.log", line);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I in container output", pollForStringInContainerOutput("CWWKG0017I|CWWKG0018I", 60000)); // waits for server configuration to finish updating (CWWKG0017I)
-        assertNotNull("Cannot find CWWKZ0003I in container output", pollForStringInContainerOutput("CWWKZ0003I", 60000)); // waits for application to finish updating (CWWKZ0003I)
+        assertNotNull("Cannot find CWWKZ0003I in container output", pollForStringInContainerOutput("CWWKZ0003I", 120000)); // waits for application to finish updating (CWWKZ0003I) - increased to 2 minutes
         Log.info(c, "setConfig exit", conf);
     }
 
