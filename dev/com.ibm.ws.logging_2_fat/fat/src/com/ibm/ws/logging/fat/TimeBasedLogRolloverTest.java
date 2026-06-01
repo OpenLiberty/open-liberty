@@ -130,6 +130,10 @@ public class TimeBasedLogRolloverTest {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
                                    "CWWKG0081E", "CWWKG0083W", "TRAS3015W", "TRAS3013W");
         }
+        // Restore the original server configuration after stopping to ensure next test starts clean
+        if (serverInUse != null) {
+            serverInUse.restoreServerConfiguration();
+        }
     }
 
     /*
