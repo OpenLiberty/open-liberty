@@ -157,6 +157,7 @@ class ConfigurationStore implements Runnable, CheckpointHook {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "config store pids are [" + configurations.keySet() + "]");
+        Tr.debug(tc, ">>ConfigurationStore.ConfigurationStore: config store pids are [" + configurations.keySet() + "]");
     }
 
     private final void readLock() {
@@ -193,6 +194,9 @@ class ConfigurationStore implements Runnable, CheckpointHook {
     }
 
     public ExtendedConfigurationImpl getConfiguration(String pid, String location) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, ">>ConfigurationStore.getConfiguration: pid=" + pid + ", location=" + location);
+
         readLock();
         ExtendedConfigurationImpl config;
         try {
@@ -201,12 +205,16 @@ class ConfigurationStore implements Runnable, CheckpointHook {
             readUnlock();
         }
         if (config != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, ">>ConfigurationStore.getConfiguration: found existing configuration for pid=" + pid);
             return config;
         }
         writeLock();
         try {
             config = configurations.get(pid);
             if (config == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, ">>ConfigurationStore.getConfiguration: configurations.put creating new configuration for pid=" + pid);
                 config = new ExtendedConfigurationImpl(caFactory, location, null, pid, null, null, null);
                 configurations.put(pid, config);
             }
@@ -229,11 +237,16 @@ class ConfigurationStore implements Runnable, CheckpointHook {
      * @return The new configuration.
      */
     public ExtendedConfiguration createFactoryConfiguration(String factoryPid, String location) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, ">>ConfigurationStore.createFactoryConfiguration: factoryPid=" + factoryPid + ", location=" + location);
+
         String pid;
         ExtendedConfigurationImpl config;
         writeLock();
         try {
             pid = generatePid(factoryPid);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, ">>ConfigurationStore.createFactoryConfiguration: configurations.put generated pid=" + pid);
             config = new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, null, null, null);
             configurations.put(pid, config);
         } finally {
@@ -271,6 +284,9 @@ class ConfigurationStore implements Runnable, CheckpointHook {
     }
 
     public ExtendedConfiguration[] listConfigurations(Filter filter) {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, ">>ConfigurationStore.listConfigurations entry: filter=" + filter);
+
         List<ExtendedConfigurationImpl> resultList = new ArrayList<>();
         readLock();
         try {
@@ -285,6 +301,10 @@ class ConfigurationStore implements Runnable, CheckpointHook {
             }
         }
         int size = resultList.size();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, ">>ConfigurationStore.listConfigurations: returning " + (size == 0 ? "null" : size + " configurations"));
+
         return size == 0 ? null : (ExtendedConfigurationImpl[]) resultList.toArray(new ExtendedConfigurationImpl[size]);
     }
 
