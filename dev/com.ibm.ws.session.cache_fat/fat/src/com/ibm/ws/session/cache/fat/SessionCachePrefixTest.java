@@ -64,6 +64,11 @@ public class SessionCachePrefixTest extends FATServletClient {
         appCustom = new SessionCacheApp(serverCustom, true, "session.cache.web", "session.cache.web.listener1");
         appEmpty = new SessionCacheApp(serverEmpty, true, "session.cache.web", "session.cache.web.listener1");
         appSpecial = new SessionCacheApp(serverSpecial, true, "session.cache.web", "session.cache.web.listener1");
+        
+        serverEmpty.useSecondaryHTTPPort();
+        // Configure serverSpecial to use HTTP_tertiary port (no useTertiaryHTTPPort() method exists)
+        serverSpecial.setBvtPortPropertyName("bvt.prop.HTTP_tertiary");
+        serverSpecial.setBvtSecurePortPropertyName("bvt.prop.HTTP_tertiary.secure");
 
         String sessionCacheConfigFile = "httpSessionCache_1.xml";
         if (RepeatTestFilter.isRepeatActionActive(CacheManagerRepeatAction.ID)) {
