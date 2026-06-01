@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 import io.openliberty.microprofile.health.file.healthcheck.fat.utils.Constants;
-import io.openliberty.microprofile.health.file.healthcheck.fat.utils.HealthFileUtils;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 /**

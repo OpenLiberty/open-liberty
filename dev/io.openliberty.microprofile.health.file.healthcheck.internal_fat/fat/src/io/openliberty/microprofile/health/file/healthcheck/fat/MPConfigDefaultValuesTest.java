@@ -32,7 +32,7 @@ import componenttest.rules.repeater.MicroProfileActions;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.microprofile.health.file.healthcheck.fat.utils.Constants;
-import io.openliberty.microprofile.health.file.healthcheck.fat.utils.HealthFileUtils;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 /**
