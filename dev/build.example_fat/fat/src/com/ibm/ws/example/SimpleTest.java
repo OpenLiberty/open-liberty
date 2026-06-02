@@ -1,20 +1,19 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2023 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.example;
 
 import static componenttest.annotation.SkipForRepeat.EE10_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE10_OR_LATER_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE11_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE11_OR_LATER_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE12_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE8_OR_LATER_FEATURES;
 import static componenttest.annotation.SkipForRepeat.EE9_FEATURES;
@@ -136,7 +135,7 @@ public class SimpleTest extends FATServletClient {
     }
 
     @Test
-    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE9_FEATURES, EE10_FEATURES })
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE12_OR_LATER_FEATURES })
     public void testEE11Only() throws Exception {
         // This test will only run for the EE11 iteration
 
@@ -144,6 +143,19 @@ public class SimpleTest extends FATServletClient {
         Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
         assertTrue("Expected the Java EE 11 feature 'servlet-6.1' to be enabled but was not: " + features,
                    features.contains("servlet-6.1"));
+        assertTrue("No EE7 features should be enabled when this test runs: " + features,
+                   !features.contains("servlet-3.1"));
+    }
+
+    @Test
+    @SkipForRepeat({ NO_MODIFICATION, EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES })
+    public void testEE12Only() throws Exception {
+        // This test will only run for the EE12 iteration
+
+        // Verify only EE12 features are enabled
+        Set<String> features = server.getServerConfiguration().getFeatureManager().getFeatures();
+        assertTrue("Expected the Java EE 12 feature 'servlet-6.2' to be enabled but was not: " + features,
+                   features.contains("servlet-6.2"));
         assertTrue("No EE7 features should be enabled when this test runs: " + features,
                    !features.contains("servlet-3.1"));
     }
