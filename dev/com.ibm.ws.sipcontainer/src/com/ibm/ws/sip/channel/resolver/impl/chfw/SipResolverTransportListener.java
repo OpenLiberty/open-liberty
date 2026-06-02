@@ -29,7 +29,7 @@ public interface SipResolverTransportListener {
 	/*
 	 * Indicates a catastrophic failure, basically that several retires have failed and
 	 * that the service is not going to work. Should result in error responses for any
-	 * outstanding requrest.
+	 * outstanding requests.
 	 */
 	public void transportFailed(Exception	exception, SipResolverTransport transport);
 }

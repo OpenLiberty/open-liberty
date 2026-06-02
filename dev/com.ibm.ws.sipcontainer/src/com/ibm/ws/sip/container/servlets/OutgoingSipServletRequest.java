@@ -2196,8 +2196,8 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
 			}
 		}
 		
-		// If the directive is NEW the composition selection 
-		// process will start then the old state info recived from 
+		// If the directive is NEW, the composition selection 
+		// process will start, then the old state info received from 
 		// application router is irrelevant
 		if (directive.equals(SipApplicationRoutingDirective.NEW)){
 			this.setStateInfo(null);

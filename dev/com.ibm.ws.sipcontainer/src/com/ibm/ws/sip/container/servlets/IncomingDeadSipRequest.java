@@ -94,7 +94,7 @@ public class IncomingDeadSipRequest extends IncomingSipServletRequest {
 		if (!isLiveMessage("createResponse"))
 			return null;
 
-	//	If it is a final response mark the request as committed. 
+	//	If it is a final response, mark the request as committed. 
 	    if (statusCode >= 200)
 	    {
 	        setIsCommited(true);
