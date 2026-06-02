@@ -34,5 +34,6 @@ instrument.classesExcludes: org/apache/xml/security/stax/ext/*.class
 	com.ibm.websphere.javaee.jaxb.2.2;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
     io.openliberty.org.apache.commons.codec;version=latest,\
-    com.ibm.websphere.appserver.spi.logging
+    com.ibm.websphere.appserver.spi.logging, \
+    com.ibm.ws.kernel.service;version=latest
 globalize: false
