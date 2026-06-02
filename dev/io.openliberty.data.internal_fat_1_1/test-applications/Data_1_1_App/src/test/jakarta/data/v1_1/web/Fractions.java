@@ -46,6 +46,7 @@ import jakarta.data.repository.QueryOptions; // TODO replace with Persistence 4.
 import jakarta.data.repository.Repository;
 import jakarta.data.repository.Select;
 import jakarta.data.restrict.Restriction;
+import jakarta.persistence.LockModeType;
 
 /**
  * Repository for the Fraction entity
@@ -176,4 +177,10 @@ public interface Fractions {
     (@By(_Fraction.NUMERATOR) In<Integer> numerators,
      @Is int denominator,
      Sort<Fraction> sort);
+
+    @JakartaQuery("WHERE name = :name")
+    @QueryOptions(lockMode = LockModeType.PESSIMISTIC_WRITE,
+                  timeout = 10000) // query timeout = 10 seconds
+    Optional<Fraction> withWriteLock(String name);
+
 }

@@ -44,6 +44,9 @@ public class Data_1_1_Test extends FATServletClient {
                     new String[] {
                                    "CWWKD1054E.*findByIsControlTrueAndNumericValueBetween",
                                    "CWWKD1091E.*countBySurgePriceGreaterThanEqual",
+                                   "DSRA0302E.*XA_RBTIMEOUT", // query timeout
+                                   "DSRA0304E.*", // query timeout
+                                   "J2CA0027E.*" // query timeout
                     };
 
     @ClassRule
@@ -67,7 +70,6 @@ public class Data_1_1_Test extends FATServletClient {
 
         WebArchive war = ShrinkHelper
                         .buildDefaultApp("Data_1_1_App",
-                                         "test.jakarta.data.v1_1.eclipselink",
                                          "test.jakarta.data.v1_1.web");
         ShrinkHelper.exportAppToServer(server, war);
         server.startServer();

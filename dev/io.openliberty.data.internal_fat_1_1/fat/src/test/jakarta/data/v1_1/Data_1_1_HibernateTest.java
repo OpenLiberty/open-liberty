@@ -46,6 +46,9 @@ public class Data_1_1_HibernateTest extends FATServletClient {
                     new String[] {
                                    "CWWKD1054E.*findByIsControlTrueAndNumericValueBetween",
                                    "CWWKD1091E.*countBySurgePriceGreaterThanEqual",
+                                   "DSRA0302E.*XA_RBTIMEOUT", // query timeout
+                                   "DSRA0304E.*", // query timeout
+                                   "J2CA0027E.*" // query timeout
                     };
 
     @ClassRule

@@ -24,9 +24,11 @@ import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
+import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
@@ -41,6 +43,7 @@ import jakarta.data.constraint.In;
 import jakarta.data.constraint.Like;
 import jakarta.data.constraint.NotBetween;
 import jakarta.data.constraint.NotNull;
+import jakarta.data.exceptions.DataException;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
@@ -58,6 +61,7 @@ import jakarta.transaction.UserTransaction;
 
 import org.junit.Test;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
 
@@ -1038,6 +1042,69 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.named(Like.pattern("T% _i_ths"),
                                      Order.by(Sort.desc(_Fraction.NAME)),
                                      Limit.of(4)));
+    }
+
+    /**
+     * Use the QueryOptions annotation to establish pessimistic locking and
+     * a query timeout on a repository method annotated JakartaQuery.
+     */
+    @AllowedFFDC("javax.transaction.xa.XAException") // due to query timeout
+    @Test
+    public void testLockModeAndQueryTimeoutAsQueryOptions() throws Exception {
+        // Populate with 18/23.
+        // Ensure deletion in the finally block.
+        fractions.supply(List.of(Fraction.of(18, 23)));
+
+        CountDownLatch locked = new CountDownLatch(1);
+        CountDownLatch blocked = new CountDownLatch(1);
+        CompletableFuture<Fraction> lockDB = CompletableFuture.supplyAsync(() -> {
+            try {
+                tx.setTransactionTimeout((int) TIMEOUT_S * 3);
+                tx.begin();
+                Optional<Fraction> found = //
+                                fractions.withWriteLock("Eighteen Twenty-thirds");
+                System.out.println("Obtained lock on 18/23");
+                locked.countDown();
+                blocked.await(TIMEOUT_S * 2, TimeUnit.SECONDS);
+                System.out.println("Release lock on 18/23");
+                tx.commit();
+                return found.orElseThrow();
+            } catch (RuntimeException x) {
+                throw x;
+            } catch (Exception x) {
+                throw new CompletionException(x);
+            }
+        });
+        try {
+            assertEquals(true, locked.await(TIMEOUT_S, TimeUnit.SECONDS));
+            tx.begin();
+            try {
+                Optional<Fraction> found = //
+                                fractions.withWriteLock("Eighteen Twenty-thirds");
+                fail("Query timeout on QueryOptions should have caused the" +
+                     " query to time out. Instead found " + found);
+            } catch (DataException x) {
+                // expected for query timeout
+            } finally {
+                tx.rollback();
+            }
+
+            blocked.countDown();
+            tx.begin();
+            Fraction f18_23 = fractions.withWriteLock("Eighteen Twenty-thirds")
+                            .orElseThrow();
+            assertEquals(0.7826,
+                         f18_23.decimal.value(),
+                         0.0001);
+            tx.commit();
+        } finally {
+            locked.countDown();
+            blocked.countDown();
+            // Ensure no fractions with denominator of 23 or more are left around
+            fractions.discard(AtLeast.min(23),
+                              AtMost.max(Integer.MAX_VALUE),
+                              Restrict.unrestricted());
+        }
     }
 
     /**
