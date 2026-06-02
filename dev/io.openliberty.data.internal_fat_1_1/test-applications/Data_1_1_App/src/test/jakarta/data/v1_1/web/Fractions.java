@@ -12,6 +12,9 @@
  *******************************************************************************/
 package test.jakarta.data.v1_1.web;
 
+import java.sql.CallableStatement;
+import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -61,6 +64,8 @@ public interface Fractions {
                                      Restriction<Fraction> filter,
                                      Order<Fraction> sortBy);
 
+    Connection connect();
+
     Long count(Restriction<Fraction> filter);
 
     long countByDenominatorBetween(int min,
@@ -107,6 +112,13 @@ public interface Fractions {
                        Limit limit);
 
     @Find
+    @OrderBy(_Fraction.DENOMINATOR)
+    CursoredPage<Fraction> namedLike //
+    (@By(_Fraction.NAME) @Is(Like.class) String pattern,
+     Order<Fraction> additionalSorting,
+     PageRequest pageReq);
+
+    @Find
     @QueryOptions(entityGraph = "EagerlyLoadRoundedValues")
     Optional<Fraction> of(int numerator, int denominator);
 
@@ -117,6 +129,23 @@ public interface Fractions {
     @Delete
     List<Fraction> remove(Like name,
                           Restriction<Fraction> filter);
+
+    /**
+     * This is a workaround for Derby, which ignores query timeout
+     * and eventually the lock timeout (default 60s) applies instead.
+     * Tests can use this method to set the lock timeout to the desired
+     * query timeout value to make a query that involves a lock appear
+     * to time out as expected if the query timeout were honored.
+     */
+    default void setLockTimeout(int seconds) throws SQLException {
+        String sql = "CALL SYSCS_UTIL.SYSCS_SET_DATABASE_PROPERTY(?, ?)";
+        try (Connection con = connect()) {
+            CallableStatement cs = con.prepareCall(sql);
+            cs.setString(1, "derby.locks.waitTimeout");
+            cs.setInt(2, seconds);
+            cs.execute();
+        }
+    }
 
     @Query("SELECT NEW test.jakarta.data.v1_1.web.Ratio(" +
            "\t\tnumerator, denominator - numerator)" +
@@ -134,13 +163,6 @@ public interface Fractions {
 
     @Query("SELECT numerator, denominator - numerator")
     Stream<Ratio> streamOfRatios();
-
-    @Find
-    @OrderBy(_Fraction.DENOMINATOR)
-    CursoredPage<Fraction> namedLike //
-    (@By(_Fraction.NAME) @Is(Like.class) String pattern,
-     Order<Fraction> additionalSorting,
-     PageRequest pageReq);
 
     @Insert
     void supply(Collection<Fraction> list);

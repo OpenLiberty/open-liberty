@@ -107,6 +107,16 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Indicates if testing with the Derby database.
+     *
+     * @return true if testing with the Derby database.
+     */
+    static final boolean isDerby() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("derby");
+    }
+
+    /**
      * Indicates if testing with the Hibernate Persistence provider
      * rather than EclipseLink.
      *
@@ -1077,6 +1087,14 @@ public class Data_1_1_Servlet extends FATServlet {
         });
         try {
             assertEquals(true, locked.await(TIMEOUT_S, TimeUnit.SECONDS));
+            // Derby ignores query timeout and the lock timeout ends up applying
+            // instead. Work around this by also setting the lock timeout when
+            // running on Derby:
+            if (isDerby())
+                if (isHibernatePersistence())
+                    statefulFractions.setLockTimeout(5);
+                else
+                    fractions.setLockTimeout(5);
             tx.begin();
             try {
                 Optional<Fraction> found = //
@@ -1104,6 +1122,11 @@ public class Data_1_1_Servlet extends FATServlet {
             fractions.discard(AtLeast.min(23),
                               AtMost.max(Integer.MAX_VALUE),
                               Restrict.unrestricted());
+            if (isDerby())
+                if (isHibernatePersistence())
+                    statefulFractions.setLockTimeout(60);
+                else
+                    fractions.setLockTimeout(60);
         }
     }
 
