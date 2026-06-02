@@ -67,8 +67,9 @@ public class SessionCachePrefixTest extends FATServletClient {
         
         serverEmpty.useSecondaryHTTPPort();
         // Configure serverSpecial to use HTTP_tertiary port (no useTertiaryHTTPPort() method exists)
-        serverSpecial.setBvtPortPropertyName("bvt.prop.HTTP_tertiary");
-        serverSpecial.setBvtSecurePortPropertyName("bvt.prop.HTTP_tertiary.secure");
+        // Hardcoded values from testports.properties: bvt.prop.HTTP_tertiary=8050, secure=8060
+        serverSpecial.setHttpDefaultPort(8050);
+        serverSpecial.setHttpDefaultSecurePort(8060);
 
         String sessionCacheConfigFile = "httpSessionCache_1.xml";
         if (RepeatTestFilter.isRepeatActionActive(CacheManagerRepeatAction.ID)) {
