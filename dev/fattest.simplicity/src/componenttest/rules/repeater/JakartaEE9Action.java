@@ -118,6 +118,7 @@ public class JakartaEE9Action extends JakartaEEAction {
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         removeFeatures(JakartaEE11Action.EE11_FEATURE_SET);
+        removeFeatures(JakartaEE12Action.EE12_FEATURE_SET);
         forceAddFeatures(false);
         withID(ID);
     }

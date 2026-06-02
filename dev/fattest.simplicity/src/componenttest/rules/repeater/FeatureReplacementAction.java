@@ -154,6 +154,13 @@ public class FeatureReplacementAction implements RepeatTestAction {
     }
 
     /**
+     * Replaces any Java / Jakarta EE features with the Jakarta EE 12 equivalent feature.
+     */
+    public static JakartaEEAction EE12_FEATURES() {
+        return new JakartaEE12Action();
+    }
+
+    /**
      * Adds beta option to all the servers and clients
      */
     public static FeatureReplacementAction BETA_OPTION() {

@@ -35,7 +35,7 @@ public class RepeatActions {
     }
 
     public static enum EEVersion {
-        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA17);
+        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA17), EE12(SEVersion.JAVA21);
 
         private EEVersion(SEVersion minJavaLevel) {
             this.minJavaLevel = minJavaLevel;
@@ -223,6 +223,8 @@ public class RepeatActions {
             action = new JakartaEE10Action();
         } else if (eeVersion == EEVersion.EE11) {
             action = new JakartaEE11Action();
+        } else if (eeVersion == EEVersion.EE12) {
+            action = new JakartaEE12Action();
         } else {
             action = new FeatureReplacementAction();
         }

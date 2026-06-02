@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2026 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,11 +23,11 @@ import componenttest.rules.repeater.RepeatActions.SEVersion;
  * Test repeat action that will do 2 things:
  * <ol>
  * <li>Invoke the Jakarta transformer on all war/ear files under the autoFVT/publish/ folder</li>
- * <li>Update all server.xml configs under the autoFVT/publish/ folder to use EE 10 features</li>
+ * <li>Update all server.xml configs under the autoFVT/publish/ folder to use EE 12 features</li>
  * </ol>
  */
-public class JakartaEE10Action extends JakartaEEAction {
-    public static final String ID = EE10_ACTION_ID;
+public class JakartaEE12Action extends JakartaEEAction {
+    public static final String ID = EE12_ACTION_ID;
 
     private static final Map<String, String> DEFAULT_TRANSFORMATION_RULES = new HashMap<>();
     private static final Map<String, String> TRANSFORMATION_RULES_APPEND = new HashMap<>();
@@ -47,83 +47,86 @@ public class JakartaEE10Action extends JakartaEEAction {
         //   (other xml properties files as referenced by 'jakarta-text.properties'
         DEFAULT_TRANSFORMATION_RULES.put("-tr", TRANSFORMER_RULES_ROOT + "jakarta-renames.properties"); // Package renames
         DEFAULT_TRANSFORMATION_RULES.put("-ts", TRANSFORMER_RULES_ROOT + "jakarta-selections.properties"); // File selections and omissions
-        DEFAULT_TRANSFORMATION_RULES.put("-tv", TRANSFORMER_RULES_ROOT + "jakarta-versions-ee10.properties"); // Package version updates
+        DEFAULT_TRANSFORMATION_RULES.put("-tv", TRANSFORMER_RULES_ROOT + "jakarta-versions-ee11.properties"); // Package version updates
         DEFAULT_TRANSFORMATION_RULES.put("-tb", TRANSFORMER_RULES_ROOT + "jakarta-bundles.properties"); // bundle identity updates
         DEFAULT_TRANSFORMATION_RULES.put("-td", TRANSFORMER_RULES_ROOT + "jakarta-direct.properties"); // exact java string constant updates
         DEFAULT_TRANSFORMATION_RULES.put("-tf", TRANSFORMER_RULES_ROOT + "jakarta-text.properties"); // text updates
     }
 
-    static final String[] EE10_FEATURES_ARRAY = {
+    // FAT tests use a mix of enabled features and not yet enabled
+    // features, which is necessary for the FATs to run.
+    static final String[] EE12_FEATURES_ARRAY = {
                                                   "appClientSupport-2.0",
-                                                  "jakartaee-10.0",
-                                                  "webProfile-10.0",
-                                                  "jakartaeeClient-10.0",
+                                                  "jakartaee-12.0",
+                                                  "webProfile-12.0",
+                                                  "jakartaeeClient-12.0",
                                                   "componenttest-2.0", // replaces "componenttest-1.0"
                                                   "txtest-2.0",
-                                                  "appAuthentication-3.0",
-                                                  "appAuthorization-2.1",
-                                                  "appSecurity-5.0",
-                                                  "batch-2.1",
-                                                  "beanValidation-3.0",
-                                                  "cdi-4.0",
-                                                  "concurrent-3.0",
-                                                  "connectors-2.1",
-                                                  "expressionLanguage-5.0",
+                                                  "appAuthentication-3.1",
+                                                  "appAuthorization-3.0",
+                                                  "appSecurity-7.0",
+                                                  "batch-2.2",
+                                                  "validation-4.0",
+                                                  "cdi-5.0",
+                                                  "concurrent-3.2",
+                                                  "connectors-2.2",
+                                                  "data-1.1",
+                                                  "dataContainer-1.1",
+                                                  "expressionLanguage-6.1",
                                                   "enterpriseBeans-4.0",
                                                   "enterpriseBeansHome-4.0",
                                                   "enterpriseBeansLite-4.0",
                                                   "enterpriseBeansPersistentTimer-4.0",
                                                   "enterpriseBeansRemote-4.0",
                                                   "enterpriseBeansTest-2.0",
-                                                  "mail-2.1",
-                                                  "persistence-3.1",
-                                                  "persistenceContainer-3.1",
-                                                  "jsonp-2.1",
-                                                  "jsonb-3.0",
-                                                  "jsonpContainer-2.1",
-                                                  "jsonbContainer-3.0",
-                                                  "faces-4.0",
-                                                  "facesContainer-4.0",
-                                                  "pages-3.1",
-                                                  "managedBeans-2.0",
+                                                  "mail-2.2",
+                                                  "persistence-4.0",
+                                                  "persistenceContainer-4.0",
+                                                  "jsonp-2.2",
+                                                  "jsonb-3.1",
+                                                  "jsonpContainer-2.2",
+                                                  "jsonbContainer-3.1",
+                                                  "faces-5.0",
+                                                  "facesContainer-5.0",
+                                                  "pages-4.1",
                                                   "mdb-4.0",
                                                   "messaging-3.1",
                                                   "messagingClient-3.0",
                                                   "messagingServer-3.0",
                                                   "messagingSecurity-3.0",
-                                                  "nosql-1.0", // TODO temporarily enabled with EE10 for testing/experimentation. Later, switch this to EE11 or whichever release Jakarta NoSQL goes into
-                                                  "restfulWS-3.1",
-                                                  "restfulWSClient-3.1",
-                                                  "servlet-6.0",
-                                                  "websocket-2.1",
+                                                  "nosql-1.0",
+                                                  "restfulWS-5.0",
+                                                  "restfulWSClient-5.0",
+                                                  "servlet-6.2",
+                                                  "websocket-2.3",
                                                   "xmlBinding-4.0",
                                                   "xmlWS-4.0",
                                                   "xmlWSClient-4.0"
     };
 
-    public static final Set<String> EE10_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE10_FEATURES_ARRAY)));
+    public static final Set<String> EE12_FEATURE_SET = Collections.unmodifiableSet(new HashSet<>(Arrays.asList(EE12_FEATURES_ARRAY)));
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // This constructor is purposely not public to force people to use the JakartaEEAction class and                 //
-    // the FeatureReplacementAction.EE10_FEATURES() method instead of referencing this class directly                //
+    // the FeatureReplacementAction.EE12_FEATURES() method instead of referencing this class directly                //
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    protected JakartaEE10Action() {
-        // Remove the EE7 and EE8 features; replace them with the EE9 features
-        super(EE10_FEATURE_SET);
+    protected JakartaEE12Action() {
+        // Remove the EE7, EE8, EE9, EE10 and EE11 features; replace them with the EE12 features
+        super(EE12_FEATURE_SET);
         removeFeatures(EE6FeatureReplacementAction.EE6_FEATURE_SET);
         removeFeatures(EE7FeatureReplacementAction.EE7_FEATURE_SET);
         removeFeatures(EE8FeatureReplacementAction.EE8_FEATURE_SET);
         removeFeatures(JakartaEE9Action.EE9_FEATURE_SET);
+        removeFeatures(JakartaEE10Action.EE10_FEATURE_SET);
         removeFeatures(JakartaEE11Action.EE11_FEATURE_SET);
-        removeFeatures(JakartaEE12Action.EE12_FEATURE_SET);
         forceAddFeatures(false);
-        withMinJavaLevel(SEVersion.JAVA11);
-        withID(ID);
+        withMinJavaLevel(SEVersion.JAVA21);
+        withID(EE12_ACTION_ID);
     }
 
     @Override
     public String toString() {
-        return "JakartaEE10 FAT repeat action (" + getID() + ")";
+        return "JakartaEE12 FAT repeat action (" + getID() + ")";
     }
 
     //
@@ -136,7 +139,7 @@ public class JakartaEE10Action extends JakartaEEAction {
      *
      */
     @Override
-    public JakartaEE10Action withLocalPackageTransformAppend(String fileName) {
+    public JakartaEE12Action withLocalPackageTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tr", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -149,7 +152,7 @@ public class JakartaEE10Action extends JakartaEEAction {
      *
      */
     @Override
-    public JakartaEE10Action withLocalSelectionTransformAppend(String fileName) {
+    public JakartaEE12Action withLocalSelectionTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-ts", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -162,7 +165,7 @@ public class JakartaEE10Action extends JakartaEEAction {
      *
      */
     @Override
-    public JakartaEE10Action withLocalVersionTransformAppend(String fileName) {
+    public JakartaEE12Action withLocalVersionTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tv", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -175,7 +178,7 @@ public class JakartaEE10Action extends JakartaEEAction {
      *
      */
     @Override
-    public JakartaEE10Action withLocalBundleTransformAppend(String fileName) {
+    public JakartaEE12Action withLocalBundleTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tb", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -188,7 +191,7 @@ public class JakartaEE10Action extends JakartaEEAction {
      *
      */
     @Override
-    public JakartaEE10Action withLocalStringTransformAppend(String fileName) {
+    public JakartaEE12Action withLocalStringTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-td", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -201,7 +204,7 @@ public class JakartaEE10Action extends JakartaEEAction {
      *
      */
     @Override
-    public JakartaEE10Action withLocalXMLTransformAppend(String fileName) {
+    public JakartaEE12Action withLocalXMLTransformAppend(String fileName) {
         TRANSFORMATION_RULES_APPEND.put("-tf", TRANSFORMER_RULES_APPEND_ROOT + fileName);
         return this;
     }
@@ -212,7 +215,7 @@ public class JakartaEE10Action extends JakartaEEAction {
      * of bundles and applications, so it is only enabled by an argument to the transformer.
      */
     @Override
-    public JakartaEE10Action withWiden() {
+    public JakartaEE12Action withWiden() {
         WIDEN = true;
         return this;
     }
