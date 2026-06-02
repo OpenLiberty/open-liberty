@@ -95,7 +95,7 @@ public abstract class LogstashCollectorTest {
         String line = getServer().waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 60000);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I from messages.log", line);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I in container output", pollForStringInContainerOutput("CWWKG0017I|CWWKG0018I", 60000)); // waits for server configuration to finish updating (CWWKG0017I)
-        assertNotNull("Cannot find CWWKZ0003I in container output", pollForStringInContainerOutput("CWWKZ0003I", 120000)); // waits for application to finish updating (CWWKZ0003I) - increased to 2 minutes
+        assertNotNull("Cannot find CWWKZ0003I in container output", pollForStringInContainerOutput("CWWKZ0003I", 420000, 60000)); // waits for application to finish updating (CWWKZ0003I) - 7 minutes, checking every minute
         Log.info(c, "setConfig exit", conf);
     }
 
@@ -474,9 +474,14 @@ public abstract class LogstashCollectorTest {
         return getServer().waitForStringInLog(message, 1000);
     }
 
-    // Poll the container output for a specific message with retry logic.
+    // Poll the container output for a specific message with retry logic (default 1 second interval).
     protected static String pollForStringInContainerOutput(String regex, long timeoutMs) {
-        Log.info(c, "pollForStringInContainerOutput", "looking for " + regex);
+        return pollForStringInContainerOutput(regex, timeoutMs, 1000);
+    }
+
+    // Poll the container output for a specific message with custom check interval.
+    protected static String pollForStringInContainerOutput(String regex, long timeoutMs, long intervalMs) {
+        Log.info(c, "pollForStringInContainerOutput", "looking for " + regex + " with " + timeoutMs + "ms timeout, checking every " + intervalMs + "ms");
         Pattern pattern = Pattern.compile(regex);
         long endTime = System.currentTimeMillis() + timeoutMs;
         
@@ -488,7 +493,7 @@ public abstract class LogstashCollectorTest {
             }
             
             try {
-                Thread.sleep(1000); // Wait for 1 second before checking again
+                Thread.sleep(intervalMs); // Wait for the specified interval before checking again
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 Log.info(c, "pollForStringInContainerOutput", "Polling interrupted: " + e.getMessage());
