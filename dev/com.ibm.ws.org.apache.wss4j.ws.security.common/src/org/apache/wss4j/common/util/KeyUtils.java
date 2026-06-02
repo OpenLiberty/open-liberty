@@ -77,14 +77,27 @@ public final class KeyUtils {
      * @return the key length
      */
     public static int getKeyLength(String algorithm) throws WSSecurityException {
+
+        LOG.debug("Mei: line 80, algorithm is: " +algorithm); 
+        // Liberty Change Start: set FIPS Digest
+        //To use Basic256Sha256 algorithm suite in policy, we need to use same signatureMethod fips and no-fips
+        if (algorithm.equals("http://www.w3.org/2001/04/xmldsig-more#hmac-sha384")) {
+            algorithm = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
+            LOG.warn("Mei: line 86, algorithm is " + algorithm);
+        }
+        // Liberty Change End
+
         if (algorithm == null) {
             return 0;
         }
 
         int size = JCEMapper.getKeyLengthFromURI(algorithm);
+        LOG.debug("Mei: line 88, size is: " +size);
+
         if (size == 0 && DEFAULT_DERIVED_KEY_LENGTHS.containsKey(algorithm)) {
             // Use a default derived key length for algorithms such as HMAC-SHA1, if none is specified
             size = DEFAULT_DERIVED_KEY_LENGTHS.get(algorithm);
+           LOG.debug("Mei: line 93, if size =0 and default containsKey algorithm, then size=DEFAULT_DERIVED_KEY_LENGTHS.get(algorithm) : " +size);
         }
 
         return size / 8;
@@ -95,6 +108,9 @@ public final class KeyUtils {
      */
     public static SecretKey prepareSecretKey(String algorithm, byte[] rawKey) {
         // Do an additional check on the keysize required by the encryption algorithm
+
+        LOG.debug("Mei: line 99, algorithm is: " +algorithm); //http://www.w3.org/2001/04/xmldsig-more#hmac-sha384  
+           
         int size = 0;
         try {
             size = JCEMapper.getKeyLengthFromURI(algorithm) / 8;
@@ -102,20 +118,26 @@ public final class KeyUtils {
             // ignore - some unknown (to JCEMapper) encryption algorithm
             LOG.debug(e.getMessage());
         }
+        LOG.debug("Mei: line 115, size is: " +size);  //0
         String keyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
+        LOG.debug("Mei: line 117, keyAlgorithm is: " +keyAlgorithm); //empty
+
         SecretKeySpec keySpec;
         if (size > 0 && !algorithm.endsWith("gcm") && !algorithm.contains("hmac-")) {
+            LOG.debug("Mei: line 121, size > 0");
             keySpec =
                 new SecretKeySpec(
                     rawKey, 0, rawKey.length > size ? size : rawKey.length, keyAlgorithm
                 );
         } else if (rawKey.length > MAX_SYMMETRIC_KEY_SIZE) {
             // Prevent a possible attack where a huge secret key is specified
+            LOG.debug("Mei: line 128, rawKey.length > MAX_SYMMETRIC_KEY_SIZE ");
             keySpec =
                 new SecretKeySpec(
                     rawKey, 0, MAX_SYMMETRIC_KEY_SIZE, keyAlgorithm
                 );
         } else {
+            LOG.debug("Mei: line 134, else() ");
             keySpec = new SecretKeySpec(rawKey, keyAlgorithm);
         }
         return keySpec;
@@ -126,7 +148,35 @@ public final class KeyUtils {
             //
             // Assume AES as default, so initialize it
             //
+
+//this caused ICC_AES_GCM_EnDecryptFinal
+            // Liberty Change Start: set FIPS default
+            //if (XMLCipher.AES_128.equals(algorithm) || XMLCipher.AES_256.equals(algorithm)) {
+            //    algorithm = CryptoUtils.isFips140_3Enabled()
+            //                ? "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+            //                : "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+            //}       
+            // Liberty Change End
+
+            // Liberty Change Start: set FIPS default
+            if (XMLCipher.AES_128.equals(algorithm)) {
+                algorithm = CryptoUtils.isFips140_3Enabled()
+                            ? "http://www.w3.org/2009/xmlenc11#aes128-gcm"
+                            : "http://www.w3.org/2001/04/xmlenc#aes128-cbc";
+            }       
+            // Liberty Change End
+
+            // Liberty Change Start: set FIPS default
+            if (XMLCipher.AES_256.equals(algorithm)) {
+                algorithm = CryptoUtils.isFips140_3Enabled()
+                            ? "http://www.w3.org/2009/xmlenc11#aes256-gcm"
+                            : "http://www.w3.org/2001/04/xmlenc#aes256-cbc";
+            }       
+            // Liberty Change End
+            
+            LOG.debug("Mei line 141, algorithm is: " +algorithm); //http://www.w3.org/2009/xmlenc11#aes128-gcm //http://www.w3.org/2001/04/xmlenc#aes128-cbc
             String keyAlgorithm = JCEMapper.getJCEKeyAlgorithmFromURI(algorithm);
+            LOG.debug("Mei line 142, keyAlgorithm is: " +keyAlgorithm); //AES
             if (keyAlgorithm == null || keyAlgorithm.length() == 0) {
                 keyAlgorithm = JCEMapper.translateURItoJCEID(algorithm);
             }
@@ -158,12 +208,14 @@ public final class KeyUtils {
     public static Cipher getCipherInstance(String cipherAlgo)
         throws WSSecurityException {
         // Liberty Change Start: set FIPS default for RSA-OAEP algorithm
-        if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo)) {
+        if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo) 
+              || XMLCipher.RSA_v1dot5.equals(cipherAlgo)) {
             cipherAlgo = CryptoUtils.isFips140_3Enabled() 
                           ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
                           : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
-        }
+        } 
         // Liberty Change End
+
         return getCipherInstance(cipherAlgo, null);
     }
 
@@ -176,12 +228,14 @@ public final class KeyUtils {
      */
     public static Cipher getCipherInstance(String cipherAlgo, String provider)
             throws WSSecurityException {
+        
         // Liberty Change Start: set FIPS default for RSA-OAEP algorithm
-        if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo)) {
+        if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo) 
+             || XMLCipher.RSA_v1dot5.equals(cipherAlgo)) {
            cipherAlgo = CryptoUtils.isFips140_3Enabled()
                         ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
                         : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
-        }
+        } 
         // Liberty Change End
         
         String keyAlgorithm = JCEMapper.translateURItoJCEID(cipherAlgo);
@@ -205,7 +259,8 @@ public final class KeyUtils {
             }
         } catch (NoSuchPaddingException | NoSuchAlgorithmException e) {
             // Liberty Change Start: set condition if RSA_OAEP or RSA_OAEP_11 is used
-            if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo)) {
+            if (XMLCipher.RSA_OAEP.equals(cipherAlgo) || XMLCipher.RSA_OAEP_11.equals(cipherAlgo)
+                 || XMLCipher.RSA_v1dot5.equals(cipherAlgo))  {
             // Liberty Change End
                 // Check to see if an RSA OAEP MGF-1 algorithm was requested
                 // Some JCE implementations don't support RSA/ECB/OAEPPadding (e.g. nCipherKM of Thales)

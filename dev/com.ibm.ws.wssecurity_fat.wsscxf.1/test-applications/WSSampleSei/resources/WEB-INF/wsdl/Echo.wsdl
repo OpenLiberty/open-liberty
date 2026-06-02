@@ -88,7 +88,7 @@
                             <!-- sp:IncludeTimestamp / -->
                             <sp:AlgorithmSuite>
                                 <wsp:Policy>
-                                    <sp:Basic128 />
+                                    <sp:Basic256Sha256 />
                                 </wsp:Policy>
                             </sp:AlgorithmSuite>
                         </wsp:Policy>
@@ -151,7 +151,7 @@
                   <sp:IncludeTimestamp />
                   <sp:AlgorithmSuite>
                     <wsp:Policy>
-                      <sp:Basic128 />
+                      <sp:Basic256Sha256 />
                     </wsp:Policy>
                   </sp:AlgorithmSuite>
                 </wsp:Policy>
@@ -214,7 +214,7 @@
                   <sp:IncludeTimestamp />
                   <sp:AlgorithmSuite>
                     <wsp:Policy>
-                      <sp:Basic128 />
+                      <sp:Basic256Sha256 />
                     </wsp:Policy>
                   </sp:AlgorithmSuite>
                 </wsp:Policy>
@@ -281,7 +281,7 @@
                   <sp:OnlySignEntireHeadersAndBody />
                   <sp:AlgorithmSuite>
                     <wsp:Policy>
-                      <sp:Basic128 />
+                      <sp:Basic256Sha256 />
                     </wsp:Policy>
                   </sp:AlgorithmSuite>
                 </wsp:Policy>
@@ -377,7 +377,7 @@
                   <sp:EncryptSignature />
                   <sp:AlgorithmSuite>
                     <wsp:Policy>
-                      <sp:Basic128 />
+                      <sp:Basic256Sha256 />
                     </wsp:Policy>
                   </sp:AlgorithmSuite>
                 </wsp:Policy>
@@ -443,7 +443,7 @@
                   </sp:ProtectionToken>
                   <sp:AlgorithmSuite>
                     <wsp:Policy>
-                      <sp:Basic128 />
+                      <sp:Basic256Sha256 />
                     </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:Layout>
@@ -537,7 +537,7 @@
                   </sp:ProtectionToken>
                   <sp:AlgorithmSuite>
                     <wsp:Policy>
-                      <sp:Basic128 />
+                      <sp:Basic256Sha256 />
                     </wsp:Policy>
                   </sp:AlgorithmSuite>
                   <sp:Layout>

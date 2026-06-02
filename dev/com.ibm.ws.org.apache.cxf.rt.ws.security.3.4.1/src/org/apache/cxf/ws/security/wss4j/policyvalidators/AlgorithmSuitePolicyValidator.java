@@ -48,6 +48,8 @@ import org.apache.wss4j.policy.model.AlgorithmSuite;
 import org.apache.wss4j.policy.model.AlgorithmSuite.AlgorithmSuiteType;
 import org.apache.xml.security.transforms.Transforms;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * Validate results corresponding to the processing of a Signature, EncryptedKey or
  * EncryptedData structure against an AlgorithmSuite policy.
@@ -59,7 +61,9 @@ import org.apache.xml.security.transforms.Transforms;
 public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidator {
     
 
-    private static final Logger LOG = LogUtils.getL7dLogger(AlgorithmSuitePolicyValidator.class); // Liberty Code Change
+    //private static final Logger LOG = LogUtils.getL7dLogger(AlgorithmSuitePolicyValidator.class); // Liberty Code Change
+    private static final org.slf4j.Logger LOG =
+        org.slf4j.LoggerFactory.getLogger(AlgorithmSuitePolicyValidator.class);
 
     /**
      * Return true if this SecurityPolicyValidator implementation is capable of validating a
@@ -167,11 +171,16 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
         AssertionInfo ai
     ) {
         AlgorithmSuiteType algorithmSuiteType = algorithmPolicy.getAlgorithmSuiteType();
+        
         for (WSDataRef dataRef : dataRefs) {
+            if (CryptoUtils.isFips140_3Enabled()) {
+                dataRef.setDigestAlgorithm("http://www.w3.org/2001/04/xmlenc#sha256");
+            }
             String digestMethod = dataRef.getDigestAlgorithm();
+             LOG.debug("Mei: line 174, dataRef.getDigestAlgorithm() digestMethod is " +digestMethod);
             if (!algorithmSuiteType.getDigest().equals(digestMethod)) {
                 ai.setNotAsserted(
-                    "The digest method does not match the requirement"
+                    "Mei: line 177, The digest method does not match the requirement"
                 );
                 return false;
             }
@@ -256,21 +265,29 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
 
         AlgorithmSuiteType algorithmSuiteType = algorithmPolicy.getAlgorithmSuiteType();
         byte[] secret = (byte[])result.get(WSSecurityEngineResult.TAG_SECRET);
+        LOG.debug("Mei: line 261, WSSecurityEngineResult secret is " +secret);
+        LOG.debug("Mei: line 262, secret.length is " +secret.length);
         if (signature) {
             Principal principal = (Principal)result.get(WSSecurityEngineResult.TAG_PRINCIPAL);
+            LOG.debug("Mei: line 265, WSSecurityEngineResult principal  is " +principal);
             if (principal instanceof WSDerivedKeyTokenPrincipal) {
+                LOG.debug("Mei: line 267, principal is instance of WSDerivedKeyTokenPrincipal ");
                 int requiredLength = algorithmSuiteType.getSignatureDerivedKeyLength();
+                LOG.debug("Mei: line 269, requiredLength is " +requiredLength); //192
                 if (secret == null || secret.length != (requiredLength / 8)) {
+                   LOG.debug("Mei line 271, secret null or secret.lenght!= requiredLength ");
                     ai.setNotAsserted(
-                        "The signature derived key length does not match the requirement"
+                        "Mei: line 273, The signature derived key length does not match the requirement"
                     );
                     return false;
                 }
             } else if (secret != null
                 && (secret.length < (algorithmSuiteType.getMinimumSymmetricKeyLength() / 8)
                     || secret.length > (algorithmSuiteType.getMaximumSymmetricKeyLength() / 8))) {
+                LOG.debug("Mei: line 287, algorithmSuiteType.getMinimumSymmetricKeyLength is " +algorithmSuiteType.getMinimumSymmetricKeyLength());
+                LOG.debug("Mei: line 288, algorithmSuiteType.getMaximumSymmetricKeyLength is " +algorithmSuiteType.getMaximumSymmetricKeyLength());
                 ai.setNotAsserted(
-                    "The symmetric key length does not match the requirement"
+                    "Mei: line 288, The symmetric key length does not match the requirement"
                 );
                 return false;
             }
@@ -278,7 +295,7 @@ public class AlgorithmSuitePolicyValidator extends AbstractSecurityPolicyValidat
             && (secret.length < (algorithmSuiteType.getMinimumSymmetricKeyLength() / 8)
                 || secret.length > (algorithmSuiteType.getMaximumSymmetricKeyLength() / 8))) {
             ai.setNotAsserted(
-                "The symmetric key length does not match the requirement"
+                "Mei: line 298, The symmetric key length does not match the requirement"
             );
             return false;
         }

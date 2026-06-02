@@ -65,7 +65,6 @@ public final class XMLCipherUtil {
                 || EncryptionConstants.ALGO_ID_BLOCKCIPHER_AES256_GCM.equals(algorithm)) {
             return constructBlockCipherParametersForGCMAlgorithm(algorithm, iv);
         } else {
-            LOG.debug("Saw non-AES-GCM mode block cipher, returning IvParameterSpec: {}", algorithm);
             return new IvParameterSpec(iv);
         }
     }
@@ -74,7 +73,6 @@ public final class XMLCipherUtil {
         if (gcmAlgorithm) {
             return constructBlockCipherParametersForGCMAlgorithm("AES/GCM/NoPadding", iv);
         } else {
-            LOG.debug("Saw non-AES-GCM mode block cipher, returning IvParameterSpec");
             return new IvParameterSpec(iv);
         }
     }
@@ -84,7 +82,6 @@ public final class XMLCipherUtil {
             // This override allows to support Java 1.7+ with (usually older versions of) third-party security
             // providers which support or even require GCM via IvParameterSpec rather than GCMParameterSpec,
             // e.g. BouncyCastle <= 1.49 (really <= 1.50 due to a semi-related bug).
-            LOG.debug("Saw AES-GCM block cipher, using IvParameterSpec due to system property override: {}", algorithm);
             return new IvParameterSpec(iv);
         }
 
@@ -116,24 +113,33 @@ public final class XMLCipherUtil {
         if (XMLCipher.RSA_OAEP.equals(encryptionAlgorithmURI)
                 || XMLCipher.RSA_OAEP_11.equals(encryptionAlgorithmURI)) {
 
-            // Liberty Change Start: set FIPS default
+             // Liberty Change Start: set FIPS default
             String jceDigestAlgorithm = CryptoUtils.isFips140_3Enabled() ? "SHA-256" : "SHA-1";
             digestAlgorithmURI = CryptoUtils.isFips140_3Enabled() 
-                   ? "http://www.w3.org/2001/04/xmlenc#sha256"
-                   : "http://www.w3.org/2000/09/xmldsig#sha1";
+                                  ? "http://www.w3.org/2001/04/xmlenc#sha256"
+                                  : "http://www.w3.org/2000/09/xmldsig#sha1";
             // Liberty Change End
+
             if (digestAlgorithmURI != null) {
                 jceDigestAlgorithm = JCEMapper.translateURItoJCEID(digestAlgorithmURI);
             }
 
+            // Liberty Change Start: set FIPS default
+            mgfAlgorithmURI = CryptoUtils.isFips140_3Enabled() 
+                               ? "http://www.w3.org/2009/xmlenc11#mgf1sha256"
+                               : "http://www.w3.org/2009/xmlenc11#mgf1sha1";
+            // Liberty Change End
+
             PSource.PSpecified pSource = oaepParams == null ?
                     PSource.PSpecified.DEFAULT : new PSource.PSpecified(oaepParams);
-
+       
             // Liberty Change Start: set FIPS default
             MGF1ParameterSpec mgfParameterSpec = CryptoUtils.isFips140_3Enabled() ? new MGF1ParameterSpec("SHA-256") : new MGF1ParameterSpec("SHA-1");
             // Liberty Change End
+
             if (XMLCipher.RSA_OAEP_11.equals(encryptionAlgorithmURI)) {
                 mgfParameterSpec = constructMGF1Parameter(mgfAlgorithmURI);
+                LOG.debug("line 142, mgfParameterSpec, mgfAlgorithmURI is:  " +mgfParameterSpec +mgfAlgorithmURI);
             }
             return new OAEPParameterSpec(jceDigestAlgorithm, "MGF1", mgfParameterSpec, pSource);
         }
@@ -160,7 +166,8 @@ public final class XMLCipherUtil {
             LOG.debug( "MGF1 algorithm URI is null or empty. Using SHA-1 as default.");
             return new MGF1ParameterSpec("SHA-1");
            }
-        } // Liberty Change End
+        }
+        // Liberty Change End
 
         switch (mgh1AlgorithmURI) {
             case EncryptionConstants.MGF1_SHA1:

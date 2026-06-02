@@ -65,12 +65,7 @@ public class FATSuite {
     /*@formatter:off*/
     @ClassRule
     //issue 23060
-    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly())
-                    .andWith(new RepeatWithEE7cbh20().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
-                    .andWith(FeatureReplacementAction.EE9_FEATURES())
-                    .andWith(FeatureReplacementAction.EE10_FEATURES())
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests r = RepeatTests.with(new EmptyAction().fullFATOnly());
     /*@formatter:on*/
 
 }

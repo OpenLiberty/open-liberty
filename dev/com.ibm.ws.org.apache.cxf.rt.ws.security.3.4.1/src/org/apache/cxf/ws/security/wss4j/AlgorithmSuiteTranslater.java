@@ -42,6 +42,8 @@ import org.apache.wss4j.policy.model.AlgorithmSuite.AlgorithmSuiteType;
 import org.apache.wss4j.policy.model.SamlToken;
 import org.apache.wss4j.policy.model.SupportingTokens;
 
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 /**
  * Translate any AlgorithmSuite policy that may be operative into a WSS4J AlgorithmSuite object
  * to enforce what algorithms are allowed in a request.
@@ -141,9 +143,34 @@ public final class AlgorithmSuiteTranslater {
                 }
 
                 algorithmSuite.addEncryptionMethod(customAlgSuite.getEncryption());
+
+                // Liberty Change Start: Add aes256-gcm for FIPS 140-3 compatibility
+                // When FIPS 140-3 is enabled, ensure aes256-gcm is in the allowed encryption algorithms
+                if (CryptoUtils.isFips140_3Enabled()) {
+                    algorithmSuite.addEncryptionMethod("http://www.w3.org/2009/xmlenc11#aes256-gcm");
+                }
+                // Liberty Change End
+
                 algorithmSuite.addKeyWrapAlgorithm(customAlgSuite.getSymmetricKeyWrap());
                 algorithmSuite.addKeyWrapAlgorithm(customAlgSuite.getAsymmetricKeyWrap());
+
+                // Liberty Change Start: Add RSA-OAEP for FIPS 140-3 compatibility
+                // When FIPS 140-3 is enabled, ensure RSA-OAEP is in the allowed key wrap algorithms
+                // Standard algorithm suites use RSA 1.5 by default, which is not FIPS compliant
+                if (CryptoUtils.isFips140_3Enabled()) {
+                    algorithmSuite.addKeyWrapAlgorithm(SPConstants.KW_RSA_OAEP);
+                    algorithmSuite.addKeyWrapAlgorithm("http://www.w3.org/2009/xmlenc11#rsa-oaep");
+                }
+                // Liberty Change End
+
                 algorithmSuite.addDigestAlgorithm(customAlgSuite.getDigest());
+
+                // Liberty Change Start: Add sha256 for FIPS 140-3 compatibility
+                // When FIPS 140-3 is enabled, allow SHA-256 for backward compatibility
+                if (CryptoUtils.isFips140_3Enabled()) {
+                    algorithmSuite.addDigestAlgorithm("http://www.w3.org/2001/04/xmlenc#sha256");
+                }
+                // Liberty Change End
 
                 algorithmSuite.addSignatureMethod(customAlgSuite.getAsymmetricSignature());
                 algorithmSuite.addSignatureMethod(customAlgSuite.getSymmetricSignature());

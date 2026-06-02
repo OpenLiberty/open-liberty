@@ -21,6 +21,7 @@ import org.junit.After;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.junit.Rule;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
@@ -38,6 +39,8 @@ import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.rules.repeater.EmptyAction;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
+import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 import componenttest.topology.impl.LibertyFileManager;
 import componenttest.topology.impl.LibertyServer;
 
@@ -56,6 +59,9 @@ public class CxfX509EncTests extends CommonTests {
 
     @Server(serverName)
     public static LibertyServer server;
+
+    @Rule
+    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.wssecurity_fat.x509enc");
 
     protected static String portNumber = "";
     protected static String checkPort = "";
@@ -401,6 +407,8 @@ public class CxfX509EncTests extends CommonTests {
      *
      */
 
+    //To use compliant algorithm with FIPS enabled, the test result will always pass; therefore not applicable for negative testing
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     //issue 230606
     @ExpectedFFDC(value = { "org.apache.wss4j.common.ext.WSSecurityException" }, repeatAction = { EmptyAction.ID, RepeatWithEE7cbh20.ID })

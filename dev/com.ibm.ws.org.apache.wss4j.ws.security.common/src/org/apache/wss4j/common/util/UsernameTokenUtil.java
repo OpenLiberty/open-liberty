@@ -76,6 +76,7 @@ public final class UsernameTokenUtil {
                 WSSecurityException.ErrorCode.FAILURE, e, "decoding.general"
             );
         }
+        
         //
         // Make the first hash round with start value
         //

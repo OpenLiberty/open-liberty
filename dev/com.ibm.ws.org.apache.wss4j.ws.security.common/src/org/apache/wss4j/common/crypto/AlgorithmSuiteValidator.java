@@ -32,6 +32,8 @@ import org.apache.wss4j.common.ext.WSSecurityException;
 import org.apache.xml.security.exceptions.DERDecodingException;
 import org.apache.xml.security.utils.DERDecoderUtils;
 import org.apache.xml.security.utils.KeyUtils;
+import com.ibm.ws.common.crypto.CryptoUtils;
+
 
 /**
  * Validate signature/encryption/etc. algorithms against an AlgorithmSuite policy.
@@ -90,6 +92,14 @@ public class AlgorithmSuiteValidator {
         String signatureMethod =
             xmlSignature.getSignedInfo().getSignatureMethod().getAlgorithm();
         checkSignatureMethod(signatureMethod);
+        LOG.warn("Mei: line 95, signatureMethod is " + signatureMethod);
+        // Liberty Change Start: set FIPS Digest
+        //To use Basic256Sha256 algorithm suite in policy, we need to use same signatureMethod fips and no-fips
+        //not needed?if (signatureMethod.equals("http://www.w3.org/2001/04/xmldsig-more#hmac-sha384")) {
+        //    signatureMethod = "http://www.w3.org/2001/04/xmldsig-more#hmac-sha256";
+        //    LOG.warn("Mei: line 100, signatureMethod is " + signatureMethod);
+        //}
+        // Liberty Change End
 
         // C14n Algorithm
         String c14nMethod =
@@ -100,7 +110,20 @@ public class AlgorithmSuiteValidator {
             Reference reference = (Reference)refObject;
             // Digest Algorithm
             String digestMethod = reference.getDigestMethod().getAlgorithm();
+            LOG.debug("Mei: line 112 no fips, digestMethod is: " +digestMethod);
+
+            // Liberty Change Start: set FIPS Digest
+            //if (CryptoUtils.isFips140_3Enabled() && digestMethod.equals("http://www.w3.org/2000/09/xmldsig#sha1")) {
+            //To use Basic256Sha256 algorithm suite in policy, we need to use same digest fips and no-fips
+            if (digestMethod.equals("http://www.w3.org/2000/09/xmldsig#sha1")) {
+                digestMethod = "http://www.w3.org/2001/04/xmlenc#sha256";
+                LOG.warn("Mei: line 119, digestMethod is " + digestMethod);
+            }
+            // Liberty Change End
+
             Set<String> allowedDigestAlgorithms = algorithmSuite.getDigestAlgorithms();
+             LOG.debug("Mei: line 115 no fips, allowedDigestAlgorithms is: " +allowedDigestAlgorithms);
+
             if (!allowedDigestAlgorithms.isEmpty()
                     && !allowedDigestAlgorithms.contains(digestMethod)) {
                 LOG.warn(
@@ -181,6 +204,7 @@ public class AlgorithmSuiteValidator {
         String symmetricAlgorithm
     ) throws WSSecurityException {
         Set<String> encryptionMethods = algorithmSuite.getEncryptionMethods();
+        LOG.warn("Mei: line 185, encryptionMethods is  " +encryptionMethods);
         if (!encryptionMethods.isEmpty()
             && !encryptionMethods.contains(symmetricAlgorithm)) {
             LOG.warn(

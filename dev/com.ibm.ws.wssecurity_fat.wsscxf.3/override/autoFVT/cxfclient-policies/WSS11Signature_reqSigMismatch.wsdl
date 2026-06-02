@@ -39,7 +39,7 @@
                </sp:RecipientSignatureToken>
                <sp:AlgorithmSuite>
                  <wsp:Policy>
-                   <sp:Basic128/>
+                   <sp:Basic256Sha256/>
                  </wsp:Policy>
                </sp:AlgorithmSuite>
                <sp:Layout>
@@ -92,7 +92,7 @@
                </sp:RecipientSignatureToken>
                <sp:AlgorithmSuite>
                  <wsp:Policy>
-                   <sp:Basic128/>
+                   <sp:Basic256Sha256/>
                  </wsp:Policy>
                </sp:AlgorithmSuite>
                <sp:Layout>
@@ -145,7 +145,7 @@
                </sp:RecipientSignatureToken>
                <sp:AlgorithmSuite>
                  <wsp:Policy>
-                   <sp:Basic128/>
+                   <sp:Basic256Sha256/>
                  </wsp:Policy>
                </sp:AlgorithmSuite>
                <sp:Layout>
@@ -206,7 +206,7 @@
              </sp:RecipientEncryptionToken>
              <sp:AlgorithmSuite>
                 <wsp:Policy>
-                   <sp:Basic128Rsa15/>
+                   <sp:Basic256Sha256Rsa15/>
                 </wsp:Policy>
              </sp:AlgorithmSuite>
              <sp:Layout>
@@ -248,7 +248,7 @@
                </sp:RecipientEncryptionToken>
                <sp:AlgorithmSuite>
                  <wsp:Policy>
-                   <sp:Basic128/>
+                   <sp:Basic256Sha256/>
                  </wsp:Policy>
                </sp:AlgorithmSuite>
                <sp:Layout>
@@ -310,7 +310,7 @@
              </sp:RecipientEncryptionToken>
              <sp:AlgorithmSuite>
                 <wsp:Policy>
-                   <sp:Basic128Rsa15/>
+                   <sp:Basic256Sha256Rsa15/>
                 </wsp:Policy>
              </sp:AlgorithmSuite>
              <sp:Layout>

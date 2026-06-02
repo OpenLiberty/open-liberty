@@ -76,12 +76,8 @@ public class WSSecEncryptedKey extends WSSecBase {
     /**
      * Algorithm used to encrypt the ephemeral key
      */
-    // Liberty Change Start: set FIPS default
-    private String keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
-                    ? WSConstants.KEYTRANSPORT_RSAOAEP_XENC11 
-                    : WSConstants.KEYTRANSPORT_RSAOAEP;
-    // Liberty Change End
-
+    private String keyEncAlgo = WSConstants.KEYTRANSPORT_RSAOAEP;
+    
     // Liberty Change Start: Backport 4.x
     /**
      * Key agreement method algorithm used to encrypt the transport key.
@@ -279,6 +275,18 @@ public class WSSecEncryptedKey extends WSSecBase {
      */
     protected void createEncryptedKeyElement(X509Certificate remoteCert, Crypto crypto, KeyAgreementParameters dhSpec)
             throws WSSecurityException {
+
+        // Liberty Change Start: set FIPS default
+        if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {
+            keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
+                     ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                     : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+        }
+        LOG.debug("Before createEncryptedKey(), keyEncAlgo is: " +keyEncAlgo);
+        // Liberty Change End
+
         encryptedKeyElement = createEncryptedKey(getDocument(), keyEncAlgo);
         if (encKeyId == null || encKeyId.isEmpty()) {
             encKeyId = IDGenerator.generateID("EK-");
@@ -460,6 +468,18 @@ public class WSSecEncryptedKey extends WSSecBase {
      *  4) Create the CipherValue element structure and insert the encrypted session key
      */
     protected void createEncryptedKeyElement(Key key) throws WSSecurityException {
+
+        // Liberty Change Start: set FIPS default
+        if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {
+            keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
+                     ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                     : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+        }
+        LOG.debug("Before createEncryptedKey(), keyEncAlgo is " +keyEncAlgo);
+        // Liberty Change End
+
         encryptedKeyElement = createEncryptedKey(getDocument(), keyEncAlgo);
         if (encKeyId == null || encKeyId.isEmpty()) {
             encKeyId = IDGenerator.generateID("EK-");
@@ -698,16 +718,31 @@ public class WSSecEncryptedKey extends WSSecBase {
 
     private byte[] encryptSymmetricKey(Key encryptingKey, SecretKey keyToBeEncrypted)
         throws WSSecurityException {
+   
+         // Liberty Change Start: set FIPS default
+         if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {
+            keyEncAlgo = CryptoUtils.isFips140_3Enabled() 
+                     ? "http://www.w3.org/2009/xmlenc11#rsa-oaep"
+                     : "http://www.w3.org/2001/04/xmlenc#rsa-oaep-mgf1p";
+            
+        }
+        LOG.debug("Before KeyUtils.getCipherInstance(), keyEncAlgo is " +keyEncAlgo);
+        // Liberty Change End
+
         Cipher cipher = KeyUtils.getCipherInstance(keyEncAlgo);
         try {
             OAEPParameterSpec oaepParameterSpec = null;
             if (WSConstants.KEYTRANSPORT_RSAOAEP.equals(keyEncAlgo)
-                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)) {
+                    || WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo)
+                    || WSConstants.KEYTRANSPORT_RSA15.equals(keyEncAlgo)) {    
                 oaepParameterSpec = XMLCipherUtil.constructOAEPParameters(keyEncAlgo, digestAlgo, mgfAlgo, null);
             }
             if (oaepParameterSpec == null) {
                 cipher.init(Cipher.WRAP_MODE, encryptingKey);
             } else {
+                LOG.debug("Before cipher.init(), encryptingKey is " +encryptingKey);  
                 cipher.init(Cipher.WRAP_MODE, encryptingKey, oaepParameterSpec);
             }
         } catch (InvalidKeyException | InvalidAlgorithmParameterException e) {
@@ -757,6 +792,7 @@ public class WSSecEncryptedKey extends WSSecBase {
             doc.createElementNS(WSConstants.ENC_NS, WSConstants.ENC_PREFIX + ":EncryptionMethod");
         encryptionMethod.setAttributeNS(null, "Algorithm", keyTransportAlgo);
 
+        LOG.debug("Before XMLUtils.createElementInSignatureSpace(), keyEncAlgo is " +keyEncAlgo);
         if ((WSConstants.KEYTRANSPORT_RSAOAEP_XENC11.equals(keyEncAlgo) || WSConstants.KEYTRANSPORT_RSAOAEP.equals(
                 keyEncAlgo)) && digestAlgo != null) {
             Element digestElement =
