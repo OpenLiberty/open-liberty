@@ -659,10 +659,10 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
              * Timers to update the Live and ready files at the fileUpdateIntervalMilliseconds.
              */
             updateReadyTimer = new Timer(true);
-            updateReadyTimer.schedule(new FileUpdateProcess(readyFile, HealthCheckConstants.HEALTH_CHECK_READY), 0, checkIntervalMilliseconds);
+            updateReadyTimer.scheduleAtFixedRate(new FileUpdateProcess(readyFile, HealthCheckConstants.HEALTH_CHECK_READY), 0, checkIntervalMilliseconds);
 
             updateLiveTimer = new Timer(true);
-            updateLiveTimer.schedule(new FileUpdateProcess(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE), 0, checkIntervalMilliseconds);
+            updateLiveTimer.scheduleAtFixedRate(new FileUpdateProcess(liveFile, HealthCheckConstants.HEALTH_CHECK_LIVE), 0, checkIntervalMilliseconds);
         }
     }
 
