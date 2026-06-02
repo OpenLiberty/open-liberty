@@ -582,7 +582,7 @@ public class SipAppDesc extends GenericAppDesc {
 				getApplicationName(), listenerClass);
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "addListener",
-					"searched Listener existance from web container for ["
+					"searched Listener existence from web container for ["
 							+ getApplicationName() + "][" + listenerClass
 							+ "][" + listener + "]");
 		}

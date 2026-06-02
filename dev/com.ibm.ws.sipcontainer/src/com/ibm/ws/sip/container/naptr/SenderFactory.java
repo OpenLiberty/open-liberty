@@ -71,7 +71,7 @@ public class SenderFactory {
 	  */
 	 public static void finishToUseSender(SendProcessor sender){
 		 if (sender.isPoolable()) {
-			 // clean and put back to the queue only if poolabe
+			 // clean and put back to the queue only if poolable
 			sender.cleanItself();
 			s_naptrSenderPool.putBack(sender);
 		}

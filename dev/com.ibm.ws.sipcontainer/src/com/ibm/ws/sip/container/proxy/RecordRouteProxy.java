@@ -474,7 +474,7 @@ public class RecordRouteProxy {
     {
         if(inRequest.getMethod().equals(Request.ACK))
         {
-            //Can not send a respone to a ACK
+            //Cannot send a response to an ACK
             return;
         }
         

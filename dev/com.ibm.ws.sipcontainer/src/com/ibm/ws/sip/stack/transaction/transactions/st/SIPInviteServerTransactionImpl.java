@@ -93,7 +93,7 @@ public class SIPInviteServerTransactionImpl
 	TimerG m_timerG;
 	
 	
-	//prvsional and final responses
+	//provisional and final responses
 	private Response m_mostRecentProvisionalResponse; 
 	private Response m_finalResponse;
 	
@@ -114,7 +114,7 @@ public class SIPInviteServerTransactionImpl
 	}
 	
 	/**
-	 * prosses the request in a state machine as stated in RFC 17.2.1
+	 * process the request in a state machine, as stated in RFC 17.2.1
 	 */
 	public synchronized void processRequest(Request sipRequest)
 		throws SipParseException
@@ -218,7 +218,7 @@ public class SIPInviteServerTransactionImpl
 	}
 	
 	/**
-	 * prosses the response in a state machine as stated in RFC 17.2.2
+	 * process the response in a state machine as stated in RFC 17.2.2
 	 * 
 	 */
 	public synchronized void processResponse(Response sipResponse) 
@@ -264,7 +264,7 @@ public class SIPInviteServerTransactionImpl
 	}
 		
 	/**
-	 *  prosses transport error
+	 *  process transport error
 	 */	
 	public synchronized void prossesTransportError()
 	{		

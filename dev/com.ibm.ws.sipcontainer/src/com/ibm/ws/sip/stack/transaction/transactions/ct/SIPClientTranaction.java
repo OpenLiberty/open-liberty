@@ -31,14 +31,14 @@ public interface SIPClientTranaction
 	
 	/**
 	 *  send the response back to the UA layer
-	 *  after prossesing it
+	 *  after processing it
 	 */
 	public void sendResponseToUA( Response sipResponse );
 	
 	
 	/**
 	 *  send the request to the Transport Layer
-	 *  after prossesing it
+	 *  after processing it
 	 */
 	public void sendRequestToTransport( Request req )
 		throws IOException,SipException;

@@ -69,7 +69,7 @@ public class SIPNonInviteClientTransactionImpl
 	}
 	
 	/**
-	 * prosses the request in a state machine as stated in RFC 17.2.2
+	 * process the request in a state machine, as stated in RFC 17.2.2
 	 */
 	public synchronized void processRequest(Request sipRequest)
 		throws SipParseException
@@ -94,15 +94,15 @@ public class SIPNonInviteClientTransactionImpl
 				break;
 
 			case STATE_TRYING:
-				//no prosses																	
+				//no process																	
 				break;
 
 			case STATE_PROCEEDING:
-				//no prosses
+				//no process
 				break;
 
 			case STATE_COMPLETED:
-				//no prosses
+				//no process
 				break;
 			}
 		}
@@ -114,7 +114,7 @@ public class SIPNonInviteClientTransactionImpl
 	}
 	
 	/**
-	 * prosses the response in a state machine as stated in RFC 17.2.2
+	 * process the response in a state machine as stated in RFC 17.2.2
 	 * 
 	 */
 	public synchronized void processResponse(Response sipResponse) 
@@ -161,7 +161,7 @@ public class SIPNonInviteClientTransactionImpl
 	
 	
 	/**
-	 *  prosses transport error
+	 *  process transport error
 	 */	
 	public synchronized void prossesTransportError()
 	{

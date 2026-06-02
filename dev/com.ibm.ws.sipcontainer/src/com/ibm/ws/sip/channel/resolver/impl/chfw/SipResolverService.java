@@ -209,8 +209,8 @@ public class SipResolverService {
         /**
          * SIP_RFC3263_nameserver key to sip container custom property for setting nameserver address
          * 
-         * Custom property is a string containing exactly one or two address/port tuples, with each 
-         *  tuple seperated by a space
+         * Custom property is a string containing exactly one or two address/port tuples, 
+         * with each tuple separated by a space
          * 
          * The tuple may consist of 
          * 	[Literal IPv4 | Literal IPv6 | hostname]@port

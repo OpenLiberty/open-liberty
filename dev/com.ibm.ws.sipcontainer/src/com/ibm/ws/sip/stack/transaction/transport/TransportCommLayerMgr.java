@@ -1273,7 +1273,7 @@ public class TransportCommLayerMgr
 					}
 				} catch (Throwable t) {
 					if (c_logger.isTraceFailureEnabled()) {
-						c_logger.traceFailure(this, "onRead", "exception occured " + t.getLocalizedMessage());
+						c_logger.traceFailure(this, "onRead", "exception occurred " + t.getLocalizedMessage());
 						t.printStackTrace();
 					}
 				} finally {
@@ -1953,8 +1953,9 @@ public class TransportCommLayerMgr
 		}
 		
 		/** 
-		 * keep wait for messages and send them to the network
-		 * untill error occurs 
+		 * wait for messages 
+		 * and send them to the network
+		 * until error occurs 
 		 **/
 		private void readLoopBackMessages()
 		{

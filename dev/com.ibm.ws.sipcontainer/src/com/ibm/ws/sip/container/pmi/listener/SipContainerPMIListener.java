@@ -40,7 +40,7 @@ public interface SipContainerPMIListener
      * Update traffic over connector
      * 
      * @param num -
-     *            sum of the incomming and outqoing messaged during the last period
+     *            sum of the incoming and outgoing messages during the last period
      */
     public void updateReceivedMsgs(long num);
 

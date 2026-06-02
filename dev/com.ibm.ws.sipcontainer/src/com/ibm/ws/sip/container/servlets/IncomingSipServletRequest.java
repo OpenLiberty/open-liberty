@@ -79,7 +79,7 @@ public class IncomingSipServletRequest extends SipServletRequestImpl
  
 	/**
      * Contains information if this Request SHOULD be answered Reliably
-     * If the incomming request contains "Require" header it will be true
+     * If the incoming request contains "Require" header it will be true
      */
     protected transient boolean m_shouldBeAnsweredReliable = false; 
     
@@ -487,7 +487,7 @@ public class IncomingSipServletRequest extends SipServletRequestImpl
         OutgoingSipServletResponse response = null;
         try
         {
-            // Create the proper jain reponse
+            // Create the proper jain response
             Request jainRequest = getRequest();
             Response jainResponse =
                 getMessageFactory().createResponse(statusCode, jainRequest);

@@ -18,8 +18,8 @@ public interface SipResolverTransportListener {
 	public void responseReceived(ByteBuf byteBuffer);
 	
 	/*
-	 * Indiactes that an error occured on the transport. This is typically not 
-	 * catostrophic and should result in a retry.
+	 * Indicates that an error occurred on the transport. This is typically not 
+	 * catastrophic and should result in a retry.
 	 */
 	public void transportError(Exception	exception, SipResolverTransport transport);
 

@@ -71,12 +71,12 @@ public class SLSPAffinityRouter extends SLSPRouter
 	{
 		// 1. iterate all Via headers on the path, and add each one
 		//    to point to this SLSP.
-		// 2. ensure all Via headers are listed as dependants of this SLSP.
+		// 2. ensure all Via headers are listed as dependents of this SLSP.
 		
 		super.processRequest(request);
 		
 		Hop slspHop = null;
-		HashSet dependants = null;
+		HashSet dependents = null;
 		HeaderIterator viaHeaders = request.getViaHeaders();
 		
 		synchronized (this) {
@@ -88,14 +88,14 @@ public class SLSPAffinityRouter extends SLSPRouter
 					// top via is the slsp
 					slspHop = hop;
 					
-					dependants = (HashSet)m_connectionToUserAddressTable.get(slspHop);
-					if (dependants == null) {
+					dependents = (HashSet)m_connectionToUserAddressTable.get(slspHop);
+					if (dependents == null) {
 						// request from unknown SLSP
-						dependants = new HashSet();
-						m_connectionToUserAddressTable.put(slspHop, dependants);
+						dependents = new HashSet();
+						m_connectionToUserAddressTable.put(slspHop, dependents);
 					}
 				}
-				dependants.add(hop);
+				dependents.add(hop);
 				m_userAddressToConnectionTable.put(hop, slspHop);
 			}
 		}
@@ -110,11 +110,11 @@ public class SLSPAffinityRouter extends SLSPRouter
 		super.removeConnectionHop(connectionHop);
 		
 		// remove from the table of SLSPs
-		HashSet dependants = (HashSet)m_connectionToUserAddressTable.remove(connectionHop);
+		HashSet dependents = (HashSet)m_connectionToUserAddressTable.remove(connectionHop);
 
-		// remove dependants
-		if (dependants != null) {
-			Iterator i = dependants.iterator();
+		// remove dependents
+		if (dependents != null) {
+			Iterator i = dependents.iterator();
 			while (i.hasNext()) {
 				Hop hop = (Hop)i.next();
 				m_userAddressToConnectionTable.remove(hop);
@@ -156,8 +156,8 @@ public class SLSPAffinityRouter extends SLSPRouter
 	 */
 	public synchronized void addSLSP(Hop slsp) {
 		if (!m_connectionToUserAddressTable.containsKey(slsp)) {
-			HashSet dependants = new HashSet();
-			m_connectionToUserAddressTable.put(slsp, dependants);
+			HashSet dependents = new HashSet();
+			m_connectionToUserAddressTable.put(slsp, dependents);
 		}
 		super.addSLSP(slsp);
 	}

@@ -513,7 +513,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 	 * Construct a new Derived Transaction User
 	 * @param tuWrapper Related TransactionUserWrapper
 	 * @param originalTU base TransactionUser 
-	 * @param response reponse which caused for this Derived TU
+	 * @param response response which caused for this Derived TU
 	 * to be created.
 	 */
 	void initializeDerivedTU(TransactionUserWrapper tuWrapper,

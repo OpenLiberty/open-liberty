@@ -1024,7 +1024,7 @@ public class GenericEndpointImpl {
 	 * 
 	 * @param message message for component exception.
 	 * @param situation situation for the logger message.
-	 * @param e occured exception.
+	 * @param e occurred exception.
 	 */
 	private void handleSipVirtualHostException(String message, String situation, Exception e){
         if(c_logger.isErrorEnabled()){
@@ -1095,7 +1095,7 @@ public class GenericEndpointImpl {
 			}
 		} catch (Exception e) {
 			if (c_logger.isTraceDebugEnabled()){
-				c_logger.traceDebug("Error occured while defaultSipEndpoint endpoint was removed from ConfigurationAdmin", e);
+				c_logger.traceDebug("Error occurred while defaultSipEndpoint endpoint was removed from ConfigurationAdmin", e);
 			}
 		}
 	}

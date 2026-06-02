@@ -120,7 +120,7 @@ public class SIPNonInviteServerTransactionImpl
 	}
 				
 	/**
-	 * prosses the request in a state machine as stated in RFC 17.2.2
+	 * process the request in a state machine, as stated in RFC 17.2.2
 	 */
 	public synchronized void processRequest(Request sipRequest)
 		throws SipParseException
@@ -161,7 +161,7 @@ public class SIPNonInviteServerTransactionImpl
 	}
 	
 	/**
-	 * prosses the response in a state machine as stated in RFC 17.2.2
+	 * process the response in a state machine as stated in RFC 17.2.2
 	 * 
 	 */
 	public synchronized void processResponse(Response sipResponse) 
@@ -236,7 +236,7 @@ public class SIPNonInviteServerTransactionImpl
 	
 	
 	/**
-	*  prosses transport error
+	*  process transport error
 	*/	
 	public synchronized void prossesTransportError()
 	{
