@@ -162,7 +162,7 @@ public class ConfigAdminHealthCheckTest {
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
         assertNotNull("App was not detected by appTracker.", stateMapLine);
-        assertTrue("Fail on purpose", false);
+        
     }
 
     /*
