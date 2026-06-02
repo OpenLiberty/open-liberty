@@ -16,10 +16,15 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+/**
+ * Unit tests for {@link OAuthProtectedResourceMetadataHandler}.
+ */
 public class OAuthProtectedResourceMetadataServletTest {
 
+    private static final String METADATA_JSON = "{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}";
+
     @Test
-    public void returnsNotFoundWhenProtectedResourceIsUnknown() {
+    public void returnsNotFoundWhenResolverReturnsNull() {
         OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler();
 
         OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/unknown");
@@ -31,11 +36,11 @@ public class OAuthProtectedResourceMetadataServletTest {
     }
 
     @Test
-    public void returnsMetadataJsonForKnownEnabledProtectedResource() {
+    public void returnsMetadataJsonWhenResolverReturnsMetadata() {
         OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
             @Override
             protected String resolveMetadataJson(String protectedResourcePath) {
-                return "{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}";
+                return METADATA_JSON;
             }
         };
 
@@ -44,7 +49,7 @@ public class OAuthProtectedResourceMetadataServletTest {
         assertTrue(response.isFound());
         assertEquals("application/json", response.getContentType());
         assertEquals("UTF-8", response.getCharacterEncoding());
-        assertEquals("{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}", response.getBody());
+        assertEquals(METADATA_JSON, response.getBody());
     }
 
     @Test
@@ -55,7 +60,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             @Override
             protected String resolveMetadataJson(String protectedResourcePath) {
                 resolvedPath[0] = protectedResourcePath;
-                return "{}";
+                return METADATA_JSON;
             }
         };
 
@@ -63,6 +68,101 @@ public class OAuthProtectedResourceMetadataServletTest {
 
         assertEquals("/mcp", resolvedPath[0]);
         assertTrue(response.isFound());
-        assertEquals("{}", response.getBody());
+        assertEquals(METADATA_JSON, response.getBody());
+    }
+
+    @Test
+    public void handlesNullPathInfoAsRootPath() {
+        final String[] resolvedPath = new String[1];
+
+        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+            @Override
+            protected String resolveMetadataJson(String protectedResourcePath) {
+                resolvedPath[0] = protectedResourcePath;
+                return METADATA_JSON;
+            }
+        };
+
+        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle(null);
+
+        assertEquals("/", resolvedPath[0]);
+        assertTrue(response.isFound());
+        assertEquals(METADATA_JSON, response.getBody());
+    }
+
+    @Test
+    public void handlesEmptyPathInfoAsRootPath() {
+        final String[] resolvedPath = new String[1];
+
+        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+            @Override
+            protected String resolveMetadataJson(String protectedResourcePath) {
+                resolvedPath[0] = protectedResourcePath;
+                return METADATA_JSON;
+            }
+        };
+
+        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("");
+
+        assertEquals("/", resolvedPath[0]);
+        assertTrue(response.isFound());
+        assertEquals(METADATA_JSON, response.getBody());
+    }
+
+    @Test
+    public void handlesSlashPathInfoAsRootPath() {
+        final String[] resolvedPath = new String[1];
+
+        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+            @Override
+            protected String resolveMetadataJson(String protectedResourcePath) {
+                resolvedPath[0] = protectedResourcePath;
+                return METADATA_JSON;
+            }
+        };
+
+        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/");
+
+        assertEquals("/", resolvedPath[0]);
+        assertTrue(response.isFound());
+        assertEquals(METADATA_JSON, response.getBody());
+    }
+
+    @Test
+    public void preservesNestedProtectedResourcePath() {
+        final String[] resolvedPath = new String[1];
+
+        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+            @Override
+            protected String resolveMetadataJson(String protectedResourcePath) {
+                resolvedPath[0] = protectedResourcePath;
+                return METADATA_JSON;
+            }
+        };
+
+        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/app/api/v1");
+
+        assertEquals("/app/api/v1", resolvedPath[0]);
+        assertTrue(response.isFound());
+        assertEquals(METADATA_JSON, response.getBody());
+    }
+
+    @Test
+    public void preservesTrailingSlashInProtectedResourcePath() {
+        final String[] resolvedPath = new String[1];
+
+        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+            @Override
+            protected String resolveMetadataJson(String protectedResourcePath) {
+                resolvedPath[0] = protectedResourcePath;
+                return METADATA_JSON;
+            }
+        };
+
+        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/mcp/");
+
+        assertEquals("/mcp/", resolvedPath[0]);
+        assertTrue(response.isFound());
+        assertEquals(METADATA_JSON, response.getBody());
     }
 }
