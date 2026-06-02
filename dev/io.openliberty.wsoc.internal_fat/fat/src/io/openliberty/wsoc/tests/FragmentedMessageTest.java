@@ -1335,6 +1335,123 @@ public class FragmentedMessageTest {
             }
         }
     }
+    /**
+     * Test message type mismatch: TEXT message sent to BINARY-only endpoint.
+     * This tests the OOM vulnerability fix where messages sent to endpoints without
+     * matching handlers should still be validated against buffer size limits.
+     *
+     * Sends TEXT frames to an endpoint that only has a ByteBuffer (binary) handler.
+     * The message should be rejected when it exceeds the buffer size, preventing OOM attacks.
+     */
+    @Test
+    @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
+    public void testMessageTypeMismatch_TextToBinaryEndpoint_ExceedsBuffer() throws Exception {
+        LOG.info("Starting testMessageTypeMismatch_TextToBinaryEndpoint_ExceedsBuffer");
+        
+        // DefaultBufferDefaultMaxEndpoint only has ByteBuffer handler (binary messages)
+        String endpoint = "ws://localhost:" + server.getHttpDefaultPort() + "/" + WAR_NAME + "/defaultBufferDefaultMax";
+        io.openliberty.wsoc.util.RawWebSocketClient client = new io.openliberty.wsoc.util.RawWebSocketClient();
+        
+        try {
+            client.connect(endpoint);
+            LOG.info("Connected to endpoint with binary-only handler");
+            
+            // Send TEXT frames (opcode 0x01) to binary-only endpoint
+            // DefaultBufferDefaultMaxEndpoint has 32KB buffer, so send 40KB of TEXT data to exceed it
+            int frameCount = 20;
+            int frameSize = 2 * 1024; // 2KB per frame = 40KB total (exceeds 32KB buffer)
+            byte[] payload = new byte[frameSize];
+            
+            // Fill with text data
+            for (int i = 0; i < payload.length; i++) {
+                payload[i] = (byte) ('A' + (i % 26));
+            }
+            
+            // Send as TEXT frames (not BINARY)
+            client.sendFirstTextFragment(payload);
+            
+            for (int i = 1; i < frameCount - 1; i++) {
+                client.sendContinuationFragment(payload);
+            }
+            
+            client.sendFinalFragment(payload);
+            LOG.info("Sent " + frameCount + " TEXT frames of " + frameSize + " bytes each (40KB total) to binary-only endpoint (32KB buffer)");
+            
+            // Connection should be closed due to message exceeding buffer size
+            // even though there's no TEXT handler
+            boolean closed = client.waitForClose(10000);
+            assertTrue("Connection should be closed due to message type mismatch exceeding buffer", closed);
+            
+            // Verify close code indicates error
+            int closeCode = client.getCloseCode();
+            LOG.info("Connection closed with code: " + closeCode);
+            // Accept either 1009 (Message Too Big) or 1011 (Internal Server Error)
+            assertTrue("Close code should indicate error (1009 or 1011), but was: " + closeCode,
+                      closeCode == 1009 || closeCode == 1011);
+            
+            LOG.info("testMessageTypeMismatch_TextToBinaryEndpoint_ExceedsBuffer PASSED");
+            
+        } catch (Exception e) {
+            LOG.severe("testMessageTypeMismatch_TextToBinaryEndpoint_ExceedsBuffer FAILED: " + e.getMessage());
+            e.printStackTrace();
+            fail("Test failed: " + e.getMessage());
+        } finally {
+            try {
+                client.close();
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+    }
+    
+    /**
+     * Test message type mismatch with message within buffer limits.
+     * TEXT message sent to BINARY-only endpoint, but small enough to fit in buffer.
+     * Should be accepted (no OOM) but will be dropped as there's no handler.
+     */
+    @Test
+    public void testMessageTypeMismatch_TextToBinaryEndpoint_WithinBuffer() throws Exception {
+        LOG.info("Starting testMessageTypeMismatch_TextToBinaryEndpoint_WithinBuffer");
+        
+        String endpoint = "ws://localhost:" + server.getHttpDefaultPort() + "/" + WAR_NAME + "/defaultBufferDefaultMax";
+        io.openliberty.wsoc.util.RawWebSocketClient client = new io.openliberty.wsoc.util.RawWebSocketClient();
+        
+        try {
+            client.connect(endpoint);
+            LOG.info("Connected to endpoint with binary-only handler");
+            
+            // Send small TEXT message (16KB) - well within 32KB buffer
+            byte[] payload = new byte[16 * 1024];
+            for (int i = 0; i < payload.length; i++) {
+                payload[i] = (byte) ('A' + (i % 26));
+            }
+            
+            // Send as single TEXT frame
+            client.sendTextFrame(payload, true);
+            LOG.info("Sent 16KB TEXT frame to binary-only endpoint (32KB buffer)");
+            
+            // Connection should remain open (message within buffer, no OOM risk)
+            // But no response expected as there's no TEXT handler
+            Thread.sleep(2000); // Wait to ensure no unexpected close
+            
+            assertTrue("Connection should remain open for small mismatched message", 
+                      !client.isClosed());
+            
+            LOG.info("testMessageTypeMismatch_TextToBinaryEndpoint_WithinBuffer PASSED");
+            
+        } catch (Exception e) {
+            LOG.severe("testMessageTypeMismatch_TextToBinaryEndpoint_WithinBuffer FAILED: " + e.getMessage());
+            e.printStackTrace();
+            fail("Test failed: " + e.getMessage());
+        } finally {
+            try {
+                client.close();
+            } catch (Exception e) {
+                // Ignore
+            }
+        }
+    }
+    
     
     
     /**

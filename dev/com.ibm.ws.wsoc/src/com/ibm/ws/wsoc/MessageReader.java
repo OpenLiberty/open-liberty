@@ -564,7 +564,6 @@ public class MessageReader {
         Long maxMessageSize = Constants.DEFAULT_MAX_MSG_SIZE;
         Long maxMessageBufferSize = 0L;
 
-        if (!(connLink.getEndpoint() instanceof AnnotatedEndpoint)) {
             if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_FIRST
                 || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_LAST) {
                 maxMessageBufferSize = (long) connLink.getMaxBinaryMessageBufferSize();
@@ -572,6 +571,10 @@ public class MessageReader {
                        || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_LAST) {
                 maxMessageBufferSize = (long) connLink.getMaxTextMessageBufferSize();
             }
+
+
+        if (!(connLink.getEndpoint() instanceof AnnotatedEndpoint)) {
+
 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "processMaxMessageSize: Not AE. payLoadSize passed in: payLoadSize: " + payLoadSize + " cumulativePayloadSize: " + cumulativePayloadSize + " maxMessageSize: " + maxMessageSize + " maxMessageBufferSize: " + maxMessageBufferSize);
@@ -604,21 +607,20 @@ public class MessageReader {
         if (epMethodHelper != null) {
             methodData = epMethodHelper.getMethodData();
         } else {
+            // No handler exists for this message type, but still validate against buffer size to prevent OOM
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "No handler found for message type: " + firstFrameOpcodeType + ". Validating against buffer size: " + maxMessageBufferSize);
+            }
+            if (maxMessageBufferSize > 0 && cumulativePayloadSize > maxMessageBufferSize) {
+                String reasonPhrase = "Invalid incoming WebSocket message. Message is too big. Message size: " +
+                                      cumulativePayloadSize + " but max message buffer size for this Session is: " + maxMessageBufferSize;
+                throw new MaxMessageException(reasonPhrase);
+            }
             return;
         }
 
         //get user defined maxMessageSize in @OnMessage annotation if there is one
         maxMessageSize = methodData.getMaxMessageSize();
-        if (maxMessageSize == Constants.ANNOTATED_UNDEFINED_MAX_MSG_SIZE) {
-            // if user did not define a max size with an annotation, get the size from the session
-            if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_FIRST
-                || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_LAST) {
-                maxMessageBufferSize = (long) connLink.getMaxBinaryMessageBufferSize();
-            } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_FIRST
-                       || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_LAST) {
-                maxMessageBufferSize = (long) connLink.getMaxTextMessageBufferSize();
-            }
-        }
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "processMaxMessageSize: Is AE. payLoadSize passed in: payLoadSize: " + payLoadSize + " cumulativePayloadSize: " + cumulativePayloadSize + " maxMessageSize: " + maxMessageSize + " maxMessageBufferSize: " + maxMessageBufferSize);

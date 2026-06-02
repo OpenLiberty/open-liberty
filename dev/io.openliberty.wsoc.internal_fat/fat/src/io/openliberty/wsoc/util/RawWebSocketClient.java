@@ -116,6 +116,53 @@ public class RawWebSocketClient {
     }
     
     /**
+     * Send a TEXT frame with control over FIN bit
+     * @param payload The frame payload
+     * @param fin true if this is the final fragment (FIN=1), false for continuation (FIN=0)
+     * @param opcode The opcode (0x01 for text, 0x00 for continuation)
+     */
+    public void sendTextFrame(byte[] payload, boolean fin, int opcode) throws IOException {
+        if (!connected) {
+            throw new IllegalStateException("Not connected");
+        }
+        
+        ByteBuffer frame = createFrame(payload, fin, opcode);
+        out.write(frame.array(), 0, frame.limit());
+        out.flush();
+    }
+    
+    /**
+     * Send first fragment of a TEXT message (FIN=0, opcode=0x01)
+     */
+    public void sendFirstTextFragment(byte[] payload) throws IOException {
+        sendTextFrame(payload, false, 0x01);
+    }
+    
+    /**
+     * Send a complete TEXT frame (FIN=1, opcode=0x01)
+     */
+    public void sendTextFrame(byte[] payload, boolean fin) throws IOException {
+        sendTextFrame(payload, fin, fin ? 0x01 : 0x00);
+    }
+    
+    private int lastCloseCode = -1;
+    
+    /**
+     * Get the close code from the last close frame received
+     * Returns -1 if no close frame received or connection still open
+     */
+    public int getCloseCode() {
+        return lastCloseCode;
+    }
+    
+    /**
+     * Check if connection is closed
+     */
+    public boolean isClosed() {
+        return !connected || socket == null || socket.isClosed();
+    }
+    
+    /**
      * Create a WebSocket frame
      */
     private ByteBuffer createFrame(byte[] payload, boolean fin, int opcode) {
@@ -226,6 +273,10 @@ public class RawWebSocketClient {
         // Check for close frame (opcode 0x8)
         if (detectClose && opcode == 0x8) {
             connected = false;
+            // Parse close code from payload (first 2 bytes, big-endian)
+            if (totalRead >= 2) {
+                lastCloseCode = ((payload[0] & 0xFF) << 8) | (payload[1] & 0xFF);
+            }
             return null;
         }
         
