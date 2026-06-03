@@ -431,13 +431,14 @@ public class IncomingSipServletRequest extends SipServletRequestImpl
 	        //container after a servlet has been invoked. 
 	        synchronized(this)
 	        {
-	            // If it is a final response, mark the request as committed,
+	            // If it is a final response, mark the request as Committed,
 	        	// to qualify with SipServletMessage.isCommitted().
 	        	// Note this does not prevent the application from generating
 	        	// another final response, as long as it was not sent.
-	        	//for proxy application we cannot change the request for commited if this is the
-	        	//initial request since initial proxy requests can send multiple responses
-	        	//for parallel proxy.
+	        	// For proxy application we cannot change the request 
+                // as committed if this is the initial request,
+	        	// since initial proxy requests can send multiple responses
+	        	// for parallel proxy.
 	        	boolean proxying = false;
 	        	if(incomingResponseTransactionUser == null){
 	        		proxying = tUser != null && tUser.isProxying();
@@ -450,7 +451,7 @@ public class IncomingSipServletRequest extends SipServletRequestImpl
 	            }else{
 	            	if (c_logger.isTraceDebugEnabled() && tUser != null){
 	            		c_logger.traceDebug(this, "createResponse", 
-	            				"Message state was not changed to commited, isProxy: " + proxying + ", isInital: " + isInitial());
+	            				"Message state was not changed to committed! isProxy: " + proxying + ", isInital: " + isInitial());
 	            	}
 	            }
 	        }

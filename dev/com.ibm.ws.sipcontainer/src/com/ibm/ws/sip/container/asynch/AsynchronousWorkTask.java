@@ -213,7 +213,7 @@ public class AsynchronousWorkTask extends RoutedTask implements AsynchronousWork
 			if (_isWaitForResponse){
 				if (c_logger.isTraceDebugEnabled()) {
 					c_logger.traceDebug(this, "notifyWaitThread",
-							"respone was received going to notify waiting thread, applicationid=" + _appSessionID);
+							"response received, notifying waiting thread. Applicationid = " + _appSessionID);
 				}
 				
 				_isWaitForResponse = false;

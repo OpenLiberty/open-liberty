@@ -501,7 +501,7 @@ public class RecordRouteProxy {
             if(c_logger.isErrorEnabled())
             {
                 Object[] args = { route }; 
-                c_logger.error("error.unkown.uri.type", 
+                c_logger.error("error.unknown.uri.type", 
                                Situation.SITUATION_CREATE, args);
             }
         }

@@ -166,8 +166,8 @@ public abstract class SipServletMessageImpl
     protected Hashtable m_attributes;
 
     /**
-     * Flag indicating whether the Message is already commited. Some operations
-     * are not allowed once the message is commited. 
+     * Flag indicating whether the message is already Committed. 
+     * Some operations are not allowed once the message is Committed. 
      */
     private boolean m_isCommited = true;
     

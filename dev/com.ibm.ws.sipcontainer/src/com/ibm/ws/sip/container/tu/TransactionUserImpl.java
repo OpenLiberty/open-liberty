@@ -460,7 +460,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 	private HashMap <Long, ClientTransaction> _proxyClientTransactions = null;
 
 	/**
-    * When this flag is true - meaning that Proxy received reINVITE wich was not answered with final response yet.
+    * When this flag is true - Proxy received a reINVITE which was not answered with a final response yet.
     */
 
    private transient boolean _proxyHasOngoingReInvite = false;
@@ -1052,15 +1052,15 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 					c_logger.traceDebug(this, "shouldTerminateUnderlyingTransactions", "Proxy mode.");
 				}
 				if (!request.isCommitted()) {
-					// In case when the request is not completed (INVITE and re-INVITE) we
+					// In case when the request is not completed (INVITE or re-INVITE), we
 					// should close all underlying transactions.
-					// We will do this only when flag is true because of the performance
+					// We will do this only when flag is true, because of the performance
 					// degradation caused by new HashTable for all
 					// outgoing client transactions in Proxy mode.
 					if (!proxyHasFinalResponse() || _proxyHasOngoingReInvite) {
 						if (c_logger.isTraceDebugEnabled()) {
 							c_logger.traceDebug(this, "shouldTerminateUnderlyingTransactions",
-									"We have no final response for proxy or request is not commited.");
+									"We have no final response for proxy or request is not committed.");
 						}
 						return true;
 					}

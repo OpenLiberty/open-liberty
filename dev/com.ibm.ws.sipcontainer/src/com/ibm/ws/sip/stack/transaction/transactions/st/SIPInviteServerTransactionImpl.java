@@ -330,8 +330,8 @@ public class SIPInviteServerTransactionImpl
 			
 	
 	/**
-	 *  timer G for this transaction
-	 *  only for reliable trasport
+	 *  timer G for this transaction.
+	 *  Only for reliable transport
 	 */
 	static class TimerG extends TimerEvent
 	{
