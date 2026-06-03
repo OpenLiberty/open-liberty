@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,9 @@
 package io.openliberty.microprofile.health.file.healthcheck.fat.utils;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.time.Duration;
 
 import com.ibm.websphere.simplicity.log.Log;
@@ -22,6 +25,11 @@ public class HealthFileUtils {
         Log.info(HealthFileUtils.class, method, msg);
     }
 
+    /**
+     *
+     * @param file
+     * @return time in ms since epoch
+     */
     public static long getLastModifiedTime(File file) {
         final String METHOD_NAME = "getLastModifiedTime";
 
@@ -31,6 +39,46 @@ public class HealthFileUtils {
         }
 
         return file.lastModified();
+
+    }
+
+    /**
+     *
+     * @param file
+     * @return time in millis since epoch
+     * @throws IOException
+     */
+    public static long getLastModifiedTimeNIO(File file) throws IOException {
+        final String METHOD_NAME = "getLastModifiedTime";
+
+        if (!file.exists()) {
+            log(METHOD_NAME, String.format("File %s does not exist", file.getAbsolutePath()));
+            return -1;
+        }
+
+        BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+
+        return attr.lastModifiedTime().toMillis();
+
+    }
+
+    /**
+     *
+     * @param file
+     * @return time in millis since epoch
+     * @throws IOException
+     */
+    public static long getCreatedTime(File file) throws IOException {
+        final String METHOD_NAME = "getCrateTime";
+
+        if (!file.exists()) {
+            log(METHOD_NAME, String.format("File %s does not exist", file.getAbsolutePath()));
+            return -1;
+        }
+
+        BasicFileAttributes attr = Files.readAttributes(file.toPath(), BasicFileAttributes.class);
+
+        return attr.creationTime().toMillis();
 
     }
 
