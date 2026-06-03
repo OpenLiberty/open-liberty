@@ -1,0 +1,119 @@
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *******************************************************************************/
+
+configurations {
+  jpaFatTools {
+    transitive = false
+  }
+  hibernateJPA21
+  hibernateJPA22
+  openjpaJPA21
+  openjpaJPA22
+  hibernateJPA30
+}
+
+dependencies {
+  jpaFatTools project(':com.ibm.ws.jpa_testframework')
+  // JPA 2.1 Hibernate 5.2.18
+  hibernateJPA21 'org.hibernate:hibernate-core:5.2.18.Final'
+  hibernateJPA21 'org.jboss.logging:jboss-logging:3.3.1.Final'
+  hibernateJPA21 'org.javassist:javassist:3.25.0-GA'
+  hibernateJPA21 'antlr:antlr:2.7.7'
+  hibernateJPA21 'org.jboss:jandex:2.0.3.Final'
+  hibernateJPA21 'com.fasterxml:classmate:1.3.0'
+  hibernateJPA21 'org.hibernate.common:hibernate-commons-annotations:5.0.1.Final'
+  hibernateJPA21 'org.dom4j:dom4j:2.1.1'
+  
+  // JPA 2.2 Hibernate 5.5.7
+  hibernateJPA22 'org.hibernate:hibernate-core:5.5.7.Final'
+  hibernateJPA22 'org.jboss.logging:jboss-logging:3.4.2.Final'
+  hibernateJPA22 'org.javassist:javassist:3.27.0-GA'
+  hibernateJPA22 'antlr:antlr:2.7.7'
+  hibernateJPA22 'org.jboss:jandex:2.2.3.Final'
+  hibernateJPA22 'com.fasterxml:classmate:1.5.1'
+  hibernateJPA22 'org.hibernate.common:hibernate-commons-annotations:5.1.2.Final'
+  hibernateJPA22 'net.bytebuddy:byte-buddy:1.11.12'
+  
+  // JPA 2.1 OpenJPA 3.0.0
+  openjpaJPA21 'org.apache.openjpa:openjpa:3.0.0'
+  openjpaJPA21 'commons-collections:commons-collections:3.2.2'
+  openjpaJPA21 'commons-dbcp:commons-dbcp:1.4'
+  openjpaJPA21 'commons-logging:commons-logging:1.2'
+  openjpaJPA21 'commons-pool:commons-pool:1.6'
+  openjpaJPA21 'net.sourceforge.serp:serp:1.15.1'
+  openjpaJPA21 'org.apache.xbean:xbean-asm6-shaded:4.8'
+  
+  // JPA 2.2 OpenJPA 3.1.2 (correct version from old FAT)
+  openjpaJPA22 'org.apache.openjpa:openjpa:3.1.2'
+  openjpaJPA22 'org.apache.commons:commons-collections4:4.4'
+  openjpaJPA22 'org.apache.commons:commons-dbcp2:2.7.0'
+  openjpaJPA22 'commons-logging:commons-logging:1.2'
+  openjpaJPA22 'org.apache.commons:commons-pool2:2.6.0'
+  openjpaJPA22 'net.sourceforge.serp:serp:1.15.1'
+  openjpaJPA22 'org.apache.xbean:xbean-asm8-shaded:4.17'
+
+  // JPA 3.0 Hibernate 5.5.7 (Jakarta namespace)
+  hibernateJPA30 'org.hibernate:hibernate-core-jakarta:5.5.7.Final'
+  hibernateJPA30 'org.jboss.logging:jboss-logging:3.4.2.Final'
+  hibernateJPA30 'org.javassist:javassist:3.27.0-GA'
+  hibernateJPA30 'antlr:antlr:2.7.7'
+  hibernateJPA30 'org.jboss:jandex:2.2.3.Final'
+  hibernateJPA30 'com.fasterxml:classmate:1.5.1'
+  hibernateJPA30 'org.hibernate.common:hibernate-commons-annotations:5.1.2.Final'
+  hibernateJPA30 'net.bytebuddy:byte-buddy:1.11.12'
+}
+
+
+task addJPAFATTools (type: Copy) {
+  mustRunAfter jar
+  from configurations.jpaFatTools
+  include "**/com.ibm.ws.jpa_testframework.jar"
+  into new File(autoFvtDir, 'lib')
+}
+
+task addhibernate_JPA21(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA21
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_embeddable_fat_jpa21_hibernate')
+}
+
+task addhibernate_JPA22(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA22
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_embeddable_fat_jpa22_hibernate')
+}
+
+task addopenjpa_JPA21(type: Copy) {
+  shouldRunAfter jar
+  from configurations.openjpaJPA21
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_embeddable_fat_jpa21_openjpa')
+}
+
+task addopenjpa_JPA22(type: Copy) {
+  shouldRunAfter jar
+  from configurations.openjpaJPA22
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_embeddable_fat_jpa22_openjpa')
+}
+task addhibernate_JPA30(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hibernateJPA30
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_embeddable_fat_jpa30_hibernate')
+}
+addRequiredLibraries {
+  dependsOn copyJdbcDrivers
+  dependsOn addJakartaTransformer
+  dependsOn addJPAFATTools
+  dependsOn addhibernate_JPA21
+  dependsOn addhibernate_JPA22
+  dependsOn addopenjpa_JPA21
+  dependsOn addopenjpa_JPA22
+  dependsOn addhibernate_JPA30
+  dependsOn copyTestContainers
+}
