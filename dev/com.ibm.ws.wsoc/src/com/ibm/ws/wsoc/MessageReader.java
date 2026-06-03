@@ -545,12 +545,16 @@ public class MessageReader {
 
     }
 
-    /*
-     * maxMessageSize attribute in @OnMessage: Specifies the maximum size of message in bytes that the method this annotates will be able to process, or -1 to indicate that there
-     * is no maximum. The default is -1. This
-     * attribute only applies when the annotation is used to process whole messages, not to those methods that process messages in parts or use a stream or reader parameter to
-     * handle the incoming message. If the incoming whole message exceeds this limit, then the implementation generates an error and closes the connection using the reason that the
-     * message was too big.
+    /**
+     * Validates incoming WebSocket message size against configured maximum message size limits.
+     * Control frames (CLOSE, PING, PONG) and partial message handlers (Reader, InputStream, or methods with boolean parameters)
+     * are exempt from validation per API specification. For annotated endpoints, validates against the @OnMessage maxMessageSize
+     * attribute if specified; otherwise uses the session's message buffer size. When maxMessageSize is -1 (unlimited), the buffer
+     * size is used as the effective limit.
+     *
+     * @param payLoadSize the size of the current payload in bytes
+     * @param cumulativePayloadSize the cumulative size of all payloads received for this message in bytes
+     * @throws MaxMessageException if the cumulative payload size exceeds the configured maximum, triggering connection closure
      */
     private void processMaxMessageSize(long payLoadSize, long cumulativePayloadSize) throws MaxMessageException {
         // Control frames are not subject to maxMessageSize validation
@@ -564,32 +568,29 @@ public class MessageReader {
         Long maxMessageSize = Constants.DEFAULT_MAX_MSG_SIZE;
         Long maxMessageBufferSize = 0L;
 
-            if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_FIRST
-                || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_LAST) {
-                maxMessageBufferSize = (long) connLink.getMaxBinaryMessageBufferSize();
-            } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_FIRST
-                       || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_LAST) {
-                maxMessageBufferSize = (long) connLink.getMaxTextMessageBufferSize();
-            }
-
+        if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_FIRST
+            || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.BINARY_PARTIAL_LAST) {
+            maxMessageBufferSize = (long) connLink.getMaxBinaryMessageBufferSize();
+        } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_FIRST
+                   || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_CONTINUATION || firstFrameOpcodeType == OpcodeType.TEXT_PARTIAL_LAST) {
+            maxMessageBufferSize = (long) connLink.getMaxTextMessageBufferSize();
+        }
 
         if (!(connLink.getEndpoint() instanceof AnnotatedEndpoint)) {
-
 
             if (tc.isDebugEnabled()) {
                 Tr.debug(tc, "processMaxMessageSize: Not AE. payLoadSize passed in: payLoadSize: " + payLoadSize + " cumulativePayloadSize: " + cumulativePayloadSize + " maxMessageSize: " + maxMessageSize + " maxMessageBufferSize: " + maxMessageBufferSize);
             }
 
-            if(maxMessageBufferSize > maxMessageSize) {
-                maxMessageSize = maxMessageBufferSize;
-            }
+            // if endpoint is not an AnnotatedEndpoint, then use the buffer size as the max message size
+            maxMessageSize = maxMessageBufferSize;
 
             // TODO: will have to use English message for now, needs to be translated in the next release
-            if (cumulativePayloadSize > maxMessageSize) {
+            if (maxMessageSize > 0 && cumulativePayloadSize > maxMessageSize) {
                 // String reasonPhrase = Tr.formatMessage(tc, "invalid.message.toobig", "MessageHandler", payLoadSize, maxMessageSize, "onMessage");
                 // also, this message needs be less than 123, the max for a control frame.
                 String reasonPhrase = "Invalid incoming WebSocket message. Message is too big. Message size: " +
-                                      payLoadSize + " but max message size for this Session is: " + maxMessageSize;
+                                      cumulativePayloadSize + " but max message size for this Session is: " + maxMessageSize;
                 throw new MaxMessageException(reasonPhrase);
             }
             return;
@@ -626,7 +627,9 @@ public class MessageReader {
             Tr.debug(tc, "processMaxMessageSize: Is AE. payLoadSize passed in: payLoadSize: " + payLoadSize + " cumulativePayloadSize: " + cumulativePayloadSize + " maxMessageSize: " + maxMessageSize + " maxMessageBufferSize: " + maxMessageBufferSize);
         }
 
-        if(maxMessageBufferSize > maxMessageSize) {
+        // Choose the effective limit: if maxMessageSize is -1 (unlimited), use buffer size if configured.
+        // Otherwise, the @OnMessage annotation takes precedence and the buffer size must not weaken it.
+        if (maxMessageSize == -1) {
             maxMessageSize = maxMessageBufferSize;
         }
 
@@ -645,7 +648,7 @@ public class MessageReader {
         }
 
         //if payload size is greater than maxMessageSize, throw MaxMessageException which calls onClose() method of ServerEndpoint config
-        if (cumulativePayloadSize > maxMessageSize) {
+        if (maxMessageSize > 0 && cumulativePayloadSize > maxMessageSize) {
             if (firstFrameOpcodeType == OpcodeType.BINARY_WHOLE) {
                 epMethodHelper = ae.getOnMessageBinaryMethod();
             } else if (firstFrameOpcodeType == OpcodeType.TEXT_WHOLE) {
@@ -653,7 +656,7 @@ public class MessageReader {
             }
             String reasonPhrase = Tr.formatMessage(tc,
                                                    "invalid.message.toobig",
-                                                   epMethodHelper.getMethod().getDeclaringClass().getName(), cumulativePayloadSize, maxMessageSize,
+                                                   cumulativePayloadSize, maxMessageSize, epMethodHelper.getMethod().getDeclaringClass().getName(),
                                                    epMethodHelper.getMethod().getName());
 
             throw new MaxMessageException(reasonPhrase);
