@@ -36,11 +36,11 @@ public class UnlimitedAccumulatorEndpoint {
     private int  totalSize = 0;
     @OnOpen
     public void onOpen(Session session) {
-        LOG.info("UnlimitedAccumulatorEndpoint opened");
+        System.out.println("UnlimitedAccumulatorEndpoint opened");
         
         // Do NOT set buffer sizes - use defaults
-        LOG.info("Default maxBinaryMessageBufferSize: " + session.getMaxBinaryMessageBufferSize());
-        LOG.info("Default maxTextMessageBufferSize: " + session.getMaxTextMessageBufferSize());
+        System.out.println("Default maxBinaryMessageBufferSize: " + session.getMaxBinaryMessageBufferSize());
+        System.out.println("Default maxTextMessageBufferSize: " + session.getMaxTextMessageBufferSize());
         
     }
     
@@ -54,7 +54,7 @@ public class UnlimitedAccumulatorEndpoint {
         int fragmentSize = message.remaining();
         totalSize += fragmentSize;
         
-        LOG.info("UnlimitedAccumulatorEndpoint received fragment: " + fragmentSize +
+        System.out.println("UnlimitedAccumulatorEndpoint received fragment: " + fragmentSize +
                  " bytes, last=" + last + ", total accumulated: " + totalSize + " bytes");
     }
     

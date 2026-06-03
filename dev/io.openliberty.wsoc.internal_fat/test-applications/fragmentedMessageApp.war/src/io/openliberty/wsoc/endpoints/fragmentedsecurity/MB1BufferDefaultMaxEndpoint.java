@@ -30,25 +30,25 @@ public class MB1BufferDefaultMaxEndpoint {
     
     @OnOpen
     public void onOpen(Session session) {
-        LOG.info("MB1BufferDefaultMaxEndpoint opened (1MB buffer)");
+        System.out.println("MB1BufferDefaultMaxEndpoint opened (1MB buffer)");
         
         // Set 1MB buffer sizes
         session.setMaxBinaryMessageBufferSize(BUFFER_SIZE);
         session.setMaxTextMessageBufferSize(BUFFER_SIZE);
         
-        LOG.info("Set maxBinaryMessageBufferSize to: " + BUFFER_SIZE + " (1MB)");
-        LOG.info("Set maxTextMessageBufferSize to: " + BUFFER_SIZE + " (1MB)");
-        LOG.info("maxMessageSize: unlimited (no @OnMessage maxMessageSize set)");
+        System.out.println("Set maxBinaryMessageBufferSize to: " + BUFFER_SIZE + " (1MB)");
+        System.out.println("Set maxTextMessageBufferSize to: " + BUFFER_SIZE + " (1MB)");
+        System.out.println("maxMessageSize: unlimited (no @OnMessage maxMessageSize set)");
     }
     
     @OnMessage
     public void onMessage(ByteBuffer message, Session session) {
-        LOG.info("MB1BufferDefaultMaxEndpoint received message: " + message.remaining() + " bytes");
+        System.out.println("MB1BufferDefaultMaxEndpoint received message: " + message.remaining() + " bytes");
         
         try {
             // Echo the message back
             session.getBasicRemote().sendBinary(message);
-            LOG.info("Echoed message back to client");
+            System.out.println("Echoed message back to client");
         } catch (IOException e) {
             LOG.severe("Error echoing message: " + e.getMessage());
         }
