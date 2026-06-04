@@ -177,29 +177,18 @@ pluginManagement {
   }
 }
 
-// Require Java 17
+// Require Java 21
 int javaVersion = Integer.parseInt(JavaVersion.current().getMajorVersion())
 
-if (javaVersion < 17) {
-  println "ERROR: Building this repository requires Java 17. To use Java 17 follow these steps:\n" + 
-                            "  1) You can download a copy for your OS here if you don't already have it: " + 
-                            "http://ibm.biz/GetSemeru\n" + 
-                            "  2) run 'export JAVA_HOME=/path/to/your/java17' in the shell, or set in ~/.bashrc\n" + 
-                            "  3) [MACOS ONLY] Set 'ulimit -Sn 1024' in your ~/.bashrc\n" + 
-                            "  4) Restart your gradle daemon with './gradlew --stop'\n";
-        throw new GradleException('Current Java version is not 17 or higher.')
-
-}
-
 if (javaVersion < 21) {
-  if (System.getenv("JAVA_21_HOME") == null) {
-    print "ERROR: Building this repository requires JAVA_21_HOME to be set to a path for a Java 21 SDK.  Please follow these steps:\n" +
-      "  1) You can download a copy for your OS here if you don't already have it: " + 
-      "https://jdk.java.net/21/\n" +
-      "  2) export 'JAVA_21_HOME=/path/to/your/java21' in the shell or set in your ~/.bashrc\n" +
-      "  3) Restart your gradle daemon with './gradlew --stop'\n";
-    throw new GradleException('JAVA_21_HOME is not set.')
-  }
+  println "ERROR: Building this repository requires Java 21. To use Java 21 follow these steps:\n" +
+                            "  1) You can download a copy for your OS here if you don't already have it: " + 
+                            "http://ibm.biz/GetSemeru\n" +
+                            "  2) run 'export JAVA_HOME=/path/to/your/java21' in the shell, or set in ~/.bashrc\n" +
+                            "  3) [MACOS ONLY] Set 'ulimit -Sn 1024' in your ~/.bashrc\n" +
+                            "  4) Restart your gradle daemon with './gradlew --stop'\n";
+        throw new GradleException('Current Java version is not 21 or higher.')
+
 }
 
 // Require cnf:initialize on clean workspace for tasks that need it.

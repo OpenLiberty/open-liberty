@@ -95,13 +95,6 @@ subprojects {
 
   
   tasks.withType(JavaCompile).configureEach({
-      int javaVersionNumVal = Integer.parseInt(JavaVersion.current().getMajorVersion())
-      if (javaVersionNumVal < 21 && '21'.equals(sourceCompatibility)) {
-          javaCompiler = javaToolchains.compilerFor {
-              languageVersion = JavaLanguageVersion.of(21)
-          }
-      }
-
       // Set the --release compiler flag to keep bootclasspath in sync 
       if(!'off'.equals(bnd.get('javac.args.release'))) {
         def release = sourceCompatibility
