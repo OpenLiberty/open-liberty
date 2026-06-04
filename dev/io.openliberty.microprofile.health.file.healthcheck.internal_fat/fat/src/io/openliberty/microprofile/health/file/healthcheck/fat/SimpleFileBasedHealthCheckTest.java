@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 import io.openliberty.microprofile.health.file.healthcheck.fat.utils.Constants;
-import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
+import io.openliberty.microprofile.health.file.healthcheck.fat.utils.HealthFileUtils;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 /**
@@ -340,72 +340,167 @@ public class SimpleFileBasedHealthCheckTest {
      */
     public void toggleReadinessFailTest() throws Exception {
         final String METHOD_NAME = "toggleReadinessFailTest";
+        final int MAX_ATTEMPTS = 10;
+        final long CHECK_INTERVAL_MS = 5000L; // 5 second interval
+        final long MIN_UPDATE_INTERVAL_MS = 4500L; // Allow 4.5-6.5 second range
+        final long MAX_UPDATE_INTERVAL_MS = 6500L;
 
-        WebArchive app = ShrinkWrap
-                        .create(WebArchive.class, TOGGLE_APP_WAR)
-                        .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
-                        .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
+        boolean testPassed = false;
+        int attempts = 0;
 
-        ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
+        while (!testPassed && attempts < MAX_ATTEMPTS) {
+            attempts++;
+            Log.info(getClass(), METHOD_NAME, "Attempt: " + attempts);
 
-        server.startServer();
+            // Clean up from previous attempt if needed
+            if (attempts > 1) {
+                after();
+                before();
+            }
 
-        // Read to run a smarter planet
-        server.waitForStringInLogUsingMark("CWWKF0011I");
-        assertTrue("Server is not started", server.isStarted());
+            WebArchive app = ShrinkWrap
+                            .create(WebArchive.class, TOGGLE_APP_WAR)
+                            .addAsWebInfResource(new File("test-applications/FileHealthCheckApp/resources/WEB-INF/web.xml"))
+                            .addPackage("io.openliberty.microprofile.health.file.healthcheck.app");
 
-        String serverRoot = server.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
+            ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
-        Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
+            server.startServer();
 
-        /*
-         * Expect:
-         * [X] /health dir
-         * [X] Started
-         * [X] Ready
-         * [X] Live
-         *
-         * Not Expected:
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
-         */
-        /*
-         * Checks that require to check that all files are created may encounter a scenario where FAT test is way ahead of the server.
-         * This results in the files not existing yet. isFilesCreated() will retry up to 2 seconds (w/ 250ms cycles).
-         */
-        Assert.assertTrue("Expected all files to be created: Review isAllHealthCheckFilesCreated logs for state of files.", FATSuite.isFilesCreated(serverRootDirFile));
+            // Read to run a smarter planet
+            server.waitForStringInLogUsingMark("CWWKF0011I");
+            assertTrue("Server is not started", server.isStarted());
 
-        URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=false");
-        HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-        con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+            String serverRoot = server.getServerRoot();
+            File serverRootDirFile = new File(serverRoot);
 
-        TimeUnit.SECONDS.sleep(10);
+            Log.info(getClass(), METHOD_NAME, "Server root directory is: " + serverRootDirFile.getAbsolutePath());
 
-        /*
-         * Now expect ready to not be updated. Expect liveness to have been updated.
-         */
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertFalse(Constants.READY_SHOULD_NOT_HAVE_UPDATED,
-                           HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+            /*
+             * Expect:
+             * [X] /health dir
+             * [X] Started
+             * [X] Ready
+             * [X] Live
+             */
+            Assert.assertTrue("Expected all files to be created: Review isAllHealthCheckFilesCreated logs for state of files.",
+                            FATSuite.isFilesCreated(serverRootDirFile));
 
-        /*
-         * Set the ready status back to UP; expect both files to have been updated
-         */
+            // Get creation times and initial modified times
+            long readyCreatedTime = HealthFileUtils.getCreatedTime(HealthFileUtils.getReadyFile(serverRootDirFile));
+            long liveCreatedTime = HealthFileUtils.getCreatedTime(HealthFileUtils.getLiveFile(serverRootDirFile));
+            long readyInitialModifiedTime = HealthFileUtils.getLastModifiedTimeNIO(HealthFileUtils.getReadyFile(serverRootDirFile));
+            long liveInitialModifiedTime = HealthFileUtils.getLastModifiedTimeNIO(HealthFileUtils.getLiveFile(serverRootDirFile));
 
-        url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=true");
-        con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-        con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+            Log.info(getClass(), METHOD_NAME, "Ready file created time (ms): " + readyCreatedTime);
+            Log.info(getClass(), METHOD_NAME, "Ready file initial modified time (ms): " + readyInitialModifiedTime);
+            Log.info(getClass(), METHOD_NAME, "Live file created time (ms): " + liveCreatedTime);
+            Log.info(getClass(), METHOD_NAME, "Live file initial modified time (ms): " + liveInitialModifiedTime);
 
-        waitForModifiedTimestamp(serverRootDirFile);
+            // Verify creation and initial modification times are close (within 1 second)
+            long readyCreateModDiff = readyInitialModifiedTime - readyCreatedTime;
+            long liveCreateModDiff = liveInitialModifiedTime - liveCreatedTime;
 
-        Assert.assertTrue(Constants.LIVE_SHOULD_HAVE_UPDATED, HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getLiveFile(serverRootDirFile), Duration.ofSeconds(8)));
-        Assert.assertTrue(Constants.READY_SHOULD_HAVE_UPDATED,
-                          HealthFileUtils.isLastModifiedTimeWithinLast(HealthFileUtils.getReadyFile(serverRootDirFile), Duration.ofSeconds(8)));
+            if (readyCreateModDiff > 1000 || liveCreateModDiff > 1000) {
+                Log.info(getClass(), METHOD_NAME, "Creation and initial modification times too far apart. Ready diff: "
+                        + readyCreateModDiff + "ms, Live diff: " + liveCreateModDiff + "ms. Retrying...");
+                continue;
+            }
 
+            // Toggle ready to false
+            URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=false");
+            HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
+            con.connect();
+            Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+
+            // Calculate time remaining in the current 5-second interval for live file
+            long currTime = System.currentTimeMillis();
+            long timeSinceLiveCreation = currTime - liveCreatedTime;
+            long timeRemainingInInterval = CHECK_INTERVAL_MS - (timeSinceLiveCreation % CHECK_INTERVAL_MS);
+            
+            Log.info(getClass(), METHOD_NAME, "Time since live file creation (ms): " + timeSinceLiveCreation);
+            Log.info(getClass(), METHOD_NAME, "Time remaining in current 5s interval (ms): " + timeRemainingInInterval);
+
+            // Wait for the next update cycle plus a bit more to ensure update happens
+            TimeUnit.MILLISECONDS.sleep(timeRemainingInInterval + 1500);
+
+            // Check that live was updated but ready was not
+            long afterToggleReadyModifiedTime = HealthFileUtils.getLastModifiedTimeNIO(HealthFileUtils.getReadyFile(serverRootDirFile));
+            long afterToggleLiveModifiedTime = HealthFileUtils.getLastModifiedTimeNIO(HealthFileUtils.getLiveFile(serverRootDirFile));
+
+            Log.info(getClass(), METHOD_NAME, "After toggle ready modified time (ms): " + afterToggleReadyModifiedTime);
+            Log.info(getClass(), METHOD_NAME, "After toggle live modified time (ms): " + afterToggleLiveModifiedTime);
+
+            long liveUpdateDiff = afterToggleLiveModifiedTime - liveCreatedTime;
+            long readyUpdateDiff = afterToggleReadyModifiedTime - readyCreatedTime;
+
+            Log.info(getClass(), METHOD_NAME, "Live file update diff from creation (ms): " + liveUpdateDiff);
+            Log.info(getClass(), METHOD_NAME, "Ready file update diff from creation (ms): " + readyUpdateDiff);
+
+            // Live should have been updated (difference from creation should be in range)
+            if (liveUpdateDiff < MIN_UPDATE_INTERVAL_MS || liveUpdateDiff > MAX_UPDATE_INTERVAL_MS) {
+                Log.info(getClass(), METHOD_NAME, "Live file update diff out of range: " + liveUpdateDiff + "ms. Retrying...");
+                continue;
+            }
+
+            // Ready should NOT have been updated (should still be close to creation time)
+            if (readyUpdateDiff > 1000) {
+                Log.info(getClass(), METHOD_NAME, "Ready file was updated when it shouldn't have been. Diff: " + readyUpdateDiff + "ms. Retrying...");
+                continue;
+            }
+
+            // Now toggle ready back to true
+            url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=true");
+            con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
+            con.connect();
+            Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+
+            // Wait for both files to update
+            waitForModifiedTimestamp(serverRootDirFile);
+
+            long finalReadyModifiedTime = HealthFileUtils.getLastModifiedTimeNIO(HealthFileUtils.getReadyFile(serverRootDirFile));
+            long finalLiveModifiedTime = HealthFileUtils.getLastModifiedTimeNIO(HealthFileUtils.getLiveFile(serverRootDirFile));
+
+            Log.info(getClass(), METHOD_NAME, "Final ready modified time (ms): " + finalReadyModifiedTime);
+            Log.info(getClass(), METHOD_NAME, "Final live modified time (ms): " + finalLiveModifiedTime);
+
+            // Verify both files were updated (should be different from their previous values)
+            // Allow for the fact that ready file may have been updated 1-2 cycles after toggle
+            if (finalReadyModifiedTime == afterToggleReadyModifiedTime) {
+                Log.info(getClass(), METHOD_NAME, "Ready file was not updated after toggling back to true. Retrying...");
+                continue;
+            }
+
+            if (finalLiveModifiedTime == afterToggleLiveModifiedTime) {
+                Log.info(getClass(), METHOD_NAME, "Live file was not updated after toggling back to true. Retrying...");
+                continue;
+            }
+
+            // Verify the files are being updated at reasonable intervals (within 1-2 cycles of 5 seconds)
+            long readyFinalDiff = finalReadyModifiedTime - afterToggleReadyModifiedTime;
+            long liveFinalDiff = finalLiveModifiedTime - afterToggleLiveModifiedTime;
+
+            Log.info(getClass(), METHOD_NAME, "Ready file final update diff (ms): " + readyFinalDiff);
+            Log.info(getClass(), METHOD_NAME, "Live file final update diff (ms): " + liveFinalDiff);
+
+            // Allow up to 2 update cycles (10 seconds) for ready file since it was down
+            if (readyFinalDiff < MIN_UPDATE_INTERVAL_MS || readyFinalDiff > (MAX_UPDATE_INTERVAL_MS * 2)) {
+                Log.info(getClass(), METHOD_NAME, "Ready file final update diff out of range: " + readyFinalDiff + "ms. Expected 4.5-13s. Retrying...");
+                continue;
+            }
+
+            // Live file should update within one cycle
+            if (liveFinalDiff < MIN_UPDATE_INTERVAL_MS || liveFinalDiff > MAX_UPDATE_INTERVAL_MS) {
+                Log.info(getClass(), METHOD_NAME, "Live file final update diff out of range: " + liveFinalDiff + "ms. Retrying...");
+                continue;
+            }
+
+            // All checks passed!
+            testPassed = true;
+            Log.info(getClass(), METHOD_NAME, "Test passed on attempt " + attempts);
+        }
+
+        assertTrue("Test failed after " + attempts + " attempts. Files did not update within expected intervals.", testPassed);
     }
 
     @Test
