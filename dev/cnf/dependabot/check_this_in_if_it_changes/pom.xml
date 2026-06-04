@@ -3459,7 +3459,7 @@
     <dependency>
       <groupId>org.eclipse.parsson</groupId>
       <artifactId>parsson</artifactId>
-      <version>1.1.7</version>
+      <version>1.1.9</version>
     </dependency>
     <dependency>
       <groupId>org.eclipse.persistence</groupId>
@@ -5314,17 +5314,17 @@
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>jakarta.json</artifactId>
-      <version>2.0.2.ibm</version>
+      <version>2.0.3.ibm</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
-      <version>1.0.5.ibm</version>
+      <version>1.0.6.ibm</version>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
-      <version>1.1.5.ibm</version>
+      <version>1.1.6.ibm</version>
     </dependency>
     <dependency>
       <groupId>com.fasterxml</groupId>
