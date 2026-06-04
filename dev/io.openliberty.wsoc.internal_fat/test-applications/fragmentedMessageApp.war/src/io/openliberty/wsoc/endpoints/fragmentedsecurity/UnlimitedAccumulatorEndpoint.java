@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2026 IBM Corporation and others.
+ * Copyright 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,10 +9,7 @@
  *******************************************************************************/
 package io.openliberty.wsoc.endpoints.fragmentedsecurity;
 
-import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.logging.Logger;
 
 import javax.websocket.OnError;
@@ -30,9 +27,6 @@ public class UnlimitedAccumulatorEndpoint {
     
     private static final Logger LOG = Logger.getLogger(UnlimitedAccumulatorEndpoint.class.getName());
     
-    // Thread-safe: Each session gets its own list
-    private static final String FRAGMENTS_KEY = "fragments";
-    private static final String TOTAL_SIZE_KEY = "totalSize";
     private int  totalSize = 0;
     @OnOpen
     public void onOpen(Session session) {

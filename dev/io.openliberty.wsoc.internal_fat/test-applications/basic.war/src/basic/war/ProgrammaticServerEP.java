@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2026 IBM Corporation and others.
+ * Copyright 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -645,8 +645,8 @@ public abstract class ProgrammaticServerEP extends Endpoint {
                         int maxBinarySize = ses.getMaxBinaryMessageBufferSize();
 
                         try {
-                            ret = ret + "Default, sesion.Text, session.Binary sizes: " + 32768 + " , " + maxTextSize + " , " + maxBinarySize;
-                            if (maxTextSize != 32768 || maxBinarySize != 32768) {
+                            ret = ret + "Default, sesion.Text, session.Binary sizes: " + 65536 + " , " + maxTextSize + " , " + maxBinarySize;
+                            if (maxTextSize != 65536 || maxBinarySize != 65536) {
                                 ret = ret + " " + Constants.FAILED;
                                 ses.getBasicRemote().sendText(ret);
                             } else {

@@ -408,7 +408,7 @@ public class FragmentedMessageTest {
      * Expected: Connection closed when cumulative size exceeds limit
      * Uses unique size: 1,111 bytes per frame
      */
-    @Test //-- CURRENTLY FAILING! NOW WORKING!
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testManySmallFragmentsRejected() throws Exception {
         LOG.info("Starting testManySmallFragmentsRejected");

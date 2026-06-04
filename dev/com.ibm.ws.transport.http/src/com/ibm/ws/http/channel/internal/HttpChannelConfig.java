@@ -854,7 +854,7 @@ public class HttpChannelConfig {
 
     }
 
-    public long getWebSocketBufferSize() {
+    public int getWebSocketBufferSize() {
         return this.websocketBufferSize;
     }
 
