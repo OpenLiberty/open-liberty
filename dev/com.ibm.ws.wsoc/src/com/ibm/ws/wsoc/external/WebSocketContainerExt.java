@@ -41,8 +41,8 @@ public class WebSocketContainerExt implements WebSocketContainer {
 
     // No spec defined limits, but we need to have some limits to prevent OOM errors.
     // Default buffer size for processing binary messages, can be overridden by user/app
-    int defaultMaxBinaryMessageBufferSize = 32 * 1024;  // default is actually set by HttpChannelConfig
-    int defaultMaxTextMessageBufferSize = 32 * 1024;  // default is actually set by HttpChannelConfig
+    int defaultMaxBinaryMessageBufferSize = 64 * 1024;  // default is actually set by HttpChannelConfig
+    int defaultMaxTextMessageBufferSize = 64 * 1024;  // default is actually set by HttpChannelConfig
     private boolean defaultMaxBinaryMessageBufferSizeSetByUser = false;
     private boolean defaultMaxTextMessageBufferSizeSetByUser = false;
 

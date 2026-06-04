@@ -67,7 +67,7 @@ public class HttpChannelConfig {
     private int incomingHdrBuffSize = 8192;
     /** Size of buffers to use while reading incoming bodies. */
     private int incomingBodyBuffSize = 32768;
-    private int websocketBufferSize = 32768;
+    private int websocketBufferSize = 65536;
     /** Time to wait for additional requests on a socket (milliseconds). */
     private int persistTimeout = 30000;
     /** Time to wait for a read to complete (milliseconds). */

@@ -145,7 +145,7 @@ public class FragmentedMessageTest {
     
     /**
      * Test DefaultEndpoint with many small frames.
-     * Sends 9 frames × 3KB = 27KB (well within 32KB limit)
+     * Sends 9 frames × 3KB = 27KB (well within 64KB limit)
      */
     @Test
     public void testDefaultEndpoint_ManySmallFrames_WithinLimit() throws Exception {
@@ -158,10 +158,10 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to DefaultEndpoint");
             
-            // DefaultBufferDefaultMaxEndpoint: 32KB buffer, -1 maxMessageSize → 32KB effective limit
+            // DefaultBufferDefaultMaxEndpoint: 64KB buffer, -1 maxMessageSize → 64KB effective limit
             // Account for WebSocket frame overhead (~6-14 bytes per frame)
             int frameCount = 9;
-            int frameSize = 2 * 1024; // 2KB per frame = 18KB total (well within 32KB with overhead)
+            int frameSize = 2 * 1024; // 2KB per frame = 18KB total (well within 64KB with overhead)
             int expectedTotalBytes = frameCount * frameSize;
             byte[] payload = new byte[frameSize];
             
@@ -581,12 +581,12 @@ public class FragmentedMessageTest {
     }
     
     // ========================================
-    // Tests for DefaultEndpoint (32KB buffer, unlimited maxMessageSize)
+    // Tests for DefaultEndpoint (64KB buffer, unlimited maxMessageSize)
     // ========================================
     
     /**
-     * Test DefaultEndpoint with few large frames within 32KB limit.
-     * Sends 3 frames of 8KB each = 24KB total (within 32KB buffer limit)
+     * Test DefaultEndpoint with few large frames within 64KB limit.
+     * Sends 3 frames of 8KB each = 24KB total (within 64KB buffer limit)
      */
     @Test
     public void testDefaultEndpoint_FewLargeFrames_WithinLimit() throws Exception {
@@ -600,8 +600,8 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to DefaultEndpoint");
             
-            // DefaultBufferDefaultMaxEndpoint: 32KB buffer, -1 maxMessageSize → 32KB effective limit
-            // Send 3 frames × 8KB = 24KB (well within 32KB limit)
+            // DefaultBufferDefaultMaxEndpoint: 64KB buffer, -1 maxMessageSize → 64KB effective limit
+            // Send 3 frames × 8KB = 24KB (well within 64KB limit)
             int frameCount = 3;
             int frameSize = 8 * 1024; // 8KB per frame = 24KB total
             int expectedTotalBytes = frameCount * frameSize;
@@ -648,8 +648,8 @@ public class FragmentedMessageTest {
     }
     
     /**
-     * Test DefaultEndpoint with few large frames exceeding 32KB limit.
-     * Sends 5 frames of 10KB each = 50KB total (exceeds 32KB buffer limit)
+     * Test DefaultEndpoint with few large frames exceeding 64KB limit.
+     * Sends 10 frames of 10KB each = 100KB total (exceeds 64KB buffer limit)
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
@@ -663,8 +663,8 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to DefaultEndpoint");
             
-            int frameCount = 5;
-            int frameSize = 10 * 1024; // 10KB per frame = 50KB total
+            int frameCount = 10;
+            int frameSize = 10 * 1024; // 10KB per frame = 100KB total
             byte[] payload = new byte[frameSize];
             
             client.sendFirstFragment(payload);
@@ -681,7 +681,7 @@ public class FragmentedMessageTest {
             
             if (client.isConnected()) {
                 client.sendFinalFragment(payload);
-                LOG.info("Sent final fragment (10KB), total: 50KB");
+                LOG.info("Sent final fragment (10KB), total: 100KB");
             }
             
             LOG.info("testDefaultEndpoint_FewLargeFrames_ExceedsLimit PASSED");
@@ -698,8 +698,8 @@ public class FragmentedMessageTest {
     }
     
     /**
-     * Test DefaultEndpoint with many small frames exceeding 32KB limit.
-     * Sends 100 frames of 500 bytes each = 50KB total (exceeds 32KB buffer limit)
+     * Test DefaultEndpoint with many small frames exceeding 64KB limit.
+     * Sends 200 frames of 500 bytes each = 100KB total (exceeds 64KB buffer limit)
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
@@ -713,8 +713,8 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to DefaultEndpoint");
             
-            int frameCount = 100;
-            int frameSize = 500; // 500 bytes per frame = 50KB total
+            int frameCount = 200;
+            int frameSize = 500; // 500 bytes per frame = 100KB total
             int sentFrames = 0;
             byte[] payload = new byte[frameSize];
             
@@ -753,13 +753,13 @@ public class FragmentedMessageTest {
     }
     
     // ========================================
-    // Tests for LimitedBufferDefaultMaxEndpoint (32KB buffer, 1MB maxMessageSize)
+    // Tests for LimitedBufferDefaultMaxEndpoint (64KB buffer, 1MB maxMessageSize)
     // ========================================
     
     /**
-     * Test LimitedBufferDefaultMaxEndpoint with few large frames within 32KB buffer limit.
-     * Sends 3 frames of 10KB each = 30KB total (within 32KB buffer limit)
-     * Note: maxMessageSize is 1MB but buffer is only 32KB, so buffer is the bottleneck
+     * Test LimitedBufferDefaultMaxEndpoint with few large frames within 64KB buffer limit.
+     * Sends 6 frames of 10KB each = 60KB total (within 64KB buffer limit)
+     * Note: maxMessageSize is 1MB but buffer is only 64KB, so buffer is the bottleneck
      */
     @Test
     public void testLimitedBufferDefaultMax_FewLargeFrames_WithinLimit() throws Exception {
@@ -772,8 +772,8 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to LimitedBufferDefaultMaxEndpoint");
             
-            int frameCount = 3;
-            int frameSize = 10 * 1024; // 10KB per frame = 30KB total
+            int frameCount = 6;
+            int frameSize = 10 * 1024; // 10KB per frame = 60KB total
             byte[] payload = new byte[frameSize];
             
             client.sendFirstFragment(payload);
@@ -783,7 +783,7 @@ public class FragmentedMessageTest {
             }
             
             client.sendFinalFragment(payload);
-            LOG.info("Sent 3 frames of 10KB each, total: 30KB");
+            LOG.info("Sent 6 frames of 10KB each, total: 60KB");
             
             // Should receive echo
             byte[] response = client.readFrame();
@@ -808,7 +808,7 @@ public class FragmentedMessageTest {
     /**
      * Test DefaultBufferMB1MaxEndpoint with few large frames exceeding 1MB maxMessageSize limit.
      * Sends 350 frames of 3KB each = 1050KB total (exceeds 1MB maxMessageSize limit)
-     * Endpoint: 32KB buffer, 1MB maxMessageSize → effective limit = max(32KB, 1MB) = 1MB
+     * Endpoint: 64KB buffer, 1MB maxMessageSize → effective limit = max(64KB, 1MB) = 1MB
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
@@ -860,7 +860,7 @@ public class FragmentedMessageTest {
     /**
      * Test DefaultBufferMB1MaxEndpoint with many small frames within 1MB maxMessageSize limit.
      * Sends 30 frames of 1KB each = 30KB total (within 1MB limit)
-     * Endpoint: 32KB buffer, 1MB maxMessageSize → effective limit = max(32KB, 1MB) = 1MB
+     * Endpoint: 64KB buffer, 1MB maxMessageSize → effective limit = max(64KB, 1MB) = 1MB
      */
     @Test
     public void testLimitedBufferDefaultMax_ManySmallFrames_WithinLimit() throws Exception {
@@ -911,7 +911,7 @@ public class FragmentedMessageTest {
     /**
      * Test DefaultBufferMB1MaxEndpoint with many small frames exceeding 1MB maxMessageSize limit.
      * Sends 4000 frames of 300 bytes each = 1200KB total (exceeds 1MB maxMessageSize limit)
-     * Endpoint: 32KB buffer, 1MB maxMessageSize → effective limit = max(32KB, 1MB) = 1MB
+     * Endpoint: 64KB buffer, 1MB maxMessageSize → effective limit = max(64KB, 1MB) = 1MB
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
@@ -965,13 +965,13 @@ public class FragmentedMessageTest {
     }
     
     // ========================================
-    // Tests for DefaultBufferMb1MaxEndpoint (32KB buffer, 1MB maxMessageSize)
+    // Tests for DefaultBufferMb1MaxEndpoint (64KB buffer, 1MB maxMessageSize)
     // ========================================
     
     /**
-     * Test DefaultBufferMb1MaxEndpoint with few large frames within 32KB buffer limit.
-     * Sends 3 frames of 10KB each = 30KB total (within 1MB maxMessageSize limit)
-     * Note: Effective limit is max(32KB buffer, 1MB maxMessageSize) = 1MB
+     * Test DefaultBufferMb1MaxEndpoint with few large frames within 64KB buffer limit.
+     * Sends 6 frames of 10KB each = 60KB total (within 1MB maxMessageSize limit)
+     * Note: Effective limit is max(64KB buffer, 1MB maxMessageSize) = 1MB
      */
     @Test
     public void testDefaultBufferMb1Max_FewLargeFrames_WithinLimit() throws Exception {
@@ -984,8 +984,8 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to DefaultBufferMb1MaxEndpoint");
             
-            int frameCount = 3;
-            int frameSize = 10 * 1024; // 10KB per frame = 30KB total
+            int frameCount = 6;
+            int frameSize = 10 * 1024; // 10KB per frame = 60KB total
             byte[] payload = new byte[frameSize];
             
             client.sendFirstFragment(payload);
@@ -995,7 +995,7 @@ public class FragmentedMessageTest {
             }
             
             client.sendFinalFragment(payload);
-            LOG.info("Sent 3 frames of 10KB each, total: 30KB");
+            LOG.info("Sent 6 frames of 10KB each, total: 60KB");
             
             // Should receive echo
             byte[] response = client.readFrame();
@@ -1020,7 +1020,7 @@ public class FragmentedMessageTest {
     /**
      * Test DefaultBufferMb1MaxEndpoint with many frames exceeding 1MB maxMessageSize limit.
      * Sends 350 frames of 3KB each = 1050KB total (exceeds 1MB maxMessageSize limit)
-     * Note: Buffer is 32KB but maxMessageSize is 1MB, so effective limit is max(32KB, 1MB) = 1MB
+     * Note: Buffer is 64KB but maxMessageSize is 1MB, so effective limit is max(64KB, 1MB) = 1MB
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
@@ -1071,8 +1071,8 @@ public class FragmentedMessageTest {
     }
     
     /**
-     * Test DefaultBufferMb1MaxEndpoint with many small frames within 32KB buffer limit.
-     * Sends 30 frames of 1KB each = 30KB total (within 32KB buffer limit)
+     * Test DefaultBufferMb1MaxEndpoint with many small frames within 64KB buffer limit.
+     * Sends 60 frames of 1KB each = 60KB total (within 64KB buffer limit)
      */
     @Test
     public void testDefaultBufferMb1Max_ManySmallFrames_WithinLimit() throws Exception {
@@ -1085,8 +1085,8 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to DefaultBufferMb1MaxEndpoint");
             
-            int frameCount = 30;
-            int frameSize = 1024; // 1KB per frame = 30KB total
+            int frameCount = 60;
+            int frameSize = 1024; // 1KB per frame = 60KB total
             byte[] payload = new byte[frameSize];
             
             client.sendFirstFragment(payload);
@@ -1096,7 +1096,7 @@ public class FragmentedMessageTest {
             }
             
             client.sendFinalFragment(payload);
-            LOG.info("Sent 30 frames of 1KB each, total: 30KB");
+            LOG.info("Sent 60 frames of 1KB each, total: 60KB");
             
             // Should receive echo
             byte[] response = client.readFrame();
@@ -1119,8 +1119,8 @@ public class FragmentedMessageTest {
     }
     
     /**
-     * Test DefaultBufferMb1MaxEndpoint with many small frames exceeding 32KB buffer limit.
-     * Sends 200 frames of 300 bytes each = 60KB total (exceeds 32KB buffer limit)
+     * Test DefaultBufferMb1MaxEndpoint with many small frames exceeding 64KB buffer limit.
+     * Sends 300 frames of 300 bytes each = 90KB total (exceeds 64KB buffer limit)
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
@@ -1229,7 +1229,7 @@ public class FragmentedMessageTest {
     
     /**
      * Test MB1BufferDefaultMaxEndpoint with few large frames exceeding 1MB buffer limit.
-     * Sends 35 frames of 32KB each = 1.12MB total (exceeds 1MB buffer limit)
+     * Sends 18 frames of 64KB each = 1.125MB total (exceeds 1MB buffer limit)
      */
     @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
@@ -1243,8 +1243,8 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to MB1BufferDefaultMaxEndpoint");
             
-            int frameCount = 35;
-            int frameSize = 32 * 1024; // 32KB per frame = 1.12MB total
+            int frameCount = 18;
+            int frameSize = 64 * 1024; // 64KB per frame = 1.125MB total
             int sentFrames = 0;
             byte[] payload = new byte[frameSize];
             
@@ -1358,9 +1358,9 @@ public class FragmentedMessageTest {
             LOG.info("Connected to endpoint with binary-only handler");
             
             // Send TEXT frames (opcode 0x01) to binary-only endpoint
-            // DefaultBufferDefaultMaxEndpoint has 32KB buffer, so send 40KB of TEXT data to exceed it
-            int frameCount = 20;
-            int frameSize = 2 * 1024; // 2KB per frame = 40KB total (exceeds 32KB buffer)
+            // DefaultBufferDefaultMaxEndpoint has 64KB buffer, so send 80KB of TEXT data to exceed it
+            int frameCount = 40;
+            int frameSize = 2 * 1024; // 2KB per frame = 80KB total (exceeds 64KB buffer)
             byte[] payload = new byte[frameSize];
             
             // Fill with text data
@@ -1376,7 +1376,7 @@ public class FragmentedMessageTest {
             }
             
             client.sendFinalFragment(payload);
-            LOG.info("Sent " + frameCount + " TEXT frames of " + frameSize + " bytes each (40KB total) to binary-only endpoint (32KB buffer)");
+            LOG.info("Sent " + frameCount + " TEXT frames of " + frameSize + " bytes each (80KB total) to binary-only endpoint (64KB buffer)");
             
             // Connection should be closed due to message exceeding buffer size
             // even though there's no TEXT handler
@@ -1421,7 +1421,7 @@ public class FragmentedMessageTest {
             client.connect(endpoint);
             LOG.info("Connected to endpoint with binary-only handler");
             
-            // Send small TEXT message (16KB) - well within 32KB buffer
+            // Send small TEXT message (16KB) - well within 64KB buffer
             byte[] payload = new byte[16 * 1024];
             for (int i = 0; i < payload.length; i++) {
                 payload[i] = (byte) ('A' + (i % 26));
@@ -1429,7 +1429,7 @@ public class FragmentedMessageTest {
             
             // Send as single TEXT frame
             client.sendTextFrame(payload, true);
-            LOG.info("Sent 16KB TEXT frame to binary-only endpoint (32KB buffer)");
+            LOG.info("Sent 16KB TEXT frame to binary-only endpoint (64KB buffer)");
             
             // Connection should remain open (message within buffer, no OOM risk)
             // But no response expected as there's no TEXT handler
