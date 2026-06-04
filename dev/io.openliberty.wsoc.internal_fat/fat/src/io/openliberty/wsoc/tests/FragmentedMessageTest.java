@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.wsoc.tests;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -41,7 +42,6 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
-import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -58,7 +58,7 @@ import io.openliberty.wsoc.util.OnlyRunNotOnZRule;
  * @see <a href="https://jakarta.ee/specifications/websocket/2.2/">Jakarta WebSocket 2.2 Specification</a>
  */
 @RunWith(FATRunner.class)
-// @Mode(TestMode.FULL)
+@Mode(TestMode.FULL)
 public class FragmentedMessageTest {
     
     public static final String SERVER_NAME = "fragmentedMessageServer";
@@ -96,7 +96,7 @@ public class FragmentedMessageTest {
      * This is the baseline test - existing functionality that should work.
      * Uses unique size: 2,097,152 bytes (2MB)
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testSingleLargeFrameRejected() throws Exception {
         LOG.info("Starting testSingleLargeFrameRejected");
@@ -147,7 +147,7 @@ public class FragmentedMessageTest {
      * Test DefaultEndpoint with many small frames.
      * Sends 9 frames × 3KB = 27KB (well within 32KB limit)
      */
-   // @Test
+    @Test
     public void testDefaultEndpoint_ManySmallFrames_WithinLimit() throws Exception {
         LOG.info("Starting testDefaultEndpoint_ManySmallFrames_WithinLimit");
         
@@ -199,7 +199,7 @@ public class FragmentedMessageTest {
      * Test MB1BufferDefaultMaxEndpoint with many small frames within 1MB buffer limit.
      * Sends 250 frames of 3KB each = 750KB total (within 1MB buffer limit)
      */
-   // @Test
+    @Test
     public void testHighBufferDefaultMax_ManySmallFrames_WithinLimit() throws Exception {
         LOG.info("Starting testHighBufferDefaultMax_ManySmallFrames_WithinLimit");
         
@@ -260,7 +260,7 @@ public class FragmentedMessageTest {
      * Uses raw WebSocket frames to ensure proper fragmentation (JSR-356 API doesn't
      * properly support sending fragmented messages).
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testFragmentedMessageExceedingLimitRejected() throws Exception {
         LOG.info("Starting testFragmentedMessageExceedingLimitRejected");
@@ -347,7 +347,7 @@ public class FragmentedMessageTest {
      * Expected: Message accepted and echoed back
      * Uses unique size: 40,960 bytes per frame
      */
-   // @Test
+    @Test
     public void testFragmentedMessageWithinLimitAccepted() throws Exception {
         LOG.info("Starting testFragmentedMessageWithinLimitAccepted");
         
@@ -408,7 +408,7 @@ public class FragmentedMessageTest {
      * Expected: Connection closed when cumulative size exceeds limit
      * Uses unique size: 1,111 bytes per frame
      */
-   // @Test //-- CURRENTLY FAILING! NOW WORKING!
+    @Test //-- CURRENTLY FAILING! NOW WORKING!
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testManySmallFragmentsRejected() throws Exception {
         LOG.info("Starting testManySmallFragmentsRejected");
@@ -520,7 +520,7 @@ public class FragmentedMessageTest {
      *
      * This test sends 98KB which is WITHIN the 10MB buffer limit, so it should be accepted.
      */
-   // @Test
+    @Test
     public void testUnlimitedMaxMessageSizeWithinBufferLimit() throws Exception {
         LOG.info("Starting testUnlimitedMaxMessageSizeWithinBufferLimit");
         
@@ -588,7 +588,7 @@ public class FragmentedMessageTest {
      * Test DefaultEndpoint with few large frames within 32KB limit.
      * Sends 3 frames of 8KB each = 24KB total (within 32KB buffer limit)
      */
-   // @Test
+    @Test
     public void testDefaultEndpoint_FewLargeFrames_WithinLimit() throws Exception {
         LOG.info("Starting testDefaultEndpoint_FewLargeFrames_WithinLimit");
         
@@ -651,7 +651,7 @@ public class FragmentedMessageTest {
      * Test DefaultEndpoint with few large frames exceeding 32KB limit.
      * Sends 5 frames of 10KB each = 50KB total (exceeds 32KB buffer limit)
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testDefaultEndpoint_FewLargeFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testDefaultEndpoint_FewLargeFrames_ExceedsLimit");
@@ -701,7 +701,7 @@ public class FragmentedMessageTest {
      * Test DefaultEndpoint with many small frames exceeding 32KB limit.
      * Sends 100 frames of 500 bytes each = 50KB total (exceeds 32KB buffer limit)
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testDefaultEndpoint_ManySmallFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testDefaultEndpoint_ManySmallFrames_ExceedsLimit");
@@ -761,7 +761,7 @@ public class FragmentedMessageTest {
      * Sends 3 frames of 10KB each = 30KB total (within 32KB buffer limit)
      * Note: maxMessageSize is 1MB but buffer is only 32KB, so buffer is the bottleneck
      */
-   // @Test
+    @Test
     public void testLimitedBufferDefaultMax_FewLargeFrames_WithinLimit() throws Exception {
         LOG.info("Starting testLimitedBufferDefaultMax_FewLargeFrames_WithinLimit");
         
@@ -810,7 +810,7 @@ public class FragmentedMessageTest {
      * Sends 350 frames of 3KB each = 1050KB total (exceeds 1MB maxMessageSize limit)
      * Endpoint: 32KB buffer, 1MB maxMessageSize → effective limit = max(32KB, 1MB) = 1MB
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testLimitedBufferDefaultMax_FewLargeFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testLimitedBufferDefaultMax_FewLargeFrames_ExceedsLimit");
@@ -862,7 +862,7 @@ public class FragmentedMessageTest {
      * Sends 30 frames of 1KB each = 30KB total (within 1MB limit)
      * Endpoint: 32KB buffer, 1MB maxMessageSize → effective limit = max(32KB, 1MB) = 1MB
      */
-   // @Test
+    @Test
     public void testLimitedBufferDefaultMax_ManySmallFrames_WithinLimit() throws Exception {
         LOG.info("Starting testLimitedBufferDefaultMax_ManySmallFrames_WithinLimit");
         
@@ -913,7 +913,7 @@ public class FragmentedMessageTest {
      * Sends 4000 frames of 300 bytes each = 1200KB total (exceeds 1MB maxMessageSize limit)
      * Endpoint: 32KB buffer, 1MB maxMessageSize → effective limit = max(32KB, 1MB) = 1MB
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testLimitedBufferDefaultMax_ManySmallFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testLimitedBufferDefaultMax_ManySmallFrames_ExceedsLimit");
@@ -973,7 +973,7 @@ public class FragmentedMessageTest {
      * Sends 3 frames of 10KB each = 30KB total (within 1MB maxMessageSize limit)
      * Note: Effective limit is max(32KB buffer, 1MB maxMessageSize) = 1MB
      */
-   // @Test
+    @Test
     public void testDefaultBufferMb1Max_FewLargeFrames_WithinLimit() throws Exception {
         LOG.info("Starting testDefaultBufferMb1Max_FewLargeFrames_WithinLimit");
         
@@ -1022,7 +1022,7 @@ public class FragmentedMessageTest {
      * Sends 350 frames of 3KB each = 1050KB total (exceeds 1MB maxMessageSize limit)
      * Note: Buffer is 32KB but maxMessageSize is 1MB, so effective limit is max(32KB, 1MB) = 1MB
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testDefaultBufferMb1Max_FewLargeFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testDefaultBufferMb1Max_FewLargeFrames_ExceedsLimit");
@@ -1074,7 +1074,7 @@ public class FragmentedMessageTest {
      * Test DefaultBufferMb1MaxEndpoint with many small frames within 32KB buffer limit.
      * Sends 30 frames of 1KB each = 30KB total (within 32KB buffer limit)
      */
-   // @Test
+    @Test
     public void testDefaultBufferMb1Max_ManySmallFrames_WithinLimit() throws Exception {
         LOG.info("Starting testDefaultBufferMb1Max_ManySmallFrames_WithinLimit");
         
@@ -1122,7 +1122,7 @@ public class FragmentedMessageTest {
      * Test DefaultBufferMb1MaxEndpoint with many small frames exceeding 32KB buffer limit.
      * Sends 200 frames of 300 bytes each = 60KB total (exceeds 32KB buffer limit)
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testDefaultBufferMb1Max_ManySmallFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testDefaultBufferMb1Max_ManySmallFrames_ExceedsLimit");
@@ -1183,7 +1183,7 @@ public class FragmentedMessageTest {
      * 
      * TODO -- Maybe 10KB is low?
      */
-   // @Test
+    @Test
     public void testHighBufferDefaultMax_FewLargeFrames_WithinLimit() throws Exception {
         LOG.info("Starting testHighBufferDefaultMax_FewLargeFrames_WithinLimit");
         
@@ -1231,7 +1231,7 @@ public class FragmentedMessageTest {
      * Test MB1BufferDefaultMaxEndpoint with few large frames exceeding 1MB buffer limit.
      * Sends 35 frames of 32KB each = 1.12MB total (exceeds 1MB buffer limit)
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testHighBufferDefaultMax_FewLargeFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testHighBufferDefaultMax_FewLargeFrames_ExceedsLimit");
@@ -1286,7 +1286,7 @@ public class FragmentedMessageTest {
      * Test MB1BufferDefaultMaxEndpoint with many small frames exceeding 1MB buffer limit.
      * Sends 350 frames of 3KB each = 1.05MB total (exceeds 1MB buffer limit)
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testHighBufferDefaultMax_ManySmallFrames_ExceedsLimit() throws Exception {
         LOG.info("Starting testHighBufferDefaultMax_ManySmallFrames_ExceedsLimit");
@@ -1344,7 +1344,7 @@ public class FragmentedMessageTest {
      * Sends TEXT frames to an endpoint that only has a ByteBuffer (binary) handler.
      * The message should be rejected when it exceeds the buffer size, preventing OOM attacks.
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testMessageTypeMismatch_TextToBinaryEndpoint_ExceedsBuffer() throws Exception {
         LOG.info("Starting testMessageTypeMismatch_TextToBinaryEndpoint_ExceedsBuffer");
@@ -1410,7 +1410,7 @@ public class FragmentedMessageTest {
      * TEXT message sent to BINARY-only endpoint, but small enough to fit in buffer.
      * Should be accepted (no OOM) but will be dropped as there's no handler.
      */
-   // @Test
+    @Test
     public void testMessageTypeMismatch_TextToBinaryEndpoint_WithinBuffer() throws Exception {
         LOG.info("Starting testMessageTypeMismatch_TextToBinaryEndpoint_WithinBuffer");
         
@@ -1457,7 +1457,7 @@ public class FragmentedMessageTest {
      * Sets websocketBufferSize to 2048 bytes and verifies it's enforced by sending
      * two small frames that together exceed the limit.
      */
-   // @Test
+    @Test
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testDynamicWebSocketBufferSize_SmallLimit() throws Exception {
         LOG.info("Starting testDynamicWebSocketBufferSize_SmallLimit");
@@ -1537,7 +1537,7 @@ public class FragmentedMessageTest {
      * Test that websocketBufferSize configuration is logged and applied.
      * Verifies the buffer size is picked up from httpOptions configuration.
      */
-   @Test
+    @Test
     public void testWebSocketBufferSize_ConfigurationLogged() throws Exception {
         LOG.info("Starting testWebSocketBufferSize_ConfigurationLogged");
         
@@ -1827,6 +1827,84 @@ public class FragmentedMessageTest {
         LOG.info("<<< " + testName + " - Complete");
     }
     
+    /**
+     * Test that maxMessageSize limit is enforced when sending data in fragments.
+     * SmallMaxLargeBufferEndpoint has maxMessageSize=8KB with default buffer.
+     * Send data in 2KB increments to exceed the 8KB maxMessageSize limit.
+     */
+    @Test
+    @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
+    public void testMaxMessageSizeLimitHitBeforeBufferLimit() throws Exception {
+        String testName = "testMaxMessageSizeLimitHitBeforeBufferLimit";
+        LOG.info(">>> " + testName + " - Starting");
+        
+        TestClient client = new TestClient();
+        WebSocketContainer container = ContainerProvider.getWebSocketContainer();
+        
+        // Connect to endpoint with maxMessageSize=8KB, default buffer
+        String uri = "ws://localhost:" + server.getHttpDefaultPort() +
+                     "/fragmentedMessageApp/smallMaxLargeBuffer";
+        
+        try {
+            Session session = container.connectToServer(client, new URI(uri));
+            
+            // Send data in 2KB fragments, total 10KB (exceeds maxMessageSize of 8KB)
+            int fragmentSize = 2 * 1024; // 2KB per fragment
+            int totalFragments = 5; // 5 fragments = 10KB total
+            
+            LOG.info("Sending " + totalFragments + " fragments of " + fragmentSize + " bytes each (total 10KB, exceeds maxMessageSize=8KB)");
+            
+            boolean exceptionCaught = false;
+            for (int i = 0; i < totalFragments; i++) {
+                ByteBuffer fragment = ByteBuffer.allocate(fragmentSize);
+                for (int j = 0; j < fragmentSize; j++) {
+                    fragment.put((byte) ((i * fragmentSize + j) % 256));
+                }
+                fragment.flip();
+                
+                boolean isLast = (i == totalFragments - 1);
+                LOG.info("Sending fragment " + (i + 1) + "/" + totalFragments + " (last=" + isLast + ")");
+                
+                try {
+                    session.getBasicRemote().sendBinary(fragment, isLast);
+                    // Small delay between fragments
+                    Thread.sleep(50);
+                } catch (Exception e) {
+                    LOG.info("Exception while sending fragment " + (i + 1) + ": " + e.getMessage());
+                    exceptionCaught = true;
+                    break;
+                }
+            }
+            
+            // Wait a bit for the connection to close
+            Thread.sleep(500);
+            
+            // Check if connection closed or exception was caught
+            boolean connectionClosed = client.closeLatch.await(2, TimeUnit.SECONDS);
+            
+            LOG.info("After sending fragments: connectionClosed=" + connectionClosed +
+                     ", exceptionCaught=" + exceptionCaught +
+                     ", session.isOpen=" + session.isOpen());
+            
+            // Either the connection should be closed OR an exception should have been caught
+            assertTrue("MaxMessageSize limit should be enforced (connection closed or exception caught)",
+                       connectionClosed || exceptionCaught || !session.isOpen());
+            
+            if (connectionClosed && client.closeReason != null) {
+                LOG.info("Connection closed with reason: " + client.closeReason);
+                // Verify close code 1009 (CANNOT_ACCEPT) indicates message too large
+                assertEquals("Close code should be 1009 (CANNOT_ACCEPT) for message too large",
+                           1009, client.closeReason.getCloseCode().getCode());
+            }
+            
+        } catch (Exception e) {
+            LOG.info("Exception occurred (expected): " + e.getMessage());
+            // Exception is expected when maxMessageSize is exceeded
+        }
+        
+        LOG.info("<<< " + testName + " - Complete");
+    }
+    
     
     
     /**
@@ -1837,19 +1915,19 @@ public class FragmentedMessageTest {
         public CountDownLatch closeLatch = new CountDownLatch(1);
         public CloseReason closeReason;
         
-        @OnOpen
+       @OnOpen
         public void onOpen(Session session) {
             LOG.info("Client connected");
         }
         
-        @OnClose
+       @OnClose
         public void onClose(Session session, CloseReason reason) {
             LOG.info("Client closed: " + reason);
             this.closeReason = reason;
             closeLatch.countDown();
         }
         
-        @OnError
+       @OnError
         public void onError(Session session, Throwable throwable) {
             LOG.severe("Client error: " + throwable.getMessage());
         }
@@ -1869,12 +1947,12 @@ public class FragmentedMessageTest {
         private long lastMessageTime = 0;
         private static final long MESSAGE_TIMEOUT_MS = 1000; // Wait 1000ms after last message
         
-        @OnOpen
+       @OnOpen
         public void onOpen(Session session) {
             LOG.info("Fragmented client connected");
         }
         
-        @OnMessage
+       @OnMessage
         public void onMessage(ByteBuffer message) {
             messageCount++;
             int size = message.remaining();
@@ -1935,14 +2013,14 @@ public class FragmentedMessageTest {
                     (receivedMessage != null ? receivedMessage.remaining() : 0) + " bytes");
         }
         
-        @OnClose
+       @OnClose
         public void onClose(Session session, CloseReason reason) {
             LOG.info("Fragmented client closed: " + reason);
             this.closeReason = reason;
             closeLatch.countDown();
         }
         
-        @OnError
+       @OnError
         public void onError(Session session, Throwable throwable) {
             LOG.severe("Fragmented client error: " + throwable.getMessage());
         }
@@ -1956,7 +2034,7 @@ public class FragmentedMessageTest {
         public int bufferSize = -1;
         public String bufferType = null;
         
-        @OnOpen
+       @OnOpen
         public void onOpen(Session session) {
             LOG.info("BufferSizeVerificationClient connected");
             // Request buffer size info from server
@@ -1967,7 +2045,7 @@ public class FragmentedMessageTest {
             }
         }
         
-        @OnMessage
+       @OnMessage
         public void onMessage(String message) {
             LOG.info("BufferSizeVerificationClient received: " + message);
             // Expected format: "BUFFER_SIZE:TYPE:12345"
@@ -1982,12 +2060,12 @@ public class FragmentedMessageTest {
             }
         }
         
-        @OnClose
+       @OnClose
         public void onClose(Session session, CloseReason reason) {
             LOG.info("BufferSizeVerificationClient closed: " + reason);
         }
         
-        @OnError
+       @OnError
         public void onError(Session session, Throwable throwable) {
             LOG.severe("BufferSizeVerificationClient error: " + throwable.getMessage());
         }
@@ -2003,7 +2081,7 @@ public class FragmentedMessageTest {
         public int binaryBufferSize = -1;
         public int textBufferSize = -1;
         
-        @OnOpen
+       @OnOpen
         public void onOpen(Session session) {
             LOG.info("DualBufferSizeVerificationClient connected");
             // Request buffer size info from server
@@ -2014,7 +2092,7 @@ public class FragmentedMessageTest {
             }
         }
         
-        @OnMessage
+       @OnMessage
         public void onMessage(String message) {
             LOG.info("DualBufferSizeVerificationClient received: " + message);
             // Expected format: "BUFFER_SIZE:BINARY:12345:TEXT:67890"
@@ -2034,12 +2112,12 @@ public class FragmentedMessageTest {
             }
         }
         
-        @OnClose
+       @OnClose
         public void onClose(Session session, CloseReason reason) {
             LOG.info("DualBufferSizeVerificationClient closed: " + reason);
         }
         
-        @OnError
+       @OnError
         public void onError(Session session, Throwable throwable) {
             LOG.severe("DualBufferSizeVerificationClient error: " + throwable.getMessage());
         }
