@@ -12,6 +12,8 @@
  *******************************************************************************/
 package test.jakarta.data.v1_1;
 
+import java.util.Optional;
+
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -26,6 +28,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
@@ -49,9 +52,12 @@ public class Data_1_1_Test extends FATServletClient {
                                    "J2CA0027E.*" // query timeout
                     };
 
+    private static final H2Database h2Database = //
+                    H2Database.create("dbuser1", "dbpwd1").withDatabaseName("testdb");
+
     @ClassRule
     public static final JdbcDatabaseContainer<?> testContainer = //
-                    DatabaseContainerFactory.createLatest();
+                    DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.1.1")
     @TestServlets({ @TestServlet(servlet = Data_1_1_Servlet.class,

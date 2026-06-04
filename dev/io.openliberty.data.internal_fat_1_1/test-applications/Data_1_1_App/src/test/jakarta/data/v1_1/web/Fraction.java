@@ -69,7 +69,7 @@ public class Fraction {
 
     @Embeddable
     public static record Decimal(
-                    @Column(nullable = false, table = "Fraction") //
+                    @Column(name = "VAL", nullable = false, table = "Fraction") //
                     double value,
 
                     @Column(nullable = false, table = "Fraction") //

@@ -33,19 +33,15 @@
   <!-- For all other repositories: -->
   <dataSource id="DefaultDataSource" fat.modify="true">
     <jdbcDriver libraryRef="JDBCLibrary"/>
-    <properties.derby.embedded createDatabase="create" databaseName="memory:testdb"
-                               user="dbuser1" password="dbpwd1"/>
+    <properties.h2 URL="${env.DB_URL}" user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
   <library id="JDBCLibrary">
-    <fileset dir="${shared.resource.dir}/jdbcJava17Plus" includes="${env.DB_DRIVER}"/>
+    <fileset dir="${shared.resource.dir}/h2" includes="*.jar"/>
   </library>
 
   <library id="HibernatePersistence">
     <fileset dir="${shared.resource.dir}/jpa32_hibernate_orm" includes="*.jar"/>
   </library>
-
-  <javaPermission codeBase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
-  <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 
 </server>
