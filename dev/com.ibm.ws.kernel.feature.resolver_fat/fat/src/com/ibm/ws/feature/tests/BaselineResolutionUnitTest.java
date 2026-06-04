@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.feature.tests;
 
@@ -257,11 +254,6 @@ public class BaselineResolutionUnitTest {
                 skipReason = "No platform";
             } else if (platform.startsWith("microProfile-")) {
                 skipReason = "Platform [ " + platform + " ] (microprofile case)";
-            } else if (platform.equals("jakartaee-11.0")) {
-                // TODO: This should test the feature kind (ga/beta).
-                // That's not available in the feature definition.
-                skipReason = "Platform [ " + platform + " ] (EE11 case)";
-
             } else {
                 ProvisioningFeatureDefinition versionlessDef = getFeatureDef(shortBaseName);
                 if (versionlessDef == null) {
@@ -479,7 +471,7 @@ public class BaselineResolutionUnitTest {
     public Result resolveFeatures(VerifyCase verifyCase, List<String> rootErrors) throws Exception {
         setEnvironment(verifyCase);
 
-        try{
+        try {
             return resolver.resolve(RepositoryUtil.getRepository(),
                                     RepositoryUtil.ignoreFeatures("Kernel", verifyCase.input.kernel),
                                     verifyCase.input.roots,
@@ -492,7 +484,7 @@ public class BaselineResolutionUnitTest {
         }
     }
 
-    protected void clearEnviornment(){
+    protected void clearEnviornment() {
         FeatureResolverImpl.setPreferredPlatforms(null);
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -691,7 +691,8 @@ public class RepositoryUtil {
      */
     public static boolean isJDBCVersionlessException(String symName, String platform) {
         return ((symName.equals("com.ibm.websphere.appserver.jdbc-4.3") && platform.equals("jakartaee-11.0")) ||
-                (symName.equals("io.openliberty.persistence-3.2") && platform.equals("jakartaee-11.0")));
+                (symName.equals("io.openliberty.persistence-3.2") && platform.equals("jakartaee-11.0")) ||
+                (symName.equals("io.openliberty.persistenceContainer-3.2") && platform.equals("jakartaee-11.0")));
     }
 
     // Use this to decide whether to run in WAS liberty mode or in open liberty
