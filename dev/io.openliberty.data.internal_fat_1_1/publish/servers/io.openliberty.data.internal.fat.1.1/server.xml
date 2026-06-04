@@ -30,7 +30,7 @@
 
   <dataSource id="MyDataStore" fat.modify="true">
     <jdbcDriver libraryRef="JDBCLibrary"/>
-    <!-- TODO remove MODE=LEGACY once EclipseLink fixes bug ???
+    <!-- TODO remove MODE=LEGACY once EclipseLink fixes bug #35022
          where it tries to compare a boolean attribute to an integer -->
     <properties.h2 URL="${env.DB_URL};MODE=LEGACY" user="dbuser1" password="dbpwd1"/>
   </dataSource>
