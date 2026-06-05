@@ -156,7 +156,7 @@ public class SIPNonInviteServerTransactionImpl
 		}
 		catch( SIPTransportException exp )
 		{
-			prossesTransportError();								 					  					
+			processTransportError();
 		}
 	}
 	
@@ -208,7 +208,7 @@ public class SIPNonInviteServerTransactionImpl
 		}
 		catch( SIPTransportException exp )
 		{
-			prossesTransportError();								 					  	
+			processTransportError();
 		}
 	}
 	
@@ -238,7 +238,7 @@ public class SIPNonInviteServerTransactionImpl
 	/**
 	*  process transport error
 	*/	
-	public synchronized void prossesTransportError()
+	public synchronized void processTransportError()
 	{
 		//move the dialog to terminated state and notify the UA
 		Response lastResponcse =null;

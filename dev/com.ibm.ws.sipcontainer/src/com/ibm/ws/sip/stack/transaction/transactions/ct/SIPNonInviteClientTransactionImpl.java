@@ -108,7 +108,7 @@ public class SIPNonInviteClientTransactionImpl
 		}
 		catch( SIPTransportException exp )
 		{
-			prossesTransportError();
+			processTransportError();
 		}
 											 					  			
 	}
@@ -163,7 +163,7 @@ public class SIPNonInviteClientTransactionImpl
 	/**
 	 *  process transport error
 	 */	
-	public synchronized void prossesTransportError()
+	public synchronized void processTransportError()
 	{
 		notifyRequestErrorToUA( getFirstRequest());
 		destroyTransaction();	

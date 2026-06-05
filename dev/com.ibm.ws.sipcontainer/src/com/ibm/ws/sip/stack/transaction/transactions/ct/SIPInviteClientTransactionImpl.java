@@ -189,7 +189,7 @@ public class SIPInviteClientTransactionImpl
                     c_logger.traceDebug(this, "processRequest", 
                                         "Exception in transport exception", exp);
                 }
-			    prossesTransportError();											 					  			
+			    processTransportError();
 			}
 	}
 
@@ -461,7 +461,7 @@ public class SIPInviteClientTransactionImpl
 	/**
 	 *  process transport error
 	 */	
-	public synchronized void prossesTransportError()
+	public synchronized void processTransportError()
 	{
 		destroyTransaction();
 		notifyRequestErrorToUA( getFirstRequest() );

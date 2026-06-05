@@ -1545,7 +1545,7 @@ public class TransportCommLayerMgr
 			ListeningPointImpl lpImpl = (ListeningPointImpl)listenningConnection.getListeningPoint();
 			
 			//forward to the stack
-			SIPTransactionStack.instance().prossesTransportSipMessage( msg , lpImpl.getProvider() , connection );
+			SIPTransactionStack.instance().processTransportSipMessage( msg , lpImpl.getProvider() , connection );
 		}
 		catch (Exception e) {
 			// catch generic exceptions to keep this thread running
@@ -1993,7 +1993,7 @@ public class TransportCommLayerMgr
 					msg.getMsg().removeHeader(SipStackUtil.DESTINATION_URI, true);
 					//forward to the stack			
 					try {
-						SIPTransactionStack.instance().prossesTransportSipMessage( msg.getMsg() , msg.getProvider() , msg.getConnection() );
+						SIPTransactionStack.instance().processTransportSipMessage( msg.getMsg() , msg.getProvider() , msg.getConnection() );
 					}
 					catch (Exception e) {
 						if (c_logger.isTraceDebugEnabled()) {

@@ -213,7 +213,7 @@ public class SIPInviteServerTransactionImpl
 		}
 		catch( SIPTransportException exp )
 		{
-			prossesTransportError();								 					  			
+			processTransportError();
 		}
 	}
 	
@@ -259,14 +259,14 @@ public class SIPInviteServerTransactionImpl
 		}
 		catch( SIPTransportException exp )
 		{
-			prossesTransportError();
+			processTransportError();
 		}									 					  
 	}
 		
 	/**
 	 *  process transport error
 	 */	
-	public synchronized void prossesTransportError()
+	public synchronized void processTransportError()
 	{		
 		notifyRespnseErrorToUA(getMostRecentResponse());				
 		destroyTransaction();
