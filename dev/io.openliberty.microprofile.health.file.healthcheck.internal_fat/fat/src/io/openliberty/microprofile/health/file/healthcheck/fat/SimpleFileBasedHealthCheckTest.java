@@ -41,7 +41,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.HttpUtils;
 import componenttest.topology.utils.HttpUtils.HTTPRequestMethod;
 import io.openliberty.microprofile.health.file.healthcheck.fat.utils.Constants;
-import io.openliberty.microprofile.health.file.healthcheck.fat.utils.HealthFileUtils;
+import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
 
 /**
@@ -410,8 +410,12 @@ public class SimpleFileBasedHealthCheckTest {
             // Toggle ready to false
             URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=false");
             HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-            con.connect();
-            Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+            try {
+                con.connect();
+                Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+            } finally {
+                con.disconnect();
+            }
 
             // Calculate time remaining in the current 5-second interval for live file
             long currTime = System.currentTimeMillis();
@@ -452,8 +456,12 @@ public class SimpleFileBasedHealthCheckTest {
             // Now toggle ready back to true
             url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?ready=true");
             con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-            con.connect();
-            Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+            try {
+                con.connect();
+                Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+            } finally {
+                con.disconnect();
+            }
 
             // Wait for both files to update
             waitForModifiedTimestamp(serverRootDirFile);
@@ -548,8 +556,12 @@ public class SimpleFileBasedHealthCheckTest {
 
         URL url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?live=false");
         HttpURLConnection con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-        con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+        try {
+            con.connect();
+            Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+        } finally {
+            con.disconnect();
+        }
 
         TimeUnit.SECONDS.sleep(10);
 
@@ -568,8 +580,12 @@ public class SimpleFileBasedHealthCheckTest {
 
         url = HttpUtils.createURL(server, "/" + TOGGLE_APP + "/HealthAppServlet?live=true");
         con = HttpUtils.getHttpConnection(url, HttpUtils.DEFAULT_TIMEOUT, HTTPRequestMethod.GET);
-        con.connect();
-        Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+        try {
+            con.connect();
+            Assert.assertTrue("200 Response code expected", con.getResponseCode() == 200);
+        } finally {
+            con.disconnect();
+        }
 
         waitForModifiedTimestamp(serverRootDirFile);
         
