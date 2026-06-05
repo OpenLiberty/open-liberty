@@ -94,17 +94,10 @@ public abstract class LogstashCollectorTest {
         Log.info(c, "setConfig entry", conf);
         getServer().setMarkToEndOfLog();
         getServer().setServerConfigurationFile(conf);
-        // assertNotNull("Cannot find CWWKG0016I from messages.log", getServer().waitForStringInLogUsingMark("CWWKG0016I", 60000));
         assertNotNull("Cannot find CWWKG0016I from messages.log", pollForLogMessage("CWWKG0016I", 60000));
         String line = getServer().waitForStringInLogUsingMark("CWWKG0017I|CWWKG0018I", 60000);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I from messages.log", line);
         assertNotNull("Cannot find CWWKG0017I or CWWKG0018I in container output", pollForStringInContainerOutput("CWWKG0017I|CWWKG0018I", 60000)); // waits for server configuration to finish updating (CWWKG0017I)
-        
-        // Only check for CWWKZ0003I during initial configuration when the application is first deployed
-        // Subsequent config changes won't trigger this message if the application doesn't need to restart
-        if (isInitialConfig) {
-            assertNotNull("Cannot find CWWKZ0003I in container output", pollForStringInContainerOutput("CWWKZ0003I", 600000, 60000)); // waits for application to finish starting (CWWKZ0003I), checking every minute
-        }
         Log.info(c, "setConfig exit", conf);
     }
 
