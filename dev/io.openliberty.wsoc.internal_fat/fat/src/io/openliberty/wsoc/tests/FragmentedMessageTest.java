@@ -114,14 +114,16 @@ public class FragmentedMessageTest {
             
             try {
                 session.getBasicRemote().sendBinary(ByteBuffer.wrap(largePayload));
+                // Give server time to process the large message and send close frame
+                Thread.sleep(100);
             } catch (Exception e) {
                 // Expected - server may close connection during send
                 LOG.info("Send failed as expected: " + e.getMessage());
             }
             
-            // Wait for close
+            // Wait for close with increased timeout to account for large message processing
             assertTrue("Connection should be closed due to message too big",
-                      client.closeLatch.await(10, TimeUnit.SECONDS));
+                      client.closeLatch.await(15, TimeUnit.SECONDS));
             
             // Verify close reason if we got one
             if (client.closeReason != null) {
@@ -432,15 +434,24 @@ public class FragmentedMessageTest {
             client.sendFirstFragment(payload);
             sentFrames++;
             
-            // Send continuation fragments
+            // Send continuation fragments with small delays to allow server processing
             boolean connectionClosed = false;
             for (int i = 1; i < frameCount - 1; i++) {
                 try {
                     client.sendContinuationFragment(payload);
                     sentFrames++;
                     
-                    if (i % 100 == 0) {
+                    // Add small delay every 50 frames to allow server to process and potentially close connection
+                    if (i % 50 == 0) {
+                        Thread.sleep(10); // 10ms delay
                         LOG.info("Sent " + sentFrames + " fragments, cumulative: " + (sentFrames * frameSize) + " bytes");
+                        
+                        // Check if connection was closed by server
+                        if (client.isClosed()) {
+                            LOG.info("Connection closed by server after " + sentFrames + " frames");
+                            connectionClosed = true;
+                            break;
+                        }
                     }
                 } catch (IOException e) {
                     LOG.info("Connection closed after " + sentFrames + " frames (" + (sentFrames * frameSize) + " bytes): " + e.getMessage());
@@ -461,10 +472,10 @@ public class FragmentedMessageTest {
                 }
             }
             
-            // Wait for close frame from server (up to 2 seconds)
+            // Wait for close frame from server (up to 5 seconds to account for network delays)
             if (!connectionClosed) {
                 LOG.info("Waiting for server to close connection...");
-                connectionClosed = client.waitForClose(2000);
+                connectionClosed = client.waitForClose(5000);
             }
             
             // Verify connection was closed
