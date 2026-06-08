@@ -168,7 +168,22 @@ public class OAuthProtectedResourceMetadataResolver {
         if (configuredPath == null || configuredPath.isEmpty()) {
             return false;
         }
-        return normalizePath(configuredPath).equals(protectedResourcePath);
+        String normalizedConfigPath = normalizePath(configuredPath);
+
+        // Check for wildcard pattern (e.g., "/mcp/*")
+        if (normalizedConfigPath.endsWith("/*")) {
+            // Extract the prefix without the wildcard
+            String prefix = normalizedConfigPath.substring(0, normalizedConfigPath.length() - 2);
+
+            // Match if the protected resource path starts with the prefix
+            // and either equals the prefix or continues with a slash
+            if (protectedResourcePath.equals(prefix)) {
+                return true;
+            }
+            return protectedResourcePath.startsWith(prefix.concat("/"));
+        }
+
+        return normalizedConfigPath.equals(protectedResourcePath);
     }
 
     /**

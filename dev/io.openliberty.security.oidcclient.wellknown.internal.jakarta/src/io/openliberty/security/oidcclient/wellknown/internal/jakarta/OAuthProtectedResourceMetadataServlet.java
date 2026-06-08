@@ -15,13 +15,19 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+import io.openliberty.security.oidcclient.wellknown.common.HttpRequestAdapter;
+import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
+import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
+import io.openliberty.security.oidcclient.wellknown.common.ServletUtils;
+
 /**
- * Servlet that serves OAuth 2.0 protected resource metadata from the
+ * Servlet entry point for OAuth 2.0 Protected Resource Metadata requests under the
  * {@code /.well-known/oauth-protected-resource} context path.
  * <p>
- * It extracts the protected resource path from the incoming request, delegates lookup to
+ * It extracts the request path, delegates request-specific path handling to
  * {@link OAuthProtectedResourceMetadataHandler}, and writes either a JSON response or a
- * {@code 404 Not Found} response.
+ * {@code 404} when no metadata is available for the requested protected resource.
+ * </p>
  */
 public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
 
@@ -37,7 +43,7 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        OAuthProtectedResourceMetadataHandler.MetadataResponse metadataResponse = createHandler(request).handle(request.getPathInfo());
+        MetadataResponse metadataResponse = createHandler(request).handle(request.getPathInfo());
 
         if (!metadataResponse.isFound()) {
             response.sendError(HttpServletResponse.SC_NOT_FOUND);
@@ -55,7 +61,7 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      * @param request the current HTTP request
      * @return a handler bound to the current request
      */
-    protected OAuthProtectedResourceMetadataHandler createHandler(HttpServletRequest request) {
+    protected OAuthProtectedResourceMetadataHandler createHandler(final HttpServletRequest request) {
         return new OAuthProtectedResourceMetadataHandler() {
             @Override
             protected String resolveMetadataJson(String protectedResourcePath) {
@@ -69,6 +75,7 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      * <p>
      * Subclasses override this method to bridge from the servlet layer to the runtime OIDC
      * client configuration and metadata generation logic.
+     * </p>
      *
      * @param request the current HTTP request
      * @param protectedResourcePath the normalized protected resource path, beginning with {@code /}
@@ -77,39 +84,40 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
     protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
         return null;
     }
-    
+
     /**
      * Builds the absolute protected resource URL from the current metadata request.
-     * <p>
-     * Example:
-     * </p>
-     *
-     * <pre>
-     * Metadata request:
-     *   https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected
-     *
-     * Protected resource URL:
-     *   https://localhost:9443/myApp/protected
-     * </pre>
      *
      * @param request current HTTP request
      * @param protectedResourcePath normalized protected resource path, such as {@code /myApp/protected}
      * @return absolute protected resource URL
      */
-    protected String buildResourceUrl(HttpServletRequest request, String protectedResourcePath) {
-        String requestUrl = request.getRequestURL().toString();
-        String requestUri = request.getRequestURI();
+    protected String buildResourceUrl(final HttpServletRequest request, String protectedResourcePath) {
+        return ServletUtils.buildResourceUrl(new HttpRequestAdapter() {
+            @Override
+            public String getRequestURL() {
+                return request.getRequestURL().toString();
+            }
 
-        int requestUriIndex = requestUrl.indexOf(requestUri);
-        if (requestUriIndex >= 0) {
-            return requestUrl.substring(0, requestUriIndex).concat(protectedResourcePath);
-        }
+            @Override
+            public String getRequestURI() {
+                return request.getRequestURI();
+            }
 
-        StringBuilder sb = new StringBuilder();
-        sb.append(request.getScheme()).append("://").append(request.getServerName())
-          .append(":").append(request.getServerPort()).append(protectedResourcePath);
-        return sb.toString();
+            @Override
+            public String getScheme() {
+                return request.getScheme();
+            }
+
+            @Override
+            public String getServerName() {
+                return request.getServerName();
+            }
+
+            @Override
+            public int getServerPort() {
+                return request.getServerPort();
+            }
+        }, protectedResourcePath);
     }
 }
-
-// Made with Bob

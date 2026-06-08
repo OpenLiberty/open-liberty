@@ -10,6 +10,7 @@ visibility = private
   com.ibm.ws.security.openidconnect.client, \
   com.ibm.ws.security.openidconnect.clients.common, \
   io.openliberty.security.oidcclientcore.internal, \
+  io.openliberty.security.oidcclient.wellknown.common, \
   io.openliberty.security.oidcclient.wellknown.internal
-kind=ga
+kind=beta
 edition=core

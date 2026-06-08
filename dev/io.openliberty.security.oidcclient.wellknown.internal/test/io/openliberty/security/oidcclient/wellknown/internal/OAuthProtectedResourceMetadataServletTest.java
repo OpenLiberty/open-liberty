@@ -16,6 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
+import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
+
 /**
  * Unit tests for {@link OAuthProtectedResourceMetadataHandler}.
  */
@@ -25,9 +27,14 @@ public class OAuthProtectedResourceMetadataServletTest {
 
     @Test
     public void returnsNotFoundWhenResolverReturnsNull() {
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler();
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/unknown");
+        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+            @Override
+            protected String resolveMetadataJson(String protectedResourcePath) {
+                return null;
+            }
+        };
+        MetadataResponse response = handler.handle("/unknown");
 
         assertFalse(response.isFound());
         assertNull(response.getContentType());
@@ -44,7 +51,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             }
         };
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/mcp");
+        MetadataResponse response = handler.handle("/mcp");
 
         assertTrue(response.isFound());
         assertEquals("application/json", response.getContentType());
@@ -64,7 +71,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             }
         };
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("mcp");
+        MetadataResponse response = handler.handle("mcp");
 
         assertEquals("/mcp", resolvedPath[0]);
         assertTrue(response.isFound());
@@ -83,7 +90,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             }
         };
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle(null);
+        MetadataResponse response = handler.handle(null);
 
         assertEquals("/", resolvedPath[0]);
         assertTrue(response.isFound());
@@ -102,7 +109,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             }
         };
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("");
+        MetadataResponse response = handler.handle("");
 
         assertEquals("/", resolvedPath[0]);
         assertTrue(response.isFound());
@@ -121,7 +128,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             }
         };
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/");
+        MetadataResponse response = handler.handle("/");
 
         assertEquals("/", resolvedPath[0]);
         assertTrue(response.isFound());
@@ -140,7 +147,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             }
         };
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/app/api/v1");
+        MetadataResponse response = handler.handle("/app/api/v1");
 
         assertEquals("/app/api/v1", resolvedPath[0]);
         assertTrue(response.isFound());
@@ -159,7 +166,7 @@ public class OAuthProtectedResourceMetadataServletTest {
             }
         };
 
-        OAuthProtectedResourceMetadataHandler.MetadataResponse response = handler.handle("/mcp/");
+        MetadataResponse response = handler.handle("/mcp/");
 
         assertEquals("/mcp/", resolvedPath[0]);
         assertTrue(response.isFound());

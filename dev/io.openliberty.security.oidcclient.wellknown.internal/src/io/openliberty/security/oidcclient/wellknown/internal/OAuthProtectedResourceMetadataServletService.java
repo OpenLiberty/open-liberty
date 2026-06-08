@@ -1,12 +1,3 @@
-/*******************************************************************************
- * Copyright (c) 2026 IBM Corporation and others.
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License 2.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-2.0/
- *
- * SPDX-License-Identifier: EPL-2.0
- *******************************************************************************/
 package io.openliberty.security.oidcclient.wellknown.internal;
 
 import javax.servlet.http.HttpServletRequest;
@@ -51,15 +42,15 @@ public class OAuthProtectedResourceMetadataServletService extends OAuthProtected
      * @param protectedResourcePath the normalized protected resource path
      * @return the metadata JSON to return, or {@code null} when the path is unknown
      */
-	@Override
-	protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
-		OAuthProtectedResourceMetadataResolver resolver = metadataResolver;
+    @Override
+    protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
+        OAuthProtectedResourceMetadataResolver resolver = metadataResolver;
 
-		if (resolver == null) {
-			return null;
-		}
+        if (resolver == null) {
+            return null;
+        }
 
-		String resourceUrl = buildResourceUrl(request, protectedResourcePath);
-		return resolver.resolveMetadataJson(protectedResourcePath, resourceUrl);
-	}
+        String resourceUrl = buildResourceUrl(request, protectedResourcePath);
+        return resolver.resolveMetadataJson(protectedResourcePath, resourceUrl);
+    }
 }

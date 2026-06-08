@@ -7,12 +7,24 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.security.oidcclient.wellknown.internal;
-
-import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
+package io.openliberty.security.oidcclient.wellknown.common;
 
 /**
- * OAuth 2.0 Protected Resource Metadata handler for javax.servlet environments.
+ * Servlet-independent view of an HTTP request.
+ * <p>
+ * This allows common metadata logic to build resource URLs without depending on either
+ * {@code javax.servlet} or {@code jakarta.servlet}.
+ * </p>
  */
-public abstract class OAuthProtectedResourceMetadataHandler extends OAuthProtectedResourceMetadataHandlerBase {
+public interface HttpRequestAdapter {
+
+    String getRequestURL();
+
+    String getRequestURI();
+
+    String getScheme();
+
+    String getServerName();
+
+    int getServerPort();
 }
