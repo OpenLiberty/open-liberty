@@ -57,6 +57,7 @@ public class McpClient extends ExternalResource {
     private final StateMode mode;
     private final String username;
     private final String password;
+    private final String bearerToken;
 
     private static final String DEFAULT_MCP_PATH = "/mcp";
     private final String path;
@@ -71,7 +72,7 @@ public class McpClient extends ExternalResource {
     }
 
     public McpClient(LibertyServer server, String contextRoot) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, StateMode.STATEFUL, null, null);
+        this(server, contextRoot, DEFAULT_MCP_PATH, StateMode.STATEFUL, null, null, null);
     }
 
     /**
@@ -80,11 +81,11 @@ public class McpClient extends ExternalResource {
      * @param mode whether to expect the server to be in stateful or stateless mode
      */
     public McpClient(LibertyServer server, String contextRoot, StateMode mode) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, null);
+        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, null, null);
     }
 
     public McpClient(LibertyServer server, String contextRoot, String path) {
-        this(server, contextRoot, path, StateMode.STATEFUL, null, null);
+        this(server, contextRoot, path, StateMode.STATEFUL, null, null, null);
     }
 
     /**
@@ -93,14 +94,21 @@ public class McpClient extends ExternalResource {
      * @param path The full request endpoint path e.g {@code path + "/mcp"}.
      */
     public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode) {
-        this(server, contextRoot, path, mode, null, null);
+        this(server, contextRoot, path, mode, null, null, null);
+    }
+
+    /**
+     * Use this constructor if you have the StateMode and bearerToken
+     */
+    public McpClient(LibertyServer server, String contextRoot, StateMode mode, String bearerToken) {
+        this(server, contextRoot, DEFAULT_MCP_PATH, mode, bearerToken, null, null);
     }
 
     /**
      * Use this constructor if you have the StateMode, username and password
      */
     public McpClient(LibertyServer server, String contextRoot, StateMode mode, String username, String password) {
-        this(server, contextRoot, DEFAULT_MCP_PATH, mode, username, password);
+        this(server, contextRoot, DEFAULT_MCP_PATH, mode, null, username, password);
     }
 
     /**
@@ -110,12 +118,13 @@ public class McpClient extends ExternalResource {
      * @param username for basic auth
      * @param password for basic auth
      */
-    public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode, String username, String password) {
+    public McpClient(LibertyServer server, String contextRoot, String path, StateMode mode, String bearerToken, String username, String password) {
         super();
         this.server = server;
         this.contextRoot = contextRoot.startsWith("/") ? contextRoot : "/" + contextRoot;
         this.path = path.startsWith("/") ? path : "/" + path;
         this.mode = mode;
+        this.bearerToken = bearerToken;
         this.username = username;
         this.password = password;
     }
@@ -356,6 +365,34 @@ public class McpClient extends ExternalResource {
         return setupAndRunRequest(request, jsonRequestBody);
     }
 
+    public String callMCPWithBearerToken(String jsonRequestBody) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath())
+                                                                         .requestProp("Authorization", "Bearer " + bearerToken);
+        return setupAndRunRequest(request, jsonRequestBody);
+    }
+
+    /**
+     * Calls MCP without an access token, where authentication is expected.
+     *
+     * Expected response when OIDC bearer authentication is active:
+     * statusCode=401
+     * WWW-Authenticate=Bearer realm="oauth", error="invalid_token", error_description="Check access token"
+     *
+     * @param jsonRequestBody JSON-RPC request body
+     * @return detailed authentication error response including status, headers and body
+     * @throws Exception if the request fails unexpectedly
+     */
+    public McpDetailedAuthResponse callMCP401AuthErrorExpected(String jsonRequestBody) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(401);
+        String responseBody = setupAndRunRequest(request, jsonRequestBody);
+
+        return new McpDetailedAuthResponse(
+                                           request.getResponseCode(),
+                                           request.getResponseHeader("WWW-Authenticate"),
+                                           request.getResponseHeader("Content-Type"),
+                                           responseBody);
+    }
+
     public String callMCPAuthorisationErrorExpected(String jsonRequestBody) throws Exception {
         final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403);
         return setupAndRunRequest(request, jsonRequestBody);
@@ -364,6 +401,11 @@ public class McpClient extends ExternalResource {
     public String callMCPwithBasicAuth_AuthorisationErrorExpected(String jsonRequestBody, String user, String password) throws Exception {
         final HttpRequest request = new HttpRequest(server, getMcpPath()).expectCode(403)
                                                                          .basicAuth(user, password);
+        return setupAndRunRequest(request, jsonRequestBody);
+    }
+
+    public String callMCPWithBearerTokenAuthorisationErrorExpected(String jsonRequestBody) throws Exception {
+        final HttpRequest request = new HttpRequest(server, getMcpPath()).requestProp("Authorization", "Bearer " + bearerToken).expectCode(403);
         return setupAndRunRequest(request, jsonRequestBody);
     }
 
@@ -494,6 +536,8 @@ public class McpClient extends ExternalResource {
 
         return combinedResponse.toString();
     }
+
+    public record McpDetailedAuthResponse(int statusCode, String wwwAuthenticate, String contentType, String body) {}
 
     public void setSessionDeleted(boolean deleted) {
         this.sessionDeleted = deleted;

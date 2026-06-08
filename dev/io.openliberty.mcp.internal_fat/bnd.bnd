@@ -26,7 +26,8 @@ tested.features: \
     cdi-4.1,\
     concurrent-3.1,\
     restfulws-4.0,\
-    servlet-6.1
+    servlet-6.1,\
+    pages-3.1
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0;version=latest,\
@@ -48,7 +49,7 @@ tested.features: \
 	io.openliberty.io.opentelemetry.2.1;version=latest,\
 	io.openliberty.mpTelemetry.2.0.thirdparty,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	io.openliberty.io.opentelemetry.internal.2.1;version=latest
+	io.openliberty.io.opentelemetry.internal.2.1;version=latest,\
+	io.openliberty.org.testcontainers;version=latest
 	
-	
-fat.test.container.images=public.ecr.aws/docker/library/node:20-alpine
+fat.test.container.images=public.ecr.aws/docker/library/node:20-alpine,quay.io/keycloak/keycloak:26.6.2

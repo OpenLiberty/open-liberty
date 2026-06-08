@@ -53,3 +53,4 @@ wasliberty-internal-docker-local/openliberty/testcontainers/spnego-kdc-server:1.
 wasliberty-internal-docker-local/openliberty/testcontainers/sqlserver-ssl:2022.0.0.1-latest
 wasliberty-mcr-docker-remote/mssql/server:2022-latest
 wasliberty-quay-docker-remote/jaegertracing/all-in-one:1.76.0
+wasliberty-quay-docker-remote/keycloak/keycloak:26.6.2
