@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -67,7 +67,7 @@ public class TransactionContextImpl implements ThreadContext {
     /**
      * Unit of work that was on the thread of execution prior to invoking the contextual task.
      */
-    private transient UOWToken suspendedUOW;
+    private transient ThreadLocal<UOWToken> suspendedUOW = new ThreadLocal<UOWToken>();
 
     /**
      * Indicates that prior to invoking a task, any transaction that is present on the thread of execution
@@ -104,7 +104,8 @@ public class TransactionContextImpl implements ThreadContext {
             // Suspend whatever is currently on the thread.
             try {
                 UOWManager uowManager = UOWManagerFactory.getUOWManager();
-                suspendedUOW = uowManager.suspend();
+                UOWToken localuSpendedUOW = uowManager.suspend();
+                suspendedUOW.set(localuSpendedUOW);
             } catch (com.ibm.ws.uow.embeddable.SystemException e) {
             }
 
@@ -156,10 +157,11 @@ public class TransactionContextImpl implements ThreadContext {
 
             // Resume the original transaction.
             try {
-                if (suspendedUOW != null) {
+                UOWToken localSuspendedUOW = suspendedUOW.get();
+                if (localSuspendedUOW != null) {
                     UOWManager uowManager = UOWManagerFactory.getUOWManager();
-                    uowManager.resume(suspendedUOW);
-                    suspendedUOW = null;
+                    uowManager.resume(localSuspendedUOW);
+                    suspendedUOW.remove();
                 }
             } catch (Throwable e) {
                 exception = e;
