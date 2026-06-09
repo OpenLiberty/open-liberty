@@ -315,10 +315,9 @@ public class EnableEndpointsTest {
         File healthDir = HealthFileUtils.getHealthDirFile(serverRootDir);
         File liveFile = HealthFileUtils.getLiveFile(serverRootDir);
 
-        // Wait for health check interval to pass (checkInterval is 5s in server config)
         // Wait for health check interval to pass (checkInterval is 5s in server config),
         // which will run the scheduler to create the health files.
-        dynamicEnableServer.waitForStringInTrace(".*HealthCheck40ServiceImpl\\$StartedFileCreateProcess > run Entry.*");
+        disabledEndpointsServer.waitForStringInTrace(".*HealthCheck40ServiceImpl\\$StartedFileCreateProcess > run Entry.*");
 
         assertTrue("Health directory should not exist or live file should not exist when health checks fail",
                    !healthDir.exists() || !liveFile.exists());
@@ -359,12 +358,21 @@ public class EnableEndpointsTest {
         dynamicEnableServer.setMarkToEndOfLog();
         ServerConfiguration config = dynamicEnableServer.getServerConfiguration();
         MPHealthElement mpHealth = config.getMPHealthElement();
-        mpHealth.setEnableEndpoints("false");
-        dynamicEnableServer.updateServerConfiguration(config);
-        dynamicEnableServer.waitForConfigUpdateInLogUsingMark(null);
+        String originalEnableEndpoints = mpHealth.getEnableEndpoints();
+        try {
+            mpHealth.setEnableEndpoints("false");
+            dynamicEnableServer.updateServerConfiguration(config);
+            dynamicEnableServer.waitForConfigUpdateInLogUsingMark(null);
 
-        // Verify endpoints are now disabled
-        verifyEndpointsAndWAB(dynamicEnableServer, true, false);
+            // Verify endpoints are now disabled
+            verifyEndpointsAndWAB(dynamicEnableServer, true, false);
+        } finally {
+            // Restore the original configuration so later tests still start with endpoints enabled
+            dynamicEnableServer.setMarkToEndOfLog();
+            mpHealth.setEnableEndpoints(originalEnableEndpoints);
+            dynamicEnableServer.updateServerConfiguration(config);
+            dynamicEnableServer.waitForConfigUpdateInLogUsingMark(null);
+        }
     }
 
     /**
@@ -392,12 +400,21 @@ public class EnableEndpointsTest {
         disabledEndpointsServer.setMarkToEndOfLog();
         ServerConfiguration config = disabledEndpointsServer.getServerConfiguration();
         MPHealthElement mpHealth = config.getMPHealthElement();
-        mpHealth.setEnableEndpoints("true");
-        disabledEndpointsServer.updateServerConfiguration(config);
-        disabledEndpointsServer.waitForConfigUpdateInLogUsingMark(null);
+        String originalEnableEndpoints = mpHealth.getEnableEndpoints();
+        try {
+            mpHealth.setEnableEndpoints("true");
+            disabledEndpointsServer.updateServerConfiguration(config);
+            disabledEndpointsServer.waitForConfigUpdateInLogUsingMark(null);
 
-        // Verify endpoints are now enabled
-        verifyEndpointsAndWAB(disabledEndpointsServer, false, true);
+            // Verify endpoints are now enabled
+            verifyEndpointsAndWAB(disabledEndpointsServer, false, true);
+        } finally {
+            // Restore the original configuration so later tests still start with endpoints disabled
+            disabledEndpointsServer.setMarkToEndOfLog();
+            mpHealth.setEnableEndpoints(originalEnableEndpoints);
+            disabledEndpointsServer.updateServerConfiguration(config);
+            disabledEndpointsServer.waitForConfigUpdateInLogUsingMark(null);
+        }
     }
 
     private void verifyHealthFilesCreated(File serverRootDir) throws InterruptedException {
