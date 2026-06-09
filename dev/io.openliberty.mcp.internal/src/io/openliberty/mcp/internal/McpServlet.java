@@ -110,7 +110,7 @@ public class McpServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        McpTransport transport = new McpTransport(req, resp, jsonb);
+        McpTransport transport = new McpTransport(req, resp, jsonb, mcpConfig.asyncTimeout());
         String excpetionMessage = Tr.formatMessage(tc, "get.disallowed");
         HttpResponseException e = new HttpResponseException(
                                                             HttpServletResponse.SC_METHOD_NOT_ALLOWED,
@@ -122,7 +122,7 @@ public class McpServlet extends HttpServlet {
     @Override
     @FFDCIgnore({ JSONRPCException.class, HttpResponseException.class })
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException, JSONRPCException {
-        McpTransport transport = new McpTransport(req, resp, jsonb);
+        McpTransport transport = new McpTransport(req, resp, jsonb, mcpConfig.asyncTimeout());
 
         try {
             transport.init(sessionStores.getCurrent());

@@ -30,6 +30,13 @@
 	    required="false"
 	    type="String"
 	    default="/mcp"/>
+    <AD name="%asyncTimeout.name"
+        description="%asyncTimeout.description"
+        id="asyncTimeout"
+        required="false"
+        type="String"
+        ibm:type="duration(s)"
+        default="30s"/>
 	<AD name="%info.name"
 	    description="%info.description"
 	    id="info"

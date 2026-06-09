@@ -19,14 +19,17 @@ import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
  * @param path The endpoint path for the mcp server
  * @param servicePid The service PID (optional, can be null)
  * @param serverInfo The server info configuration (optional, can be null; name and version are required and will use defaults if not provided, title and description are optional)
+ * @param asyncTimeout The timeout in seconds for asynchronous tool calls
  */
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
                                    String path,
                                    String servicePid,
-                                   ServerInfo serverInfo) implements McpConfig {
+                                   ServerInfo serverInfo,
+                                   int asyncTimeout) implements McpConfig {
 
     public static final String FALLBACK_PATH = "/mcp";
+    public static final int DEFAULT_ASYNC_TIMEOUT = 30;
 
     // Default serverInfo values from metatype.xml
     public static final String DEFAULT_SERVER_NAME = "mcp-server";
@@ -35,7 +38,7 @@ public record McpServerConfigProps(boolean stateless,
     // Default ServerInfo with defaults (name and version only, title and description are null)
     public static final ServerInfo DEFAULT_SERVER_INFO = new ServerInfo(DEFAULT_SERVER_NAME, null, DEFAULT_SERVER_VERSION, null);
 
-    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, null);
+    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, null, DEFAULT_ASYNC_TIMEOUT);
 
     /**
      * Compact constructor that validates and applies defaults for required fields.
@@ -53,10 +56,7 @@ public record McpServerConfigProps(boolean stateless,
 
             // Apply defaults if required fields are null
             if (name == null || version == null) {
-                serverInfo = new ServerInfo(
-                                            name != null ? name : DEFAULT_SERVER_NAME,
-                                            serverInfo.title(),
-                                            version != null ? version : DEFAULT_SERVER_VERSION,
+                serverInfo = new ServerInfo(name != null ? name : DEFAULT_SERVER_NAME, serverInfo.title(), version != null ? version : DEFAULT_SERVER_VERSION,
                                             serverInfo.description());
             }
         }

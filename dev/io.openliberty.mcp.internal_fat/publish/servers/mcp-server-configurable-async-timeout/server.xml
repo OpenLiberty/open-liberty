@@ -1,0 +1,22 @@
+<server description="MCP Server with Configurable Async Timeout">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcpServer-1.0</feature>
+    <feature>concurrent-3.0</feature>
+  </featureManager>
+  
+  <!-- Application with short async timeout (2 seconds) -->
+  <application location="shortTimeoutTest.war">
+    <mcpServer asyncTimeout="2"/>
+  </application>
+
+  <!-- Application with default async timeout (30 seconds) -->
+  <application location="defaultTimeoutTest.war">
+    <mcpServer/>
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+  
+</server>

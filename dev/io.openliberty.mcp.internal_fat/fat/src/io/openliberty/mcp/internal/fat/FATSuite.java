@@ -44,6 +44,7 @@ import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
 import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
+import io.openliberty.mcp.internal.fat.timeout.ConfigurableAsyncTimeoutTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolsErrorHandlingTest;
@@ -83,6 +84,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 BeanLifecycleTest.class,
                 CancellationTest.class,
                 ConfigurableMcpPathTest.class,
+                ConfigurableAsyncTimeoutTest.class,
                 CustomServerInfoTest.class,
                 DefaultValueTest.class,
                 DeploymentProblemTest.class,

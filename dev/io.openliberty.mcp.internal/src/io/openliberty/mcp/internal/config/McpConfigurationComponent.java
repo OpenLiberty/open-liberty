@@ -59,11 +59,21 @@ public class McpConfigurationComponent {
         String path = (String) properties.get("path");
         Object statelessObj = properties.get("stateless");
         boolean stateless = statelessObj != null ? Boolean.parseBoolean(String.valueOf(statelessObj)) : false;
+        // Parse asyncTimeout with default value
+        // When using ibm:type="duration(s)", Liberty converts the value to a Long in seconds
+        Object asyncTimeoutObj = properties.get("asyncTimeout");
+        int asyncTimeout;
+        if (asyncTimeoutObj != null) {
+            // Duration type returns a Long value in the specified unit (seconds)
+            asyncTimeout = ((Long) asyncTimeoutObj).intValue();
+        } else {
+            asyncTimeout = McpServerConfigProps.DEFAULT_ASYNC_TIMEOUT;
+        }
 
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)
         ServerInfo serverInfo = parseServerInfo(properties);
 
-        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, serverInfo);
+        this.config = new McpServerConfigProps(stateless, moduleName, path, servicePid, serverInfo, asyncTimeout);
     }
 
     /**
