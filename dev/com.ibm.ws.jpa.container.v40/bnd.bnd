@@ -17,8 +17,8 @@ Bundle-Name: JPA 4.0 Container Runtime
 Bundle-SymbolicName: com.ibm.ws.jpa.container.v40
 Bundle-Description: JPA 4.0 Container Runtime; version=${bVersion}
 
-javac.source: 17
-javac.target: 17
+javac.source: 21
+javac.target: 21
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
