@@ -9,9 +9,12 @@ import java.util.Set;
 
 import org.junit.AfterClass;
 
+import componenttest.annotation.MaximumJavaLevel;
+
 /**
  *
  */
+@MaximumJavaLevel(javaLevel = 21) //https://docs.spring.io/spring-boot/docs/2.7.18/reference/html/getting-started.html#getting-started.system-requirements
 public class ErrorPage20Test extends ErrorPageBaseTest {
 
     @AfterClass
