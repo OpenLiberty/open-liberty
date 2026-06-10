@@ -7,8 +7,6 @@
 # 
 # SPDX-License-Identifier: EPL-2.0
 #
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -20,7 +18,7 @@ Bundle-Description: JPA 4.0 Container Runtime; version=${bVersion}
 javac.source: 21
 javac.target: 21
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 WS-TraceGroup: JPA
 

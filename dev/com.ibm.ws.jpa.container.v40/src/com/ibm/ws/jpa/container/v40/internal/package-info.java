@@ -7,8 +7,6 @@
  * 
  * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 @TraceOptions(traceGroup = JPAConstants.JPA_TRACE_GROUP, messageBundle = JPAConstants.JPA_RESOURCE_BUNDLE_NAME)
 package com.ibm.ws.jpa.container.v40.internal;
