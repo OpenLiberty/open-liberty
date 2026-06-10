@@ -146,18 +146,22 @@ class ConfigurationStore implements Runnable, CheckpointHook {
         String pid;
         do {
             pid = factoryPid + "_" + getCount(factoryPid);
+            Tr.debug(tc, ">>ConfigurationStore.generatePid: pid is " + pid + ".");
         } while (configurations.containsKey(pid));
         return pid;
     }
 
     public ConfigurationStore(ConfigAdminServiceFactory configAdminServiceFactory, BundleContext bc) {
+        Tr.debug(tc, ">>ConfigurationStore.ConfigurationStore: bundleContext is [" + bc.toString() + "]");
         this.caFactory = configAdminServiceFactory;
         this.persistentConfig = bc.getDataFile(ConfigAdminConstants.CONFIG_PERSISTENT);
+        Tr.debug(tc, ">>ConfigurationStore.ConfigurationStore: persistentConfig is [" + this.persistentConfig + "]");
         this.configurations = loadConfigurationDatas(this.persistentConfig);
+        Tr.debug(tc, ">>ConfigurationStore.ConfigurationStore: configurations is [" + this.configurations + "]");
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
             Tr.debug(tc, "config store pids are [" + configurations.keySet() + "]");
-        Tr.debug(tc, ">>ConfigurationStore.ConfigurationStore: config store pids are [" + configurations.keySet() + "]");
+        Tr.debug(tc, ">>ConfigurationStore.ConfigurationStore: config store pids from loadConfigurationDatas is [" + configurations.keySet() + "]");
     }
 
     private final void readLock() {
@@ -348,12 +352,16 @@ class ConfigurationStore implements Runnable, CheckpointHook {
     }
 
     private Map<String, ExtendedConfigurationImpl> loadConfigurationDatas(File configDatas) {
+        Tr.debug(tc, ">>ConfigurationStore.loadConfigurationDatas: configDatas is [" + configDatas.getAbsolutePath() + "]");
+        Tr.debug(tc, ">>ConfigurationStore.loadConfigurationDatas: configDatas.isFile() is [" + configDatas.isFile() + "]");
         if (configDatas.isFile()) {
             ConfigStorageConsumer<String, ExtendedConfigurationImpl> consumer = new ConfigStorageConsumer<String, ExtendedConfigurationImpl>() {
                 @Override
                 public ExtendedConfigurationImpl consumeConfigData(String location, Set<String> uniqueVars, Set<ConfigID> references, ConfigurationDictionary dict) {
                     String pid = (String) dict.get(Constants.SERVICE_PID);
                     String factoryPid = (String) dict.get(ConfigurationAdmin.SERVICE_FACTORYPID);
+                    Tr.debug(tc, ">>ConfigurationStore.loadConfigurationDatas.consumeConfigData: pid is [" + pid + "], factoryPid is [" + factoryPid + "], location is [" + location
+                                 + "]");
                     return new ExtendedConfigurationImpl(caFactory, location, factoryPid, pid, dict, references, uniqueVars);
                 }
 
@@ -363,12 +371,16 @@ class ConfigurationStore implements Runnable, CheckpointHook {
                 }
             };
             try {
-                return ConfigurationStorageHelper.load(configDatas, consumer);
+                Map<String, ExtendedConfigurationImpl> result = ConfigurationStorageHelper.load(configDatas, consumer);
+                Tr.debug(tc, ">>ConfigurationStore.loadConfigurationDatas: loaded configurations is [" + result + "]");
+                return result;
             } catch (IOException e) {
+                Tr.debug(tc, ">>ConfigurationStore.loadConfigurationDatas: IOException occurred, returning empty HashMap");
                 // auto FFDC is fine
                 return new HashMap<>();
             }
         }
+        Tr.debug(tc, ">>ConfigurationStore.loadConfigurationDatas: configDatas is not a file, returning empty HashMap");
         return new HashMap<>();
     }
 
