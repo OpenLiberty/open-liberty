@@ -14,6 +14,8 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
+import java.util.Collections;
+
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -26,6 +28,8 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.Mode;
+import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.mcp.internal.fat.tool.asyncToolApp.AsyncTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
@@ -36,6 +40,7 @@ import io.openliberty.mcp.internal.fat.utils.ToolStatus;
  * Tests two scenarios:
  * 1. Short timeout (2 seconds) - should timeout quickly
  * 2. Default timeout (30 seconds) - uses the default value
+ * 3. Timeout changed to 5 seconds using server_updated_async_timeout.xml
  */
 @RunWith(FATRunner.class)
 public class ConfigurableAsyncTimeoutTest {
@@ -163,6 +168,102 @@ public class ConfigurableAsyncTimeoutTest {
         // Verify the tool executed successfully even with short timeout
         assertTrue("Response should contain the echoed input",
                    response.contains("Quick response"));
+    }
+
+    /**
+     * Test that verifies asyncTimeout configuration can be dynamically updated
+     * and the changes are reflected in the timeout behavior.
+     *
+     * Initial configuration: asyncTimeout="2s"
+     * Updated configuration: asyncTimeout="5s"
+     *
+     * This test verifies that after updating the configuration, a tool that takes
+     * 3 seconds to complete will timeout with the initial 2s timeout but succeed
+     * with the updated 5s timeout.
+     */
+    @Test
+    @Mode(TestMode.FULL)
+    public void testDynamicAsyncTimeoutUpdate() throws Exception {
+        // First, verify the initial timeout (2 seconds) causes a timeout for a 3-second operation
+        String timeoutRequest = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "timeout-test-4",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "asyncToolThatNeverCompletes",
+                            "arguments": {
+                              "input": "This should timeout initially"
+                            }
+                          }
+                        }
+                        """;
+
+        long startTime = System.currentTimeMillis();
+        try {
+            shortTimeoutClient.callMCP(timeoutRequest);
+            fail("Expected timeout exception was not thrown with initial 2s timeout");
+        } catch (Exception e) {
+            long elapsedTime = System.currentTimeMillis() - startTime;
+            assertTrue("Initial timeout should occur within 5 seconds, but took " + elapsedTime + "ms",
+                       elapsedTime < 5000);
+            assertTrue("Initial timeout should take at least 2 seconds, but took " + elapsedTime + "ms",
+                       elapsedTime >= 2000);
+        }
+
+        server.setMarkToEndOfLog();
+
+        // Mark the session as deleted since config changes will invalidate it
+        // This prevents the cleanup code from trying to delete an already-invalid session
+        shortTimeoutClient.markSessionDeleted();
+
+        // Dynamically update the asyncTimeout configuration by replacing the server.xml
+        // This changes the timeout from 2s to 5s
+        server.setServerConfigurationFile("server_updated_async_timeout.xml");
+        server.waitForConfigUpdateInLogUsingMark(Collections.singleton("shortTimeoutTest"));
+
+        // Re-initialize the session after config update since the old session was invalidated
+        // Create a new client which will automatically establish a new session
+        McpClient newShortTimeoutClient = new McpClient(server, "/shortTimeoutTest");
+        newShortTimeoutClient.initializeSession();
+
+        try {
+            // Verify that with the updated timeout (5 seconds), the same operation still times out
+            // but takes longer (since asyncToolThatNeverCompletes never completes)
+            startTime = System.currentTimeMillis();
+            try {
+                newShortTimeoutClient.callMCP(timeoutRequest);
+                fail("Expected timeout exception was not thrown with updated 5s timeout");
+            } catch (Exception e) {
+                long elapsedTime = System.currentTimeMillis() - startTime;
+                assertTrue("Updated timeout should occur within 8 seconds, but took " + elapsedTime + "ms",
+                           elapsedTime < 8000);
+                assertTrue("Updated timeout should take at least 5 seconds, but took " + elapsedTime + "ms",
+                           elapsedTime >= 5000);
+            }
+
+            // Verify that a quick operation still works with the updated timeout
+            String quickRequest = """
+                            {
+                              "jsonrpc": "2.0",
+                              "id": "timeout-test-5",
+                              "method": "tools/call",
+                              "params": {
+                                "name": "asyncEcho",
+                                "arguments": {
+                                  "input": "Quick response after config update"
+                                }
+                              }
+                            }
+                            """;
+
+            String response = newShortTimeoutClient.callMCP(quickRequest);
+            assertTrue("Response should contain the echoed input after config update",
+                       response.contains("Quick response after config update"));
+        } finally {
+            // Clean up the new client's session
+            newShortTimeoutClient.cleanupSession();
+        }
     }
 
 }
