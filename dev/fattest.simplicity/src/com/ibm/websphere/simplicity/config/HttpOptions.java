@@ -1,11 +1,9 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.websphere.simplicity.config;
 
@@ -18,6 +16,7 @@ public class HttpOptions extends ConfigElement {
 
     private Boolean ignoreWriteAfterCommit;
     private Integer messageSizeLimit;
+    private String websocketBufferSize;
 
     public Integer getMessageSizeLimit() {
         return this.messageSizeLimit;
@@ -37,6 +36,14 @@ public class HttpOptions extends ConfigElement {
         this.ignoreWriteAfterCommit = ignoreWriteAfterCommit;
     }
 
+    public String isWebsocketBufferSize() {
+        return this.websocketBufferSize;
+    }
+    @XmlAttribute
+    public void setWebsocketBufferSize(String websocketBufferSize) {
+        this.websocketBufferSize = websocketBufferSize;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("httpOptions{");
@@ -46,6 +53,8 @@ public class HttpOptions extends ConfigElement {
             buf.append("ignoreWriteAfterCommit=\"" + ignoreWriteAfterCommit + "\" ");
         if (messageSizeLimit != null)
             buf.append("messageSizeLimit=\"" + messageSizeLimit + "\" ");
+        if (websocketBufferSize != null)
+            buf.append("websocketBufferSize=\"" + websocketBufferSize + "\" ");
         buf.append("}");
         return buf.toString();
     }
