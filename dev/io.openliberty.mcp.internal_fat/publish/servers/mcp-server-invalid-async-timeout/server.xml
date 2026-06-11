@@ -1,0 +1,17 @@
+<server description="MCP Server with Configurable Async Timeout">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcpServer-1.0</feature>
+    <feature>concurrent-3.0</feature>
+  </featureManager>
+  
+  <!-- Application with invalid async timeout (sheep) -->
+  <application location="invalidTimeoutTest.war">
+    <mcpServer asyncTimeout="sheep"/>
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+  
+</server>
