@@ -20,6 +20,7 @@ import java.util.List;
 
 import org.junit.Test;
 
+import com.ibm.json.java.JSONObject;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 
@@ -49,61 +50,60 @@ public class OAuthProtectedResourceMetadataResolverTest {
     }
 
     @Test
-    public void matchesUsesConfiguredResourcesBeforeContextPath() {
+    public void matchesResourceReturnsTrueForSameNormalizedPath() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
-        TestOidcClientConfig config = new TestOidcClientConfig();
-        config.resources = new String[] { "/mcp", "/api" };
-        config.contextPath = "/different";
 
-        assertTrue(resolver.matches(config, "/mcp"));
-        assertTrue(resolver.matches(config, "/api"));
-        assertFalse(resolver.matches(config, "/unknown"));
+        assertTrue(resolver.matchesResource("/mcp", "/mcp"));
     }
 
     @Test
-    public void matchesFallsBackToContextPath() {
+    public void matchesResourceAddsLeadingSlashBeforeComparing() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
-        TestOidcClientConfig config = new TestOidcClientConfig();
-        config.contextPath = "/mcp";
 
-        assertTrue(resolver.matches(config, "/mcp"));
-        assertFalse(resolver.matches(config, "/other"));
+        assertTrue(resolver.matchesResource("mcp", "/mcp"));
+    }
+
+    @Test
+    public void matchesResourceReturnsFalseForDifferentPath() {
+        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+
+        assertFalse(resolver.matchesResource("/mcp", "/other"));
+    }
+
+    @Test
+    public void matchesResourceDoesNotTreatStarAsWildcard() {
+        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+
+        assertFalse(resolver.matchesResource("/mcp/*", "/mcp"));
+        assertFalse(resolver.matchesResource("/mcp/*", "/mcp/tool"));
     }
 
     @Test
     public void createMetadataJsonUsesIssuerIdentifierWhenPresent() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
         TestOidcClientConfig config = new TestOidcClientConfig();
+
         config.id = "client1";
         config.issuerIdentifier = "https://issuer.example.com";
 
-        String metadata = resolver.createMetadataJson(config, "/mcp");
+        String metadata = resolver.createMetadataJson(config, "https://localhost:9443/mcp");
 
-        assertEquals("{\"resource\":\"\\/mcp\",\"authorization_servers\":[\"https:\\/\\/issuer.example.com\"]}", metadata);
+        assertEquals("{\"resource\":\"https:\\/\\/localhost:9443\\/mcp\",\"authorization_servers\":[\"https:\\/\\/issuer.example.com\"]}", metadata);
     }
 
     @Test
-    public void createMetadataJsonFallsBackToDiscoveryEndpoint() {
+    public void createMetadataJsonOmitsAuthorizationServersWhenIssuerIsMissing() throws Exception {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
-        TestOidcClientConfig config = new TestOidcClientConfig();
+
+        TestOidcClientConfig config = new TestOidcClientConfig(null);
         config.id = "client1";
-        config.discoveryEndpointUrl = "https://issuer.example.com/.well-known/openid-configuration";
 
-        String metadata = resolver.createMetadataJson(config, "/mcp");
+        String metadataJson = resolver.createMetadataJson(config, "https://localhost:9443/myApp/protected");
 
-        assertEquals("{\"resource\":\"\\/mcp\",\"authorization_servers\":[\"https:\\/\\/issuer.example.com\\/.well-known\\/openid-configuration\"]}", metadata);
-    }
+        JSONObject metadata = JSONObject.parse(metadataJson);
 
-    @Test
-    public void createMetadataJsonFallsBackToAuthorizationEndpoint() {
-        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
-        TestOidcClientConfig config = new TestOidcClientConfig();
-        config.id = "client1";
-        config.authorizationEndpointUrl = "https://issuer.example.com/authorize";
-
-        String metadata = resolver.createMetadataJson(config, "/mcp");
-
-        assertEquals("{\"resource\":\"\\/mcp\",\"authorization_servers\":[\"https:\\/\\/issuer.example.com\\/authorize\"]}", metadata);
+        assertEquals("https://localhost:9443/myApp/protected", metadata.get("resource"));
+        assertFalse(metadata.containsKey("authorization_servers"));
     }
 
     private static class TestOidcClientConfig implements OidcClientConfig {
@@ -113,6 +113,17 @@ public class OAuthProtectedResourceMetadataResolverTest {
         String issuerIdentifier;
         String discoveryEndpointUrl;
         String authorizationEndpointUrl;
+
+        private TestOidcClientConfig() {
+            // Default constructor for existing tests.
+        }
+
+        /**
+         * @param object
+         */
+        private TestOidcClientConfig(String issuerIdentifier) {
+            this.issuerIdentifier = issuerIdentifier;
+        }
 
         @Override
         public String[] getResources() {

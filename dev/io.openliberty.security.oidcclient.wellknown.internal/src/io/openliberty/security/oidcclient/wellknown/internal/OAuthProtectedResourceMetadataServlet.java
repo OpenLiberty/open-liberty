@@ -17,6 +17,8 @@ import javax.servlet.http.HttpServletResponse;
 
 import io.openliberty.security.oidcclient.wellknown.common.HttpRequestAdapter;
 import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
+import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
+import io.openliberty.security.oidcclient.wellknown.common.ProtectedResourceMetadataResolver;
 import io.openliberty.security.oidcclient.wellknown.common.ServletUtils;
 
 /**
@@ -36,7 +38,7 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      * Handles a metadata discovery request for a protected resource path beneath the servlet
      * context.
      *
-     * @param request the HTTP request targeting a protected resource metadata endpoint
+     * @param request  the HTTP request targeting a protected resource metadata endpoint
      * @param response the HTTP response to populate
      * @throws IOException if the response cannot be written
      */
@@ -60,13 +62,13 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      * @param request the current HTTP request
      * @return a handler bound to the current request
      */
-    protected OAuthProtectedResourceMetadataHandler createHandler(final HttpServletRequest request) {
-        return new OAuthProtectedResourceMetadataHandler() {
+    protected OAuthProtectedResourceMetadataHandlerBase createHandler(final HttpServletRequest request) {
+        return new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 return OAuthProtectedResourceMetadataServlet.this.resolveMetadataJson(request, protectedResourcePath);
             }
-        };
+        });
     }
 
     /**
@@ -76,7 +78,7 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      * client configuration and metadata generation logic.
      * </p>
      *
-     * @param request the current HTTP request
+     * @param request               the current HTTP request
      * @param protectedResourcePath the normalized protected resource path, beginning with {@code /}
      * @return the metadata JSON to return, or {@code null} if the path has no metadata
      */
@@ -87,7 +89,7 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
     /**
      * Builds the absolute protected resource URL from the current metadata request.
      *
-     * @param request current HTTP request
+     * @param request               current HTTP request
      * @param protectedResourcePath normalized protected resource path, such as {@code /myApp/protected}
      * @return absolute protected resource URL
      */

@@ -17,9 +17,12 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
+import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
+import io.openliberty.security.oidcclient.wellknown.common.ProtectedResourceMetadataResolver;
 
 /**
- * Unit tests for {@link OAuthProtectedResourceMetadataHandler}.
+ * /**
+ * Unit tests for {@link OAuthProtectedResourceMetadataHandlerBase}.
  */
 public class OAuthProtectedResourceMetadataServletTest {
 
@@ -27,13 +30,13 @@ public class OAuthProtectedResourceMetadataServletTest {
 
     @Test
     public void returnsNotFoundWhenResolverReturnsNull() {
-
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 return null;
             }
-        };
+        });
+
         MetadataResponse response = handler.handle("/unknown");
 
         assertFalse(response.isFound());
@@ -44,12 +47,12 @@ public class OAuthProtectedResourceMetadataServletTest {
 
     @Test
     public void returnsMetadataJsonWhenResolverReturnsMetadata() {
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 return METADATA_JSON;
             }
-        };
+        });
 
         MetadataResponse response = handler.handle("/mcp");
 
@@ -63,13 +66,13 @@ public class OAuthProtectedResourceMetadataServletTest {
     public void normalizesMissingLeadingSlashBeforeLookup() {
         final String[] resolvedPath = new String[1];
 
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 resolvedPath[0] = protectedResourcePath;
                 return METADATA_JSON;
             }
-        };
+        });
 
         MetadataResponse response = handler.handle("mcp");
 
@@ -82,13 +85,13 @@ public class OAuthProtectedResourceMetadataServletTest {
     public void handlesNullPathInfoAsRootPath() {
         final String[] resolvedPath = new String[1];
 
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 resolvedPath[0] = protectedResourcePath;
                 return METADATA_JSON;
             }
-        };
+        });
 
         MetadataResponse response = handler.handle(null);
 
@@ -101,13 +104,13 @@ public class OAuthProtectedResourceMetadataServletTest {
     public void handlesEmptyPathInfoAsRootPath() {
         final String[] resolvedPath = new String[1];
 
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 resolvedPath[0] = protectedResourcePath;
                 return METADATA_JSON;
             }
-        };
+        });
 
         MetadataResponse response = handler.handle("");
 
@@ -120,13 +123,13 @@ public class OAuthProtectedResourceMetadataServletTest {
     public void handlesSlashPathInfoAsRootPath() {
         final String[] resolvedPath = new String[1];
 
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 resolvedPath[0] = protectedResourcePath;
                 return METADATA_JSON;
             }
-        };
+        });
 
         MetadataResponse response = handler.handle("/");
 
@@ -139,13 +142,13 @@ public class OAuthProtectedResourceMetadataServletTest {
     public void preservesNestedProtectedResourcePath() {
         final String[] resolvedPath = new String[1];
 
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 resolvedPath[0] = protectedResourcePath;
                 return METADATA_JSON;
             }
-        };
+        });
 
         MetadataResponse response = handler.handle("/app/api/v1");
 
@@ -158,13 +161,13 @@ public class OAuthProtectedResourceMetadataServletTest {
     public void preservesTrailingSlashInProtectedResourcePath() {
         final String[] resolvedPath = new String[1];
 
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
+        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 resolvedPath[0] = protectedResourcePath;
                 return METADATA_JSON;
             }
-        };
+        });
 
         MetadataResponse response = handler.handle("/mcp/");
 

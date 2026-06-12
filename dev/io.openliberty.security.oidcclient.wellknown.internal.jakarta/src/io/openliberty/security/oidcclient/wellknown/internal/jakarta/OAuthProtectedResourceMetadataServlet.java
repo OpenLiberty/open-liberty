@@ -17,6 +17,7 @@ import jakarta.servlet.http.HttpServletResponse;
 
 import io.openliberty.security.oidcclient.wellknown.common.HttpRequestAdapter;
 import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
+import io.openliberty.security.oidcclient.wellknown.common.ProtectedResourceMetadataResolver;
 import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
 import io.openliberty.security.oidcclient.wellknown.common.ServletUtils;
 
@@ -61,13 +62,13 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      * @param request the current HTTP request
      * @return a handler bound to the current request
      */
-    protected OAuthProtectedResourceMetadataHandler createHandler(final HttpServletRequest request) {
-        return new OAuthProtectedResourceMetadataHandler() {
+    protected OAuthProtectedResourceMetadataHandlerBase createHandler(final HttpServletRequest request) {
+        return new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
             @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
+            public String resolveMetadataJson(String protectedResourcePath) {
                 return OAuthProtectedResourceMetadataServlet.this.resolveMetadataJson(request, protectedResourcePath);
             }
-        };
+        });
     }
 
     /**

@@ -16,17 +16,27 @@ package io.openliberty.security.oidcclient.wellknown.common;
  * metadata request paths and mapping metadata lookup results into response models.
  * </p>
  */
-public abstract class OAuthProtectedResourceMetadataHandlerBase {
+public class OAuthProtectedResourceMetadataHandlerBase {
+
+    private final ProtectedResourceMetadataResolver metadataResolver;
+
+    public OAuthProtectedResourceMetadataHandlerBase(ProtectedResourceMetadataResolver metadataResolver) {
+        this.metadataResolver = metadataResolver;
+    }
 
     /**
      * Handles a request for protected resource metadata.
      *
-     * @param pathInfo servlet path info identifying the protected resource whose metadata is being requested
+     * @param pathInfo servlet path info from the metadata endpoint request. This is the portion
+     *                     of the request path after {@code /.well-known/oauth-protected-resource}. For
+     *                     example, for {@code /.well-known/oauth-protected-resource/myApp/protected},
+     *                     this value is {@code /myApp/protected}. It is not the full request URL or the
+     *                     full request URI.
      * @return response model representing either a JSON metadata document or not found
      */
     public MetadataResponse handle(String pathInfo) {
         String protectedResourcePath = toProtectedResourcePath(pathInfo);
-        String metadataJson = resolveMetadataJson(protectedResourcePath);
+        String metadataJson = metadataResolver.resolveMetadataJson(protectedResourcePath);
 
         if (metadataJson == null) {
             return MetadataResponse.notFound();
@@ -36,10 +46,11 @@ public abstract class OAuthProtectedResourceMetadataHandlerBase {
     }
 
     /**
-     * Converts servlet path info into the normalized protected resource path used for metadata lookup.
+     * Converts servlet path info into a normalized protected resource path.
      *
-     * @param pathInfo servlet path info from the incoming request
-     * @return normalized protected resource path beginning with {@code /}
+     * @param pathInfo servlet path info from the metadata endpoint request
+     * @return normalized protected resource path. Empty, {@code null}, or {@code /} values are
+     *         normalized to {@code /}. Values without a leading slash are prefixed with {@code /}.
      */
     protected String toProtectedResourcePath(String pathInfo) {
         if (pathInfo == null || pathInfo.isEmpty() || "/".equals(pathInfo)) {
@@ -52,12 +63,4 @@ public abstract class OAuthProtectedResourceMetadataHandlerBase {
 
         return "/" + pathInfo;
     }
-
-    /**
-     * Resolves protected resource metadata for the specified protected resource path.
-     *
-     * @param protectedResourcePath normalized protected resource path, such as {@code /mcp}
-     * @return metadata JSON, or {@code null} if no metadata should be served for that path
-     */
-    protected abstract String resolveMetadataJson(String protectedResourcePath);
 }

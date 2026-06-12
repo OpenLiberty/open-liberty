@@ -17,18 +17,22 @@ import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
+import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
+import io.openliberty.security.oidcclient.wellknown.common.ProtectedResourceMetadataResolver;
+
 
 public class OAuthProtectedResourceMetadataServletTest {
 
     @Test
     public void returnsNotFoundWhenProtectedResourceIsUnknown() {
-    	
-    	OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
-    	    @Override
-    	    protected String resolveMetadataJson(String protectedResourcePath) {
-    	        return null;
-    	    }
-    	};
+        OAuthProtectedResourceMetadataHandlerBase handler =
+                new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
+                    @Override
+                    public String resolveMetadataJson(String protectedResourcePath) {
+                        return null;
+                    }
+                });
+
         MetadataResponse response = handler.handle("/unknown");
 
         assertFalse(response.isFound());
@@ -39,12 +43,13 @@ public class OAuthProtectedResourceMetadataServletTest {
 
     @Test
     public void returnsMetadataJsonForKnownEnabledProtectedResource() {
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
-            @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
-                return "{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}";
-            }
-        };
+        OAuthProtectedResourceMetadataHandlerBase handler =
+                new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
+                    @Override
+                    public String resolveMetadataJson(String protectedResourcePath) {
+                        return "{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}";
+                    }
+                });
 
         MetadataResponse response = handler.handle("/mcp");
 
@@ -58,13 +63,14 @@ public class OAuthProtectedResourceMetadataServletTest {
     public void normalizesMissingLeadingSlashBeforeLookup() {
         final String[] resolvedPath = new String[1];
 
-        OAuthProtectedResourceMetadataHandler handler = new OAuthProtectedResourceMetadataHandler() {
-            @Override
-            protected String resolveMetadataJson(String protectedResourcePath) {
-                resolvedPath[0] = protectedResourcePath;
-                return "{}";
-            }
-        };
+        OAuthProtectedResourceMetadataHandlerBase handler =
+                new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
+                    @Override
+                    public String resolveMetadataJson(String protectedResourcePath) {
+                        resolvedPath[0] = protectedResourcePath;
+                        return "{}";
+                    }
+                });
 
         MetadataResponse response = handler.handle("mcp");
 

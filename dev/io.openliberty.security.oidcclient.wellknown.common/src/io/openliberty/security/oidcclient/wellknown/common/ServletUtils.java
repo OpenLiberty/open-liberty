@@ -36,19 +36,29 @@ public final class ServletUtils {
      * https://localhost:9443/myApp/protected
      * </pre>
      *
-     * @param request current request adapter
+     * @param request               current request adapter
      * @param protectedResourcePath normalized protected resource path, such as {@code /myApp/protected}
      * @return absolute protected resource URL
      */
     public static String buildResourceUrl(HttpRequestAdapter request, String protectedResourcePath) {
-        String requestUrl = request.getRequestURL();
-        String requestUri = request.getRequestURI();
+        StringBuilder resourceUrl = new StringBuilder();
 
-        int requestUriIndex = requestUrl.indexOf(requestUri);
-        if (requestUriIndex >= 0) {
-            return requestUrl.substring(0, requestUriIndex) + protectedResourcePath;
+        resourceUrl.append(request.getScheme())
+                   .append("://")
+                   .append(request.getServerName());
+
+        int serverPort = request.getServerPort();
+        if (serverPort > 0 && !isDefaultPort(request.getScheme(), serverPort)) {
+            resourceUrl.append(':').append(serverPort);
         }
 
-        return request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + protectedResourcePath;
+        resourceUrl.append(protectedResourcePath);
+
+        return resourceUrl.toString();
+    }
+
+    private static boolean isDefaultPort(String scheme, int port) {
+        return ("http".equalsIgnoreCase(scheme) && port == 80)
+                || ("https".equalsIgnoreCase(scheme) && port == 443);
     }
 }

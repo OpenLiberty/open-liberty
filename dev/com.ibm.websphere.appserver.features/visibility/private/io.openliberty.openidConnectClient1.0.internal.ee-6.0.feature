@@ -12,5 +12,5 @@ visibility = private
   io.openliberty.security.oidcclientcore.internal, \
   io.openliberty.security.oidcclient.wellknown.common, \
   io.openliberty.security.oidcclient.wellknown.internal
-kind=beta
+kind=ga
 edition=core
