@@ -13,8 +13,10 @@ import java.time.Duration;
 
 public class TestConstants {
 
-    public static final Duration POSITIVE_TIMEOUT = Duration.ofMillis(10_000);
-    public static final Duration NEGATIVE_TIMEOUT = Duration.ofMillis(500);
+    public static final int POSITIVE_TIMEOUT_MS = 10_000;
+    public static final int NEGATIVE_TIMEOUT_MS = 500;
+    public static final Duration POSITIVE_TIMEOUT = Duration.ofMillis(POSITIVE_TIMEOUT_MS);
+    public static final Duration NEGATIVE_TIMEOUT = Duration.ofMillis(NEGATIVE_TIMEOUT_MS);
 
     // HTTP header names
     public static final String ACCEPT = "Accept";

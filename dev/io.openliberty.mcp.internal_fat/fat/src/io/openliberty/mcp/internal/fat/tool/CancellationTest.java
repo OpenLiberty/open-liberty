@@ -37,6 +37,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.tool.cancellationApp.CancellationTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
 import io.openliberty.mcp.internal.fat.utils.ToolStatusClient;
 
@@ -132,7 +133,7 @@ public class CancellationTest extends FATServletClient {
 
         clientWithTool.callMCPNotification(cancellationRequestNotification);
 
-        String response = future.get(10, TimeUnit.SECONDS);
+        String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
@@ -142,7 +143,7 @@ public class CancellationTest extends FATServletClient {
 
     @Test
     public void testCancellationToolFromWrongClient() throws Exception {
-        final String LATCH_NAME = "strId";
+        final String LATCH_NAME = "strIdWrongClient";
 
         Callable<String> threadCallingTool = () -> {
             try {
@@ -154,7 +155,7 @@ public class CancellationTest extends FATServletClient {
                                   "params": {
                                     "name": "cancellationTool",
                                     "arguments": {
-                                      "latchName": "strId"
+                                      "latchName": "strIdWrongClient"
                                     }
                                   }
                                 }
@@ -182,7 +183,7 @@ public class CancellationTest extends FATServletClient {
         clientOnWrongURL.callMCPNotification(cancellationRequestNotification);
 
         try {
-            String response = future.get(10, TimeUnit.SECONDS);
+            String response = future.get(TestConstants.NEGATIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
             fail("Expected TimeoutException because cancellation from wrong client should have no effect across different modules");
         } catch (java.util.concurrent.TimeoutException e) {
             //Test passed: TimeoutException caught as expected - cancellation from wrong client had no effect
@@ -237,7 +238,7 @@ public class CancellationTest extends FATServletClient {
 
         clientWithTool.callMCPNotification(cancellationRequestNotification);
 
-        String response = future.get(10, TimeUnit.SECONDS);
+        String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         String expectedResponseString = """
                         {"id":2,"jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
@@ -299,7 +300,7 @@ public class CancellationTest extends FATServletClient {
         // Ending the session should cancel the tool call
         clientWithTool.deleteSession();
 
-        String response = future.get(10, TimeUnit.SECONDS);
+        String response = future.get(TestConstants.POSITIVE_TIMEOUT_MS, TimeUnit.MILLISECONDS);
 
         String expectedResponseString = """
                         {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
