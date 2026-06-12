@@ -38,7 +38,7 @@ public class McpRequestTracker {
     private static final TraceComponent tc = Tr.register(McpRequestTracker.class);
 
     private ConcurrentMap<ExecutionRequestId, CancellationImpl> ongoingRequests = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, Set<ExecutionRequestId>> sessionToRequestIds = new ConcurrentHashMap<>();
+    private final ConcurrentMap<McpSessionId, Set<ExecutionRequestId>> sessionToRequestIds = new ConcurrentHashMap<>();
 
     private McpConfig mcpConfig;
 
@@ -78,7 +78,7 @@ public class McpRequestTracker {
             return;
         }
 
-        Set<ExecutionRequestId> requests = sessionToRequestIds.remove(sessionId.value());
+        Set<ExecutionRequestId> requests = sessionToRequestIds.remove(sessionId);
         if (requests == null) {
             return;
         }

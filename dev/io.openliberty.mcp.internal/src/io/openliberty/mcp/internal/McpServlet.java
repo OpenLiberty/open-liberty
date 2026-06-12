@@ -225,12 +225,14 @@ public class McpServlet extends HttpServlet {
             return;
         }
 
-        String sessionId = req.getHeader(McpTransport.MCP_SESSION_ID_HEADER);
+        String sessionIdStr = req.getHeader(McpTransport.MCP_SESSION_ID_HEADER);
 
-        if (sessionId == null) {
+        if (sessionIdStr == null) {
             resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Missing Mcp-Session-Id");
             return;
         }
+
+        McpSessionId sessionId = new McpSessionId(sessionIdStr);
 
         if (sessionStores.getCurrent().isValid(sessionId)) {
             sessionStores.getCurrent().deleteSession(sessionId);
@@ -578,14 +580,16 @@ public class McpServlet extends HttpServlet {
         traceEvent("Client initializing: " + params.getClientInfo(), params.getCapabilities());
         Principal userId = transport.getUser();
 
-        String sessionId = sessionStores.getCurrent().createSession(userId, sessionMetrics);
+        McpSessionId sessionId = sessionStores.getCurrent().createSession(userId, sessionMetrics);
         sessionMetrics.setTransport(transport);
 
         ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
         ServerInfo info = mcpConfig.serverInfo();
         McpInitializeResult result = new McpInitializeResult(version, caps, info, null);
 
-        transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId);
+        if (sessionId != null) {
+            transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId.value());
+        }
         sendSuccessResponseAndEndMetrics(transport, result, operationMetrics);
     }
 
@@ -609,7 +613,7 @@ public class McpServlet extends HttpServlet {
             return;
         }
 
-        var session = sessionStores.getCurrent().getSession(sessionId.value());
+        var session = sessionStores.getCurrent().getSession(sessionId);
         if (session == null || !Objects.equals(session.getUserId(), userId)) {
             sendAuthErrorAndEndMetrics(transport,
                                        new AuthenticationException(Tr.formatMessage(tc, "unauthorized.cancellation")),

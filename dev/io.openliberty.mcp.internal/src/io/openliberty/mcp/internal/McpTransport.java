@@ -105,7 +105,7 @@ public class McpTransport {
             return;
         }
 
-        McpSession session = sessionStore.getSession(sessionIdHeader);
+        McpSession session = sessionStore.getSession(new McpSessionId(sessionIdHeader));
         if (session == null) {
             throw new HttpResponseException(HttpServletResponse.SC_NOT_FOUND, "Invalid or Expired Session Id");
         }

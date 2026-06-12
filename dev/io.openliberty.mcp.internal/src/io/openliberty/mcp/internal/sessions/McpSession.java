@@ -26,8 +26,8 @@ public class McpSession {
     private Instant lastAccessed;
     private McpSessionMetrics metrics;
 
-    public McpSession(String sessionId, Principal userId, McpSessionMetrics metrics) {
-        this.sessionId = new McpSessionId(sessionId);
+    public McpSession(McpSessionId sessionId, Principal userId, McpSessionMetrics metrics) {
+        this.sessionId = sessionId;
         this.userId = userId;
         this.created = Instant.now();
         this.lastAccessed = this.created;
