@@ -49,6 +49,10 @@ public class McpRequestTracker {
 
     public void deregisterOngoingRequest(ExecutionRequestId id) {
         ongoingRequests.remove(id);
+        Set<ExecutionRequestId> sessionRequests = sessionToRequestIds.get(id.sessionId());
+        if (sessionRequests != null) {
+            sessionRequests.remove(id);
+        }
     }
 
     public void registerOngoingRequest(ExecutionRequestId requestId, CancellationImpl cancellation) {
@@ -57,6 +61,7 @@ public class McpRequestTracker {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
                                        Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
         }
+        sessionToRequestIds.computeIfAbsent(requestId.sessionId(), k -> ConcurrentHashMap.newKeySet()).add(requestId);
     }
 
     public boolean isOngoingRequest(ExecutionRequestId id) {

@@ -268,4 +268,44 @@ public class CancellationTest extends FATServletClient {
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
+    @Test
+    public void testCancellationWhenSessionDeleted() throws Exception {
+        Callable<String> threadCallingTool = () -> {
+            try {
+                String request = """
+                                  {
+                                  "jsonrpc": "2.0",
+                                  "id": "2",
+                                  "method": "tools/call",
+                                  "params": {
+                                    "name": "cancellationTool",
+                                    "arguments": {
+                                      "latchName": "sessionDeleteTest"
+                                    }
+                                  }
+                                }
+                                """;
+
+                return clientWithTool.callMCP(request);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        Future<String> future = executor.submit(threadCallingTool);
+
+        toolStatus.awaitStarted("sessionDeleteTest");
+
+        // Ending the session should cancel the tool call
+        clientWithTool.deleteSession();
+
+        String response = future.get(10, TimeUnit.SECONDS);
+
+        String expectedResponseString = """
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+
+    }
+
 }
