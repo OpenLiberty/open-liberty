@@ -526,11 +526,36 @@ public class CacheHashMap extends BackedHashMap {
             } else {
                 if (session.appDataChanges != null) {
                     if (appDataTablesPerThread) {
+                        // First try the current thread (normal case)
                         if ((tht = (Hashtable) session.appDataChanges.get(t)) != null) {
                             if (trace && tc.isDebugEnabled()) {
                                 Tr.debug(this, tc, "doing app changes for " + id + " on thread " + t);
                             }
                             propsToWrite = tht.keySet();
+                        }
+                        
+                        // If current thread has no changes, collect from ALL threads.
+                        // This handles the case where END_OF_SERVLET_SERVICE flush runs
+                        // on a different thread than the one that called setAttribute
+                        // (observed on S390 and ARM64 under EE10 feature set).
+                        if (propsToWrite == null && !session.appDataChanges.isEmpty()) {
+                            if (trace && tc.isDebugEnabled()) {
+                                Tr.debug(this, tc, "no changes for current thread " + t +
+                                         ", scanning all threads for " + id);
+                            }
+                            Set<String> merged = new HashSet<String>();
+                            for (Object val : session.appDataChanges.values()) {
+                                if (val instanceof Hashtable) {
+                                    merged.addAll(((Hashtable<String, ?>) val).keySet());
+                                }
+                            }
+                            if (!merged.isEmpty()) {
+                                propsToWrite = merged;
+                                if (trace && tc.isDebugEnabled()) {
+                                    Tr.debug(this, tc, "found " + merged.size() +
+                                             " cross-thread props to write for " + id);
+                                }
+                            }
                         }
                     } else { // appDataTablesPerSession
                         propsToWrite = session.appDataChanges.keySet();
@@ -583,11 +608,14 @@ public class CacheHashMap extends BackedHashMap {
                 if (trace && tc.isDebugEnabled())
                     Tr.debug(this, tc, propsToWrite.size() + " property writes are done");
 
+                // Clear all thread entries rather than just the current thread.
+                // When a cross-thread flush occurred, remove(t) would leave stale
+                // entries behind for the thread that originally called setAttribute.
                 if (appDataTablesPerThread) {
                     if (session.appDataChanges != null)
-                        session.appDataChanges.remove(t);
+                        session.appDataChanges.clear();
                     if (trace && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "remove thread from appDataChanges for thread", t);
+                        Tr.debug(this, tc, "cleared all thread entries from appDataChanges for " + id);
                     }
                 } else { //appDataTablesPerSession
                     if (session.appDataChanges != null)
@@ -617,6 +645,23 @@ public class CacheHashMap extends BackedHashMap {
                         }
                         propsToRemove = tht.keySet();
                     }
+                    
+                    // Same cross-thread fix for removals
+                    if (propsToRemove == null && !session.appDataRemovals.isEmpty()) {
+                        if (trace && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "no removals for current thread " + t +
+                                     ", scanning all threads for removals for " + id);
+                        }
+                        Set<String> merged = new HashSet<String>();
+                        for (Object val : session.appDataRemovals.values()) {
+                            if (val instanceof Hashtable) {
+                                merged.addAll(((Hashtable<String, ?>) val).keySet());
+                            }
+                        }
+                        if (!merged.isEmpty()) {
+                            propsToRemove = merged;
+                        }
+                    }
                 }
 
                 if (propsToRemove != null && !propsToRemove.isEmpty()) {
@@ -642,11 +687,11 @@ public class CacheHashMap extends BackedHashMap {
                     if (trace && tc.isDebugEnabled()) {
                         Tr.debug(this, tc, "clearing appDataRemovals");
                     }
-                } else { //appDataTablesPerThread
+                } else { // appDataTablesPerThread - clear all threads
                     if (session.appDataRemovals != null)
-                        session.appDataRemovals.remove(t);
+                        session.appDataRemovals.clear();
                     if (trace && tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "remove thread from appDataRemovals", t);
+                        Tr.debug(this, tc, "cleared all thread entries from appDataRemovals for " + id);
                     }
                 }
             }
