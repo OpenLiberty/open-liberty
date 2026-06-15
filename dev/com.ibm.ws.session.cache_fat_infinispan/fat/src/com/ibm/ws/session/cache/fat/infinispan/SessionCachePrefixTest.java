@@ -39,6 +39,9 @@ import componenttest.topology.utils.FATServletClient;
  * Tests for the cacheNamePrefix attribute of httpSessionCache.
  * This feature allows customers to customize session cache names when multiple
  * Liberty instances share the same Infinispan cluster.
+ * 
+ * Uses serverDefault with setServerConfigurationFile() for single-server tests,
+ * and serverPod1/serverPod2 for multi-pod clustering tests.
  */
 @MaximumJavaLevel(javaLevel = 22)
 @RunWith(FATRunner.class)
@@ -47,39 +50,15 @@ public class SessionCachePrefixTest extends FATServletClient {
     @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.default")
     public static LibertyServer serverDefault;
 
-    @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.custom")
-    public static LibertyServer serverCustom;
-
     @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.pod1")
     public static LibertyServer serverPod1;
 
     @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.pod2")
     public static LibertyServer serverPod2;
 
-    @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.empty")
-    public static LibertyServer serverEmpty;
-
-    @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.special")
-    public static LibertyServer serverSpecial;
-
-    @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.appname")
-    public static LibertyServer serverAppName;
-
-    @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.dynamic")
-    public static LibertyServer serverDynamic;
-
-    @Server("com.ibm.ws.session.cache.fat.infinispan.prefix.invalid")
-    public static LibertyServer serverInvalid;
-
     public static SessionCacheApp appDefault;
-    public static SessionCacheApp appCustom;
     public static SessionCacheApp appPod1;
     public static SessionCacheApp appPod2;
-    public static SessionCacheApp appEmpty;
-    public static SessionCacheApp appSpecial;
-    public static SessionCacheApp appAppName;
-    public static SessionCacheApp appDynamic;
-    public static SessionCacheApp appInvalid;
 
     @ClassRule
     public static RepeatTests repeatRule = RepeatTests.withoutModification().andWith(new CacheManagerRepeatAction());
@@ -88,22 +67,15 @@ public class SessionCachePrefixTest extends FATServletClient {
     public static void setUp() throws Exception {
         // Initialize apps for each server
         appDefault = new SessionCacheApp(serverDefault, true, "session.cache.infinispan.web");
-        appCustom = new SessionCacheApp(serverCustom, true, "session.cache.infinispan.web");
         appPod1 = new SessionCacheApp(serverPod1, true, "session.cache.infinispan.web");
         appPod2 = new SessionCacheApp(serverPod2, true, "session.cache.infinispan.web");
-        appEmpty = new SessionCacheApp(serverEmpty, true, "session.cache.infinispan.web");
-        appSpecial = new SessionCacheApp(serverSpecial, true, "session.cache.infinispan.web");
-        appAppName = new SessionCacheApp(serverAppName, true, "session.cache.infinispan.web");
-        appDynamic = new SessionCacheApp(serverDynamic, true, "session.cache.infinispan.web");
-        appInvalid = new SessionCacheApp(serverInvalid, true, "session.cache.infinispan.web");
 
-        // Use secondary HTTP ports for additional servers
+        // Use secondary HTTP ports for pod2
         serverPod2.useSecondaryHTTPPort();
 
         // Set up JVM options for all servers with unique cluster name
         String rand = UUID.randomUUID().toString();
         setupServer(serverDefault, rand);
-        setupServer(serverCustom, rand);
         setupServer(serverPod1, rand);
         setupServer(serverPod2, rand);
 
@@ -117,11 +89,6 @@ public class SessionCachePrefixTest extends FATServletClient {
         pod2Options.put("-Djgroups.bind.port", "7801");
         pod2Options.put("-Djgroups.tcpping.initial_hosts", "127.0.0.1[7800],127.0.0.1[7801]");
         serverPod2.setJvmOptions(pod2Options);
-        setupServer(serverEmpty, rand);
-        setupServer(serverSpecial, rand);
-        setupServer(serverAppName, rand);
-        setupServer(serverDynamic, rand);
-        setupServer(serverInvalid, rand);
     }
 
     private static void setupServer(LibertyServer server, String clusterName) throws Exception {
@@ -137,33 +104,9 @@ public class SessionCachePrefixTest extends FATServletClient {
             stopServer(serverDefault);
         } finally {
             try {
-                stopServer(serverCustom);
+                stopServer(serverPod1);
             } finally {
-                try {
-                    stopServer(serverPod1);
-                } finally {
-                    try {
-                        stopServer(serverPod2);
-                    } finally {
-                        try {
-                            stopServer(serverEmpty);
-                        } finally {
-                            try {
-                                stopServer(serverSpecial);
-                            } finally {
-                                try {
-                                    stopServer(serverAppName);
-                                } finally {
-                                    try {
-                                        stopServer(serverDynamic);
-                                    } finally {
-                                        stopServer(serverInvalid);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                stopServer(serverPod2);
             }
         }
     }
@@ -186,6 +129,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testDefaultCacheNames() throws Exception {
+        serverDefault.setServerConfigurationFile("configs/server_default.xml");
         serverDefault.startServer();
 
         try {
@@ -214,25 +158,26 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testCustomPrefix() throws Exception {
-        serverCustom.startServer();
+        serverDefault.setServerConfigurationFile("configs/server_custom.xml");
+        serverDefault.startServer();
 
         try {
             // Create a session and put data
             List<String> session = new ArrayList<>();
-            String sessionId = appCustom.sessionPut("testKey", "customValue", session, true);
+            String sessionId = appDefault.sessionPut("testKey", "customValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appCustom.sessionGet("testKey", "customValue", session);
+            appDefault.sessionGet("testKey", "customValue", session);
 
             // Check logs for custom prefix in cache names
             assertNotNull("Should find custom prefix 'testPrefix_' in cache names",
-                         serverCustom.waitForStringInTrace("testPrefix_com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
+                         serverDefault.waitForStringInTrace("testPrefix_com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
 
             Log.info(SessionCachePrefixTest.class, "testCustomPrefix",
                     "Successfully verified custom prefix 'testPrefix_' in cache names");
         } finally {
-            serverCustom.stopServer("CWWKG0075E");
+            serverDefault.stopServer("CWWKG0075E");
         }
     }
 
@@ -338,25 +283,26 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testEmptyStringPrefix() throws Exception {
-        serverEmpty.startServer();
+        serverDefault.setServerConfigurationFile("configs/server_empty.xml");
+        serverDefault.startServer();
 
         try {
             // Create a session and put data
             List<String> session = new ArrayList<>();
-            String sessionId = appEmpty.sessionPut("testKey", "emptyValue", session, true);
+            String sessionId = appDefault.sessionPut("testKey", "emptyValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appEmpty.sessionGet("testKey", "emptyValue", session);
+            appDefault.sessionGet("testKey", "emptyValue", session);
 
             // Check logs for standard cache name pattern (empty prefix should behave like default)
             assertNotNull("Should find standard cache name pattern in logs",
-                         serverEmpty.waitForStringInTrace("com\\.ibm\\.ws\\.session\\.(attr|meta)\\.default_host", 30000));
+                         serverDefault.waitForStringInTrace("com\\.ibm\\.ws\\.session\\.(attr|meta)\\.default_host", 30000));
 
             Log.info(SessionCachePrefixTest.class, "testEmptyStringPrefix",
                     "Successfully verified empty string prefix behaves like default");
         } finally {
-            serverEmpty.stopServer("CWWKG0075E");
+            serverDefault.stopServer("CWWKG0075E");
         }
     }
 
@@ -366,25 +312,26 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testSpecialCharactersInPrefix() throws Exception {
-        serverSpecial.startServer();
+        serverDefault.setServerConfigurationFile("configs/server_special.xml");
+        serverDefault.startServer();
 
         try {
             // Create a session and put data
             List<String> session = new ArrayList<>();
-            String sessionId = appSpecial.sessionPut("testKey", "specialValue", session, true);
+            String sessionId = appDefault.sessionPut("testKey", "specialValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appSpecial.sessionGet("testKey", "specialValue", session);
+            appDefault.sessionGet("testKey", "specialValue", session);
 
             // Check logs for prefix with special characters: "app-v1.2_prod:"
             assertNotNull("Should find prefix with special characters in cache names",
-                         serverSpecial.waitForStringInTrace("app-v1\\.2_prod:com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
+                         serverDefault.waitForStringInTrace("app-v1\\.2_prod:com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
 
             Log.info(SessionCachePrefixTest.class, "testSpecialCharactersInPrefix",
                     "Successfully verified special characters in prefix");
         } finally {
-            serverSpecial.stopServer("CWWKG0075E");
+            serverDefault.stopServer("CWWKG0075E");
         }
     }
 
@@ -394,22 +341,23 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testPrefixWithAppNameAndSeparator() throws Exception {
-        serverAppName.startServer();
+        serverDefault.setServerConfigurationFile("configs/server_appname.xml");
+        serverDefault.startServer();
 
         try {
             // Create a session and put data
             List<String> session = new ArrayList<>();
-            String sessionId = appAppName.sessionPut("testKey", "appNameValue", session, true);
+            String sessionId = appDefault.sessionPut("testKey", "appNameValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appAppName.sessionGet("testKey", "appNameValue", session);
+            appDefault.sessionGet("testKey", "appNameValue", session);
 
             // Session put/get working proves the prefix configuration is correct
             Log.info(SessionCachePrefixTest.class, "testPrefixWithAppNameAndSeparator",
                     "Successfully verified prefix with appInCacheName and cacheSeparator");
         } finally {
-            serverAppName.stopServer("CWWKG0075E");
+            serverDefault.stopServer("CWWKG0075E");
         }
     }
 
@@ -420,25 +368,26 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testDynamicConfigChange() throws Exception {
-        serverDynamic.startServer();
+        serverDefault.setServerConfigurationFile("configs/server_dynamic.xml");
+        serverDefault.startServer();
 
         try {
             // Create a session with initial prefix "initial_"
             List<String> session = new ArrayList<>();
-            String sessionId = appDynamic.sessionPut("testKey", "initialValue", session, true);
+            String sessionId = appDefault.sessionPut("testKey", "initialValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appDynamic.sessionGet("testKey", "initialValue", session);
+            appDefault.sessionGet("testKey", "initialValue", session);
 
             // Check logs for initial prefix
             assertNotNull("Should find initial prefix 'initial_' in cache names",
-                         serverDynamic.waitForStringInTrace("initial_com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
+                         serverDefault.waitForStringInTrace("initial_com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
 
             Log.info(SessionCachePrefixTest.class, "testDynamicConfigChange",
                     "Successfully verified initial prefix. Note: Dynamic config changes require server restart.");
         } finally {
-            serverDynamic.stopServer("CWWKG0075E");
+            serverDefault.stopServer("CWWKG0075E");
         }
     }
 
@@ -465,15 +414,16 @@ public class SessionCachePrefixTest extends FATServletClient {
         // This test verifies that the server can start with potentially problematic characters
         // The prefix "test/invalid\prefix" contains forward slash and backslash
         try {
-            serverInvalid.startServer();
+            serverDefault.setServerConfigurationFile("configs/server_invalid.xml");
+            serverDefault.startServer();
 
             // If server starts successfully, verify basic session functionality
             List<String> session = new ArrayList<>();
-            String sessionId = appInvalid.sessionPut("testKey", "invalidValue", session, true);
+            String sessionId = appDefault.sessionPut("testKey", "invalidValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appInvalid.sessionGet("testKey", "invalidValue", session);
+            appDefault.sessionGet("testKey", "invalidValue", session);
 
             Log.info(SessionCachePrefixTest.class, "testInvalidPrefixCharacters",
                     "Server accepted prefix with special characters - session functionality works");
@@ -483,10 +433,9 @@ public class SessionCachePrefixTest extends FATServletClient {
                     "Server rejected prefix with problematic characters: " + e.getMessage());
             assertTrue("Expected exception for invalid prefix characters", true);
         } finally {
-            if (serverInvalid.isStarted()) {
-                serverInvalid.stopServer("CWWKG0075E");
+            if (serverDefault.isStarted()) {
+                serverDefault.stopServer("CWWKG0075E");
             }
         }
     }
 }
-

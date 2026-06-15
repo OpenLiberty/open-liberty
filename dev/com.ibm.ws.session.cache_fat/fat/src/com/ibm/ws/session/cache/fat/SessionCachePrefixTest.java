@@ -39,71 +39,38 @@ import componenttest.topology.utils.FATServletClient;
  * Tests for cacheNamePrefix configuration with Hazelcast.
  * This feature allows customers to customize session cache names when multiple
  * Liberty instances share the same Hazelcast cluster.
+ *
+ * Uses a single server instance with setServerConfigurationFile() to test
+ * different prefix configurations sequentially.
  */
 @RunWith(FATRunner.class)
 public class SessionCachePrefixTest extends FATServletClient {
 
     @Server("sessionCachePrefixServer")
-    public static LibertyServer serverCustom;
+    public static LibertyServer server;
 
-    @Server("sessionCachePrefixServer_empty")
-    public static LibertyServer serverEmpty;
-
-    @Server("sessionCachePrefixServer_special")
-    public static LibertyServer serverSpecial;
-
-    public static SessionCacheApp appCustom = null;
-    public static SessionCacheApp appEmpty = null;
-    public static SessionCacheApp appSpecial = null;
+    public static SessionCacheApp app = null;
 
     @ClassRule
     public static RepeatTests repeatRule = RepeatTests.withoutModification().andWith(new CacheManagerRepeatAction());
 
     @BeforeClass
     public static void setUp() throws Exception {
-        appCustom = new SessionCacheApp(serverCustom, true, "session.cache.web", "session.cache.web.listener1");
-        appEmpty = new SessionCacheApp(serverEmpty, true, "session.cache.web", "session.cache.web.listener1");
-        appSpecial = new SessionCacheApp(serverSpecial, true, "session.cache.web", "session.cache.web.listener1");
-        
-        serverEmpty.useSecondaryHTTPPort();
-        // Configure serverSpecial to use HTTP_tertiary port (no useTertiaryHTTPPort() method exists)
-        // Hardcoded values from testports.properties: bvt.prop.HTTP_tertiary=8050, secure=8060
-        serverSpecial.setHttpDefaultPort(8050);
-        serverSpecial.setHttpDefaultSecurePort(8060);
-
-        String sessionCacheConfigFile = "httpSessionCache_1.xml";
-        if (RepeatTestFilter.isRepeatActionActive(CacheManagerRepeatAction.ID)) {
-            sessionCacheConfigFile = "httpSessionCache_2.xml";
-        }
+        app = new SessionCacheApp(server, true, "session.cache.web", "session.cache.web.listener1");
 
         String hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
-        String configLocation = new File(serverCustom.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
+        String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
         
         List<String> jvmOptions = Arrays.asList("-Dhazelcast.group.name=" + UUID.randomUUID(),
-                                                "-Dhazelcast.config=" + configLocation,
-                                                "-Dsession.cache.config.file=" + sessionCacheConfigFile);
+                                                "-Dhazelcast.config=" + configLocation);
         
-        serverCustom.setJvmOptions(jvmOptions);
-        serverEmpty.setJvmOptions(jvmOptions);
-        serverSpecial.setJvmOptions(jvmOptions);
+        server.setJvmOptions(jvmOptions);
     }
 
     @AfterClass
     public static void tearDown() throws Exception {
-        try {
-            if (serverCustom != null && serverCustom.isStarted()) {
-                serverCustom.stopServer("CWWKG0058E", "CWWKO0221E");
-            }
-        } finally {
-            try {
-                if (serverEmpty != null && serverEmpty.isStarted()) {
-                    serverEmpty.stopServer("CWWKG0058E", "CWWKO0221E");
-                }
-            } finally {
-                if (serverSpecial != null && serverSpecial.isStarted()) {
-                    serverSpecial.stopServer("CWWKG0058E", "CWWKO0221E");
-                }
-            }
+        if (server != null && server.isStarted()) {
+            server.stopServer("CWWKG0058E", "CWWKO0221E");
         }
     }
 
@@ -113,24 +80,25 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testCustomPrefix() throws Exception {
-        serverCustom.startServer();
+        server.setServerConfigurationFile("configs/server_customPrefix.xml");
+        server.startServer();
         
         try {
             List<String> session = new ArrayList<>();
-            String sessionId = appCustom.sessionPut("testKey", "testValue", session, true);
+            String sessionId = app.sessionPut("testKey", "testValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appCustom.sessionGet("testKey", "testValue", session);
+            app.sessionGet("testKey", "testValue", session);
 
             // Check logs for custom prefix "testPrefix_"
             assertNotNull("Should find custom prefix in cache names",
-                         serverCustom.waitForStringInTrace("testPrefix_com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
+                         server.waitForStringInTrace("testPrefix_com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
 
             Log.info(SessionCachePrefixTest.class, "testCustomPrefix",
                     "Successfully verified custom prefix 'testPrefix_' in cache names");
         } finally {
-            serverCustom.stopServer("CWWKG0058E", "CWWKO0221E");
+            server.stopServer("CWWKG0058E", "CWWKO0221E");
         }
     }
 
@@ -140,24 +108,25 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testEmptyStringPrefix() throws Exception {
-        serverEmpty.startServer();
+        server.setServerConfigurationFile("configs/server_emptyPrefix.xml");
+        server.startServer();
         
         try {
             List<String> session = new ArrayList<>();
-            String sessionId = appEmpty.sessionPut("emptyKey", "emptyValue", session, true);
+            String sessionId = app.sessionPut("emptyKey", "emptyValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appEmpty.sessionGet("emptyKey", "emptyValue", session);
+            app.sessionGet("emptyKey", "emptyValue", session);
 
             // Check logs for standard cache name pattern (empty prefix should behave like default)
             assertNotNull("Should find standard cache name pattern in logs",
-                         serverEmpty.waitForStringInTrace("com\\.ibm\\.ws\\.session\\.(attr|meta)\\.default_host", 30000));
+                         server.waitForStringInTrace("com\\.ibm\\.ws\\.session\\.(attr|meta)\\.default_host", 30000));
 
             Log.info(SessionCachePrefixTest.class, "testEmptyStringPrefix",
                     "Successfully verified empty string prefix behaves like default");
         } finally {
-            serverEmpty.stopServer("CWWKG0058E", "CWWKO0221E");
+            server.stopServer("CWWKG0058E", "CWWKO0221E");
         }
     }
 
@@ -167,24 +136,25 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testSpecialCharactersInPrefix() throws Exception {
-        serverSpecial.startServer();
+        server.setServerConfigurationFile("configs/server_specialPrefix.xml");
+        server.startServer();
         
         try {
             List<String> session = new ArrayList<>();
-            String sessionId = appSpecial.sessionPut("specialKey", "specialValue", session, true);
+            String sessionId = app.sessionPut("specialKey", "specialValue", session, true);
             assertNotNull("Session ID should not be null", sessionId);
 
             // Verify session data can be retrieved
-            appSpecial.sessionGet("specialKey", "specialValue", session);
+            app.sessionGet("specialKey", "specialValue", session);
 
             // Check logs for prefix with special characters: "app-v1.2_prod:"
             assertNotNull("Should find prefix with special characters in cache names",
-                         serverSpecial.waitForStringInTrace("app-v1\\.2_prod:com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
+                         server.waitForStringInTrace("app-v1\\.2_prod:com\\.ibm\\.ws\\.session\\.(attr|meta)", 30000));
 
             Log.info(SessionCachePrefixTest.class, "testSpecialCharactersInPrefix",
                     "Successfully verified special characters in prefix");
         } finally {
-            serverSpecial.stopServer("CWWKG0058E", "CWWKO0221E");
+            server.stopServer("CWWKG0058E", "CWWKO0221E");
         }
     }
 }
