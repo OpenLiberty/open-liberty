@@ -11,7 +11,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
     <featureManager>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
@@ -29,8 +28,7 @@
 
     <bell libraryRef="HazelcastLib" service="javax.cache.spi.CachingProvider"/>
     
-    <!-- No cacheNamePrefix configured - should use default behavior -->
-    <httpSessionCache/>
+    <httpSessionCache cacheNamePrefix="testPrefix_"/>
 
 	<!-- Perms needed because the application uses Hazelcast directly   -->
 	<javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
@@ -52,5 +50,3 @@
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanTrustPermission" name="register"/>
 </server>
-
-

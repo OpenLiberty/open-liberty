@@ -11,7 +11,6 @@
         IBM Corporation - initial API and implementation
  -->
 <server>
-
     <featureManager>
         <feature>servlet-3.1</feature>
         <feature>componenttest-1.0</feature>
@@ -19,11 +18,7 @@
         <feature>sessionCache-1.0</feature>
     </featureManager>
     
-    <httpEndpoint id="defaultHttpEndpoint"
-                  httpPort="${bvt.prop.HTTP_secondary}"
-                  httpsPort="${bvt.prop.HTTP_secondary.secure}"/>
-    
-    <include location="../fatTestCommon.xml"/>
+    <include location="../fatTestPorts.xml"/>
 
     <httpSession maxInMemorySessionCount="1" allowOverflow="false" hideSessionValues="false"/>
 
@@ -56,4 +51,3 @@
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanTrustPermission" name="register"/>
 </server>
-

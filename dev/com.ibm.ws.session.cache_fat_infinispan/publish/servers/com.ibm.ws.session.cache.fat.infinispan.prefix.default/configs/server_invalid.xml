@@ -36,13 +36,8 @@
         <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
     </library>
     
-    <!-- Test Scenario 6: Interaction with appInCacheName and cacheSeparator -->
-    <httpSessionCache libraryRef="InfinispanLib" 
-                      writeContents="GET_AND_SET_ATTRIBUTES" 
-                      uri="file:///${shared.resource.dir}/infinispan/infinispan-com-ibm-configuration.xml" 
-                      cacheNamePrefix="myPrefix_"
-                      appInCacheName="true"
-                      cacheSeparator="-">
+    <!-- Test Scenario 10: Negative testing - prefix with potentially problematic characters -->
+    <httpSessionCache libraryRef="InfinispanLib" writeContents="GET_AND_SET_ATTRIBUTES" uri="file:///${shared.resource.dir}/infinispan/infinispan-com-ibm-configuration.xml" cacheNamePrefix="test/invalid\prefix">
         <properties/>
     </httpSessionCache>
     
