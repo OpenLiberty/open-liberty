@@ -32,10 +32,12 @@ if (isBuildOsNativePackages) {
 		}
 
 		into ("packages.current") {
+
 		from "${project(':build.image').projectDir}/packaging/rpmbuild/RPMS/noarch/"
 		    include ('*.rpm')
 		}
 	}
+
 	customizeAutoFVT.dependsOn copyCurrentPackages
 }
 
