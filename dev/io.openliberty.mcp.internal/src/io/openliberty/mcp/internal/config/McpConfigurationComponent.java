@@ -59,7 +59,7 @@ public class McpConfigurationComponent {
         String moduleName = (String) properties.get("moduleName");
         String path = (String) properties.get("path");
         boolean stateless = (boolean) properties.get("stateless");
-        int asyncTimeout = (int) properties.get("asyncTimeout");
+        long asyncTimeout = (long) properties.get("asyncTimeout");
         Duration sessionTimeout = Duration.ofSeconds((Long) properties.get("sessionTimeout"));
 
         // Parse flattened serverInfo properties (ibm:flat="true" in metatype.xml)

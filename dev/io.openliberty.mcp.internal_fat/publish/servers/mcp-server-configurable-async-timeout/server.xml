@@ -9,7 +9,7 @@
   
   <!-- Application with short async timeout (2 seconds) -->
   <application location="shortTimeoutTest.war">
-    <mcpServer asyncTimeout="2"/>
+    <mcpServer asyncTimeout="2s"/>
   </application>
 
   <!-- Application with default async timeout (30 seconds) -->

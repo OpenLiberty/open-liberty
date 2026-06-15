@@ -18,7 +18,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.concurrent.CompletionStage;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 import com.ibm.websphere.ras.Tr;
@@ -62,14 +61,14 @@ public class McpTransport {
     private Writer writer;
     private McpProtocolVersion version;
     private McpSession sessionInfo;
-    private final int asyncTimeoutSeconds;
+    private final long asyncTimeoutMs;
     private String appName;
 
-    public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb, int asyncTimeoutSeconds) throws IOException {
+    public McpTransport(HttpServletRequest req, HttpServletResponse res, Jsonb jsonb, long asyncTimeoutMs) throws IOException {
         this.req = req;
         this.res = res;
         this.jsonb = jsonb;
-        this.asyncTimeoutSeconds = asyncTimeoutSeconds;
+        this.asyncTimeoutMs = asyncTimeoutMs;
         req.setCharacterEncoding(StandardCharsets.UTF_8.name());
         res.setCharacterEncoding(StandardCharsets.UTF_8.name());
         writer = res.getWriter(); // Writer must be acquired after setting response character encoding
@@ -310,7 +309,7 @@ public class McpTransport {
 
     public <T> CompletionStage<T> sendResultAsync(CompletionStage<T> stage) {
         AsyncContext asyncContext = req.startAsync();
-        asyncContext.setTimeout(TimeUnit.SECONDS.toMillis(asyncTimeoutSeconds));
+        asyncContext.setTimeout(asyncTimeoutMs);
         return stage.handle((result, throwable) -> {
             try {
                 if (throwable == null) {

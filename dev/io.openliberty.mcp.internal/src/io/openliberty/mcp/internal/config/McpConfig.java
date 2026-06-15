@@ -30,10 +30,11 @@ public interface McpConfig {
      * @return ServerInfo with name, title, version, and description
      */
     ServerInfo serverInfo();
+
     /**
-     * Returns the timeout in seconds for asynchronous tool executions
+     * Returns the timeout in milliseconds for asynchronous tool executions
      *
-     * @return the async timeout in seconds
+     * @return the async timeout in milliseconds
      */
-    int asyncTimeout();
+    long asyncTimeoutMs();
 }

@@ -42,7 +42,7 @@
         id="asyncTimeout"
         required="false"
         type="String"
-        ibm:type="duration(s)"
+        ibm:type="duration(ms)"
         default="30s"/>
 	<AD name="%info.name"
 	    description="%info.description"
