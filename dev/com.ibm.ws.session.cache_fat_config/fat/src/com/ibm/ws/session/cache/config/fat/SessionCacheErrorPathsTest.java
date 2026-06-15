@@ -71,7 +71,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
     public void cleanUpPerTest() throws Exception {
         try {
             if (server.isStarted()) {
-                server.stopServer("CWWKG0033W");
+                server.stopServer("CWWKG0033W", "SESN0307E", "SRVE8059E");
             }
         } finally {
             server.updateServerConfiguration(savedConfig);
@@ -150,6 +150,7 @@ public class SessionCacheErrorPathsTest extends FATServletClient {
      * verifying that a session attribute added afterward is persisted, whereas a session attribute added before
      * (in absence of sessionCache-1.0 feature) is not.
      */
+    @AllowedFFDC(value = { "java.lang.IllegalStateException" })
     @Test
     public void testAddFeature() throws Exception {
         // Start the server with sessionCache-1.0 enabled
