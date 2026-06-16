@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<server description="Sample Liberty server with Telemetry Enabled">
+    <featureManager>
+        <feature>mcpserver-1.0</feature>
+        <feature>componenttest-2.0</feature>
+        <feature>monitor-1.0</feature>
+        <feature>mpmetrics-5.1</feature>
+        <feature>cdi-4.0</feature>
+        <feature>mptelemetry-2.1</feature>
+        <feature>servlet-6.0</feature>
+    </featureManager>
+    <include location="../fatTestPorts.xml"/>
+    <mpMetrics authentication="false"/>
+</server>

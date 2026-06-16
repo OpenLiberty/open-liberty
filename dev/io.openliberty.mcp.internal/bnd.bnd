@@ -22,6 +22,15 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 WS-TraceGroup: MCP
 
+Export-Package: \
+	io.openliberty.mcp.internal.monitoring,\
+	io.openliberty.mcp.internal.metrics,\
+	io.openliberty.mcp.internal.requests,\
+	io.openliberty.mcp.internal
+
+Private-Package: \
+	io.openliberty.mcp.internal.*
+	
 Import-Package: \
     jakarta.annotation.*;version='[2.1.0,4.0.0)',\
     *
@@ -31,10 +40,12 @@ Include-Resource: \
 
 Bundle-Localization: \
         OSGI-INF/l10n/metatype
+        
 
 -dsannotations: \
  io.openliberty.mcp.internal.McpServletInitializer,\
  io.openliberty.mcp.internal.McpCdiExtensionMetadata,\
+ io.openliberty.mcp.internal.McpMetricRecorderProviderHolder,\
  io.openliberty.mcp.internal.config.McpConfigurationComponent,\
  io.openliberty.mcp.internal.config.McpServerApplicationTracker,\
  io.openliberty.mcp.internal.introspection.McpIntrospector
@@ -47,6 +58,7 @@ Bundle-Localization: \
 	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
 	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\

@@ -50,6 +50,8 @@ import componenttest.topology.utils.HttpRequest;
  */
 public class McpClient extends ExternalResource {
 
+    private static final Class<?> c = McpClient.class;
+
     private final LibertyServer server;
     private final String contextRoot;
     private final StateMode mode;
@@ -122,6 +124,23 @@ public class McpClient extends ExternalResource {
         return contextRoot + path;
     }
 
+    /**
+     * Initialize the MCP client by sending an initialize request and setting up the session.
+     * This method can be called directly when you need to reinitialize after session deletion.
+     *
+     * @throws Exception if initialization fails
+     */
+    public void initialize() throws Exception {
+        try {
+            before();
+        } catch (Throwable t) {
+            if (t instanceof Exception) {
+                throw (Exception) t;
+            }
+            throw new Exception("Initialization failed", t);
+        }
+    }
+
     /** {@inheritDoc} */
     @Override
     protected void before() throws Throwable {
@@ -189,12 +208,18 @@ public class McpClient extends ExternalResource {
         callMCPNotification(notification);
     }
 
+    /**
+     * Indicates that the session should not be deleted when the test completes.
+     * This is useful for tests that explicitly delete the session themselves or
+     * when the application is undeployed before the test completes.
+     */
+    public void skipSessionDeletion() {
+        this.sessionDeleted = true;
+    }
+
     @Override
     protected void after() {
-        if (mode.equals(StateMode.STATEFUL)) {
-            if (sessionDeleted) {
-                return;
-            }
+        if (mode.equals(StateMode.STATEFUL) && !sessionDeleted) {
             try {
                 new HttpRequest(server, getMcpPath()).requestProp(MCP_SESSION_ID, sessionId)
                                                      .method("DELETE")
@@ -247,6 +272,21 @@ public class McpClient extends ExternalResource {
             try {
                 new HttpRequest(server, getMcpPath())
                                                      .requestProp(MCP_SESSION_ID, sessionId)
+                                                     .method("DELETE")
+                                                     .run(String.class);
+
+                this.sessionDeleted = true;
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    public void deleteSession(String mcpSessionId) {
+        if (mode.equals(StateMode.STATEFUL)) {
+            try {
+                new HttpRequest(server, getMcpPath())
+                                                     .requestProp(MCP_SESSION_ID, mcpSessionId)
                                                      .method("DELETE")
                                                      .run(String.class);
 
@@ -453,6 +493,10 @@ public class McpClient extends ExternalResource {
         combinedResponse.put("result", combinedResult);
 
         return combinedResponse.toString();
+    }
+
+    public void setSessionDeleted(boolean deleted) {
+        this.sessionDeleted = deleted;
     }
 
 }

@@ -1,0 +1,16 @@
+<server description="MCP Server with Monitor Only">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcpServer-1.0</feature>
+    <feature>componenttest-2.0</feature>
+    <feature>monitor-1.0</feature>
+    <feature>localConnector-1.0</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml" />
+  
+</server>
+
+<!-- Made with Bob -->

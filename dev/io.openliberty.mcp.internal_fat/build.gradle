@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,7 @@ sourceSets {
 dependencies {
   requiredLibs 'org.json:json:20080701',
                'org.skyscreamer:jsonassert:2.0-rc1'
+  requiredLibs project(':io.openliberty.io.opentelemetry.2.1')
   noParamNamesCompileOnly project(':io.openliberty.mcp'),
                               project(path: ':io.openliberty.jakarta', configuration: 'cdi40')
   implementation sourceSets.noParamNames.output  

@@ -17,6 +17,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.Tool;
@@ -30,6 +32,7 @@ import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.meta.Meta;
 import io.openliberty.mcp.meta.MetaKey;
 import io.openliberty.mcp.request.RequestId;
+import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
@@ -504,6 +507,58 @@ public class BasicTools {
     public String getUserJp(@ToolArg(name = "userid",
                                      description = "対象ユーザーのユーザーID。") String userId) { // The user ID of the target user
         return "ID: " + userId + ", Name: 仮名, role: user";
+    }
+
+    //////////
+    // Error Testing Tools
+    //////////
+
+    @Tool(name = "businessErrorTool", title = "Business Error Tool", description = "Sync tool that throws ToolCallException for testing error metrics")
+    public String businessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("bad-value".equals(input) || "bad".equals(input)) {
+            throw new ToolCallException("Invalid business input: " + input);
+        }
+        return "Success: " + input;
+    }
+
+    @Tool(name = "nonBusinessErrorTool", title = "Non-Business Error Tool", description = "Sync tool that throws generic exception for testing error metrics")
+    public String nonBusinessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("trigger-error".equals(input) || "error".equals(input)) {
+            throw new RuntimeException("Non-business error occurred");
+        }
+        return "Success: " + input;
+    }
+
+    @Tool(name = "asyncBusinessErrorTool", title = "Async Business Error Tool", description = "Async tool that throws ToolCallException for testing async error metrics")
+    public CompletionStage<String> asyncBusinessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("bad-value".equals(input) || "bad".equals(input)) {
+            throw new ToolCallException("Async invalid business input: " + input);
+        }
+        return CompletableFuture.completedFuture("Async success: " + input);
+    }
+
+    @Tool(name = "asyncNonBusinessErrorTool", title = "Async Non-Business Error Tool", description = "Async tool that throws generic exception for testing async error metrics")
+    public CompletionStage<String> asyncNonBusinessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("trigger-error".equals(input) || "error".equals(input)) {
+            throw new RuntimeException("Async non-business error occurred");
+        }
+        return CompletableFuture.completedFuture("Async success: " + input);
+    }
+
+    @Tool(name = "failedStageTool", title = "Failed Stage Tool", description = "Synchronous tool that throws an exception for testing error metrics")
+    public String failedStageTool(@ToolArg(name = "input", description = "input value") String input) throws ToolCallException {
+        if ("fail".equals(input) || "error".equals(input)) {
+            throw new ToolCallException("Failed stage error");
+        }
+        return "Success: " + input;
+    }
+
+    @Tool(name = "asyncFailedStageTool", title = "Async Failed Stage Tool", description = "Async tool that returns failed CompletionStage for testing async error metrics")
+    public CompletionStage<String> asyncFailedStageTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("trigger-error".equals(input) || "error".equals(input)) {
+            return CompletableFuture.failedStage(new ToolCallException("Async failed stage error"));
+        }
+        return CompletableFuture.completedFuture("Async success: " + input);
     }
 
     @Tool(name = "testNonLatinStringStructuredContent", title = "Not Latin String Structured Content Response",

@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -25,10 +25,12 @@ tested.features: \
     appSecurity-6.0,\
     cdi-4.1,\
     concurrent-3.1,\
+    restfulws-4.0,\
     servlet-6.1
 
 -buildpath: \
 	com.ibm.ws.componenttest.2.0;version=latest,\
+	org.hamcrest:hamcrest-all,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.mcp;version=latest,\
@@ -42,6 +44,11 @@ tested.features: \
 	com.ibm.websphere.javaee.jsonp.1.1;version=latest,\
 	io.openliberty.jakarta.annotation.2.1,\
 	io.openliberty.jakarta.concurrency.3.0,\
-	io.openliberty.org.testcontainers;version=latest
+	io.openliberty.org.testcontainers;version=latest,\
+	io.openliberty.io.opentelemetry.2.1;version=latest,\
+	io.openliberty.mpTelemetry.2.0.thirdparty,\
+	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
+	io.openliberty.io.opentelemetry.internal.2.1;version=latest
+	
 	
 fat.test.container.images=public.ecr.aws/docker/library/node:20-alpine

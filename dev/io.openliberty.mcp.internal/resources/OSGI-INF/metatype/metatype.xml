@@ -30,6 +30,13 @@
 	    required="false"
 	    type="String"
 	    default="/mcp"/>
+	<AD name="%sessionTimeout.name"
+	    description="%sessionTimeout.description"
+	    id="sessionTimeout"
+	    required="false"
+	    type="String"
+	    ibm:type="duration(s)"
+	    default="600s"/>
     <AD name="%asyncTimeout.name"
         description="%asyncTimeout.description"
         id="asyncTimeout"
@@ -65,7 +72,7 @@
         description="%info.title.description"
         required="false"
         type="String"/>
-    <AD id="version" 
+    <AD id="version"
         name="%info.version.name"
         description="%info.version.description"
         required="false"

@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.config;
 
+import java.time.Duration;
+
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 
 /**
@@ -17,17 +19,18 @@ import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
  * @param stateless The boolean value indicating if the sever is running in stateless mode
  * @param moduleName The name of the module the application is running in (optional, can be null)
  * @param path The endpoint path for the mcp server
- * @param servicePid The service PID (optional, can be null)
- * @param serverInfo The server info configuration (optional, can be null; name and version are required and will use defaults if not provided, title and description are optional)
+ * @param servicePid The service PID
+ * @param sessionTimeout The session timeout duration
+ * @param serverInfo The server info configuration
  * @param asyncTimeout The timeout in seconds for asynchronous tool calls
  */
 public record McpServerConfigProps(boolean stateless,
                                    String moduleName,
                                    String path,
                                    String servicePid,
+                                   Duration sessionTimeout,
                                    ServerInfo serverInfo,
                                    int asyncTimeout) implements McpConfig {
-
     public static final String FALLBACK_PATH = "/mcp";
     public static final int DEFAULT_ASYNC_TIMEOUT = 30;
 
@@ -38,7 +41,7 @@ public record McpServerConfigProps(boolean stateless,
     // Default ServerInfo with defaults (name and version only, title and description are null)
     public static final ServerInfo DEFAULT_SERVER_INFO = new ServerInfo(DEFAULT_SERVER_NAME, null, DEFAULT_SERVER_VERSION, null);
 
-    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, null, DEFAULT_ASYNC_TIMEOUT);
+    public static final McpServerConfigProps DEFAULT_CONFIG = new McpServerConfigProps(false, null, FALLBACK_PATH, null, Duration.ofMinutes(10), null, DEFAULT_ASYNC_TIMEOUT);
 
     /**
      * Compact constructor that validates and applies defaults for required fields.

@@ -206,6 +206,23 @@
                                         "inputSchema": {
                                             "type": "object",
                                             "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        },
+                                        "name": "failedStageTool",
+                                        "description": "Synchronous tool that throws an exception for testing error metrics",
+                                        "title": "Failed Stage Tool"
+                                    },
+                                    {
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
                                                 "num1": {
                                                     "description": "long",
                                                     "type": "integer"
@@ -1673,6 +1690,91 @@
                                             "type": "object",
                                             "properties": {},
                                             "required": []
+                                        }
+                                    },
+                                    {
+                                        "name": "businessErrorTool",
+                                        "description": "Sync tool that throws ToolCallException for testing error metrics",
+                                        "title": "Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "nonBusinessErrorTool",
+                                        "description": "Sync tool that throws generic exception for testing error metrics",
+                                        "title": "Non-Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "asyncBusinessErrorTool",
+                                        "description": "Async tool that throws ToolCallException for testing async error metrics",
+                                        "title": "Async Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "asyncNonBusinessErrorTool",
+                                        "description": "Async tool that throws generic exception for testing async error metrics",
+                                        "title": "Async Non-Business Error Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
+                                        }
+                                    },
+                                    {
+                                        "name": "asyncFailedStageTool",
+                                        "description": "Async tool that returns failed CompletionStage for testing async error metrics",
+                                        "title": "Async Failed Stage Tool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "description": "input value",
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": [
+                                                "input"
+                                            ]
                                         }
                                     }
                                 ]

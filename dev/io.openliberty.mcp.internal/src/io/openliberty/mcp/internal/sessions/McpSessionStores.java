@@ -15,6 +15,7 @@ import io.openliberty.mcp.internal.AbstractModuleScopedStore;
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.McpRequestTrackers;
 import io.openliberty.mcp.internal.config.McpConfig;
+import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -41,5 +42,16 @@ public class McpSessionStores extends AbstractModuleScopedStore<McpSessionStore>
     protected McpSessionStore createInstance(J2EEName moduleName) {
         McpRequestTracker requestTracker = requestTrackers.getForModule(moduleName);
         return new McpSessionStore(requestTracker, mcpConfig);
+    }
+
+    /**
+     * Called when the application is stopping. Ends all active sessions across all modules
+     * and records their metrics. 
+     */
+    @PreDestroy
+    protected void shutdown() {
+        for (McpSessionStore store : getAll()) {
+            store.endAllSessions();
+        }
     }
 }
