@@ -108,6 +108,7 @@ public class H2Connection {
     private final FrameSettings ackSettingsFrame;
 
     private final AtomicBoolean closeCalled = new AtomicBoolean(false);
+    private final AtomicBoolean connectionErrorOccurred = new AtomicBoolean(false);
 
     private static String sendBackPriority1 = "SEND.BACK.PRIORITY.1";
     private static String sendBackWinUpdate1 = "SEND.BACK.WINDOW.UPDATE.1";
@@ -799,8 +800,16 @@ public class H2Connection {
         this.serverFirstConnectReceived = received;
     }
 
+    public void setConnectionErrorOccurred() {
+        this.connectionErrorOccurred.set(true);
+    }
+
     public boolean isClosedCalled() {
         return this.closeCalled.get();
+    }
+
+    public boolean connectionErrorOccurred() {
+        return this.connectionErrorOccurred.get();
     }
 
     public void addExpectedFrames(ArrayList<Frame> frames) throws CompressionException, IOException, ExpectedPushPromiseDoesNotIncludeLinkHeaderException {

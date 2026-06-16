@@ -77,9 +77,9 @@ public class H2TCPReadCallback implements TCPReadCompletedCallback {
             LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Received error callback from connection " + arg1.getSocket() + " -> " + arg2);
         if (!h2connection.isClosedCalled()) {
             if (LOGGER.isLoggable(Level.FINEST))
-                LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Calling close with encountered exception");
+                LOGGER.logp(Level.FINEST, CLASS_NAME, "error", "H2TCPReadCallback.error: Calling error occurred on connection");
             h2connection.getReportedExceptions().add(arg2);
-            h2connection.close();
+            h2connection.setConnectionErrorOccurred();
         }
     }
 
