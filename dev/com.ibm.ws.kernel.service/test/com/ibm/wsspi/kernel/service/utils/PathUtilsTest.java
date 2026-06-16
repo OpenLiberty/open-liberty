@@ -382,9 +382,8 @@ public class PathUtilsTest {
             System.out.println("test:\t" + result);
             assertEquals("symbol should be preserved", "${preserved}/../${preserved}/../end", result);
 
-            // Don't collapse .. after a symbol @ beginning of string
-            // Don't collapse .. after a symbol in the middle of the string
-            // Collapse .. when a symbol is present, but not near the ..
+            // A partial symbol "SHOULD" be collapsed, and not treated as a special symbol in the middle of the string
+            // Collapse .. segments around these partial symbols as well.
             path = "${preserved/../${preserved/../collapsed/../end";
             result = PathUtils.normalize(path);
             System.out.println("Path:\t" + path);

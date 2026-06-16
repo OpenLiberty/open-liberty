@@ -292,11 +292,11 @@ public class WsLocationAdminImplTest {
             assertNotNull("Non-null resource should be returned for non-existent resource", r);
             assertEquals(".. should be allowed to traverse to parent (also symbolic path): " + r, NORMALIZED_ROOT + "/servers/other.dir/", r);
 
-            // Resolve path with relative segments
+            // Resolve path with relative segments including partial symbol segment
             r = impl.resolveString("${server.config.dir}/../${server.config.dir/../../other.dir/");
             System.out.println("Resolved: " + r.toString());
             assertNotNull("Non-null resource should be returned for non-existent resource", r);
-            assertEquals("../.. this shows traversal beyond parent (also symbolic path): " + r, NORMALIZED_ROOT + "/other.dir/", r);
+            assertEquals("../.. this shows traversal beyond parent, but it collapses all .. segments correctly...(also symbolic path): " + r, NORMALIZED_ROOT + "/other.dir/", r);
 
             r = impl.resolveString("${server.config.dir}/./other.dir/");
             assertNotNull("Non-null resource should be returned for non-existent resource", r);
