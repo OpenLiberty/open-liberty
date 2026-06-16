@@ -129,7 +129,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testDefaultCacheNames() throws Exception {
-        serverDefault.setServerConfigurationFile("configs/server_default.xml");
+        serverDefault.setServerConfigurationFile("server_default.xml");
         serverDefault.startServer();
 
         try {
@@ -158,7 +158,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testCustomPrefix() throws Exception {
-        serverDefault.setServerConfigurationFile("configs/server_custom.xml");
+        serverDefault.setServerConfigurationFile("server_custom.xml");
         serverDefault.startServer();
 
         try {
@@ -283,7 +283,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testEmptyStringPrefix() throws Exception {
-        serverDefault.setServerConfigurationFile("configs/server_empty.xml");
+        serverDefault.setServerConfigurationFile("server_empty.xml");
         serverDefault.startServer();
 
         try {
@@ -312,7 +312,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testSpecialCharactersInPrefix() throws Exception {
-        serverDefault.setServerConfigurationFile("configs/server_special.xml");
+        serverDefault.setServerConfigurationFile("server_special.xml");
         serverDefault.startServer();
 
         try {
@@ -341,7 +341,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testPrefixWithAppNameAndSeparator() throws Exception {
-        serverDefault.setServerConfigurationFile("configs/server_appname.xml");
+        serverDefault.setServerConfigurationFile("server_appname.xml");
         serverDefault.startServer();
 
         try {
@@ -368,7 +368,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testDynamicConfigChange() throws Exception {
-        serverDefault.setServerConfigurationFile("configs/server_dynamic.xml");
+        serverDefault.setServerConfigurationFile("server_dynamic.xml");
         serverDefault.startServer();
 
         try {
@@ -414,7 +414,7 @@ public class SessionCachePrefixTest extends FATServletClient {
         // This test verifies that the server can start with potentially problematic characters
         // The prefix "test/invalid\prefix" contains forward slash and backslash
         try {
-            serverDefault.setServerConfigurationFile("configs/server_invalid.xml");
+            serverDefault.setServerConfigurationFile("server_invalid.xml");
             serverDefault.startServer();
 
             // If server starts successfully, verify basic session functionality

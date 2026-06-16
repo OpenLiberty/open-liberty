@@ -80,7 +80,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testCustomPrefix() throws Exception {
-        server.setServerConfigurationFile("configs/server_customPrefix.xml");
+        server.setServerConfigurationFile("server_customPrefix.xml");
         server.startServer();
         
         try {
@@ -108,7 +108,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testEmptyStringPrefix() throws Exception {
-        server.setServerConfigurationFile("configs/server_emptyPrefix.xml");
+        server.setServerConfigurationFile("server_emptyPrefix.xml");
         server.startServer();
         
         try {
@@ -136,7 +136,7 @@ public class SessionCachePrefixTest extends FATServletClient {
      */
     @Test
     public void testSpecialCharactersInPrefix() throws Exception {
-        server.setServerConfigurationFile("configs/server_specialPrefix.xml");
+        server.setServerConfigurationFile("server_specialPrefix.xml");
         server.startServer();
         
         try {
