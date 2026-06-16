@@ -1728,7 +1728,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
 
         // Netty involved so need to just call it complete
         if (Objects.nonNull(this.nettyContext)) {
-            callback.complete(NettyVirtualConnectionImpl.DUMMY_NETTY_VC);
+            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
             return null;
         }
 

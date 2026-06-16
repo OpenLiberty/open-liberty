@@ -1,3 +1,17 @@
+<!-- 
+/*******************************************************************************
+ * Copyright (c) 2026 IBM Corporation and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License 2.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-2.0/
+ * 
+ * SPDX-License-Identifier: EPL-2.0
+ *
+ * Contributors:
+ *     IBM Corporation - initial API and implementation
+ *******************************************************************************/
+-->
 <persistence xmlns="https://jakarta.ee/xml/ns/persistence"
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="https://jakarta.ee/xml/ns/persistence https://jakarta.ee/xml/ns/persistence/persistence_3_2.xsd"
@@ -7,7 +21,7 @@
     <scope>jakarta.enterprise.context.ApplicationScoped</scope>
 
     <properties>
-      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
       <property name="eclipselink.logging.parameters" value="true"/>
       <property name="jakarta.persistence.bean.classes"
                 value="jakarta.persistence.EntityManager,
@@ -24,7 +38,7 @@
     <scope>jakarta.enterprise.context.Dependent</scope>
 
     <properties>
-      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
       <property name="eclipselink.logging.parameters" value="true"/>
       <property name="jakarta.persistence.bean.classes"
                 value="jakarta.persistence.EntityManager,
@@ -38,7 +52,7 @@
 
   <persistence-unit name="DefaultScopedPU">
     <properties>
-      <property name="jakarta.persistence.schema-generation.database.action" value="create"/>
+      <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create"/>
       <property name="eclipselink.logging.parameters" value="true"/>
       <property name="jakarta.persistence.bean.classes"
                 value="jakarta.persistence.EntityManager,

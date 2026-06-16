@@ -149,7 +149,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     private String tokenEndpointAuthSigningAlgorithm = null;
     public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
     private String tokenRequestOriginHeader = null;
-    
+
     public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
     private List<String> tokenOrderToFetchCallerClaims;
 
@@ -1004,7 +1004,7 @@ public class OidcLoginConfigImpl extends Oauth2LoginConfigImpl implements Conver
     public String getTokenRequestOriginHeader() {
         return tokenRequestOriginHeader;
     }
-
+    
     @Override
     public List<String> getTokenOrderToFetchCallerClaims() {  
         return tokenOrderToFetchCallerClaims;

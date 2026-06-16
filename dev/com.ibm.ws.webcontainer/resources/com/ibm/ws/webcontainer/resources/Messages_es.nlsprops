@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=No se ha podido cargar el archiv
 failed.to.load.converter.properties.useraction=Aseg\u00farese de que el archivo especificado exista y de que tenga el formato correcto de acuerdo con java.utils.Properties.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: Se ha llamado a setBufferSize() tras la primera grabaci\u00f3n en la corriente de salida/grabador
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) se invoca tras la primera escritura o una vez confirmada la respuesta
 setbuffer.size.called.after.write.explanation=Se ha intentado establecer el tama\u00f1o del almacenamiento intermedio de respuesta despu\u00e9s de que se haya comprometido la respuesta. Se trata de un error de aplicaci\u00f3n.
 setbuffer.size.called.after.write.useraction=Elimine la llamada a setBufferSize() o mu\u00e9valo a una posici\u00f3n anterior al compromiso de la respuesta.
 

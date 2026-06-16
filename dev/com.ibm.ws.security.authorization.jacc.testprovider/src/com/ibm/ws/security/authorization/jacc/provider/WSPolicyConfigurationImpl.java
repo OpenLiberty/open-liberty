@@ -22,6 +22,7 @@ import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 import javax.security.jacc.PolicyConfiguration;
 import javax.security.jacc.PolicyContextException;
@@ -42,7 +43,7 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
     String contextID = null;
     List<Permission> excludedList = null;
     List<Permission> uncheckedList = null;
-    Map<String, List<Permission>> roleToPermMap = new HashMap<String, List<Permission>>();
+    Map<String, List<Permission>> roleToPermMap = new ConcurrentHashMap<String, List<Permission>>();
     ContextState state = ContextState.STATE_OPEN;
 
     public WSPolicyConfigurationImpl(String s) throws PolicyContextException {
@@ -72,12 +73,13 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
         if (permissioncollection != null) {
             List<Permission> permList = roleToPermMap.get(s);
             if (permList == null) {
-                List<Permission> newPermList = new ArrayList<Permission>();
-                for (Enumeration<Permission> e = permissioncollection.elements(); e.hasMoreElements();) {
-                    newPermList.add(e.nextElement());
+                permList = new ArrayList<Permission>();
+                List<Permission> oldValue = roleToPermMap.putIfAbsent(s, permList);
+                if (oldValue != null) {
+                    permList = oldValue;
                 }
-                roleToPermMap.put(s, newPermList);
-            } else {
+            }
+            synchronized (permList) {
                 for (Enumeration<Permission> e = permissioncollection.elements(); e.hasMoreElements();) {
                     permList.add(e.nextElement());
                 }
@@ -99,10 +101,13 @@ public class WSPolicyConfigurationImpl implements PolicyConfiguration {
         if (permission != null) {
             List<Permission> permList = roleToPermMap.get(s);
             if (permList == null) {
-                List<Permission> newPermList = new ArrayList<Permission>();
-                newPermList.add(permission);
-                roleToPermMap.put(s, newPermList);
-            } else {
+                permList = new ArrayList<Permission>();
+                List<Permission> oldValue = roleToPermMap.putIfAbsent(s, permList);
+                if (oldValue != null) {
+                    permList = oldValue;
+                }
+            }
+            synchronized (permList) {
                 permList.add(permission);
             }
         }

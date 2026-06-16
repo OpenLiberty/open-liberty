@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -126,6 +126,7 @@ public class ServletStartedListenerTest {
                     one(cc).locateService("webJaccService", jsr);
                     will(returnValue(js));
                     one(js).propagateWebConstraints(APP_NAME, MODULE_NAME, wac);
+                    one(smd).getRoles();
                 }
             });
         } catch (UnableToAdaptException e) {
@@ -135,6 +136,7 @@ public class ServletStartedListenerTest {
             fail("An exception is caught." + e);
         }
         ServletStartedListener ssl = new ServletStartedListener();
+        ssl.setDeclaredRolesService(new WebDeclaredRolesService());
         ssl.setWebJaccService(jsr);
         ssl.activate(cc);
 

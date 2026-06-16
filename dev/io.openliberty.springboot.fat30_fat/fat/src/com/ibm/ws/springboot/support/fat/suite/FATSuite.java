@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -78,8 +78,11 @@ import com.ibm.ws.springboot.support.fat.WebSocketSpringBootAppTests30;
 import com.ibm.ws.springboot.support.fat.WebSocketWebAppTests30;
 import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
 
+import componenttest.custom.junit.runner.AlwaysPassesTest;
+
 @RunWith(Suite.class)
 @SuiteClasses({
+                AlwaysPassesTest.class,
                 CommonWebServerTests30.class,
                 CommonWebFluxTests30.class,
                 UnsupportedConfigWarningTest30.class,
@@ -143,7 +146,6 @@ import com.ibm.ws.springboot.support.fat.utility.SpringBootUtilityThinTest;
                 HTTPMetricsNoContextRootTest.class,
                 HTTPMetricsWithContextRootTest.class
 })
-
 public class FATSuite {
     // Empty
 }

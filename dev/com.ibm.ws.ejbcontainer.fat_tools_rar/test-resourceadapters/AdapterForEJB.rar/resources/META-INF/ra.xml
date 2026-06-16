@@ -78,7 +78,7 @@
 				</config-property>
 
 				<config-property>
-					<description>the datasource implementation class</description>
+					<description>the datasource implementation class (default: org.apache.derby.jdbc.EmbeddedXADataSource40 for Derby, or use org.h2.jdbcx.JdbcDataSource for H2)</description>
 					<config-property-name>dataSourceClass</config-property-name>
 					<config-property-type>java.lang.String</config-property-type>
 					<config-property-value>org.apache.derby.jdbc.EmbeddedXADataSource40</config-property-value>

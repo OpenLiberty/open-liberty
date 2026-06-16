@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,10 +16,10 @@ configurations {
 }
 
 dependencies {
-  resteasy 'org.jboss.resteasy:resteasy-client:7.0.0.Final',
-           'org.jboss.resteasy:resteasy-client-api:7.0.0.Final',
-           'org.jboss.resteasy:resteasy-core:7.0.0.Final',
-           'org.jboss.resteasy:resteasy-core-spi:7.0.0.Final'
+  resteasy 'org.jboss.resteasy:resteasy-client:7.0.2.Final',
+           'org.jboss.resteasy:resteasy-client-api:7.0.2.Final',
+           'org.jboss.resteasy:resteasy-core:7.0.2.Final',
+           'org.jboss.resteasy:resteasy-core-spi:7.0.2.Final'
 }
 
 task extractInjectedClasses(type: Copy) {

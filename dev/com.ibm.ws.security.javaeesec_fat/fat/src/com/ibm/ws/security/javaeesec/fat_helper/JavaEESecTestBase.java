@@ -989,8 +989,8 @@ public class JavaEESecTestBase {
      * is not releasing the handle to the directory, but I have not yet been able to figure it
      * out.
      */
-    public static void assumeNotWindowsEe9() {
-        if (JakartaEEAction.isEE9Active() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
+    public static void assumeNotWindowsEe9Plus() {
+        if (JakartaEEAction.isEE9OrLaterActive() && System.getProperty("os.name").toLowerCase().startsWith("win")) {
             Log.info(logClass, "assumeNotWindowsEe9", "Skipping EE9 repeat action on Windows.");
             assumeTrue(false);
         }

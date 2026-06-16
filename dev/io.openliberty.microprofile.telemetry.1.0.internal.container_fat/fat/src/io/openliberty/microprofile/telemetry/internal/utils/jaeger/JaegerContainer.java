@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,7 @@ package io.openliberty.microprofile.telemetry.internal.utils.jaeger;
 import java.io.File;
 
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
-import org.testcontainers.utility.ImageNameSubstitutor;
+import org.testcontainers.utility.MountableFile;
 
 import com.ibm.websphere.simplicity.log.Log;
 
@@ -46,52 +45,28 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
     public static final int HTTP_QUERY_PORT = 16686;
     public static final int GRPC_QUERY_PORT = 16685;
 
-    //TODO switch to use quay.io/jaegertracing/all-in-one:1.54
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     public JaegerContainer(File tlsCert, File tlsKey) {
-        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
-                                                                                          ImageNameSubstitutor.instance()
-                                                                                                              .apply(TestConstants.DOCKER_IMAGE_ALL_IN_ONE)
-                                                                                                              .asCanonicalNameString())
-                                                                                    .copy("/etc/certificate.crt", "/etc/certificate.crt")
-                                                                                    .copy("/etc/private.key", "/etc/private.key")
-                                                                                    .build())
-                                       .withFileFromFile("/etc/certificate.crt", tlsCert, 0644)
-                                       .withFileFromFile("/etc/private.key", tlsKey, 0644));
-        Log.info(c, "JaegerContainer", "creating JaegerContainer with grpc client cert and key");
 
+        super(TestConstants.DOCKER_IMAGE_JAEGER_ALL_IN_ONE);
         withExposedPorts(OTLP_GRPC_PORT,
                          OTLP_HTTP_PORT,
                          JAEGER_LEGACY_PORT,
                          JAEGER_THRIFT_PORT,
                          GRPC_QUERY_PORT,
                          HTTP_QUERY_PORT);
-
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
         withEnv("QUERY_GRPC_TLS_ENABLED", "true");
+        withEnv("OTEL_TRACES_SAMPLER", "always_off"); // Disable Jaeger's own trace export
         withEnv("QUERY_GRPC_TLS_CERT", "/etc/certificate.crt");
         withEnv("QUERY_GRPC_TLS_KEY", "/etc/private.key");
+        withCopyFileToContainer(MountableFile.forHostPath(tlsCert.toPath()), "/etc/certificate.crt");
+        withCopyFileToContainer(MountableFile.forHostPath(tlsKey.toPath()), "/etc/private.key");
+        Log.info(c, "JaegerContainer", "creating JaegerContainer with grpc client cert and key");
     }
 
-    //TODO switch to use quay.io/jaegertracing/all-in-one:1.54
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     public JaegerContainer(File otelCollectorTlsCert, File otelCollectorTlsKey, File jaegerQueryTlsCert, File jaegerQueryTlsKey) {
-        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
-                                                                                          ImageNameSubstitutor.instance()
-                                                                                                              .apply(TestConstants.DOCKER_IMAGE_ALL_IN_ONE)
-                                                                                                              .asCanonicalNameString())
-                                                                                    .copy("/etc/jaegerQueryCertificate.crt", "/etc/jaegerQueryCertificate.crt")
-                                                                                    .copy("/etc/jaegerQueryPrivateKey.key", "/etc/jaegerQueryPrivateKey.key")
-                                                                                    .copy("/etc/otelCollectorCertificate.crt", "/etc/otelCollectorCertificate.crt")
-                                                                                    .copy("/etc/otelCollectorPrivateKey.key", "/etc/otelCollectorPrivateKey.key")
-                                                                                    .build())
-                                       .withFileFromFile("/etc/jaegerQueryCertificate.crt", jaegerQueryTlsCert, 0644)
-                                       .withFileFromFile("/etc/jaegerQueryPrivateKey.key", jaegerQueryTlsKey, 0644)
-                                       .withFileFromFile("/etc/otelCollectorCertificate.crt", otelCollectorTlsCert, 0644)
-                                       .withFileFromFile("/etc/otelCollectorPrivateKey.key", otelCollectorTlsKey, 0644));
 
-        Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
-
+        super(TestConstants.DOCKER_IMAGE_JAEGER_ALL_IN_ONE);
         withExposedPorts(OTLP_GRPC_PORT,
                          OTLP_HTTP_PORT,
                          JAEGER_LEGACY_PORT,
@@ -100,12 +75,21 @@ public class JaegerContainer extends GenericContainer<JaegerContainer> {
                          HTTP_QUERY_PORT);
 
         withEnv("COLLECTOR_OTLP_ENABLED", "true");
+        withEnv("OTEL_TRACES_SAMPLER", "always_off"); // Disable Jaeger's own trace export
         withEnv("COLLECTOR_OTLP_GRPC_TLS_ENABLED", "true");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_CERT", "/etc/otelCollectorCertificate.crt");
         withEnv("COLLECTOR_OTLP_GRPC_TLS_KEY", "/etc/otelCollectorPrivateKey.key");
         withEnv("QUERY_GRPC_TLS_ENABLED", "true");
         withEnv("QUERY_GRPC_TLS_CERT", "/etc/jaegerQueryCertificate.crt");
         withEnv("QUERY_GRPC_TLS_KEY", "/etc/jaegerQueryPrivateKey.key");
+
+        withCopyFileToContainer(MountableFile.forHostPath(jaegerQueryTlsCert.toPath()), "/etc/jaegerQueryCertificate.crt");
+        withCopyFileToContainer(MountableFile.forHostPath(jaegerQueryTlsKey.toPath()), "/etc/jaegerQueryPrivateKey.key");
+
+        withCopyFileToContainer(MountableFile.forHostPath(otelCollectorTlsCert.toPath()), "/etc/otelCollectorCertificate.crt");
+        withCopyFileToContainer(MountableFile.forHostPath(otelCollectorTlsKey.toPath()), "/etc/otelCollectorPrivateKey.key");
+
+        Log.info(c, "JaegerContainer", "creating JaegerContainer with tls certificate and keys");
 
     }
 

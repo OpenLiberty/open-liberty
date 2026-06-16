@@ -16,7 +16,6 @@ package com.ibm.ws.security.social.fat.LibertyOP;
 import java.util.ArrayList;
 import java.util.List;
 
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.junit.BeforeClass;
 import org.junit.ClassRule;
 import org.junit.Test;

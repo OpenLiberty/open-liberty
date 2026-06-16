@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,7 +24,6 @@ import org.junit.runner.RunWith;
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
@@ -36,7 +35,6 @@ import componenttest.topology.utils.HttpUtils;
  * Do not make this part of the FULL mode since we want to make sure
  * this tests always runs.
  */
-@MinimumJavaLevel(javaLevel = 17)
 public class PreThinnedSpringBootTests40 extends AbstractSpringTests {
 
     private String application = SPRING_BOOT_40_APP_BASE;

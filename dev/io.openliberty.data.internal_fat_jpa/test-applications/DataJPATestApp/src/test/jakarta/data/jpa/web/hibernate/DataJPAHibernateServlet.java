@@ -310,7 +310,7 @@ public class DataJPAHibernateServlet extends FATServlet {
             assertEquals(true, em.isJoinedToTransaction());
 
             entity = em.find(SimpleEntity.class, 2);
-            entity.value = "flushed";
+            entity.val = "flushed";
 
             entity = em.merge(entity);
 
@@ -353,7 +353,7 @@ public class DataJPAHibernateServlet extends FATServlet {
             em.close();
         }
 
-        assertEquals("flushed", entity.value);
+        assertEquals("flushed", entity.val);
     }
 
     /**
@@ -409,7 +409,7 @@ public class DataJPAHibernateServlet extends FATServlet {
 
         assertEquals("new", entity.getValue());
 
-        entity.value = "merged";
+        entity.val = "merged";
 
         tx.begin();
         try {
@@ -474,7 +474,7 @@ public class DataJPAHibernateServlet extends FATServlet {
         // The original entity should have been persisted to the database.
 
         //Another part of the application modifies the original entity
-        original.value = "modified";
+        original.val = "modified";
 
         // Now we want to persist this change to the database
         // so we have to re-attach the detached entity.
@@ -523,7 +523,7 @@ public class DataJPAHibernateServlet extends FATServlet {
         // - The entity was updated in the database
         assertNotNull(found);
 
-        assertEquals("modified", found.value);
+        assertEquals("modified", found.val);
     }
 
     @Test
@@ -553,7 +553,7 @@ public class DataJPAHibernateServlet extends FATServlet {
         // The original entity should have been persisted to the database.
 
         //Another part of the application modifies the original entity
-        original.value = "modified";
+        original.val = "modified";
 
         // Now we want to persist this change to the database
         // so we have to re-attach the detached entity.
@@ -601,6 +601,6 @@ public class DataJPAHibernateServlet extends FATServlet {
         // - The entity was updated in the database
         assertNotNull(found);
 
-        assertEquals("modified", found.value);
+        assertEquals("modified", found.val);
     }
 }

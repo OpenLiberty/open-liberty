@@ -23,7 +23,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.containers.TestContainerSuite;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyFileManager;
@@ -60,7 +59,7 @@ public class FATSuite extends TestContainerSuite {
      * Run EE9 tests in LITE mode and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE9_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                     .andWith(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES());

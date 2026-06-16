@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Die angegebene Datei konnte nich
 failed.to.load.converter.properties.useraction=Stellen Sie sicher, dass die angegebene Datei vorhanden ist und das mit "java.utils.Properties" definierte Format hat.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: setBufferSize() nach erstem Schreibzugriff auf Ausgabedatenstrom/Ausgabeprogramm aufgerufen
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) wird aufgerufen, nachdem der erste Schreibvorgang oder die erste Antwort best\u00e4tigt wurde
 setbuffer.size.called.after.write.explanation=Es wurde versucht, die Gr\u00f6\u00dfe des Antwortpuffers zu definieren, nachdem die Antwort bereits festgeschrieben war. Dies ist ein Anwendungsfehler.
 setbuffer.size.called.after.write.useraction=Entfernen Sie den Aufruf von setBufferSize() oder verschieben Sie ihn an eine Position, die vor dem Festschreiben der Antwort liegt.
 

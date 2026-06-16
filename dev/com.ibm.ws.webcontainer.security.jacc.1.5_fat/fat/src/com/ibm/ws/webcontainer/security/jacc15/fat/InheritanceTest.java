@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2020 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
 package com.ibm.ws.webcontainer.security.jacc15.fat;
@@ -34,6 +31,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -147,6 +145,11 @@ public class InheritanceTest {
                       server.waitForStringInLog("CWWKZ0001I"));
         assertNotNull("JACC feature did not report it was starting", server.waitForStringInLog("CWWKS2850I"));
         assertNotNull("JACC feature did not report it was ready", server.waitForStringInLog("CWWKS2851I"));
+        String currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        if (currentRepeatAction != null && currentRepeatAction.contains("_spec")) {
+            assertNotNull("spec user feature WAB did not start the PolicyFactory", server.waitForStringInLog("CWWKS2866I.*PolicyFactory"));
+            assertNotNull("spec user feature WAB did not start the PolicyConfigurationFactory", server.waitForStringInLog("CWWKS2866I.*PolicyConfigurationFactory"));
+        }
 
         Log.info(thisClass, "setUp", "server started");
         // get the base http & https portion of the urls
@@ -971,7 +974,7 @@ public class InheritanceTest {
      * - verifies that the correct servlet instance was hit
      * - verifies that the user info printed by the servlet is correct
      *
-     * @param inputSetting (local inputSettings structure - containing all the info needed to invoke any of the methods)
+     * @param inputSetting     (local inputSettings structure - containing all the info needed to invoke any of the methods)
      * @param expectedSettings (local expectedSettings structure - containing all the info needed to verify test behavior)
      * @returns Exception
      **/

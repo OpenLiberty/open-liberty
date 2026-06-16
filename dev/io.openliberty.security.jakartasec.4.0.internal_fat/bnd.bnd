@@ -17,6 +17,8 @@ src: \
     fat/src,\
     test-applications/inmemory/WEB-INF,\
     test-applications/inmemory/src,\
+    test-applications/multipleidentitystores/WEB-INF,\
+    test-applications/multipleidentitystores/src,\
     test-applications/ham/src,\
     test-applications/declaredroles/src
         

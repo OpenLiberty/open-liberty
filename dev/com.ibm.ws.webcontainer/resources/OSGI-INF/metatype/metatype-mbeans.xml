@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2012, 2023 IBM Corporation and others.
+    Copyright (c) 2012, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -76,6 +76,10 @@
 
         <AD name="%plugin.ignoreAffinityRequests.name" description="%plugin.ignoreAffinityRequests.desc"
                 id="ignoreAffinityRequests" required="false" default="true" type="Boolean" />
+        <AD name="%plugin.outboundInterfacesList.name" description="%plugin.outboundInterfacesList.desc"
+                id="outboundInterfacesList" required="false" type="String" />
+        <AD name="%plugin.outboundBindStrict.name" description="%plugin.outboundBindStrict.desc"
+                id="outboundBindStrict" required="false" type="Boolean" default="false" />
     </OCD>
 
     <Designate pid="com.ibm.ws.generatePluginConfig">

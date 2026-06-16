@@ -330,7 +330,7 @@ public class SIPTransactionStack
 	 * @param sipMsg The Message from the Transport Layer
 	 */
 	
-	public void prossesTransportSipMessage( Message sipMsg , SipProvider provider , SIPConnection sipTransportConnection )
+	public void processTransportSipMessage( Message sipMsg , SipProvider provider , SIPConnection sipTransportConnection )
 		throws SipParseException
 	{
 		

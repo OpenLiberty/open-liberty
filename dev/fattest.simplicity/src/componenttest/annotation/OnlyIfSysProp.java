@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -72,6 +72,7 @@ public @interface OnlyIfSysProp {
     public static final String DB_Derby = "fat.bucket.db.type=Derby";
     public static final String DB_DerbyClient = "fat.bucket.db.type=DerbyClient";
     public static final String DB_Informix = "fat.bucket.db.type=Informix";
+    public static final String DB_H2 = "fat.bucket.db.type=H2";
     public static final String DB_Oracle = "fat.bucket.db.type=Oracle";
     public static final String DB_Postgres = "fat.bucket.db.type=Postgres";
     public static final String DB_SQLServer = "fat.bucket.db.type=SQLServer";

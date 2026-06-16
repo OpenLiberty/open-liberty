@@ -17,7 +17,9 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 FactoryMessagesTests.class,
-                ProviderServiceRemovalTest.class
+                ProviderServiceRemovalTest.class,
+                AnnotationRolesTest.class,
+                AnnotationRoleGroupTest.class
 })
 public class FATSuite {
 }

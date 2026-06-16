@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -123,7 +123,7 @@ option-key.os=\ \ \ \ --os=value,value,...
 option-desc.os=\tSpecifica i sistemi operativi che si desidera che il server in package\n\tsupporti. Fornire un elenco di valori separati da virgole. Il valore predefinito \u00e8 any,    \n \tche indica che il server deve essere distribuibile a qualsiasi sistema operativo\n\tsupportato dall'origine.                                      \n\tPer specificare che un sistema operativo non deve essere supportato anteporre al nome\n\tun segno meno ("-"). Per un elenco di valori di sistemi operativi, fare riferimento\n \tal sito web OSGi Alliance al seguente URL:                  \n\thttp://www.osgi.org/Specifications/Reference#os                      \n\tQuesta opzione si applica solo alle operazioni di package e pu\u00f2 essere utilizzata\n\tcon l'opzione --include=minify. Se si esclude un sistema operativo\n \tnon \u00e8 possibile includerlo successivamente se si ripete l'operazione minify\n\tsull'archivio.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
-option-desc.no-password=\tDisabilita la generazione della password del keystore predefinito
+option-desc.no-password=\tDisattiva la generazione della password predefinita dell'archivio chiavi e della password predefinita delle chiavi LTPA.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="cartella server root nell'archivio"
 option-desc.package.server-root=\tSpecifica il nome della cartella principale del server nel file di archivio. 

@@ -20,7 +20,6 @@ import com.ibm.ws.security.fat.common.actions.SecurityTestFeatureEE9RepeatAction
 import com.ibm.ws.security.fat.common.actions.SecurityTestRepeatAction;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -43,7 +42,7 @@ public class FATSuite {
      * Run EE9/EE10/EE11 tests in LITE mode (but not on Windows) and run all tests in FULL mode.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
             .andWith(new SecurityTestRepeatAction().onlyOnWindows().liteFATOnly())
             .andWith(new SecurityTestFeatureEE9RepeatAction().notOnWindows().forServerConfigPaths("publish/servers", "publish/shared/config").liteFATOnly())
             .andWith(new SecurityTestFeatureEE10RepeatAction().notOnWindows().forServerConfigPaths("publish/servers", "publish/shared/config").liteFATOnly())

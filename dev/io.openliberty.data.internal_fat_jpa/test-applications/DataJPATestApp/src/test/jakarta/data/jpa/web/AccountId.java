@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -28,6 +28,18 @@ public class AccountId {
     public AccountId(long accountNum, long routingNum) {
         this.accountNum = accountNum;
         this.routingNum = routingNum;
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        return other instanceof AccountId id &&
+               accountNum == id.accountNum &&
+               routingNum == id.routingNum;
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (accountNum + routingNum);
     }
 
     public static AccountId of(long accountNum, long routingNum) {

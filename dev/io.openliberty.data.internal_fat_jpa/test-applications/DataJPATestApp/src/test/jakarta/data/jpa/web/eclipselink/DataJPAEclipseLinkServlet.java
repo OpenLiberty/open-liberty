@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -47,12 +47,9 @@ import test.jakarta.data.jpa.web.PurchaseTime;
  */
 @DataSourceDefinition(name = "java:module/jdbc/EclipseLinkDataStore",
                       className = "${repository.datasource.class.name}",
-                      databaseName = "${repository.database.name}",
+                      url = "jdbc:h2:mem:${repository.database.name};DB_CLOSE_DELAY=-1",
                       user = "${repository.database.user}",
-                      password = "${repository.database.password}",
-                      properties = {
-                                     "createDatabase=create"
-                      })
+                      password = "${repository.database.password}")
 @Resource(name = "java:app/env/data/DataStoreRef",
           lookup = "java:comp/DefaultDataSource")
 @SuppressWarnings("serial")
@@ -72,7 +69,8 @@ public class DataJPAEclipseLinkServlet extends FATServlet {
     /**
      * Verify that JPQL can be used to EXTRACT the DATE from a LocalDateTime.
      */
-    @Test
+    // TODO enable once EclipseLink 34899 is fixed to run EXTRACT(DATE FROM...) on H2
+    // @Test
     public void testExtractDate() {
         rebates.reset();
 
@@ -116,7 +114,8 @@ public class DataJPAEclipseLinkServlet extends FATServlet {
     /**
      * Verify that JPQL can be used to EXTRACT the TIME from a LocalDateTime.
      */
-    @Test
+    // TODO enable once EclipseLink 34899 is fixed to run EXTRACT(TIME FROM...) on H2
+    // @Test
     public void testExtractTime() {
         rebates.reset();
 

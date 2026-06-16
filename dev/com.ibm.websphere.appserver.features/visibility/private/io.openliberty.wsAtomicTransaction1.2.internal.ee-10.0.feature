@@ -4,7 +4,7 @@ singleton=true
 visibility = private
 -features=\
   io.openliberty.xmlWS-4.0, \
-  com.ibm.websphere.appserver.servlet-6.0; ibm.tolerates:="6.1"
+  com.ibm.websphere.appserver.servlet-6.0; ibm.tolerates:="6.1, 6.2"
 -bundles=\
   io.openliberty.webservices.handler, \
   com.ibm.ws.wsat.common.jakarta; start-phase:=CONTAINER_LATE, \

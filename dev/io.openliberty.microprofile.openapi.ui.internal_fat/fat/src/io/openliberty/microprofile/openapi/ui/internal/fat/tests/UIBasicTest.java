@@ -101,7 +101,10 @@ public class UIBasicTest {
 
     @AfterClass
     public static void teardown() throws Exception {
-        server.stopServer();
+        /*
+         * SRVE8056E: An unexpected exception occurred closing the output stream is generated occasionally during shutdown
+         */
+        server.stopServer("SRVE8056E");
     }
 
     @Before

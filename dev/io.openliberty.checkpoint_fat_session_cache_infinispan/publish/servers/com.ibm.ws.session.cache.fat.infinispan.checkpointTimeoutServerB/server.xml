@@ -40,4 +40,7 @@
     <library id="InfinispanLib">
         <fileset dir="${shared.resource.dir}/infinispan" includes="*.jar"/>
     </library>
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

@@ -62,5 +62,7 @@
         <tcpOptions soReuseAddr="true"/>
     </httpEndpoint>
 
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>
   

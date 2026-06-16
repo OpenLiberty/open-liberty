@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
 import com.ibm.ws.jsp23.fat.tests.JSPChannelTest;
 import com.ibm.ws.jsp23.fat.tests.JSPDebugSupport;
+import com.ibm.ws.jsp23.fat.tests.JSPEmptyIncludePathTest;
 import com.ibm.ws.jsp23.fat.tests.JSPExpressionLanguageTests;
 import com.ibm.ws.jsp23.fat.tests.JSPGlobalTLDTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava11Test;
@@ -31,9 +32,9 @@ import com.ibm.ws.jsp23.fat.tests.JSPJava7Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
+import com.ibm.ws.jsp23.fat.tests.JSPTagFilesInJarTest;
 import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -59,7 +60,9 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JSPGlobalTLDTest.class,
                 JSPChannelTest.class,
                 JSPDebugSupport.class,
-                JSPExpressionLanguageTests.class
+                JSPExpressionLanguageTests.class,
+                JSPEmptyIncludePathTest.class,
+                JSPTagFilesInJarTest.class
 })
 
 public class FATSuite {
@@ -71,7 +74,7 @@ public class FATSuite {
      * If running with a Java version less than 11, have EE9 be the lite mode test to run.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
                     .andWith(new FeatureReplacementAction("cdi-1.2", "cdi-2.0")
                                     .withID("CDI-2.0")
                                     .forceAddFeatures(false)

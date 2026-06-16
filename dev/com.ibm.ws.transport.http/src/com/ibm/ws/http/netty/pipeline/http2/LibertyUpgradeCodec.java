@@ -24,6 +24,8 @@ import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpObjectAggregator;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelPromise;
 import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaders;
 import io.netty.handler.codec.http.HttpObjectDecoder;
@@ -33,16 +35,26 @@ import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodec;
 import io.netty.handler.codec.http.HttpServerUpgradeHandler.UpgradeCodecFactory;
 import io.netty.handler.codec.http.websocketx.WebSocketServerProtocolHandler;
 import io.netty.handler.codec.http2.CleartextHttp2ServerUpgradeHandler;
+import io.netty.handler.codec.http2.DecoratingHttp2ConnectionEncoder;
 import io.netty.handler.codec.http2.DefaultHttp2Connection;
+import io.netty.handler.codec.http2.DefaultHttp2ConnectionDecoder;
+import io.netty.handler.codec.http2.DefaultHttp2ConnectionEncoder;
+import io.netty.handler.codec.http2.DefaultHttp2FrameReader;
+import io.netty.handler.codec.http2.DefaultHttp2FrameWriter;
 import io.netty.handler.codec.http2.DefaultHttp2LocalFlowController;
 import io.netty.handler.codec.http2.Http2CodecUtil;
+import io.netty.handler.codec.http2.Http2ConnectionEncoder;
+import io.netty.handler.codec.http2.Http2ControlFrameLimitEncoder;
 import io.netty.handler.codec.http2.Http2Exception;
+import io.netty.handler.codec.http2.Http2HeadersEncoder;
+import io.netty.handler.codec.http2.Http2LifecycleManager;
 import io.netty.handler.codec.http2.Http2ServerUpgradeCodec;
 import io.netty.handler.codec.http2.Http2Settings;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandlerBuilder;
 import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapterBuilder;
+import io.netty.handler.codec.http2.LibertyDefaultHttp2HeadersDecoder;
 import io.netty.util.AsciiString;
 import io.netty.util.ReferenceCountUtil;
 import io.openliberty.http.netty.quiesce.QuiesceStrategy;
@@ -99,7 +111,6 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
                     request.headers().set(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text(), 1);
                     if (Constants.SPEC_INITIAL_WINDOW_SIZE != httpConfig.getH2ConnectionWindowSize()) {
                         // window update sets the difference between what the client has (default) and the new value.
-                        // TODO Should this actually be a difference from the settings value instead of the spec size itself since that's the part where the ohter endpoint has the established info
                         int updateSize = httpConfig.getH2ConnectionWindowSize() - Constants.SPEC_INITIAL_WINDOW_SIZE;
                         try {
                              ((DefaultHttp2LocalFlowController) handler.decoder().flowController()).incrementWindowSize(handler.decoder().connection().connectionStream(),
@@ -159,14 +170,50 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
         Http2Settings initialSettings = new Http2Settings().maxConcurrentStreams(httpConfig.getH2MaxConcurrentStreams()).maxFrameSize(httpConfig.getH2MaxFrameSize());
         if (httpConfig.getH2SettingsInitialWindowSize() != Constants.SPEC_INITIAL_WINDOW_SIZE)
             initialSettings.initialWindowSize(httpConfig.getH2SettingsInitialWindowSize());
-        int frameWindowSize = httpConfig.getH2ResetFramesWindow() / 1000; // Frame window divided by 1000 because our httpOption is in ms precision but Netty's is in seconds
         InboundHttp2ToHttpAdapterBuilder builder = new InboundHttp2ToHttpAdapterBuilder(connection).propagateSettings(false).maxContentLength(Integer.MAX_VALUE).validateHttpHeaders(false);
         if (maxContentlength >= 0)
             builder.maxContentLength(maxContentlength);
         else
             maxContentlength = Integer.MAX_VALUE;
-        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, maxContentlength, false, false, channel);
-        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder().frameListener(listener).connection(connection).initialSettings(initialSettings).encoderIgnoreMaxHeaderListSize(true).decoderEnforceMaxRstFramesPerWindow(httpConfig.getH2MaxResetFrames(), frameWindowSize).encoderEnforceMaxRstFramesPerWindow(httpConfig.getH2MaxResetFrames(), frameWindowSize).limitFieldSize(httpConfig.getLimitOfFieldSize()).limitNumHeaders(httpConfig.getLimitOnNumberOfHeaders()).maxHeaderBlockSize(httpConfig.getH2MaxHeaderBlockSize()).build();
+        LibertyInboundHttp2ToHttpAdapter listener = new LibertyInboundHttp2ToHttpAdapter(connection, maxContentlength, false, false, channel, httpConfig);
+
+        // Create encoder with same configuration as builder would
+        DefaultHttp2FrameWriter frameWriter = new DefaultHttp2FrameWriter(Http2HeadersEncoder.NEVER_SENSITIVE, true);
+        DefaultHttp2ConnectionEncoder defaultEncoder = new DefaultHttp2ConnectionEncoder(
+            connection, 
+            frameWriter
+        );
+        Http2ConnectionEncoder wrappedEncoder = new Http2ControlFrameLimitEncoder(defaultEncoder, Http2CodecUtil.DEFAULT_MAX_QUEUED_CONTROL_FRAMES);
+
+        // Wrap with millisecond tracking for Liberty logic reusing the listener as the tracker
+        wrappedEncoder = new LibertyResetEncoderWrapper(
+            wrappedEncoder,
+            listener
+        );
+
+        // Create default decoder with reader using Liberty HTTP options
+        DefaultHttp2ConnectionDecoder defaultDecoder = new DefaultHttp2ConnectionDecoder(
+            connection,
+            wrappedEncoder,
+            new DefaultHttp2FrameReader(
+                new LibertyDefaultHttp2HeadersDecoder(
+                    true,
+                    Long.MAX_VALUE,
+                    httpConfig.getH2MaxHeaderBlockSize(),
+                    httpConfig.getLimitOfFieldSize(),
+                    httpConfig.getLimitOnNumberOfHeaders()
+                    )
+                )
+            );
+
+        // Build with custom encoder
+        HttpToHttp2ConnectionHandler handler = new HttpToHttp2ConnectionHandlerBuilder()
+            .frameListener(listener)
+            .initialSettings(initialSettings)
+            .decoderEnforceMaxRstFramesPerWindow(0, 0) // Force disable since logic is already done in custom listener
+            .codec(defaultDecoder, wrappedEncoder)
+            .build();
+
         if (!httpConfig.getH2LimitWindowUpdateFrames()) {
             // Execute this in event loop due to assertions
             channel.eventLoop().execute(() -> {
@@ -181,6 +228,36 @@ public class LibertyUpgradeCodec implements UpgradeCodecFactory {
             });
         }
         return handler;
+    }
+
+    private class LibertyResetEncoderWrapper extends DecoratingHttp2ConnectionEncoder {
+        private final ResetFrameTracker tracker;
+        private Http2LifecycleManager lifecycleManager;
+        
+        public LibertyResetEncoderWrapper(Http2ConnectionEncoder delegate, ResetFrameTracker libertyAdapter) {
+            super(delegate);
+            this.tracker = libertyAdapter;
+        }
+
+        @Override
+        public void lifecycleManager(Http2LifecycleManager lifecycleManager) {
+            this.lifecycleManager = lifecycleManager;
+            super.lifecycleManager(lifecycleManager);
+        }
+        
+        @Override
+        public ChannelFuture writeRstStream(ChannelHandlerContext ctx, int streamId, 
+                                            long errorCode, ChannelPromise promise) {
+            ChannelFuture future = super.writeRstStream(ctx, streamId, errorCode, promise);
+            if (tracker.isResetTrackingEnabled()) {
+                tracker.incrementResetCount();
+                if (tracker.isResetsInTimeExceeded()) {
+                    lifecycleManager.onError(ctx, true, LibertyInboundHttp2ToHttpAdapter.RST_FRAME_RATE_EXCEEDED);
+                    ctx.close();
+                }
+            }
+            return future;
+        }
     }
 
 }

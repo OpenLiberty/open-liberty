@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -124,7 +124,7 @@ option-desc.os=\tSp\u00e9cifie les syst\u00e8mes d'exploitation \u00e0 prendre e
     \ tard en r\u00e9p\u00e9tant l'op\u00e9ration \n\tminify sur l'archive.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
-option-desc.no-password=\tD\u00e9sactivez la g\u00e9n\u00e9ration d'un mot de passe de magasin de cl\u00e9s par d\u00e9faut
+option-desc.no-password=\tD\u00e9sactiver la g\u00e9n\u00e9ration du mot de passe par d\u00e9faut du keystore et du mot de passe par d\u00e9faut des cl\u00e9s LTPA.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="dossier de serveur racine dans l'archive"
 option-desc.package.server-root=\tSp\u00e9cifie le nom du dossier racine du serveur dans le fichier d'archive. 

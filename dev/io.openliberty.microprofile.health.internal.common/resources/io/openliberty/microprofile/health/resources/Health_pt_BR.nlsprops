@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,7 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=Especifique um valo
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: A configura\u00e7\u00e3o do intervalo de verifica\u00e7\u00e3o de inicializa\u00e7\u00e3o foi definida antes da configura\u00e7\u00e3o do intervalo de verifica\u00e7\u00e3o. A verifica\u00e7\u00e3o de integridade baseada em arquivo \u00e9 desativada quando o intervalo de verifica\u00e7\u00e3o n\u00e3o est\u00e1 configurado.
 startup.check.interval.config.only.set.CWMMH01012W.explanation=A configura\u00e7\u00e3o apenas do intervalo de verifica\u00e7\u00e3o de inicializa\u00e7\u00e3o n\u00e3o habilita o mecanismo de verifica\u00e7\u00e3o de integridade baseado em arquivo.
 startup.check.interval.config.only.set.CWMMH01012W.useraction=Configure o intervalo de verifica\u00e7\u00e3o para ativar o mecanismo de verifica\u00e7\u00e3o de integridade baseado em arquivo.
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: A configura\u00e7\u00e3o ` enableEndpoints ` est\u00e1 definida como `false`, mas a fun\u00e7\u00e3o de verifica\u00e7\u00e3o de integridade baseada em arquivo n\u00e3o est\u00e1 ativada. Essa configura\u00e7\u00e3o n\u00e3o tem efeito, e os pontos de verifica\u00e7\u00e3o de integridade est\u00e3o ativados.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=A configura\u00e7\u00e3o do ` enableEndpoints ` s\u00f3 entra em vigor quando as verifica\u00e7\u00f5es de integridade baseadas em arquivo est\u00e3o ativadas.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Ative as fun\u00e7\u00f5es de verifica\u00e7\u00e3o de integridade baseadas em arquivos ou remova a configura\u00e7\u00e3o ` enableEndpoints `.

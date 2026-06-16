@@ -251,7 +251,7 @@ public class SIPTransactionsModel
 	 */
 	public synchronized void remove(SIPClientTranaction ct) {
 		if (s_logger.isTraceDebugEnabled()) {
-			s_logger.traceDebug("removing client tranaction [" + ct + ']');
+			s_logger.traceDebug("removing client transaction [" + ct + ']');
 		}
 		m_clientTransactionsById.remove(new Long(ct.getId()));
 		m_clientTransactionsByBranchMethodKey.remove(ct.getBranchMethodId());

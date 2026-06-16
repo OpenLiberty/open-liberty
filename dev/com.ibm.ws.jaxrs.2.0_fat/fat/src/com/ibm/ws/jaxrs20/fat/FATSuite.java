@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.jaxrs20.fat;
 
@@ -23,8 +20,6 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
@@ -97,14 +92,14 @@ public class FATSuite {
         if (!(isWindows) || FATRunner.FAT_TEST_LOCALRUN) {
             r = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().withID("JAXRS-2.1").fullFATOnly())
-                    .andWith(new JakartaEE9Action().alwaysAddFeature("jsonb-2.0").removeFeature("mpMetrics-2.3").addFeature("mpMetrics-4.0")
+                    .andWith(FeatureReplacementAction.EE9_FEATURES().alwaysAddFeature("jsonb-2.0").removeFeature("mpMetrics-2.3").addFeature("mpMetrics-4.0")
                         .removeFeature("microProfile-1.3").addFeature("microProfile-5.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-                    .andWith(new JakartaEE10Action().alwaysAddFeature("jsonb-3.0").removeFeature("jsonb-2.0").removeFeature("mpMetrics-2.3").removeFeature("mpMetrics-4.0").removeFeature("microProfile-1.3").addFeature("mpMetrics-5.0")
+                    .andWith(FeatureReplacementAction.EE10_FEATURES().alwaysAddFeature("jsonb-3.0").removeFeature("jsonb-2.0").removeFeature("mpMetrics-2.3").removeFeature("mpMetrics-4.0").removeFeature("microProfile-1.3").addFeature("mpMetrics-5.0")
                              .removeFeature("microProfile-5.0").addFeature("microProfile-6.0").conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0").removeFeature("jsonb-2.0").removeFeature("mpMetrics-2.3").removeFeature("mpMetrics-4.0").removeFeature("microProfile-1.3").removeFeature("mpMetrics-5.0")
                              .addFeature("mpMetrics-5.1").removeFeature("microProfile-5.0").addFeature("microProfile-6.0"));
         } else {
-            r = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+            r = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_11))
                             .andWith(FeatureReplacementAction.EE11_FEATURES().alwaysAddFeature("jsonb-3.0").removeFeature("jsonb-2.0").removeFeature("mpMetrics-2.3").removeFeature("mpMetrics-4.0").removeFeature("microProfile-1.3").removeFeature("mpMetrics-5.0")
                                      .addFeature("mpMetrics-5.1").removeFeature("microProfile-5.0").addFeature("microProfile-6.0"));
         }

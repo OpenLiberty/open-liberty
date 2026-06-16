@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.data1.0-jdbc
 visibility=private
 IBM-Provision-Capability: \
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.data-1.1)(osgi.identity=io.openliberty.data-1.0)))", \
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.data-1.0))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=com.ibm.websphere.appserver.jdbc-4.3)(osgi.identity=com.ibm.websphere.appserver.jdbc-4.2)))"
 -features=\
   com.ibm.websphere.appserver.transaction-2.0,\
@@ -11,5 +11,5 @@ IBM-Provision-Capability: \
 -bundles=\
   io.openliberty.data.internal
 IBM-Install-Policy: when-satisfied
-kind=beta
+kind=ga
 edition=core

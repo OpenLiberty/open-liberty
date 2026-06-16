@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 import org.apache.tools.ant.filters.ReplaceTokens
@@ -401,10 +398,8 @@ def gaAndBetaAndNoShipPublicFeatures() {
 }
 
 def webProfile8Features() { project.file("profiles/webProfile8/features.xml").readLines() }
-def webProfile10Features() { project.file("profiles/webProfile10/features.xml").readLines() }
 def webProfile11Features() { project.file("profiles/webProfile11/features.xml").readLines() }
 def javaee8Features() { project.file("profiles/javaee8/features.xml").readLines() }
-def jakartaee10Features() { project.file("profiles/jakartaee10/features.xml").readLines() }
 def jakartaee11Features() { project.file("profiles/jakartaee11/features.xml").readLines() }
 def microProfile4Features() { project.file("profiles/microProfile4/features.xml").readLines() }
 def microProfile7Features() { project.file("profiles/microProfile7/features.xml").readLines() }
@@ -514,44 +509,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     
     //GA
-    task packageOpenLibertyWebProfile10(type: PackageLibertyWithFeatures) {
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&webProfile10Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpFaultTolerance,io.openliberty.mpOpenAPI,io.openliberty.mpRestClient,io.openliberty.mpMetrics,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.org.eclipse.microprofile.faulttolerance,io.openliberty.org.eclipse.microprofile.openapi,io.openliberty.org.eclipse.microprofile.rest.client,io.openliberty.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion,io.openliberty.mpHealth.4.0.ee.10.0.mp"
-        outputTo new File(packageDir, "webProfile10")
-        doLast {
-            copy {
-                from "$packageDir/webProfile10/wlp/templates/servers/webProfile10/server.xml"
-                into "$packageDir/webProfile10/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from "$packageDir/webProfile10/wlp/templates/clients/jakartaeeClient10/client.xml"
-                into "$packageDir/webProfile10/wlp/templates/clients/defaultClient"
-            }
-        }
-    }
-    
-    //GA
-    task packageOpenLibertyJakartaee10(type: PackageLibertyWithFeatures) {
-        dependsOn parent.subprojects.assemble
-        dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
-        withFeatures this.&jakartaee10Features
-        packageServerConflict = "com.ibm.websphere.appserver.sessionStore,com.ibm.websphere.appserver.jdbc,io.openliberty.microProfile,io.openliberty.mpConfig,io.openliberty.mpFaultTolerance,io.openliberty.mpOpenAPI,io.openliberty.mpRestClient,io.openliberty.mpMetrics,io.openliberty.mpTelemetry,io.openliberty.org.eclipse.microprofile.config,io.openliberty.org.eclipse.microprofile.faulttolerance,io.openliberty.org.eclipse.microprofile.openapi,io.openliberty.org.eclipse.microprofile.rest.client,io.openliberty.org.eclipse.microprofile.metrics,io.openliberty.mpCompatible,io.openliberty.internal.mpVersion,io.openliberty.mpHealth.4.0.ee.10.0.mp"
-        outputTo new File(packageDir, "jakartaee10")
-        doLast {
-            copy {
-                from "$packageDir/jakartaee10/wlp/templates/servers/jakartaee10/server.xml"
-                into "$packageDir/jakartaee10/wlp/templates/servers/defaultServer"
-            }
-            copy {
-                from "$packageDir/jakartaee10/wlp/templates/clients/jakartaeeClient10/client.xml"
-                into "$packageDir/jakartaee10/wlp/templates/clients/defaultClient"
-            }
-        }
-    }
-
-    //NOSHIP
     task packageOpenLibertyWebProfile11(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -575,7 +532,7 @@ if (isAutomatedBuild && !isIFIXBuild) {
         }
     }
 
-    //NOSHIP
+    //GA
     task packageOpenLibertyJakartaee11(type: PackageLibertyWithFeatures) {
         dependsOn parent.subprojects.assemble
         dependsOn ':com.ibm.websphere.appserver.features:publishFeatureResources'
@@ -758,46 +715,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
     }
     publish.dependsOn cleanupOpenLibertyJavaee8Package
 
-    // GA: Includes only features listed in profiles/webProfile10/features.xml
-    task zipOpenLibertyWebProfile10(type: Zip) {
-        dependsOn packageOpenLibertyWebProfile10
-        dependsOn genChecksums
-        archiveBaseName = 'openliberty-webProfile10'
-        from(packageOpenLibertyWebProfile10)
-        destinationDirectory = layout.buildDirectory.dir("distributions")
-        archiveVersion = releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.webprofile10.archivename', archiveFile.get().getAsFile().toString())
-            rootProject.storeProps()
-        }
-    }
-
-    task cleanupOpenLibertyWebProfile10Package(type: Delete) {
-        dependsOn zipOpenLibertyWebProfile10
-        delete(packageOpenLibertyWebProfile10)
-    }
-    publish.dependsOn cleanupOpenLibertyWebProfile10Package
-
-    // GA: Includes only features listed in profiles/jakartaee10/features.xml
-    task zipOpenLibertyJakartaee10(type: Zip) {
-        dependsOn packageOpenLibertyJakartaee10
-        dependsOn genChecksums
-        archiveBaseName = 'openliberty-jakartaee10'
-        from(packageOpenLibertyJakartaee10)
-        destinationDirectory = layout.buildDirectory.dir("distributions")
-        archiveVersion = releaseVersion
-        doLast {
-            rootProject.userProps.setProperty('zipopenliberty.jakartaee10.archivename', archiveFile.get().getAsFile().toString())
-            rootProject.storeProps()
-        }
-    }
-
-    task cleanupOpenLibertyJakartaee10Package(type: Delete) {
-        dependsOn zipOpenLibertyJakartaee10
-        delete(packageOpenLibertyJakartaee10)
-    }
-    publish.dependsOn cleanupOpenLibertyJakartaee10Package
-
     // GA: Includes only features listed in profiles/webProfile11/features.xml
     task zipOpenLibertyWebProfile11(type: Zip) {
         dependsOn packageOpenLibertyWebProfile11
@@ -906,8 +823,6 @@ if (isAutomatedBuild && !isIFIXBuild) {
         dependsOn cleanupOpenLibertyKernelPackage
         dependsOn cleanupOpenLibertyWebProfile8Package
         dependsOn cleanupOpenLibertyJavaee8Package
-        dependsOn cleanupOpenLibertyJakartaee10Package
-        dependsOn cleanupOpenLibertyWebProfile10Package
         dependsOn cleanupOpenLibertyJakartaee11Package
         dependsOn cleanupOpenLibertyWebProfile11Package
         dependsOn cleanupOpenLibertyMicroProfile4Package

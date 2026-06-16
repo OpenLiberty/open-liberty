@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2025 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1230,13 +1230,20 @@ public class BootstrapConfig {
         BufferedWriter bw = null;
         File serverEnv = getConfigFile("server.env");
         try {
-            char[] keystorePass = PasswordGenerator.generateRandom();
             String serverEnvContents = FileUtils.readFile(serverEnv);
             String toWrite = "";
-            if (generatePassword && (serverEnvContents == null || !serverEnvContents.contains("keystore_password="))) {
-                if (serverEnvContents != null)
-                    toWrite += System.getProperty("line.separator");
-                toWrite += "keystore_password=" + new String(keystorePass);
+            if (generatePassword) {
+                if (serverEnvContents == null) {
+                    toWrite += "keystore_password=" + new String(PasswordGenerator.generateRandom());
+                    toWrite += System.getProperty("line.separator") + "ltpa_keys_password=" + new String(PasswordGenerator.generateRandom());
+                } else {
+                    if (!serverEnvContents.contains("keystore_password=")) {
+                        toWrite += System.getProperty("line.separator") + "keystore_password=" + new String(PasswordGenerator.generateRandom());
+                    }
+                    if (!serverEnvContents.contains("ltpa_keys_password=")) {
+                        toWrite += System.getProperty("line.separator") + "ltpa_keys_password=" + new String(PasswordGenerator.generateRandom());
+                    }
+                }
             }
 
             if (serverEnvContents == null)

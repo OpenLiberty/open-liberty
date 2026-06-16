@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -75,6 +75,17 @@ public interface InstallKernelInteractive {
      * @throws InstallException
      */
     public void resolve(Collection<String> assetIds, boolean download) throws InstallException;
+
+
+    /**
+     * Resolves assetIds and platforms into a map of installation resources.
+     *
+     * @param assetIds the asset Ids
+     * @param platforms the platforms
+     * @param download if assets should be downloaded or not
+     * @throws InstallException
+     */
+    public void resolve(Collection<String> assetIds, Collection<String> platforms, boolean download) throws InstallException;
 
     /**
      * Resolves a feature from a local file.

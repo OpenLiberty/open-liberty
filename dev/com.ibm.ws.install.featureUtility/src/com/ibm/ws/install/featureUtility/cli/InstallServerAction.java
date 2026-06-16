@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2023 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -230,7 +230,7 @@ public class InstallServerAction implements ActionHandler {
                         return FeatureUtilityExecutor.returnCode(ie.getRc());
                 } catch (Exception e) {
                         logger.log(Level.SEVERE, e.getMessage(), e);
-                        rc = ReturnCode.RUNTIME_EXCEPTION;
+                        return ReturnCode.RUNTIME_EXCEPTION;
                 }
 
 				if (featuresToInstall.isEmpty()) {

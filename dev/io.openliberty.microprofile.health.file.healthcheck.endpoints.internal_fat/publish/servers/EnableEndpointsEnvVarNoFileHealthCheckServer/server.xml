@@ -1,0 +1,28 @@
+<server description="Server for testing enableEndpoints via ENV var without file-based health checks">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>mpHealth-4.0</feature>
+        <feature>mpConfig-3.1</feature>
+        <feature>cdi-4.0</feature>
+        <feature>jsonp-2.1</feature>
+        <feature>servlet-6.0</feature>
+    </featureManager>
+    
+    <!-- NO enableEndpoints attribute, NO checkInterval or startupCheckInterval (file-based health checks disabled) -->
+    <!-- MP_HEALTH_ENABLE_ENDPOINTS environment variable will be set to "false" in test -->
+    <mpHealth />
+    	
+	<logging traceSpecification="*=info:HEALTH=all"/>
+	
+    <webContainer deferServletLoad="false"/>
+
+	<httpEndpoint id="defaultHttpEndpoint" host="*" httpPort="${bvt.prop.HTTP_default}" httpsPort="${bvt.prop.HTTP_default.secure}">
+		<tcpOptions portOpenRetries="60" />                   
+	</httpEndpoint>
+	
+</server>
+
+<!-- Made with Bob -->

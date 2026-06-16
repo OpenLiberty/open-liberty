@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
@@ -46,7 +43,7 @@ import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipIfSysProp;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -55,13 +52,25 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     private static final String APP_NAME = "AppDefResourcesApp";
-    private static final String DerbyVersion = "10.11.1.1";
+    private static final String H2Version = "2.1.214 (2022-06-13)";
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat("com.ibm.ws.rest.handler.config.appdef.fat",
-                                                         EERepeatActions.EE10, // EE10
-                                                         EERepeatActions.EE9, // EE9
-                                                         EERepeatActions.EE8); // EE8
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode() // servlet-3.1
+                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.appdef.fat")
+                                    .alwaysAddFeature("servlet-4.0")
+                                    .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.appdef.fat")
+                                    .alwaysAddFeature("servlet-5.0")
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.appdef.fat")
+                                    .alwaysAddFeature("servlet-6.0")
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.appdef.fat")
+                                    .alwaysAddFeature("servlet-6.1"));
 
     @Server("com.ibm.ws.rest.handler.config.appdef.fat")
     public static LibertyServer server;
@@ -383,8 +392,8 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         JsonObject authData;
         assertNotNull(err, authData = ds.getJsonObject("containerAuthDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
-        assertEquals(err, "derbyAuth1", authData.getString("uid"));
-        assertEquals(err, "derbyAuth1", authData.getString("id"));
+        assertEquals(err, "h2Auth1", authData.getString("uid"));
+        assertEquals(err, "h2Auth1", authData.getString("id"));
         assertEquals(err, "dbuser1", authData.getString("user"));
         assertEquals(err, "******", authData.getString("password"));
 
@@ -396,13 +405,13 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "jdbcDriver", driver.getString("configElementName"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", driver.getString("uid"));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]/jdbcDriver", driver.getString("id"));
-        assertEquals(err, "org.apache.derby.jdbc.EmbeddedXADataSource", driver.getString("javax.sql.XADataSource"));
+        assertEquals(err, "org.h2.jdbcx.JdbcDataSource", driver.getString("javax.sql.XADataSource"));
 
         JsonObject library;
         assertNotNull(err, library = driver.getJsonObject("libraryRef"));
         assertEquals(err, "library", library.getString("configElementName"));
-        assertEquals(err, "Derby", library.getString("uid"));
-        assertEquals(err, "Derby", library.getString("id"));
+        assertEquals(err, "H2", library.getString("uid"));
+        assertEquals(err, "H2", library.getString("id"));
         assertEquals(err, "spec,ibm-api,api,stable", library.getString("apiTypeVisibility"));
 
         JsonArray files;
@@ -410,31 +419,27 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, files = library.getJsonArray("fileRef"));
         assertNotNull(err, file = files.getJsonObject(0));
         assertEquals(err, "file", file.getString("configElementName"));
-        assertEquals(err, "library[Derby]/file[default-0]", file.getString("uid"));
+        assertEquals(err, "library[H2]/file[default-0]", file.getString("uid"));
         assertNull(err, file.get("id"));
-        assertTrue(err, file.getString("name").endsWith("derby.jar"));
+        assertTrue(err, file.getString("name").endsWith("h2.jar"));
 
         JsonArray onConnect;
         assertNotNull(err, onConnect = ds.getJsonArray("onConnect"));
         assertEquals(err, 1, onConnect.size());
-        assertEquals(err, "DECLARE GLOBAL TEMPORARY TABLE TEMP2 (COL1 VARCHAR(80)) ON COMMIT PRESERVE ROWS NOT LOGGED", onConnect.getString(0));
+        assertEquals(err, "CREATE TABLE IF NOT EXISTS TEMP2 (COL1 VARCHAR(80))", onConnect.getString(0));
 
         JsonObject props;
         assertNotNull(err, props = ds.getJsonObject("properties"));
-        assertEquals(err, 3, props.size());
-        assertEquals(err, "create", props.getString("createDatabase"));
-        String databaseName;
-        assertNotNull(err, databaseName = props.getString("databaseName"));
-        assertTrue(err, databaseName.endsWith("configRHTestDB"));
-        assertTrue(err, databaseName.contains("resources")); // must expand ${shared.resource.dir}
+        assertEquals(err, 2, props.size());
+        assertEquals(err, "******", props.getString("URL"));
         assertEquals(err, 220, props.getInt("loginTimeout"));
 
         assertEquals(err, 82, ds.getInt("queryTimeout"));
 
         assertNotNull(err, authData = ds.getJsonObject("recoveryAuthDataRef"));
         assertEquals(err, "authData", authData.getString("configElementName"));
-        assertEquals(err, "derbyAuth2", authData.getString("uid"));
-        assertEquals(err, "derbyAuth2", authData.getString("id"));
+        assertEquals(err, "h2Auth2", authData.getString("uid"));
+        assertEquals(err, "h2Auth2", authData.getString("id"));
         assertEquals(err, "dbuser2", authData.getString("user"));
         assertEquals(err, "******", authData.getString("password"));
 
@@ -496,13 +501,13 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "jdbcDriver", driver.getString("configElementName"));
         assertEquals(err, "dataSource[java:global/env/jdbc/ds4]/jdbcDriver", driver.getString("uid"));
         assertEquals(err, "dataSource[java:global/env/jdbc/ds4]/jdbcDriver", driver.getString("id"));
-        assertTrue(err, driver.getString("javax.sql.XADataSource").startsWith("org.apache.derby.jdbc."));
+        assertTrue(err, driver.getString("java.sql.Driver").equals("org.h2.Driver"));
 
         JsonObject library;
         assertNotNull(err, library = driver.getJsonObject("libraryRef"));
         assertEquals(err, "library", library.getString("configElementName"));
-        assertEquals(err, "Derby", library.getString("uid"));
-        assertEquals(err, "Derby", library.getString("id"));
+        assertEquals(err, "H2", library.getString("uid"));
+        assertEquals(err, "H2", library.getString("id"));
         assertEquals(err, "spec,ibm-api,api,stable", library.getString("apiTypeVisibility"));
 
         JsonArray files;
@@ -510,22 +515,21 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, files = library.getJsonArray("fileRef"));
         assertNotNull(err, file = files.getJsonObject(0));
         assertEquals(err, "file", file.getString("configElementName"));
-        assertEquals(err, "library[Derby]/file[default-0]", file.getString("uid"));
+        assertEquals(err, "library[H2]/file[default-0]", file.getString("uid"));
         assertNull(err, file.get("id"));
-        assertTrue(err, file.getString("name").endsWith("derby.jar"));
+        assertTrue(err, file.getString("name").endsWith("h2.jar"));
 
         JsonObject props;
         assertNotNull(err, props = ds.getJsonObject("properties"));
-        assertEquals(err, 4, props.size());
-        assertEquals(err, "create", props.getString("createDatabase"));
-        assertEquals(err, "memory:fourthdb", props.getString("databaseName"));
+        assertEquals(err, 3, props.size());
+        assertEquals(err, "******", props.getString("URL"));
         assertEquals(err, "dbuser4", props.getString("user"));
         assertEquals(err, "******", props.getString("password"));
 
         assertEquals(err, 10, ds.getInt("statementCacheSize"));
         assertFalse(err, ds.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
         assertTrue(err, ds.getBoolean("transactional"));
-        assertEquals(err, "javax.sql.XADataSource", ds.getString("type"));
+        assertEquals(err, "java.sql.Driver", ds.getString("type"));
 
         JsonArray api;
         assertNotNull(err, api = ds.getJsonArray("api"));
@@ -544,12 +548,12 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, json.getBoolean("successful"));
         assertNull(err, json.get("failure"));
         assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
+        assertEquals(err, "H2", json.getString("databaseProductName"));
         assertNotNull(err, json.getString("databaseProductVersion"));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
+        assertEquals(err, "H2 JDBC Driver", json.getString("jdbcDriverName"));
         assertNotNull(err, json.getString("jdbcDriverVersion"));
-        assertEquals(err, "DBUSER4", json.getString("schema"));
-        assertEquals(err, "dbuser4", json.getString("user"));
+        assertEquals(err, "PUBLIC", json.getString("schema"));
+        assertEquals(err, "DBUSER4", json.getString("user"));
     }
 
     /**
@@ -630,9 +634,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
                      ejb_ds_driver.getString("id"));
 
         assertNull(err, web_ds_driver.get("javax.sql.ConnectionPoolDataSource"));
-        assertEquals(err, "org.apache.derby.jdbc.EmbeddedConnectionPoolDataSource", ejb_ds_driver.getString("javax.sql.ConnectionPoolDataSource"));
+        assertEquals(err, "org.h2.jdbcx.JdbcDataSource", ejb_ds_driver.getString("javax.sql.XADataSource"));
 
-        assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", web_ds_driver.getString("javax.sql.DataSource"));
+        assertEquals(err, "org.h2.jdbcx.JdbcDataSource", web_ds_driver.getString("javax.sql.XADataSource"));
         assertNull(err, ejb_ds_driver.get("javax.sql.DataSource"));
 
         assertNotNull(err, web_ds_driver.getJsonObject("libraryRef"));
@@ -643,13 +647,10 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, ejb_ds_props = ejb_ds.getJsonObject("properties"));
 
         assertEquals(err, 1, web_ds_props.size());
-        assertEquals(err, 2, ejb_ds_props.size());
+        assertEquals(err, 1, ejb_ds_props.size());
 
-        assertNull(err, web_ds_props.get("createDatabase"));
-        assertEquals(err, "create", ejb_ds_props.getString("createDatabase"));
-
-        assertEquals(err, "memory:thirddb;create=true", web_ds_props.getString("databaseName"));
-        assertEquals(err, "memory:ejbdb", ejb_ds_props.getString("databaseName"));
+        assertEquals(err, "******", web_ds_props.getString("URL"));
+        assertEquals(err, "******", ejb_ds_props.getString("URL"));
 
         assertEquals(err, 10, web_ds.getInt("statementCacheSize"));
         assertEquals(err, 10, ejb_ds.getInt("statementCacheSize"));
@@ -660,8 +661,8 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, web_ds.getBoolean("transactional"));
         assertTrue(err, ejb_ds.getBoolean("transactional"));
 
-        assertEquals(err, "javax.sql.DataSource", web_ds.getString("type"));
-        assertEquals(err, "javax.sql.ConnectionPoolDataSource", ejb_ds.getString("type"));
+        assertEquals(err, "javax.sql.XADataSource", web_ds.getString("type"));
+        assertEquals(err, "javax.sql.XADataSource", ejb_ds.getString("type"));
 
         JsonArray web_ds_api, ejb_ds_api;
         assertNotNull(err, web_ds_api = web_ds.getJsonArray("api"));
@@ -719,13 +720,13 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:comp/env/jdbc/ds3]/jdbcDriver",
                      driver.getString("id"));
         assertNull(err, driver.get("jndiName"));
-        assertEquals(err, "org.apache.derby.jdbc.EmbeddedDataSource", driver.getString("javax.sql.DataSource"));
+        assertEquals(err, "org.h2.jdbcx.JdbcDataSource", driver.getString("javax.sql.XADataSource"));
 
         JsonObject library;
         assertNotNull(err, library = driver.getJsonObject("libraryRef"));
         assertEquals(err, "library", library.getString("configElementName"));
-        assertEquals(err, "Derby", library.getString("uid"));
-        assertEquals(err, "Derby", library.getString("id"));
+        assertEquals(err, "H2", library.getString("uid"));
+        assertEquals(err, "H2", library.getString("id"));
         assertEquals(err, "spec,ibm-api,api,stable", library.getString("apiTypeVisibility"));
 
         JsonArray files;
@@ -733,9 +734,9 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNotNull(err, files = library.getJsonArray("fileRef"));
         assertNotNull(err, file = files.getJsonObject(0));
         assertEquals(err, "file", file.getString("configElementName"));
-        assertEquals(err, "library[Derby]/file[default-0]", file.getString("uid"));
+        assertEquals(err, "library[H2]/file[default-0]", file.getString("uid"));
         assertNull(err, file.get("id"));
-        assertTrue(err, file.getString("name").endsWith("derby.jar"));
+        assertTrue(err, file.getString("name").endsWith("h2.jar"));
     }
 
     /**
@@ -1081,20 +1082,20 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertNull(err, jj.get("id"));
         assertNotNull(err, jj = jj.getJsonObject("libraryRef"));
         assertEquals(err, "library", jj.getString("configElementName"));
-        assertEquals(err, "Derby", jj.getString("uid"));
-        assertEquals(err, "Derby", jj.getString("id"));
+        assertEquals(err, "H2", jj.getString("uid"));
+        assertEquals(err, "H2", jj.getString("id"));
         assertEquals(err, "spec,ibm-api,api,stable", jj.getString("apiTypeVisibility"));
         assertNotNull(err, json = jj.getJsonArray("fileRef"));
         assertEquals(err, 1, json.size());
         assertNotNull(err, jj = json.getJsonObject(0));
         assertEquals(err, "file", jj.getString("configElementName"));
-        assertEquals(err, "library[Derby]/file[default-0]", jj.getString("uid"));
-        assertTrue(err, jj.getString("name").endsWith("derby.jar"));
+        assertEquals(err, "library[H2]/file[default-0]", jj.getString("uid"));
+        assertTrue(err, jj.getString("name").endsWith("h2.jar"));
         assertEquals(err, 10, j.getInt("statementCacheSize"));
         assertEquals(err, false, j.getBoolean("syncQueryTimeoutWithTransactionTimeout"));
         assertEquals(err, false, j.getBoolean("transactional"));
-        assertNotNull(err, j = j.getJsonObject("properties.derby.embedded"));
-        assertEquals(err, "memory:recoverydb", j.getString("databaseName"));
+        assertNotNull(err, j = j.getJsonObject("properties.h2"));
+        assertEquals(err, "jdbc:h2:mem:recoverydb;DB_CLOSE_DELAY=-1", j.getString("URL"));
     }
 
     /**
@@ -1197,7 +1198,7 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
     @Test
     @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to additional Db2 JDBC driver in JDK
     public void testValidateAppDefinedDataSources() throws Exception {
-        JsonArray array = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource?auth=container&authAlias=derbyAuth3")
+        JsonArray array = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource?auth=container&authAlias=h2Auth3")
                         .run(JsonArray.class);
         String err = array.toString();
         assertEquals(err, 6, array.size());
@@ -1253,12 +1254,12 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
-        assertEquals(err, "DBUSER3", info.getString("schema"));
-        assertEquals(err, "dbuser3", info.getString("user"));
+        assertEquals(err, "H2", info.getString("databaseProductName"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(H2Version));
+        assertEquals(err, "H2 JDBC Driver", info.getString("jdbcDriverName"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(H2Version));
+        assertEquals(err, "PUBLIC", info.getString("schema"));
+        assertEquals(err, "DBUSER3", info.getString("user"));
 
         assertNotNull(err, v = array.getJsonObject(2));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesApp.war]/dataSource[java:module/env/jdbc/ds2]", v.getString("uid"));
@@ -1270,12 +1271,12 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
-        assertEquals(err, "DBUSER3", info.getString("schema"));
-        assertEquals(err, "dbuser3", info.getString("user"));
+        assertEquals(err, "H2", info.getString("databaseProductName"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(H2Version));
+        assertEquals(err, "H2 JDBC Driver", info.getString("jdbcDriverName"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(H2Version));
+        assertEquals(err, "PUBLIC", info.getString("schema"));
+        assertEquals(err, "DBUSER3", info.getString("user"));
 
         assertNotNull(err, v = array.getJsonObject(3));
         assertEquals(err, "application[AppDefResourcesApp]/module[AppDefResourcesEJB.jar]/component[AppDefinedResourcesBean]/dataSource[java:comp/env/jdbc/ds3]",
@@ -1289,12 +1290,12 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
-        assertEquals(err, "DBUSER3", info.getString("schema"));
-        assertEquals(err, "dbuser3", info.getString("user"));
+        assertEquals(err, "H2", info.getString("databaseProductName"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(H2Version));
+        assertEquals(err, "H2 JDBC Driver", info.getString("jdbcDriverName"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(H2Version));
+        assertEquals(err, "PUBLIC", info.getString("schema"));
+        assertEquals(err, "DBUSER3", info.getString("user"));
 
         assertNotNull(err, v = array.getJsonObject(4));
         assertEquals(err, "DefaultDataSource", v.getString("uid"));
@@ -1318,12 +1319,12 @@ public class ConfigRESTHandlerAppDefinedResourcesTest extends FATServletClient {
         assertTrue(err, v.getBoolean("successful"));
         assertNull(err, v.get("failure"));
         assertNotNull(err, info = v.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
-        assertTrue(err, info.getString("databaseProductVersion").contains(DerbyVersion));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
-        assertTrue(err, info.getString("jdbcDriverVersion").contains(DerbyVersion));
-        assertEquals(err, "DBUSER3", info.getString("schema"));
-        assertEquals(err, "dbuser3", info.getString("user"));
+        assertEquals(err, "H2", info.getString("databaseProductName"));
+        assertTrue(err, info.getString("databaseProductVersion").contains(H2Version));
+        assertEquals(err, "H2 JDBC Driver", info.getString("jdbcDriverName"));
+        assertTrue(err, info.getString("jdbcDriverVersion").contains(H2Version));
+        assertEquals(err, "PUBLIC", info.getString("schema"));
+        assertEquals(err, "DBUSER3", info.getString("user"));
     }
 
     /**

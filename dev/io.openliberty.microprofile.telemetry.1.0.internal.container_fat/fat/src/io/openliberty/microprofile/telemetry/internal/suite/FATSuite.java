@@ -41,6 +41,7 @@ import io.openliberty.microprofile.telemetry.internal.tests.ZipkinTest;
 @SuiteClasses({
 
                 AlwaysPassesTest.class, //Must keep this test to run something in the Java 6 builds.
+
                 AgentTest.class,
                 Agent129Test.class,
                 Agent214Test.class,

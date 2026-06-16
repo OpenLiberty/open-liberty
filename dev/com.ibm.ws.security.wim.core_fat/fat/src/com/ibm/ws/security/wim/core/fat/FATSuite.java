@@ -25,7 +25,6 @@ import com.ibm.ws.com.unboundid.InMemoryADLDAPServer;
 import com.ibm.ws.com.unboundid.InMemoryLDAPServer;
 import com.ibm.ws.com.unboundid.InMemoryTDSLDAPServer;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
@@ -54,7 +53,7 @@ public class FATSuite {
      * no longer include ldapRegistry-3.0, so we need to add that as well.
      */
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction())
+    public static RepeatTests repeat = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE9_FEATURES()
                                     .addFeature("appSecurity-4.0")
                                     .removeFeature("appSecurity-1.0")

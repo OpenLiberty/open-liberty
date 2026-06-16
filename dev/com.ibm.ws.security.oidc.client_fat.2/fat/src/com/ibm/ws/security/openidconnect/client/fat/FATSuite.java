@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,10 +22,8 @@ import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.fat.common.utils.ldaputils.CommonLocalLDAPServerSuite;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientConsumeUserinfoTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCookieNameTests;
-import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientEncryptionTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientLTPACookieTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSameSiteTests;
-import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSignatureAlgTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationConsumeUserinfoTests;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcPropagationRemoteValidationTests;
 
@@ -38,8 +36,6 @@ import componenttest.rules.repeater.RepeatTests;
         OidcClientCookieNameTests.class,
         OidcClientLTPACookieTests.class,
         OidcClientSameSiteTests.class,
-        OidcClientSignatureAlgTests.class,
-        OidcClientEncryptionTests.class,
         OidcClientConsumeUserinfoTests.class,
         OidcPropagationConsumeUserinfoTests.class,
         OidcPropagationRemoteValidationTests.class

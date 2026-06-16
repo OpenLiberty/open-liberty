@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
@@ -25,10 +22,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.ejbcontainer.security.jacc_fat.audit.PureAnnA08JAASLoginFromEJBJACCAuditTest;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -93,12 +87,12 @@ public class FATSuite {
      */
     @ClassRule
     /*@formatter:off*/
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
-            .andWith(new JakartaEE9Action()
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
+            .andWith(FeatureReplacementAction.EE9_FEATURES()
                      .removeFeatures(EE78_FEATURES)
                      .addFeatures(EE9_FEATURES)
                      .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
-            .andWith(new JakartaEE10Action()
+            .andWith(FeatureReplacementAction.EE10_FEATURES()
                      .removeFeatures(EE78_FEATURES)
                      .removeFeatures(EE9_FEATURES)
                      .addFeatures(EE10_FEATURES)

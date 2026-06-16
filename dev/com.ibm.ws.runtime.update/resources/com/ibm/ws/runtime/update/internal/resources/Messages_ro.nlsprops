@@ -51,11 +51,11 @@ client.quiesce.end=CWWKE1104I: Dezactivare client complet\u0103.
 client.quiesce.end.explanation=Opera\u0163ia de dezactivare s-a finalizat cu succes.
 client.quiesce.end.useraction=Nicio ac\u0163iune necesar\u0103.
 
-notifications.not.complete=CWWKE1105W: {0} actualiz\u0103ri runtime nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce).
+notifications.not.complete=CWWKE1105W: {0} actualiz\u0103ri runtime nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce). Urm\u0103toarele actualiz\u0103ri la rulare nu s-au finalizat: {1}
 notifications.not.complete.explanation=Una sau mai multe actualiz\u0103ri pentru caracteristici, configura\u0163ie sau aplica\u0163ii nu s-au finalizat \u00eenainte de oprirea serverului.  
 notifications.not.complete.useraction=Nu este necesar\u0103 nici o ac\u0163iune. 
 
-quiesce.listeners.not.complete=CWWKE1106W: {0} opera\u0163ii de oprire (shutdown) nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce). 
+quiesce.listeners.not.complete=CWWKE1106W: {0} opera\u0163ii de oprire (shutdown) nu s-au finalizat \u00een timpul perioadei de lini\u015ftire (quiesce). Urm\u0103toarele opera\u021biuni nu s-au finalizat: {1}
 quiesce.listeners.not.complete.explanation=Una sau mai multe opera\u0163ii care au fost ini\u0163iate \u00een timpul opera\u0163iei de oprire nu s-au finalizat.
 quiesce.listeners.not.complete.useraction=Nu este necesar\u0103 nici o ac\u0163iune.
 

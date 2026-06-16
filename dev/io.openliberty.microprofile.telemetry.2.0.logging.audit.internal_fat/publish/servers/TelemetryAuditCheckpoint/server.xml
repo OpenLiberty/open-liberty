@@ -20,4 +20,7 @@
 	</featureManager>
 	<include location="../fatTestPorts.xml"/>
 	<mpTelemetry source="audit"/>
+
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

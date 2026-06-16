@@ -35,5 +35,20 @@
     <Designate pid="test.server.quiesce">
         <Object ocdref="test.server.quiesce"/>
     </Designate>
-    
+
+    <OCD name="internal" description="internal" 
+         id="test.server.pre.quiesce" ibm:alias="testPreServerQuiesce">
+        <AD name="internal" description="internal" 
+            id="throwException" required="false" type="Boolean" default="false" />  
+        <AD name="internal" description="internal" 
+            id="takeForever" required="false" type="Boolean" default="false" />  
+        <AD name="internal" description="internal" 
+            id="startThreadsAfterStop" required="false" type="Boolean" default="false" />  
+        <AD name="internal" description="internal"
+            id="startThreadsWhileRunning" required="false" type="Boolean" default="false"/>
+    </OCD>
+  
+    <Designate pid="test.server.pre.quiesce">
+        <Object ocdref="test.server.pre.quiesce"/>
+    </Designate>
 </metatype:MetaData>

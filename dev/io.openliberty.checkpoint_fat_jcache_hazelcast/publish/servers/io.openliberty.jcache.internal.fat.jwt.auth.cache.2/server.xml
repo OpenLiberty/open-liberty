@@ -71,4 +71,6 @@
 	<mpJwt id="myMpJwt" issuer="ALL_ISSUERS"
 		jwksUri="https://localhost:${bvt.prop.HTTP_default.secure}/jwt/ibm/api/defaultJWT/jwk" />
 
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

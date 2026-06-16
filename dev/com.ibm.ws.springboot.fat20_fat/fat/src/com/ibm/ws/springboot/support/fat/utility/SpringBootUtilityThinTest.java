@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2025 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,10 +21,13 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -68,11 +71,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
     private static String SPRING_BOOT_20_BASE_THIN = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + SPRING_APP_TYPE;
     private static String SPRING_BOOT_20_WAR_THIN = SPRING_BOOT_20_APP_WAR.substring(0, SPRING_BOOT_20_APP_WAR.length() - 3) + SPRING_APP_TYPE;
+    private static final String extractingFilesMessage = "Extracting files to ";
     private static String installDir = null;
     private static boolean wlpLibExtractCreated;
     private String application = SPRING_BOOT_20_APP_BASE;
     private RemoteFile sharedResourcesDir;
     private RemoteFile appsDir;
+    private String extractedWLP;
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -160,7 +165,11 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             properties.put("server.ssl.key-store-password", "secret");
             properties.put("server.ssl.key-password", "secret");
         }
-        properties.put("com.ibm.ws.logging.trace.specification", "*=info:com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil=all");
+        properties.put("com.ibm.ws.logging.trace.specification", "*=info"
+                                                                 + ":com.ibm.ws.app.manager.springboot.util.SpringBootThinUtil=all"
+                                                                 + ":com.ibm.ws.kernel.filemonitor*=all"
+                                                                 + ":com.ibm.ws.app.manager.*=all"
+                                                                 + ":com.ibm.ws.app.manager.springboot*=all");
         return properties;
     }
 
@@ -315,6 +324,18 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testDefaultHostWithAppPortRunLibertyUberJarWithSSL() throws Exception {
+        String os = System.getProperty("os.name");
+        String javaVersion = System.getProperty("java.specification.version");
+
+        if ((os.equals("z/OS") || os.equals("OS/400")) && javaVersion.equals("1.8")) {
+            // Skipping the test because of the following error
+            // E CWWKE0701E: bundle com.ibm.ws.zos.core:1.0.114.cl260620260520-1901 (24)[com.ibm.ws.zos.core.internal.CoreBundleActivator(22)] : The activate method has thrown an exception java.lang.UnsatisfiedLinkError
+            // Caused by: java.lang.UnsatisfiedLinkError: /u/MSTONE1/wlpExtract/libertyUber_1779954574138017627/wlp/lib/native/zos/s390x/libzNativeServices.so (EDC5111I Permission denied.)
+            Log.warning(getClass(), "Skipping the test for " + os + " java version " + javaVersion);
+            return;
+        }
+
+        String method = "testDefaultHostWithAppPortRunLibertyUberJarWithSSL";
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
         RemoteFile thinApp = server.getMachine().getFile(server.getFileFromLibertyServerRoot(dropinsSpring), "springBootApp.jar");
@@ -355,31 +376,85 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
         RemoteFile libertyUberJar = server.getFileFromLibertyServerRoot("libertyUber.jar");
         Assert.assertTrue("Expected Liberty uber JAR does not exist: " + libertyUberJar.getAbsolutePath(), libertyUberJar.isFile());
 
+        String[] javaCmd;
         //Run libertyUberJar using java -jar command
-        Process proc = Runtime.getRuntime().exec("java -jar " + libertyUberJar.getAbsolutePath());
+        if (System.getProperty("os.name").equalsIgnoreCase("os/400")) {
+            // If this is running on IBM i, add the -XX:+EnableHCR option to not run in a separate JVM
+            javaCmd = new String[] { "java", "-XX:+EnableHCR", "-jar", libertyUberJar.getAbsolutePath() };
+        } else {
+            javaCmd = new String[] { "java", "-jar", libertyUberJar.getAbsolutePath() };
+        }
 
-        String line = null;
+        Process proc = Runtime.getRuntime().exec(javaCmd);
+        try {
+            String line = null;
+            line = readProcessLine(proc, method, "CWWKT0016I");
+
+            if (line == null) {
+                proc.destroy();
+                Log.info(getClass(), method, "Running the uber jar again because the last run wasn't successful");
+                proc = Runtime.getRuntime().exec(javaCmd);
+                line = readProcessLine(proc, method, "CWWKT0016I");
+            }
+
+            // Printing trace logs to understand why the application has not started
+            if (line == null) {
+                if (extractedWLP != null) {
+                    Path extractedTraceLogsLocation = Paths.get(extractedWLP, "usr", "servers", server.getServerName(), "logs", "trace.log");
+                    Log.info(getClass(), method, "==============================================BELOW ARE THE WLP TRACE LOGS EXTRACTED FROM " + extractedTraceLogsLocation);
+                    printTrace(extractedTraceLogsLocation.toString(), method);
+                    Log.info(getClass(), method, "========================================================================================================================");
+                } else {
+                    Log.warning(getClass(), "Extraced WLP location not found in logs");
+                }
+            }
+
+            assertNotNull("The endpoint is not available", line);
+            assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
+
+            int start = line.indexOf("https");
+            String url = line.substring(start);
+
+            String result = sendHttpsGet(url, server);
+            assertNotNull(result);
+            assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
+        } finally {
+            proc.destroy();
+        }
+    }
+
+    private void printTrace(String extractedTraceLogsLocation, String method) {
+        String line;
+        try (BufferedReader reader = new BufferedReader(new FileReader(extractedTraceLogsLocation))) {
+            while ((line = reader.readLine()) != null) {
+                Log.info(getClass(), method, line);
+            }
+        } catch (Exception e) {
+            Log.error(getClass(), method, e);
+        }
+    }
+
+    private String readProcessLine(Process proc, String method, String message) throws IOException {
+        String line;
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(proc.getInputStream()))) {
             line = readTimeout(reader);
-            Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
+            Log.info(getClass(), method, line);
             while (line != null) {
-                Log.info(getClass(), "testRunLibertyUberJarWithSSL", line);
-                if (line.contains("CWWKT0016I")) {
+                Log.info(getClass(), method, line);
+                if (line.contains(message)) {
                     break;
+                } else if (line.contains(extractingFilesMessage)) {
+                    // This line will have something like the following in case of linux and windows respectively
+                    // Extracting files to /path/to/extract/location
+                    // Extracting files to c:\\path\to\extract\location
+                    // Must handle paths with / or \
+                    int startIndex = line.indexOf(extractingFilesMessage) + extractingFilesMessage.length();
+                    extractedWLP = line.substring(startIndex).trim();
                 }
                 line = readTimeout(reader);
             }
         }
-        assertNotNull("The endpoint is not available", line);
-        assertTrue("Expected log not found", line.contains("CWWKT0016I") && line.contains("default_host"));
-
-        int start = line.indexOf("https");
-        String url = line.substring(start);
-
-        String result = sendHttpsGet(url, server);
-        assertNotNull(result);
-        assertEquals("Expected response not found.", "HELLO SPRING BOOT!!", result);
-        proc.destroy();
+        return line;
     }
 
     String readTimeout(BufferedReader reader) throws IOException {

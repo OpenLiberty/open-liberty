@@ -43,12 +43,12 @@ import io.netty.handler.codec.http.HttpVersion;
 import io.netty.handler.codec.http.TooLongHttpHeaderException;
 import io.netty.handler.codec.http2.Http2Connection;
 import io.netty.handler.codec.http2.Http2Exception.StreamException;
-import io.netty.handler.timeout.ReadTimeoutException;
 import io.netty.handler.codec.http2.Http2Error;
 import io.netty.handler.codec.http2.Http2Stream;
 import io.netty.handler.codec.http2.HttpConversionUtil;
 import io.netty.handler.codec.http2.HttpToHttp2ConnectionHandler;
 import io.netty.util.ReferenceCountUtil;
+import io.openliberty.http.netty.timeout.exception.ReadTimeoutException;
 import io.openliberty.http.netty.timeout.exception.TimeoutException;
 
 /**
@@ -83,19 +83,8 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
     @Override
     protected void channelRead0(ChannelHandlerContext context, FullHttpRequest request) throws Exception {
         if (request.decoderResult().isFinished() && request.decoderResult().isSuccess()) {
-            // Verify if the request expects 100 continue
-            // At this point, the validation of the message size is already done by the aggregator
-            if (HttpUtil.is100ContinueExpected(request)) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Request contains [Expect: 100-continue]");
-                }
-                DefaultFullHttpResponse continueResponse = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.CONTINUE);
-                HttpUtil.setContentLength(continueResponse, 0);
-                byte[] date = HttpDispatcher.getDateFormatter().getRFC1123TimeAsBytes(config.getDateHeaderRange());
-                continueResponse.headers().set(HttpHeaderKeys.HDR_DATE.getName(),
-                                new String(date, StandardCharsets.UTF_8));
-                context.writeAndFlush(continueResponse);
-            }
+            // Note: 100-Continue is now handled in LibertyHttpObjectAggregator before aggregation
+            // to avoid deadlock where aggregator waits for body and client waits for 100-Continue
             FullHttpRequest msg = request;
             HttpDispatcher.getExecutorService().execute(new Runnable() {
                 @Override
@@ -195,10 +184,10 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<FullHttpR
                 Tr.debug(tc, "The connection closed due to idle timeout");
             }
             if(cause instanceof ReadTimeoutException){
-                sendErrorMessage(cause);
+                sendErrorMessage(StatusCodes.REQ_TIMEOUT, cause);
+                return;
             }
-             
-        } else if(cause instanceof TooLongFrameException) { 
+        } else if(cause instanceof TooLongFrameException) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "exceptionCaught encountered an TooLongFrameException : " + cause);
             }

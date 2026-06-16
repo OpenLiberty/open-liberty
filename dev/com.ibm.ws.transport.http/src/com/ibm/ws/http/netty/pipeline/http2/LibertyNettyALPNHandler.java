@@ -96,7 +96,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, new HttpServerKeepAliveHandler());
             //TODO: this is a very large number, check best practice
             ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_KEEP_ALIVE_HANDLER_NAME, HttpPipelineInitializer.HTTP_AGGREGATOR_HANDLER_NAME,
-                                    new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? HttpPipelineInitializer.maxContentLength : httpConfig.getMessageSizeLimit()));
+                                    new LibertyHttpObjectAggregator(httpConfig.getMessageSizeLimit() == -1 ? HttpPipelineInitializer.maxContentLength : httpConfig.getMessageSizeLimit(), httpConfig));
             ctx.pipeline().addAfter(HttpPipelineInitializer.HTTP_AGGREGATOR_HANDLER_NAME, HttpPipelineInitializer.HTTP_REQUEST_HANDLER_NAME, new LibertyHttpRequestHandler(httpConfig));
             // Turn on half closure for H1
             ctx.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, true);

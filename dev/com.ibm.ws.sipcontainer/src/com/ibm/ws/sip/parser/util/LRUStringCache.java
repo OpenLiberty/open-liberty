@@ -305,7 +305,7 @@ public class LRUStringCache {
         }
 
         //The 'current' bucket is not out of the list. Put it back at the
-        // begining of the list.
+        // beginning of the list.
         current._next = _LRURoot;
         _LRURoot._prev = current;
 

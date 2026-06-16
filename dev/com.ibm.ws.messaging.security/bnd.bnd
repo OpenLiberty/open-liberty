@@ -30,8 +30,7 @@ Private-Package:\
  com.ibm.ws.messaging.security.utility
 
 -dsannotations: \
- com.ibm.ws.messaging.security.internal.MessagingSecurityServiceImpl,\
- com.ibm.ws.messaging.security.internal.LTPACondition
+ com.ibm.ws.messaging.security.internal.MessagingSecurityServiceImpl
 
 instrument.disabled: true
 

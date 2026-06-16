@@ -28,6 +28,5 @@
     </logstashCollector>
 
     <ssl id="defaultSSLConfig" verifyHostname="false" />
-    <keyStore id="defaultKeyStore" password="{xor}Lz4sLChvLTs=" />
 
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -374,7 +374,7 @@ public class InactivityTimeoutTests {
                        server.findStringsInLogsAndTraceUsingMark("SocketTimeoutException").size() == 1);
         } else {
             assertTrue("The connection closed message was not found in the trace and should have been!",
-                       server.findStringsInLogsAndTraceUsingMark("connection closed due to idle timeout").size() == 1);
+                       server.findStringsInLogsAndTraceUsingMark("The connection is closing due an idle read timeout").size() == 1);
         }
     }
 

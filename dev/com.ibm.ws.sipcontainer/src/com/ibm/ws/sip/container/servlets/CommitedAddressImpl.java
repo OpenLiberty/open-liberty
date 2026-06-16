@@ -80,13 +80,13 @@ public class CommitedAddressImpl extends ContactSystemAddressImpl
     }
     
     /**
-     * In this Class only user part MAY be modified
+     * In this Class only the User part MAY be modified
      * @see javax.servlet.sip.Address#setURI(URI)
      */
     @Override
 	public void setURI(URI uri)
     {
-    	throw new IllegalStateException("This Address is used in commited message where it cannot be modified");
+    	throw new IllegalStateException("This Address is used in a committed message, therefore it cannot be modified");
     }
     
     /**
@@ -95,7 +95,7 @@ public class CommitedAddressImpl extends ContactSystemAddressImpl
      */
     @Override
 	public void setParameter(String name, String value){
-    	throw new IllegalStateException("This Address is used in commited message where it cannot be modified");
+    	throw new IllegalStateException("This Address is used in a committed message, therefore it cannot be modified");
     }
     
     /**
@@ -103,7 +103,7 @@ public class CommitedAddressImpl extends ContactSystemAddressImpl
 	 */
 	@Override
 	public void setValue(String value) throws IllegalStateException {
-		throw new IllegalStateException("This Address is used in commited message where it cannot be modified");
+		throw new IllegalStateException("This Address is used in a committed message, therefore it cannot be modified");
 	}
 	
     /**
@@ -112,7 +112,7 @@ public class CommitedAddressImpl extends ContactSystemAddressImpl
     @Override
 	public void setExpires(int seconds)
     {
-    	throw new IllegalStateException("This Address is used in commited message where it cannot be modified");
+    	throw new IllegalStateException("This Address is used in a committed message, therefore it cannot be modified");
     }
 
     
@@ -122,6 +122,6 @@ public class CommitedAddressImpl extends ContactSystemAddressImpl
     @Override
 	public void setQ(float q)
     {
-    	throw new IllegalStateException("This Address is used in commited message where it cannot be modified");
+    	throw new IllegalStateException("This Address is used in committed message, therefore it cannot be modified");
     }
 }

@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2014, 2020 IBM Corporation and others.
+    Copyright (c) 2014, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -28,12 +28,14 @@
     <databaseStore id="dbTaskStore1">
       <dataSource>
         <jdbcDriver libraryRef="jdbc1Lib1"/>
-        <properties.derby.embedded createDatabase="create" databaseName="memory:cpefeature"/>
+        <properties.h2 URL="jdbc:h2:mem:cpefeature;DB_CLOSE_DELAY=-1"/>
       </dataSource>
     </databaseStore>
     <library id="jdbc1Lib1">
-      <fileset dir="${shared.resource.dir}/derby" includes="derby.jar"/>
+      <fileset dir="${shared.resource.dir}/h2Java8" includes="h2.jar"/>
     </library>
   
-    <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
+    <!-- Due to lack of doPriv in h2: -->
+    <javaPermission className="java.lang.RuntimePermission" name="getClassLoader"/>
 </server>

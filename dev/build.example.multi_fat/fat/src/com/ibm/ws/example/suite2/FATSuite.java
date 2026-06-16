@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,9 +27,11 @@ public class FATSuite {
 
     // Using the RepeatTests @ClassRule will cause all tests to be run two times.
     // 1) [FULL mode if Java 17 or later, else LITE mode] again with all features _and applications_ upgraded to Jakarta EE 10 equivalents
-    // 2) [LITE mode if Java 17 or later] again with all features _and applications_ upgraded to Jakarta EE 11 equivalents
+    // 2) [FULL mode if Java 21 or later] again with all features _and applications_ upgraded to Jakarta EE 11 equivalents
+    // 3) [LITE mode if Java 21 or later] again with all features _and applications_ upgraded to Jakarta EE 12 equivalents
     @ClassRule
     public static RepeatTests r = RepeatTests.with(FeatureReplacementAction.EE10_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                    .andWith(FeatureReplacementAction.EE11_FEATURES());
+                    .andWith(FeatureReplacementAction.EE11_FEATURES().conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_21))
+                    .andWith(FeatureReplacementAction.EE12_FEATURES());
 
 }

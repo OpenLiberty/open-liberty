@@ -376,8 +376,9 @@ public abstract class SIPStreamConectionAdapter extends SIPConnectionAdapter
 		}
 		
 		/** 
-		 * keep wait for messages and send them to the network
-		 * untill error occurs 
+		 * wait for messages 
+		 * and send them to the network
+		 * until error occurs 
 		 **/
 		public void run()
 		{

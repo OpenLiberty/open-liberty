@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -395,7 +395,21 @@ class ResolveDirector extends AbstractDirector {
 
         RepositoryConnectionList loginInfo = getRepositoryConnectionList(null, null, null, this.getClass().getCanonicalName() + ".resolve");
 
-        this.installResources = resolveMap(assetIds, loginInfo, download);
+        this.installResources = resolveMap(assetIds, new ArrayList<>(), loginInfo, download);
+        if (isEmpty(this.installResources)) {
+            throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED",
+                                             InstallUtils.getShortNames(product.getFeatureDefinitions(), assetIds).toString());
+        }
+    }
+
+    void resolve(Collection<String> assetIds, Collection<String> platforms, boolean download) throws InstallException {
+        if (assetIds == null || assetIds.isEmpty()) {
+            throw ExceptionUtils.createByKey("ERROR_ASSETS_LIST_INVALID");
+        }
+
+        RepositoryConnectionList loginInfo = getRepositoryConnectionList(null, null, null, this.getClass().getCanonicalName() + ".resolve");
+
+        this.installResources = resolveMap(assetIds, platforms, loginInfo, download);
         if (isEmpty(this.installResources)) {
             throw ExceptionUtils.createByKey(InstallException.ALREADY_EXISTS, "ASSETS_ALREADY_INSTALLED",
                                              InstallUtils.getShortNames(product.getFeatureDefinitions(), assetIds).toString());
@@ -415,9 +429,9 @@ class ResolveDirector extends AbstractDirector {
             log(Level.FINEST, "Determined unresolved features: " + unresolvedFeatures.toString() + " from " + fromDir.getAbsolutePath());
             RepositoryConnectionList loginInfo = getRepositoryConnectionList(null, null, null, this.getClass().getCanonicalName() + ".resolve");
             if (this.installResources == null) {
-                this.installResources = resolveMap(unresolvedFeatures, loginInfo, false);
+                this.installResources = resolveMap(unresolvedFeatures, new ArrayList<>(), loginInfo, false);
             } else {
-                installResources.putAll(resolveMap(unresolvedFeatures, loginInfo, false));
+                installResources.putAll(resolveMap(unresolvedFeatures, new ArrayList<>(), loginInfo, false));
             }
         }
         if (!installAssets.isEmpty()) {
@@ -618,7 +632,7 @@ class ResolveDirector extends AbstractDirector {
         resolveAutoFeature(autoFeatures, installAssets, featureDefinitionsToCheck);
     }
 
-    List<List<RepositoryResource>> resolve(Collection<String> assetNames, RepositoryConnectionList loginInfo, boolean download, boolean installingFeature) throws InstallException {
+    List<List<RepositoryResource>> resolve(Collection<String> assetNames, Collection<String> platforms, RepositoryConnectionList loginInfo, boolean download, boolean installingFeature) throws InstallException {
         boolean installingAsset = !installingFeature;
         Collection<String> assetNamesProcessed = new ArrayList<String>();
         for (String s : assetNames) {
@@ -649,7 +663,7 @@ class ResolveDirector extends AbstractDirector {
             if (InstallUtils.isServerXmlInstall()) {
                 // call resolveAsSet --> detects singleton exceptions and tolerated features
                 log(Level.FINE, "Calling resolveAsSet api");
-                installResources = resolver.resolveAsSet(assetNamesProcessed);
+                installResources = resolver.resolveAsSet(assetNamesProcessed, platforms);
                 resolveAutoFeatures(installResources, new RepositoryResolver(productDefinitions, installedFeatures, installedIFixes, loginInfo));
             } else {
                 Collection<String> assetsToInstall = getFeaturesToInstall(assetNamesProcessed, download);
@@ -661,7 +675,7 @@ class ResolveDirector extends AbstractDirector {
             }
 
         } catch (RepositoryResolutionException e) {
-            throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), installingAsset, isOpenLiberty);
+            throw ExceptionUtils.create(e, assetNamesProcessed, product.getInstallDir(), installingAsset, isOpenLiberty, false);
         } catch (RepositoryException e) {
             throw ExceptionUtils.create(e, assetNamesProcessed, installingAsset, proxy, defaultRepo(), isOpenLiberty);
         }
@@ -720,20 +734,20 @@ class ResolveDirector extends AbstractDirector {
         }
     }
 
-    Map<String, List<List<RepositoryResource>>> resolveMap(Collection<String> assetNames, RepositoryConnectionList loginInfo, boolean download) throws InstallException {
+    Map<String, List<List<RepositoryResource>>> resolveMap(Collection<String> assetNames, Collection<String> platforms, RepositoryConnectionList loginInfo, boolean download) throws InstallException {
         fireProgressEvent(InstallProgressEvent.RESOLVE, 2, Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("STATE_PREPARING_ASSETS"));
         Map<String, List<List<RepositoryResource>>> installResourcesMap = new HashMap<String, List<List<RepositoryResource>>>();
         Map<String, Collection<String>> assetsMap = InstallUtils.getAssetsMap(assetNames, download);
         Collection<String> dAssets = assetsMap.get(DEFAULT_TO_EXTENSION);
         if (dAssets != null && !dAssets.isEmpty()) {
-            List<List<RepositoryResource>> resolved = resolve(dAssets, loginInfo, download, false);
+            List<List<RepositoryResource>> resolved = resolve(dAssets, platforms, loginInfo, download, false);
             if (!isEmpty(resolved)) {
                 installResourcesMap.put(DEFAULT_TO_EXTENSION, resolved);
             }
         }
         for (Entry<String, Collection<String>> assetsEntry : assetsMap.entrySet()) {
             if (!assetsEntry.getKey().equalsIgnoreCase(DEFAULT_TO_EXTENSION)) {
-                List<List<RepositoryResource>> resolved = resolve(assetsEntry.getValue(), loginInfo, download, false);
+                List<List<RepositoryResource>> resolved = resolve(assetsEntry.getValue(), platforms, loginInfo, download, false);
                 if (!download)
                     checkESAResources(resolved);
                 resolved = removeDuplicated(installResourcesMap, resolved);
@@ -1212,7 +1226,7 @@ class ResolveDirector extends AbstractDirector {
         RepositoryConnectionList loginInfo = new RepositoryConnectionList();
         List<List<RepositoryResource>> resources = null;
         try {
-            resources = resolve(assetIds, loginInfo, false, installingFeature);
+            resources = resolve(assetIds, new ArrayList<>(), loginInfo, false, installingFeature);
         } catch (InstallException e) {
             // Should do nothing
             log(Level.FINEST, "checkAssetsNotInstalled() ignore exception: " + e.getMessage(), e);

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -135,7 +135,7 @@ public abstract class SSLCommonTests extends AbstractSpringTests {
     }
 
     public static String sendHttpsGet(String url, LibertyServer server, String ksPath, String ksPassword, String tsPath, String tsPassword) throws Exception {
-
+        assertNotNull(server.waitForStringInLog("CWWKO0219I"));
         String result = null;
         SSLContext sslcontext = SSLContext.getInstance("SSL");
 

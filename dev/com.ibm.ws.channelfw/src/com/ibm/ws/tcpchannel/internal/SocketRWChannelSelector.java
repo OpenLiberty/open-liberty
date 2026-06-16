@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2005, 2025 IBM Corporation and others.
+ * Copyright (c) 2005, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -258,8 +258,16 @@ public class SocketRWChannelSelector extends ChannelSelector implements Runnable
                         }
                     } // end-vc-sync
                 } else {
-                    // Change the request's selection key's interested
-                    key.interestOps(selectorOp);
+                    try {
+                        // Change the request's selection key's interested
+                        key.interestOps(selectorOp);
+                    } catch (CancelledKeyException cke) {
+                        // Key cancelled (channel likely closed), ignore
+                        if (bTrace && tc.isDebugEnabled()) {
+                            Tr.debug(this, tc, "Key cancelled while updating interest ops for  " + ioSocket.getChannel()
+                                    + ". exception is: " + cke);
+                        }
+                    }
                 }
             } else {
                 if (work.isRequestTypeRead()) {

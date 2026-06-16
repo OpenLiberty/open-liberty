@@ -46,5 +46,6 @@
         </group>
     </basicRegistry>
 
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
 
 </server>

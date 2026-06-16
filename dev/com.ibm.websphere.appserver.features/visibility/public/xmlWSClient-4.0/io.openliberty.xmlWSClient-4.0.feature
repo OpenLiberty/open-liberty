@@ -40,5 +40,5 @@ IBM-ShortName: xmlWSClient-4.0
 IBM-Process-Types: client
 -features=\
   io.openliberty.xmlWSClient.internal-4.0
-kind=beta
+kind=ga
 edition=base

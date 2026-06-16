@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -250,6 +250,17 @@ public abstract class ServletClientImpl implements ServletClient {
     public boolean accessProtectedServletWithInvalidRegistry(String urlPattern, String user, String password) {
         String url = servletURL + urlPattern;
         logger.info("accessProtectedServletWithInvalidRegistry: "
+                    + url + " user=" + user + " password="
+                    + password);
+
+        return accessAndAuthenticate(url, user, password, 401) == null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean accessProtectedServletWithoutLtpaServiceReady(String urlPattern, String user, String password) {
+        String url = servletURL + urlPattern;
+        logger.info("accessProtectedServletWithoutLtpaServiceReady: "
                     + url + " user=" + user + " password="
                     + password);
 

@@ -1,0 +1,18 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+
+# Package for this bucket's test suite
+-privatepackage: com.ibm.ws.jpa.tests.spec10.callback.jpa20
+
+# Suite class that will be runnig
+suite.name=com.ibm.ws.jpa.tests.spec10.callback.jpa20.FATSuite
+
+# Features tested by this bucket
+tested.features: jpa-2.0, ejbLite-3.1, servlet-3.0, jdbc-4.0, jndi-1.0, databaserotation

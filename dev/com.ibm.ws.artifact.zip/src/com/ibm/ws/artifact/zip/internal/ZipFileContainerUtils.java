@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.artifact.zip.internal;
 
@@ -122,7 +119,7 @@ public class ZipFileContainerUtils {
             int location = locations[index++];
 
             ZipEntryData nextEntryData = allEntryData[location];
-            String nextPath = nextEntryData.r_getPath();
+            String nextPath = nextEntryData.r_path;
 
             int parentLen;
             if ( parentPath.isEmpty() ) {
@@ -212,6 +209,10 @@ public class ZipFileContainerUtils {
         }
     }
 
+    private static final String MULTI_RELEASE_PREFIX = "META-INF/versions/";
+
+    private static final int MULTI_RELEASE_PREFIX_LENGTH = MULTI_RELEASE_PREFIX.length();
+
     private static final List<Integer> EMPTY_OFFSETS = null;
 
     private static final int[] EMPTY_OFFSETS_ARRAY = new int[0];
@@ -250,7 +251,7 @@ public class ZipFileContainerUtils {
         int numValues = offsets.size();
         
         int[] extractedValues;
-        
+
         if ( numValues == 0 ) {
             extractedValues = EMPTY_OFFSETS_ARRAY;
         } else {
@@ -303,7 +304,15 @@ public class ZipFileContainerUtils {
         List<List<Integer>> offsetsStack = new ArrayList<List<Integer>>(32);
 
         for ( int nextOffset = 0; nextOffset < zipEntryData.length; nextOffset++ ) {
-            String r_nextPath = zipEntryData[nextOffset].r_getPath();
+            // Do not include phantom entry data in the iterator data.
+            // Consumers of the iterator are not expecting a nonexistent entry in the zip
+            // file that cannot be consumed.  Only real entries should be returned to external
+            // consumers of the Container iterator for that reason.  This change maintains 
+            // the previous behavior so as not to cause a consumer to cause an error.
+            if (zipEntryData[nextOffset].isPhantom()) {
+                continue;
+            }
+            String r_nextPath = zipEntryData[nextOffset].r_path;
             int r_nextPathLen = r_nextPath.length();
 
             // The next path may be on a different branch.
@@ -420,7 +429,7 @@ public class ZipFileContainerUtils {
         }
 
         final String r_path;
-        private final long time;
+        final long time;
         private int offset = -1;
 
         final void setOffset(int offset) {
@@ -441,6 +450,15 @@ public class ZipFileContainerUtils {
             return time;
         }
 
+        @Trivial
+        boolean isPhantom()  {
+            return false;
+        }
+
+        ZipEntryData getMultiReleaseEntry() {
+            return this;
+        }
+
         abstract String getPath();
 
         abstract boolean isDirectory();
@@ -450,9 +468,9 @@ public class ZipFileContainerUtils {
 
     @Trivial
     private static class FileZipEntryData extends ZipEntryData {
-        FileZipEntryData(ZipEntry zipEntry) {
-            super(stripPath(zipEntry.getName()), zipEntry.getTime());
-            this.path = zipEntry.getName();
+        FileZipEntryData(String entryPath, ZipEntry zipEntry) {
+            super(stripPath(entryPath), zipEntry.getTime());
+            this.path = entryPath;
             this.size = (int) zipEntry.getSize();
         }
 
@@ -476,10 +494,90 @@ public class ZipFileContainerUtils {
         }
     }
 
+    /**
+     * This ZipEntryData implementation represents an entry that may or may not actually exist.
+     * If it doesn't exist it is a "phantom" entry pointing to the entry that exists in the mutli 
+     * release space. The phantom entry is needed when doing a lookup to avoid looking up an entry
+     * multiple times for each of multi release versions it could be located in.
+     */
+    @Trivial
+    static class MultiReleaseFileZipEntryData extends ZipEntryData {
+        /**
+         * This constructor is used when the entry actually exists in the zip file and there is a multi release
+         * version of the file as well.
+         */
+        MultiReleaseFileZipEntryData(String entryPath, String relativePath, ZipEntry zipEntry, ZipEntryData multiReleaseEntry, int multiReleaseJavaVersion) {
+            super(relativePath, zipEntry.getTime());
+            this.path = entryPath;
+            this.size = (int) zipEntry.getSize();
+            this.multiReleaseEntry = multiReleaseEntry;
+            this.multiReleaseJavaVersion = multiReleaseJavaVersion;
+        }
+
+        /**
+         * This constructor is used when replacing an entry with a new one due to a newer Java version identified
+         * or finding a multi release entry for an existing ZipEntryData
+         */
+        MultiReleaseFileZipEntryData(ZipEntryData entryData, ZipEntryData multiReleaseEntry, int multiReleaseJavaVersion) {
+            super(entryData.r_path, entryData.time);
+            this.path = entryData.getPath();
+            this.size = entryData.getSize();
+            this.multiReleaseEntry = multiReleaseEntry;
+            this.multiReleaseJavaVersion = multiReleaseJavaVersion;
+        }
+
+        /**
+         * This constructor is used when the entry doesn't exists in the zip file and there is a multi release
+         * version of the entry that this entry points to for fast lookup.
+         */
+        MultiReleaseFileZipEntryData(String phantomPath, String relativePhantomPath, ZipEntryData multiReleaseEntry, int multiReleaseJavaVersion) {
+            super(relativePhantomPath, -1);
+            this.path = phantomPath;
+            this.size = -1;
+            this.multiReleaseEntry = multiReleaseEntry;
+            this.multiReleaseJavaVersion = multiReleaseJavaVersion;
+        }
+
+        final String path;
+
+        final ZipEntryData multiReleaseEntry;
+
+        final int multiReleaseJavaVersion;
+
+        @Override
+        String getPath() {
+            return path;
+        }            
+
+        @Override
+        boolean isDirectory() {
+            return false; 
+        }
+        
+        final int size;
+
+        @Override
+        int getSize() {
+            return size;
+        }
+
+        @Override
+        boolean isPhantom() {
+            // if size == -1, then it is not a real entry in the zip file
+            // it just points to the multi-release version of the entry
+            return size == -1;
+        }
+
+        @Override
+        ZipEntryData getMultiReleaseEntry() {
+            return multiReleaseEntry;
+        }
+    }
+
     @Trivial
     private static class DirZipEntryData extends ZipEntryData {
-        DirZipEntryData(ZipEntry zipEntry) {
-            super(stripPath(zipEntry.getName()), zipEntry.getTime());
+        DirZipEntryData(String entryPath, ZipEntry zipEntry) {
+            super(stripPath(entryPath), zipEntry.getTime());
         }
 
         @Override
@@ -496,15 +594,6 @@ public class ZipFileContainerUtils {
         int getSize() {
             return 0;
         }
-    }
-
-    @Trivial
-    private static final ZipEntryData createZipEntryData(ZipEntry entry) {
-        String path = entry.getName();
-        if (path.charAt( path.length() - 1 ) == '/' ) {
-            return new DirZipEntryData(entry);
-        }
-        return new FileZipEntryData(entry);
     }
 
     private static class SearchZipEntryData extends ZipEntryData {
@@ -542,7 +631,7 @@ public class ZipFileContainerUtils {
     public static class ZipEntryDataComparator implements Comparator<ZipEntryData> {
         @Trivial
         public int compare(ZipEntryData data1, ZipEntryData data2) {
-            return PathUtils.PATH_COMPARATOR.compare( data1.r_getPath(), data2.r_getPath() );
+            return PathUtils.PATH_COMPARATOR.compare( data1.r_path, data2.r_path );
         }
     }
 
@@ -552,6 +641,10 @@ public class ZipFileContainerUtils {
      * Collect data for the entries of a zip file.
      *
      * Intermediate / implied paths are not added to the result.
+     * 
+     * Multi-release entries are interpreted and the non multi release 
+     * entry is updated or a phantom entry is created to point to the 
+     * multi-release entry.
      *
      * Answer the zip entries sorted using the path comparator.
      * See {@link PathUtils#PATH_COMPARATOR}.
@@ -561,15 +654,74 @@ public class ZipFileContainerUtils {
      * @return Sorted data for entries of the zip file.
      */
     @Trivial
-    public static ZipEntryData[] collectZipEntries(ZipFile zipFile) {
-        final List<ZipEntryData> entriesList = new ArrayList<ZipEntryData>();
+    public static ZipEntryData[] collectZipEntries(ZipFile zipFile, Map<String, ZipEntryData> entryDataMap, boolean isMultiRelease) {
 
         final Enumeration<? extends ZipEntry> zipEntries = zipFile.entries();
         while ( zipEntries.hasMoreElements() ) {
-            entriesList.add( createZipEntryData( zipEntries.nextElement() ) );
+            ZipEntry zipEntry = zipEntries.nextElement();
+            String entryPath = zipEntry.getName();
+            boolean isDirectory = (entryPath.charAt( entryPath.length() - 1 ) == '/' );
+            ZipEntryData entryData = isDirectory ? new DirZipEntryData(entryPath, zipEntry) : new FileZipEntryData(entryPath, zipEntry);
+
+            String entryRelativePath = entryData.r_path;
+            ZipEntryData oldValue = entryDataMap.put(entryRelativePath, entryData);
+            if (isMultiRelease && !isDirectory) {
+                // check to see if we just removed a previous value that we need to account for
+                if (oldValue != null) {
+                    if (oldValue instanceof MultiReleaseFileZipEntryData) {
+                        MultiReleaseFileZipEntryData multiReleaseData = (MultiReleaseFileZipEntryData) oldValue;
+                        // If the existing entry was a phantom entry, it had the multi release data in it, but not the
+                        // non multi release data.  As such convert the phantom MultiReleaseFileZipEntryData to a
+                        // non phantom version.
+                        //
+                        // Otherwise, put the multi release value back instead of a non multi release value.  This should
+                        // never happen, but possibly it could if there are duplicates of the same entry in the zip.  If we
+                        // do we have duplicates, have the last one win.
+                        entryDataMap.put(entryRelativePath, new MultiReleaseFileZipEntryData(entryPath, entryRelativePath, zipEntry, multiReleaseData.multiReleaseEntry, multiReleaseData.multiReleaseJavaVersion));
+                    }
+                }
+
+                // Check to see if the current entryData is from a multi release location and if
+                // the version number is valid for the current java version either
+                // a) update to have a phantom entry created for it to point to the multi release 
+                //    location if a non multi release entry doesn't exist
+                // b) convert a non multi release entry to a multi release entry to point to this one
+                // c) check the version number to see if it is higher than the current referenced
+                //    multi release entry and replace it if it is
+                // d) do nothing because the current non multi release entry has the right information 
+                else if (entryRelativePath.startsWith(MULTI_RELEASE_PREFIX)) {
+                    int nextSlashIndex = entryRelativePath.indexOf('/', MULTI_RELEASE_PREFIX_LENGTH);
+                    if (nextSlashIndex > 0) {
+                        String javaVersionString = entryRelativePath.substring(MULTI_RELEASE_PREFIX_LENGTH, nextSlashIndex);
+                        int javaVersionInt;
+                        try {
+                            javaVersionInt = Integer.parseInt(javaVersionString);
+                        } catch (NumberFormatException e) {
+                            javaVersionInt = -1;
+                        }
+
+                        // precondition
+                        if (javaVersionInt >= 9 && javaVersionInt <= ZipFileContainer.CURRENT_JAVA_VERSION) {
+                            String relativeUnversionedPath = entryRelativePath.substring(nextSlashIndex + 1);
+                            ZipEntryData unVersionedEntry = entryDataMap.get(relativeUnversionedPath);
+
+                            // scenario a
+                            if (unVersionedEntry == null) {
+                                String unversionedPath = entryRelativePath.substring(nextSlashIndex);
+                                entryDataMap.put(relativeUnversionedPath, new MultiReleaseFileZipEntryData(unversionedPath, relativeUnversionedPath, entryData, javaVersionInt));
+
+                            // scenario b and c
+                            } else if (!(unVersionedEntry instanceof MultiReleaseFileZipEntryData) ||
+                                            javaVersionInt > ((MultiReleaseFileZipEntryData) unVersionedEntry).multiReleaseJavaVersion) {
+                                entryDataMap.put(relativeUnversionedPath, new MultiReleaseFileZipEntryData(unVersionedEntry, entryData, javaVersionInt));
+                            }
+                        }
+                    }
+                }
+            }
         }
         
-        ZipEntryData[] entryData = entriesList.toArray( new ZipEntryData[ entriesList.size() ] );
+        ZipEntryData[] entryData = entryDataMap.values().toArray( new ZipEntryData[ entryDataMap.size() ] );
 
         Arrays.sort(entryData, ZIP_ENTRY_DATA_COMPARATOR);
 
@@ -577,25 +729,18 @@ public class ZipFileContainerUtils {
     }
 
     /**
-     * Create a table of entry data using the relative paths of the entries as
-     * keys.  As a side effect, set the offset of each entry data to its location
-     * int he entry data array.
+     * Set the offset of each entry data to its location
+     * in the entry data array.
      * 
      * @param entryData The array of entry data to place in a table.
-     * 
-     * @return The table of entry data.
      */
     @Trivial
-    public static Map<String, ZipEntryData> setLocations(ZipEntryData[] entryData) {
-    	Map<String, ZipEntryData> entryDataMap = new HashMap<String, ZipEntryData>(entryData.length);
+    public static void setLocations(ZipEntryData[] entryData) {
     	
-    	for ( int entryNo = 0; entryNo < entryData.length; entryNo++ ) {
+    	for ( int entryNo = 0, len = entryData.length; entryNo < len; entryNo++ ) {
     		ZipEntryData entry = entryData[entryNo];
     		entry.setOffset(entryNo);
-    		entryDataMap.put(entry.r_path, entry);
     	}
-    	
-    	return entryDataMap;
     }
 
     /**
@@ -644,7 +789,7 @@ public class ZipFileContainerUtils {
      * @return The path with leading and trailing slashes removed.
      */
     @Trivial
-    private static String stripPath(String path) {
+    static String stripPath(String path) {
         int pathLen = path.length();
 
         if ( pathLen == 0 ) {

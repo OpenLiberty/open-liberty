@@ -18,8 +18,8 @@ import java.util.NoSuchElementException;
 /**
  * @author Amir Perlman, Oct 14, 2004
  *
- * Dummy iterator implemenation for case where we must return an iterator in 
- * the API but we dont have collection object instantiated. 
+ * Dummy iterator implementation for case where we must return an iterator in 
+ * the API but we don't have collection object instantiated. 
  */
 @SuppressWarnings("unchecked")
 public class EmptyIterator<E> implements Iterator<E> {

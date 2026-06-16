@@ -21,15 +21,15 @@ public interface SipResolverTransportListener {
 	public void responseReceived(WsByteBuffer byteBuffer);
 	
 	/*
-	 * Indiactes that an error occured on the transport. This is typically not 
-	 * catostrophic and should result in a retry.
+	 * Indicates that an error occurred on the transport. This is typically not 
+	 * catastrophic and should result in a retry.
 	 */
 	public void transportError(Exception	exception, SipResolverTransport transport);
 
 	/*
-	 * Indicates a catostrophic failure, basically that several retires have failed and
+	 * Indicates a catastrophic failure, basically that several retires have failed and
 	 * that the service is not going to work. Should result in error responses for any
-	 * outstanding requrest.
+	 * outstanding requests.
 	 */
 	public void transportFailed(Exception	exception, SipResolverTransport transport);
 }

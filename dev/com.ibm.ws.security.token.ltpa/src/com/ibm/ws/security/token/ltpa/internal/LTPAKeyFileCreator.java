@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,5 +36,23 @@ public interface LTPAKeyFileCreator extends LTPAKeyFileUtility {
      * @throws Exception
      */
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes) throws Exception;
+
+    /**
+     * Create the LTPA keys file at the specified location using
+     * the specified password bytes, shared key bytes, private key bytes, and public key bytes.
+     * <p>
+     * Access the keyFile using the WsLocationAdmin
+     *
+     * @param locService
+     * @param keyFile
+     * @param keyPasswordBytes
+     * @param sharedKeyBytes
+     * @param privateKeyBytes
+     * @param publicKeyBytes
+     * @return A Properties object containing the various attributes created for the LTPA keys
+     * @throws Exception
+     */
+    public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes,
+                                         @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception;
 
 }

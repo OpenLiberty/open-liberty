@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-    Copyright (c) 2025 IBM Corporation and others.
+    Copyright (c) 2025, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@
     <OCD id="io.openliberty.microprofile.health" name="%mpHealth" description="%mpHealth.desc" ibm:alias="mpHealth" >
         <AD id="checkInterval" name="%checkInterval" description="%checkInterval.desc" required="false" type="String" />
         <AD id="startupCheckInterval" name="%startupCheckInterval" description="%startupCheckInterval.desc" required="false" type="String"/>
+        <AD id="enableEndpoints" name="%enableEndpoints" description="%enableEndpoints.desc" required="false" type="Boolean" default="true" ibm:beta="true"/>
     </OCD>
 
     <Designate pid="io.openliberty.microprofile.health">

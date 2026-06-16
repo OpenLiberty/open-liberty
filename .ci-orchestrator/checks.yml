@@ -12,20 +12,35 @@ triggers:
     - name: githubPRNumber
       isRequired: true
       description: "PR number to perform delivery requirement verification against e.g. 30188"
+    - name: githubPRBranch
+      isRequired: false
+      description: "Head branch of specified PR"
+    - name: githubPRBranchOwner
+      isRequired: false
+      description: "PR head branch owner"
 
 steps:
-- stepName: PR Changes
-  workType: PRChangesDetection
-  timeoutInMinutes: 30
-  properties:
-    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
-
 - stepName: Copyright Header Check
   workType: Jenkins
   projectName: copyrightHeaderCheck
   timeoutInMinutes: 1440
   properties:
-    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"  
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
+
+- stepName: Detect Secrets Scan
+  conditionalRun:
+    - type: ifSet
+      value: ${githubPRBranch}
+    - type: ifSet
+      value: ${githubPRBranchOwner}
+  workType: Jenkins
+  projectName: detectSecretsScan
+  timeoutInMinutes: 1440
+  properties:
+    repoToScan: "open-liberty"
+    repoSSHURL: "git@github.com:${githubPRBranchOwner}/open-liberty.git"
+    branchToScan: ${githubPRBranch}
+    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
 
 - stepName: Prohibited Terms Check
   workType: Jenkins
@@ -47,30 +62,3 @@ steps:
   timeoutInMinutes: 1440
   properties:
     githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
-
-- stepName: Code Checklist Creation
-  workType: Jenkins
-  projectName: codeCheckListBuilder
-  timeoutInMinutes: 1440
-  dependsOn:
-  - stepName: PR Changes
-    awaitOutputProperties: true
-  properties:
-    githubPRApi: "https://api.github.com/repos/OpenLiberty/open-liberty/pulls/${githubPRNumber}"
-    isBvtCodeChanged: ${PR Changes:is.bvt.code.changed}
-    isFatCodeChanged: ${PR Changes:is.fat.code.changed}
-    isFeatureFilesChanged: ${PR Changes:is.feature.files.changed}
-    isInfraCodeChanged: ${PR Changes:is.infra.code.changed}
-    isMsgsFilesChanged: ${PR Changes:is.msgs.files.changed}
-    isNlsFilesChanged: ${PR Changes:is.nls.files.changed}
-    isProductCodeChanged: ${PR Changes:is.product.code.changed}
-    isTestInfraCodeChanged: ${PR Changes:is.test.infra.code.changed}
-    isUnittestCodeChanged: ${PR Changes:is.unittest.code.changed}    
-    bvtFilesCount: ${PR Changes:bvt.files.count}
-    fatFilesCount: ${PR Changes:fat.files.count}
-    infraFilesCount: ${PR Changes:infra.files.count}
-    msgsFiles: ${PR Changes:msgs.files}
-    nlsFiles: ${PR Changes:nls.files}
-    productFilesCount: ${PR Changes:product.files.count}
-    testInfraFilesCount: ${PR Changes:test.infra.files.count}
-    unittestFilesCount: ${PR Changes:unittest.files.count}

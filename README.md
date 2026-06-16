@@ -82,11 +82,11 @@ Our [CONTRIBUTING](https://github.com/OpenLiberty/open-liberty/blob/release/CONT
 
     Troubleshooting - If `./gradlew assemble` shows out of memory error, you can increase the memory in `dev/gradle.properties` file. Stop the gradle daemon after you change the memory setting by using `./gradlew --stop`. If it does not help the problem, try cleaning up your maven repository cache (using `rm -rf ~/.m2`) and gradle cache (using `rm -rf ~/.gradle/caches`).
     
-3. Run the unit or FAT tests.
+3. Run the unit or FAT tests. [Description here](https://github.com/OpenLiberty/open-liberty/wiki/open%E2%80%90liberty-tests)
 
     `./gradlew test` for unit tests
-    
-    `./gradlew build.example_fat:buildandrun` to run a [FAT project](https://github.com/OpenLiberty/open-liberty/wiki/FAT-tests)
+
+    `./gradlew build.example_fat:buildandrun` to run a FAT project
    
    **NOTE:** ```./gradlew build``` runs the `assemble` and `test` tasks
    

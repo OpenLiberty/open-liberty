@@ -66,7 +66,7 @@ public interface Router
     public List getNextHops(Request request);
     
 	/**
-	 * prosses the incomming request
+	 * process the incoming request
 	 * @param req - request
 	 * @param connection
 	 * @throws SipParseException

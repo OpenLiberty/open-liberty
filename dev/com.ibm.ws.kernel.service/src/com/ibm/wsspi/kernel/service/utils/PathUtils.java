@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.wsspi.kernel.service.utils;
 
@@ -61,7 +58,7 @@ public class PathUtils {
      *
      * The result is computed by {@link #isOsCaseSensitive()}.
      */
-    private static boolean IS_OS_CASE_SENSITIVE = isOsCaseSensitive();
+    static boolean IS_OS_CASE_SENSITIVE = isOsCaseSensitive();
 
     /**
      * File name restricted characters. Used by {@link #replaceRestrictedCharactersInFileName(String)}.
@@ -74,11 +71,11 @@ public class PathUtils {
 
     /**
      *
-     * @deprecated - Instead use !isOsCaseSensitive()
+     * @deprecated - Instead use !IS_OS_CASE_SENSITIVE
      */
     @Deprecated
     static boolean isPossiblyCaseInsensitive() {
-        return !isOsCaseSensitive();
+        return !IS_OS_CASE_SENSITIVE;
     }
 
     /**
@@ -143,9 +140,8 @@ public class PathUtils {
             // Include diagnostic information about the temp directory configuration
             String tmpDir = System.getProperty("java.io.tmpdir", "unknown");
             String osName = System.getProperty("os.name", "unknown");
-            String userName = System.getProperty("user.name", "unknown");
             FFDCFilter.processException(e, PathUtils.class.getName(), "isOsCaseSensitive",
-                                       new Object[] { "java.io.tmpdir=" + tmpDir, "os.name=" + osName, "user.name=" + userName });
+                                        new Object[] { "java.io.tmpdir=" + tmpDir, "os.name=" + osName });
             return false;
         } finally {
             if (caseSensitiveFile != null) {
@@ -682,16 +678,16 @@ public class PathUtils {
         @Trivial
         public int compare(String o1, String o2) {
             int len1 = o1.length(), l2 = o2.length();
-            int minLen = Math.min(len1, l2);
+            int minLen = len1 <= l2 ? len1 : l2;
             for (int i = 0; i < minLen; i++) {
                 char c1 = o1.charAt(i), c2 = o2.charAt(i);
-                if (c1 == c2)
-                    continue;
-                if (c1 == PATH_SEPARATOR)
-                    return CMP_LT;
-                if (c2 == PATH_SEPARATOR)
-                    return CMP_GT;
-                return c1 - c2;
+                if (c1 != c2) {
+                    if (c1 == PATH_SEPARATOR)
+                        return CMP_LT;
+                    if (c2 == PATH_SEPARATOR)
+                        return CMP_GT;
+                    return c1 - c2;
+                }
             }
             // Strings differ in length only - shorter string should come first
             return len1 - l2;
@@ -756,34 +752,30 @@ public class PathUtils {
     }
 
     /**
-     * Answer the last file name of a path, using the forward slash ('/') as the
-     * path separator character. Answer the path element which follows the last
-     * forward slash of the path.
-     *
-     * Answer the entire path if the path contains no path separator.
-     *
-     * For example:
-     *
-     * For "/parent/child" answer "child".
-     *
-     * For "child" answer "child".
-     *
-     * An exception will be thrown if the path ends with a trailing slash.
-     *
-     * @param path The path from which to answer the last file name.
-     *
-     * @return The last file name of the path.
-     */
+    * Returns the path element following the last '/' character.
+    *
+    * <p>If the path contains no '/', the entire path is returned.</p>
+    *
+    * <p>If the path ends with '/', an empty string is returned.</p>
+    *
+    * <p>Examples:</p>
+    * <ul>
+    * <li>{@code getName("/parent/child")} returns {@code "child"}</li>
+    * <li>{@code getName("child")} returns {@code "child"}</li>
+    * <li>{@code getName("/parent/")} returns {@code ""}</li>
+    * <li>{@code getName("/")} returns {@code ""}</li>
+    * </ul>
+    *
+    * @param pathAndName the path from which to extract the last path element
+    * @return the path element following the last '/' character
+     
+    */
     public static String getName(String pathAndName) {
         int i = pathAndName.lastIndexOf('/');
-        int l = pathAndName.length();
         if (i == -1) {
             return pathAndName;
-        } else if (l == i) {
-            return "/";
-        } else {
-            return pathAndName.substring(i + 1);
         }
+        return pathAndName.substring(i + 1);
     }
 
     /**

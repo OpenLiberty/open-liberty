@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2021, 2022 IBM Corporation and others.
+ * Copyright (c) 2021, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -57,7 +57,7 @@ public class BeansAsset extends ClassLoaderAsset {
      * All the supported CDI versions
      */
     public static enum CDIVersion {
-        CDI10, CDI11, CDI20, CDI30, CDI40
+        CDI10, CDI11, CDI20, CDI30, CDI40, CDI41
     };
 
     //A static array containing cached BeansAsset instances for all combinations of DiscoveryMode and CDIVersion
@@ -123,6 +123,8 @@ public class BeansAsset extends ClassLoaderAsset {
             beans = "beans30_";
         } else if (version == CDIVersion.CDI40) {
             beans = "beans40_";
+        } else if (version == CDIVersion.CDI41) {
+            beans = "beans41_";
         } else {
             throw new IllegalArgumentException("Unknown CDI Version: " + version);
         }

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
@@ -26,10 +23,7 @@ import componenttest.rules.repeater.CheckpointEE10Action;
 import componenttest.rules.repeater.CheckpointEE11Action;
 import componenttest.rules.repeater.CheckpointEE8Action;
 import componenttest.rules.repeater.CheckpointEE9Action;
-import componenttest.rules.repeater.EE8FeatureReplacementAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
-import componenttest.rules.repeater.JakartaEE9Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -110,17 +104,17 @@ public class FATSuite {
     /*@formatter:on*/
 
     public static FeatureReplacementAction ee8Action(String serverName, boolean checkpointRepeat) {
-        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE8Action() : new EE8FeatureReplacementAction();
+        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE8Action() : FeatureReplacementAction.EE8_FEATURES();
         return action.forServers(serverName).removeFeatures(EE9_FEATURES).removeFeatures(EE10_FEATURES).removeFeatures(EE11_FEATURES).removeFeatures(EE11_SPEC_FEATURES).addFeatures(EE8_FEATURES);
     }
 
     public static FeatureReplacementAction ee9Action(String serverName, boolean checkpointRepeat) {
-        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE9Action() : new JakartaEE9Action();
+        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE9Action() : FeatureReplacementAction.EE9_FEATURES();
         return action.forServers(serverName).removeFeatures(EE8_FEATURES).removeFeatures(EE10_FEATURES).removeFeatures(EE11_FEATURES).removeFeatures(EE11_SPEC_FEATURES).addFeatures(EE9_FEATURES);
     }
 
     public static FeatureReplacementAction ee10Action(String serverName, boolean checkpointRepeat) {
-        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE10Action() : new JakartaEE10Action();
+        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE10Action() : FeatureReplacementAction.EE10_FEATURES();
         return action.forServers(serverName).removeFeatures(EE8_FEATURES).removeFeatures(EE9_FEATURES).removeFeatures(EE11_FEATURES).removeFeatures(EE11_SPEC_FEATURES).addFeatures(EE10_FEATURES);
     }
 

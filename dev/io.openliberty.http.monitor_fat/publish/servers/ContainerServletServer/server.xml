@@ -5,6 +5,8 @@
     	<feature>mpTelemetry-2.0</feature>
     </featureManager>
 
+    <httpSession useSeparateSessionInvalidatorThreadPool="false" delayInvalidationAlarmDuringServerStartup="90"/>
+
     <include location="../fatTestPorts.xml" />
 
     <quickStartSecurity userName="theUser" userPassword="thePassword"/>

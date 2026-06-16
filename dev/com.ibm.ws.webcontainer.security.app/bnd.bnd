@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2024 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -54,12 +54,19 @@ Service-Component: \
     optional:='taiService,interceptorService,webAuthenticator,webJaccService,unprotectedResourceService,webAppSecurityConfigChangeListener,loggedOutCookieCacheService'; \
     dynamic:='ssoAuthFilter,taiService,interceptorService,webAuthenticator,webJaccService,unprotectedResourceService,authenticatorFactory,webAppSecurityConfigChangeListener'; \
     properties:="service.vendor=IBM,loggedOutCookieCacheService.target=(id=unbound)", \
+  com.ibm.ws.webcontainer.security.WebDeclaredRolesService; \
+    implementation:=com.ibm.ws.webcontainer.security.WebDeclaredRolesService; \
+    provide:='com.ibm.ws.security.authorization.DeclaredRolesService,\
+              com.ibm.ws.webcontainer.security.WebDeclaredRolesService'; \
+    configuration-policy:=ignore; \
+    properties:="service.vendor=IBM", \
   com.ibm.ws.webcontainer.security.ServletStartedListener; \
     implementation:=com.ibm.ws.webcontainer.security.ServletStartedListener; \
     provide:='com.ibm.wsspi.webcontainer.collaborator.WebAppInitializationCollaborator'; \
     activate:=activate;\
     deactivate:=deactivate;\
     webJaccService=com.ibm.ws.webcontainer.security.WebJaccService;\
+    declaredRolesService=com.ibm.ws.webcontainer.security.WebDeclaredRolesService;\
     dynamic:='webJaccService';\
     optional:='webJaccService';\
     configuration-policy:=ignore;\
@@ -77,6 +84,7 @@ Service-Component: \
     activate:=activate; \
     deactivate:=deactivate; \
     webJaccService=com.ibm.ws.webcontainer.security.WebJaccService; \
+    declaredRolesService=com.ibm.ws.webcontainer.security.WebDeclaredRolesService;\
     dynamic:='webJaccService'; \
     optional:='webJaccService'; \
     properties:="service.vendor=IBM"

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ encode.option-desc.1.text=\tJe\u015bli nie podano \u017cadnych argument\u00f3w, 
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tOkre\u015bla spos\u00f3b kodowania has\u0142a. Obs\u0142ugiwane kodowania to xor, aes, aes-128, i hash. Kodowanie domy\u015blne to xor. Aes szyfruje przy u\u017cyciu klucza aes-256 bit.\n\taes-128 mo\u017ce by\u0107 u\u017cywana w celu zapewnienia kompatybilno\u015bci z wersjami serwera sprzed 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[klucz]
-encode.option-desc.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany podczas kodowania AES.\\n Ten ci\u0105g znak\u00f3w b\u0119dzie hashowany w celu utworzenia klucza szyfrowania, kt\u00f3ry jest u\u017cywany do szyfrowania i odszyfrowania has\u0142a. Klucz mo\u017ce by\u0107 dostarczony do serwera poprzez definiuj\u0105c zmienn\u0105 wlp.password.encryption.key, kt\u00f3rej warto\u015bci\u0105 jest klucz key. Je\u015bli ta opcja nie zostanie podana, powinien zosta\u0107\\n\n\\tu\u017cyty klucz domy\u015blny.
+encode.option-desc.key=\tOkre\u015bl klucz, kt\u00f3ry ma by\u0107 u\u017cywany podczas kodowania AES.\\n Ten ci\u0105g znak\u00f3w zostanie\nwykorzystany do wygenerowania klucza szyfruj\u0105cego AES, kt\u00f3ry s\u0142u\u017cy do szyfrowania i\ndeszyfrowania has\u0142a. Klucz mo\u017cna przekaza\u0107 serwerowi poprzez zdefiniowanie\nzmiennej ` wlp.password.encryption.key `, kt\u00f3rej warto\u015b\u0107 stanowi\nten klucz. Pocz\u0105wszy od wersji 26.0.0.3 nie stosuje si\u0119 ju\u017c domy\u015blnego klucza. Zamiast tego\nnale\u017cy poda\u0107 jeden z nast\u0119puj\u0105cych argument\u00f3w: --key, --base64Key, --aesConfigFile, lub --keyring.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\tKlucz Base64-encodedAES-256 ma s\u0142u\u017cy\u0107 do szyfrowania i deszyfrowania\nhas\u0142a. Podaj ten klucz serwerowi, definiuj\u0105c zmienn\u0105\nwlp.aes.encryption.key. Je\u015bli --base64Key jest\nokre\u015blone, to --aesConfigFile i --key nie mog\u0105 by\u0107 okre\u015blone.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile

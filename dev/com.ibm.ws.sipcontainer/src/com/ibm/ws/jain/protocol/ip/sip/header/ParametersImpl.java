@@ -456,7 +456,7 @@ public class ParametersImpl implements Parameters, Cloneable, Serializable
 	}
 
 	/**
-	 * encodes the paramters in canonical form
+	 * encodes the parameters in canonical form
 	 * @param buffer buffer to write parameters to
 	 * @param separator character that separates between parameters
 	 * @param escape whether or not to escape parameters

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2023 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ public interface LTPAConfiguration {
     /**
      * The token keys file password.
      */
-    public static final String CFG_KEY_PASSWORD = "keysPassword";
+    public static final String CFG_KEY_PASSWORD = "keysPassword"; // pragma: allowlist secret
 
     /**
      * The token expiration.
@@ -74,6 +74,15 @@ public interface LTPAConfiguration {
     static final String CFG_KEY_VALIDATION_VALID_UNTIL_DATE = "validUntilDate";
 
     /**
+     * Internal property used to distinguish configured validation keys from non-configured validation keys.
+     * Configured validation keys are explicitly defined in the server.xml using <validationKeys /> and require a password.
+     * Non-configured validation keys are picked up when <ltpa monitorValidationKeysDir="true" /> is set and uses the same password as the primary ltpa key.
+     *
+     * Currently only used to determine if we should re-encrypt the validation key when the primary ltpa key is re-encrypted and it is a non-configured validation key.
+     */
+    static final String INTERNAL_KEY_IS_CONFIGURED_VALIDATION_KEY = "isConfiguredValidationKey";
+
+    /**
      * @return TokenFactory instance corresponding to this LTPA configuration
      */
     TokenFactory getTokenFactory();
@@ -92,6 +101,11 @@ public interface LTPAConfiguration {
      * @return LTPA key password
      */
     String getPrimaryKeyPassword();
+
+    /**
+     * @return boolean for try to re-encrypt ltpa keys
+     */
+    boolean getTryToReEncryptLtpaKeys();
 
     /**
      * @return LTPA expiration

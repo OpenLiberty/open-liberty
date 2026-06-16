@@ -44,4 +44,7 @@
    	                           user="dbuser1" password="dbpass1"/>
   	</dataSource>
   	<javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -214,6 +214,10 @@ public class JSF23CDIInjectionTests extends CDITestBase {
      *
      * Also ensure that when running on a Server with the cdi-2.0 feature enabled that JSF knows that MyFaces CDI Support
      * is enabled.
+     * 
+     * Note: MyFaces Core CDI support enabled is not needed for 4.1+ since CDI is required.
+     * Message was kept for 4.0 as the message was kept post GA.  Removal avoided to reduce any potential breaking changes. 
+     * However, there is no indication of any breaking changes as CDI is required for 4.0+.
      *
      * @throws Exception
      */
@@ -234,14 +238,19 @@ public class JSF23CDIInjectionTests extends CDITestBase {
         // Reset the log search offset position to avoid conflict with other searches
         server.resetLogOffsets();
 
-        String isCDISupportEnabled = server.waitForStringInLog(msgToSearchFor2, 30 * 1000);
+        String isCDISupportEnabled = null;
+        if(!JakartaEEAction.isEE11OrLaterActive()) {
+            isCDISupportEnabled = server.waitForStringInLog(msgToSearchFor2, 30 * 1000);
+        }
 
         // There should be a match so fail if there is not.
         assertNotNull("The following message was not found in the trace logs: " + msgToSearchFor1,
                       isInjectionProviderBeingLoaded);
 
-        assertNotNull("The following message was not found in the logs: " + msgToSearchFor2,
+        if(!JakartaEEAction.isEE11OrLaterActive()) {
+            assertNotNull("The following message was not found in the logs: " + msgToSearchFor2,
                       isCDISupportEnabled);
+        }
     }
 
     /**

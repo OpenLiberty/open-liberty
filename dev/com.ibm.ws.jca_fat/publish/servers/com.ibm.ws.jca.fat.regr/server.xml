@@ -84,4 +84,6 @@
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="java.util.Hashtable" principalType="*" principalName="*" actions="read"/>
     <javaPermission className="javax.security.auth.PrivateCredentialPermission" signedBy="com.ibm.ws.security.token.internal.SingleSignonTokenImpl" principalType="*" principalName="*" actions="read"/>
 
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

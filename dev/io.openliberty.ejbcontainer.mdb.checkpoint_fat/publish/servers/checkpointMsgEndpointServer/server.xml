@@ -174,4 +174,6 @@
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.lang.RuntimePermission" name="getProtectionDomain"/>
     <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.sql.SQLPermission" name="deregisterDriver"/>
 
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

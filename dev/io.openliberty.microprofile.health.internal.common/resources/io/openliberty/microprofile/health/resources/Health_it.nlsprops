@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,7 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=Specificare un valo
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: La configurazione dell'intervallo di controllo all'avvio \u00e8 stata impostata prima della configurazione dell'intervallo di controllo. Il controllo dello stato di salute basato su file \u00e8 disabilitato quando l'intervallo di controllo non \u00e8 configurato.
 startup.check.interval.config.only.set.CWMMH01012W.explanation=La configurazione del solo intervallo di controllo all'avvio non abilita il meccanismo di controllo dello stato di salute basato su file.
 startup.check.interval.config.only.set.CWMMH01012W.useraction=Configurare l'intervallo di controllo per abilitare il meccanismo di controllo dello stato di salute basato su file.
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: La configurazione dell' enableEndpoints e \u00e8 impostata su false, ma la funzione di controllo dello stato basata sui file non \u00e8 abilitata. Questa configurazione non ha alcun effetto e gli endpoint di controllo dello stato sono abilitati.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=La configurazione di " enableEndpoints " ha effetto solo quando sono abilitati i controlli di integrit\u00e0 basati su file.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Abilitare le funzioni di controllo dello stato dei file oppure rimuovere la configurazione " enableEndpoints ".

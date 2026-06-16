@@ -30,7 +30,7 @@ public class FromToAddressImpl extends AddressImpl {
     }
     
 	/**
-     * We don't allow changing the TAG paramter
+     * We don't allow changing the TAG parameter
      * 
      * @exception IllegalStateException
      */
@@ -41,7 +41,7 @@ public class FromToAddressImpl extends AddressImpl {
 	}
 
 	/**
-	 * We don't allow changing the TAG paramter
+	 * We don't allow changing the TAG parameter
 	 * 
 	 * @exception IllegalStateException
 	 */

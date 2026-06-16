@@ -4,11 +4,11 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
- *     IBM Corporation - initial API and implementation
+ * IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.security.openidconnect.client.internal;
@@ -119,6 +119,10 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     final String discoveryjsonString_3 = "{\"introspection_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/introspect\",\"coverage_map_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/coverage_map\",\"issuer\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample\",\"authorization_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/authorize\",\"token_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/token\",\"jwks_uri\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/jwk\",\"response_types_supported\":[\"code\",\"token\",\"id_token token\"],\"subject_types_supported\":[\"public\"],\"id_token_signing_alg_values_supported\":[\"ES256\"],\"userinfo_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/userinfo\",\"registration_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/registration\",\"scopes_supported\":[\"profile\",\"general\",\"email\",\"address\",\"phone\"],\"claims_supported\":[\"sub\",\"groupIds\",\"name\",\"preferred_username\",\"picture\",\"locale\",\"email\",\"profile\"],\"response_modes_supported\":[\"query\",\"fragment\",\"form_post\"],\"grant_types_supported\":[\"authorization_code\",\"implicit\",\"refresh_token\",\"client_credentials\",\"password\",\"urn:ietf:params:oauth:grant-type:jwt-bearer\"],\"token_endpoint_auth_methods_supported\":[\"client_secret_somethingelse\"],\"display_values_supported\":[\"page\"],\"claim_types_supported\":[\"normal\"],\"claims_parameter_supported\":false,\"request_parameter_supported\":false,\"request_uri_parameter_supported\":false,\"require_request_uri_registration\":false,\"check_session_iframe\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/check_session_iframe\",\"end_session_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/end_session\"}";
     final String discoveryjsonString_4 = "{\"introspection_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/introspect\",\"coverage_map_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/coverage_map\",\"issuer\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample\",\"authorization_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/authorize\",\"token_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/token\",\"jwks_uri\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/jwk\",\"response_types_supported\":[\"code\",\"token\",\"id_token token\"],\"subject_types_supported\":[\"public\"],\"id_token_signing_alg_values_supported\":[\"ES256\"],\"userinfo_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/userinfo\",\"registration_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/registration\",\"scopes_supported\":[\"general\",\"email\",\"address\",\"phone\"],\"claims_supported\":[\"sub\",\"groupIds\",\"name\",\"preferred_username\",\"picture\",\"locale\",\"email\",\"profile\"],\"response_modes_supported\":[\"query\",\"fragment\",\"form_post\"],\"grant_types_supported\":[\"authorization_code\",\"implicit\",\"refresh_token\",\"client_credentials\",\"password\",\"urn:ietf:params:oauth:grant-type:jwt-bearer\"],\"token_endpoint_auth_methods_supported\":[\"client_secret_post\",\"client_secret_basic\"],\"display_values_supported\":[\"page\"],\"claim_types_supported\":[\"normal\"],\"claims_parameter_supported\":false,\"request_parameter_supported\":false,\"request_uri_parameter_supported\":false,\"require_request_uri_registration\":false,\"check_session_iframe\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/check_session_iframe\",\"end_session_endpoint\":\"http://localhost:8940/oidc/endpoint/OidcConfigSample/end_session\"}";
 
+    // Store original beta edition state to restore after tests
+    private static final String BETA_EDITION_PROPERTY = "com.ibm.ws.beta.edition";
+    private String originalBetaEdition;
+
     @Before
     public void setUp() throws Exception {
         System.out.println("Entering test: " + testName.getMethodName());
@@ -129,6 +133,9 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             createSSLExpectations();
             final Map<String, Object> props = createProps(true);
             oidcClientConfig.activate(cc, props);
+
+            // Store original beta edition state
+            originalBetaEdition = System.getProperty(BETA_EDITION_PROPERTY);
         } catch (Exception e) {
             e.printStackTrace(System.out);
             throw e;
@@ -139,6 +146,13 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     @After
     public void afterTest() throws Exception {
         System.out.println("Exiting test: " + testName.getMethodName());
+
+        // Restore original beta edition state
+        if (originalBetaEdition != null) {
+            System.setProperty(BETA_EDITION_PROPERTY, originalBetaEdition);
+        } else {
+            System.clearProperty(BETA_EDITION_PROPERTY);
+        }
         outputMgr.resetStreams();
         mock.assertIsSatisfied();
     }
@@ -810,6 +824,130 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         }
     }
 
+    @Test
+    public void testServeProtectedResourceMetadata_defaultValue() {
+        try {
+            // Test that the default value is false
+            assertFalse("serveProtectedResourceMetadata should default to false", oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that serveProtectedResourceMetadata is FALSE when IN beta mode,
+     * but configuration does not specify the property (default behaviour).
+     */
+    @Test
+    public void testServeProtectedResourceMetadata_BetaMode_NotConfigured_ReturnsFalse() {
+        try {
+            // Simulate running in beta mode
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            // Verify: serveProtectedResourceMetadata should be false (default even in beta mode)
+            assertFalse("serveProtectedResourceMetadata should be false by default even in beta mode when not configured",
+                    oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that serveProtectedResourceMetadata is TRUE when IN beta mode,
+     * and configuration explicitly sets it to true.
+     *
+     * This verifies that the beta feature works correctly when enabled.
+     */
+    @Test
+    public void testServeProtectedResourceMetadata_BetaMode_ConfiguredTrue_ReturnsTrue() {
+        try {
+
+            // Simulate running in beta mode
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, true);
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            // Verify: serveProtectedResourceMetadata should be true (respects configuration in beta mode)
+            assertTrue("serveProtectedResourceMetadata should be true when in beta mode and configured to true",
+                    oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that serveProtectedResourceMetadata is FALSE when IN beta mode,
+     * but configuration explicitly sets it to false.
+     */
+    @Test
+    public void testServeProtectedResourceMetadata_BetaMode_ConfiguredFalse_ReturnsFalse() {
+        try {
+            // Simulate running in beta mode
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, false);
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            // Verify: serveProtectedResourceMetadata should be false (respects configuration)
+            assertFalse("serveProtectedResourceMetadata should be false when in beta mode and configured to false",
+                    oidcClientConfig.getServeProtectedResourceMetadata());
+
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that serveProtectedResourceMetadata is FALSE when NOT in beta mode,
+     * even when configuration explicitly sets it to true.
+     *
+     * This verifies beta fencing.
+     */
+    @Test
+    public void testServeProtectedResourceMetadata_NotBetaMode_ConfiguredTrue_ReturnsFalse() {
+        try {
+            // Simulate NOT running in beta mode
+            System.clearProperty(BETA_EDITION_PROPERTY);
+
+            final Map<String, Object> props = createProps(false);
+            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, true);
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            // Verify: serveProtectedResourceMetadata should be false
+            assertFalse("serveProtectedResourceMetadata should be false when not in beta mode, even if configured to true",
+                    oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     public Map<String, Object> createProps(boolean value) {
         final Map<String, Object> props = new Hashtable<String, Object>();
 
@@ -841,7 +979,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         props.put(OidcClientConfigImpl.CFG_KEY_AUTO_AUTHORIZE_PARAM, AUTO_AUTHORIZE_PARAM);
         props.put(OidcClientConfigImpl.CFG_KEY_HOST_NAME_VERIFICATION_ENABLED, value);
         props.put(OidcClientConfigImpl.CFG_KEY_INCLUDE_CUSTOM_CACHE_KEY_IN_SUBJECT, value);
-        props.put(OidcClientConfigImpl.CFG_KEY_ALLOW_CUSTOM_CACHE_KEY , value);
+        props.put(OidcClientConfigImpl.CFG_KEY_ALLOW_CUSTOM_CACHE_KEY, value);
         props.put(OidcClientConfigImpl.CFG_KEY_INCLUDE_ID_TOKEN_IN_SUBJECT, value);
         props.put(OidcClientConfigImpl.CFG_KEY_AUTH_CONTEXT_CLASS_REFERENCE, ACR_VALUES);
         props.put(OidcClientConfigImpl.CFG_KEY_AUTH_FILTER_REF, authFilterId);

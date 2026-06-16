@@ -493,7 +493,7 @@ unknown_bean_class=Unbekannte Entity-Bean-Klasse: {0}. Vergewissern Sie sich, da
 
 unknown_entitybean_name=Unbekannter Entity-Bean-Name: {0}
 
-unsupported_classfile_version=Die Klasse \u201e {0} \u201c wurde mit einem nicht unterst\u00fctzten JDK kompiliert und kann nicht gelesen werden. Die aktuelle ASM-Version unterst\u00fctzt bis zur JDK-Version {1}. Aktualisieren Sie die ASM-Abh\u00e4ngigkeiten von \u201e OW2 \u201c.
+unsupported_classfile_version=Die Klasse \u201e {0} \u201c wurde mit einem nicht unterst\u00fctzten JDK kompiliert und kann nicht gelesen werden. Die aktuelle ASM-Version unterst\u00fctzt maximal JDK- {1}. Aktualisieren Sie die ASM-Abh\u00e4ngigkeiten von \u201e OW2 \u201c.
 
 wrap_convert_exception=Beim Aufrufen von {0} f\u00fcr die Converterklasse {1} mit dem Wert {2} ist eine Ausnahme eingetreten.
 

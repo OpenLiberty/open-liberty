@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.datastore.ejb;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
@@ -21,6 +22,7 @@ public class DSDEntityEJB {
     @Id
     public int id;
 
+    @Column(name = "VAL")
     public String value;
 
     public static DSDEntityEJB of(int id, String value) {

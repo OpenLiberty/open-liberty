@@ -63,21 +63,19 @@ import org.junit.Test;
 import componenttest.app.FATServlet;
 import test.jakarta.data.errpaths.web.Voters.NameAndZipCode;
 
-@DataSourceDefinition(name = "java:app/jdbc/DerbyDataSource",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+@DataSourceDefinition(name = "java:app/jdbc/H2DataSource",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "dbuser1",
-                      password = "dbpwd1",
-                      properties = "createDatabase=create")
+                      password = "dbpwd1")
 @DataSourceDefinition(name = "java:module/jdbc/DataSourceForInvalidEntity",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testdb;DB_CLOSE_DELAY=-1",
                       user = "dbuser1",
-                      password = "dbpwd1",
-                      properties = "createDatabase=create")
+                      password = "dbpwd1")
 @DataSourceDefinition(name = "java:comp/jdbc/InvalidDatabase",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "notfounddb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:notfounddb;IFEXISTS=TRUE;DB_CLOSE_DELAY=-1",
                       user = "dbuser1",
                       password = "dbpwd1")
 @PersistenceUnit(name = "java:app/env/VoterPersistenceUnitRef",

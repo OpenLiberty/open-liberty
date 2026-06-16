@@ -30,10 +30,18 @@ import javax.security.auth.login.CredentialExpiredException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Modified;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.ejs.container.BeanMetaData;
 import com.ibm.ejs.ras.TraceNLS;
+import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.security.audit.AuditAuthResult;
@@ -75,6 +83,8 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
  */
 
 @SuppressWarnings("deprecation")
+@Component(service = { EJBSecurityCollaborator.class, ComponentMetaDataListener.class }, immediate = true,
+           configurationPolicy = ConfigurationPolicy.OPTIONAL, property = "service.vendor=IBM")
 public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<SecurityCookieImpl>, EJBAuthorizationHelper, ComponentMetaDataListener {
     private static final TraceComponent tc = Tr.register(EJBSecurityCollaboratorImpl.class);
     protected static final String KEY_SECURITY_SERVICE = "securityService";
@@ -88,8 +98,10 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     private final AtomicServiceReference<UnauthenticatedSubjectService> unauthenticatedSubjectServiceRef = new AtomicServiceReference<UnauthenticatedSubjectService>(KEY_UNAUTHENTICATED_SUBJECT_SERVICE);
     private final AtomicServiceReference<EJBJaccService> ejbJaccService = new AtomicServiceReference<EJBJaccService>(KEY_EJB_JACC_SERVICE);
 
-    protected SubjectManager subjectManager;
-    protected CollaboratorUtils collabUtils;
+    protected final SubjectManager subjectManager;
+    protected final CollaboratorUtils collabUtils;
+
+    private final EJBDeclaredRolesService rolesService;
 
     protected AuditManager auditManager;
 
@@ -112,19 +124,19 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         }
     });
 
-    /**
-     * Zero length constructor required by DS.
-     */
-    public EJBSecurityCollaboratorImpl() {
-        this(new SubjectManager());
+    @Activate
+    public EJBSecurityCollaboratorImpl(@Reference EJBDeclaredRolesService rolesService) {
+        this(new SubjectManager(), rolesService);
         this.auditManager = new AuditManager();
     }
 
-    public EJBSecurityCollaboratorImpl(SubjectManager subjectManager) {
+    EJBSecurityCollaboratorImpl(SubjectManager subjectManager, EJBDeclaredRolesService rolesService) {
         this.subjectManager = subjectManager;
         this.collabUtils = new CollaboratorUtils(subjectManager);
+        this.rolesService = rolesService;
     }
 
+    @Reference(name = KEY_CREDENTIAL_SERVICE)
     protected void setCredentialService(ServiceReference<CredentialsService> ref) {
         credServiceRef.setReference(ref);
     }
@@ -133,6 +145,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         credServiceRef.unsetReference(ref);
     }
 
+    @Reference(name = KEY_SECURITY_SERVICE)
     protected void setSecurityService(ServiceReference<SecurityService> ref) {
         securityServiceRef.setReference(ref);
     }
@@ -141,7 +154,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         securityServiceRef.unsetReference(ref);
     }
 
-    @Reference
+    @Reference(name = KEY_SECURITY_READY_SERVICE)
     protected void setSecurityReadyService(SecurityReadyService ref) {
         this.securityReadyService = ref;
     }
@@ -149,6 +162,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
     protected void unsetSecurityReadyService(SecurityReadyService ref) {
     }
 
+    @Reference(name = KEY_UNAUTHENTICATED_SUBJECT_SERVICE)
     protected void setUnauthenticatedSubjectService(ServiceReference<UnauthenticatedSubjectService> ref) {
         unauthenticatedSubjectServiceRef.setReference(ref);
     }
@@ -157,6 +171,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         unauthenticatedSubjectServiceRef.unsetReference(ref);
     }
 
+    @Reference(name = KEY_EJB_JACC_SERVICE, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
     protected void setEJBJaccService(ServiceReference<EJBJaccService> reference) {
         ejbJaccService.setReference(reference);
         eah = new EJBJaccAuthorizationHelper(ejbJaccService, this);
@@ -167,6 +182,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         eah = this;
     }
 
+    @Activate
     protected void activate(ComponentContext cc, Map<String, Object> props) {
         securityServiceRef.activate(cc);
         credServiceRef.activate(cc);
@@ -175,6 +191,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         ejbSecConfig = new EJBSecurityConfigImpl(props);
     }
 
+    @Modified
     protected void modified(Map<String, Object> newProperties) {
         EJBSecurityConfig newEjbSecConfig = new EJBSecurityConfigImpl(newProperties);
         // Capture the properties that were changed for our audit record
@@ -183,6 +200,7 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
         Tr.audit(tc, "EJB_SECURITY_CONFIGURATION_UPDATED", deltaString);
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext cc) {
         securityServiceRef.deactivate(cc);
         credServiceRef.deactivate(cc);
@@ -755,11 +773,12 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      */
     @Override
     public void componentMetaDataCreated(MetaDataEvent<ComponentMetaData> event) {
-        EJBJaccService js = ejbJaccService.getService();
-        if (js != null) {
-            MetaData metaData = event.getMetaData();
-            if (metaData instanceof BeanMetaData) {
-                BeanMetaData bmd = (BeanMetaData) metaData;
+        MetaData metaData = event.getMetaData();
+        if (metaData instanceof BeanMetaData) {
+            BeanMetaData bmd = (BeanMetaData) metaData;
+            rolesService.addDeclaredRoles(bmd);
+            EJBJaccService js = ejbJaccService.getService();
+            if (js != null) {
                 js.propagateEJBRoles(bmd);
             }
         }
@@ -772,6 +791,11 @@ public class EJBSecurityCollaboratorImpl implements EJBSecurityCollaborator<Secu
      */
     @Override
     public void componentMetaDataDestroyed(MetaDataEvent<ComponentMetaData> event) {
+        ComponentMetaData metaData = event.getMetaData();
+        if (metaData instanceof BeanMetaData) {
+            J2EEName j2eeName = metaData.getJ2EEName();
+            rolesService.removeModule(j2eeName.getApplication(), j2eeName.getModule());
+        }
 
     }
 

@@ -179,6 +179,8 @@
 		</application-bnd>
 	    </application>
 
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 	<include location="../fatTestPorts.xml"/>
 
 </server>

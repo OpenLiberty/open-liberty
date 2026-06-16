@@ -74,6 +74,7 @@ import com.ibm.ws.jca.cm.AbstractConnectionFactoryService;
 import com.ibm.ws.jca.cm.ConnectorService;
 import com.ibm.ws.jdbc.internal.PropertyService;
 import com.ibm.ws.jdbc.osgi.JDBCRuntimeVersion;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.SecureAction;
 import com.ibm.ws.resource.ResourceRefInfo;
 import com.ibm.ws.rsadapter.AdapterUtil;
@@ -427,6 +428,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
         else if (dsClassName.startsWith("com.sybase.")) helper = new SybaseHelper(this);
         else if (dsClassName.startsWith("org.apache.derby.jdbc.Client")) helper = new DerbyNetworkClientHelper(this);
         else if (dsClassName.startsWith("org.apache.derby.jdbc.Embedded")) helper = new DerbyHelper(this);
+        else if (dsClassName.startsWith("org.h2.") && ProductInfo.getBetaEdition()) helper = new H2Helper(this);
         else if (dsClassName.startsWith("org.postgresql.")) helper = new PostgreSQLHelper(this);
         else if (vPropsPid.length() > PropertyService.FACTORY_PID.length()) {
             String suffix = vPropsPid.substring(PropertyService.FACTORY_PID.length() + 1);
@@ -441,6 +443,7 @@ public class WSManagedConnectionFactoryImpl extends WSManagedConnectionFactory i
             else if (suffix.startsWith("sybase")) helper = new SybaseHelper(this);
             else if (suffix.startsWith("derby.client")) helper = new DerbyNetworkClientHelper(this);
             else if (suffix.startsWith("derby.embedded")) helper = new DerbyHelper(this);
+            else if (suffix.startsWith("h2") && ProductInfo.getBetaEdition()) helper = new H2Helper(this);
             else if (suffix.startsWith("postgresql")) helper = new PostgreSQLHelper(this);
         }
 

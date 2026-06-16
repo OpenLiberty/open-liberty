@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -31,7 +31,7 @@ import componenttest.app.FATServlet;
 @WebServlet(urlPatterns = "/EjbInjectionClientTestServlet")
 public class EjbInjectionClientTestServlet extends FATServlet {
 
-    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/ejbinjection/";
+    private static final String URI_CONTEXT_ROOT = "http://localhost:" + Integer.getInteger("bvt.prop.HTTP_default") + "/EjbInjection/";
 
     private Client client;
 
@@ -109,6 +109,125 @@ public class EjbInjectionClientTestServlet extends FATServlet {
                         .get();
         assertEquals(200, response2.getStatus());
         assertEquals("Goodbye, World!", response2.readEntity(String.class));
+    }
+
+/**
+     * Scenario 1: Resource class defined as an EJB via annotation (@Stateless)
+     * with EJB field injection using @Inject.
+     * Tests that EJBs can be injected using @Inject in CDI-enabled environments.
+     */
+    @Test
+    public void testEjbFieldInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("ejbfieldinjection/greet")
+                        .queryParam("name", "TestUser")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello from EJB service, TestUser!", response.readEntity(String.class));
+    }
+
+    /**
+     * Scenario 2: Resource class defined as an EJB via annotation (@Stateless)
+     * with an injected method parameter.
+     */
+    @Test
+    public void testEjbMethodParamInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("ejbmethodparam/greet")
+                        .queryParam("name", "Bob")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello from EJB service, Bob!", response.readEntity(String.class));
+    }
+
+    /**
+     * Scenario 3: Resource class defined as an EJB via ejb-jar.xml file
+     * (with no EJB annotations) with an injected field.
+     */
+    @Test
+    public void testEjbXmlFieldInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("ejbxmlfield/greet")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello from XML-defined EJB!", response.readEntity(String.class));
+    }
+
+    /**
+     * Scenario 4: Resource class defined as an EJB via ejb-jar.xml file
+     * (with no EJB annotations) with an injected method parameter.
+     */
+    @Test
+    public void testEjbXmlMethodParamInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("ejbxmlmethodparam/greet")
+                        .queryParam("name", "Alice")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello from XML-defined EJB, Alice!", response.readEntity(String.class));
+    }
+
+    /**
+     * Scenario 5: Standard non-EJB JAX-RS resource class that injects an EJB
+     * (defined via annotation) using field injection.
+     */
+    @Test
+    public void testStandardResourceWithEjbFieldInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("standardejbfield/greet")
+                        .queryParam("name", "Charlie")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello from EJB service, Charlie!", response.readEntity(String.class));
+    }
+
+    /**
+     * Scenario 6: Standard non-EJB JAX-RS resource class that injects an EJB
+     * (defined via annotation) using method parameter injection.
+     */
+    @Test
+    public void testStandardResourceWithEjbMethodParamInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("standardejbmethodinjection/greet")
+                        .queryParam("name", "Diana")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Hello from EJB service, Diana!", response.readEntity(String.class));
+    }
+
+    /**
+     * Scenario 7: Standard non-EJB JAX-RS resource class that injects an EJB
+     * (defined via ejb-jar.xml) using field injection.
+     */
+    @Test
+    public void testStandardResourceWithXmlEjbFieldInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("standardxmlejbfield/message")
+                        .queryParam("name", "Eve")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("Message from XML-defined EJB service for Eve!", response.readEntity(String.class));
+    }
+
+    /**
+     * Scenario 8: Standard non-EJB JAX-RS resource class that injects an EJB
+     * (defined via ejb-jar.xml) using method parameter injection.
+     */
+    @Test
+    public void testStandardResourceWithXmlEjbMethodParamInjection() {
+        Response response = client.target(URI_CONTEXT_ROOT)
+                        .path("standardxmlejbmethodinjection/status")
+                        .request(MediaType.TEXT_PLAIN_TYPE)
+                        .get();
+        assertEquals(200, response.getStatus());
+        assertEquals("XML-defined EJB service is active", response.readEntity(String.class));
     }
 
 }

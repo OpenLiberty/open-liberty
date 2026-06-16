@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -89,6 +89,7 @@ public class FeatureUtilities {
         features.addAll(JakartaEE9Action.EE9_FEATURE_SET);
         features.addAll(JakartaEE10Action.EE10_FEATURE_SET);
         features.addAll(JakartaEE11Action.EE11_FEATURE_SET);
+        features.addAll(JakartaEE12Action.EE12_FEATURE_SET);
 
         // EE-related features which aren't in one of the feature sets
         features.add("appSecurity-1.0");

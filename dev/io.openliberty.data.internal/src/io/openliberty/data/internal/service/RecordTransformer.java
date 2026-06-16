@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,7 +9,7 @@
  *******************************************************************************/
 package io.openliberty.data.internal.service;
 
-import static io.openliberty.data.internal.EntityManagerBuilder.getClassNames;
+import static io.openliberty.data.internal.EntityHandlerFactory.getClassNames;
 import static io.openliberty.data.internal.cdi.DataExtension.exc;
 import static org.objectweb.asm.Opcodes.ACC_PRIVATE;
 import static org.objectweb.asm.Opcodes.ACC_PUBLIC;

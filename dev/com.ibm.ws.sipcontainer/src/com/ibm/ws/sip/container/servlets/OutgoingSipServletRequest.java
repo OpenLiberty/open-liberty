@@ -684,12 +684,13 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
         boolean wasSent = transaction.sendRequest();
         
         //In some case the request might have not been actually sent, e.g. 
-        //CANCEL when a provisional response has been not received yet. Verify that
-        //it was sent before changing the state. 
+        //CANCEL when a provisional response has been not received yet. 
+        //Verify that it was sent before changing the state. 
         if(wasSent)
         {
-            //Changes the state of the Message to commited so it no longer can 
-            //be modified after it is sent.
+            //It was sent. 
+            //Change the state of the message to Committed 
+            //so it no longer can be modified.
             setIsCommited(true);
             
             //clean up the client transaction listener - no longer needed
@@ -1695,14 +1696,14 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
     	if (!isLiveMessage("createCancel"))
     		return null;
     	
-    	//Invite message that was not sent yet, therefore is not in commit state, cannot get canceled 
+    	//Invite message was not sent yet, therefore it is not in Committed state. It cannot be canceled 
     	if (!isCommitted())
     	{
     		if (c_logger.isTraceDebugEnabled()) {
-    			c_logger.traceDebug(this, "createCancel", "Can not cancel an outgoing request that is not commited");
+    			c_logger.traceDebug(this, "createCancel", "Cannot cancel an outgoing request that is not committed");
     		}
 
-    		throw new IllegalStateException("Can not cancel an outgoing request that is not commited");
+    		throw new IllegalStateException("Cannot cancel an outgoing request that is not committed");
     	}
 
     	//if the outgoing request is committed, the transaction must be set on it.
@@ -2196,8 +2197,8 @@ public class OutgoingSipServletRequest extends SipServletRequestImpl
 			}
 		}
 		
-		// If the directive is NEW the composition selection 
-		// process will start then the old state info recived from 
+		// If the directive is NEW, the composition selection 
+		// process will start, then the old state info received from 
 		// application router is irrelevant
 		if (directive.equals(SipApplicationRoutingDirective.NEW)){
 			this.setStateInfo(null);

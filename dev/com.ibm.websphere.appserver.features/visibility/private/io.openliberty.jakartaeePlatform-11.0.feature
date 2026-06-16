@@ -7,6 +7,6 @@ IBM-Process-Types: client, server
 # com.ibm.ws.security.java2sec is removed for EE 11
 -bundles=com.ibm.ws.app.manager.module, \
  com.ibm.ws.javaee.platform.defaultresource
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,11 +13,12 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.IOException;
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
+import java.net.Socket;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.junit.AfterClass;
@@ -104,15 +105,15 @@ public class Expect100ContinueTest {
         LOG.info("test100Continue -> Response code received: " + responseCode);
         assertTrue("Unexpected response code: " + responseCode, responseCode == HttpURLConnection.HTTP_OK);
         // Ensure we find the message "Request contains [Expect: 100-continue]"
-        assertNotNull("We were expecting to find a request with Expect: 100-continue but did not!", server.waitForStringInTraceUsingMark("Request contains [Expect: 100-continue]"));
+        assertNotNull("We were expecting to find a request with Expect: 100-continue but did not!",
+                      server.waitForStringInTraceUsingMark("Request contains [Expect: 100-continue]"));
     }
-
 
     /**
      * This tests verifies that by sending an expect 100 continue headers with
      * an invalid header, the server will not respond with a 100 continue and
      * will treat it as a bad request.
-     * 
+     *
      * Allowed FFDC is added because during Netty parsing, an IllegalArgumentException
      * is generated from the Netty code even though the behavior between Netty and
      * Legacy is the same.
@@ -132,7 +133,69 @@ public class Expect100ContinueTest {
         LOG.info("test100Continue -> Response code received: " + responseCode);
         assertTrue("Unexpected response code: " + responseCode, responseCode == HttpURLConnection.HTTP_BAD_REQUEST);
         // Ensure we do NOT find the message "Request contains [Expect: 100-continue]"
-        assertNull("Found a Expect: 100-continue request but should not have been processed!", server.waitForStringInTraceUsingMark("Request contains [Expect: 100-continue]", LOG_SEARCH_TIMEOUT));
+        assertNull("Found a Expect: 100-continue request but should not have been processed!",
+                   server.waitForStringInTraceUsingMark("Request contains [Expect: 100-continue]", LOG_SEARCH_TIMEOUT));
+    }
+
+    /**
+     * This test properly waits for the 100-Continue response before sending the body.
+     * Uses try-with-resources to ensure socket is closed even if assertions fail.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void test100ContinueWithProperWait() throws Exception {
+        String body = "Hello World!";
+
+        // Use raw socket to have full control over the HTTP exchange
+        // try-with-resources ensures socket is closed even if assertions fail
+        try (Socket socket = new Socket(server.getHostname(), server.getHttpDefaultPort())) {
+            socket.setSoTimeout(5000); // 5 second timeout
+
+            OutputStream out = socket.getOutputStream();
+            InputStream in = socket.getInputStream();
+
+            // Send request headers with Expect: 100-continue (but NOT the body yet)
+            String requestHeaders = "POST /" + TEST_APP_CONTEXT_ROOT + "/test.html HTTP/1.1\r\n" +
+                                    "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
+                                    "Content-Length: " + body.length() + "\r\n" +
+                                    "Expect: 100-continue\r\n" +
+                                    "\r\n";
+            out.write(requestHeaders.getBytes());
+            out.flush();
+
+            LOG.info("Sent request headers, waiting for 100-Continue response...");
+
+            // Read the 100-Continue response
+            BufferedReader reader = new BufferedReader(new java.io.InputStreamReader(in));
+            String responseLine = reader.readLine();
+            LOG.info("Received response line: " + responseLine);
+
+            assertTrue("Expected 100-Continue response but got: " + responseLine,
+                       responseLine != null && responseLine.contains("100"));
+
+            // Read headers until blank line
+            String line;
+            while ((line = reader.readLine()) != null && !line.isEmpty()) {
+                LOG.info("Response header: " + line);
+            }
+
+            // Now send the body
+            out.write(body.getBytes());
+            out.flush();
+
+            LOG.info("Sent request body, waiting for final response...");
+
+            // Read the final response
+            responseLine = reader.readLine();
+            LOG.info("Final response line: " + responseLine);
+            assertTrue("Expected 200 OK response but got: " + responseLine,
+                       responseLine != null && responseLine.contains("200"));
+        } // Socket automatically closed here
+
+        // Verify the trace log shows the 100-continue was processed
+        assertNotNull("We were expecting to find a request with Expect: 100-continue but did not!",
+                      server.waitForStringInTraceUsingMark("Request contains [Expect: 100-continue]"));
     }
 
     private HttpURLConnection buildExpectContinueRequest() throws Exception {

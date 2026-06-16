@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2024 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -17,7 +17,6 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.wsoc.tests.BasicTest;
@@ -55,7 +54,7 @@ public class FATSuite {
     // If we only specify EE10/EE11 for lite mode it will cause no tests to run with lower Java versions which causes an error.
     // If we are running with a Java version less than 11, have EE9 be the lite mode test to run.
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().fullFATOnly())
+    public static RepeatTests repeat = RepeatTests.withoutModificationInFullMode()
                     .andWith(FeatureReplacementAction.EE9_FEATURES()
                                     .removeFeature("websocket-1.0")
                                     .addFeature("websocket-2.0")

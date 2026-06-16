@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -93,7 +93,7 @@ public class FATSuite extends TestContainerSuite {
     private static ExtendedWebDriver DRIVER;
 
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(new EmptyAction().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+    public static RepeatTests repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT().conditionalFullFATOnly(EmptyAction.GREATER_THAN_OR_EQUAL_JAVA_17))
                     .andWith(FeatureReplacementAction.EE11_FEATURES().setSkipTransformation(true));
 
     /**
@@ -133,12 +133,12 @@ public class FATSuite extends TestContainerSuite {
 
     public static ExtendedWebDriver getWebDriver() throws Exception {
         int retryCount = 3;
-        while(DRIVER == null && retryCount > 0) {
+        while (DRIVER == null && retryCount > 0) {
             Log.info(c, "getWebDriver", "Attempting to initialize WebDriver, attempts remaining: " + retryCount);
             try {
                 CHROME_CONTAINER = new BrowserWebDriverContainer<>(getChromeImage()).withCapabilities(new ChromeOptions())
-                            .withAccessToHost(true)
-                            .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
+                                .withAccessToHost(true)
+                                .withSharedMemorySize(2147483648L); // avoids "message":"Duplicate mount point: /dev/shm"
                 CHROME_CONTAINER.start();
                 DRIVER = new CustomDriver(new RemoteWebDriver(CHROME_CONTAINER.getSeleniumAddress(), new ChromeOptions().setAcceptInsecureCerts(true)));
             } catch (Exception ex1) {
@@ -146,10 +146,11 @@ public class FATSuite extends TestContainerSuite {
                 retryCount--;
                 try {
                     Thread.sleep(10000); // wait for 10 seconds before retrying
-                } catch (InterruptedException ie) {}
+                } catch (InterruptedException ie) {
+                }
             }
         }
-        if(DRIVER == null) {
+        if (DRIVER == null) {
             throw new Exception("Failed to initialize WebDriver after multiple attempts! See log for details.");
         }
         return DRIVER;

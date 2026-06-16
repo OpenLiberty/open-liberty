@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -124,7 +124,7 @@ option-desc.os=\tOkre\u015bla systemy operacyjne, kt\u00f3re maj\u0105 by\u0107 
     na b\u0119dzie go p\u00f3\u017aniej doda\u0107, je\u015bli operacja minimalizacji         \n\tarchiwum zostanie powt\u00f3rzona.
 #------------------------------\n at 72 chars -- leading tab-----------\n\# 
 option-key.no-password=\ \ \ \ --no-password
-option-desc.no-password=\tWy\u0142\u0105cz generowanie domy\u015blnego has\u0142a magazynu kluczy
+option-desc.no-password=\tWy\u0142\u0105cz generowanie domy\u015blnego has\u0142a do magazynu kluczy oraz domy\u015blnego has\u0142a do kluczy LTPA.
 #------------------------------\n at 72 chars -- leading tab-----------\n\#
 option-key.server-root=\ \ \ \ --server-root="g\u0142\u00f3wny folder serwera w archiwum"
 option-desc.package.server-root=\tOkre\u015bla nazw\u0119 folderu g\u0142\u00f3wnego serwera w pliku archiwum. 

@@ -28,9 +28,9 @@ public class EmptyAction implements RepeatTestAction {
     private TestMode testRunMode = TestMode.LITE;
     private boolean liteFATOnly = false;
 
-    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.JAVA_VERSION >= 11;
-    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.JAVA_VERSION >= 17;
-    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_21 = (action) -> JavaInfo.JAVA_VERSION >= 21;
+    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_11 = (action) -> JavaInfo.BOOTSTRAP_JAVA_VERSION >= 11;
+    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_17 = (action) -> JavaInfo.BOOTSTRAP_JAVA_VERSION >= 17;
+    public static final Predicate<EmptyAction> GREATER_THAN_OR_EQUAL_JAVA_21 = (action) -> JavaInfo.BOOTSTRAP_JAVA_VERSION >= 21;
 
     @Override
     public void setup() {}

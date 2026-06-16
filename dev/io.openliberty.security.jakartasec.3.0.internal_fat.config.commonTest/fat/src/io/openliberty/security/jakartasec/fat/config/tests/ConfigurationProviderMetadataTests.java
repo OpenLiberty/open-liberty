@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,6 +36,7 @@ import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import io.openliberty.security.jakartasec.fat.commonTests.CommonAnnotatedSecurityTests;
@@ -107,12 +108,12 @@ public class ConfigurationProviderMetadataTests extends CommonAnnotatedSecurityT
         updateTrackers(opServer, rpServer, false);
 
         List<String> waitForMsgs = null;
-        opServer.startServerUsingExpandedConfiguration("server_providerMetadata.xml", waitForMsgs);
+        opServer.startServerUsingExpandedConfiguration(getServerConfigFile("server_providerMetadata.xml"), waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(opServer, Constants.BVT_SERVER_1_PORT_NAME_ROOT);
         opHttpBase = "http://localhost:" + opServer.getBvtPort();
         opHttpsBase = "https://localhost:" + opServer.getBvtSecurePort();
 
-        rpServer.startServerUsingExpandedConfiguration("server_orig.xml", waitForMsgs);
+        rpServer.startServerUsingExpandedConfiguration(getServerConfigFile("server_orig.xml"), waitForMsgs);
         SecurityFatHttpUtils.saveServerPorts(rpServer, Constants.BVT_SERVER_2_PORT_NAME_ROOT);
 
         rpHttpBase = "http://localhost:" + rpServer.getBvtPort();

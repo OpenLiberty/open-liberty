@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -92,6 +92,16 @@ public class LTPAKeyFileCreatorImpl extends LTPAKeyFileUtilityImpl implements LT
     public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes) throws Exception {
         String realmName = isUserRegistryAvailable()?getRealmName():"defaultRealm";
         Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, realmName);
+        addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
+        return ltpaProps;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Properties createLTPAKeysFile(WsLocationAdmin locService, String keyFile, @Sensitive byte[] keyPasswordBytes,
+                                         @Sensitive byte[] sharedKeyBytes, @Sensitive byte[] privateKeyBytes, @Sensitive byte[] publicKeyBytes) throws Exception {
+        String realmName = isUserRegistryAvailable() ? getRealmName() : "defaultRealm";
+        Properties ltpaProps = generateLTPAKeys(keyPasswordBytes, sharedKeyBytes, privateKeyBytes, publicKeyBytes, realmName);
         addLTPAKeysToFile(getOutputStream(locService, keyFile), ltpaProps);
         return ltpaProps;
     }

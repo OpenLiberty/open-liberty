@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.rest.handler.config.fat;
 
@@ -37,7 +34,7 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.EERepeatActions;
+import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
@@ -47,10 +44,22 @@ import componenttest.topology.utils.FATServletClient;
 public class ConfigRESTHandlerJMSTest extends FATServletClient {
 
     @ClassRule
-    public static RepeatTests r = EERepeatActions.repeat("com.ibm.ws.rest.handler.config.jms.fat",
-                                                         EERepeatActions.EE10, // EE10
-                                                         EERepeatActions.EE9, // EE9
-                                                         EERepeatActions.EE8); // EE8
+    public static RepeatTests r = RepeatTests.withoutModificationInFullMode() // servlet-3.1
+                    .andWith(FeatureReplacementAction.EE8_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.jms.fat")
+                                    .alwaysAddFeature("servlet-4.0")
+                                    .fullFATOnly())
+                    .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.jms.fat")
+                                    .alwaysAddFeature("servlet-5.0")
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_11))
+                    .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.jms.fat")
+                                    .alwaysAddFeature("servlet-6.0")
+                                    .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
+                    .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                    .forServers("com.ibm.ws.rest.handler.config.jms.fat")
+                                    .alwaysAddFeature("servlet-6.1"));
 
     @Server("com.ibm.ws.rest.handler.config.jms.fat")
     public static LibertyServer server;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2015, 2024 IBM Corporation and others.
+ * Copyright (c) 2015, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,6 +33,18 @@ public class MetaDataListenerImpl implements ModuleMetaDataListener {
     protected static final String KEY_WEB_JACC_SERVICE = "webJaccService";
     protected final AtomicServiceReference<WebJaccService> webJaccService = new AtomicServiceReference<WebJaccService>(KEY_WEB_JACC_SERVICE);
 
+    private WebDeclaredRolesService rolesService;
+
+    protected void setDeclaredRolesService(WebDeclaredRolesService rolesService) {
+        this.rolesService = rolesService;
+    }
+
+    protected void unsetDeclaredRolesService(WebDeclaredRolesService rolesService) {
+        if (rolesService == this.rolesService) {
+            this.rolesService = null;
+        }
+    }
+
     protected void setWebJaccService(ServiceReference<WebJaccService> reference) {
         webJaccService.setReference(reference);
     }
@@ -56,16 +68,20 @@ public class MetaDataListenerImpl implements ModuleMetaDataListener {
      */
     @Override
     public void moduleMetaDataCreated(MetaDataEvent<ModuleMetaData> event) throws MetaDataException {
-        WebJaccService js = webJaccService.getService();
-        if (js != null) {
-            MetaData metaData = event.getMetaData();
-            if (metaData instanceof WebModuleMetaData) {
-                WebModuleMetaData wmmd = (WebModuleMetaData) metaData;
-                if (wmmd.getSecurityMetaData() != null && ((SecurityMetadata) (wmmd.getSecurityMetaData())).getSecurityConstraintCollection() != null) {
-                    // propagate the security constraints when it is available.
-                    WebAppConfig webAppConfig = wmmd.getConfiguration();
-                    js.propagateWebConstraints(webAppConfig.getApplicationName(), webAppConfig.getModuleName(), webAppConfig);
+        MetaData metaData = event.getMetaData();
+        if (metaData instanceof WebModuleMetaData) {
+            WebModuleMetaData wmmd = (WebModuleMetaData) metaData;
+            SecurityMetadata securityMetadata = (SecurityMetadata) wmmd.getSecurityMetaData();
+            if (securityMetadata != null) {
+                WebAppConfig webAppConfig = wmmd.getConfiguration();
+                String appName = webAppConfig.getApplicationName();
+                String moduleName = webAppConfig.getModuleName();
+                WebJaccService js = webJaccService.getService();
+                // propagate the security constraints when it is available.
+                if (js != null && securityMetadata.getSecurityConstraintCollection() != null) {
+                    js.propagateWebConstraints(appName, moduleName, webAppConfig);
                 }
+                rolesService.addDeclaredRoles(appName, moduleName, securityMetadata.getRoles());
             }
         }
     }
@@ -77,8 +93,12 @@ public class MetaDataListenerImpl implements ModuleMetaDataListener {
      */
     @Override
     public void moduleMetaDataDestroyed(MetaDataEvent<ModuleMetaData> event) {
-        // TODO Auto-generated method stub
-
+        MetaData metaData = event.getMetaData();
+        if (metaData instanceof WebModuleMetaData) {
+            WebModuleMetaData wmmd = (WebModuleMetaData) metaData;
+            WebAppConfig webAppConfig = wmmd.getConfiguration();
+            rolesService.removeModule(webAppConfig.getApplicationName(), webAppConfig.getModuleName());
+        }
     }
 
 }

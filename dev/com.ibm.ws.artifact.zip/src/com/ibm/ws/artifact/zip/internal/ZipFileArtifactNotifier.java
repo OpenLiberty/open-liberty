@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2012,2018 IBM Corporation and others.
+ * Copyright (c) 2012,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.artifact.zip.internal;
 
@@ -920,6 +917,14 @@ public class ZipFileArtifactNotifier implements ArtifactNotifier, com.ibm.ws.ker
 
         if ( a_path.isEmpty() || ((a_path.length() == 1) && (a_path.charAt(0) == '/')) ) {
             for ( ZipEntryData entry : allEntryData ) {
+                // Do not include phantom entry data.
+                // Consumers of the entry paths are not expecting a nonexistent entry in the zip
+                // file that cannot be consumed.  Only real entries should be returned to external
+                // consumers of the notifier for that reason.  This change maintains 
+                // the previous behavior so as not to cause a consumer to cause an error.
+                if (entry.isPhantom()) {
+                    continue;
+                }
                 a_paths.add( "/" + entry.r_getPath() );
             }
             a_paths.add("/");

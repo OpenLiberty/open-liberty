@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -130,9 +130,10 @@ public class RestartStartupSingletonTest extends FATServletClient {
         // CNTR4002E: The * EJB module in the * application failed to start
         // CNTR0201E: The * startup singleton session bean in the * module failed initialization
         // CWWKZ0106E: Could not start web application RestartStartupSingletonApp
+        // CWWKZ0014W: The application * could not be started as it could not be found at location *
         // CWWKZ0059E: The * application installed from * has been deleted while it is still configured
         if (server != null && server.isStarted()) {
-            server.stopServer("CNTR0020E", "CNTR0190E", "CNTR4002E", "CNTR0201E", "CWWKZ0106E", "CWWKZ0059E");
+            server.stopServer("CNTR0020E", "CNTR0190E", "CNTR4002E", "CNTR0201E", "CWWKZ0106E", "CWWKZ0014W", "CWWKZ0059E");
         }
     }
 

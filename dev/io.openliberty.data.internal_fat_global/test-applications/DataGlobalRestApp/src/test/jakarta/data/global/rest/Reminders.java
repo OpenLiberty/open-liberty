@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,11 +25,10 @@ import jakarta.data.repository.Repository;
  * that is defined in this application.
  */
 @DataSourceDefinition(name = "java:global/jdbc/RestResourceDataSource",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource",
-                      databaseName = "memory:testdb",
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "jdbc:h2:mem:testrestdb;DB_CLOSE_DELAY=-1",
                       user = "dbuser1",
-                      password = "dbpwd1",
-                      properties = "createDatabase=create")
+                      password = "dbpwd1")
 @Repository(dataStore = "java:global/jdbc/RestResourceDataSource")
 public interface Reminders extends CrudRepository<Reminder, Long> {
 

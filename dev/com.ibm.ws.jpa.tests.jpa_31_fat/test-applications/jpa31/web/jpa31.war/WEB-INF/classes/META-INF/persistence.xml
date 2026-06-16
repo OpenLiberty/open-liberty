@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,9 @@
         <properties>
             <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 
@@ -36,6 +39,9 @@
         <properties>
             <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 
@@ -54,6 +60,9 @@
         <properties>
             <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 
@@ -71,6 +80,9 @@
         <properties>
             <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 
@@ -84,6 +96,9 @@
             <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.cache.shared.default" value="false"/>
             <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 
@@ -95,6 +110,9 @@
             <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.cache.shared.default" value="false"/>
             <property name="eclipselink.logging.level" value="FINE"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 
@@ -108,6 +126,9 @@
         <properties>
             <property name="DISABLED.jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.cache.shared.default" value="false"/>
+            <property name="hibernate.cache.use_second_level_cache" value="false"/>
+            <property name="hibernate.cache.use_query_cache" value="false"/>
+            <property name="hibernate.show_sql" value="true"/>
         </properties>
     </persistence-unit>
 </persistence>

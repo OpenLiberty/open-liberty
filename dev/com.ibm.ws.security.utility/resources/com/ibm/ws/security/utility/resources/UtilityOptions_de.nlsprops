@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ encode.option-desc.1.text=\tWenn keine Argumente angegeben werden, wechselt das 
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tGeben Sie an, wie das Kennwort verschl\u00fcsselt werden soll. Unterst\u00fctzte Kodierungen sind xor, aes, aes-128, und Hash. Die Standardcodierung ist xor. Aes verschl\u00fcsselt mit einem aes-256 Bit-Schl\u00fcssel.\n\taes-128 kann f\u00fcr die Kompatibilit\u00e4t mit Serverversionen vor 25.0.0.2 verwendet werden. {2}
 encode.option-key.key=\ \ \ \ --key=[Schl\u00fcssel]
-encode.option-desc.key=\tGibt einen bei der Codierung mit AES zu verwendenden Schl\u00fcssel an. Diese Zeichenfolge wird wird ein Hashwert gebildet, der zum Ver- und Entschl\u00fcsseln des entschl\u00fcsselung des Passworts verwendet wird. Der Schl\u00fcssel kann dem Server zur Verf\u00fcgung gestellt werden, indem die Variable wlp.password.encryption.key definiert wird, deren Wert der schl\u00fcssel ist. Wenn Sie diese\\n\n\\tOption nicht angeben, wird ein Standardschl\u00fcssel verwendet.
+encode.option-desc.key=\tGibt einen bei der Codierung mit AES zu verwendenden Schl\u00fcssel an. Diese Zeichenfolge wird\nzur Ableitung eines AES-Verschl\u00fcsselungsschl\u00fcssels verwendet, der zum\nVerschl\u00fcsseln und Entschl\u00fcsseln des Passworts dient. Der Schl\u00fcssel kann dem Server \u00fcbermittelt werden, indem\ndie Variable \u201e wlp.password.encryption.key \u201c definiert wird, deren Wert der\nSchl\u00fcssel ist. Ab Version 26.0.0.3 wird kein Standardschl\u00fcssel mehr verwendet. Geben Sie stattdessen\neines der folgenden Argumente an: --key, --base64Key, --aesConfigFile, oder --keyring.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\tEin Base64-encodedAES-256 Schl\u00fcssel ist zur Ver- und Entschl\u00fcsselung des\nPassworts Geben Sie diesen Schl\u00fcssel an den Server weiter, indem Sie die\nwlp.aes.encryption.key Variable definieren. Wenn angegeben --base64Key ist\n, k\u00f6nnen --aesConfigFile und --key nicht angegeben werden.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile

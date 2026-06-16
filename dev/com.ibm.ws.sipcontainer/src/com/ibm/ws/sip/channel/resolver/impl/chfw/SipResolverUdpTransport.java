@@ -443,8 +443,8 @@ class SipResolverUdpTransport implements ConnectionReadyCallback,
 
         //  clear the request queue of all outstanding request.
         //  We can only clear when the object using us tell us to clear,
-        //  ohterwise we risk timing windows whereby we clear out requests
-        //  which were menat for rollover, or we fail to clear out an attempt
+        //  otherwise we risk timing windows whereby we clear out requests
+        //  which were meant for rollover, or we fail to clear out an attempt
         //  the will later be retried. 
         if ( c_logger.isTraceDebugEnabled())
             c_logger.traceDebug("SipResolverUdpTransport: prepareForReConnect: clear out _requestQueue: # of items: " + _requestQueue.size());

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2025 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,9 +11,9 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-var dojoVersion = '1.13.10';
+var dojoVersion = '1.14.9';
 var gridxVersion = '1.3.9';
-var idxVersion = '1.5.2.6_2';
+var idxVersion = '1.5.2.6_3';
 
 var profile = {
     action : 'release',

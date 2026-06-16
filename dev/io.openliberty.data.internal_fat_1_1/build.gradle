@@ -47,7 +47,7 @@ task addHibernateJPA32(type: Copy) {
 addRequiredLibraries.dependsOn copyTestContainers
 addRequiredLibraries.dependsOn copyJdbcDriversJava17Plus
 
-addRequiredLibraries.dependsOn addDerbyJava17Plus
+addRequiredLibraries.dependsOn addH2
 addRequiredLibraries.dependsOn addHibernateJPA32
 
 apply plugin: 'java'

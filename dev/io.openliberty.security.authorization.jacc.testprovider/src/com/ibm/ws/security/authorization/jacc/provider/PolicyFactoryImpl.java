@@ -19,10 +19,12 @@ public class PolicyFactoryImpl extends PolicyFactory {
 
     private final Map<String, Policy> policyMap = new ConcurrentHashMap<>();
 
+    private volatile Policy globalPolicy = new PolicyImpl(null);
+
     @Override
     public Policy getPolicy(String contextId) {
         if (contextId == null) {
-            return null;
+            return globalPolicy;
         }
 
         Policy policy = policyMap.get(contextId);
@@ -39,6 +41,8 @@ public class PolicyFactoryImpl extends PolicyFactory {
     public void setPolicy(String contextId, Policy policy) {
         if (contextId != null) {
             policyMap.put(contextId, policy);
+        } else {
+            globalPolicy = policy;
         }
     }
 

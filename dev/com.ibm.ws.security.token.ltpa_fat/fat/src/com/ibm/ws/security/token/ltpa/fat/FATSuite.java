@@ -10,12 +10,15 @@
 
 package com.ibm.ws.security.token.ltpa.fat;
 
+import java.util.Locale;
+
 import org.junit.ClassRule;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -25,21 +28,41 @@ import componenttest.rules.repeater.RepeatTests;
                 ContextRootCookiePathTests.class,
                 FATTest.class,
                 LTPAKeyRotationTests.class,
-                LTPAValidationKeyTests.class
+                LTPAValidationKeyTests.class,
+                LTPAKeyPasswordTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.
  */
 public class FATSuite {
 
-    /*@formatter:off*/
+    private static final boolean isWindows = System.getProperty("os.name").toLowerCase(Locale.ENGLISH).contains("win");
+
     @ClassRule
-    public static RepeatTests repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT()
-                                                         .fullFATOnly())
-                                        .andWith(FeatureReplacementAction.EE9_FEATURES()
-                                                         .liteFATOnly()) // Having all repeats in FULL mode causes bucket timeouts.
-                                        .andWith(FeatureReplacementAction.EE10_FEATURES()
-                                                         .conditionalFullFATOnly(FeatureReplacementAction.GREATER_THAN_OR_EQUAL_JAVA_17))
-                                        .andWith(FeatureReplacementAction.EE11_FEATURES());
+    public static RepeatTests repeat;
+
+    /*@formatter:off*/
+    static {
+        if (isWindows && !FATRunner.FAT_TEST_LOCALRUN) {
+            // Only one FULL mode repeat on Windows to avoid bucket timeouts.
+            repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT()
+                                            .fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                            .liteFATOnly()) // Having all repeats in FULL mode causes bucket timeouts.
+                            .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                            .liteFATOnly())
+                            .andWith(FeatureReplacementAction.EE11_FEATURES()
+                                            .liteFATOnly());
+        } else {
+            repeat = RepeatTests.with(FeatureReplacementAction.NO_REPLACEMENT()
+                                            .fullFATOnly())
+                            .andWith(FeatureReplacementAction.EE9_FEATURES()
+                                            .liteFATOnly()) // Having all repeats in FULL mode causes bucket timeouts.
+                            .andWith(FeatureReplacementAction.EE10_FEATURES()
+                                            .liteFATOnly())
+                            .andWith(FeatureReplacementAction.EE11_FEATURES());
+        }
+    }
     /*@formatter:on*/
+
 }

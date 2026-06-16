@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2025 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.classloading.internal;
 
@@ -531,24 +528,21 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     @Trivial // injected trace calls ProtectedDomain.toString() which requires privileged access
     private ProtectionDomain getClassSpecificProtectionDomain(final ContainerURL containerUrl) {
+        ProtectionDomain pd;
         if (containerUrl == null) {
             // not expected; there will have been some FFDCs if this is null
-            return config.getProtectionDomain();
-        }
-        ProtectionDomain pd = null;
-        try {
-            pd = AccessController.doPrivileged(new PrivilegedExceptionAction<ProtectionDomain>() {
+            pd = config.getProtectionDomain();
+        } else if (System.getSecurityManager() == null) {
+            pd = getClassSpecificProtectionDomainPrivileged(containerUrl);
+        } else {
+            pd = AccessController.doPrivileged(new PrivilegedAction<ProtectionDomain>() {
                 @Override
                 public ProtectionDomain run() {
                     return getClassSpecificProtectionDomainPrivileged(containerUrl);
                 }
             });
-        } catch (PrivilegedActionException paex) {
-            //auto FFDC
-            pd = config.getProtectionDomain();
         }
         return pd;
-
     }
 
     ProtectionDomain getClassSpecificProtectionDomainPrivileged(ContainerURL containerUrl) {

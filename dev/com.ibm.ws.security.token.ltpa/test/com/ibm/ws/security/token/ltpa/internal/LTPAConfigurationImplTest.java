@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,7 +68,7 @@ public class LTPAConfigurationImplTest {
     private static final String RESOLVED_DEFAULT_OUTPUT_LOCATION = "testServerName/resources/security/ltpa.keys";
     private static final String DEFAULT_VALIDATION_KEY_ELEMENT = "<validationKeys fileName=\"validation.keys\" password=\"pwd\" validUntilDate=\"2099-01-01T00:00:00Z\"/>";
     private static final String DEFAULT_VALIDATION_FILENAME = "validation.keys";
-    private static final String DEFAULT_VALIDATION_PASSWORD = "pwd";
+    private static final String DEFAULT_VALIDATION_PASSWORD = "pwd"; // pragma: allowlist secret
     private static final String DEFAULT_VALIDATION_VALID_UNTIL_DATE = "2099-01-01T00:00:00Z";
     private static final String PWD = "pwd";
     private static final String ANOTHER_PWD = "anotherPwd";
@@ -399,7 +399,7 @@ public class LTPAConfigurationImplTest {
     @Test
     public void getValidationKeys() {
         assertEquals("The validationKeys value was not the expected value",
-                     "[{fileName=" + PATH_TO_DIR + "validation.keys, password=pwd, validUntilDate=2099-01-01T00:00:00Z}]", ltpaConfig.getValidationKeys().toString());
+                     "[{fileName=" + PATH_TO_DIR + "validation.keys, password=pwd, isConfiguredValidationKey=true, validUntilDate=2099-01-01T00:00:00Z}]", ltpaConfig.getValidationKeys().toString());
     }
 
     /**
@@ -639,7 +639,7 @@ public class LTPAConfigurationImplTest {
         setupLocationServiceExpectations(1);
         // setupFileMonitorRegistrationsExpectations(1);
 
-        final String originalPassword = "{xor}Lz4sLCgwLTs=";
+        final String originalPassword = "{xor}Lz4sLCgwLTs="; // pragma: allowlist secret
         final String maskedPassword = "*not null*";
         props.put(LTPAConfiguration.CFG_KEY_PASSWORD, new SerializableProtectedString(originalPassword.toCharArray()));
 

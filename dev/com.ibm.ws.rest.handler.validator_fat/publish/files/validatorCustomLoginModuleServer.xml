@@ -1,3 +1,12 @@
+<!--
+    Copyright (c) 2017, 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+ -->
 <server>
   <include location="../fatTestPorts.xml" />
 
@@ -15,8 +24,8 @@
   <keyStore id="defaultKeyStore" password="Liberty"/>
   <quickStartSecurity userName="adminuser" userPassword="adminpwd"/>
   
-  <library id="Derby">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  <library id="H2">
+    <file name="${shared.resource.dir}/h2Java8/h2.jar"/>
   </library>
   
   <authData id="auth1" user="dbuser" password="dbpass"/>
@@ -42,9 +51,9 @@
   </jmsTopicConnectionFactory>
   
   <dataSource id="customLoginDS" jndiName="jdbc/customLoginDS" jaasLoginContextEntry="customLoginEntry">
-    <jdbcDriver libraryRef="Derby"/>
+    <jdbcDriver libraryRef="H2"/>
     <!-- user/password settings propagated by custom login module -->
-    <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
+    <properties.h2 URL="jdbc:h2:mem:defaultdb;DB_CLOSE_DELAY=-1"/>
   </dataSource>
   
   <!-- This datasource intentionally has no auth data associated in server.xml, to simulate a <custom-login-configuration>
@@ -54,20 +63,20 @@
        </resource-ref>
   -->
   <dataSource id="customLoginDSWebBnd" jndiName="jdbc/customLoginDSWebBnd">
-    <jdbcDriver libraryRef="Derby"/>
+    <jdbcDriver libraryRef="H2"/>
     <!-- user/password settings propagated by custom login module -->
-    <properties.derby.embedded databaseName="memory:defaultdb" createDatabase="create"/>
+    <properties.h2 URL="jdbc:h2:mem:defaultdb;DB_CLOSE_DELAY=-1"/>
   </dataSource>
   
   <transaction enableHADBPeerLocking="false">
-    <DATASOURCE transactional="false">
+    <DATASOURCE transactional="false" containerAuthDataRef="auth1">
       <connectionManager maxPoolSize="5" connectionTimeout="0s"/>
-      <jdbcDriver libraryRef="Derby"/>
-   	  <properties.derby.embedded databaseName="memory:recoverydb" createDatabase="create"/>
+      <jdbcDriver libraryRef="H2"/>
+   	  <properties.h2 URL="jdbc:h2:mem:recoverydb;DB_CLOSE_DELAY=-1"/>
     </DATASOURCE>
   </transaction>
   
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
   <javaPermission codebase="${server.config.dir}/customLoginModule.jar" className="java.security.AllPermission"/>
 
   <javaPermission codebase="${server.config.dir}/dropins/TestValidationJMSAdapter.rar"

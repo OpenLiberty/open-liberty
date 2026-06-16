@@ -26,6 +26,14 @@ import javax.security.auth.login.CredentialExpiredException;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
+import org.osgi.service.component.annotations.ReferencePolicyOption;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -35,6 +43,7 @@ import com.ibm.ws.security.AccessIdUtil;
 import com.ibm.ws.security.authorization.AccessDecisionService;
 import com.ibm.ws.security.authorization.AuthorizationService;
 import com.ibm.ws.security.authorization.AuthorizationTableService;
+import com.ibm.ws.security.authorization.DeclaredRolesService;
 import com.ibm.ws.security.authorization.FeatureAuthorizationTableService;
 import com.ibm.ws.security.context.SubjectManager;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
@@ -44,15 +53,20 @@ import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
  * Built-in authorization service which implements a role-based authorization
  * model.
  */
+
+@Component(name = "com.ibm.ws.security.authorization.builtin", service = AuthorizationService.class,
+           configurationPolicy = ConfigurationPolicy.OPTIONAL, property = { "service.vendor=IBM", "com.ibm.ws.security.authorization.type=Builtin" })
 public class BuiltinAuthorizationService implements AuthorizationService {
     private static final TraceComponent tc = Tr.register(BuiltinAuthorizationService.class);
 
     protected static final String KEY_ACCESS_DECISION_SERVICE = "accessDecisionService";
     protected static final String KEY_AUTHORIZATION_TABLE_SERVICE = "authorizationTableService";
     protected static final String KEY_USE_ROLE_AS_GROUP_NAME = "useRoleAsGroupName";
+    protected static final String KEY_DECLARED_ROLES_SERVICE = "declaredRolesService";
     private final AtomicServiceReference<AccessDecisionService> accessDecisionServiceRef = new AtomicServiceReference<AccessDecisionService>(KEY_ACCESS_DECISION_SERVICE);
     private final ConcurrentServiceReferenceSet<AuthorizationTableService> authorizationTables = new ConcurrentServiceReferenceSet<AuthorizationTableService>(KEY_AUTHORIZATION_TABLE_SERVICE);
     private final ConcurrentServiceReferenceSet<AuthorizationTableService> appBndAuthorizationTables = new ConcurrentServiceReferenceSet<AuthorizationTableService>(KEY_AUTHORIZATION_TABLE_SERVICE);
+    private final ConcurrentServiceReferenceSet<DeclaredRolesService> rolesServices = new ConcurrentServiceReferenceSet<DeclaredRolesService>(KEY_DECLARED_ROLES_SERVICE);
     private final SubjectManager subjManager = new SubjectManager();
     static final String KEY_FEATURE_SECURITY_AUTHZ_SERVICE = "featureAuthzTableService";
     private final AtomicServiceReference<FeatureAuthorizationTableService> featureAuthzTableServiceRef = new AtomicServiceReference<FeatureAuthorizationTableService>(KEY_FEATURE_SECURITY_AUTHZ_SERVICE);
@@ -65,6 +79,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
     static final String KEY_FEATURE_AUTHORIZATION_TABLE = "com.ibm.ws.webcontainer.security.feature.internal.FeatureAuthorizationTable";
     private final List<String> useRoleAsGroupNameForApps = new ArrayList<String>();
 
+    @Reference(name = KEY_ACCESS_DECISION_SERVICE)
     protected void setAccessDecisionService(ServiceReference<AccessDecisionService> ref) {
         accessDecisionServiceRef.setReference(ref);
     }
@@ -73,6 +88,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         accessDecisionServiceRef.unsetReference(ref);
     }
 
+    @Reference(name = KEY_AUTHORIZATION_TABLE_SERVICE, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
     protected void setAuthorizationTableService(ServiceReference<AuthorizationTableService> ref) {
         authorizationTables.addReference(ref);
         String cn = (String) ref.getProperty(KEY_COMPONENT_NAME);
@@ -92,6 +108,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         }
     }
 
+    @Reference(name = KEY_FEATURE_SECURITY_AUTHZ_SERVICE, cardinality = ReferenceCardinality.OPTIONAL, policy = ReferencePolicy.DYNAMIC)
     protected void setFeatureAuthzTableService(ServiceReference<FeatureAuthorizationTableService> ref) {
         featureAuthzTableServiceRef.setReference(ref);
     }
@@ -100,20 +117,33 @@ public class BuiltinAuthorizationService implements AuthorizationService {
         featureAuthzTableServiceRef.unsetReference(ref);
     }
 
+    @Reference(name = KEY_DECLARED_ROLES_SERVICE, cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC, policyOption = ReferencePolicyOption.GREEDY)
+    protected void setDeclaredRolesService(ServiceReference<DeclaredRolesService> ref) {
+        rolesServices.addReference(ref);
+    }
+
+    protected void unsetDeclaredRolesService(ServiceReference<DeclaredRolesService> ref) {
+        rolesServices.removeReference(ref);
+    }
+
+    @Activate
     protected void activate(ComponentContext cc, Map<String, Object> properties) {
         accessDecisionServiceRef.activate(cc);
         authorizationTables.activate(cc);
         appBndAuthorizationTables.activate(cc);
         featureAuthzTableServiceRef.activate(cc);
+        rolesServices.activate(cc);
         if (properties != null && properties.containsKey(KEY_USE_ROLE_AS_GROUP_NAME))
             useRoleAsGroupName = (Boolean) properties.get(KEY_USE_ROLE_AS_GROUP_NAME);
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext cc) {
         accessDecisionServiceRef.deactivate(cc);
         authorizationTables.deactivate(cc);
         appBndAuthorizationTables.deactivate(cc);
         featureAuthzTableServiceRef.deactivate(cc);
+        rolesServices.deactivate(cc);
         useRoleAsGroupNameForApps.clear();
     }
 
@@ -213,18 +243,7 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     @Override
     public Set<String> getAllDeclaredRolesForResourceForSubject(String resourceName, Subject subject) {
-        Set<String> roles = new HashSet<String>(Collections.EMPTY_SET);
-        WSCredential wsCred = getWSCredentialFromSubject(subject);
-        if (wsCred != null) {
-            String accessId = getAccessId(wsCred);
-            String realmName = getRealmName(wsCred);
-
-            Collection<String> foundRoles = getRolesForAccessId(resourceName, accessId, realmName);
-            if (foundRoles != null) {
-                roles.addAll(foundRoles);
-            }
-        }
-        return roles;
+        return getRolesForSubject(resourceName, subject, true);
     }
 
     /**
@@ -359,49 +378,115 @@ public class BuiltinAuthorizationService implements AuthorizationService {
 
     @Override
     public Set<String> getMappedRoles(String resourceName, Subject subject) {
+        return getRolesForSubject(resourceName, subject, false);
+    }
 
+    private Set<String> getRolesForSubject(String resourceName, Subject subject, boolean onlyDeclaredRoles) {
         WSCredential wsCred = getWSCredentialFromSubject(subject);
 
-        Set<String> roles = new HashSet<>();
-        if (wsCred == null) {
+        Set<String> declaredRoles = null;
+        if (onlyDeclaredRoles) {
+            declaredRoles = new HashSet<>();
+            for (DeclaredRolesService rolesService : rolesServices.services()) {
+                declaredRoles.addAll(rolesService.getDeclaredRoles(resourceName));
+            }
+
+            if (declaredRoles.isEmpty()) {
+                return Collections.emptySet();
+            }
+        }
+
+        boolean isUnAuthenticated = wsCred == null || wsCred.isUnauthenticated();
+
+        if (useRoleAsGroupName && !isAuthzInfoAvailableForApp(resourceName)) {
+            Collection<String> assignedRoles = null;
+            if (!isUnAuthenticated) {
+                String[] groupIds = getGroupIds(wsCred);
+                if (groupIds != null && groupIds.length > 0) {
+                    String realmName = getRealmName(wsCred);
+                    // Just include the group name and not the id
+                    assignedRoles = AccessIdUtil.getUniqueIds(groupIds, realmName);
+                }
+            }
+
+            if (assignedRoles == null) {
+                return Collections.emptySet();
+            }
+
+            Set<String> roles = new HashSet<>();
+            if (!onlyDeclaredRoles) {
+                roles.addAll(assignedRoles);
+            } else {
+                // Only add roles to the return Set if it is one of the declared roles in the application
+                for (String assignedRole : assignedRoles) {
+                    if (declaredRoles.contains(assignedRole)) {
+                        roles.add(assignedRole);
+                    }
+                }
+            }
             return roles;
         }
 
-        if (useRoleAsGroupName && !isAuthzInfoAvailableForApp(resourceName)) {
-            String[] groupIds = getGroupIds(wsCred);
-            if (groupIds != null && groupIds.length > 0) {
-                String realmName = getRealmName(wsCred);
-                // Just include the group name and not the id
-                Collection<String> assignedRoles = AccessIdUtil.getUniqueIds(groupIds, realmName);
-                if (assignedRoles != null) {
-                    roles.addAll(assignedRoles);
-                }
-            }
-        } else {
+        Set<String> roles = new HashSet<>();
+        if (!isUnAuthenticated) {
             String accessId = getAccessId(wsCred);
             String realmName = getRealmName(wsCred);
             Collection<String> userRoles = getRolesForAccessId(resourceName, accessId, realmName);
             if (userRoles != null) {
-                roles.addAll(userRoles);
+                if (!onlyDeclaredRoles) {
+                    roles.addAll(userRoles);
+                } else {
+                    // Only add roles to the return Set if it is one of the declared roles in the application
+                    for (String assignedRole : userRoles) {
+                        if (declaredRoles.contains(assignedRole)) {
+                            roles.add(assignedRole);
+                        }
+                    }
+                }
             }
             String[] groupIds = getGroupIds(wsCred);
             if (groupIds != null && groupIds.length > 0) {
                 for (int i = 0; i < groupIds.length; i++) {
                     String groupId = groupIds[i];
                     Collection<String> assignedRoles = getRolesForAccessId(resourceName, groupId, realmName);
-                    if (assignedRoles != null) {
+                    if (!onlyDeclaredRoles) {
                         roles.addAll(assignedRoles);
+                    } else {
+                        // Only add roles to the return Set if it is one of the declared roles in the application
+                        for (String assignedRole : assignedRoles) {
+                            if (declaredRoles.contains(assignedRole)) {
+                                roles.add(assignedRole);
+                            }
+                        }
+                    }
+                }
+            }
+            Collection<String> allAuthenticatedUsersRoles = getRolesForSpecialSubject(resourceName, AuthorizationTableService.ALL_AUTHENTICATED_USERS);
+            if (allAuthenticatedUsersRoles != null) {
+                if (!onlyDeclaredRoles) {
+                    roles.addAll(allAuthenticatedUsersRoles);
+                } else {
+                    // Only add roles to the return Set if it is one of the declared roles in the application
+                    for (String assignedRole : allAuthenticatedUsersRoles) {
+                        if (declaredRoles.contains(assignedRole)) {
+                            roles.add(assignedRole);
+                        }
                     }
                 }
             }
         }
-        Collection<String> allAuthenticatedUsersRoles = getRolesForSpecialSubject(resourceName, AuthorizationTableService.ALL_AUTHENTICATED_USERS);
         Collection<String> everyoneRoles = getRolesForSpecialSubject(resourceName, AuthorizationTableService.EVERYONE);
-        if (allAuthenticatedUsersRoles != null) {
-            roles.addAll(allAuthenticatedUsersRoles);
-        }
         if (everyoneRoles != null) {
-            roles.addAll(everyoneRoles);
+            if (!onlyDeclaredRoles) {
+                roles.addAll(everyoneRoles);
+            } else {
+                // Only add roles to the return Set if it is one of the declared roles in the application
+                for (String assignedRole : everyoneRoles) {
+                    if (declaredRoles.contains(assignedRole)) {
+                        roles.add(assignedRole);
+                    }
+                }
+            }
         }
         return roles;
     }

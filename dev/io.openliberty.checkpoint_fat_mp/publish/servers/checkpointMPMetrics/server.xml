@@ -30,4 +30,7 @@
     </administrator-role>
 
 	<mpMetrics authentication="true"/>
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

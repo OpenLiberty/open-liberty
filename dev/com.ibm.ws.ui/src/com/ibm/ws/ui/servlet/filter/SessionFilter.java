@@ -384,6 +384,15 @@ public class SessionFilter implements Filter {
         final String requestURI = httpRequest.getRequestURI();
         final String method = httpRequest.getMethod();
 
+        // Set HSTS header for secure connections
+        // This ensures browsers always use HTTPS for Admin Center resources including 404.js
+        if (httpRequest.isSecure()) {
+            httpResponse.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "HSTS header set for: " + requestURI);
+            }
+        }
+
         // Generate or retrieve CSRF token
         generateAndSetCsrfToken(httpRequest, httpResponse);
 

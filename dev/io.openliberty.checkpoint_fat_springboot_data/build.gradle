@@ -11,9 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-repositories {
-  mavenCentral()
-}
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
   postgres

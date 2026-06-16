@@ -1,23 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2020 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package jdbc.fat.v43.web;
 
-import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 
-import javax.servlet.ServletException;
-import javax.servlet.SingleThreadModel;
+import javax.annotation.Resource;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -28,20 +23,15 @@ import org.junit.Test;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.app.FATServlet;
 
-@SuppressWarnings({ "serial", "deprecation" })
+@SuppressWarnings("serial")
 @WebServlet(urlPatterns = "/HandleListTestServlet")
-public class HandleListTestServlet extends FATServlet implements SingleThreadModel {
-    // SingleThreadModel prevents resource injection, and JNDI lookups aren't enabled, so we use these static
-    // fields to store the data sources that were injected into the JDBC43TestServlet,
-    static DataSource unsharablePool1DataSource;
-    static DataSource unsharablePool2DataSource;
+public class HandleListTestServlet extends FATServlet {
 
-    // Asks the JDBC43TestServlet to populate the above fields
-    private void populateDataSources(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        getServletContext()
-                        .getRequestDispatcher("/JDBC43TestServlet?testMethod=populateDataSources")
-                        .include(request, response);
-    }
+    @Resource(lookup = "jdbc/poolOf1", shareable = false)
+    DataSource unsharablePool1DataSource;
+
+    @Resource(lookup = "jdbc/poolOf2", shareable = false)
+    DataSource unsharablePool2DataSource;
 
     /**
      * When HandleList is not enabled, an unshared connection cannot be used for another request which happens inline on the same thread.
@@ -49,7 +39,6 @@ public class HandleListTestServlet extends FATServlet implements SingleThreadMod
     @ExpectedFFDC("com.ibm.websphere.ce.j2c.ConnectionWaitTimeoutException")
     @Test
     public void testUnsharedConnectionNotReassociatedAcrossServletRequests(HttpServletRequest request, HttpServletResponse response) throws Exception {
-        populateDataSources(request, response);
 
         Connection con = unsharablePool1DataSource.getConnection();
         try {

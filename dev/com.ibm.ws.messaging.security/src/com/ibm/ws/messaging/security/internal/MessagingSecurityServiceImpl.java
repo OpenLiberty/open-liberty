@@ -60,6 +60,7 @@ import com.ibm.ws.security.SecurityService;
 import com.ibm.ws.security.registry.RegistryException;
 import com.ibm.ws.security.registry.UserRegistry;
 import com.ibm.ws.security.registry.UserRegistryService;
+import com.ibm.ws.security.token.ltpa.LTPAConfiguration;
 import com.ibm.wsspi.sib.utils.ras.SibTr;
 
 /**
@@ -181,8 +182,8 @@ public class MessagingSecurityServiceImpl implements MessagingSecurityService, C
      * is raised during authentication resulting in an FFDC dump.
      * This function is a "dummy" that will influence OSGi's running of this bundle, delaying until the service can be resolved.
      */
-    @Reference(service = Condition.class, target = LTPACondition.LTPA_CONDITION_FILTER)
-    protected void setLTPA2(ServiceReference<Condition> ref) {
+    @Reference(service = LTPAConfiguration.class)
+    protected void setLTPA2(ServiceReference<LTPAConfiguration> ref) {
         final String methodName = "setLTPA2";
         if (TraceComponent.isAnyTracingEnabled() && tc.isEntryEnabled()) {
           SibTr.entry(tc, methodName, new Object[] {this, ref});

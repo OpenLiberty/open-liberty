@@ -12,11 +12,13 @@ package io.openliberty.security.jakartasec40.cdi.extensions;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 
@@ -33,10 +35,12 @@ import com.ibm.ws.security.javaeesec.cdi.beans.CustomFormAuthenticationMechanism
 import com.ibm.ws.security.javaeesec.cdi.beans.FormAuthenticationMechanism;
 import com.ibm.ws.security.javaeesec.cdi.extensions.HttpAuthenticationMechanismsTracker;
 import com.ibm.ws.security.javaeesec.cdi.extensions.PrimarySecurityCDIExtension;
+import com.ibm.ws.security.javaeesec.properties.ModuleProperties;
 
 import io.openliberty.security.jakartasec.JakartaSec30Constants;
 import io.openliberty.security.jakartasec.OpenIdAuthenticationMechanismDefinitionHolder;
 import io.openliberty.security.jakartasec.cdi.beans.OidcHttpAuthenticationMechanism;
+import io.openliberty.security.jakartasec.handlers.HAMModuleRegistry;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.inject.Any;
@@ -97,16 +101,15 @@ public class JakartaSecurity40CDIExtension implements Extension {
 
     private static PrimarySecurityCDIExtension primarySecurityCDIExtension;
 
-    // for multi-ham, if there are qualifiers, helper class to store HAM details
-    //   as they are created and added into the CDI in afterBeanDiscovery()
-    private final List<HAMDefinition> hamDefinitions = new ArrayList<>();
+    // temporary storage for qualified HAMs during CDI extension phase only
+    private final List<QualifiedHAMData> qualifiedHAMs = new ArrayList<>();
 
-    private static class HAMDefinition {
-        Class<?> implClass;
-        List<Class<?>> qualifiers;
-        Properties props;
+    private static class QualifiedHAMData {
+        private final Class<?> implClass;
+        private final List<Class<?>> qualifiers;
+        private final Properties props;
 
-        HAMDefinition(Class<?> implClass, List<Class<?>> qualifiers, Properties props) {
+        QualifiedHAMData(Class<?> implClass, List<Class<?>> qualifiers, Properties props) {
             this.implClass = implClass;
             this.qualifiers = qualifiers;
             this.props = props;
@@ -233,7 +236,47 @@ public class JakartaSecurity40CDIExtension implements Extension {
                              + "] and props [" + props.toString() + "].");
             }
 
-            hamDefinitions.add(new HAMDefinition(hamImplClass, qualifiers, props));
+            // Determine module name from the class location
+            String moduleName = null;
+            try {
+                String location = annotatedClass.getProtectionDomain().getCodeSource().getLocation().getFile();
+                // Remove trailing slashes (common for expanded WARs/EARs)
+                while (location.endsWith("/")) {
+                    location = location.substring(0, location.length() - 1);
+                }
+                
+                // For expanded WARs, location might be .../module.war/WEB-INF/classes
+                // Extract the WAR name by looking for .war in the path
+                int warIndex = location.indexOf(".war");
+                if (warIndex > 0) {
+                    // Find the start of the WAR name (after the last slash before .war)
+                    int startIndex = location.lastIndexOf('/', warIndex);
+                    if (startIndex >= 0) {
+                        moduleName = location.substring(startIndex + 1, warIndex + 4); // +4 to include ".war"
+                    } else {
+                        moduleName = location.substring(0, warIndex + 4);
+                    }
+                } else {
+                    // Fallback: extract from the last path component
+                    int lastSlash = location.lastIndexOf('/');
+                    if (lastSlash >= 0) {
+                        moduleName = location.substring(lastSlash + 1);
+                    } else {
+                        moduleName = location;
+                    }
+                }
+            } catch (Exception e) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Could not determine module name for class: " + annotatedClass.getName(), e);
+                }
+            }
+            
+            if (tc.isDebugEnabled()) {
+                Tr.debug(tc, "Registering HAM [" + hamImplClass.getSimpleName() + "] with module: [" + moduleName + "]");
+            }
+            // Register HAM with its module in the registry
+            HAMModuleRegistry.register(applicationName, hamImplClass, moduleName);
+            qualifiedHAMs.add(new QualifiedHAMData(hamImplClass, qualifiers, props));
 
             // add to tracker EARLY (during ProcessAnnotatedType phase) to prevent other extensions
             //   (such as JavaEESecCDIExtension) from vetoing the bean (and only add one of the HAM type)
@@ -398,7 +441,8 @@ public class JakartaSecurity40CDIExtension implements Extension {
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "afterBeanDiscovery : instance : " + Integer.toHexString(this.hashCode()));
-            Tr.debug(tc, "Number of qualified HAM definitions: " + hamDefinitions.size());
+            Tr.debug(tc, "Number of qualified HAM definitions: " + qualifiedHAMs.size());
+            Tr.debug(tc, "afterBeanDiscovery called for application: " + applicationName);
         }
 
         try {
@@ -408,11 +452,11 @@ public class JakartaSecurity40CDIExtension implements Extension {
             // to prevent old extensions from vetoing them
 
             // Create QualifiedHAMBean for each HAM definition with qualifiers
-            for (HAMDefinition hamDef : hamDefinitions) {
+            for (QualifiedHAMData qualifiedHAM : qualifiedHAMs) {
                 if (tc.isDebugEnabled()) {
                     Tr.debug(tc, "Creating QualifiedHAMBean for class ["
-                                 + hamDef.implClass.getCanonicalName() + "] with qualifiers ["
-                                 + hamDef.qualifiers.toString() + "].");
+                                 + qualifiedHAM.implClass.getCanonicalName() + "] with qualifiers ["
+                                 + qualifiedHAM.qualifiers.toString() + "].");
                 }
 
                 // Build qualifier annotations
@@ -421,7 +465,7 @@ public class JakartaSecurity40CDIExtension implements Extension {
                     private static final long serialVersionUID = 1L;
                 });
 
-                for (Class<?> qClass : hamDef.qualifiers) {
+                for (Class<?> qClass : qualifiedHAM.qualifiers) {
                     Annotation qualifier = createQualifierAnnotation(qClass);
                     if (qualifier != null) {
                         qualifierAnnotations.add(qualifier);
@@ -430,11 +474,11 @@ public class JakartaSecurity40CDIExtension implements Extension {
 
                 // Create and add QualifiedHAMBean
                 Set<Annotation> qualifierSet = new HashSet<>(qualifierAnnotations);
-                QualifiedHAMBean qualifiedHAMBean = new QualifiedHAMBean(beanManager, hamDef.implClass, qualifierSet, hamDef.props);
+                QualifiedHAMBean qualifiedHAMBean = new QualifiedHAMBean(beanManager, qualifiedHAM.implClass, qualifierSet, qualifiedHAM.props);
                 beansToAdd.add(qualifiedHAMBean);
 
                 if (tc.isDebugEnabled()) {
-                    Tr.debug(tc, "Added QualifiedHAMBean for " + hamDef.implClass.getName() +
+                    Tr.debug(tc, "Added QualifiedHAMBean for " + qualifiedHAM.implClass.getName() +
                                  " with qualifiers: " + qualifierSet);
                 }
             }
@@ -467,7 +511,7 @@ public class JakartaSecurity40CDIExtension implements Extension {
     private void verifyConfiguration() throws DeploymentException {
 
         // only custom qualified HAM defs require a custom handler
-        boolean hasCustomQualifiedHAMs = hamDefinitions.stream().anyMatch(hamDef -> hamDef.qualifiers.stream().anyMatch(q -> !isDefaultQualifier(q)));
+        boolean hasCustomQualifiedHAMs = qualifiedHAMs.stream().anyMatch(hamDef -> hamDef.qualifiers.stream().anyMatch(q -> !isDefaultQualifier(q)));
 
         if (tc.isDebugEnabled()) {
             Tr.debug(tc, "Have custom qualified HAMs is [" + hasCustomQualifiedHAMs + "].");

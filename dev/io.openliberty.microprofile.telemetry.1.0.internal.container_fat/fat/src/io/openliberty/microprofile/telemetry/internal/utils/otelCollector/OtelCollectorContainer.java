@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,9 +15,8 @@ package io.openliberty.microprofile.telemetry.internal.utils.otelCollector;
 import java.io.File;
 
 import org.testcontainers.containers.GenericContainer;
-import org.testcontainers.images.builder.ImageFromDockerfile;
 import org.testcontainers.utility.DockerImageName;
-import org.testcontainers.utility.ImageNameSubstitutor;
+import org.testcontainers.utility.MountableFile;
 
 import io.openliberty.microprofile.telemetry.internal.utils.TestConstants;
 
@@ -50,48 +49,25 @@ public class OtelCollectorContainer extends GenericContainer<OtelCollectorContai
         this(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR, configFile, tlsCert, tlsKey);
     }
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.117.0
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     public OtelCollectorContainer(DockerImageName imageName, File configFile) {
-        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
-                                                                                          ImageNameSubstitutor.instance()
-                                                                                                              .apply(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR)
-                                                                                                              .asCanonicalNameString())
-                                                                                    .copy("/etc/otel-collector-config.yaml", "/etc/otel-collector-config.yaml")
-                                                                                    .build())
-                                       .withFileFromFile("/etc/otel-collector-config.yaml", configFile, 0644));
+        super(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR);
+        withCopyFileToContainer(MountableFile.forHostPath(configFile.toPath()), "/etc/otel-collector-config.yaml");
         withExposedPorts(OTLP_GRPC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
     }
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.117.0
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     public OtelCollectorContainer(DockerImageName imageName, File configFile, int PROMETHEUS_METRIC_PORT) {
-        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
-                                                                                          ImageNameSubstitutor.instance()
-                                                                                                              .apply(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR)
-                                                                                                              .asCanonicalNameString())
-                                                                                    .copy("/etc/otel-collector-config.yaml", "/etc/otel-collector-config.yaml")
-                                                                                    .build())
-                                       .withFileFromFile("/etc/otel-collector-config.yaml", configFile, 0644));
+        super(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR);
+        withCopyFileToContainer(MountableFile.forHostPath(configFile.toPath()), "/etc/otel-collector-config.yaml");
         withExposedPorts(OTLP_GRPC_PORT, PROMETHEUS_METRIC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
     }
 
-    //TODO switch to use ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.117.0
-    //TODO remove withDockerfileFromBuilder and instead create a dockerfile
     public OtelCollectorContainer(DockerImageName imageName, File configFile, File tlsCert, File tlsKey) {
-        super(new ImageFromDockerfile().withDockerfileFromBuilder(builder -> builder.from(
-                                                                                          ImageNameSubstitutor.instance()
-                                                                                                              .apply(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR)
-                                                                                                              .asCanonicalNameString())
-                                                                                    .copy("/etc/certificate.crt", "/etc/certificate.crt")
-                                                                                    .copy("/etc/private.key", "/etc/private.key")
-                                                                                    .copy("/etc/otel-collector-config.yaml", "/etc/otel-collector-config.yaml")
-                                                                                    .build())
-                                       .withFileFromFile("/etc/otel-collector-config.yaml", configFile, 0644)
-                                       .withFileFromFile("/etc/certificate.crt", tlsCert, 0644)
-                                       .withFileFromFile("/etc/private.key", tlsKey, 0644));
+        super(TestConstants.DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR);
+        withCopyFileToContainer(MountableFile.forHostPath(configFile.toPath()), "/etc/otel-collector-config.yaml");
+        withCopyFileToContainer(MountableFile.forHostPath(tlsCert.toPath()), "/etc/certificate.crt");
+        withCopyFileToContainer(MountableFile.forHostPath(tlsKey.toPath()), "/etc/private.key");
         withExposedPorts(OTLP_GRPC_PORT);
         withCommand("--config=/etc/otel-collector-config.yaml");
     }

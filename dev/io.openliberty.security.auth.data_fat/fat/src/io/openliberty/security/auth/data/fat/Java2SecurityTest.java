@@ -10,6 +10,7 @@
 
 package io.openliberty.security.auth.data.fat;
 
+import componenttest.annotation.SkipIfSysProp;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Rule;
@@ -30,6 +31,7 @@ import componenttest.topology.utils.FATServletClient;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MaximumJavaLevel(javaLevel = 17)
+@SkipIfSysProp({SkipIfSysProp.OS_ZOS, SkipIfSysProp.OS_IBMI})
 public class Java2SecurityTest extends FATServletClient {
 
     private final Class<Java2SecurityTest> thisClass = Java2SecurityTest.class;

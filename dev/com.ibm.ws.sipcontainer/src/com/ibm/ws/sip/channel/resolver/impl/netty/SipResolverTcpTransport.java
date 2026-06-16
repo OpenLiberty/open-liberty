@@ -564,7 +564,7 @@ class SipResolverTcpTransport implements SipResolverTransport {
             c_logger.traceEntry(this, "SipResolverTcpTransport: complete: write complete id=" + hashCode());
 
         if (c_logger.isTraceDebugEnabled())
-            c_logger.traceDebug("SipResolverTcpTransport: complete: write completed sucessfully: " + hashCode());
+            c_logger.traceDebug("SipResolverTcpTransport: complete: write completed successfully: " + hashCode());
 
         _connectionFailedCount = 0;
         _transportErrorCount = 0;

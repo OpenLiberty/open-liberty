@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -105,8 +105,8 @@ public class TestConstants {
     private TestConstants() {}
 
     //Docker image names. These must be kept in sync with bnd.bnd
-    public static final DockerImageName DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR = DockerImageName.parse("otel/opentelemetry-collector:0.74.0");
-    public static final DockerImageName DOCKER_IMAGE_ALL_IN_ONE = DockerImageName.parse("jaegertracing/all-in-one:1.54");
-    public static final DockerImageName DOCKER_IMAGE_ZIPKIN_SLIM = DockerImageName.parse("openzipkin/zipkin-slim:2.23");
+    public static final DockerImageName DOCKER_IMAGE_OPENTELEMETRY_COLLECTOR = DockerImageName.parse("ghcr.io/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.150.1");
+    public static final DockerImageName DOCKER_IMAGE_JAEGER_ALL_IN_ONE = DockerImageName.parse("quay.io/jaegertracing/all-in-one:1.76.0");
+    public static final DockerImageName DOCKER_IMAGE_ZIPKIN_SLIM = DockerImageName.parse("ghcr.io/openzipkin/zipkin-slim:3.6");
 
 }

@@ -21,9 +21,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestRule;
@@ -65,7 +63,6 @@ import componenttest.topology.impl.LibertyServerWrapper;
 @LibertyServerWrapper
 @Mode(TestMode.FULL)
 @AllowedFFDC({ "org.apache.http.NoHttpResponseException", "com.ibm.oauth.core.api.error.oauth20.OAuth20InvalidTokenException" })
-@SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule
 public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     protected static Class<?> thisClass = BasicBCLTests.class;
@@ -74,9 +71,6 @@ public class BasicBCLTests extends BackChannelLogoutCommonTests {
 
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
-
-    @ClassRule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled();
 
     /**
      * Repeat tests using OIDC (with a Local or Custom Store) or OIDC with SAML OP's, OIDC and Social clients, end_session or http

@@ -18,7 +18,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import com.ibm.ws.wssecurity.fat.cxf.ecdh.CxfECDHCallerTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -37,7 +36,7 @@ public class FATSuite {
     /*@formatter:off*/
     @ClassRule
     //issue 23060
-    public static RepeatTests r = RepeatTests.with(new EmptyAction())
+    public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE8_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE9_FEATURES().fullFATOnly())
                     .andWith(FeatureReplacementAction.EE10_FEATURES().fullFATOnly())

@@ -109,6 +109,7 @@ public class JspOptions {
     protected boolean    deleteClassFilesBeforeRecompile = false; //PI12939
     protected boolean    allowMultipleAttributeValues = false; //PI30519
     protected boolean    allowPrecedenceInJspExpressionsWithConstantString = false; //PI37304
+    protected boolean    loadTagFilesFromJars = false; // Load tag files from META-INF/resources/WEB-INF/tags in JARs
 
     //@BLB Pretouch End
     // defect 400645
@@ -662,7 +663,21 @@ public class JspOptions {
         }
         //PK57873
         
-        String ieClassId = jspParams.getProperty("ieClassId");        
+        // Load tag files from JARs
+        String loadTagFilesFromJars = jspParams.getProperty("loadTagFilesFromJars");
+        if (loadTagFilesFromJars != null) {
+            if (loadTagFilesFromJars.equalsIgnoreCase("true"))
+                this.loadTagFilesFromJars = true;
+            else if (loadTagFilesFromJars.equalsIgnoreCase("false"))
+                this.loadTagFilesFromJars = false;
+            else {
+                if(logger.isLoggable(Level.INFO)){
+                    logger.logp(Level.INFO, CLASS_NAME, "populateOptions", "Invalid value for loadTagFilesFromJars = "+ loadTagFilesFromJars);
+                }
+            }
+        }
+        
+        String ieClassId = jspParams.getProperty("ieClassId");
         if (ieClassId != null)
             this.ieClassId = ieClassId;
 
@@ -1598,6 +1613,15 @@ public class JspOptions {
         this.allowPrecedenceInJspExpressionsWithConstantString = temp;
     }
     //PI37304 end
+    
+    // Load tag files from JARs
+    public boolean isLoadTagFilesFromJars(){
+        return loadTagFilesFromJars;
+    }
+    
+    public void setLoadTagFilesFromJars(boolean temp){
+        this.loadTagFilesFromJars = temp;
+    }
 
     public String toString() {	//overrride Object's toString to assist in debugging.
     	String separatorString = System.getProperty("line.separator");

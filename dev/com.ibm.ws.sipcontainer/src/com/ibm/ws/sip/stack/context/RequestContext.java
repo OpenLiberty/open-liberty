@@ -58,7 +58,7 @@ public class RequestContext extends MessageContext {
 			}
 		}
 		//report transaction about the transport error that occurred. 
-		sipTransaction.prossesTransportError();
+		sipTransaction.processTransportError();
 	}
 
 	protected void doneWithContext() {

@@ -89,4 +89,6 @@
 
 	<include location="../fatTestPorts.xml"/>
 
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

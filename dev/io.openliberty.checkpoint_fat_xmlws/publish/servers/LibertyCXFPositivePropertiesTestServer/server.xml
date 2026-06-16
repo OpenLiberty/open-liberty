@@ -35,5 +35,7 @@
 				wsdl-location="https://${TEST_HOST}:${bvt.prop.HTTP_default.secure}/libertyCXFProperty/ImageServiceImplServiceTwo?wsdl" />
 		</webservices-bnd>
     </webApplication>
-    
+
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

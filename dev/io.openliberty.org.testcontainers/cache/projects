@@ -11,6 +11,7 @@ com.ibm.ws.concurrent.persistent_fat_timers
 com.ibm.ws.couchdb_fat
 com.ibm.ws.gvt.rest_fat
 com.ibm.ws.install.featureUtility_fat
+com.ibm.ws.jbatch.open.partition_fat
 com.ibm.ws.jdbc_fat
 com.ibm.ws.jdbc_fat_db2
 com.ibm.ws.jdbc_fat_krb5
@@ -40,12 +41,7 @@ com.ibm.ws.jpa.tests.jpaconfig_jpa_2.2_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_3.0_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_3.1_fat
 com.ibm.ws.jpa.tests.jpaconfig_jpa_3.2_fat
-com.ibm.ws.jpa.tests.spec10.callback_jpa_2.0_fat
-com.ibm.ws.jpa.tests.spec10.callback_jpa_2.1_fat
-com.ibm.ws.jpa.tests.spec10.callback_jpa_2.2_fat
-com.ibm.ws.jpa.tests.spec10.callback_jpa_3.0_fat
-com.ibm.ws.jpa.tests.spec10.callback_jpa_3.1_fat
-com.ibm.ws.jpa.tests.spec10.callback_jpa_3.2_fat
+com.ibm.ws.jpa.tests.spec10.callback_fat
 com.ibm.ws.jpa.tests.spec10.embeddable_jpa_2.0_fat
 com.ibm.ws.jpa.tests.spec10.embeddable_jpa_2.1_fat
 com.ibm.ws.jpa.tests.spec10.embeddable_jpa_2.2_fat

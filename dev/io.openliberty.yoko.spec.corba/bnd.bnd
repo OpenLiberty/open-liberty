@@ -11,8 +11,8 @@
 #     IBM Corporation - initial API and implementation
 #*******************************************************************************
 
--include= jar:${fileuri;\${repo;io.openliberty.yoko:yoko-spec-corba;1.6.0.20260302_8d3da30381}}!/META-INF/MANIFEST.MF,bnd.overrides
+-include= jar:${fileuri;\${repo;io.openliberty.yoko:yoko-spec-corba;1.6.1.20260416_276d09256d}}!/META-INF/MANIFEST.MF,bnd.overrides
 
--includeresource: @\${repo;io.openliberty.yoko:yoko-spec-corba;1.6.0.20260302_8d3da30381}!/!META-INF/maven/*
+-includeresource: @\${repo;io.openliberty.yoko:yoko-spec-corba;1.6.1.20260416_276d09256d}!/!META-INF/maven/*
 
--buildpath: io.openliberty.yoko:yoko-spec-corba;version=1.6.0.20260302_8d3da30381
+-buildpath: io.openliberty.yoko:yoko-spec-corba;version=1.6.1.20260416_276d09256d

@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
@@ -20,7 +17,6 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.rules.repeater.CheckpointEE10Action;
 import componenttest.rules.repeater.CheckpointEE11Action;
 import componenttest.rules.repeater.FeatureReplacementAction;
-import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTests;
 
@@ -53,7 +49,7 @@ public class FATSuite {
     /*@formatter:on*/
 
     public static FeatureReplacementAction ee10Action(String serverName, boolean checkpointRepeat) {
-        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE10Action() : new JakartaEE10Action();
+        FeatureReplacementAction action = checkpointRepeat ? new CheckpointEE10Action() : FeatureReplacementAction.EE10_FEATURES();
         return action.forServers(serverName).removeFeature("usr:jaccTestProvider-3.0").removeFeature("usr:authzTestProvider-3.0").addFeature("usr:jaccTestProvider-2.1");
     }
 

@@ -45,7 +45,7 @@ IBM-SPI-Package: \
   io.openliberty.org.jboss.logging36, \
   com.ibm.ws.com.fasterxml.classmate, \
   io.openliberty.org.hibernate.validator.9.0
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true

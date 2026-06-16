@@ -59,6 +59,7 @@
  *
  */
 //PK56156	11/13/2007	sartoris	Need ability to convert a null to empty string 
+//OLGH34747 04/27/2026  volosied    Fix NPE in include method
 package org.apache.jasper.runtime;
 
 import java.util.*;
@@ -1041,6 +1042,10 @@ public class JspRuntimeLibrary {
 
         String resourcePath = getContextRelativePath(request, relativePath);
         RequestDispatcher rd = request.getRequestDispatcher(resourcePath);
+
+        if(rd == null) {
+            throw new ServletException("No RequestDispatcher for " + resourcePath);
+        }
 
         rd.include(request, new ServletResponseWrapperInclude(response, out));
 

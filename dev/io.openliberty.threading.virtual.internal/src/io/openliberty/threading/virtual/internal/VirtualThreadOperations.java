@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,7 +27,6 @@ import org.osgi.service.component.annotations.ReferencePolicyOption;
 import org.osgi.service.component.propertytypes.SatisfyingConditionTarget;
 import org.osgi.service.condition.Condition;
 
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.wsspi.threading.ThreadTypeOverride;
 
@@ -100,9 +99,6 @@ public class VirtualThreadOperations implements VirtualThreadOps {
     @Override
     public boolean isVirtualThreadCreationEnabled() {
         ThreadTypeOverride override = overrideService;
-        if (!ProductInfo.getBetaEdition()) {
-            return true;
-        }
         return override == null ? true : override.allowVirtualThreadCreation();
     }
 }

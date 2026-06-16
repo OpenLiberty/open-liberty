@@ -14,6 +14,7 @@ Subsystem-Content: com.ibm.websphere.appserver.servlet-6.1; type="osgi.subsystem
  io.openliberty.beanValidation-3.1; type="osgi.subsystem.feature",
  io.openliberty.enterpriseBeansLite-4.0; type="osgi.subsystem.feature",
  io.openliberty.enterpriseBeans-4.0; type="osgi.subsystem.feature",
+ io.openliberty.enterpriseBeansHome-4.0; type="osgi.subsystem.feature",
  io.openliberty.connectors-2.1; type="osgi.subsystem.feature",
  io.openliberty.persistence-3.2; type="osgi.subsystem.feature",
  io.openliberty.mdb-4.0; type="osgi.subsystem.feature",

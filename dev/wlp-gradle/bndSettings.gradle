@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 /**
@@ -53,7 +50,6 @@ buildscript {
     dependencies {
         classpath bnd_plugin
         classpath 'biz.aQute.bnd:biz.aQute.bnd:7.0.0'
-        classpath 'gradle.plugin.net.ossindex:ossindex-gradle-plugin:0.4.11'
         classpath 'com.gradle:build-scan-plugin:2.1'
             
     }
@@ -75,6 +71,7 @@ buildscript {
 import aQute.bnd.build.Workspace
 import aQute.bnd.osgi.Constants
 import aQute.bnd.gradle.BndPlugin
+import aQute.bnd.repository.maven.provider.MavenBndRepository
 
 Workspace.setDriver(Constants.BNDDRIVER_GRADLE)
 Workspace.addGestalt(Constants.GESTALT_BATCH, null)
@@ -189,4 +186,57 @@ gradle.projectsLoaded { gradle ->
     gradle.rootProject.ext.gradleBndProjects = allBndProjects
     gradle.rootProject.ext.projectNames = projectNames
     gradle.rootProject.ext.parseBoolean = { value -> parseBoolean(value) }
+
+    // Pre-initialize indexed Maven repositories to prevent race conditions
+    // that exists in the bnd Index code that causes failures during parallel builds.
+    // Doing pre-initialization here before doing parallel processing avoids the race condition.
+    // When the race condition is encountered, you get an error with the following message:
+    // error : null, for cmd: repo, arguments; [repo, group:artifact, version]
+    println '[Bnd] Pre-initializing indexed Maven repositories...'
+    def startTime = System.currentTimeMillis()
+
+    try {
+        // Find repositories with index files (MavenBndRepository with index parameter)
+        def indexedRepos = workspace.getRepositories().findAll { repo ->
+            repo instanceof MavenBndRepository && repo.getIndexFile() != null
+        }
+
+        if (indexedRepos.isEmpty()) {
+            println '[Bnd] No indexed repositories found'
+            return
+        }
+
+        println "[Bnd] Found ${indexedRepos.size()} indexed repositories to initialize"
+
+        def initialized = []
+        def failed = []
+
+        // Initialize each repository by triggering IndexFile.getBridge()
+        indexedRepos.each { repo ->
+            try {
+                def repoName = repo.getName()
+
+                // Calling list() triggers IndexFile.getBridge() initialization
+                // This ensures the bridge is populated before parallel builds start
+                def artifacts = repo.list('*')
+
+                initialized << repoName
+                println "[Bnd]   [OK] ${repoName} (${artifacts?.size() ?: 0} artifacts)"
+
+            } catch (Exception e) {
+                failed << repo.getName()
+                logger.warn("[Bnd]   [FAILED] ${repo.getName()}: ${e.message}")
+            }
+        }
+
+        def elapsed = System.currentTimeMillis() - startTime
+        println "[Bnd] Initialized ${initialized.size()}/${indexedRepos.size()} repositories in ${elapsed}ms"
+
+        if (!failed.isEmpty()) {
+            logger.warn("[Bnd] Failed to initialize: ${failed.join(', ')}")
+        }
+
+    } catch (Exception e) {
+        logger.error('[Bnd] Repository initialization failed', e)
+    }
 }

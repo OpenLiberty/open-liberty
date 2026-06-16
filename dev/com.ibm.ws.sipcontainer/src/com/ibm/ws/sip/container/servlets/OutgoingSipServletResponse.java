@@ -829,8 +829,8 @@ public class OutgoingSipServletResponse extends SipServletResponseImpl
     @Override
 	public SipSession getProxySession(boolean create) {
     	//TODO was not supposed to be executed here! we need to understand
-    	//why we create and invoke to a servlet an outgoing response (on doresponse)
-    	//and not an incomnig one
+    	//why we create and invoke to a servlet an outgoing response (on doResponse)
+    	//and not an incoming one
 		return getTransactionUser().getSipSession(create);
 	}
     

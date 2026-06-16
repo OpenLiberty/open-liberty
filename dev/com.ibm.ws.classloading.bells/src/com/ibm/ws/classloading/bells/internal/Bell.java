@@ -45,6 +45,7 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.Filter;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.PrototypeServiceFactory;
+import org.osgi.framework.ServiceFactory;
 import org.osgi.framework.ServiceReference;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.component.ComponentContext;
@@ -440,6 +441,17 @@ public class Bell implements LibraryChangeListener {
             serviceProperties.putAll(serviceInfo.props);
             serviceProperties.put("implementation.class", serviceInfo.implClass);
             serviceProperties.put("exported.from", library.id());
+            serviceProperties.put("liberty.bell", library.id());
+            serviceProperties.computeIfPresent(Constants.SERVICE_RANKING, (k, e) -> {
+                if (e instanceof String) {
+                    try {
+                        return Integer.valueOf((String) e);
+                    } catch (NumberFormatException nfe) {
+                        return e;
+                    }
+                }
+                return e;
+            });
 
             final ServiceRegistration<?> reg = context.registerService(interfaceName, createServiceFactory(serviceInfo, library, fileUrl, spiVisibility, properties),
                                                                        serviceProperties);
@@ -481,35 +493,60 @@ public class Bell implements LibraryChangeListener {
     }
 
     @SuppressWarnings("rawtypes")
-    private static PrototypeServiceFactory<?> createServiceFactory(final ServiceInfo serviceInfo, final Library library, final URL fileUrl,
-                                                                   final boolean spiVisibility, final Map<String, String> properties) {
-        // A prototype factory is used in case the consumer wants to get multiple instances of the service object.
-        // A typical user of the service will simply use the R5 ways to get the service which will fall back to
-        // behaving like a normal ServiceFactory.
-        return new PrototypeServiceFactory() {
-            @Override
-            public Object getService(Bundle bundle, ServiceRegistration registration) {
-                if (library.id() == null) {
-                    // this is a case where the library has been deleted but we have not
-                    // gotten to unregister the service factory yet;
-                    // just return null instead of failing out here with exceptions
-                    return null;
-                }
-                // Note the following methods will produce messages if something goes wrong
-                Class<?> serviceType = findClass(serviceInfo.implClass, library, fileUrl, spiVisibility);
-                if (serviceType != null) {
-                    return createService(serviceType, library.id(), fileUrl, properties);
-                }
-                // something went wrong have to return null.
-                // TODO may want to throw a ServiceException with our message here so we don't
-                // get a generic message from the framework when null is returned.
-                return null;
-            }
+    private static Object createServiceFactory(final ServiceInfo serviceInfo, final Library library, final URL fileUrl,
+                                               final boolean spiVisibility, final Map<String, String> properties) {
+        String scope = serviceInfo.props.get(Constants.SERVICE_SCOPE);
+        if (scope == null) {
+            scope = Constants.SCOPE_PROTOTYPE;
+        }
+        switch (scope) {
+            case Constants.SCOPE_SINGLETON:
+                return createServiceObject(serviceInfo, library, fileUrl, spiVisibility, properties);
+            case Constants.SCOPE_BUNDLE:
+                return new ServiceFactory() {
+                    @Override
+                    public Object getService(Bundle bundle, ServiceRegistration registration) {
+                        return createServiceObject(serviceInfo, library, fileUrl, spiVisibility, properties);
+                    }
 
-            @Override
-            public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
-            }
-        };
+                    @Override
+                    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+                    }
+                };
+            default:
+                // A prototype factory is used by default in case the consumer wants to get multiple instances of the service object.
+                // A typical user of the service will simply use the R5 ways to get the service which will fall back to
+                // behaving like a normal ServiceFactory.
+                return new PrototypeServiceFactory() {
+                    @Override
+                    public Object getService(Bundle bundle, ServiceRegistration registration) {
+                        return createServiceObject(serviceInfo, library, fileUrl, spiVisibility, properties);
+                    }
+
+                    @Override
+                    public void ungetService(Bundle bundle, ServiceRegistration registration, Object service) {
+                    }
+                };
+        }
+    }
+
+    private static Object createServiceObject(final ServiceInfo serviceInfo, final Library library, final URL fileUrl,
+                                              final boolean spiVisibility, final Map<String, String> properties) {
+        if (library.id() == null) {
+            // this is a case where the library has been deleted but we have not
+            // gotten to unregister the service factory yet;
+            // just return null instead of failing out here with exceptions
+            return null;
+        }
+        // Note the following methods will produce messages if something goes wrong
+        Class<?> serviceType = findClass(serviceInfo.implClass, library, fileUrl, spiVisibility);
+        if (serviceType != null) {
+            return createServiceImpl(serviceType, library.id(), fileUrl, properties);
+        }
+        // something went wrong have to return null.
+        // TODO may want to throw a ServiceException with our message here so we don't
+        // get a generic message from the framework when null is returned.
+        return null;
     }
 
     /**
@@ -540,7 +577,7 @@ public class Bell implements LibraryChangeListener {
         return service;
     }
 
-    private static Object createService(final Class<?> serviceType, final String libID, final URL fileUrl, final Map<String, String> properties) {
+    private static Object createServiceImpl(final Class<?> serviceType, final String libID, final URL fileUrl, final Map<String, String> properties) {
         Object service = null;
         Constructor<?> singleArgCtor;
         Method updateMethod;

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -10,6 +10,12 @@
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
+// Always pull from mirror so we don't have to upload transitive dependencies to artifactory
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
+
+ext {
+  hibernateVersion = '7.3.3.Final'
+}
 
 configurations {
   jpaFatTools {
@@ -18,19 +24,23 @@ configurations {
   requiredLibs {
     transitive = false
   }
-  hibernateJPA31
+  hibernateJPA32
 }
 
 dependencies {
   jpaFatTools project(':com.ibm.ws.jpa_testframework')
   
-  hibernateJPA31 'com.fasterxml:classmate:1.5.1'
-  hibernateJPA31 'net.bytebuddy:byte-buddy:1.12.8'
-  hibernateJPA31 'org.antlr:antlr4-runtime:4.9.1'
-  hibernateJPA31 'org.hibernate.common:hibernate-commons-annotations:6.0.0.Final'
-  hibernateJPA31 'org.hibernate.orm:hibernate-core:6.0.0.Final'
-  hibernateJPA31 'org.jboss:jandex:2.4.2.Final'
-  hibernateJPA31 'org.jboss.logging:jboss-logging:3.4.3.Final'
+  def withoutJakartaAPI = {
+      exclude group: 'jakarta.activation', module: 'jakarta.activation-api'
+      exclude group: 'jakarta.inject', module: 'jakarta.inject-api'
+      exclude group: 'jakarta.persistence', module: 'jakarta.persistence-api'
+      exclude group: 'jakarta.transaction', module: 'jakarta.transaction-api'
+      exclude group: 'jakarta.xml.bind', module: 'jakarta.xml.bind-api'
+  }
+    
+  hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}", withoutJakartaAPI
+  hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
+  hibernateJPA32 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}", withoutJakartaAPI
 }
 
 task addJPAFATTools (type: Copy) {
@@ -40,15 +50,17 @@ task addJPAFATTools (type: Copy) {
   into new File(autoFvtDir, 'lib')
 }
 
-task addhibernateJPA31(type: Copy) {
+task addhibernateJPA32(type: Copy) {
   shouldRunAfter jar
-  from configurations.hibernateJPA31
-  into new File(autoFvtDir, 'publish/shared/resources/jpa_entity_fat_jpa31_hibernate')
+  from configurations.hibernateJPA32
+  into new File(autoFvtDir, 'publish/shared/resources/jpa_fat_jpa32_hibernate')
 }
 
 addRequiredLibraries {
+  dependsOn addH2
   dependsOn copyJdbcDrivers
   dependsOn addJPAFATTools
-  dependsOn addhibernateJPA31
+  dependsOn addhibernateJPA32
+  dependsOn addJakartaTransformer
   dependsOn copyTestContainers
 }

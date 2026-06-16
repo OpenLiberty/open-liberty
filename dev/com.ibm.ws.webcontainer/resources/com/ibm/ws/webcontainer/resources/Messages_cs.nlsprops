@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=Ur\u010den\u00fd soubor nebylo m
 failed.to.load.converter.properties.useraction=Ov\u011b\u0159te, \u017ee ur\u010den\u00fd soubor existuje a \u017ee m\u00e1 spr\u00e1vn\u00fd form\u00e1t podle specifikace java.utils.Properties.
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: Po prvn\u00edm z\u00e1pisu do v\u00fdstupn\u00edho proudu/zapisova\u010de byla vol\u00e1na metoda setBufferSize()
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) se vol\u00e1 po potvrzen\u00ed prvn\u00edho z\u00e1pisu nebo odpov\u011bdi
 setbuffer.size.called.after.write.explanation=Do\u0161lo k pokusu o nastaven\u00ed velikosti vyrovn\u00e1vac\u00ed pam\u011bti odezvy pot\u00e9, co ji\u017e byla potvrzena odezva. Jde o chybu aplikace.
 setbuffer.size.called.after.write.useraction=Odeberte vol\u00e1n\u00ed metody setBufferSize() nebo je p\u0159esu\u0148te p\u0159ed potvrzen\u00ed odezvy.
 

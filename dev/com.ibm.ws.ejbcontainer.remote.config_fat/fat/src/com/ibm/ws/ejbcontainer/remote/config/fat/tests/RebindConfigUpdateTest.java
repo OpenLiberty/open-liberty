@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,7 @@ package com.ibm.ws.ejbcontainer.remote.config.fat.tests;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -319,7 +320,6 @@ public class RebindConfigUpdateTest extends FATServletClient {
      * Note: For this scenario, the application should not be restarted after the configuration update.
      */
     @Test
-    @Ignore("ORB restart not supported on Liberty") //TODO
     public void testRebindAfterEjbContainerUpdated() throws Exception {
         server.startServer();
         verifyBindings(server, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);
@@ -364,9 +364,10 @@ public class RebindConfigUpdateTest extends FATServletClient {
     public void testRebindAfterOrbLateStart() throws Exception {
         List<Element> removed = removeQuickStartConfig();
         server_ssl.startServer();
-        assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
-        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
-        assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
+        // Security service and ORB will not start without QuickStartSecurity
+        assertTrue("Security service reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKS0008I", server_ssl.getDefaultLogFile()).isEmpty());
+        assertNotNull("LTPA configuration did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS4105I"));
+        assertTrue("ORB reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKI0001I", server_ssl.getDefaultLogFile()).isEmpty());
         expected_ssl_exceptions = new String[] { "CWWKS9582E", "CWWKS9660E" }; // No user registry
 
         verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, 0);
@@ -389,9 +390,9 @@ public class RebindConfigUpdateTest extends FATServletClient {
     @ExpectedFFDC("com.ibm.wsspi.injectionengine.InjectionException")
     public void testRebindAfterOrbStoppedStarted() throws Exception {
         server_ssl.startServer();
-        assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
-        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
-        assertNotNull("ORB did not report it was ready", server.waitForStringInLogUsingMark("CWWKI0001I"));
+        assertNotNull("Security service did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS0008I"));
+        assertNotNull("LTPA configuration did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS4105I"));
+        assertNotNull("ORB did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKI0001I"));
         expected_ssl_exceptions = new String[] { "CWWKS9582E" }; // ORB did not start in 10 seconds
 
         verifyBindings(server_ssl, ALL_LOCAL_BINDINGS, ALL_REMOTE_BINDINGS);

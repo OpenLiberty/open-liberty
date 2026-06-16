@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -88,6 +88,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
     private String primaryKeyImportDir;
     @Sensitive
     private String primaryKeyPassword;
+    private boolean tryToReEncryptLtpaKeys;
     private long keyTokenExpiration;
     private long monitorInterval;
     private LTPAFileMonitor ltpaFileMonitor;
@@ -143,9 +144,13 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         executorService.activate(context);
         ltpaKeysChangeNotifierService.activate(context);
 
-        loadConfig(props);
-        setupRuntimeLTPAInfrastructure();
-        debugLTPAConfig(); //prints debug for current LTPA config
+        try {
+            loadConfig(props);
+            setupRuntimeLTPAInfrastructure();
+            debugLTPAConfig(); //prints debug for current LTPA config
+        } catch (IllegalArgumentException e) {
+            Tr.error(tc, e.getMessage());
+        }
     }
 
     /**
@@ -174,24 +179,27 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             Tr.debug(tc, "oldValidationKeys: " + maskKeysPasswords(oldValidationKeys));
         }
 
-        loadConfig(props);
+        try {
+            loadConfig(props);
 
-        if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
-            unsetFileMonitorRegistration();
-            Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
-            setupRuntimeLTPAInfrastructure();
-        } else if (isMonitorIntervalChanged(oldMonitorInterval)) {
-            unsetFileMonitorRegistration();
-            optionallyCreateFileMonitor();
+            if (isKeysConfigChanged(oldKeyImportFile, oldKeyTokenExpiration, oldExpirationDifferenceAllowed, oldMonitorValidationKeysDir, oldUpdateTrigger, oldValidationKeys)) {
+                unsetFileMonitorRegistration();
+                Tr.audit(tc, "LTPA_KEYS_TO_LOAD", primaryKeyImportFile);
+                setupRuntimeLTPAInfrastructure();
+            } else if (isMonitorIntervalChanged(oldMonitorInterval)) {
+                unsetFileMonitorRegistration();
+                optionallyCreateFileMonitor();
+            }
+            debugLTPAConfig(); //prints debug for current LTPA config
+        } catch (IllegalArgumentException e) {
+            Tr.error(tc, e.getMessage());
         }
-        debugLTPAConfig(); //prints debug for current LTPA config
     }
 
     @Sensitive
     private void loadConfig(Map<String, Object> props) {
         primaryKeyImportFile = (String) props.get(CFG_KEY_IMPORT_FILE);
-        SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
-        primaryKeyPassword = sps == null ? null : new String(sps.getChars());
+        primaryKeyPassword = resolvePrimaryKeyPassword(props);
         keyTokenExpiration = (Long) props.get(CFG_KEY_TOKEN_EXPIRATION);
         monitorInterval = (Long) props.get(CFG_KEY_MONITOR_INTERVAL);
         authFilterRef = (String) props.get(KEY_AUTH_FILTER_REF);
@@ -232,6 +240,31 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
         }
 
         combineValidationKeys();
+    }
+
+    @Sensitive
+    private String resolvePrimaryKeyPassword(Map<String, Object> props) {
+        SerializableProtectedString sps = (SerializableProtectedString) props.get(CFG_KEY_PASSWORD);
+        String keysPassword = sps == null ? null : new String(sps.getChars());
+        if (keysPassword != null && !keysPassword.isEmpty()) {
+            tryToReEncryptLtpaKeys = false;
+            return keysPassword;
+        }
+
+        String ltpaKeysPassword = System.getenv("ltpa_keys_password");
+        if (ltpaKeysPassword != null && !ltpaKeysPassword.isEmpty()) {
+            tryToReEncryptLtpaKeys = false;
+            return ltpaKeysPassword;
+        }
+
+        String keystorePassword = System.getenv("keystore_password");
+        if (keystorePassword != null && !keystorePassword.isEmpty()) {
+            tryToReEncryptLtpaKeys = true;
+            return keystorePassword;
+        }
+
+        String formattedMessage = Tr.formatMessage(tc, "LTPA_KEYS_PASSWORD_ERROR");
+        throw new IllegalArgumentException(formattedMessage);
     }
 
     /**
@@ -337,6 +370,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
                 Properties properties = new Properties();
                 properties.setProperty(CFG_KEY_VALIDATION_FILE_NAME, fullFileName);
                 properties.setProperty(CFG_KEY_VALIDATION_PASSWORD, primaryKeyPassword);
+                properties.setProperty(INTERNAL_KEY_IS_CONFIGURED_VALIDATION_KEY, Boolean.FALSE.toString());
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Non-configured validationKeys file name: " + fullFileName);
@@ -760,6 +794,12 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
 
     /** {@inheritDoc} */
     @Override
+    public boolean getTryToReEncryptLtpaKeys() {
+        return tryToReEncryptLtpaKeys;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public long getTokenExpiration() {
         return keyTokenExpiration;
     }
@@ -834,6 +874,7 @@ public class LTPAConfigurationImpl implements LTPAConfiguration, FileBasedAction
             for (Map<String, Object> elementProps : listOfElementMaps) {
                 Properties properties = getValidationKeysProps(elementProps, elementName, attrKeys);
                 if (properties != null && !properties.isEmpty()) {
+                    properties.setProperty(INTERNAL_KEY_IS_CONFIGURED_VALIDATION_KEY, Boolean.TRUE.toString());
                     listOfValidationKeysProps.add(properties);
                 }
             }

@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2019, 2025 IBM Corporation and others.
+    Copyright (c) 2019, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -44,8 +44,8 @@
     <user>reader</user>
   </reader-role>
 
-  <!-- configuration error: this points at Derby jars, not Cloudant -->
-  <cloudant id="cloudant" libraryRef="Derby" url="http://myhost.rchland.ibm.com:5984"/>
+  <!-- configuration error: this points at H2 jars, not Cloudant -->
+  <cloudant id="cloudant" libraryRef="H2" url="http://myhost.rchland.ibm.com:5984"/>
   <cloudantDatabase id="cldb" jndiName="cloudant/testdb" cloudantRef="cloudant" databaseName="exampledb" create="true"/>
 
   <connectionFactory id="cf1" jndiName="eis/cf1">
@@ -54,13 +54,13 @@
   </connectionFactory>
 
   <dataSource id="DefaultDataSource">
-    <jdbcDriver libraryRef="Derby"/>
-   	<properties.derby.embedded databaseName="memory:derbydb" createDatabase="create"/>
-   	<containerAuthData user="derbyuser1" password="derbypwd1"/>
+    <jdbcDriver libraryRef="H2"/>
+   	<properties.h2 URL="jdbc:h2:mem:h2db;DB_CLOSE_DELAY=-1"/>
+   	<containerAuthData user="h2user1" password="h2pwd1"/>
   </dataSource>
 
-  <library id="Derby">
-    <file name="${shared.resource.dir}/derby/derby.jar"/>
+  <library id="H2">
+    <file name="${shared.resource.dir}/h2Java8/h2.jar"/>
   </library>
 
   <messagingEngine id="defaultME"/>
@@ -76,5 +76,5 @@
     <properties.wasJms temporaryTopicNamePrefix="TMPTOP3"/>
   </jmsTopicConnectionFactory>
 
-  <javaPermission codebase="${shared.resource.dir}/derby/derby.jar" className="java.security.AllPermission"/>
+  <javaPermission codebase="${shared.resource.dir}/h2Java8/h2.jar" className="java.security.AllPermission"/>
 </server>

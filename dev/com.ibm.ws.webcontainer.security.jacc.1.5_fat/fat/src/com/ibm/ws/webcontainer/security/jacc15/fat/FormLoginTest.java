@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2024 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.webcontainer.security.jacc15.fat;
@@ -61,6 +58,7 @@ import com.ibm.ws.webcontainer.security.test.servlets.SSLFormLoginClient;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.CheckpointRule;
 import componenttest.rules.repeater.CheckpointRule.ServerMode;
 import componenttest.topology.impl.LibertyServer;
@@ -76,11 +74,8 @@ public class FormLoginTest extends CommonServletTestScenarios {
     private static SSLFormLoginClient mySSLClient;
 
     @ClassRule
-    public static CheckpointRule checkpointRule = new CheckpointRule()
-                                                      .setConsoleLogName(FormLoginTest.class.getSimpleName() + ".log")
-                                                      .setServerSetup(FormLoginTest::serverSetUp)
-                                                      .setServerStart(FormLoginTest::serverStart)
-                                                      .setServerTearDown(FormLoginTest::serverTearDown);
+    public static CheckpointRule checkpointRule = new CheckpointRule().setConsoleLogName(FormLoginTest.class.getSimpleName()
+                                                                                         + ".log").setServerSetup(FormLoginTest::serverSetUp).setServerStart(FormLoginTest::serverStart).setServerTearDown(FormLoginTest::serverTearDown);
 
     public static LibertyServer serverSetUp(ServerMode mode) throws Exception {
         myServer = LibertyServerFactory.getLibertyServer("com.ibm.ws.webcontainer.security.fat.formlogin");
@@ -123,6 +118,11 @@ public class FormLoginTest extends CommonServletTestScenarios {
     protected static void verifyServerStartedWithJaccFeature(LibertyServer server) {
         assertNotNull("JACC feature did not report it was starting", server.waitForStringInLog("CWWKS2850I")); //Hiroko-Kristen
         assertNotNull("JACC feature did not report it was ready", server.waitForStringInLog("CWWKS2851I")); //Hiroko-Kristen
+        String currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        if (currentRepeatAction != null && currentRepeatAction.contains("_spec")) {
+            assertNotNull("spec user feature WAB did not start the PolicyFactory", server.waitForStringInLog("CWWKS2866I.*PolicyFactory"));
+            assertNotNull("spec user feature WAB did not start the PolicyConfigurationFactory", server.waitForStringInLog("CWWKS2866I.*PolicyConfigurationFactory"));
+        }
     }
 
     public FormLoginTest() {

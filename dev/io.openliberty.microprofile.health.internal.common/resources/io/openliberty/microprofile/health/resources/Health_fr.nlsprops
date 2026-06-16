@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,7 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=Sp\u00e9cifiez une 
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: La configuration de l'intervalle de contr\u00f4le de d\u00e9marrage a \u00e9t\u00e9 d\u00e9finie avant la configuration de l'intervalle de contr\u00f4le. Le bilan de sant\u00e9 bas\u00e9 sur les fichiers est d\u00e9sactiv\u00e9 lorsque l'intervalle de v\u00e9rification n'est pas configur\u00e9.
 startup.check.interval.config.only.set.CWMMH01012W.explanation=Le fait de configurer uniquement l'intervalle de contr\u00f4le au d\u00e9marrage n'active pas le m\u00e9canisme de contr\u00f4le de sant\u00e9 bas\u00e9 sur les fichiers.
 startup.check.interval.config.only.set.CWMMH01012W.useraction=Configurez l'intervalle de contr\u00f4le pour activer le m\u00e9canisme de contr\u00f4le de sant\u00e9 bas\u00e9 sur les fichiers.
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: La configuration de l'option \u00ab enableEndpoints \u00bb est d\u00e9finie sur \u00ab false \u00bb, mais la fonction de contr\u00f4le d'int\u00e9grit\u00e9 bas\u00e9e sur les fichiers n'est pas activ\u00e9e. Cette configuration n'a aucun effet et les points de contr\u00f4le de l'\u00e9tat de sant\u00e9 restent activ\u00e9s.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=La configuration de l'option \u00ab enableEndpoints \u00bb ne prend effet que lorsque les contr\u00f4les d'int\u00e9grit\u00e9 bas\u00e9s sur des fichiers sont activ\u00e9s.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Activez les fonctions de v\u00e9rification de l'int\u00e9grit\u00e9 des fichiers ou supprimez la configuration de l' enableEndpoints.

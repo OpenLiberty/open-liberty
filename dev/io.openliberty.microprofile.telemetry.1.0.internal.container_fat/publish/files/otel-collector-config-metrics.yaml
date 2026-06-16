@@ -2,10 +2,14 @@ receivers:
  otlp:
    protocols:
      grpc:
+       endpoint: 0.0.0.0:4317
 
 exporters:
  prometheus:
-  endpoint: otel-collector-metrics:3131
+   endpoint: otel-collector-metrics:3131
+   resource_to_telemetry_conversion:
+     enabled: true
+   enable_open_metrics: true
 
 
 processors:

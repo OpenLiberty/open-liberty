@@ -22,7 +22,7 @@ IBM-API-Package:\
 -features=io.openliberty.jakarta.xmlWS-4.0, \
   io.openliberty.xmlBinding-4.0, \
   com.ibm.websphere.appserver.httpcommons-1.0, \
-  io.openliberty.jakarta.mail-2.1, \
+  io.openliberty.jakarta.mail-2.1; ibm.tolerates:="2.2", \
   com.ibm.websphere.appserver.injection-2.0, \
   com.ibm.websphere.appserver.internal.slf4j-1.7
 -bundles=\

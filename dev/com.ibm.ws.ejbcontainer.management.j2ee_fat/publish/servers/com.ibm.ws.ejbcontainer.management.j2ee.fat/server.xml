@@ -11,5 +11,6 @@
     <application id="EJBJ2EEManagement" location="EJBJ2EEManagement.ear"/>
 
     <keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" /> <!-- pwd: Liberty, expires1/4/2099 -->
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
     <quickStartSecurity userName="theUser" userPassword="thePassword"/>
 </server>

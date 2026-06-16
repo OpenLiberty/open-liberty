@@ -1,18 +1,17 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2024 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.rest.handler.validator.fat;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
+import static componenttest.annotation.SkipForRepeat.EE7_FEATURES;
+import static componenttest.annotation.SkipForRepeat.EE8_FEATURES;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -40,8 +39,9 @@ import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.rest.handler.validator.loginmodule.TestLoginModule;
 
-import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -60,6 +60,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
 
     @ClassRule
     public static RepeatTests r1 = EERepeatActions.repeat(FeatureReplacementAction.ALL_SERVERS,
+                                                          EERepeatActions.EE11,
                                                           EERepeatActions.EE10,
                                                           EERepeatActions.EE9,
                                                           EERepeatActions.EE8,
@@ -102,13 +103,11 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         messages.add("J2CA7001I: .* TestValidationJMSAdapter"); // J2CA7001I: Resource adapter TestValidationJMSAdapter installed in # seconds.
         server.waitForStringsInLogUsingMark(messages);
 
-        // TODO remove once transactions code is fixed to use container auth for the recovery log dataSource
-        // Lacking this fix, transaction manager will experience an auth failure and log FFDC for it.
-        // The following line causes an XA-capable data source to be used for the first time outside of a test method execution,
-        // so that the FFDC is not considered a test failure.
-        JsonObject response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDS").run(JsonObject.class);
-        Log.info(c, "setUp", "DefaultDataSource response: " + response);
-    }
+        Log.info(c, "setUp", "initialize users for defaultdb (customLoginDS)");
+
+        JsonObject response = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDS?auth=container")
+                                      .run(JsonObject.class);
+        Log.info(c, "setUp", "customLoginDS response: " + response);    }
 
     @AfterClass
     public static void tearDown() throws Exception {
@@ -123,10 +122,12 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      * This default endpoint invocation is equivalent to an application direct lookup, which does
      * not get container managed authentication applied and therefore should not succeed.
      */
+    @AllowedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException",
+                   "java.sql.SQLInvalidAuthorizationSpecException",
+                   "javax.resource.spi.ResourceAllocationException",
+                   "javax.resource.spi.SecurityException",
+                   "org.h2.jdbc.JdbcSQLInvalidAuthorizationSpecException" })
     @Test
-    @ExpectedFFDC({ "java.sql.SQLNonTransientException",
-                    "javax.resource.spi.SecurityException",
-                    "javax.resource.spi.ResourceAllocationException" })
     public void testCustomLoginModuleDirectLookupInvalid() throws Exception {
         JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDS")
                         .run(JsonObject.class);
@@ -147,10 +148,10 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         assertNull(err, json.get("successful"));
         assertNull(err, json.get("failure"));
         assertNull(err, json.get("info"));
-        assertEquals(err, "08004", getString(json, "sqlState"));
-        assertEquals(err, "40000", json.getString("errorCode"));
-        assertEquals(err, "java.sql.SQLNonTransientException", getString(json, "class"));
-        assertTrue(err, getString(json, "message").contains("Invalid authentication"));
+        assertEquals(err, "28000", getString(json, "sqlState"));
+        assertEquals(err, "28000", json.getString("errorCode"));
+        assertEquals(err, "java.sql.SQLInvalidAuthorizationSpecException", getString(json, "class"));
+        assertTrue(err, getString(json, "message").contains("Wrong user name or password"));
     }
 
     /**
@@ -205,10 +206,10 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
     /**
      * Test specifyig a non-existant customLoginConfig
      */
+    @AllowedFFDC({ "java.sql.SQLException",
+                   "javax.resource.ResourceException",
+                   "javax.security.auth.login.LoginException" })
     @Test
-    @ExpectedFFDC({ "javax.security.auth.login.LoginException",
-                    "javax.resource.ResourceException",
-                    "java.sql.SQLException" })
     public void testCustomLoginIBMWebBndWrongName() throws Exception {
         JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/dataSource/customLoginDSWebBnd?auth=container&loginConfig=bogus")
                         .run(JsonObject.class);
@@ -364,6 +365,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      * when the type matches the case specified in server.xml. In this test the specific
      * instance's uid is specified.
      */
+    @SkipForRepeat({ EE7_FEATURES, EE8_FEATURES }) // container auth not yet used for recovery data source
     @Test
     public void testValidateNestedDifferentCase() throws Exception {
         JsonObject json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/DATASOURCE/transaction%2FDATASOURCE%5Bdefault-0%5D?auth=container&authAlias=auth1")
@@ -376,13 +378,13 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         assertTrue(err, json.getBoolean("successful"));
         assertNull(err, json.get("failure"));
         assertNotNull(err, json = json.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", json.getString("databaseProductName"));
+        assertEquals(err, "H2", json.getString("databaseProductName"));
         assertTrue(err, json.getString("databaseProductVersion").matches(VERSION_REGEX));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", json.getString("jdbcDriverName"));
+        assertEquals(err, "H2 JDBC Driver", json.getString("jdbcDriverName"));
         assertTrue(err, json.getString("jdbcDriverVersion").matches(VERSION_REGEX));
-        assertNull(err, json.get("catalog")); // currently not supported by Derby
-        assertEquals(err, "DBUSER", json.getString("schema"));
-        assertEquals(err, "dbuser", json.getString("user"));
+        assertEquals(err, "RECOVERYDB", json.getString("catalog")); // H2 returns database name as catalog
+        assertEquals(err, "PUBLIC", json.getString("schema"));
+        assertEquals(err, "DBUSER", json.getString("user"));
     }
 
     /*
@@ -390,6 +392,7 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
      * when the type matches the case specified in server.xml. In this test no
      * UID is provided.
      */
+    @SkipForRepeat({ EE7_FEATURES, EE8_FEATURES }) // container auth not yet used for recovery data source
     @Test
     public void testValidateNestedDifferentCaseMulitple() throws Exception {
         JsonArray json = FATSuite.createHttpsRequestWithAdminUser(server, "/ibm/api/validation/DATASOURCE?auth=container&authAlias=auth1")
@@ -405,13 +408,13 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         assertTrue(err, j.getBoolean("successful"));
         assertNull(err, j.get("failure"));
         assertNotNull(err, j = j.getJsonObject("info"));
-        assertEquals(err, "Apache Derby", j.getString("databaseProductName"));
+        assertEquals(err, "H2", j.getString("databaseProductName"));
         assertTrue(err, j.getString("databaseProductVersion").matches(VERSION_REGEX));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", j.getString("jdbcDriverName"));
+        assertEquals(err, "H2 JDBC Driver", j.getString("jdbcDriverName"));
         assertTrue(err, j.getString("jdbcDriverVersion").matches(VERSION_REGEX));
-        assertNull(err, j.get("catalog")); // currently not supported by Derby
-        assertEquals(err, "DBUSER", j.getString("schema"));
-        assertEquals(err, "dbuser", j.getString("user"));
+        assertEquals(err, "RECOVERYDB", j.getString("catalog")); // H2 returns database name as catalog
+        assertEquals(err, "PUBLIC", j.getString("schema"));
+        assertEquals(err, "DBUSER", j.getString("user"));
     }
 
     private static void assertSuccessResponse(JsonObject json, String expectedUID, String expectedID, String expectedJndiName) {
@@ -423,9 +426,9 @@ public class ValidateDSCustomLoginModuleTest extends FATServletClient {
         assertNull(err, json.get("failure"));
         JsonObject info = json.getJsonObject("info");
         assertNotNull(err, info);
-        assertEquals(err, "Apache Derby", info.getString("databaseProductName"));
+        assertEquals(err, "H2", info.getString("databaseProductName"));
         assertTrue(err, info.getString("databaseProductVersion").matches(VERSION_REGEX));
-        assertEquals(err, "Apache Derby Embedded JDBC Driver", info.getString("jdbcDriverName"));
+        assertEquals(err, "H2 JDBC Driver", info.getString("jdbcDriverName"));
         assertTrue(err, info.getString("jdbcDriverVersion").matches(VERSION_REGEX));
     }
 

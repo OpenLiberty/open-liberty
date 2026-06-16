@@ -1,6 +1,7 @@
 <feature>jakartaee-11.0</feature>
 <feature>jakartaeeClient-11.0</feature>
 <feature>enterpriseBeans-4.0</feature>
+<feature>enterpriseBeansHome-4.0</feature>
 <feature>xmlBinding-4.0</feature>
 <feature>xmlWS-4.0</feature>
 <feature>xmlWSClient-4.0</feature>

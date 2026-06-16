@@ -129,6 +129,8 @@
 	</wsSecurityProvider>
 
     <include location="imports/java2Permissions.xml" />
+
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
     
 </server>
 

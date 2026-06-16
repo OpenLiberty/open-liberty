@@ -33,4 +33,7 @@
     <authData id="defaultAuthData" user="APPUSR" password="${default.user.password}" />
 
     <include location="../fatTestPorts.xml"/>
+
+    <ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

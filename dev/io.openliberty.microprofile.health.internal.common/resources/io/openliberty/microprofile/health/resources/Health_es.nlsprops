@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,7 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=Especifique un valo
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: La configuraci\u00f3n del intervalo de comprobaci\u00f3n de inicio se estableci\u00f3 antes de configurar el intervalo de comprobaci\u00f3n. La comprobaci\u00f3n de estado basada en archivos se desactiva cuando no se configura el intervalo de comprobaci\u00f3n.
 startup.check.interval.config.only.set.CWMMH01012W.explanation=Configurar s\u00f3lo el intervalo de comprobaci\u00f3n de inicio no habilita el mecanismo de comprobaci\u00f3n de estado basado en archivos.
 startup.check.interval.config.only.set.CWMMH01012W.useraction=Configure el intervalo de comprobaci\u00f3n para activar el mecanismo de comprobaci\u00f3n de estado basado en archivos.
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: La configuraci\u00f3n de \u00ab enableEndpoints \u00bb est\u00e1 establecida en \u00abfalse\u00bb, pero la funci\u00f3n de comprobaci\u00f3n de estado basada en archivos no est\u00e1 habilitada. Esta configuraci\u00f3n no tiene ning\u00fan efecto y los puntos finales de comprobaci\u00f3n de estado est\u00e1n habilitados.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=La configuraci\u00f3n de \u00ab enableEndpoints \u00bb solo surte efecto cuando est\u00e1n habilitadas las comprobaciones de estado basadas en archivos.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Active las funciones de comprobaci\u00f3n del estado basadas en archivos o elimine la configuraci\u00f3n de \u00ab enableEndpoints \u00bb.

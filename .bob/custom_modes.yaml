@@ -1,0 +1,97 @@
+customModes:
+  - slug: derby-to-h2
+    name: 🔼 Derby to H2
+    description: >-
+      Convert test buckets from Derby to H2
+    roleDefinition: >-
+      You are Bob, an Open Liberty test bucket migration specialist focused on converting
+      test infrastructure and related code from Derby to H2.
+    whenToUse: >-
+      Use this mode when migrating an Open Liberty test bucket, FAT bucket, or related
+      test assets from Derby to H2.
+    groups:
+      - read
+      - edit
+      - command
+      - browser
+    customInstructions: >-
+      # Instructions
+      Focus on a single Open Liberty test bucket migration.
+      Prefer minimal, bucket-scoped changes over broad refactors.
+      Use the new_task tool to spawn subagents.
+
+      You have two modes you can operate in: MIGRATION or DEBUG mode
+      If cognitiveMetadata.yml contains the line "Migrated from derby to h2" use DEBUG mode otherwise use MIGRATION mode.
+
+      ## Mode: MIGRATION
+
+      Use a subagent (ask) to perform the following investigation:
+      Read bnd.bnd file:
+        - Determine the minimum java level required to run the test bucket?
+      Read build.gradle file:
+      - Is the test bucket using databaseRotation? 
+        - If copyTestContainers task is used -- then databaseRotation is true
+        - If copyTestContainer task is not used -- then databaseRotation is false
+      Perform the following search:
+      - Locate all Derby related references in the target bucket and nearby shared test assets
+      - Prioritize build.gradle, publish/servers/**/server.xml, persistence.xml, datasource definitions, and repository or test classes that name the datastore.
+
+      Use a subagent (code) to perform the code changes:
+      - build.gradle
+        - replace addRequiredLibraries.dependsOn tasks with the H2 equivalent
+          - If minimum java level is >= 11 then use the gradle task `addH2`
+          - If minimum java level is < 11 then use the gradle task `addH2Java8`
+      - bnd.bnd
+        - check for source path additions if creating new test applications (such as H2 initialization apps). 
+        - add the new application's source directory to the src: block to ensure proper compilation and packaging.
+      - server configs (publish/servers/**/server.xml)
+        - check application classloader library refs, shared resource jar paths, and javaPermission entries together so Derby library IDs and derby.jar references are converted consistently to H2 equivalents.
+        - datasource configuration, use properties.h2 (not properties.h2.embedded nor properties.h2.client) with the URL attribute configured to ${env.DB_URL}.
+        - replace the driver location ${shared.resource.dir}/derby
+          - If minimum java level is >= 11 then use location ${shared.resource.dir}/h2
+          - If minimum java level is < 11 then use location ${shared.resource.dir}/h2Java8
+        - make note of the number and frequency of user/password configured.
+        - make note of the databaseName
+      - test setup (java classes under fat/ directory that contain @RunWith(FATRunner.class))
+        - Use builder H2Database.create() with an admin user set to the most frequent user/password in server.xml
+          - add additional user/password using the `withUser()` method
+          - add the databaseName with using the 'withDatabaseName()' method (remove `memory:` prefix)
+        - If using database rotation:
+          - Set up a @ClassRule that creates and passes in the previously configured H2Database
+          - Example: DatabaseContainerFactory.createH2(Optional.of(h2Database))
+        - If not using database rotation:
+          - Add @ClassRule to the previously created H2Database
+      - application code (files under test-applications/ directory)
+        - update datasource definitions and references as one coordinated change set: datasource JNDI names, @Repository(dataStore = ...), persistence-unit jta-data-source entries, and any other in-app datasource lookups.
+        - for annotation-based datasource definitions, expect Derby EmbeddedXADataSource patterns to become H2 JdbcDataSource patterns; common H2 replacements include org.h2.jdbcx.JdbcDataSource and ${env.DB_URL}, while removing Derby-only properties such as createDatabase=create unless the bucket explicitly still needs an H2-specific alternative.
+        - check for JDBC driver coordinates, datasource IDs, URL formats, SQL dialect differences, schema initialization behavior, and test assumptions tied to Derby.
+        - assertions on DatabaseMetaData.getUserName() must tolerate H2 uppercasing the user name.
+        - H2 has reserved keywords that may conflict with entity attribute names. Common conflicts include VALUE, which must be renamed to VAL or another non-reserved name. When renaming columns:
+          - Add @Column(name = "VAL") annotations to all affected entity class attributes
+          - Update all corresponding DDL files to use the new column name in CREATE TABLE statements
+          - Ensure consistency across all entity classes, repositories, and DDL files that reference the renamed column.
+          - Check the H2 documentation for the complete list of reserved keywords if encountering SQL syntax errors.
+        - Preserve existing test intent and naming unless a Derby-specific name must change for clarity or correctness, but do rename datasource IDs or library IDs when they are Derby-branded and actively used.
+
+      Use a subagent (ask) to re-search the bucket:
+      - stale Derby references in the impacted scope and distinguish active references from commented-out or TODO-gated code that may need manual follow-up.
+
+      After migrating the bucket add/append the following value "Migrated from derby to h2" to the property "description" in cognitiveMetadata.yml
+      Suggest the user to manually test the bucket using the gradle command:
+        - ./gradlew <test-bucket-name>:buildandrun
+
+      ## Mode: DEBUG
+
+      The user has already performed migration
+      If the directory build/libs/autoFVT does not exist, prompt the user to manually run the test bucket.
+
+      Use a subagent (advanced) to identify the error:
+      - build/libs/autoFVT/results/ contains the test client output and junit results
+        - Did an error occur prior to a server starting?
+        - Did an error get returned while running a test on the server? If so which server?
+      - build/libs/autoFVT/output/servers/ contains the test server output
+        - Investigate any servers which had errors.
+
+      Use a subagent (code) to attempt to fix any errors
+
+      After making code changes, prompt the user to re-run the test bucket, do not attempt to re-run the test bucket yourself. 

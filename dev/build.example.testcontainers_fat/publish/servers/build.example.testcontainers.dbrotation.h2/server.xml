@@ -1,0 +1,96 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>jdbc-4.1</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+    
+    <include location="../fatTestPorts.xml"/>
+      
+      <library id="dbRotationLib">
+        <fileset dir="${shared.resource.dir}/jdbc" includes="${env.DB_DRIVER}"/>
+      </library>
+    
+    <!-- Used for DatabaseRotation.java 
+        fat.modify="true" on the dataSource element is used to change the 
+        property elements at runtime depending on the database configured. 
+        
+        If nothing is configured, we will use the properties here.
+        Best practice is to set derby by default
+    -->
+    <dataSource jndiName="jdbc/dbRotation" fat.modify="true">
+      <jdbcDriver libraryRef="dbRotationLib"/>
+      <properties.h2 URL="${env.DB_URL}" user="dbuser" password="dbpass"/>
+    </dataSource>
+    
+    <!-- 
+        Instead of always setting the user/password via datasource properties
+        a test suite may wish to test authData functionality. 
+        fat.modify="true" on an authData element is used to change the attributes that
+        correspond to the containers auth data at runtime. 
+     -->
+    <authData id="databaseAuth" user="dbuser" password="dbpass" fat.modify="true"/>
+    
+    <dataSource jndiName="jdbc/dbRotationContainerAuth"  containerAuthDataRef="databaseAuth" fat.modify="true">
+      <jdbcDriver libraryRef="dbRotationLib"/>
+      <properties.h2 URL="${env.DB_URL}"/>
+    </dataSource>
+    
+    <!-- 
+        Same concept as the previous datasource except using a nested AuthData element
+     -->
+    <dataSource jndiName="jdbc/dbRotationNestedContainerAuth" fat.modify="true">
+      <jdbcDriver libraryRef="dbRotationLib"/>
+      <containerAuthData id="containerAuthData" user="dbuser" password="dbpass" fat.modify="true" />
+      <properties.h2 URL="${env.DB_URL}"/>
+    </dataSource>
+    
+    <!-- 
+        If no authData is provided, this is a valid configuration for H2, but not for most databases. 
+        We will make no attempt to add auth data to this datasource's properties.
+        Assume the application is using a Deployment Descriptor to provide auth data.
+     -->
+    <dataSource jndiName="jdbc/dbRotationDDAuth" fat.modify="true">
+      <jdbcDriver libraryRef="dbRotationLib"/>
+      <properties.h2 URL="${env.DB_URL}"/>
+    </dataSource>
+    
+    <!-- 
+        If no authData is provided, this is a valid configuration for H2, but not for most databases.
+        We will make no attempt to add auth data to this datasource's properties.
+        In this case there is no Deployment Descriptor so we will expect this datasource to fail!
+     -->
+    <dataSource jndiName="jdbc/dbRotationNoAuth" fat.modify="true">
+      <jdbcDriver libraryRef="dbRotationLib"/>
+      <properties.h2 URL="${env.DB_URL}"/>
+    </dataSource>
+    
+    <application location="app.war">
+        <classloader commonLibraryRef="dbRotationLib"/>
+    </application>
+    
+    <javaPermission codeBase="${shared.resource.dir}/jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+    
+    <!-- Permission needed for Oracle driver -->
+    <javaPermission className="java.lang.RuntimePermission" name="accessDeclaredMembers" />
+    
+    <!-- Permission needed for Postgres driver -->
+    <javaPermission codeBase="${server.config.dir}/apps/app.war" className="java.util.PropertyPermission" name="org.postgresql.forceBinary" actions="read"/>
+
+    <!-- Permission needed for SQLServer driver -->
+    <javaPermission className="java.util.PropertyPermission" name="java.specification.version" actions="read"/>
+    <javaPermission className="java.net.SocketPermission" name="*" actions="connect,resolve"/>
+</server>

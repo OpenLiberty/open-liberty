@@ -14,9 +14,7 @@ addRequiredLibraries.dependsOn addDerby
 addRequiredLibraries.dependsOn copyJdbcDrivers
 addRequiredLibraries.dependsOn copyTestContainers
 
-repositories { 
-  mavenCentral()
-}
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 configurations {
   derby16 // See derby/java compatibility matrix https://db.apache.org/derby/derby_downloads.html

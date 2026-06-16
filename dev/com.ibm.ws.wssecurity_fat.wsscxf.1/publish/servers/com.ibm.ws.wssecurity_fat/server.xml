@@ -54,6 +54,8 @@
     <!-- 11/2022 brought back cxf-ehcache.xml and renamed with _ee7 for consistency; the file was removed during migration -->
         
     <include location="imports/java2Permissions.xml" />
+
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
     
 </server>
 

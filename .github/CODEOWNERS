@@ -1,0 +1,9 @@
+/.github/CODEOWNERS     @OpenLiberty/admin
+/cla/                   @OpenLiberty/admin
+/LICENSE                @OpenLiberty/admin
+/SECURITY.md            @OpenLiberty/admin
+
+# AI enablement related files and folders
+/.bob/                  @OpenLiberty/ai-enablement-reviewers
+/GENAI_GUIDELINES.md    @OpenLiberty/ai-enablement-reviewers
+AGENTS.md               @OpenLiberty/ai-enablement-reviewers

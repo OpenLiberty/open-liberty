@@ -5,7 +5,7 @@
   "author": "OpenLiberty",
   "dependencies": {
     "d3": "3.5.10",
-    "dojo": "1.13.10",
+    "dojo": "1.14.9",
     "svg4everybody": "^2.1.9"
   }
 }

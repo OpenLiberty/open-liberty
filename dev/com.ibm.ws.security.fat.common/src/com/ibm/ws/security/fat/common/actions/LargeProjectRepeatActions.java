@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- * IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.security.fat.common.actions;
 
@@ -25,7 +22,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.custom.junit.runner.Mode.TestMode;
 import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.custom.junit.runner.TestModeFilter;
-import componenttest.rules.repeater.EmptyAction;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEE10Action;
 import componenttest.rules.repeater.JakartaEE9Action;
@@ -112,7 +108,7 @@ public class LargeProjectRepeatActions {
 
         if (OperatingSystem.WINDOWS == currentOS) {
             Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance since we're running on Windows");
-            rTests = addRepeat(rTests, new EmptyAction());
+            rTests = addRepeat(rTests, FeatureReplacementAction.NO_REPLACEMENT());
         } else {
             if (JavaInfo.forCurrentVM().majorVersion() > 8) {
                 if (TestModeFilter.FRAMEWORK_TEST_MODE == TestMode.LITE) {
@@ -130,7 +126,7 @@ public class LargeProjectRepeatActions {
                 }
             } else {
                 Log.info(thisClass, "createLargeProjectRepeats", "Enabling the default EE7/EE8 test instance (Not on Windows, Java = 8, any Mode)");
-                rTests = addRepeat(rTests, new EmptyAction());
+                rTests = addRepeat(rTests, FeatureReplacementAction.NO_REPLACEMENT());
             }
         }
 
@@ -159,12 +155,12 @@ public class LargeProjectRepeatActions {
     public static FeatureReplacementAction adjustFeatures(String featureType, String addEEFeature, Set<String> removeFeatureList, Set<String> insertFeatureList, String... serverPaths) {
         FeatureReplacementAction featureAction = null;
         if (featureType.equals(JakartaEE9Action.ID)) {
-            featureAction = new JakartaEE9Action();
+            featureAction = FeatureReplacementAction.EE9_FEATURES();
         } else if (featureType.equals(JakartaEE10Action.ID)) {
-            featureAction = new JakartaEE10Action();
+            featureAction = FeatureReplacementAction.EE10_FEATURES();
         } else {
             Log.info(thisClass, "adjustFeatures", "Unknown feature type, " + featureType + ", defaulting to " + JakartaEE9Action.ID);
-            featureAction = new JakartaEE9Action();
+            featureAction = FeatureReplacementAction.EE9_FEATURES();
         }
         if (addEEFeature != null) {
             featureAction.alwaysAddFeature(addEEFeature);

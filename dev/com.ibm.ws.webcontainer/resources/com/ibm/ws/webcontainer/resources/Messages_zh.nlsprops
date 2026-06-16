@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 1997, 2025 IBM Corporation and others.
+# Copyright (c) 1997, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -212,7 +212,7 @@ failed.to.load.converter.properties.explanation=\u65e0\u6cd5\u88c5\u5165\u6307\u
 failed.to.load.converter.properties.useraction=\u8bf7\u786e\u4fdd\u6307\u5b9a\u7684\u6587\u4ef6\u5b58\u5728\uff0c\u5e76\u4e14\u5b83\u7684\u683c\u5f0f\u662f\u7b26\u5408 java.utils.Properties \u7684\u6b63\u786e\u683c\u5f0f\u3002
 
 # --------------------------------
-setbuffer.size.called.after.write=SRVE0157E: \u7b2c\u4e00\u6b21\u5199\u5165\u8f93\u51fa\u6d41/\u5199\u7a0b\u5e8f\u4e4b\u540e\u8c03\u7528\u4e86 setBufferSize()
+setbuffer.size.called.after.write=SRVE0157E:setBufferSize( ) \u5728\u9996\u6b21\u5199\u5165\u6216\u54cd\u5e94\u63d0\u4ea4\u540e\u8c03\u7528
 setbuffer.size.called.after.write.explanation=\u5c1d\u8bd5\u5728\u843d\u5b9e\u54cd\u5e94\u540e\u8bbe\u7f6e\u54cd\u5e94\u7f13\u51b2\u533a\u5927\u5c0f\u3002\u8fd9\u662f\u5e94\u7528\u7a0b\u5e8f\u9519\u8bef\u3002
 setbuffer.size.called.after.write.useraction=\u8bf7\u5728\u79fb\u9664 setBufferSize() \u8c03\u7528\u6216\u8005\u5728\u54cd\u5e94\u843d\u5b9e\u4e4b\u524d\u5c06\u5176\u79fb\u52a8\u5230\u67d0\u4e2a\u4f4d\u7f6e\u3002
 

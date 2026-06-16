@@ -2,7 +2,7 @@
 symbolicName=io.openliberty.persistenceContainer-3.2
 visibility=public
 singleton=true
-kind=beta
+kind=ga
 edition=core
 Subsystem-Name: Jakarta Persistence 3.2 Container
 IBM-ShortName: persistenceContainer-3.2

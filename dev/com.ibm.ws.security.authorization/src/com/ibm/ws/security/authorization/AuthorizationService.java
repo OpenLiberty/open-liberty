@@ -90,20 +90,20 @@ public interface AuthorizationService {
     default boolean isStarStarRoleMapped(String resourceName) {
         return false;
     }
+
     /**
-     *
-     * Retrieve all declared roles subject is assigned to within the provided resource
+     * Retrieve all declared roles in the application that subject is assigned
      *
      * Any dynamically assigned roles should not be returned.
      *
-     * @param resourceName the name of the resource being accessed, used to
-     *            look up the corresponding authorization table. Must not be {@code null}.
-     * @param subject the Subject which roles we are trying to find in the resource. Must not be {@code null}.
+     * @param resourceName the name of the resource being accessed (i.e. the application), used to
+     *                         look up the corresponding authorization table. Must not be {@code null}.
+     * @param subject      the Subject which roles we are trying to find in the resource. Must not be {@code null}.
      *
      * @return {@code Set<String>} of all the roles assigned to the subject in the resource.
-     *            Returns an empty set if no roles for
+     *         Returns an empty set if no roles for
      */
-    default Set<String> getAllDeclaredRolesForResourceForSubject(String resourceName, Subject subject){
+    default Set<String> getAllDeclaredRolesForResourceForSubject(String resourceName, Subject subject) {
         return new HashSet<String>(Collections.EMPTY_SET);
     }
 

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,7 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=Specifica\u021bi o 
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: Configurarea intervalului de verificare de pornire a fost setat\u0103 \u00eenainte de configurarea intervalului de verificare. Verificarea s\u0103n\u0103t\u0103\u021bii pe baz\u0103 de fi\u0219ier este dezactivat\u0103 atunci c\u00e2nd intervalul de verificare nu este configurat.
 startup.check.interval.config.only.set.CWMMH01012W.explanation=Configurarea doar a intervalului de verificare la pornire nu activeaz\u0103 mecanismul de verificare a s\u0103n\u0103t\u0103\u021bii bazat pe fi\u0219iere.
 startup.check.interval.config.only.set.CWMMH01012W.useraction=Configura\u021bi intervalul de verificare pentru a activa mecanismul de verificare a s\u0103n\u0103t\u0103\u021bii bazat pe fi\u0219iere.
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: Configura\u021bia \u201e enableEndpoints \u201d este setat\u0103 la \u201efalse\u201d, dar func\u021bia de verificare a st\u0103rii bazat\u0103 pe fi\u0219iere nu este activat\u0103. Aceast\u0103 configurare nu are niciun efect, iar punctele finale de verificare a st\u0103rii sunt activate.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=Configura\u021bia \u201e enableEndpoints \u201d se aplic\u0103 numai atunci c\u00e2nd sunt activate verific\u0103rile de stare bazate pe fi\u0219iere.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Activa\u021bi func\u021biile de verificare a st\u0103rii bazate pe fi\u0219iere sau elimina\u021bi configura\u021bia \u201e enableEndpoints \u201d.

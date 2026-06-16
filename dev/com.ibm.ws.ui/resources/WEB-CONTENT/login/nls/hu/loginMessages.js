@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,7 @@ define({
 	"LOGIN_TITLE": "Liberty Admin Center",
 	"LOGIN_USER": "Felhasználónév",
 	"LOGIN_PASSWORD": "Jelszó",
-	"LOGIN_COPYRIGHT": "Copyright (c) 2013, 2016 IBM Corporation és mások. Minden jog fenntartva.\nEz a program és a hozzá tartozó anyagok a jelen terjesztéshez tartozó Eclipse Public License 2.0 feltételei szerint érhetők el, amely megtekinthető a http://www.eclipse.org/legal/epl-2.0/ címen.",
+	"LOGIN_COPYRIGHT": "Szerzői jog (c) 2013, 2026 IBM Corporation és mások. Minden jog fenntartva.\nEz a program és a kísérő anyagok\n az Eclipse nyilvános licenc 2.0\n feltételei szerint érhetők el, amely ezt az eloszlást kíséri, és elérhető a következő helyen:\nhttp://www.eclipse.org/legal/epl-2.0/",
 	"LOGIN_ERROR_MESSAGE": "Bejelentkezési hiba: ismeretlen felhasználónév és/vagy jelszó",
 	"ACCESS_ERROR_MESSAGE": "Hozzáférési hiba: a felhasználói fiók nem jogosult az Admin Center elérésére"
 });

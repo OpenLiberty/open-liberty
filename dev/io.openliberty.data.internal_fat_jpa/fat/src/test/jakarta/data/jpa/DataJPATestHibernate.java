@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -11,6 +11,8 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package test.jakarta.data.jpa;
+
+import java.util.Optional;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.AfterClass;
@@ -27,6 +29,7 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
@@ -67,12 +70,15 @@ public class DataJPATestHibernate extends FATServletClient {
 
                     };
 
-    // TODO update tests to run in database rotation
+    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withDatabaseName("testdb");
+
+    // TODO enable database rotation to verify Hibernate behavior against other databases.
 //    @ClassRule
-//    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatest();
+//    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatestH2(Optional.of(h2Database));
 
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createType(DatabaseContainerType.DerbyJava17Plus);
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createType(DatabaseContainerType.H2Java11Plus, Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.jpa.hibernate")
     @TestServlets({

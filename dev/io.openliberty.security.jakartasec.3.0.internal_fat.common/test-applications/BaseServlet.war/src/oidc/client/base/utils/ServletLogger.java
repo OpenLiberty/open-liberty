@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -18,19 +18,21 @@ import jakarta.servlet.ServletOutputStream;
 
 public class ServletLogger {
 
+    // only log output stream is null once.
+    private static boolean outputStreamIsNullPrinted = false;
+
     public static void printLine(ServletOutputStream ps, String caller, String msg) throws IOException {
-
         printLine(ps, caller + msg);
-
     }
 
     public static void printLine(ServletOutputStream ps, String msg) throws IOException {
-
         System.out.println(msg);
+
         if (ps != null) {
             ps.println(msg);
-        } else {
+        } else if (!outputStreamIsNullPrinted) {
             System.out.println("output stream is null");
+            outputStreamIsNullPrinted=true;
         }
 
     }

@@ -11,7 +11,7 @@
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
-addRequiredLibraries.dependsOn addDerby
+addRequiredLibraries.dependsOn addH2
 
 apply plugin: 'java'
 

@@ -8,6 +8,6 @@ singleton=true
   io.openliberty.jakarta.cdi-4.0; ibm.tolerates:="4.1"
 -bundles=\
   io.openliberty.jakarta.data.1.0; location:="dev/api/spec/,lib/"; mavenCoordinates="jakarta.data:jakarta.data-api:1.0.0"
-kind=beta
+kind=ga
 edition=core
 WLP-Activation-Type: parallel

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -71,9 +71,13 @@ public class AuthenticationAppServlet extends SimpleServlet {
             System.out.println("Already Authenticated");
         }
 
-        ServletOutputStream outputStream = response.getOutputStream();
+        ServletOutputStream outputStream = null;
+        // Servlet 6.1 onwards throws an exception that the response has already been committed.
+        // so using the output stream causes exceptions in the log, but the test result is unaffected
+        if(!response.isCommitted()) {
+            outputStream = response.getOutputStream();
+        }
         recordAppInfo(request, outputStream);
-
     }
 
 }

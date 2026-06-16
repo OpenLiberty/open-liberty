@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018,2020 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.v43;
 
@@ -22,7 +19,6 @@ import org.jboss.shrinkwrap.api.importer.ZipImporter;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.test.d43.jdbc.D43Driver;
@@ -35,21 +31,19 @@ import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.JakartaEE9Action;
-import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import jdbc.fat.v43.web.HandleListTestServlet;
 import jdbc.fat.v43.web.JDBC43TestServlet;
 
+/**
+ * This is the same test as JDBC43SingleThreadModelTest without using the
+ * Servlet SingleThreadModel.
+ */
 @RunWith(FATRunner.class)
 public class JDBC43Test extends FATServletClient {
-    public static final String APP_NAME = "app43";
-
-    @ClassRule
-    public static RepeatTests r = RepeatTests
-                    .withoutModification()
-                    .andWith(new JakartaEE9Action());
+    private static final String APP_NAME = "app43";
+    private static final String SERVLET_NAME = "JDBC43TestServlet";
 
     @Server("com.ibm.ws.jdbc.fat.v43")
     @TestServlets({
@@ -109,8 +103,8 @@ public class JDBC43Test extends FATServletClient {
      */
     @Test
     public void testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundary() throws Exception {
-        runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1");
-        runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart2");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart1");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedAutocommitConnectionAcrossServletBoundaryPart2");
     }
 
     /**
@@ -128,8 +122,8 @@ public class JDBC43Test extends FATServletClient {
     @ExpectedFFDC("com.ibm.ws.LocalTransaction.RolledbackException")
     @Test
     public void testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundary() throws Exception {
-        runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1");
-        runTest(server, "app43/JDBC43TestServlet", "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart1");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testCompletionStageCachesUnsharedManualCommitConnectionAcrossServletBoundaryPart2");
     }
 
     /**
@@ -139,9 +133,9 @@ public class JDBC43Test extends FATServletClient {
      */
     @Test
     public void testHandleListClosesLeakedConnectionsFromSeparateRequests() throws Exception {
-        runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
-        runTest(server, "app43/JDBC43TestServlet", "testLeakConnection");
-        runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSeparateRequests");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakConnection");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakConnection");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSeparateRequests");
     }
 
     /**
@@ -151,7 +145,7 @@ public class JDBC43Test extends FATServletClient {
      */
     @Test
     public void testHandleListClosesLeakedConnectionsFromSingleRequest() throws Exception {
-        runTest(server, "app43/JDBC43TestServlet", "testLeakConnections");
-        runTest(server, "app43/JDBC43TestServlet", "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSingleRequest");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakConnections");
+        runTest(server, APP_NAME + "/" + SERVLET_NAME, "testLeakedConnectionsWereReturned&invokedBy=testHandleListClosesLeakedConnectionsFromSingleRequest");
     }
 }

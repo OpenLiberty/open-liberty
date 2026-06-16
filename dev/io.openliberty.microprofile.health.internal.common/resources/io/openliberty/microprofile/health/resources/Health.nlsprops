@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,11 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=Specify a correct v
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: The startup check interval configuration was set before the check interval was configured. The file-based health check is disabled when the check interval is not configured.
 startup.check.interval.config.only.set.CWMMH01012W.explanation=Configuring only the startup check interval does not enable the file-based health check mechanism.
 startup.check.interval.config.only.set.CWMMH01012W.useraction=Configure the check interval to enable the file-based health check mechanism.
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: The enableEndpoints configuration is set to false but the file-based health check function is not enabled. This configuration has no effect and the health check endpoints are enabled.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=The enableEndpoints configuration takes effect only when file-based health checks are enabled.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Enable file-based health check functions, or remove the enableEndpoints configuration.
+
+enable.endpoints.env.var.invalid.value.CWMMH01014W=CWMMH01014W: An invalid value [{0}] was provided for the MP_HEALTH_ENABLE_ENDPOINTS environment variable. The value that is provided must be either "true" or "false". The runtime uses the server configuration or defaults to true.
+enable.endpoints.env.var.invalid.value.CWMMH01014W.explanation=The MP_HEALTH_ENABLE_ENDPOINTS environment variable accepts only "true" or "false" values (case-insensitive).
+enable.endpoints.env.var.invalid.value.CWMMH01014W.useraction=Set the MP_HEALTH_ENABLE_ENDPOINTS environment variable to either "true" or "false", or remove the environment variable to use the server configuration.

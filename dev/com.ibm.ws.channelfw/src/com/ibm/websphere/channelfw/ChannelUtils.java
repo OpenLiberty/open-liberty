@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2014 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -909,10 +909,10 @@ public final class ChannelUtils extends ChannelUtilsBase {
                 Runnable runner = new Runnable() {
                     @Override
                     public void run() {
-                        // wait for the quiesce time to expire
-                        listener.waitOnChains(quiesceTimeout);
-
-                        // call the runnable to finish cleanup activity.
+                        // Wait for chains to actually stop (or timeout)
+                        listener.waitForChainsToStop(quiesceTimeout);
+                        
+                        // Chains are now stopped (or timeout expired), run cleanup
                         runOnStop.run();
                     }
                 };
@@ -924,10 +924,10 @@ public final class ChannelUtils extends ChannelUtilsBase {
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "Waiting for chains to stop");
+            Tr.debug(tc, "Quick check to see if chains stopped immediately");
         }
-        // wait for the quiesce time to expire
-        listener.waitOnChains(quiesceTimeout);
+        // Remove stopped chains.
+        listener.cleanUpChains(quiesceTimeout);
     }
 
     /**

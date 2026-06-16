@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -67,6 +67,8 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
             testSendRedirect_303_clearBuffer_true();
         else if (runTestMethod.equalsIgnoreCase("testSendRedirect_throws_IllegalArgumentException"))
             testSendRedirect_throws_IllegalArgumentException();
+        else if (runTestMethod.equalsIgnoreCase("testSendRedirect_setBufferSize"))
+            testSendRedirect_setBufferSize();
 
         LOG("EXIT doGet");
     }
@@ -229,7 +231,33 @@ public class TestResponseSendRedirectServlet extends HttpServlet {
         LOG("<<< Testing testSendRedirect");
     }
 
+    /**
+     * sendRedirect then setBufferSize which causes IllegalStateException
+     *
+     * This test causes SRVE0157E
+     */
+    private void testSendRedirect_setBufferSize() throws IOException{
+        LOG(">>> Testing testSendRedirect_setBufferSize");
+
+        try {
+            response.sendRedirect(LOCATION);
+            LOG("Calling response.setBufferSize() after sendRedirect. Expecting IllegalStateException");
+            response.setBufferSize(4096*2);
+        }
+        catch (Exception e){
+            LOG("testSendRedirect_setBufferSize; Exception: [" + e + "]");
+
+            if (!e.getMessage().contains("SRVE0157E")) {
+                throw e;
+            }
+            else {
+                LOG("testSendRedirect_setBufferSize; Found the expected Exception: [" + e + "]");
+            }
+        }
+        LOG("<<< Testing testSendRedirect_setBufferSize");
+    }
+
     public static void LOG(String s) {
-        System.out.println(CLASS_NAME + " " + s);
+        System.out.println(CLASS_NAME + " , " + s);
     }
 }

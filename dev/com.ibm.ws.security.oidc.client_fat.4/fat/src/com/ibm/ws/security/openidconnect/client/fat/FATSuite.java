@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.security.fat.common.actions.LargeProjectRepeatActions;
 import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientCallerClaims;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientEncryptionTests;
+import com.ibm.ws.security.openidconnect.client.fat.IBM.OidcClientSignatureAlgTests;
 
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 import componenttest.rules.repeater.RepeatTests;
@@ -27,7 +29,9 @@ import componenttest.rules.repeater.RepeatTests;
 @RunWith(Suite.class)
 @SuiteClasses({
         AlwaysPassesTest.class,
-        OidcClientCallerClaims.class
+        OidcClientCallerClaims.class,
+        OidcClientEncryptionTests.class,
+        OidcClientSignatureAlgTests.class
 })
 /**
  * Purpose: This suite collects and runs all known good test suites.

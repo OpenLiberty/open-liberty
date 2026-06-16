@@ -115,7 +115,7 @@ public class PrivateHeaderTest {
             e.printStackTrace();
         } finally {
             LOG.info("\n /************************************************************************************/");
-            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: SendValid$WSSCPrivateHeader");
+            LOG.info("\n [WebContainer | PrivateHeaderTest]: SendValid$WSSCPrivateHeader");
             LOG.info("\n /************************************************************************************/");
         }
 
@@ -159,7 +159,7 @@ public class PrivateHeaderTest {
             e.printStackTrace();
         } finally {
             LOG.info("\n /************************************************************************************/");
-            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: SendInvalid$WSSCPrivateHeader");
+            LOG.info("\n [WebContainer | PrivateHeaderTest]: SendInvalid$WSSCPrivateHeader");
             LOG.info("\n /************************************************************************************/");
         }
 
@@ -204,7 +204,7 @@ public class PrivateHeaderTest {
             e.printStackTrace();
         } finally {
             LOG.info("\n /************************************************************************************/");
-            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: SendValid$WSPRPrivateHeader");
+            LOG.info("\n [WebContainer | PrivateHeaderTest]: SendValid$WSPRPrivateHeader");
             LOG.info("\n /************************************************************************************/");
         }
 
@@ -249,7 +249,7 @@ public class PrivateHeaderTest {
             e.printStackTrace();
         } finally {
             LOG.info("\n /************************************************************************************/");
-            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: SendInvalid$WSPRPrivateHeader");
+            LOG.info("\n [WebContainer | PrivateHeaderTest]: SendInvalid$WSPRPrivateHeader");
             LOG.info("\n /************************************************************************************/");
         }
 
@@ -294,7 +294,7 @@ public class PrivateHeaderTest {
             e.printStackTrace();
         } finally {
             LOG.info("\n /************************************************************************************/");
-            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: SendValid$WSRAPrivateHeader");
+            LOG.info("\n [WebContainer | PrivateHeaderTest]: SendValid$WSRAPrivateHeader");
             LOG.info("\n /************************************************************************************/");
         }
 
@@ -339,7 +339,7 @@ public class PrivateHeaderTest {
             e.printStackTrace();
         } finally {
             LOG.info("\n /************************************************************************************/");
-            LOG.info("\n [WebContainer | AsyncReadListenerHttpUnit]: SendInvalid$WSRAPrivateHeader");
+            LOG.info("\n [WebContainer | PrivateHeaderTest]: SendInvalid$WSRAPrivateHeader");
             LOG.info("\n /************************************************************************************/");
         }
     }

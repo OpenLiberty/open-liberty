@@ -29,7 +29,8 @@
 		</clientPolicy.clientContainerCsiv2>
 	</orb>
 
-	<keyStore id="defaultKeyStore" password="{xor}EzY9Oi0rJg==" />
+    <keyStore id="defaultKeyStore" location="${wlp.install.dir}/usr/servers/SSLHandshakeTest/resources/security/key.p12"
+              password="{xor}EzY9Oi0rJg==" type="PKCS12" />
 
 	<sslDefault sslRef="supportedClientAuthenticationSSLConfig" />
 

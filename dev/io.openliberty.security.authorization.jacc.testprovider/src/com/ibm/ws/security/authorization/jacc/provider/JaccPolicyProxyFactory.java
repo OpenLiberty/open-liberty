@@ -19,26 +19,24 @@ public class JaccPolicyProxyFactory extends PolicyFactory {
 
     private final Map<String, Policy> policyMap = new ConcurrentHashMap<>();
 
+    private volatile Policy globalPolicy = new JaccPolicyProxy();
+
     @Override
     public Policy getPolicy(String contextId) {
         if (contextId == null) {
-            return null;
+            return globalPolicy;
         }
 
         Policy policy = policyMap.get(contextId);
-        if (policy == null) {
-            // get policy and set it in the map
-            policy = new JaccPolicyProxy(contextId);
-            policyMap.put(contextId, policy);
-        }
-
-        return policy;
+        return policy == null ? globalPolicy : policy;
     }
 
     @Override
     public void setPolicy(String contextId, Policy policy) {
         if (contextId != null) {
             policyMap.put(contextId, policy);
+        } else {
+            globalPolicy = policy;
         }
     }
 

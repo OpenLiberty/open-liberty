@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,7 +25,7 @@ import componenttest.containers.TestContainerSuite;
 @RunWith(Suite.class)
 @SuiteClasses({
 
-	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class
+	InstallFeatureTest.class, InstallServerTest.class, HelpActionTest.class, InstallVersionlessServerTest.class, FindActionTest.class
 
 })
 public class FATSuite extends TestContainerSuite {
@@ -39,7 +39,7 @@ public class FATSuite extends TestContainerSuite {
     public static void beforeSuite() throws Exception {
 	FeatureUtilityToolTest.setupEnv();
 	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/userFeature/userFeature-1.0.zip"));
-	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/archive1/Archive-1.0.zip"));
+	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/archive1/Archive-3.0.zip"));
 	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo2/").toAbsolutePath().toString(),Paths.get("publish/repo/archive2/Archive-2.0.zip")); //New repo has versionless features
     }
 

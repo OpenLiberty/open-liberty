@@ -55,7 +55,7 @@
   </messagingEngine>
   
   <jmsConnectionFactory id="TestConnectionFactory" jndiName="jms/TestConnectionFactory">
-    <properties.wasJms clientID="TestClientID" remoteServerAddress="localhost:7276:BootstrapBasicMessaging"/>
+    <properties.wasJms clientID="TestClientID" remoteServerAddress="localhost:${bvt.prop.jms.0}:BootstrapBasicMessaging"/>
   </jmsConnectionFactory>
   
   <jmsQueue id="TestQueue" jndiName="jms/TestQueue">

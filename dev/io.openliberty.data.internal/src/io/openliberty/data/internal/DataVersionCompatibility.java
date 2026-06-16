@@ -139,6 +139,15 @@ public interface DataVersionCompatibility {
     Annotation getExistsAnnotation(Method method);
 
     /**
+     * Obtains the value of the First annotation if present on the method.
+     * Otherwise null.
+     *
+     * @param method repository method. Must not be null.
+     * @return First annotation value if present, otherwise null.
+     */
+    Integer getFirstAnnotationValue(Method method);
+
+    /**
      * Obtains the values of Select annotations if present on the method
      * or record component. The order for values is the same as the order in
      * which the annotations are listed. Otherwise a size 0 array.
@@ -167,14 +176,6 @@ public interface DataVersionCompatibility {
      */
     boolean isSpecialParamValid(Class<?> paramType,
                                 QueryType queryType);
-
-    /**
-     * Returns the repository method annotations that accept JPQL
-     * (such as Query).
-     *
-     * @return the annotation classes.
-     */
-    Set<Class<? extends Annotation>> jpqlQueryAnnoTypes();
 
     /**
      * Returns the repository method annotations that represent life cycle
@@ -206,7 +207,7 @@ public interface DataVersionCompatibility {
 
         sorted.put(Find.class.getName(), Find.class);
 
-        for (Class<? extends Annotation> annoClass : jpqlQueryAnnoTypes())
+        for (Class<? extends Annotation> annoClass : queryLanguageAnnoTypes())
             sorted.put(annoClass.getSimpleName(), annoClass);
 
         for (Class<? extends Annotation> annoClass : lifeCycleAnnoTypes(stateful))
@@ -239,6 +240,14 @@ public interface DataVersionCompatibility {
      * @return the name of the Liberty feature that provides Jakarta Persistence.
      */
     String persistenceFeatureName();
+
+    /**
+     * Returns the repository method annotations that accept JPQL
+     * (such as Query).
+     *
+     * @return the annotation classes.
+     */
+    Set<Class<? extends Annotation>> queryLanguageAnnoTypes();
 
     /**
      * List of valid return types for resource accessor methods.

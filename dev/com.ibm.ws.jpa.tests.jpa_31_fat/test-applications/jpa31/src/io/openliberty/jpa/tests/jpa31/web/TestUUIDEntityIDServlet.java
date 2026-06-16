@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2024 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -59,6 +59,17 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
     private UserTransaction tx;
 
     /**
+     * Method to check if the test is running with Hibernate.
+     * Reads the 'repeat_phase' environment variable set in the test setup.
+     *
+     * @return true if running with Hibernate, false otherwise
+     */
+    private boolean isRunningWithHibernate() {
+        String repeatPhase = System.getenv("repeat_phase");
+        return repeatPhase != null && repeatPhase.contains("hibernate");
+    }
+
+    /**
      * Verify that an entity using a UUID type for its identity can be persisted to and fetched from the database.
      */
     @Test
@@ -88,7 +99,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             UUIDEntity findEntity = em.find(UUIDEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter 
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {
@@ -133,7 +149,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             XMLUUIDEntity findEntity = em.find(XMLUUIDEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter - this is a valid optimization
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {
@@ -331,7 +352,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             UUIDAutoGenEntity findEntity = em.find(UUIDAutoGenEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {
@@ -376,7 +402,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             XMLUUIDAutoGenEntity findEntity = em.find(XMLUUIDAutoGenEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {
@@ -421,7 +452,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             UUIDUUIDGenEntity findEntity = em.find(UUIDUUIDGenEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {
@@ -466,7 +502,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             UUIDUUIDGenEntity findEntity = em.find(UUIDUUIDGenEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {
@@ -511,7 +552,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             XMLUUIDUUIDGenEntity findEntity = em.find(XMLUUIDUUIDGenEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {
@@ -556,7 +602,12 @@ public class TestUUIDEntityIDServlet extends JPADBTestServlet {
             XMLUUIDUUIDGenEntity findEntity = em.find(XMLUUIDUUIDGenEntity.class, id);
             Assert.assertNotNull(findEntity);
             Assert.assertEquals(id, findEntity.getId());
-            Assert.assertNotSame(id, findEntity.getId());
+            // Hibernate reuses the UUID object from the find parameter
+            if (isRunningWithHibernate()) {
+                Assert.assertSame(id, findEntity.getId());
+            } else {
+                Assert.assertNotSame(id, findEntity.getId());
+            }
             Assert.assertNotSame(entity, findEntity);
 
         } catch (AssertionError ae) {

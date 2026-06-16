@@ -102,4 +102,6 @@
 		
 	<variable name="clientsecret" value="secret1" />
 
+	<ltpa keysPassword="WebAS" /> <!-- pragma: allowlist secret -->
+
 </server>

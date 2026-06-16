@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.topology.impl;
 
@@ -29,6 +26,8 @@ import java.util.concurrent.ConcurrentHashMap;
 import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
+import componenttest.common.apiservices.Bootstrap;
+
 /**
  * A class used for identifying properties of a JDK other
  * than the one that is currently being run.
@@ -37,7 +36,19 @@ public class JavaInfo {
     private static Class<?> c = JavaInfo.class;
     private static Map<String, JavaInfo> cache = new HashMap<String, JavaInfo>();
 
-    public static int JAVA_VERSION = JavaInfo.forCurrentVM().majorVersion();
+    public final static int JAVA_VERSION = JavaInfo.forCurrentVM().majorVersion();
+
+    public final static int BOOTSTRAP_JAVA_VERSION;
+    static {
+        try {
+            BOOTSTRAP_JAVA_VERSION = JavaInfo.forBootstrap(Bootstrap.getInstance()).majorVersion();
+        } catch (Exception ex) {
+            if (ex instanceof RuntimeException) {
+                throw (RuntimeException) ex;
+            }
+            throw new RuntimeException(ex);
+        }
+    }
 
     public static JavaInfo forCurrentVM() {
         String javaHome = System.getProperty("java.home");
@@ -67,6 +78,19 @@ public class JavaInfo {
         cache.put(jdkPath, info);
         if (jdkPath.contains("\\"))
             cache.put(jdkPath.replace("\\", "/"), info);
+    }
+
+    /**
+     * Get the JavaInfo for the JDK that will be used for LibertyServer and LibertyClient
+     * from the Bootstrap that is fed to those classes. The Java used to run the tests
+     * can be different than the one to run the client and server when using the
+     * supports.framework.java variable.
+     * </ol>
+     */
+    public static JavaInfo forBootstrap(Bootstrap bootstrap) throws IOException {
+        String bootstrapHostName = bootstrap.getValue("hostName");
+        String bootstrapJava = bootstrap.getValue(bootstrapHostName + ".JavaHome");
+        return fromPath(bootstrapJava);
     }
 
     /**
