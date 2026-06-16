@@ -70,6 +70,15 @@ public class AttachmentDeserializer {
      */
     public static final String ATTACHMENT_MAX_COUNT = "attachment-max-count";
 
+    // Liberty Change Start - CXF #3159
+    /**
+     * The maximum number of attachment headers permitted in a message. The default is 500.
+     */
+    public static final String ATTACHMENT_HEADERS_MAX_COUNT = "attachment-headers-max-count";
+    public static final int DEFAULT_ATTACHMENT_HEADERS_MAX_COUNT =
+        SystemPropertyAction.getInteger("org.apache.cxf.attachment-max-headers-count", 500);
+    // Liberty Change End
+
     /**
      * The maximum MIME Header Length. The default is 300.
      */
@@ -107,6 +116,7 @@ public class AttachmentDeserializer {
     private List<String> supportedTypes;
 
     private int maxHeaderLength = DEFAULT_MAX_HEADER_SIZE;
+    private int maxHeadersCount = DEFAULT_ATTACHMENT_HEADERS_MAX_COUNT; // Liberty Change - CXF #3159
 
     public AttachmentDeserializer(Message message) {
         this(message, Collections.singletonList("multipart/related"));
@@ -119,6 +129,12 @@ public class AttachmentDeserializer {
         // Get the maximum Header length from configuration
         maxHeaderLength = MessageUtils.getContextualInteger(message, ATTACHMENT_MAX_HEADER_SIZE,
                                                             DEFAULT_MAX_HEADER_SIZE);
+
+        // Liberty Change Start - CXF #3159
+        // Get the maximum headers count
+        maxHeadersCount = MessageUtils.getContextualInteger(message, ATTACHMENT_HEADERS_MAX_COUNT,
+                                                            DEFAULT_ATTACHMENT_HEADERS_MAX_COUNT);
+        // Liberty Change End
     }
 
     public void initializeAttachments() throws IOException {
@@ -165,7 +181,7 @@ public class AttachmentDeserializer {
                 throw new IOException("Couldn't find MIME boundary: " + boundaryString);
             }
 
-            Map<String, List<String>> ih = loadPartHeaders(stream);
+            Map<String, List<String>> ih = loadPartHeaders(stream, maxHeaderLength, maxHeadersCount); // Liberty Change - CXF #3159
             message.put(ATTACHMENT_PART_HEADERS, ih);
             String val = AttachmentUtil.getHeader(ih, "Content-Type", "; ");
             if (!StringUtils.isEmpty(val)) {
@@ -230,7 +246,7 @@ public class AttachmentDeserializer {
         }
         stream.unread(v);
 
-        Map<String, List<String>> headers = loadPartHeaders(stream);
+        Map<String, List<String>> headers = loadPartHeaders(stream, maxHeaderLength, maxHeadersCount); // Liberty Change - CXF #3159
         return (AttachmentImpl)createAttachment(headers);
     }
 
@@ -369,7 +385,7 @@ public class AttachmentDeserializer {
 
 
 
-    private Map<String, List<String>> loadPartHeaders(InputStream in) throws IOException {
+    private Map<String, List<String>> loadPartHeaders(InputStream in, int maxHeaderLength, int maxHeadersCount) throws IOException { // Liberty Change - CXF #3159
         StringBuilder buffer = new StringBuilder(128);
         StringBuilder b = new StringBuilder(128);
         Map<String, List<String>> heads = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
@@ -387,7 +403,7 @@ public class AttachmentDeserializer {
             } else {
                 // if we have a line pending in the buffer, flush it
                 if (buffer.length() > 0) {
-                    addHeaderLine(heads, buffer);
+                    addHeaderLine(heads, buffer, maxHeadersCount); // Liberty Change - CXF #3159
                     buffer.setLength(0);
                 }
                 // add this to the accumulator
@@ -397,7 +413,7 @@ public class AttachmentDeserializer {
 
         // if we have a line pending in the buffer, flush it
         if (buffer.length() > 0) {
-            addHeaderLine(heads, buffer);
+            addHeaderLine(heads, buffer, maxHeadersCount); // Liberty Change - CXF #3159
         }
         return heads;
     }
@@ -431,7 +447,7 @@ public class AttachmentDeserializer {
         return buffer.length() != 0;
     }
 
-    private void addHeaderLine(Map<String, List<String>> heads, StringBuilder line) {
+    private void addHeaderLine(Map<String, List<String>> heads, StringBuilder line, int maxHeadersCount) throws IOException { // Liberty Change - CXF #3159
         // null lines are a nop
         final int size = line.length();
         if (size == 0) {
@@ -456,6 +472,13 @@ public class AttachmentDeserializer {
             }
             value = line.substring(separator);
         }
+
+        // Liberty Change Start - CXF #3159
+        if (heads.size() >= maxHeadersCount) {
+            throw new IOException("The attachment contains more headers than are permitted");
+        }
+        // Liberty Change End
+
         List<String> v = heads.computeIfAbsent(name, k -> new ArrayList<>(1));
         v.add(value);
     }
