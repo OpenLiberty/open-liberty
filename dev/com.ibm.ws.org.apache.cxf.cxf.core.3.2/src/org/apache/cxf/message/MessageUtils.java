@@ -211,6 +211,20 @@ public final class MessageUtils {
         return defaultValue;
     }
 
+    // Liberty Change Start
+    public static String getContextualString(Message m, String key, String defaultValue) {
+        if (m != null) {
+            final Object o = m.getContextualProperty(key);
+            if (o instanceof String) {
+                return (String) o;
+            } else if (o != null) {
+                return o.toString();
+            }
+        }
+        return defaultValue;
+    }
+    // Liberty Change End
+
     public static Object getContextualProperty(Message m, String propPreferred, String propDefault) {
         Object prop = null;
         if (m != null) {

@@ -56,6 +56,8 @@ import org.apache.cxf.transport.http.AbstractHTTPDestination;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore; // Liberty Change
 
 public final class FormUtils {
+    public static final int DEFAULT_MAX_FORM_PARAM_COUNT = 500; // Liberty Change - CXF #3177
+
     public static final String FORM_PARAMS_FROM_HTTP_PARAMS = "set.form.parameters.from.http.parameters";
     public static final String FORM_PARAM_MAP = "org.apache.cxf.form_data";
     public static final String FORM_PARAM_MAP_DECODED = "org.apache.cxf.form_data.decoded";
@@ -278,8 +280,10 @@ public final class FormUtils {
         if (m == null || m.getExchange() == null || m.getExchange().getInMessage() == null) {
             return;
         }
-        String maxPartsCountProp = (String)m.getExchange()
-            .getInMessage().getContextualProperty(MAX_FORM_PARAM_COUNT);
+        // Liberty Change Start - CXF #3177
+        final String maxPartsCountProp = MessageUtils.getContextualString(m.getExchange().getInMessage(),
+            MAX_FORM_PARAM_COUNT, Integer.toString(DEFAULT_MAX_FORM_PARAM_COUNT));
+        // Liberty Change End
         if (maxPartsCountProp == null) {
             return;
         }
