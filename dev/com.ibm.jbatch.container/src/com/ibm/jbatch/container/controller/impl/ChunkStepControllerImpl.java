@@ -1,5 +1,5 @@
 /*
- * Copyright 2026 International Business Machines Corp.
+ * Copyright 2012, 2026 International Business Machines Corp.
  *
  * See the NOTICE file distributed with this work for additional information
  * regarding copyright ownership. Licensed under the Apache License,
@@ -70,6 +70,10 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
     private final static Logger logger = Logger.getLogger(sourceClass);
 
     protected static final int DEFAULT_TRAN_TIMEOUT_SECONDS = 180; // From the spec Sec. 9.7
+    
+    // Property keys for transaction timeout
+    private static final String JAVAX_TRANSACTION_TIMEOUT_PROPERTY = "javax.transaction.global.timeout";
+    private static final String JAKARTA_TRANSACTION_TIMEOUT_PROPERTY = "jakarta.transaction.global.timeout";
 
     private Chunk chunk = null;
     private ItemReaderProxy readerProxy = null;
@@ -1077,15 +1081,15 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
         String propertyKeyUsed = null;
         
         if (p != null && !p.isEmpty()) {
-            // Check jakarta property first (for Jakarta EE 9+)
-            propertyTimeOut = p.getProperty("jakarta.transaction.global.timeout");
+            // Check javax property first (for zero migration - existing apps using javax continue to work)
+            propertyTimeOut = p.getProperty(JAVAX_TRANSACTION_TIMEOUT_PROPERTY);
             if (propertyTimeOut != null && !propertyTimeOut.isEmpty()) {
-                propertyKeyUsed = "jakarta.transaction.global.timeout";
+                propertyKeyUsed = JAVAX_TRANSACTION_TIMEOUT_PROPERTY;
             } else {
-                // Fall back to javax property (for EE8 and backward compatibility)
-                propertyTimeOut = p.getProperty("javax.transaction.global.timeout");
+                // Fall back to jakarta property (for Jakarta EE 9+)
+                propertyTimeOut = p.getProperty(JAKARTA_TRANSACTION_TIMEOUT_PROPERTY);
                 if (propertyTimeOut != null && !propertyTimeOut.isEmpty()) {
-                    propertyKeyUsed = "javax.transaction.global.timeout";
+                    propertyKeyUsed = JAKARTA_TRANSACTION_TIMEOUT_PROPERTY;
                 }
             }
             
@@ -1097,7 +1101,11 @@ public class ChunkStepControllerImpl extends SingleThreadedStepControllerImpl {
                 }
             }
             if (propertyTimeOut != null && !propertyTimeOut.isEmpty()) {
-                timeout = Integer.parseInt(propertyTimeOut, 10);
+                try {
+                    timeout = Integer.parseInt(propertyTimeOut, 10);
+                } catch (NumberFormatException e) {
+                    throw new IllegalArgumentException("Could not parse transaction timeout value. Received NumberFormatException for value: " + propertyTimeOut);
+                }
             }
         }
         logger.exiting(sourceClass, "initStepTransactionTimeout", timeout);
