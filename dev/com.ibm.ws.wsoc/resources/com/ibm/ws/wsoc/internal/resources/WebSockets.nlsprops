@@ -159,8 +159,8 @@ morethanoneonopen.annotation=CWWKH0036E: Exception occurred during WebSocket app
 morethanoneonopen.annotation.explanation=Annotated ServerEndpoint is invalid because more than one @OnOpen method is defined in Annotated Endpoint class. WebSocket application is not deployed successfully.
 morethanoneonopen.annotation.useraction=Fix Annotated ServerEndpoint class by defining only one @OnOpen method. After you resolve the problem, deploy the application again.
 
-invalid.message.toobig=CWWKH0037E: Incoming message size {0} bytes exceeds maximum allowed size of {1} bytes in class {2} for method {3}.
-invalid.message.toobig.explanation=The message exceeded the configured size limit. This can be the @OnMessage maxMessageSize annotation value, the session buffer size (maxTextMessageBufferSize or maxBinaryMessageBufferSize), or the default limit when no handler exists for the message type.
+invalid.message.toobig=CWWKH0037E: An incoming message of size {0} bytes exceeds the maximum allowed size of {1} bytes in the {2} class for the {3} method.
+invalid.message.toobig.explanation=The message exceeded the configured size limit. This problem can be caused by the @OnMessage maxMessageSize annotation value, the session buffer size (maxTextMessageBufferSize or maxBinaryMessageBufferSize), or the default limit when no handler exists for the message type.
 invalid.message.toobig.useraction=Either reduce the client message size, increase the @OnMessage maxMessageSize annotation value, increase the session buffer size using setMaxTextMessageBufferSize() or setMaxBinaryMessageBufferSize(), use HTTP config option websocketBufferSize, or add an appropriate @OnMessage handler for the message type.
 
 maxidletimeout.closesession=CWWKH0038E: The WebSocket session has been inactive for {0} seconds. Closing the connection.

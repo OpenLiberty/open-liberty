@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2026 IBM Corporation and others.
+ * Copyright (c) 2017, 2025 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -39,9 +39,6 @@ public class Constants {
 
     // javadoc says -1 for annotation max message size attribute means "unlimited", and that is also the default.
     public static final long ANNOTATED_UNDEFINED_MAX_MSG_SIZE = -1;
-
-    // JavaDoc doesn't give a specific value, but we need a limit to prevent OOM errors. 
-    public static final int DEFAULT_BUFFER_SIZE = 32 * 1024;
 
     public static final String GUID = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
 
