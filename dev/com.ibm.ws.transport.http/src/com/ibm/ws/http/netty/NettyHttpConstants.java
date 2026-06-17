@@ -10,6 +10,7 @@
 package com.ibm.ws.http.netty;
 
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.ws.http.channel.internal.HttpChannelConfig;
 import com.ibm.ws.http.channel.internal.inbound.HttpInputStreamImpl;
@@ -54,6 +55,10 @@ public class NettyHttpConstants {
     public static final AttributeKey<Boolean> INPUT_SHUTDOWN_PENDING = AttributeKey.valueOf("shutdownPending");
     public static final AttributeKey<Boolean> ASYNC_STREAM_READ =
         AttributeKey.valueOf("httpAsyncStreamRead");
+    public static final AttributeKey<AtomicBoolean> ASYNC_READ_DISPATCHED =
+        AttributeKey.valueOf("httpAsyncReadDispatched");
+    public static final AttributeKey<Boolean> ASYNC_READ_PENDING_SIGNAL =
+        AttributeKey.valueOf("httpAsyncReadPendingSignal");
     public static final AttributeKey<Runnable> ASYNC_READ_ERROR_CALLBACK =
         AttributeKey.valueOf("httpAsyncReadErrorCallback");
     

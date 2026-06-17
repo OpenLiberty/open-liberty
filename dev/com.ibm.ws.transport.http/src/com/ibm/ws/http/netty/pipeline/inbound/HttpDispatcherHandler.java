@@ -567,7 +567,7 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
             Runnable pending = ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
             if (pending != null) {
-                HttpDispatcher.getExecutorService().execute(pending);
+                dispatchAsyncRead(ctx, pending);
             }
 
             String protocol = ctx.channel().attr(NettyHttpConstants.PROTOCOL).get();
@@ -663,8 +663,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             return;
         }
 
-
-        clearPerRequestAttrs(ctx);
         ctx.close();
     }
 
@@ -751,11 +749,18 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
     }
 
     private static void clearPerRequestAttrs(ChannelHandlerContext ctx) {
-        ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+        boolean asyncReadInProgress =
+            Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get()) ||
+            isAsyncReadDispatched(ctx.channel());
+        if (!asyncReadInProgress) {
+            ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.FALSE);
+            ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+            ctx.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+            ctx.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
+            releaseAsyncReadDispatch(ctx.channel());
+            ctx.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
+        }
         ctx.channel().attr(NettyHttpConstants.HTTP_INPUT_STREAM).set(null);
-        ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
-        ctx.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
-        ctx.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.FALSE);
         if (ctx.channel().hasAttr(NettyHttpConstants.CONTENT_LENGTH)) {
             ctx.channel().attr(NettyHttpConstants.CONTENT_LENGTH).set(null);
         }
@@ -784,10 +789,15 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             content.release();
         }
 
+        boolean asyncReadInProgress =
+            Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get()) ||
+            isAsyncReadDispatched(context.channel());
         if (queue != null && !queue.isEos()) {
-            queue.wakeReaders();
-
-            firePendingAsyncReadError(context);
+            context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
+            queue.signalError(new EOFException("Channel closed before request body completed."));
+            if (!asyncReadInProgress) {
+                firePendingAsyncReadError(context);
+            }
         }
         clearPerRequestAttrs(context);
         super.channelInactive(context);
@@ -922,10 +932,71 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
 
 
     private void firePendingAsyncRead(ChannelHandlerContext ctx) {
+        if (isAsyncReadDispatched(ctx.channel())) {
+            ctx.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.TRUE);
+            return;
+        }
         Runnable pending = ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
         if (pending != null) {
-            System.out.println("QUIESCE-PROOF firePendingAsyncRead task. ");
-            HttpDispatcher.getExecutorService().execute(pending);
+            Tr.debug(tc, "firePendingAsyncRead task.");
+            dispatchAsyncRead(ctx, pending);
+        }
+    }
+
+    private void dispatchAsyncRead(ChannelHandlerContext ctx, Runnable pending) {
+        if (!claimAsyncReadDispatch(ctx.channel())) {
+            ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(pending);
+            ctx.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.TRUE);
+            return;
+        }
+        HttpDispatcher.getExecutorService().execute(() -> {
+            Runnable current = pending;
+            try {
+                while (current != null) {
+                    current.run();
+                    if (Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get())) {
+                        firePendingAsyncReadError(ctx);
+                        return;
+                    }
+                    if (!Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).get())) {
+                        return;
+                    }
+                    Runnable next = ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+                    if (next == null) {
+                        return;
+                    }
+                    ctx.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
+                    current = next;
+                }
+            } finally {
+                boolean pendingSignal = Boolean.TRUE.equals(ctx.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).getAndSet(Boolean.FALSE));
+                releaseAsyncReadDispatch(ctx.channel());
+                if (pendingSignal) {
+                    firePendingAsyncRead(ctx);
+                }
+            }
+        });
+    }
+
+    private static boolean isAsyncReadDispatched(Channel channel) {
+        AtomicBoolean dispatched = channel.attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
+        return dispatched != null && dispatched.get();
+    }
+
+    private static boolean claimAsyncReadDispatch(Channel channel) {
+        AtomicBoolean dispatched = channel.attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
+        if (dispatched == null) {
+            AtomicBoolean created = new AtomicBoolean();
+            AtomicBoolean existing = channel.attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).setIfAbsent(created);
+            dispatched = existing == null ? created : existing;
+        }
+        return dispatched.compareAndSet(false, true);
+    }
+
+    private static void releaseAsyncReadDispatch(Channel channel) {
+        AtomicBoolean dispatched = channel.attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
+        if (dispatched != null) {
+            dispatched.set(false);
         }
     }
 
@@ -935,5 +1006,6 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
             HttpDispatcher.getExecutorService().execute(error);
         }
         ctx.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+        ctx.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
     } 
 }

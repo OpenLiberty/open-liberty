@@ -638,6 +638,10 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
         return enableMultiReadofPostData || dataAlreadyReadFromChannel;
     }
 
+    boolean isStreamingNetty() {
+        return streaming;
+    }
+
     public boolean fillFromStreamingNettyIfAvailable() throws IOException{
         synchronized (streamingReadLock){
             if (this.buffer != null && this.buffer.hasRemaining()){
@@ -662,7 +666,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
             return false;
         }
 
-        if (context != null && context.executor().inEventLoop()){
+        if (waitForInput && context != null && context.executor().inEventLoop()){
             throw new IllegalStateException("Blocking request read on event loop group thread");
         }
 

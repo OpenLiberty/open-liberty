@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -476,25 +476,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                         }
                         // Everything was written, if forceQueue need to do callback on another thread
                         if (forceQueue) {
-                            HttpDispatcher.getExecutorService().submit(() -> {
-                                if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null) {
-                                    // Check if the connection was closed by the peer here to do an error callback
-                                    if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class).peerClosedConnection()) {
-                                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                            Tr.debug(this, tc, "Listener called on done async promise for connection that was closed by peer for channel: " + nettyChannel);
-                                        }
-                                        callback.error(vc, null, new IOException("Broken pipe!"));
-                                        return;
-                                    }
-                                }
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(this, tc, "Calling callback in asynchronous thread for channel: " + nettyChannel);
-                                }
-                                callback.complete(vc, this);
-                                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                    Tr.debug(this, tc, "Finished callback in asynchronous thread for channel: " + nettyChannel);
-                                }
-                            });
+                            HttpDispatcher.getExecutorService().submit(() -> completeWriteCallback(writePromise, callback));
                             return null;
                         }
                         return vc;
@@ -503,27 +485,7 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
                         Tr.debug(this, tc, "Went async, found writePromise to be running on channel: " + nettyChannel);
                     }
                     writePromise.addListener((ChannelFutureListener) future -> {
-                        boolean succeeded = future.isSuccess();
-                        HttpDispatcher.getExecutorService().submit(() -> {
-                            if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class) != null) {
-                                // Check if the connection was closed by the peer here to do an error callback
-                                if (nettyChannel.pipeline().get(NettyServletUpgradeHandler.class).peerClosedConnection()) {
-                                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                        Tr.debug(this, tc, "Listener called on connection that was closed by peer for channel: " + nettyChannel);
-                                    }
-                                    callback.error(vc, null, new IOException("Broken pipe!"));
-                                    return;
-                                }
-                            }
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(this, tc, "Listener called with success? " + succeeded +" for channel: " + nettyChannel);
-                            }
-                            if(succeeded){
-                                callback.complete(vc, this);
-                            } else {
-                                callback.error(vc, this, (future.cause() instanceof IOException) ? ((IOException)future.cause()) : new IOException(future.cause()));
-                            }
-                        });
+                        HttpDispatcher.getExecutorService().submit(() -> completeWriteCallback(future, callback));
                     });
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -549,6 +511,40 @@ public class NettyTCPWriteRequestContext implements TCPWriteRequestContext {
             callback.error(vc, null, new IOException(e));
         }
         return null; // Return null as the write operation is queued or forced to queue
+    }
+
+    private void completeWriteCallback(ChannelFuture future, TCPWriteCompletedCallback callback) {
+        boolean succeeded = future.isSuccess();
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(this, tc, "Listener called with success? " + succeeded + " for channel: " + nettyChannel);
+        }
+        if (succeeded) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Calling callback in asynchronous thread for channel: " + nettyChannel);
+            }
+            callback.complete(vc, this);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Finished callback in asynchronous thread for channel: " + nettyChannel);
+            }
+        } else {
+            callback.error(vc, this, getWriteFailure(future));
+        }
+    }
+
+    private IOException getWriteFailure(ChannelFuture future) {
+        NettyServletUpgradeHandler upgradeHandler = nettyChannel.pipeline().get(NettyServletUpgradeHandler.class);
+        if (upgradeHandler != null && upgradeHandler.peerClosedConnection()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(this, tc, "Listener called on connection that was closed by peer for channel: " + nettyChannel);
+            }
+            return new IOException("Broken pipe!");
+        }
+
+        Throwable cause = future.cause();
+        if (cause instanceof IOException) {
+            return (IOException) cause;
+        }
+        return new IOException(cause);
     }
 
     private static boolean isUpgrade101(Object object){

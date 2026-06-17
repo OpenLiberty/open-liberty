@@ -1732,8 +1732,7 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         }
 
         if (Objects.nonNull(this.nettyContext)) {
-            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
-            return null;
+            return getNettyRequestBodyBuffer(callback, bForce);
         }
 
         boolean isError = false;
@@ -1828,11 +1827,12 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
             }
         }
 
-        if (body instanceof HttpInputStreamEE7){
+        if (body instanceof HttpInputStreamEE7 && body.isStreamingNetty()){
+            HttpInputStreamEE7 nettyBody = (HttpInputStreamEE7) body;
             try{
-                if (((HttpInputStreamEE7) body).asyncCheckStreamingNettyBuffers(callback)){
+                if (nettyBody.asyncCheckStreamingNettyBuffers(callback)){
                     if (bForce){
-                        callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+                        dispatchNettyRequestBodyCallback(() -> completeNettyRequestBodyWhenReady(nettyBody, callback));
                         return null;
                     }
                     return NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC;
@@ -1844,6 +1844,86 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         }
         armNettyRequestBodyCallback(callback);
         return null;
+    }
+
+    private void completeNettyRequestBodyWhenReady(HttpInputStreamEE7 body, InterChannelCallback callback) {
+        try {
+            if (body.asyncCheckStreamingNettyBuffers(callback)) {
+                callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+            }
+        } catch (IOException ioe) {
+            callback.error(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC, ioe);
+        }
+    }
+
+    private void dispatchNettyRequestBodyCallback(Runnable pending) {
+        if (!claimNettyRequestBodyDispatch()) {
+            this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(pending);
+            this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.TRUE);
+            return;
+        }
+
+        HttpDispatcher.getExecutorService().execute(() -> {
+            Runnable current = pending;
+            try {
+                while (current != null) {
+                    current.run();
+                    if (Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get())) {
+                        firePendingNettyRequestBodyError();
+                        return;
+                    }
+                    if (!Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).get())) {
+                        return;
+                    }
+                    Runnable next = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+                    if (next == null) {
+                        return;
+                    }
+                    this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
+                    current = next;
+                }
+            } finally {
+                releaseNettyRequestBodyDispatch();
+                dispatchPendingNettyRequestBodyCallback();
+            }
+        });
+    }
+
+    private void dispatchPendingNettyRequestBodyCallback() {
+        if (!Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).get())) {
+            return;
+        }
+        Runnable next = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+        if (next != null) {
+            this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
+            dispatchNettyRequestBodyCallback(next);
+        }
+    }
+
+    private boolean claimNettyRequestBodyDispatch() {
+        AtomicBoolean dispatched = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
+        if (dispatched == null) {
+            AtomicBoolean created = new AtomicBoolean();
+            AtomicBoolean existing = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).setIfAbsent(created);
+            dispatched = existing == null ? created : existing;
+        }
+        return dispatched.compareAndSet(false, true);
+    }
+
+    private void releaseNettyRequestBodyDispatch() {
+        AtomicBoolean dispatched = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
+        if (dispatched != null) {
+            dispatched.set(false);
+        }
+    }
+
+    private void firePendingNettyRequestBodyError() {
+        Runnable error = this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).getAndSet(null);
+        if (error != null) {
+            HttpDispatcher.getExecutorService().execute(error);
+        }
+        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+        this.nettyContext.channel().attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
     }
 
     private void armNettyRequestBodyCallback(InterChannelCallback callback){

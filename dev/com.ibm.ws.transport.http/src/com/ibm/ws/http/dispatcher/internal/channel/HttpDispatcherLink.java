@@ -324,7 +324,9 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             try {
                 body.fillFromStreamingNetty();
             } catch (Exception e2) {
-                e2.printStackTrace();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Failed to consume remaining Netty request body before close: " + e2);
+                }
             }
         } else {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -431,10 +433,10 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         boolean quiescing = QuiesceState.isQuiesceInProgress();
-        System.out.println("[QUIESCE-PROOF] NETTY_CLOSE_QUIESCE_CHECK"
-    + " link=" + System.identityHashCode(this)
-    + " ch=" + qpNettyChannelId()
-    + " quiescing=" + quiescing);
+        Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_QUIESCE_CHECK"
+            + " link=" + System.identityHashCode(this)
+            + " ch=" + qpNettyChannelId()
+            + " quiescing=" + quiescing);
 
         if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing) {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=NO_KEEPALIVE_CLOSE_CHANNEL"
@@ -663,7 +665,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
 
         // set decrementNeeded to true only for wsoc upgrade requests
-        boolean isH2HttpLink = isc.isH2Connection();
+        boolean isH2HttpLink = isc != null && isc.isH2Connection();
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "isH2HttpLink: " + isH2HttpLink);
         }
@@ -1656,12 +1658,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             if (releaseNettyRequest && this.nettyRequest != null){
                 ReferenceCountUtil.release(this.nettyRequest);
                 this.nettyRequest = null;
-                if(isH2){
-                    if(activeFinishOperations.decrementAndGet() == 0) {
+            }
+            if(isH2){
+                if(activeFinishOperations.decrementAndGet() == 0) {
                     finishCompleteLatch.countDown();
-                    }
                 }
-            } 
+            }
         }
         close(getVirtualConnection(), error);
     }

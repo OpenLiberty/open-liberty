@@ -25,6 +25,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.locks.LockSupport;
 
 import com.ibm.websphere.ras.Tr;
@@ -390,7 +391,10 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 awaitUpgradePipeline(effectiveTimeout);
             }
             if(hasUpgradeHandler()){
-                HttpDispatcher.getExecutorService().execute(success);
+                Runnable pending = nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+                if (pending != null) {
+                    dispatchAsyncRead(pending);
+                }
             }
             return null;
         }
@@ -412,16 +416,87 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
                 boolean isEE7 = (in2 instanceof HttpInputStreamEE7);
                 if (in2.available() > 0 || (isEE7 && ((HttpInputStreamEE7) in2).isFinished())) {
                     Runnable pending = nettyChannel.attr(com.ibm.ws.http.netty.NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
-                    if (pending != null)
-                        HttpDispatcher.getExecutorService().execute(pending);
+                    if (pending != null) {
+                        dispatchAsyncRead(pending);
+                    } else {
+                        nettyChannel.attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
+                    }
                 }
-                nettyChannel.attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).set(null);
             } catch (IOException ignore) { }
 
             requestRead();
             return null;
         }
         return null;
+    }
+
+    private void dispatchAsyncRead(Runnable pending) {
+        if (!claimAsyncReadDispatch()) {
+            nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(pending);
+            nettyChannel.attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.TRUE);
+            return;
+        }
+        HttpDispatcher.getExecutorService().execute(() -> {
+            Runnable current = pending;
+            try {
+                while (current != null) {
+                    current.run();
+                    if (Boolean.TRUE.equals(nettyChannel.attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).get())) {
+                        firePendingAsyncReadError();
+                        return;
+                    }
+                    if (!Boolean.TRUE.equals(nettyChannel.attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).get())) {
+                        return;
+                    }
+                    Runnable next = nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+                    if (next == null) {
+                        return;
+                    }
+                    nettyChannel.attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
+                    current = next;
+                }
+            } finally {
+                releaseAsyncReadDispatch();
+                dispatchPendingAsyncRead();
+            }
+        });
+    }
+
+    private void dispatchPendingAsyncRead() {
+        if (!Boolean.TRUE.equals(nettyChannel.attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).get())) {
+            return;
+        }
+        Runnable next = nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).getAndSet(null);
+        if (next != null) {
+            nettyChannel.attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
+            dispatchAsyncRead(next);
+        }
+    }
+
+    private boolean claimAsyncReadDispatch() {
+        AtomicBoolean dispatched = nettyChannel.attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
+        if (dispatched == null) {
+            AtomicBoolean created = new AtomicBoolean();
+            AtomicBoolean existing = nettyChannel.attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).setIfAbsent(created);
+            dispatched = existing == null ? created : existing;
+        }
+        return dispatched.compareAndSet(false, true);
+    }
+
+    private void releaseAsyncReadDispatch() {
+        AtomicBoolean dispatched = nettyChannel.attr(NettyHttpConstants.ASYNC_READ_DISPATCHED).get();
+        if (dispatched != null) {
+            dispatched.set(false);
+        }
+    }
+
+    private void firePendingAsyncReadError() {
+        Runnable error = nettyChannel.attr(NettyHttpConstants.ASYNC_READ_ERROR_CALLBACK).getAndSet(null);
+        if (error != null) {
+            HttpDispatcher.getExecutorService().execute(error);
+        }
+        nettyChannel.attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(null);
+        nettyChannel.attr(NettyHttpConstants.ASYNC_READ_PENDING_SIGNAL).set(Boolean.FALSE);
     }
 
     public VirtualConnection upgradedAsyncRead(long numBytes, TCPReadCompletedCallback callback, boolean forceQueue, int timeout) {
@@ -443,12 +518,15 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
         final io.netty.util.concurrent.EventExecutor el = nettyChannel.eventLoop();
         final java.util.concurrent.atomic.AtomicReference<io.netty.util.concurrent.ScheduledFuture<?>> toRef = new java.util.concurrent.atomic.AtomicReference<>(null);
+        final AtomicBoolean delivered = new AtomicBoolean(false);
 
         final TCPReadCompletedCallback wrapped = new TCPReadCompletedCallback() {
             
             @Override
             public void complete(VirtualConnection v, TCPReadRequestContext ctx) {
-
+                if (!delivered.compareAndSet(false, true)) {
+                    return;
+                }
 
                 io.netty.util.concurrent.ScheduledFuture<?> f = toRef.getAndSet(null);
                 if (f != null){
@@ -471,6 +549,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
 
             @Override
             public void error(VirtualConnection v, TCPReadRequestContext ctx, java.io.IOException e) {
+                if (!delivered.compareAndSet(false, true)) {
+                    return;
+                }
                 io.netty.util.concurrent.ScheduledFuture<?> f = toRef.getAndSet(null);
                 if (f != null)
                     try {
@@ -790,7 +871,11 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
     private Runnable installAsyncHttpReadCallbacks(long numBytes,
                                                TCPReadCompletedCallback callback,
                                                int effectiveTimeout) {
+        final AtomicBoolean delivered = new AtomicBoolean(false);
         Runnable success = () -> {
+            if (!delivered.compareAndSet(false, true)) {
+                return;
+            }
             nettyChannel.attr(NettyHttpConstants.ASYNC_STREAM_READ).set(Boolean.TRUE);
             try {
                 read(numBytes, effectiveTimeout);
@@ -821,6 +906,9 @@ public class NettyTCPReadRequestContext implements TCPReadRequestContext {
         };
 
         Runnable error = () -> {
+            if (!delivered.compareAndSet(false, true)) {
+                return;
+            }
             try {
                 if (callback != null) {
                     callback.error(
