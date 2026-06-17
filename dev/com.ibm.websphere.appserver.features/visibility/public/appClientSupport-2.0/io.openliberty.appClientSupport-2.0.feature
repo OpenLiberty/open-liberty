@@ -77,11 +77,11 @@ IBM-SPI-Package: \
 IBM-ShortName: appClientSupport-2.0
 Subsystem-Name: Jakarta Application Client Support for Server 2.0
 -features=io.openliberty.appclient.appClient-2.0, \
-  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0", \
+  com.ibm.websphere.appserver.eeCompatible-9.0; ibm.tolerates:="10.0, 11.0, 12.0", \
   com.ibm.websphere.appserver.clientContainerRemoteSupport-1.0, \
   com.ibm.websphere.appserver.injection-2.0
 kind=ga
 edition=base
 WLP-Activation-Type: parallel
-WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0
+WLP-Platform: jakartaee-9.1,jakartaee-10.0,jakartaee-11.0,jakartaee-12.0
 WLP-InstantOn-Enabled: true

@@ -351,6 +351,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource,
                     throws IllegalAccessException, IllegalArgumentException, InvocationTargetException,
                     SQLException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled(); 
+        final boolean disableForH2 = "org.h2.jdbcx.JdbcDataSource".equals(implObject.getClass().getName()) && "getReference".equals(method.getName());
 
         if (isTraceOn && tc.isEntryEnabled())
             Tr.entry(this, tc, "invokeOperation: " + method.getName(), args); 
@@ -374,7 +375,7 @@ public class WSJdbcDataSource extends WSJdbcWrapper implements DataSource,
         }
 
         if (isTraceOn && tc.isEntryEnabled())
-            Tr.exit(this, tc, "invokeOperation: " + method.getName(), result); 
+            Tr.exit(this, tc, "invokeOperation: " + method.getName(), disableForH2 ? "******" : result); 
         return result;
     }
 

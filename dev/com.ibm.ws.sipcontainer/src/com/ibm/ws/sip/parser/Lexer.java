@@ -357,7 +357,7 @@ public class Lexer implements Separators
     /**
      * match the given character. 
      * 
-     * @param chr the charachter to match.
+     * @param chr the character to match.
      * @throws SipParseException if the character was not matched.
      */
     public void match(char chr) throws SipParseException

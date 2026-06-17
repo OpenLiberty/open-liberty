@@ -1050,12 +1050,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
             return new TranRequest<JobExecution>(em) {
                 @Override
                 public JobExecution call() {
-                    final JobExecutionEntity exec = entityMgr.createQuery(
-                            "SELECT j FROM JobExecutionEntity j WHERE j.jobExecId = :id",
-                            JobExecutionEntity.class)
-                            .setParameter("id", jobExecutionId)
-                            .setLockMode(LockModeType.PESSIMISTIC_WRITE) // Lock JobExecution FIRST
-                            .getSingleResult();
+                    JobExecutionEntity exec = entityMgr.find(JobExecutionEntity.class, jobExecutionId);
                     if (exec == null) {
                         throw new NoSuchJobExecutionException("No job execution found for id = " + jobExecutionId);
                     }
@@ -1665,12 +1660,7 @@ public class JPAPersistenceManagerImpl extends AbstractPersistenceManager implem
                     if (jobInstance == null) {
                         throw new IllegalStateException("Didn't find JobInstanceEntity associated with step thread key value: " + instanceKey.getJobInstance());
                     }
-                    final JobExecutionEntity jobExecution = entityMgr.createQuery(
-                            "SELECT j FROM JobExecutionEntity j WHERE j.jobExecId = :id",
-                            JobExecutionEntity.class)
-                            .setParameter("id", jobExecutionId)
-                            .setLockMode(LockModeType.PESSIMISTIC_WRITE)
-                            .getSingleResult();
+                    final JobExecutionEntity jobExecution = entityMgr.find(JobExecutionEntity.class, jobExecutionId);
                     if (jobExecution == null) {
                         throw new IllegalStateException("Didn't find JobExecutionEntity associated with value: " + jobExecutionId);
                     }

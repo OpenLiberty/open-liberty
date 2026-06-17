@@ -247,6 +247,7 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     private final AtomicServiceReference<ManagedObjectService> managedObjectServiceRef = new AtomicServiceReference<ManagedObjectService>(REFERENCE_MANAGED_OBJECT_SERVICE);
 
     private volatile CountDownLatch remoteFeatureLatch = null;
+    private volatile boolean remoteFeatureSupported = false;
     private volatile boolean ejbRuntimeActive = false;
     private volatile boolean serverStopping = false;
 
@@ -1457,7 +1458,9 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     @Override
     public void unregisterServant(EJSRemoteWrapper remoteObject) {
-        // Ignore silently.
+        // Remove the cached stub and tie
+        remoteObject.instub = null;
+        remoteObject.intie = null;
     }
 
     @Override
@@ -1602,8 +1605,25 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
             remoteLatch.countDown();
         }
 
-        // bind any Remote interfaces to COS Naming for beans already started
-        bindAllRemoteInterfacesToContextRoot();
+        // Bind remote interfaces to COS Naming for beans already started. Use a separate thread
+        // to avoid delaying OSGi component activation.
+        ScheduledExecutorService executor = getScheduledExecutorService();
+        if (executor != null && ejbRuntimeActive && !serverStopping) {
+            Runnable bindAllRemoteInterfaces = new Runnable() {
+                @Override
+                public void run() {
+                    bindAllRemoteInterfacesToContextRoot();
+                }
+            };
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Scheduling binding of all deferred remote interfaces");
+            // Use slight delay to provide an allowance for ORB to finish starting
+            executor.schedule(bindAllRemoteInterfaces, 250, TimeUnit.MILLISECONDS);
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Binding deferred remote interfaces skipped : " + executor + ", " + ejbRuntimeActive + ", " + serverStopping);
+        }
     }
 
     protected void unsetEJBRemoteRuntime(ServiceReference<EJBRemoteRuntime> ref) {
@@ -1743,23 +1763,33 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
     protected void setLibertyFeature(ServiceReference<LibertyFeature> feature) {
         // If the remote runtime hasn't come up yet, but remote is configured,
         // then create a latch to support a pause in starting remote EJBs.
-        if (remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
+        if (!remoteFeatureSupported) {
             String featureName = (String) feature.getProperty("ibm.featureName");
             if (featureName != null && (featureName.startsWith("enterpriseBeansRemote") || featureName.startsWith("ejbRemote"))) {
-                remoteFeatureLatch = new CountDownLatch(1);
+                remoteFeatureSupported = true;
+                if (remoteFeatureLatch == null && ejbRemoteRuntimeServiceRef.getReference() == null) {
+                    remoteFeatureLatch = new CountDownLatch(1);
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "remoteFeatureSupported = " + remoteFeatureSupported + ", remoteFeatureLatch = " + remoteFeatureLatch);
             }
         }
     }
 
     protected void unsetLibertyFeature(ServiceReference<LibertyFeature> feature) {
         // If the remote feature was configured, but never came up, and now
-        // is being removed, then also remove the remote latch.
-        CountDownLatch remoteLatch = remoteFeatureLatch;
-        if (remoteLatch != null) {
+        // is being removed, then also remove the remote latch and clear remote supported
+        if (remoteFeatureSupported) {
             String featureName = (String) feature.getProperty("ibm.featureName");
             if (featureName != null && (featureName.startsWith("enterpriseBeansRemote") || featureName.startsWith("ejbRemote"))) {
-                remoteFeatureLatch = null;
-                remoteLatch.countDown();
+                remoteFeatureSupported = false;
+                CountDownLatch remoteLatch = remoteFeatureLatch;
+                if (remoteLatch != null) {
+                    remoteFeatureLatch = null;
+                    remoteLatch.countDown();
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "remoteFeatureSupported = " + remoteFeatureSupported + ", remoteFeatureLatch = " + remoteFeatureLatch);
             }
         }
     }
@@ -1864,10 +1894,8 @@ public class EJBRuntimeImpl extends AbstractEJBRuntime implements ApplicationSta
 
     @Override
     public boolean isRemoteSupported() {
-        if (remoteFeatureLatch != null || ejbRemoteRuntimeServiceRef.getReference() != null) {
-            return true;
-        }
-        return false;
+        // true if remote feature enabled in server.xml; may not be active yet
+        return remoteFeatureSupported;
     }
 
     @Override

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,10 +24,10 @@ import org.junit.runner.RunWith;
 import org.testcontainers.containers.JdbcDatabaseContainer;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
-import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -47,6 +47,7 @@ import jpabootstrap.web.TestJPABootstrapServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
+@SkipForRepeat("JPA32_HIBERNATE")
 public class JPABootstrapTest extends FATServletClient {
     public static final String APP_NAME = "jpabootstrap";
     public static final String SERVLET = "TestJPABootstrap";
@@ -58,11 +59,13 @@ public class JPABootstrapTest extends FATServletClient {
     })
     public static LibertyServer server1;
 
-    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+    public static final JdbcDatabaseContainer<?> testContainer = AbstractFATSuite.testContainer;
 
     @BeforeClass
     public static void setUp() throws Exception {
         PrivHelper.generateCustomPolicy(server1, PrivHelper.JAXB_PERMISSION);
+
+        server1.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
 
         //Get driver name
         server1.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());

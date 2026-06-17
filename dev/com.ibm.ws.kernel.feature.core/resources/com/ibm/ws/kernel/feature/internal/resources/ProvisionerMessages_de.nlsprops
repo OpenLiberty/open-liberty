@@ -31,7 +31,7 @@
 #   Messages in the range CWWKF1000 are reserved for the FeatureToolMessages.
 # -------------------------------------------------------------------------------------------------
 
-UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: Es wurde keine Featuredefinition f\u00fcr {0} gefunden.
+UPDATE_MISSING_FEATURE_ERROR=CWWKF0001E: F\u00fcr \u201e {0} \u201c konnte keine Feature-Definition gefunden werden. Um die Funktion zu installieren, f\u00fchren Sie den Befehl \u201e bin/featureUtility \u201c ( installFeature {0} ) oder den Befehl \u201e bin/featureUtility \u201c ( installServerFeatures ) aus.
 UPDATE_MISSING_FEATURE_ERROR.explanation=Der Feature-Manager hat keine Definition f\u00fcr das angegebene Feature gefunden.
 UPDATE_MISSING_FEATURE_ERROR.useraction=Stellen Sie sicher, dass das Feature korrekt angegeben wurde und dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist.
 
@@ -202,9 +202,9 @@ UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.explanation=Das konfigurierte 
 UPDATE_WRONG_PROCESS_TYPE_DEPENDENCY_CLIENT_ERROR.useraction=Entfernen Sie das Feature aus der Konfiguration oder \u00e4ndern Sie die Feature-Manifestdatei so, dass die Unterst\u00fctzung f\u00fcr den gew\u00fcnschten Prozesstyp aktiviert wird.
 
 # CWWK0042E  {0} = feature Name: {1} = server name 
-UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Es wurde keine Featuredefinition f\u00fcr das Feature {0} gefunden. Versuchen Sie, das Feature mit dem Befehl bin/featureUtility install {0} zu installieren. Alternativ k\u00f6nnen Sie den Befehl bin/featureUtility install {1} ausf\u00fchren, um alle Features zu installieren, die von dieser Konfiguration referenziert werden.
+UPDATE_MISSING_CORE_FEATURE_ERROR=CWWKF0042E: Es wurde keine Featuredefinition f\u00fcr das Feature {0} gefunden.  F\u00fchren Sie den Befehl \u201e bin/featureUtility install {0} \u201c aus, um die Funktion zu installieren. Alternativ k\u00f6nnen Sie den Befehl \u201e bin/featureUtility install {1} \u201c ausf\u00fchren, um alle Funktionen zu installieren, auf die in dieser Konfiguration verwiesen wird.
 UPDATE_MISSING_CORE_FEATURE_ERROR.explanation=Der Feature-Manager hat keine Definition f\u00fcr das angegebene Feature gefunden.
-UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=\u00dcberpr\u00fcfen Sie, ob der Name des Features richtig angegeben wurde. Stellen Sie au\u00dferdem sicher, dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist. Wenn das Feature nicht vorhanden ist, versuchen Sie, das Feature mit dem Befehl bin/featureUtility install Featurename zu installieren bzw. alle von dieser Konfiguration referenzierten Features mit dem Befehl bin/featureUtility install Servername zu installieren.
+UPDATE_MISSING_CORE_FEATURE_ERROR.useraction=\u00dcberpr\u00fcfen Sie, ob der Name des Features richtig angegeben wurde.  Stellen Sie au\u00dferdem sicher, dass die Featuredefinition im Verzeichnis lib/features vorhanden und lesbar ist.  Falls die Funktion nicht vorhanden ist, f\u00fchren Sie den Befehl \u201e bin/featureUtility install feature_name\u201c aus, um die Funktion zu installieren, oder den Befehl \u201e bin/featureUtility install server_name\u201c, um alle Funktionen zu installieren, auf die in dieser Konfiguration verwiesen wird.
 
 # CWWK0043E  {0} = EeProgModel1: {1} = EeProgModel2: {2} = configuredFeature1: {3} = configuredFeature2: {4} EePlaformCommonToProgModels 
 UPDATE_CONFLICT_INCOMPATIBLE_EE_FEATURES_SAME_PLATFORM_ERROR=CWWKF0043E: Das konfigurierte Feature {2} von {0} ist nicht kompatibel mit dem konfigurierten Feature {3} von {1}. Die Konfiguration enth\u00e4lt eine nicht kompatible Kombination von {4}-Features, die nicht unterst\u00fctzt wird. Aktualisieren Sie die Konfiguration so, dass kompatible Versionen der konfigurierten Features verwendet werden, die {0} oder die {1}-Programmiermodelle unterst\u00fctzen.

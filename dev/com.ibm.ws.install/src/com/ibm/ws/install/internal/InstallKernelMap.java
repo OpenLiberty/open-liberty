@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -1119,28 +1119,36 @@ public class InstallKernelMap implements Map {
      */
     public void overrideEnvMap(Map<String, Object> overrideMap) {
         logger.fine("envmap before:");
+        logEnvMap(envMap);
         if (overrideMap == null) {
             return;
         }
         if (envMap == null) {
             envMap = new HashMap<>();
         }
-        logger.fine(this.envMap.toString());
         envMap.putAll(overrideMap);
         logger.fine("printing envmap after");
+        logEnvMap(envMap);
+    }
 
+    /**
+     * log the passed in environmental variable values map
+     *
+     * @param envMap
+     */
+    private void logEnvMap(Map<String, Object> envMap) {
         StringBuilder sb = new StringBuilder();
         sb.append("{");
         for (Entry<String, Object> entry : envMap.entrySet()) {
             sb.append(entry.getKey());
             sb.append("=");
-            //Encrypt proxy password
-            sb.append(entry.getKey().contains(".proxyPassword") ? HIDDEN_PASSWORD : entry.getValue());
+            //Encrypt proxy password and AES encryption key
+            sb.append(entry.getKey().contains(".proxyPassword") || entry.getKey().equals("wlp.aes.encryption.key")
+                      || entry.getKey().equals("WLP_AES_ENCRYPTION_KEY") ? HIDDEN_PASSWORD : entry.getValue());
             sb.append(", ");
         }
         sb.append("}");
         logger.fine(sb.toString());
-
     }
 
     /**
@@ -1180,7 +1188,6 @@ public class InstallKernelMap implements Map {
             data.put(InstallConstants.ACTION_ERROR_MESSAGE, e.getMessage());
             data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(e));
         }
-
     }
 
     /**
@@ -1410,7 +1417,6 @@ public class InstallKernelMap implements Map {
             return m2Path.toString();
         }
         return null;
-
     }
 
     private Path getM2Path() {
@@ -1537,7 +1543,6 @@ public class InstallKernelMap implements Map {
                 this.put(InstallConstants.ACTION_ERROR_MESSAGE, encounteredException.getMessage());
                 this.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(encounteredException));
             }
-
             return null;
         }
     }
@@ -1657,7 +1662,6 @@ public class InstallKernelMap implements Map {
         File singleJson = new File(dir + File.separator + "SingleJson.json");
 
         return createJson(singleJson, shortNameMap, esas);
-
     }
 
     /**
@@ -1675,7 +1679,6 @@ public class InstallKernelMap implements Map {
         File singleJson = new File(dir + File.separator + "SingleJson.json");
 
         return createJson(singleJson, shortNameMap, esas);
-
     }
 
     private File createJson(File singleJson, Map<String, String> shortNameMap, List<File> esas) throws InstallException, RepositoryException {
@@ -1710,7 +1713,6 @@ public class InstallKernelMap implements Map {
             }
             resource.uploadToMassive(new AddThenDeleteStrategy());
         }
-
         return singleJson;
     }
 
@@ -1740,7 +1742,6 @@ public class InstallKernelMap implements Map {
             data.put(InstallConstants.CLEANUP_NEEDED, false);
         }
         return foundFeatures;
-
     }
 
     /**
@@ -1830,7 +1831,6 @@ public class InstallKernelMap implements Map {
             target.add(indexes.get(index), obj);
             index += 1;
         }
-
     }
 
     private boolean isValidEsa(String fileName) {
@@ -1877,7 +1877,6 @@ public class InstallKernelMap implements Map {
         }
         this.openLibertyVersion = openLibertyVersion;
         return openLibertyVersion;
-
     }
 
     // TODO make these methods private, hiding them behind map.put and map.get
@@ -1903,7 +1902,6 @@ public class InstallKernelMap implements Map {
         }
         this.put(LOCALLY_PRESENT_JSONS, foundJsons);
         return jsons;
-
     }
 
     /**
@@ -1948,7 +1946,6 @@ public class InstallKernelMap implements Map {
                     result.add((File) downloaded);
                 }
             }
-
         }
         fine("Downloaded the following json files from remote: " + result);
 
@@ -1958,9 +1955,7 @@ public class InstallKernelMap implements Map {
             data.put(InstallConstants.ACTION_ERROR_MESSAGE, ie.getMessage());
             data.put(InstallConstants.ACTION_EXCEPTION_STACKTRACE, ExceptionUtils.stacktraceToString(ie));
         }
-
         return result;
-
     }
 
     private Map<String, Object> getEnvMap() {
@@ -1982,7 +1977,6 @@ public class InstallKernelMap implements Map {
                 envMapRet.put(key, httpProxyVariables.get(key));
             }
         }
-
         String proxyEnvVarHttps = System.getenv("https_proxy");
         if (proxyEnvVarHttps != null && !proxyEnvVarHttps.isEmpty()) {
             Map<String, String> httpsProxyVariables;
@@ -1999,7 +1993,6 @@ public class InstallKernelMap implements Map {
                 envMapRet.put(key, httpsProxyVariables.get(key));
             }
         }
-
         envMapRet.put("http.nonProxyHosts", System.getenv("no_proxy"));
         envMapRet.put("FEATURE_REPO_URL", System.getenv("FEATURE_REPO_URL"));
         envMapRet.put("FEATURE_REPO_USER", System.getenv("FEATURE_REPO_USER"));
@@ -2009,10 +2002,10 @@ public class InstallKernelMap implements Map {
             repos.add(new MavenRepository("Environment Variables Repo", System.getenv("FEATURE_REPO_URL"), System.getenv("FEATURE_REPO_USER"), System.getenv("FEATURE_REPO_PASSWORD")));
         }
         envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
-
         envMapRet.put("FEATURE_LOCAL_REPO", System.getenv("FEATURE_LOCAL_REPO"));
-
         envMapRet.put("FEATURE_VERIFY", System.getenv("FEATURE_VERIFY"));
+        // Add AES encryption key environment variable
+        envMapRet.put("WLP_AES_ENCRYPTION_KEY", System.getenv("WLP_AES_ENCRYPTION_KEY"));
 
         //search through the properties file to look for overrides if they exist
         //TODO remove? - Do we use featureUtility.env ?
@@ -2053,9 +2046,7 @@ public class InstallKernelMap implements Map {
                 repos.add(repo);
                 envMapRet.put("FEATURE_UTILITY_MAVEN_REPOSITORIES", repos);
             }
-
         }
-
         return envMapRet;
     }
 

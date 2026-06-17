@@ -31,7 +31,6 @@ import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Mode;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -90,7 +89,7 @@ public class PageImpl<T> implements Page<T> {
      * Construct a new Page.
      *
      * @param queryInfo           query information.
-     * @param em                  the entity manager.
+     * @param entityHandler       EntityAgent or EntityManager
      * @param pageRequest         the request for this page.
      * @param args                values that are supplied to the repository method.
      * @param deferredConstraints map of method parameter index to non-Literal
@@ -102,7 +101,7 @@ public class PageImpl<T> implements Page<T> {
      */
     @Trivial
     PageImpl(QueryInfo queryInfo,
-             EntityManager em,
+             AutoCloseable entityHandler,
              PageRequest pageRequest,
              Object[] args,
              Map<Integer, Object> deferredConstraints,
@@ -122,9 +121,9 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.method.getGenericReturnType().getTypeName(),
                       CursoredPage.class.getName());
 
-        @SuppressWarnings("unchecked")
-        TypedQuery<T> query = (TypedQuery<T>) em.createQuery(queryInfo.jpql,
-                                                             Object.class);
+        TypedQuery<T> query = queryInfo.ehCreateTypedQuery(entityHandler,
+                                                           queryInfo.ql,
+                                                           Object.class);
         queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
 
         int maxPageSize = pageRequest.size();
@@ -185,7 +184,7 @@ public class PageImpl<T> implements Page<T> {
     /**
      * Query for count of total elements across all pages.
      *
-     * @param jpql count query.
+     * @return the count
      * @throws IllegalStateException if not configured to request a total count of elements.
      */
     @FFDCIgnore(Exception.class)
@@ -209,26 +208,35 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.method.getName(),
                       queryInfo.repositoryInterface.getName(),
                       queryInfo.jpqlCount,
-                      queryInfo.jpql);
+                      queryInfo.ql);
 
-        EntityManagerBuilder builder = queryInfo.entityInfo.builder;
         boolean stateful = queryInfo.producer.stateful();
-        EntityManager em = null;
+        EntityHandlerFactory factory = queryInfo.entityInfo.factory;
+        EntityHandlerFactory.Sync<? extends AutoCloseable> entityHandlerSync = null;
         try {
-            em = builder.getEntityManager(stateful);
+            entityHandlerSync = stateful || queryInfo.entityInfo.simulateStateless() //
+                            ? factory.getEntityManager(stateful) //
+                            : factory.getEntityAgent();
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(this, tc, "query for count: " + queryInfo.jpqlCount);
 
-            TypedQuery<Long> query = em.createQuery(queryInfo.jpqlCount, Long.class);
+            TypedQuery<Long> query = queryInfo //
+                            .ehCreateTypedQuery(entityHandlerSync.entityHandler(),
+                                                queryInfo.jpqlCount,
+                                                Long.class);
             queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
 
             return query.getSingleResult();
         } catch (Exception x) {
-            throw RepositoryImpl.failure(x, builder);
+            throw RepositoryImpl.failure(x, factory);
         } finally {
-            if (!stateful && em != null)
-                em.close();
+            if (entityHandlerSync != null && !entityHandlerSync.automaticallyCloses())
+                try {
+                    entityHandlerSync.entityHandler().close();
+                } catch (Exception x) {
+                    throw RepositoryImpl.failure(x, factory);
+                }
         }
     }
 

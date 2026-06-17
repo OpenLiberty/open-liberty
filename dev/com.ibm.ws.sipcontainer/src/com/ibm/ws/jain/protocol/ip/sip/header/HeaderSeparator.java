@@ -227,7 +227,7 @@ public class HeaderSeparator
 				// a custom filter to erase the default string with "*:off,..".
 				map.clear();
 			}
-			// If comma.seperated.header property is defined to contain headers 
+			// If comma.separated.header property is defined to contain headers 
 			// which mustn't be nested - a warning is printed
 			HeaderImpl hdr = HeaderCreator.createHeader(key);
 			// Extended headers can be nested/not nested no need to check isNested.

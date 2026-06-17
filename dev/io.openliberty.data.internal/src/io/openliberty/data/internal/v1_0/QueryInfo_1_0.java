@@ -38,6 +38,8 @@ import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.Save;
 import jakarta.data.repository.Update;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.TypedQuery;
 
 /**
  * QueryInfo implementation for Jakarta Data 1.0.
@@ -124,6 +126,59 @@ public class QueryInfo_1_0 extends QueryInfo {
                         expression, //
                         sort.isAscending(), //
                         sort.ignoreCase());
+    }
+
+    @Override
+    protected jakarta.persistence.Query //
+                    ehCreateNativeQuery(AutoCloseable entityHandler) {
+        throw new UnsupportedOperationException("jakarta.persistence.query.NativeQuery");
+    }
+
+    @Override
+    protected jakarta.persistence.Query //
+                    ehCreateNativeStatement(AutoCloseable entityHandler) {
+        throw new UnsupportedOperationException("jakarta.persistence.query.NativeQuery");
+    }
+
+    @Override
+    @Trivial
+    protected jakarta.persistence.Query ehCreateStatement(AutoCloseable entityHandler,
+                                                          String jpql) {
+        return ((EntityManager) entityHandler).createQuery(jpql);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    @Trivial
+    protected <T> TypedQuery<T> ehCreateTypedQuery(AutoCloseable entityHandler,
+                                                   String jpql,
+                                                   Class<?> resultType) {
+        return (TypedQuery<T>) ((EntityManager) entityHandler) //
+                        .createQuery(jpql, resultType);
+    }
+
+    @Override
+    @Trivial
+    protected void ehDelete(AutoCloseable entityHandler, Object entity) {
+        ((EntityManager) entityHandler).remove(entity);
+    }
+
+    @Override
+    @Trivial
+    protected void ehInsert(AutoCloseable entityHandler, Object entity) {
+        ((EntityManager) entityHandler).persist(entity);
+    }
+
+    @Override
+    @Trivial
+    protected Object ehUpdate(AutoCloseable entityHandler, Object entity) {
+        return ((EntityManager) entityHandler).merge(entity);
+    }
+
+    @Override
+    @Trivial
+    protected Object ehUpsert(AutoCloseable entityHandler, Object entity) {
+        return ((EntityManager) entityHandler).merge(entity);
     }
 
     @Override

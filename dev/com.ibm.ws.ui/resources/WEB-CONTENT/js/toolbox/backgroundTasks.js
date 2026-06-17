@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -85,14 +85,14 @@ I put this after catalogContainer:
           </div>  <!-- end of contentPane -->
 
 */
-define([ "dojo/_base/declare", 
-         "dojo/request/xhr", 
-         "dojo/Deferred", 
+define([ "dojo/_base/declare",
+         "dojo/request",
+         "dojo/Deferred",
          "dojo/_base/lang",
          "dojo/store/Memory",
          "dojo/date/locale"
-         ], 
-    function(declare, xhr, Deferred, lang, Memory, locale) {
+         ],
+    function(declare, request, Deferred, lang, Memory, locale) {
     'use strict';
 
     // maps to the rest api status code
@@ -526,7 +526,7 @@ define([ "dojo/_base/declare",
         // ansync call to get the background tasks       
         getDeploymentStatus: function(rootURL, token, expectedTotal, cbk, parentDeferred) {
           var xhrArgs = {handleAs: 'json'};
-          var xhrDef = xhr.get(rootURL + "/" + token + this.statusURI, xhrArgs);
+          var xhrDef = request.get(rootURL + "/" + token + this.statusURI, xhrArgs);
 
           // Establish the Deferred to be returned.
           // This allows the caller to cancel the underlying XHR request.
@@ -596,7 +596,7 @@ define([ "dojo/_base/declare",
             this.totalObjects = 0;
             this.isProcessFinished = false;
             var xhrArgs = {handleAs: inType};
-            var xhrDef = xhr.get(inURL + this.deployURI, xhrArgs);
+            var xhrDef = request.get(inURL + this.deployURI, xhrArgs);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.
@@ -630,7 +630,7 @@ define([ "dojo/_base/declare",
         
         getDeploymentResult: function(rootURL, token, expectedTotal, parentDeferred) {
           var xhrArgs = {handleAs: 'json'};
-          var xhrDef = xhr.get(rootURL + "/" + token + this.resultsURI, xhrArgs);
+          var xhrDef = request.get(rootURL + "/" + token + this.resultsURI, xhrArgs);
 
           // Establish the Deferred to be returned.
           // This allows the caller to cancel the underlying XHR request.
@@ -695,7 +695,7 @@ define([ "dojo/_base/declare",
             this.totalObjects = 0;
             this.total = 0;
             var xhrArgs = {handleAs: inType};
-            var xhrDef = xhr.get(inURL + this.deployURI, xhrArgs);
+            var xhrDef = request.get(inURL + this.deployURI, xhrArgs);
             this.isProcessFinished = false;
 
             // Establish the Deferred to be returned.

@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,7 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=\u4e3a\u542f\u52a8\
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: \u542f\u52a8\u68c0\u67e5\u65f6\u95f4\u95f4\u9694\u914d\u7f6e\u662f\u5728\u914d\u7f6e\u68c0\u67e5\u65f6\u95f4\u95f4\u9694\u4e4b\u524d\u8bbe\u7f6e\u7684\u3002 \u672a\u914d\u7f6e\u68c0\u67e5\u65f6\u95f4\u95f4\u9694\u65f6\uff0c\u57fa\u4e8e\u6587\u4ef6\u7684\u5065\u5eb7\u68c0\u67e5\u5c06\u88ab\u7981\u7528\u3002
 startup.check.interval.config.only.set.CWMMH01012W.explanation=\u4ec5\u914d\u7f6e\u542f\u52a8\u68c0\u67e5\u65f6\u95f4\u95f4\u9694\u4e0d\u80fd\u542f\u7528\u57fa\u4e8e\u6587\u4ef6\u7684\u5065\u5eb7\u68c0\u67e5\u673a\u5236\u3002
 startup.check.interval.config.only.set.CWMMH01012W.useraction=\u914d\u7f6e\u68c0\u67e5\u95f4\u9694\uff0c\u4ee5\u542f\u7528\u57fa\u4e8e\u6587\u4ef6\u7684\u5065\u5eb7\u68c0\u67e5\u673a\u5236\u3002
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: enableEndpoints \u914d\u7f6e\u5df2\u8bbe\u4e3afalse\uff0c\u4f46\u57fa\u4e8e\u6587\u4ef6\u7684\u5065\u5eb7\u68c0\u67e5\u529f\u80fd\u5c1a\u672a\u542f\u7528\u3002 \u6b64\u914d\u7f6e\u65e0\u6548\uff0c\u5065\u5eb7\u68c0\u67e5\u7aef\u70b9\u5df2\u542f\u7528\u3002
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=\u53ea\u6709\u5728\u542f\u7528\u4e86\u57fa\u4e8e\u6587\u4ef6\u7684\u5065\u5eb7\u68c0\u67e5\u65f6\uff0c enableEndpoints \u914d\u7f6e\u624d\u4f1a\u751f\u6548\u3002
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=\u542f\u7528\u57fa\u4e8e\u6587\u4ef6\u7684\u5065\u5eb7\u68c0\u67e5\u529f\u80fd\uff0c\u6216\u5220\u9664 enableEndpoints \u914d\u7f6e\u3002

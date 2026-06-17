@@ -77,7 +77,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ffdc.FFDCFilter;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.JavaInfo;
 import com.ibm.ws.webcontainer.httpsession.SessionManager;
 import com.ibm.ws.webcontainer.osgi.DynamicVirtualHost;
@@ -335,27 +334,19 @@ public class PluginGenerator {
             esiProp5.setAttribute("Value", root);
             rootElement.appendChild(esiProp5);
 
-            /*
-             * Add OutboundInterfacesList property if configured
-             * Beta fencing: Only add if running in beta edition
-             */
-            if (ProductInfo.getBetaEdition() && pcd.OutboundInterfacesList != null) {
+            // Add OutboundInterfacesList property if configured
+            if (pcd.OutboundInterfacesList != null) {
                 Element outboundInterfacesProp = output.createElement("Property");
                 outboundInterfacesProp.setAttribute("Name", "OutboundInterfacesList");
                 outboundInterfacesProp.setAttribute("Value", pcd.OutboundInterfacesList);
                 rootElement.appendChild(outboundInterfacesProp);
             }
 
-            /*
-             * Add OutboundBindStrict property
-             * Beta fencing: Only add if running in beta edition
-             */
-            if (ProductInfo.getBetaEdition()) {
-                Element outboundBindStrictProp = output.createElement("Property");
-                outboundBindStrictProp.setAttribute("Name", "OutboundBindStrict");
-                outboundBindStrictProp.setAttribute("Value", pcd.OutboundBindStrict.toString());
-                rootElement.appendChild(outboundBindStrictProp);
-            }
+            // Add OutboundBindStrict property
+            Element outboundBindStrictProp = output.createElement("Property");
+            outboundBindStrictProp.setAttribute("Name", "OutboundBindStrict");
+            outboundBindStrictProp.setAttribute("Value", pcd.OutboundBindStrict.toString());
+            rootElement.appendChild(outboundBindStrictProp);
 
             HttpEndpointInfo httpEndpointInfo;
             httpEndpointInfo = new HttpEndpointInfo(context, output, pcd.httpEndpointPid);
@@ -1842,19 +1833,12 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                 TrustedProxyGroup = proxyList.split(",");
             }
 
-            /*
-             * Initialize new outbound interface properties
-             * Beta fencing: Only initialize if running in beta edition
-             */
-            if (ProductInfo.getBetaEdition()) {
-                OutboundInterfacesList = (String) config.get("outboundInterfacesList");
+            // Initialize new outbound interface properties
+            OutboundInterfacesList = (String) config.get("outboundInterfacesList");
 
-                /*
-                 * Initialize new outbound bind strict property
-                 */
-                if (config.get("outboundBindStrict") != null) {
-                    OutboundBindStrict = (Boolean) config.get("outboundBindStrict");
-                }
+            // Initialize new outbound bind strict property
+            if (config.get("outboundBindStrict") != null) {
+                OutboundBindStrict = (Boolean) config.get("outboundBindStrict");
             }
 
             // populate extra properties map with default values but allow override from user config

@@ -39,7 +39,7 @@ public class FATSuite extends TestContainerSuite {
     public static void beforeSuite() throws Exception {
 	FeatureUtilityToolTest.setupEnv();
 	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/userFeature/userFeature-1.0.zip"));
-	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/archive1/Archive-1.0.zip"));
+	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo/").toAbsolutePath().toString(),Paths.get("publish/repo/archive1/Archive-3.0.zip"));
 	FeatureUtilityToolTest.constructLocalMavenRepo(Paths.get("publish/repo2/").toAbsolutePath().toString(),Paths.get("publish/repo/archive2/Archive-2.0.zip")); //New repo has versionless features
     }
 

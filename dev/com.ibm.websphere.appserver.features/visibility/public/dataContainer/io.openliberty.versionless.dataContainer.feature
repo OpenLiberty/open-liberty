@@ -3,7 +3,7 @@ symbolicName=io.openliberty.versionless.dataContainer
 visibility=public
 IBM-ShortName: dataContainer
 Subsystem-Name: dataContainer
--features=io.openliberty.internal.versionless.dataContainer-1.0
+-features=io.openliberty.internal.versionless.dataContainer-1.0; ibm.tolerates:="1.1"
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

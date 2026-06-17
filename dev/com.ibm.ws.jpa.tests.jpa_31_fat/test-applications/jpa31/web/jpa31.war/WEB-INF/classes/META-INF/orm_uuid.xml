@@ -42,9 +42,6 @@
   </entity>
   
   <embeddable class="io.openliberty.jpa.tests.jpa31.models.XMLEmbeddableUUID_ID">
-     <attributes>
-        <basic name="eid" />
-     </attributes>
   </embeddable>
 
 </entity-mappings>

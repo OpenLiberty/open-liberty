@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -26,6 +26,7 @@ public class EERepeatActions {
     public static final String EE9_ID = JakartaEEAction.EE9_ACTION_ID;
     public static final String EE10_ID = JakartaEEAction.EE10_ACTION_ID;
     public static final String EE11_ID = JakartaEEAction.EE11_ACTION_ID;
+    public static final String EE12_ID = JakartaEEAction.EE12_ACTION_ID;
 
     //The EE FeatureSets
     public static final FeatureSet EE6 = new FeatureSet(EE6_ID, EE6FeatureReplacementAction.EE6_FEATURE_SET, EEVersion.EE6);
@@ -34,12 +35,13 @@ public class EERepeatActions {
     public static final FeatureSet EE9 = new FeatureSet(EE9_ID, JakartaEE9Action.EE9_FEATURE_SET, EEVersion.EE9);
     public static final FeatureSet EE10 = new FeatureSet(EE10_ID, JakartaEE10Action.EE10_FEATURE_SET, EEVersion.EE10);
     public static final FeatureSet EE11 = new FeatureSet(EE11_ID, JakartaEE11Action.EE11_FEATURE_SET, EEVersion.EE11);
+    public static final FeatureSet EE12 = new FeatureSet(EE12_ID, JakartaEE12Action.EE12_FEATURE_SET, EEVersion.EE12);
 
     //The FeatureSet for the latest EE version
-    public static final FeatureSet LATEST = EE10;
+    public static final FeatureSet LATEST = EE11;
 
     //All EE FeatureSets - must be descending order
-    private static final FeatureSet[] ALL_SETS_ARRAY = { EE11, EE10, EE9, EE8, EE7, EE6 };
+    private static final FeatureSet[] ALL_SETS_ARRAY = { EE12, EE11, EE10, EE9, EE8, EE7, EE6 };
     private static final List<FeatureSet> ALL = Collections.unmodifiableList(Arrays.asList(ALL_SETS_ARRAY));
 
     /**

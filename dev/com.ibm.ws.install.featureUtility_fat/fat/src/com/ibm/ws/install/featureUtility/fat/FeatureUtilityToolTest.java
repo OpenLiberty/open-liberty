@@ -185,6 +185,10 @@ public abstract class FeatureUtilityToolTest {
     public static void copyFileToMinifiedRoot(String extendedPath, String fileName) throws Exception {
 	LibertyFileManager.copyFileIntoLiberty(server.getMachine(), minifiedRoot + "/" + extendedPath, fileName);
     }
+
+    public static void deleteFileFromMinifiedRoot(String fileName) throws Exception {
+        LibertyFileManager.deleteLibertyFile(server.getMachine(), minifiedRoot + "/" + fileName);
+    }
     
 
     public static void writeToProps(String remoteFileName, String property, String value) throws Exception {

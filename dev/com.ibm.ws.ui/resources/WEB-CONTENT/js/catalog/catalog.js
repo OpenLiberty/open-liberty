@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -24,14 +24,14 @@
  */
 
 define(["dojo/_base/declare",
-        "dojo/request/xhr",
+        "dojo/request",
         "dojo/Deferred",
         "dojo/json",
         "dojo/_base/lang",
         "dojo/i18n!./nls/catalogMessages",
         'js/common/tr'
     ],
-    function(declare, xhr, Deferred, JSON, lang, i18n, tr) {
+    function(declare, request, Deferred, JSON, lang, i18n, tr) {
     'use strict';
 
     var Catalog = declare("Catalog", null, {
@@ -46,7 +46,7 @@ define(["dojo/_base/declare",
         getTools: function(fields) {
             var url = (fields) ? this.__url+"?fields="+fields : this.__url;
             var options = { handleAs: "json" };
-            var xhrDef = xhr.get(url, options);
+            var xhrDef = request.get(url, options);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.
@@ -89,7 +89,7 @@ define(["dojo/_base/declare",
             }
             var url = this.__url;
             var options = { handleAs: "json" };
-            var xhrDef = xhr.get(url, options);
+            var xhrDef = request.get(url, options);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.
@@ -140,7 +140,7 @@ define(["dojo/_base/declare",
             }
             var url = this.__url+"/bookmarks";
             var options = { handleAs: "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(bookmarkProps) };
-            var xhrDef = xhr.post(url, options);
+            var xhrDef = request.post(url, options);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.
@@ -175,7 +175,7 @@ define(["dojo/_base/declare",
             }
             var url = this.__url + "/bookmarks/" + id;
             var options = { handleAs: "json" };
-            var xhrDef = xhr.del(url, options);
+            var xhrDef = request.del(url, options);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.

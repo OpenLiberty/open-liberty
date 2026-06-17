@@ -43,5 +43,4 @@ public class NettyVirtualConnectionFactoryImpl implements InboundVirtualConnecti
     public VirtualConnection createConnection() {
         return new NettyVirtualConnectionImpl();
     }
-
 }

@@ -35,12 +35,10 @@ import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.WebApplication;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
 public class JPAEclipseLinkAppTests40War extends JPAAppAbstractTests {
 
     @BeforeClass

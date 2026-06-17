@@ -21,7 +21,7 @@ public abstract class SASAttrRepositoryFactory {
      * @return a Sip application session attribute manager
      * @throws ClassNotFoundException - when failed to find the implementation class by name
      * @throws InstantiationException - succeeded to find the class but failed to create an instance
-     * @throws IllegalAccessException - found the class but security violation occured.
+     * @throws IllegalAccessException - found the class but a security violation occurred.
      */
 	abstract public SASAttrRepository createRepository() 
 	throws ClassNotFoundException,InstantiationException, IllegalAccessException;

@@ -14,7 +14,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.junit.BeforeClass;
-import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -34,8 +33,6 @@ import com.meterware.httpunit.WebConversation;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled;
-import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsEnabledRule;
 
 /**
  * This is the test class that will run tests to verify the correct behavior with
@@ -56,7 +53,6 @@ import componenttest.rules.SkipJavaSemeruWithFipsEnabled.SkipJavaSemeruWithFipsE
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipJavaSemeruWithFipsEnabledRule
 public class OidcClientEncryptionTests extends CommonTest {
 
     public static Class<?> thisClass = OidcClientEncryptionTests.class;
@@ -71,9 +67,6 @@ public class OidcClientEncryptionTests extends CommonTest {
     public static final String MSG_USER_NOT_IN_REG = "CWWKS1106A";
     public static final JwtTokenBuilderUtils tokenBuilderHelpers = new JwtTokenBuilderUtils();
     public static final String badTokenSegment = "1234567890123456789";
-
-    @ClassRule
-    public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.openidconnect.client-1.0_fat.4.opWithStub");
 
     @SuppressWarnings("serial")
     @BeforeClass

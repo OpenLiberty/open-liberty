@@ -21,14 +21,14 @@ public class SimpleEntity {
     @Id
     long id;
 
-    String value;
+    String val;
 
     public long getId() {
         return id;
     }
 
     public String getValue() {
-        return value;
+        return val;
     }
 
     public void setId(long id) {
@@ -36,11 +36,11 @@ public class SimpleEntity {
     }
 
     public void setValue(String value) {
-        this.value = value;
+        this.val = value;
     }
 
     @Override
     public String toString() {
-        return "SimpleEntity id=" + id + " " + " value=" + value;
+        return "SimpleEntity id=" + id + " " + " value=" + val;
     }
 }

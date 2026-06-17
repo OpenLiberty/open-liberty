@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -575,6 +575,12 @@ public class InstallKernelImpl implements InstallKernel, InstallKernelInteractiv
     public void resolve(Collection<String> assetIds, boolean download) throws InstallException {
         this.director.refresh();
         this.director.resolve(assetIds, download);
+    }
+
+    @Override
+    public void resolve(Collection<String> assetIds, Collection<String> platforms, boolean download) throws InstallException {
+        this.director.refresh();
+        this.director.resolve(assetIds, platforms, download);
     }
 
     @Override

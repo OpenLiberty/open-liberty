@@ -88,6 +88,8 @@ public class DynamicJACCFeatureTest extends EJBAnnTestBase {
         client.resetClientState();
 
         testHelper.reconfigureServer(Constants.DEFAULT_CONFIG_FILE, getName().getMethodName(), msgs, Constants.DO_NOT_RESTART_SERVER);
+        verifyServerStartedWithJaccFeature(server);
+
         String queryString2 = "/SimpleServlet?testInstance=ejb01&testMethod=denyAll";
         String response2 = generateResponseFromServlet(queryString2, Constants.MANAGER_USER, Constants.MANAGER_PWD);
         verifyException(response2, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.JACC_AUTH_DENIED_USER_NOT_GRANTED_REQUIRED_ROLE);
@@ -122,6 +124,8 @@ public class DynamicJACCFeatureTest extends EJBAnnTestBase {
         msgs.add(waitForMessage);
 
         testHelper.reconfigureServer(Constants.DEFAULT_CONFIG_FILE, getName().getMethodName(), msgs, Constants.RESTART_SERVER);
+        verifyServerStartedWithJaccFeature(server);
+
         String queryString2 = "/SimpleServlet?testInstance=ejb01&testMethod=denyAll";
         String response2 = generateResponseFromServlet(queryString2, Constants.MANAGER_USER, Constants.MANAGER_PWD);
         verifyException(response2, MessageConstants.EJB_ACCESS_EXCEPTION, MessageConstants.JACC_AUTH_DENIED_USER_NOT_GRANTED_REQUIRED_ROLE);

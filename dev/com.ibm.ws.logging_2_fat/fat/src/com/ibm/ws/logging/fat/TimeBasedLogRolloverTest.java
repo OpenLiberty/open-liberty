@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2025 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -129,6 +129,10 @@ public class TimeBasedLogRolloverTest {
         if (serverInUse != null && serverInUse.isStarted()) {
             serverInUse.stopServer("com.ibm.ws.logging.fat.ffdc.servlet.FFDCServlet.doGet", "ArithmeticException",
                                    "CWWKG0081E", "CWWKG0083W", "TRAS3015W", "TRAS3013W");
+        }
+        // Restore the original server configuration after stopping to ensure next test starts clean
+        if (serverInUse != null) {
+            serverInUse.restoreServerConfiguration();
         }
     }
 

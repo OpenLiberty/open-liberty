@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2021 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,7 +22,7 @@
  * @returns {Toolbox} The Toolbox object
  */
 
-define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 'js/common/tr' ], function(declare, xhr, Deferred, JSON, tr) {
+define(["dojo/_base/declare", "dojo/request", "dojo/Deferred", "dojo/json", 'js/common/tr' ], function(declare, request, Deferred, JSON, tr) {
   'use strict';
 
   /**
@@ -47,7 +47,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
       var options = {
         handleAs : "json"
       };
-      var xhrDef = xhr.get(url, options);
+      var xhrDef = request.get(url, options);
 
       // Establish the Deferred to be returned.
       // This allows the caller to cancel the underlying XHR request.
@@ -91,7 +91,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
       var options = {
         handleAs : "json"
       };
-      var xhrDef = xhr.get(url, options);
+      var xhrDef = request.get(url, options);
 
       // Establish the Deferred to be returned.
       // This allows the caller to cancel the underlying XHR request.
@@ -131,7 +131,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
         },
         data : JSON.stringify(toAdd)
       };
-      var xhrDef = xhr.post(url, options);
+      var xhrDef = request.post(url, options);
 
       // Establish the Deferred to be returned.
       // This allows the caller to cancel the underlying XHR request.
@@ -170,7 +170,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
         },
         data : JSON.stringify(toAdd)
       };
-      var xhrDef = xhr.post(url, options);
+      var xhrDef = request.post(url, options);
 
       // Establish the Deferred to be returned.
       // This allows the caller to cancel the underlying XHR request.
@@ -204,7 +204,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
       var options = {
         handleAs : "json"
       };
-      var xhrDef = xhr.del(url, options);
+      var xhrDef = request.del(url, options);
 
       // Establish the Deferred to be returned.
       // This allows the caller to cancel the underlying XHR request.
@@ -233,7 +233,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
             var options = {
                     handleAs : "json"
             };
-            var xhrDef = xhr.get(url, options);
+            var xhrDef = request.get(url, options);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.
@@ -264,7 +264,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
             }
             var url = this.__url+"/preferences";
             var options = { handleAs: "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(prefs) };
-            var xhrDef = xhr.put(url, options);
+            var xhrDef = request.put(url, options);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.
@@ -299,7 +299,7 @@ define(["dojo/_base/declare", "dojo/request/xhr", "dojo/Deferred", "dojo/json", 
             var options = {
                     handleAs : "json", headers: {"Content-type":"application/json"}, data: JSON.stringify(toolEntries)
             };
-            var xhrDef = xhr.put(url, options);
+            var xhrDef = request.put(url, options);
 
             // Establish the Deferred to be returned.
             // This allows the caller to cancel the underlying XHR request.

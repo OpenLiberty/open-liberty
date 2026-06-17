@@ -1732,7 +1732,8 @@ public class HttpInboundServiceContextImpl extends HttpServiceContextImpl implem
         }
 
         if (Objects.nonNull(this.nettyContext)) {
-            return getNettyRequestBodyBuffer(callback, bForce);
+            callback.complete(NettyVirtualConnectionImpl.SHARED_NETTY_CALLBACK_VC);
+            return null;
         }
 
         boolean isError = false;

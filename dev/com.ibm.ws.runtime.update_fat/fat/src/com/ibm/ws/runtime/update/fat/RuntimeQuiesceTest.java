@@ -1,16 +1,18 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
  *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.ws.runtime.update.fat;
+
+import static org.junit.Assert.assertNotNull;
 
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.junit.After;
@@ -21,11 +23,13 @@ import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TestName;
+import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.log.Log;
 
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.impl.LibertyServerFactory;
 
@@ -37,6 +41,7 @@ import componenttest.topology.impl.LibertyServerFactory;
  *
  * The server logs will be collected at the end, in the tearDown.
  */
+@RunWith(FATRunner.class)
 public class RuntimeQuiesceTest {
 
     private static final String QUIESCE_LISTENER_EXCEPTION_MESSAGE = "WOOPS!";
@@ -47,6 +52,8 @@ public class RuntimeQuiesceTest {
     private static final String QUIESCE_LISTENER_HUNG_WARNING = "CWWKE1106W";
     private static final String QUIESCE_FAILURE_WARNING = "CWWKE1102W";
     private static final String QUIESCE_SUCCESS_MESSAGE = "CWWKE1101I";
+    private static final String QUIESCE_LISTENER_ORDER_MESSAGE_PREFIX = "QuiesceListenerOrderRecordingService:";
+    private static final String QUIESCE_LISTENER_ORDER_MESSAGE = "QuiesceListenerOrderRecordingService: called type=PRE: 0 called type=PRE: 1 called type=PRE: 2 called type=DEFAULT: 3";
 
     private static final Class<?> c = RuntimeQuiesceTest.class;
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("com.ibm.ws.runtime.quiesce.fat");
@@ -149,6 +156,21 @@ public class RuntimeQuiesceTest {
     }
 
     /**
+     * Define/invoke a runtime-level quiesce listener
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testSinglePreRuntimeQuiesceListener() throws Exception {
+        // Add a single quiesce listener as a runtime feature/bundle (internal)
+        server.setServerConfigurationFile("pre-quiesce-listener.server.xml");
+        server.installSystemBundle("test.server.quiesce");
+        server.installSystemFeature("quiescelistener-1.0");
+
+        startStopServer(TestType.SUCCESS);
+    }
+
+    /**
      * Make sure a user feature/product extension can provide a quiesce listener
      * (SPI is defined properly).
      *
@@ -183,6 +205,23 @@ public class RuntimeQuiesceTest {
     }
 
     /**
+     * Try a quiesce service that throws an exception, and make sure that doesn't
+     * prevent the quiesce activity from completing.
+     *
+     * @throws Exception
+     */
+    @Test
+    @ExpectedFFDC("java.lang.RuntimeException")
+    public void testQuiesceListenerPreException() throws Exception {
+        // Add a single quiesce listener as a usr feature/bundle (SPI)
+        server.setServerConfigurationFile("bad-pre-quiesce-listener.server.xml");
+        server.installSystemBundle("test.server.quiesce");
+        server.installSystemFeature("quiescelistener-1.0");
+
+        startStopServer(TestType.EXCEPTION);
+    }
+
+    /**
      * Long running test (at least 30s), push this into the full bucket.
      * This triggers a quiesce listener that takes longer than 30s to complete.
      * Make sure we get a warning that not all quiesce activity completed (and that
@@ -201,24 +240,56 @@ public class RuntimeQuiesceTest {
     }
 
     @Test
+    public void testLongRunningPreQuiesceListener() throws Exception {
+        // Add a single quiesce listener as a usr feature/bundle (SPI)
+        server.setServerConfigurationFile("longrunning-pre-quiesce-listener.server.xml");
+        server.installSystemBundle("test.server.quiesce");
+        server.installSystemFeature("quiescelistener-1.0");
+
+        startStopServer(TestType.QUIESCE_HANG);
+    }
+
+    @Test
     public void testLongRunningThreads() throws Exception {
         server.setServerConfigurationFile("longrunning-threads-server.xml");
         server.installSystemBundle("test.server.quiesce");
         server.installSystemFeature("quiescelistener-1.0");
 
-        startStopServer(TestType.THREAD_HANG);
+        startStopServer(TestType.THREAD_HANG, 4);
     }
 
     @Test
-    public void testNonBlockingThreads() throws Exception {
+    public void testLongRunningPreThreads() throws Exception {
+        server.setServerConfigurationFile("longrunning-pre-threads-server.xml");
+        server.installSystemBundle("test.server.quiesce");
+        server.installSystemFeature("quiescelistener-1.0");
+
+        startStopServer(TestType.THREAD_HANG, 8);
+    }
+
+    @Test
+    public void testBlockingPreThreads() throws Exception {
+        server.setServerConfigurationFile("blocking-threads-server.xml");
+        server.installSystemBundle("test.server.quiesce");
+        server.installSystemFeature("quiescelistener-1.0");
+
+        startStopServer(TestType.THREAD_HANG, 6);
+    }
+
+    @Test
+    public void testBlockingThreads() throws Exception {
         server.setServerConfigurationFile("non-blocking-threads-server.xml");
         server.installSystemBundle("test.server.quiesce");
         server.installSystemFeature("quiescelistener-1.0");
 
-        startStopServer(TestType.SUCCESS);
+        startStopServer(TestType.THREAD_HANG, 2);
     }
 
     private void startStopServer(TestType type) throws Exception {
+        startStopServer(type, 0);
+    }
+
+    private void startStopServer(TestType type, int numExpectedHungThreads) throws Exception {
         // start the server, do a clean start, and do not pre-clean the logs dir
         server.startServer(method.getMethodName() + ".console.log", true, false);
 
@@ -245,6 +316,14 @@ public class RuntimeQuiesceTest {
         Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain WHEE! because the test quiesce listener was called",
                              server.waitForStringInLog(QUIESCE_LISTENER_CALLED_MESSAGE, 0));
 
+        // Check we called the PRE listeners before the default ones
+        String listenerCallOrder = server.waitForStringInLog(QUIESCE_LISTENER_ORDER_MESSAGE_PREFIX, 0);
+        assertNotNull("Did not find message: " + QUIESCE_LISTENER_ORDER_MESSAGE_PREFIX, listenerCallOrder);
+        listenerCallOrder = listenerCallOrder.substring(listenerCallOrder.indexOf(QUIESCE_LISTENER_ORDER_MESSAGE_PREFIX));
+        Assert.assertEquals("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " listeners not called in correct order",
+                            QUIESCE_LISTENER_ORDER_MESSAGE,
+                            listenerCallOrder);
+
         if (type == TestType.EXCEPTION) {
             Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName()
                                  + " should contain WOOPS! because the test quiesce listener threw an exception",
@@ -267,8 +346,9 @@ public class RuntimeQuiesceTest {
                                  threadWarning);
             threadWarning = threadWarning.substring(threadWarning.indexOf(QUIESCE_THREADS_HUNG_WARNING));
             // We should report two hung threads, not four
-            Assert.assertTrue("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should be blocked by two threads, not four",
-                              threadWarning.contains("2") && !threadWarning.contains("4"));
+            Assert.assertTrue("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should be blocked by " + numExpectedHungThreads + " threads: "
+                              + threadWarning,
+                              threadWarning.contains(String.valueOf(numExpectedHungThreads)));
 
         } else {
             Assert.assertNotNull("FAIL for " + method.getMethodName() + ": " + server.getServerName() + " should contain information about the completion of server quiesce",

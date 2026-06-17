@@ -51,7 +51,7 @@ import jain.protocol.ip.sip.message.MessageFactory;
 /**
  * @author Amir Perlman, Feb 16, 2003
  *
- * Implemenation for the SipServletMessage API
+ * Implementation for the SipServletMessage API
  */
 public abstract class SipServletMessageImpl 
 	implements SipServletMessageExt, Serializable
@@ -166,8 +166,8 @@ public abstract class SipServletMessageImpl
     protected Hashtable m_attributes;
 
     /**
-     * Flag indicating whether the Message is already commited. Some operations
-     * are not allowed once the message is commited. 
+     * Flag indicating whether the message is already Committed. 
+     * Some operations are not allowed once the message is Committed. 
      */
     private boolean m_isCommited = true;
     
@@ -568,8 +568,8 @@ public abstract class SipServletMessageImpl
             {
                 AcceptLanguageHeader h = (AcceptLanguageHeader)iterator.next();
                 
-                //the first local is also the preffered
-                //should be added at the begining 
+                //the first local is also the preferred one,
+                //should be added at the beginning 
                 if(first){
                 	orderList.add(0,h);
                 	first=false;
@@ -3413,7 +3413,7 @@ public abstract class SipServletMessageImpl
 	}
 	
 	/**
-	 * An exception has occured log it to the session sequence log. 
+	 * An exception has occurred, log it to the session sequence log. 
      * @param status Status/Reason code for the specified error
      * @param e
      */

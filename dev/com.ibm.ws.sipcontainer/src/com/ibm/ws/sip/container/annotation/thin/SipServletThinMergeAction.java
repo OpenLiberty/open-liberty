@@ -114,7 +114,7 @@ public class SipServletThinMergeAction extends SipMergeAction {
 			}
 
 			if (c_logger.isLoggable(Level.FINEST)){
-				c_logger.logp(Level.FINEST, className, "mergeClassTarget", "processing SipServlet annotatoion for siplet: " + clazz.getName());
+				c_logger.logp(Level.FINEST, className, "mergeClassTarget", "processing SipServlet annotation for siplet: " + clazz.getName());
 			}
 			
 			//creating the new Servlet object

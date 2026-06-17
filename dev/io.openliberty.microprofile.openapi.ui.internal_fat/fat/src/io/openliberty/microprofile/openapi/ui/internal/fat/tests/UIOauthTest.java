@@ -136,7 +136,10 @@ public class UIOauthTest {
         //close the browser before stopping the server to reduce changes of open connections
         driver.quit();
         try {
-            server.stopServer();
+            /*
+             * SRVE8056E: An unexpected exception occurred closing the output stream is generated occasionally during shutdown
+             */
+            server.stopServer("SRVE8056E");
         } finally {
             // Restore Config to original after test to prevent potential config bleeding between tests
             server.updateServerConfiguration(baseConfig);

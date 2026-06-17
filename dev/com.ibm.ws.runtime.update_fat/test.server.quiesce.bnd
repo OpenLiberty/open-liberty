@@ -27,7 +27,9 @@ Private-Package: \
   test.server.quiesce
   
 -dsannotations: \
-  test.server.quiesce.TestQuiesceListener
+  test.server.quiesce.TestQuiesceListener, \
+  test.server.quiesce.TestPreQuiesceListener, \
+  test.server.quiesce.QuiesceListenerOrderRecordingService
 
 
  

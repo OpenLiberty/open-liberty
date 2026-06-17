@@ -38,7 +38,6 @@ import jakarta.data.exceptions.MappingException;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.PageRequest;
 import jakarta.data.page.PageRequest.Cursor;
-import jakarta.persistence.EntityManager;
 import jakarta.persistence.TypedQuery;
 
 /**
@@ -52,7 +51,7 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
      * Construct a new CursoredPage.
      *
      * @param queryInfo            query information.
-     * @param em                   the entity manager.
+     * @param entityHandler        EntityAgent or EntityManager
      * @param pageRequest          the request for this page.
      * @param args                 values that are supplied to the repository method.
      * @param deferredConstraints  map of method parameter index to non-Literal
@@ -64,7 +63,7 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
      */
     @Trivial // avoid tracing customer data
     CursoredPageImpl(QueryInfo queryInfo,
-                     EntityManager em,
+                     AutoCloseable entityHandler,
                      PageRequest pageRequest,
                      Object[] args,
                      Map<Integer, Object> deferredConstraints,
@@ -98,13 +97,14 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
 
             addParametersForCursor(cursor.get(), addedJPQLParams);
         } else { // no Cursor in PageRequest
-            jpql = queryInfo.jpql;
+            jpql = queryInfo.ql;
 
             addedJPQLParams = constraintJPQLParams;
         }
 
-        @SuppressWarnings("unchecked")
-        TypedQuery<T> query = (TypedQuery<T>) em.createQuery(jpql, Object.class);
+        TypedQuery<T> query = queryInfo.ehCreateTypedQuery(entityHandler,
+                                                           jpql,
+                                                           Object.class);
         queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
 
         query.setFirstResult(firstResult);
@@ -180,7 +180,7 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
                         ? null //
                         : queryInfo.jpqlParamNames.toArray();
 
-        int paramNum = queryInfo.jpqlParamCount + 1;
+        int paramNum = queryInfo.qlParamCount + 1;
         for (int c = 0; c < cursorSize; c++, paramNum++) {
             Object key = paramNames == null //
                             ? paramNum // positional parameters

@@ -35,7 +35,6 @@ import jakarta.data.page.Page;
 import jakarta.data.page.PageRequest;
 import jakarta.data.repository.OrderBy;
 import jakarta.data.repository.Param;
-import jakarta.data.repository.Query;
 
 /**
  * This class consists of methods that raise exceptions.
@@ -122,6 +121,27 @@ public class Fail {
                       endOfWhereClause,
                       ql.length(),
                       ql);
+    }
+
+    /**
+     * Raises IllegalStateException because the repository bean was disposed.
+     *
+     * @param impl   repository implementation
+     * @param proxy  proxy instance upon which the repository method is invoked
+     * @param method repository method that the application invoked
+     * @throws IllegalStateException
+     */
+    static IllegalStateException disposed(RepositoryImpl<?> impl,
+                                          Object proxy,
+                                          Method method) {
+        throw exc(IllegalStateException.class,
+                  "CWWKD1076.repo.disposed",
+                  method.getName(),
+                  impl.repositoryInterface.getName(),
+                  new StringBuilder("RepositoryImpl@") //
+                                  .append(Integer.toHexString(impl.hashCode())) //
+                                  .append("/(proxy)@") //
+                                  .append(Integer.toHexString(System.identityHashCode(proxy))));
     }
 
     /**
@@ -309,7 +329,7 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   info.specialParamsStartAt,
                   info.method.getParameterTypes()[index].getName(),
-                  info.jpql);
+                  info.ql);
     }
 
     /**
@@ -331,7 +351,7 @@ public class Fail {
                   info.repositoryInterface.getName(),
                   numRequired,
                   numFound,
-                  info.jpql);
+                  info.ql);
     }
 
     /**
@@ -389,7 +409,7 @@ public class Fail {
                   info.method.getName(),
                   info.repositoryInterface.getName(),
                   all,
-                  info.method.getAnnotation(Query.class).value(),
+                  info.getQueryAnnoValue(),
                   "@Param(\"" + first + "\")",
                   "String " + first);
     }
@@ -605,10 +625,10 @@ public class Fail {
                   "CWWKD1019.mixed.positional.named",
                   info.method.getName(),
                   info.repositoryInterface.getName(),
-                  info.jpqlParamCount - methodNPCount,
+                  info.qlParamCount - methodNPCount,
                   methodNPCount,
                   allNamedParams,
-                  info.method.getAnnotation(Query.class).value(),
+                  info.getQueryAnnoValue(),
                   ':' + firstNamedParam,
                   "@Param(\"" + firstNamedParam + "\")",
                   firstNamedParamType.getSimpleName() + ' ' + firstNamedParam);
@@ -726,6 +746,9 @@ public class Fail {
     static UnsupportedOperationException orderByAnnoIncompat(QueryInfo info) {
         // disallow on incompatible operations
         if (info.type != FIND && info.type != FIND_AND_DELETE)
+            // TODO need appropriate error for (type == NATIVE) where the
+            // @OrderBy is not allowed on a NativeQuery even if it is a
+            // find operation
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1096.orderby.incompat",
                       info.method.getName(),
@@ -1145,7 +1168,7 @@ public class Fail {
                       info.method.getName(),
                       info.repositoryInterface.getName(),
                       extraParamNames,
-                      info.method.getAnnotation(Query.class).value(),
+                      info.getQueryAnnoValue(),
                       ':' + firstExtraParam);
         else
             throw exc(MappingException.class,
@@ -1154,7 +1177,7 @@ public class Fail {
                       info.repositoryInterface.getName(),
                       extraParamNames,
                       qlParamNames,
-                      info.method.getAnnotation(Query.class).value());
+                      info.getQueryAnnoValue());
     }
 
     /**
@@ -1164,7 +1187,7 @@ public class Fail {
      *                                          a query parameter.
      */
     private static void validateParameterPositions(QueryInfo info) {
-        DataVersionCompatibility compat = info.entityInfo.builder.provider.compat;
+        DataVersionCompatibility compat = info.entityInfo.factory.provider.compat;
 
         Class<?>[] paramTypes = info.method.getParameterTypes();
         Set<Class<?>> specParamTypes = compat.specialParamTypes();

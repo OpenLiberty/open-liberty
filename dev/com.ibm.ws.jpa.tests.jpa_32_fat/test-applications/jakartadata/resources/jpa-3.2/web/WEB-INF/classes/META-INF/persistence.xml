@@ -20,17 +20,18 @@
 
     <persistence-unit name="RecreatePersistenceUnit">
     	<properties>
-			<!-- EclipseLink should create the database schema automatically -->
-			<property name="jakarta.persistence.schema-generation.database.action" value="create" />
+   <!-- Drop and recreate the database schema automatically for clean test runs -->
+   <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
 			<property name="eclipselink.logging.parameters" value="true"/>
+			<property name="hibernate.show_sql" value="true"/>
 		</properties>
     </persistence-unit>
     
     <persistence-unit name="RecreatePersistenceUnitH2">
         <jta-data-source>jdbc/H2DataSource</jta-data-source>
     	<properties>
-            <!-- EclipseLink should create the database schema automatically -->
-            <property name="jakarta.persistence.schema-generation.database.action" value="create" />
+    	       <!-- Drop and recreate the database schema automatically for clean test runs -->
+    	       <property name="jakarta.persistence.schema-generation.database.action" value="drop-and-create" />
             <property name="eclipselink.logging.parameters" value="true"/>
         </properties>
     </persistence-unit>

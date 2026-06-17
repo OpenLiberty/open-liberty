@@ -64,10 +64,19 @@ public class TagFileResourcesImpl extends ResourcesImpl implements TagFileResour
         if (tfi.getPath().startsWith("/WEB-INF/tags")) {
             tagFilePath = tfi.getPath().substring(tfi.getPath().indexOf("/WEB-INF/tags") + 13);
         }
+        else if (tfi.getPath().startsWith("/META-INF/resources/WEB-INF/tags")) {
+            // Handle tag files from JARs: /META-INF/resources/WEB-INF/tags/...
+            tagFilePath = tfi.getPath().substring(tfi.getPath().indexOf("/META-INF/resources/WEB-INF/tags") + 32);
+        }
         else if (tfi.getPath().startsWith("/META-INF/tags")) {
             tagFilePath = tfi.getPath().substring(tfi.getPath().indexOf("/META-INF/tags") + 14);
         }
-        tagFilePath = tagFilePath.substring(0, tagFilePath.lastIndexOf("/"));
+        
+        if (tagFilePath != null && tagFilePath.contains("/")) {
+            tagFilePath = tagFilePath.substring(0, tagFilePath.lastIndexOf("/"));
+        } else if (tagFilePath != null) {
+            tagFilePath = "";  // No subdirectory, just the tags directory itself
+        }
         
         //PM70267 start
         if (tagFilePath.indexOf("-") > -1) {

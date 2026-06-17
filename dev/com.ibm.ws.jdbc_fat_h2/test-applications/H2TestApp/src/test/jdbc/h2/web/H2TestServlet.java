@@ -22,7 +22,6 @@ import static org.junit.Assert.fail;
 
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
-import java.sql.Driver;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -46,6 +45,7 @@ import javax.sql.XADataSource;
 
 import org.junit.Test;
 
+import componenttest.annotation.SkipIfSysProp;
 import componenttest.app.FATServlet;
 
 @DataSourceDefinition(name = "java:app/jdbc/H2ConnectionPoolDataSource",
@@ -186,6 +186,7 @@ public class H2TestServlet extends FATServlet {
      * javax.sql.ConnectionPoolDataSource interface.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testConnectionPoolDataSource() throws Exception {
         try (Connection con = h2cpDataSource.getConnection()) {
             assertEquals(true, con.getAutoCommit());
@@ -249,6 +250,7 @@ public class H2TestServlet extends FATServlet {
      * javax.sql.DataSource interface.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testDataSource() throws Exception {
         try (Connection con = h2DataSource.getConnection()) {
             assertEquals(true, con.getAutoCommit());
@@ -280,7 +282,7 @@ public class H2TestServlet extends FATServlet {
             assertEquals(true,
                          h2DataSource.isWrapperFor(Referenceable.class));
             Referenceable r = h2DataSource.unwrap(Referenceable.class);
-            System.out.println("getReference: " + r.getReference());
+            r.getReference();
 
             // valid usage
             PreparedStatement pstmt = con.prepareStatement("""
@@ -301,6 +303,7 @@ public class H2TestServlet extends FATServlet {
      * java.sql.Driver interface.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testDriver() throws Exception {
         try (Connection con = h2driverDataSource.getConnection()) {
             assertEquals(true, con.getAutoCommit());
@@ -350,6 +353,7 @@ public class H2TestServlet extends FATServlet {
      * javax.sql.XADataSource interface.
      */
     @Test
+    @SkipIfSysProp(SkipIfSysProp.OS_IBMI) //Skip on IBM i due to Db2 native driver in JDK
     public void testXADataSource() throws Exception {
         try (Connection con = h2xaDataSource.getConnection()) {
             assertEquals(true, con.getAutoCommit());

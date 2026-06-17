@@ -8,7 +8,7 @@ wasliberty-aws-docker-remote/docker/library/node:20-alpine
 wasliberty-aws-docker-remote/docker/library/postgres:17
 wasliberty-aws-docker-remote/docker/library/postgres:17-alpine
 wasliberty-aws-docker-remote/docker/library/python:3.11.6
-wasliberty-aws-docker-remote/elastic/logstash:8.19.14
+wasliberty-aws-docker-remote/elastic/logstash:9.3.3
 wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23.9-full-faststart
 wasliberty-ghcr-docker-remote/gvenzl/oracle-free:23.9-slim-faststart
 wasliberty-ghcr-docker-remote/open-telemetry/opentelemetry-collector-releases/opentelemetry-collector:0.127.0

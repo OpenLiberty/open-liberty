@@ -170,6 +170,7 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
      * @throws Throwable if something goes wrong.
      */
     public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+        boolean disableForH2 = false;
         // Special case methods are looked up from a map and invoked.
         // Do not trace because this includes some basic things like hashcode and equals.
         // Important special case methods will take care of tracing themselves.
@@ -286,6 +287,8 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
                 throw closedX;
             }
 
+            disableForH2 = "org.h2.jdbcx.JdbcDataSource".equals(implObject.getClass().getName()) && "getReference".equals(method.getName());
+
             WSJdbcConnection connWrapper = null; 
             // If configured to do so, attempt to enlist in a transaction or start a new one.
             if (this instanceof WSJdbcObject) {
@@ -317,7 +320,7 @@ public abstract class WSJdbcWrapper implements InvocationHandler, Wrapper
         } // reflection error from invocation attempt on main wrapper
 
         if (tc.isEntryEnabled())
-            Tr.exit(this, tc, toString(proxy, method), result); 
+            Tr.exit(this, tc, toString(proxy, method), disableForH2 ? "******" : result); 
         return result;
     }
 

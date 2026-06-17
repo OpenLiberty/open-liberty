@@ -994,7 +994,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
         Log.entering(c, METHOD_NAME);
 
         // Begin Test
-        String[] param1s = { "installFeature", "RestfulWS-3.0" };
+        String[] param1s = { "installFeature", "RestfulWS-3.0", "--verbose" };
         String[] filesList = { "/lib/features/com.ibm.websphere.appserver.eeCompatible-6.0.mf",
             "/lib/features/com.ibm.websphere.appserver.eeCompatible-7.0.mf",
             "/lib/features/com.ibm.websphere.appserver.eeCompatible-8.0.mf",

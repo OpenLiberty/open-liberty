@@ -6,9 +6,6 @@
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 
 package com.ibm.ws.ejbcontainer.security.jacc_fat;
@@ -37,6 +34,7 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.webcontainer.security.test.servlets.BasicAuthClient;
 import com.ibm.ws.webcontainer.security.test.servlets.ServletClient;
 
+import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.topology.impl.LibertyServer;
@@ -165,6 +163,11 @@ public class EJBAnnTestBase {
     protected static void verifyServerStartedWithJaccFeature(LibertyServer server) {
         assertNotNull("JACC feature did not report it was starting", server.waitForStringInLog(MessageConstants.JACC_SERVICE_STARTING));
         assertNotNull("JACC feature did not report it was ready", server.waitForStringInLog(MessageConstants.JACC_SERVICE_STARTED));
+        String currentRepeatAction = RepeatTestFilter.getRepeatActionsAsString();
+        if (currentRepeatAction != null && currentRepeatAction.contains("_spec")) {
+            assertNotNull("spec user feature WAB did not start the PolicyFactory", server.waitForStringInLog("CWWKS2866I.*PolicyFactory"));
+            assertNotNull("spec user feature WAB did not start the PolicyConfigurationFactory", server.waitForStringInLog("CWWKS2866I.*PolicyConfigurationFactory"));
+        }
     }
 
     public void generateAccessDeniedResponseFromServlet(String queryString, String roleUser, String rolePwd) {

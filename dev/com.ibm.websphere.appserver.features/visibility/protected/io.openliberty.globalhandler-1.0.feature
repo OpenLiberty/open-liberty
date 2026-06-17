@@ -5,8 +5,8 @@ IBM-App-ForceRestart: uninstall, \
  install
 IBM-SPI-Package: com.ibm.wsspi.webservices.handler
 -features=\
-  io.openliberty.globalhandler1.0.internal.ee-10.0; ibm.tolerates:="11.0", \
-  io.openliberty.servlet.api-6.0; ibm.tolerates:="6.1"
+  io.openliberty.globalhandler1.0.internal.ee-10.0; ibm.tolerates:="11.0, 12.0", \
+  io.openliberty.servlet.api-6.0; ibm.tolerates:="6.1, 6.2"
 -jars=\
   io.openliberty.globalhandler.spi; location:=dev/spi/ibm/
 -files=\

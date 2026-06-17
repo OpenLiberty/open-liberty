@@ -415,7 +415,35 @@ goto:eof
   if not exist "!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" (
      mkdir "!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs"
   )
-  "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe"  //IS//%SERVER_NAME% --Startup=manual --DisplayName="%SERVER_NAME%" --Description="Open Liberty" ++DependsOn=Tcpip --LogPath="!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" --StdOutput=auto --StdError=auto --StartMode=exe --StartPath="%WLP_INSTALL_DIR%" --StartImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StartParams=start#%SERVER_NAME% --StopMode=exe --StopPath="%WLP_INSTALL_DIR%" --StopImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StopParams=stop#%SERVER_NAME% --ServiceUser=LocalSystem                                                                                                                          
+  @REM Register Windows Service using Apache Commons Daemon (prunsrv)
+  @REM Updates registry at: Computer\HKEY_LOCAL_MACHINE\SOFTWARE\WOW6432Node\Apache Software Foundation\Procrun 2.0\%SERVER_NAME%\Parameters
+  @REM
+  @REM Start Configuration:
+  @REM   --StartImage: Directly invokes server.bat
+  @REM   ++StartParams: Passes "start <servername>" to server.bat
+  @REM   Note: prunsrv //ES// (start) is ASYNCHRONOUS - returns without waiting for the server to start.
+  @REM         The startWinService subroutine polls for WINDOWS_SERVICE_START_TIMEOUT seconds after prunsrv returns.
+  @REM.        LIMITATION: Since prunsrv is asynchronous (returns almost immediately), the server might not be started when 
+  @REM.                 prunsrv command returns. Windows Services interface (services.msc) always reports that it is started.  
+  @REM                  If server start was invoked from Windows Services, server.bat runs in the background and waits for the
+  @REM                  server to start.  It waits for a hard-coded 30 seconds - not WINDOWS_SERVICE_START_TIMEOUT seconds, but 
+  @REM                  whether it waits the correct amount of time doesn't matter.  The output is not visible and the return 
+  @REM                  value is not checked.  This is a limitation of running prunsrv in exe mode, which is what we have to do
+  @REM                  in order to launch server.bat.               
+  @REM
+  @REM Stop Configuration:
+  @REM   --StopImage: Directly invokes server.bat
+  @REM   ++StopParams: Passes "stop <servername> --timeout <seconds>" to server.bat
+  @REM                 --timeout: Passed to Java process to control how long Java client waits for stop confirmation
+  @REM   --StopTimeout: Maximum seconds prunsrv waits for stop command to complete (should match the --timeout value)
+  @REM         Note: prunsrv //SS// (stop) is SYNCHRONOUS (because we added --StopTimeout option). Prunsrv waits up to 
+  @REM               StopTimeout seconds for server to stop
+  @REM
+  @REM IMPORTANT: Stop timeout value is resolved at registration time, not at runtime.
+  @REM            To change the stop timeout, you must unregister and re-register the service.
+  @REM            Modifying WINDOWS_SERVICE_STOP_TIMEOUT in server.env after registration does not affect the timeout.
+  @REM            WINDOWS_SERVICE_START_TIMEOUT is not used by Windows Services.  It is only used by the startWinService command.
+  "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe"  //IS//%SERVER_NAME% --Startup=manual --DisplayName="%SERVER_NAME%" --Description="Open Liberty" ++DependsOn=Tcpip --LogPath="!WLP_OUTPUT_DIR!\%SERVER_NAME%\logs" --StdOutput=auto --StdError=auto --StartMode=exe --StartPath="%WLP_INSTALL_DIR%\bin" --StartImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StartParams=start#%SERVER_NAME% --StopMode=exe --StopPath="%WLP_INSTALL_DIR%\bin" --StopImage="%WLP_INSTALL_DIR%\bin\server.bat" ++StopParams=stop#%SERVER_NAME%#--timeout=%WINDOWS_SERVICE_STOP_TIMEOUT% --StopTimeout=%WINDOWS_SERVICE_STOP_TIMEOUT% --ServiceUser=LocalSystem
   set RC=!errorlevel!
 goto:eof
 
@@ -438,33 +466,45 @@ goto:eof
      "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //ES//%SERVER_NAME%
      set RC=!errorlevel!
 
-     @rem  Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be "running" 
+     @REM  Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be "running"
      call:serverRunning !WINDOWS_SERVICE_START_TIMEOUT! 0
      call:javaCmdResult
-  )   
+  )
 goto:eof
 
 :stopWinService
   if NOT "%OS%" == "Windows_NT" goto:eof
   call:serverEnv
+  
+  @REM KNOWN LIMITATION:
+  @REM If the server is stopped immediately after starting (within ~1-2 seconds - an unlikely scenario), 
+  @REM there is a race condition in the Liberty kernel's FeatureManager that can cause the stop to
+  @REM timeout. This occurs because the stop is requested while features are still being
+  @REM activated, leading to lock contention in FeatureManager.deactivate(). The server
+  @REM will eventually stop successfully after the timeout period.
+  @REM This mainly occurs because Windows Services interface reports the service started before it actually starts.
+  
   call:serverExists true
   if %RC% == 2 goto:eof
+  
+  @REM prunsrv calls the "server stop --timeout %WINDOWS_SERVICE_START_TIMEOUT% command".  See "registerWinService" subroutine.
   "!WLP_INSTALL_DIR!\bin\tools\win\prunsrv.exe" //SS//%SERVER_NAME%
-  set RC=!errorlevel!
 
-  @rem Wait up to WINDOWS_SERVICE_START_TIMEOUT seconds for server status to be 1, meaning stopped.
-  @rem RC=0 indicates the server is running; ie the stop request failed.
-  @rem      Call stopServer directly. Stopping the server should stop the service.
-  @rem RC=1 is what we are expecting, meaning server stopped. 
-  @rem      Change RC to RC=0 to indicate success.
-  call:serverRunning !WINDOWS_SERVICE_STOP_TIMEOUT! 1
+  @REM The prunsrv call is synchronous.
+  @REM Check the final server status.
+  @REM RC=0 indicates the server is running (stop failed).
+  @REM RC=1 indicates the server is stopped (stop succeeded).
+  call:serverRunning 0 1
 
-  if !RC! EQU 0 (
-     @rem The service failed to stop, attempt to stop the server directly.
-     call:stopServer
-  ) else ( 
+  @REM Flip the return code to standard exit code convention:
+  @REM   RC=1 (stopped) --> RC=0 (success)
+  @REM   RC=0 (still running) --> RC=1 (failure)
+  if !RC! EQU 1 (
      set RC=0
+  ) else (
+     set RC=1
   )
+  
 goto:eof
 
 :unregisterWinService

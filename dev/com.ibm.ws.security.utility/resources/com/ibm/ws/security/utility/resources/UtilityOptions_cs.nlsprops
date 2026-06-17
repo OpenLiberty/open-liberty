@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ encode.option-desc.1.text=\tPokud nejsou zad\u00e1ny \u017e\u00e1dn\u00e9 argume
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tZadejte zp\u016fsob k\u00f3dov\u00e1n\u00ed hesla. Podporovan\u00e1 k\u00f3dov\u00e1n\u00ed jsou xor, aes, aes-128, a hash. V\u00fdchoz\u00ed k\u00f3dov\u00e1n\u00ed je xor. Aes \u0161ifruje pomoc\u00ed aes-256 bitov\u00e9ho kl\u00ed\u010de.\n\taes-128 lze pou\u017e\u00edt pro kompatibilitu s verzemi serveru p\u0159ed 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[kl\u00ed\u010d]
-encode.option-desc.key=\tZadejte kl\u00ed\u010d, kter\u00fd m\u00e1 b\u00fdt pou\u017eit p\u0159i k\u00f3dov\u00e1n\u00ed pomoc\u00ed AES. Tento \u0159et\u011bzec bude a vytvo\u0159\u00ed \u0161ifrovac\u00ed kl\u00ed\u010d, kter\u00fd se pou\u017eije k za\u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze serveru poskytnout pomoc\u00ed definov\u00e1n\u00edm prom\u011bnn\u00e9 wlp.password.encryption.key, jej\u00ed\u017e hodnota je key. Nen\u00ed-li tato volba zad\u00e1na, pou\u017eije se v\u00fdchoz\u00ed kl\u00ed\u010d.
+encode.option-desc.key=\tZadejte kl\u00ed\u010d, kter\u00fd m\u00e1 b\u00fdt pou\u017eit p\u0159i k\u00f3dov\u00e1n\u00ed pomoc\u00ed AES. Tento \u0159et\u011bzec bude\nslou\u017eit k odvozen\u00ed \u0161ifrovac\u00edho kl\u00ed\u010de AES, kter\u00fd se pou\u017e\u00edv\u00e1 k \u0161ifrov\u00e1n\u00ed a\nde\u0161ifrov\u00e1n\u00ed hesla. Kl\u00ed\u010d lze serveru p\u0159edat definov\u00e1n\u00edm\nprom\u011bnn\u00e9 ` wlp.password.encryption.key `, jej\u00ed\u017e hodnotou je\nkl\u00ed\u010d. Od verze 26.0.0.3 se ji\u017e nepou\u017e\u00edv\u00e1 v\u00fdchoz\u00ed kl\u00ed\u010d. M\u00edsto toho\nzadejte jeden z n\u00e1sleduj\u00edc\u00edch argument\u016f: --key, --base64Key, --aesConfigFile, nebo --keyring.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\tK za\u0161ifrov\u00e1n\u00ed a de\u0161ifrov\u00e1n\u00ed Base64-encodedAES-256 hesla se pou\u017eije kl\u00ed\u010d\n. Tento kl\u00ed\u010d poskytn\u011bte serveru definov\u00e1n\u00edm prom\u011bnn\u00e9\nwlp.aes.encryption.key. Pokud --base64Key je\nspecifikov\u00e1no, pak --aesConfigFile a --key nelze specifikovat.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -163,3 +163,11 @@ JCACHE_PUT_FAILURE.useraction=Address the cause of the error.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: The logged-out-cookie cache was unable to check the JCache cache for the cookie. The error is: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=The logged-out-cookie cache encountered an error when it tried to check the JCache cache for the cookie. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Address the cause of the error.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Logged-out tokens with an older format are detected. For the logged-out cache to be shared properly, ensure all servers in your environment are upgraded to the latest version.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=The system detected logged-out tokens that have an older format. For improved security and consistency, logged-out tokens have been migrated to the newer format.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=To ensure that logged-out tokens use the most recent format, upgrade all servers in your cluster or environment to the latest version.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: The logged-out-cookie cache encountered an error while migrating old tokens to hashed versions. The error is: {0}
+JCACHE_MIGRATION_FAILURE.explanation=The logged-out-cookie cache encountered an error during the one-time migration of old logged-out tokens to the new hashed format.
+JCACHE_MIGRATION_FAILURE.useraction=Review the error message and server logs to determine the cause of the failure. The migration will be retried on the next server restart.

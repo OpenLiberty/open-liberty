@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,13 +27,11 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 import com.ibm.websphere.simplicity.log.Log;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 
 @RunWith(FATRunner.class)
 @Mode(FULL)
-@MinimumJavaLevel(javaLevel = 17)
 public class ExceptionOccuredAfterAppIsAvailableTest30 extends AbstractSpringTests {
 
     @Override

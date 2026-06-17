@@ -27,8 +27,8 @@ public interface TransactionSupport
 
 	/**
 	 * begin to commit a transaction (which has been started by beginTx())
-	 * @param the transaction to be commited. this should matc the return value of beginTx()
-	 * if null is provided the application should commit all uncommited work.
+	 * @param the transaction to be committed. This should match the return value of beginTx()
+	 * if null is provided, it should commit all of the uncommitted work.
 	 * @return optional the transaction ID which has been committed.
 	 */
 	public Object commitTx(Object txKey);

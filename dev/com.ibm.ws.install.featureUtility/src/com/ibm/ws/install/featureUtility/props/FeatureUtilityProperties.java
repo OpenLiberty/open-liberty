@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -33,13 +33,15 @@ import com.ibm.ws.install.InstallException;
 import com.ibm.ws.install.internal.InstallLogUtils;
 import com.ibm.ws.install.internal.MavenRepository;
 import com.ibm.ws.kernel.boot.cmdline.Utils;
+import com.ibm.ws.crypto.util.AESKeyManager;
 
 public class FeatureUtilityProperties {
 
     private final static String FILEPATH_EXT = "/etc/featureUtility.properties";
     private final static String FeatureVerifyQualifier = "feature.verify";
     private final static Set<String> DEFINED_OPTIONS = new HashSet<>(Arrays.asList("proxyHost", "proxyPort",
-	    "proxyUser", "proxyPassword", "http.nonProxyHosts", "featureLocalRepo", FeatureVerifyQualifier));
+     "proxyUser", "proxyPassword", "http.nonProxyHosts", "featureLocalRepo", FeatureVerifyQualifier,
+     "wlp.password.encryption.key", "wlp.aes.encryption.key"));
     private static Map<String, String> definedVariables = new HashMap<>();
     private static List<MavenRepository> repositoryList = new ArrayList<>();
     private static List<String> bomIdList = new ArrayList<>();
@@ -49,9 +51,19 @@ public class FeatureUtilityProperties {
     private static boolean didFileParse;
 
     static {
+        // Load properties first, then initialize the KeyStringResolver
+        // This allows the resolver to read encryption keys from featureUtility.properties
+        // in addition to bootstrap.properties, server.env, and environment variables
         Properties properties = null;
         try {
             properties = loadProperties();
+            
+            // Initialize the KeyStringResolver AFTER loading properties but BEFORE parsing
+            // This ensures that any AES-encrypted passwords in featureUtility.properties
+            // can be properly decrypted using encryption keys from the same file
+            FeatureUtilityKeyResolver keyResolver = new FeatureUtilityKeyResolver(properties);
+            AESKeyManager.setKeyStringResolver(keyResolver);
+            
             didFileParse = parseProperties(properties);
         } catch (InstallException e) {
             // log here that could not be found.

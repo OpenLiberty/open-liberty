@@ -25,18 +25,18 @@ public class NettyVirtualConnectionImpl implements VirtualConnection {
     private boolean inetAddressingValid = false;
     private ConnectionDescriptor connDesc = null;
 
-    // NO-op VC used only as a non-null callback token
+    //no-op using for complete callback.
     public static final NettyVirtualConnectionImpl SHARED_NETTY_CALLBACK_VC = new NettyVirtualConnectionImpl(true);
 
     protected NettyVirtualConnectionImpl() {
         this(false);
     }
 
-    private NettyVirtualConnectionImpl(boolean sharedCallbackInstance){
+    private NettyVirtualConnectionImpl(boolean sharedCallbackInstance) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "constructor, this [" + this + "], sharedCallbackInstance [" + sharedCallbackInstance + "]");
         }
-        // Isolate an empty shared request stateStore from normal operation.
+        //Isolate an empty shared request stateStore from normal operation.
         this.stateStore = sharedCallbackInstance ? Collections.emptyMap() : new HashMap<Object, Object>();
     }
 

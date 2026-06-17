@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ encode.option-desc.1.text=\tHa nem adunk meg argumentumokat, akkor az eszk\u00f6
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tAdja meg, hogyan k\u00f3dolja a jelsz\u00f3t. T\u00e1mogatott k\u00f3dol\u00e1sok: xor, aes, aes-128, \u00e9s hash. Az alap\u00e9rtelmezett k\u00f3dol\u00e1s: xor. Az Aes titkos\u00edt\u00e1s egy aes-256 bites kulcs haszn\u00e1lat\u00e1val t\u00f6rt\u00e9nik.\n\taes-128 a 25.0.0.2 el\u0151tti szerverv\u00e1ltozatokkal val\u00f3 kompatibilit\u00e1s \u00e9rdek\u00e9ben haszn\u00e1lhat\u00f3. {2}
 encode.option-key.key=\ \ \ \ --key=[kulcs]
-encode.option-desc.key=\tMegad egy kulcsot az AES k\u00f3dol\u00e1shoz. Ez a karakterl\u00e1nc lesz titkos\u00edt\u00e1si kulcsot \u00e1ll\u00edt el\u0151, amelyet a titkos\u00edt\u00e1shoz \u00e9s a a jelsz\u00f3 visszafejt\u00e9s\u00e9re. A kulcsot a kiszolg\u00e1l\u00f3nak a k\u00f6vetkez\u0151 m\u00f3don lehet megadni a wlp.password.encryption.key v\u00e1ltoz\u00f3 defini\u00e1l\u00e1s\u00e1val, amelynek \u00e9rt\u00e9ke a kulcs. Ha ez a param\u00e9ter nincs megadva, akkor alap\u00e9rtelmezett kulcs ker\u00fcl felhaszn\u00e1l\u00e1sra.
+encode.option-desc.key=\tMegad egy kulcsot az AES k\u00f3dol\u00e1shoz. Ezt a karakterl\u00e1ncot\naz AES titkos\u00edt\u00e1si kulcs kisz\u00e1m\u00edt\u00e1s\u00e1hoz haszn\u00e1lj\u00e1k, amely a jelsz\u00f3\ntitkos\u00edt\u00e1s\u00e1hoz \u00e9s visszafejt\u00e9s\u00e9hez szolg\u00e1l. A kulcsot \u00fagy adhatjuk meg a szervernek, hogy\nmeghat\u00e1rozzuk az ` wlp.password.encryption.key ` v\u00e1ltoz\u00f3t, amelynek \u00e9rt\u00e9ke\na kulcs. Az \u201e 26.0.0.3 \u201d verzi\u00f3t\u00f3l kezdve az alap\u00e9rtelmezett kulcs m\u00e1r nem ker\u00fcl haszn\u00e1latra. Ehelyett\nadja meg az al\u00e1bbi param\u00e9terek egyik\u00e9t: --key, --base64Key, --aesConfigFile, vagy --keyring.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\tA Base64-encodedAES-256 kulcsot a jelsz\u00f3 titkos\u00edt\u00e1s\u00e1ra \u00e9s visszafejt\u00e9s\u00e9re kell haszn\u00e1lni\n. Adja meg ezt a kulcsot a szervernek a\nwlp.aes.encryption.key v\u00e1ltoz\u00f3 defini\u00e1l\u00e1s\u00e1val. Ha --base64Key meg van\nadva, akkor --aesConfigFile \u00e9s --key nem adhat\u00f3 meg.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile

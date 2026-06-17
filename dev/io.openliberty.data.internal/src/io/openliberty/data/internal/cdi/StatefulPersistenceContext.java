@@ -19,7 +19,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.LocalTransaction.LocalTransactionCoordinator;
 
 import io.openliberty.data.internal.DataProvider;
-import io.openliberty.data.internal.EntityManagerBuilder;
+import io.openliberty.data.internal.EntityHandlerFactory;
 import io.openliberty.data.internal.Util;
 import jakarta.annotation.PreDestroy;
 import jakarta.enterprise.context.RequestScoped;
@@ -30,7 +30,7 @@ import jakarta.transaction.Status;
  * Manages the life cycle of persistence context (an EntityManager)
  * for each (request scope, repository group) combination in which a
  * stateful repository is accessed. A repository group is represented
- * by an EntityManagerBuilder. The same EntityManager should be used
+ * by an EntityHandlerFactory. The same EntityManager should be used
  * throughout the life cycle of the request scope and closed when the
  * scope ends.
  */
@@ -41,24 +41,24 @@ public class StatefulPersistenceContext {
 
     /**
      * Keeps track of the active EntityManager instance for each
-     * repository group (EntityManagerBuilder) that is used within
+     * repository group (EntityHandlerFactory) that is used within
      * the scope of the current request.
      */
-    private final Map<EntityManagerBuilder, EntityManager> entityManagers = //
+    private final Map<EntityHandlerFactory, EntityManager> entityManagers = //
                     new ConcurrentHashMap<>();
 
     /**
      * Closes all EntityManagers at the end of the request scope.
      */
     @PreDestroy
-    private void dispose() throws Exception {
+    private void dispose() {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
 
-        for (Iterator<Entry<EntityManagerBuilder, EntityManager>> it = //
+        for (Iterator<Entry<EntityHandlerFactory, EntityManager>> it = //
                         entityManagers.entrySet().iterator(); //
                         it.hasNext();)
             try {
-                Entry<EntityManagerBuilder, EntityManager> entry = it.next();
+                Entry<EntityHandlerFactory, EntityManager> entry = it.next();
                 DataProvider provider = entry.getKey().provider;
                 EntityManager em = entry.getValue();
 
@@ -93,7 +93,7 @@ public class StatefulPersistenceContext {
                 } catch (Exception x) {
                     // TODO better NLS message for error writing changes to database
                     Tr.error(tc, "CWWKD1000.repo.general.err", "", "", x.toString());
-                    throw x;
+                    x.printStackTrace(System.err);
                 } finally {
                     try {
                         if (startedTransaction)
@@ -121,7 +121,7 @@ public class StatefulPersistenceContext {
                     } catch (Exception x) {
                         // TODO better NLS message for error comitting changes to database
                         Tr.error(tc, "CWWKD1000.repo.general.err", "", "", x.toString());
-                        throw x;
+                        x.printStackTrace(System.err);
                     } finally {
                         em.close();
                     }
@@ -133,17 +133,17 @@ public class StatefulPersistenceContext {
 
     /**
      * Obtains the EntityManager instance for the current request scope and
-     * the given builder, which represents a group of one or more repositories
+     * the given factory, which represents a group of one or more repositories
      * that share the same dataStore. If one does not exist yet, then the
-     * builder is used to create a new EntityManager to associate with the
+     * factory is used to create a new EntityManager to associate with the
      * current request scope.
      *
-     * @param builder builder that creates an EntityManager for a group of
+     * @param factory factory that creates an EntityManager for a group of
      *                    one or more repositories that have the same dataStore.
      * @return EntityManager instance.
      */
-    public EntityManager get(EntityManagerBuilder builder) {
-        return entityManagers.computeIfAbsent(builder,
-                                              EntityManagerBuilder::createEntityManager);
+    public EntityManager get(EntityHandlerFactory factory) {
+        return entityManagers.computeIfAbsent(factory,
+                                              EntityHandlerFactory::createEntityManager);
     }
 }

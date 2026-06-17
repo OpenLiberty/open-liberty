@@ -58,7 +58,7 @@ public class PathUtils {
      *
      * The result is computed by {@link #isOsCaseSensitive()}.
      */
-    private static boolean IS_OS_CASE_SENSITIVE = isOsCaseSensitive();
+    static boolean IS_OS_CASE_SENSITIVE = isOsCaseSensitive();
 
     /**
      * File name restricted characters. Used by {@link #replaceRestrictedCharactersInFileName(String)}.
@@ -71,11 +71,11 @@ public class PathUtils {
 
     /**
      *
-     * @deprecated - Instead use !isOsCaseSensitive()
+     * @deprecated - Instead use !IS_OS_CASE_SENSITIVE
      */
     @Deprecated
     static boolean isPossiblyCaseInsensitive() {
-        return !isOsCaseSensitive();
+        return !IS_OS_CASE_SENSITIVE;
     }
 
     /**
@@ -140,9 +140,8 @@ public class PathUtils {
             // Include diagnostic information about the temp directory configuration
             String tmpDir = System.getProperty("java.io.tmpdir", "unknown");
             String osName = System.getProperty("os.name", "unknown");
-            String userName = System.getProperty("user.name", "unknown");
             FFDCFilter.processException(e, PathUtils.class.getName(), "isOsCaseSensitive",
-                                        new Object[] { "java.io.tmpdir=" + tmpDir, "os.name=" + osName, "user.name=" + userName });
+                                        new Object[] { "java.io.tmpdir=" + tmpDir, "os.name=" + osName });
             return false;
         } finally {
             if (caseSensitiveFile != null) {
@@ -753,31 +752,28 @@ public class PathUtils {
     }
 
     /**
-     * Answer the last file name of a path, using the forward slash ('/') as the
-     * path separator character. Answer the path element which follows the last
-     * forward slash of the path.
-     *
-     * Answer the entire path if the path contains no path separator.
-     *
-     * For example:
-     *
-     * For "/parent/child" answer "child".
-     *
-     * For "child" answer "child".
-     *
-     * An exception will be thrown if the path ends with a trailing slash.
-     *
-     * @param path The path from which to answer the last file name.
-     *
-     * @return The last file name of the path.
-     */
+    * Returns the path element following the last '/' character.
+    *
+    * <p>If the path contains no '/', the entire path is returned.</p>
+    *
+    * <p>If the path ends with '/', an empty string is returned.</p>
+    *
+    * <p>Examples:</p>
+    * <ul>
+    * <li>{@code getName("/parent/child")} returns {@code "child"}</li>
+    * <li>{@code getName("child")} returns {@code "child"}</li>
+    * <li>{@code getName("/parent/")} returns {@code ""}</li>
+    * <li>{@code getName("/")} returns {@code ""}</li>
+    * </ul>
+    *
+    * @param pathAndName the path from which to extract the last path element
+    * @return the path element following the last '/' character
+     
+    */
     public static String getName(String pathAndName) {
         int i = pathAndName.lastIndexOf('/');
         if (i == -1) {
             return pathAndName;
-        }
-        if (pathAndName.length() == i) {
-            return "/";
         }
         return pathAndName.substring(i + 1);
     }

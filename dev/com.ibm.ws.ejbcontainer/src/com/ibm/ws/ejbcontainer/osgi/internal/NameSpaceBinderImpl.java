@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -265,22 +265,22 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * @param hr               the HomeRecord of the EJB
      * @param bindingName      the JNDI binding name
      * @param isSimpleName     Flag used to force creation of an AmbiguousEJBReference if an
-     *                          ambiguous simple name binding is detected
+     *                             ambiguous simple name binding is detected
      * @param isDefaultBinding Flag used if this is a default binding
      */
     private void bindLegacyRemoteBinding(EJBBinding bindingObject, HomeRecord hr, String bindingName, boolean isSimpleName, boolean isDefaultBinding) throws NamingException {
         final boolean isTraceOn = TraceComponent.isAnyTracingEnabled();
         EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
         if (remoteRuntime != null) {
-            
+
             if (!remoteRuntime.isRemoteEjbAdapterAvailable()) {
                 //UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interface of the {1} bean in the {2} module of the {3} application to the {4} name location. The ORB service is unavailable.
                 BeanMetaData bmd = hr.getBeanMetaData();
                 Tr.warning(tc, "UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W",
-                       new Object[] { bindingObject.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), bindingName });
+                           new Object[] { bindingObject.interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), bindingName });
                 return;
             }
-            
+
             BindingsHelper bh = BindingsHelper.getRemoteHelper(hr);
             BundleContext bc = ejbRemoteRuntimeServiceRef.getReference().getBundle().getBundleContext();
             BeanMetaData bmd = hr.getBeanMetaData();
@@ -556,25 +556,30 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                              boolean local,
                              boolean deferred) throws NamingException {
         EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
-        if (!local && remoteRuntime != null) {
-            if (remoteRuntime.isRemoteEjbAdapterAvailable()) {
-              
-                HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
-                if (hrImpl.remoteBindingData == null) {
-                    BeanMetaData bmd = hr.getBeanMetaData();
-                    EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
-                    EJBApplicationMetaData amd = mmd.getEJBApplicationMetaData();
-                    String appLogicalName = amd.isStandaloneModule() ? null : amd.getLogicalName();
-                    hrImpl.remoteBindingData = remoteRuntime.createBindingData(bmd, appLogicalName, mmd.ivLogicalName);
-                }
+        if (!local) {
+            if (remoteRuntime != null) {
+                if (remoteRuntime.isRemoteEjbAdapterAvailable()) {
 
-                remoteRuntime.bind(hrImpl.remoteBindingData, interfaceIndex, interfaceName);
+                    HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
+                    if (hrImpl.remoteBindingData == null) {
+                        BeanMetaData bmd = hr.getBeanMetaData();
+                        EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
+                        EJBApplicationMetaData amd = mmd.getEJBApplicationMetaData();
+                        String appLogicalName = amd.isStandaloneModule() ? null : amd.getLogicalName();
+                        hrImpl.remoteBindingData = remoteRuntime.createBindingData(bmd, appLogicalName, mmd.ivLogicalName);
+                    }
+
+                    remoteRuntime.bind(hrImpl.remoteBindingData, interfaceIndex, interfaceName);
+                } else {
+                    //UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interface of the {1} bean in the {2} module of the {3} application to the {4} name location. The ORB service is unavailable.
+                    BeanMetaData bmd = hr.getBeanMetaData();
+                    String bindingName = bmd.enterpriseBeanName + '!' + interfaceName;
+                    Tr.warning(tc, "UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W",
+                               new Object[] { interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), bindingName });
+                    hr.remoteBindingDeferred = true;
+                }
             } else {
-                //UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interface of the {1} bean in the {2} module of the {3} application to the {4} name location. The ORB service is unavailable.
-                BeanMetaData bmd = hr.getBeanMetaData();
-                String bindingName = bmd.enterpriseBeanName + '!' + interfaceName;
-                Tr.warning(tc, "UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W",
-                           new Object[] { interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), bindingName });      
+                hr.remoteBindingDeferred = true;
             }
         }
 
@@ -647,7 +652,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Unbind the names from the java:app name space.
      *
      * @param names List of names to remove from the
-     *            application name space.
+     *                  application name space.
      */
     @Override
     public void unbindJavaApp(List<String> names) {
@@ -679,6 +684,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                 }
             } finally {
                 writeLock.unlock();
+                hr.remoteBindingDeferred = true;
             }
         }
 
@@ -732,7 +738,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Unbind the names from the ejblocal: name space.
      *
      * @param names List of names to remove from the
-     *            application name space.
+     *                  application name space.
      */
     @Override
     public void unbindEJBLocal(List<String> names) throws NamingException {
@@ -743,7 +749,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Undoes the bindings from local namespace.
      *
      * @param names List of names to remove from the
-     *            application name space.
+     *                  application name space.
      */
     @Override
     public void unbindLocalColonEJB(List<String> names) throws NamingException {
@@ -754,7 +760,7 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
      * Undoes the root remote bindings.
      *
      * @param names List of names to remove from the
-     *            application name space.
+     *                  application name space.
      */
     @Override
     public void unbindRemote(List<String> names) {

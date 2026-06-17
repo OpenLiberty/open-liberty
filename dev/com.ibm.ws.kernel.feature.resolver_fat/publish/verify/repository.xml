@@ -31171,69 +31171,6 @@
         </constituent>
     </feature>
     <feature>
-        <file>io.openliberty.data-1.1.mf</file>
-        <name>data-1.1</name>
-        <symbolic-name>io.openliberty.data-1.1</symbolic-name>
-        <short-name>data-1.1</short-name>
-        <version>1.0.0</version>
-        <ibm-version>2</ibm-version>
-        <supported-version/>
-        <visibility>PUBLIC</visibility>
-        <singleton/>
-        <restart>NEVER</restart>
-        <constituent>
-            <symbolic-name>io.openliberty.data_1.1-javadoc.zip</symbolic-name>
-            <location>dev/api/ibm/javadoc/io.openliberty.data_1.1-javadoc.zip</location>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=file</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>com.ibm.websphere.appserver.eeCompatible-11.0</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.cdi-4.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.jakarta.data-1.1</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.subsystem.feature</type>
-            <version-range>0.0.0</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.data</symbolic-name>
-            <location>dev/api/ibm/,lib/</location>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.data.internal</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-        <constituent>
-            <symbolic-name>io.openliberty.data.1.1.internal</symbolic-name>
-            <start-level>12</start-level>
-            <activation-type>PARALLEL</activation-type>
-            <type>type=osgi.bundle</type>
-            <version-range>[1.0.0,1.1.0)</version-range>
-        </constituent>
-    </feature>
-    <feature>
         <file>io.openliberty.data1.0-jdbc.mf</file>
         <name>io.openliberty.data1.0-jdbc</name>
         <symbolic-name>io.openliberty.data1.0-jdbc</symbolic-name>

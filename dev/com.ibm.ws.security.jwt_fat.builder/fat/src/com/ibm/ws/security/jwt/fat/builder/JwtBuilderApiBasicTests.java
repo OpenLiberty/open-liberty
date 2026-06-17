@@ -85,7 +85,6 @@ import componenttest.topology.impl.LibertyServer;
 
 @Mode(TestMode.FULL)
 @RunWith(FATRunner.class)
-@SkipJavaSemeruWithFipsEnabledRule
 public class JwtBuilderApiBasicTests extends CommonSecurityFat {
 
     @Server("com.ibm.ws.security.jwt_fat.builder")
@@ -103,7 +102,7 @@ public class JwtBuilderApiBasicTests extends CommonSecurityFat {
     @Rule
     public static final TestRule conditIgnoreRule = new ConditionalIgnoreRule();
 
-    @ClassRule
+    @Rule
     public static final SkipJavaSemeruWithFipsEnabled skipJavaSemeruWithFipsEnabled = new SkipJavaSemeruWithFipsEnabled("com.ibm.ws.security.jwt_fat.builder");
 
     private static final JwtBuilderActions actions = new JwtBuilderActions();

@@ -3,8 +3,8 @@ symbolicName=io.openliberty.beanValidationCDI-3.1
 visibility=private
 IBM-App-ForceRestart: install, uninstall
 IBM-Provision-Capability: \
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.cdi-4.1))", \
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.beanValidation-3.1))"
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.cdi-4.1)(osgi.identity=io.openliberty.cdi-5.0)))", \
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.beanValidation-3.1)(osgi.identity=io.openliberty.beanValidation-4.0)))"
 IBM-Install-Policy: when-satisfied
 -bundles=\
   com.ibm.ws.beanvalidation.v20.cdi.jakarta,\

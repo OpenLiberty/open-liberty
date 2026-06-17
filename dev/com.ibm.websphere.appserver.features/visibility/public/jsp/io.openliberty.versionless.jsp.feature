@@ -3,7 +3,7 @@ symbolicName=io.openliberty.versionless.jsp
 visibility=public
 IBM-ShortName: jsp
 Subsystem-Name: jsp
--features=io.openliberty.internal.versionless.jsp-2.2; ibm.tolerates:="2.3,3.0,3.1,4.0"
+-features=io.openliberty.internal.versionless.jsp-2.2; ibm.tolerates:="2.3,3.0,3.1,4.0,4.1"
 kind=ga
 edition=core
 WLP-InstantOn-Enabled: true

@@ -35,12 +35,13 @@ public final class HttpDecoderConfig implements Cloneable {
     private int maxHeaderSize = HttpObjectDecoder.DEFAULT_MAX_HEADER_SIZE;
     private int initialBufferSize = HttpObjectDecoder.DEFAULT_INITIAL_BUFFER_SIZE;
     private boolean strictLineParsing = HttpObjectDecoder.DEFAULT_STRICT_LINE_PARSING;
-    
+    private boolean useRfc9112TransferEncoding = HttpObjectDecoder.RFC9112_TRANSFER_ENCODING;
+
     // Liberty Http Options
     private int limitFieldSize = 32768;
     private int limitNumHeaders = 500;
     public boolean libertyHttpHeaderOptionsSet = false;
-    
+
     /**
      * Returns whether or not Liberty specific Http Options
      * have been set for headers. This should be queried in
@@ -84,8 +85,6 @@ public final class HttpDecoderConfig implements Cloneable {
     	libertyHttpHeaderOptionsSet = true;
         return this;
     }
-    
-    
 
     public int getInitialBufferSize() {
         return initialBufferSize;
@@ -295,6 +294,28 @@ public final class HttpDecoderConfig implements Cloneable {
      */
     public HttpDecoderConfig setStrictLineParsing(boolean strictLineParsing) {
         this.strictLineParsing = strictLineParsing;
+        return this;
+    }
+
+    public boolean isUseRfc9112TransferEncoding() {
+        return useRfc9112TransferEncoding;
+    }
+
+    /**
+     * The RFC 9112 specification is more strict than RFC 7230 with regards to having {@code Transfer-Encoding} and
+     * {@code Content-Length} headers in the same HTTP message. Senders are now forbidden from including both headers
+     * in the same message, while servers may reject such requests. When this setting is set to {@code true}, which
+     * is the default, then such messages will be <em>rejected.</em>
+     * <p>
+     * When this setting is set to {@code false}, it restores the RFC 7230 behavior of instead removing any
+     * {@code Content-Length} headers when {@code Transfer-Encoding} headers are present.
+     * @param useRfc9112TransferEncoding Whether to reject messages with both {@code Transfer-Encoding} and
+     *                                   {@code Content-Length} headers.
+     * @return This decoder config.
+     * @see HttpObjectDecoder#handleTransferEncodingChunkedWithContentLength(HttpMessage)
+     */
+    public HttpDecoderConfig setUseRfc9112TransferEncoding(boolean useRfc9112TransferEncoding) {
+        this.useRfc9112TransferEncoding = useRfc9112TransferEncoding;
         return this;
     }
 

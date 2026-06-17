@@ -96,6 +96,6 @@ public interface SIPTransaction
 		throws SipParseException;	
 			
 	/** process transaction transport error */
-	public void prossesTransportError();		
+	public void processTransportError();
 		
 }

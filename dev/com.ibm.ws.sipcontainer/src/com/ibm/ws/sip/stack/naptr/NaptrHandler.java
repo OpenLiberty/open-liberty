@@ -356,8 +356,8 @@ public class NaptrHandler implements NaptrRequestListener {
 		if (c_logger.isTraceDebugEnabled()) {
 			c_logger.traceDebug(this, "useNaptr", "Call to NAPTR resolve the targetUrl = " + _target);
 		}
-		// this is to avoid loops if we got here after sending to a message
-		// conext
+		// avoid loops in case we got here 
+		// after sending to a message context
 		// for which a Naptr Request was already sent
 		if (_messageContext.isNaptrCalled()) {
 			return;

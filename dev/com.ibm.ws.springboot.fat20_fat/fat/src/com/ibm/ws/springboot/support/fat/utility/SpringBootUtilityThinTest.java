@@ -26,6 +26,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
@@ -69,6 +71,7 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
     private final static String PROPERTY_KEY_INSTALL_DIR = "install.dir";
     private static String SPRING_BOOT_20_BASE_THIN = SPRING_BOOT_20_APP_BASE.substring(0, SPRING_BOOT_20_APP_BASE.length() - 3) + SPRING_APP_TYPE;
     private static String SPRING_BOOT_20_WAR_THIN = SPRING_BOOT_20_APP_WAR.substring(0, SPRING_BOOT_20_APP_WAR.length() - 3) + SPRING_APP_TYPE;
+    private static final String extractingFilesMessage = "Extracting files to ";
     private static String installDir = null;
     private static boolean wlpLibExtractCreated;
     private String application = SPRING_BOOT_20_APP_BASE;
@@ -321,6 +324,17 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testDefaultHostWithAppPortRunLibertyUberJarWithSSL() throws Exception {
+        String os = System.getProperty("os.name");
+        String javaVersion = System.getProperty("java.specification.version");
+
+        if ((os.equals("z/OS") || os.equals("OS/400")) && javaVersion.equals("1.8")) {
+            // Skipping the test because of the following error
+            // E CWWKE0701E: bundle com.ibm.ws.zos.core:1.0.114.cl260620260520-1901 (24)[com.ibm.ws.zos.core.internal.CoreBundleActivator(22)] : The activate method has thrown an exception java.lang.UnsatisfiedLinkError
+            // Caused by: java.lang.UnsatisfiedLinkError: /u/MSTONE1/wlpExtract/libertyUber_1779954574138017627/wlp/lib/native/zos/s390x/libzNativeServices.so (EDC5111I Permission denied.)
+            Log.warning(getClass(), "Skipping the test for " + os + " java version " + javaVersion);
+            return;
+        }
+
         String method = "testDefaultHostWithAppPortRunLibertyUberJarWithSSL";
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();
@@ -386,9 +400,9 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
             // Printing trace logs to understand why the application has not started
             if (line == null) {
                 if (extractedWLP != null) {
-                    String extractedTraceLogsLocation = extractedWLP + "/usr/servers/" + server.getServerName() + "/logs/trace.log";
+                    Path extractedTraceLogsLocation = Paths.get(extractedWLP, "usr", "servers", server.getServerName(), "logs", "trace.log");
                     Log.info(getClass(), method, "==============================================BELOW ARE THE WLP TRACE LOGS EXTRACTED FROM " + extractedTraceLogsLocation);
-                    printTrace(extractedTraceLogsLocation, method);
+                    printTrace(extractedTraceLogsLocation.toString(), method);
                     Log.info(getClass(), method, "========================================================================================================================");
                 } else {
                     Log.warning(getClass(), "Extraced WLP location not found in logs");
@@ -429,8 +443,13 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
                 Log.info(getClass(), method, line);
                 if (line.contains(message)) {
                     break;
-                } else if (line.contains("Extracting files to")) {
-                    extractedWLP = line.substring(line.indexOf("/"), line.length());
+                } else if (line.contains(extractingFilesMessage)) {
+                    // This line will have something like the following in case of linux and windows respectively
+                    // Extracting files to /path/to/extract/location
+                    // Extracting files to c:\\path\to\extract\location
+                    // Must handle paths with / or \
+                    int startIndex = line.indexOf(extractingFilesMessage) + extractingFilesMessage.length();
+                    extractedWLP = line.substring(startIndex).trim();
                 }
                 line = readTimeout(reader);
             }

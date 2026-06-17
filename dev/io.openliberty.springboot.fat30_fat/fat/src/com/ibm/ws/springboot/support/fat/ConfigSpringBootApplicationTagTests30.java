@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -25,12 +25,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.config.SpringBootApplication;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
 public class ConfigSpringBootApplicationTagTests30 extends AbstractSpringTests {
     @Override
     public Set<String> getFeatures() {

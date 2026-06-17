@@ -28,11 +28,12 @@ tested.features:\
 # Uncomment to use remote docker host to simulate continuous build behavior.
 #fat.test.use.remote.docker: true
 
-fat.test.container.images: public.ecr.aws/elastic/logstash:8.19.14
+fat.test.container.images: public.ecr.aws/elastic/logstash:9.3.3
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
     com.ibm.ws.logging;version=latest,\
     httpunit:httpunit;version=1.5.4,\
     org.json:json;version=20080701,\
-    io.openliberty.org.testcontainers;version=latest
+    io.openliberty.org.testcontainers;version=latest,\
+    fattest.simplicity;version=latest

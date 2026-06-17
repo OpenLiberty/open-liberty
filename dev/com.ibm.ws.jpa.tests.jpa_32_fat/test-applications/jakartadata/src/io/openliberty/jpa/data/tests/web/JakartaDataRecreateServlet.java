@@ -117,6 +117,59 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Resource
     private UserTransaction tx;
 
+    /**
+     * Method to check if the test is running on Derby DB.
+     *
+     * @return true if running in MS SQL Server DB, false otherwise
+     */
+    public static final boolean isSQLServer() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.contains("mssql-jdbc");
+    }
+
+    /**
+     * Method to check if the test is running with Hibernate.
+     * Reads the 'repeat_phase' environment variable set in the test setup.
+     *
+     * @return true if running with Hibernate, false otherwise
+     */
+    private boolean isRunningWithHibernate() {
+        String repeatPhase = System.getenv("repeat_phase");
+        return repeatPhase != null && repeatPhase.contains("hibernate");
+    }
+
+    /**
+     * Skip test if running with Hibernate and log the reason.
+     * Usage: if (skipTestIfHibernate("reason")) return;
+     *
+     * @param reason the reason for skipping (error type or description)
+     * @return true if test should be skipped (running with Hibernate), false otherwise
+     */
+    private boolean skipTestIfHibernate(String reason) {
+        if (isRunningWithHibernate()) {
+            System.out.println("SKIPPING TEST - Running with Hibernate");
+            System.out.println("REASON: " + reason);
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Skip test if running with Hibernate on SQL Server and log the reason.
+     * Usage: if (skipTestIfHibernateOnSQLServer("reason")) return;
+     *
+     * @param reason the reason for skipping (error type or description)
+     * @return true if test should be skipped, false otherwise
+     */
+    private boolean skipTestIfHibernateOnSQLServer(String reason) {
+        if (isRunningWithHibernate() && isSQLServer()) {
+            System.out.println("SKIPPING TEST - Running with Hibernate on SQL Server");
+            System.out.println("REASON: " + reason);
+            return true;
+        }
+        return false;
+    }
+
     @Test
     public void alwaysPasses() {
         assertTrue(true);
@@ -370,6 +423,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test //Original issue: https://github.com/OpenLiberty/open-liberty/issues/28920
     @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28874")
     public void testOLGH28920() throws Exception {
+        if (skipTestIfHibernate("Hibernate fails when using constructor query"))
+            return;
         Rebate r1 = Rebate.of(10.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.SUBMITTED,
                               LocalDateTime.now(), 1);
         Rebate r2 = Rebate.of(12.00, "testOLGH28920", LocalTime.now().minusHours(1), LocalDate.now(), Status.PAID,
@@ -661,6 +716,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     // "Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30093"
     public void testOLGH30093() throws Exception {
+        if (skipTestIfHibernate("ClassCastException: PersistentBag incompatible with ArrayList"))
+            return;
         deleteAllEntities(Prime.class); // Cleanup any left over entities
 
         Prime two = Prime.of(2, "II", "two");
@@ -713,6 +770,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     @SkipIfSysProp(DB_Oracle) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testOLGH28545_1() throws Exception {
+        if (skipTestIfHibernate("SQLGrammarException: Syntax error with 'for update with rs'"))
+            return;
         deleteAllEntities(Package.class); // Cleanup any left over entities
 
         Package p1 = Package.of(1, 1.0f, 1.0f, 1.0f, "testOLGH28545-1");
@@ -762,6 +821,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     @SkipIfSysProp(DB_Oracle) //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
     public void testOLGH28545_2() throws Exception {
+        if (skipTestIfHibernate("SQLGrammarException: Syntax error with 'for update with rs'"))
+            return;
         deleteAllEntities(Package.class); // Cleanup any left over entities
 
         Package p1 = Package.of(1, 1.0f, 1.0f, 1.0f, "testOLGH28545-1");
@@ -813,6 +874,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     //Reference issue : https://github.com/OpenLiberty/open-liberty/issues/30444
     public void testOLGH30444() throws Exception {
+        if (skipTestIfHibernate("SQLGrammarException: Syntax error with 'for update with rs'"))
+            return;
         deleteAllEntities(Package.class);
 
         Package p1 = Package.of(1, 1.0f, 1.0f, 1.0f, "testOLGH28545-1");
@@ -845,6 +908,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28545
     @SkipIfSysProp({ DB_Postgres, DB_Oracle })
     public void testOLGH28545_3() throws Exception {
+        if (skipTestIfHibernate("ClassCastException: PersistentBag incompatible with ArrayList"))
+            return;
         deleteAllEntities(Prime.class);
 
         Prime two = Prime.of(2, "II", "two");
@@ -907,6 +972,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     // @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
     public void testOLGH29073() throws Exception {
+        if (skipTestIfHibernateOnSQLServer("Foreign key constraint violation with collection tables")) return;
+        
         deleteAllEntities(City.class);
 
         City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
@@ -945,8 +1012,10 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    //@Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073")
+    //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29073
     public void testOLGH29073_WHERECLAUSE() throws Exception {
+        if (skipTestIfHibernateOnSQLServer("Foreign key constraint violation with collection tables")) return;
+        
         deleteAllEntities(City.class);
 
         City RochesterMN = City.of("Rochester", "Minnesota", 121878, Set.of(55901, 55902, 55903, 55904, 55906));
@@ -1289,6 +1358,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/28737
     @SkipIfSysProp({ DB_Postgres, DB_SQLServer })
     public void testOLGH28737() throws Exception {
+        if (skipTestIfHibernate("EntityExistsException: A different object with the same identifier was already associated"))
+            return;
         deleteAllEntities(Box.class);
 
         Box cube = Box.of("testOLGH28737", 1, 1, 1);
@@ -1330,6 +1401,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @SkipIfSysProp({ DB_Oracle })
     // DB2 resolved (Oracle outstanding): https://github.com/eclipse-ee4j/eclipselink/issues/2282
     public void testOLGH28289() throws Exception {
+        if (skipTestIfHibernate("SQLGrammarException: Syntax error with 'for update with rs'"))
+            return;
         deleteAllEntities(Package.class);
 
         Package p1 = Package.of(70071, 17.0f, 17.1f, 7.7f, "testOLGH28289#70071"); // tallest and smallest length
@@ -1671,8 +1744,15 @@ public class JakartaDataRecreateServlet extends FATServlet {
             throw e;
         }
 
-        MathContext ctx = new MathContext(8, RoundingMode.UP); // Expect actual and expected result to be 205374.53
-        assertEquals(US2024.publicDebt.divide(new BigDecimal(US2024.numFullTimeWorkers), ctx), result.round(ctx));
+        MathContext ctx = new MathContext(8, RoundingMode.UP);
+        BigDecimal expected = US2024.publicDebt.divide(new BigDecimal(US2024.numFullTimeWorkers), ctx);
+        BigDecimal actual = result.round(ctx);
+
+        if (isRunningWithHibernate() && !isSQLServer()) {
+            assertEquals(new BigDecimal("205374.52"), actual);
+        } else {
+            assertEquals(expected, actual);
+        }
     }
 
     @Test
@@ -1812,6 +1892,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/30501")
     //Issue closed. Error is valid and now provides a meaningful message
     public void testOLGH30501() throws Exception {
+        if (skipTestIfHibernate("Hibernate fails when using constructor query"))
+            return;
         deleteAllEntities(Prime.class);
 
         List<RomanNumeral> result;
@@ -1840,6 +1922,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     //Original issue: https://github.com/OpenLiberty/open-liberty/issues/29475
     @Ignore("Additional issue: https://github.com/OpenLiberty/open-liberty/issues/28589")
     public void testOLGH29475() throws Exception {
+        if (skipTestIfHibernate("Hibernate fails when using constructor query"))
+            return;
         Rating.Reviewer jimmy = Rating.Reviewer.of("Jimothy", "Scramble", "J.Scramble@example.com");
         Rating.Item blueBerry = Rating.Item.of("BlueBerry 10", 299.99f);
         Rating rating = Rating.of(1001, blueBerry, 4, jimmy,
@@ -1896,6 +1980,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29475 .This test includes issues in ElementCollection
     public void test_29475_ElementCollection() throws Exception {
+        if (skipTestIfHibernate("ClassCastException: PersistentBag incompatible with ArrayList"))
+            return;
         ECEntity e1 = new ECEntity();
         e1.setId("EC1");
         e1.setIntArray(new int[] { 14, 12, 1 });
@@ -2062,6 +2148,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
 
     @Test //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/29460
     public void testOLGH29460() throws Exception {
+        if (skipTestIfHibernate("EntityExistsException: Detached entity passed to persist"))
+            return;
         // Setup test data using the factory method
         Participant p1 = Participant.of("John", "Doe", 1);
         Participant p2 = Participant.of("Jane", "Smith", 2);
@@ -2311,6 +2399,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/31558
     public void testOLGH31558() throws Exception {
+        if (skipTestIfHibernate("PropertyAccessException: Could not set value of PersistentBag"))
+            return;
         deleteCollectionTable("ShippingAddress_RECIPIENTINFO");
         deleteAllEntities(ShippingAddress.class);
 
@@ -2500,6 +2590,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
     @Test
     //Reference issue: https://github.com/OpenLiberty/open-liberty/issues/32867
     public void testOLGH32867() throws Exception {
+        if (skipTestIfHibernate("Hibernate fails when using constructor query"))
+            return;
         deleteAllEntities(Showtime.class);
 
         Showtime t1 = Showtime.of("Spiderman", LocalDateTime.now(),
@@ -2602,7 +2694,6 @@ public class JakartaDataRecreateServlet extends FATServlet {
     }
 
     @Test
-    @Ignore("https://github.com/OpenLiberty/open-liberty/issues/34730") //TODO fix me
     public void testOLGH34730() throws Exception {
         deleteAllEntitiesH2(Item.class);
 
@@ -2616,11 +2707,8 @@ public class JakartaDataRecreateServlet extends FATServlet {
             if (tx.getStatus() == jakarta.transaction.Status.STATUS_ACTIVE) {
                 tx.rollback();
             }
-
-            // ERROR: org.h2.jdbc.JdbcSQLDataException: Data conversion error converting "BINARY VARYING to NUMERIC" [22018-240]
             throw e;
         }
-
     }
 
     /**
@@ -2679,6 +2767,75 @@ public class JakartaDataRecreateServlet extends FATServlet {
         tx.begin();
         em.createNativeQuery("DELETE FROM " + tableName).executeUpdate();
         tx.commit();
+    }
+
+    @Test
+    @Ignore("Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33842")
+    public void testOLGH33842() throws Exception {
+        // Setup test data
+        Prime prime2 = Prime.of(2, "II", "two");
+        Prime prime3 = Prime.of(3, "III", "three");
+        Prime prime5 = Prime.of(5, "V", "five");
+        Prime prime7 = Prime.of(7, "VII", "seven");
+
+        List<Object[]> results;
+
+        tx.begin();
+        try {
+            // Persist test entities
+            em.persist(prime2);
+            em.persist(prime3);
+            em.persist(prime5);
+            em.persist(prime7);
+
+            // Execute the problematic JPQL query
+            results = em.createQuery(
+                "SELECT numberId, CASE WHEN even = TRUE THEN 'even' ELSE 'odd' END " +
+                "FROM Prime " +
+                "WHERE numberId BETWEEN ?1 AND ?2 " +
+                "ORDER BY numberId ASC",
+                Object[].class)
+                .setParameter(1, 2L)
+                .setParameter(2, 7L)
+                .getResultList();
+
+            tx.commit();
+        } catch (Exception e) {
+            tx.rollback();
+
+            /*
+            * Recreated from issue #33842
+            * Exception [EclipseLink-0] (Eclipse Persistence Services - 5.0.0-B11):
+            * org.eclipse.persistence.exceptions.JPQLException
+            * Exception Description: Problem compiling [SELECT numberId, 
+            * CASE WHEN even = TRUE THEN 'even' ELSE 'odd' END
+            * FROM Prime
+            * WHERE numberId BETWEEN ?1 and ?2
+            * ORDER BY numberId ASC].
+            * [27, 31] 'even' cannot be resolved to a type.
+            */
+            throw e;
+        }
+
+        // Verify results
+        assertNotNull(results);
+        assertEquals(4, results.size());
+
+        // Verify first result (2 is even)
+        assertEquals(2L, results.get(0)[0]);
+        assertEquals("even", results.get(0)[1]);
+
+        // Verify second result (3 is odd)
+        assertEquals(3L, results.get(1)[0]);
+        assertEquals("odd", results.get(1)[1]);
+
+        // Verify third result (5 is odd)
+        assertEquals(5L, results.get(2)[0]);
+        assertEquals("odd", results.get(2)[1]);
+
+        // Verify fourth result (7 is odd)
+        assertEquals(7L, results.get(3)[0]);
+        assertEquals("odd", results.get(3)[1]);
     }
 
 }

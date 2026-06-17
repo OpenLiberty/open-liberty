@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -72,10 +72,11 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
         String keyStr = (String) key;
 
         LoggedOutCookieCache jCacheCookieCache = LoggedOutCookieCacheHelper.getLoggedOutCookieCacheService();
+        String hashedKeyStr = LoggedOutCookieCacheHelper.generateTokenHashKey(keyStr);
         if (jCacheCookieCache != null) {
-            return jCacheCookieCache.contains(keyStr);
+            return jCacheCookieCache.contains(hashedKeyStr);
         } else {
-            return inMemoryCookieCache.contains(keyStr);
+            return inMemoryCookieCache.contains(hashedKeyStr);
         }
     }
 
@@ -116,10 +117,11 @@ public class LoggedOutTokenCacheImpl implements LoggedOutTokenCache {
          * Choose between using the in-memory logged out cookie cache, or the JCache logged out cookie cache.
          */
         LoggedOutCookieCache jCacheCookieCache = LoggedOutCookieCacheHelper.getLoggedOutCookieCacheService();
+        String hashedKeyStr = LoggedOutCookieCacheHelper.generateTokenHashKey(keyStr);
         if (jCacheCookieCache != null) {
-            jCacheCookieCache.put(keyStr, value);
+            jCacheCookieCache.put(hashedKeyStr, value);
         } else {
-            inMemoryCookieCache.put(keyStr, value, timeOut);
+            inMemoryCookieCache.put(hashedKeyStr, value, timeOut);
         }
     }
 

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2024 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Level;
 
 import org.junit.After;
@@ -44,6 +45,8 @@ import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.impl.JavaInfo;
+import componenttest.topology.impl.JavaInfo.Vendor;
 import componenttest.topology.impl.LibertyServer;
 
 @RunWith(FATRunner.class)
@@ -57,6 +60,15 @@ public class SlowRequestTiming {
 
     @BeforeClass
     public static void setUp() throws Exception {
+        Vendor vendor = JavaInfo.forServer(server).vendor();
+        // For J9 JVMs, add system dump for IOException to diagnose issues
+        if (vendor == Vendor.IBM || vendor == Vendor.OPENJ9) {
+            Map<String, String> jvmOptions = server.getJvmOptionsAsMap();
+            jvmOptions.put("-Xdump:system:events=throw+systhrow,filter=java/io/IOException,msg_filter=Invalid argument,range=1..3,request=exclusive+prepwalk",
+                           null);
+            server.setJvmOptions(jvmOptions);
+        }
+
         ShrinkHelper.defaultDropinApp(server, "jdbcTestPrj_3", "com.ibm.ws.request.timing");
         CommonTasks.writeLogMsg(Level.INFO, " starting server..");
         server.startServer();

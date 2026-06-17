@@ -220,7 +220,7 @@ public class TelephoneNumber
     }
 	
 	/**
-	 * Encode the paramters in canonical form.
+	 * Encode the parameters in canonical form.
 	 */
 	private void encodeParams(CharsBuffer buffer, Map map)
 	{

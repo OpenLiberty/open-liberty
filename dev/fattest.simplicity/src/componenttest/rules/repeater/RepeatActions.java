@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2020, 2024 IBM Corporation and others.
+ * Copyright (c) 2020, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.rules.repeater;
 
@@ -38,7 +35,7 @@ public class RepeatActions {
     }
 
     public static enum EEVersion {
-        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA17);
+        EE6(SEVersion.JAVA8), EE7(SEVersion.JAVA8), EE8(SEVersion.JAVA8), EE9(SEVersion.JAVA8), EE10(SEVersion.JAVA11), EE11(SEVersion.JAVA17), EE12(SEVersion.JAVA21);
 
         private EEVersion(SEVersion minJavaLevel) {
             this.minJavaLevel = minJavaLevel;
@@ -165,7 +162,7 @@ public class RepeatActions {
         List<FeatureSet> actualOtherFeatureSets = new ArrayList<>(otherFeatureSets);
 
         // If the firstFeatureSet requires a Java level higher than the one we're running, try to find a suitable replacement so we don't end up not running the test at all in LITE mode
-        int currentJavaLevel = JavaInfo.forCurrentVM().majorVersion();
+        int currentJavaLevel = JavaInfo.BOOTSTRAP_JAVA_VERSION;
         if (currentJavaLevel < firstFeatureSet.getMinJavaLevel().majorVersion()) {
 
             // Find the newest feature set that's in otherFeatureSets and is compatible with the current java version
@@ -226,6 +223,8 @@ public class RepeatActions {
             action = new JakartaEE10Action();
         } else if (eeVersion == EEVersion.EE11) {
             action = new JakartaEE11Action();
+        } else if (eeVersion == EEVersion.EE12) {
+            action = new JakartaEE12Action();
         } else {
             action = new FeatureReplacementAction();
         }

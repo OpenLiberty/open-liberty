@@ -15,9 +15,7 @@ src: \
  test-applications/batchFAT.war/src,\
  test-applications/batchFAT.war/resources,\
  test-applications/fat.common/DbServletApp.war/src,\
- test-applications/fat.common/DbServletApp.war/resources,\
- test-applications/fat.common/BonusPayout.war/src,\
- test-applications/fat.common/BonusPayout.war/resources
+ test-applications/fat.common/DbServletApp.war/resources
 
 fat.project: true
 

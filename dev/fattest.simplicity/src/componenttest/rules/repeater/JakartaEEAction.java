@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,6 +57,7 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
     public static final String EE9_ACTION_ID = "EE9_FEATURES";
     public static final String EE10_ACTION_ID = "EE10_FEATURES";
     public static final String EE11_ACTION_ID = "EE11_FEATURES";
+    public static final String EE12_ACTION_ID = "EE12_FEATURES";
 
     static final String TRANSFORMER_RULES_APPEND_ROOT = System.getProperty("user.dir") + "/publish/rules/";
     static final String TRANSFORMER_RULES_ROOT = System.getProperty("user.dir") + "/autoFVT-templates/";
@@ -84,16 +85,24 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
         return RepeatTestFilter.isRepeatActionActive(EE11_ACTION_ID);
     }
 
+    public static final boolean isEE12Active() {
+        return RepeatTestFilter.isRepeatActionActive(EE12_ACTION_ID);
+    }
+
     public static final boolean isEE9OrLaterActive() {
-        return RepeatTestFilter.isAnyRepeatActionActive(EE9_ACTION_ID, EE10_ACTION_ID, EE11_ACTION_ID);
+        return RepeatTestFilter.isAnyRepeatActionActive(EE9_ACTION_ID, EE10_ACTION_ID, EE11_ACTION_ID, EE12_ACTION_ID);
     }
 
     public static final boolean isEE10OrLaterActive() {
-        return RepeatTestFilter.isAnyRepeatActionActive(EE10_ACTION_ID, EE11_ACTION_ID);
+        return RepeatTestFilter.isAnyRepeatActionActive(EE10_ACTION_ID, EE11_ACTION_ID, EE12_ACTION_ID);
     }
 
     public static final boolean isEE11OrLaterActive() {
-        return RepeatTestFilter.isAnyRepeatActionActive(EE11_ACTION_ID);
+        return RepeatTestFilter.isAnyRepeatActionActive(EE11_ACTION_ID, EE12_ACTION_ID);
+    }
+
+    public static final boolean isEE12OrLaterActive() {
+        return RepeatTestFilter.isAnyRepeatActionActive(EE12_ACTION_ID);
     }
 
     protected JakartaEEAction(Set<String> addFeatures) {
@@ -285,6 +294,9 @@ public abstract class JakartaEEAction extends FeatureReplacementAction {
                 break;
             case EE11:
                 JakartaEE11Action.staticTransformApplication(appPath, newAppPath, null);
+                break;
+            case EE12:
+                JakartaEE12Action.staticTransformApplication(appPath, newAppPath, null);
                 break;
             default:
                 // do nothing

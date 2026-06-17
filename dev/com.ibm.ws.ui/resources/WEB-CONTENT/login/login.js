@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,8 +29,8 @@
  *    Rather than a real redirect, the login.jsp page contents are served up raw and therefore
  *    our location is whatever the resource being accessed was (e.g. ANYTHING ELSE).
  */
-define(['dojo/dom','dojo/request/xhr','dojo/i18n!./nls/loginMessages', './hashCookie', 'dojo/_base/kernel', 'dojo/on', 'dojo/dom-class', 'dojo/io-query', 'dojox/html/entities'],
-    function(dom, xhr, i18n, hashCookie, kernel, on, domClass, ioQuery, entities) {
+define(['dojo/dom','dojo/request','dojo/i18n!./nls/loginMessages', './hashCookie', 'dojo/_base/kernel', 'dojo/on', 'dojo/dom-class', 'dojo/io-query', 'dojox/html/entities'],
+    function(dom, request, i18n, hashCookie, kernel, on, domClass, ioQuery, entities) {
   'use strict';
   
   /**
@@ -229,13 +229,13 @@ define(['dojo/dom','dojo/request/xhr','dojo/i18n!./nls/loginMessages', './hashCo
    * If so, then if the page is an 'unauthorized' page, then the current user
    * needs to be logged out before the new user can properly log in.
    */
-  function performLogin(dom, xhr, needToLogout) {
+  function performLogin(dom, request, needToLogout) {
     var j_username = dom.byId('j_username').value;
     var j_password = dom.byId('j_password').value;
     // If a user name and password have been specified, do a login.
     // Otherwise, trigger the browser's native form validation by clicking the 'hiddenLoginFormSubmit' button
     if (j_username && j_password && needToLogout) {
-      xhr.post('ibm_security_logout', {sync: true, data: 'logoutExitPage=%2Flogin.jsp', headers: {'Content-type':'application/x-www-form-urlencoded'}});
+      request.post('ibm_security_logout', {sync: true, data: 'logoutExitPage=%2Flogin.jsp', headers: {'Content-type':'application/x-www-form-urlencoded'}});
     }
     var submit = dom.byId('hiddenLoginFormSubmit');
     submit.disabled=false;
@@ -248,7 +248,7 @@ define(['dojo/dom','dojo/request/xhr','dojo/i18n!./nls/loginMessages', './hashCo
    */
   function doLogin() {
     var needToLogout = window.location.search.search('user-unauthorized') >= 0 || window.location.pathname.substring(window.location.pathname.lastIndexOf('/')+1)!=='login.jsp';
-    performLogin(dom, xhr, needToLogout);
+    performLogin(dom, request, needToLogout);
     hashCookie.stopCapturing();
     var noAccess = window.location.search.search('no_access') >= 0;
     if (noAccess) {

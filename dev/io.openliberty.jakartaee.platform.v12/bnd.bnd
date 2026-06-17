@@ -1,0 +1,27 @@
+#*******************************************************************************
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+javac.source: 21
+javac.target: 21
+
+Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+
+Bundle-Name: Jakarta EE API service for Runtime version
+Bundle-SymbolicName: io.openliberty.jakartaee.platform.v12
+Bundle-Description: Jakarta EE 12.0 API service for runtime, version ${bVersion}
+
+# Register a marker service to enable 12.0 Jakarta EE.
+Service-Component: \
+  io.openliberty.jakartaee.platform.v12; \
+    implementation:=com.ibm.ws.javaee.version.JavaEEVersion; \
+    provide:=com.ibm.ws.javaee.version.JavaEEVersion; \
+    properties:="version=12.0,service.ranking:Integer=12"

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2024 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,8 +21,10 @@ import java.util.List;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
+import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.testcontainers.containers.GenericContainer;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 import com.ibm.websphere.simplicity.log.Log;
@@ -37,9 +39,23 @@ public class LogstashCollectorIndependentTest extends LogstashCollectorTest {
 
     private static Class<?> c = LogstashCollectorIndependentTest.class;
 
+    /*
+     * Current model must acquire server this way, we need server "early" so that the static initialization of the generic container can resolve
+     */
     private static LibertyServer server = LibertyServerFactory.getLibertyServer("LogstashCollectorServer");
 
     protected static boolean runTest;
+
+    @ClassRule
+    public static GenericContainer<?> logstashContainer = createExpLogstashContainer();
+
+    private static GenericContainer<?> createExpLogstashContainer() {
+        try {
+            return prepareServerSSLAndConstructContainer(server);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to setup server and/or container", e);
+        }
+    }
 
     @BeforeClass
     public static void setUp() throws Exception {

@@ -33,12 +33,10 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.RemoteFile;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.utils.HttpUtils;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
 public class JPAHibernateAppTests40 extends JPAAppAbstractTests {
 
     @BeforeClass

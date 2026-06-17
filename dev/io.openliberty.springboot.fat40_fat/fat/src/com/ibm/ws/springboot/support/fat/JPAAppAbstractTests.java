@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -21,11 +21,9 @@ import com.ibm.websphere.simplicity.config.Library;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
 
-import componenttest.annotation.MinimumJavaLevel;
 import componenttest.custom.junit.runner.FATRunner;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 17)
 public abstract class JPAAppAbstractTests extends AbstractSpringTests {
 
     @Override

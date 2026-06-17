@@ -6,7 +6,7 @@
 #ISMESSAGEFILE true
 # #########################################################################
 ###############################################################################
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -97,3 +97,7 @@ startup.check.interval.config.invalid.CWMMH01011W.useraction=Okre\u015bl prawid\
 startup.check.interval.config.only.set.CWMMH01012W=CWMMH01012W: Konfiguracja interwa\u0142u sprawdzania uruchamiania zosta\u0142a ustawiona przed skonfigurowaniem interwa\u0142u sprawdzania. Kontrola kondycji oparta na plikach jest wy\u0142\u0105czona, gdy interwa\u0142 kontroli nie jest skonfigurowany.
 startup.check.interval.config.only.set.CWMMH01012W.explanation=Skonfigurowanie tylko interwa\u0142u sprawdzania uruchamiania nie w\u0142\u0105cza mechanizmu sprawdzania kondycji opartego na plikach.
 startup.check.interval.config.only.set.CWMMH01012W.useraction=Skonfiguruj interwa\u0142 sprawdzania, aby w\u0142\u0105czy\u0107 mechanizm sprawdzania kondycji oparty na plikach.
+
+enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: Warto\u015b\u0107 parametru \u201e enableEndpoints \u201d jest ustawiona na \u201efalse\u201d, ale funkcja sprawdzania stanu oparta na plikach nie jest w\u0142\u0105czona. Ta konfiguracja nie ma \u017cadnego wp\u0142ywu, a punkty ko\u0144cowe sprawdzania stanu s\u0105 w\u0142\u0105czone.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=Konfiguracja opcji \u201e enableEndpoints \u201d zaczyna obowi\u0105zywa\u0107 dopiero po w\u0142\u0105czeniu test\u00f3w sprawno\u015bci opartych na plikach.
+enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=W\u0142\u0105cz funkcje sprawdzania stanu plik\u00f3w lub usu\u0144 konfiguracj\u0119 opcji \u201e enableEndpoints \u201d.

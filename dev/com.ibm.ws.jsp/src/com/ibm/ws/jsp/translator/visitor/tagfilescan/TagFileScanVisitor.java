@@ -91,6 +91,9 @@ public class TagFileScanVisitor extends JspVisitor {
         String dirName = tagFilePath.substring(0, tagFilePath.lastIndexOf('/'));
         if (dirName.startsWith("/WEB-INF/tags")) {
             dirName = dirName.substring(dirName.indexOf("/WEB-INF/tags") + 13);
+        } else if (dirName.startsWith("/META-INF/resources/WEB-INF/tags")) {
+            // Handle tag files from JARs: /META-INF/resources/WEB-INF/tags/...
+            dirName = dirName.substring(dirName.indexOf("/META-INF/resources/WEB-INF/tags") + 32);
         } else if (dirName.startsWith("/META-INF/tags")) {
             dirName = dirName.substring(dirName.indexOf("/META-INF/tags") + 14);
         }

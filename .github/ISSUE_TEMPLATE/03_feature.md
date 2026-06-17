@@ -97,7 +97,7 @@ Design preliminaries determine whether a formal design, which will be provided b
 - [ ] ID requirements identified, or N/A. (Feature owner and [ID focal point](https://github.com/orgs/OpenLiberty/teams/id-approvers))
    - Refer to [Documenting Open Liberty](https://github.com/OpenLiberty/open-liberty/wiki/Documenting-Open-Liberty).
    - Feature owner adds label `ID Required`, if non-trivial documentation needs to be created by the ID team.
-   - ID adds label `ID Required - Trivial`, if no design will be performed and only trivial ID updates are needed.
+   - If seeking No Design approval and the feature requires documentation, verify with the [ID team](https://github.com/orgs/OpenLiberty/teams/id-approvers) that the doc updates are trivial. If so, add the `ID Required - Trivial` label.
 - [ ] Serviceability requirements identified, or N/A. (Feature owner and [Serviceability focal point](https://github.com/orgs/OpenLiberty/teams/serviceability-approvers))
 - [ ] SVT requirements identified, or N/A. (Feature owner and [SVT focal point](https://github.com/orgs/OpenLiberty/teams/svt-approvers))
 - [ ] Performance testing requirements identified, or N/A. (Feature owner and [Performance focal point](https://github.com/orgs/OpenLiberty/teams/performance-approvers))

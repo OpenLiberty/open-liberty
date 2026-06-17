@@ -31,7 +31,8 @@ import org.xml.sax.SAXException;
 
 import com.ibm.ws.sip.container.properties.SarToWarProperties;
 import com.ibm.ws.sip.properties.CoreProperties;
-//TODO Liberty find the class in Liberty that provide the LoggerHelper functionality.ther's a LoggerHelper but with different methods.
+//TODO Liberty find the class in Liberty that provide the LoggerHelper functionality. 
+// There is a LoggerHelper, but with different methods.
 //import com.ibm.ws.logging.LoggerHelper;
 //import com.ibm.ws.logging.WsLogger;
 //TODO Liberty replace ECS annotation reading process to Liberty
@@ -301,7 +302,7 @@ public class SipAnnotationUtil {
 
 	/**
 	 * @param sipXml - sip.xml to check 
-	 * @return true if servlet selection wich contains main servlet node exist in sip.xml
+	 * @return true if a servlet-selection element exists in the sip.xml, false otherwise
 	 */
 	public static boolean checkIfMainServletExist(Document sipXml) {
 
@@ -639,7 +640,7 @@ public class SipAnnotationUtil {
 
 			if (c_logger.isLoggable(Level.FINEST)){
 				c_logger.logp(Level.FINEST, className, "processServletAnnotations", 
-						"Adding new siplet, name=" + servletName);
+						"Adding new servlet, name = " + servletName);
 			}
 
 			// Validate that servlet class extends SipServlet 

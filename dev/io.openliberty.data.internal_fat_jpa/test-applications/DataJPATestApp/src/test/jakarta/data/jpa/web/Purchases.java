@@ -12,10 +12,13 @@
  *******************************************************************************/
 package test.jakarta.data.jpa.web;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.List;
 
 import jakarta.data.repository.Insert;
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 
 /**
@@ -29,9 +32,16 @@ public interface Purchases {
     List<Purchase> findByTimeOfPurchaseBetween(PurchaseTime min,
                                                PurchaseTime max);
 
+    @Query("WHERE EXTRACT(DATE FROM timeOfPurchase) = ?1 ORDER BY total DESC")
+    List<Purchase> madeOn(LocalDate date);
+
     @Insert
     void make(Purchase purchase);
 
     int removeByTimeOfPurchaseBetween(PurchaseTime min,
                                       PurchaseTime max);
+
+    @Query("SELECT EXTRACT(TIME FROM timeOfPurchase)")
+    @OrderBy("total")
+    List<LocalTime> timesOfPurchase();
 }

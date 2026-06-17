@@ -73,6 +73,6 @@
 	</authorization-roles>
 	
 	<javaPermission className="java.util.PropertyPermission" name="*" actions="read"/>
-	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/derby/derby.jar"/>
+	<javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jdbc/derby.jar"/>
 	
 </server>

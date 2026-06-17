@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2018,2023 IBM Corporation and others.
+ * Copyright (c) 2018,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.annotation;
 
@@ -39,6 +36,7 @@ public @interface SkipForRepeat {
     public static final String EE9_FEATURES = JakartaEEAction.EE9_ACTION_ID;
     public static final String EE10_FEATURES = JakartaEEAction.EE10_ACTION_ID;
     public static final String EE11_FEATURES = JakartaEEAction.EE11_ACTION_ID;
+    public static final String EE12_FEATURES = JakartaEEAction.EE12_ACTION_ID;
     public static final String CHECKPOINT_RULE = CheckpointRule.ID;
 
     // Cannot use MultivalueSkips.name() since it isn't a constant at compile time so need to actually
@@ -47,14 +45,16 @@ public @interface SkipForRepeat {
     public static final String EE9_OR_LATER_FEATURES = "EE9_OR_LATER_FEATURES";
     public static final String EE10_OR_LATER_FEATURES = "EE10_OR_LATER_FEATURES";
     public static final String EE11_OR_LATER_FEATURES = "EE11_OR_LATER_FEATURES";
+    public static final String EE12_OR_LATER_FEATURES = "EE12_OR_LATER_FEATURES";
 
     // Using an enum in order to be able to store the array of repeated skip values and to have
     // a static method to process a given list.  Annotations cannot have a method that takes a parameter.
     public enum MultivalueSkips {
-        EE8_OR_LATER_FEATURES(new String[] { EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES }),
-        EE9_OR_LATER_FEATURES(new String[] { EE9_FEATURES, EE10_FEATURES, EE11_FEATURES }),
-        EE10_OR_LATER_FEATURES(new String[] { EE10_FEATURES, EE11_FEATURES }),
-        EE11_OR_LATER_FEATURES(new String[] { EE11_FEATURES });
+        EE8_OR_LATER_FEATURES(new String[] { EE8_FEATURES, EE9_FEATURES, EE10_FEATURES, EE11_FEATURES, EE12_FEATURES }),
+        EE9_OR_LATER_FEATURES(new String[] { EE9_FEATURES, EE10_FEATURES, EE11_FEATURES, EE12_FEATURES }),
+        EE10_OR_LATER_FEATURES(new String[] { EE10_FEATURES, EE11_FEATURES, EE12_FEATURES }),
+        EE11_OR_LATER_FEATURES(new String[] { EE11_FEATURES, EE12_FEATURES }),
+        EE12_OR_LATER_FEATURES(new String[] { EE12_FEATURES });
 
         // These cannot be used as @SkipForRepeat(EE8_OR_LATER_FEATURES.skipValues).  Need to use constants above and then it will
         // be converted to the multiple skip values.
@@ -71,6 +71,7 @@ public @interface SkipForRepeat {
             enumNames.add(EE9_OR_LATER_FEATURES.name());
             enumNames.add(EE10_OR_LATER_FEATURES.name());
             enumNames.add(EE11_OR_LATER_FEATURES.name());
+            enumNames.add(EE12_OR_LATER_FEATURES.name());
             OR_LATER_NAMES = Collections.unmodifiableSet(enumNames);
         }
 

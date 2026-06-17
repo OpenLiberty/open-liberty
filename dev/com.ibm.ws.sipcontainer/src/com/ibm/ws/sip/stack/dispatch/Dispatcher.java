@@ -348,7 +348,7 @@ public class Dispatcher implements Runnable
 				event.onExecute();
 			} catch (Throwable t) {
 				if (s_logger.isTraceFailureEnabled()) {
-					s_logger.traceFailure(this, "queueTimerEvent", "exception occured while executing timer event " + t);
+					s_logger.traceFailure(this, "queueTimerEvent", "exception occurred while executing timer event " + t);
 				}
 			} finally {
 				//Remove the call ID from the current thread

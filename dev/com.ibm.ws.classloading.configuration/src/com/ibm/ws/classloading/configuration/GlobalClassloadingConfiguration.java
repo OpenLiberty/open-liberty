@@ -261,6 +261,10 @@ public class GlobalClassloadingConfiguration {
             //       returning a non-empty set will cause everything not in the set to be filtered.
             if (usingBootclasspathJVMOption()) {
                 // if using -Xbootclasspath we cannot filter anything
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "discoverParentPackages: returning null because -Xbootclasspath JVM option is being used.");
+                }
                 return null;
             }
             if (parentConfig == ParentConfig.PLATFORM) {

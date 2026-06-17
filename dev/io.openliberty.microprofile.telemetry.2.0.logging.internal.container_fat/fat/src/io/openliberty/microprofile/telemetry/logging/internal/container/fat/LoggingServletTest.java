@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -108,9 +108,9 @@ public class LoggingServletTest {
         //Allow time for the collector to receive and bridge logs.
         TimeUnit.SECONDS.sleep(WAIT_TIMEOUT);
 
+        // Get logs for remaining assertions
         final String logs = container.getLogs();
-
-        assertTrue("Info message log could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "Body: Str(info message)"));
+        assertTrue("Info message could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "Body: Str(info message)"));
         assertTrue("Extension appName could not be found.", TestUtils.assertLogContains("testMessageLogs", logs, "io.openliberty.ext.app_name: Str(MpTelemetryLogApp)"));
         assertTrue("Module could not be found.",
                    TestUtils.assertLogContains("testMessageLogs", logs,
@@ -131,7 +131,7 @@ public class LoggingServletTest {
      * Ensures that a trace message from a Liberty application are bridged over to the otlp container.
      */
     @Test
-    public void testTraceLogs() throws Exception {
+    public void testTraceLogs() throws Exception {  
 
         assertTrue("The server was not started successfully.", server.isStarted());
 
@@ -142,12 +142,14 @@ public class LoggingServletTest {
 
         TestUtils.runApp(server, "logs");
 
+        // Poll for the trace message log with retry logic
+        assertTrue("Trace message log could not be found.", pollForLogMessage("testTraceLogs", "Body: Str(finest trace)"));
+
         //Allow time for the collector to receive and bridge logs.
         TimeUnit.SECONDS.sleep(WAIT_TIMEOUT);
 
         final String logs = container.getLogs();
 
-        assertTrue("Trace message log could not be found.", TestUtils.assertLogContains("testTraceLogs", logs, "Body: Str(finest trace)"));
         assertTrue("Extension appName could not be found", TestUtils.assertLogContains("testTraceLogs", logs, "io.openliberty.ext.app_name: Str(MpTelemetryLogApp)"));
         assertTrue("Module could not be found.",
                    TestUtils.assertLogContains("testTraceLogs", logs,
@@ -183,9 +185,10 @@ public class LoggingServletTest {
         //Allow time for the collector to receive and bridge logs.
         TimeUnit.SECONDS.sleep(WAIT_TIMEOUT);
 
+        assertTrue("FFDC message log could not be found.", pollForLogMessage("testFFDCLogs", "Body: Str(FFDC_TEST_DOGET"));
+
         final String logs = container.getLogs();
 
-        assertTrue("FFDC message log could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "Body: Str(FFDC_TEST_DOGET"));
         assertTrue("Exception message could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "exception.message: Str(FFDC_TEST_DOGET"));
         assertTrue("Exception Stacktrace  could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "exception.stacktrace: Str(java.lang.ArithmeticException"));
         assertTrue("Exception type could not be found.", TestUtils.assertLogContains("testFFDCLogs", logs, "exception.type: Str(java.lang.ArithmeticException)"));
@@ -328,5 +331,30 @@ public class LoggingServletTest {
                 : base + Pattern.quote(expected) + "\\b";
 
         return Pattern.compile(pattern, Pattern.CASE_INSENSITIVE).matcher(logs).find();
+    }
+
+    // Poll the container logs for a specific message with retry logic.
+    // Checks every 1 second for up to 10 seconds.
+    private static boolean pollForLogMessage(String testName, String message) {
+        long endTime = System.currentTimeMillis() + TimeUnit.SECONDS.toMillis(10);
+        
+        while (System.currentTimeMillis() < endTime) {
+            String logs = container.getLogs();
+            if (TestUtils.assertLogContains(testName, logs, message)) {
+                return true;
+            }
+            
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                Log.info(c, testName, "Polling interrupted: " + e.getMessage());
+                return false;
+            }
+        }
+        
+        // One final check after timeout
+        String logs = container.getLogs();
+        return TestUtils.assertLogContains(testName, logs, message);
     }
 }
