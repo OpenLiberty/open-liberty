@@ -87,6 +87,12 @@ public class TransactionContextImpl implements ThreadContext {
     public ThreadContext clone() {
         try {
             TransactionContextImpl copy = (TransactionContextImpl) super.clone();
+            // Copy the ThreadLocal value to the cloned instance
+            copy.suspendedUOW = new ThreadLocal<UOWToken>();
+            UOWToken currentValue = this.suspendedUOW.get();
+            if (currentValue != null) {
+                copy.suspendedUOW.set(currentValue);
+            }
             return copy;
         } catch (CloneNotSupportedException x) {
             throw new RuntimeException(x);
