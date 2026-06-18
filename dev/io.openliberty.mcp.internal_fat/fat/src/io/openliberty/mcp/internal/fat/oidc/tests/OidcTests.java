@@ -36,6 +36,7 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testcontainers.Testcontainers;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
@@ -99,6 +100,8 @@ public class OidcTests extends FATServletClient {
         setupKeycloak();
         updateOidcConfigAttributes();
         server.startServer();
+        Testcontainers.exposeHostPorts(server.getHttpDefaultPort());
+
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
     }
 

@@ -38,6 +38,7 @@ import io.openliberty.mcp.internal.fat.security.AsyncNoClassAnnotationTests;
 import io.openliberty.mcp.internal.fat.security.AsyncPermitAllTests;
 import io.openliberty.mcp.internal.fat.security.DenyAllTests;
 import io.openliberty.mcp.internal.fat.security.DenyAllTestsStateless;
+import io.openliberty.mcp.internal.fat.security.JwtBuilderTest;
 import io.openliberty.mcp.internal.fat.security.NoClassAnnotationTests;
 import io.openliberty.mcp.internal.fat.security.NoClassAnnotationTestsStateless;
 import io.openliberty.mcp.internal.fat.security.PermitAllTests;
@@ -128,6 +129,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 ToolManagerTest.class,
                 ToolTest.class,
                 // Authorisation Tests
+                JwtBuilderTest.class,
                 AdminsRoleAllowedTests.class,
                 DenyAllTests.class,
                 NoClassAnnotationTests.class,

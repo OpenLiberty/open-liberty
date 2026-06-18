@@ -50,7 +50,7 @@ tested.features: \
 	io.openliberty.io.opentelemetry.2.1;version=latest,\
 	io.openliberty.mpTelemetry.2.0.thirdparty,\
 	com.ibm.websphere.javaee.servlet.3.1;version=latest,\
-	io.openliberty.io.opentelemetry.internal.2.1;version=latest,\
-	io.openliberty.org.testcontainers;version=latest
+	com.ibm.websphere.appserver.api.jwt;version=latest,\
+	com.ibm.ws.org.jose4j;version=latest
 	
 fat.test.container.images=public.ecr.aws/docker/library/node:20-alpine,quay.io/keycloak/keycloak:26.6.2

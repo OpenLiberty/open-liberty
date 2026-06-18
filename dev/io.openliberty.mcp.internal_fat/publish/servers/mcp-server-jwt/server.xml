@@ -1,0 +1,18 @@
+<server description="Server with JWT Builder">
+    <featureManager>
+        <feature>jwt-1.0</feature>
+        <feature>servlet-6.0</feature>
+        <feature>jsonp-2.1</feature>
+    </featureManager>
+
+    <!-- JWT Builder configuration -->
+    <jwtBuilder id="testJwtBuilder" jwkEnabled="true"/>
+
+    <httpEndpoint id="defaultHttpEndpoint"
+                  httpPort="${bvt.prop.HTTP_default}"
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions soReuseAddr="true"/>
+    </httpEndpoint>
+
+    <include location="../fatTestPorts.xml"/>
+</server>
