@@ -3577,11 +3577,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                         }
                         break;
                     }
-                } else if (getCharacterValidation()) {
-                    this.byteCache[bytePosition-1] = BNFHeaders.SPACE;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found a CR replacing it with a SP");
-                    }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "findCRLFTokenLength: Found CR which we are treating as a delimiter");
@@ -3598,11 +3593,6 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 // This means a bare LF was found, verify if we should reject it
                 if (this.rejectHeaderLineFolding) {
                     throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
-                } else if (getCharacterValidation()) {
-                    this.byteCache[bytePosition-1] = BNFHeaders.SPACE;
-                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, "Found a LF replacing it with a SP");
-                    }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "findCRLFTokenLength: Found LF which we are treating as a delimiter");
