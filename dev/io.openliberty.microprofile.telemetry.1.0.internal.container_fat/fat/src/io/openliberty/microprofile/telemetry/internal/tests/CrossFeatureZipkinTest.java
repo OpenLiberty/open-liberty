@@ -184,7 +184,7 @@ public class CrossFeatureZipkinTest {
             assertThat(server1, hasTag("otel.scope.name", "io.openliberty.microprofile.telemetry"));
             assertThat(client2, hasTag("otel.scope.name", "Client filter"));
         }
-        // assertTrue("Force failure.", false);
+        assertTrue("Force failure.", false);
     }
 
     /**
