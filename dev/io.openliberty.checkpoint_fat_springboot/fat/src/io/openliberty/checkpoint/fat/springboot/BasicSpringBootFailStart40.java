@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +41,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @CheckpointTest
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 26) //https://docs.spring.io/spring-boot/4.1/system-requirements.html (Early Semeru java 27 runtime is not available to test yet)
 public class BasicSpringBootFailStart40 extends FATServletClient {
 
     @Server("checkpointSpringBoot40")
@@ -73,7 +75,7 @@ public class BasicSpringBootFailStart40 extends FATServletClient {
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testFailAppStart() throws Exception {
-        ProgramOutput output = server.startServer(testName + ".log");
+        ProgramOutput output = server.startServer("BasicSpringBootFailStart40.log");
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 72, retureCode);
     }

@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -33,6 +34,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @CheckpointTest
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 26) //https://docs.spring.io/spring-boot/4.1/system-requirements.html (Early Semeru java 27 runtime is not available to test yet)
 public class BasicSpringBootWebfluxTests40 extends FATServletClient {
 
     @Server("checkpointSpringBoot40")
@@ -55,7 +57,7 @@ public class BasicSpringBootWebfluxTests40 extends FATServletClient {
                                  assertNotNull("Spring-managed lifecycle beans not stopped",
                                                server.waitForStringInLogUsingMark("Stopping Spring-managed lifecycle beans before JVM checkpoint", 0));
                              });
-        server.startServer("BasicSpringBootWefluxTests.log");
+        server.startServer("BasicSpringBootWefluxTests40.log");
         assertNotNull("Spring-managed lifecycle beans not restarted after JVM restore",
                       server.waitForStringInLogUsingMark("Restarting Spring-managed lifecycle beans after JVM restore"));
         // make sure the web app URL is logged on restore side
