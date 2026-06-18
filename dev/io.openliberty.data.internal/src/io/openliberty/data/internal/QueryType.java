@@ -33,7 +33,8 @@ public enum QueryType {
           !Require.AUTO_START_TX, //
           !Require.DETACH_ENTITIES, //
           !Require.RETURN_HIDDEN, //
-          null), // stateful or stateless
+          null, // stateful or stateless
+          Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Detach
     DETACH("Detach", //
@@ -41,7 +42,8 @@ public enum QueryType {
            !Require.AUTO_START_TX, //
            Require.DETACH_ENTITIES, //
            !Require.RETURN_HIDDEN, //
-           Require.STATEFUL),
+           Require.STATEFUL, //
+           !Supports.QUERY_OPTIONS),
 
     // repository query method exists
     EXISTS(null, //
@@ -49,7 +51,8 @@ public enum QueryType {
            !Require.AUTO_START_TX, //
            !Require.DETACH_ENTITIES, //
            !Require.RETURN_HIDDEN, //
-           null), // stateful or stateless
+           null, // stateful or stateless
+           Supports.QUERY_OPTIONS),
 
     // repository query method find/@Find/@Query(SELECT/FROM/WHERE)
     FIND(Find.class.getSimpleName(), //
@@ -57,7 +60,8 @@ public enum QueryType {
          !Require.AUTO_START_TX, //
          null, // detach depends on stateless vs stateful repository
          Require.RETURN_HIDDEN, //
-         null), // stateful or stateless
+         null, // stateful or stateless
+         Supports.QUERY_OPTIONS),
 
     // stateless repository query method delete/@Delete with entity result
     FIND_AND_DELETE(Delete.class.getSimpleName(), //
@@ -65,7 +69,8 @@ public enum QueryType {
                     Require.AUTO_START_TX, //
                     Require.DETACH_ENTITIES, //
                     Require.RETURN_HIDDEN, //
-                    Require.STATELESS),
+                    Require.STATELESS, //
+                    Supports.QUERY_OPTIONS),
 
     // stateless repository life cycle method @Insert
     INSERT(Insert.class.getSimpleName(), //
@@ -73,7 +78,8 @@ public enum QueryType {
            Require.AUTO_START_TX, //
            Require.DETACH_ENTITIES, //
            Require.RETURN_HIDDEN, //
-           Require.STATELESS),
+           Require.STATELESS, //
+           !Supports.QUERY_OPTIONS),
 
     // stateless repository life cycle method @Delete
     LC_DELETE(Delete.class.getSimpleName(), //
@@ -81,7 +87,8 @@ public enum QueryType {
               Require.AUTO_START_TX, //
               !Require.DETACH_ENTITIES, //
               !Require.RETURN_HIDDEN, //
-              Require.STATELESS),
+              Require.STATELESS, //
+              !Supports.QUERY_OPTIONS),
 
     // stateless repository life cycle method @Update
     LC_UPDATE(Update.class.getSimpleName(), //
@@ -89,7 +96,8 @@ public enum QueryType {
               Require.AUTO_START_TX, //
               !Require.DETACH_ENTITIES, //
               !Require.RETURN_HIDDEN, //
-              Require.STATELESS),
+              Require.STATELESS, //
+              !Supports.QUERY_OPTIONS),
 
     // stateless repository life cycle method @Update with entity result (find & merge)
     LC_UPDATE_MERGE(Update.class.getSimpleName(), //
@@ -97,7 +105,8 @@ public enum QueryType {
                     Require.AUTO_START_TX, //
                     Require.DETACH_ENTITIES, //
                     Require.RETURN_HIDDEN, //
-                    Require.STATELESS),
+                    Require.STATELESS, //
+                    !Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Merge
     MERGE("Merge", //
@@ -105,7 +114,17 @@ public enum QueryType {
           !Require.AUTO_START_TX, //
           !Require.DETACH_ENTITIES, //
           Require.RETURN_HIDDEN, //
-          Require.STATEFUL),
+          Require.STATEFUL, //
+          !Supports.QUERY_OPTIONS),
+
+    // repository native query method @NativeQuery
+    NATIVE("NativeQuery", //
+           !Is.LIFE_CYCLE_METHOD, //
+           Require.AUTO_START_TX, // TODO ? needed for updates, not for finds
+           null, // detach depends on stateless vs stateful repository // TODO ? and whether entities are returned
+           Require.RETURN_HIDDEN, //
+           null, // stateful or stateless
+           Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Persist
     PERSIST("Persist", //
@@ -113,7 +132,8 @@ public enum QueryType {
             Require.AUTO_START_TX, //
             !Require.DETACH_ENTITIES, //
             !Require.RETURN_HIDDEN, //
-            Require.STATEFUL),
+            Require.STATEFUL, //
+            !Supports.QUERY_OPTIONS),
 
     // stateless repository query method delete/@Delete/@Query(DELETE)
     QM_DELETE(Delete.class.getSimpleName(), //
@@ -121,7 +141,8 @@ public enum QueryType {
               Require.AUTO_START_TX, //
               !Require.DETACH_ENTITIES, //
               !Require.RETURN_HIDDEN, //
-              Require.STATELESS),
+              Require.STATELESS, //
+              Supports.QUERY_OPTIONS),
 
     // stateless repository query method update/@Update/@Query(UPDATE)
     QM_UPDATE(Update.class.getSimpleName(), //
@@ -129,7 +150,8 @@ public enum QueryType {
               Require.AUTO_START_TX, //
               !Require.DETACH_ENTITIES, //
               !Require.RETURN_HIDDEN, //
-              Require.STATELESS),
+              Require.STATELESS, //
+              Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Refresh
     REFRESH("Refresh", //
@@ -137,7 +159,8 @@ public enum QueryType {
             !Require.AUTO_START_TX, //
             !Require.DETACH_ENTITIES, //
             !Require.RETURN_HIDDEN, //
-            Require.STATEFUL),
+            Require.STATEFUL, //
+            !Supports.QUERY_OPTIONS),
 
     // stateful repository life cycle method @Remove
     REMOVE("Remove", //
@@ -145,7 +168,8 @@ public enum QueryType {
            Require.AUTO_START_TX, //
            !Require.DETACH_ENTITIES, //
            !Require.RETURN_HIDDEN, //
-           Require.STATEFUL),
+           Require.STATEFUL, //
+           !Supports.QUERY_OPTIONS),
 
     // resource accessor method
     RESOURCE_ACCESS(null, //
@@ -153,7 +177,8 @@ public enum QueryType {
                     !Require.AUTO_START_TX, //
                     !Require.DETACH_ENTITIES, //
                     !Require.RETURN_HIDDEN, //
-                    null), // stateful or stateless
+                    null, // stateful or stateless
+                    !Supports.QUERY_OPTIONS),
 
     // stateless repository life cycle method @Save
     SAVE(Save.class.getSimpleName(), //
@@ -161,7 +186,8 @@ public enum QueryType {
          Require.AUTO_START_TX, //
          Require.DETACH_ENTITIES, //
          Require.RETURN_HIDDEN, //
-         Require.STATELESS);
+         Require.STATELESS, //
+         !Supports.QUERY_OPTIONS);
 
     private final static TraceComponent tc = Tr.register(QueryType.class);
 
@@ -208,6 +234,12 @@ public enum QueryType {
     private final Boolean stateful;
 
     /**
+     * Indicates whether the jakarta.persistence.QueryOptions annotation
+     * is supported on the type of repository method for Persistence 4.0+.
+     */
+    public final boolean supportsQueryOptions;
+
+    /**
      * Internal constructor for enumeration values.
      *
      * @param annoName             Simple name of the equivalent repository method
@@ -231,13 +263,15 @@ public enum QueryType {
                       boolean autoStartTransaction,
                       Boolean detachEntities,
                       boolean hideReturnValue,
-                      Boolean stateful) {
+                      Boolean stateful,
+                      boolean supportsQueryOptions) {
         this.autoStartTransaction = autoStartTransaction;
         this.detachEntities = detachEntities;
         this.hideReturnValue = hideReturnValue;
         this.isLifeCycleMethod = isLifeCycleMethod;
         this.operationName = annoName == null ? name() : annoName;
         this.stateful = stateful;
+        this.supportsQueryOptions = supportsQueryOptions;
     }
 
     /**
@@ -284,4 +318,15 @@ public enum QueryType {
         static final boolean STATEFUL = true;
         static final boolean STATELESS = false;
     }
+
+    /**
+     * Constants used internally by the enumeration.
+     * The constants cannot be declared directly on the enumeration because the
+     * enumerated values need access to them and cannot access fields that are
+     * declared later in the file.
+     */
+    private static final class Supports {
+        static final boolean QUERY_OPTIONS = true;
+    }
+
 }

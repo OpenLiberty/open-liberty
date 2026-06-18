@@ -2459,7 +2459,7 @@ public abstract class MessageImpl implements Message, Externalizable, HeaderIter
 			
 			// commaSeperated is relevant only if the next header is the same,
 			// and it'll be true if the header is defined to be nested (possibly)
-			// and is declared as comma seperated by the custom property
+			// and is declared as comma separated by the custom property
 			commaSeparated = ( headerName.equals(nextHeaderName) && h.isNested() )&& 
 								(headerSeparator.isCommaSeparated(headerName, false));
 			if (commaSeparated) {

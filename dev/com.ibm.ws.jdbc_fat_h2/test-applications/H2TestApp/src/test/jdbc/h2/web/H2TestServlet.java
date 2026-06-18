@@ -282,7 +282,7 @@ public class H2TestServlet extends FATServlet {
             assertEquals(true,
                          h2DataSource.isWrapperFor(Referenceable.class));
             Referenceable r = h2DataSource.unwrap(Referenceable.class);
-            System.out.println("getReference: " + r.getReference());
+            r.getReference();
 
             // valid usage
             PreparedStatement pstmt = con.prepareStatement("""

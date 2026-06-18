@@ -34,7 +34,7 @@ public interface SIPServerTransaction
 	
 	/**
 	 *  send the response back to the transport layer
-	 *  after prossesing it
+	 *  after processing it
 	 */
 	public void sendResponseToTransport( Response sipResponse )
 			throws SIPTransportException;
@@ -42,7 +42,7 @@ public interface SIPServerTransaction
 	
 	/**
 	 *  send the request to the UA
-	 *  after prossesing it
+	 *  after processing it
 	 */
 	public void sendRequestToUA( Request req );
 	

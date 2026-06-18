@@ -95,8 +95,6 @@ public final class ExternalSpecifications
             //log.log(Level.FINE, "Error loading class (could be normal)", t);
             available = false;
         }
-
-        log.info("MyFaces Core CDI support " + (available ? "enabled" : "disabled"));
  
         return available;
     });

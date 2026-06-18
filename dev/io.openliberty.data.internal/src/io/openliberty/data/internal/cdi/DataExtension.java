@@ -64,7 +64,6 @@ import jakarta.data.exceptions.OptimisticLockingFailureException;
 import jakarta.data.repository.By;
 import jakarta.data.repository.DataRepository;
 import jakarta.data.repository.Find;
-import jakarta.data.repository.Query;
 import jakarta.data.repository.Repository;
 import jakarta.data.spi.EntityDefining;
 import jakarta.enterprise.event.Observes;
@@ -346,7 +345,7 @@ public class DataExtension implements Extension {
                         }
 
                 for (Class<? extends Annotation> queryAnnoType : provider.compat //
-                                .jpqlQueryAnnoTypes())
+                                .queryLanguageAnnoTypes())
                     if (method.getAnnotation(queryAnnoType) != null) {
                         hasQueryAnno = true;
                         break;
@@ -538,7 +537,7 @@ public class DataExtension implements Extension {
             }
 
             if (!queriesWithQueryAnno.isEmpty())
-                queriesPerEntity.put(Query.class, queriesWithQueryAnno);
+                queriesPerEntity.put(QueryInfo.ENTITY_TBD, queriesWithQueryAnno);
 
             producer.setPrimaryEntityClass(primaryEntityClass);
         }

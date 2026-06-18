@@ -122,7 +122,7 @@ public class PageImpl<T> implements Page<T> {
                       CursoredPage.class.getName());
 
         TypedQuery<T> query = queryInfo.ehCreateTypedQuery(entityHandler,
-                                                           queryInfo.jpql,
+                                                           queryInfo.ql,
                                                            Object.class);
         queryInfo.setParameters(query, args, deferredConstraints, addedJPQLParams);
 
@@ -184,7 +184,7 @@ public class PageImpl<T> implements Page<T> {
     /**
      * Query for count of total elements across all pages.
      *
-     * @param jpql count query.
+     * @return the count
      * @throws IllegalStateException if not configured to request a total count of elements.
      */
     @FFDCIgnore(Exception.class)
@@ -208,7 +208,7 @@ public class PageImpl<T> implements Page<T> {
                       queryInfo.method.getName(),
                       queryInfo.repositoryInterface.getName(),
                       queryInfo.jpqlCount,
-                      queryInfo.jpql);
+                      queryInfo.ql);
 
         boolean stateful = queryInfo.producer.stateful();
         EntityHandlerFactory factory = queryInfo.entityInfo.factory;

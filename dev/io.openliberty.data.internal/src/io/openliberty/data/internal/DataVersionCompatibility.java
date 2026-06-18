@@ -178,14 +178,6 @@ public interface DataVersionCompatibility {
                                 QueryType queryType);
 
     /**
-     * Returns the repository method annotations that accept JPQL
-     * (such as Query).
-     *
-     * @return the annotation classes.
-     */
-    Set<Class<? extends Annotation>> jpqlQueryAnnoTypes();
-
-    /**
      * Returns the repository method annotations that represent life cycle
      * operations (such as Delete and Insert) for either a stateful or
      * stateless repository, depending on the parameter.
@@ -215,7 +207,7 @@ public interface DataVersionCompatibility {
 
         sorted.put(Find.class.getName(), Find.class);
 
-        for (Class<? extends Annotation> annoClass : jpqlQueryAnnoTypes())
+        for (Class<? extends Annotation> annoClass : queryLanguageAnnoTypes())
             sorted.put(annoClass.getSimpleName(), annoClass);
 
         for (Class<? extends Annotation> annoClass : lifeCycleAnnoTypes(stateful))
@@ -248,6 +240,14 @@ public interface DataVersionCompatibility {
      * @return the name of the Liberty feature that provides Jakarta Persistence.
      */
     String persistenceFeatureName();
+
+    /**
+     * Returns the repository method annotations that accept JPQL
+     * (such as Query).
+     *
+     * @return the annotation classes.
+     */
+    Set<Class<? extends Annotation>> queryLanguageAnnoTypes();
 
     /**
      * List of valid return types for resource accessor methods.

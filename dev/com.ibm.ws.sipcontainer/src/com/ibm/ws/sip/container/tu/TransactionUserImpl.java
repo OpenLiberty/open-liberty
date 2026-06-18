@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2003, 2021 IBM Corporation and others.
+ * Copyright (c) 2003, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -460,7 +460,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 	private HashMap <Long, ClientTransaction> _proxyClientTransactions = null;
 
 	/**
-    * When this flag is true - meaning that Proxy received reINVITE wich was not answered with final response yet.
+    * When this flag is true - Proxy received a reINVITE which was not answered with a final response yet.
     */
 
    private transient boolean _proxyHasOngoingReInvite = false;
@@ -513,7 +513,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 	 * Construct a new Derived Transaction User
 	 * @param tuWrapper Related TransactionUserWrapper
 	 * @param originalTU base TransactionUser 
-	 * @param response reponse which caused for this Derived TU
+	 * @param response response which caused for this Derived TU
 	 * to be created.
 	 */
 	void initializeDerivedTU(TransactionUserWrapper tuWrapper,
@@ -1052,15 +1052,15 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 					c_logger.traceDebug(this, "shouldTerminateUnderlyingTransactions", "Proxy mode.");
 				}
 				if (!request.isCommitted()) {
-					// In case when the request is not completed (INVITE and re-INVITE) we
+					// In case when the request is not completed (INVITE or re-INVITE), we
 					// should close all underlying transactions.
-					// We will do this only when flag is true because of the performance
+					// We will do this only when flag is true, because of the performance
 					// degradation caused by new HashTable for all
 					// outgoing client transactions in Proxy mode.
 					if (!proxyHasFinalResponse() || _proxyHasOngoingReInvite) {
 						if (c_logger.isTraceDebugEnabled()) {
 							c_logger.traceDebug(this, "shouldTerminateUnderlyingTransactions",
-									"We have no final response for proxy or request is not commited.");
+									"We have no final response for proxy or request is not committed.");
 						}
 						return true;
 					}
@@ -3192,7 +3192,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 			c_logger.traceEntry(this, " processTimeout", params);
 		}
 		if( isInitialState(_tuWrapper.getState()) && SipUtil.isDialogInitialRequest(req.getMethod())){
-			//        	If the request that was timedOut is on the dialog that is in initial 
+			//        	If the request that was timedOut is on the dialog that is in initial
 			//        	state it should be removed from transactionUsers table.
 			SipTransactionUserTable.getInstance().removeTransactionUserForOutgoingRequest(req);
 		}
@@ -3201,6 +3201,7 @@ public class TransactionUserImpl  extends ReplicatableImpl {
 
 		_tuWrapper.logToContext(SipSessionSeqLog.PROCESS_TIMEOUT, req.getCallId(), req);
 
+		// Generate and send 408 response
 		IncomingSipServletResponse response = null;
 		try {
 			response = SipUtil.createResponse(SipServletResponse.SC_REQUEST_TIMEOUT, req);

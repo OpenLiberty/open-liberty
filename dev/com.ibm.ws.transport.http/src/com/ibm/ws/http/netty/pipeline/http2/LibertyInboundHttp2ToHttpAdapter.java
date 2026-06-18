@@ -10,9 +10,15 @@
 package com.ibm.ws.http.netty.pipeline.http2;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
+import com.ibm.ws.http.channel.internal.HttpChannelConfig;
+import com.ibm.ws.http.channel.internal.HttpMessages;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.Channel;
@@ -31,14 +37,27 @@ import io.netty.handler.codec.http2.InboundHttp2ToHttpAdapter;
  * launch stream errors handled further in the pipeline to match the same behavior as
  * before.
  */
-public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter {
+public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter implements ResetFrameTracker {
+    private static final TraceComponent tc = Tr.register(LibertyInboundHttp2ToHttpAdapter.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
 
     private final Channel channel;
+    private final int maxResetFrames;
+    private final int resetFrameWindow;
+    
+    private volatile long startResetTime = System.nanoTime();
+    private volatile int resetFrameCount = 0; //tracks both inbound and outbound resets
+
     private AtomicBoolean goAwayReceived = new AtomicBoolean(false);
 
-    protected LibertyInboundHttp2ToHttpAdapter(Http2Connection connection, int maxContentLength, boolean validateHttpHeaders, boolean propagateSettings, Channel channel) {
+    static final Http2Exception RST_FRAME_RATE_EXCEEDED = new Http2Exception(Http2Error.ENHANCE_YOUR_CALM,
+            "too many reset frames processed");
+
+
+    protected LibertyInboundHttp2ToHttpAdapter(Http2Connection connection, int maxContentLength, boolean validateHttpHeaders, boolean propagateSettings, Channel channel, HttpChannelConfig httpConfig) {
         super(connection, maxContentLength, validateHttpHeaders, propagateSettings);
         this.channel = channel;
+        this.maxResetFrames = httpConfig.getH2MaxResetFrames();
+        this.resetFrameWindow = httpConfig.getH2ResetFramesWindow();
     }
 
     @Override
@@ -76,6 +95,8 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
 
     @Override
     public void onRstStreamRead(ChannelHandlerContext ctx, int streamId, long errorCode) throws Http2Exception {
+        if (isResetTrackingEnabled())
+            incrementResetCount();
         Http2Stream stream = connection.stream(streamId);
         FullHttpMessage msg = getMessage(stream);
         if (msg != null) {
@@ -85,8 +106,64 @@ public class LibertyInboundHttp2ToHttpAdapter extends InboundHttp2ToHttpAdapter 
         if (Objects.isNull(code)) {
             code = Http2Error.INTERNAL_ERROR;
         }
+        if (isResetsInTimeExceeded()) {
+            throw RST_FRAME_RATE_EXCEEDED;
+        }
         ctx.fireExceptionCaught(Http2Exception.streamError(streamId, code,
                                                            "HTTP/2 to HTTP layer caught stream reset"));
+    }
+
+    public void incrementResetCount() {
+        resetFrameCount++;
+    }
+
+    public boolean isResetTrackingEnabled() {
+        return maxResetFrames > 0;
+    }
+
+    public boolean isResetsInTimeExceeded() {
+        // Are we checking the reset frames/time ?
+        if (isResetTrackingEnabled()) {
+            // Is the window limited?
+            if (resetFrameWindow > 0) {
+                long curResetTime = System.nanoTime();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setting curResetTime: " + curResetTime);
+                }
+
+                if (curResetTime - startResetTime < TimeUnit.MILLISECONDS.toNanos(resetFrameWindow)) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "number of resets in time is " + resetFrameCount);
+                    }
+                    if (resetFrameCount >= maxResetFrames) {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, "too many resets within time");
+                        }
+                        return true;
+                    }
+
+                } else {
+                    // Start over with a new window
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "restarting reset frame time window " + curResetTime);
+                    }
+                    startResetTime = curResetTime;
+                    resetFrameCount = 0;
+                }
+            } else {
+                // Unlimited time window
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "number of resets in unlimited time is " + resetFrameCount);
+                }
+                if (resetFrameCount >= maxResetFrames) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "reset frames in unlimited window exceeded: " + resetFrameCount);
+                    }
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override

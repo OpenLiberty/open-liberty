@@ -31,6 +31,7 @@ import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
+import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
@@ -72,8 +73,12 @@ public class DataJPATestHibernate extends FATServletClient {
     private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
                     .withDatabaseName("testdb");
 
+    // TODO enable database rotation to verify Hibernate behavior against other databases.
+//    @ClassRule
+//    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createLatestH2(Optional.of(h2Database));
+
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createH2(Optional.of(h2Database));
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createType(DatabaseContainerType.H2Java11Plus, Optional.of(h2Database));
 
     @Server("io.openliberty.data.internal.fat.jpa.hibernate")
     @TestServlets({

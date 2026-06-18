@@ -14,7 +14,7 @@ IBM-API-Package: \
  io.openliberty.mcp.tools; type="ibm-api"
 IBM-ShortName: mcpServer-1.0
 Subsystem-Name: Model Context Protocol Server 1.0
--features=io.openliberty.mcpServer1.0.ee-10.0;ibm.tolerates:=11.0
+-features=io.openliberty.mcpServer1.0.ee-10.0;ibm.tolerates:="11.0, 12.0"
 -bundles=io.openliberty.mcp; location:="dev/api/ibm/,lib/", \
  io.openliberty.mcp.internal
 -files=dev/api/ibm/javadoc/io.openliberty.mcp_1.0-javadoc.zip

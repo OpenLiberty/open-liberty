@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Risolvere la causa dell'errore.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: La cache del cookie di logout non \u00e8 riuscita a verificare la cache JCache per il cookie. L''errore \u00e8: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=La cache del cookie di logout ha rilevato un errore durante il tentativo di verificare la cache JCache per il cookie. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Risolvere la causa dell'errore.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Sono stati rilevati token con formato precedente per cui \u00e8 stata effettuata la disconnessione. Affinch\u00e9 la cache relativa agli utenti disconnessi venga condivisa correttamente, assicurati che tutti i server del tuo ambiente siano aggiornati all'ultima versione.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=Il sistema ha rilevato token con accesso terminato che presentano un formato precedente. Per garantire una maggiore sicurezza e coerenza, i token con sessione terminata sono stati convertiti al formato pi\u00f9 recente.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Per garantire che i token di disconnessione utilizzino il formato pi\u00f9 recente, aggiorna tutti i server del tuo cluster o del tuo ambiente all'ultima versione.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: La cache dei cookie di disconnessione ha riscontrato un errore durante la migrazione dei vecchi token alle versioni con hash. L''errore \u00e8: {0}
+JCACHE_MIGRATION_FAILURE.explanation=La cache dei cookie di disconnessione ha riscontrato un errore durante la migrazione una tantum dei vecchi token di disconnessione al nuovo formato con hash.
+JCACHE_MIGRATION_FAILURE.useraction=Esaminare il messaggio di errore e i log del server per individuare la causa dell'errore. La migrazione verr\u00e0 riprovata al prossimo riavvio del server.

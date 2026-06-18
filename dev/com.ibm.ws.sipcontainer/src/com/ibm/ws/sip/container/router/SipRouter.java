@@ -1399,8 +1399,8 @@ public class SipRouter {
     }
     
 	/**
-     * Send the Error respone to the UAC if the incommng Request cannot be
-     * handled by the Container
+     * Send the Error response to the UAC if the incoming Request 
+	 * cannot be handled by the Container
      * 
      * @param request
      *            Original request
@@ -1413,8 +1413,8 @@ public class SipRouter {
 	
 	
 	/**
-     * Send the Error respone to the UAC if the incommng Request cannot be
-     * handled by the Container
+     * Send the Error response to the UAC if the incoming Request 
+	 * cannot be handled by the Container
      * 
      * @param request
      *            Original request
@@ -2086,7 +2086,7 @@ public class SipRouter {
 	}
 
 	/**
-	 * Notify the SipApplicationRouter about all the deployed applications and load thier configuration
+	 * Notify the SipApplicationRouter about all the deployed applications and load their configuration
 	 * This should be called only when the SipApplicationRouter is initialized and not on later applications
 	 */
 	public void notifyRouterOnDeployedApps() {

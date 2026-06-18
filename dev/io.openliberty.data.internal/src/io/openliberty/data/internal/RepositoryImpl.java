@@ -581,6 +581,7 @@ public class RepositoryImpl<R> implements InvocationHandler {
                     case INSERT -> queryInfo.insert(args[0], eh);
                     case SAVE -> queryInfo.save(args[0], eh);
                     case QM_UPDATE, QM_DELETE -> queryInfo.execute(eh, args);
+                    case NATIVE -> queryInfo.nativeQuery(eh, txStatus, args);
                     case LC_DELETE -> queryInfo.delete(args[0], eh);
                     case LC_UPDATE -> queryInfo.update(args[0], eh);
                     case LC_UPDATE_MERGE -> queryInfo.findAndUpdate(args[0], eh);

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Kezelje a hiba ok\u00e1t.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: A kil\u00e9p\u00e9si cookie gyors\u00edt\u00f3t\u00e1r nem tudta ellen\u0151rizni a JCache gyors\u00edt\u00f3t\u00e1rat a cookie sz\u00e1m\u00e1ra. A hiba a k\u00f6vetkez\u0151: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=A kil\u00e9p\u00e9si cookie gyors\u00edt\u00f3t\u00e1r hib\u00e1t \u00e9szlelt, amikor megpr\u00f3b\u00e1lta ellen\u0151rizni a JCache gyors\u00edt\u00f3t\u00e1rat a cookie sz\u00e1m\u00e1ra. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Kezelje a hiba ok\u00e1t.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: A rendszer \u00e9szleli a r\u00e9gebbi form\u00e1tum\u00fa, m\u00e1r lej\u00e1rt tokeneket. Ahhoz, hogy a kijelentkez\u00e9s ut\u00e1ni gyors\u00edt\u00f3t\u00e1r megfelel\u0151en megoszt\u00e1sra ker\u00fclj\u00f6n, gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a k\u00f6rnyezet\u00e9ben tal\u00e1lhat\u00f3 \u00f6sszes szerver friss\u00edtve van a leg\u00fajabb verzi\u00f3ra.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=A rendszer olyan, m\u00e1r kijelentkezett tokeneket \u00e9szlelt, amelyek r\u00e9gebbi form\u00e1tum\u00faak. A biztons\u00e1g \u00e9s az egys\u00e9gess\u00e9g jav\u00edt\u00e1sa \u00e9rdek\u00e9ben a lej\u00e1rt tokeneket \u00e1t\u00e1ll\u00edtottuk az \u00faj form\u00e1tumra.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Annak \u00e9rdek\u00e9ben, hogy a kijelentkezett tokenek a legfrissebb form\u00e1tumot haszn\u00e1lj\u00e1k, friss\u00edtse a klaszterben vagy a k\u00f6rnyezetben tal\u00e1lhat\u00f3 \u00f6sszes szervert a leg\u00fajabb verzi\u00f3ra.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: A kijelentkez\u00e9si cookie-k gyors\u00edt\u00f3t\u00e1r\u00e1ban hiba t\u00f6rt\u00e9nt a r\u00e9gi tokenek hash-elt v\u00e1ltozataira t\u00f6rt\u00e9n\u0151 \u00e1talak\u00edt\u00e1s sor\u00e1n. A hiba a k\u00f6vetkez\u0151: {0}
+JCACHE_MIGRATION_FAILURE.explanation=A kijelentkez\u00e9si cookie-k gyors\u00edt\u00f3t\u00e1r\u00e1ban hiba t\u00f6rt\u00e9nt a r\u00e9gi kijelentkez\u00e9si tokenek egyszeri \u00e1tvitelekor az \u00faj, hash-elt form\u00e1tumra.
+JCACHE_MIGRATION_FAILURE.useraction=Ellen\u0151rizze a hiba\u00fczenetet \u00e9s a szerver napl\u00f3it a hiba ok\u00e1nak meg\u00e1llap\u00edt\u00e1s\u00e1hoz. A migr\u00e1ci\u00f3t a szerver k\u00f6vetkez\u0151 \u00fajraind\u00edt\u00e1sakor \u00fajra megpr\u00f3b\u00e1ljuk.

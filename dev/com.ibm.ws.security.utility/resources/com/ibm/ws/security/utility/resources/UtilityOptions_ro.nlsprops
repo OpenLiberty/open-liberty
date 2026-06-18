@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ encode.option-desc.1.text=\tDac\u0103 nu sunt specificate argumente, instrumentu
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tSpecifica\u021bi modul de codare a parolei. Codurile acceptate sunt xor, aes, aes-128, \u0219i hash. Codificarea implicit\u0103 este xor. Aes cripteaz\u0103 folosind o cheie aes-256 bit.\n\taes-128 poate fi utilizat pentru compatibilitate cu versiunile serverului anterioare 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
-encode.option-desc.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codificarea se face utiliz\u00e2nd AES. Acest \u0219ir va fi ha\u0219urat pentru a produce o cheie de criptare, care este utilizat\u0103 pentru a cripta \u0219i decriptarea parolei. Cheia poate fi furnizat\u0103 serverului prin definirea variabilei wlp.password.encryption.key a c\u0103rei valoare este cheie. Dac\u0103 aceast\u0103 op\u0163iune nu este furnizat\u0103, se va folosi o cheie implicit\u0103.
+encode.option-desc.key=\tSpecifica\u0163i o cheie de utilizat c\u00e2nd codificarea se face utiliz\u00e2nd AES. Acest \u0219ir va fi\nutilizat pentru a genera o cheie de criptare AES, care este folosit\u0103 pentru criptarea \u0219i\ndecriptarea parolei. Cheia poate fi furnizat\u0103 serverului prin definirea\nvariabilei ` wlp.password.encryption.key `, a c\u0103rei valoare este\ncheia. \u00cencep\u00e2nd cu versiunea 26.0.0.3, nu se mai utilizeaz\u0103 o cheie implicit\u0103. \u00cen schimb,\nspecifica\u021bi unul dintre urm\u0103toarele argumente: --key, --base64Key, --aesConfigFile, sau --keyring.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\tO Base64-encodedAES-256 cheie va fi utilizat\u0103 pentru criptarea \u0219i decriptarea\nparolei. Furniza\u021bi aceast\u0103 cheie serverului prin definirea variabilei\nwlp.aes.encryption.key. Dac\u0103 --base64Key este\nspecificat, atunci --aesConfigFile \u0219i --key nu pot fi specificate.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile

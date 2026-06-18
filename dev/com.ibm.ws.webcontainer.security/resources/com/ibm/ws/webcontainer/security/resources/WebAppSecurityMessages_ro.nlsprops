@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Examina\u021bi \u0219i corecta\u021bi cauza erorii
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: Cache-ul logged-out-cookie nu a putut verifica cache-ul JCache pentru cookie. Eroarea este: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=Cache-ul logged-out-cookie a \u00eent\u00e2lnit o eroare atunci c\u00e2nd a \u00eencercat s\u0103 verifice cache-ul JCache pentru cookie. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Examina\u021bi \u0219i corecta\u021bi cauza erorii.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Sunt detectate token-urile cu accesul expirat care au un format mai vechi. Pentru ca memoria cache pentru utilizatorii deconecta\u021bi s\u0103 fie partajat\u0103 corespunz\u0103tor, asigura\u021bi-v\u0103 c\u0103 toate serverele din mediul dumneavoastr\u0103 au fost actualizate la cea mai recent\u0103 versiune.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=Sistemul a detectat tokenuri pentru care s-a \u00eencheiat sesiunea \u0219i care au un format mai vechi. Pentru a spori securitatea \u0219i coeren\u021ba, token-urile corespunz\u0103toare sesiunilor \u00eencheiate au fost migrate c\u0103tre formatul mai nou.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Pentru a v\u0103 asigura c\u0103 token-urile de deconectare utilizeaz\u0103 cel mai recent format, actualiza\u021bi toate serverele din clusterul sau mediul dumneavoastr\u0103 la cea mai recent\u0103 versiune.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: Cache-ul cookie-urilor de deconectare a \u00eent\u00e2mpinat o eroare \u00een timpul migr\u0103rii token-urilor vechi c\u0103tre versiunile hash. Eroarea este: {0}
+JCACHE_MIGRATION_FAILURE.explanation=Cache-ul cookie-urilor de deconectare a \u00eent\u00e2mpinat o eroare \u00een timpul migr\u0103rii unice a vechilor token-uri de deconectare c\u0103tre noul format hash.
+JCACHE_MIGRATION_FAILURE.useraction=Analiza\u021bi mesajul de eroare \u0219i jurnalele serverului pentru a identifica cauza erorii. Migrarea va fi \u00eencercat\u0103 din nou la urm\u0103toarea repornire a serverului.

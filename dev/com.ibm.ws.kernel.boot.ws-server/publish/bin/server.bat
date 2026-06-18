@@ -675,9 +675,9 @@ goto:eof
     if "!ADD_SHARE_CLASSES!" == "true" (
       @REM Set -Xscmx
       if "debug" == "%ACTION%" (
-        set XSCMX_VAL="130m"
+        set XSCMX_VAL="165m"
       ) else (
-        set XSCMX_VAL="80m"
+        set XSCMX_VAL="125m"
       )
       set SERVER_IBM_JAVA_OPTIONS=-Xshareclasses:name=liberty-%%u,nonfatal,cacheDir="%WLP_OUTPUT_DIR%\.classCache" -XX:ShareClassesEnableBCI -Xscmx!XSCMX_VAL! !SPECIFIED_JAVA_OPTIONS!
     ) else (

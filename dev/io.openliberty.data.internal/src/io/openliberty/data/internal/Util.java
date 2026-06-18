@@ -142,7 +142,7 @@ public class Util {
     /**
      * Return types for deleteBy that distinguish delete-only from find-and-delete.
      */
-    static final Set<Class<?>> RETURN_TYPES_FOR_DELETE_ONLY = //
+    static final Set<Class<?>> RETURN_TYPES_FOR_UPDATE_COUNT = //
                     Set.of(void.class, Void.class,
                            boolean.class, Boolean.class,
                            int.class, Integer.class,
@@ -290,7 +290,7 @@ public class Util {
 
     /**
      * Identifies whether a method is annotated with a Jakarta Data annotation
-     * that performs and operation, such as Query, Find, or Save. This method is
+     * that performs an operation, such as Query, Find, or Save. This method is
      * for use by error reporting only, so it does not need to be very efficient.
      *
      * @param method   repository method.

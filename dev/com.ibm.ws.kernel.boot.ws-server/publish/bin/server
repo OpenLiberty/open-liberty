@@ -447,9 +447,9 @@ serverEnvDefaults()
       # Set -Xscmx
       if [ "${ACTION}" = "debug" ]
       then
-        XSCMX_VAL="130m"
+        XSCMX_VAL="165m"
       else
-        XSCMX_VAL="80m"
+        XSCMX_VAL="125m"
       fi
   
       if $shareclassesCacheDirPerm

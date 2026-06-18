@@ -101,3 +101,7 @@ startup.check.interval.config.only.set.CWMMH01012W.useraction=Configure the chec
 enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: The enableEndpoints configuration is set to false but the file-based health check function is not enabled. This configuration has no effect and the health check endpoints are enabled.
 enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=The enableEndpoints configuration takes effect only when file-based health checks are enabled.
 enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Enable file-based health check functions, or remove the enableEndpoints configuration.
+
+enable.endpoints.env.var.invalid.value.CWMMH01014W=CWMMH01014W: An invalid value [{0}] was provided for the MP_HEALTH_ENABLE_ENDPOINTS environment variable. The value that is provided must be either "true" or "false". The runtime uses the server configuration or defaults to true.
+enable.endpoints.env.var.invalid.value.CWMMH01014W.explanation=The MP_HEALTH_ENABLE_ENDPOINTS environment variable accepts only "true" or "false" values (case-insensitive).
+enable.endpoints.env.var.invalid.value.CWMMH01014W.useraction=Set the MP_HEALTH_ENABLE_ENDPOINTS environment variable to either "true" or "false", or remove the environment variable to use the server configuration.

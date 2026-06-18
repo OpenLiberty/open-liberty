@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ encode.option-desc.1.text=\tSe nenhum argumento for especificado, a ferramenta e
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tEspecifique como codificar a senha. As codifica\u00e7\u00f5es compat\u00edveis s\u00e3o xor, aes, aes-128, e hash. A codifica\u00e7\u00e3o padr\u00e3o \u00e9 xor. O Aes criptografa usando uma chave de aes-256 bits.\n\taes-128 pode ser usado para compatibilidade com vers\u00f5es do servidor anteriores a 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[chave]
-encode.option-desc.key=\tEspecifique uma chave a ser utilizada quando a codifica\u00e7\u00e3o utilizando AES. Essa string ser\u00e1 transformada em hash para produzir uma chave de criptografia, que \u00e9 usada para criptografar e descriptografar a senha. A chave pode ser fornecida ao servidor definindo a vari\u00e1vel wlp.password.encryption.key cujo valor \u00e9 a chave. Se esta op\u00e7\u00e3o n\u00e3o for fornecida, uma chave padr\u00e3o dever\u00e1 ser usada.
+encode.option-desc.key=\tEspecifique uma chave a ser utilizada quando a codifica\u00e7\u00e3o utilizando AES. Essa sequ\u00eancia de caracteres ser\u00e1\nusada para gerar uma chave de criptografia AES, que \u00e9 utilizada para criptografar e\ndescriptografar a senha. A chave pode ser fornecida ao servidor definindo-se\na vari\u00e1vel ` wlp.password.encryption.key `, cujo valor \u00e9 a\nchave. A partir do 26.0.0.3, uma chave padr\u00e3o n\u00e3o \u00e9 mais utilizada. Em vez disso,\nespecifique um dos seguintes argumentos: --key, --base64Key, --aesConfigFile, ou --keyring.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\tUma Base64-encodedAES-256 chave deve ser usada para criptografar e descriptografar a\nsenha. Forne\u00e7a essa chave ao servidor definindo a\nwlp.aes.encryption.key vari\u00e1vel. Se --base64Key for\nespecificado, ent\u00e3o --aesConfigFile e --key n\u00e3o poder\u00e3o ser especificados.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile

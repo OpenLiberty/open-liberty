@@ -18,7 +18,7 @@ import java.util.NoSuchElementException;
 /**
  * @author Amir Perlman, 23 Feb 2005
  *
- * Empty Enumeration implemenation where we need to return an enumeration but 
+ * Empty Enumeration implementation where we need to return an enumeration but 
  * the enumerated structure is either empty or not initialized.  
  */
 public class EmptyEnumeration implements Enumeration 

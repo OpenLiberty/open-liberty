@@ -309,25 +309,26 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
 
         // Resolve enableEndpoints config (beta feature only)
         if (ProductInfo.getBetaEdition()) {
-            // Try server config first (Boolean), then fall back to env var (String)
-            Boolean enableEndpointsConfig = (Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS);
+            Boolean enableEndpointsConfig = null;
 
-            // If server config not set, check environment variable
-            if (enableEndpointsConfig == null) {
-                String envConfig = System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS);
-                if (envConfig != null && !envConfig.trim().isEmpty()) {
-                    String trimmedEnvConfig = envConfig.trim();
-                    // Only parse if it's a valid boolean string (case-insensitive)
-                    // Invalid values are ignored, allowing default (true) to be used
-                    if (trimmedEnvConfig.equalsIgnoreCase("true") || trimmedEnvConfig.equalsIgnoreCase("false")) {
-                        enableEndpointsConfig = Boolean.valueOf(trimmedEnvConfig);
-                    } else {
-                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                            Tr.debug(tc, "Invalid value for " + HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS +
-                                    ": '" + trimmedEnvConfig + "'. Must be 'true' or 'false'. Using default value (true).");
-                        }
-                    }
+            // Check environment variable first
+            String envConfig = System.getenv(HealthCheckConstants.HEALTH_ENV_CONFIG_ENABLE_ENDPOINTS);
+            if (envConfig != null && !envConfig.trim().isEmpty()) {
+                String trimmedEnvConfig = envConfig.trim();
+                // Boolean.valueOf() returns true only if value is "true" (case-insensitive), false otherwise
+                // For invalid values (not "true" or "false"), show warning and use default by not setting enableEndpointsConfig
+                if (trimmedEnvConfig.equalsIgnoreCase("true") || trimmedEnvConfig.equalsIgnoreCase("false")) {
+                    enableEndpointsConfig = Boolean.valueOf(trimmedEnvConfig);
+                } else {
+                    Tr.warning(tc, "enable.endpoints.env.var.invalid.value.CWMMH01014W", trimmedEnvConfig);
                 }
+            }
+
+            // If env var not set, check server config
+            // Note: properties.get() may return default value even if not explicitly set in server.xml
+            // We check env var first to allow it to override the default
+            if (enableEndpointsConfig == null) {
+                enableEndpointsConfig = (Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS);
             }
 
             // Process the resolved config value
@@ -522,9 +523,18 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
         if (isValidSystemForFileHealthCheck) {
             processCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_CHECK_INTERVAL));
             processStartupCheckIntervalConfig((String) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_STARTUP_CHECK_INTERVAL));
-            
-            // processEnableEndpointsConfig returns true if the value changed
-            boolean enableEndpointsChanged = processEnableEndpointsConfig((Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS));
+
+            // Process enableEndpoints config (beta feature only)
+            boolean enableEndpointsChanged = false;
+            if (ProductInfo.getBetaEdition()) {
+                // processEnableEndpointsConfig returns true if the value changed
+                enableEndpointsChanged = processEnableEndpointsConfig((Boolean) properties.get(HealthCheckConstants.HEALTH_SERVER_CONFIG_ENABLE_ENDPOINTS));
+            } else {
+                // Not in beta edition - skip enableEndpoints configuration entirely
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "enableEndpoints configuration skipped in Modified - feature only available in beta edition");
+                }
+            }
 
             // Only execute WAB update if enableEndpoints actually changed
             if (enableEndpointsChanged) {

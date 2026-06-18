@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2013, 2023 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -68,6 +68,13 @@ import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
            property = { "service.vendor=IBM" })
 public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, SynchronousBundleListener {
     private static final TraceComponent tc = Tr.register(RuntimeUpdateManagerImpl.class);
+
+    static final String QUIESCE_PHASE_PROPERTY = "quiesce.phase";
+
+    enum QuiescePhase {
+        PRE,
+        DEFAULT
+    }
 
     private volatile FutureMonitor futureMonitor;
     private final AtomicBoolean normalServerStop = new AtomicBoolean(true);
@@ -309,14 +316,48 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                 normalServerStop.set(false);
             } else {
                 // NICE / NORMAL STOP
-                // Find all ServerQueisceListeners and notify them
+                // Find all PRE quiesce listeners and notify them first
                 try {
-                    quiesceListeners(bundleCtx.getServiceReferences(ServerQuiesceListener.class, null));
+                    quiesceListeners();
                 } catch (InvalidSyntaxException e) {
                     // not going to happen with a null filter.
                 }
             }
         }
+    }
+
+    private boolean callQuiesceListeners(long startTime, int quiesceTimeout, final ConcurrentLinkedQueue<Object> invoking,
+                                         Collection<ServiceReference<ServerQuiesceListener>> listenerRefs, ThreadQuiesce tq) {
+        FutureCollection quiesceListenerFutures = new FutureCollection();
+        // Queue the notification of each hook (unbounded queue)
+        for (ServiceReference<ServerQuiesceListener> ref : listenerRefs) {
+            final ServerQuiesceListener listener = bundleCtx.getService(ref);
+            if (listener != null) {
+                quiesceListenerFutures.add(executorService.submit(new Runnable() {
+                    @Override
+                    public void run() {
+                        try {
+                            invoking.add(listener);
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "Invoking serverStopping() on listener: " + ref);
+                            }
+                            listener.serverStopping();
+                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                                Tr.debug(tc, "serverStopping() method completed on listener: " + ref);
+                            }
+
+                        } catch (Throwable t) {
+                            // Auto-FFDC here..
+                        } finally {
+                            invoking.remove(listener);
+                        }
+                    }
+                }));
+            }
+        }
+        // Notify the executor service that we are quiescing, if available
+        boolean quiesceListenerSuccess = quiesceListenerFutures.isComplete(startTime, quiesceTimeout);
+        return quiesceListenerSuccess && (tq != null ? tq.quiesceThreads(startTime) : true);
     }
 
     /**
@@ -325,9 +366,9 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
      * All invocations are then allowed to complete.
      *
      * @param listenerRefs Collection of {@code ServiceReference}s for {@code ServerQuiesceListener}s
+     * @throws InvalidSyntaxException
      */
-
-    private void quiesceListeners(Collection<ServiceReference<ServerQuiesceListener>> listenerRefs) {
+    private void quiesceListeners() throws InvalidSyntaxException {
         // Make a copy of existing notifications: we can't hold the lock around notifications
         // to iterate while waiting for the existing notifications to complete because that would
         // lock-out cleanupNotifications.
@@ -336,7 +377,12 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             existingNotifications.putAll(notifications);
         }
 
-        if (listenerRefs.isEmpty() && existingNotifications.isEmpty())
+        Collection<ServiceReference<ServerQuiesceListener>> preListenerRefs = bundleCtx.getServiceReferences(ServerQuiesceListener.class,
+                                                                                                             "(" + QUIESCE_PHASE_PROPERTY + "=" + QuiescePhase.PRE + ")");
+        // NOTE this filter will need to change if another phase is defined for quiesce
+        Collection<ServiceReference<ServerQuiesceListener>> defaultListenerRefs = bundleCtx.getServiceReferences(ServerQuiesceListener.class,
+                                                                                                                 "(!(" + QUIESCE_PHASE_PROPERTY + "=" + QuiescePhase.PRE + "))");
+        if (preListenerRefs.isEmpty() && defaultListenerRefs.isEmpty() && existingNotifications.isEmpty())
             return;
 
         ThreadQuiesce tq = (ThreadQuiesce) executorService;
@@ -364,45 +410,33 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
             });
         }
 
-        FutureCollection quiesceListenerFutures = new FutureCollection();
-
-        // Queue the notification of each listener (unbounded queue)
-        final ConcurrentLinkedQueue<ServerQuiesceListener> listeners = new ConcurrentLinkedQueue<ServerQuiesceListener>();
-        for (ServiceReference<ServerQuiesceListener> ref : listenerRefs) {
-            final ServerQuiesceListener listener = bundleCtx.getService(ref);
-            if (listener != null) {
-
-                quiesceListenerFutures.add(executorService.submit(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            listeners.add(listener);
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "Invoking serverStopping() on listener: " + listener);
-                            }
-                            listener.serverStopping();
-                            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                                Tr.debug(tc, "serverStopping() method completed on listener: " + listener);
-                            }
-
-                        } catch (Throwable t) {
-                            // Auto-FFDC here..
-                        } finally {
-                            listeners.remove(listener);
-                        }
-                    }
-                }));
-
-            }
-        }
-
         if (tc.isDebugEnabled())
             Tr.debug(tc, "About to begin quiesce of executor service threads.");
 
-        // Notify the executor service that we are quiescing
-
+        final ConcurrentLinkedQueue<Object> invoking = new ConcurrentLinkedQueue<>();
         long startTime = System.currentTimeMillis();
-        if (tq.quiesceThreads() && quiesceListenerFutures.isComplete(startTime, quiesceTimeout)) {
+        // now call the listeners
+        boolean preListenerSuccess = callQuiesceListeners(startTime, quiesceTimeout, invoking, preListenerRefs, null);
+        long currentTime = System.currentTimeMillis();
+        long preQuiesceTime = (currentTime - startTime) / 1000;
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Done calling pre-quiesce listeners, time taken: " + preQuiesceTime);
+        }
+
+        // check if pre listener time took more than half the configured timeout
+        if (preQuiesceTime > (quiesceTimeout / 2)) {
+            // Pre listeners took more than half the timeout;
+            // Resetting the startTime and setting the timeout to give normal listeners
+            // half the configured timeout.
+            startTime = currentTime;
+            quiesceTimeout = quiesceTimeout / 2;
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Extending timeout for default listeners after pre listeners timed out: " + quiesceTimeout);
+            }
+        }
+        boolean defaultListenerSuccess = callQuiesceListeners(startTime, quiesceTimeout, invoking, defaultListenerRefs, tq);
+
+        if (preListenerSuccess && defaultListenerSuccess) {
             if (isServer())
                 Tr.info(tc, "quiesce.end");
             else
@@ -432,17 +466,17 @@ public class RuntimeUpdateManagerImpl implements RuntimeUpdateManager, Synchrono
                 Tr.warning(tc, "notifications.not.complete", notificationCount, String.join(", ", incompleteNotifications));
             }
 
-            List<String> runningListenerClasses = Collections.emptyList();
-            if (listeners.size() > 0) {
-                // snapshot listener classes to avoid timing issues
-                runningListenerClasses = listeners.stream().map(l -> l.getClass().getName()).collect(Collectors.toList());
-                if (runningListenerClasses.size() > 0) {
-                    Tr.warning(tc, "quiesce.listeners.not.complete", runningListenerClasses.size(),
-                               String.join(", ", runningListenerClasses));
+            List<String> invokingObjects = Collections.emptyList();
+            if (invoking.size() > 0) {
+                // snapshot invoking classes to avoid timing issues
+                invokingObjects = invoking.stream().map(Object::toString).collect(Collectors.toList());
+                if (invokingObjects.size() > 0) {
+                    Tr.warning(tc, "quiesce.listeners.not.complete", invokingObjects.size(),
+                               String.join(", ", invokingObjects));
                 }
             }
 
-            count = count - notificationCount - runningListenerClasses.size();
+            count = count - notificationCount - invokingObjects.size();
             if (count > 0) {
                 Tr.warning(tc, "quiesce.waiting.on.threads", count);
             }

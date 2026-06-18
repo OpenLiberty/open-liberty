@@ -135,6 +135,43 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
             }
         }
     }
+    
+    /**
+     * Method to check if the test is running on Oracle DB.
+     *
+     * @return true if running in Oracle DB, false otherwise
+     */
+    public static final boolean isOracleDB() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.contains("ojdbc8");
+    }
+
+    /**
+     * Method to check if the test is running with Hibernate.
+     * Reads the 'repeat_phase' environment variable set in the test setup.
+     *
+     * @return true if running with Hibernate, false otherwise
+     */
+    private boolean isRunningWithHibernate() {
+        String repeatPhase = System.getenv("repeat_phase");
+        return repeatPhase != null && repeatPhase.contains("hibernate");
+    }
+
+    /**
+     * Skip test if running with Hibernate on Oracle DB and log the reason.
+     * Usage: if (skipTestIfHibernateOnOracleDB("reason")) return;
+     *
+     * @param reason the reason for skipping (error type or description)
+     * @return true if test should be skipped, false otherwise
+     */
+    private boolean skipTestIfHibernateOnOracleDB(String reason) {
+        if (isRunningWithHibernate() && isOracleDB()) {
+            System.out.println("SKIPPING TEST - Running with Hibernate on Oracle DB");
+            System.out.println("REASON: " + reason);
+            return true;
+        }
+        return false;
+    }
 
     @Test
     public void testLocalDateFunction_JPQL() throws Exception {
@@ -203,6 +240,7 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
     @Test
     // Reference issue: https://github.com/OpenLiberty/open-liberty/issues/33805
     public void testLocalTimeFunction_JPQL() throws Exception {
+        if (skipTestIfHibernateOnOracleDB("Hibernate generates incorrect SQL for LOCAL TIME in Oracle DB")) return;
         em.clear();
 
         // Verify that the LOCAL TIME operation can be used in the WHERE clause in a comparator operation
@@ -590,7 +628,7 @@ public class TestNewQueryTimeFunctionsServlet extends JPADBTestServlet {
         q = em.createQuery("SELECT EXTRACT(SECOND FROM qdte.localDateTimeData) FROM QueryDateTimeEntity qdte WHERE qdte.id = 1");
         result = q.getSingleResult();
         Assert.assertNotNull(result);
-        Assert.assertEquals(0.0d, result);
+        Assert.assertEquals(0.0d, ((Number) result).doubleValue());
     }
 
     @Test

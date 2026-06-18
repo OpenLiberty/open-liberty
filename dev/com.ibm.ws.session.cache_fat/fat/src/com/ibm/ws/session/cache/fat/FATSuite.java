@@ -37,6 +37,7 @@ import componenttest.topology.utils.HttpUtils;
                 SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
                 SessionCacheTwoServerTimeoutTest.class,
+                SessionCachePrefixTest.class,
                 HazelcastClientTest.class
 })
 

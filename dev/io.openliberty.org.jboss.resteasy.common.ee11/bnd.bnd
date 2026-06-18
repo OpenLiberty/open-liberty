@@ -19,7 +19,7 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 bVersion=1.0
 
-resteasy-version=7.0.0.Final
+resteasy-version=7.0.2.Final
 resteasy-tracing-api-version=1.1.0.Final
 apache-mime4j-version=0.8.10
 
@@ -34,7 +34,8 @@ app-resources= \
   META-INF/services/jakarta.ws.rs.ext.MessageBodyWriter | \
   META-INF/services/jakarta.ws.rs.ext.RuntimeDelegate | \
   META-INF/services/jakarta.ws.rs.ext.Providers | \
-  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext
+  META-INF/services/org.jboss.resteasy.spi.concurrent.ThreadContext | \
+  META-INF/services/org.jboss.resteasy.spi.Registry
 
 -cdiannotations:
 
@@ -87,7 +88,7 @@ Export-Package: \
   org.jboss.resteasy.core.providerfactory;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.core.registry;version=${resteasy-version}, \
   org.jboss.resteasy.core.request;version=${resteasy-version}, \
-  org.jboss.resteasy.core;version=${resteasy-version}, \
+  org.jboss.resteasy.core;version=${resteasy-version};thread-context=true, \
   org.jboss.resteasy.microprofile.config;version=${resteasy-version}, \
   org.jboss.resteasy.mock;version=${resteasy-version}, \
   org.jboss.resteasy.plugins.delegates;version=${resteasy-version}, \

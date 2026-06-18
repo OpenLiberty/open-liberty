@@ -1,0 +1,41 @@
+#*******************************************************************************
+# Copyright (c) 2019, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+
+# Enable multifat - include all bucket .bnd files
+-sub: *.bnd
+
+#Bundle version
+bVersion=1.0
+
+# Source directories - BND will compile all of these
+src: \
+    fat/src,\
+    test-applications/callback/src,\
+    test-applications/helpers/DatabaseManagement/src
+
+# This is a runnable FAT (not just a library)
+fat.project: true
+
+# Disable bytecode instrumentation
+instrument.disabled: true
+
+# Build-time dependencies (for compilation)
+-buildpath: \
+       com.ibm.ws.jpa_testframework;version=latest,\
+       io.openliberty.jakarta.transaction.2.0;version=latest,\
+       com.ibm.websphere.javaee.persistence.2.1;version=latest,\
+       com.ibm.websphere.javaee.servlet.4.0;version=latest,\
+       com.ibm.websphere.javaee.transaction.1.2;version=latest,\
+       io.openliberty.org.testcontainers;version=latest
+

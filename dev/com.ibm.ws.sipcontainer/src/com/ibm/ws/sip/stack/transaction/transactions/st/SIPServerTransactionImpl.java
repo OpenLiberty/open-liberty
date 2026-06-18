@@ -141,7 +141,7 @@ public abstract class SIPServerTransactionImpl
 	 */
 	protected abstract boolean is2543RequestPartOfTransaction(Request req, ViaHeader oldVia, ViaHeader newVia);
 	
-	//send back the response to the trasport
+	//send back the response to the transport
 	public void sendResponseToTransport( Response sipResponse )
 		throws SIPTransportException		
 	{

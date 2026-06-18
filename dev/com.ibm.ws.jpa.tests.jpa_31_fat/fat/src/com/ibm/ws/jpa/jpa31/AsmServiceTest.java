@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -36,11 +36,12 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.FATSuite;
+import com.ibm.ws.jpa.jpa31.AbstractFATSuite;
 import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
@@ -54,6 +55,7 @@ import junit.framework.Assert;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
+@SkipForRepeat("JPA32_HIBERNATE")
 public class AsmServiceTest extends JPAFATServletClient {
     private final static String CONTEXT_ROOT = "eclAsmService";
     private final static String RESOURCE_ROOT = "test-applications/eclAsmService/";
@@ -72,7 +74,7 @@ public class AsmServiceTest extends JPAFATServletClient {
                                                                     "CWWJP9991W", // From Eclipselink drop-and-create tables option
     };
 
-    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+    public static final JdbcDatabaseContainer<?> testContainer = AbstractFATSuite.testContainer;
 
     static {
         dropSet.add("ASMSERVICE_DROP_${dbvendor}.ddl");
@@ -90,9 +92,9 @@ public class AsmServiceTest extends JPAFATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(serverWithDefaultAsm, FATSuite.JAXB_PERMS);
-        PrivHelper.generateCustomPolicy(serverWithEclipselinkAsm, FATSuite.JAXB_PERMS);
-        PrivHelper.generateCustomPolicy(serverWithOw2Asm, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(serverWithDefaultAsm, AbstractFATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(serverWithEclipselinkAsm, AbstractFATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(serverWithOw2Asm, AbstractFATSuite.JAXB_PERMS);
 
         //Get driver name
         serverWithDefaultAsm.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());

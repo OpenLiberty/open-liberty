@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Beheben Sie die Fehlerursache.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: Vom Cache f\u00fcr abgemeldete Cookies konnte der JCache-Cache nicht auf das Cookie \u00fcberpr\u00fcft werden. Der Fehler: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=Im Cache f\u00fcr abgemeldete Cookies ist ein Fehler aufgetreten, als versucht wurde, den JCache-Cache auf das Cookie zu \u00fcberpr\u00fcfen. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Beheben Sie die Fehlerursache.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Es werden abgemeldete Tokens mit einem \u00e4lteren Format erkannt. Damit der Cache f\u00fcr abgemeldete Benutzer ordnungsgem\u00e4\u00df gemeinsam genutzt werden kann, stellen Sie sicher, dass alle Server in Ihrer Umgebung auf die neueste Version aktualisiert wurden.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=Das System hat abgemeldete Tokens erkannt, die ein \u00e4lteres Format aufweisen. Um die Sicherheit und Konsistenz zu verbessern, wurden die Token f\u00fcr abgemeldete Nutzer auf das neuere Format umgestellt.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Um sicherzustellen, dass \u201eLogged-out\u201c-Token das aktuellste Format verwenden, aktualisieren Sie alle Server in Ihrem Cluster oder Ihrer Umgebung auf die neueste Version.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: Beim Cache f\u00fcr das \u201eLogged-out\u201c-Cookie ist bei der Migration alter Tokens in gehashtete Versionen ein Fehler aufgetreten. Der Fehler: {0}
+JCACHE_MIGRATION_FAILURE.explanation=Beim Cache f\u00fcr die \u201eLogged-out\u201c-Cookies ist w\u00e4hrend der einmaligen Migration alter \u201eLogged-out\u201c-Token in das neue Hash-Format ein Fehler aufgetreten.
+JCACHE_MIGRATION_FAILURE.useraction=\u00dcberpr\u00fcfen Sie die Fehlermeldung und die Serverprotokolle, um die Ursache des Fehlers zu ermitteln. Die Migration wird beim n\u00e4chsten Neustart des Servers erneut versucht.

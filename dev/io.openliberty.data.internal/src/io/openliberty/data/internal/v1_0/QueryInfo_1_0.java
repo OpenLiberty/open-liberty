@@ -129,9 +129,21 @@ public class QueryInfo_1_0 extends QueryInfo {
     }
 
     @Override
+    protected jakarta.persistence.Query //
+                    ehCreateNativeQuery(AutoCloseable entityHandler) {
+        throw new UnsupportedOperationException("jakarta.persistence.query.NativeQuery");
+    }
+
+    @Override
+    protected jakarta.persistence.Query //
+                    ehCreateNativeStatement(AutoCloseable entityHandler) {
+        throw new UnsupportedOperationException("jakarta.persistence.query.NativeQuery");
+    }
+
+    @Override
     @Trivial
-    protected jakarta.persistence.Query ehCreateQuery(AutoCloseable entityHandler,
-                                                      String jpql) {
+    protected jakarta.persistence.Query ehCreateStatement(AutoCloseable entityHandler,
+                                                          String jpql) {
         return ((EntityManager) entityHandler).createQuery(jpql);
     }
 

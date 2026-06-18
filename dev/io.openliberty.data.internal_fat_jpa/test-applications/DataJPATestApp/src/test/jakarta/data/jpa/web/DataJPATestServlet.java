@@ -1105,10 +1105,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @SkipIfSysProp(DB_Postgres)
     public void testEscapeCharacters() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         orders.deleteAll();
 
         orders.create(PurchaseOrder.of(21.91f, "Escape_Characters"),
@@ -1864,10 +1860,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testEmptyAndNotEmpty() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         mobilePhones.removeAll();
 
         Mobile m1 = mobilePhones.insert(Mobile.of(OS.ANDROID,
@@ -1919,10 +1911,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testEntitiesAsParameters() throws Exception {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -2517,10 +2505,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testFetchType() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         mobilePhones.removeAll();
 
         List<String> apps = Arrays.asList("Settings", "Camera", "Phone", "Email", "Messages",
@@ -2918,10 +2902,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testGeneratedKey() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         ZoneOffset MDT = ZoneOffset.ofHours(-6);
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -3465,10 +3445,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testInsertInTransaction() throws Exception {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         UUID id1;
 
         tran.begin();
@@ -3992,10 +3968,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testMultipleThreadsVersionedUpdate() throws Exception {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         orders.deleteAll();
 
         PurchaseOrder o = new PurchaseOrder();
@@ -4454,10 +4426,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testSortByVersionFunction() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -5063,10 +5031,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUpdateInTransaction() throws Exception {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         Mobile m1 = mobilePhones.insert(Mobile.of(OS.ANDROID,
                                                   List.of("settings",
                                                           "messages",
@@ -5170,10 +5134,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testUpdateWithEntityResults() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -5339,10 +5299,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testVersionedDelete() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();
@@ -5455,10 +5411,6 @@ public class DataJPATestServlet extends FATServlet {
      */
     @Test
     public void testVersionedUpdate() {
-        // enable once EclipseLink 34730 is fixed
-        if (isH2() && !isHibernate())
-            return;
-
         orders.deleteAll();
 
         PurchaseOrder o1 = new PurchaseOrder();

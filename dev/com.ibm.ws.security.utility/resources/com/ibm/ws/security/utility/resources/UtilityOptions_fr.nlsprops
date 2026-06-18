@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2010, 2025 IBM Corporation and others.
+# Copyright (c) 2010, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -57,7 +57,7 @@ encode.option-desc.1.text=\tSi aucun argument n''est sp\u00e9cifi\u00e9, l''outi
 encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
 encode.option-desc.encoding=\tIndiquez comment coder le mot de passe. Les encodages pris en charge sont xor, aes, aes-128, et hash. Le codage par d\u00e9faut est xor. Le cryptage Aes s''effectue \u00e0 l''aide d''une cl\u00e9 de aes-256 bits.\n\taes-128 peut \u00eatre utilis\u00e9 pour assurer la compatibilit\u00e9 avec les versions du serveur ant\u00e9rieures \u00e0 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[key]
-encode.option-desc.key=\tIndiquer une cl\u00e9 \u00e0 utiliser lors du codage \u00e0 l''aide\nde la norme AES. Cette cha\u00eene sera hach\u00e9e pour produire une cl\u00e9 de chiffrement, qui est utilis\u00e9e pour chiffrer et d\u00e9chiffrer le mot de passe d\u00e9crypter le mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur en d\u00e9finissant la variable wlp.password.encryption.key dont la valeur est la cl\u00e9. Sans cette option fournie, une cl\u00e9 par d\u00e9faut est utilis\u00e9e.
+encode.option-desc.key=\tIndiquer une cl\u00e9 \u00e0 utiliser lors du codage \u00e0 l''aide\nde la norme AES. Cette cha\u00eene servira\n\u00e0 g\u00e9n\u00e9rer une cl\u00e9 de chiffrement AES, qui sera utilis\u00e9e pour chiffrer et\nd\u00e9chiffrer le mot de passe. La cl\u00e9 peut \u00eatre fournie au serveur en d\u00e9finissant\nla variable wlp.password.encryption.key dont la valeur correspond \u00e0 la\ncl\u00e9. \u00c0 partir d'' 26.0.0.3, la cl\u00e9 par d\u00e9faut n''est plus utilis\u00e9e. \u00c0 la place,\nindiquez l''un des arguments suivants : --key, --base64Key, --aesConfigFile, ou --keyring.
 encode.option-key.base64Key=\ \ \ \ --base64Key=base64Key
 encode.option-desc.base64Key=\tUne Base64-encodedAES-256 cl\u00e9 doit \u00eatre utilis\u00e9e pour crypter et d\u00e9crypter le\nmot de passe. Fournissez cette cl\u00e9 au serveur en d\u00e9finissant la\nwlp.aes.encryption.key variable. Si --base64Key est\nsp\u00e9cifi\u00e9, alors --aesConfigFile et --key ne peuvent pas \u00eatre sp\u00e9cifi\u00e9s.
 encode.option-key.aesConfigFile=\ \ \ \ --aesConfigFile=aesConfigFile

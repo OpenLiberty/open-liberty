@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -30,11 +30,12 @@ import com.ibm.websphere.simplicity.config.Application;
 import com.ibm.websphere.simplicity.config.ClassloaderElement;
 import com.ibm.websphere.simplicity.config.ConfigElementList;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import com.ibm.ws.jpa.FATSuite;
+import com.ibm.ws.jpa.jpa31.AbstractFATSuite;
 import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
+import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
 import componenttest.custom.junit.runner.FATRunner;
@@ -49,6 +50,7 @@ import io.openliberty.jpa.tests.jpa31.json.web.JPAJSONTestServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
+@SkipForRepeat("JPA32_HIBERNATE")
 public class JPAJSONTest extends JPAFATServletClient {
     private final static String CONTEXT_ROOT = "jpajson";
     private final static String RESOURCE_ROOT = "test-applications/json/";
@@ -62,7 +64,7 @@ public class JPAJSONTest extends JPAFATServletClient {
     private final static Set<String> createSet = new HashSet<String>();
     private static long timestart = 0;
 
-    public static final JdbcDatabaseContainer<?> testContainer = FATSuite.testContainer;
+    public static final JdbcDatabaseContainer<?> testContainer = AbstractFATSuite.testContainer;
 
     static {
 //        dropSet.add("JPAJSON_DROP_${dbvendor}.ddl");
@@ -78,7 +80,7 @@ public class JPAJSONTest extends JPAFATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        PrivHelper.generateCustomPolicy(server, FATSuite.JAXB_PERMS);
+        PrivHelper.generateCustomPolicy(server, AbstractFATSuite.JAXB_PERMS);
         bannerStart(JPAJSONTest.class);
         timestart = System.currentTimeMillis();
 
@@ -91,6 +93,8 @@ public class JPAJSONTest extends JPAFATServletClient {
         if (configUpdateTimeout < (120 * 1000)) {
             server.setConfigUpdateTimeout(120 * 1000);
         }
+
+        server.addEnvVar("repeat_phase", AbstractFATSuite.repeatPhase);
 
         //Get driver name
         server.addEnvVar("DB_DRIVER", DatabaseContainerType.valueOf(testContainer).getDriverName());

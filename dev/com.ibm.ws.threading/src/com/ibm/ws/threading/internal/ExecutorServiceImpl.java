@@ -636,13 +636,17 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         return wrappedTasks;
     }
 
+    @Override
+    public boolean quiesceThreads() {
+        throw new UnsupportedOperationException();
+    }
     /*
      * (non-Javadoc)
      *
      * @see com.ibm.ws.threading.ThreadQuiesce#quiesceThreads()
      */
     @Override
-    public boolean quiesceThreads() {
+    public boolean quiesceThreads(long startTime) {
         this.serverStopping = true;
 
         // Wait for all pre-quiesce work to complete.
@@ -651,10 +655,15 @@ public final class ExecutorServiceImpl implements WSExecutorService, ThreadQuies
         // and signal it. If count is already 0, we return immediately.
         quiesceLatch = new CountDownLatch(1);
         if (activeThreadCount.get() != 0) {
+            long endTime = startTime + (quiesceTimeout * 1000);
+            long waitTime = endTime - System.currentTimeMillis();
+            if (waitTime <= 0) {
+                return false;
+            }
             try {
                 // Wait for all active threads to finish.  The last thread that finishes
                 // will call the latch.
-                if (!quiesceLatch.await(quiesceTimeout, TimeUnit.SECONDS)) {
+                if (!quiesceLatch.await(waitTime, TimeUnit.MILLISECONDS)) {
                     // If we time out, quiesce has failed.
                     return false;
                 }

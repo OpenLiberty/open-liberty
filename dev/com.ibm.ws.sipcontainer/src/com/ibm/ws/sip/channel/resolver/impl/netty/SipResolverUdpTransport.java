@@ -755,7 +755,7 @@ class SipResolverUdpTransport implements SipResolverTransport {
                 parent.init(ch);
             }
             ChannelPipeline pipeline = ch.pipeline();
-            // Timeout handlers look to be unneccessary for UDP
+            // Timeout handlers look to be unnecessary for UDP
             // https://github.com/OpenLiberty/open-liberty/issues/31408
             // CHFW's SipResolverUdpTransport doesn't set timeouts either
             pipeline.addLast("decoder", new SipMessageBufferDatagramDecoder());

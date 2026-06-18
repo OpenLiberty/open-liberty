@@ -22,6 +22,7 @@ import com.ibm.ws.jsp23.fat.tests.JSP23JSP22ServerTest;
 import com.ibm.ws.jsp23.fat.tests.JSPCdiTest;
 import com.ibm.ws.jsp23.fat.tests.JSPChannelTest;
 import com.ibm.ws.jsp23.fat.tests.JSPDebugSupport;
+import com.ibm.ws.jsp23.fat.tests.JSPEmptyIncludePathTest;
 import com.ibm.ws.jsp23.fat.tests.JSPExpressionLanguageTests;
 import com.ibm.ws.jsp23.fat.tests.JSPGlobalTLDTest;
 import com.ibm.ws.jsp23.fat.tests.JSPJava11Test;
@@ -31,6 +32,7 @@ import com.ibm.ws.jsp23.fat.tests.JSPJava7Test;
 import com.ibm.ws.jsp23.fat.tests.JSPJava8Test;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountDefaultValueTests;
 import com.ibm.ws.jsp23.fat.tests.JSPPrepareJSPThreadCountNonDefaultValueTests;
+import com.ibm.ws.jsp23.fat.tests.JSPTagFilesInJarTest;
 import com.ibm.ws.jsp23.fat.tests.JSTLTests;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -58,7 +60,9 @@ import componenttest.topology.impl.LibertyServerFactory;
                 JSPGlobalTLDTest.class,
                 JSPChannelTest.class,
                 JSPDebugSupport.class,
-                JSPExpressionLanguageTests.class
+                JSPExpressionLanguageTests.class,
+                JSPEmptyIncludePathTest.class,
+                JSPTagFilesInJarTest.class
 })
 
 public class FATSuite {

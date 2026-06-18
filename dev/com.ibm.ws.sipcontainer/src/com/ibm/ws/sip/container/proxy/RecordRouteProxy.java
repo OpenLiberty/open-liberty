@@ -474,7 +474,7 @@ public class RecordRouteProxy {
     {
         if(inRequest.getMethod().equals(Request.ACK))
         {
-            //Can not send a respone to a ACK
+            //Cannot send a response to an ACK
             return;
         }
         
@@ -501,7 +501,7 @@ public class RecordRouteProxy {
             if(c_logger.isErrorEnabled())
             {
                 Object[] args = { route }; 
-                c_logger.error("error.unkown.uri.type", 
+                c_logger.error("error.unknown.uri.type", 
                                Situation.SITUATION_CREATE, args);
             }
         }

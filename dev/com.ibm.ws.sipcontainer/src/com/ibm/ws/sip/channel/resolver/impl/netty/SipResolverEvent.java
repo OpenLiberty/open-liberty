@@ -17,7 +17,7 @@ import com.ibm.ws.sip.channel.resolver.dns.impl.netty.DnsMessage;
  * Class to represent a Sip Resolver Event
  * <p>
  * Within the Sip Resolver Event class is a type of event the class represents, 
- * request, response and a listener, interested in the reponse.
+ * request, response and a listener, interested in the response.
  *  
  */
 public class SipResolverEvent {

@@ -4,7 +4,7 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -15,29 +15,31 @@ package test.server.quiesce;
 import java.util.Map;
 import java.util.concurrent.ExecutorService;
 
+import org.osgi.framework.BundleContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
 
-import com.ibm.ws.threading.ThreadQuiesce;
 import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 
 /**
  *
  */
 @Component(immediate = true, configurationPid = "test.server.quiesce")
-public class TestQuiesceListener implements ServerQuiesceListener {
+public class TestQuiesceListener {
 
-    boolean throwException = false;
-    boolean takeForever = false;
-    boolean startThreadsAfterStop = false;
-    ExecutorService executorService;
+    final boolean throwException;
+    final boolean takeForever;
+    final boolean startThreadsAfterStop;
+    final ExecutorService executorService;
 
     @Activate
-    protected void activate(Map<String, Object> newConfig) {
+    public TestQuiesceListener(BundleContext context, Map<String, Object> newConfig,
+                               @Reference QuiesceListenerOrderRecordingService recorder,
+                               @Reference ExecutorService executorService) {
         System.out.println("TEST CONFIGURATION: " + newConfig);
 
+        this.executorService = executorService;
         throwException = (Boolean) newConfig.get("throwException");
         takeForever = (Boolean) newConfig.get("takeForever");
         startThreadsAfterStop = (Boolean) newConfig.get("startThreadsAfterStop");
@@ -49,6 +51,11 @@ public class TestQuiesceListener implements ServerQuiesceListener {
                 @Override
                 public void run() {
                     while (true) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
 
                 }
@@ -56,10 +63,9 @@ public class TestQuiesceListener implements ServerQuiesceListener {
             executorService.submit(r);
             executorService.submit(r);
         }
-
+        context.registerService(ServerQuiesceListener.class, recorder.createQuiesceListener("DEFAULT", this::serverStopping), null);
     }
 
-    @Override
     public void serverStopping() {
 
         System.out.println("WHEE! THE SERVER IS STOPPING AND I GOT TOLD!");
@@ -80,23 +86,17 @@ public class TestQuiesceListener implements ServerQuiesceListener {
         }
 
         if (startThreadsAfterStop) {
-            // Normally the executor service will already be quiescing at this point, but wait just in case
-            for (int i = 0; i < 20; i++) {
-                if (((ThreadQuiesce) executorService).quiesceStarted()) {
-                    break;
-                }
-                try {
-                    Thread.sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            // Start a couple of threads. These should not block shutdown
+            // Start a couple of threads. These SHOULD block shutdown
             Runnable r = new Runnable() {
 
                 @Override
                 public void run() {
                     while (true) {
+                        try {
+                            Thread.sleep(1000);
+                        } catch (InterruptedException e) {
+                            Thread.currentThread().interrupt();
+                        }
                     }
 
                 }
@@ -104,12 +104,6 @@ public class TestQuiesceListener implements ServerQuiesceListener {
             executorService.submit(r);
             executorService.submit(r);
         }
-    }
-
-    @Reference(service = ExecutorService.class,
-               cardinality = ReferenceCardinality.MANDATORY)
-    protected void setExecutorService(ExecutorService executorService) {
-        this.executorService = executorService;
     }
 
 }

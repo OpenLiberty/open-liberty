@@ -218,7 +218,8 @@ public class ConsoleFormatTest {
         // Verify if the server was successfully updated again.
         String line = server.waitForStringInLogUsingMark("CWWKG0017I", consoleLogFile);
         Log.info(c, "testTBasicConsoleFormat", "The tbasic console formatted line : " + line);
-
+        assertNotNull("Message CWWKG0017I not appeared or appeared more than once ", line);
+        
         // Verify if the console log is using the tbasic format, by getting the latest message.
         assertTrue("The console.log file was not formatted to the tbasic format.", isStringinTBasicFormat(line, TBASIC_FORMAT_REGEX_PATTERN));
     }

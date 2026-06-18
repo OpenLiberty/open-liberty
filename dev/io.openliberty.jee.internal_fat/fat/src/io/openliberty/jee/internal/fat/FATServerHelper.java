@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -256,6 +256,7 @@ public class FATServerHelper {
         server.installUserFeature("io.extension.jeeTestFeature-1.0");
         server.installUserFeature("io.extension.jeeTestFeature.internal-10.0");
         server.installUserFeature("io.extension.jeeTestFeature.internal-11.0");
+        server.installUserFeature("io.extension.jeeTestFeature.internal-12.0");
         server.installUserFeature("io.extension.jeeTestFeature.internal-6.0");
         server.installUserFeature("io.extension.jeeTestFeature.internal-7.0");
         server.installUserFeature("io.extension.jeeTestFeature.internal-8.0");
@@ -266,6 +267,7 @@ public class FATServerHelper {
         server.uninstallUserFeature("io.extension.jeeTestFeature-1.0");
         server.uninstallUserFeature("io.extension.jeeTestFeature.internal-10.0");
         server.uninstallUserFeature("io.extension.jeeTestFeature.internal-11.0");
+        server.uninstallUserFeature("io.extension.jeeTestFeature.internal-12.0");
         server.uninstallUserFeature("io.extension.jeeTestFeature.internal-6.0");
         server.uninstallUserFeature("io.extension.jeeTestFeature.internal-7.0");
         server.uninstallUserFeature("io.extension.jeeTestFeature.internal-8.0");

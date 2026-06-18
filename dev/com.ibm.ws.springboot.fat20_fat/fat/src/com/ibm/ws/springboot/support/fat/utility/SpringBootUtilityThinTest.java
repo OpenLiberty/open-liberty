@@ -324,6 +324,17 @@ public class SpringBootUtilityThinTest extends CommonWebServerTests {
 
     @Test
     public void testDefaultHostWithAppPortRunLibertyUberJarWithSSL() throws Exception {
+        String os = System.getProperty("os.name");
+        String javaVersion = System.getProperty("java.specification.version");
+
+        if ((os.equals("z/OS") || os.equals("OS/400")) && javaVersion.equals("1.8")) {
+            // Skipping the test because of the following error
+            // E CWWKE0701E: bundle com.ibm.ws.zos.core:1.0.114.cl260620260520-1901 (24)[com.ibm.ws.zos.core.internal.CoreBundleActivator(22)] : The activate method has thrown an exception java.lang.UnsatisfiedLinkError
+            // Caused by: java.lang.UnsatisfiedLinkError: /u/MSTONE1/wlpExtract/libertyUber_1779954574138017627/wlp/lib/native/zos/s390x/libzNativeServices.so (EDC5111I Permission denied.)
+            Log.warning(getClass(), "Skipping the test for " + os + " java version " + javaVersion);
+            return;
+        }
+
         String method = "testDefaultHostWithAppPortRunLibertyUberJarWithSSL";
         String dropinsSpring = "dropins/" + SPRING_APP_TYPE + "/";
         new File(new File(server.getServerRoot()), dropinsSpring).mkdirs();

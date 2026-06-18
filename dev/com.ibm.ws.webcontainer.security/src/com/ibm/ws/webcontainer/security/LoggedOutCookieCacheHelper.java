@@ -36,7 +36,7 @@ public class LoggedOutCookieCacheHelper {
     private static LoggedOutCookieCache cookieCacheService = null;
     
     public static final String LOGOUT_KEY_PREFIX = "LOGOUT:";
-    private static final String SHA_512 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA512;
+    private static final String SHA_512 = CryptoUtils.MESSAGE_DIGEST_ALGORITHM_SHA_512;
     private static final Object SYNC_OBJECT = new Object();
     private static MessageDigest CLONEABLE_MESSAGE_DIGEST = null;
 

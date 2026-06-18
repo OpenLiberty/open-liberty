@@ -8,15 +8,9 @@
     SPDX-License-Identifier: EPL-2.0
  -->
 <server description="new server">
-
-	<featureManager>
-		<feature>persistence-3.2</feature>
-		<feature>servlet-6.1</feature>
-		<!-- DO NOT ADD data-1.0 feature -->
-	    <feature>componenttest-2.0</feature>
-    </featureManager>
     
-    <include location="../fatTestPorts.xml"/>
+	<include location="../fatTestPorts.xml"/>
+    <include location="${shared.config.dir}/${env.repeat_phase}"/>
     
     <dataSource id="DefaultDataSource" fat.modify="true">
         <jdbcDriver libraryRef="JDBCLib"/>

@@ -1,0 +1,29 @@
+<server description="Server for testing dynamic configuration: enable to disable">
+
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>localConnector-1.0</feature>
+        <feature>mpHealth-4.0</feature>
+        <feature>mpConfig-3.1</feature>
+        <feature>cdi-4.0</feature>
+        <feature>jsonp-2.1</feature>
+        <feature>servlet-6.0</feature>
+    </featureManager>
+    
+    <!-- Enable file-based health checks with endpoints enabled (default) -->
+    <mpHealth startupCheckInterval="1s" checkInterval="5s" enableEndpoints="true" />
+    	
+    <logging traceSpecification="*=info:HEALTH=all"/>
+    
+    <webContainer deferServletLoad="false"/>
+
+    <httpEndpoint id="defaultHttpEndpoint" host="*" 
+                  httpPort="${bvt.prop.HTTP_default}" 
+                  httpsPort="${bvt.prop.HTTP_default.secure}">
+        <tcpOptions portOpenRetries="60" />                   
+    </httpEndpoint>
+    	
+</server>
+
+<!-- Made with Bob -->

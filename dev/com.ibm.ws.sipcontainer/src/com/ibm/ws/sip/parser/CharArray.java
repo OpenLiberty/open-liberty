@@ -245,7 +245,7 @@ public class CharArray implements Cloneable, Serializable
 		char[] a1 = m_array;
 		char[] a2 = other.m_array;
 		
-		// compare existance of contents
+		// compare existence of contents
 		if (a1 == null || a2 == null) {
 			if (a1 != null || a2 != null)
 				return false;

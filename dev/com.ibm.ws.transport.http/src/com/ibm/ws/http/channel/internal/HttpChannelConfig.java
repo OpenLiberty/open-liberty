@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -630,9 +630,9 @@ public class HttpChannelConfig {
         parseCookiesSameSiteLax(props.get(HttpConfigConstants.PROPNAME_SAMESITE_LAX_INTERNAL));
         parseCookiesSameSiteNone(props.get(HttpConfigConstants.PROPNAME_SAMESITE_NONE_INTERNAL));
         parseCookiesSameSiteStrict(props.get(HttpConfigConstants.PROPNAME_SAMESITE_STRICT_INTERNAL));
-        parseH2MaxResetFrames(props);
-        parseH2ResetFramesWindow(props);
-        parseH2MaxStreamsRefused(props);
+        parseH2MaxResetFrames(props.get(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES));
+        parseH2ResetFramesWindow(props.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW));
+        parseH2MaxStreamsRefused(props.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED));
         parseH2MaxHeaderBlockSize(props.get(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE));
         parseCookiesSameSitePartitioned(props);
         initSameSiteCookiesPatterns();
@@ -937,54 +937,51 @@ public class HttpChannelConfig {
         }
     }
 
-    private void parseH2MaxResetFrames(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_RESET_FRAMES);
-        if (null != value) {
+    protected void parseH2MaxResetFrames(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2MaxResetFrames = convertInteger(value);
+                this.http2MaxResetFrames = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Max Reset Frames " + getH2MaxResetFrames());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxResetFrames", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Max Reset Frames; " + value);
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Reset Frames; " + option);
 
                 }
             }
         }
     }
 
-    private void parseH2ResetFramesWindow(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW);
-        if (null != value) {
+    protected void parseH2ResetFramesWindow(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2ResetFramesWindow = convertInteger(value);
+                this.http2ResetFramesWindow = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Reset Frames Window " + getH2ResetFramesWindow());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2ResetFramesWindow", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Reset Frames Window; " + value);
+                    Tr.event(tc, "Config: Invalid HTTP/2 Reset Frames Window; " + option);
 
                 }
             }
         }
     }
 
-    private void parseH2MaxStreamsRefused(Map<Object, Object> props) {
-        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED);
-        if (null != value) {
+    protected void parseH2MaxStreamsRefused(Object option) {
+        if (Objects.nonNull(option)) {
             try {
-                this.http2MaxStreamsRefused = convertInteger(value);
+                this.http2MaxStreamsRefused = convertInteger(option);
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: HTTP/2 Max Streams Refused " + getH2MaxStreamsRefused());
                 }
             } catch (NumberFormatException nfe) {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxStreamsRefused", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
-                    Tr.event(tc, "Config: Invalid HTTP/2 Max Streams Refused; " + value);
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Streams Refused; " + option);
 
                 }
             }

@@ -3,8 +3,8 @@
 symbolicName=io.openliberty.jsonb.compatibility
 visibility=private
 IBM-Provision-Capability:\
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.jsonb-3.0))",\
-  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.jsonbContainer-3.0))"
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.jsonb-3.0)(osgi.identity=io.openliberty.jsonb-3.1)))",\
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(|(osgi.identity=io.openliberty.jsonbContainer-3.0)(osgi.identity=io.openliberty.jsonbContainer-3.1)))"
 IBM-Install-Policy: when-satisfied
 -bundles=io.openliberty.jakarta.jsonb.compatibility
 kind=ga

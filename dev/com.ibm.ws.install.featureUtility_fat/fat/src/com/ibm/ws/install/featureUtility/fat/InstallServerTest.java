@@ -155,6 +155,7 @@ public class InstallServerTest extends FeatureUtilityToolTest {
 		String output = po.getStdout();
 
 		checkCommandOutput(po, 0, null, null);
+		deleteFileFromMinifiedRoot("usr/servers/serverX/included.xml");
 
 		Log.exiting(c, METHOD_NAME);
 	}

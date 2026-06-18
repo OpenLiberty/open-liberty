@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Resuelva la causa del error.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: La memoria cach\u00e9 de cookie de finalizaci\u00f3n de sesi\u00f3n no ha podido comprobar la memoria cach\u00e9 JCache para la cookie. El error es: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=La memoria cach\u00e9 de cookie de finalizaci\u00f3n de sesi\u00f3n ha encontrado un error al intentar comprobar la memoria cach\u00e9 JCache para la cookie. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Resuelva la causa del error.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Se han detectado tokens de desconexi\u00f3n con un formato anterior. Para que la cach\u00e9 de sesi\u00f3n cerrada se comparta correctamente, aseg\u00farate de que todos los servidores de tu entorno est\u00e9n actualizados a la \u00faltima versi\u00f3n.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=El sistema ha detectado tokens sin sesi\u00f3n activa que tienen un formato antiguo. Para mejorar la seguridad y la coherencia, los tokens de sesi\u00f3n caducada se han migrado al formato m\u00e1s reciente.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Para garantizar que los tokens de desconexi\u00f3n utilicen el formato m\u00e1s reciente, actualiza todos los servidores de tu cl\u00faster o entorno a la \u00faltima versi\u00f3n.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: La cach\u00e9 de cookies de desconexi\u00f3n ha detectado un error al migrar los tokens antiguos a versiones con hash. El error es: {0}
+JCACHE_MIGRATION_FAILURE.explanation=La cach\u00e9 de cookies de desconexi\u00f3n ha detectado un error durante la migraci\u00f3n \u00fanica de los antiguos tokens de desconexi\u00f3n al nuevo formato con hash.
+JCACHE_MIGRATION_FAILURE.useraction=Revisa el mensaje de error y los registros del servidor para determinar la causa del fallo. La migraci\u00f3n se volver\u00e1 a intentar la pr\u00f3xima vez que se reinicie el servidor.

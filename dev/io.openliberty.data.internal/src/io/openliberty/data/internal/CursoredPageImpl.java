@@ -97,7 +97,7 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
 
             addParametersForCursor(cursor.get(), addedJPQLParams);
         } else { // no Cursor in PageRequest
-            jpql = queryInfo.jpql;
+            jpql = queryInfo.ql;
 
             addedJPQLParams = constraintJPQLParams;
         }
@@ -180,7 +180,7 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
                         ? null //
                         : queryInfo.jpqlParamNames.toArray();
 
-        int paramNum = queryInfo.jpqlParamCount + 1;
+        int paramNum = queryInfo.qlParamCount + 1;
         for (int c = 0; c < cursorSize; c++, paramNum++) {
             Object key = paramNames == null //
                             ? paramNum // positional parameters

@@ -50,27 +50,35 @@ public class JaxRsSSLManager {
 
         try {
             Map<String, Object> connectionInfo = getConnectionInfo(host, port);
+            String cacheKey = getCacheKey(sslRef, host, port);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "getSSLSocketFactoryBySSLRef: sslRef=" + sslRef + ", host=" + host + ", port=" + port + ", cacheKey=" + cacheKey);
+            }
+
             SSLContext sslContext = getSSLContext(sslRef, connectionInfo);
 
             if (sslContext == null) {
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "getSSLSocketFactoryBySSLRef: returning null, sslContext is null");
+                }
                 return null;
             }
 
             boolean recache = false;
             synchronized (sslContexts) {
-                SSLContext cachedSslContext = sslContexts.get(sslRef);
+                SSLContext cachedSslContext = sslContexts.get(cacheKey);
                 if (sslContext == null || !sslContext.equals(cachedSslContext)) {
                     // first request or SSL config has changed, re-cache the SSLContext and SSLSocketFactory
-                    sslContexts.put(sslRef, sslContext);
+                    sslContexts.put(cacheKey, sslContext);
                     recache = true;
                 }
             }
 
             synchronized (socketFactories) {
-                sslSocketFactory = socketFactories.get(sslRef);
+                sslSocketFactory = socketFactories.get(cacheKey);
                 if (sslSocketFactory == null || recache) {
                     sslSocketFactory = sslContext.getSocketFactory();
-                    socketFactories.put(sslRef, sslSocketFactory);
+                    socketFactories.put(cacheKey, sslSocketFactory);
                 }
             }
         } catch (com.ibm.websphere.ssl.SSLException e) {
@@ -80,6 +88,13 @@ public class JaxRsSSLManager {
             return null;
         }
         return sslSocketFactory;
+    }
+
+    private static String getCacheKey(String sslRef, String host, String port) {
+        if (sslRef != null) {
+            return sslRef;
+        }
+        return "dynamic:" + host + ":" + port;
     }
 
     private static Map<String, Object> getConnectionInfo(String host, String port) {

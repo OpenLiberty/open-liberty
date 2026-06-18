@@ -170,9 +170,12 @@ public class DatabaseContainerFactory {
     }
 
     public static JdbcDatabaseContainer<?> createType(DatabaseContainerType type) throws IllegalArgumentException {
-        Log.info(c, "createType", "Database Container Type is " + type);
+        return createType(type, Optional.empty());
+    }
 
-        return initContainer(type, Optional.empty());
+    public static JdbcDatabaseContainer<?> createType(DatabaseContainerType type, Optional<H2Database> h2Database) throws IllegalArgumentException {
+        Log.info(c, "createType", "Database Container Type is " + type);
+        return initContainer(type, h2Database);
     }
 
     //Private Method: used to initialize test container.

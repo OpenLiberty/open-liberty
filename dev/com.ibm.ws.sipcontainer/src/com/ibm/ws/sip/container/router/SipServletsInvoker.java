@@ -22,7 +22,7 @@ import com.ibm.ws.sip.container.parser.SipServletDesc;
  *
  * Passes calls to the acutal Servlet for execution. The purpose is to be able 
  * to tie container logic to different deployment models, e.g. Websphere Web
- * Container or a Stand alone test enviroment.  
+ * Container or a Stand alone test environment.  
  * 
  */
 public interface  SipServletsInvoker

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024, 2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -442,7 +442,7 @@ public abstract class BaseTestClass {
          * The existence of a period indicates that something has been recorded
          */
         if (expectedSum == null) {
-            expectedSum = "[0-9]+\\.[0-9]*[eE]?-?[0-9]+";
+            expectedSum = "[0-9]+[\\.]?[0-9]*[eE]?-?[0-9]+";
             isDefaultCountCheck = true;
         }
 

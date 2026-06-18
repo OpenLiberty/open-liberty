@@ -70,12 +70,12 @@ public class EntityInfo {
     // properly cased/qualified JPQL attribute name --> type of collection
     final Map<String, Class<?>> collectionElementTypes;
 
-    final Class<?> entityClass; // will be a generated class for entity records
+    public final Class<?> entityClass; // will be a generated class for entity records
     final EntityHandlerFactory factory;
     final Class<?> idType; // type of the id, which could be a JPA IdClass for composite ids
     final SortedMap<String, Member> idClassAttributeAccessors; // null if no IdClass
     final boolean inheritance;
-    final boolean isHibernate;
+    public final boolean isHibernate;
     final String name; // entity name to use in query language. If a record, the name will be [RecordName]Entity.
     final Class<?> recordClass; // null if not a record
     final String versionAttributeName; // null if unversioned
