@@ -3555,6 +3555,38 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
 
             // check for a CRLF
             if (BNFHeaders.CR == b) {
+                // Obsolete line folding creates ambiguous request boundaries in HTTP/1.x.
+                if (this.rejectHeaderLineFolding) {
+                    // Need to check next char to see if it is an LF and if needed read more data
+                    if (this.bytePosition >= this.byteLimit) {
+                        if (!fillByteCache(buff)) {
+                            // no more data
+                            this.bytePosition--;
+                            break;
+                        }
+                    }
+                    if (BNFHeaders.LF != this.byteCache[this.bytePosition]) {
+                        throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
+                    } else {
+                        rc = TokenCodes.TOKEN_RC_CRLF;
+                        if (HeaderStorage.NOTSET != this.headerChangeLimit) {
+                            int pos = findCurrentBufferPosition(buff);
+                            this.lastCRLFPosition = pos - 1; // Should this be - 2?
+                            this.lastCRLFBufferIndex = this.parseIndex;
+                            this.lastCRLFisCR = false;
+                        }
+                        break;
+                    }
+                } else if (getCharacterValidation()) {
+                    this.byteCache[bytePosition-1] = BNFHeaders.SPACE;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found a CR replacing it with a SP");
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "findCRLFTokenLength: Found CR which we are treating as a delimiter");
+                    }
+                }
                 rc = TokenCodes.TOKEN_RC_DELIM;
                 if (HeaderStorage.NOTSET != this.headerChangeLimit) {
                     this.lastCRLFPosition = findCurrentBufferPosition(buff) - 1;
@@ -3563,6 +3595,19 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 }
                 break; // out of while
             } else if (BNFHeaders.LF == b) {
+                // This means a bare LF was found, verify if we should reject it
+                if (this.rejectHeaderLineFolding) {
+                    throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
+                } else if (getCharacterValidation()) {
+                    this.byteCache[bytePosition-1] = BNFHeaders.SPACE;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Found a LF replacing it with a SP");
+                    }
+                } else {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "findCRLFTokenLength: Found LF which we are treating as a delimiter");
+                    }
+                }
                 // update counter if linefeed found
                 rc = TokenCodes.TOKEN_RC_DELIM;
                 this.numCRLFs = 1;
@@ -3820,7 +3865,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         }
         TokenCodes rc = findCRLFTokenLength(buff);
         // Set the parsedToken from the token parsed from this ByteBuffer
-        saveParsedToken(buff, start, TokenCodes.TOKEN_RC_DELIM.equals(rc), log);
+        saveParsedToken(buff, start, (TokenCodes.TOKEN_RC_DELIM.equals(rc) || TokenCodes.TOKEN_RC_CRLF.equals(rc)), log);
         return rc;
     }
 

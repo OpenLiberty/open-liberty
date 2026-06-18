@@ -832,9 +832,16 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
 
             this.myContentLength = length;
         } catch (NumberFormatException nfe) {
+            // If the issue is caught in an incoming request, we need to close the connection to avoid possible vulnerabilities
+            if (isIncoming()) { // TODO: Do we need to check if isRequestSmugglingProtectionEnabled?
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "setContentLength(b): error parsing value: " + nfe.getMessage());
+                }
+                throw new IllegalArgumentException(nfe);
+            }
             // no FFDC required
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "Format exception in value");
+                Tr.debug(tc, "Format exception in value, operation will be ignored.");
             }
             return false;
         }
