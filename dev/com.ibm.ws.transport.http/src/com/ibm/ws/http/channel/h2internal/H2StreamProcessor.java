@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.ibm.websphere.channelfw.osgi.CHFWBundle;
 import com.ibm.websphere.ras.Tr;
@@ -179,6 +180,7 @@ public class H2StreamProcessor {
     // Queue allows multiple DATA frames to be pending, maintaining write order
     private final Queue<PendingDataWrite> pendingWriteQueue = new ConcurrentLinkedQueue<PendingDataWrite>();
     private volatile ScheduledFuture<?> writeTimeoutFuture = null;
+    private final AtomicBoolean retryInProgress = new AtomicBoolean(false);
 
     /**
      * Create a stream processor initialized in idle state
@@ -883,25 +885,28 @@ public class H2StreamProcessor {
             // this call does not need to be synchronized, since frame processing per connection is serial at this point in the code flow for the update frame
             muxLink.incrementConnectionWindowUpdateLimit(castFrame.getWindowSizeIncrement());
         } else {
-            // Increment size is 31 bits, max.   make sure adding it to Write Limit does go over 0x7FFFFFFF
-            long temp = streamWindowUpdateWriteLimit + castFrame.getWindowSizeIncrement();
-            temp = temp & Constants.LONG_31BIT_FILTER;
-            if (temp != 0) {
-                // number would be bigger that 2^31 - 1, which it can't be
-                String s = "processWindowUpdateFrame: out of bounds increment, current stream write limit: " + streamWindowUpdateWriteLimit
-                           + " total would have been: " + temp;
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, s);
+            // Synchronize to prevent race condition with SETTINGS frame processing
+            synchronized (this) {
+                // Increment size is 31 bits, max.   make sure adding it to Write Limit does go over 0x7FFFFFFF
+                long temp = streamWindowUpdateWriteLimit + castFrame.getWindowSizeIncrement();
+                temp = temp & Constants.LONG_31BIT_FILTER;
+                if (temp != 0) {
+                    // number would be bigger that 2^31 - 1, which it can't be
+                    String s = "processWindowUpdateFrame: out of bounds increment, current stream write limit: " + streamWindowUpdateWriteLimit
+                               + " total would have been: " + temp;
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, s);
+                    }
+                    FlowControlException e = new FlowControlException(s);
+                    // since the ID for this stream is 0, this is a stream error rather than a connection error
+                    e.setConnectionError(false);
+                    throw e;
                 }
-                FlowControlException e = new FlowControlException(s);
-                // since the ID for this stream is 0, this is a stream error rather than a connection error
-                e.setConnectionError(false);
-                throw e;
-            }
 
-            streamWindowUpdateWriteLimit += castFrame.getWindowSizeIncrement();
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "processWindowUpdateFrame: new write limit is: " + streamWindowUpdateWriteLimit);
+                streamWindowUpdateWriteLimit += castFrame.getWindowSizeIncrement();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "processWindowUpdateFrame: new write limit is: " + streamWindowUpdateWriteLimit);
+                }
             }
 
             // If this stream was tracked as low window and now exceeds the limit, remove it from tracking
@@ -981,6 +986,7 @@ public class H2StreamProcessor {
     /**
      * Tell this stream to attempt to start writing out data frames.
      * Now schedules async retry for deferred writes instead of just notifying waiting threads.
+     * Uses atomic flag to prevent redundant scheduling when retry is already in progress.
      */
     private void flushDataWaitingForWindowUpdate() {
         // Check if writes are pending before triggering a write attempt
@@ -988,8 +994,18 @@ public class H2StreamProcessor {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "flushDataWaitingForWindowUpdate: stream: " + myID + " has no data pending to be written.");
             }
-                return;
+            return;
         }
+
+        // Only schedule if no retry is currently in progress
+        // The retry itself will check for more work in its finally block
+        if (retryInProgress.get()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "flushDataWaitingForWindowUpdate: stream: " + myID + " retry already in progress, will be picked up");
+            }
+            return;
+        }
+
         // Schedule retry on executor (don't block WINDOW_UPDATE processing)
         ExecutorService executor = CHFWBundle.getExecutorService();
         executor.execute(() -> {
@@ -1029,14 +1045,17 @@ public class H2StreamProcessor {
             Tr.debug(tc, "updateInitialWindowsUpdateSize entry: stream {0} newSize: {1}", myID, newSize);
         }
 
-        long diff = newSize - streamWindowUpdateWriteInitialSize;
+        // Synchronize to prevent race condition with WINDOW_UPDATE frame processing
+        synchronized (this) {
+            long diff = newSize - streamWindowUpdateWriteInitialSize;
 
-        streamWindowUpdateWriteInitialSize = newSize;
-        streamWindowUpdateWriteLimit += diff;
+            streamWindowUpdateWriteInitialSize = newSize;
+            streamWindowUpdateWriteLimit += diff;
 
-        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-            Tr.debug(tc, "streamWindowUpdateWriteInitialSize updated to: " + streamWindowUpdateWriteInitialSize);
-            Tr.debug(tc, "streamWindowUpdateWriteLimit updated to: " + streamWindowUpdateWriteLimit);
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "streamWindowUpdateWriteInitialSize updated to: " + streamWindowUpdateWriteInitialSize);
+                Tr.debug(tc, "streamWindowUpdateWriteLimit updated to: " + streamWindowUpdateWriteLimit);
+            }
         }
 
         // Check if the new window size falls below the low window limit
@@ -1488,7 +1507,7 @@ public class H2StreamProcessor {
 
     /**
      * Check to see if a writing out a frame will cause the stream or connection window to go exceeded
-     *
+     * Synchronize to prevent race condition with window update operations
      * @return true if the write window would be exceeded by writing the frame
      */
     private boolean isWindowLimitExceeded(FrameData dataFrame) {
@@ -1498,7 +1517,7 @@ public class H2StreamProcessor {
     /**
      * Check if writing a frame with the given payload length would exceed flow control windows.
      */
-    private boolean isWindowLimitExceeded(int payloadLength) {
+    private synchronized boolean isWindowLimitExceeded(int payloadLength) {
         if (streamWindowUpdateWriteLimit - payloadLength < 0 ||
             muxLink.getWorkQ().getConnectionWriteLimit() - payloadLength < 0) {
             // would exceed window update limit
@@ -1596,7 +1615,9 @@ public class H2StreamProcessor {
                              writeTimeout, data.getFrameType(),
                              data.getPayloadLength(), myID);
 
-            streamWindowUpdateWriteLimit -= data.getPayloadLength();
+            synchronized (this) {
+                streamWindowUpdateWriteLimit -= currentFrame.getPayloadLength();
+            }
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "performDataWrite: stream: " + myID + " DATA written, new streamWindowUpdateWriteLimit: " + streamWindowUpdateWriteLimit);
@@ -1682,9 +1703,19 @@ public class H2StreamProcessor {
     /**
      * Retry deferred writes from the queue (called from executor thread when window opens).
      * Processes writes in FIFO order, stopping when window is exhausted or queue is empty.
+     * Uses atomic flag to prevent multiple concurrent executions for the same stream.
      */
     private void retryDeferredWrite() {
-        while (true) {
+        // Prevent multiple concurrent retry attempts for the same stream
+        if (!retryInProgress.compareAndSet(false, true)) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " already has retry in progress, skipping");
+            }
+            return;
+        }
+
+        try {
+            while (true) {
             PendingDataWrite pending;
 
             // Check if stream is still valid
@@ -1774,6 +1805,25 @@ public class H2StreamProcessor {
                 // Error already handled in performDataWrite
                 // Continue to next write in queue
                 continue;
+            }
+        }
+        } finally {
+            retryInProgress.set(false);
+            // Check if more work arrived while we were finishing up
+            // This prevents a race where a window update comes in just as we're exiting
+            if (!pendingWriteQueue.isEmpty()) {
+                // Peek at next item to see if window is now available
+                PendingDataWrite pending = pendingWriteQueue.peek();
+                if (pending != null && !isWindowLimitExceeded(pending.payloadLength)) {
+                    // Window opened up while we were exiting - schedule another retry
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "retryDeferredWrite: stream: " + myID + " detected window opened during exit, scheduling another retry");
+                    }
+                    ExecutorService executor = CHFWBundle.getExecutorService();
+                    executor.execute(() -> {
+                        retryDeferredWrite();
+                    });
+                }
             }
         }
     }
