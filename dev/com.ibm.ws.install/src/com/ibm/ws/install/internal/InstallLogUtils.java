@@ -23,8 +23,6 @@ import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
-import org.fusesource.jansi.AnsiConsole;
-
 import com.ibm.websphere.ras.DataFormatHelper;
 import com.ibm.ws.install.InstallConstants;
 import com.ibm.ws.repository.connections.DirectoryRepositoryConnection;
@@ -127,7 +125,7 @@ public class InstallLogUtils {
             if (null != record.getMessage()) {
                 if (progressBarActive) {
                     ProgressBar.getInstance().clearProgress();
-                    AnsiConsole.err().println(strDate + getFormatter().formatMessage(record));
+                    System.err.println(strDate + getFormatter().formatMessage(record));
                 } else {
                     System.err.println(strDate + getFormatter().formatMessage(record));
                 }
