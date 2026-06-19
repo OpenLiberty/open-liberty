@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2019 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -17,6 +17,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.osgi.service.component.annotations.Component;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.container.service.annocache.AnnotationsBetaHelper;
@@ -27,6 +29,9 @@ import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.anno.targets.AnnotationTargets_Targets;
 import com.ibm.wsspi.webcontainer.collaborator.WebAppInjectionClassListCollaborator;
 
+@Component(name = "com.ibm.ws.wsoc.injection.class.list.collaborator",
+           immediate = true,
+           property = { "service.vendor=IBM" })
 public class WebSocketInjectionClassListCollaborator  implements WebAppInjectionClassListCollaborator {
     private static final TraceComponent tc = Tr.register(WebSocketInjectionClassListCollaborator.class);
 

@@ -366,7 +366,7 @@ public class RebindConfigUpdateTest extends FATServletClient {
         server_ssl.startServer();
         // Security service and ORB will not start without QuickStartSecurity
         assertTrue("Security service reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKS0008I", server_ssl.getDefaultLogFile()).isEmpty());
-        assertNotNull("LTPA configuration did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
         assertTrue("ORB reported it was ready", server_ssl.findStringsInLogsUsingMark("CWWKI0001I", server_ssl.getDefaultLogFile()).isEmpty());
         expected_ssl_exceptions = new String[] { "CWWKS9582E", "CWWKS9660E" }; // No user registry
 
@@ -391,7 +391,7 @@ public class RebindConfigUpdateTest extends FATServletClient {
     public void testRebindAfterOrbStoppedStarted() throws Exception {
         server_ssl.startServer();
         assertNotNull("Security service did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS0008I"));
-        assertNotNull("LTPA configuration did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
         assertNotNull("ORB did not report it was ready", server_ssl.waitForStringInLogUsingMark("CWWKI0001I"));
         expected_ssl_exceptions = new String[] { "CWWKS9582E" }; // ORB did not start in 10 seconds
 

@@ -96,6 +96,8 @@ public class InMemoryIdentityStoreEnablementTests extends BaseJakartaSecurity40T
         ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
         instance.startServer();
+
+        server.waitForLTPAConfigReady();
     }
 
     @After

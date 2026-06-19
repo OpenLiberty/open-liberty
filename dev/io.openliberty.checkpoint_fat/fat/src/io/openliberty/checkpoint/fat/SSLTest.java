@@ -79,7 +79,6 @@ public class SSLTest {
     private static final Class<?> c = SSLTest.class;
     private final String APP_NAME = "app2";
     private final String KEYSTORE_GENERATED = "CWPKI0803A";
-    private final String TCP_CHANNEL_STARTED = "CWWKO0219I:.*defaultHttpEndpoint-ssl";
     public TestMethod testMethod;
 
     @ClassRule
@@ -301,7 +300,7 @@ public class SSLTest {
         final String tsPath = null;
         final String tsPassword = null;
 
-        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
@@ -318,7 +317,7 @@ public class SSLTest {
         final String tsPath = null;
         final String tsPassword = null;
 
-        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
@@ -336,7 +335,7 @@ public class SSLTest {
         final String tsPath = null;
         final String tsPassword = null;
 
-        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);
@@ -352,7 +351,7 @@ public class SSLTest {
         final String ksPassword = "secret";
         final String tsPassword = "secret";
 
-        assertNotNull("Ecpected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         String result = sendHttpsGet("app2/request", server, ksPath, ksPassword, tsPath, tsPassword);
         assertNotNull(result);

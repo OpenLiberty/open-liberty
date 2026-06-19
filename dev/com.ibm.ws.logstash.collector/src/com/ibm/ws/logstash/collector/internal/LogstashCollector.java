@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2016, 2020 IBM Corporation and others.
+ * Copyright (c) 2016, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -44,6 +44,7 @@ import com.ibm.ws.lumberjack.LumberjackEvent.Entry;
 import com.ibm.wsspi.collector.manager.Handler;
 import com.ibm.wsspi.kernel.service.location.VariableRegistry;
 import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
+import com.ibm.wsspi.kernel.service.utils.ServerQuiesceListener;
 import com.ibm.wsspi.ssl.SSLSupport;
 
 /**
@@ -51,8 +52,10 @@ import com.ibm.wsspi.ssl.SSLSupport;
  * to a Logstash instance using Lumberjack protocol
  */
 
-@Component(name = LogstashCollector.COMPONENT_NAME, service = { Handler.class }, configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.vendor=IBM" })
-public class LogstashCollector extends Collector {
+@Component(name = LogstashCollector.COMPONENT_NAME, service = { Handler.class, ServerQuiesceListener.class },
+           configurationPolicy = ConfigurationPolicy.REQUIRE,
+           property = { "service.vendor=IBM" })
+public class LogstashCollector extends Collector implements ServerQuiesceListener {
 
     private static final TraceComponent tc = Tr.register(LogstashCollector.class, "logstashCollector",
                                                          "com.ibm.ws.logstash.collector.internal.resources.LoggingMessages");
@@ -88,6 +91,8 @@ public class LogstashCollector extends Collector {
     private TaskManager taskMgr = null;
 
     private String logstashVersion;
+
+    public final String WEBAPP_REMOVAL_MESSAGE_ID = "CWWKT0017I";
 
     private String jsonAccessLogFields;
 
@@ -210,7 +215,7 @@ public class LogstashCollector extends Collector {
         String serverDefaultHostName = (String) configuration.get(SERVER_DEFAULT_HOST_NAME_KEY);
         String serverUserDir = variableRegistryServiceRef.getService().resolveString(VAR_WLPUSERDIR);
 
-        if (serverName.trim().isEmpty()) {
+        if (serverName == null || serverName.trim().isEmpty()) {
             serverName = variableRegistryServiceRef.getService().resolveString(ENV_VAR_CONTAINERNAME);
             if (ENV_VAR_CONTAINERNAME.equals(serverName)) {
                 serverName = variableRegistryServiceRef.getService().resolveString(VAR_WLPSERVERNAME);
@@ -227,13 +232,13 @@ public class LogstashCollector extends Collector {
         }
         this.serverUserDir = serverUserDir;
 
-        if (serverHostName.trim().isEmpty()) {
+        if (serverHostName == null || serverHostName.trim().isEmpty()) {
             serverHostName = variableRegistryServiceRef.getService().resolveString(ENV_VAR_CONTAINERHOST);
             if (ENV_VAR_CONTAINERHOST.equals(serverHostName)) {
                 serverHostName = serverDefaultHostName;
             }
             //defaultHostName variable did not resolve or has resolved to "localhost"
-            if (VAR_DEFAULTHOSTNAME.equals(serverHostName) || serverHostName.equals("localhost")) {
+            if (VAR_DEFAULTHOSTNAME.equals(serverHostName) || (serverHostName != null && serverHostName.equals("localhost"))) {
                 try {
                     serverHostName = AccessController.doPrivileged(new PrivilegedExceptionAction<String>() {
                         @Override
@@ -282,6 +287,47 @@ public class LogstashCollector extends Collector {
             };
         }
         return taskMgr;
+    }
+
+    @Override
+    public void serverStopping() {
+        // Only proceed if applications are running
+        if (LogstashCollectorASL.getRunningApplicationCount() == 0) {
+            return;
+        }
+
+        boolean shouldMonitor = shouldMonitorSeparateMessageSourceTask();
+
+        if (shouldMonitor) {
+
+            // Block here and wait for CWWKT0017I message
+            // This allows serverStopping() to return only after the message is found,
+            // which signals the quiesce mechanism to proceed immediately
+            boolean found = false;
+            int checkCount = 0;
+            while (!found) {
+                try {
+                    checkCount++;
+
+                    // checkMessageSourceForMessage() blocks until next event is available
+                    // Just check each event as it arrives until we find CWWKT0017I
+                    boolean messageFound = checkMessageSourceForMessage(WEBAPP_REMOVAL_MESSAGE_ID);
+
+                    if (messageFound) {
+                        found = true;
+                        stopAllTasks();
+                        if (taskMgr != null) {
+                            taskMgr.close();
+                        }
+                    }
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled()) {
+                        Tr.debug(tc, "Error checking message source", e);
+                    }
+                    break;
+                }
+            }
+        }
     }
 
 }

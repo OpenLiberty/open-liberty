@@ -221,8 +221,7 @@ public class LTPAValidationKeyTests {
                           server.waitForStringInLogUsingMark("CWWKZ0001I"));
             // Wait for the LTPA configuration to be ready
             assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                          server.waitForStringInLogUsingMark("CWWKS4105I"));
-
+                          server.waitForLTPAConfigReady(true));
         }
 
         server1FlClient1 = new FormLoginClient(server1, FormLoginClient.DEFAULT_SERVLET_NAME, "/formlogin1");
@@ -311,12 +310,12 @@ public class LTPAValidationKeyTests {
         server1.setMarkToEndOfLog();
         copyFileToServerResourcesSecurityDir(ALT_VALIDATION_KEY1_PATH, server1);
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server1.waitForStringInLogUsingMark("CWWKS4105I"));
+                      server1.waitForLTPAConfigReady(true));
 
         server2.setMarkToEndOfLog();
         copyFileToServerResourcesSecurityDir(ALT_VALIDATION_KEY2_PATH, server2);
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server2.waitForStringInLogUsingMark("CWWKS4105I"));
+                      server2.waitForLTPAConfigReady(true));
 
         // Replace the LTPA keys with the known valid ltpa keys and assert the change occurs
         renameKeyAndWaitForLtpaConfigReady(VALIDATION_KEY1_PATH, DEFAULT_KEY_PATH, server1);
@@ -335,7 +334,7 @@ public class LTPAValidationKeyTests {
 
         // Wait for the LTPA configuration to be ready after the change
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server2.waitForStringInLogUsingMark("CWWKS4105I"));
+                      server2.waitForLTPAConfigReady(true));
 
         // Attempt to login to the simple servlet on server #2 and assert that the login is successful
         server2FlClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, server1Cookie);
@@ -405,7 +404,7 @@ public class LTPAValidationKeyTests {
         // Update the server configuration to recognize the changes
         updateConfigDynamically(server2, server2Config);
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server2.waitForStringInLogUsingMark("CWWKS4105I"));
+                      server2.waitForLTPAConfigReady(true));
 
         // Attempt to login to the simple servlet on server #2 and assert that the login is successful (uses validation key)
         server2FlClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, server1Cookie);
@@ -456,7 +455,7 @@ public class LTPAValidationKeyTests {
         server2.setMarkToEndOfLog();
         copyFileToServerResourcesSecurityDir(ALT_VALIDATION_KEY2_PATH, server2);
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server2.waitForStringInLogUsingMark("CWWKS4105I"));
+                      server2.waitForLTPAConfigReady(true));
 
         renameKeyAndWaitForLtpaConfigReady(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, server2);
 
@@ -477,7 +476,7 @@ public class LTPAValidationKeyTests {
         server2.setMarkToEndOfLog();
         copyFileToServerResourcesSecurityDir(ALT_VALIDATION_KEY9_PATH, server2);
         assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server2.waitForStringInLogUsingMark("CWWKS4105I"));
+                      server2.waitForLTPAConfigReady(true));
 
         // Attempt to login to the simple servlet on server #2 and assert that the login is successful (uses validation key)
         server2FlClient1.accessProtectedServletWithAuthorizedCookie(FormLoginClient.PROTECTED_SIMPLE, server1Cookie);
@@ -805,7 +804,7 @@ public class LTPAValidationKeyTests {
             if (waitForLTPAConfigReadyMessage) {
                 // Wait for the LTPA configuration to be ready after the change
                 assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                              server.waitForStringInLogUsingMark("CWWKS4105I"));
+                              server.waitForLTPAConfigReady(true));
             }
         }
 

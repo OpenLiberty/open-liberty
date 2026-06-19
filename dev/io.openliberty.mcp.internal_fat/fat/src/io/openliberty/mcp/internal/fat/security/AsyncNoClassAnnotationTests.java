@@ -53,7 +53,7 @@ public class AsyncNoClassAnnotationTests extends FATServletClient {
         server.startServer();
         assertNotNull(server.findStringsInLogs("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
         // Wait for LTPA configuration to be ready
-        server.waitForStringInLog("CWWKS4105I.*");
+        server.waitForLTPAConfigReady();
     }
 
     @AfterClass

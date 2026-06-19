@@ -106,11 +106,9 @@ public class CxfCallerX509SymTests {
         server.waitForStringInLog("port " + portNumberSecure);
         // check  message.log
         // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now lis....Port 8010
-        assertNotNull("defaultHttpendpoint may not started at :" + portNumber,
-                      server.waitForStringInLog("CWWKO0219I.*" + portNumber));
+        server.waitForDefaultHTTPEndpointStart();
         // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now lis....Port 8020
-        assertNotNull("defaultHttpEndpoint SSL port may not be started at:" + portNumberSecure,
-                      server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         // using the original port to send the parameters
         callerUNTClientUrl = "http://localhost:" + portNumber +
@@ -119,9 +117,6 @@ public class CxfCallerX509SymTests {
         // portNumber = "9085";                // for debugging
         Log.info(thisClass, thisMethod, "****portNumber is(2):" + portNumber);
         Log.info(thisClass, thisMethod, "****portNumberSecure is(2):" + portNumberSecure);
-
-        return;
-
     }
 
     /**

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,8 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.logstash.collector.tests.ContainerEnvVarTest;
 import com.ibm.ws.logstash.collector.tests.CustomizedTagTest;
+import com.ibm.ws.logstash.collector.tests.LogStashShutdownSpamTest;
+import com.ibm.ws.logstash.collector.tests.LogStashShutdownTest;
 import com.ibm.ws.logstash.collector.tests.LogStashWithBinaryLoggingTest;
 import com.ibm.ws.logstash.collector.tests.LogstashCollectorIndependentTest;
 import com.ibm.ws.logstash.collector.tests.LogstashSSLTest;
@@ -36,7 +38,9 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
                 MaxFieldLengthTest.class,
                 LogStashWithBinaryLoggingTest.class,
                 LogstashCollectorIndependentTest.class,
-                ContainerEnvVarTest.class
+                ContainerEnvVarTest.class,
+                LogStashShutdownTest.class,
+                LogStashShutdownSpamTest.class
 })
 
 /**

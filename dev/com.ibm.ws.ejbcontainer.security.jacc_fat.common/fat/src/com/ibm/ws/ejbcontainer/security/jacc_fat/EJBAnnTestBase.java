@@ -130,7 +130,7 @@ public class EJBAnnTestBase {
         // Wait for feature update to complete
         assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
         assertEquals("Application/s did not start", expectedStartedApps, server.waitForMultipleStringsInLog(expectedStartedApps, "CWWKZ0001I"));
-        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLog("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
         if (server.getValidateApps()) { // If this build is Java 7 or above
             verifyServerStartedWithJaccFeature(server);
         }

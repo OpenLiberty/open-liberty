@@ -79,7 +79,7 @@ public class EJBHandlerTest {
         //EJBHandler does not require app security things, the feature is just added there to make sure, our functions could work
         //with security enabled.
         Assert.assertNotNull("LTPA keys in not created",
-                             server.waitForStringInLog("CWWKS4104A.*LTPA"));
+                             server.waitForLTPAKeysCreated());
 
         CLIENT_HANDLER_ENDPOINT_URL = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort() + "/EJBHandler/EJBHandlerClientBeanService";
 

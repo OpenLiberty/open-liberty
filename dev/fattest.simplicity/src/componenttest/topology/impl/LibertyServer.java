@@ -1200,38 +1200,411 @@ public class LibertyServer implements LogMonitorClient {
 
     }
 
+    /**
+     * Check logs for SSL endpoint Stop and Start messages from the log
+     * 
+     * This does not initiate an SSL Restart.
+     * 
+     * @throws Exception
+     */
     public void waitForSSLRestart() throws Exception {
 
         String thisMethod = "waitForSSLRestart";
         // look for the "CWWKO0220I: TCP Channel defaultHttpEndpoint-ssl has stopped listening for requests on host " message
         // if we find it, then wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
-        String sslStopMsg = waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
+        String sslStopMsg = waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500 );
         if (sslStopMsg != null) {
-            String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+            String sslStartMsg = waitForDefaultHTTPEndpointSSLStart(true);
             if (sslStartMsg == null) {
                 Log.warning(c, "SSL may not have started properly - future failures may be due to this");
             } else {
                 Log.info(c, thisMethod, "SSL appears have restarted properly");
             }
         } else {
-            Log.info(c, thisMethod, "Did not detect a restart of the SSL port");
+            Log.info(c, thisMethod, "Did not detect a stopping of the SSL port - unable to validate SSL has restarted");
         }
 
     }
 
     /**
-     * Wait for the server to state that it is listening on its SSL port
+     * Wait for endpoint on provided port to start
      *
-     * @throws Exception
+     * @param port
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
+     * @throws Exception is thrown if endpoint does not start within the default time period
      */
-    public void waitForSSLStart() throws Exception {
-        //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
-        String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
-        if (sslStartMsg == null) {
-            RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint-ssl");
-            Log.error(c, "waitForSSLStart", rx);
-            throw rx;
+    public String waitForEndpointOnPortToStart(int port) throws Exception{
+        return waitForEndpointOnPortToStart(port, LOG_SEARCH_TIMEOUT);
+    }
+
+    /**
+     * Wait for endpoint on provided port to start in the defined time period
+     *
+     * @param port
+     * @param timeout a timeout, in milliseconds
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
+     * @throws Exception is thrown if endpoint does not start within the provided time
+     */
+    public String waitForEndpointOnPortToStart(int port, int timeout) throws Exception{
+        return waitForEndpointOnPortToStart(port, timeout, false);
+    }
+
+    /**
+     * Wait for endpoint on provided port to start
+     *
+     * @param port 
+     * @param suppressException if set to 'true', method return null if the message is not found instead of throwing an exception
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
+     * @throws Exception is thrown if endpoint does not start within the default timeout period and if suppressException is 'false'
+     */
+    public String waitForEndpointOnPortToStart(int port, boolean suppressException) throws Exception{
+        return waitForEndpointOnPortToStart(port, LOG_SEARCH_TIMEOUT, suppressException);
+    }
+
+    /**
+     * Wait for endpoint on provided port to start
+     * 
+     * @param port
+     * @param timeout a timeout, in milliseconds
+     * @param suppressException if set to 'true', method return null if the message is not found instead of throwing an exception
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
+     * @throws Exception is thrown if endpoint does not start within the provided time and if suppressException is 'false'
+     */
+    public String waitForEndpointOnPortToStart(int port, int timeout, boolean suppressException) throws Exception{
+        String endpointStarted = waitForStringInLogUsingMark("CWWKO0219I:.*" + port, timeout);
+        if(endpointStarted == null){
+            RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize endpoint on port: " + port);
+            Log.error(c, "waitForEndpointOnPortToStart", rx);
+            if(!suppressException){
+                throw rx;
+            }
         }
+        return endpointStarted;
+    }
+
+
+    /**
+     * Wait for the server to state that it is listening on its default SSL Endpoint
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if SSL Endpoint has not been logged as started within the default timeout
+     */
+    public String waitForDefaultHTTPEndpointSSLStart() throws Exception {
+        return waitForDefaultHTTPEndpointSSLStart(LOG_SEARCH_TIMEOUT);
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its default SSL Endpoint
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * You can suppress the throwing of the exception, will return null if the message is not found instead
+     *
+     * @param suppressException
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if suppressException is false and message is not found
+     */
+    public String waitForDefaultHTTPEndpointSSLStart(boolean suppressException) throws Exception {
+        return waitForDefaultHTTPEndpointSSLStart(LOG_SEARCH_TIMEOUT, suppressException);
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its default SSL Endpoint
+     * 
+     * Method does respect if a Mark has been taken in the logs
+     * 
+     * @param timeout a timeout, in milliseconds
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if SSL Endpoint has not been logged as started within the default timeout
+     */
+    public String waitForDefaultHTTPEndpointSSLStart(int timeout) throws Exception {
+        return waitForDefaultHTTPEndpointSSLStart(timeout, false);
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its default SSL Endpoint in the time specified
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @param suppressException whether to throw an exception or return null if the message is not found
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if SSL endpoint has not been logged as started within the provided timeout amd suppressException is 'false'
+     */
+    public String waitForDefaultHTTPEndpointSSLStart(int timeout, boolean suppressException) throws Exception {
+        //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
+        String sslStartMsg = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*", timeout);
+        if (sslStartMsg == null){
+            RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint-ssl");
+            Log.error(c, "waitForDefaultHTTPEndpointSSLStart", rx);
+            if(!suppressException) {
+                throw rx;
+            }
+        }
+        return sslStartMsg;
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its default non-SSL Endpoint
+     * 
+     * Method does respect if a Mark has been taken in the logs
+     * 
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if SSL endpoint has not been logged as started within the default time period
+     */
+    public String waitForDefaultHTTPEndpointStart() throws Exception {
+        return waitForDefaultHTTPEndpointStart(LOG_SEARCH_TIMEOUT);
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its non-SSL default endpoint
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param suppressException whether to throw an exception or return null if the message is not found
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if the endpoint has not been logged as started within the default time period and suppressException is 'false'
+     */
+    public String waitForDefaultHTTPEndpointStart(boolean suppressException) throws Exception {
+        return waitForDefaultHTTPEndpointStart(LOG_SEARCH_TIMEOUT, suppressException);
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its non-SSL default endpoint
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if the endpoint has not been logged as started within the default time period
+     */
+    public String waitForDefaultHTTPEndpointStart(int timeout) throws Exception {
+        return waitForDefaultHTTPEndpointStart(timeout, false);
+    }
+
+    /**
+     * Wait for the server to state that it is listening on its non-SSL default endpoint in the time provided
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @param suppressException whether to throw an exception or return null if the message is not found
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if the endpoint has not been logged as started within the provided time period and suppressException is 'false'
+     */
+    public String waitForDefaultHTTPEndpointStart(int timeout, boolean suppressException) throws Exception {
+        //wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host"
+        // space is required to prevent confusion with the SSL endpoint
+        String endpointStartMessage = waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint ", timeout);
+        if(endpointStartMessage == null){
+            // highly unlikely unless something is really wrong.
+            RuntimeException rx = new RuntimeException("Timed out waiting for the server to initialize defaultHttpEndpoint");
+            Log.error(c, "waitForDefaultHTTPEndpointStart", rx);
+            if(!suppressException) {
+                throw rx;
+            }
+        }
+        return endpointStartMessage;
+
+    }
+
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready`
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if LTPA Config ready message is not received within the default timeout period
+     */
+    public String waitForLTPAConfigReady() throws Exception {
+       return waitForLTPAConfigReady(LOG_SEARCH_TIMEOUT);
+    }
+
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready` in the time specified
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if LTPA Config ready message is not received within the provided timeout period
+     */
+    public String waitForLTPAConfigReady(int timeout) throws Exception {
+        return waitForLTPAConfigReady(timeout, false);
+    }
+
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready`
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param suppressException if true, will return null instead of throwing an exception
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if LTPA Config ready message is not received within the default timeout period and suppressException is false
+     */
+    public String waitForLTPAConfigReady(boolean suppressException) throws Exception {
+        return waitForLTPAConfigReady(LOG_SEARCH_TIMEOUT, suppressException);
+    }
+
+
+    /**
+     * Wait for the server to state that `CWWKS4105I: LTPA configuration is ready` in the time specified
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @param suppressException if wait times out, whether to suppress the exception and return null instead
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if LTPA config ready message is not received in the provided period and suppressException is 'false'
+     */
+    public String waitForLTPAConfigReady(int timeout, boolean suppressException) throws Exception {
+        // wait for "CWWKS4105I: LTPA configuration is ready"
+        String ltpaReady = waitForStringInLogUsingMark("CWWKS4105I", timeout);
+        if(ltpaReady == null){
+            RuntimeException rx = new RuntimeException("Timed out waiting for the LTPA Config to be ready");
+            Log.error(c, "waitForLTPAConfigReady", rx);
+            if(!suppressException) {
+                throw rx;
+            }
+        }
+        return ltpaReady;
+
+    }
+
+    /**
+     * Wait for the server to report `CWWKS4104A: LTPA keys created`
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if LTPA keys created ready message is not received within the default timeout period
+     */
+    public String waitForLTPAKeysCreated() throws Exception {
+        return waitForLTPAKeysCreated(LOG_SEARCH_TIMEOUT);
+    }
+
+    /**
+     * Wait for the server to report `CWWKS4104A: LTPA keys created` in the time specified
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if LTPA keys created ready message is not received within the provided timeout period
+     */
+    public String waitForLTPAKeysCreated(int timeout) throws Exception {
+        return waitForLTPAKeysCreated(timeout, false);
+    }
+
+    /**
+     * Wait for the server to report `CWWKS4104A: LTPA keys created`
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param suppressException if wait times out, whether to suppress the exception and return null instead
+     * @return the matching line in the log, or null if no matches appear before the default timeout expires
+     * @throws Exception if LTPA keys created ready message is not received within the default timeout period and suppressException is 'false'
+     */
+    public String waitForLTPAKeysCreated(boolean suppressException) throws Exception {
+        return waitForLTPAKeysCreated(LOG_SEARCH_TIMEOUT, suppressException);
+    }
+
+    /**
+     * Wait for the server to report `CWWKS4104A: LTPA keys created` file has been created in the time specified
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @param timeout a timeout, in milliseconds
+     * @param suppressException if wait times out, whether to suppress the exception and return null instead
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if LTPA keys created ready message is not received within the provided timeout period and suppressException is 'false'
+     */
+    public String waitForLTPAKeysCreated(int timeout, boolean suppressException) throws Exception{
+        // wait for "CWWKS4104A: LTPA keys created"
+        String ltpaKeysCreated = waitForStringInLogUsingMark("CWWKS4104A", timeout);
+        if(ltpaKeysCreated == null){
+            RuntimeException rx = new RuntimeException("Timed out waiting for the LTPA keys to be created");
+            Log.error(c, "waitForLTPAKeysCreated", rx);
+            if(!suppressException) {
+                throw rx;
+            }
+        }
+        return ltpaKeysCreated;
+    }
+
+    /**
+     * @deprecated
+     * This method is provided for existing test cases which checked for both keys create and config ready.
+     * It is recommended to just wait for the config to be stated as ready
+     *
+     * Wait for LTPA keys have been created and the LTPA config to report as ready
+     *
+     * Method does respect if a Mark has been taken in the logs
+     *
+     * @return the matching line in the log, or null if no matches appear before the provided timeout expires
+     * @throws Exception if the LTPA keys created and Config ready messages are not received within the default timeout period
+     */
+    @Deprecated
+    public String waitForLTPAKeysCreatedandConfigReady() throws Exception {
+        return waitForLTPAKeysCreatedAndConfigReady(LOG_SEARCH_TIMEOUT);
+    }
+
+    /**
+     * @deprecated
+     * This method is provided for existing test cases which checked for both keys create and config ready.
+     * It is recommended to just wait for the config to be stated as ready
+     *
+     * Wait for LTPA keys have been created and the LTPA config to report as ready
+     *
+     * Method uses the a mark if one has been made
+     *
+     * @param timeout, timeout applied to each check, a timeout of 60000, is a total of 120000
+     * @return the result of waitForLTPAConfigReady, as keys must be created before Config can be ready
+     * @throws Exception if messages aren't found in logs then a runtime exception is thrown within the provided time period
+     */
+    @Deprecated
+    public String waitForLTPAKeysCreatedAndConfigReady(int timeout) throws Exception {
+        return waitForLTPAKeysCreatedAndConfigReady(timeout, false);
+    }
+
+    /**
+     * @deprecated
+     * This method is provided for existing test cases which checked for both keys create and config ready.
+     * It is recommended to just wait for the config to be stated as ready
+     *
+     * Wait for LTPA keys have been created and the LTPA config to report as ready
+     *
+     * Method uses the a mark if one has been made
+     *
+     * @param suppressException, whether to suppress the runtime exception, should only be supplied if asserting on the result.
+     * @return the result of waitForLTPAConfigReady, as keys must be created before Config can be ready
+     * @throws Exception if messages aren't found in logs and suppressException is 'false' then a runtime exception is thrown
+     */
+    @Deprecated
+    public String waitForLTPAKeysCreatedAndConfigReady(boolean suppressException) throws Exception {
+        return waitForLTPAKeysCreatedAndConfigReady(LOG_SEARCH_TIMEOUT, suppressException);
+    }
+
+    /**
+     * @deprecated
+     * This method is provided for existing test cases which checked for both keys create and config ready.
+     * It is recommended to just wait for the config to be stated as ready
+     *
+     * Wait for LTPA keys have been created and the LTPA config to report as ready
+     *
+     * Method uses the a mark if one has been made
+     *
+     * @param timeout how long to wait for each check, 1000ms has a total timeout of 2000ms
+     * @param suppressException whether to suppress the runtime exception, should only be supplied if asserting on the result.
+     * @return the result of waitForLTPAConfigReady, as keys must be created before Config can be ready
+     * @throws Exception if messages aren't found in logs and suppressException is 'false' then a runtime exception is thrown
+     */
+    @Deprecated
+    public String waitForLTPAKeysCreatedAndConfigReady(int timeout, boolean suppressException) throws Exception {
+        waitForLTPAKeysCreated(timeout, suppressException);
+        return waitForLTPAConfigReady(timeout, suppressException);
     }
 
     /**
@@ -1703,9 +2076,9 @@ public class LibertyServer implements LogMonitorClient {
             // Check if "websphere.java.security" has been added to bootstrapping.properties
             // as some tests will add it for their own security enable tests
             RemoteFile f = getServerBootstrapPropertiesFile();
-            java.io.BufferedReader reader = null;
+            BufferedReader reader = null;
             try {
-                reader = new java.io.BufferedReader(new java.io.InputStreamReader(f.openForReading()));
+                reader = new BufferedReader(new InputStreamReader(f.openForReading()));
                 String line = reader.readLine();
                 while (line != null) {
                     if (line != null && line.trim().equals("websphere.java.security")) {
@@ -2361,7 +2734,7 @@ public class LibertyServer implements LogMonitorClient {
     }
 
     private void addJava2SecurityPropertiesToBootstrapFile(RemoteFile f, boolean debug) throws Exception {
-        java.io.OutputStream w = f.openForWriting(true);
+        OutputStream w = f.openForWriting(true);
         try {
             w.write("\n".getBytes());
             w.write("websphere.java.security".getBytes());
@@ -2543,7 +2916,7 @@ public class LibertyServer implements LogMonitorClient {
 
             }
             String exceptionText = "Failures occured while waiting for app" + plural + " to start:";
-            for (Map.Entry<String, List<String>> entry : failedApps.entrySet()) {
+            for (Entry<String, List<String>> entry : failedApps.entrySet()) {
                 for (String failure : entry.getValue()) {
                     String text;
                     if (entry.getKey().equals("*")) {
@@ -2863,7 +3236,7 @@ public class LibertyServer implements LogMonitorClient {
     protected static String findAppNameInTokens(Map<String, Pattern> unstartedApps, String[] tokens) {
         final String method = "findAppNameInTokens";
 
-        for (Map.Entry<String, Pattern> entry : unstartedApps.entrySet()) {
+        for (Entry<String, Pattern> entry : unstartedApps.entrySet()) {
             Log.finer(c, method, "looking for app " + entry.getKey() + " in " + tokens[1]);
             if (entry.getValue().matcher(tokens[1]).matches()) {
                 Log.finer(c, method, "matched app " + entry.getKey());
@@ -2922,7 +3295,7 @@ public class LibertyServer implements LogMonitorClient {
                 //since this is going to connect to the secure port, that needs to be ready
                 //before an attempt to make the JMX connection
                 Log.info(c, method, "Checking that the JMX RestConnector is available and secured");
-                assertNotNull("CWWKO0219I.*ssl not received", waitForStringInLogUsingMark("CWWKO0219I.*ssl"));
+                assertNotNull("CWWKO0219I.*ssl not received",waitForDefaultHTTPEndpointSSLStart());
 
                 assertNotNull("IBMJMXConnectorREST app did not report as ready", waitForStringInLogUsingMark("CWWKT0016I.*IBMJMXConnectorREST"));
 
@@ -3630,7 +4003,7 @@ public class LibertyServer implements LogMonitorClient {
 
                     if (unexpectedFeatures.size() > 0) {
                         String message = "Runtime features were not of the expected version for repeat action (Server: " + serverName + ", Action: " + action.getID() + ").\n";
-                        for (Map.Entry<String, String> entry : unexpectedFeatures.entrySet()) {
+                        for (Entry<String, String> entry : unexpectedFeatures.entrySet()) {
                             message = message + "Expected: " + entry.getKey() + ", Actual: " + entry.getValue() + ".\n";
                         }
                         message = message
@@ -5291,7 +5664,7 @@ public class LibertyServer implements LogMonitorClient {
     public void setJvmOptions(Map<String, String> options) throws Exception {
         ArrayList<String> optionList = new ArrayList<String>();
         if (options != null) {
-            for (Map.Entry<String, String> entry : options.entrySet()) {
+            for (Entry<String, String> entry : options.entrySet()) {
                 String key = entry.getKey();
                 if (key == null) {
                     continue;
@@ -6282,7 +6655,7 @@ public class LibertyServer implements LogMonitorClient {
                     if (line.contains(name))
                         counters.put(name, counters.get(name) + (line.contains("009I: ") ? -1 : 1));
 
-            for (Map.Entry<String, Integer> entry : counters.entrySet())
+            for (Entry<String, Integer> entry : counters.entrySet())
                 if (entry.getValue() > 0)
                     subset.add(entry.getKey());
         }
@@ -6628,7 +7001,8 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param  regexp
      * @param  timeout a timeout, in milliseconds
-     * @return
+     * @return        the matching line in the log, or null if no matches
+     *                appear before the timeout expires
      */
     public String waitForStringInLog(String regexp, long timeout) {
         return waitForStringInLogUsingMark(regexp, timeout);
@@ -6643,7 +7017,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  numberOfMatches number of matches required
      * @param  regexp          a regular expression to search for
      * @param  timeout         a timeout, in milliseconds
-     * @return
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public int waitForMultipleStringsInLog(int numberOfMatches, String regexp, long timeout) {
         try {
@@ -6665,7 +7039,7 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param  regexp
      * @param  timeout a timeout, in milliseconds
-     * @return
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public String waitForStringInLogUsingLastOffset(String regexp, long timeout) {
         try {
@@ -6686,7 +7060,7 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param  regexp
      * @param  timeout a timeout, in milliseconds
-     * @return
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public String waitForStringInLogUsingMark(String regexp, long timeout) {
         return logMonitor.waitForStringInLogUsingMark(regexp, timeout);
@@ -6695,7 +7069,7 @@ public class LibertyServer implements LogMonitorClient {
     /**
      * @param  regexp
      * @param  serverConfigurationFile
-     * @return
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public String waitForStringInLog(String regexp, RemoteFile outputFile) {
         return waitForStringInLogUsingMark(regexp, outputFile);
@@ -6707,7 +7081,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  regexp     a regular expression to search for
      * @param  timeout    a timeout, in milliseconds
      * @param  outputFile file to check
-     * @return            line that matched the regexp
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public String waitForStringInLog(String regexp, long timeout, RemoteFile outputFile) {
         return waitForStringInLogUsingMark(regexp, timeout, outputFile);
@@ -6762,7 +7136,7 @@ public class LibertyServer implements LogMonitorClient {
      *
      * @param  regexp
      * @param  outputFile
-     * @return
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public String waitForStringInLogUsingMark(String regexp, RemoteFile outputFile) {
         return waitForStringInLogUsingMark(regexp, LOG_SEARCH_TIMEOUT, outputFile);
@@ -6773,9 +7147,9 @@ public class LibertyServer implements LogMonitorClient {
      * The offset is incremented every time this method is called.
      *
      * @param  regexp     a regular expression to search for
-     * @param  timeout    a timeout, in milliseconds
+     * @param  intendedTimeout    a timeout, in milliseconds
      * @param  outputFile file to check
-     * @return            line that matched the regexp
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public String waitForStringInLogUsingLastOffset(String regexp, long intendedTimeout, RemoteFile outputFile) {
         return waitForStringInLogUsingLastOffset(regexp, intendedTimeout, 2 * intendedTimeout, outputFile);
@@ -6789,7 +7163,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  intendedTimeout a timeout, in milliseconds, within which we expect the wait to complete. Missing this is a soft fail.
      * @param  extendedTimeout a timeout, in milliseconds, within which we insist the wait complete. Missing this is an error.
      * @param  outputFile      file to check
-     * @return                 line that matched the regexp
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     protected String waitForStringInLogUsingLastOffset(String regexp, long intendedTimeout, long extendedTimeout, RemoteFile outputFile) {
         final String METHOD_NAME = "waitForStringInLogUsingLastOffset";
@@ -6843,9 +7217,9 @@ public class LibertyServer implements LogMonitorClient {
      * The offset is also incremented every time this method is called.
      *
      * @param  regexp     a regular expression to search for
-     * @param  timeout    a timeout, in milliseconds
+     * @param  intendedTimeout    a timeout, in milliseconds
      * @param  outputFile file to check
-     * @return            line that matched the regexp
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     public String waitForStringInLogUsingMark(String regexp, long intendedTimeout, RemoteFile outputFile) {
         return waitForStringInLogUsingMark(regexp, intendedTimeout, 2 * intendedTimeout, outputFile);
@@ -6859,7 +7233,7 @@ public class LibertyServer implements LogMonitorClient {
      * @param  intendedTimeout a timeout, in milliseconds, within which the wait should complete. Exceeding this is a soft fail.
      * @param  extendedTimeout a timeout, in milliseconds, within which the wait must complete. Exceeding this is a hard fail.
      * @param  outputFile      file to check
-     * @return                 line that matched the regexp
+     * @return the matching line in the log, or null if no matches appear before the timeout expires
      */
     protected String waitForStringInLogUsingMark(String regexp, long intendedTimeout, long extendedTimeout, RemoteFile outputFile) {
         return logMonitor.waitForStringInLogUsingMark(regexp, intendedTimeout, extendedTimeout, outputFile);

@@ -47,7 +47,7 @@ public class HeaderPropagation12Test extends FATServletClient {
     public static void setUp() throws Exception {
         ShrinkHelper.defaultApp(server, appName, new DeployOptions[] { DeployOptions.SERVER_ONLY }, "mpRestClient12.headerPropagation");
         server.startServer();
-        assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
     }
 
     @AfterClass

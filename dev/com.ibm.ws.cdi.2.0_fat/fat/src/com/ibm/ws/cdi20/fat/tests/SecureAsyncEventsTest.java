@@ -65,7 +65,7 @@ public class SecureAsyncEventsTest extends FATServletClient {
 
         assertNotNull("CWWKF0011I.* not received on server", server.waitForStringInLog("CWWKF0011I.*")); // wait for server is ready to run a smarter planet
         assertNotNull("Security service did not report it was ready", server.waitForStringInLog("CWWKS0008I"));
-        assertNotNull("CWWKS4105I.* not received on server", server.waitForStringInLog("CWWKS4105I.*")); // wait for LTPA key to be available
+        server.waitForLTPAConfigReady(); // wait for LTPA key to be available
     }
 
     @AfterClass

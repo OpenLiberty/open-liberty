@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Traitez la cause de l'erreur.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: Le cache de cookie de d\u00e9connexion n''a pas pu rechercher le cookie dans le cache JCache. L''erreur est la suivante : {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=Le cache de cookie de d\u00e9connexion a rencontr\u00e9 une erreur lors de la tentative de recherche du cookie dans le cache JCache. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Traitez la cause de l'erreur.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Des jetons de d\u00e9connexion d'un ancien format ont \u00e9t\u00e9 d\u00e9tect\u00e9s. Pour que le cache \u00ab logged-out \u00bb soit correctement partag\u00e9, assurez-vous que tous les serveurs de votre environnement ont \u00e9t\u00e9 mis \u00e0 jour vers la derni\u00e8re version.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=Le syst\u00e8me a d\u00e9tect\u00e9 des jetons dont la session a expir\u00e9 et qui sont d'un ancien format. Afin d'am\u00e9liorer la s\u00e9curit\u00e9 et la coh\u00e9rence, les jetons de d\u00e9connexion ont \u00e9t\u00e9 convertis au nouveau format.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Pour vous assurer que les jetons de d\u00e9connexion utilisent le format le plus r\u00e9cent, mettez \u00e0 jour tous les serveurs de votre cluster ou de votre environnement vers la derni\u00e8re version.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: Le cache des cookies de d\u00e9connexion a rencontr\u00e9 une erreur lors de la migration des anciens jetons vers leurs versions hach\u00e9es. L''erreur est la suivante : {0}
+JCACHE_MIGRATION_FAILURE.explanation=Le cache des cookies de d\u00e9connexion a rencontr\u00e9 une erreur lors de la migration ponctuelle des anciens jetons de d\u00e9connexion vers le nouveau format hach\u00e9.
+JCACHE_MIGRATION_FAILURE.useraction=Consultez le message d'erreur et les journaux du serveur pour d\u00e9terminer la cause de la panne. La migration sera relanc\u00e9e lors du prochain red\u00e9marrage du serveur.

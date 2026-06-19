@@ -74,8 +74,7 @@ public abstract class BaseTestCase {
      *
      * @param server The server to check the logs for the message.
      */
-    protected static void waitForDefaultHttpsEndpoint(LibertyServer server) {
-        assertNotNull("The SSL TCP Channel for default HTTPS endpoint did not start in time.",
-                      server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl.*" + server.getHttpDefaultSecurePort()));
+    protected static void waitForDefaultHttpsEndpoint(LibertyServer server) throws Exception {
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 }

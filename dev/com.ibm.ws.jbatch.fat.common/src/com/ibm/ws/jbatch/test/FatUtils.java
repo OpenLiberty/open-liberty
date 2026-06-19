@@ -5,7 +5,6 @@ import static org.junit.Assert.assertNotNull;
 import com.ibm.websphere.simplicity.config.DataSource;
 import com.ibm.websphere.simplicity.config.JdbcDriver;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
-import componenttest.custom.junit.runner.JavaLevelFilter;
 import componenttest.topology.impl.LibertyServer;
 
 /**
@@ -37,7 +36,7 @@ public class FatUtils {
     /**
      * Wait for the "smarter planet" and "ssl endpoint started" messages.
      */
-    public static void waitForStartupAndSsl(LibertyServer server) {
+    public static void waitForStartupAndSsl(LibertyServer server) throws Exception {
         waitForSmarterPlanet(server);
         waitForSslEndpoint(server);
     }
@@ -61,12 +60,10 @@ public class FatUtils {
      * 
      * @param server
      */
-    public static void waitForSslEndpoint(LibertyServer server) {
+    public static void waitForSslEndpoint(LibertyServer server) throws Exception {
         // Wait for SSL endpoint
         server.resetLogMarks();
-        assertNotNull("defaultHttpEndpoint-ssl was not started",
-                      //server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started"));
-                      server.waitForStringInLog("CWWKO0219I:(.*)defaultHttpEndpoint-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
     }
     
@@ -77,13 +74,9 @@ public class FatUtils {
      * 
      * @param server
      */
-    public static void waitForLTPA(LibertyServer server) {
+    public static void waitForLTPA(LibertyServer server) throws Exception {
         server.resetLogMarks();
-        // Previously it looked like we were trying to match CWWKS4105A
-        // in addition to a CWWKS4104A.  As it turns out, there is only CWWKS4105I
-        // so we will remove that.
-        assertNotNull("Waited for the LTPA keys to be generated, but did not receive the CWWKS4104A message ",
-                       server.waitForStringInLog("CWWKS4104A"));
+        server.waitForLTPAConfigReady();
 
     }
     
@@ -107,7 +100,7 @@ public class FatUtils {
      * 
      * @param server
      */
-    public static void waitForStartupSslAndLTPA(LibertyServer server) {
+    public static void waitForStartupSslAndLTPA(LibertyServer server) throws Exception {
         waitForSmarterPlanet(server);
         waitForSslEndpoint(server);
         waitForLTPA (server);
@@ -118,7 +111,7 @@ public class FatUtils {
      * 
      * @param server
      */
-    public static void waitForSSLKeyAndLTPAKey(LibertyServer server) {
+    public static void waitForSSLKeyAndLTPAKey(LibertyServer server) throws Exception {
     	waitForSSLKeyFile(server);
     	waitForLTPA(server);
     }

@@ -106,7 +106,7 @@ public class UIBasicTest {
     public void testPrivateUI() throws Exception {
         //Reduce possibility that Server is not listening on its HTTPS Port
         //Especially for Windows if certificates are slow to create
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         driver.get("https://admin:test@host.testcontainers.internal:" + server.getHttpDefaultSecurePort() + "/ibm/api/explorer");
         testUI();

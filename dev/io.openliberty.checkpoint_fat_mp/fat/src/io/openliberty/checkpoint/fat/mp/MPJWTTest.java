@@ -120,7 +120,7 @@ public class MPJWTTest extends FATServletClient {
             server.checkpointRestore();
 
             // wait on LTPA to be available to avoid error "CWWKS4000E: ... The requested TokenService instance of type Ltpa2 could not be found."
-            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForStringInLog("CWWKS4105I.*"));
+            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForLTPAConfigReady(true));
 
             Response response = makeRequest(urlRoles, authHeaderAdmin);
             assertEquals("Incorrect response code from " + urlRoles, 200, response.getStatus());
@@ -142,7 +142,7 @@ public class MPJWTTest extends FATServletClient {
             server.checkpointRestore();
 
             // wait on LTPA to be available to avoid error "CWWKS4000E: ... The requested TokenService instance of type Ltpa2 could not be found."
-            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForStringInLog("CWWKS4105I.*"));
+            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForLTPAConfigReady(true));
 
             Response response = makeRequest(urlUsername, authHeaderUser);
             assertEquals("Incorrect response code from " + urlUsername, 200, response.getStatus());
@@ -179,7 +179,7 @@ public class MPJWTTest extends FATServletClient {
             server.checkpointRestore();
 
             // wait on LTPA to be available to avoid error "CWWKS4000E: ... The requested TokenService instance of type Ltpa2 could not be found."
-            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForStringInLog("CWWKS4105I.*"));
+            assertNotNull("'CWWKS4105I: LTPA configuration is ready' message not found.", server.waitForLTPAConfigReady(true));
 
             Response response = makeRequest(urlUsername, authHeaderUser);
             assertEquals("Incorrect response code from " + urlUsername, 200, response.getStatus());

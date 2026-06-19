@@ -127,6 +127,7 @@ public class MultipleModuleGlobalClientCertFailOverTest extends JavaEESecTestBas
 
     @BeforeClass
     public static void setUp() throws Exception {
+        assumeNotWindowsEe9Plus();
 
         ldapServer = new LocalLdapServer();
         ldapServer.start();

@@ -91,41 +91,6 @@ public class ServerInstanceUtils {
 
     }
 
-    // Special case SSL ready checker - for test classes that don't enable/use SSL from server
-    // startup.  This method will check entire message log for the ssl inited msg (instead of checking
-    // from the last mark)
-    public static void waitForSSLMsg(LibertyServer server) {
-
-        waitForSSLMsg(server, System.currentTimeMillis());
-    }
-
-    private static void waitForSSLMsg(LibertyServer server, long startTime) {
-
-        String methodName = "waitForSSLMsg";
-        try {
-
-            // wait for up to 2 minutes
-            if (System.currentTimeMillis() - startTime > (2 * 60 * 1000)) {
-                Log.info(thisClass, methodName, "Timed out searching for SSL ready message - test will probably fail");
-                return;
-            }
-            // if nothing is found, sleep and request another try
-            List<String> wasFound = LibertyFileManager.findStringsInFile(".*" + MessageConstants.CWWKO0219I_SSL_CHANNEL_READY + ".*", server.getDefaultLogFile());
-            if (wasFound == null || wasFound.isEmpty()) {
-                Thread.sleep(5 * 1000);
-                waitForSSLMsg(server, startTime);
-            } else {
-                for (String msg : wasFound) {
-                    Log.info(thisClass, "waitForSSLMsg", "Found SSL MSG: " + msg);
-                }
-                Log.info(thisClass, methodName, "Found SSL ready message");
-                return;
-            }
-        } catch (Exception e) {
-            Log.info(thisClass, "waitForSSLMsg", "Something went wrong while checking for the SSL ready msg: " + e.getMessage());
-        }
-    }
-
     /**
      * Update/Set config variables for a server and push the updates to the server.
      * Method waits for server to update or indicate that no update in needed

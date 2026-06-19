@@ -82,8 +82,7 @@ public class ServerXMLConfigurationMBeanTest {
                       server.waitForStringInLog("CWWKT0016I.*IBMJMXConnectorREST"));
 
         Log.info(logClass, methodName, "Waiting for 'CWWKO0219I.*ssl'");
-        assertNotNull("'CWWKO0219I.*ssl' was not received on server",
-                      server.waitForStringInLog("CWWKO0219I.*ssl"));
+server.waitForDefaultHTTPEndpointSSLStart();
 
         Log.info(logClass, methodName, "Waiting for 'CWPKI0803A.*ssl'");
         assertNotNull("'CWPKI0803A.*ssl' was not generated on server",
@@ -94,8 +93,7 @@ public class ServerXMLConfigurationMBeanTest {
                       server.waitForStringInLog("CWWKS0008I"));
 
         Log.info(logClass, methodName, "Waiting for 'CWWKS4105I: LTPA configuration is ready'");
-        assertNotNull("'CWWKS4105I: LTPA configuration is ready' was not generated on server",
-                      server.waitForStringInLog("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
 
         // Set up the trust store
         TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {

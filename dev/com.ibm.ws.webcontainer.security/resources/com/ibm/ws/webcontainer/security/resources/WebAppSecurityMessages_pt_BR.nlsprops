@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Resolva a causa do erro.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: O cache de cookie logado foi incapaz de verificar o cache do JCache para o cookie. O erro \u00e9: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=O cache de cookie logado encontrou um erro quando tentou verificar o cache do JCache para o cookie. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Resolva a causa do erro.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Foram detectados tokens cuja sess\u00e3o foi encerrada e que apresentam um formato mais antigo. Para que o cache de logout seja compartilhado corretamente, certifique-se de que todos os servidores do seu ambiente estejam atualizados para a vers\u00e3o mais recente.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=O sistema detectou tokens cuja sess\u00e3o foi encerrada e que apresentam um formato mais antigo. Para aumentar a seguran\u00e7a e a consist\u00eancia, os tokens de sess\u00e3o encerrada foram migrados para o formato mais recente.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Para garantir que os tokens de logout utilizem o formato mais recente, atualize todos os servidores do seu cluster ou ambiente para a vers\u00e3o mais recente.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: O cache de cookies de logout encontrou um erro ao migrar tokens antigos para vers\u00f5es com hash. O erro \u00e9: {0}
+JCACHE_MIGRATION_FAILURE.explanation=O cache de cookies de logout encontrou um erro durante a migra\u00e7\u00e3o \u00fanica dos tokens de logout antigos para o novo formato com hash.
+JCACHE_MIGRATION_FAILURE.useraction=Analise a mensagem de erro e os logs do servidor para determinar a causa da falha. A migra\u00e7\u00e3o ser\u00e1 tentada novamente na pr\u00f3xima reinicializa\u00e7\u00e3o do servidor.

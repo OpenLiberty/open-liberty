@@ -121,8 +121,8 @@ public class TokenValidationTests extends CommonAnnotatedSecurityTests {
         deployMyApps();
 
         // Wait to ensure LTPA configuration has completed before starting tests
-        opServer.waitForStringInLog("CWWKS4105I");
-        rpServer.waitForStringInLog("CWWKS4105I");
+        opServer.waitForLTPAConfigReady();
+        rpServer.waitForLTPAConfigReady();
 
     }
 

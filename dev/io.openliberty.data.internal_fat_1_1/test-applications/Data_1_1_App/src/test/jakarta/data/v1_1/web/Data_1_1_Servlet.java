@@ -1586,6 +1586,7 @@ public class Data_1_1_Servlet extends FATServlet {
 
     /**
      * Use a NativeQuery method that selects multiple entities as a list.
+     * Also covers a NativeQuery that has no parameters.
      */
     @Test
     public void testNativeQueryReturnsListOfEntities() {
@@ -1650,6 +1651,94 @@ public class Data_1_1_Servlet extends FATServlet {
     public void testNativeQuerySelectsCount() {
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
                      fractions.numReducedWithDenominatorOf(18, true));
+    }
+
+    /**
+     * Use a NativeQuery method that executes a SQL query with named parameters,
+     * where the named parameter names are implied from the method parameter names.
+     */
+    @Test
+    public void testNativeQueryWithImplicitNamedParameters() {
+        // Relies on optional capability where Hibernate provides named parameters
+        // for SQL queries
+        if (isHibernatePersistence()) {
+            Fraction fiveTwelfths = fractions.ifReduced(true, 5, 12)
+                            .orElseThrow();
+            assertEquals(5,
+                         fiveTwelfths.numerator);
+            assertEquals(12,
+                         fiveTwelfths.denominator);
+            assertEquals("Five Twelfths",
+                         fiveTwelfths.name);
+            assertEquals(true,
+                         fiveTwelfths.reduced);
+            // TODO would require Hibernate support for
+            // @QueryOptions(entityGraph = "EagerlyLoadRoundedValues")
+            // on native queries
+            //assertEquals(List.of(BigDecimal.valueOf(400, 3),
+            //                     BigDecimal.valueOf(420, 3),
+            //                     BigDecimal.valueOf(417, 3)),
+            //             fiveTwelfths.rounded);
+            assertEquals(BigDecimal.valueOf(4167, 4),
+                         fiveTwelfths.decimal.ceiling());
+            assertEquals(BigDecimal.valueOf(4166, 4),
+                         fiveTwelfths.decimal.truncated());
+            assertEquals(5.0 / 12.0,
+                         fiveTwelfths.decimal.value(),
+                         0.0001);
+            assertEquals(2.4,
+                         fiveTwelfths.decimal.inverse(),
+                         0.0001);
+            assertEquals("41",
+                         fiveTwelfths.decimal.digits().nonrepeating());
+            assertEquals("6",
+                         fiveTwelfths.decimal.digits().repeating());
+        }
+    }
+
+    /**
+     * Use a NativeQuery method that executes a SQL query with some method
+     * parameters correponding to named parameters and another being a special
+     * parameter of type Limit.
+     */
+    @Test
+    public void testNativeQueryWithNamedAndSpecialParameters() {
+        // Relies on optional capability where Hibernate provides named parameters
+        // for SQL queries
+        if (isHibernatePersistence())
+            assertEquals(List.of("Eight Elevenths",
+                                 "Eight Fifteenths",
+                                 "Eight Nineteenths",
+                                 "Eight Ninths",
+                                 "Eight Seventeenths",
+                                 "Eight Thirteenths",
+                                 "Eighteen Nineteenths",
+                                 "Eleven Eighteenths",
+                                 "Eleven Fifteenths"),
+                         fractions.alphabetized(true, Limit.of(9)));
+    }
+
+    /**
+     * Use a NativeQuery method that executes a SQL query with named parameters,
+     * where the named parameter names are indicted by the Param annotation of each
+     * method parameter.
+     */
+    @Test
+    public void testNativeQueryWithNamedParameters() {
+        // Relies on optional capability where Hibernate provides named parameters
+        // for SQL queries
+        if (isHibernatePersistence())
+            assertEquals(List.of("Nine Eighteenths",
+                                 "Nine Fifteenths",
+                                 "Nine Fourteenths",
+                                 "Nine Nineteenths",
+                                 "Nine Seventeenths",
+                                 "Nine Sixteenths",
+                                 "Nine Thirteenths"),
+                         Stream.of(fractions.withNamePattern("Nine ",
+                                                             "teenths"))
+                                         .map(f -> f.name)
+                                         .toList());
     }
 
     /**
@@ -1865,9 +1954,9 @@ public class Data_1_1_Servlet extends FATServlet {
                 tx.setTransactionTimeout((int) TIMEOUT_S * 3);
                 tx.begin();
                 boolean found = fractions.change(BigDecimal.valueOf(1880, 4),
-                                 BigDecimal.valueOf(1870, 4),
-                                 3,
-                                 16);
+                                                 BigDecimal.valueOf(1870, 4),
+                                                 3,
+                                                 16);
                 System.out.println("Obtained lock on 3/16");
                 locked.countDown();
                 blocked.await(TIMEOUT_S * 2, TimeUnit.SECONDS);

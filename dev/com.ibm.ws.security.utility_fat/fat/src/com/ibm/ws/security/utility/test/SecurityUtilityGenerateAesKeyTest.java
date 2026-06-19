@@ -443,14 +443,7 @@ public class SecurityUtilityGenerateAesKeyTest {
 		testServer.startServer(testName.getMethodName());
 
 		// Verify startup log contains LTPA initialization
-		String logOutput = testServer.waitForStringInLogUsingMark("CWWKS4105I", 5000);
-		if (logOutput == null) {
-			Log.info(thisClass, testName.getMethodName(), "LTPA ready not found, aesConfigFile contents: "
-					+ readStringUsingBufferedReader(new File(aesConfigFile).toPath()));
-		}
-
-		assertNotNull("Expected LTPA configuration ready message not found in the log.", logOutput);
-
+		testServer.waitForLTPAConfigReady(5000);
 		// Verify startup log contains the keystore loaded successfully message
 		assertNotNull("Expected Keystore loaded message not found in the log.",
 				testServer.waitForStringInLogUsingMark("Successfully loaded default keystore", 5000));

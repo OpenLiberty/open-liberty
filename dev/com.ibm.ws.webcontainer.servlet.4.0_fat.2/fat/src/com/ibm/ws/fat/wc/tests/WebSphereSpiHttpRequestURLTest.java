@@ -56,7 +56,7 @@ public class WebSphereSpiHttpRequestURLTest {
         server.installSystemFeature("webcontainerlibertyinternals");
         server.startServer(WebSphereSpiHttpRequestURLTest.class.getSimpleName() + ".log");
 
-        String tcpChannelMessage = server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint");
+        String tcpChannelMessage = server.waitForDefaultHTTPEndpointStart();
         runningNetty = tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);
         LOG.info("Running Netty? " + runningNetty);
 

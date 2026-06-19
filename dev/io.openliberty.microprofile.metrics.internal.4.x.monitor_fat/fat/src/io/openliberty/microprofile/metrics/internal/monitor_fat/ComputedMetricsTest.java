@@ -575,16 +575,15 @@ public class ComputedMetricsTest {
         }
     }
 
-    private void waitForSecurityPrerequisites(LibertyServer server, int timeout) {
+    private void waitForSecurityPrerequisites(LibertyServer server, int timeout) throws Exception {
         // We only need to wait for LTPA keys if this is the first time using this server.
        if (initialServerStart) {
-            // Need to ensure LTPA keys and configuration are created before hitting a secure endpoint.
-            Assert.assertNotNull("LTPA keys are not created within timeout period of " + timeout + "ms.", server.waitForStringInLog("CWWKS4104A", timeout));
-            Assert.assertNotNull("LTPA configuration is not ready within timeout period of " + timeout + "ms.", server.waitForStringInLog("CWWKS4105I", timeout));
+           // Need to ensure LTPA configuration is ready before hitting a secure endpoint.
+           server.waitForLTPAConfigReady(timeout);
        }
 
         // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", timeout));
+        server.waitForDefaultHTTPEndpointSSLStart(timeout);
     }
 
     private String getHttpServlet(String servletPath, LibertyServer server) throws Exception {

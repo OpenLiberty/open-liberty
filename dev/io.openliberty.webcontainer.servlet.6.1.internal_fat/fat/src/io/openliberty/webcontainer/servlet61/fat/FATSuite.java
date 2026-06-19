@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -16,6 +16,7 @@ import org.junit.runners.Suite.SuiteClasses;
 
 import com.ibm.ws.fat.util.FatLogHandler;
 
+import io.openliberty.webcontainer.servlet61.fat.tests.ServiceAcceptLanguageTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61AddAndSetHeaderTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61CharsetEncodingTest;
 import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61DispatcherErrorMethodAttributeTest;
@@ -50,7 +51,8 @@ import io.openliberty.webcontainer.servlet61.fat.tests.Servlet61SetCookieRandomA
     Servlet61ResponseSendRedirectTest.class,
     Servlet61SetCookieRandomAttributes.class,
     Servlet61SecureProtocolTLSDefaultAttributeTest.class,
-    Servlet61SecureProtocolTLSv1_2AttributeTest.class
+    Servlet61SecureProtocolTLSv1_2AttributeTest.class,
+    ServiceAcceptLanguageTest.class
 })
 public class FATSuite {
     /**

@@ -46,6 +46,7 @@ import jakarta.data.repository.Is;
 import jakarta.data.repository.JakartaQuery; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.NativeQuery; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.QueryOptions; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.Repository;
@@ -58,6 +59,15 @@ import jakarta.persistence.LockModeType;
  */
 @Repository(dataStore = "MyDataStore")
 public interface Fractions {
+
+    @NativeQuery("""
+                    SELECT name
+                      FROM Fraction
+                     WHERE reduced = :isReduced
+                     ORDER BY name ASC
+                    """)
+    List<String> alphabetized(@Param("isReduced") boolean reduced,
+                              Limit limit);
 
     @Find
     @First(10)
@@ -154,6 +164,17 @@ public interface Fractions {
     Stream<Fraction> havingDenominatorWithin//
     (@By(_Fraction.DENOMINATOR) @Is(AtLeast.class) long min,
      @By(_Fraction.DENOMINATOR) @Is(AtMost.class) long max);
+
+    @NativeQuery("""
+                    SELECT *
+                      FROM Fraction
+                     WHERE reduced = :reduced
+                       AND numerator = :numerator
+                       AND denominator = :denominator
+                    """)
+    Optional<Fraction> ifReduced(boolean reduced,
+                                 int numerator,
+                                 int denominator);
 
     @Find
     @Select(_Fraction.NAME)
@@ -296,6 +317,16 @@ public interface Fractions {
     (@By(_Fraction.NAME) @Is(Like.class) String pattern,
      Restriction<Fraction> filter,
      Order<Fraction> order);
+
+    @NativeQuery("""
+                    SELECT *
+                      FROM Fraction
+                     WHERE name LIKE CONCAT('%', :nameSuffix)
+                       AND name LIKE CONCAT(:namePrefix, '%')
+                     ORDER BY name
+                    """)
+    Fraction[] withNamePattern(@Param("namePrefix") String prefix,
+                               @Param("nameSuffix") String suffix);
 
     @Find
     @Select(_Fraction.NAME)

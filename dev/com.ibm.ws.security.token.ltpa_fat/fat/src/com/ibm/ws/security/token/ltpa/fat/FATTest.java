@@ -428,8 +428,7 @@ public class FATTest {
         assertNotNull("The application did not report is was started",
                       server.waitForStringInLog("CWWKZ0001I"));
         // Wait for the LTPA configuration to be ready
-        assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
     }
 
     /**

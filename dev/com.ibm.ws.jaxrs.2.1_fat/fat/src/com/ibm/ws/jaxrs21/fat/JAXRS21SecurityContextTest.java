@@ -65,7 +65,7 @@ public class JAXRS21SecurityContextTest {
             assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
             assertNotNull("The Security Service should be ready", server.waitForStringInLog("CWWKS0008I"));
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
-            assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
+            assertNotNull("LTPA configuration should report it is ready", server.waitForLTPAConfigReady(true));
         } catch (Exception e) {
             System.out.println(e.toString());
         }

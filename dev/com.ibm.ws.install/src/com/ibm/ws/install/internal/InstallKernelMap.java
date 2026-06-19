@@ -1495,7 +1495,7 @@ public class InstallKernelMap implements Map {
         try {
             Properties properties = RepositoryConfigUtils.loadRepoProperties();
 
-            if (workingRepos.isEmpty()) {
+            if (workingRepos.isEmpty() ) {
                 if (RepositoryConfigUtils.isWlpRepoEnabled(properties)) {
                     workingRepos.add(MAVEN_CENTRAL_REPOSITORY);
                 } else {
