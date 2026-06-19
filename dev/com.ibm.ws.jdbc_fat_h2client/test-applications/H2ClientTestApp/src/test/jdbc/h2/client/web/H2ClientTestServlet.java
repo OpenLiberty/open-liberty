@@ -149,44 +149,45 @@ public class H2ClientTestServlet extends FATServlet {
 
             con1.setAutoCommit(false);
 
-            // Insert a new planet in con1's uncommitted transaction
-            try (PreparedStatement ps = con1.prepareStatement(
-                         "INSERT INTO PLANETS VALUES (?, ?, ?)")) {
-                ps.setString(1, "Jupiter");
-                ps.setInt(2, 71492);
-                ps.setDouble(3, 4332.589);
-                ps.executeUpdate();
-            }
-
-            // con2 must not see con1's uncommitted row
-            try (PreparedStatement ps = con2.prepareStatement(
-                         "SELECT COUNT(*) FROM PLANETS WHERE NAME=?")) {
-                ps.setString(1, "Jupiter");
-                try (ResultSet rs = ps.executeQuery()) {
-                    rs.next();
-                    assertEquals("con2 must not see con1's uncommitted INSERT",
-                                 0, rs.getInt(1));
+            try {
+                // Insert a new planet in con1's uncommitted transaction
+                try (PreparedStatement ps = con1.prepareStatement(
+                             "INSERT INTO PLANETS VALUES (?, ?, ?)")) {
+                    ps.setString(1, "Jupiter");
+                    ps.setInt(2, 71492);
+                    ps.setDouble(3, 4332.589);
+                    ps.executeUpdate();
                 }
-            }
 
-            con1.commit();
-
-            // After commit, con2 must see the row
-            try (PreparedStatement ps = con2.prepareStatement(
-                         "SELECT COUNT(*) FROM PLANETS WHERE NAME=?")) {
-                ps.setString(1, "Jupiter");
-                try (ResultSet rs = ps.executeQuery()) {
-                    rs.next();
-                    assertEquals("con2 must see con1's committed INSERT",
-                                 1, rs.getInt(1));
+                // con2 must not see con1's uncommitted row
+                try (PreparedStatement ps = con2.prepareStatement(
+                             "SELECT COUNT(*) FROM PLANETS WHERE NAME=?")) {
+                    ps.setString(1, "Jupiter");
+                    try (ResultSet rs = ps.executeQuery()) {
+                        rs.next();
+                        assertEquals("con2 must not see con1's uncommitted INSERT",
+                                     0, rs.getInt(1));
+                    }
                 }
-            }
 
-            // Clean up
-            try (Statement stmt = con1.createStatement()) {
-                stmt.executeUpdate("DELETE FROM PLANETS WHERE NAME='Jupiter'");
+                con1.commit();
+
+                // After commit, con2 must see the row
+                try (PreparedStatement ps = con2.prepareStatement(
+                             "SELECT COUNT(*) FROM PLANETS WHERE NAME=?")) {
+                    ps.setString(1, "Jupiter");
+                    try (ResultSet rs = ps.executeQuery()) {
+                        rs.next();
+                        assertEquals("con2 must see con1's committed INSERT",
+                                     1, rs.getInt(1));
+                    }
+                }
+            } finally {
+                try (Statement stmt = con1.createStatement()) {
+                    stmt.executeUpdate("DELETE FROM PLANETS WHERE NAME='Jupiter'");
+                }
+                con1.commit();
             }
-            con1.commit();
         }
     }
 }
