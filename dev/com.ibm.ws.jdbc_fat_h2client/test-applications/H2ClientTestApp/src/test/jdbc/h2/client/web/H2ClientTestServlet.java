@@ -57,6 +57,8 @@ public class H2ClientTestServlet extends FATServlet {
     @Resource(lookup = "jdbc/H2XADataSource")
     DataSource h2xaDataSource;
 
+    record Planet(String name, int radiusKm, double orbitDays) {}
+
     /**
      * Create the PLANETS table and populate initial rows.
      */
@@ -73,16 +75,16 @@ public class H2ClientTestServlet extends FATServlet {
                             """);
             String insert = "INSERT INTO PLANETS VALUES (?, ?, ?)";
             try (PreparedStatement ps = con.prepareStatement(insert)) {
-                Object[][] rows = {
-                    { "Mercury", 2440,  87.969  },
-                    { "Venus",   6052,  224.701 },
-                    { "Earth",   6371,  365.256 },
-                    { "Mars",    3390,  686.971 },
+                Planet[] planets = {
+                    new Planet("Mercury", 2440,  87.969),
+                    new Planet("Venus",   6052, 224.701),
+                    new Planet("Earth",   6371, 365.256),
+                    new Planet("Mars",    3390, 686.971),
                 };
-                for (Object[] row : rows) {
-                    ps.setString(1, (String) row[0]);
-                    ps.setInt(2, (Integer) row[1]);
-                    ps.setDouble(3, (Double) row[2]);
+                for (Planet p : planets) {
+                    ps.setString(1, p.name());
+                    ps.setInt(2, p.radiusKm());
+                    ps.setDouble(3, p.orbitDays());
                     ps.addBatch();
                 }
                 ps.executeBatch();
@@ -160,10 +162,11 @@ public class H2ClientTestServlet extends FATServlet {
             try (PreparedStatement ps = con2.prepareStatement(
                          "SELECT COUNT(*) FROM PLANETS WHERE NAME=?")) {
                 ps.setString(1, "Jupiter");
-                ResultSet rs = ps.executeQuery();
-                rs.next();
-                assertEquals("con2 must not see con1's uncommitted INSERT",
-                             0, rs.getInt(1));
+                try (ResultSet rs = ps.executeQuery()) {
+                    rs.next();
+                    assertEquals("con2 must not see con1's uncommitted INSERT",
+                                 0, rs.getInt(1));
+                }
             }
 
             con1.commit();
@@ -172,10 +175,11 @@ public class H2ClientTestServlet extends FATServlet {
             try (PreparedStatement ps = con2.prepareStatement(
                          "SELECT COUNT(*) FROM PLANETS WHERE NAME=?")) {
                 ps.setString(1, "Jupiter");
-                ResultSet rs = ps.executeQuery();
-                rs.next();
-                assertEquals("con2 must see con1's committed INSERT",
-                             1, rs.getInt(1));
+                try (ResultSet rs = ps.executeQuery()) {
+                    rs.next();
+                    assertEquals("con2 must see con1's committed INSERT",
+                                 1, rs.getInt(1));
+                }
             }
 
             // Clean up
