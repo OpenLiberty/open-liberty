@@ -53,8 +53,7 @@
     <properties url="jdbc:h2:tcp://localhost:${h2TcpPort}/./testdb" user="dbuser1" password="dbpwd1"/>
   </dataSource>
 
-  <dataSource jndiName="jdbc/H2XADataSource"
-              type="javax.sql.XADataSource">
+  <dataSource jndiName="jdbc/H2XADataSource">
     <jdbcDriver libraryRef="H2Lib"/>
     <properties url="jdbc:h2:tcp://localhost:${h2TcpPort}/./testdb" user="dbuser1" password="dbpwd1"/>
   </dataSource>

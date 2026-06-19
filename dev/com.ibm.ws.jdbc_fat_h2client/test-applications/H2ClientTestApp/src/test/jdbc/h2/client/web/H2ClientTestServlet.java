@@ -54,13 +54,11 @@ public class H2ClientTestServlet extends FATServlet {
     DataSource h2driverDataSource;
 
     /** Backed by H2 XADataSource via TCP */
-    @Resource(lookup = "jdbc/H2XADataSource", shareable = false)
+    @Resource(lookup = "jdbc/H2XADataSource")
     DataSource h2xaDataSource;
 
     /**
      * Create the PLANETS table and populate initial rows.
-     * The table must not exist beforehand; an error here indicates a problem
-     * with server or test setup (stale state from a previous run, etc.).
      */
     @Override
     public void init(ServletConfig config) throws ServletException {
@@ -94,14 +92,6 @@ public class H2ClientTestServlet extends FATServlet {
         }
     }
 
-    // -------------------------------------------------------------------------
-    // Smoke tests — one assert each, one per JDBC interface type
-    // -------------------------------------------------------------------------
-
-    /**
-     * Smoke test: ConnectionPoolDataSource TCP path.
-     * Verifies a basic TCP connection can be established and the catalog is correct.
-     */
     @Test
     public void testConnectionPoolDataSource() throws Exception {
         try (Connection con = h2cpDataSource.getConnection()) {
@@ -109,10 +99,6 @@ public class H2ClientTestServlet extends FATServlet {
         }
     }
 
-    /**
-     * Smoke test: DataSource TCP path.
-     * Verifies a basic TCP connection can be established and the catalog is correct.
-     */
     @Test
     public void testDataSource() throws Exception {
         try (Connection con = h2DataSource.getConnection()) {
@@ -120,10 +106,6 @@ public class H2ClientTestServlet extends FATServlet {
         }
     }
 
-    /**
-     * Smoke test: Driver TCP path.
-     * Verifies a basic TCP connection can be established and the catalog is correct.
-     */
     @Test
     public void testDriver() throws Exception {
         try (Connection con = h2driverDataSource.getConnection()) {
@@ -131,20 +113,12 @@ public class H2ClientTestServlet extends FATServlet {
         }
     }
 
-    /**
-     * Smoke test: XADataSource TCP path.
-     * Verifies a basic TCP connection can be established and the catalog is correct.
-     */
     @Test
     public void testXADataSource() throws Exception {
         try (Connection con = h2xaDataSource.getConnection()) {
             assertEquals("TESTDB", con.getCatalog());
         }
     }
-
-    // -------------------------------------------------------------------------
-    // TCP-unique tests
-    // -------------------------------------------------------------------------
 
     /**
      * Verifies the DatabaseMetaRemote TCP path returns correct values for
