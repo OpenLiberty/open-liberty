@@ -1006,12 +1006,14 @@ public class LTPAKeyRotationTests {
         String cookie1 = flClient1.getCookieFromLastLogin();
         assertNotNull("Expected SSO Cookie 1 is missing.", cookie1);
 
+        // Set log mark to wait for correct LTPA ready message after replacement
+        moveLogMark();
+
         // Replace the primary key with a different valid key
         renameFileIfExists(VALIDATION_KEY2_PATH, DEFAULT_KEY_PATH, true);
 
         // Wait for the LTPA configuration to be ready after the change
-        assertNotNull("Expected LTPA configuration ready message not found in the log.",
-                      server.waitForStringInLog("CWWKS4105I", 5000));
+        waitForLTPAConfigurationReadyMessage();
 
         // Attempt to access the simple servlet again with the same cookie and assert it fails and the server needs to login again
         assertTrue("An invalid cookie should result in authorization challenge",
