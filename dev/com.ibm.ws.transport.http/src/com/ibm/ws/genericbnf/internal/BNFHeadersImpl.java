@@ -2925,6 +2925,15 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     }
 
     /**
+     * Get whether parsed headers should reject obsolete line folding.
+     *
+     * @param flag
+     */
+    final protected boolean isRejectHeaderLineFolding() {
+        return this.rejectHeaderLineFolding;
+    }
+
+    /**
      * Check the input header value for validity, starting at the offset and
      * continuing for the input length of characters.
      *
