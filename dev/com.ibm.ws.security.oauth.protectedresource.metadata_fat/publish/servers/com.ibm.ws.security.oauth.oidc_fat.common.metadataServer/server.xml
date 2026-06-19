@@ -1,0 +1,105 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+    <!-- 
+        FEATURES:
+        - openidConnectClient-1.0: Required for OIDC client configuration and metadata endpoint
+        - servlet-3.1: Required to deploy the formlogin.war test application
+        - ssl-1.0: Required for HTTPS endpoints (metadata endpoint uses HTTPS)
+        - appSecurity-2.0: Required for form-based authentication in test app
+    -->
+    <featureManager>
+        <feature>openidConnectClient-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>ssl-1.0</feature>
+        <feature>appSecurity-2.0</feature>
+    </featureManager>
+
+    <!-- 
+        BASIC REGISTRY:
+        Simple user registry for test authentication. Not directly related to metadata
+        endpoint, but needed for the formlogin app to authenticate users.
+    -->
+    <basicRegistry id="basic" realm="BasicRealm">
+        <user name="testuser" password="testuserpwd" />
+        <user name="user1" password="user1pwd" />
+    </basicRegistry>
+
+    <!--
+        SSL CONFIGURATION:
+        Includes keystores and SSL settings. Required because:
+        1. The metadata endpoint is served over HTTPS
+        2. The issuerIdentifier uses HTTPS URLs
+    -->
+    <include location="imports/goodSSLSettings.xml" />
+
+    <!--
+        PORT CONFIGURATION:
+        Defines HTTP/HTTPS ports for the test server. Required for all HTTP communication.
+        This file is copied from the common project during the build.
+    -->
+    <include location="imports/fatTestPorts.xml" />
+
+    <!-- 
+        OIDC CLIENT CONFIGURATION:
+        This is the core configuration that enables the metadata endpoint.
+        
+        Key attributes explained:
+        - id: Unique identifier for this OIDC client config
+        - issuerIdentifier: THE CRITICAL FIELD - this is what gets returned in the 
+          metadata's "authorization_servers" array. Must be an issuer identifier (not an endpoint URL).
+        - authFilterRef: Links to the authFilter that defines which URLs are protected.
+          The metadata resolver uses this to match incoming metadata requests to the correct config.
+        
+        Note: clientId, authorizationEndpointUrl, tokenEndpointUrl are NOT used by the metadata
+        endpoint itself, but are required by the openidConnectClient configuration schema.
+    -->
+    <openidConnectClient
+        id="OidcConfigSample"
+        clientId="client01"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilter1"
+    />
+
+    <!-- 
+        AUTHENTICATION FILTER:
+        Defines which URL patterns are protected by the OIDC client.
+        
+        The metadata resolver calls authFilter.getRequestUrlPatterns() to check if a requested
+        path (e.g., "/formlogin/SimpleServlet") matches this filter. If it matches, the metadata
+        endpoint returns metadata for this resource.
+        
+        matchType="equals" means exact string matching (no wildcards).
+    -->
+    <authFilter id="authFilter1">
+        <requestUrl
+            id="requestUrl1"
+            urlPattern="/formlogin/SimpleServlet"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        FORMLOGIN APPLICATION:
+        Test application that contains the SimpleServlet at /formlogin/SimpleServlet.
+        This is the protected resource that the metadata endpoint describes.
+        
+        The application configuration is copied from the common project during the build.
+    -->
+    <include location="imports/formlogin_1.xml" />
+
+</server>
+
+<!-- Made with Bob -->

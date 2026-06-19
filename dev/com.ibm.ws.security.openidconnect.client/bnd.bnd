@@ -40,10 +40,10 @@ instrument.classesExcludes: com/ibm/ws/security/openidconnect/client/internal/re
 
 Export-Package: \
    com.ibm.ws.security.openidconnect.client;provide:=true, \
-   com.ibm.ws.security.openidconnect.client.jose4j
+   com.ibm.ws.security.openidconnect.client.jose4j, \
+   com.ibm.ws.security.openidconnect.client.internal
 
 Private-Package: \
-    com.ibm.ws.security.openidconnect.client.internal.*, \
     com.ibm.ws.security.openidconnect.client.web
 
 Import-Package: \
