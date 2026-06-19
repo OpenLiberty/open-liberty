@@ -9,18 +9,16 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import io.openliberty.mcp.internal.Capabilities.ClientCapabilities;
+import java.util.Map;
 
 /**
  *
  */
 public class McpInitializeParams {
 
-    public static record ClientInfo(String name, String title, String version) {}
-
     private String protocolVersion;
-    private ClientCapabilities capabilities;
-    private ClientInfo clientInfo;
+    private Map<String, Object> capabilities;
+    private ImplementationInfoImpl clientInfo;
 
     public String getProtocolVersion() {
         return protocolVersion;
@@ -30,19 +28,19 @@ public class McpInitializeParams {
         this.protocolVersion = protocolVersion;
     }
 
-    public ClientCapabilities getCapabilities() {
+    public Map<String, Object> getCapabilities() {
         return capabilities;
     }
 
-    public void setCapabilities(ClientCapabilities capabilities) {
+    public void setCapabilities(Map<String, Object> capabilities) {
         this.capabilities = capabilities;
     }
 
-    public ClientInfo getClientInfo() {
+    public ImplementationInfoImpl getClientInfo() {
         return clientInfo;
     }
 
-    public void setClientInfo(ClientInfo clientInfo) {
+    public void setClientInfo(ImplementationInfoImpl clientInfo) {
         this.clientInfo = clientInfo;
     }
 }

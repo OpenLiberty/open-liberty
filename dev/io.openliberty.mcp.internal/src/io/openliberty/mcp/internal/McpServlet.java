@@ -580,15 +580,15 @@ public class McpServlet extends HttpServlet {
         traceEvent("Client initializing: " + params.getClientInfo(), params.getCapabilities());
         Principal userId = transport.getUser();
 
-        McpSessionId sessionId = sessionStores.getCurrent().createSession(userId, sessionMetrics);
+        McpSession session = sessionStores.getCurrent().createSession(userId, sessionMetrics, params.getClientInfo(), params.getCapabilities());
         sessionMetrics.setTransport(transport);
 
         ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
         ServerInfo info = mcpConfig.serverInfo();
         McpInitializeResult result = new McpInitializeResult(version, caps, info, null);
 
-        if (sessionId != null) {
-            transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId.value());
+        if (session != null) {
+            transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, session.getSessionId().value());
         }
         sendSuccessResponseAndEndMetrics(transport, result, operationMetrics);
     }

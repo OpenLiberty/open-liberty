@@ -49,8 +49,7 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public ImplementationInfo clientInfo() {
-        // TODO: store and retrieve from session/request
-        return null;
+        return session.getClientInfo();
     }
 
     @Override
@@ -65,8 +64,7 @@ public class McpRequestImpl implements McpRequest {
 
     @Override
     public Map<String, Object> rawClientCapabilities() {
-        // TODO: store and retrieve from session/request
-        return null;
+        return session.getClientCapabilities();
     }
 
     @Override

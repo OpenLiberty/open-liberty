@@ -9,30 +9,18 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 import org.mcpjava.server.Icon;
 
-import jakarta.json.bind.annotation.JsonbTypeDeserializer;
-import jakarta.json.bind.annotation.JsonbTypeSerializer;
-import jakarta.json.bind.serializer.DeserializationContext;
-import jakarta.json.bind.serializer.JsonbDeserializer;
-import jakarta.json.bind.serializer.JsonbSerializer;
-import jakarta.json.bind.serializer.SerializationContext;
-import jakarta.json.stream.JsonGenerator;
-import jakarta.json.stream.JsonParser;
-import jakarta.json.stream.JsonParser.Event;
+import jakarta.json.bind.adapter.JsonbAdapter;
 
 /**
  * Record implementation of {@link Icon}
  */
-@JsonbTypeSerializer(IconImpl.Serializer.class)
-@JsonbTypeDeserializer(IconImpl.Deserializer.class)
 public record IconImpl(String src, String mimeTypeValue, List<String> sizes, Theme themeValue) implements Icon {
 
     public IconImpl {
@@ -112,54 +100,32 @@ public record IconImpl(String src, String mimeTypeValue, List<String> sizes, The
         }
     }
 
-    public static class Serializer implements JsonbSerializer<IconImpl> {
-
-        @Override
-        public void serialize(IconImpl icon, JsonGenerator json, SerializationContext ctx) {
-            json.writeStartObject();
-            json.write("src", icon.src());
-            icon.mimeType().ifPresent(m -> json.write("mimeType", m));
-            if (!icon.sizes().isEmpty()) {
-                json.writeStartArray();
-                icon.sizes().forEach(size -> json.write(size));
-                json.writeEnd();
-            }
-            icon.theme().map(t -> json.write("theme", t.name().toLowerCase()));
-            json.writeEnd();
-        }
+    public static class IconTO {
+        public String src;
+        public String mimeType;
+        public List<String> sizes;
+        public String theme;
     }
 
-    public static class Deserializer implements JsonbDeserializer<IconImpl> {
+    public static class Adapter implements JsonbAdapter<Icon, IconTO> {
 
         @Override
-        public IconImpl deserialize(JsonParser parser, DeserializationContext ctx, Type type) {
-            String src = null;
-            String mimeType = null;
-            List<String> sizes = Collections.emptyList();
-            Theme theme = null;
-            String expectKey = null;
+        public Icon adaptFromJson(IconTO to) throws Exception {
+            return new IconImpl(to.src,
+                                to.mimeType,
+                                to.sizes,
+                                to.theme == null ? null : Theme.valueOf(to.theme.toUpperCase()));
+        }
 
-            while (parser.hasNext()) {
-                Event event = parser.next();
-                if (expectKey == null) {
-                    if (event != Event.KEY_NAME) {
-                        throw new IllegalStateException();
-                    }
-                    expectKey = parser.getString();
-                } else {
-                    switch (expectKey) {
-                        case "src" -> src = parser.getString();
-                        //case "sizes" -> sizes = ctx.deserialize(type, parser)
-                        case "mimeType" -> mimeType = parser.getString();
-                        case "theme" -> theme = Theme.valueOf(parser.getString().toUpperCase());
-                        default -> { // Do nothing
-                        }
-                    }
-                    expectKey = null;
-                }
-            }
-
-            return new IconImpl(src, mimeType, sizes, theme);
+        @Override
+        public IconTO adaptToJson(Icon icon) throws Exception {
+            IconImpl obj = (IconImpl) icon;
+            IconTO result = new IconTO();
+            result.src = obj.src;
+            result.mimeType = obj.mimeTypeValue;
+            result.sizes = obj.sizes;
+            result.theme = obj.themeValue == null ? null : obj.themeValue.name().toLowerCase();
+            return result;
         }
 
     }

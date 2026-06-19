@@ -40,6 +40,8 @@ import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
+import io.openliberty.mcp.internal.requests.IconImpl;
+import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
@@ -88,7 +90,9 @@ public class McpCdiExtension implements Extension {
     private static Jsonb createJsonb() {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer(), new TextContentImpl.Serializer(), new ToolResponseImpl.Serializer())
                                                    .withDeserializers(new McpRequestIdDeserializer())
-                                                   .withAdapters(new RoleAdapter());
+                                                   .withAdapters(new RoleAdapter(),
+                                                                 new ImplementationInfoImpl.Adapter(),
+                                                                 new IconImpl.Adapter());
 
         return JsonbBuilder.create(jsonbConfig);
     }
