@@ -10,6 +10,7 @@
 package http2.test.driver.war.servlets;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
@@ -23,6 +24,7 @@ import com.ibm.ws.http.channel.h2internal.frames.FrameSettings;
 import com.ibm.ws.http.channel.h2internal.hpack.H2HeaderField;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants;
 import com.ibm.ws.http2.test.Http2Client;
+import com.ibm.ws.http2.test.exceptions.ConnectionNotClosedAfterGoAwayException;
 import com.ibm.ws.http2.test.frames.FrameHeadersClient;
 import com.ibm.ws.http2.test.helpers.HeaderEntry;
 
@@ -51,7 +53,7 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 41, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        // Set initial window size to 1024 bytes (at the lowWindowLimit threshold)
+        // Set initial window size to 1024 bytes
         // This will cause all new streams to be counted as "low window" streams
         FrameSettings lowWindowSettings = new FrameSettings(0, -1, -1, -1, 1024, -1, -1, false);
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI, lowWindowSettings);
@@ -62,9 +64,7 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
         headersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         headersToSend.add(new HeaderEntry(new H2HeaderField(":path", LARGE_RESPONSE_URI + "?sizeKB=2"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
 
-        // Open 101 streams (stream 1 is the upgrade, so we start at stream 3)
-        // The 101st stream should trigger the GOAWAY
-        for (int i = 3; i <= 203; i += 2) {
+        for (int i = 3; i <= 43; i += 2) {
             FrameHeadersClient frameHeaders = new FrameHeadersClient(i, null, 0, 0, 0, true, true, false, false, false, false);
             frameHeaders.setHeaderEntries(headersToSend);
             h2Client.sendFrame(frameHeaders);
@@ -329,6 +329,14 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
         h2Client.sendFrame(lowWindowSettings);
 
         blockUntilConnectionIsDone.await();
+        // For this test, there may still be data in flight for the responses which the client takes as an
+        // error of ConnectionNotClosedAfterGoAwayException. If the exception occurs, we will tolerate it
+        Iterator iter = h2Client.getReportedExceptions().iterator();
+        while (iter.hasNext()) {
+            if (iter.next() instanceof ConnectionNotClosedAfterGoAwayException) {
+                iter.remove();
+            }
+        }
         this.handleErrors(h2Client, testName);
     }
 
@@ -347,23 +355,31 @@ public class LowWindowStreamTests extends H2FATDriverServlet {
         FrameGoAway errorFrame = new FrameGoAway(0, debugData, ENHANCE_YOUR_CALM_ERROR, 41, false);
         h2Client.addExpectedFrame(errorFrame);
 
-        // Set initial window size to exactly 1024 bytes (at the threshold)
-        FrameSettings thresholdWindowSettings = new FrameSettings(0, -1, -1, -1, 1024, -1, -1, false);
+        // Set initial window size to exactly the threshold
+        FrameSettings thresholdWindowSettings = new FrameSettings(0, -1, -1, -1, 16384, -1, -1, false);
         setupDefaultUpgradedConnection(h2Client, HEADERS_ONLY_URI, thresholdWindowSettings);
 
         // Create headers to send for each stream
         List<HeaderEntry> headersToSend = new ArrayList<HeaderEntry>();
         headersToSend.add(new HeaderEntry(new H2HeaderField(":method", "GET"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
         headersToSend.add(new HeaderEntry(new H2HeaderField(":scheme", "http"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
-        headersToSend.add(new HeaderEntry(new H2HeaderField(":path", LARGE_RESPONSE_URI + "?sizeKB=2"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
+        headersToSend.add(new HeaderEntry(new H2HeaderField(":path", LARGE_RESPONSE_URI + "?sizeKB=17"), HpackConstants.LiteralIndexType.NEVERINDEX, false));
 
-        // Open 101 streams with window size = 1024 - should trigger GOAWAY
-        for (int i = 3; i <= 203; i += 2) {
+        // Open over maxLowWindowStreams which should trigger a go away
+        for (int i = 3; i <= 45; i += 2) {
             FrameHeadersClient frameHeaders = new FrameHeadersClient(i, null, 0, 0, 0, true, true, false, false, false, false);
             frameHeaders.setHeaderEntries(headersToSend);
             h2Client.sendFrame(frameHeaders);
         }
         blockUntilConnectionIsDone.await();
+        // For this test, there may still be data in flight for the responses which the client takes as an
+        // error of ConnectionNotClosedAfterGoAwayException. If the exception occurs, we will tolerate it
+        Iterator iter = h2Client.getReportedExceptions().iterator();
+        while (iter.hasNext()) {
+            if (iter.next() instanceof ConnectionNotClosedAfterGoAwayException) {
+                iter.remove();
+            }
+        }
         this.handleErrors(h2Client, testName);
     }
 
