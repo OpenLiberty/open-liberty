@@ -12,9 +12,6 @@
  *******************************************************************************/
 package com.ibm.ejs.container;
 
-import static com.ibm.ejs.container.ContainerConfigConstants.deactivateOnQuiesce;
-import static com.ibm.ejs.container.ContainerConfigConstants.destroyOnQuiesce;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -1631,6 +1628,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
                                               "Synch AfterBegin            = " + ivAfterBegin, // F743-25855
                                               "Synch BeforeCompletion      = " + ivBeforeCompletion, // F743-25855
                                               "Synch AfterCompletion       = " + ivAfterCompletion, // F743-25855
+                                              "Quiesce                     = " + quiesce,
                                               "Application Classloader     = " + classLoader,
                                               "Context class loader        = " + (classLoader == ivContextClassLoader ? "(same)" : ivContextClassLoader)
             };
@@ -2638,9 +2636,9 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
     /**
      * Determines if a message-driven bean should be deactivated during server quiesce. <p>
      *
-     * Based on env-entry property: io.openliberty.ejb.deactivateOnQuiesce.<bean name>.
-     * The value may be specified in ejb-jar.xml, ibm-*-bnd.xml, or server.xml; all
-     * using the env-entry element. ibm-*-bnd.xml overrides ejb-jar.xml, and server.xml
+     * Based on env-entry property: io.openliberty.ejb.deactivateOnQuiesce.
+     * The value may be specified in ejb-jar.xml, ibm-ejb-jar-bnd.xml, or server.xml; all
+     * using the env-entry element. ibm-ejb-jar-bnd.xml overrides ejb-jar.xml, and server.xml
      * overrides both. <p>
      *
      * Default is true.
@@ -2648,39 +2646,22 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
      * @return true if the bean should be deactivated during quiesce, false otherwise
      */
     public boolean isDeactivateOnQuiesce() {
-        // Already determined if value was in ibm-*-bnd.xml or server.xml
         if (quiesce != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "isDeactivateOnQuiesce = " + quiesce + "(configured)");
             return quiesce;
         }
-
-        // Configuring a message-drivenn bean to deactivate on quiesce is done by adding an env-entry
-        // with the following name: io.openliberty.ejb.deactivateOnQuiesce.<bean name>
-        String quiescePropertyName = deactivateOnQuiesce + getJ2EEName().getComponent();
-
-        // The value may come from either ejb-jar.xml or ibm-ejb-jar-bnd.xml, so
-        // use the injection binding, where this has already been resolved.
-        InjectionBinding<?> binding = ivJavaColonCompEnvMap != null ? ivJavaColonCompEnvMap.get(quiescePropertyName) : null;
-
-        if (binding != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "found binding for " + quiescePropertyName);
-            Object injectionObj = binding.getBindingObject();
-            if (injectionObj instanceof Boolean) {
-                return ((Boolean) injectionObj).booleanValue();
-            }
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "binding not found for " + quiescePropertyName);
-        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isDeactivateOnQuiesce = true (default)");
         return true;
     }
 
     /**
      * Determines if a singleton bean should be destroyed during server quiesce. <p>
      *
-     * Based on env-entry property: io.openliberty.ejb.destroyOnQuiesce.<bean name>.
-     * The value may be specified in ejb-jar.xml, ibm-*-bnd.xml, or server.xml; all
-     * using the env-entry element. ibm-*-bnd.xml overrides ejb-jar.xml, and server.xml
+     * Based on env-entry property: io.openliberty.ejb.destroyOnQuiesce.
+     * The value may be specified in ejb-jar.xml, ibm-ejb-jar-bnd.xml, or server.xml; all
+     * using the env-entry element. ibm-ejb-jar-bnd.xml overrides ejb-jar.xml, and server.xml
      * overrides both. <p>
      *
      * Default is false.
@@ -2688,30 +2669,13 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
      * @return true if the bean should be destroyed during quiesce, false otherwise
      */
     public boolean isDestroyOnQuiesce() {
-        // Already determined if value was in ibm-*-bnd.xml or server.xml
         if (quiesce != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "isDestroyOnQuiesce = " + quiesce + "(configured)");
             return quiesce;
         }
-
-        // Configuring a singleton bean to quiesce is done by adding an env-entry
-        // with the following name: io.openliberty.ejb.destroyOnQuiesce.<bean name>
-        String quiescePropertyName = destroyOnQuiesce + getJ2EEName().getComponent();
-
-        // The value may come from either ejb-jar.xml or ibm-ejb-jar-bnd.xml, so
-        // use the injection binding, where this has already been resolved.
-        InjectionBinding<?> binding = ivJavaColonCompEnvMap != null ? ivJavaColonCompEnvMap.get(quiescePropertyName) : null;
-
-        if (binding != null) {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "found binding for " + quiescePropertyName);
-            Object injectionObj = binding.getBindingObject();
-            if (injectionObj instanceof Boolean) {
-                return ((Boolean) injectionObj).booleanValue();
-            }
-        } else {
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "binding not found for " + quiescePropertyName);
-        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isDeactivateOnQuiesce = false (default)");
         return false;
     }
 

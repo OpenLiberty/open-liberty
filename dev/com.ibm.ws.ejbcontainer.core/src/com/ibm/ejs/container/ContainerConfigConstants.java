@@ -1140,7 +1140,7 @@ public class ContainerConfigConstants {
      *
      * <pre>{@code
      *    <env-entry>
-     *        <env-entry-name>io.openliberty.ejb.deactivateOnQuiesce.<bean name></env-entry-name>
+     *        <env-entry-name>io.openliberty.ejb.deactivateOnQuiesce</env-entry-name>
      *        <env-entry-type>java.lang.Boolean</env-entry-type>
      *        <env-entry-value>false</env-entry-value>
      *    </env-entry>
@@ -1153,15 +1153,15 @@ public class ContainerConfigConstants {
      * "@Startup" singleton beans in the application. <p>
      *
      * Since this is a custom environment property, defining the environment entry
-     * with @Resource or <env-entry> in either ejb-jar.xml or web.xml is not required.
-     * Providing the environment entry binding in ibm-ejb-jar-bnd.xml or in <ejb-bnd>
-     * in server.xml will override the default value of the property. <p>
+     * with @Resource or <env-entry> in ejb-jar.xml is not required. Providing the
+     * environment entry binding in ibm-ejb-jar-bnd.xml or in <ejb-bnd> in server.xml
+     * will override the default value of the property. <p>
      *
      * Syntax for environment entry binding in ibm-ejb-jar-bnd.xml:
      *
      * <pre>{@code
      *    <message-driven name="MessageBean">
-     *        <env-entry name="io.openliberty.ejb.deactivateOnQuiesce.MessageBean" value="false"/>
+     *        <env-entry name="io.openliberty.ejb.deactivateOnQuiesce" value="false"/>
      *    </message-driven>
      * }</pre>
      *
@@ -1171,11 +1171,14 @@ public class ContainerConfigConstants {
      *    <webApplication location="sample-application.war">
      *        <ejb-jar-bnd>
      *            <message-driven name="MessageBean">
-     *                <env-entry name="io.openliberty.ejb.deactivateOnQuiesce.MessageBean" value="false"/>
+     *                <env-entry name="io.openliberty.ejb.deactivateOnQuiesce" value="false"/>
      *            </message-driven>
      *        </ejb-jar-bnd>
      *    </webApplication>
      * }</pre>
+     *
+     * Note: this setting is not supported in web.xml, ibm-web-bnd.xml, or web-bnd
+     * in server.xml. <p>
      *
      * Note: if the message endpoint is configured to deactivate during the server
      * quiesce period but the --force option is used on the server stop commend, then
@@ -1185,24 +1188,23 @@ public class ContainerConfigConstants {
      * <p><b>Environment Entry type:</b> Boolean
      * <p><b>Environment Entry values:</b> true or false (default true)
      */
-    public static final String deactivateOnQuiesce = "io.openliberty.ejb.deactivateOnQuiesce.";
+    public static final String deactivateOnQuiesce = "io.openliberty.ejb.deactivateOnQuiesce";
 
     /**
      * Environment entry that configures singleton bean destruction on server quiesce.
      *
      * By default, a singleton bean is destroyed during application stop, which occurs
-     * after the server quiesce period that occurs when the server stop command is issued.
-     * Configuring an application to be notified of the beginning of the quiesce period
-     * can be useful to allow the application to begin shutting down before being
-     * stopped and avoid starting new work while the server is stopping. A boolean
-     * environment entry can be added for a singleton bean to force destruction prior
-     * to the server quiesce period. <p>
+     * after the server quiesce period when the server stop command is issued. Configuring
+     * an application to be notified of the beginning of the quiesce period can be useful
+     * to allow the application to begin shutting down before being stopped and avoid
+     * starting new work while the server is stopping. A boolean environment entry can be
+     * added for a singleton bean to force destruction prior to the server quiesce period. <p>
      *
      * Syntax for the environment entry is:
      *
      * <pre>{@code
      *    <env-entry>
-     *        <env-entry-name>io.openliberty.ejb.destroyOnQuiesce.<bean name></env-entry-name>
+     *        <env-entry-name>io.openliberty.ejb.destroyOnQuiesce</env-entry-name>
      *        <env-entry-type>java.lang.Boolean</env-entry-type>
      *        <env-entry-value>true</env-entry-value>
      *    </env-entry>
@@ -1213,38 +1215,42 @@ public class ContainerConfigConstants {
      * server quiesce period. If the configured value is "true", singleton bean destruction
      * will occur at the beginning of the server quiesce period.
      *
-     * Since this is a custom environment property, defining the environment entry
-     * with @Resource or <env-entry> in either ejb-jar.xml or web.xml is not required.
-     * Providing the environment entry binding in ibm-ejb-jar-bnd.xml or in <ejb-bnd>
-     * in server.xml will override the default value of the property.
+     * Since this is a custom environment property, defining the environment entry with
      *
-     * Syntax for environment entry binding in ibm-ejb-jar-bnd.xml:
+     * @Resource or <env-entry> in ejb-jar.xml is not required. Providing the environment
+     *           entry binding in ibm-ejb-jar-bnd.xml or in <ejb-bnd> in server.xml will override
+     *           the default value of the property.
      *
-     * <pre>{@code
+     *           Syntax for environment entry binding in ibm-ejb-jar-bnd.xml:
+     *
+     *           <pre>{@code
      *    <session name="StartupSingleton" simple-binding-name="StartupSingleton">
-     *        <env-entry name="io.openliberty.ejb.destroyOnQuiesce.StartupSingleton" value="true"/>
+     *        <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
      *    </session>
      * }</pre>
      *
-     * Syntax for environment entry binding in server.xml:
+     *           Syntax for environment entry binding in server.xml:
      *
-     * <pre>{@code
+     *           <pre>{@code
      *    <webApplication location="sample-application.war">
      *        <ejb-jar-bnd>
      *             <session name="StartupSingleton" simple-binding-name="StartupSingleton">
-     *                 <env-entry name="io.openliberty.ejb.destroyOnQuiesce.StartupSingleton" value="true"/>
+     *                 <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
      *             </session>
      *        </ejb-jar-bnd>
      *    </webApplication>
      * }</pre>
      *
-     * Note: if the singleton bean is configured for destruction during the server
-     * quiesce period but the --force option is used on the server stop commend, then
-     * the quiesce period will be skipped and the singleton bean will be destroyed
-     * when the application is stopped.
+     *           Note: this setting is not supported in web.xml, ibm-web-bnd.xml, or web-bnd
+     *           in server.xml. <p>
      *
-     * <p><b>Environment Entry type:</b> Boolean
-     * <p><b>Environment Entry values:</b> true or false (default false)
+     *           Note: if the singleton bean is configured for destruction during the server
+     *           quiesce period but the --force option is used on the server stop commend, then
+     *           the quiesce period will be skipped and the singleton bean will be destroyed
+     *           when the application is stopped.
+     *
+     *           <p><b>Environment Entry type:</b> Boolean
+     *           <p><b>Environment Entry values:</b> true or false (default false)
      */
-    public static final String destroyOnQuiesce = "io.openliberty.ejb.destroyOnQuiesce.";
+    public static final String destroyOnQuiesce = "io.openliberty.ejb.destroyOnQuiesce";
 }
