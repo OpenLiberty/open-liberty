@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package com.ibm.wsspi.webcontainer.util;
 
@@ -19,7 +16,7 @@ import java.nio.charset.IllegalCharsetNameException;
 import java.nio.charset.UnsupportedCharsetException;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Hashtable;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
@@ -32,6 +29,7 @@ import java.util.logging.Logger;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ejs.ras.TraceNLS;
 import com.ibm.ws.webcontainer.srt.ISRTServletRequest;
 import com.ibm.wsspi.http.channel.values.HttpHeaderKeys;
 import com.ibm.wsspi.webcontainer.WCCustomProperties;
@@ -60,6 +58,7 @@ import com.ibm.wsspi.webcontainer.logging.LoggerFactory;
 public class EncodingUtils {
     protected static final Logger logger = LoggerFactory.getInstance().getLogger("com.ibm.ws.webcontainer.util");
     private static final String CLASS_NAME="com.ibm.wsspi.webcontainer.util.EncodingUtils";
+    protected static final TraceNLS nls = TraceNLS.getTraceNLS(EncodingUtils.class, "com.ibm.ws.webcontainer.resources.Messages");
 
     private static final Map<String, Charset> supportedEncodingsCache = new ConcurrentHashMap<>();
 
@@ -128,9 +127,22 @@ public class EncodingUtils {
 
         return afterSemi.substring(charsetLocation + 8).trim();
     }
+    
+    // Keep a cache of locales with LRU eviction policy when cache max size is reached
+    private static final int LOCALES_CACHE_MAX_SIZE = 2000;
 
-    // Keep a cache of locales
-    private static final Hashtable localesCache = new Hashtable();
+    // Maximum Accept-Language header length
+    private static final int MAX_ACCEPT_LANGUAGE_LENGTH = 4096;
+
+    private static final Map<String, Vector> localesCache = Collections.synchronizedMap(
+        new LinkedHashMap<String, Vector>(16, 0.75f, true) {
+
+            @Override
+            protected boolean removeEldestEntry(Map.Entry<String, Vector> eldest) {
+                return size() > LOCALES_CACHE_MAX_SIZE;
+            }
+        }
+    );
 
     /**
      * Returns a Vector of locales from the passed in request object.
@@ -150,12 +162,19 @@ public class EncodingUtils {
             Vector def = new Vector();
             def.addElement(Locale.getDefault());
             if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-                logger.logp(Level.FINE, CLASS_NAME,"getLocales", "processed Locales --> ", def);
+                logger.logp(Level.FINE, CLASS_NAME,"getLocales", "null AL , processed default Locales --> ", def);
             }
             return def;
         }
+        
+        // Validate Accept-Language header length
+        if (acceptLanguage.length() > MAX_ACCEPT_LANGUAGE_LENGTH) {
+            logger.logp(Level.INFO, CLASS_NAME, "getLocales", "Accept-Language header exceeds maximum length of [" +
+                            MAX_ACCEPT_LANGUAGE_LENGTH + "] ; actual [" + acceptLanguage.length() + "] . Throwing IAE exception");
 
-        // Check cache
+            throw new IllegalArgumentException(nls.getString("invalid.accept.language.length"));
+        }
+
         Vector langList = null;
         langList = (Vector) localesCache.get(acceptLanguage);
 
@@ -173,7 +192,7 @@ public class EncodingUtils {
         }
 
         if (com.ibm.ejs.ras.TraceComponent.isAnyTracingEnabled()&&logger.isLoggable (Level.FINE)) {
-            logger.logp(Level.FINE, CLASS_NAME,"getLocales", "processed Locales --> " + langList);
+            logger.logp(Level.FINE, CLASS_NAME,"getLocales", "processed Locales --> " + langList + " , locales cache size: " + localesCache.size() );
         }
 
         return langList;

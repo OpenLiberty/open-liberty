@@ -101,11 +101,12 @@ public class DefaultHistogramBucketsTest {
 	}
 
 	@Before
-	public void beforeTest() {
+	public void beforeTest() throws Exception {
 
-		// Check that both CWWKO0219I messages for non-secure and secured http
+		// Check that both for HTTP and HTTPS
 		// endpoints are initialized
-		server.waitForMultipleStringsInLog(2, "CWWKO0219I");
+		server.waitForDefaultHTTPEndpointStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
 	}
 

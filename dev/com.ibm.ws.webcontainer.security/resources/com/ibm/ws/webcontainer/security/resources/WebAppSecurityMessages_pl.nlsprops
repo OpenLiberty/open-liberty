@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2011, 2021 IBM Corporation and others.
+# Copyright (c) 2011, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -148,3 +148,11 @@ JCACHE_PUT_FAILURE.useraction=Usu\u0144 przyczyn\u0119 b\u0142\u0119du.
 JCACHE_CONTAINSKEY_FAILURE=CWWKS9131E: Pami\u0119\u0107 podr\u0119czna informacji cookie wylogowania nie mog\u0142a sprawdzi\u0107 informacji cookie w pami\u0119ci podr\u0119cznej JCache. B\u0142\u0105d: {0}
 JCACHE_CONTAINSKEY_FAILURE.explanation=Pami\u0119\u0107 podr\u0119czna informacji cookie wylogowania napotka\u0142a b\u0142\u0105d podczas pr\u00f3by sprawdzenia informacji cookie w pami\u0119ci podr\u0119cznej JCache. 
 JCACHE_CONTAINSKEY_FAILURE.useraction=Usu\u0144 przyczyn\u0119 b\u0142\u0119du.
+
+OLD_LOGOUT_TOKENS_MIGRATED=CWWKS9132W: Wykryto tokeny po wylogowaniu w starszym formacie. Aby pami\u0119\u0107 podr\u0119czna dla u\u017cytkownik\u00f3w wylogowanych dzia\u0142a\u0142a poprawnie, upewnij si\u0119, \u017ce wszystkie serwery w Twoim \u015brodowisku zosta\u0142y zaktualizowane do najnowszej wersji.
+OLD_LOGOUT_TOKENS_MIGRATED.explanation=System wykry\u0142 tokeny po wylogowaniu, kt\u00f3re maj\u0105 starszy format. W celu zwi\u0119kszenia bezpiecze\u0144stwa i sp\u00f3jno\u015bci tokeny u\u017cytkownik\u00f3w, kt\u00f3rzy si\u0119 wylogowali, zosta\u0142y przeniesione do nowszego formatu.
+OLD_LOGOUT_TOKENS_MIGRATED.useraction=Aby zapewni\u0107, \u017ce tokeny po wylogowaniu b\u0119d\u0105 mia\u0142y najnowszy format, nale\u017cy zaktualizowa\u0107 wszystkie serwery w klastrze lub \u015brodowisku do najnowszej wersji.
+
+JCACHE_MIGRATION_FAILURE=CWWKS9133E: W pami\u0119ci podr\u0119cznej plik\u00f3w cookie wylogowania wyst\u0105pi\u0142 b\u0142\u0105d podczas przenoszenia starych token\u00f3w do wersji zaszyfrowanych. B\u0142\u0105d: {0}
+JCACHE_MIGRATION_FAILURE.explanation=W pami\u0119ci podr\u0119cznej plik\u00f3w cookie wylogowania wyst\u0105pi\u0142 b\u0142\u0105d podczas jednorazowej migracji starych token\u00f3w wylogowania do nowego formatu z zastosowaniem funkcji skr\u00f3tu.
+JCACHE_MIGRATION_FAILURE.useraction=Przejrzyj komunikat o b\u0142\u0119dzie oraz logi serwera, aby ustali\u0107 przyczyn\u0119 awarii. Pr\u00f3ba migracji zostanie powt\u00f3rzona przy nast\u0119pnym ponownym uruchomieniu serwera.

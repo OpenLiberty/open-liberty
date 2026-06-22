@@ -72,7 +72,7 @@ public class CertificateLoginTestWithSquareBraceInCertificateFilter {
         assertNotNull("The application did not report is was started",
                       myServer.waitForStringInLog("CWWKZ0001I"));
         assertNotNull("We need to wait for the SSL port to be open",
-                      myServer.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl"));
+                      myServer.waitForDefaultHTTPEndpointSSLStart(true));
         assertNotNull("Server did not came up",
                       myServer.waitForStringInLog("CWWKF0011I"));
 
@@ -142,8 +142,6 @@ public class CertificateLoginTestWithSquareBraceInCertificateFilter {
 
         // Use server.xml configuration with certificateMapMode="cn=${SubjectCN}"
         setServerConfiguration(DEFAULT_CONFIG_FILE);
-        // assertNotNull("We need to wait for the SSL port to be open",
-        //              myServer.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl"));
 
         client = setupClient(user1CertFile, true);
         String response = client.access("/SimpleServlet", 200);

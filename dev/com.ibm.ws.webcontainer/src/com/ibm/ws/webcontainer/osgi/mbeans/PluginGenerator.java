@@ -511,7 +511,9 @@ public class PluginGenerator {
                     // Set server attributes
                     // Could not find the best match values in liberty now, so just use the default value of metatype
                     serverElem.setAttribute("ConnectTimeout", sd.connectTimeout.toString());
-                    serverElem.setAttribute("ServerIOTimeout", sd.serverIOTimeout.toString());
+                    // A negative ServerIOTimeout allows plugin to mark the server down after timeout
+                    long serverIOTimeoutValue = sd.serverIOTimeoutMarksDown ? -sd.serverIOTimeout : sd.serverIOTimeout;
+                    serverElem.setAttribute("ServerIOTimeout", Long.toString(serverIOTimeoutValue));
                     if (sd.wsServerIOTimeout != null)
                         serverElem.setAttribute("wsServerIOTimeout", sd.wsServerIOTimeout.toString());
                     if (sd.wsServerIdleTimeout != null)
@@ -1768,6 +1770,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected Boolean IPv6Preferred = null;
         protected String httpEndpointPid = null;
         protected Long serverIOTimeout = null;
+        protected Boolean serverIOTimeoutMarksDown = null;
         protected Long wsServerIOTimeout = null; //optional
         protected Long wsServerIdleTimeout = null; //optional
         public Long connectTimeout = null;
@@ -1803,6 +1806,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             ignoreAffinityRequests = (Boolean) config.get("ignoreAffinityRequests");
             httpEndpointPid = (String) config.get("httpEndpointRef");
             serverIOTimeout = (Long) config.get("serverIOTimeout");
+            serverIOTimeoutMarksDown = (Boolean) config.get("serverIOTimeoutMarksDown");
             wsServerIOTimeout = (Long) config.get("wsServerIOTimeout");
             wsServerIdleTimeout = (Long) config.get("wsServerIdleTimeout");
             connectTimeout = (Long) config.get("connectTimeout");
@@ -1912,6 +1916,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
                 Tr.debug(trace, "   postSizeLimit           : " + postSizeLimit);
                 Tr.debug(trace, "   postBufferSize          : " + postBufferSize);
                 Tr.debug(trace, "   serverIOTimeout         : " + serverIOTimeout);
+                Tr.debug(trace, "   serverIOTimeoutMarksDown: " + serverIOTimeoutMarksDown);
                 Tr.debug(trace, "   wsServerIOTimeout       : " + wsServerIOTimeout);
                 Tr.debug(trace, "   wsServerIdleTimeout     : " + wsServerIdleTimeout);
                 Tr.debug(trace, "   GetDWLMTable            : " + GetDWLMTable);
@@ -2032,6 +2037,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
         protected List<TransportData> transports = new LinkedList<TransportData>();
         protected Long connectTimeout = Long.valueOf(5);
         protected Long serverIOTimeout = Long.valueOf(0);
+        protected Boolean serverIOTimeoutMarksDown = Boolean.FALSE;
         protected Long wsServerIOTimeout = null;//optional
         protected Long wsServerIdleTimeout = null;//optional
         protected Boolean waitForContinue = Boolean.FALSE;
@@ -2056,6 +2062,7 @@ protected class XMLRootHandler extends DefaultHandler implements LexicalHandler 
             }
             this.nodeName = null;
             this.serverIOTimeout = pcd.serverIOTimeout;
+            this.serverIOTimeoutMarksDown = pcd.serverIOTimeoutMarksDown;
             this.wsServerIOTimeout = pcd.wsServerIOTimeout;
             this.wsServerIdleTimeout = pcd.wsServerIdleTimeout;
             this.connectTimeout = pcd.connectTimeout;

@@ -64,7 +64,7 @@ public class ServletApplicationTest extends BaseTestClass {
         ShrinkHelper.exportDropinAppToServer(server, wildCardServletWAR, DeployOptions.SERVER_ONLY);
 
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         //Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");

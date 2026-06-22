@@ -78,16 +78,14 @@ public class JAXRSClientLtpaTest extends AbstractTest {
                       serverServer.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not received on serverServer",
-                      serverServer.waitForStringInLog("CWWKS4105I.*"));
+        serverServer.waitForLTPAConfigReady();
         
         // Pause for the smarter planet message
         assertNotNull("The smarter planet message did not get printed on clientServer",
                       clientServer.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not received on clientServer",
-                      clientServer.waitForStringInLog("CWWKS4105I.*"));        
+        clientServer.waitForLTPAConfigReady();
     }
 
     @AfterClass

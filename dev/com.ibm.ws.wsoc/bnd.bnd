@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2017, 2025 IBM Corporation and others.
+# Copyright (c) 2017, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -65,8 +65,10 @@ Service-Component: \
     injectionEngine=com.ibm.wsspi.injectionengine.InjectionEngine; \
     injectionService=com.ibm.ws.wsoc.injection.InjectionService; \
     injectionService12=com.ibm.ws.wsoc.injection.InjectionService12; \
-    optional:='injectionEngine,injectionService,injectionService12'; \
-    dynamic:='injectionEngine,injectionService,injectionService12'; \
+    managedObjectService=com.ibm.ws.managedobject.ManagedObjectService; \
+    optional:='injectionEngine,injectionService,injectionService12,managedObjectService'; \
+    dynamic:='injectionEngine,injectionService,injectionService12,managedObjectService'; \
+    greedy:='managedObjectService'; \
     properties:="service.vendor=IBM", \
   com.ibm.ws.wsoc.version;\
     implementation:=com.ibm.ws.wsoc.WebSocketVersionServiceManager; \
@@ -131,7 +133,9 @@ instrument.classesExcludes: \
 	io.openliberty.netty.internal.impl;version=latest,\
 	io.openliberty.io.netty,\
 	io.openliberty.transport.config.internal,\
-	io.openliberty.io.netty.ssl
+	io.openliberty.io.netty.ssl,\
+ 	com.ibm.ws.managedobject;version=latest
+
 
 -testpath: \
 	../build.sharedResources/lib/junit/old/junit.jar;version=file, \

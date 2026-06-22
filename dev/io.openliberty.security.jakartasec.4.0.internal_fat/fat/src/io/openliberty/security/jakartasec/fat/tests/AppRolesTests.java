@@ -55,8 +55,7 @@ public class AppRolesTests {
 
         server.startServer();
 
-        assertNotNull(server.waitForStringInLog("CWWKS4105I"));
-
+        server.waitForLTPAConfigReady();
         urlApp1 = "http://localhost:" + server.getHttpDefaultPort() + "/" + APP_NAME + RESOURCE_PATH;
         urlApp2 = "http://localhost:" + server.getHttpDefaultPort() + "/" + APP_NAME_2 + RESOURCE_PATH;
         Log.info(c, "setUp", "Server started successfully");

@@ -176,9 +176,9 @@ public class CursoredPageImpl<T> extends PageImpl<T> implements CursoredPage<T> 
         if (queryInfo.sorts.size() != cursorSize)
             cursorSizeMismatchError(cursor);
 
-        Object[] paramNames = queryInfo.jpqlParamNames.isEmpty() //
+        Object[] paramNames = queryInfo.qlParamNames.isEmpty() //
                         ? null //
-                        : queryInfo.jpqlParamNames.toArray();
+                        : queryInfo.qlParamNames.toArray();
 
         int paramNum = queryInfo.qlParamCount + 1;
         for (int c = 0; c < cursorSize; c++, paramNum++) {

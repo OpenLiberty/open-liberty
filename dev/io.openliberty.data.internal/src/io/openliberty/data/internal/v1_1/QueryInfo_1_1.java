@@ -436,13 +436,14 @@ public class QueryInfo_1_1 extends QueryInfo {
 
         // TODO Persistence 4.0 API
         //if (entityHandler instanceof EntityHandler handler) ...
+        //    handler.createNativeStatement(ql)
 
         if (entityHandler instanceof EntityManager em) {
             query = em.createNativeQuery(ql);
         } else {
             try {
                 query = (jakarta.persistence.Query) entityHandler.getClass() //
-                                .getMethod("createNativeStatement", String.class) //
+                                .getMethod("createNativeMutationQuery", String.class) //
                                 .invoke(entityHandler, ql);
             } catch (IllegalAccessException | NoSuchMethodException x) {
                 throw new RuntimeException(x); // should be impossible

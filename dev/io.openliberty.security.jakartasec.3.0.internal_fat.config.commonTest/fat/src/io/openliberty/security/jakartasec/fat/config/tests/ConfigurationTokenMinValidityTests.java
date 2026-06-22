@@ -107,11 +107,12 @@ public class ConfigurationTokenMinValidityTests extends CommonAnnotatedSecurityT
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
+        opServer.waitForLTPAConfigReady();
+        rpServer.waitForLTPAConfigReady();
         ShortTokenLifetimePrep s = new ShortTokenLifetimePrep();
         s.shortTokenLifetimePrep(opServer, rpHttpsBase, "TokenMinValidity5s/TokenMinValidity5sServlet", "TokenMinValidity20s/TokenMinValidity20sServlet",
                                  "TokenMinValidity60s/TokenMinValidity60sServlet", "TokenMinValidity90s/TokenMinValidity90sServlet",
                                  "TokenMinValidity0s/TokenMinValidity0sServlet");
-
     }
 
     /**

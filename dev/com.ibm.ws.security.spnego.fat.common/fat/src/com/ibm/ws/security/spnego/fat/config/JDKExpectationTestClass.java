@@ -29,7 +29,7 @@ public abstract interface JDKExpectationTestClass {
     ///////////////////////////////
     //Liberty Server Expectations//
     ///////////////////////////////
-    public void serverUpdate(LibertyServer myServer);
+    public void serverUpdate(LibertyServer myServer) throws Exception;
 
     ////////////////////
     //KDC Expectations//

@@ -332,7 +332,7 @@ public class H2FATDriverServlet extends FATServlet {
      * by another of 1 byte (sent when the window size is updated).
      * 
      * TODO: This test should be improved for the legacy implementation of the transport, as it does not 
-     * currently send the two frames separately. 
+     * currently send the two frames separately. See https://github.com/OpenLiberty/open-liberty/issues/32381
      */
     public void testSmallWindowSize(HttpServletRequest request, HttpServletResponse response) throws InterruptedException, Exception {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
@@ -2222,7 +2222,7 @@ public class H2FATDriverServlet extends FATServlet {
         CountDownLatch blockUntilConnectionIsDone = new CountDownLatch(1);
         Http2Client h2Client = getDefaultH2Client(request, response, blockUntilConnectionIsDone);
 
-        // TODO Need to look more into this, not exactly sure why it's sending a go away frame since the stream should be closed
+        // Difference allowed between Netty and CHFW -- See POC Issue 207
 
         byte[] chfwDebugData = "CONTINUATION frame received on a closed stream".getBytes();
         byte[] nettyDebugData = "Received 9 frame but not currently processing headers.".getBytes();

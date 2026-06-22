@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2024 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -95,9 +95,9 @@ public class KeyMatcher {
      */
     public synchronized void add(GenericKeys key) {
         KeyBucket bucket = makeBucket(key.getName().charAt(0));
-            if (null != bucket) {
-                bucket.add(key);
-            }
+        if (null != bucket) {
+            bucket.add(key);
+        }
     }
 
     /**
@@ -267,8 +267,7 @@ public class KeyMatcher {
             if (c1 == c2)
                 return true;
             if (!isCaseSensitive()) {
-                // check both possible variations (lower/upper case)
-                return ((c1 + 32) == c2 || (c1 - 32) == c2);
+                return Character.toLowerCase(c1) == Character.toLowerCase(c2);
             }
             return false;
         }

@@ -76,7 +76,7 @@ public class CollectionsTest extends FATServletClient {
             remoteAppServer.changeFeatures(Arrays.asList("componenttest-1.0","jaxrs-2.1","jsonp-1.1","ssl-1.0","jsonb-1.0"));
         }
         remoteAppServer.startServer();
-        remoteAppServer.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        remoteAppServer.waitForDefaultHTTPEndpointSSLStart();
 
         ShrinkHelper.defaultDropinApp(server, appName, new DeployOptions[] {DeployOptions.SERVER_ONLY}, "mpRestClient10.collections");
         Set<String>features = server.getServerConfiguration().getFeatureManager().getFeatures();
@@ -94,7 +94,7 @@ public class CollectionsTest extends FATServletClient {
         }
 
         server.startServer();
-        server.waitForStringInLog("CWWKO0219I.*ssl"); // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host *  (IPv6) port 8020.
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

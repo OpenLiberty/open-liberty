@@ -107,10 +107,8 @@ public class ApplicationProcessorTest extends FATServletClient {
         assertNotNull("Server did not report that it has started",
             server.waitForStringInLog("CWWKF0011I.*"));
 
-        assertNotNull("Http port not opened",
-            server.waitForStringInLog("CWWKO0219I.* defaultHttpEndpoint ")); // Wait for http port
-        assertNotNull("Https port not opened",
-            server.waitForStringInLog("CWWKO0219I.* defaultHttpEndpoint-ssl ")); // Wait for https port to open (this
+        server.waitForDefaultHTTPEndpointStart(); // Wait for http port
+        server.waitForDefaultHTTPEndpointSSLStart(); // Wait for https port to open (this
                                                                                  // can sometimes take a while)
     }
 

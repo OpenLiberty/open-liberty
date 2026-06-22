@@ -80,10 +80,8 @@ public class SCIMTest {
                       server.waitForStringInLog("CWWKT0016I:.*"));
         assertNotNull("Server did not came up",
                       server.waitForStringInLog("CWWKF0011I:.*"));
-        assertNotNull("TCP non ssl Channel did not come up",
-                      server.waitForStringInLog("CWWKO0219I:.*"));
-        assertNotNull("TCP SSL Channel did not come up",
-                      server.waitForStringInLog("CWWKO0219I:.*ssl.*"));
+        server.waitForDefaultHTTPEndpointStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

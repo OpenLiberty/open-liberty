@@ -69,8 +69,7 @@ public class JAXRS21SecuritySSLTest {
                       server.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not received on server",
-                      server.waitForStringInLog("CWWKS4105I.*"));
+        server.waitForLTPAConfigReady();
 
         // Wait for /jaxrs21security endpoints to be initialized
         assertNotNull("/jaxrs21security com.ibm.ws.jaxrs21.fat.security.ssl.SSLApplication was not initialized (SRVE0242I not found)",

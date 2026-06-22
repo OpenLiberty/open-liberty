@@ -601,7 +601,7 @@ public class Fail {
                                                            int methodNPCount) {
         String firstNamedParam = null;
         StringBuilder allNamedParams = new StringBuilder().append('(');
-        for (String name : info.jpqlParamNames) {
+        for (String name : info.qlParamNames) {
             if (firstNamedParam == null)
                 firstNamedParam = name;
             else

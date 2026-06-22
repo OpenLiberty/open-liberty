@@ -261,7 +261,7 @@ public class OAuth20TestCommon {
         assertNotNull("The security service was not ready in time",
                       server.waitForStringInLog("CWWKS0008I"));
         assertNotNull("The TCP Channel defaultHttpEndpoint-ssl did not start",
-                      server.waitForStringInLog("CWWKO0219I.*ssl"));
+                      server.waitForDefaultHTTPEndpointSSLStart(true));
         if (_server.startsWith(DERBY_STARTS_WITH) || _server.startsWith(MONG_STARTS_WITH)) {
             // The OAuthConfigDerby app works for both types of stores (database and custom), didn't rename when MongoDB was added
             assertNotNull("Provider OAuthConfigDerby config was not processed in time",

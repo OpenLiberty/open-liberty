@@ -67,12 +67,10 @@ public class StoreServicesSecurityTests extends FATServletClient {
         StoreClientTestsUtils.addConsumerApp_RestClient(consumerServer, isArchive);
 
         storeJWTSSoServer.startServer(c.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not received", storeJWTSSoServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        storeJWTSSoServer.waitForDefaultHTTPEndpointSSLStart();
 
         // Error CWWKS4000E shows up intermittently due to LTPA slowness
-        // Add CWWKS4105I: LTPA configuration is ready check to avoid this
-        assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      storeJWTSSoServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
+        storeJWTSSoServer.waitForLTPAConfigReady();
 
         // set bvt.prop.member_1.http=8080 and bvt.prop.member_1.https=8081
         consumerServer.setHttpDefaultPort(Integer.parseInt(getSysProp("member_1.http")));
@@ -82,12 +80,10 @@ public class StoreServicesSecurityTests extends FATServletClient {
 
         consumerServer.setHttpDefaultSecurePort(securePort);
         consumerServer.startServer(c.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not received", consumerServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        consumerServer.waitForDefaultHTTPEndpointSSLStart();
 
         // Error CWWKS4000E shows up intermittently due to LTPA slowness
-        // Add CWWKS4105I: LTPA configuration is ready check to avoid this
-        assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      consumerServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
+        consumerServer.waitForLTPAConfigReady();
 
     }
 

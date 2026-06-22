@@ -77,8 +77,7 @@ public class FileNotificationMBeanTest extends AbstractNotificationTest {
         assertNotNull("The application 'IBMJMXConnectorREST' did not report it was started",
                       server.waitForStringInLog("CWWKT0016I.*IBMJMXConnectorREST"));
         // Wait for secure port to be ready
-        assertNotNull("SSL port is not ready",
-                      server.waitForStringInLog("CWWKO0219I.*ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
         assertNotNull("The server is not ready to run a smarter planet",
                       server.waitForStringInLog("CWWKF0011I"));
         assertNotNull("The security service is not ready",

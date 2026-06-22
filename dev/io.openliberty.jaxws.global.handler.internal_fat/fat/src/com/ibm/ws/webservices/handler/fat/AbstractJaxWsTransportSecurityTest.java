@@ -273,7 +273,7 @@ abstract public class AbstractJaxWsTransportSecurityTest {
                 // Current configuration has SSL feature, check if the ssl port is opened
                 if (SERVER_CONFIG_WITH_SSL.contains(newServerConfigFile)) {
                     Log.info(AbstractJaxWsTransportSecurityTest.class, "updateServerConfigFile", "Wait for ssl port open.");
-                    isFound = null != server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl");
+                    isFound = null != server.waitForDefaultHTTPEndpointSSLStart(true);
                 }
             } else if (!newServerConfigFile.equals(lastServerConfig)) {// The last server config file is not the same as the current one
                 Log.info(AbstractJaxWsTransportSecurityTest.class, "updateServerConfigFile", "old: -" + lastServerConfig + "-, new: -" + newServerConfigFile + "-");
@@ -285,7 +285,7 @@ abstract public class AbstractJaxWsTransportSecurityTest {
                 // Current configuration has SSL feature, but last configuration has no SSL feature, should check if the ssl port is opened.
                 if (SERVER_CONFIG_WITH_SSL.contains(newServerConfigFile) && SERVER_CONFIG_WITHOUT_SSL.contains(lastServerConfig)) {
                     Log.info(AbstractJaxWsTransportSecurityTest.class, "updateServerConfigFile", "Wait for ssl port open.");
-                    isFound = null != server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl");
+                    isFound = null != server.waitForDefaultHTTPEndpointSSLStart(true);
                 }
             }
 

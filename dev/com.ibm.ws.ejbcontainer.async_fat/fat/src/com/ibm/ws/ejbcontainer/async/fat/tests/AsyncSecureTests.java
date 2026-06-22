@@ -72,7 +72,7 @@ public class AsyncSecureTests extends AbstractTest {
 
         // verify the appSecurity-2.0 feature is ready
         assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
-        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
         server.setMarkToEndOfLog();
 
         // Allow apps in this test to start slower than the default

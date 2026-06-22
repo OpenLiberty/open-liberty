@@ -67,7 +67,7 @@ public class MPMetricsTest extends FATServletClient {
     @Test
     public void testMetricsEndpoint() throws Exception {
         server.checkpointRestore();
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started", server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         //server.xml has mpMetrics authentication set to true. So /metrics shouldn't be available on http port.
         assertEquals("Expected response code not found", HttpURLConnection.HTTP_NOT_FOUND,

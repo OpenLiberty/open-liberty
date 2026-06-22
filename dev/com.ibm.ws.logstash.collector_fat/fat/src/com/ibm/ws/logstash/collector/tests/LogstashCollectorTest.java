@@ -146,6 +146,20 @@ public abstract class LogstashCollectorTest {
 
     }
 
+    protected void createMessageLogEvents(String id) {
+        String url = getAppUrl() + "/MessageURL";
+        if (id != null) {
+            try {
+                url = url + "?id=" + URLEncoder.encode(id, "UTF-8");
+            } catch (UnsupportedEncodingException e) {
+                Log.error(c, "createMessageLogEvents", e);
+                e.printStackTrace();
+            }
+        }
+        runApp(url);
+
+    }
+
     protected void createFFDCEvent(int i) {
         String url = getAppUrl();
         switch (i) {

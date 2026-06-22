@@ -96,11 +96,9 @@ public class CxfX509MigSymEE7LiteTests extends CommonTests {
         server.waitForStringInLog("port " + portNumberSecure);
         // check  message.log
         // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now lis....Port 8010
-        assertNotNull("defaultHttpendpoint may not started at :" + portNumber,
-                      server.waitForStringInLog("CWWKO0219I.*" + portNumber));
+        server.waitForDefaultHTTPEndpointStart();
         // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now lis....Port 8020
-        assertNotNull("defaultHttpEndpoint SSL port may not be started at:" + portNumberSecure,
-                      server.waitForStringInLog("CWWKO0219I.*" + portNumberSecure));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         // using the original port to send the parameters
         x509MigSymClientUrl = "http://localhost:" + portNumber +

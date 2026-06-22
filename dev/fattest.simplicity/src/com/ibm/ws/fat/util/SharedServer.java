@@ -181,7 +181,7 @@ public class SharedServer extends ExternalResource {
                 server.startServerAndValidate(true, true, false);
             }
             if (this.waitForSecurity) {
-                server.waitForStringInLog(".*CWWKS4105I: LTPA configuration is ready.*");
+                server.waitForLTPAConfigReady();
                 server.waitForStringInLog(".*CWWKS0008I: The security service is ready.*");
             }
             LOG.info(delimiter);
@@ -208,7 +208,7 @@ public class SharedServer extends ExternalResource {
             LOG.info(delimiter);
             server.startServerAndValidate(preClean, cleanStart, validateApps); // throws exception if start fails
             if (this.waitForSecurity) {
-                server.waitForStringInLog(".*CWWKS4105I: LTPA configuration is ready.*");
+                server.waitForLTPAConfigReady();
                 server.waitForStringInLog(".*CWWKS0008I: The security service is ready.*");
             }
             LOG.info(delimiter);

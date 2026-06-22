@@ -22,6 +22,7 @@ import com.ibm.ws.cdi.jee.jsf.SimpleJSFWithSharedLibTest;
 import com.ibm.ws.cdi.jee.jsp.SimpleJSPTest;
 import com.ibm.ws.cdi.jee.servlet.ServletStartupTest;
 import com.ibm.ws.cdi.jee.session.CDISessionPersistenceTest;
+import com.ibm.ws.cdi.jee.websocket.WebSocketCDIInjectionTest;
 import com.ibm.ws.cdi.jee.webservices.CDI12WebServicesTest;
 
 import componenttest.rules.repeater.EERepeatActions;
@@ -42,6 +43,7 @@ import componenttest.rules.repeater.RepeatTests;
                 SimpleJSPTest.class,
                 Faces40CDISessionPersistence.class,
                 ManagedBeanBindingTest.class,
+                WebSocketCDIInjectionTest.class,
 })
 
 public class FATSuite {

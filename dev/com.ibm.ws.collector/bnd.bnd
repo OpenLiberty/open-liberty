@@ -48,6 +48,7 @@ Private-Package: com.ibm.ws.collector.internal*
 	com.ibm.websphere.appserver.spi.kernel.service;version=latest,\
 	com.ibm.ws.collector.manager;version=latest,\
 	com.ibm.ws.logging;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest
 
 -testpath: \

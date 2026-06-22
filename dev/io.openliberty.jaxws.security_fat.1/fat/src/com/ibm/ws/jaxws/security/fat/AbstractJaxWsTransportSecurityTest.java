@@ -112,7 +112,7 @@ abstract public class AbstractJaxWsTransportSecurityTest extends AbstractJaxWsTr
                 if (SERVER_CONFIG_WITHOUT_SSL.contains(lastServerConfig)) {
                     Log.info(AbstractJaxWsTransportSecurityTest.class, "updateServerConfigFile",
                              "Wait for ssl port open.");
-                    isFound = null != server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl");
+                    isFound = null != server.waitForDefaultHTTPEndpointSSLStart(true);
                 }
             }
 

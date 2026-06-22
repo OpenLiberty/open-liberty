@@ -55,7 +55,7 @@ public class NoAppTest extends BaseTestClass {
                                              DeployOptions.SERVER_ONLY);
 
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         //Read to run a smarter planet
         server.waitForStringInLogUsingMark("CWWKF0011I");

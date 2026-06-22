@@ -115,7 +115,7 @@ public class VersionlessTest {
         server.startServer();
         try {
             if (waitForSSL()) {
-                server.waitForSSLStart();
+                server.waitForDefaultHTTPEndpointSSLStart();
             }
             action.accept(server);
         } finally {

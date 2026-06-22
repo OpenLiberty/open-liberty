@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Modify the application logic to make 
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: The sendRedirect relative URL in the application cannot be converted into a valid URL.
 sendRedirect.cannot.convert.relative.url.explanation=The relative URL given might contain invalid path traversal characters or indexes.
 sendRedirect.cannot.convert.relative.url.useraction=Verify the sendRedirect location URL in the application before calling the response.sendRedirect() method
+
+invalid.accept.language.length=CWWWC0013E: The HTTP request Accept-Language header value is too long.
+invalid.accept.language.length.explanation=The client sends an Accept-Language header that is too long.
+invalid.accept.language.length.useraction=The client must send an Accept-Language header with a value length of 4096 bytes or less.

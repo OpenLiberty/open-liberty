@@ -12,6 +12,7 @@
  *******************************************************************************/
 package test.jakarta.data.v1_1.web;
 
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -45,6 +46,7 @@ import jakarta.data.repository.Is;
 import jakarta.data.repository.JakartaQuery; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.NativeQuery; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.OrderBy;
+import jakarta.data.repository.Param;
 import jakarta.data.repository.Query;
 import jakarta.data.repository.QueryOptions; // TODO replace with Persistence 4.0 anno once available
 import jakarta.data.repository.Repository;
@@ -58,12 +60,34 @@ import jakarta.persistence.LockModeType;
 @Repository(dataStore = "MyDataStore")
 public interface Fractions {
 
+    @NativeQuery("""
+                    SELECT name
+                      FROM Fraction
+                     WHERE reduced = :isReduced
+                     ORDER BY name ASC
+                    """)
+    List<String> alphabetized(@Param("isReduced") boolean reduced,
+                              Limit limit);
+
     @Find
     @First(10)
     @Select(_Fraction.NUMERATOR)
     List<Integer> atMost10Numerators(int denominator,
                                      Restriction<Fraction> filter,
                                      Order<Fraction> sortBy);
+
+    @NativeQuery("""
+                    UPDATE Fraction
+                       SET ceiling = ?,
+                           truncated = ?
+                     WHERE numerator = ?
+                       AND denominator = ?
+                    """)
+    @QueryOptions(timeout = 12000) // query timeout = 12 seconds
+    boolean change(BigDecimal ceiling,
+                   BigDecimal truncated,
+                   int numerator,
+                   int denominator);
 
     Connection connect();
 
@@ -73,6 +97,24 @@ public interface Fractions {
                                    int max,
                                    Restriction<Fraction> filter);
 
+    @NativeQuery("""
+                    INSERT INTO Fraction
+                         (numerator, denominator, name, reduced, VAL, inverse,
+                          ceiling, truncated, type, nonrepeating, repeating )
+                         values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                    """)
+    void create(int numerator,
+                int denominator,
+                String name,
+                boolean reduced,
+                double value,
+                double inverse,
+                BigDecimal ceiling,
+                BigDecimal truncated,
+                int decimalType, // ordinal value of Fraction.Decimal.Type enum
+                String nonrepeating,
+                String repeating);
+
     int deleteByNameStartsWith(String prefix,
                                Restriction<Fraction> filter);
 
@@ -81,6 +123,14 @@ public interface Fractions {
     (@By(_Fraction.DENOMINATOR) NotNull<Integer> notNull,
      @By(_Fraction.DENOMINATOR) AtMost<Integer> max,
      Sort<?>... sorts);
+
+    @NativeQuery("""
+                    DELETE FROM Fraction
+                     WHERE numerator = ?
+                       AND name LIKE CONCAT('% ', ?)
+                    """)
+    long destroy(int numerator,
+                 String denominatorName);
 
     @Delete
     long discard(@By("denominator") AtLeast<Integer> minDenominator,
@@ -114,6 +164,17 @@ public interface Fractions {
     Stream<Fraction> havingDenominatorWithin//
     (@By(_Fraction.DENOMINATOR) @Is(AtLeast.class) long min,
      @By(_Fraction.DENOMINATOR) @Is(AtMost.class) long max);
+
+    @NativeQuery("""
+                    SELECT *
+                      FROM Fraction
+                     WHERE reduced = :reduced
+                       AND numerator = :numerator
+                       AND denominator = :denominator
+                    """)
+    Optional<Fraction> ifReduced(boolean reduced,
+                                 int numerator,
+                                 int denominator);
 
     @Find
     @Select(_Fraction.NAME)
@@ -189,6 +250,11 @@ public interface Fractions {
     List<Fraction> remove(Like name,
                           Restriction<Fraction> filter);
 
+    @Find
+    @Select(_Fraction.DECIMAL_CEILING)
+    Optional<BigDecimal> roundedUp(@By(_Fraction.NUMERATOR) int numerator,
+                                   @By(_Fraction.DENOMINATOR) int denominator);
+
     /**
      * This is a workaround for Derby, which ignores query timeout
      * and eventually the lock timeout (default 60s) applies instead.
@@ -251,6 +317,16 @@ public interface Fractions {
     (@By(_Fraction.NAME) @Is(Like.class) String pattern,
      Restriction<Fraction> filter,
      Order<Fraction> order);
+
+    @NativeQuery("""
+                    SELECT *
+                      FROM Fraction
+                     WHERE name LIKE CONCAT('%', :nameSuffix)
+                       AND name LIKE CONCAT(:namePrefix, '%')
+                     ORDER BY name
+                    """)
+    Fraction[] withNamePattern(@Param("namePrefix") String prefix,
+                               @Param("nameSuffix") String suffix);
 
     @Find
     @Select(_Fraction.NAME)

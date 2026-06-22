@@ -57,7 +57,7 @@ public class Servlet61SecureProtocolTLSDefaultAttributeTest {
         server.startServer(Servlet61SecureProtocolTLSDefaultAttributeTest.class.getSimpleName() + ".log");
 
         //MUST WAIT FOR SECURE PORT...else this test will fail.
-        assertNotNull("SSL port is not ready", server.waitForStringInLog("CWWKO0219I:.*defaultHttpEndpoint-ssl.*"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         LOG.info("Setup : startServer, ready for Tests.");
     }

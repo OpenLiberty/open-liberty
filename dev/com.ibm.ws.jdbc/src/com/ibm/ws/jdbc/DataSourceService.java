@@ -862,6 +862,14 @@ public class DataSourceService extends AbstractConnectionFactoryService implemen
             }
         }
 
+        // Validate H2 URLs don't contain PASSWORD parameter
+        if (vPropsPID != null && vPropsPID.endsWith(".h2")) {
+            String url = vProps.getProperty("URL", vProps.getProperty("url"));
+            if (url != null && url.matches("(?i).*;\\bPASSWORD=.*")) {
+                throw new IllegalArgumentException(AdapterUtil.getNLSMessage("8070_H2_URL_PASSWORD", id));
+            }
+        }
+
         // identifyException, which is a group of
         // (identifyException.#.sqlState, identifyException.#.errorCode, identifyException.#.as)
         // is parsed separately to have a predictable order of precedence when collisions occur

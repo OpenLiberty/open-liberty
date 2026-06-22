@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2013 IBM Corporation and others.
+ * Copyright (c) 2013, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -16,6 +16,11 @@ import javax.enterprise.inject.spi.BeanManager;
 
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.ComponentContext;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.wsoc.injection.InjectionProvider12;
@@ -26,6 +31,10 @@ import com.ibm.wsspi.kernel.service.utils.AtomicServiceReference;
 /**
  *
  */
+@Component(name = "com.ibm.ws.wsoc.manager",
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           immediate = true,
+           property = { "service.vendor=IBM" })
 public class ServiceManager implements InjectionService12 {
 
 	private static final AtomicServiceReference<CDIService> cdiService = new AtomicServiceReference<CDIService>(
@@ -38,9 +47,10 @@ public class ServiceManager implements InjectionService12 {
 
 	/**
 	 * DS method for activating this component.
-	 * 
+	 *
 	 * @param context
 	 */
+	@Activate
 	protected synchronized void activate(ComponentContext context) {
 		cdiService.activate(context);
 		injectionEngineSRRef.activate(context);
@@ -48,14 +58,16 @@ public class ServiceManager implements InjectionService12 {
 
 	/**
 	 * DS method for deactivating this component.
-	 * 
+	 *
 	 * @param context
 	 */
+	@Deactivate
 	protected synchronized void deactivate(ComponentContext context) {
 		cdiService.deactivate(context);
 		injectionEngineSRRef.deactivate(context);
 	}
 
+	@Reference(name = "cdiService")
 	protected void setCdiService(ServiceReference<CDIService> ref) {
 		cdiService.setReference(ref);
 	}
@@ -64,6 +76,7 @@ public class ServiceManager implements InjectionService12 {
 		cdiService.unsetReference(ref);
 	}
 
+	@Reference(name = "injectionEngine")
 	protected void setInjectionEngine(ServiceReference<InjectionEngine> ref) {
 		this.injectionEngineSRRef.setReference(ref);
 	}

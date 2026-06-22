@@ -83,10 +83,8 @@ public class SSLBasic21Test {
         wt_secure = new WsocTest(LS, true);
         ssl = new SSLTest(wt_secure);
         bwst.setUp();
-
-        LS.waitForStringInLog("CWWKS4105I:.*configuration is ready.*");
         // tests cannot work until ssl is up
-        LS.waitForStringInLog("CWWKO0219I:.*ssl.*");
+        LS.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

@@ -46,7 +46,7 @@ public class CustomSecurityContextTest {
         try {
             server.startServer();
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
-            assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
+            server.waitForLTPAConfigReady();
         } catch (Exception e) {
             System.out.println(e.toString());
         }

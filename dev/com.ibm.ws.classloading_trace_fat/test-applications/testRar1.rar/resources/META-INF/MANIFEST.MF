@@ -1,0 +1,2 @@
+Manifest-Version: 1.0
+Class-Path: testLib10.jar doesNotExistFrom_testRar1.rar

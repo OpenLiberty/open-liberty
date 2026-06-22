@@ -60,7 +60,7 @@ abstract public class AbstractJaxWsTransportSecuritySSLTest extends AbstractJaxW
             server.waitForStringInLog("CWWKZ0001I.*TransportSecurityProvider");
             server.waitForStringInLog("CWWKZ0001I.*TransportSecurityClient");
             if (SERVER_CONFIG_WITH_SSL.contains(serverConfigFile)) {
-                server.waitForStringInLog("CWWKO0219I:.*-ssl");
+                server.waitForDefaultHTTPEndpointSSLStart();
             }
         }
     }
@@ -114,7 +114,7 @@ abstract public class AbstractJaxWsTransportSecuritySSLTest extends AbstractJaxW
                 if (SERVER_CONFIG_WITH_SSL.contains(newServerConfigFile)) {
                     Log.info(AbstractJaxWsTransportSecuritySSLTest.class, "updateServerConfigFile",
                              "Wait for ssl port open.");
-                    isFound = null != server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl");
+                    isFound = null != server.waitForDefaultHTTPEndpointSSLStart(true);
                 }
             } else if (!newServerConfigFile.equals(lastServerConfig)) {// The last server config file is not the same as
                                                                        // the current one
@@ -133,7 +133,7 @@ abstract public class AbstractJaxWsTransportSecuritySSLTest extends AbstractJaxW
                 if (SERVER_CONFIG_WITH_SSL.contains(newServerConfigFile)) {
                     Log.info(AbstractJaxWsTransportSecuritySSLTest.class, "updateServerConfigFile",
                              "Wait for ssl port open.");
-                    isFound = null != server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl");
+                    isFound = null != server.waitForDefaultHTTPEndpointSSLStart(true);
                 }
             }
 

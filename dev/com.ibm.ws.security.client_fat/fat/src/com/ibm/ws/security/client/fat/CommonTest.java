@@ -459,7 +459,7 @@ public class CommonTest {
         // assertNotNull("Application did not start",
         // testServer.waitForStringInLog("CWWKZ0001I"));
         if (isSecure) {
-            assertNotNull("LTPA configuration did not report it was ready", testServer.waitForStringInLog("CWWKS4105I"));
+            testServer.waitForLTPAConfigReady();
         }
 
     }

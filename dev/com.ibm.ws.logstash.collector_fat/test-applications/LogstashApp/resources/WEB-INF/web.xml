@@ -27,10 +27,17 @@
     <load-on-startup>1</load-on-startup>
   </servlet>
   
-    <servlet id="ExceptionServlet">
+  <servlet id="ExceptionServlet">
     <servlet-name>ExceptionServlet</servlet-name>
     <display-name>ExceptionServlet</display-name>
     <servlet-class>com.ibm.logs.ExceptionServlet</servlet-class>
+    <load-on-startup>1</load-on-startup>
+  </servlet>
+  
+  <servlet id="MessageServlet">
+    <servlet-name>MessageServlet</servlet-name>
+    <display-name>MessageServlet</display-name>
+    <servlet-class>com.ibm.logs.MessageServlet</servlet-class>
     <load-on-startup>1</load-on-startup>
   </servlet>
   
@@ -50,9 +57,14 @@
     <url-pattern>/TraceURL</url-pattern>
   </servlet-mapping>
   
-    <servlet-mapping id="ExceptionServlet">
+  <servlet-mapping id="ExceptionServlet">
     <servlet-name>ExceptionServlet</servlet-name>
     <url-pattern>/ExceptionURL</url-pattern>
+  </servlet-mapping>
+  
+  <servlet-mapping id="MessageServlet">
+    <servlet-name>MessageServlet</servlet-name>
+    <url-pattern>/MessageURL</url-pattern>
   </servlet-mapping>
 
 </web-app>

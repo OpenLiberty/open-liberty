@@ -1495,10 +1495,12 @@ public class InstallKernelMap implements Map {
         try {
             Properties properties = RepositoryConfigUtils.loadRepoProperties();
 
-            if (workingRepos.isEmpty() && RepositoryConfigUtils.isWlpRepoEnabled(properties)) {
-                workingRepos.add(MAVEN_CENTRAL_REPOSITORY);
-            } else {
-                throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_CONNECT_REPOS"));
+            if (workingRepos.isEmpty() ) {
+                if (RepositoryConfigUtils.isWlpRepoEnabled(properties)) {
+                    workingRepos.add(MAVEN_CENTRAL_REPOSITORY);
+                } else {
+                    throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_CONNECT_REPOS"));
+                }
             }
         } catch (InstallException e) {
             throw new RuntimeException(e);

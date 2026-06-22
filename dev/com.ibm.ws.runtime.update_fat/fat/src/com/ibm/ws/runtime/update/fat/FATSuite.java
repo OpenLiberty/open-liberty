@@ -19,7 +19,8 @@ import org.junit.runners.Suite.SuiteClasses;
 @RunWith(Suite.class)
 @SuiteClasses({
                 ConfigUpdateDeliveryTest.class,
-                RuntimeQuiesceTest.class
+                RuntimeQuiesceTest.class,
+                PauseableComponentTest.class
 })
 public class FATSuite {
 

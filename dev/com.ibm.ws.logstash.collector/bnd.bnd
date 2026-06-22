@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2019, 2020 IBM Corporation and others.
+# Copyright (c) 2019, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -37,7 +37,10 @@ Import-Package: \
         com.ibm.wsspi.collector.manager, \
         com.ibm.ws.collector, \
         com.ibm.ws.lumberjack, \
-        com.ibm.ws.logging.data
+        com.ibm.ws.logging.data, \
+        com.ibm.ws.container.service.app.deploy;resolution:=optional, \
+        com.ibm.ws.container.service.state;resolution:=optional, \
+        *
 
 Private-Package: \
         com.ibm.ws.logstash.collector.internal*
@@ -46,7 +49,8 @@ Include-Resource: \
         OSGI-INF=resources/OSGI-INF
 
 -dsannotations: \
-        com.ibm.ws.logstash.collector.internal.LogstashCollector
+	com.ibm.ws.logstash.collector.internal.LogstashCollector, \
+	com.ibm.ws.logstash.collector.internal.LogstashCollectorASL
 
 -buildpath: \
 	com.ibm.wsspi.org.osgi.core;version=latest,\
@@ -57,4 +61,6 @@ Include-Resource: \
 	com.ibm.wsspi.org.osgi.service.component;version=latest,\
 	com.ibm.ws.collector.manager;version=latest,\
 	com.ibm.ws.kernel.service;version=latest,\
-	com.ibm.ws.org.osgi.annotation.versioning;version=latest
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	com.ibm.ws.container.service;version=latest

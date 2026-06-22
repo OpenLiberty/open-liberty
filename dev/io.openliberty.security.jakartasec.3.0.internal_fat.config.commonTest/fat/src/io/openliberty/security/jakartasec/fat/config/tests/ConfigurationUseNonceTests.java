@@ -105,6 +105,8 @@ public class ConfigurationUseNonceTests extends CommonAnnotatedSecurityTests {
 
         deployMyApps(); // run this after starting the RP so we have the rp port to update the openIdConfig.properties file within the apps
 
+        opServer.waitForLTPAConfigReady();
+        rpServer.waitForLTPAConfigReady();
     }
 
     /**

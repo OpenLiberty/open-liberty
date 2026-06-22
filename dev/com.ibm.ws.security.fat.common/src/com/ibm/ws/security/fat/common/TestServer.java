@@ -953,7 +953,7 @@ public class TestServer extends ExternalResource {
         // if we find it, then wait for "CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for requests on host"
         String sslStopMsg = server.waitForStringInLogUsingMark("CWWKO0220I:.*defaultHttpEndpoint-ssl.*", 500);
         if (sslStopMsg != null) {
-            String sslStartMsg = server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl.*");
+            String sslStartMsg = server.waitForDefaultHTTPEndpointSSLStart(true);
             if (sslStartMsg == null) {
                 Log.warning(thisClass, "SSL may not have started properly - future failures may be due to this");
                 sslWaitTimeoutCount += 1;

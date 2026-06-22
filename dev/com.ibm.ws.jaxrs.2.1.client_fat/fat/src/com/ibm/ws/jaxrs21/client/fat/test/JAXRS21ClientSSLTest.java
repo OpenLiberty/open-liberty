@@ -58,7 +58,6 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
         // already started server
         try {
             server.startServer(true);
-            server.waitForSSLStart();
         } catch (Exception e) {
             System.out.println(e.toString());
         }
@@ -66,10 +65,7 @@ public class JAXRS21ClientSSLTest extends JAXRS21AbstractTest {
         // Pause for the smarter planet message
         assertNotNull("The smarter planet message did not get printed on server",
                       server.waitForStringInLog("CWWKF0011I"));
-
-        // wait for the tcp channel to start
-        assertNotNull("TCP Channel not started",
-                      server.waitForStringInLog("CWWKO0219I"));
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

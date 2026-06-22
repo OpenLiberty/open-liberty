@@ -71,7 +71,7 @@ public class SecureHelloWorldTest extends HelloWorldBasicTest {
                                       "io.grpc.examples.helloworld");
 
         secureHelloWorldServer.startServer(SecureHelloWorldTest.class.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not received", secureHelloWorldServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        secureHelloWorldServer.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

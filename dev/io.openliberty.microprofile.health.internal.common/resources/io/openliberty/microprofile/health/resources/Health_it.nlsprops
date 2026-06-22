@@ -101,3 +101,7 @@ startup.check.interval.config.only.set.CWMMH01012W.useraction=Configurare l'inte
 enable.endpoints.config.without.file.health.check.CWMMH01013W=CWMMH01013W: La configurazione dell' enableEndpoints e \u00e8 impostata su false, ma la funzione di controllo dello stato basata sui file non \u00e8 abilitata. Questa configurazione non ha alcun effetto e gli endpoint di controllo dello stato sono abilitati.
 enable.endpoints.config.without.file.health.check.CWMMH01013W.explanation=La configurazione di " enableEndpoints " ha effetto solo quando sono abilitati i controlli di integrit\u00e0 basati su file.
 enable.endpoints.config.without.file.health.check.CWMMH01013W.useraction=Abilitare le funzioni di controllo dello stato dei file oppure rimuovere la configurazione " enableEndpoints ".
+
+enable.endpoints.env.var.invalid.value.CWMMH01014W=CWMMH01014W: \u00c8 stato specificato un valore non valido [ {0} ] per la variabile d''ambiente MP_HEALTH_ENABLE_ENDPOINTS. Il valore fornito deve essere "true" oppure "false". Il runtime utilizza la configurazione del server oppure imposta il valore predefinito su "true".
+enable.endpoints.env.var.invalid.value.CWMMH01014W.explanation=La variabile d'ambiente MP_HEALTH_ENABLE_ENDPOINTS accetta solo i valori "true" o "false" (senza distinzione tra maiuscole e minuscole).
+enable.endpoints.env.var.invalid.value.CWMMH01014W.useraction=Impostare la variabile d'ambiente MP_HEALTH_ENABLE_ENDPOINTS su "true" o "false", oppure rimuovere la variabile d'ambiente per utilizzare la configurazione del server.

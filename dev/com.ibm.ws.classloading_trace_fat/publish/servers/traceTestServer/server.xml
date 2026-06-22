@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server>
+    <include location="../fatTestPorts.xml"/>
+
+    <featureManager>
+        <feature>servlet-4.0</feature>
+        <feature>componenttest-1.0</feature>
+        <feature>ejb-3.2</feature>
+        <feature>jca-1.7</feature>
+    </featureManager>
+
+    <!-- Enable detailed classloading trace -->
+    <logging traceSpecification="*=info:com.ibm.ws.classloading.*=all:com.ibm.ws.classloading.internal.*=all"
+             traceFormat="BASIC"
+             maxFileSize="100"
+             maxFiles="10"/>
+
+    <!-- Test EAR application with multiple modules -->
+    <enterpriseApplication id="traceTestEar" 
+                          location="traceTestEar.ear" 
+                          name="traceTestEar"/>
+
+</server>
