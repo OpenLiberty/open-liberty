@@ -450,10 +450,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             + " ch=" + qpNettyChannelId()
             + " quiescing=" + quiescing);
 
-        if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing) {
+        boolean requestTrailersRequireClose = requestTrailersRequireClose(requestReference);
+        if (nettyContext.pipeline().get("httpKeepAlive") == null || quiescing || requestTrailersRequireClose) {
             Tr.debug(tc, "[QUIESCE-PROOF] NETTY_CLOSE_BRANCH=NO_KEEPALIVE_CLOSE_CHANNEL"
         + " link=" + System.identityHashCode(this)
-        + " ch=" + qpNettyChannelId());
+        + " ch=" + qpNettyChannelId()
+        + " requestTrailersRequireClose=" + requestTrailersRequireClose);
             this.nettyContext.channel().close();
         }else {
 
@@ -469,6 +471,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         return;
 
+    }
+
+    static boolean requestTrailersRequireClose(FullHttpRequest requestReference) {
+        // Trailer-bearing requests have already reached EOS here; close the response side instead
+        // of leaving raw clients blocked behind an otherwise persistent HTTP/1.1 connection.
+        return requestReference != null && requestReference.headers().contains(HttpHeaderNames.TRAILER);
     }
 
     private boolean shouldDrainRequestBodyBeforeNettyClose(Exception closeCause) {
