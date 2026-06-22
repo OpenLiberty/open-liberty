@@ -192,9 +192,16 @@ public class HttpPipelineInitializer extends ChannelInitializerWrapper {
         pipeline.addLast(HttpDispatcherHandler.NAME, new HttpDispatcherHandler(httpConfig));
         addPreHttpCodecHandlers(pipeline);
         addH2CCodecHandlers(pipeline);
+        addH2cTimeoutHandler(pipeline);
         addPreDispatcherHandlers(pipeline, true);
         // Turn off half closure with H2
         pipeline.channel().config().setOption(ChannelOption.ALLOW_HALF_CLOSURE, false);
+    }
+
+    private void addH2cTimeoutHandler(ChannelPipeline pipeline) {
+        if (pipeline.get(TimeoutHandler.class) == null) {
+            pipeline.addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, new TimeoutHandler(httpConfig));
+        }
     }
 
     /**
