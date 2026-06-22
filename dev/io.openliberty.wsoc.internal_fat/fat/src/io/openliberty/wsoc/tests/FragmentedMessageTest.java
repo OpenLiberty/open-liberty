@@ -1468,7 +1468,7 @@ public class FragmentedMessageTest {
      * Sets websocketBufferSize to 2048 bytes and verifies it's enforced by sending
      * two small frames that together exceed the limit.
      */
-    @Test
+    @Test // Intermittent failure in builds
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testDynamicWebSocketBufferSize_SmallLimit() throws Exception {
         LOG.info("Starting testDynamicWebSocketBufferSize_SmallLimit");
@@ -1548,7 +1548,7 @@ public class FragmentedMessageTest {
      * Test that websocketBufferSize configuration is logged and applied.
      * Verifies the buffer size is picked up from httpOptions configuration.
      */
-    @Test
+    @Test // Intermittent failure in builds
     public void testWebSocketBufferSize_ConfigurationLogged() throws Exception {
         LOG.info("Starting testWebSocketBufferSize_ConfigurationLogged");
         
@@ -1687,7 +1687,7 @@ public class FragmentedMessageTest {
      * Test that buffer size is auto-synced when maxMessageSize is set on the server endpoint.
      * Uses DefaultBufferMB1MaxEndpoint which has maxMessageSize=1MB on binary handler.
      */
-    @Test
+    @Test // failure in builds
     public void testBufferSizeNotDecreasedWhenMaxMessageSizeSmaller() throws Exception {
         String testName = "testBufferSizeNotDecreasedWhenMaxMessageSizeSmaller";
         LOG.info(">>> " + testName + " - Starting");
@@ -1721,7 +1721,7 @@ public class FragmentedMessageTest {
      * Test that text buffer size is automatically synced when maxMessageSize is applied to onTextMessage.
      * TextMaxMessageSizeEndpoint has maxMessageSize=512KB on text handler, so text buffer should be synced to 512KB.
      */
-    @Test
+    @Test // Intermittent failure in builds
     public void testTextBufferSizeAutoSyncedToMaxMessageSize() throws Exception {
         String testName = "testTextBufferSizeAutoSyncedToMaxMessageSize";
         LOG.info(">>> " + testName + " - Starting");
@@ -1762,7 +1762,7 @@ public class FragmentedMessageTest {
      * Test that binary buffer size is automatically synced when maxMessageSize is applied to onMessage (binary handler).
      * BinaryMaxMessageSizeEndpoint has maxMessageSize=768KB on binary handler, so binary buffer should be synced to 768KB.
      */
-    @Test
+    @Test // Intermittent failure in builds
     public void testBinaryBufferSizeAutoSyncedToMaxMessageSize() throws Exception {
         String testName = "testBinaryBufferSizeAutoSyncedToMaxMessageSize";
         LOG.info(">>> " + testName + " - Starting");
@@ -1803,7 +1803,7 @@ public class FragmentedMessageTest {
      * Test default buffer sizes when no maxMessageSize is specified on any handler.
      * DefaultEndpoint has both binary and text handlers with no maxMessageSize specified.
      */
-    @Test
+    @Test // Intermittent failure in builds
     public void testDefaultBufferSizesWithBothHandlers() throws Exception {
         String testName = "testDefaultBufferSizesWithBothHandlers";
         LOG.info(">>> " + testName + " - Starting");
@@ -1843,7 +1843,7 @@ public class FragmentedMessageTest {
      * SmallMaxLargeBufferEndpoint has maxMessageSize=8KB with default buffer.
      * Send data in 2KB increments to exceed the 8KB maxMessageSize limit.
      */
-    @Test
+    @Test // Intermittent failure in builds
     @ExpectedFFDC({ "com.ibm.ws.wsoc.MaxMessageException" })
     public void testMaxMessageSizeLimitHitBeforeBufferLimit() throws Exception {
         String testName = "testMaxMessageSizeLimitHitBeforeBufferLimit";
