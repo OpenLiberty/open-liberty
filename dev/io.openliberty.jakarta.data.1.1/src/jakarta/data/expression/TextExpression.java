@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.expression;
 
+import jakarta.data.Sort;
 import jakarta.data.constraint.Like;
 import jakarta.data.constraint.NotLike;
 import jakarta.data.messages.Messages;
@@ -39,9 +40,17 @@ public interface TextExpression<T> extends ComparableExpression<T, String> {
                                          this);
     }
 
+    default Sort<T> ascIgnoreCase() {
+        return Sort.ascIgnoreCase(this);
+    }
+
     default Restriction<T> contains(String substring) {
         Like constraint = Like.substring(substring);
         return BasicRestriction.of(this, constraint);
+    }
+
+    default Sort<T> descIgnoreCase() {
+        return Sort.descIgnoreCase(this);
     }
 
     default Restriction<T> endsWith(String suffix) {
