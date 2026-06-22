@@ -53,6 +53,8 @@ public class NettyHttpConstants {
     public static final AttributeKey<CompletableFuture<Void>> UPGRADE_READY_PROMISE = AttributeKey.valueOf("upgradeReadyPromise");
     public static final AttributeKey<Boolean> QUIESCING = AttributeKey.valueOf("quiescing");
     public static final AttributeKey<Boolean> INPUT_SHUTDOWN_PENDING = AttributeKey.valueOf("shutdownPending");
+    public static final AttributeKey<Boolean> RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE =
+        AttributeKey.valueOf("responseCloseBeforeRequestBodyComplete");
     public static final AttributeKey<Boolean> ASYNC_STREAM_READ =
         AttributeKey.valueOf("httpAsyncStreamRead");
     public static final AttributeKey<AtomicBoolean> ASYNC_READ_DISPATCHED =

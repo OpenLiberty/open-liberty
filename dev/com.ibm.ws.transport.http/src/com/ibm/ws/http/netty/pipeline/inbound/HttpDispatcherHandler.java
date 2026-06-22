@@ -792,13 +792,22 @@ public class HttpDispatcherHandler extends SimpleChannelInboundHandler<HttpObjec
         boolean asyncReadInProgress =
             Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.ASYNC_STREAM_READ).get()) ||
             isAsyncReadDispatched(context.channel());
+        boolean responseCloseBeforeRequestBodyComplete =
+            Boolean.TRUE.equals(context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).get());
         if (queue != null && !queue.isEos()) {
+            if (responseCloseBeforeRequestBodyComplete && !asyncReadInProgress) {
+                queue.signalEos();
+                if (link != null)
+                    link.setBodyComplete();
+            } else {
             context.channel().attr(NettyHttpConstants.INPUT_SHUTDOWN_PENDING).set(Boolean.TRUE);
             queue.signalError(new EOFException("Channel closed before request body completed."));
             if (!asyncReadInProgress) {
                 firePendingAsyncReadError(context);
             }
         }
+        }
+        context.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.FALSE);
         clearPerRequestAttrs(context);
         super.channelInactive(context);
     }

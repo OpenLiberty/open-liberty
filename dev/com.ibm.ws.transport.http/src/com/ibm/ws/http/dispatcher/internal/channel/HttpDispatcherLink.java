@@ -315,8 +315,12 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         if (this.nettyContext.pipeline().get(RemoteIpHandler.class) != null)
             this.nettyContext.pipeline().get(RemoteIpHandler.class).resetState();
 
-        // Read until consumed data to read for other request if not already read
+        // Read until consumed data to read for other request if not already read.
+        // If this response/connection is already closing, there is no next request to protect;
+        // blocking here can deadlock raw clients that advertise a request body and then wait for EOF.
         if (!this.isc.isBodyComplete()) {
+            boolean shouldDrainRequestBody = shouldDrainRequestBodyBeforeNettyClose(e);
+            if (shouldDrainRequestBody) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Body not fully read for request. Consuming until finished.");
             }
@@ -326,6 +330,14 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
             } catch (Exception e2) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Failed to consume remaining Netty request body before close: " + e2);
+                }
+            }
+        } else {
+                if (e == null && this.nettyContext != null) {
+                    this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
+                }
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Skipping remaining request body drain because Netty connection is closing.");
                 }
             }
         } else {
@@ -457,6 +469,40 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
         }
         return;
 
+    }
+
+    private boolean shouldDrainRequestBodyBeforeNettyClose(Exception closeCause) {
+        if (closeCause != null) {
+            return false;
+        }
+        if (this.nettyContext == null) {
+            return true;
+        }
+        if (QuiesceState.isQuiesceInProgress()) {
+            return false;
+        }
+        if (Boolean.TRUE.equals(this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).get())) {
+            return false;
+        }
+        if (this.isc != null && !this.isc.isPersistent()) {
+            return false;
+        }
+        if (this.nettyContext.pipeline().get(NettyServletUpgradeHandler.class) != null) {
+            return true;
+        }
+        FullHttpRequest requestReference = (this.nettyRequest != null) ? this.nettyRequest : this.nettyHeaderOnly;
+        if (requestReference != null && !HttpUtil.isKeepAlive(requestReference)) {
+            return false;
+        }
+        if (this.isc != null && this.isc.getNettyResponse() != null) {
+            if (!HttpUtil.isKeepAlive(this.isc.getNettyResponse())) {
+                return false;
+            }
+            if (this.isc.getNettyResponse().headers().contains(HttpHeaderNames.CONNECTION, ConnectionValues.CLOSE.getName(), true)) {
+                return false;
+            }
+        }
+        return this.nettyContext.pipeline().get("httpKeepAlive") != null;
     }
 
     /*

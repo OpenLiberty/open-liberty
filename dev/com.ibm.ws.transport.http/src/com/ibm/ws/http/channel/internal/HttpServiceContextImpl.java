@@ -3757,6 +3757,8 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         if(!(getTSC().getWriteInterface() instanceof NettyTCPWriteRequestContext))
             throw new RuntimeException("Writing on Netty requires a NettyTCPWriteRequestContext");
 
+        prepareNettyCloseForIncompleteRequestBody(finalWrite);
+
         if (null != writeBuffers) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Writing " + writeBuffers.length + " buffers on netty channel.");
@@ -3794,6 +3796,22 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         }
     }
 
+    private void prepareNettyCloseForIncompleteRequestBody(boolean finalWrite) {
+        if (!finalWrite || isBodyComplete() || nettyResponse == null) {
+            return;
+        }
+        if (nettyResponse.headers().contains(HttpConversionUtil.ExtensionHeaderNames.STREAM_ID.text())) {
+            return;
+        }
+
+        // A finalized response cannot safely leave an HTTP/1.x connection reusable while
+        // unread request-body bytes may still be on the wire. Mark the response state as
+        // close-delimited before the write path so close cleanup does not block draining.
+        this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
+        setPersistent(false);
+        nettyResponse.headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+    }
+
     private void sendNettyFinalContent() {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Netty write flushing out last http content due to final write happening.");
@@ -3805,9 +3823,25 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
         String streamId = (streamIdField.asString() != null) ? streamIdField.asString() : "-1";
 
         DefaultLastHttpContent lastContent = new LastStreamSpecificHttpContent(Integer.valueOf(streamId), trailers);
+        boolean closeAfterFinalContent = "-1".equals(streamId)
+                                        && (!isPersistent()
+                                            || resp.getResponse().headers().contains(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE, true)
+                                            || !trailers.isEmpty()
+                                            || !isBodyComplete());
+
+        if (closeAfterFinalContent && !isBodyComplete()) {
+            this.nettyContext.channel().attr(NettyHttpConstants.RESPONSE_CLOSE_BEFORE_REQUEST_BODY_COMPLETE).set(Boolean.TRUE);
+            setPersistent(false);
+            resp.getResponse().headers().set(HttpHeaderNames.CONNECTION, HttpHeaderValues.CLOSE);
+        }
 
         // Sending last http content since all data was written
-        this.nettyContext.channel().eventLoop().execute(() -> nettyContext.channel().writeAndFlush(lastContent));
+        this.nettyContext.channel().eventLoop().execute(() -> {
+            ChannelFuture future = nettyContext.channel().writeAndFlush(lastContent);
+            if (closeAfterFinalContent) {
+                future.addListener(ChannelFutureListener.CLOSE);
+            }
+        });
     }
 
     /**
