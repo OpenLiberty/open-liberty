@@ -155,4 +155,3 @@ public class HeaderCasingServlet extends HttpServlet {
         doGet(request, response);
     }
 }
-

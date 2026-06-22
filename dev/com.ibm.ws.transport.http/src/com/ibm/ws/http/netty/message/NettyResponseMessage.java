@@ -382,8 +382,9 @@ public class NettyResponseMessage extends NettyBaseMessage implements HttpRespon
 
     @Override
     public void setHeader(String header, String value) {
-        String normalizedName = HeaderValidator.process(header.trim(), FieldType.NAME, config);
-        headers.set(normalizedName, value.trim());
+        String normalizedName = HeaderValidator.process(header, FieldType.NAME, config);
+        String normalizedValue = HeaderValidator.process(value, FieldType.VALUE, config);
+        headers.set(normalizedName, normalizedValue);
     }
 
     @Override

@@ -81,14 +81,31 @@ public class HeaderValidator {
             if(type == FieldType.NAME && token == null){
                 throw new IllegalArgumentException("Header name must not be null");
             }
+            
+            // For addHeader (appendHeader), null values should throw IllegalArgumentException
+            // to match CHFW behavior - but only when validation is enabled
+            if(type == FieldType.VALUE && token == null && config.isHeaderValidationEnabled()){
+                throw new IllegalArgumentException("Null input provided: " + token);
+            }
+            
             String normalized = (token == null) ? "": token.trim();
-    
-            if(type == FieldType.NAME && !token.isEmpty()){
-               normalized = normalizeHeaderName(normalized);
+            
+            // For header names with validation enabled, we need to call normalizeHeaderName
+            // to match CHFW behavior which validates through HttpHeaderKeys.find()
+            if(type == FieldType.NAME && token != null && config.isHeaderValidationEnabled()){
+               if(token.isEmpty() || normalized.isEmpty()){
+                   // Empty or whitespace-only name - validate the original to get CHFW exception
+                   // This will throw StringIndexOutOfBoundsException for empty strings
+                   // or IllegalArgumentException for whitespace-only strings
+                   normalizeHeaderName(token);
+               } else {
+                   // Normal case - normalize the trimmed name
+                   normalized = normalizeHeaderName(normalized);
+               }
             }
         
-        return validate(normalized, type, config);
-
+            return validate(normalized, type, config);
+    
     }
 
     /**
@@ -111,7 +128,9 @@ public class HeaderValidator {
         if(!config.isHeaderValidationEnabled()){
             return token;
         }
-        if (type == FieldType.NAME && !TCHAR_PATTERN.matcher(token).matches()) {
+        
+        // For header names, only validate if not empty (empty is caught earlier with proper exception)
+        if (type == FieldType.NAME && !token.isEmpty() && !TCHAR_PATTERN.matcher(token).matches()) {
             throw new IllegalArgumentException("Invalid header name: " + token);
         }
 
@@ -136,8 +155,12 @@ public class HeaderValidator {
                 if (i + 1 < token.length()) {
                     char next = token.charAt(i + 1);
                     if (next != SPACE && next != TAB) {
-                        error = "Invalid LF not followed by whitespace in header " + token;
+                        error = "Invalid LF not followed by whitespace";
                     }
+                } else {
+                    // LF at end of string (already checked for trailing LF above, but this handles edge case)
+                    // This matches CHFW behavior
+                    error = "Invalid LF not followed by whitespace";
                 }
             }
             if (c >= 32 && c < 127) {
@@ -183,14 +206,17 @@ public class HeaderValidator {
         
         // Use HttpHeaderKeys.find to get the normalized header name
         // This leverages the same matcher logic that CHFW uses
-        HttpHeaderKeys key = HttpHeaderKeys.find(headerName, true);
+        // Pass false for returnNullForInvalidName to throw exceptions for:
+        // - Empty strings (StringIndexOutOfBoundsException from KeyMatcher.add)
+        // - Invalid characters like whitespace and special chars (IllegalArgumentException)
+        HttpHeaderKeys key = HttpHeaderKeys.find(headerName, false);
         
         if (key != null) {
             // Return the properly cased name from the HttpHeaderKeys constant
             return key.getName();
         }
         
-        // If not found (shouldn't happen with returnNullForInvalidName=true), 
+        // If not found (shouldn't happen with returnNullForInvalidName=false),
         // return the original name
         return headerName;
     }
