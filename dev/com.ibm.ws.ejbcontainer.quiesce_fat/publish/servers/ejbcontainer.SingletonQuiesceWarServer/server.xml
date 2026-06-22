@@ -1,0 +1,28 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <webApplication id="SingletonQuiesce" location="SingletonQuiesce.war">
+        <ejb-jar-bnd>
+            <session name="SingletonQuiesceServer">
+                <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
+            </session>
+            <session name="SingletonQuiesceServerOverride">
+                <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
+            </session>
+            <session name="StartupSingletonQuiesceServer">
+                <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
+            </session>
+            <session name="StartupSingletonQuiesceServerOverride">
+                <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
+            </session>
+        </ejb-jar-bnd>
+    </webApplication>
+
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+</server>
