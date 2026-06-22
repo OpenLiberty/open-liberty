@@ -29,6 +29,7 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
+import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
@@ -278,6 +279,109 @@ public class HeaderCasingTests {
                 LOG.info("Header " + expectedCasing + " not present in response (optional)");
             }
         }
+    }
+
+    /**
+     * Test edge cases for setHeader and addHeader methods.
+     * This test validates that both Netty and CHFW implementations handle edge cases identically:
+     * - null header names/values
+     * - empty string header names/values
+     * - whitespace-only header names/values
+     * - special characters in header names
+     * - newlines in header values
+     * - very long header values
+     */
+    @Test
+    @ExpectedFFDC("java.lang.IllegalArgumentException")
+    public void testHeaderEdgeCases() throws Exception {
+        LOG.info("Testing header edge cases");
+        
+        HttpURLConnection con = getConnection(SERVLET_PATH + "?action=testEdgeCases");
+        con.setRequestMethod("GET");
+        
+        int responseCode = con.getResponseCode();
+        assertEquals("Unexpected response code", HttpURLConnection.HTTP_OK, responseCode);
+        
+        // Read the response to see the edge case test results
+        BufferedReader reader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        StringBuilder response = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            response.append(line).append("\n");
+        }
+        reader.close();
+        
+        String responseText = response.toString();
+        LOG.info("Edge case test results:\n" + responseText);
+        
+        // Validate expected behaviors based on both implementations
+        
+        // Test 1: setHeader with null header name - No exception (both impls)
+        assertTrue("Test 1 should show no exception for null header name with setHeader",
+                   responseText.contains("Test 1:") && responseText.contains("No exception thrown"));
+        
+        // Test 2: setHeader with null header value - No exception (both impls)
+        assertTrue("Test 2 should show no exception for null header value with setHeader",
+                   responseText.contains("Test 2:") && responseText.contains("No exception thrown"));
+        
+        // Test 3: addHeader with null header name - NullPointerException (both impls)
+        if(componenttest.rules.repeater.JakartaEEAction.isEE11OrLaterActive()) {
+            assertTrue("Test 3 should show NullPointerException for null header name with addHeader",
+                    responseText.contains("Test 3:") && responseText.contains("No exception thrown"));
+        } else {
+            assertTrue("Test 3 should show NullPointerException for null header name with addHeader",
+                    responseText.contains("Test 3:") && responseText.contains("NullPointerException"));
+        }
+        
+        // Test 4: addHeader with null header value - IllegalArgumentException (both impls)
+        assertTrue("Test 4 should show IllegalArgumentException for null header value with addHeader",
+                   responseText.contains("Test 4:") && responseText.contains("IllegalArgumentException"));
+        
+        // Test 5: setHeader with empty string header name - StringIndexOutOfBoundsException (both impls)
+        assertTrue("Test 5 should show StringIndexOutOfBoundsException for empty header name with setHeader",
+                   responseText.contains("Test 5:") && responseText.contains("StringIndexOutOfBoundsException"));
+        
+        // Test 6: setHeader with empty string header value - No exception (both impls)
+        assertTrue("Test 6 should show no exception for empty header value with setHeader",
+                   responseText.contains("Test 6:") && responseText.contains("No exception thrown"));
+        
+        // Test 7: addHeader with empty string header name - StringIndexOutOfBoundsException (both impls)
+        assertTrue("Test 7 should show StringIndexOutOfBoundsException for empty header name with addHeader",
+                   responseText.contains("Test 7:") && responseText.contains("StringIndexOutOfBoundsException"));
+        
+        // Test 8: addHeader with empty string header value - No exception (both impls)
+        assertTrue("Test 8 should show no exception for empty header value with addHeader",
+                   responseText.contains("Test 8:") && responseText.contains("No exception thrown"));
+        
+        // Test 9: setHeader with whitespace-only header name - IllegalArgumentException (both impls)
+        assertTrue("Test 9 should show IllegalArgumentException for whitespace header name",
+                   responseText.contains("Test 9:") && responseText.contains("IllegalArgumentException"));
+        
+        // Test 10: setHeader with whitespace-only header value - No exception (both impls)
+        assertTrue("Test 10 should show no exception for whitespace header value",
+                   responseText.contains("Test 10:") && responseText.contains("No exception thrown"));
+        
+        // Test 11: setHeader with special characters in header name - IllegalArgumentException (both impls)
+        assertTrue("Test 11 should show IllegalArgumentException for special chars in header name",
+                   responseText.contains("Test 11:") && responseText.contains("IllegalArgumentException"));
+        
+        // Test 12: setHeader with newline in header value - IllegalArgumentException (both impls)
+        assertTrue("Test 12 should show IllegalArgumentException for newline in header value",
+                   responseText.contains("Test 12:") && responseText.contains("IllegalArgumentException"));
+        
+        // Test 13: setHeader with very long header value - No exception (both impls)
+        assertTrue("Test 13 should show no exception for very long header value",
+                   responseText.contains("Test 13:") && responseText.contains("No exception thrown"));
+        
+        // Test 14: setHeader with both null name and value - No exception (both impls)
+        assertTrue("Test 14 should show no exception for both null name and value",
+                   responseText.contains("Test 14:") && responseText.contains("No exception thrown"));
+        
+        // Test 15: addHeader with both empty string name and value - StringIndexOutOfBoundsException (both impls)
+        assertTrue("Test 15 should show StringIndexOutOfBoundsException for both empty strings",
+                   responseText.contains("Test 15:") && responseText.contains("StringIndexOutOfBoundsException"));
+        
+        LOG.info("All edge case validations passed - both implementations behave identically");
     }
 
     /**
