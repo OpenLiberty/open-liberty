@@ -1,20 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2024 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+  * Copyright The RESTEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.plugins.server.servlet;
@@ -25,6 +11,8 @@ import java.security.PrivilegedExceptionAction;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import jakarta.ws.rs.core.Application;
 
@@ -92,6 +80,12 @@ public abstract class ConfigurationBootstrap implements ResteasyConfiguration {
             String[] p = providers.split(",");
             for (String pr : p)
                 deployment.getProviderClasses().add(pr.trim());
+        }
+
+        final String disableProviders = getParameter(ResteasyContextParameters.RESTEASY_DISABLE_PROVIDERS);
+        if (disableProviders != null && !disableProviders.isBlank()) {
+            deployment.addDisabledProviderClasses(
+                    Stream.of(disableProviders.split(",")).map(String::trim).collect(Collectors.toSet()));
         }
 
         String resteasySecurity = getParameter(ResteasyContextParameters.RESTEASY_ROLE_BASED_SECURITY);

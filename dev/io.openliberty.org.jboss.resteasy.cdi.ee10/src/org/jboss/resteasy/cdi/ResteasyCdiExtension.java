@@ -1,20 +1,6 @@
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2024 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Copyright The RESTEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
  */
 
 package org.jboss.resteasy.cdi;
@@ -27,9 +13,11 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import jakarta.decorator.Decorator;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -51,6 +39,7 @@ import jakarta.enterprise.inject.spi.ProcessInjectionTarget;
 import jakarta.enterprise.inject.spi.ProcessSessionBean;
 import jakarta.enterprise.inject.spi.WithAnnotations;
 import jakarta.enterprise.util.AnnotationLiteral;
+import jakarta.inject.Inject;
 import jakarta.ws.rs.Path;
 import jakarta.ws.rs.client.Client;
 import jakarta.ws.rs.client.ClientBuilder;
@@ -73,6 +62,7 @@ import org.jboss.resteasy.plugins.providers.RegisterBuiltin;
  */
 public class ResteasyCdiExtension implements Extension {
     private static boolean active;
+    private static final String JAKARTA_EJB_STATEFUL = "jakarta.ejb.Stateful";
     private static final String JAKARTA_EJB_STATELESS = "jakarta.ejb.Stateless";
     private static final String JAKARTA_EJB_SINGLETON = "jakarta.ejb.Singleton";
 
@@ -92,6 +82,7 @@ public class ResteasyCdiExtension implements Extension {
     }
 
     private final Map<Class<?>, Type> sessionBeanInterface = new HashMap<>();
+    private final Set<Class<?>> beanContainer = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private boolean generateClientBean = true;
     private boolean addContextProducers = true;
     private boolean noApplicationFound = true;
@@ -134,6 +125,11 @@ public class ResteasyCdiExtension implements Extension {
                             .newClient(RegisterBuiltin.getClientInitializedResteasyProviderFactory(getClassLoader())))
                     .disposeWith((client, instance) -> client.close());
         }
+        final Set<Class<?>> resources = Set.copyOf(beanContainer);
+        final ResteasyBeanContainer instance = resources::contains;
+        event.addBean().addType(ResteasyBeanContainer.class)
+                .scope(ApplicationScoped.class)
+                .createWith(ctx -> instance);
     }
 
     /**
@@ -175,6 +171,10 @@ public class ResteasyCdiExtension implements Extension {
             BeanManager beanManager) {
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
+        // Check if this is a stateful bean and consider it not managed by the CDI container. This means we will not add
+        // it to the bean container.
+        final boolean isStatefulBean = isStatefulBean(annotatedType);
+
         if (!annotatedType.getJavaClass().isInterface()
                 && !isSessionBean(annotatedType)
                 && !annotatedType.isAnnotationPresent(Decorator.class)) {
@@ -182,6 +182,11 @@ public class ResteasyCdiExtension implements Extension {
                 LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsResource(annotatedType.getJavaClass()
                         .getCanonicalName()));
                 event.configureAnnotatedType().add(requestScopedLiteral);
+                if (!isStatefulBean) {
+                    beanContainer.add(annotatedType.getJavaClass());
+                }
+            } else if (!isStatefulBean && Utils.isNormalScope(annotatedType, beanManager)) {
+                beanContainer.add(annotatedType.getJavaClass());
             }
         }
     }
@@ -197,6 +202,10 @@ public class ResteasyCdiExtension implements Extension {
             BeanManager beanManager) {
         AnnotatedType<T> annotatedType = event.getAnnotatedType();
 
+        // Check if this is a stateful bean and consider it not managed by the CDI container. This means we will not add
+        // it to the bean container.
+        final boolean isStatefulBean = isStatefulBean(annotatedType);
+
         if (!annotatedType.getJavaClass().isInterface()
                 && !isSessionBean(annotatedType)
                 && !isUnproxyableClass(annotatedType.getJavaClass())) {
@@ -204,6 +213,11 @@ public class ResteasyCdiExtension implements Extension {
                 LogMessages.LOGGER.debug(Messages.MESSAGES.discoveredCDIBeanJaxRsProvider(annotatedType.getJavaClass()
                         .getCanonicalName()));
                 event.configureAnnotatedType().add(applicationScopedLiteral);
+                if (!isStatefulBean) {
+                    beanContainer.add(annotatedType.getJavaClass());
+                }
+            } else if (!isStatefulBean && Utils.isNormalScope(annotatedType, beanManager)) {
+                beanContainer.add(annotatedType.getJavaClass());
             }
         }
     }
@@ -217,9 +231,22 @@ public class ResteasyCdiExtension implements Extension {
      */
     public <T extends Application> void observeApplications(@Observes ProcessAnnotatedType<T> event,
             BeanManager beanManager) {
-        noApplicationFound = false;
-        if (!Utils.isScopeDefined(event.getAnnotatedType(), beanManager)) {
-            event.configureAnnotatedType().add(applicationScopedLiteral);
+        final Class<T> applicationClass = event.getAnnotatedType().getJavaClass();
+
+        // Check if this is a stateful bean and consider it not managed by the CDI container. This means we will not add
+        // it to the bean container.
+        final boolean isStatefulBean = isStatefulBean(event.getAnnotatedType());
+
+        if (!Modifier.isAbstract(applicationClass.getModifiers())) {
+            noApplicationFound = false;
+            if (!Utils.isScopeDefined(event.getAnnotatedType(), beanManager)) {
+                event.configureAnnotatedType().add(applicationScopedLiteral);
+                if (!isStatefulBean) {
+                    beanContainer.add(applicationClass);
+                }
+            } else if (!isStatefulBean && Utils.isNormalScope(event.getAnnotatedType(), beanManager)) {
+                beanContainer.add(applicationClass);
+            }
         }
     }
 
@@ -262,9 +289,9 @@ public class ResteasyCdiExtension implements Extension {
             if ((type instanceof Class<?>) && ((Class<?>) type).isInterface()) {
                 Class<?> clazz = (Class<?>) type;
                 final Class<?> beanClass = bean.getBeanClass();
-                if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) { // Liberty Change
+                if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) {
                     sessionBeanInterface.put(bean.getBeanClass(), type);
-                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass)); // Liberty Change
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass));
                     return;
                 }
             }
@@ -288,6 +315,16 @@ public class ResteasyCdiExtension implements Extension {
         return false;
     }
 
+    private boolean isStatefulBean(final AnnotatedType<?> annotatedType) {
+        for (Annotation annotation : annotatedType.getAnnotations()) {
+            Class<?> annotationType = annotation.annotationType();
+            if (annotationType.getName().equals(JAKARTA_EJB_STATEFUL)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Check for select case of unproxyable bean type.
      * (see CDI 2.0 spec, section 3.11)
@@ -302,7 +339,7 @@ public class ResteasyCdiExtension implements Extension {
         // or have no non-private no-args constructor
         return isFinal(clazz) ||
                 hasNonPrivateNonStaticFinalMethod(clazz) ||
-                hasNoNonPrivateNoArgsConstructor(clazz);
+                !hasValidConstructor(clazz);
     }
 
     private boolean isFinal(Class<?> clazz) {
@@ -321,17 +358,22 @@ public class ResteasyCdiExtension implements Extension {
         return false;
     }
 
-    private boolean hasNoNonPrivateNoArgsConstructor(Class<?> clazz) {
+    private boolean hasValidConstructor(final Class<?> clazz) {
+        // Check if there is a constructor with @Inject or a no-arg constructor
+        for (Constructor<?> c : clazz.getDeclaredConstructors()) {
+            if (c.isAnnotationPresent(Inject.class)) {
+                return true;
+            }
+        }
+        // For a bean to be considered proxyable, the bean must have a non-private constructor with no parameters. If
+        // a method matching those requirements does not exist, we'll not register this component as a CDI bean.
         Constructor<?> constructor;
         try {
-            constructor = clazz.getConstructor();
-        } catch (NoSuchMethodException exception) {
-            return true;
+            constructor = clazz.getDeclaredConstructor();
+        } catch (NoSuchMethodException e) {
+            return false;
         }
-
-        // Note: this probably can only be private if the provider also has
-        // a non-private @Context constructor, which is unlikely but possible.
-        return isPrivate(constructor);
+        return !isPrivate(constructor);
     }
 
     private boolean isFinal(Member member) {

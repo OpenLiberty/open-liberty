@@ -1,22 +1,7 @@
-
 /*
- * JBoss, Home of Professional Open Source.
- *
- * Copyright 2024 Red Hat, Inc., and individual contributors
- * as indicated by the @author tags.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+ * Copyright The RestEasy Authors
+ * SPDX-License-Identifier: Apache-2.0
+*/
 
 package org.jboss.resteasy.core.providerfactory;
 
@@ -167,12 +152,22 @@ public class ResteasyProviderFactoryImpl extends ResteasyProviderFactory
     protected boolean lockSnapshots;
     protected StatisticsControllerImpl statisticsController = new StatisticsControllerImpl();
 
-    private final boolean defaultExceptionManagerEnabled = getOptionValue(Options.ENABLE_DEFAULT_EXCEPTION_MAPPER);
+    private final boolean defaultExceptionManagerEnabled;
 
     public ResteasyProviderFactoryImpl() {
+        this(getOptionValue(Options.ENABLE_DEFAULT_EXCEPTION_MAPPER));
+    }
+
+    /**
+     * Creates a new factory.
+     *
+     * @param defaultExceptionManagerEnabled {@code true} if the default exception manager should be enabled
+     */
+    public ResteasyProviderFactoryImpl(final boolean defaultExceptionManagerEnabled) {
         // NOTE!!! It is important to put all initialization into initialize() as ThreadLocalResteasyProviderFactory
         // subclasses and delegates to this class.
         initialize();
+        this.defaultExceptionManagerEnabled = defaultExceptionManagerEnabled;
     }
 
     /**
@@ -188,6 +183,7 @@ public class ResteasyProviderFactoryImpl extends ResteasyProviderFactory
         initializeCommon(null, true, false);
         // don't know when client will be made shareable so just do it here
         lockSnapshots();
+        this.defaultExceptionManagerEnabled = getOptionValue(Options.ENABLE_DEFAULT_EXCEPTION_MAPPER);
     }
 
     /**
@@ -215,6 +211,7 @@ public class ResteasyProviderFactoryImpl extends ResteasyProviderFactory
             serverHelper = new ServerHelper(this, parentImpl.serverHelper);
             initializeCommon(parentImpl, false, true);
         }
+        this.defaultExceptionManagerEnabled = getOptionValue(Options.ENABLE_DEFAULT_EXCEPTION_MAPPER);
     }
 
     protected void registerBuiltin() {
@@ -643,7 +640,25 @@ public class ResteasyProviderFactoryImpl extends ResteasyProviderFactory
             throw new RuntimeException(Messages.MESSAGES.registeringContextResolverAsLambda());
         }
         copyResolversIfNeeded();
-        Type typeParameter = Types.getActualTypeArgumentsOfAnInterface(providerClass, ContextResolver.class)[0];
+        Type[] typeParameters = Types.getActualTypeArgumentsOfAnInterface(providerClass, ContextResolver.class);
+        Type typeParameter;
+        if (typeParameters.length == 0) {
+            // This may be an indication that this is a CDI client proxy. In some cases, the ContextResolver interface
+            // may appear as implemented by the proxy, in other words providerClass.getGenericTypes() may return the
+            // ContextResolver interface. However, this is not a ParameterizedType, therefore the generic type cannot
+            // be resolved on the client proxy. For this reason, we will check the super class as it should be the
+            // non-proxied type we'd expect and we can get the generic type for the ContextResolver from there.
+            final Class<?> superType = providerClass.getSuperclass();
+            if (superType != null) {
+                typeParameters = Types.getActualTypeArgumentsOfAnInterface(superType, ContextResolver.class);
+            } else {
+                throw Messages.MESSAGES.couldNotDetermineGenericType(providerClass.getName(), ContextResolver.class.getName());
+            }
+            if (typeParameters.length == 0) {
+                throw Messages.MESSAGES.couldNotDetermineGenericType(providerClass.getName(), ContextResolver.class.getName());
+            }
+        }
+        typeParameter = typeParameters[0];
         Utils.injectProperties(this, providerClass, provider);
         Class<?> parameterClass = Types.getRawType(typeParameter);
         MediaTypeMap<SortedKey<ContextResolver>> resolvers = contextResolvers.get(parameterClass);
@@ -1016,6 +1031,7 @@ public class ResteasyProviderFactoryImpl extends ResteasyProviderFactory
         Class exceptionType = type;
         SortedKey<ExceptionMapper> mapper = null;
         Map<Class<?>, SortedKey<ExceptionMapper>> mappers = getSortedExceptionMappers();
+        final boolean defaultExceptionManagerEnabled = isDefaultExceptionManagerEnabled();
         if (mappers == null && defaultExceptionManagerEnabled) {
             return (ExceptionMapper<T>) DefaultExceptionMapper.INSTANCE;
         }
