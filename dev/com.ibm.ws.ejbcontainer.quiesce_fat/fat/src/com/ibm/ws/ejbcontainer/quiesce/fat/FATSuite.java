@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 import org.junit.runners.Suite.SuiteClasses;
 
+import com.ibm.ws.ejbcontainer.quiesce.fat.tests.MdbQuiesceTest;
 import com.ibm.ws.ejbcontainer.quiesce.fat.tests.SingletonQuiesceTest;
 
 import componenttest.rules.repeater.FeatureReplacementAction;
@@ -24,6 +25,7 @@ import componenttest.rules.repeater.RepeatTests;
 
 @RunWith(Suite.class)
 @SuiteClasses({
+                MdbQuiesceTest.class,
                 SingletonQuiesceTest.class
 })
 

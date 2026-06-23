@@ -1,0 +1,90 @@
+<server>
+    <featureManager>
+        <feature>servlet-3.1</feature>
+        <feature>ejbLite-3.2</feature>
+        <feature>mdb-3.2</feature>
+        <feature>wasJmsServer-1.0</feature>
+        <feature>wasJmsClient-2.0</feature>
+        <feature>componenttest-1.0</feature>
+    </featureManager>
+
+    <include location="../fatTestPorts.xml"/>
+
+    <messagingEngine>
+        <queue id="MdbQuiesceEjbDefaultQueue"/>
+        <queue id="MdbQuiesceEjbBndQueue"/>
+        <queue id="MdbQuiesceEjbServerQueue"/>
+        <queue id="MdbQuiesceWebDefaultQueue"/>
+        <queue id="MdbQuiesceWebBndQueue"/>
+        <queue id="MdbQuiesceWebServerQueue"/>
+    </messagingEngine>
+
+    <jmsQueueConnectionFactory id="MdbQuiesceQCF" jndiName="jms/MdbQuiesceQCF">
+        <properties.wasJms/>
+    </jmsQueueConnectionFactory>
+
+    <!-- EJB Module Queues and Activation Specs -->
+    <jmsQueue id="MdbQuiesceEjbDefaultQueue" jndiName="jms/MdbQuiesceEjbDefaultQueue">
+        <properties.wasJms queueName="MdbQuiesceEjbDefaultQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceEjb/MdbQuiesceDefault">
+        <properties.wasJms destinationRef="MdbQuiesceEjbDefaultQueue"/>
+    </jmsActivationSpec>
+
+    <jmsQueue id="MdbQuiesceEjbBndQueue" jndiName="jms/MdbQuiesceEjbBndQueue">
+        <properties.wasJms queueName="MdbQuiesceEjbBndQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceEjb/MdbQuiesceBnd">
+        <properties.wasJms destinationRef="MdbQuiesceEjbBndQueue"/>
+    </jmsActivationSpec>
+
+    <jmsQueue id="MdbQuiesceEjbServerQueue" jndiName="jms/MdbQuiesceEjbServerQueue">
+        <properties.wasJms queueName="MdbQuiesceEjbServerQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceEjb/MdbQuiesceServer">
+        <properties.wasJms destinationRef="MdbQuiesceEjbServerQueue"/>
+    </jmsActivationSpec>
+
+    <!-- Web Module Queues and Activation Specs -->
+    <jmsQueue id="MdbQuiesceWebDefaultQueue" jndiName="jms/MdbQuiesceWebDefaultQueue">
+        <properties.wasJms queueName="MdbQuiesceWebDefaultQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceWeb/MdbQuiesceDefault">
+        <properties.wasJms destinationRef="MdbQuiesceWebDefaultQueue"/>
+    </jmsActivationSpec>
+
+    <jmsQueue id="MdbQuiesceWebBndQueue" jndiName="jms/MdbQuiesceWebBndQueue">
+        <properties.wasJms queueName="MdbQuiesceWebBndQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceWeb/MdbQuiesceBnd">
+        <properties.wasJms destinationRef="MdbQuiesceWebBndQueue"/>
+    </jmsActivationSpec>
+
+    <jmsQueue id="MdbQuiesceWebServerQueue" jndiName="jms/MdbQuiesceWebServerQueue">
+        <properties.wasJms queueName="MdbQuiesceWebServerQueue"/>
+    </jmsQueue>
+
+    <jmsActivationSpec id="MdbQuiesceApp/MdbQuiesceWeb/MdbQuiesceServer">
+        <properties.wasJms destinationRef="MdbQuiesceWebServerQueue"/>
+    </jmsActivationSpec>
+
+    <application id="MdbQuiesceApp" location="MdbQuiesceApp.ear">
+        <ejb-jar-bnd moduleName="MdbQuiesceEjb">
+            <message-driven name="MdbQuiesceServer">
+                <env-entry name="io.openliberty.ejb.deactivateOnQuiesce" value="false"/>
+            </message-driven>
+        </ejb-jar-bnd>
+        <ejb-jar-bnd moduleName="MdbQuiesceWeb">
+            <message-driven name="MdbQuiesceServer">
+                <env-entry name="io.openliberty.ejb.deactivateOnQuiesce" value="false"/>
+            </message-driven>
+        </ejb-jar-bnd>
+    </application>
+
+    <javaPermission className="java.util.PropertyPermission" name="*" actions="read,write"/>
+</server>

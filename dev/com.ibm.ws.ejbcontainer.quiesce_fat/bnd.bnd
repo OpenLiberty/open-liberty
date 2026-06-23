@@ -15,6 +15,8 @@ bVersion=1.0
 
 src: \
     fat/src, \
+    test-applications/MdbQuiesceEjb.jar/src, \
+    test-applications/MdbQuiesceWeb.war/src, \
     test-applications/SingletonQuiesce.war/src, \
     test-applications/SingletonQuiesceEjb.jar/src, \
     test-applications/SingletonQuiesceWeb.war/src
@@ -24,6 +26,14 @@ fat.project: true
 tested.features: \
     ejbLite-3.2,\
     enterpriseBeansLite-4.0,\
+    mdb-3.2,\
+    mdb-4.0,\
+    connectors-2.0,\
+    connectors-2.1,\
+    wasJmsServer-1.0,\
+    messagingServer-3.0,\
+    wasJmsClient-2.0,\
+    messagingClient-3.0,\
     servlet-3.1,\
     servlet-4.0,\
     servlet-5.0,\
@@ -33,4 +43,5 @@ tested.features: \
 -buildpath: \
     com.ibm.websphere.javaee.annotation.1.1;version=latest,\
     com.ibm.websphere.javaee.ejb.3.1;version=latest,\
+    com.ibm.websphere.javaee.jms.2.0;version=latest,\
     com.ibm.websphere.javaee.servlet.3.1;version=latest
