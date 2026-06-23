@@ -37,7 +37,7 @@ import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.v1_1.web.Data_1_1_Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 21)
+@MinimumJavaLevel(javaLevel = 17)
 @MaximumJavaLevel(javaLevel = 25) // TODO remove once RTC 309096 updates Byte Buddy to a version that supports java 26+
 public class Data_1_1_HibernateTest extends FATServletClient {
     /**
