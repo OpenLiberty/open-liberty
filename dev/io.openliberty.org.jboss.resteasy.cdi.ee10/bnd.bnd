@@ -110,4 +110,5 @@ Include-Resource:\
   io.openliberty.org.jboss.resteasy.common.ee10,\
   io.openliberty.jakarta.restfulWS.3.1,\
   io.openliberty.jakarta.cdi.4.0,\
-  io.openliberty.jakarta.annotation.2.1
+  io.openliberty.jakarta.annotation.2.1,\
+  io.openliberty.jakarta.servlet.6.0;version=latest
