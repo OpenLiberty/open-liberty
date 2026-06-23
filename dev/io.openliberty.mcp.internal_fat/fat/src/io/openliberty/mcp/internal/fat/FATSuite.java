@@ -26,8 +26,8 @@ import io.openliberty.mcp.internal.fat.isolation.MultiAppIsolationTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.AsyncToolLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
-import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
 import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
+import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
@@ -114,7 +114,10 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
+                // TestContainer Tests
                 OidcTests.class,
+                ConformanceTests.class,
+
                 CustomServerInfoTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
@@ -140,9 +143,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 PermitAllTestsStateless.class,
                 DenyAllTestsStateless.class,
                 NoClassAnnotationTestsStateless.class,
-                AdminsRoleAllowedTestsStateless.class,
-                // Conformance Tests
-                ConformanceTests.class
+                AdminsRoleAllowedTestsStateless.class
 
 })
 
