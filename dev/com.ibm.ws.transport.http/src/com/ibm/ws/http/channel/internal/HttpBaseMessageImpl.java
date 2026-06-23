@@ -803,6 +803,9 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Invalid Content-Length: " + Long.toString(length));
                 }
+                if (null != this.myHSC && this.myHSC.getHttpConfig().isRequestSmugglingProtectionEnabled()) {
+                    this.myHSC.setPersistent(false);
+                }
                 return false;
             }
             // check for existing Content-Length header
@@ -833,7 +836,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
             this.myContentLength = length;
         } catch (NumberFormatException nfe) {
             // If the issue is caught in an incoming request, we need to close the connection to avoid possible vulnerabilities
-            if (isIncoming()) { // TODO: Do we need to check if isRequestSmugglingProtectionEnabled?
+            if (isIncoming() && null != this.myHSC && this.myHSC.getHttpConfig().isRequestSmugglingProtectionEnabled()) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "setContentLength(b): error parsing value: " + nfe.getMessage());
                 }
