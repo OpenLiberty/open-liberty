@@ -36,7 +36,7 @@ import componenttest.topology.utils.FATServletClient;
 import test.jakarta.data.v1_1.web.Data_1_1_Servlet;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 21)
+@MinimumJavaLevel(javaLevel = 17)
 public class Data_1_1_Test extends FATServletClient {
     /**
      * Error messages, typically for invalid repository methods, that are
