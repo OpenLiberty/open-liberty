@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=包含維護序號機制以及在物件上實際設定序號所耗費的時間
+
+cache_hits=在快取中找到物件的次數
+
+cache_misses=在快取中找不到物件的次數
+
+caching=包含在快取中新增、查閱和移除物件所耗費的時間
+
+change_set_not_processed=因為在快取中找不到物件，而擲出的 ObjectChangeSets 數目
+
+change_set_processed=在快取中找到的 ObjectChangeSets 數目
+
+client_session_count=已登入的 ClientSession 數目
+
+connect_call=發出的連接呼叫總數
+
+connection=管理連線所耗費的時間，包括：連接、重新連接，以及與資料來源切斷連線
+
+connection_in_used=對於任何專用 ConnectionPool(Write, ExclusiveRead)，每一個儲存區的使用中連線數
+
+connection_ping=測試資料庫連線以判斷是否可以使用所耗費的時間。
+
+database_execute=呼叫 JDBC Statement 所耗費的時間，包括呼叫 close、executeUpdate 和 executeQuery 所耗費的時間
+
+deleted_object=需要從 ObjectChangeSet 中的 identityMap 移除的物件
+
+descriptor_event=執行 DescriptorEvent 所耗費的時間
+
+disconnect_call=所發出的切斷連線呼叫總數
+
+distributed_merge=將遠端交易變更合併到本端共用快取所耗費的時間。會在使用快取同步化時出現
+
+jts_aftercompletion=執行 JTS afterCompletion(Object status) 方法所耗費的時間
+
+jts_beforecompletion=執行 JTS beforeCompletion() 方法所耗費的時間
+
+logging=記載 TopLink 活動所耗費的時間
+
+merge_time=將變更合併至共用快取所耗費的時間。
+
+object_building=從資料庫列建置持續性物件所耗費的時間
+
+optimistic_lock=已擲出的樂觀鎖定異常狀況數目
+
+query=執行作業所耗費的時間總計：{0}
+
+query_misc=執行作業所耗費的時間總計：{0}。這是指沒有包含在任何查詢名詞中的特殊作業而言，例如：批次寫入。
+
+query_prepareation=準備查詢的時間
+
+rcm_message_received=透過 RCM 收到的訊息數目
+
+rcm_message_sent=透過 RCM 傳送的訊息數目
+
+rcm_status=[未配置、已啟動、已停止] 之一
+
+remote_change_set=從遠端機器收到和已處理的變更集數目
+
+row_fetch=從 jdbc ResultSet 建置記錄物件所耗費的時間。包括正規 SQL 呼叫和儲存程序呼叫
+
+session_event=執行 SessionEvent 所耗費的時間
+
+session_login_time=登入階段作業的時間
+
+session_name=階段作業的名稱
+
+sql_generation=產生 SQL 所耗費的時間。若為 TopLink 表示式，則是將表示式轉換成 SQL 所耗費的時間
+
+sql_prepare=JDBC 準備陳述式所耗費的時間。亦包含 EIS 建立連線的相關聯互動，以及建立輸入及輸出記錄物件所耗費的時間。
+
+unitofwork_commit=測量 UnitOfWork 的確定程序
+
+unitofwork_commits=UnitOfWork 確定數目
+
+unitofwork_count=已建立的 UnitOfWork 物件數目總計
+
+unitofwork_register=包含在 registerExistingObject、registerNewContainerBean、registerNewContainerBeanForCMP、registerNewObject、registerObject、readIntoWorkingCopy) 中所耗費的時間
+
+unitofwork_rollback=已回復的 UnitOfWork 確定數目
+
+wrapping=包裝 CMP 和 BMP Bean 兩者所耗費的時間
+

@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=Aşteptarea a fost întreruptă. {0}Mesaj: [{1}]
+
+2002=Eşuare la aşteptare în ServerSession.
+
+2003=Eşuare la aşteptare în ClientSession.
+
+2004=A fost încercat un semnal înainte de aşteptare() în ConcurrencyManager. Aceasta înseamnă în mod normal că o încercare a fost făcută pentru comiterea {0} sau derularea înapoi a tranzacţiei înainte de a fi începută, sau derularea înapoi de două ori a tranzacţiei.
+
+2005=Eşuare la aşteptare în Secvenţionarea handler-ului de conexiune pentru DatabaseSession.
+
+2006=Încercați să dobândiți valorile de secvențiere printr-o singură conexiune ({0}) simultan prin mai multe fire.
+
+2007=Numărul maxim de încercări de blocare obiect: {0} a fost depăşit.  Eşuare la clonarea obiectului.
+
+2008=Numărul maxim de încercări de blocare obiect: {0} a fost depăşit.  Eşuare la combinarea tranzacţiei.
+
+2009=Numărul maxim de încercări de blocare obiect a fost depăşit.  Eşuare la construirea obiectului. Firul de execuţie: {0} are o blocare asupra obiectului dar firul de execuţie: {1} construieşte obiectul.
+
+2010=Blocarea a fost deja tranziţionată pentru o Blocare amânată.  O a doua încercare de tranziţie a blocării a fost solicitată de firul de execuţie: {0} în timpul combinării.
+

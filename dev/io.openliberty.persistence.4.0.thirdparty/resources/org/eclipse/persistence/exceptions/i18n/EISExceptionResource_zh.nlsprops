@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=必须设置 {0} 属性。
+
+17008=遇到无效 {0} 属性。
+
+17009=必须设置 {0} 或 {1} 属性。
+
+17010=输出记录包含不受支持的消息类型
+
+17011=尚未指定任何连接工厂。
+
+17012=InteractionSspec 必须是 CciJMSInteractionSpec。
+
+17013=Record 必须是 CciJMSRecord。
+
+17014=交互规范类型未知
+
+17015=输入必须包含单个文本元素。
+
+17016=发生超时 - 未接收到任何消息。
+
+17017=输入记录包含不受支持的消息类型。
+
+17018=无法在非事务性会话上调用“begin()”。
+
+17019=针对事务性会话进行测试时发生问题：
+
+17020=InteractionSspec 必须是 AQInteractionSpec。
+
+17021=Record 必须是 AQRecord。
+
+17022=输入必须包含单个原始元素。
+
+17023=设置 MQQueueConnectionFactory 属性时发生异常。
+
+17024=未能删除文件：{0}
+
+17025=此映射需要外键分组元素，因为存在多个外键。
+

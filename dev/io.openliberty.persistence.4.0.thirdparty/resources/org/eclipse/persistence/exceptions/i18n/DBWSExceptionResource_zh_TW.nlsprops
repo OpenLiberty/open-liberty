@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=找不到 "[{0}]" 檔案
+
+47001=在 O-R 專案中找不到 [{1}] 作業的 [{0}] 描述子
+
+47002=找不到 [{1}] 描述子的 "[{0}]" 查詢
+
+47003=找不到 [{1}] 階段作業的 "[{0}]" 查詢
+
+47004=[{1}] 作業的 [{0}] 參數類型不存在於綱目中
+
+47005=針對 [{1}] 作業，[{0}] 參數類型沒有 O-X 對映
+
+47006=[{0}] 結果類型（針對 [{1}] 作業）不存在於綱目中
+
+47007=[{0}] 結果類型（針對 [{1}] 作業）沒有 O-X 對映
+
+47008=只有 Simple XML Format 查詢支援多個輸出引數
+
+47009=不支援 INOUT 游標參數
+
+47010=找不到 [{0}] 服務的 O-R 階段作業
+
+47011=找不到 [{0}] 服務的 O-X 階段作業
+
+47012=無法剖析 DBWS 檔案
+

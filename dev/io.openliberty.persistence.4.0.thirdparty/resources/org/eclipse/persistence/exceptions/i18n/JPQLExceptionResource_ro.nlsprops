@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JPQLExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+8001=Problema de recunoaştere sintaxă parsează interogarea [{0}]. Parser a returnat următorul [{1}].
+
+8002=Problemă generală la parsarea interogării [{0}]. Parser a returnat următorul [{1}].
+
+8003=Clasa [{0}] nu a fost găsită. Parser a returnat următorul [{1}].
+
+8004=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: variabilă de identificare necunoscută [{3}]. Clauza FROM a interogării nu declară o variabilă de identificare [{3}].
+
+8005=Eroare la compilarea interogării [{0}]. A fost întâlnită o eroare la rezolvarea numelui clasei - Clasa [{1}] nu a fost găsită.
+
+8006=Eroare la compilarea interogării [{0}]. A fost întâlnită o eroare la rezolvarea numelui clasei - Descriptorul pentru [{1}] nu a fost găsit.
+
+8007=Eroare la compilarea interogării [{0}]. A fost întâlnită o problemă la rezolvarea numelui clasei - Maparea pentru [{1}] nu a fost găsită.
+
+8008=Eroare la compilarea interogării [{0}]. A fost întâlnită o problemă la construirea expresiei de interogare - ExpressionBuilder pentru [{1}] nu a fost găsit.
+
+8009=Problemă la compilarea interogării [{0}]. Expresia [{1}] nu este suportată momentan.
+
+8010=Problemă generală la parsarea interogării [{0}].
+
+8011=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: declarare invalidă a membrului de colecţie [{3}], a eşuat asocierea aşteptată a valorii de colecţie.
+
+8012=Problemă la compilarea interogării [{0}]. Nu este încă implementată: {1}.
+
+8013=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: clasa de constructor [{3}] nu a fost găsită.
+
+8014=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: argument SIZE invalid [{3}], a eşuat asocierea aşteptată a valorii de colecţie.
+
+8015=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: literal enum invalid, tipul enum {3} nu are un literal enum {4}.
+
+8016=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: expresie SELECT invalidă [{3}] pentru interogare cu grupare [{4}]. Sunt permise numai agregate, articole Grupare după sau expresii constructor în clauza SELECT a unei interogări Grupare după.
+
+8017=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: expresie HAVING invalidă [{3}] pentru interogare cu grupare [{4}]. Clauza HAVING trebuie să specifice condiţiile de căutare peste articolele de grupare sau funcţiile agregat ce se aplică grupării articolelor.
+
+8018=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: utilizare multiplă invalidă a parametrului [{3}] prin asumarea diferitelor tipuri de parametrii [{4}] şi [{5}].
+
+8019=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: declarare multiplă a variabilei de identificare [{3}], declarată anterior ca şi [{4} {3}].
+
+8020=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: invalid {3} argument de funcţie [{4}], argument aşteptat de tip [{5}].
+
+8021=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: articol Ordonare după invalid [{3}] de tip [{4}], expresie aşteptată a unui tip ce poate fi comandat.
+
+8022=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: invalid {3} argument expresie [{4}], argument aşteptat de tip [{5}].
+
+8023=Eroare de sintaxă la pararea interogării [{0}].
+
+8024=Eroare de sintaxă la parsarea interogării [{0}], linia {1}, coloana {2}: eroare de sintaxă la [{3}].
+
+8025=Eroare de sintaxă la parsarea interogării [{0}], linia {1}, coloana {2}: token neaşteptat [{3}].
+
+8026=Eroare de sintaxă la parsarea interogării [{0}], linia {1}, coloana {2}: caracter neaşteptat [{3}].
+
+8027=Eroare de sintaxă la parsarea interogării [{0}], linia {1}, coloana {2}: caracter aşteptat [{3}], găsit [{4}].
+
+8028=Eroare de sintaxă la parsarea interogării [{0}], linia {1}, coloana {2}: sfârşit de interogare neaşteptat.
+
+8029=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: expresie de navigare invalidă [{3}], nu se poate naviga expresia [{4}] de tip [{5}] într-o interogare.
+
+8030=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: stare sau câmp de asociere necunoscute [{3}] de clasă [{4}].
+
+8031=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: {3} al intrării înglobate {4} nu este suportat.
+
+8032=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: acces invalid de atribut [{3}] în ţinta clauzei SET [{4}], numai câmpurile de stare şi câmpurile de asociere evaluate singulare pot fi actualizate într-o clauză SET.
+
+8033=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: expresie de navigare invalidă [{3}], nu poate naviga câmpul de asociere [{4}] în ţinta clauză SET.
+
+8034=Eroare la compilarea interogării [{0}]. Tip de entitate necunoscut [{1}].
+
+8035=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: expresie egal enum invalidă, nu se poate compara valoarea enum de tip [{3}} cu o valoare non enum de tip [{4}].
+
+8036=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: expresie de navigare invalidă [{3}], nu se poate naviga câmpul de asociere evaluat de colecţie [{4}].
+
+8037=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}:  Tip de entitate necunoscut [{3}].
+
+8038=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: o problemă a fost întâlnită la rezolvarea numelui clasei - Clasa [{3}] nu a fost găsită.
+
+8039=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: Variabila {3} un nu, o hartă şi o cheie de hartă sunt cerute de la aceasta.
+
+8040=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: Alias {3} este utilizat în clauza Ordonare după, dar nu este definită în interogare.
+
+8041=Eroare la compilarea interogării [{0}], linia {1}, coloana {2}: Indexul poate fi utilizat numai pentru o variabilă şi este apelat într-o non-variabilă {3}.
+

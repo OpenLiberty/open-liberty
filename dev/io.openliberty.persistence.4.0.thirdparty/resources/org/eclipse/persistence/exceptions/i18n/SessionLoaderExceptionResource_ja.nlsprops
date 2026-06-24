@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=複数の [{0}] SessionLoaderExceptions がスローされました。
+
+9001=XML ノード: [{1}] の 不明なタグ名 : [{0}]。
+
+9002=プロジェクト・クラス [{0}] をロードできません。
+
+9003=値 [{1}] を持つ XML タグ [{0}] を処理できません。
+
+9004=プロジェクトの XML ファイル [{0}] がクラスパスにもファイル・システムにも見つかりませんでした。
+
+9005=プロジェクトの XML ファイル [{0}] のロード中に例外がスローされました。
+
+9006=XML ファイルの構文解析中に {0} がスローされました。  XML 文書の行 {1} 列 {2} で発生しました。
+
+9007=XML ファイルの構文解析中に例外がスローされました。
+
+9008=タグ [{1}] の予期しない値 [{0}] です。
+
+9009=タグ [{0}] に不明な属性があります。
+
+9010=XML スキーマに照らして XML ファイルを構文解析中に {0} がスローされました。
+
+9011=サーバー・プラットフォーム・クラス {0} が削除され、対応するアプリケーション・サーバーのバージョンがサポートされなくなりました。
+
+9012=セッションの XML ファイルに無効な形式が含まれるか XML の形式がサポートされていないため、セッションの XML ファイルのロードができません。
+

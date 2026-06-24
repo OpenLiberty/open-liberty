@@ -1,0 +1,185 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=Začátek profilu
+
+class=třída
+
+commit_depth=(potvrdit hloubku = {0})
+
+connected=připojeno
+
+connector=konektor
+
+context=Kontext:    
+
+database_name=název databáze
+
+datasource=zdroj dat
+
+datasource_URL=adresa URL zdroje dat
+
+datasource_name=název zdroje dat
+
+depth_reset_key=(hloubka = {0}, resetovat klíč = {1}, resetovat verzi = {2})
+
+disconnected=odpojeno
+
+empty_commit_order_dependency_node=Prázdný uzel CommitOrderDependencyNode
+
+end_profile=Ukončit profil
+
+error_printing_expression=Chyba při tisku výrazu
+
+lazy=pomalý
+
+local_time=místní čas
+
+login=přihlášení
+
+longestTime=nejdelší doba
+
+min_max=(minimum připojení = {0}, maximum připojení = {1})
+
+mulitple_files=více souborů
+
+multiple_readers=více čtecích zařízení
+
+name=Název: 
+
+nest_level=(vnořená úroveň = {0})
+
+no_files=žádné soubory
+
+no_streams=žádné proudy
+
+node=Uzel ({0})
+
+non_lazy=nepomalý
+
+not_instantiated=nepřevedeno na instance
+
+number_of_objects=počet objektů
+
+objects_second=objektů/sekundu
+
+platform=platforma
+
+pooled=z fondu
+
+profile=Profil
+
+profiling_time=doba profilace
+
+reader=čtecí zařízení
+
+schema=Schéma: 
+
+sdo_classgenerator_usage_help_1of8={0} Použití: org.eclipse.persistence.sdo.helper.{0} [-volby]
+
+sdo_classgenerator_usage_help_2of8=Volby:
+
+sdo_classgenerator_usage_help_3of8=-help                        Vytiskne text zprávy nápovědy
+
+sdo_classgenerator_usage_help_4of8=-sourceFile <název_souboru>  Vstupní soubor schématu (povinné)
+
+sdo_classgenerator_usage_help_5of8=-targetDirectory <DirName>   Adresář pro vygenerování zdroje Java (nepovinné)
+
+sdo_classgenerator_usage_help_6of8=-logLevel <č.úrovně>         Zadejte celočíselnou hodnotu úrovně protokolování (8=VYPNUTO, 7=ZÁVAŽNÉ, 6=VAROVÁNÍ, 5=INFO, 4=KONFIGURACE, 3=DOBRÝ, 2=LEPŠÍ(předvolba), 1=NEJLEPŠÍ, 0=VŠE).
+
+sdo_classgenerator_usage_help_7of8=-noInterfaces                Negenerovat třídy rozhraní
+
+sdo_classgenerator_usage_help_8of8=-noImpls                     Negenerovat třídy implementace
+
+sdo_classgenerator_usage_missing_sourcefile={0} Parametr -sourceFile nebyl uveden, ale je povinný.
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} Nebyla uvedena hodnota -sourceFile.
+
+sdo_classgenerator_usage_missing_targetdir={0} Nebyla uvedena hodnota -targetDirectory.
+
+server_name=název serveru
+
+shortestTime=nejkratší doba
+
+staticweave_commandline_help_message_10of19=-log
+
+staticweave_commandline_help_message_11of19=Zadejte soubor protokolování.
+
+staticweave_commandline_help_message_12of19=-loglevel
+
+staticweave_commandline_help_message_13of19=Zadejte celočíselnou hodnotu úrovně protokolování (8=VYPNUTO, 7=ZÁVAŽNÉ, 6=VAROVÁNÍ, 5=INFO, 4=KONFIGURACE, 3=DOBRÝ, 2=LEPŠÍ(předvolba), 1=NEJLEPŠÍ, 0=VŠE).
+
+staticweave_commandline_help_message_14of19=Cesta ke třídě musí obsahovat všechny třídy nezbytné pro načtení tříd ze zdroje.
+
+staticweave_commandline_help_message_15of19=Zakomponování se provede, pokud zdroj a cíl ukazují na stejné umístění. Zakomponování je možné POUZE v případě zdrojů s adresářovou strukturou.
+
+staticweave_commandline_help_message_16of19=Příklad:
+
+staticweave_commandline_help_message_17of19=Chcete-li zakomponovat všechny entity z C:oo-source.jar a persistence.xml, který je součástí C:oo-containing-persistence-xml.jar,
+
+staticweave_commandline_help_message_18of19=a zapsat výstup do C:oo-target.jar, zadejte:
+
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:oo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:oo-source.jar C:oo-target.jar
+
+staticweave_commandline_help_message_1of19=Použití: StaticWeave [volby] zdroj cíl
+
+staticweave_commandline_help_message_2of19=Volby:
+
+staticweave_commandline_help_message_3of19=-classpath cesta_ke_třídě
+
+staticweave_commandline_help_message_4of19=Nastaví cestu ke třídě uživatele. Jako oddělovač použijte v systému Windows znak ";" a v systému Unix znak ":".
+
+staticweave_commandline_help_message_5of19=-persistenceinfo
+
+staticweave_commandline_help_message_6of19=Explicitně identifikujte, kde je uložen soubor META-INF/persistence.xml. Musí jít o kořenovou specifikaci META-INF/persistence.xml.
+
+staticweave_commandline_help_message_7of19=Tato volba se obvykle používá ke specifikaci hlavního souboru JAR při zakomponování souborů uvedených parametrem <jar-file> ve specifikaci persistence.xml.
+
+staticweave_commandline_help_message_8of19=-persistencexml
+
+staticweave_commandline_help_message_9of19=Identifikujte umístění specifikace persistence.xml relativně ke kořeni jednotky perzistence, pokud se liší od META-INF/persistence.xml.
+
+staticweave_processor_dir_not_created=Adresář {0} nelze vytvořit.
+
+staticweave_processor_file_not_created=Soubor {0} nelze vytvořit.
+
+staticweave_processor_unknown_outcome=Zakomponování tříd uložených v adresáři a vystupujících do souboru JAR často vede k neočekávaným výsledkům.
+
+time_object=čas/objekt
+
+total_time=celkový čas
+
+unknown=neznámé
+
+user_name=jméno uživatele
+
+writer=autor
+

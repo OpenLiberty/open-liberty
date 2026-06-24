@@ -10,11 +10,31 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.org.eclipse.persistence-4.0
-Bundle-Name: Eclipse Persistence 4.0 Wrapper
-Bundle-Description: Wrapper bundle for Eclipse Persistence 4.0; version=${bVersion}
+Bundle-SymbolicName: io.openliberty.org.eclipse.persistence-4.0; singleton:=true
 
-javac.source: 21
-javac.target: 21
+Bundle-Activator: io.openliberty.jakarta.persistence.internal.JakartaPersistenceActivator
 
-Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
+Import-Package: \
+  com.ibm.ws.threadContext, \
+  com.ibm.ws.runtime.metadata, \
+  org.osgi.framework;version="[1.6,2)", \
+  org.osgi.util.tracker;version="[1.5,2)", \
+  javax.sql; resolution:=optional
+
+Export-Package: jakarta.persistence.*; jpa=4.0; consumer=persistenceService; mandatory:=consumer; -split-package:=first
+
+Private-Package: io.openliberty.jakarta.persistence.internal
+
+Include-Resource: \
+   @\${repo;jakarta.persistence:jakarta.persistence-api;4.0}!/about.html
+
+instrument.disabled: true
+
+-buildpath: \
+	jakarta.persistence:jakarta.persistence-api;version=4.0.0,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.container.service.compat;version=latest,\
+	io.openliberty.jakartapersistenceactivator

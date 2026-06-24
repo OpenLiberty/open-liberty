@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Došlo k pokusu o odstranění objektu [{0}], ten však nemá v mapě identit žádné číslo verze. {3}Je možné, že před tím, než došlo k pokusu o odstranění, nebyl načten. {3}Třída> {1} Primární klíč> {2}
+
+5003=Objekt [{0}] nelze odstranit, protože se od posledního načtení změnil nebo byl odstraněn. {3}Třída> {1} Primární klíč> {2}
+
+5004=Došlo k pokusu o aktualizaci objektu [{0}], ten však nemá v mapě identit žádné číslo verze. {3}Je možné, že před tím, než došlo k pokusu o aktualizaci, nebyl načten. {3}Třída> {1} Primární klíč> {2}
+
+5006=Objekt [{0}] nelze aktualizovat, protože se od posledního načtení změnil nebo byl odstraněn. {3}Třída> {1} Primární klíč> {2}
+
+5007=Objekt [{0}] musí mít mapování neurčené jen pro čtení na pole zámku verze.
+
+5008=Při použití zamykání s časovou značkou je třeba pole zámku verze mapovat na java.sql.Timestamp.
+
+5009=Objekt třídy [{1}] s primárním klíčem [{0}] nelze rozbalit, protože byl od posledního načtení odstraněn.
+
+5010=Objekt [{0}] nelze sloučit, protože se od posledního načtení změnil nebo byl odstraněn. {2}Třída> {1}
+
+5011=Minimálně jeden objekt nelze aktualizovat, protože se od posledního načtení změnil nebo byl odstraněn.
+

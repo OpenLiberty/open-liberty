@@ -1,0 +1,223 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=上下文路径 {0} 没有包含任何 ObjectFactory 或 jaxb.index，在属性“映射”中找不到任何外部元数据，并且找到 sessions.xml 或 sessions.xml 无效。
+
+50001=类 {0} 需要一个零参数构造函数或一个指定的工厂方法。请注意非静态内部类没有零参数构造函数并且不受支持。
+
+50002=在类 {0} 上没有工厂方法的情况下指定了工厂类。
+
+50003=在类 {1} 上未声明名为 {0} 的工厂方法。
+
+50004=在属性 {0} 上，XmlAnyAttribute 无效。必须与类型为“映射”的属性配合使用。
+
+50005=在类 {0} 上，仅允许一个属性带有 XmlAnyAttribute。
+
+50006=类 {1} 上属性 {0} 的 XmlElementRef 无效。未声明所引用元素。
+
+50007=名称冲突。两个类具有 URI 为 {0} 并且名称为 {1} 的 XML 类型。
+
+50008=不支持节点类 {0}。createBinder(Class) 方法仅支持类 org.w3c.dom.Node。
+
+50009=类 {1} 上的属性或字段 {0} 注释为瞬态项，因此，它无法包括在 propOrder 注释中。
+
+50010=类 {1} 上的属性或字段 {0} 必须是属性，因为另一字段或属性已使用 XmlValue 进行注释。
+
+50011=类 {1} 上的属性或字段 {0} 不能使用 XmlValue 进行注释，因为它是另一 XML 绑定类的子类。
+
+50012=类 {1} 上的属性或字段 {0} 已在 propOrder 中指定，但属于无效属性。
+
+50013=类 {1} 上的属性或字段 {0} 必须包括在 XmlType 注释的 propOrder 元素中。
+
+50014=类 {1} 上的属性或字段 {0}（带有 XmlValue 注释）必须属于映射至简单模式类型的类型。
+
+50015=仅集合或数组属性上允许 XmlElementWrapper，但 [{0}] 不是集合或数组属性。
+
+50016=属性 [{0}] 具有 XmlID 注释，但其类型不是 String。
+
+50017=属性 [{0}] 上的 XmlIDREF 无效。类 [{1}] 必须具有使用 XmlID 注释的属性。
+
+50018=仅集合或数组属性上允许 XmlList，但 [{0}] 不是集合或数组属性。
+
+50019=通过属性“映射”处理外部元数据时，遇到无效参数类型。与键 [eclipselink-oxm-xml] 关联的值必须是下列其中一项：Map<String, Object>、List<Object> 或 Object。Object 必须是下列其中一项：java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node 或 org.xml.sax.InputSource。对于 Map<String, Object>，String 是包名。
+
+50021=通过属性“映射”处理外部元数据时，遇到无效参数类型。对于 Map<String, Object>，键的类型必须为 String（指示包名）。
+
+50022=通过属性“映射”处理外部元数据时，遇到无效参数类型。对于 Map<String, Object>，值必须为下列其中一项：java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node 或 org.xml.sax.InputSource（元数据文件的句柄）。
+
+50023=通过属性“映射”处理外部元数据时，遇到键 [{0}] 的空值。值必须为非空值并且必须是下列其中一项：java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node 或 org.xml.sax.InputSource（元数据文件的句柄）。
+
+50024=通过属性“映射”处理外部元数据时，遇到空键。键必须为非空键，并且其类型必须为 String（指示包名）。
+
+50025=未能装入在外部元数据文件中声明的类 [{0}]。请确保该类名正确并且已设置正确的类装入器。
+
+50026=尝试为 XmlModel 创建 JAXBContext 时发生异常。
+
+50027=尝试取消编组已外部化的元数据文件时发生异常。
+
+50028=未能创建 [{0}] 的新实例。
+
+50029=XmlCustomizer 上提供的类 [{0}] 未实现 org.eclipse.persistence.config.DescriptorCustomizer 接口。
+
+50030=已尝试在类 [{1}] 上设置多个 XmlID 属性。属性 [{0}] 无法设置为 XmlID，因为属性 [{2}] 已设置为 XmlID。
+
+50031=已尝试在类 [{0}] 上设置多个 XmlValue 属性。属性 [{1}] 无法设置为 XmlValue，因为属性 [{2}] 已设置为 XmlValue。
+
+50032=已尝试在类 [{0}] 上设置多个 XmlAnyElement 属性。属性 [{1}] 无法设置为 XmlAnyElement，因为属性 [{2}] 已设置为 XmlAnyElement。
+
+50033=未能初始化属性 [{1}] 上设置的 DomHandler [{0}] 的 DomHandlerConverter。
+
+50034=无法使用 XmlAttachmentRef 对属性或字段 [{0}] 进行注释，因为它不是 DataHandler。
+
+50035=由于属性或字段 [{0}] 设置为 XmlIDREF，因此 XmlElement 列表内声明的每个 XmlElement 的目标类型都必须具有 XmlID 属性。请确保 XmlElement [{1}] 的目标类型包含 XmlID 属性。
+
+50036=具有 XmlTagName QName [{0}] 的 TypeMappingInfo 需要在其上设置非空类型。
+
+50037=位于包 [{1}] 上的绑定文件中不允许具有包 [{0}] 的 Java 类型。
+
+50038=无法从具体类创建 DynamicJAXBContext。请使用 org.eclipse.persistence.jaxb.JAXBContext，或在 jaxb.properties 文件中指定 org.eclipse.persistence.jaxb.JAXBContextFactory，以从现有类创建上下文。
+
+50039=创建 DynamicJAXBContext 时发生错误：节点必须是文档或元素的实例。
+
+50040=创建 DynamicJAXBContext 时发生错误。
+
+50041=找不到枚举常量 [{0}]。
+
+50042=创建 DynamicJAXBContext 时发生错误：会话名称为空项。
+
+50043=创建 DynamicJAXBContext 时发生错误：源为空项。
+
+50044=创建 DynamicJAXBContext 时发生错误：输入流为空项。
+
+50045=创建 DynamicJAXBContext 时发生错误：节点为空项。
+
+50046=创建 DynamicJAXBContext 时发生错误：XJC 无法生成代码模型。
+
+50047=找不到类 [{0}]。
+
+50048=为属性 [{0}] 指定的读变换器同时具有类和方法。需要类或方法，但不同时需要这两者。
+
+50049=为属性 [{0}] 指定的读变换器既没有类，也没有方法。需要类或方法。
+
+50050=为属性 [{0}] 的 xml 路径 [{1}] 指定的写变换器同时具有类和方法。需要类或方法，但不同时需要这两者。
+
+50051=为属性 [{0}] 的 xml 路径 [{1}] 指定的写变换器既没有类，也没有方法。需要类或方法。
+
+50052=为属性 [{0}] 指定的写变换器没有设置 xml 路径。需要 xml 路径。
+
+50053=找不到带有参数 ()、AbstractSession 或 Session 的变换方法 [{0}]。
+
+50054=找不到变换器类 [{0}]。请确保该类名正确并且已设置正确的类装入器。
+
+50055=创建 DynamicJAXBContext 时发生错误：在属性映射中，找不到 eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE)，或映射为空映射。
+
+50056=属性 [{0}] 包含 XmlJoinNode 声明，但所引用类 [{1}] 不适用于此类型的关系。
+
+50057=类 [{0}] 中的属性 [{1}] 引用了标记为瞬态的类 [{2}]，这是不允许的情况。
+
+50058=类 [{0}] 中的属性 [{1}] 具有 XmlJoinNode 声明，但是目标类 [{2}] 没有任何 XmlID 属性或 XmlKey 属性。在每个 referencedXmlPath 的目标类上，必须存在带有匹配的 XmlPath 的 XmlID/XmlKey 属性。
+
+50059=类 [{0}] 中的属性 [{1}] 具有带 referencedXmlPath [{3}] 的 XmlJoinNode 声明，但是带有 XmlPath [{3}] 的目标类 [{2}] 上不存在任何 XmlID 或 XmlKey 属性。在每个 referencedXmlPath 的目标类上，必须存在带有匹配的 XmlPath 的 XmlID/XmlKey 属性。
+
+50060=类 [{0}] 中的属性 [{1}] 具有 XmlIDREF 声明，但目标类 [{2}] 不适用于此类型的关系。
+
+50061=尝试装入 XmlAdapterClass [{0}] 时发生异常。可能的原因是已设置不正确的适配器类名或不正确的装入器。
+
+50062=尝试访问 XmlAdapterClass [{0}] 的已声明方法时发生异常。可能的原因如下：安全管理器已拒绝对适配器类中的已声明方法的访问，或安全管理器已拒绝对适配器类的包的访问。
+
+50063=尝试实例化 XmlAdapterClass [{0}] 时发生异常。可能的原因是适配器类没有任何零参数构造函数。
+
+50064=XmlAdapterClass [{0}] 未按预期那样扩展“jakarta.xml.bind.annotation.adapters.XmlAdapter”。  适配器类必须扩展“jakarta.xml.bind.annotation.adapters.XmlAdapter”，并声明方法“public abstract BoundType unmarshal (ValueType v)”和“public abstract ValueType marshal (BoundType v)”。
+
+50065=为包 [{1}] 指定的 XmlJavaTypeAdapter [{0}] 无效。可能的原因是已设置不正确的适配器类名或不正确的装入器。
+
+50066=为类 [{1}] 指定的 XmlJavaTypeAdapter [{0}] 无效。可能的原因是已设置不正确的适配器类名或不正确的装入器。
+
+50067=为类 [{2}] 上的字段/属性 [{1}] 指定的 XmlJavaTypeAdapter [{0}] 无效。可能的原因是已设置不正确的适配器类名或不正确的装入器。
+
+50068=通过属性“映射”处理外部元数据时，遇到空值。XML 元数据文件的句柄必须为非空项并且是下列其中一项：java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node 或 org.xml.sax.InputSource。
+
+50069=没有为指定的 XML 元数据文件指定包。该包可通过传递 Map<String, Object>（其中 String 为包，Object 为 XML 元数据文件的句柄）或通过在 XML 元数据文件中设置 xml 绑定元素上的包名属性来指定。
+
+50070=类 [{1}] 上的属性 [{0}] 具有包含不等量 XmlElement/XmlJoinNode 的 XmlElement 声明。对于 XmlElement 声明内包含的每个 XmlElement，必须存在一个对应的 XmlJoinNode。
+
+50071=类 [{1}] 上的属性 [{0}] 具有包含在路径 [{2}] 的根目录处带有属性的 XmlPath 的 XmlPath 声明。对于 XmlPath，属性必须嵌套在 XmlPath 中，例如 [foo/{2}]。
+
+50072=类 [{1}] 上找到名为 [{0}] 的重复属性
+
+50073=在多个外部绑定文件中，指定了类 [{1}] 上的属性 [{0}]。每个属性只能在一个文件中指定
+
+50074=访问 XMLNameTransformer [{0}] 时发生异常
+
+50075=尝试使用 XMLNameTransformer [{1}] 对名称 [{0}] 进行变换时发生异常
+
+50076=无法从所提供位置 [{0}] 装入外部元数据。此位置必须为有效 URL 或类路径引用。
+
+50077=无法刷新元数据。元数据必须以 XML 节点形式提供，以便支持刷新。
+
+50078=无法处理外部绑定文件 (XJB)。要使用外部绑定文件，XSD 和 XJB 都必须以 javax.xml.transform.Source 形式提供。
+
+50079=无法处理模式。如果使用模式导入，那么 XSD 必须以 javax.xml.transform.Source 形式提供。
+
+50080=仅在类型为 org.xml.sax.Locator 的属性上允许 XmlLocation，但是 [{0}] 的类型为 [{1}]。
+
+50081=模式生成期间发生异常。
+
+50082=已尝试写入值 {0} 但没有指定键。请尝试在 JAXBMarshaller 上设置 JSON_VALUE_WRAPPER
+
+50083=尝试实例化 AccessorFactory 类 {0} 时发生错误
+
+50084=指定的 AccessorFactory 类 {0} 无效。它必须实现 createFieldAccessor(Class, Field, boolean) 和 createPropertyAccessor(Class, Method, Method)。
+
+50085=调用 AccessorFactory {0} 上的 createFieldAccessor 方法时发生异常
+
+50086=调用 AccessorFactory {0} 上的 createPropertyAccessor 方法时发生异常
+
+50087=尝试调用 Accessor {1} 上的 {0} 方法时发生异常
+
+50088=枚举值 {0} 对于具有类 {1} 的 XmlEnum 无效
+
+50089=Java 接口 {0} 无法由 JAXB 映射，因为它具有多个可映射父接口。不支持多重继承
+
+50090=以下值对于对象图形无效：{0}。该值必须是字符串或 ObjectGraph 的实例。
+
+50091=元素名称 {0} 具有多个映射。
+
+50092=在类 {1} 上，仅允许一个 XmlElementRef 属性（其类型为 {0}）。
+
+50093=在 JAXBContext 中，类 {0} 不是已映射的类型。
+
+50094=在类 {1} 上找不到 XmlVariableNode 注释上指定的属性 {0}。
+
+50095=类 {2} 上类型为 {1} 的属性 {0} 对于 XmlVariableNode 无效。仅允许类型为 String 或 QName 的属性。
+
+50096=类型 {1} 中的 @XmlAttribute 属性 {0} 必须引用映射到 XML 中文本的类型。{2} 无法映射到文本值。
+

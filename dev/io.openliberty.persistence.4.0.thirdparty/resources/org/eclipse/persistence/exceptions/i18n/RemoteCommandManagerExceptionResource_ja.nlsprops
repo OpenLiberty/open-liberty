@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=JNDI コンテキストを取得できませんでした。プロパティーが正しく設定されているか確認してください。
+
+22102=名前 {0} のローカル・ネーミング・サービスで接続を POST できませんでした
+
+22103=URL {1} で名前 {0} のリモート接続を検索できませんでした
+
+22104=ホスト名を検索できませんでした
+
+22105=コマンドを {0} に伝搬できませんでした
+
+22106=Topic {0} および Topic Factory {1} で外部 JMS 接続を作成できませんでした。 コンテキスト・プロパティーが正しく設定されているかも確認してください。
+
+22107=名前 {0} のローカル・ネーミング・サービスでローカル接続を削除できませんでした
+
+22108=コマンドをシリアライズまたはデシリアライズできませんでした
+
+22109=JMS プロバイダーからの JMS メッセージの受信に失敗しました
+
+22110=ローカル・ホスト IP アドレスのディスカバーに失敗しました。
+
+22111=ServerPlatform の取得に失敗しました。 ServerPlatform は Session または RemoteCommandManager のいずれかに設定される必要があります。
+
+22112=Topic {0} および Topic Factory {1} でローカル JMS 接続を作成できませんでした。 コンテキスト・プロパティーが正しく設定されているかも確認してください。
+
+22113=ファクトリー {2} を使用して Oc4jJGroupsRemoteConnection サービス ID {0}、トピック {1} を作成できませんでした。 コンテキスト・プロパティーが正しく設定されているかも確認してください。
+
+22114={0}: 取得したメッセージ {1} のデシリアライズに失敗しました。
+
+22115={0}: メッセージ {1}、{2}、コマンド・タイプ {3} から取得したリモート・コマンドの処理に失敗しました
+
+22116=受信した JMS メッセージはヌルです。 JMSException として処理します。
+
+22117=セッションの RemoteCommandManager はクローズされたか、着信メッセージの処理中に初期化されていません。
+
+22118=次の構成ファイルを使用した JGroups 接続の作成に失敗しました: {0}
+
+22119={0} の初期化中にエラーが発生しました。org.eclipse.persistence.corba.jar をクラスパスに追加してください。
+

@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource_ru.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=ValidationException при попытке создать сеанс: [{0}] . Скорее всего, причина в том, что файл [{1}] не указан в пути к классам или не содержит вызываемый сеанс: [{0}].
+
+28002=EclipseLink попытался загрузить ServerSession с именем [{0}] из [{1}], а не получить ServerSession.
+
+28003=EclipseLink загрузил Session [{0}] из [{1}], однако в нем не задана платформа сервера, либо указанная платформа сервера не использует внешний контроллер транзакций.  Укажите необходимую платформу сервера, если планируется использовать JTA.
+
+28004=Ошибка при настройке фабрики EntityManager: метод JavaSECMPInitializer.initializeFromMain вернул значение false.
+
+28005=Исключительная ситуация при настройке фабрики EntityManager.
+
+28006=ClassNotFound: в свойстве [{1}] задано значение [{0}].
+
+28007=Не удалось создать экземпляр ServerPlatform типа [{0}], указанный в свойстве [{1}].
+
+28008=Класс {0} не найден при обработке аннотаций.
+
+28009=Сделана попытка заново развернуть сеанс с именем {0}, не закрыв его.
+
+28010=PersistenceUnitInfo {0} имеет transactionType JTA, однако для него не определен jtaDataSource.
+
+28011=Сеанс [{0}], созданный для единицы хранения, не был доступен в момент развертывания.  Это означает, что сеанс был каким-то образом удален из контейнера в середине процесса развертывания.
+
+28012=Значение [{0}] свойства [{2}] имеет неверный тип, необходимо значение типа [{1}].
+
+28013=Невозможно развернуть PersistenceUnit [{0}] в недопустимом состоянии [{1}].
+
+28014=Исключительная ситуация при обработке свойства [{0}] со значением [{1}].
+
+28015=Не удалось создать экземпляр SessionLog типа [{0}], указанный в свойстве [{1}].
+
+28016=Единица хранения с именем [{0}] не существует.
+
+28017=Невозможно предварительно развернуть PersistenceUnit [{0}] в недопустимом состоянии [{1}].
+
+28018=Не удалось предварительно развернуть PersistenceUnit [{0}].
+
+28019=Не удалось развернуть PersistenceUnit [{0}]. Закройте все фабрики этого PersistenceUnit.
+
+28020=Сеанс с именем [{0}], загруженный из [{1}], равен [{2}], однако это должен быть ServerSession.
+
+28021=PersistenceUnit [{0}] попытался загрузить сеанс из [{1}], не указав имя сеанса.  Имя сеанса должно быть задано в свойстве eclipselink.session-name.
+
+28022=Значение [true] недопустимо для свойства [eclipselink.weaving], если глобальный инструментарий равен null. Значение должно быть равно null, false или static.
+
+28023=При вызове метода [{0}] из объекта [{1}] класса [{2}] возникла исключительная ситуация.
+
+28024=Невозможно рефлективно получить доступ к методу [{0}] в объекте [{1}] класса [{2}].
+
+28025=Единица хранения с именем [{0}] вернула временный classLoader [null] - прошивка выключена для этого сеанса.  Для обхода неполадки можно использовать статическую прошивку.
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider не поддерживает развертывание контейнера (createContainerEntityManagerFactory).  Используйте вместо него org.eclipse.persistence.jpa.PersistenceProvider.
+
+28027=Была сделана попытка использовать PersistenceUnit [{0}], однако комплект с определением этой единицы хранения недоступен.
+
+28028=Не удалось создать экземпляр класса [{0}] для свойства единицы хранения [{1}]. Проверьте правильность определения конструктора.
+
+28029=PersistenceUnit [{0}] попытался использовать sessions.xml (задано свойство eclipselink.sessions-xml), являясь составным (свойство eclipselink.composite-unit равно true). Эти режимы несовместимы.
+
+28030=В PersistenceUnit [{0}] задано свойство eclipselink.composite-unit.member со значением true. Это означает, что его можно использовать только как составную часть, а не как отдельный элемент.
+
+28031=Не задано обязательное свойство [{0}].
+
+28032=Не удалось создать временный загрузчик классов с doPrivileged.
+

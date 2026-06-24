@@ -1,0 +1,443 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource_pt_BR.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=O atributo [{0}] não está declarado como tipo ValueHolderInterface, mas seu mapeamento usa via indireta.
+
+10=Este mapeamento não tem um nome de campo configurado.
+
+100=Um método acionou uma exceção.
+
+101=O método subjacente acionou uma exceção.
+
+102=O método [{0}] acionou uma exceção.
+
+103=Problema ao extrair classe da linha [{0}], usando o método estático [{1}], com o parâmetro (DatabaseRow).  Uma exceção foi acionada.
+
+104=Problema ao criar nova instância usando o método criação [{0}].  O método de criação acionou uma exceção.
+
+105=O método de retorno de chamada do descritor subjacente [{0}], com o parâmetro (Sessão), acionou uma exceção.
+
+106=O método [{0}] no objeto está lançando uma exceção. {2}Argumento: [{1}]
+
+108=Não é possível localizar valor no mapeamento do indicador de classe no descritor pai [{0}].
+
+109=Este descritor não deve ter um campo de bloqueio de gravação definido porque é um descritor filho. Ele herda o campo de bloqueio de gravação de seu descritor pai.
+
+11=As informações de chave estrangeira para este mapeamento estão definidas incorretamente.
+
+110=O descritor está ausente para a classe [{0}].
+
+111=Vários nomes de campo de chave primária da tabela devem ser completos.
+
+112=Somente uma tabela pode ser incluída usando setTableName(String). Use addTableName(String) para incluir várias tabelas em um descritor.
+
+113=O construtor estava inacessível.
+
+114=Problema ao criar nova instância usando o método criação [{0}].  O método de criação não está acessível.
+
+115=Nenhum valor de conversão fornecido para o atributo [{0}].
+
+116=Nenhum valor de conversão fornecido para o valor [{0}] no campo [{1}].
+
+118=O objeto [{0}] não deve ter mapeamentos somente leitura para seus campos de bloqueio de gravação.
+
+119=Os mapeamentos [{0}] do objeto para seus campos de bloqueio de gravação devem ser somente leitura.
+
+12=Os descritores devem usar um mapa de identidade para usar a opção de verificação de existência "Verificar cache".
+
+120=A chave de consulta [{0}] está definida no descritor pai [{1}], mas não no descritor filho [{2}].
+
+122=setExistenceCheck() com argumento [{0}] não é entendido.
+
+125=O mapeamento para o atributo [{0}] usa via indireta; portanto, deve ser inicializado para um novo ValueHolder.  Atualmente, o valor é: [{1}].
+
+126=Nenhuma subclasse corresponde a esta classe [{0}] para este mapeamento agregado com herança.
+
+127=O método get para o atributo [{0}] não retorna um ValueHolderInterface, mas o mapeamento usa via indireta.
+
+128=O método get para o atributo [{0}] retorna um ValueHolderInterface, mas o mapeamento não usa via indireta.
+
+129=O método de configuração para o atributo [{0}] não utiliza um ValueHolderInterface como seu parâmetro, mas o mapeamento usa via indireta.
+
+13=A variável de instância [{0}] no objeto [{1}] está inacessível.
+
+130=O método de configuração para o atributo [{0}] utiliza um ValueHolderInterface como seu parâmetro, mas o mapeamento não usa via indireta.
+
+131=O método get para o atributo [{0}] deve retornar um Vetor (ou um tipo que implemente Mapa ou Coleção, se estiver usando Java 2).
+
+133=O método de configuração para o atributo [{0}] deve utilizar um Vetor como seu parâmetro (ou um tipo que implemente Mapa ou Coleção, se estiver usando Java 2).
+
+135=O relacionamento de chave estrangeira de várias tabelas refere-se a uma tabela desconhecida [{0}].
+
+138=O atributo [{0}] é do tipo [{1}], mas o mapeamento usa via indireta transparente (carregamento lento), requerendo que ele seja uma superclasse de [{2}].
+
+139=O método get para o atributo [{0}] retorna [{1}], mas o mapeamento usa via indireta transparente (carregamento lento), requerendo que ele seja uma superclasse de [{2}].
+
+14=Problema ao clonar o objeto [{0}].  O método de clone [{1}] não está acessível.
+
+140=O método de configuração para o atributo [{0}] utiliza [{1}], mas o mapeamento usa via indireta transparente (carregamento lento), requerendo que ele seja uma superclasse de [{2}].
+
+141=O campo [{0}] não está presente na tabela [{1}] no banco de dados.
+
+142=A tabela [{0}] não está presente no banco de dados.
+
+143=O vetor especificado, [{0}], da ordem de inserção de várias tabelas tem mais ou menos tabelas do que o especificado no descritor. {2}Todas as tabelas [{1}] devem ser incluídas no Vetor de ordem de inserção.
+
+144=A via indireta transparente pode ser usada somente com CollectionMappings.
+
+145=A classe de contêiner [{0}] indireta deve implementar a construtor [{1}] com o parâmetro (ValueHolderInterface).
+
+146=A classe de contêiner [{0}] indireta não pôde ser instanciada usando o construtor {1}(ValueHolderInterface).
+
+147=A política de contêiner [{0}] deve ser usada somente no JDK 1.1.x.  Ela foi instanciada para [{1}].
+
+148=A política de contêiner [{0}] não é compatível com via indireta transparente.
+
+149=Objetos NoIndirectionPolicy não devem receber esta mensagem.
+
+15=Esta classe não define um construtor padrão, que o EclipseLink requer.
+
+150=O mapeamento para o atributo [{0}] usa via indireta transparente, de modo que o atributo [{0}] deve ser inicializado para um contêiner apropriado.  Atualmente, o valor é [{1}]. {2} – Deve ser a instância de um implementador de Coleção ou Mapa.
+
+151=A operação [{0}] é inválida para este mapeamento.
+
+152=A operação [{1}] é inválida para esta política de via indireta [{0}].
+
+153=O descritor de referência para [{0}] deve ser configurado para ser um descritor de Coleta agregada.
+
+154=A classe de contêiner de via indireta [{0}] não implementa IndirectContainer.
+
+155=Este mapeamento não inclui um campo de chave estrangeira vinculado ao campo de chave primária [{0}].
+
+156=O nome da estrutura não está configurado para este mapeamento.
+
+157=Descritores normais não suportam extensões não relacionais.
+
+158=A classe-pai deste descritor foi configurada para si mesma.
+
+159=A via indireta de proxy está disponível somente em máquinas virtuais compatíveis com JDK 1.3 ou superior.
+
+16=O método de retorno de chamada do descritor [{0}], com o parâmetro (DescriptorEvent), está inacessível.
+
+160=O atributo [{0}] da classe [{1}] foi digitado como [{2}], que não foi especificado na lista de interfaces fornecidas para o método useProxyIndirection(). {4}As interfaces válidas são: [{3}].
+
+161=O método [{0}] na classe [{1}] retorna um valor do tipo [{2}], que não foi especificado na lista de interfaces fornecidas para o método useProxyIndirection(). {4}As interfaces válidas são: [{3}].
+
+162=O método [{0}] na classe [{1}] utiliza um parâmetro do tipo [{2}], que não foi especificado na lista de interfaces fornecidas para o método useProxyIndirection().{4}As interfaces válidas são: [{3}].
+
+163=A classe de atributos deste mapeamento não corresponde à classe de coleção.  [{1}] não pode ser designada a [{0}].
+
+164=O método de aditamento [{1}], na classe de aditamento [{0}], é inválido, não é público ou não pode ser localizado. {2}Os métodos de aditamento do descritor devem ser declarados "public static void" com (ClassDescriptor) como o único parâmetro.
+
+165=O método de aditamento deste descritor [{1}] na classe de aditamento [{0}] acionou uma exceção.
+
+166=Não há mapeamento para o atributo [{0}].
+
+167=Um construtor válido não foi localizado para a classe de contêiner de via indireta [{0}].
+
+168=Problema ao criar nova instância usando o construtor padrão.  O construtor padrão acionou uma exceção.
+
+169=Problema ao criar nova instância de factory usando o construtor padrão.  O construtor padrão acionou uma exceção.
+
+17=Tentando acessar o método [{0}] no objeto [{1}].  O método subjacente está inacessível.
+
+170=Problema (acesso ilegal) ao criar nova instância de factory usando o construtor padrão.
+
+171=A classe de factory não define um construtor padrão público ou o construtor levantou uma exceção.
+
+172=Construtor de factory não localizado.
+
+173=O construtor de factory estava inacessível.
+
+174=Problema ao criar factory.  O método de criação [{0}] não está acessível.
+
+175=Problema ao criar factory usando o método criação [{0}].  O método de criação acionou uma exceção.
+
+176=Problema ao criar factory usando o método criação [{0}].  O método de criação não está acessível.
+
+177=O mapeamento está ausente para o atributo: [{0}].
+
+178=Não é possível localizar o mapeamento do atributo [{0}] no bean de entidade [{1}]. O atributo deve ser mapeado.
+
+179=O atributo [{0}] usa manutenção de relacionamento bidirecional, mas tem ContainerPolicy [{1}] que não o suporta.  O atributo deve ser mapeado com um tipo de coleção diferente.
+
+18=Acesso de método ilegal em um mapeamento de Transformação usando um ValueHolder.
+
+181=A classe AttributeTransformer [{0}] não pode ser localizada.
+
+182=A classe FieldTransformer [{0}] não pode ser localizada.
+
+183=A classe [{0}] não pode ser usada como um AttributeTransformer.
+
+184=A classe [{0}] não pode ser usada como um FieldTransformer.
+
+185=ReturningPolicy contém o campo [{0}] com dois tipos diferentes: [{1}] e [{2}].
+
+186=ReturningPolicy contém o campo [{0}] incluído duas vezes: usando addInsertField e addInsertFieldReturnOnly.
+
+187=ReturningPolicy contém o campo [{0}] com o tipo [{1}], mas o mesmo campo no descritor tem o tipo [{2}].
+
+188=ReturningPolicy contém o campo não mapeado [{0}] que requer o tipo.
+
+189=ReturningPolicy contém o campo mapeado [{0}] que requer o tipo.
+
+19=Acesso ilegal ao chamar o método de atributo em um mapeamento de transformação.  O método subjacente está inacessível.
+
+190=ReturningPolicy contém o campo [{0}] mapeado com o mapeamento [{1}] que não é suportado.
+
+191=ReturningPolicy contém o campo [{0}] que não é suportado: é um campo de sequência, indicador de tipo de classe ou usado para bloqueio.
+
+192=ReturningPolicy contém o campo [{0}], mas [{1}] customizado não o gera na saída.
+
+193=Não há [{0}] customizado configurado, mas ReturningPolicy contém campo(s) a ser retornado(s) e [{1}] não suporta geração de chamada com retorno.
+
+194=O método de extração de classe [{0}] deve ser um método estático na classe do descritor.
+
+195=A classe compartilhada {1} não deve fazer referência à classe isolada {0}.
+
+196=UpdateAllFields não foi configurado ou foi configurado como false.  Ao usar CMPPolicy.setForceUpdate(true), deve-se também chamar CMPPolicy.setUpdateAllFields(true)
+
+197=O mapeamento [{0}] não é o tipo apropriado para esse descritor
+
+198=Para usar ObjectChangeTrackingPolicy ou AttributeChangeTrackingPolicy, {0} deve implementar a interface ChangeTracker.
+
+199=Para usar o grupo de buscas, a classe de domínio ({0}) deve implementar a interface FetchGroupTracker.
+
+2=O atributo [{0}] é declarado como tipo ValueHolderInterface, mas seu mapeamento não usa via indireta.
+
+20=O método [{0}] está inacessível.
+
+200=Tentativa de registrar um objeto com via indireta inativa como novo objeto.  Possivelmente, o objeto foi excluído ou removido do cache durante uma mesclagem de um clone serializado.  Esta é uma violação de simultaneidade; considere uma estratégia de bloqueio.
+
+201=Foi tentada a construção de um objeto no cache de sessão, mas o descritor está marcado como isolado na unidade de trabalho, de modo que nunca deve ser acessado fora de uma unidade de trabalho.
+
+202=Ocorreu um erro interno ao acessar o objeto de chave primária [{0}].
+
+203=Ocorreu um erro interno ao acessar o método [{1}] na classe [{0}].
+
+204=A ordem de tabela de inserção contradiz as chaves estrangeiras de diversas tabelas - de acordo com a última tabela [{0}] deve ser inserido antes da tabela [{1}].
+
+205=A ordem de tabela de inserção tem dependência cíclica entre as tabelas [{0}] e [{1}].
+
+206=A ordem de tabela de inserção tem dependência cíclica entre três ou mais tabelas.
+
+207=A ordem de tabela de inserção está errada: a tabela [{0}] mapeada para pai é especificada para ser inserida após a tabela [{1}] mapeada para filho.
+
+208=Você está tentando configurar um Conversor com o nome de classe [{1}] em um mapeamento não direto [{0}].  Somente Mapeamentos diretos podem ter conversores.  Isso geralmente acontece ao tentar configurar um conversor de chave em um DirectMapMapping com uma chave não direta.
+
+209=Este descritor contém um mapeamento com um DirectMapMapping e nenhum campo-chave configurado.
+
+21=Problema ao extrair classe da linha [{0}].  O método estático [{1}], com o parâmetro (DatabaseRow), não está acessível.
+
+210=[{0}] tem campo de ordem de lista configurado, mas o atributo não implementa Lista.
+
+211=[{0}] tem campo de ordem de lista configurado e o modo de validação do campo de ordem de lista é CORRECTION, que requer que IndirectList seja designável ao atributo.
+
+212=O campo de ordem de lista especificado para [{0}] tem uma tabela incorreta [{1}]. Em vez disso, deve ser {2}.
+
+213={0} requer que todos os campos de chave estrangeira de destino pertençam à mesma tabela, mas várias foram localizadas: {1}.
+
+214={0} especifica a tabela de relação, que não é compatível com o método addForeignKey(Nome), ou use os métodos addSourceRelationKeyField(Name) e addTargetRelationKeyFieldName em seu lugar.
+
+215={0} deve ter RelationTableMechanism não nulo.
+
+216=CacheKeyType não pode ser ID_VALUE para uma chave primária composta.
+
+217=XPath inválido para XMLDirectMapping/XMLCompositeDirectCollectionMapping. XPath deve conter um símbolo @ para atributos ou terminar com /text() para nós de texto. Por exemplo: "@nome" ou "name/text()"
+
+218=Um NullPointerException teria ocorrido ao acessar um método _vh_ construído não existente [{0}].  A classe não foi construída corretamente - para implementações EE, verifique a ordem do módulo no descritor de implementação application.xml e verifique se o módulo que contém a unidade de persistência está à frente de qualquer outro módulo que o utiliza.
+
+219=Os critérios adicionais de [{1}] não são permitidos dentro de uma hierarquia de herança usando visualizações.
+
+22=Problema ao criar nova instância.  O método de criação [{0}] não está acessível.
+
+220=Política de particionamento ausente para o nome [{0}].
+
+221=O campo SerializedObjectPolicy não está configurado.
+
+222=Uma exceção foi lançada ao tentar obter uma instância de classe de chave primária.
+
+23=O método de retorno de chamada do descritor [{0}], com o parâmetro (Sessão), está inacessível.
+
+24=A variável de instância [{0}] no objeto [{1}] está inacessível. {3}Argumento: [{2}]
+
+25=O método [{0}] com o argumento [{1}] não está acessível.
+
+26=Tentando obter o valor da variável de instância [{0}] do tipo [{1}] do objeto [{2}].  O objeto especificado não é uma instância da classe ou interface que declara o campo subjacente.
+
+27=Tentando chamar o método [{0}] no objeto [{1}].  O número de parâmetros reais e formais diferem, ou uma conversão de desagrupamento falhou.
+
+28=Argumento ilegal ao instanciar um proxy baseado em método em um mapeamento de transformação.
+
+29=O número de parâmetros reais e formais diferem, ou uma conversão de desagrupamento falhou.
+
+30=O número de parâmetros reais e formais diferem para o método [{0}], ou uma conversão de desagrupamento falhou.
+
+31=O número de parâmetros reais e formais para o método de retorno de chamada do descritor [{0}] difere, ou uma conversão de desagrupamento falhou.
+
+32=Tentando configurar o valor [{0}] para a variável de instância [{1}] do tipo [{2}] no objeto.  O objeto especificado não é uma instância da classe ou interface que declara o campo subjacente, ou uma conversão de desagrupamento falhou.
+
+33=Tentando chamar [{0}] no objeto com o valor [{1}].  O número de parâmetros reais e formais diferem, ou uma conversão de desagrupamento falhou.
+
+34=Esta classe não define um construtor padrão público, ou o construtor levantou uma exceção.
+
+35=Evento inválido.
+
+36=Código de evento inválido [{0}].
+
+37=Código de evento do descritor inválido [{0}].
+
+38=O construtor do mapa de identidade falhou porque um mapa de identidade inválido foi especificado.
+
+39=Este descritor não especifica uma classe Java.
+
+40=O descritor está ausente para [{0}].  Ele provavelmente não foi incluído na Sessão.
+
+41=Um mapeamento que não seja somente leitura deve ser definido para o campo de número de sequência.
+
+43=Classe ausente para o valor do campo indicador [{0}] do tipo [{1}].
+
+44=Campo indicador de classe ausente da linha do banco de dados [{0}].
+
+45=Mapeamento ausente para o campo [{0}].
+
+46=Deve haver um mapeamento que não seja somente leitura definido para o campo de chave primária [{0}].
+
+47=O mapeamento de chave primária de diversas tabelas deve ser especificado quando uma junção de várias tabelas customizadas é usada.
+
+48=Diversos mapeamentos graváveis existem para o campo [{0}].  Somente um pode ser definido como gravável, todos os outros devem ser especificados somente leitura.
+
+49=Um nome de método de transformação de atributo não foi especificado para este mapeamento.
+
+50=Um nome de campo não está configurado para este mapeamento.
+
+51=Nenhuma chave estrangeira foi especificada para este mapeamento.
+
+52=Nenhuma chave de referência foi especificada para este mapeamento.
+
+53=O nome da tabela de relação não está configurado para este mapeamento.
+
+54=Não existem chaves de relação de origem especificadas para esse mapeamento.
+
+55=O método de retorno de chamada do descritor [{0}] não pode ser localizado.  Ele deve usar uma Sessão ou um DescriptorEvent como seu argumento.
+
+56=O método [{0}] com os parâmetros (Registro) ou (Registro, Sessão) não foi localizado.
+
+57=Construtor inacessível.
+
+58=O método [{0}] com os parâmetros () ou (Sessão) não foi localizado.
+
+59=A variável de instância [{0}] não está definida na classe de domínio [{1}] ou não está acessível.
+
+6=O nome do atributo está ausente.
+
+60=O método [{0}] ou [{1}] não está definido no objeto [{2}].
+
+61=O método de extração de classe estática [{0}], com o parâmetro (Registro), não existe ou não está acessível.
+
+62=O método de clone [{0}], sem parâmetros, não existe ou não está acessível.
+
+63=O método de criação de instância [{0}], sem parâmetros, não existe ou não está acessível.
+
+64=Nenhuma chave estrangeira de destino foi especificada para este mapeamento.
+
+65=Nenhuma chave de relação de destino foi especificada para este mapeamento.
+
+66=Não foi possível desserializar o objeto da matriz de bytes.
+
+67=Não foi possível serializar o objeto na matriz de bytes.
+
+68=O valor de uma agregação no objeto [{0}] é nulo.  Valores nulos não são permitidos para mapeamentos agregados, a menos que "Permitir nulo" seja especificado.
+
+69=Um NullPointerException foi lançado ao extrair um valor da variável de instância [{0}] no objeto [{1}].
+
+7=O atributo [{0}] deve ser um tipo que implementa {1}.
+
+70=Um NullPointerException foi lançado ao extrair um valor por meio do método [{0}] no objeto [{1}].
+
+71=Um NullPointerException foi lançado ao configurar o valor da variável de instância [{0}] com o valor [{1}].
+
+72=Um NullPointerException foi lançado ao configurar um valor por meio do método [{0}] com o argumento [{1}].
+
+73=Não é possível localizar o descritor para a classe-pai [{0}].
+
+74=Os campos de chave primária não estão configurados para este descritor.
+
+75=A classe de referência não foi especificada para este descritor.
+
+77=O descritor de referência para [{0}] deve ser configurado para ser um descritor agregado.
+
+78=O campo de referência [{0}] para este mapeamento deve existir na tabela de referência.
+
+79=A tabela de referência não foi especificado para este mapeamento.
+
+8=O descritor [{0}] foi configurado para usar herança, mas um campo de indicador de classe não foi definido. {2}Ao usar herança, um campo de indicador de classe ou um método de extração de classe deve ser configurado. {2}Descritor pai: [{1}]
+
+80=O campo de chave de relação [{0}] para este mapeamento deve existir na tabela de relação.
+
+81=O método [{0}] deve retornar o tipo do atributo mapeado, não anular.
+
+82=O método de retorno de chamada do descritor [{0}], com o parâmetro (DescriptorEvent), não está acessível.
+
+83=O método de retorno de chamada do descritor [{0}], com o parâmetro (Sessão), não está acessível.
+
+84=O método [{0}], com os parâmetros (Registro) ou (Registro, Sessão), não está acessível.
+
+85=O método [{0}], com os parâmetros () ou (Sessão), não está acessível.
+
+86=A variável de instância [{0}] na classe [{1}] não está acessível.
+
+87=Os métodos [{0}], [{1}] no objeto [{2}] não estão acessíveis
+
+88=O método de extração de classe estática [{0}], com o parâmetro (Registro), não está acessível.
+
+89=O método de clone [{0}], sem parâmetros, não está acessível.
+
+9=Este mapeamento não tem um nome de campo direto configurado.
+
+90=O método de criação de instância [{0}], sem parâmetros, não está acessível.
+
+91=Para usar IDs gerados em sequência, as propriedades "Nome do número de sequência" e "Nome do campo de número de sequência" devem ser configuradas para este descritor.
+
+92=O tamanho da chave primária do destino não corresponde ao tamanho da chave estrangeira.
+
+93=A tabela [{0}] não está presente neste descritor.
+
+94=Os descritores devem ter um nome de tabela definido.
+
+96=O número de chaves de destino não corresponde ao número de chaves de origem.
+
+97=Problema ao clonar o objeto [{0}].  O método de clone [{1}] acionou uma exceção.
+
+98=O método de retorno de chamada do descritor subjacente [{0}], com o parâmetro (DescriptorEvent), acionou uma exceção.
+
+99=O método [{0}] no objeto [{1}] acionou uma exceção.
+

@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=オブジェクト [{0}] を削除しようとしましたが、ID マップにバージョン番号がありません。 {3}削除試行前に読み取られなかった可能性があります。 {3}クラス > {1}、1 次キー > {2}
+
+5003=オブジェクト [{0}] は、最後に読み取られてから変更されているか削除されているため、削除できません。 {3}クラス > {1}、1 次キー > {2}
+
+5004=オブジェクト [{0}] を更新しようとしましたが、ID マップにバージョン番号がありません。 {3}更新試行前に読み取られなかった可能性があります。 {3}クラス > {1}、1 次キー > {2}
+
+5006=オブジェクト [{0}] は、最後に読み取られてから変更されているか削除されているため、更新できません。 {3}クラス > {1}、1 次キー > {2}
+
+5007=オブジェクト [{0}] にはバージョン・ロック・フィールドへの非読み取り専用マッピングが含まれている必要があります。
+
+5008=タイム・スタンプ・ロックを使用する場合にはバージョン・ロック・フィールドを java.sql.Timestamp にマップする必要があります
+
+5009=1 次キーが [{0}] のクラス [{1}] のオブジェクトは、最後に読み取られてから削除されているため、アンラップできません。
+
+5010=オブジェクト [{0}] は、最後に読み取られてから変更されているか削除されているため、マージできません。 {2}クラス > {1}
+
+5011=1 つ以上のオブジェクトが、最後に読み取られてから変更されているか削除されているため、更新できません
+

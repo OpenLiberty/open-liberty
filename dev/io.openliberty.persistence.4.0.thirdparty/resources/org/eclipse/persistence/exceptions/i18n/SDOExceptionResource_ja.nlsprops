@@ -1,0 +1,149 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=URI [{0}] および名前 [{1}] が指定されたタイプで、タイプ ID の ID エレメントが見つかりませんでした。
+
+45001=schemaLocation [{0}] および名前空間 [{1}] が指定されたインポートの処理中にエラーが発生しました。
+
+45002=schemaLocation [{0}] が指定されたインクルードの処理中にエラーが発生しました。
+
+45003=URI [{0}] および名前 [{1}] が指定された参照プロパティーが見つかりませんでした。
+
+45004=changesummary で古いシーケンスが見つかりませんでした。
+
+45005=[{0}] という名前のプロパティー値は DataObject である必要があります。
+
+45006=シーケンスは type.isSequenced() が TRUE の場合はヌルにすることはできません。
+
+45007=[{0}] という名前のプロパティーでタイプが設定されませんでした。
+
+45008=IOException が発生しました。
+
+45009=URI [{0}] および名前 [{1}] でタイプが見つかりませんでした。
+
+45010=インターフェース・クラス [{0}] のタイプが見つかりませんでした。 このタイプが定義されていることを確認してください。  また、インターフェース・クラス・ローダーはヘルパー・コンテキスト・クラス・ローダーの階層メンバーである必要があり、これは [{1}] であるかのように見えます。
+
+45011=type.isAbstract() が TRUE を返すため、URI [{0}] および名前 [{1}] が指定されたタイプの DataObject を作成できませんでした。
+
+45012=インターフェース [{0}] の DataObject を作成できませんでした。URI [{1}] および名前 [{2}] を指定したタイプの DataObject の作成を試行してください。 
+
+45013=ヌル引数のアプリケーション情報を検索できません。
+
+45014=タイプを定義できませんでした。  タイプは commonj.sdo.Type に設定されたタイプの DataObject に対してのみ定義することができます。
+
+45015=ヌル名を指定したタイプを定義できませんでした。
+
+45016=changesummary XML の変更オブジェクトに参照属性が欠落しているか、値が指定されていません。
+
+45017=xpath [{0}] の処理中にエラーが発生しました。
+
+45018=複合の単一設定 [{1}] の重複項目を位置 [{0}] のシーケンスに追加することはサポートされていません。
+
+45019=属性プロパティー [{0}] をシーケンスに追加することはサポートされていません。
+
+45020=パス [{0}] の シーケンスは見つかりませんでした。
+
+45021=DataObject インスタンス・フィールドがヌルのシーケンス・オブジェクトをインスタンス化しようとしてエラーが発生しました。
+
+45022=プロパティー [{0}] ではシーケンスはサポートされません。
+
+45023=URI [{0}] および名前 [{1}] を指定したタイプのプロパティーをクラス [{2}] の値に設定できませんでした
+
+45024=変換エラーが発生しました。
+
+45025=索引 [{0}] でプロパティーが見つかりませんでした
+
+45026=ヌル・パラメーターで操作 [{0}] を実行できません。
+
+45027=URI [{0}] および名前 [{1}] が指定されたタイプのクラスが見つかりません。
+
+45028=タイプをオープンおよびデータ型に設定できません。  URI [{0}] および名前 [{1}] が指定されたタイプでエラーが発生しました。
+
+45029=無効な索引 [{0}] がメソッド [{1}] に渡されました。
+
+45030=クラス [{0}] で String 引数を指定したコンストラクターを呼び出し中にエラーが発生しました。
+
+45031=ターゲット type.dataType が TRUE であるため、プロパティー [{1}] に無効なターゲット・タイプ [{0}] を設定できません。
+
+45032=URI [{1}] およびローカル名 [{2}] で XMLMarshalException が発生しました。  例外: [{0}]
+
+45033=タイプの生成中にエラーが発生しました。 名前 [{1}] および名前空間 URI [{0}] の XML スキーマ・コンポーネントは参照されますが定義されません。  名前空間 URI[{0}] のインポートまたはインクルードが XML スキーマから欠落している可能性があります。
+
+45034=オプション・パラメーターの値は URI [{0}] および名前 [{1}] が指定されたタイプの DataObject である必要があります。
+
+45035=「type」プロパティーに対応する値は Type オブジェクトである必要があります。
+
+45036=ロードされた XML ノードに対応するグローバル・プロパティーが見つかりませんでした。
+
+45037=プレフィックス [{0}] が使用されていますが、XML スキーマで宣言されていません。
+
+45038=パス [{1}] から到達可能ではないため、プロパティー [{0}] で操作を実行できません。 パスが無効か、パス上にある 1 つ以上の DataObject が ヌルです。
+
+45039=DataObject 上の externalizableDelegator フィールド [{0}] へのアクセス中にエラーが発生しました。
+
+45040=ヌル・パラメーター [{1}] で操作 [{0}] を実行できません。
+
+45041=クラス [{1}] の値 [{0}] はタイプ [{3}] のプロパティー [{2}] で無効です。
+
+45100=要求された SDOHelperContext を返そうとしてエラーが発生しました。  アクティブな WebLogic インスタンスでは、ヘルパー・コンテキスト・キャッシュの検索でアプリケーション名が必要です。  {0} の検索が失敗したため、アプリケーション名は判別できませんでした。
+
+45101=要求された SDOHelperContext を返そうとしてエラーが発生しました。  アクティブな WebLogic インスタンスでは、ヘルパー・コンテキスト・キャッシュの検索でアプリケーション名が必要です。  {1} で {0} を反射的に呼び出すことができなかったため、アプリケーション名を判別できませんでした。
+
+45102=要求された SDOHelperContext を返そうとしてエラーが発生しました。  アクティブな WebLogic インスタンスでは、ヘルパー・コンテキスト・キャッシュの検索でアプリケーション名が必要です。  {0} で ObjectName を作成または返すことができなかったため、アプリケーション名を判別できませんでした。
+
+45103=要求された SDOHelperContext を返そうとしてエラーが発生しました。  アクティブな WebLogic インスタンスでは、ヘルパー・コンテキスト・キャッシュの検索でアプリケーション名が必要です。  InitialContext をインスタンス化できなかったため、アプリケーション名を判別できませんでした。
+
+45200=SDO/JAXB: SDO タイプ [{0}] に対応する OXM 記述子が見つかりませんでした。Java クラスが XML タイプ [{1}] にマップされていることを確認してください。
+
+45201=SDO/JAXB: SDO プロパティー [{0}] に対応する OXM マッピングが見つかりませんでした。Java プロパティーが XML ノード [{1}] にマップされていることを確認してください。
+
+45202=SDO/JAXB: Java クラス [{0}] に対応する SDO タイプが見つかりませんでした。
+
+45203=SDO/JAXB: スキーマ参照は Java クラス [{0}] の記述子に設定されている必要があります。
+
+45204=SDO/JAXB: スキーマ・コンテキストは Java クラス [{0}] の記述子でスキーマ参照に設定されている必要があります。
+
+45205=SDO/JAXB: Java クラス [{0}] に対応する SDO タイプが見つかりませんでした。SDO タイプが XML タイプ [{1}] に対応していることを確認してください。
+
+45206=SDO/JAXB: JAXB Unmarshaller の作成中にエラーが発生しました。
+
+45207=指定された SchemaResolver を使用してスキーマを解決しようとしてエラーが発生しました。
+
+45208=タイプ {1} からプロパティー {0} をマップできません。 DataHandler タイプのプロパティーをマップするには、jakarta.activation および jakarta.mail パッケージが必要です。 両方のパッケージがクラスパスで使用可能であることを確認してください。
+
+45209=SDOHelperContext の ApplicationResolver インスタンスをリセットしようとしました。  設定できる項目は 1 つだけです。
+
+45210=マーシャルされている DataObject は XMLHelper と同じ HelperContext のものではありません。
+
+45211=タイプを名前 [{0}] で定義できませんでした。 この名前は有効な XML 名ではありません。
+
+45212=プロパティーを名前 [{0}] で定義できませんでした。 この名前は有効な XML 名ではありません。
+

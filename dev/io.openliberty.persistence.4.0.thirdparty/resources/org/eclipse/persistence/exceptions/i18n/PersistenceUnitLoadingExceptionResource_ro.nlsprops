@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=A fost aruncată o excepţie la încercarea de încărcare a unităţii de persistenţă pentru directorul: {0}
+
+30002=A fost aruncată o excepţie la încercarea de încărcare a unităţii de persistenţă pentru fişierul jar: {0}
+
+30003=A fost aruncată o excepţie în timpul procesării unităţii de persistenţă la URL: {0}
+
+30004=A fost aruncată o excepţie în timpul procesării persistence.xml din URL: {0}
+
+30005=A fost aruncată o excepţie în timpul căutării arhivelor de presistenţă cu ClassLoader: {0}
+
+30006=A fost aruncată o excepţie în timpul căutării entităţilor la URL: {0}
+
+30007=A fost aruncată o excepţie în timpul încărcării clasei: {0} pentru a verifica dacă implementează @Entity, @Embeddable sau @MappedSuperclass.
+
+30008=Calea de fişier returnată a fost goală sau nulă
+
+30009=A fost aruncată o excepţie în timpul încercării de încărcare a unităţii de persistenţă la url: {0}
+
+30010=A fost aruncată o excepţie în timpul încărcării fişierului ORM XML: {0}
+
+30011=EclipseLink nu a putut obţine clase din URL: {0}.  EclipseLink a încercat să citească acest URL ca şi jarFile şi ca şi Director, şi nu a putut fi procesat.
+
+30012=EclipseLink nu a putut obţine informaţiile unităţii de persistenţă de la URL:{0}
+
+30013=A fost aruncată o excepţie în timpul încercării de construire a numelui unităţii de persistenţă pentru unitatea de persistenţă [{1}] de la URL: {0}.
+
+30014=Unitatea de persistenţă specifică modul de validare ca şi "CALLBACK", dar o ValidatorFactory de validare bean nu a putut fi iniţializată. Vă rugăm să faceţi referire la excepţia imbricată pentru detalii. Vă rugăm să vă asiguraţi că API de validare bean şi Furnizorul de validare bean sunt disponibile în calea de clase.
+
+30015=A fost aruncată o excepţie în timpul încărcării clasei grupului de validare: {0}.
+
+30016=Numele de sesiune {0} nu poate fi utilizat de unitatea de persistenţă {1}, este deja utilizat de unitatea de persistenţă {2}
+
+30017=Unitatea de persistenţă {0} este definită atât în URL:{1} cât şi în URL:{2}. Nu pot exista mai multe unităţi de persistenţă cu acelaşi nume încărcate de acelaşi classloader.
+
+30018=Excepţie: {1} a survenit în timpul încercării de instanţiere a ArchiveFactory specificat de utilizator: {0}.
+
+30019=Apelaţi refreshMetadata într-o EntityManagerFactory pentru unitatea de persistenţă {0}.  Metadatele nu pot fi reîmprospătate deoarece această EntityManagerFactory a fost creată dintr-un obiect sesiune derivat dintr-o unitate de persistenţă.
+

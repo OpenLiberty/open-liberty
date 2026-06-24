@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource_pl.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Niepoprawny łańcuch wyrażenia XPath: {0}
+
+25002=Nie można przeanalizować indeksu liczby całkowitej z tego łańcucha wyrażenia XPath: {0}
+
+25003=Wystąpił błąd podczas marszalingu obiektu
+
+25004=Wystąpił błąd podczas demarszalingu dokumentu
+
+25005=Wystąpił błąd podczas sprawdzania poprawności obiektu
+
+25006=Nie określono domyślnego elementu głównego dla obiektu XMLDescriptor odwzorowanego na element {0}
+
+25007=W projekcie nie znaleziono deskryptora dla klasy {0}.  W przypadku architektury JAXB, jeśli obiekt JAXBContext został uruchomiony za pomocą obiektu TypeMappingInfo[], należy wywołać metodę marszalingu, która akceptuje obiekt TypeMappingInfo jako parametr wejściowy.
+
+25008=W projekcie nie znaleziono deskryptora z domyślnym elementem głównym {0}
+
+25010=Nie określono odwołania do schematu dla obiektu XMLDescriptor odwzorowanego na element {0}
+
+25011=Napotkano argument o wartości NULL
+
+25012=Wystąpił błąd podczas rozstrzygania schematu XML.
+
+25013=Wystąpił błąd podczas próby ustawienia schematów.
+
+25014=Wystąpił błąd podczas próby utworzenia instancji platformy schematu.
+
+25015=Wystąpił błąd podczas próby rozstrzygnięcia identyfikatora URI przestrzeni nazw dla elementu {0}. Nie określono obiektu tłumaczącego przestrzeni nazw dla deskryptora.
+
+25016=Nie znaleziono przestrzeni nazw dla przedrostka {0} w obiekcie tłumaczącym przestrzeni nazw.
+
+25017=Element enumClass lub enumClassName musi być ustawiony dla obiektu JAXBTypesafeEnumConverter.
+
+25018=Metoda fromString dla klasy wyliczenia {0} nie istnieje lub nie można jej wywołać.
+
+25019=Nie można znaleźć określonej klasy wyliczenia {0}.
+
+25020=Nie wolno wywoływać metody getResult() przed wywołaniem zdarzenia endDocument().
+
+25021=Klasa {0} jest niepoprawna dla elementu SwaRef. Wymagana jest klasa jakarta.activation.DataHandler.
+
+25022=Nie można zestawić obrazu. Brak dostępnego kodera dla typu mimeType {0}.
+
+25023=Nie znaleziono deskryptora podczas demarszalingu elementu odwzorowanego na atrybut {0}.
+
+25024=Wystąpił błąd podczas tworzenia instancji klasy UnmappedContentHandler {0}.
+
+25025=Klasa UnmappedContentHandler {0} ustawiona w obiekcie XMLUnmarshaller musi implementować interfejs org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Nie można zaktualizować węzła [{0}]. Nie znaleziono obiektu w pamięci podręcznej.
+
+25027=Nie można pobrać załącznika z identyfikatorem CID {0}, ponieważ nie ustawiono obiektu AttachmentUnmarshaller.
+
+25028=Nie znaleziono deskryptora odwołania dla odwzorowania {1} ze względu na nieznaną wartość xsi:type: {0}.
+
+25029=W przypadku przedrostka [{0}] klasa [{1}] podjęła próbę przypisania identyfikatora URI przestrzeni nazw [{2}], ale jej klasa nadrzędna [{3}] już przypisała identyfikator URI przestrzeni nazw [{4}].
+
+25030=Wystąpił błąd podczas wywoływania metody {0} dla niestandardowego obiektu NamespacePrefixMapper: {1}.
+
+25031=Wystąpił błąd podczas przetwarzania programu odwzorowującego przedrostki przestrzeni nazw: {1}. Nie znaleziono metody {0}.
+
+25032=Wystąpił błąd podczas wywoływania metody {0} dla niestandardowego interfejsu CharacterEscapeHandler: {1}.
+
+25033=Wystąpił błąd podczas przetwarzania interfejsu CharacterEscapeHandler: {1}. Nie znaleziono metody {0}.
+
+25034=Wystąpił błąd podczas wywoływania metody {0} dla niestandardowego obiektu IDResolver: {1}.
+
+25035=Wystąpił błąd podczas przetwarzania obiektu IDResolver: {1}. Nie znaleziono metody {0}.
+
+25036=Niestandardowa klasa IDResolver {1} nie obsługuje wielu identyfikatorów XML {0}.  Niestandardowe klasy IDResolver muszą być podklasami klasy org.eclipse.persistence.jaxb.IDResolver, jeśli używanych jest wiele identyfikatorów.
+
+25037=Wykryto cykl w grafie obiektu.  Spowoduje to pętlę nieskończoną: {0}
+
+25038=Obiekt DOMPlatform nie jest obsługiwany z typem nośnika application/json.
+
+25039=Wystąpił błąd podczas demarszalingu z {0}
+
+25040=Nie znaleziono obiektu typu {0} o identyfikatorze {1}.
+
+25041=Określona grupa atrybutów {0} nie jest zdefiniowana dla klasy {1}.
+
+25042=Wartość właściwości zmiennej {0} dla klasy {1} nie może być równa NULL.
+

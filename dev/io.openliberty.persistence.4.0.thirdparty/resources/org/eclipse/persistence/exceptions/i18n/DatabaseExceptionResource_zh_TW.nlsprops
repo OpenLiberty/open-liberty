@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=配置錯誤。找不到類別 [{0}]。
+
+4005=未連接 DatabaseAccessor。
+
+4006=從 getObject() 中的串流讀取 BLOB 資料時，發生錯誤。
+
+4007=因內部錯誤，無法轉換物件類型。{0}java.sql.TYPES：[{1}]
+
+4008=交易在進行中時，您無法登出。
+
+4009=順序表格資訊不完整。
+
+4011=預先配置序號時，發生錯誤。順序表格資訊不完整。
+
+4014=無法登錄 SynchronizationListener。
+
+4015=已同步的 UnitOfWork 不支援 commitAndResume() 作業。
+
+4016=配置錯誤。無法將驅動程式 [{0}] 實例化。
+
+4017=配置錯誤。無法存取驅動程式 [{0}]。
+
+4018=沒有為 JTS 驅動程式設定 TransactionManager。
+
+4019=取得資料庫的相關資訊時發生錯誤。如需詳細資料，請參閱巢狀異常。
+
+4020=無法為所指定的樂觀鎖定欄位 [{0}] 找到符合的資料庫欄位。請注意，比對作業會區分大小寫，因此，如果您允許在 getter 方法上使用預設直欄名稱，該名稱將會是大寫。
+
+4021=無法從驅動程式 [{0}]、使用者 [{1}] 和 URL [{2}] 取得連線。請驗證您已設定所預期的驅動程式類別和 URL。檢查您的登入、persistence.xml 或 sessions.xml 資源。jdbc.driver 內容應設為與資料庫平台相容的類別
+
+4022=存取元或其連線已設為空值。如果 ClientSession 或 UnitOfWork 釋放在不同的執行緒中（例如，如果發生「逾時」），就會發生這種情況。
+

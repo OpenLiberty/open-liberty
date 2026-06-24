@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=Přidávání vyhodnocovacích modulů oboru názvů
+
+create_descriptors=Vytváření deskriptorů
+
+create_mappings=Přidávání mapování do deskriptoru {0}
+
+error=Chyba: 
+
+generate_files=Zápis XML implementace a konfigurace relací
+
+generate_source=Generování implementačních tříd
+
+impl_package_missing=Název balíku implementační třídy chybí
+
+io_exception_error=Chyba: Neočekávaná výjimka IOException
+
+malformed_url_error=Chyba: Neočekávaná výjimka MalformedURLException
+
+missing_customization=Vstupní soubor přizpůsobení chybí
+
+missing_output_dir=Název výstupního adresáře TopLink chybí
+
+missing_project_dir=Název adresáře projektu TopLink Workbench chybí
+
+missing_schema_file=Vstupní soubor schématu chybí
+
+missing_src_dir=Název výstupního adresáře zdroje chybí
+
+missing_target_package=Název cílového balíku chybí
+
+read_customization=Čtení souboru přizpůsobení
+
+setup_inheritance=Nastavování dědičnosti
+
+start_mw_project=Vytváření projektu Mapping Workbench
+
+start_orajaxb=Vyvolávání orajaxb
+
+start_toplink=Vyvolávání generování TopLink
+
+version=Verze: 
+

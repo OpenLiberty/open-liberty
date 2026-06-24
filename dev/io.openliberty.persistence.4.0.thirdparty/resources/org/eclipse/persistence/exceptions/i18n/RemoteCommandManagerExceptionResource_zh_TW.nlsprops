@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=無法取得 JNDI 環境定義，請確定您的內容設定正確。
+
+22102=無法以名稱 {0} 在本端命名服務中張貼連線
+
+22103=無法使用 URL {1} 以名稱 {0} 查閱遠端連線
+
+22104=無法查閱主機名稱
+
+22105=無法將指令延伸到 {0}
+
+22106=無法以主題 {0} 和主題 Factory {1} 來建立外部 JMS 連線。同樣地，請確定您的環境定義內容設定正確。
+
+22107=無法以名稱 {0} 在本端命名服務中移除本端連線
+
+22108=無法將指令序列化或解除序列化
+
+22109=無法接收來自 JMS 提供者的 JMS 訊息
+
+22110=無法探索本端主機 IP 位址。
+
+22111=無法取得 ServerPlatform。ServerPlatform 必須設定在 Session 或 RemoteCommandManager 上。
+
+22112=無法以主題 {0} 和主題 Factory {1} 來建立本端 JMS 連線。同樣地，請確定您的環境定義內容設定正確。
+
+22113=無法使用 Factory {2} 來建立 Oc4jJGroupsRemoteConnection 服務 ID {0}、主題 {1}。同樣地，請確定您的環境定義內容設定正確。
+
+22114={0}：無法將所擷取的訊息 {1} 解除序列化。
+
+22115={0}：無法處理從訊息 {1} 擷取的遠端指令，來自 {2}，指令類型 {3}
+
+22116=所接收的 JMS 訊息是空值。將其視為 JMSException
+
+22117=在處理送入的訊息時，階段作業的 RemoteCommandManager 已關閉或尚未起始設定
+
+22118=無法使用配置檔 {0} 建立 JGroups 連線
+
+22119=起始設定 {0} 時發生錯誤，請將 org.eclipse.persistence.corba.jar 新增至類別路徑。
+

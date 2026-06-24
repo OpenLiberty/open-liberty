@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=尝试为以下目录装入持久性单元时抛出了异常：{0}
+
+30002=尝试为以下 JAR 文件装入持久性单元时抛出了异常：{0}
+
+30003=处理以下 URL 处的持久性单元时抛出了异常：{0}
+
+30004=处理来自以下 URL 的 persistence.xml 时抛出了异常：{0}
+
+30005=使用类装入器 {0} 搜索持久性归档时抛出了异常
+
+30006=在以下 URL 处搜索实体时抛出了异常：{0}
+
+30007=装入类 {0} 以检查它是否实现 @Entity、@Embeddable 或 @MappedSuperclass 时抛出了异常。
+
+30008=返回的文件路径为空或 Null
+
+30009=尝试装入以下 URL 处的持久性单元时抛出了异常：{0}
+
+30010=装入以下 ORM XML 文件时抛出了异常：{0}
+
+30011=EclipseLink 未能从 URL {0} 获取类。EclipseLink 已尝试以 JAR 文件和目录形式读取此 URL，无法对其进行处理。
+
+30012=EclipseLink 未能从 URL {0} 获取持久性单元信息
+
+30013=尝试从 URL {0} 为持久性单元 [{1}] 构建持久性单元名称时抛出了异常。
+
+30014=持久性单元指定验证方式为“CALLBACK”，但 Bean 验证 ValidatorFactory 未能初始化。请参阅嵌套异常以获取详细信息。请确保类路径中提供了 Bean 验证 API 以及 Bean 验证提供程序。
+
+30015=装入以下验证组类时抛出了异常：{0}。
+
+30016=会话名称 {0} 无法由持久性单元 {1} 使用，它已由持久性单元 {2} 使用
+
+30017=同时在以下两个 URL 中定义了持久性单元 {0}：{1} 和 {2}。同一类装入器无法装入同名的若干持久性单元。
+
+30018=尝试实例化用户指定的 ArchiveFactory {0} 时发生了异常 {1}。
+
+30019=正在 EntityManagerFactory 上为持久性单元 {0} 调用 refreshMetadata。元数据无法刷新，因为已从会话对象创建而不是从持久性单元派生此 EntityManagerFactory。
+

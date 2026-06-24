@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=JNDI 名 [{0}] での外部トランザクション・リソースの検索でエラーが発生しました
+
+23002=現行の外部管理トランザクションの状況取得でエラーが発生しました
+
+23003=現行の外部管理トランザクションの取得でエラーが発生しました
+
+23004=トランザクション・マネージャーの取得でエラーが発生しました
+
+23005=外部管理トランザクションへのバインディングでエラーが発生しました
+
+23006=新規外部管理トランザクションの開始でエラーが発生しました
+
+23007=外部管理トランザクションのコミットでエラーが発生しました
+
+23008=外部管理トランザクションのロールバックでエラーが発生しました
+
+23009=ロールバックに対する外部管理トランザクションのマーキングでエラーが発生しました
+
+23010=このスレッドでは現在アクティブである外部管理トランザクションはありません。
+
+23011=関連する外部管理トランザクションが完了する前に UnitOfWork [{0}] が非アクティブにされました。
+
+23012=現在アクティブなトランザクションがありません
+
+23013=トランザクションは現在アクティブです
+
+23014=JTA の使用中に EntityTransaction を使用できません。
+
+23015=トランザクションで複数のデータ・ソースに参加できません。
+
+23016=プロキシーの実行で例外が発生しました。
+

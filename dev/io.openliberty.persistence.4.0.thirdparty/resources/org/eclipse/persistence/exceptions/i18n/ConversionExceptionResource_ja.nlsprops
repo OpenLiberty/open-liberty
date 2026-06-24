@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=クラス [{1}] のオブジェクト [{0}] を [{2}] に変換できませんでした。
+
+3002=記述子が [{3}] のマッピング [{2}] のクラス [{1}] のオブジェクト [{0}] を [{4}] に変換できませんでした。
+
+3003=日付形式が正しくありません: [{0}] ([YYYY-MM-DD] が予期されています)
+
+3004=時刻形式が正しくありません: [{0}] ([HH:MM:SS] が予期されています)
+
+3005=タイム・スタンプ形式が正しくありません: [{0}] ([YYYY-MM-DD HH:MM:SS.NNNNNNNNN] が予期されています)
+
+3006=バイト配列に変換するには、[{0}] の長さは偶数でなければなりません。
+
+3007=クラス [{1}] のオブジェクト [{0}] を [{2}] に変換できませんでした。  クラス [{2}] が CLASSPATH にあることを確認してください。  代替 API を使用して、必要に応じて適切なクラス・ローダーで渡すか、それをデフォルト ConversionManager で設定する必要が生じることがあります
+
+3008=日時形式が正しくありません: [{0}] ([YYYY-MM-DD''T''HH:MM:SS] が予期されています)
+
+3009={0} のプロパティー [{1}] を [{2}] に設定することはできません。
+

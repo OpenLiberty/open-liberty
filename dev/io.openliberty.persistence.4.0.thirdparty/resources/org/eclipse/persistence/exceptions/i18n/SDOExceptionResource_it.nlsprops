@@ -1,0 +1,149 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource_it.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Impossibile trovare elemento ID di ID tipo su tipo con uri [{0}] e nome [{1}].
+
+45001=Si è verificato un errore durante l''elaborazione dell''importazione con schemaLocation [{0}] e spazio dei nomi [{1}].
+
+45002=Si è verificato un errore durante l''elaborazione dell''inclusione con schemaLocation [{0}].
+
+45003=Una proprietà di riferimento con uri [{0}] e nome [{1}] non è stata trovata.
+
+45004=La vecchia sequenza non è stata trovata in changesummary.
+
+45005=Il valore della proprietà denominata [{0}] deve essere un DataObject
+
+45006=La sequenza non può essere null quando type.isSequenced() è true.
+
+45007=Un tipo non è stato impostato sulla proprietà con nome [{0}]
+
+45008=Si è verificata un''eccezione IO.
+
+45009=Tipo non trovato con uri [{0}] e nome [{1}]
+
+45010=Un tipo non è stato trovato per la classe di interfaccia [{0}]. Assicurarsi che il tipo sia stato definito.  Inoltre, il programma di caricamento classe interfaccia deve essere membro della gerarchia del programma di caricamento classe del contesto helper: sembra sia [{1}].
+
+45011=Impossibile creare un DataObject per il tipo con uri [{0}] e nome [{1}] perché type.isAbstract() restituisce true.
+
+45012=Impossibile creare un DataObject per l''interfaccia [{0}], tentando di creare un DataObject per il tipo con uri [{1}] e nome [{2}] 
+
+45013=Impossibile ricercare info app per argomento null.
+
+45014=Impossibile definire il tipo.  I tipi possono essere definiti solo per DataObjects con il tipo impostato su commonj.sdo.Type
+
+45015=Impossibile definire il tipo con un nome null.
+
+45016=In un oggetto modificato nell''XML changesummary manca un attributo ref o il valore non è specificato.
+
+45017=Si è verificato un errore di elaborazione dell''xpath [{0}].
+
+45018=L''aggiunta di una voce duplicata per l''impostazione singola complessa [{1}] in una sequenza alla posizione [{0}] non è supportata.
+
+45019=L''aggiunta di una proprietà dell''attributo [{0}] ad una sequenza non è supportata.
+
+45020=Nessuna sequenza trovata per il percorso [{0}].
+
+45021=Si è verificato un errore nel tentativo di creare un''istanza di un oggetto Sequence con un campo istanza dataObject null.
+
+45022=Nessuna sequenza è supportata per la proprietà [{0}].
+
+45023=Impossibile impostare la proprietà di tipo con uri [{0}] e nome [{1}] sul valore della classe [{2}]
+
+45024=Si è verificato un errore di conversione.
+
+45025=Impossibile trovare la proprietà all''indice [{0}]
+
+45026=Impossibile eseguire l''operazione [{0}] sul parametro null.
+
+45027=Impossibile trovare la classe per il tipo con uri [{0}] e nome [{1}].
+
+45028=Non è possibile impostare un tipo su open e datatype.  Errore con tipo con uri [{0}] e nome [{1}].
+
+45029=Indice non valido [{0}] passato al metodo [{1}].
+
+45030=Si è verificato un errore durante il richiamo del costruttore con un argomento String sulla classe [{0}].
+
+45031=Impossibile impostare il tipo di destinazione non valido [{0}] sulla proprietà [{1}] poiché type.dataType di destinazione è true.
+
+45032=Si è verificata una XMLMarshalException per l''uri [{1}] e il nome locale [{2}].  Eccezione: [{0}]
+
+45033=Si è verificato un errore durante la generazione dei tipi. È stato fatto riferimento al componente schema XML con nome [{1}] e URI spazio dei nomi [{0}], ma non è stato mai definito.  Un''importazione o inclusione per l''URI spazio dei nomi [{0}] potrebbe mancare dallo schema XML.
+
+45034=Il valore del parametro options deve essere un DataObject Type con uri [{0}] e nome [{1}].
+
+45035=Il valore che corrisponde alla proprietà "type" deve essere un Type.
+
+45036=Una proprietà globale corrispondente al nodo XML in fase di caricamento non è stata trovata.
+
+45037=Il prefisso [{0}] viene utilizzato ma non dichiarato nello schema XML.
+
+45038=Impossibile eseguire l''operazione sulla proprietà [{0}] perché non è raggiungibile dal percorso [{1}]. Il percorso non è valido oppure uno o più oggetti di dati sul percorso sono null.
+
+45039=Si è verificato un errore durante l''accesso al campo externalizableDelegator [{0}] sul DataObject.
+
+45040=Impossibile eseguire l''operazione [{0}] con parametro null [{1}].
+
+45041=Il valore [{0}] della classe [{1}] non è valido per la proprietà [{2}] di tipo [{3}].
+
+45100=Si è verificato un errore nel tentativo di restituire l''SDOHelperContext richiesto.  In un''istanza WebLogic attiva il nome dell''applicazione è richiesto per le ricerche cache contesto helper.  Il nome dell''applicazione non può essere determinato poiché la ricerca {0} non è riuscita.
+
+45101=Si è verificato un errore nel tentativo di restituire l''SDOHelperContext richiesto.  In un''istanza WebLogic attiva il nome dell''applicazione è richiesto per le ricerche cache contesto helper.  Il nome dell''applicazione non può essere determinato poiché {0} non può essere richiamato riflessivamente su {1}.
+
+45102=Si è verificato un errore nel tentativo di restituire l''SDOHelperContext richiesto.  In un''istanza WebLogic attiva il nome dell''applicazione è richiesto per le ricerche cache contesto helper.  Il nome dell''applicazione non può essere determinato poiché non è stato possibile creare/restituire un ObjectName per {0}.
+
+45103=Si è verificato un errore nel tentativo di restituire l''SDOHelperContext richiesto.  In un''istanza WebLogic attiva il nome dell''applicazione è richiesto per le ricerche cache contesto helper.  Il nome dell''applicazione non può essere determinato poiché non è stato possibile creare un''istanza di InitialContext.
+
+45200=SDO/JAXB - Non è stato trovato un descrittore OXM che corrisponde al tipo SDO [{0}], assicurarsi che una classe Java sia associata al tipo XML [{1}].
+
+45201=SDO/JAXB - Non è stata trovata un''associazione OXM che corrisponde alla proprietà SDO [{0}], assicurarsi che una proprietà Java sia associata al nodo XML [{1}].
+
+45202=SDO/JAXB - Non è stato trovato un tipo SDO che corrisponde alla classe Java [{0}].
+
+45203=SDO/JAXB - Deve essere impostato un riferimento schema sul descrittore per la classe Java [{0}].
+
+45204=SDO/JAXB - Deve essere impostato un contesto schema sul riferimento schema sul descrittore per la classe Java [{0}].
+
+45205=SDO/JAXB - Non è stato trovato un tipo SDO che corrisponde alla Java [{0}], assicurarsi che il tipo SDO corrisponda al tipo XML [{1}].
+
+45206=SDO/JAXB - Si è verificato un errore durante la creazione di un Unmarshaller JAXB.
+
+45207=Si è verificato un errore nel tentativo di risolvere un schema utilizzando lo SchemaResolver fornito.
+
+45208=Impossibile associare la proprietà {0} dal tipo {1}. I package jakarta.activation e jakarta.mail devono mappare le proprietà di tipo DataHandler. Verificare che entrambi siano disponibili nel percorso di classe.
+
+45209=È stato effettuato un tentativo di reimpostare l''istanza ApplicationResolver su SDOHelperContext.  È consentita una sola impostazione.
+
+45210=Il DataObject in fase di marshalling non proviene dallo stesso HelperContext di XMLHelper.
+
+45211=Il tipo potrebbe non essere definito con il nome [{0}]. Il nome non è un nome XML valido.
+
+45212=La proprietà potrebbe non essere definita con il nome [{0}]. Il nome non è un nome XML valido.
+

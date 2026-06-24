@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource_ru.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=Объект [{0}] класса [{1}] невозможно преобразовать в [{2}].
+
+3002=Объект [{0}] класса [{1}] из связи [{2}] с дескриптором [{3}] невозможно преобразовать в [{4}].
+
+3003=Неверный формат даты: [{0}] (ожидалось значение в формате [ГГГГ-ММ-ДД])
+
+3004=Неверный формат времени: [{0}] (ожидалось значение в формате [ЧЧ:ММ:СС])
+
+3005=Неверный формат системного времени: [{0}] (ожидалось значение в формате [ГГГГ-ММ-ДД ЧЧ:ММ:СС.ННННННННН])
+
+3006=[{0}] должен иметь четную длину для выполнения преобразования в байтовый массив.
+
+3007=Объект [{0}] класса [{1}] невозможно преобразовать в [{2}].  Убедитесь в том, что класс [{2}] указан в переменной CLASSPATH.  Возможно, необходимо использовать альтернативный API, передающий необходимый загрузчик классов или настраивающий го в ConversionManager по умолчанию
+
+3008=Неверный формат даты и времени: [{0}] (ожидалось значение в формате [ГГГГ-ММ-ДД''T''ЧЧ:ММ:СС])
+
+3009=Не удалось присвоить свойствам {0} [{1}] значения [{2}].
+

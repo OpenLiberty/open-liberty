@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=查閱 JNDI 名稱 [{0}] 之下的外部交易資源時，發生錯誤
+
+23002=取得現行外部管理交易的狀態時，發生錯誤
+
+23003=取得現行外部管理交易時，發生錯誤
+
+23004=取得交易管理程式時，發生錯誤
+
+23005=連結至外部管理交易時，發生錯誤
+
+23006=開始新的外部管理交易時，發生錯誤
+
+23007=確定外部管理交易時，發生錯誤
+
+23008=回復外部管理交易時，發生錯誤
+
+23009=標示要回復的外部管理交易時，發生錯誤
+
+23010=這個執行緒目前沒有作用中的外部管理交易
+
+23011=在相關聯的外部管理交易完成之前，UnitOfWork [{0}] 呈現非作用中。
+
+23012=目前沒有作用中的交易
+
+23013=交易目前作用中
+
+23014=使用 JTA 時，無法使用 EntityTransaction。
+
+23015=無法在交易中列入多個資料來源。
+
+23016=Proxy 執行時發生異常狀況。
+

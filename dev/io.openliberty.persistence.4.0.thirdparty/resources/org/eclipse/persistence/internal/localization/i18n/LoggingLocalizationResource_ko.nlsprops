@@ -1,0 +1,785 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/LoggingLocalizationResource_ko.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+Current=스레드 (ID: {3} 이름: {4}) 스택 추적:
+
+External_transaction_controller_not_defined_by_server_platform=DatabaseSession에는 ServerPlatform이 아닌 항목에서 정의된 외부 트랜잭션 제어기가 있습니다. EclipseLink가 외부 트랜잭션 제어기의 대체를 허용하지만, org.eclipse.persistence.platform.server.ServerPlatformBase를 서브클래싱의 대체를 고려하고 getExternalTransactionControllerClass()를 대체하도록 권장합니다.
+
+JDBC_driver_does_not_support_meta_data=연결됨: 알 수 없음(JDBC 드라이버가 메타데이터를 지원하지 않습니다.)
+
+all_registered_clones=등록된 모든 복제본:
+
+an_error_executing_ejbSelect=ejbSelect를 실행하는 중에 오류 발생: {0}
+
+an_error_executing_finder=파인더를 실행하는 중에 오류 발생: {0}
+
+an_error_occured_executing_findByPrimaryKey=findByPrimaryKey를 실행하는 중에 오류 발생: {0}
+
+an_error_occured_initializing_dms_listener=DMS 임베디드 리스너 및 SPY 서블릿을 초기화하는 중에 예외 발생
+
+an_error_occured_preparing_bean=호출에 대해 Bean을 준비하는 중에 오류 발생: {0}
+
+an_error_occured_trying_to_undeploy_bean=Bean을 배치 해제하는 중에 오류 발생(배치 실패 이후): {0}
+
+annotation_warning_ignore_annotation=이 클래스에 대해 XML 메타데이터 완료가 true로 설정되어 [{1}] 요소에서 [{0}] 어노테이션을 무시합니다.
+
+annotation_warning_ignore_private_owned=엔티티 클래스 [{0}] 내의 [{1}] 요소에서 @PrivateOwned를 무시합니다. @PrivateOwned는 @OneToOne, @OneToMany 및 @VariableOneToOne으로만 사용할 수 있습니다. 또한 개인 소유권은 @BasicCollection 및 @BasicMap으로만 암시됩니다.
+
+annotation_warning_ignore_return_insert=[{0}] 요소에서 @ReturnInsert를 무시합니다. @ReturnInsert가 기본 맵핑으로만 지원됩니다.
+
+annotation_warning_ignore_return_update=[{0}] 요소에서 @ReturnUpdate를 무시합니다. @ReturnUpdate가 기본 맵핑으로만 지원됩니다.
+
+application_server_name_and_version=서버: {0}
+
+archive_not_found_in_input=아카이브 파일 ({0})이 입력 디렉토리 ({1}) 아래에 없습니다.
+
+associate_using_third_table_not_migrated=관계 테이블을 통한 1:m을 맵핑하기 위한 Oc4j 원시 CMP 기능 -DassociateUsingThirdTable=true가 마이그레이션되지 않습니다. 마이그레이션 프로세스 이후 맵핑 워크벤치를 통해 일대다 맵핑으로 엔티티 ({0})의 cmr 필드 ({1})을(를) 다시 맵핑해야 합니다.
+
+attempted_to_open_entry_in_url_as_jar=jar 및 액세스 항목 {1}(으)로 {0}을(를) 여는 중에 {2}이(가) 발생했습니다.
+
+attempted_to_open_file_url_as_directory=디렉토리 및 액세스 항목 {1}(으)로 {0}을(를) 여는 중에 {2}이(가) 발생했습니다.
+
+attempted_to_open_url_as_directory=디렉토리로 {0}을(를) 여는 중에 {1}이(가) 발생했습니다.
+
+attempted_to_open_url_as_jar=jar로 {0}을(를) 여는 중에 {1}이(가) 발생했습니다.
+
+automatic_key_generation_not_supported=엔티티 ({0})에서 WLS 원시 CMP 설정 "automatic-key-generation"이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+bacth_update_not_supported=엔티티 Bean ({1})에 정의된 값 ({0})이(가) 포함된 일괄처리 크기를 설정하는 일괄처리 업데이트가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+broadcast_connection_already_closed=경고: {0}: 이미 처리완료된 연결을 닫으려고 시도합니다. 무시합니다.
+
+broadcast_connection_already_closing=경고: {0}: 현재 처리완료 중인 연결을 닫으려고 시도합니다. 무시합니다.
+
+broadcast_exception_thrown_when_attempting_to_close_connection=경고: {0}: 연결을 닫으려고 시도하는 중 예외 {1} 발생
+
+broadcast_ignored_command_while_closing_connection=경고: {0}: 연결을 닫는 중 명령 공개 요청을 무시합니다.
+
+broadcast_listening_sleep_on_error=경고: {0}: 예외 {1}이(가) 발생했습니다. 스레드는 청취를 재개하기 전에 {2}밀리초 동안 휴면합니다.
+
+broadcast_remote_command_is_null=경고: {0}: RemoteCommand 대신 널을 포함하는 수신된 메시지 {1}입니다.
+
+broadcast_remote_command_wrong_type=경고: {0}: 예상되는 유형 RemoteCommnad 대신 {2} 유형의 오브젝트를 포함하는 수신된 메시지 {1}입니다.
+
+call_timeout_not_migrated=호출 제한시간 값={1}이(가) orion-ejb-jar.xml의 엔티티 {0}에 정의되지만 디스크립터 파일에 정의된 지속성 맵핑이 없으므로 마이그레이션이 발생하지 않습니다. EclipseLink 기본 맵핑을 나중에 사용하여 EclipseLink 맵핑 디스크립터를 생성하는 경우, EclipseLink 기본 맵핑이 원시 디스크립터 파일에 액세스할 수 없으면 호출 제한시간 설정이 유실됩니다. 그런 다음 기본 맵핑 생성 이후 EclipseLink 맵핑 워크벤치를 통하거나 수동으로 호출 제한시간을 재설정해야 합니다.
+
+cannot_get_nested_collection_type=중첩된 콜렉션 유형을 얻을 수 없습니다.
+
+cannot_get_server_name_and_version=다음 예외로 인해 서버 이름 및 버전을 가져올 수 없습니다. {0}
+
+cannot_unwrap_connection=다음 예외로 인해 애플리케이션 서버에서 랩핑된 Oracle 연결을 언랩할 수 없습니다. {0}
+
+cannot_weave_changetracking={0} 클래스가 해당 맵핑에서 지원되지 않으므로 변경 추적에 위브될 수 없습니다.
+
+cannot_weave_virtual_one_to_one={0} 클래스에 가상 속성에서 OneToOne 또는 ManyToOne 맵핑을 사용하는 {1} 속성이 있습니다. 이러한 유형의 맵핑 위빙이 지원되지 않습니다. {0}에 대해 위빙을 사용 안합니다.
+
+check_exist_on_method_as_true_not_supported=엔티티 ({0})에서 WLS 원시 CMP 설정 "check-exists-on-method-as-true"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+class_list_created_by=({0}).({1})() 메소드에서 작성된 클래스 목록입니다.
+
+cmp_and_cmr_field=[{0}]에 대한 ejb-jar.xml 항목이 [{1}] 속성에 대해 <cmp-field> 및 <cmr-field> 항목을 둘 다 포함합니다. <cmp-field> 항목을 무시합니다.
+
+column_size_not_migrated=DB 열 크기 ({0})이(가) 마이그레이션됩니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+communication_failure_attempting_begintransaction_retry=데이터베이스에서 트랜잭션을 작성하는 중에 통신 장애가 발견되었습니다. 시작 트랜잭션을 재시도합니다. 오류: {0}.
+
+communication_failure_attempting_query_retry=트랜잭션의 외부에서 읽기 조회를 수행하는 중에 통신 장애가 발견되었습니다. 조회를 재시도합니다. 오류: {0}.
+
+config_factory=구성 팩토리: ({0}) = ({1})
+
+connected_sdk=연결됨: SDK
+
+connected_user_database=연결됨: {3}{4}사용자: {0}{3}{4}데이터베이스: {1} 버전: {2}
+
+connected_user_database_driver=연결됨: {0}{6}사용자: {1}{6}데이터베이스: {2} 버전: {3}{6}드라이버: {4} 버전: {5}
+
+corrupt_object=손상된 오브젝트: {0}
+
+corrupt_object_referenced_through_mapping=맵핑을 통해 손상된 오브젝트가 참조됨: {0}
+
+corrupted_session_announcement=SessionID: {0} 발견 관리자가 손상된 세션 공지사항을 수신했습니다. 무시합니다.
+
+create_default_dbms_tables_not_supported=WLS 원시 CMP 설정 "create-default-dbms-tables"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+data_sync_on_ejb_create_not_supported=엔티티 Bean ({0})에 정의된 data-synchronization-option="ejbCreate"를 설정하는 데이터 동기화가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+dbPlatformHelper_defaultingPlatform=벤더 이름 [{0}]에 대한 플랫폼을 발견할 수 없습니다. 기본값이 [{1}](으) 설정됩니다. 사용되는 데이터베이스 통용어가 사용 중인 데이터베이스와 일치하지 않을 수 있습니다. "eclipselink.target-database" 특성을 통해 플랫폼을 명시적으로 제공하십시오.
+
+dbPlatformHelper_noMappingFound=벤더 이름에서 데이터베이스 플랫폼으로 맵핑을 로드하는 [{0}] 자원을 로드할 수 없습니다. 데이터베이스 플랫폼의 자동 발견이 작동하지 않습니다.
+
+dbws_no_wsdl_inline_schema=[{0}] WSDL 인라인 스키마를 읽을 수 없습니다.
+
+dbws_orm_metadata_read_error=[{0}] ORM 메타데이터를 읽을 수 없습니다.
+
+dbws_oxm_metadata_read_error=[{0}] OXM 메타데이터를 읽을 수 없습니다.
+
+dbws_xml_schema_read_error=[{0}] XML 스키마를 읽을 수 없습니다.
+
+ddl_generation_unknown_property_value=알 수 없는 {0} 값이 지속성 단위 [{2}]에 대해 [{1}]을(를) 제공했습니다. 유효한 옵션: [{3}]
+
+default_dbms_tables_ddl_not_supported=WLS 원시 CMP 설정 "default-dbms-tables-ddl"이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+default_tables_already_existed=테이블 ({0})이(가) 데이터베이스에 이미 있으므로 작성되지 않습니다.
+
+delay_database_insert_until_ejb_create_not_supported=엔티티 ({0})에서 WLS 원시 CMP 설정 "delay-database-insert-until-ejbCreate"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+delay_database_insert_until_ejb_post_create_not_supported=엔티티 ({0})의 WLS 원시 CMP 설정 "delay-database-insert-until-ejbPostCreate"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+delay_updates_until_commit_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 기능 "delay-updates-until-commit"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+deleted_objects=삭제된 오브젝트:
+
+deleting_object=제거 조작이 {0}에서 수행되었습니다.
+
+deprecated_property={1} 특성이 더 이상 사용되지 않고 {0} 특성을 대신 사용해야 합니다.
+
+descriptor_named_query_cannot_be_added=기존 조회와 이름이 충돌하는 조회로 이름 지정된 디스크립터를 추가할 수 없습니다. 추가될 조회: [{0}]이(가) 다음으로 이름 지정됨: [{2}] 인수가 포함된 [{1}]
+
+dir_cleaned_for_mw_files={0} 디렉토리 아래의 파일 및 서브디렉토리가 새로 생성된 EclipseLink 맵핑 워크벤치 프로젝트 파일에 대해 정리 디렉토리를 작성하기 위해 삭제되었습니다.
+
+do_select_before_insert_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 기능 "do-select-before-insert"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+drop_connection_on_error=경고: {1} 오류 시 {0}에 대한 원격 명령 연결 삭제
+
+eclipselink_version_error=파일: {0}이(가) 없거나 손상되었습니다.
+
+ejbSelect2=EjbSelect: {0}
+
+ejb_jar_xml_not_found_in_input=ejb-jar.xml이 입력 디렉토리 ({0})에서 나타나지 않습니다.
+
+elements={0}{1} 요소
+
+enable_batch_operations_as_true_not_supported=WLS 원시 CMP 설정 "enable-batch-operations-as-true"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+entity_manager_ignores_jta_data_source=지속성 단위가 JTA를 사용하지 않으므로 EntityManager가 jta 데이터 소스를 무시합니다. 
+
+entity_manager_ignores_nonjta_data_source=지속성 단위가 JTA를 사용하므로 EntityManager가 비jta 데이터 소스를 무시합니다. 
+
+entity_manager_sets_property_while_context_is_active=활성 지속성 컨텍스트가 이미 있는 경우 {0} 특성이 EntityManager로 설정되고, 새 활성 지속성 컨텍스트가 작성되는 경우에만 처리되어 적용됩니다. 새 활성 지속성 컨텍스트를 작성하려면 기존의 것을 제거해야 합니다. 이는 EntityManager에서 정리 메소드를 호출하여 완료할 수 있습니다.
+
+entity_not_available_during_merge=최대 시도 횟수를 초과했습니다. 잠긴 cacheKey의 값을 찾을 수 없습니다. 클래스 [{0}] ID:[{1}] 이 스레드: [{2}] 소유 스레드:[{3}]
+
+error_during_PersistenceManager_setup_for_bean=Bean에 대한 PersistenceManager 설정 중 오류: {0}
+
+error_executing_ejbHome=ejbHome 실행 중 오류: {0}
+
+error_executing_remote_command={1}(으)로 인해 {0} 명령 실패
+
+error_getting_transaction_status=트랜잭션 상태를 가져오는 중에 오류가 발생했습니다. {0}
+
+error_in_codegen=구체적인 Bean 클래스의 생성 중에 오류가 발생했습니다.
+
+error_in_create=create의 오류입니다.
+
+error_in_remove=remove의 오류입니다.
+
+error_loading_xml_file=ORM xml 파일 로드 중 예외 발생: {0}: {1}
+
+exception_loading_entity_class=지속성을 초기화하는 중에 예외가 발생했습니다. 엔티티 클래스 {0}을(를) 로드하는 중에 {1}이(가) 발생했습니다.
+
+exception_thrown_when_attempting_to_close_connection=경고: 연결을 닫는 중 예외 발생
+
+exception_thrown_when_attempting_to_close_listening_topic_connection=청취 주제 연결을 닫는 중 예외 발생: {0}
+
+exception_thrown_when_attempting_to_shutdown_cache_synch=캐시 동기화를 종료하는 중에 예외 발생: {0}
+
+exception_while_weaving={0} 클래스를 위브하는 중에 위버에서 예외가 발생했습니다. 예외는 {1}입니다.
+
+extra_cmp_field=[{0}] 추상 Bean 클래스에 정의된 추상 getter 및/또는 setter가 있지만 해당하는 cmp 필드 [{1}]이(가) ejb-jar.xml에 선언되지 않았습니다.
+
+extra_ejb_select=[{0}] 추상 Bean 클래스에 정의된 추상 ejbSelect가 있지만 해당하는 ejbSelect [{1}{2}] 항목이 ejb-jar.xml에 선언되지 않았습니다.
+
+extra_finder=[{0}] 홈 인터페이스에 선언된 파인더가 있지만 해당하는 파인더 [{1}{2}] 항목이 ejb-jar.xml에 선언되지 않았습니다.
+
+failed_command_propagation=오류: {1}(으)로 인해 {0}에 명령을 전파하는 데 실패함
+
+failed_to_find_mbean_server=MBean 서버 찾기 실패: {0}
+
+failed_to_propogate_to=CacheSynchronization: {0}에 전파하는 데 실패했습니다. {1}
+
+field_group_not_supported=엔티티 ({0})의 WLS 원시 CMP 설정 "field-group"이 EclipseLink CMP에서 직접 지원되지 않았습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+field_type_set_to_java_lang_string=기본 테이블 생성기가 java 유형 ({1})을(를) 찾거나 데이터베이스 필드 ({0})의 데이터베이스 유형으로 변환할 수 없습니다. 생성기가 "java.lang.String"을 필드의 기본 java 유형으로 사용합니다.
+
+force_update_not_supported=엔티티({0})의 Oc4j 원시 CMP 기능 "force-update"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+identitymap_for={0}{1} 용도: {2}
+
+includes=다음 포함: 
+
+input_and_output_dir_be_different=입력 디렉토리와 다른 출력 디렉토리를 정의해야 합니다.
+
+input_archive_format_not_supported=마이그레이션 유틸리티가 .ear 및 .jar과 입력 아카이브 형식을 지원합니다. 입력 파일 형식 ({0})이(가) 지원되지 않습니다.
+
+input_at_least_either_archive_or_xml=-e를 사용하여 마이그레이션된 아카이브 파일 이름을 지정하거나 -x를 사용하여 입력 디렉토리의 디스크립터 xml 파일이 마이그레이션된다고 신호를 보내고, 그 중 하나만 지정해야 합니다.
+
+input_minimum_arguments=명령행 입력 인수가 최소한 -s, -a 또는 -x 및 -o를 포함해야 합니다.
+
+input_not_both_archive_and_xml=-e를 사용하여 아카이브 파일 이름을 지정하거나 -x를 사용하여 입력 디렉토리의 디스크립터 파일이 마이그레이션된다고 신호를 보내지만, 둘 다는 아닙니다.
+
+input_orione_ejb_jar_augmented=입력 orion-ejb-jar.xml 파일이 기능 보강되어 OC4J의 지속성 관리자로 EclipseLink를 지정합니다.
+
+invalid_command_line_argument=명령행 인수 ({0})이(가) 올바르지 않습니다.
+
+invalid_datasource_property_value={1}이(가) {0} 특성에 대해 전달할 유효한 오브젝트가 아닙니다. 유효한 값은 javax.sql.DataSource의 인스턴스 또는 문자열입니다.
+
+invalid_property_value={1}이(가) {0} 특성에 대해 전달할 유효한 오브젝트가 아닙니다.
+
+isolation_level_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 설정 "isolation-level"이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+jar_entry_has_been_migrated=입력 EAR 파일 ({1})에서 jar 항목 ({0})의 원시 cmp 디스크립터 파일이 마이그레이션되었습니다.
+
+jar_entry_not_migratable=입력 EAR 파일 ({1})의 jar 항목 ({0})을(를) 마이그레이션할 수 없습니다.
+
+jar_file_url_exception=persistence.xml을 구문 분석하는 중에 예외가 발생했습니다. Jar 파일 위치를 찾을 수 없음: {0}
+
+jaxb_metadata_warning_ignoring_java_attribute=생성된 특성이 없으므로 [{1}] 클래스에서 [{0}] 속성을 무시합니다.
+
+jaxb_metadata_warning_ignoring_type_on_map=xml-map이 [{0}] 특성에 지정되었으므로 xml-element에서 유형 속성 세트를 무시합니다.
+
+jaxb_metadata_warning_invalid_bound_type=어댑터 클래스 [{1}]의 바인드된 유형 [{0}]이(가) 올바르지 않아서 무시됩니다.
+
+jaxb_metadata_warning_invalid_java_attribute=지원되지 않는 JavaAttribute [{0}]이(가) 발생하여 무시됩니다.
+
+jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=올바르지 않은 XmlJavaTypeAdapter [{0}]이(가) [{1}] 패키지에 지정되어서 무시됩니다.
+
+jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=올바르지 않은 XmlJavaTypeAdapter [{0}]이(가) [{2}] 클래스의 필드/특성 [{1}]에 대해 지정되어서 무시됩니다.
+
+jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=올바르지 않은 XmlJavaTypeAdapter [{0}]이(가) [{1}] 클래스에 대해 지정되어 무시됩니다.
+
+jaxb_metadata_warning_no_classes_to_process=[{0}] 패키지에 대해 처리할 클래스가 없습니다.
+
+jmx_mbean_runtime_services_failed_toget_initial_context=MBean 등록에 대해 InitialContext를 가져오는 데 실패했습니다. {0}
+
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=WebLogic의 버전이 executeThreadRuntime을 지원하지 않음 - ClassLoader 사용: {0}
+
+jmx_mbean_runtime_services_identity_map_class=ID 맵 [{0}] 클래스 = {1}
+
+jmx_mbean_runtime_services_identity_map_empty=ID 맵 [{0}]이(가) 비어 있습니다.
+
+jmx_mbean_runtime_services_identity_map_initialized=ID 맵 [{0}]이(가) 초기화되었습니다.
+
+jmx_mbean_runtime_services_identity_map_invalidated=ID 맵 [{0}]이(가) 무효화되었습니다.
+
+jmx_mbean_runtime_services_identity_map_non_existent=ID 맵 [{0}]이(가) 없습니다.
+
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=MBean 등록에 대해 InitialContext를 가져오는 데 실패했습니다. {0}
+
+jmx_mbean_runtime_services_no_classes_in_session=세션에 클래스가 없습니다.
+
+jmx_mbean_runtime_services_no_connection_pools_available=사용 가능한 연결 풀이 없습니다.
+
+jmx_mbean_runtime_services_no_identity_maps_in_session=이 세션에 ID 맵이 없습니다.
+
+jmx_mbean_runtime_services_pool_name=풀 이름 = {0}
+
+jmx_mbean_runtime_services_print_cache_key_value=키 [{0}] => 값 [{1}]
+
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=여러 JMX MBeanServer 인스턴스 [{0}]이(가) 있고 색인에서 서버를 사용합니다. [{1}] : [{2}]
+
+jmx_mbean_runtime_services_registration_mbeanserver_print=JMX MBeanServer 인스턴스가 다음을 찾았습니다. [{0}], Bean의 #: [{1}], 도메인: [{2}] 색인: [{3}]
+
+jmx_mbean_runtime_services_statement_cache_cleared=명령문 캐시가 지워졌습니다.
+
+jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=사용 중인 JMX MBeanServer: [{1}] 색인의 [{0}] 
+
+jmx_mbean_runtime_services_threadpool_initialize_failed=MBean threadPoolRuntime을 초기화하는 데 실패: {0}
+
+jmx_unable_to_unregister_mbean=MBeanServer가 널이므로 MBean [{0}]을(를) 등록 해제할 수 없습니다. ServerPlatform에서 JMX가 사용으로 설정되었는지 확인하십시오.
+
+jmx_unregistered_mbean=MBeanServer [{1}]에서 MBean [{0}]을(를) 등록 해제했습니다.
+
+jpars_could_bootstrap_persistence_context=지속성 컨텍스트: [{0}]을(를) 부트스트랩할 수 없습니다.
+
+jpars_could_not_find_class_in_persistence_unit=유형: [{0}]을(를) 지속성 단위 [{1}]에서 찾을 수 없습니다.
+
+jpars_could_not_find_persistence_context=JPA-RS 호출이 지속성 컨텍스트 [{0}]을(를) 요청합니다. 해당 지속성 컨텍스트를 찾을 수 없습니다.
+
+jpars_could_not_find_session_bean=JNDI 이름이 [{0}]인 세션 Bean에 호출이 작성됩니다. 해당 Bean을 찾을 수 없습니다.
+
+jta_cannot_be_disabled_in_cmp=CMP(Container Managed Persistence) 사용 시 JTA를 사용 안함으로 설정할 수 없습니다. JTA가 사용 가능한 경우와 같이 EclipseLink가 역할을 수행합니다.
+
+jta_duplicate_ctrl_property="eclipselink.target-server" 및 "eclipselink.jta.controller" 특성 모두에 정의된 JTA 트랜잭션 제��기 클래스입니다. "eclipselink.target-server"의 값을 사용합니다.
+
+jta_tsr_lookup_failure=TransactionSynchronizationRegistry 인스턴스를 검색할 수 없음: {0}
+
+key_identity_hash_code_object={0}키: {1}{2}ID 해시 코드: {3}{2}오브젝트: {4}
+
+key_object_null={0}키: {1}{2}오브젝트: 널
+
+key_version_identity_hash_code_object={0}키: {1}{2}버전: {5}{2}ID 해시 코드: {3}{2}오브젝트: {4}
+
+locking_mode_not_valid=orion-ejb-jar.xml에 있는 엔티티({0})의 잠금 모드({1})가 잘 정의되지 않아서 마이그레이션되지 않습니다.
+
+locking_required_for_database_change_notification={0} 엔티티가 버전 잠금을 사용하지 않지만 여러 테이블 또는 관계가 있고 Oracle 데이터베이스 변경 알림을 사용하며, 관계 또는 보조 테이블에 대한 변경사항이 캐시를 무효화하지 않을 수 있습니다.
+
+log_file_under_output_dir=출력 디렉토리 ({1}) 아래에 ({0}) 로그 파일이 있습니다.
+
+mapping_not_supported_by_mw=EclipseLink 맵핑 {0}이(가) 맵핑 워크벤치에서 지원되지 않습니다.
+
+marshal_warning_null_document_root_element={0}: 참조된 오브젝트 [{1}]의 정의되지 않은 문서 루트 요소가 임의의 콜렉션|오브젝트 맵핑과 함께 마샬링 중 무시됩니다.
+
+max_instance_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 설정 "max-instance"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+max_tx_retries_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 설정 "max-tx-retries"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+metadata_access_type=지속성 클래스 [{1}]의 액세스 유형이 [{0}](으)로 설정되었습니다.
+
+metadata_default_alias=엔티티 클래스 [{0}]에 대한 별명 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_collection_catalog=기본 콜렉션/맵 맵핑 [{0}]에 대한 콜렉션 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_collection_schema=기본 콜렉션/맵 맵핑 [{0}]에 대한 콜렉션 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_collection_table_name=기본 콜렉션/맵 맵핑 [{0}]에 대한 콜렉션 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_column=[{0}] 요소에 대한 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_converter_data_type=[{0}] 엔티티에서 [{1}] 요소와 함께 사용된 [{2}] 이름의 변환기에 대한 데이터 유형의 기본값이 [{3}](으)로 설정됩니다.
+
+metadata_default_converter_object_type=[{0}] 엔티티에서 [{1}] 요소와 함께 사용된 [{2}] 이름의 변환기에 대한 오브젝트 유형의 기본값이 [{3}](으)로 설정됩니다.
+
+metadata_default_element_collection_reference_class=요소 콜렉션 맵핑 요소 [{0}]에 대한 대상 클래스(참조) 클래스의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_entity_graph_name=[{1}] 클래스에서 이름이 지정된 EntityGroup 스펙에 대한 이름의 기본값이 {0}(으)로 설정됨
+
+metadata_default_fk_column=맵핑 요소 [{0}]에 대한 외부 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_inheritance_discriminator_column=루트 상속 클래스 [{0}]에 대한 식별자 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_inheritance_fk_column=상속 클래스 [{0}]에 대한 외부 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_inheritance_pk_column=상속 클래스 [{0}]에 대한 기본 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_join_catalog=다대다 맵핑 [{0}]에 대한 결합 테이블 카탈로그의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_join_schema=다대다 맵핑 [{0}]에 대한 결합 테이블 스키마의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_join_table_name=다대다 맵핑 [{0}]에 대한 결합 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_key_column=기본 맵 맵핑 요소 [{0}]에 대한 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_many_to_many_reference_class=다대다 맵핑 요소 [{0}]에 대한 대상 엔티티(참조) 클래스의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_many_to_one_reference_class=다대일 맵핑 요소 [{0}]에 대한 대상 엔티티(참조) 클래스의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_map_key_attribute_name=맵핑 요소 [{0}]에 대한 맵 키 속성 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_one_to_many_mapping=요소 [{0}]의 기본값이 일대다 맵핑으로 설정됩니다.
+
+metadata_default_one_to_many_reference_class=일대다 맵핑 요소 [{0}]에 대한 대상 엔티티(참조)의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_one_to_one_mapping=요소 [{0}]의 기본값이 일대일 맵핑으로 설정됩니다.
+
+metadata_default_one_to_one_reference_class=일대일 맵핑 요소 [{0}]에 대한 대상 엔티티(참조) 클래스의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_order_column=요소 [{0}]에 대한 순서 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_pk_column=맵핑 요소 [{0}]에 대한 기본 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_qk_column=변수 일대일 맵핑 [{0}]에 대한 조회 키 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_secondary_catalog=엔티티 [{0}]에 대한 보조 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_secondary_schema=엔티티 [{0}]에 대한 보조 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_secondary_table_fk_column=요소 [{0}]에 대한 보조 테이블 외부 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_secondary_table_name=엔티티 [{0}]에 대한 보조 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_secondary_table_pk_column=요소 [{0}]에 대한 보조 테이블 기본 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_sequence_generator_catalog=[{0}] 내에 정의된 시퀀스 생성기 카탈로그의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_sequence_generator_schema=[{0}] 내에 정의된 시퀀스 생성기 스키마의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_sequence_generator_sequence_name=[{2}]에서 [{1}]에 정의된 [{0}] 이름의 시퀀스 생성기에 대한 시퀀스 이름의 기본값이 {0}(으)로 설정됩니다.
+
+metadata_default_source_fk_column=다대다 맵핑 [{0}]에 대한 소스 외부 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_source_pk_column=다대다 맵핑 [{0}]에 대한 소스 기본 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_table_catalog=엔티티 [{0}]에 대한 테이블 카탈로그의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_table_generator_catalog=[{0}] 내에 정의된 테이블 생성기 카탈로그의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_table_generator_name=[{0}] 내에 정의된 테이블 생성기 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_table_generator_pk_column_value=[{2}]에서 [{1}]에 정의된 [{0}] 이름의 테이블 생성기에 대한 pk 열 값의 기본값이 {0}(으)로 설정됩니다.
+
+metadata_default_table_generator_schema=[{0}] 내에 정의된 테이블 생성기 스키마의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_table_name=엔티티 [{0}]에 대한 테이블 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_table_schema=엔티티 [{0}]에 대한 테이블 스키마의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_target_fk_column=다대다 맵핑 [{0}]에 대한 대상 외부 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_target_pk_column=다대다 맵핑 [{0}]에 대한 대상 기본 키 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_tenant_discriminator_column=요소 [{0}]에 대한 테넌트 식별자 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_tenant_discriminator_context_property=요소 [{0}]에서 테넌트 식별자 열 [{1}]에 대한 테넌트 식별자 컨텍스트 특성의 기본값이 {2}(으)로 설정됩니다.
+
+metadata_default_tenant_table_discriminator_context_property=엔티티 [{0}]에 대한 테넌트 테이블 식별자 컨텍스트 특성의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_tenant_table_discriminator_type=엔티티 [{0}]에 대한 테넌트 테이블 식별자 유형의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_value_column=기본 콜렉션/맵 맵핑 요소 맵핑 요소 [{0}]에 대한 값 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_variable_one_to_one_discriminator_column=변수 일대일 맵핑 [{0}]에 대한 식별자 열 이름의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_default_variable_one_to_one_mapping=요소 [{0}]의 기본값이 변수 일대일 맵핑으로 설정됩니다.
+
+metadata_default_variable_one_to_one_reference_class=변수 일대일 맵핑 요소 [{0}]에 대한 대상 인터페이스(참조) 클래스의 기본값이 {1}(으)로 설정됩니다.
+
+metadata_warning_ignore_association_override=동일한 이름의 association-override가 엔티티 클래스 [{3}]에서 지정되었으므로 맵핑된 수퍼클래스 [{2}]의 요소 [{1}]에서 association-override 이름 [{0}]을(를) 무시합니다.
+
+metadata_warning_ignore_attribute_override=동일한 이름의 attribute-override가 엔티티 클래스 [{3}]에서 지정되었으므로 맵핑된 수퍼클래스 [{2}]의 요소 [{1}]에서 attribute-override 이름 [{0}]을(를) 무시합니다.
+
+metadata_warning_ignore_auto_apply_converter=EclipseLink 변환 메타데이터가 지정되었으므로 엔티티 클래스 [{0}] 내에서 요소 [{1}]에 대한 자동-적용 변환기를 무시합니다.
+
+metadata_warning_ignore_cacheable_false=모두 캐싱 유형이 persistence.xml 파일에 지정되었으므로 엔티티 클래스 [{0}]에 설정된 명시적 cacheable=false를 무시합니다.
+
+metadata_warning_ignore_cacheable_true=없음 캐싱 유형이 persistence.xml 파일에 지정되었으므로 엔티티 클래스 [{0}]에 설정된 명시적 cacheable=true를 무시합니다.
+
+metadata_warning_ignore_converts=EclipseLink 변환 메타데이터가 지정되었으므로 엔티티 클래스 [{0}] 내의 요소 [{1}]에서 JPA 변환 스펙을 무시합니다.
+
+metadata_warning_ignore_enumerated=EclipseLink 변환 메타데이터가 지정되었으므로 엔티티 클래스 [{0}] 내의 요소 [{1}]에서 열거된 스펙을 무시합니다.
+
+metadata_warning_ignore_fetch_group=위빙을 사용 안하고 엔티티 클래스가 FetchGroupTracker 인터페이스를 구현하지 않으므로 [{1}] 엔티티에 대해 [{0}] 클래스에서 지정된 페치 그룹을 무시합니다.
+
+metadata_warning_ignore_inheritance_subclass_cache=상속 서브클래스 [{0}]에서 캐시 메타데이터를 무시합니다. 캐시 메타데이터가 상속 계층의 루트에만 지정되어야 하고 상속 서브클래스에서 대체될 수 없습니다.
+
+metadata_warning_ignore_inheritance_subclass_cache_interceptor=상속 서브클래스 [{0}]에서 캐시 인터셉터 메타데이터를 무시합니다. 캐시 인터셉터 메타데이터가 상속 계층의 루트에만 지정되어야 하고 상속 서브클래스에서 대체될 수 없습니다.
+
+metadata_warning_ignore_inheritance_subclass_default_redirectors=상속 서브클래스 [{0}]에서 기본 경로 재지정자 메타데이터를 무시합니다. 기본 경로 재지정자 메타데이터가 상속 계층의 루트에만 지정되어야 하고 상속 서브클래스에서 대체될 수 없습니다.
+
+metadata_warning_ignore_inheritance_subclass_read_only=상속 서브클래스 [{0}]의 읽기 전용 설정을 무시합니다. 읽기 전용 설정이 상속 계층의 루트에만 지정되어야 하고 상속 서브클래스에서 대체될 수 없습니다.
+
+metadata_warning_ignore_inheritance_tenant_discriminator_column=상속 서브클래스 [{0}]의 테넌트 식별자 열 설정을 무시합니다. 테넌트 식별자 열이 상속 계층의 루트에만 지정되어야 하고 상속 서브클래스에서 대체되거나 지정될 수 없습니다.
+
+metadata_warning_ignore_inheritance_tenant_table_discriminator=상속 서브클래스 [{0}]의 테넌트 테이블 식별자 설정을 무시합니다. 테넌트 테이블 식별자가 상속 계층의 루트에만 지정되어야 하고 상속 서브클래스에서 대체되거나 지정될 수 없습니다.
+
+metadata_warning_ignore_is_null_allowed=집계에 (중첩될 수 있는) 대상 외부 키 맵핑이 있으므로 isNullAllowed가 {0}에서 false로 재설정됩니다.
+
+metadata_warning_ignore_lazy=위빙이 사용되지 않거나 발생하지 않았으므로 엔티티 클래스 [{1}]에 대해 OneToOne 또는 ManyToOne 속성 [{0}]에서 지연 설정을 되돌립니다.
+
+metadata_warning_ignore_lob=EclipseLink 변환 메타데이터가 지정되었으므로 엔티티 클래스 [{0}] 내의 요소 [{1}]에서 LOB 스펙을 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_additional_criteria=추가 기준 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 추가 기준 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_annotation=메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{2}]에 대해 맵핑된 수퍼클래스 [{1}]에서 메타데이터 [{0}] 설정을 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_association_override=동일한 이름의 association-override가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 [{2}]에 대해 맵핑된 수퍼클래스 [{1}]에서 정의된 association-override 이름 [{0}]을(를) 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_attribute_override=동일한 이름의 attribute-override가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 [{2}]에 대해 맵핑된 수퍼클래스 [{1}]에서 정의된 attribute-override 이름 [{0}]을(를) 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_cache=캐시 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 캐시 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_cache_interceptor=캐시 인터셉터 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 캐시 인터셉터 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_cacheable=캐시 가능한 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 캐시 가능한 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_change_tracking=변경 추적 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 변경 추적 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_copy_policy=복사 정책 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 복사 정책 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_customizer=사용자 정의 프로그램 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 사용자 정의 프로그램을 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_default_redirectors=기본 경로 재지정자 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 기본 경로 재지정자 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_existence_checking=존재 확인 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 존재 확인 설정을 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_fetch_group=동일한 이름의 패치 그룹이 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 이름이 [{2}]인 페치 그룹을 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_id_class=ID 클래스가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 ID 클래스를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_multitenant=다중 테넌트 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 다중 테넌트 설정을 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_optimistic_locking=낙관적 잠금 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 낙관적 잠금 메타데이터를 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_primary_key=기본 키 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 기본 키 설정을 무시합니다.
+
+metadata_warning_ignore_mapped_superclass_read_only=읽기 전용 메타데이터가 해당 엔티티(엔티티 자체 또는 다른 맵핑된 수퍼클래스에서)에 대해 이전에 발견되었으므로 엔티티 클래스 [{0}]에 대해 맵핑된 수퍼클래스 [{1}]에서 읽기 전용 설정을 무시합니다.
+
+metadata_warning_ignore_mapping_metadata=[{1}] 클래스에서 [{0}] 속성에 적용된 jakarta.persistence 메타데이터를 무시합니다. jakarta.persistence 메타데이터는 임시적이고 정적이거나 추상적인 특성 또는 필드에서 무시됩니다.
+
+metadata_warning_ignore_serialized=EclipseLink 변환 메타데이터가 지정되었으므로 엔티티 클래스 [{0}] 내의 요소 [{1}]에서 기본 직렬화를 무시합니다.
+
+metadata_warning_ignore_temporal=EclipseLink 변환 메타데이터가 지정되었으므로 엔티티 클래스 [{0}] 내의 요소 [{1}]에서 시간 스펙을 무시합니다.
+
+metadata_warning_ignore_version_locking=낙관적 잠금 메타데이터가 엔티티 [{0}]에 대해 디스크립터에서 이미 정의되었습니다. [{1}] 요소에서 버전 스펙을 무시합니다.
+
+metadata_warning_integer_discriminator_could_not_be_built=[{0}] 클래스가 discriminatorType=INTEGER를 지정하고 [{1}]을(를) discriminatorValue로 사용합니다. 해당 값을 정수로 변환할 수 없습니다. 이 값을 문자열 형식으로 사용하려고 시도합니다.
+
+metadata_warning_inverse_access_type_mapping_override={2} 맵핑 속성 [{1}]을(를) [{0}] 클래스에서 {4} 맵핑 속성 [{3}](으)로 대체합니다. 이 경고를 피하려면 [{1}] 속성을 임시로 표시해야 합니다.
+
+metadata_warning_multiple_id_fields_without_id_class=@IdClass를 지정하지 않고 엔티티 클래스 [{0}]에 대해 여러 ID를 지정했습니다. 그러면 ID, 분산 캐시 지원 등으로 찾을 수 없을 수 있습니다. 참고: 그러나 기본 키 필드의 목록을 전달하여 EntityManager 찾기 조작을 사용할 수 있습니다. 또는 JPQL 조회를 사용하여 엔티티를 읽어야 합니다. 기타 ID 옵션은 @PrimaryKey를 참조하십시오.
+
+metadata_warning_override_annotation_with_xml=XML 요소가 맵핑 파일 [{2}]에 정의되었으므로 [{1}]에서 [{0}] 어노테이션을 무시합니다.
+
+metadata_warning_override_named_annotation_with_xml=동일한 이름 [{1}]의 XML 요소가 맵핑 파일 [{3}]에 정의되었으므로 [{2}]에서 [{0}] 어노테이션을 무시합니다.
+
+metadata_warning_override_named_xml_with_eclipselink_xml=이름이 동일한 요소가 eclipselink-orm mapping 파일 [{3}]에서 정의되었으므로 맵핑 파일 [{2}]에 정의된 [{1}] 이름의 [{0}] 요소를 무시합니다.
+
+metadata_warning_override_xml_with_eclipselink_xml=이 요소가 eclipselink-orm mapping 파일 [{3}]에서 정의되었으므로 맵핑 파일 [{2}]에 정의된 [{1}]에서 [{0}] 요소를 무시합니다.
+
+metadata_warning_partitioned_not_set=@Partitioning이 {0} 클래스의 {1} 요소에서 발견되었지만 @Partitioned는 없습니다. @Partitioned 어노테이션이 파티셔닝 정책을 설정하는 데 사용되어야 하고, @Partitioning은 정책을 정의하지만 설정하지는 않습니다.
+
+metadata_warning_reference_column_not_found=[{1}] 요소에 맵핑된 참조 열 이름 [{0}]이(가) 맵핑 참조에서 유효한 ID 또는 기본 필드/열에 해당하지 않습니다. 참조된 열 이름을 제공된 대로 사용합니다.
+
+metamodel_print_type_header=따를 메타 모델 [{0}] 유형의 인쇄된 목록:
+
+metamodel_print_type_value=메타 모델 유형: [{0}]
+
+metamodel_type_collection_empty=메타 모델 유형의 콜렉션이 비어 있습니다. Java SE 및 일부 Java EE 컨테이너 관리된 지속성 단위에 대한 엔티티 검색 중 모델 클래스가 없는지 확인하십시오. <class> 요소 또는 글로벌 <exclude-unlisted-classes>false</exclude-unlisted-classes> 요소를 통해 persistence.xml에서 엔티티 클래스가 참조되는지 확인하십시오.
+
+metamodel_type_collection_empty_during_lookup=메타 모델 [{1}] 유형의 콜렉션이 비어 있습니다. Java SE 및 일부 Java EE 컨테이너 관리된 지속성 단위에 대한 엔티티 검색 중 모델 클래스가 없는지 확인하십시오. <class> 요소 또는 글로벌 <exclude-unlisted-classes>false</exclude-unlisted-classes> 요소를 통한 persistence.xml에서 엔티티 클래스가 참조되는지 확인하십시오. [{0}]에서 검색하면 널이 리턴됩니다.
+
+migration_failed=마이그레이션에 실패했습니다.
+
+migration_input_dir_not_valid=정의한 입력 디렉토리 ({0})이(가) 유효하지 않습니다.
+
+migration_output_dir_not_valid=정의한 출력 디렉토리 ({0})이(가) 유효하지 않습니다.
+
+migration_successful=마이그레이션 성공!
+
+min_instance_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 설정 "min-instance"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+missing_converter=경고: CommandConverter가 누락되어 {0} 명령을 변환할 수 없습니다. 명령을 무시합니다.
+
+multiple_ds_not_supported=EclipseLink CMP가 여러 데이터 소스를 지원하지 않고 이름이 ({0})인 항목 중 하나만 사용하는데, 이는 orion-ejb-jar.xml에서 지정되고 해당하는 ejb-jar.xml에서 마지막으로 정의된 엔티티 Bean과 연관됩니다.
+
+must_define_migration_output_dir=마이그레이션 도구에 대한 출력 디렉토리를 정의해야 합니다.
+
+mw_project_generated_and_under=마이그레이션된 EclipseLink Workbench 프로젝트 파일이 ({0}) 아래에 있습니다.
+
+named_argument_not_found_in_query_parameters=이름 지정된 인수의 조회 매개변수 누락: {0} "null"이 대체됩니다.
+
+nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending={0} 클래스를 이미 비웁니다. 추가 변경사항이 데이터베이스에 기록되지 않고 조회가 실행됩니다. 조회가 변경된 데이터에 대해 조건부인 경우 변경사항이 결과에 반영되지 않을 수 있습니다. 사용자는 올바른 결과를 보장하기 위해 이 flush() 이전에 종속적 변경사항의 완료 시 flush() 호출을 실행해야 합니다.
+
+new_objects=새 오브젝트:
+
+no_exclusive_write_access_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 기능 "no-exclusive-write-access"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+no_jar_entry_migratable_in_ear=입력 EAR 파일 ({0})의 jar 항목 중 마이그레이션할 수 있는 항목이 없습니다.
+
+no_session_found=session.xml 파일 [{1}]에서 이름이 [{0}]인 세션을 찾을 수 없음
+
+non_jpa_allowed_type_used_for_collection_using_lazy_access=JPA 스펙이 java.util.Collection, java.util.Set, java.util.List 또는 java.util.Map만 지원하는 경우 엔티티 클래스 [{0}] 내의 [{1}] 요소가 콜렉션 유형 [{2}]을(를) 사용합니다. 이 유형은 이거 로딩으로 지원됩니다. 이 콜렉션 유형으로 지연 로딩을 사용하려면 추가 구성 및 [{2}]을(를) 확장하는 IndirectContainer 구현이 필요하거나 기본 간접 참조를 사용할 맵핑 및 유형이 ValueholderInterface가 되도록 설정해야 합니다.
+
+objectchangepolicy_turned_off=변경 추적을 끈 이유: {0}
+
+oc4j_native_migration_start=OC4J-원시 CMP -> OC4J EclipseLink CMP 마이그레이션 시작......
+
+old_pessimistic_locking_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 설정 "old-pessimistic-locking"이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+one_to_one_join_outer_migrated=엔티티 Bean ({1})의 cmr 필드 ({0})에 정의된 일대일 외부 결합이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+optimistic_locking_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 설정 locking-mode="optimistic"이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml이 지정된 입력 디렉토리 ({0}) 아래에 없습니다.
+
+osgi_initializer=OSGi 초기자(initializer) 사용 중: [{0}]
+
+osgi_initializer_failed=환경 특정 OSGi 초기자(initializer), [{0}]의 생성에 실패하여 다음 메시지가 발생합니다. [{1}]
+
+overriding_cache_isolation=상위 엔티티 {0}에 {3} 격리와 함께 {2} 서브클래스보다 더 보호하는 {1}의 격리 레벨이 있어서 서브클래스가 격리 레벨 {1}(으)로 설정되었습니다.
+
+ox_lowering_global_logging_from_default_info_to_warning={0} 기본 INFO에서 WARNING 레벨로 글로벌 로깅을 낮춥니다.
+
+ox_lowering_session_logging_from_default_info_to_warning={0} 기본 INFO에서 WARNING 레벨로 세션 로깅을 낮춥니다.
+
+ox_turn_global_logging_off={0} 글로벌 세션 로깅을 끕니다.
+
+ox_turn_session_logging_off={0} 세션 로깅을 끕니다.
+
+parse_ejb_jar_with_validation_fails=유효성 검증으로 ejb-jar.xml을 구문 분석하는 데 오류 ({0})(으)로 인해 실패합니다. 마이그레이션 도구가 유효성 검증 없이 xml 파일을 구문 분석합니다.
+
+persistence_unit_ignores_statments_cache_setting=연결 풀이 구성되지 않아서 명령문 캐시를 사용할 수 없습니다.
+
+persistence_unit_processor_error_in_class_forname_weaving_disabled=classLoader [{0}]에서 [{1}] 클래스를 로드하는 데 실패했습니다. 위빙이 이 세션에 대해 사용 안함으로 설정되었습니다. EclipseLink가 서버에서 스펙 필수 임시 클래스 로더를 가져올 수 없을 수 있어서, 사용자는 선택적 임시 해결책으로 정적 위빙을 사용할 수 있습니다. 
+
+persistence_unit_processor_error_loading_class={0}: {1}이(가) {2} 클래스를 로드하려는 PersistenceLoadProcessor의 시도에서 발생했습니다. 클래스가 무시됩니다.
+
+persistence_unit_processor_error_loading_class_weaving_disabled=PersistenceLoadProcessor [{1}]의 classLoader [{0}]에서 [{2}] 클래스를 로드하는 데 실패했습니다. 위빙이 이 세션에 대해 사용 안함으로 설정되었습니다. EclipseLink가 서버에서 스펙 필수 임시 클래스 로더를 가져올 수 없을 수 있어서, 사용자는 선택적 임시 해결책으로 정적 위빙을 사용할 수 있습니다. 
+
+persistence_unit_processor_jboss_temp_classloader_bypassed=PersistenceLoadProcessor [{0}]의 임시 classLoader를 사용할 수 없습니다. classLoader를 [{1}](으)로 전환합니다. 위빙이 이 세션에 대해 사용 안함으로 설정되었습니다. EclipseLink가 서버에서 스펙 필수 임시 클래스 로더를 가져올 수 없을 수 있어서, 사용자는 선택적 임시 해결책으로 정적 위빙을 사용할 수 있습니다. 
+
+persistence_unit_processor_npe_temp_classloader=PersistenceLoadProcessor [{1}]의 classLoader [{0}]이(가) loadClass에서 NPE를 유발합니다. classLoader를 [{2}](으)로 전환합니다. 위빙이 이 세션에 대해 사용 안함으로 설정되었습니다. EclipseLink가 서버에서 스펙 필수 임시 클래스 로더를 가져올 수 없을 수 있어서, 사용자는 선택적 임시 해결책으로 정적 위빙을 사용할 수 있습니다. 
+
+persistence_unit_processor_null_temp_classloader=PersistenceLoadProcessor [{0}]의 classLoader가 널입니다. 위빙이 이 세션에 대해 사용 안함으로 설정되었습니다. EclipseLink가 서버에서 스펙 필수 임시 클래스 로더를 가져올 수 없을 수 있어서, 사용자는 선택적 임시 해결책으로 정적 위빙을 사용할 수 있습니다. 
+
+persistence_unit_processor_sap_temp_classloader_bypassed=PersistenceLoadProcessor [{0}]의 임시 classLoader를 사용할 수 없습니다. classLoader를 [{1}](으)로 전환합니다. 위빙이 이 세션에 대해 사용 안함으로 설정되었습니다. EclipseLink가 서버에서 스펙 필수 임시 클래스 로더를 가져올 수 없을 수 있어서, 사용자는 선택적 임시 해결책으로 정적 위빙을 사용할 수 있습니다. 
+
+problem_adding_connection=오류로 인해 {0}에서 원격 연결을 추가할 수 없음: {1}
+
+problem_adding_remote_connection=원격 연결 추가 중 문제점 발생: {0}
+
+problem_reconnect_to_jms=오류로 인해 JMS 주제 이름 {0}에 다시 연결할 수 없음: {1}
+
+problem_registering_mbean=MBean 등록 중 문제점 발생: {0}
+
+problem_unregistering_mbean=MBean 등록 해제 중 문제점 발생: {0}
+
+problem_while_registering=등록 중 문제점 발생: {0}
+
+query_has_both_join_attributes_and_partial_attributes=이름이 {1}인 {0}에 결합 속성 및 부분 속성이 둘 다 있습니다. 이러한 두 기술은 함께 작동하도록 디자인되지 않아서 결과를 예측할 수 없습니다.
+
+query_has_joined_attribute_outside_fetch_group={0}: 결합된 속성 [{1}]이(가) 페치 그룹에 포함되지 않습니다. 결합된 속성 데이터(데이터베이스에서 읽기에도 불구하고)를 무시합니다. 새 sql이 결합된 속성에서 참조된 오브젝트를 다시 읽도록 실행됩니다. 다른 sql도 잇따라 실행되어 전체 기본 오브젝트를 읽습니다(페치 그룹 외부에서 속성에 값을 설정하므로). 페치된 속성을 페치 그룹에 포함하거나 제거하십시오.
+
+received_corrupt_announcement=경고: 발견 관리자가 {0}(으)로 인해 서비스 공지사항을 처리할 수 없습니다. 공지사항을 무시합니다.
+
+received_unexpected_message_type={1} 주제에서 예상치 못한 메시지 유형 {0}을(를) 수신했습니다. 무시합니다.
+
+register_new_for_persist=PERSIST 조작이 {0}에서 호출되었습니다.
+
+relational_descriptor_support_only=기본 테이블 생성기가 현재 관계형 프로젝트에서 기본 테이블 스키마 생성만 지원합니다.
+
+relationship_cacheing_not_supported=엔티티 ({0})의 WLS 원시 CMP 설정 "relationship-caching"이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+removeEJB_return=removeEJB 리턴: {0}
+
+removing_unique_constraint=UNIQUE 제한조건 정의도 기본 키이므로 [{0}]에서 제거합니다.
+
+resource_local_persistence_init_info_ignores_jta_data_source=PersistenceUnitInfo {0}에 transactionType RESOURCE_LOCAL이 있어서 jtaDataSource를 무시합니다.
+
+retreived_null_message={0} 주제에서 널 메시지를 검색했습니다. 무시합니다.
+
+retreived_unknown_message_type={1} 주제에서 알 수 없는 메시지 유형 {0}을(를) 검색했습니다. 무시합니다.
+
+sdo_classgenerator_exception={2} [{0}] 예외가 발생했습니다. 메시지는 [{1}]입니다.
+
+sdo_error_deserialization={0} 클래스에서 권한 없는 직렬화 해제를 시도했습니다.
+
+sdo_error_processing_referenced_schema=schemaLocation {2}이(가) 포함된 uri {1}과(와) 함께 참조된 스키마를 처리하는 중에 {0}이(가) 발생했습니다.
+
+sdo_invalid_schemaLocation=uri [{1}]과(와) 함께 가져오기에 대해 schemaLocation [{0}]을(를) 작성할 수 없습니다.
+
+sdo_missing_schemaLocation=schemaLocation 속성이 지정되지 않아서 uri {0}과(와) 함께 참조된 스키마를 처리할 수 없습니다.
+
+sdo_type_generation_modified_class_naming_format_to={0}: 생성된 유형 [{1}] java 클래스 이름이 [{2}](으)로 변경되어 클래스 이름 지정 규칙을 따릅니다.
+
+sdo_type_generation_modified_function_naming_format_to={0}: 생성된 유형 [{1}] java get/set 메소드 이름이 [{2}](으)로 변경되어 클래스 이름 지정 규칙을 따릅니다.
+
+sdo_type_generation_warning_class_name_violates_java_spec={0}: 생성된 유형 [{1}]이(가) [{2}]에 대해 Java 스펙 이름 지정 규칙과 충돌하여 이름을 바꿔야 합니다.
+
+sdo_type_generation_warning_class_name_violates_sdo_spec={0}: 생성된 유형 [{1}]이(가) [{2}]에 대해 SDO 스펙 이름 지정 규칙과 충돌하여 이름을 바꿔야 합니다.
+
+sequence_cachekey_improper_format=엔티티 ({0})의 WLS 원시 CMP 설정 "key-cache-size"가 ({1}) 값으로 잘못 형식화되었습니다.
+
+session_key_for_mbean_name_is_null=MBean 등록에 사용된 세션 이름이 널일 수 없습니다.
+
+session_manager_no_partition=현재 SessionManager 인스턴스에 연관된 partition 인스턴스가 없습니다.
+
+sessions_xml_path_where_session_load_from=세션 정보가 [{0}]에서 로드됩니다.
+
+sop_object_deserialze_failed=[{1}]의 [{0}]에서 sopObject를 직렬화 해제하는 데 실패했습니다.
+
+sop_object_not_found=직렬화된 sopObject를 [{1}]의 [{0}]에서 찾을 수 없습니다.
+
+sop_object_wrong_pk=[{2}]에서 [{1}]에 잘못된 기본 키 [{0}]이(가) 있으므로 직렬화된 sopObject를 행에서 제거합니다.
+
+sop_object_wrong_version=[{2}]에서 [{1}]에 잘못된 버전 [{0}]이(가) 있으므로 직렬화된 sopObject를 행에서 제거합니다.
+
+src_pm_name_first_argument=처음 입력 인수에서 소스 PM 이름을 -sOc4j-native 또는 -sWeblogic으로 지정해야 합니다.
+
+stack_of_visited_objects_that_refer_to_the_corrupt_object=손상된 오브젝트를 참조하는 방문한 오브젝트의 스택: {0}
+
+table_existed_during_creation=테이블 작성에 실패했습니다. 이미 있는 경우 우선 삭제해야 합니다. 이는 orion-ejb-jar.xml에서 db-table-gen 속성을 설정하여 수동으로 완료할 수 있습니다.
+
+template_orion_ejb_jar_created=템플리트된 orion-ejb-jar.xml 파일이 작성되었습니다.
+
+topLink_version=EclipseLink, 버전: {0}
+
+toplink=[EL]: 
+
+toplink_cmp_bean_name_xml_deprecated=toplink-cmp-bean_name.xml에 대한 지원이 더 이상 사용되지 않습니다. toplink-ejb-jar.xml을 사용하려면 이 문서를 참조하십시오.
+
+toplink_config=[EL 구성]: 
+
+toplink_ejb_jar_in_jar=toplink-ejb-jar.xml이 jar({0}) 파일에 포함되어 이 jar에 수행되는 마이그레이션이 없습니다.
+
+toplink_ejb_jar_xml_found_in_input=toplink-ejb-jar.xml이 입력 디렉토리 ({0}) 아래에 있습니다. toplink 디스크립터를 입력 디렉토리에서 제거하여 마이그레이션을 처리해야 합니다.
+
+toplink_fine=[EL 세부적]: 
+
+toplink_finer=[EL 더 세부적]: 
+
+toplink_finest=[EL 가장 세부적]: 
+
+toplink_info=[EL 정보]: 
+
+toplink_severe=[EL 심각]: 
+
+toplink_warning=[EL 경고]: 
+
+unit_of_work_thread_info=세션의 현재 작업 단위({0})가 현재 스레드(ID: {3} 이름: {4})가 아닌 다른 스레드(ID: {1} 이름: {2})에 의해 작성되었습니다.
+
+unit_of_work_thread_info_thread_dump=작성 스레드 (ID: {0} 이름: {1}) 스택 추적:
+
+unitofwork_identity_hashcode={0}UnitOfWork ID 해시코드: {1}
+
+update_all_fields_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 기능 "update-all-fields"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery가 이 데이터베이스 플랫폼에서 바인딩을 사용할 수 없습니다. 조회 설정을 바인딩 없이 실행하도록 변경했습니다.
+
+validate_db_schema_with_not_supported=WLS 원시 CMP 설정 "validate-db-schema-with"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+validate_ejb_jar=ejb-jar.xml 유효성 검증이 시작되었습니다. 일정 시간이 걸릴 수 있습니다.
+
+validate_object_space=오브젝트 공간의 유효성을 검증합니다.
+
+validity_timeout_not_supported=엔티티 ({0})의 Oc4j 원시 CMP 설정 "validity-timeout"이 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+verifiy_columns_read_locking_not_supported=엔티티 ({0})의 "verifiy-columns"에서 낙관적 설정 "Read"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+verifiy_rows_read_locking_not_supported=엔티티 ({0})의 "verify-rows"에서 낙관적 설정 "Read"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+
+weaver_class_not_in_project=위버가 프로젝트의 파트가 아닌 클래스를 찾았습니다. {0}
+
+weaver_could_not_write=파일 시스템에 {0} 클래스를 쓰는 중에 위버에서 예외가 발생했습니다. 예외는 {1}입니다.
+
+weaver_disable_by_system_property=시스템 특성 {0}에서 사용 안함으로 설정된 위빙
+
+weaver_not_overwriting=위버가 겹쳐쓰도록 설정되지 않았으므로 {0} 클래스를 겹쳐쓰지 않습니다.
+
+weaver_null_project=위버 세션의 프로젝트가 널일 수 없습니다.
+
+weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml이 지정된 입력 디렉토리 ({0}) 아래에 없습니다.
+
+weblogic_native_migration_start=WebLogic-원시 CMP -> OC4J EclipseLink CMP 마이그레이션 시작......
+
+weblogic_ql_not_supported=EclipseLink에서 WebLogic QL 언어를 지원하지 않으므로 엔티티({2})의 메소드({1}) 중 WebLogic-QL({0})이 마이그레이션되지 않습니다.
+
+weblogic_query_not_supported=엔티티 ({0})의 WLS 원시 CMP 설정 "weblogic-query"가 EclipseLink CMP에서 직접 지원되지 않습니다. 자세한 내용은 마이그레이션 문서를 참조하십시오.
+

@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource_pt_BR.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Não foi possível obter contexto JNDI; verifique se suas propriedades estão configuradas corretamente.
+
+22102=Não foi possível postar conexão no serviço de nomenclatura local sob o nome {0}
+
+22103=Não foi possível consultar a conexão remota sob o nome {0} com a URL {1}
+
+22104=não foi possível consultar o nome do host
+
+22105=Não foi possível propagar o comando para {0}
+
+22106=Não foi possível criar a conexão JMS externa com o Tópico {0} e o Factory de tópico {1}. Além disso, verifique se as propriedades de contexto estão configuradas corretamente.
+
+22107=Não foi possível remover conexão local no serviço de nomenclatura local sob o nome {0}
+
+22108=Não foi possível serializar ou desserializar o comando
+
+22109=Falha ao receber mensagem JMS do provedor JMS
+
+22110=Falha ao descobrir endereço IP do host local.
+
+22111=Falha ao obter ServerPlatform. O ServerPlatform deve ser configurado na Sessão ou em RemoteCommandManager.
+
+22112=Não foi possível criar a conexão JMS local com o tópico {0} e o factory de tópico {1}. Além disso, verifique se as propriedades de contexto estão configuradas corretamente.
+
+22113=Não foi possível criar o ID de serviço Oc4jJGroupsRemoteConnection {0}, tópico {1}, usando o factory {2}. Além disso, verifique se as propriedades de contexto estão configuradas corretamente.
+
+22114={0}: falha ao desserializar mensagem recuperada {1}.
+
+22115={0}: falha ao processar o comando remoto recuperado da mensagem {1}, de {2}, tipo de comando {3}
+
+22116=A mensagem JMS recebida é nula. Tratando-a como um JMSException
+
+22117=O RemoteCommandManager da sessão está fechado ou não foi inicializado ao processar mensagens recebidas
+
+22118=Falha ao criar a conexão JGroups usando o arquivo de configuração: {0}
+
+22119=Erro ao inicializar {0}, inclua org.eclipse.persistence.corba.jar em seu classpath.
+

@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN="in(Expression<?>... values)" került meghívásra {0} kifejezéstípussal, amely nem literál és nem paraméter.  Ez nem támogatott.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=Feltétel lekérdezés létrehozásának kísérlete gyökér nélkül.
+
+INCORRECT_PARAMETER_TYPE=A(z) {0} indexnél a paraméter nem {1} típusú volt.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT="multiSelect" került meghívásra egy CriteriaQuery lekérdezésen primitív eredménytípussal.  A visszatérési típus helytelen, vagy helyette "select" használatát kellene megvalósítani.
+
+NO_PARAMETER_WITH_INDEX=Nem található paraméter {0} indexszel a lekérdezésen belül: {1}.
+
+NO_PARAMETER_WITH_NAME=Nem található paraméter {0} névvel a lekérdezésen belül: {1}.
+
+NO_VALUE_BOUND=Nem volt érték kötve a(z) {0} nevű paraméterhez
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Null paraméter volt átadva a "setParameter" számára.  "Null" szerint nem indexheltők paraméterek.
+
+PARAMETER_NILL_NOT_FOUND=Null paraméter volt átadva a getParameterValue() számára
+
+add_attribute_key_was_null=Egy attribútumtípus egyik alosztályához egy AttributeGroup megadásakor a type paraméter nem lehet null
+
+argument_collection_was_null=Argumentum gyűjtemény nullértékű
+
+argument_keyed_named_query_with_JPA=Több lekérdezés létezik {0} névvel, azonban a neveknek egyedinek kell lenniük EntityManagerFactory.addNamedQuery() használatakor
+
+attribute_is_not_map_with_managed_key=Nem adható hozzá kulcs aldiagram az EntityGroup elemhez a(z) {1} osztályban lévő {0} attribúmként, mivel az nem egy kezelt típusú kulccsal rendelkező leképezés.
+
+bean_definition_vector_arguments_are_of_different_sizes=A komponensmeghatározási vektor argumentumok eltérő méretűek
+
+bean_not_found_on_database=A(z) {0} komponens nem található az adatbázisban.
+
+bean_validation_constraint_violated=Legalább egy komponens érvényesítési megszorítást megsértettek az automatikus komponens érvényesítés futtatása közben a következő visszahívási eseményen: {0} (osztály: {1}). Részletekért tekintse meg a beágyazott korlátsértéseket.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=A(z) [{1}] leíróval rendelkező [{0}] osztály esetében nincs beállítva CMPPolicy, nem hozható létre elsődleges kulcs példány a(z) [{2}] azonosítótípushoz.
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=A(z) [{0}] osztály nem megmaradó típusú - nem rendelkezik társított leíróval.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=A(z) [{1}] leíróval rendelkező [{0}] objektum esetében nincs beállítva CMPPolicy, nem adható vissza azonosító.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=A(z) [{0}] objektum nem megmaradó típusú - nem rendelkezik társított leíróval.
+
+called_get_entity_manager_from_non_jta=getEntityManager() került meghívásra egy nem-JTA támogatással rendelkező EntityManagerFactory objektumból.  Győződjön meg róla, hogy a JTA megfelelően be van állítva a EntityManagerFactory objektumon.
+
+can_not_create_directory=A(z) {0} könyvtár nem hozható létre.
+
+can_not_create_file=A(z) {0} fájl nem hozható létre.
+
+can_not_move_directory=Könyvtárak nem helyezhetők át.
+
+cannot_get_from_non_correlated_query=getCorrelationParent() került meghívásra egy from részkifejezésen, amely nem lett lekérve viszonyításon keresztül.
+
+cannot_get_unfetched_attribute=A(z) [{1}] nem lehívott attribútum nem kérhető le a(z) {0} leválasztott objektumból.
+
+cannot_merge_removed_entity=Nem vonható össze eltávolított entitás: {0}
+
+cannot_read_through_txn_for_unsynced_pc=A tulajdonság be lett állítva a megmaradási kontextus csatlakoztatására a jelenleg aktív tranzakcióhoz, azonban ez nem SYNCHRONIZED megmaradási kontextus.
+
+cannot_remove_detatched_entity=Az entitást az eltávolítás meghívására kell beállítani: {0}, kísérelje meg a leválasztottat összevonni, majd próbálkozzon meg újra az eltávolítással.
+
+cannot_remove_removed_entity=Az entitás mmár eltávolításra került: {0}
+
+cannot_update_entity_fetch-group=Kísérlet a(z) [{1}] attribútum hozzáadására a következőhöz: {0}, vagy eltávolítására abból - az EntityFetchGroup objektum megváltozhatatlan.
+
+cannot_use_transaction_on_unsynced_pc=Nem hívhatók meg tranzakciót igénylő metódusok, ha az EntityManager nem csatlakozott az aktuális tranzakcióhoz.
+
+cant_lock_not_managed_object=Az entitást zárolás meghívására kell beállítani: {0}, kísérelje meg a leválasztottat összevonni, majd próbálkozzon meg újra a zárolással.
+
+cant_persist_detatched_object=PERSIST művelet leválasztott objektumra nem hajtható végre, lehetséges többször szereplő elsődleges kulcs: {0}.
+
+cant_refresh_not_managed_object=Nem kezelt objektum nem frissíthető: {0}.
+
+create_insertion_failed=Beszúrás létrehozása meghiúsult.
+
+criteria_no_constructor_found=Kivétel történt a(z) {0} osztályban egy konstruktor kereséséhez végzett vizsgálat során, a kiválasztási feltételtípusok mint argumentumok használatával.  Ha ez a CriteriaQuery nem konstruktor lekérdezésnek lett tervezve, akkor ellenőrizze, hogy a kiválasztás megegyezik-e a visszatérési típussal.
+
+directory_not_exist=A(z) {0} könyvtár nem létezik.
+
+ejb30-default-for-unknown-property=Nem adható vissza alapértelmezett érték ismeretlen tulajdonsághoz: {0}.
+
+ejb30-illegal-property-value=A(z) {0} tulajdonság illegális értékkel rendelkezik: {1}.
+
+ejb30-incorrect-parameter-type=Megkísérelt beállítani egy {1} típusú értéket a(z) {2} elvárt típusú {0} paraméterhez a(z) {3} lekérdezési karaktersorozatból.
+
+ejb30-wrong-argument-index=Megkísérelte egy paraméter beállítását a(z) {0} pozícióban, amely nem létezik ebben a lekérdezési karaktersorozatban: {1}.
+
+ejb30-wrong-argument-name=Megkísérelt beállítani egy paraméterértéket {0} név használatával, amely nem létezik a lekérdezési karaktersorozatban: {1}.
+
+ejb30-wrong-lock_called_without_version_locking-index=Érvénytelen zárolási mód típus egy olyan entitás esetén, amely nem rendelkezik verziózárolás indexszel. Csak PESSIMISTIC zárolási mód típus használható, amikor nincs jelen verziózárolás index.
+
+ejb30-wrong-query-hint-value=A(z) {0} lekérdezésben a(z) {1} lekérdezés-tipp értéke illegális: {2}.
+
+ejb30-wrong-type-for-query-hint=A(z) {0} lekérdezés esetén a(z) {1} lekérdezés-tipp érvénytelen ehhez a lekérdezés-típushoz.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager tulajdonságütközés: a jakarta.persistence.driver és/vagy a jakarta.persistence.url a DefaultConnector használatát igényli, de a perzisztenciaegység külső tranzakcióvezérlőt használ, ezért JNDIConnector szükséges.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager tulajdonságütközés: a jakarta.persistence.driver és/vagy a jakarta.persistence.url a DefaultConnector használatát igényli, miközben a jakarta.persistence.jtaDataSource és/vagy a jakarta.persistence.nonjtaDataSource JNDIConnector használatát igényli.
+
+entity_no_longer_exists_in_db=Az entitás már nem létezik az adatbázisban: {0}.
+
+error_executing_jar_process=Hiba történt jar folyamat végrehajtása során
+
+error_invoking_deploy=Hiba történt telepítés meghívása során
+
+error_loading_resources=Hiba {0} erőforrások betöltése során az osztályútvonalról
+
+error_marshalling_arguments=Hiba történt argumentumok elrendezése során
+
+error_marshalling_return=Hiba történt válasz elrendezése során
+
+error_parsing_resources=Hiba történt az erőforrások értelmezése során: {0}
+
+error_reading_jar_file=Hiba a(z) {0} jar fájl olvasása során, bejegyzés: {1}
+
+error_unmarshalling_arguments=Hiba történt argumentumok visszarendezése során
+
+error_unmarshalling_return=hiba történt válasz visszarendezése során
+
+file_exists=A(z) {0} fájl már létezik.
+
+file_not_exist=A(z) {0} fájl nem létezik.
+
+finder_query_failed=Kereső lekérdezés meghiúsult:
+
+getpersistenceunitutil_called_on_closed_emf=getPersistenceUnitUtil() került meghívásra zárt EntityManagerFactory objektumon.
+
+illegal_state_while_closing=Kísérlet egy EntityManager bezárására a NO_TRANSACTION, COMMITTED vagy ROLLEDBACK állapotoktól eltérő tranzakciós állapottal.
+
+incorrect_hint=Nem megfelelő objektumtípus van megadva a tipphez: {0}.
+
+incorrect_query_for_get_result_collection=Ezen a lekérdezésen nem hívható getResultCollection().  Nem megfelelő lekérdezési típus.
+
+incorrect_query_for_get_result_list=Ezen a lekérdezésen nem hívható getResultList().  Nem megfelelő lekérdezési típus.
+
+incorrect_query_for_get_single_result=Ezen a lekérdezésen nem hívható getSingleResult().  Nem megfelelő lekérdezési típus.
+
+incorrect_spq_query_for_execute=Ezen a tárolt eljárás lekérdezésen nem hívható execute().  Nem megfelelő lekérdezési típus.
+
+incorrect_spq_query_for_execute_update=Ezen a tárolt eljárás lekérdezésen nem hívható executeUpdate(), mivel az egy eredményhalmazt ad vissza, nem pusztán egy frissítési számot.
+
+incorrect_spq_query_for_get_result_list=Ezen a tárolt eljárás lekérdezésen nem hívható getResultList(), mivel az nem eredményhalmazt ad vissza.
+
+incorrect_spq_query_for_get_single_result=Ezen a tárolt eljárás lekérdezésen nem hívható getSingleResult(), mivel az nem eredményhalmazt ad vissza.
+
+input_source_not_found=Bemeneti forrás nem található vagy nullértékű
+
+interface_hash_mismatch=Felület kivonat eltérése
+
+invalid_lock_query=A zárolási típus csak select lekérdezéssel használható (ami lehetővé teszi az adatbázis zárolását, ahol szükséges).
+
+invalid_method_hash=Érvénytelen metódus kivonat
+
+invalid_method_number=Érvénytelen metódus szám
+
+invalid_pk_class=Helytelen PK osztály példányt adott meg ehhez a keresési művelethez.  Elvárt osztály: {0}, Fogadott osztály: {1}.
+
+jar_not_exist=A(z) {0} jar fájl nem létezik.
+
+jaxb_helper_invalid_binder=A megadott [{0}] Binder nem EclipseLink JAXBBinder, ezért nem alakítható át.
+
+jaxb_helper_invalid_jaxbcontext=A megadott [{0}] JAXBContext nem EclipseLink JAXBContext, ezért nem alakítható át.
+
+jaxb_helper_invalid_marshaller=A megadott [{0}] rendező nem EclipseLink JAXBMarshaller, ezért nem alakítható át.
+
+jaxb_helper_invalid_target_for_binder=A megadott [{0}] célosztály csak EclipseLink JAXBBinder vagy EclipseLink XMLBinder lehet.
+
+jaxb_helper_invalid_target_for_jaxbcontext=A megadott [{0}] célosztály csak EclipseLink JAXBContext vagy EclipseLink XMLContext lehet.
+
+jaxb_helper_invalid_target_for_marshaller=A megadott [{0}] célosztály csak EclipseLink JAXBMarshaller vagy EclipseLink XMLMarshaller lehet.
+
+jaxb_helper_invalid_target_for_unmarshaller=A megadott [{0}] célosztály csak EclipseLink JAXBUnmarshaller vagy EclipseLink XMLUnmarshaller lehet.
+
+jaxb_helper_invalid_unmarshaller=A megadott [{0}] visszaalakító nem EclipseLink JAXBUnmarshaller, ezért nem alakítható át.
+
+jmx_enabled_platform_mbean_runtime_exception=Kivétel történt egy JMX MBean futási szervizfüggvény hívása során a következőn: {0}, mely EclipseLink munkamenet-információkat tár fel: {1}
+
+join_trans_called_on_entity_trans=joinTransaction került meghívásra egy resource-local EntityManager esetén, amely nem tud regisztrálni JTA tranzakcióhoz.
+
+jpa21-ddl-create-script-target-not-specified=A parancsfájlok DDL-jeinek előállításakor meg kell adni egy létrehozási cél parancsfájlt a [jakarta.persistence.schema-generation.scripts.create-target] tulajdonság használatával.
+
+jpa21-ddl-drop-script-target-not-specified=A parancsfájlok DDL-jeinek előállításakor meg kell adni egy megszüntetési cél parancsfájlt a [jakarta.persistence.schema-generation.scripts.drop-target] tulajdonság használatával.
+
+jpa21-ddl-invalid-source-script-type=A megadott {0} forrás parancsfájl érvénytelen típusú: {0}. Az érvényes forrás parancsfájl-típusok: java.io.Reader vagy egy fájl URL címet kijelölő karaktersorozat.
+
+jpa21-ddl-invalid-target-script-type=A megadott {0} cél parancsfájl érvénytelen típusú: {0}. Az érvényes cél parancsfájl-típusok: java.io.Writer vagy egy fájl URL címet kijelölő karaktersorozat.
+
+jpa21-ddl-source-script-io-exception=IO hiba történt a forrás ddl előállításási parancsfájlban: {0}.
+
+jpa21-ddl-source-script-not-found=A(z) {0} forrás parancsfájl a generateSchema híváshoz nem található. Győződjön meg róla, hogy érvényes karaktersorozat URL címet adott meg, amely a "file:" protokollt használja, illetve hogy a karaktersorozat fájlnév az osztályútvonalról elérhető érvényes erőforrást képvisel.
+
+jpa21-ddl-source-script-sql-exception=Hiba történt a(z) {0} végrehajtása során a forrás ddl előállítási parancsfájlból: {1}.
+
+jpa21_invalid_call_on_un_executed_query=A lekérdezést ezen metódus hívása előtt végre kell hajtani.
+
+jpa21_invalid_call_with_no_output_parameters=Érvénytelen hívás egy lekérdezésen, amely nem ad vissza OUT paramétereket.
+
+jpa21_invalid_call_with_no_result_sets_returned=Érvénytelen hívás egy lekérdezésen, amely nem ad vissza eredményhalmazokat.
+
+jpa21_invalid_parameter_name=Érvénytelen kimeneti paraméter név: {0}. {1}
+
+jpa21_invalid_parameter_position=Érvénytelen kimeneti paraméter pozíció: {0}. {1}.
+
+jpa_criteriaapi_alias_reused=Több kiválasztás elem ugyanazt az álnevet használja.  A használt többször szereplő nevek: {0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=Illegális rendezett n-es vagy tömb-elemű kiválasztás elem található. A talált argumentum: {0}
+
+jpa_criteriaapi_invalid_result_index=A(z) {0} index érvénytelen a(z) {1} méretű eredménylistához.
+
+jpa_criteriaapi_invalid_result_type=A(z) {1} típusú {0} elem érvénytelen a(z) {2} eredményhez.
+
+jpa_criteriaapi_no_corresponding_element_in_result=A(z) {0} elem nem felel meg a lekérdezési eredmény elemének.
+
+jpa_criteriaapi_null_literal_value=Nullérték került átadásra a CriteriaBuilder.literal() számára.  Használja helyette a következőt: nullLiteral(Class<T> resultClass).
+
+jpa_helper_invalid_entity_manager_factory=A(z) {0} JPA EntityManagerFactory nem egy EclipseLink EntityManagerFactory, és ezért nem alakítható át.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=A(z) {0} JPA EntityManagerFactory nem egy EclipseLink EntityManagerFactory, és ezért a metaadatai nem frissíthetők.
+
+jpa_helper_invalid_query=A(z) {0} típusú lekérdezés nem EclipseLink lekérdezés, ezért nem alakítható át.
+
+jpa_helper_invalid_read_all_query=A(z) {0} típusú lekérdezés nem EclipseLink minden olvasás (read all) lekérdezés, ezért nem alakítható át.
+
+jpa_helper_invalid_report_query=A(z) {0} típusú lekérdezés nem EclipseLink jelentés (report) lekérdezés, ezért nem alakítható át.
+
+jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) került meghívásra a(z) [{0}] objektummal, ami nem megmaradó objektum.
+
+lock_called_without_version_locking=Az entityManager.lock(Object entity, LockModeType lockMode) hívások engedélyezett verziózárolást igényelnek.
+
+managed_component_not_found=A(z) {0} entitásdiagramban felsorolt {1} attribútum egy {2} nevű aldiagramra hivatkozik, amely nem található.
+
+may_not_contain_xml_entry=A(z) {0} talán nem tartalmazza a következőt: {1}.
+
+metamodel_class_incorrect_type_instance=A(z) [{2}] típus nem az elvárt [{1}] a(z) [{0}] kulcs osztályhoz.  Győződjön meg róla, hogy a(z) [{2}] osztály a persistence.xml fájlban egy specifikus <class/> tulajdonság vagy egy globális <exclude-unlisted-classes>false</exclude-unlisted-classes> elem használatával van bejegyezve.
+
+metamodel_class_null_type_instance=Nem található [{1}] a(z) [{0}] kulcs osztályhoz a metamodellben - győződjön meg róla, hogy a(z) [{2}] osztály a persistence.xml fájlban egy specifikus <class>{0}</class> tulajdonság vagy egy globális <exclude-unlisted-classes>false</exclude-unlisted-classes> elem használatával van bejegyezve.
+
+metamodel_class_null_type_instance_for_null_key=Nem található [{0}] a null kulcs osztály paraméterhez a metamodellben - adja meg a helyes kulcs osztályt a(z) [{1}] metamodell osztályhoz, és győződjön meg róla, hogy a kulcs osztály a persistence.xml fájlban egy specifikus <class/> tulajdonság vagy egy globális <exclude-unlisted-classes>false</exclude-unlisted-classes> elem használatával van bejegyezve.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=A(z) [{0}] azonosítható típus elvárt egyetlen @Id attribútuma egy nem várt @IdClass része.
+
+metamodel_identifiable_id_attribute_type_incorrect=[{2}] várt azonosító attribútumtípus a meglévő [{0}] azonosító attribútumokban az azonosítható [{1}] típuson, de [{3}] attribútumtípusok találhatók.
+
+metamodel_identifiable_no_id_attribute_present=Nem létezik @Id attribútum a(z) [{0}] azonosítható típuson.
+
+metamodel_identifiable_no_version_attribute_present=Nem létezik @Version attribútum a(z) [{0}] azonosítható típuson.
+
+metamodel_identifiable_type_has_no_idclass_attribute=Nem léteznek @IdClass attribútumok a(z) [{0}] IdentifiableType típuson.  Még lehetséges legalább egy @Id vagy egy @EmbeddedId a típuson.
+
+metamodel_identifiable_version_attribute_type_incorrect=A meglévő [{0}] version attribútumon, a(z) [{1}] azonosítható típuson az elvárt version attribútumtípus: [{2}], de a megtalálható attribútumtípus: [{3}].
+
+metamodel_incompatible_persistence_config_for_getIdType=Nem kompatibilis perzisztencia beállítás a ManagedType [{0}] metamodell azonosítótípusának lekérésekor.
+
+metamodel_interface_inheritance_not_supported=A(z) [{0}] leíró ({1}) öröklés használatával jelenleg nem támogatott a metamodell előállítás során. Próbálkozzon meg az Entity vagy MappedSuperclass (Abstract class) öröklés használatával.
+
+metamodel_managed_type_attribute_not_present=A(z) [{0}] attribútum nincs jelen a(z) [{1}] kezelt típusban.
+
+metamodel_managed_type_attribute_return_type_incorrect=A meglévő [{0}] attribútumon, a(z) [{1}] kezelt típuson az elvárt attribútum visszatérési típus: [{2}], de a megtalálható attribútum visszatérési típus: [{3}].
+
+metamodel_managed_type_attribute_type_incorrect=A meglévő [{0}] attribútumon, a(z) [{1}] kezelt típuson az elvárt attribútumtípus: [{2}], de a megtalálható attribútumtípus: [{3}].
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=A deklarált [{0}] attribútum a(z) [{1}] kezelt típusból nincs jelen - azonban deklarálva van egy szülőosztályon.
+
+missing_parameter_value=A(z) {0} lekérdezési argumentum nem található a lekérdezés végrehajtása során a megadott paraméterlistában.
+
+missing_toplink_bean_definition_for=Hiányzó TopLink komponens meghatározás a következőhöz: {0}
+
+named_entity_graph_exists=A következőn: {1} található, {0} nevű NamedEntityGraph már létezik ebben a perzisztencia egységben.
+
+negative_max_result=A negatív MaxResult nem megengedett.
+
+negative_start_position=A negatív kezdő pozíció nem megengedett
+
+new_object_found_during_commit=A szinkronizálás során új objektum található olyan viszonyon keresztül, amely nem cascade PERSIST jelölésű: {0}.
+
+no_entities_retrieved_for_get_reference=Nem található entitás a következő azonosítóhoz: {0}
+
+no_entities_retrieved_for_get_single_result=A getSingleResult() nem olvasott be entitást.
+
+no_entity_graph_of_name=Nem létezik EntityGraph {0} névvel
+
+not_an_entity=Objektum: {0} nem egy ismert entitástípus.
+
+not_jar_file=A(z) {0} nem jar fájl.
+
+not_usable_passed_to_entitygraph_hint=a(z) {0} lekérdezés tipp számára átadott {1} érték nem megfelelő ehhez a lekérdezés tipphez
+
+null_argument_get_attributegroup=Az AttributeGroup keresési neve nem lehet null.
+
+null_jar_file_names=Null jar fájlnevek
+
+null_not_supported_identityweakhashmap=Az IdentityWeakHashMap nem támogatja a "null" kifejezést kulcsként vagy értékként.
+
+null_pk=Egy null PK példány helytelenül lett megadva ehhez a keresési művelethez.
+
+null_sqlresultsetmapping_in_query=A ResultSetMappingQuery SQLResultSetMapping beállításának érvényesnek kell lennie
+
+null_value_for_column_result=Oszlopnevet kell megadni egy ColumnResult számára
+
+null_value_for_constructor_result=Célosztály-nevet kell megadni a konstruktor eredmény számára
+
+null_value_for_entity_result=Entity osztálynevet kell megadni az Entity eredmény számára
+
+null_value_in_sqlresultsetmapping=Meg kell adni egy nevet az SQLResultSetMapping számára.  Ez a név kerül felhasználásra az SQLResultSetMapping meghivatkozására egy lekérdezésből.
+
+null_values_for_field_result=Attribútumnevet és Oszlopnevet is meg kell adni a FieldResult számára
+
+only_one_root_subgraph=Csak a gyökér aldiagram listázható típus nélkül.  Az alosztályokat képviselő aldiagramok típusát be kell állítani.
+
+operation_not_supported=A specifikáció nem támogatja {0} hívását a következőn: {1}.
+
+operation_on_closed_entity_manager=Művelet végrehajtásának kísérlete zárt EntityManager esetén.
+
+operation_on_closed_entity_manager_factory=Művelet végrehajtásának kísérlete zárt EntityManagerFactory esetén.
+
+ora_pessimistic_locking_with_rownum=A Pessimistic zárolás lekérdezési sor korlátokkal nem támogatott.
+
+parsing_error=értelmezési hiba
+
+parsing_fatal_error=végzetes értelmezési hiba
+
+parsing_warning=értelmezési figyelmeztetés
+
+pathnode_is_primitive_node=A feltétel kifejezés primitív típusú, nem navigálható tovább.
+
+pathnode_type_does_not_apply_to_primitive_node=A feltétel kifejezés primitív típusú, nem navigálható tovább.  A primitív kifejezések nem engedélyezik a "type" megadását.
+
+pk_class_not_found=A(z) {0} elsődleges kulcs osztály nem tölthető be
+
+position_bound_param_not_found=Nem található kötési paraméter a következő pozícióban: {0}.
+
+position_param_not_found=Nem található paraméter a következő pozícióban: {0}.
+
+pu_configured_for_resource_local=Nem hozható létre egy EntityManager SynchronizationType típussal, mert a PersistenceUnit resource-local tranzakciókkal van konfigurálva.
+
+remove_deletion_failed=Törlés eltávolítás meghiúsult:
+
+rollback_because_of_rollback_only=A tranzakció visszagörgetésre került, mert a tranzakció beállítása RollbackOnly.
+
+sdo_helper_invalid_changesummary=A megadott [{0}] ChangeSummary nem EclipseLink SDOChangeSummary, ezért nem alakítható át.
+
+sdo_helper_invalid_copyhelper=A megadott [{0}] CopyHelper nem EclipseLink SDOCopyHelper, ezért nem alakítható át.
+
+sdo_helper_invalid_datafactory=A megadott [{0}] DataFactory nem EclipseLink SDODataFactory, ezért nem alakítható át.
+
+sdo_helper_invalid_datahelper=A megadott [{0}] DataHelper nem EclipseLink SDODataHelper, ezért nem alakítható át.
+
+sdo_helper_invalid_dataobject=A megadott [{0}] DataObject nem EclipseLink SDODataObject, ezért nem alakítható át.
+
+sdo_helper_invalid_equalityhelper=A megadott [{0}] EqualityHelper nem EclipseLink SDOEqualityHelper, ezért nem alakítható át.
+
+sdo_helper_invalid_helpercontext=A megadott [{0}] HelperContext nem EclipseLink SDOHelperContext, ezért nem alakítható át.
+
+sdo_helper_invalid_property=A megadott [{0}] tulajdonság nem EclipseLink SDOProperty, ezért nem alakítható át.
+
+sdo_helper_invalid_sequence=A megadott [{0}] szekvencia nem EclipseLink SDOSequence, ezért nem alakítható át.
+
+sdo_helper_invalid_target_for_changesummary=A megadott [{0}] célosztálynak EclipseLink SDOChangeSummary osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_copyhelper=A megadott [{0}] célosztálynak EclipseLink SDOCopyHelper osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_datafactory=A megadott [{0}] célosztálynak EclipseLink SDODataFactory osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_datahelper=A megadott [{0}] célosztálynak EclipseLink SDODataHelper osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_dataobject=A megadott [{0}] célosztálynak EclipseLink SDODataObject osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_equalityhelper=A megadott [{0}] célosztálynak EclipseLink SDOEqualityHelper osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_helpercontext=A megadott [{0}] célosztálynak EclipseLink SDOHelperContext osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_property=A megadott [{0}] célosztálynak EclipseLink SDOProperty osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_sequence=A megadott [{0}] célosztálynak EclipseLink SDOSequence osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_type=A megadott [{0}] célosztály csak EclipseLink SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType vagy SDOXMLHelperLoadOptionsType lehet.
+
+sdo_helper_invalid_target_for_typehelper=A megadott [{0}] célosztálynak EclipseLink SDOTypeHelper osztálynak kell lennie.
+
+sdo_helper_invalid_target_for_xmlhelper=A megadott [{0}] célosztály csak EclipseLink SDOXMLHelper, EclipseLink XMLMarshaller vagy EclipseLink XMLUnmarshaller lehet.
+
+sdo_helper_invalid_target_for_xsdhelper=A megadott [{0}] célosztálynak EclipseLink SDOXSDHelper osztálynak kell lennie.
+
+sdo_helper_invalid_type=A megadott [{0}] típus nem EclipseLink SDOType, ezért nem alakítható át.
+
+sdo_helper_invalid_typehelper=A megadott [{0}] TypeHelper nem EclipseLink SDOTypeHelper, ezért nem alakítható át.
+
+sdo_helper_invalid_xmlhelper=A megadott [{0}] XMLHelper nem EclipseLink SDOXMLHelper, ezért nem alakítható át.
+
+sdo_helper_invalid_xsdhelper=A megadott [{0}] XSDHelper nem EclipseLink SDOXSDHelper, ezért nem alakítható át.
+
+subclass_sought_not_a_managed_type=a keresett {0} aldiagram típus nem kezelt típus a következő attribútumra: {1}.
+
+too_many_results_for_get_single_result=A Query.getSingleResult() több eredményt adott vissza
+
+unable_to_find_named_query=A(z) {0} névhez tartozó NamedQuery nem található.
+
+unable_to_unwrap_jpa=A szolgáltató nem támogatja a(z) {0} - {1} visszalakítást
+
+undeclared_checked_exception=Nem deklarált ellenőrzött kivétel
+
+unexpect_argument=Nem várt bemeneti argumentum: {0}
+
+unknown_bean_class=Ismeretlen entitáskomponens osztály: {0}, ellenőrizze, hogy ez az osztály meg van-e jelölve @Entity feljegyzéssel.
+
+unknown_entitybean_name=Ismeretlen entitáskomponens név: {0}
+
+unsupported_classfile_version=A(z) {0} osztály nem támogatott JDK segítségével lett lefordítva. Jelentse ezt a hibát az EclipseLink nyílt forrású projektnek.
+
+wrap_convert_exception=Kivétel történt a(z) {0} hívása során a(z) {1} átalakító osztályon {2} értékkel
+
+wrap_ejbql_exception=Kivétel történt EntityManager lekérdezés létrehozása során
+

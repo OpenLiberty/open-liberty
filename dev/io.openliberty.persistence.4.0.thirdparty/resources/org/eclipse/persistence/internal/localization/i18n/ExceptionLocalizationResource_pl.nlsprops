@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource_pl.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN=Metoda in(Expression<?>... values) została wywołana z typem wyrażenia {0}, który nie jest literałem ani parametrem.  Taka operacja nie jest obsługiwana.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=Podjęto próbę utworzenia zapytania o kryteria bez elementu głównego.
+
+INCORRECT_PARAMETER_TYPE=Parametr w indeksie {0} ma typ inny niż {1}.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT=Metodę multiSelect wywołano względem interfejsu CriteriaQuery, który ma wynik typu podstawowego.  Typ zwracany jest niepoprawny lub zamiast tej metody należy użyć metody select.
+
+NO_PARAMETER_WITH_INDEX=W zapytaniu {1} nie znaleziono parametru o indeksie {0}.
+
+NO_PARAMETER_WITH_NAME=W zapytaniu {1} nie znaleziono parametru o nazwie {0}.
+
+NO_VALUE_BOUND=Z parametrem o nazwie {0} nie powiązano żadnej wartości
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Do metody setParameter przekazano parametr o wartości NULL.  Nie można indeksować parametrów przy użyciu wartości NULL.
+
+PARAMETER_NILL_NOT_FOUND=Do metody getParameterValue() przekazano parametr o wartości NULL.
+
+add_attribute_key_was_null=Podczas określania obiektu AttributeGroup dla podklasy typu atrybutu parametr typu nie może mieć wartości NULL.
+
+argument_collection_was_null=Kolekcja argumentów ma wartość NULL
+
+argument_keyed_named_query_with_JPA=Istnieje wiele zapytań o nazwie {0}, ale nazwy muszą być unikalne w przypadku używania metody EntityManagerFactory.addNamedQuery()
+
+attribute_is_not_map_with_managed_key=Nie można dodać grafu podrzędnego klucza do obiektu EntityGroup jako atrybutu {0} w klasie {1}, ponieważ element nie jest odwzorowaniem z kluczem typu zarządzanego.
+
+bean_definition_vector_arguments_are_of_different_sizes=Argumenty wektora definicji komponentu bean są różnej wielkości
+
+bean_not_found_on_database=Nie znaleziono komponentu bean {0} w bazie danych.
+
+bean_validation_constraint_violated=Naruszono co najmniej jedno ograniczenie sprawdzania poprawności komponentu bean podczas wykonywania automatycznego sprawdzania poprawności komponentu bean względem zdarzenia wywołania zwrotnego: {0} dla klasy: {1}. Przejrzyj osadzone naruszenia ograniczeń, aby uzyskać szczegółowe informacje.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=Klasa [{0}] o deskryptorze [{1}] nie ma ustawionej klasy CMPPolicy. Nie można utworzyć instancji klucza podstawowego dla typu identyfikatora [{2}].
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=Klasa [{0}] nie ma typu trwałego – nie ma powiązanego deskryptora.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=Obiekt [{0}] o deskryptorze [{1}] nie ma ustawionej klasy CMPPolicy. Nie można zwrócić identyfikatora.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=Obiekt [{0}] nie ma typu trwałego – nie ma powiązanego deskryptora.
+
+called_get_entity_manager_from_non_jta=Metoda getEntityManager() jest wywoływana z interfejsu EntityManagerFactory nieobsługującego interfejsu JTA.  Upewnij się, że interfejs JTA jest poprawnie skonfigurowany w interfejsie EntityManagerFactory.
+
+can_not_create_directory=Nie można utworzyć katalogu {0}.
+
+can_not_create_file=Nie można utworzyć pliku {0}.
+
+can_not_move_directory=Nie można przenieść katalogów.
+
+cannot_get_from_non_correlated_query=Metoda getCorrelationParent() została wywołana względem klauzuli from, która nie została uzyskana za pomocą korelacji.
+
+cannot_get_unfetched_attribute=Nie można uzyskać niepobranego atrybutu [{1}] z odłączonego obiektu {0}.
+
+cannot_merge_removed_entity=Nie można scalić jednostki, która została usunięta: {0}
+
+cannot_read_through_txn_for_unsynced_pc=Właściwość została ustawiona w celu połączenia tego kontekstu trwałości z aktualnie aktywną transakcją, ale nie jest to zsynchronizowany kontekst trwałości.
+
+cannot_remove_detatched_entity=Obiekt musi być zarządzany, aby można było wywołać usunięcie: {0}. Spróbuj scalić odłączony obiekt i ponowić próbę usunięcia.
+
+cannot_remove_removed_entity=Obiekt został już usunięty: {0}
+
+cannot_update_entity_fetch-group=Podjęto próbę dodania atrybutu [{1}] do elementu {0} lub usunięcia go z niego – obiekt EntityFetchGroup jest niezmienialny.
+
+cannot_use_transaction_on_unsynced_pc=Nie można wywoływać metod wymagających transakcji, jeśli interfejs EntityManager nie został połączony z bieżącą transakcją.
+
+cant_lock_not_managed_object=Obiekt musi być zarządzany, aby można było wywołać blokadę: {0}. Spróbuj scalić odłączony obiekt i ponowić próbę zablokowania.
+
+cant_persist_detatched_object=Nie można utrwalić odłączonego obiektu. Możliwy duplikat klucza podstawowego: {0}.
+
+cant_refresh_not_managed_object=Nie można odświeżyć obiektu niezarządzanego: {0}.
+
+create_insertion_failed=Wstawienie utworzenia nie powiodło się.
+
+criteria_no_constructor_found=Wystąpił wyjątek podczas wyszukiwania konstruktora w klasie {0} przy użyciu typów kryteriów wyboru jako argumentów.  Jeśli ten interfejs CriteriaQuery nie miał być zapytaniem o konstruktor, upewnij się, że wybór jest zgodny z typem zwracanym.
+
+directory_not_exist=Katalog {0} nie istnieje.
+
+ejb30-default-for-unknown-property=Nie można zwrócić wartości domyślnej dla nieznanej właściwości {0}.
+
+ejb30-illegal-property-value=Właściwość {0} ma niedozwoloną wartość {1}.
+
+ejb30-incorrect-parameter-type=Próbowano ustawić wartość typu {1} dla parametru {0} z oczekiwanym typem {2} z łańcucha zapytania {3}.
+
+ejb30-wrong-argument-index=Próbowano ustawić parametr na pozycji {0}, która nie istnieje w tym łańcuchu zapytania {1}.
+
+ejb30-wrong-argument-name=Próbowano ustawić wartość parametru przy użyciu nazwy {0}, która nie istnieje w łańcuchu zapytania {1}.
+
+ejb30-wrong-lock_called_without_version_locking-index=Niepoprawny typ trybu blokady dla jednostki, która nie ma indeksu blokującego wersję. Tylko pesymistyczny typ trybu blokady może być używany, gdy nie ma indeksu blokującego wersję.
+
+ejb30-wrong-query-hint-value=Wskazówka {1} zapytania {0} ma niedozwoloną wartość {2}.
+
+ejb30-wrong-type-for-query-hint=Wskazówka {1} zapytania {0} nie jest poprawna dla tego typu zapytania.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Konflikt właściwości interfejsu EntityManager: jakarta.persistence.driver i jakarta.persistence.url wymagają obiektu DefaultConnector, ale jednostka trwałości korzysta z zewnętrznego kontrolera transakcji, dlatego wymagany jest obiekt JNDIConnector.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Konflikt właściwości interfejsu EntityManager: jakarta.persistence.driver i jakarta.persistence.url wymagają obiektu DefaultConnector, ale jakarta.persistence.jtaDataSource i jakarta.persistence.nonjtaDataSource wymagają obiektu JNDIConnector.
+
+entity_no_longer_exists_in_db=Obiekt już nie istnieje w bazie danych: {0}.
+
+error_executing_jar_process=Błąd podczas wykonywania procesu JAR
+
+error_invoking_deploy=Błąd podczas wywoływania wdrażania
+
+error_loading_resources=Błąd podczas ładowania zasobów {0} ze ścieżki klas
+
+error_marshalling_arguments=Błąd podczas marszalingu argumentów
+
+error_marshalling_return=Błąd podczas powrotu z marszalingu
+
+error_parsing_resources=Błąd podczas analizowania zasobów {0}
+
+error_reading_jar_file=Błąd podczas odczytu pliku JAR: {0}, pozycja: {1}
+
+error_unmarshalling_arguments=Błąd podczas demarszalingu argumentów
+
+error_unmarshalling_return=Błąd podczas powrotu z demarszalingu
+
+file_exists=Plik {0} już istnieje.
+
+file_not_exist=Plik {0} nie istnieje.
+
+finder_query_failed=Zapytanie wyszukiwarki nie powiodło się:
+
+getpersistenceunitutil_called_on_closed_emf=Metoda getPersistenceUnitUtil() została wywołana względem zamkniętego interfejsu EntityManagerFactory.
+
+illegal_state_while_closing=Próba zamknięcia interfejsu EntityManager ze stanem transakcji innym niż NO_TRANSACTION, COMMITTED lub ROLLEDBACK.
+
+incorrect_hint=Dla wskazówki {0} podano niepoprawny typ obiektu.
+
+incorrect_query_for_get_result_collection=Nie można wywołać metody getResultCollection() względem tego zapytania.  Jest to niepoprawny typ zapytania.
+
+incorrect_query_for_get_result_list=Nie można wywołać metody getResultList() względem tego zapytania.  Jest to niepoprawny typ zapytania.
+
+incorrect_query_for_get_single_result=Nie można wywołać metody getSingleResult() względem tego zapytania.  Jest to niepoprawny typ zapytania.
+
+incorrect_spq_query_for_execute=Nie można wywołać metody execute() względem tego zapytania procedury składowanej.  Jest to niepoprawny typ zapytania.
+
+incorrect_spq_query_for_execute_update=Nie można wywołać metody executeUpdate() względem tego zapytania procedury składowanej, ponieważ zwraca ona tabelę wynikową, a nie jedynie licznik aktualizacji.
+
+incorrect_spq_query_for_get_result_list=Nie można wywołać metody getResultList() względem tego zapytania procedury składowanej, ponieważ nie zwraca ona tabeli wynikowej.
+
+incorrect_spq_query_for_get_single_result=Nie można wywołać metody getSingleResult() względem tego zapytania procedury składowanej, ponieważ nie zwraca ona tabeli wynikowej.
+
+input_source_not_found=Nie znaleziono źródła danych wejściowych lub ma ono wartość NULL
+
+interface_hash_mismatch=Niezgodność wartości mieszającej interfejsu
+
+invalid_lock_query=Typ blokady może być używany tylko z zapytaniem wyboru (co umożliwia zablokowanie bazy danych w razie potrzeby).
+
+invalid_method_hash=Niepoprawna wartość mieszająca metody
+
+invalid_method_number=Niepoprawny numer metody
+
+invalid_pk_class=Podano instancję niepoprawnej klasy klucza podstawowego dla tej operacji wyszukiwania.  Oczekiwana klasa: {0}, odebrana klasa: {1}.
+
+jar_not_exist=Plik JAR {0} nie istnieje.
+
+jaxb_helper_invalid_binder=Podana klasa Binder [{0}] nie jest klasą EclipseLink JAXBBinder i dlatego nie może zostać przekształcona.
+
+jaxb_helper_invalid_jaxbcontext=Podana klasa JAXBContext [{0}] nie jest klasą EclipseLink JAXBContext i dlatego nie może zostać przekształcona.
+
+jaxb_helper_invalid_marshaller=Podana klasa Marshaller [{0}] nie jest klasą EclipseLink JAXBMarshaller i dlatego nie może zostać przekształcona.
+
+jaxb_helper_invalid_target_for_binder=Podana klasa docelowa [{0}] musi być klasą EclipseLink JAXBBinder lub EclipseLink XMLBinder.
+
+jaxb_helper_invalid_target_for_jaxbcontext=Podana klasa docelowa [{0}] musi być klasą EclipseLink JAXBContext lub EclipseLink XMLContext.
+
+jaxb_helper_invalid_target_for_marshaller=Podana klasa docelowa [{0}] musi być klasą EclipseLink JAXBMarshaller lub EclipseLink XMLMarshaller.
+
+jaxb_helper_invalid_target_for_unmarshaller=Podana klasa docelowa [{0}] musi być klasą EclipseLink JAXBUnmarshaller lub EclipseLink XMLUnmarshaller.
+
+jaxb_helper_invalid_unmarshaller=Podana klasa Unmarshaller [{0}] nie jest klasą EclipseLink JAXBUnmarshaller i dlatego nie może zostać przekształcona.
+
+jmx_enabled_platform_mbean_runtime_exception=Wystąpił wyjątek podczas wywoływania funkcji usługi środowiska wykonawczego komponentu MBean JMX względem elementu {0}, który prezentuje informacje o sesji EclipseLink. Wyjątek: {1}
+
+join_trans_called_on_entity_trans=Metodę joinTransaction wywołano względem interfejsu EntityManager lokalnego dla zasobów, który nie może zarejestrować się w transakcji JTA.
+
+jpa21-ddl-create-script-target-not-specified=Podczas generowania kodu DDL dla skryptów należy określić cel skryptu tworzenia, używając właściwości [jakarta.persistence.schema-generation.scripts.create-target].
+
+jpa21-ddl-drop-script-target-not-specified=Podczas generowania kodu DDL dla skryptów należy określić cel skryptu usuwana, używając właściwości [jakarta.persistence.schema-generation.scripts.drop-target].
+
+jpa21-ddl-invalid-source-script-type=Udostępniony skrypt źródłowy {0} ma niepoprawny typ {0}. Poprawny typ skryptu źródłowego to java.io.Reader lub łańcuch adresu URL pliku.
+
+jpa21-ddl-invalid-target-script-type=Udostępniony skrypt docelowy {0} ma niepoprawny typ {0}. Poprawny typ skryptu docelowego to java.io.Writer lub łańcuch adresu URL pliku.
+
+jpa21-ddl-source-script-io-exception=Wystąpił błąd we/wy w źródłowym skrypcie generowania DDL: {0}.
+
+jpa21-ddl-source-script-not-found=Skrypt źródłowy {0} dla wywołania generateSchema nie został znaleziony. Upewnij się, że podano poprawny łańcuch adresu URL, który używa protokołu file: lub że łańcuch nazwy pliku reprezentuje poprawny zasób dostępny w ścieżce klas.
+
+jpa21-ddl-source-script-sql-exception=Wystąpił błąd podczas wykonywania {0} z poziomu źródłowego skryptu generowania DDL: {1}.
+
+jpa21_invalid_call_on_un_executed_query=Zapytanie musi zostać wykonane przed wywołaniem tej metody.
+
+jpa21_invalid_call_with_no_output_parameters=Niepoprawne wywołanie zapytania, które nie zwraca parametrów wyjściowych.
+
+jpa21_invalid_call_with_no_result_sets_returned=Niepoprawne wywołanie zapytania, które nie zwraca tabel wynikowych.
+
+jpa21_invalid_parameter_name=Niepoprawna nazwa parametru wyjściowego: {0}. {1}
+
+jpa21_invalid_parameter_position=Niepoprawna pozycja parametru wyjściowego: {0}. {1}.
+
+jpa_criteriaapi_alias_reused=Więcej niż jeden element wyboru używa tego samego aliasu.  Użyte zduplikowane nazwy: {0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=Znaleziono niedozwoloną krotkę lub element wyboru o wartości tablicy. Znaleziony argument: {0}
+
+jpa_criteriaapi_invalid_result_index=Indeks {0} jest niepoprawny w przypadku listy wyników o wielkości {1}.
+
+jpa_criteriaapi_invalid_result_type=Typ {1} elementu {0} jest niepoprawny dla wyniku {2}.
+
+jpa_criteriaapi_no_corresponding_element_in_result=Element {0} nie odpowiada elementowi w wynikach zapytania.
+
+jpa_criteriaapi_null_literal_value=Do metody CriteriaBuilder.literal() przekazano wartość NULL.  Użyj zamiast niej metody nullLiteral(Class<T> resultClass).
+
+jpa_helper_invalid_entity_manager_factory=Interfejs EntityManagerFactory JPA {0} nie jest interfejsem EntityManagerFactory EclipseLink, a więc nie można jej przekształcić.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=Interfejs EntityManagerFactory JPA {0} nie jest interfejsem EntityManagerFactory EclipseLink, a więc nie można odświeżyć jej metadanych.
+
+jpa_helper_invalid_query=Zapytanie typu {0} nie jest zapytaniem EclipseLink i dlatego nie może zostać przekształcone.
+
+jpa_helper_invalid_read_all_query=Zapytanie typu {0} nie jest zapytaniem odczytu wszystkiego EclipseLink i dlatego nie może zostać przekształcone.
+
+jpa_helper_invalid_report_query=Zapytanie typu {0} nie jest zapytaniem raportu EclipseLink i dlatego nie może zostać przekształcone.
+
+jpa_persistence_util_non_persistent_class=Metoda PersistenceUtil.getIdentifier(entity) została wywołana z obiektem [{0}], który nie jest obiektem trwałym.
+
+lock_called_without_version_locking=Wywołania metody entityManager.lock(Object entity, LockModeType lockMode) wymagają włączonego blokowania wersji.
+
+managed_component_not_found=Atrybut: {1} wymieniony w interfejsie EntityGraph: {0} odwołuje się do grafu podrzędnego o nazwie: {2}, którego nie można znaleźć.
+
+may_not_contain_xml_entry=Element {0} nie może zawierać pozycji {1}.
+
+metamodel_class_incorrect_type_instance=Typ klasy [{2}] nie jest oczekiwanym typem [{1}] dla klasy klucza [{0}].  Sprawdź, czy klasa [{2}] została przywołana w pliku persistence.xml za pomocą specyficznej właściwości <class/> lub globalnego elementu <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance=W metamodelu nie znaleziono wartości [{1}] dla klasy klucza [{0}]. Sprawdź, czy klasa [{2}] została przywołana w pliku persistence.xml za pomocą specyficznej właściwości <class>{0}</class> lub globalnego elementu <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance_for_null_key=W metamodelu nie znaleziono wartości [{0}] dla parametru klasy klucza o wartości NULL. Podaj poprawną klasę klucza dla klasy [{1}] metamodelu i sprawdź, czy klasa klucza została przywołana w pliku persistence.xml za pomocą specyficznej właściwości <class/> lub globalnego elementu <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=Oczekiwany pojedynczy atrybut @Id dla identyfikowalnego typu [{0}] jest częścią nieoczekiwanej adnotacji @IdClass.
+
+metamodel_identifiable_id_attribute_type_incorrect=Oczekiwano typu atrybutu identyfikatora [{2}] w istniejących atrybutach identyfikatora [{0}] w identyfikowalnym typie [{1}], ale znaleziono typy atrybutów [{3}].
+
+metamodel_identifiable_no_id_attribute_present=Brak atrybutu @Id w identyfikowalnym typie [{0}].
+
+metamodel_identifiable_no_version_attribute_present=Brak atrybutu @Version w identyfikowalnym typie [{0}].
+
+metamodel_identifiable_type_has_no_idclass_attribute=Brak atrybutów @IdClass w interfejsie IdentifiableType [{0}].  W typie nadal może istnieć jedna lub większa liczba adnotacji @Id lub @EmbeddedId.
+
+metamodel_identifiable_version_attribute_type_incorrect=Oczekiwano typu atrybutu wersji [{2}] istniejącego atrybutu wersji [{0}] w identyfikowalnym typie [{1}], ale znaleziono typ atrybutu [{3}].
+
+metamodel_incompatible_persistence_config_for_getIdType=Niekompatybilna konfiguracja utrwalania podczas uzyskiwania typu identyfikatora metamodelu dla interfejsu ManagedType [{0}].
+
+metamodel_interface_inheritance_not_supported=Deskryptor [{0}] używający dziedziczenia ({1}) nie jest aktualnie obsługiwany podczas generowania metamodelu. Spróbuj użyć dziedziczenia klasy Entity lub MappedSuperclass (klasa abstrakcyjna).
+
+metamodel_managed_type_attribute_not_present=Brak atrybutu [{0}] w typie zarządzanym [{1}].
+
+metamodel_managed_type_attribute_return_type_incorrect=Oczekiwano typu zwracanego atrybutu [{2}] istniejącego atrybutu [{0}] w typie zarządzanym [{1}], ale znaleziono typ zwracany atrybutu [{3}].
+
+metamodel_managed_type_attribute_type_incorrect=Oczekiwano typu atrybutu [{2}] istniejącego atrybutu [{0}] w typie zarządzanym [{1}], ale znaleziono typ atrybutu [{3}].
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Brak zadeklarowanego atrybutu [{0}] z typu zarządzanego [{1}], jednak jest on zadeklarowany w nadklasie.
+
+missing_parameter_value=Argument zapytania {0} nie został znaleziony na liście parametrów podanych podczas wykonywania zapytania.
+
+missing_toplink_bean_definition_for=Brak definicji komponentu bean TopLink dla elementu {0}
+
+named_entity_graph_exists=Adnotacja NamedEntityGraph o nazwie {0} znaleziona w elemencie {1} już istnieje w tej jednostce trwałości.
+
+negative_max_result=Ujemna wartość MaxResult nie jest dozwolona.
+
+negative_start_position=Ujemna pozycja początkowa nie jest dozwolona.
+
+new_object_found_during_commit=Podczas synchronizacji znaleziono nowy obiekt przez relację, która nie została oznaczona typem kaskady PERSIST: {0}.
+
+no_entities_retrieved_for_get_reference=Nie można znaleźć jednostki dla identyfikatora: {0}
+
+no_entities_retrieved_for_get_single_result=Metoda getSingleResult() nie pobrała żadnych obiektów.
+
+no_entity_graph_of_name=Brak interfejsu EntityGraph o nazwie {0}
+
+not_an_entity=Obiekt: {0} nie jest znanym typem jednostki.
+
+not_jar_file=Element {0} nie jest plikiem JAR.
+
+not_usable_passed_to_entitygraph_hint=Wartość {1} przekazana do wskazówki zapytania {0} nie jest odpowiednia dla tej wskazówki zapytania
+
+null_argument_get_attributegroup=Nazwa wyszukiwania dla klasy AttributeGroup nie może mieć wartości NULL.
+
+null_jar_file_names=Nazwy plików JAR mają wartości NULL
+
+null_not_supported_identityweakhashmap=Klasa IdentityWeakHashMap nie obsługuje wartości NULL jako klucza ani wartości.
+
+null_pk=Instancja klucza podstawowego o wartości NULL została niepoprawnie podana dla tej operacji wyszukiwania.
+
+null_sqlresultsetmapping_in_query=Aby klasa ResultSetMappingQuery była poprawna, musi zawierać adnotację SQLResultSetMapping
+
+null_value_for_column_result=Dla adnotacji ColumnResult należy podać nazwę kolumny
+
+null_value_for_constructor_result=Dla wyniku konstruktora należy podać nazwę klasy docelowej
+
+null_value_for_entity_result=Dla wyniku obiektu należy podać nazwę klasy obiektu
+
+null_value_in_sqlresultsetmapping=Dla adnotacji SQLResultSetMapping należy podać nazwę.  Ta nazwa służy do przywoływania adnotacji SQLResultSetMapping z zapytania.
+
+null_values_for_field_result=Dla adnotacji FieldResult należy podać nazwę atrybutu i nazwę kolumny
+
+only_one_root_subgraph=Tylko główny graf podrzędny może być wymieniony bez typu.  Wszystkie grafy podrzędne reprezentujące podklasy muszą mieć ustawiony typ.
+
+operation_not_supported=Wywoływanie operacji {0} względem elementu {1} nie jest obsługiwane przez specyfikację.
+
+operation_on_closed_entity_manager=Próbowano wykonać operację na zamkniętym interfejsie EntityManager.
+
+operation_on_closed_entity_manager_factory=Próbowano wykonać operację na zamkniętym interfejsie EntityManagerFactory.
+
+ora_pessimistic_locking_with_rownum=Blokada pesymistyczna z limitami wierszy zapytania nie jest obsługiwana.
+
+parsing_error=błąd analizowania
+
+parsing_fatal_error=błąd krytyczny analizowania
+
+parsing_warning=ostrzeżenie analizowania
+
+pathnode_is_primitive_node=Wyrażenie kryteriów ma typ podstawowy i nie można kontynuować nawigacji.
+
+pathnode_type_does_not_apply_to_primitive_node=Wyrażenie kryteriów ma typ podstawowy i nie można kontynuować nawigacji.  Typ nie jest dozwolony dla wyrażeń podstawowych.
+
+pk_class_not_found=Nie można załadować klasy klucza podstawowego {0}
+
+position_bound_param_not_found=Brak powiązanego parametru w pozycji: {0}.
+
+position_param_not_found=Brak parametru w pozycji: {0}.
+
+pu_configured_for_resource_local=Nie można utworzyć interfejsu EntityManager z obiektem SynchronizationType, ponieważ interfejs PersistenceUnit jest skonfigurowany z transakcjami lokalnymi względem zasobów.
+
+remove_deletion_failed=Skasowanie usunięcia nie powiodło się:
+
+rollback_because_of_rollback_only=Transakcja została wycofana, ponieważ ustawiono dla niej wartość RollbackOnly.
+
+sdo_helper_invalid_changesummary=Podany interfejs ChangeSummary [{0}] nie jest klasą EclipseLink SDOChangeSummary i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_copyhelper=Podany interfejs CopyHelper [{0}] nie jest klasą EclipseLink SDOCopyHelper i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_datafactory=Podany interfejs DataFactory [{0}] nie jest klasą EclipseLink SDODataFactory i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_datahelper=Podany interfejs DataHelper [{0}] nie jest klasą EclipseLink SDODataHelper i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_dataobject=Podany interfejs DataObject [{0}] nie jest klasą EclipseLink SDODataObject i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_equalityhelper=Podany interfejs EqualityHelper [{0}] nie jest klasą EclipseLink SDOEqualityHelper i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_helpercontext=Podany interfejs HelperContext [{0}] nie jest klasą EclipseLink SDOHelperContext i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_property=Podany interfejs Property [{0}] nie jest klasą EclipseLink SDOProperty i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_sequence=Podany interfejs Sequence [{0}] nie jest klasą EclipseLink SDOSequence i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_target_for_changesummary=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOChangeSummary.
+
+sdo_helper_invalid_target_for_copyhelper=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOCopyHelper.
+
+sdo_helper_invalid_target_for_datafactory=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDODataFactory.
+
+sdo_helper_invalid_target_for_datahelper=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDODataHelper.
+
+sdo_helper_invalid_target_for_dataobject=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDODataObject.
+
+sdo_helper_invalid_target_for_equalityhelper=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOEqualityHelper.
+
+sdo_helper_invalid_target_for_helpercontext=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOHelperContext.
+
+sdo_helper_invalid_target_for_property=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOProperty.
+
+sdo_helper_invalid_target_for_sequence=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOSequence.
+
+sdo_helper_invalid_target_for_type=Podana klasa docelowa [{0}] musi być jedną z następujących klas EclipseLink: SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType lub SDOXMLHelperLoadOptionsType.
+
+sdo_helper_invalid_target_for_typehelper=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOTypeHelper.
+
+sdo_helper_invalid_target_for_xmlhelper=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOXMLHelper, EclipseLink XMLMarshaller lub EclipseLink XMLUnmarshaller.
+
+sdo_helper_invalid_target_for_xsdhelper=Podana klasa docelowa [{0}] musi być klasą EclipseLink SDOXSDHelper.
+
+sdo_helper_invalid_type=Podany interfejs Type [{0}] nie jest klasą EclipseLink SDOType i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_typehelper=Podany interfejs TypeHelper [{0}] nie jest interfejsem EclipseLink SDOTypeHelper i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_xmlhelper=Podany interfejs XMLHelper [{0}] nie jest interfejsem EclipseLink SDOXMLHelper i dlatego nie może zostać przekształcony.
+
+sdo_helper_invalid_xsdhelper=Podany interfejs XSDHelper [{0}] nie jest interfejsem EclipseLink SDOXSDHelper i dlatego nie może zostać przekształcony.
+
+subclass_sought_not_a_managed_type=Poszukiwany typ grafu podrzędnego {0} nie jest typem zarządzanym dla danego atrybutu: {1}.
+
+too_many_results_for_get_single_result=Metoda Query.getSingleResult() zwróciła więcej niż jeden wynik
+
+unable_to_find_named_query=Nie znaleziono adnotacji NamedQuery o nazwie {0}.
+
+unable_to_unwrap_jpa=Dostawca nie obsługuje wypakowywania elementu {0} do {1}
+
+undeclared_checked_exception=Niezadeklarowany sprawdzony wyjątek
+
+unexpect_argument=Nieoczekiwany argument wejściowy {0}
+
+unknown_bean_class=Nieznana klasa komponentu bean obiektu: {0}. Sprawdź, czy ta klasa została oznaczona przy użyciu adnotacji @Entity.
+
+unknown_entitybean_name=Nieznana nazwa komponentu bean obiektu: {0}
+
+unsupported_classfile_version=Klasa {0} została skompilowana z nieobsługiwanym pakietem JDK. Zgłoś ten problem zespołowi projektu Open Source EclipseLink.
+
+wrap_convert_exception=Wystąpił wyjątek podczas wywoływania operacji {0} względem klasy konwertera {1} o wartości {2}
+
+wrap_ejbql_exception=Wystąpił wyjątek podczas tworzenia zapytania w interfejsie EntityManager
+

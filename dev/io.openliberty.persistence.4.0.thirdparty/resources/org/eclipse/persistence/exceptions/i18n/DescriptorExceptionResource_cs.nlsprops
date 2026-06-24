@@ -1,0 +1,443 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=Atribut [{0}] není deklarovaný jako typ ValueHolderInterface, ale jeho mapování používá nepřímý odkaz.
+
+10=Toto mapování nemá nastavený název pole.
+
+100=Metoda spustila výjimku.
+
+101=Základní metoda spustila výjimku.
+
+102=Metoda [{0}] spustila výjimku.
+
+103=Problém při extrahování třídy z řádku [{0}] pomocí statické metody [{1}] s parametrem (DatabaseRow). Byla spuštěna výjimka.
+
+104=Problém při vytváření nové instance pomocí metody vytvoření [{0}]. Metoda vytvoření spustila výjimku.
+
+105=Základní metoda zpětného volání deskriptoru [{0}] s parametrem (Session) spustila výjimku.
+
+106=Metoda [{0}] na objektu spouští výjimku. {2}Argument: [{1}]
+
+108=Nelze najít hodnotu v mapování indikátoru třídy v nadřízeném deskriptoru [{0}].
+
+109=Tento deskriptor by neměl mít definované pole zámku pro zápis, protože se jedná o podřízený deskriptor. Zdědí pole zámku pro zápis od svého nadřízeného deskriptoru.
+
+11=Informace o cizím klíči pro toto mapování jsou definovány chybně.
+
+110=Chybí deskriptor pro třídu [{0}].
+
+111=Více názvů pole primárního klíče tabulky musí být uvedeno včetně úplné cesty.
+
+112=Pomocí metody setTableName(String) lze přidat pouze jednu tabulku. Chcete-li do deskriptoru přidat více tabulek, použijte metodu addTableName(String).
+
+113=Konstruktor nebyl dostupný.
+
+114=Problém při vytváření nové instance pomocí metody vytvoření [{0}]. Metoda vytvoření není přístupná.
+
+115=Není poskytnuta žádná hodnota konverze pro atribut [{0}].
+
+116=Není poskytnuta žádná hodnota konverze pro hodnotu [{0}] v poli [{1}].
+
+118=Objekt [{0}] nesmí mít na svých polích zámku pro zápis mapování jen pro čtení.
+
+119=Mapování objektu [{0}] na jeho pole zámku pro zápis musí být jen pro čtení.
+
+12=Deskriptory musí používat mapu identit, aby bylo možné používat volbu kontroly existence "Kontrolovat mezipaměť".
+
+120=Klíč dotazu [{0}] je definovaný v nadřízeném deskriptoru [{1}], nikoli však v podřízeném deskriptoru [{2}].
+
+122=Metodu setExistenceCheck() s argumentem [{0}] se nezdařilo interpretovat.
+
+125=Mapování pro atribut [{0}] používá nepřímý odkaz, a proto musí být inicializováno na nový objekt ValueHolder. Aktuální hodnota je: [{1}].
+
+126=Této třídě [{0}] pro toto agregované mapování s dědičností neodpovídá žádná podtřída.
+
+127=Metoda get pro atribut [{0}] nevrací rozhraní ValueHolderInterface, ale mapování používá nepřímý odkaz.
+
+128=Metoda get pro atribut [{0}] vrací rozhraní ValueHolderInterface, ale mapování nepoužívá nepřímý odkaz.
+
+129=Metoda set pro atribut [{0}] nepřijímá jako parametr rozhraní ValueHolderInterface, ale mapování používá nepřímý odkaz.
+
+13=Proměnná instance [{0}] v objektu [{1}] je nepřístupná.
+
+130=Metoda set pro atribut [{0}] přijímá jako parametr rozhraní ValueHolderInterface, ale mapování nepoužívá nepřímý odkaz.
+
+131=Metoda get pro atribut [{0}] by měla vracet vektor (resp. typ, který implementuje mapu nebo kolekci při použití jazyka Java 2).
+
+133=Metoda set pro atribut [{0}] by měla jako parametr přijímat vektor (resp. typ, který implementuje mapu nebo kolekci při použití jazyka Java 2).
+
+135=Vícenásobný vztah s cizím klíčem tabulky odkazuje na neznámou tabulku [{0}].
+
+138=Atribut [{0}] je typu [{1}], ale mapování používá transparentní nepřímý odkaz (pomalé načítání), což vyžaduje, aby se jednalo o supertřídu [{2}].
+
+139=Metoda get pro atribut [{0}] vrací [{1}], ale mapování používá transparentní nepřímý odkaz (pomalé načítání), což vyžaduje, aby se jednalo o supertřídu [{2}].
+
+14=Problém při klonování objektu [{0}]. Metoda klonování [{1}] není přístupná.
+
+140=Metoda set pro atribut [{0}] přijímá [{1}], ale mapování používá transparentní nepřímý odkaz (pomalé načítání), což vyžaduje, aby se jednalo o supertřídu [{2}].
+
+141=Pole [{0}] se v tabulce [{1}] v databázi nevyskytuje.
+
+142=Tabulka [{0}] se v databázi nevyskytuje.
+
+143=Určený vektor příkazu vložení více tabulek [{0}] obsahuje více nebo méně tabulek, než kolik jich je uvedeno v deskriptoru. {2}Vektor příkazu vložení musí zahrnovat všechny tabulky [{1}].
+
+144=Transparentní nepřímý odkaz lze použít pouze s třídou CollectionMappings.
+
+145=Třída nepřímého kontejneru [{0}] musí implementovat konstruktor [{1}] s parametrem (ValueHolderInterface).
+
+146=Třídu nepřímého kontejneru [{0}] nelze převést na instanci pomocí konstruktoru {1}(ValueHolderInterface).
+
+147=Zásada kontejneru [{0}] by se měla používat pouze v JDK 1.1.x. Pro [{1}] byla převedena na instanci.
+
+148=Zásada kontejneru [{0}] není kompatibilní s transparentním nepřímým odkazem.
+
+149=Objekty NoIndirectionPolicy by neměly obdržet tuto zprávu.
+
+15=Tato třída nedefinuje výchozí konstruktor, což EclipseLink vyžaduje.
+
+150=Mapování pro atribut [{0}] používá transparentní nepřímý odkaz, takže atribut [{0}] musí být inicializovaný na příslušný kontejner. Aktuální hodnota je [{1}]. {2} -  Musí být instancí implementátoru kolekce nebo mapy.
+
+151=Operace [{0}] je pro toto mapování neplatná.
+
+152=Operace [{1}] je pro tuto zásadu nepřímého odkazu [{0}] neplatná.
+
+153=Deskriptor odkazu pro [{0}] by měl být nastaven tak, aby se jednalo o deskriptor agregované kolekce.
+
+154=Třída kontejneru nepřímého odkazu [{0}] neimplementuje IndirectContainer.
+
+155=Toto mapování neobsahuje pole cizího klíče propojené s polem primárního klíče [{0}].
+
+156=Pro toto mapování není nastavený název struktury.
+
+157=Běžné deskriptory nepodporují nerelační rozšíření.
+
+158=Nadřízená třída tohoto deskriptoru byla nastavena sama na sebe.
+
+159=Nepřímý odkaz serveru proxy je dostupný pouze na virtuálních počítačích kompatibilních se sadou JDK 1.3 nebo vyšší.
+
+16=Metoda zpětného volání deskriptoru [{0}] s parametrem (DescriptorEvent) je nepřístupná.
+
+160=Atribut [{0}] třídy [{1}] je typovaný jako [{2}], což nebylo uvedeno v seznamu rozhraní předaném metodě useProxyIndirection(). {4}Platná rozhraní jsou: [{3}].
+
+161=Metoda [{0}] ve třídě [{1}] vrací hodnotu typu [{2}], což nebylo uvedeno v seznamu rozhraní předaném metodě useProxyIndirection(). {4}Platná rozhraní jsou: [{3}].
+
+162=Metoda [{0}] ve třídě [{1}] přijímá parametr typu [{2}], což nebylo uvedeno v seznamu rozhraní předaném metodě useProxyIndirection().{4}Platná rozhraní jsou: [{3}].
+
+163=Třída atributu tohoto mapování neodpovídá třídě kolekce. [{1}] nelze přiřadit [{0}].
+
+164=Metoda doplnění [{1}] ve třídě doplnění [{0}] je neplatná, neveřejná, nebo ji nelze najít. {2}Metody doplnění deskriptoru musí být deklarovány jako "public static void" s jediným parametrem (ClassDescriptor).
+
+165=Metoda doplnění tohoto deskriptoru [{1}] ve třídě doplnění [{0}] spustila výjimku.
+
+166=Pro atribut [{0}] neexistuje žádné mapování.
+
+167=Nebyl nalezen platný konstruktor pro třídu kontejneru nepřímého odkazu [{0}].
+
+168=Problém při vytváření nové instance pomocí výchozího konstruktoru. Výchozí konstruktor spustil výjimku.
+
+169=Problém při vytváření nové instance továrny pomocí výchozího konstruktoru. Výchozí konstruktor spustil výjimku.
+
+17=Probíhá pokus o přístup k metodě [{0}] na objektu [{1}]. Základní metoda je nepřístupná.
+
+170=Problém (nepovolený přístup) při vytváření nové instance továrny pomocí výchozího konstruktoru.
+
+171=Třída továrny nedefinuje veřejný výchozí konstruktor nebo konstruktor vyvolal výjimku.
+
+172=Nebyl nalezen konstruktor továrny.
+
+173=Konstruktor továrny byl nepřístupný.
+
+174=Problém při vytváření továrny. Metoda vytvoření [{0}] není přístupná.
+
+175=Problém při vytváření továrny pomocí metody vytvoření [{0}]. Metoda vytvoření spustila výjimku.
+
+176=Problém při vytváření továrny pomocí metody vytvoření [{0}]. Metoda vytvoření není přístupná.
+
+177=Chybí mapování pro atribut: [{0}].
+
+178=Nelze najít mapování pro atribut [{0}] v objektu entity bean [{1}]. Atribut musí být mapovaný.
+
+179=Atribut [{0}] používá obousměrnou údržbu vztahu, ale má třídu ContainerPolicy [{1}], která ji nepodporuje. Atribut by měl být namapován s jiným typem kolekce.
+
+18=Nepovolený přístup k metodě v mapování transformace pomocí objektu ValueHolder.
+
+181=Nelze najít třídu AttributeTransformer [{0}].
+
+182=Nelze najít třídu FieldTransformer [{0}].
+
+183=Třídu [{0}] nelze použít jako AttributeTransformer.
+
+184=Třídu [{0}] nelze použít jako FieldTransformer.
+
+185=Třída ReturningPolicy obsahuje pole [{0}] se dvěma různými typy: [{1}] a [{2}].
+
+186=Třída ReturningPolicy obsahuje pole [{0}], které je přidáno dvakrát: pomocí addInsertField a addInsertFieldReturnOnly.
+
+187=Třída ReturningPolicy obsahuje pole [{0}] s typem [{1}], ale v deskriptoru má totéž pole typ [{2}].
+
+188=Třída ReturningPolicy obsahuje nemapované pole [{0}], které vyžaduje typ.
+
+189=Třída ReturningPolicy obsahuje mapované pole [{0}], které vyžaduje typ.
+
+19=Nepovolený přístup během vyvolání metody atributu na mapování transformace. Základní metoda je nepřístupná.
+
+190=Třída ReturningPolicy obsahuje pole [{0}] mapované pomocí mapování [{1}], které není podporováno.
+
+191=Třída ReturningPolicy obsahuje pole [{0}], které není podporováno: jedná se o pole posloupnosti či indikátor typu třídy, případně slouží k zamykání.
+
+192=Třída ReturningPolicy obsahuje pole [{0}], ale vlastní [{1}] ho neodesílá na výstup.
+
+193=Není nastaveno žádné vlastní [{0}], ale třída ReturningPolicy obsahuje pole, která mají být vrácena a [{1}] nepodporuje generování volání s návratem.
+
+194=Metoda extrakce třídy [{0}] musí být statická metoda na třídě deskriptoru.
+
+195=Sdílená třída {1} nesmí odkazovat na izolovanou třídu {0}.
+
+196=Hodnota UpdateAllFields nebyla nastavena nebo byla nastavena na hodnotu false. Při použití metody CMPPolicy.setForceUpdate(true) musíte volat také metodu CMPPolicy.setUpdateAllFields(true).
+
+197=Mapování [{0}] není příslušným typem pro tento deskriptor.
+
+198=Aby bylo možné používat třídu ObjectChangeTrackingPolicy nebo AttributeChangeTrackingPolicy, {0} musí implementovat rozhraní ChangeTracker.
+
+199=Aby bylo možné používat skupinu načtení, třída domény ({0}) musí implementovat rozhraní FetchGroupTracker.
+
+2=Atribut [{0}] je deklarovaný jako typ ValueHolderInterface, ale jeho mapování nepoužívá nepřímý odkaz.
+
+20=Metoda [{0}] je nepřístupná.
+
+200=Pokus o registraci objektu s neaktivním nepřímým odkazem jako nového objektu. Tento objekt byl pravděpodobně odstraněn nebo odebrán z mezipaměti během sloučení serializovaného klonu. Jedná se o porušení souběžnosti, zvažte strategii zamykání.
+
+201=Došlo k pokusu o sestavení objektu v mezipaměti relace, ale deskriptor je v jednotce práce označený jako izolovaný, takže by se k němu nemělo nikdy přistupovat mimo jednotku práce.
+
+202=Došlo k interní chybě při přístupu k objektu primárního klíče [{0}].
+
+203=Došlo k interní chybě při přístupu k metodě [{1}] na třídě [{0}].
+
+204=Pořadí vložení tabulky je v rozporu s cizími klíči více tabulek - podle nich by tabulka [{0}] měla být vložena před tabulku [{1}].
+
+205=Pořadí vložení tabulky má cyklickou závislost mezi tabulkami [{0}] a [{1}].
+
+206=Pořadí vložení tabulky má cyklickou závislost mezi třemi nebo více tabulkami.
+
+207=Pořadí vložení tabulky je chybné: tabulka [{0}] mapovaná na nadřízený prvek má být vložena za tabulku [{1}] mapovanou na podřízený prvek.
+
+208=Pokoušíte se nastavit převodník s názvem třídy [{1}] na nepřímém mapování [{0}]. Převodníky mohou mít pouze přímá mapování. K tomu obvykle dojde při pokusu o nastavení převodníku klíče na třídě DirectMapMapping s nepřímým klíčem.
+
+209=Tento deskriptor obsahuje mapování s třídou DirectMapMapping a bez nastaveného pole klíče.
+
+21=Problém při extrahování třídy z řádku [{0}]. Statická metoda [{1}] s parametrem (DatabaseRow) není přístupná.
+
+210=[{0}] má nastavené pole pořadí seznamu, ale atribut neimplementuje seznam.
+
+211=[{0}] má nastavené pole pořadí seznamu a režim ověření pole pořadí seznamu je CORRECTION, což vyžaduje, aby byla třída IndirectList přiřaditelná atributu.
+
+212=Pole pořadí seznamu určené pro [{0}] má chybnou tabulku [{1}]. Namísto ní musí používat {2}.
+
+213={0} vyžaduje, aby všechna cílová pole cizího klíče patřila do stejné tabulky, bylo jich však nalezeno několik: {1}.
+
+214={0} určuje tabulku vztahů, která není kompatibilní s metodou addForeignKey(Name), případně namísto toho použijte metody addSourceRelationKeyField(Name) a addTargetRelationKeyFieldName.
+
+215={0} musí mít nenulový RelationTableMechanism.
+
+216=CacheKeyType pro složený primární klíč nemůže být ID_VALUE.
+
+217=Neplatný výraz XPath pro XMLDirectMapping/XMLCompositeDirectCollectionMapping. Výraz XPath musí buď obsahovat symbol @ v případě atributů, nebo v případě textových uzlů končit takto: /text(). Například: "@name" nebo "name/text()"
+
+218=Při přístupu k neexistující zakomponované třídě _vh_ method [{0}] by došlo k výjimce NullPointerException. Třída nebyla správně zakomponovaná - u implementací EE zkontrolujte pořadí modulů v deskriptoru implementace application.xml a ověřte, zda modul obsahující jednotku perzistence předchází všem dalším modulům, které ho používají.
+
+219=V rámci hierarchie dědičnosti používající pohledy nejsou povolena další kritéria z [{1}].
+
+22=Problém při vytváření nové instance. Metoda vytvoření [{0}] není přístupná.
+
+220=Chybí zásada rozdělení na oblasti pro název [{0}].
+
+221=Není nastaveno pole SerializedObjectPolicy.
+
+222=Došlo k výjimce při pokusu o získání instance třídy primárního klíče.
+
+23=Metoda zpětného volání deskriptoru [{0}] s parametrem (Session) je nepřístupná.
+
+24=Proměnná instance [{0}] v objektu [{1}] je nepřístupná. {3}Argument: [{2}]
+
+25=Metoda [{0}] s argumentem [{1}] je nepřístupná.
+
+26=Probíhá pokus o získání hodnoty pro proměnnou instance [{0}] typu [{1}] z objektu [{2}]. Určený objekt není instance třídy nebo rozhraní deklarující základní pole.
+
+27=Probíhá pokus o vyvolání metody [{0}] na objektu [{1}]. Liší se počet skutečných a formálních parametrů, nebo se nezdařil převod rozbalení.
+
+28=Nepovolený argument během vytváření instance serveru proxy založeného na metodě v mapování transformace.
+
+29=Liší se počet skutečných a formálních parametrů, nebo se nezdařil převod rozbalení.
+
+30=Liší se počet skutečných a formálních parametrů pro metodu [{0}], nebo se nezdařil převod rozbalení.
+
+31=Liší se počet skutečných a formálních parametrů pro metodu zpětného volání deskriptoru [{0}], nebo se nezdařil převod rozbalení.
+
+32=Probíhá pokus o nastavení hodnoty [{0}] pro proměnnou instance [{1}] typu [{2}] v objektu. Určený objekt není instance třídy nebo rozhraní deklarující základní pole nebo se nezdařil převod rozbalení.
+
+33=Probíhá pokus o vyvolání [{0}] na objektu s hodnotou [{1}]. Liší se počet skutečných a formálních parametrů, nebo se nezdařil převod rozbalení.
+
+34=Tato třída nedefinuje veřejný výchozí konstruktor nebo konstruktor vyvolal výjimku.
+
+35=Neplatná událost.
+
+36=Neplatný kód události [{0}].
+
+37=Neplatný kód události deskriptoru [{0}].
+
+38=Konstruktor mapy identit se nezdařil, protože byla určena neplatná mapa identit.
+
+39=Tento deskriptor neurčuje třídu Java.
+
+40=Chybí deskriptor pro [{0}]. Pravděpodobně nebyl přidán do relace.
+
+41=Pro pole pořadového čísla musí být definováno mapování neurčené jen pro čtení.
+
+43=Chybí třída pro hodnotu pole indikátoru [{0}] typu [{1}].
+
+44=Na řádku databáze [{0}] chybí pole indikátoru třídy.
+
+45=Chybí mapování pro pole [{0}].
+
+46=Pro pole primárního klíče [{0}] by mělo být definováno jedno mapování neurčené jen pro čtení.
+
+47=Při použití spojení více vlastních tabulek musí být určeno mapování primárního klíče více tabulek.
+
+48=Pro pole [{0}] existuje více mapování schopných zápisu. Pouze jedno z nich může být definováno jako schopné zápisu, všechna ostatní musí být určena jako jen pro čtení.
+
+49=Pro toto mapování není určen název metody transformace atributu.
+
+50=Pro toto mapování není nastaven název pole.
+
+51=Pro toto mapování nejsou určeny žádné cizí klíče.
+
+52=Pro toto mapování není určený žádný klíč odkazu.
+
+53=Pro toto mapování není nastaven název tabulky vztahů.
+
+54=Pro toto mapování nejsou určeny žádné klíče vztahu zdroje.
+
+55=Nelze najít metodu zpětného volání deskriptoru [{0}]. Jako argument musí přijímat třídu DescriptorEvent nebo Session.
+
+56=Nebyla nalezena metoda [{0}] s parametry (Record) nebo (Record, Session).
+
+57=Nepřístupný konstruktor.
+
+58=Nebyla nalezena metoda [{0}] s parametry () nebo (Session).
+
+59=Proměnná instance [{0}] není definována ve třídě domény [{1}] nebo není přístupná.
+
+6=Chybí název atributu.
+
+60=V objektu [{2}] není definována metoda [{0}] nebo [{1}].
+
+61=Metoda extrakce statické třídy [{0}] s parametrem (Record) neexistuje nebo není přístupná.
+
+62=Metoda klonování [{0}] bez parametrů neexistuje nebo není přístupná.
+
+63=Metoda vytvoření instance [{0}] bez parametrů neexistuje nebo není přístupná.
+
+64=Pro toto mapování nejsou určeny žádné cílové cizí klíče.
+
+65=Pro toto mapování nejsou určeny žádné cílové klíče vztahu.
+
+66=Nelze deserializovat objekt z bajtového pole.
+
+67=Nelze serializovat objekt do bajtového pole.
+
+68=Hodnota agregace v objektu [{0}] je null. Hodnoty null nejsou pro agregovaná mapování povoleny, pokud není zadána volba "Povolit hodnotu null".
+
+69=Při extrakci hodnoty z proměnné instance [{0}] v objektu [{1}] došlo k výjimce NullPointerException.
+
+7=Atribut [{0}] by měl být typem, který implementuje {1}.
+
+70=Při extrakci hodnoty prostřednictvím metody [{0}] v objektu [{1}] došlo k výjimce NullPointerException.
+
+71=Při nastavení hodnoty proměnné instance [{0}] na hodnotu [{1}] došlo k výjimce NullPointerException.
+
+72=Při nastavení hodnoty prostřednictvím metody [{0}] s argumentem [{1}] došlo k výjimce NullPointerException.
+
+73=Nelze najít deskriptor pro nadřízenou třídu [{0}].
+
+74=Pro tento deskriptor nejsou nastavena pole primárního klíče.
+
+75=Pro tento deskriptor není určena třída odkazu.
+
+77=Deskriptor odkazu pro [{0}] by měl být nastaven jako agregační deskriptor.
+
+78=V referenční tabulce musí existovat pole odkazu [{0}] pro toto mapování.
+
+79=Pro toto mapování není určena referenční tabulka.
+
+8=Deskriptor [{0}] je nastaven na použití dědičnosti, není však definováno pole indikátoru třídy. {2}Při použití dědičnosti je třeba nastavit pole indikátoru třídy nebo metodu extrakce třídy. {2}Nadřízený deskriptor: [{1}]
+
+80=V tabulce vztahů musí existovat pole klíče vztahu [{0}] pro toto mapování.
+
+81=Metoda [{0}] by měla vrátit typ mapovaného atributu, nikoli prázdnou hodnotu.
+
+82=Metoda zpětného volání deskriptoru [{0}] s parametrem (DescriptorEvent) není přístupná.
+
+83=Metoda zpětného volání deskriptoru [{0}] s parametrem (Session) není přístupná.
+
+84=Metoda [{0}] s parametry (Record) nebo (Record, Session) není přístupná.
+
+85=Metoda [{0}] s parametry () nebo (Session) není přístupná.
+
+86=Proměnná instance [{0}] ve třídě [{1}] není přístupná.
+
+87=Metody [{0}], [{1}] v objektu [{2}] nejsou přístupné.
+
+88=Metoda extrakce statické třídy [{0}] s parametrem (Record) není přístupná.
+
+89=Metoda klonování [{0}] bez parametrů není přístupná.
+
+9=Toto mapování nemá nastavený přímý název pole.
+
+90=Metoda vytvoření instance [{0}] bez parametrů není přístupná.
+
+91=Chcete-li použít ID generovaná posloupností, musí být pro tento deskriptor nastaveny vlastnosti "Název pořadového čísla" a "Název pole pořadového čísla".
+
+92=Velikost primárního klíče cíle neodpovídá velikosti cizího klíče.
+
+93=Tabulka [{0}] není v tomto deskriptoru přítomná.
+
+94=Deskriptory musí mít definovaný název tabulky.
+
+96=Počet cílových klíčů neodpovídá počtu zdrojových klíčů.
+
+97=Problém při klonování objektu [{0}]. Metoda klonování [{1}] spustila výjimku.
+
+98=Základní metoda zpětného volání deskriptoru [{0}] s parametrem (DescriptorEvent) spustila výjimku.
+
+99=Metoda [{0}] na objektu [{1}] spustila výjimku.
+

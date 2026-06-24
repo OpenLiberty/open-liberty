@@ -1,0 +1,223 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=コンテキスト・パス {0} に ObjectFactory も jaxb.index も含まれていません。プロパティー Map に外部メタデータが見つからず、sessions.xml が見つかったか無効でした。
+
+50001=クラス {0} にはゼロ引数コンストラクターまたは特定のファクトリー・メソッドが必要です。  非静的内部クラスは、ゼロ引数コンストラクターを持たないためサポートされないので注意してください。
+
+50002=クラス {0} にファクトリー・メソッドのないファクトリー・クラスが指定されています。
+
+50003={0} というファクトリー・メソッドはクラス {1} で宣言されていません。
+
+50004=XmlAnyAttribute はプロパティー {0} では無効です。 型が Map のプロパティーで使用する必要があります。
+
+50005=クラス {0} で許可される XmlAnyAttribute が含まれたプロパティーは 1 つのみです。
+
+50006=クラス {1} のプロパティー {0} に無効な XmlElementRef があります。 参照されているエレメントが宣言されていません。
+
+50007=名前が競合しています。  2 つのクラスに URI が {0} で名前が {1} の XML 型があります。
+
+50008=ノード・クラス {0} はサポートされません。  createBinder(Class) メソッドではクラス org.w3c.dom.Node のみがサポートされます。
+
+50009=クラス {1} のプロパティーまたはフィールド {0} は、一過性であるとのアノテーションが付けられているため、propOrder アノテーションに含めることはできません。
+
+50010=クラス {1} のプロパティーまたはフィールド {0} は、別のフィールドまたはプロパティーに XmlValue のアノテーションが付けられているため、属性でなければなりません。
+
+50011=クラス {1} のプロパティーまたはフィールド {0} は、XML でバインドされた別のクラスのサブクラスであるため、XmlValue のアノテーションを付けることはできません。
+
+50012=クラス {1} のプロパティーまたはフィールド {0} が propOrder で指定されていますが、無効なプロパティーです。
+
+50013=クラス {1} のプロパティーまたはフィールド {0} を XmlType アノテーションの propOrder エレメントに含める必要があります。
+
+50014=XmlValue アノテーションが付いている、クラス {1} のプロパティーまたはフィールド {0} は、単純スキーマ・タイプにマップされる型でなければなりません。
+
+50015=XmlElementWrapper はコレクションまたは配列プロパティーでのみ許可されますが、[{0}] はコレクションまたは配列プロパティーではありません。
+
+50016=プロパティー [{0}] に XmlID アノテーションがありますが、その型が String でありません。
+
+50017=プロパティー [{0}] の XmlIDREF が無効です。  クラス [{1}] のプロパティーには XmlID のアノテーションを付ける必要があります。
+
+50018=XmlList はコレクションまたは配列プロパティーでのみ許可されますが、[{0}] はコレクションまたは配列プロパティーではありません。
+
+50019=プロパティー Map を使用して外部メタデータを処理中に無効なパラメーター型が検出されました。  Key [eclipselink-oxm-xml] に関連付けられている Value は、[Map<String, Object>、List<Object>、または Object] のいずれかでなければなりません。  Object は、[java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node、または org.xml.sax.InputSource] のいずれかでなければなりません。[Map<String, Object>] の場合、String はパッケージ名です。
+
+50021=プロパティー Map を使用して外部メタデータを処理中に無効なパラメーター型が検出されました。  [Map<String, Object>] の場合、Key の型は [String] (パッケージ名を示すもの) でなければなりません。
+
+50022=プロパティー Map を使用して外部メタデータを処理中に無効なパラメーター型が検出されました。  [Map<String, Object>] の場合、Value は[java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node、または org.xml.sax.InputSource] のいずれかでなければなりません (メタデータ・ファイルのハンドル)。
+
+50023=プロパティー Map を使用して外部メタデータを処理中に Key [{0}] のヌルの Value が検出されました。  Value は非ヌルで、[java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node、または org.xml.sax.InputSource] のいずれかでなければなりません (メタデータ・ファイルのハンドル)。
+
+50024=プロパティー Map を使用して外部メタデータを処理中にヌルの Key が検出されました。  Key は非ヌルで、型 [String] (パッケージ名を示すもの) でなければなりません。
+
+50025=外部メタデータ・ファイルに宣言されているクラス [{0}] をロードできませんでした。  クラス名が正しいこと、および正しい ClassLoader が設定されていることを確認してください。
+
+50026=XmlModel の JAXBContext の作成試行中に例外が発生しました。
+
+50027=外部化メタデータ・ファイルをアンマーシャルしようとしているときに例外が発生しました。
+
+50028=[{0}] の新規インスタンスを作成できませんでした。
+
+50029=XmlCustomizer に指定されているクラス [{0}] は org.eclipse.persistence.config.DescriptorCustomizer インターフェースを実装していません。
+
+50030=複数の XmlID プロパティーをクラス [{1}] で設定しようとしました。  プロパティー [{2}] が XmlID として既に設定されているため、プロパティー [{0}] を XmlID として設定することはできません。
+
+50031=複数の XmlValue プロパティーをクラス [{0}] で設定しようとしました。  プロパティー [{2}] が XmlValue として既に設定されているため、プロパティー [{1}] を XmlValue として設定することはできません。
+
+50032=複数の XmlAnyElement プロパティーをクラス [{0}] で設定しようとしました。  プロパティー [{2}] が XmlAnyElement として既に設定されているため、プロパティー [{1}] を XmlAnyElement として設定することはできません。
+
+50033=プロパティー [{1}] で設定されている DomHandler [{0}] の DomHandlerConverter を初期化できませんでした。
+
+50034=プロパティーまたはフィールド [{0}] は DataHandler でないため、XmlAttachmentRef のアノテーションを付けることができません。
+
+50035=プロパティーまたはフィールド [{0}] は XmlIDREF として設定されているため、XmlElements リスト内で宣言されている各 XmlElement のターゲット型に XmlID プロパティーがなければなりません。  XmlElement [{1}] のターゲット型に XmlID プロパティーが含まれていることを確認してください。
+
+50036=XmlTagName QName が [{0}] の TypeMappingInfo には、非ヌルの型が設定されていなければなりません。
+
+50037=パッケージ [{1}] にあるバインディング・ファイルではパッケージ [{0}] の Java 型は許可されません。
+
+50038=DynamicJAXBContext は具象クラスから作成できません。  org.eclipse.persistence.jaxb.JAXBContext を使用するか、jaxb.properties ファイルで org.eclipse.persistence.jaxb.JAXBContextFactory を指定して、既存のクラスからコンテキストを作成してください。
+
+50039=DynamicJAXBContext の作成中にエラーが発生しました。ノードは Document または Element のいずれかのインスタンスでなければなりません。
+
+50040=DynamicJAXBContext の作成中にエラーが発生しました。
+
+50041=列挙型定数 [{0}] が見つかりません。
+
+50042=DynamicJAXBContext の作成中にエラーが発生しました。セッション名がヌルでした。
+
+50043=DynamicJAXBContext の作成中にエラーが発生しました。ソースがヌルでした。
+
+50044=DynamicJAXBContext の作成中にエラーが発生しました。InputStream がヌルでした。
+
+50045=DynamicJAXBContext の作成中にエラーが発生しました。ノードがヌルでした。
+
+50046=DynamicJAXBContext の作成中にエラーが発生しました。XJC で CodeModel を生成できませんでした。
+
+50047=クラス [{0}] が見つかりません。
+
+50048=プロパティー [{0}] に指定されている読み取り変換プログラムにクラスとメソッドの両方があります。 クラスまたはメソッドのいずれか (両方ではない) が必要です。
+
+50049=プロパティー [{0}] に指定されている読み取り変換プログラムにクラスもメソッドもありません。 クラスまたはメソッドが必要です。
+
+50050=プロパティー [{0}] の XML パス [{1}] に指定されている書き込み変換プログラムにクラスとメソッドの両方があります。 クラスまたはメソッドのいずれか (両方ではない) が必要です。
+
+50051=プロパティー [{0}] の XML パス [{1}] に指定されている書き込み変換プログラムにクラスもメソッドもありません。 クラスまたはメソッドが必要です。
+
+50052=プロパティー [{0}] に指定されている書き込み変換プログラムに XML パスが設定されていません。 XML パスが必要です。
+
+50053=パラメーター ()、(AbstractSession)、または (Session) が指定された変換メソッド [{0}] が見つかりません。
+
+50054=変換プログラム・クラス [{0}] が見つかりません。 クラス名が正しいこと、および正しい ClassLoader が設定されていることを確認してください。
+
+50055=DynamicJAXBContext の作成中にエラーが発生しました。eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) がプロパティー・マップで見つからないか、マップがヌルでした。
+
+50056=プロパティー [{0}] に XmlJoinNode 宣言が含まれていますが、参照されているクラス [{1}] はこのタイプの関係に適用できません。
+
+50057=クラス [{0}] のプロパティー [{1}] が、一過性のマークが付けられているクラス [{2}] を参照していますが、これは許可されません。
+
+50058=クラス [{0}] のプロパティー [{1}] に XmlJoinNode 宣言がありますが、ターゲット・クラス [{2}] に XmlID プロパティーも XmlKey プロパティーもありません。  各 referencedXmlPath にターゲット・クラスで一致する XmlPath を持つ XmlID/XmlKey プロパティーがなければなりません。
+
+50059=クラス [{0}] のプロパティー [{1}] に referencedXmlPath [{3}] を使用した XmlJoinNode 宣言がありますが、ターゲット・クラス [{2}] で XmlPath [{3}] を持つ XmlID プロパティーも XmlKey プロパティーもありません。  各 referencedXmlPath にターゲット・クラスで一致する XmlPath を持つ XmlID/XmlKey プロパティーがなければなりません。
+
+50060=クラス [{0}] のプロパティー [{1}] に XmlIDREF 宣言が含まれていますが、ターゲット・クラス [{2}] はこのタイプの関係に適用できません。
+
+50061=XmlAdapterClass [{0}] のロード試行中に例外が発生しました。 原因としては、アダプター・クラス名が正しくないこと、または正しくないローダーが設定されていることが考えられます。
+
+50062=XmlAdapterClass [{0}] の宣言されているメソッドへのアクセス試行中に例外が発生しました。 原因としては、SecurityManager がアダプター・クラス内の宣言されているメソッドへのアクセスを拒否したこと、または SecuritManager がアダプター・クラスのパッケージへのアクセスを拒否したことが考えられます。
+
+50063=XmlAdapterClass [{0}] のインスタンス化試行中に例外が発生しました。 原因としては、アダプター・クラスにゼロ引数コンストラクターがないことが考えられます。
+
+50064=XmlAdapterClass [{0}] は、予期されるとおりに "jakarta.xml.bind.annotation.adapters.XmlAdapter" を拡張しません。  アダプター・クラスは "jakarta.xml.bind.annotation.adapters.XmlAdapter" を拡張し、メソッド "public abstract BoundType unmarshal(ValueType v)" および "public abstract ValueType marshal(BoundType v)" を宣言する必要があります。
+
+50065=無効な XmlJavaTypeAdapter [{0}] がパッケージ [{1}] に対して指定されました。 原因としては、アダプター・クラス名が正しくないこと、または正しくないローダーが設定されていることが考えられます。
+
+50066=無効な XmlJavaTypeAdapter [{0}] がクラス [{1}] に対して指定されました。 原因としては、アダプター・クラス名が正しくないこと、または正しくないローダーが設定されていることが考えられます。
+
+50067=無効な XmlJavaTypeAdapter [{0}] が、クラス [{2}] のフィールド/プロパティー [{1}] に対して指定されました。 原因としては、アダプター・クラス名が正しくないこと、または正しくないローダーが設定されていることが考えられます。
+
+50068=プロパティー Map を使用して外部メタデータを処理中にヌルの値が検出されました。  XML メタデータ・ファイルのハンドルは非ヌルで、[java.io.File、java.io.InputStream、java.io.Reader、java.net.URL、javax.xml.stream.XMLEventReader、javax.xml.stream.XMLStreamReader、javax.xml.transform.Source、org.w3c.dom.Node、または org.xml.sax.InputSource] のいずれかでなければなりません。
+
+50069=指定されている XML メタデータ・ファイルにパッケージが指定されていません。  パッケージを指定するには、Map<String, Object> (ここで、String = パッケージ、Object = XML メタデータ・ファイルのハンドル) を渡すか、XML メタデータ・ファイルの xml-bindings エレメントで package-name 属性を設定します。
+
+50070=クラス [{1}]  のプロパティー [{0}] に、等しくない数の XmlElement/XmlJoinNodes が含まれている XmlElements 宣言があります。  XmlElements 宣言内に含まれている XmlElement ごとに対応する XmlJoinNodes がなければなりません。
+
+50071=クラス [{1}] のプロパティー [{0}] に、パス [{2}] のルートに属性を持つ XmlPath が含まれている XmlPaths 宣言があります。  XmlPaths の場合、属性は、XmlPath にネストする必要があります。つまり、 [foo/{2}]。
+
+50072=[{0}] という名前の重複しているプロパティーがクラス [{1}] で見つかりました
+
+50073=クラス [{1}] のプロパティー [{0}] は複数の外部バインディング・ファイルで指定されています。 各プロパティーは 1 つのファイルのみで指定できます
+
+50074=XMLNameTransformer [{0}] へのアクセス中に例外が発生しました
+
+50075=XMLNameTransformer [{1}] を使用して名前 [{0}] を変更しようとしているときに例外が発生しました
+
+50076=次の指定されている場所から外部メタデータをロードできません: {0}]。 この場所は有効な URL かクラスパス参照のいずれかでなければなりません。
+
+50077=メタデータをリフレッシュできません。  リフレッシュをサポートするには、メタデータは XML ノードとして指定する必要があります。
+
+50078=外部バインディング・ファイルを処理できません (XJB)。  外部バインディング・ファイルを使用するには、XSD と XJB の両方を javax.xml.transform.Sources として指定する必要があります。
+
+50079=スキーマを処理できません。  スキーマのインポートを使用する場合、XSD を javax.xml.transform.Source として指定する必要があります。
+
+50080=XmlLocation が許可されるのは型が org.xml.sax.Locator のプロパティーのみですが、[{0}] の型は [{1}] です。
+
+50081=スキーマ生成中に例外が発生しました。
+
+50082=キーの指定なしで値 {0} の書き込みが試行されました。  JSON_VALUE_WRAPPER を JAXBMarshaller で設定してください
+
+50083=AccessorFactory クラス {0} のインスタンス化試行中にエラーが発生しました
+
+50084=指定された AccessorFactory クラス {0} は無効です。 createFieldAccessor(Class, Field, boolean) および createPropertyAccessor(Class, Method, Method) を実装している必要があります。
+
+50085=AccessorFactory {0} での createFieldAccessor メソッドの呼び出し中に例外が発生しました
+
+50086=AccessorFactory {0} での createPropertyAccessor メソッドの呼び出し中に例外が発生しました
+
+50087=Accessor {1} での {0} メソッドの呼び出し試行中に例外が発生しました
+
+50088=列挙型値 {0} はクラス {1} の XmlEnum では無効です
+
+50089=Java インターフェース {0} は、複数のマップ可能親インターフェースがあるため、JAXB によってマップできません。 複数の継承はサポートされません
+
+50090=オブジェクト・グラフの値が無効です: {0}。 値はストリングか ObjectGraph のインスタンスでなければなりません。
+
+50091=エレメント名 {0} に複数のマッピングがあります。
+
+50092=クラス {1} で許可される型 {0} の XmlElementRef プロパティーは 1 つのみです。
+
+50093=クラス {0} は JAXBContext でマップされる型ではありません。
+
+50094=XmlVariableNode アノテーションで指定されているプロパティー {0} がクラス {1} で見つかりませんでした。
+
+50095=クラス {2} の型が {1} のプロパティー {0} は XmlVariableNode では無効です。  型が String または QName のプロパティーのみが許可されます。
+
+50096=型 {1} の @XmlAttribute プロパティー {0} は、XML でテキストにマップされる型を参照する必要があります。  {2} はテキスト値にマップできません。
+

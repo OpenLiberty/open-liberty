@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_pt_BR.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Foi feita uma tentativa de excluir o objeto [{0}], mas ele não tem número de versão no mapa de identidade. {3}Ele pode não ter sido lido antes da tentativa de exclusão. {3}Classe> {1} Chave primária> {2}
+
+5003=O objeto [{0}] não pode ser excluído porque foi alterado ou excluído desde que foi lido pela última vez. {3}Classe> {1} Chave primária> {2}
+
+5004=Foi feita uma tentativa de atualizar o objeto [{0}], mas ele não tem número de versão no mapa de identidade. {3}Ele pode não ter sido lido antes da tentativa de atualização. {3}Classe> {1} Chave primária> {2}
+
+5006=O objeto [{0}] não pode ser atualizado porque foi alterado ou excluído desde que foi lido pela última vez. {3}Classe> {1} Chave primária> {2}
+
+5007=O objeto [{0}] deve ter um mapeamento que não seja somente leitura para o campo de bloqueio de versão.
+
+5008=Deve-se mapear o campo de bloqueio de versão para java.sql.Timestamp ao usar Bloqueio de registro de data e hora
+
+5009=O objeto da classe [{1}] com a chave primária [{0}] não pode ser desagrupado porque foi excluído desde que foi lido pela última vez.
+
+5010=O objeto [{0}] não pode ser mesclado porque foi alterado ou excluído desde que foi lido pela última vez. {2}Classe> {1}
+
+5011=Um ou mais objetos não podem ser atualizados porque foi alterado ou excluído desde que foi lido pela última vez
+

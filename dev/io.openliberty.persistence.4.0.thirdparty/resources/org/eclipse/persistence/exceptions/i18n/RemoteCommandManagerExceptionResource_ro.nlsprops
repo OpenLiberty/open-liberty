@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Nu s-a putut obţine contextul JNDI, verificaţi dacă proprietăţile vă sunt setate corect.
+
+22102=Nu s-a putut posta conexiunea în serviciul de numire local sub numele {0}
+
+22103=Nu s-a putut căuta conexiunea la distanţă sub numele {0} cu URL {1}
+
+22104=Nu s-a putut căuta nume gazdă
+
+22105=Nu s-a putut propaga comanda la {0}
+
+22106=Nu s-a putut crea conexiunea externă JMS cu Subiect {0} şi Fabrica de subiecte {1}. Verificaţi de asemenea dacă proprietăţile dumneavoastră contextuale sunt setate corect.
+
+22107=Nu s-a putut înlătura conexiunea locală din serviciul de numire local cu numele {0}
+
+22108=Nu s-a putut serializa sau deserializa comanda
+
+22109=Eşuare la recepţionarea mesajului JMS de la furnizorul JMS
+
+22110=Eşuare la descoperirea adresei IP a gazdei locale.
+
+22111=Eşuare la obţinerea ServerPlatform. ServerPlatform trebuie setat în Sesiune sau în RemoteCommandManager.
+
+22112=Nu s-a putut crea conexiunea JMS locală cu Subiect {0} şi Fabrica de subiecte {1}. De asemenea, verificaţi dacă proprietăţile dumneavoastră contextuale sunt setate corect.
+
+22113=Nu s-a putut crea ID-ul serviciului Oc4jJGroupsRemoteConnection {0}, subiectul {1}, utilizând fabrica {2}. Verificaţi de asemenea dacă proprietăţile dumneavoastră contextuale sunt setate corect.
+
+22114={0}: eşuare la deserializarea mesajului extras {1}.
+
+22115={0}: eşuare la procesarea comenzii la distanţă extrase din mesajul {1}, din {2}, tip comandă {3}
+
+22116=Mesajul JMS primit este null. Este tratat ca şi o JMSException
+
+22117=RemoteCommandManager al sesiunii este închis sau nu a fost iniţializat în timpul procesării mesajelor de intrare
+
+22118=A eşuat crearea conexiunii JGroups folosind fişierul config: {0}
+
+22119=Eroare la inițializarea {0}, adăugați org.eclipse.persistence.corba.jar la classpath.
+

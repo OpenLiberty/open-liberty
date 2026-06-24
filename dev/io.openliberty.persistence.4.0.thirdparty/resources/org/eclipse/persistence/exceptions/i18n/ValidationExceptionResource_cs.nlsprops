@@ -1,0 +1,637 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ValidationExceptionResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+7001=Před získáním třídy ClientSession se musíte přihlásit ke třídě ServerSession.
+
+7002=Fond s názvem [{0}] neexistuje.
+
+7003=Maximální velikost musí být větší než minimální velikost.
+
+7004=Fondy musí být před přihlášením nakonfigurovány.
+
+7008=Typ Java [{0}] není platný typ databáze.
+
+7009=Chybí deskriptor pro [{0}]. Ověřte, že je deskriptor v relaci řádně registrovaný.
+
+7010=Počáteční index je mimo rozsah.
+
+7011=Koncový index je mimo rozsah.
+
+7012=Došlo k závažné chybě.
+
+7013=Používáte zamítnuté rozhraní API SessionManager a ve vaší cestě ke třídě nebyl nalezen žádný soubor EclipseLink.properties. Ze souboru nemohly být načteny žádné relace.
+
+7017=Podřízené deskriptory nemají mapu identity, sdílejí své nadřízené prvky.
+
+7018=Chyba souboru.
+
+7023=Byla poskytnuta chybná instance přihlášení. Musí být poskytnuto přihlášení DatabaseLogin.
+
+7024=Neplatná zásada sloučení.
+
+7025=Jediné platné klíče pro objekty DatabaseRow jsou objekty String a DatabaseField.
+
+7027=Posloupnost s názvem [{0}] je chybně nastavena. Její přírůstek neodpovídá velikosti před alokací.
+
+7028=Metoda writeObject() není v rámci rozhraní UnitOfWork povolena.
+
+7030=Po přihlášení nelze nastavit velikost fondu načtení.
+
+7031=Do třídy SessionBroker nelze přidat deskriptory.
+
+7032=Pro třídu [{0}] není registrována žádná relace.
+
+7033=Není registrována žádná relace s názvem [{0}].
+
+7038=Chyba při protokolování zprávy do protokolu relace.
+
+7039=Nelze odebrat ze sady tříd jen pro čtení ve vnořeném rozhraní UnitOfWork. {0}Sada tříd jen pro čtení vnořeného rozhraní UnitOfWork musí být rovna sadě tříd jen pro čtení nadřízeného prvku, nebo musí být její nadřízenou sadou.
+
+7040=Sadu tříd jen pro čtení v rozhraní UnitOfWork nelze změnit poté, co bylo rozhraní UnitOfWork použito. {0}Změny sady jen pro čtení je třeba provést při získání rozhraní UnitOfWork nebo okamžitě po něm.
+
+7042=Nebyla nalezena třída databázové platformy [{0}].
+
+7043=[{0}] neobsahuje žádné tabulky, které by se měly vytvořit v databázi.
+
+7044=Uvedenou třídu kontejneru [{0}] nelze použít jako kontejner, protože neimplementuje kolekci ani mapu.
+
+7047=Uvedený kontejner [{0}] nevyžaduje klíče. Pokusili jste se použít metodu [{1}].
+
+7048=Pro třídu položky [{1}] neexistuje instanční metoda ani pole s názvem [{0}], a proto ji nelze použít k vytvoření klíče pro mapu.
+
+7051=Chybí atribut [{1}] pro deskriptor [{0}] volaný z [{2}]
+
+7052=Došlo k pokusu o použití [{0}] (s metodou klíče [{1}]) jako kontejneru pro třídu DirectCollectionMapping. Metodu useMapClass() nelze použít, pro třídu DirectCollectionMappings je podporováno pouze rozhraní API useCollectionClass().
+
+7053=Došlo k pokusu o metodu release() v jiné relaci než ClientSession. Uvolnit lze pouze relace ClientSession.
+
+7054=Došlo k pokusu o metodu acquire() v jiné relaci než ServerSession. Relace ClientSession lze získat pouze z relací ServerSession.
+
+7055=Zamykání před aktualizací není podporováno u generování uložených procedur.
+
+7056=Do rozhraní UnitOfWork byl registrován chybný objekt. Objekt [{0}] by měl být objekt z nadřízené mezipaměti [{1}].
+
+7058=Neplatný konektor [{0}] (musí být typu DefaultConnector).
+
+7059=Neplatný název zdroje dat [{0}].
+
+7060=Nelze získat zdroj dat [{0}].
+
+7061=Došlo k výjimce v rámci JTS.
+
+7062=Zamykání na úrovni pole není podporováno mimo rozhraní UnitOfWork. Chcete-li použít zamykání na úrovni pole, je třeba pro VŠECHNY zápisy používat rozhraní UnitOfWork.
+
+7063=Došlo k výjimce v rámci kontejneru EJB.
+
+7064=Došlo k výjimce v reflexivní extrakci primárního klíče EJB. Ověřte, že je správně definován objekt primárního klíče. {2}Klíč: [{0}] {2}Objekt typu bean: [{1}]
+
+7065=Nelze načíst ani najít vzdálenou třídu pro objekt typu bean. Zkontrolujte, zda je nastaven správný zavaděč tříd. {2}Objekt typu bean: [{0}] {2}Vzdálená třída: [{1}]
+
+7066=Objekty typu bean nelze vytvořit ani odebrat, pokud není přítomna transakce JTS. {1}Objekt typu bean: [{0}]
+
+7068=Pomocí výchozího zavaděče tříd nebyla nalezena třída projektu [{0}] pro projekt [{1}].
+
+7071=Vstupní/výstupní parametry nelze použít bez použití vazby.
+
+7072=Pomocí výchozího zavaděče tříd nebyla nalezena třída databázové platformy [{0}] pro projekt [{1}].
+
+7073=Není definován typ objektu Oracle s názvem typu [{0}].
+
+7074=Není definován název typu objektu Oracle [{0}].
+
+7075=Není definována maximální velikost pro typ VARRAY Oracle [{0}]. Maximální velikost musí být definována.
+
+7076=Při generování třídy projektu nesmí být inicializovány deskriptory projektu. {1} Deskriptor: [{0}]
+
+7077=Domovské rozhraní [{0}] určené během vytvoření zásady BMPWrapperPolicy neobsahuje správnou metodu findByPrimaryKey(). Musí existovat metoda findByPrimaryKey(), která přijímá třídu PrimaryKey pro tento objekt typu bean.
+
+7079=V relaci [{1}] nebyl nalezen deskriptor pro [{0}]. Zkontrolujte projekt používaný pro tuto relaci.
+
+7080=Při pokusu o načtení [{0}] třídy [{1}] s primárním klíčem [{2}] došlo k výjimce FinderException.
+
+7081=Agregovaný objekt [{0}] nelze přímo registrovat v rozhraní UnitOfWork. Musí být přidružen ke zdrojovému objektu (vlastník).
+
+7084=Soubor [{0}] není platným typem pro čtení. Třídě ProjectReader musí být předán implementovaný soubor projektu XML.
+
+7086=Typ relace [{0}] názvu relace [{1}] nebyl řádně definován.
+
+7087=Pomocí výchozího zavaděče tříd nebyl nalezen typ relace [{0}] pro [{1}].
+
+7088=Nelze vytvořit instanci externího řadiče transakcí [{0}] uvedeného v souboru vlastností.
+
+7089=Došlo k výjimce při vyhledávání nebo vyvolávání metody doplnění relace [{0}] na třídě [{1}] s parametry [{2}].
+
+7091=Nelze nastavit třídy modulu listener.
+
+7092=Nelze přidat dotaz, jehož typy jsou v konfliktu s existujícím dotazem. Přidávaný dotaz: [{0}] má název: [{1}] s argumenty [{2}]. Existující kolidující dotaz: [{3}] má název: [{4}] s parametry: [{5}].
+
+7093=V dotazu s názvem [{0}] nelze najít třídu [{2}] pro argument dotazu s názvem [{1}]. Zahrňte chybějící třídu do cesty ke třídě.
+
+7095=Na cestě k prostředku nebyl nalezen prostředek sessions.xml [{0}]. Zkontrolujte správnost názvu/cesty k prostředku a zavaděče tříd předaných metodě SessionManager.getSession. Soubor sessions.xml by měl být zahrnutý do kořenového adresáře implementovaného souboru JAR aplikace. Pokud je soubor sessions.xml v souboru JAR aplikace implementovaný v podadresáři, zkontrolujte, zda se používá správná cesta k prostředku s použitím dopředných lomítek "/", nikoli zpětných lomítek "".
+
+7096=K opětovnému potvrzení rozhraní UnitOfWork nelze použít metodu commit().
+
+7097=Operace není podporována: [{0}].
+
+7099=Na cestě k prostředku nebyl nalezen prostředek XML projektu implementace [{0}]. Zkontrolujte správnost názvu/cesty k prostředku a zavaděče tříd předaných třídě XMLProjectReader. Soubor XML projektu by měl být zahrnutý do kořenového adresáře implementovaného souboru JAR aplikace. Pokud je soubor XML projektu v souboru JAR aplikace implementovaný v podadresáři, zkontrolujte, zda se používá správná cesta k prostředku s použitím dopředných lomítek "/", nikoli zpětných lomítek "".
+
+7100=Nelze najít relaci s názvem [{0}] v souboru session.xml [{1}]
+
+7101=Ve vaší cestě ke třídě nebyl nalezen žádný soubor "meta-inf/eclipselink-ejb-jar.xml". Relaci CMP nelze načíst ze souboru.
+
+7102=Byla rozpoznána hodnota null klíče mezipaměti při pokusu o odebrání{2}objektu z mapy identit: [{0}]{2}obsahující objekt třídy: [{1}] (nebo třídu v této hierarchii){2}Nejpravděpodobnější příčinou této situace je to, že objekt již byl uvolněn{2}z paměti, a proto v mapě identit neexistuje.{2}Chcete-li této situaci zabránit, zvažte použití alternativní mapy identit.{2}Další podrobnosti o mapách identit viz dokumentace EclipseLink.
+
+7103=Byl rozpoznán odkaz na hodnotu null při pokusu o vyvolání{1}metody: [{0}] na objektu, který používá nepřímý odkaz serveru proxy.{1}Před vyvoláním metod tohoto objektu zkontrolujte, zda tento objekt nemá hodnotu null.
+
+7104=Přihlášení k sekvenčnímu zpracování by nemělo používat externí řadič transakcí.
+
+7105=Došlo k chybě při převodu třídy šifrování: [{0}]
+
+7106=Došlo k chybě během šifrování řetězce.
+
+7107=Došlo k chybě během dešifrování řetězce.
+
+7108=Tato operace není podporována pro nerelační platformy.
+
+7109=Přihlášení v projektu, které se používá k vytvoření relace, má hodnotu null, musí se jednat o platné přihlášení.
+
+7110=V současné době funguje relace HistoricalSession pouze s databázemi Oracle 9R2 nebo novějšími, protože používá funkci Flashback společnosti Oracle.
+
+7111=Relaci HistoricalSession nelze získat z rozhraní UnitOfWork, jiné relace HistoricalSession, relace ServerSession nebo relace ServerSessionBroker. Můžete ji získat z běžné relace, relace ClientSession nebo relace ClientSessionBroker.
+
+7112=Uvedli jste, že produkt EclipseLink používá funkci: {0}, tato funkce však není dostupná v aktuálně spuštěné verzi JDK:{1}.
+
+7113={0} nepodporuje volání s návratem.
+
+7114=Izolovaná data nejsou aktuálně podporována v rámci zprostředkovatele relací klienta. Relace s názvem {0} obsahuje deskriptory představující izolovaná data.
+
+7115=Výhradní připojení nelze použít pro čtení relace typu ClientSession bez izolovaných dat. Aktualizujte zásadu ConnectionPolicy používanou k odebrání konfigurace ExclusiveConnection nebo projektu tak, aby byla určitá data nastavena jako exkluzivní.
+
+7116=Jsou použity neplatné argumenty. Prostudujte si informace k veřejnému rozhraní API volající metody a použijte platné hodnoty argumentů.
+
+7117=Došlo k pokusu o použití více než jednoho kurzoru ve volání SQLCall {0}
+
+7118=Ve volání SQLCall {0} byla volána metoda setCustomSQLArgumentType, toto volání však nepoužívá vlastní kód SQL.
+
+7119=Nepřipravené volání SQLCall {0} se pokusilo o překlad.
+
+7120=Parametr {0} ve volání SQLCall {1} nelze použít jako kurzor, protože má jiný typ parametru než OUT.
+
+7121={0} nepodporuje uložené funkce
+
+7122=Výhradní připojení přidružené k dané relaci je nedostupné pro dotaz na {0}.
+
+7123=Na tomto rozhraní UnitOfWork byla volána úspěšná metoda writeChanges(). Jelikož byl zahájen proces potvrzení, který však ještě nebyl dokončen, jsou nyní podporovány pouze operace commit, commitAndResume, release, libovolné dotazy na jiné úrovni než na úrovni objektu a provedení SQLCall. Operace {0} v této chvíli není povolena.
+
+7124=Na tomto rozhraní UnitOfWork byla volána neúspěšná metoda writeChanges(). S ohledem na riziko, že do datového úložiště mohly být zapsány dílčí změny, které však nebyly odvolány (pokud jsou uvnitř externí transakce), jsou nyní podporovány pouze operace release, globální vrácení transakce, libovolné dotazy na jiné úrovni než na úrovni objektu a provedení SQLCall. Došlo k pokusu o operaci {0}.
+
+7125=Poté, co je rozhraní UnitOfWork potvrzeno anebo vydáno, neměla by se na něm provádět žádná jiná operace. Došlo na něm k pokusu o operaci {0}.
+
+7126=Metodu writeChanges nelze volat na vnořené rozhraní UnitOfWork. Vnořené rozhraní UnitOfWork nikdy nezapisuje změny přímo do datového úložiště, to provádí pouze nadřízené rozhraní UnitOfWork.
+
+7127=Změny do datového úložiště můžete zapsat pouze jednou, stejně jako můžete pouze jednou volat potvrzení.
+
+7128=Relace [{0}] je již přihlášena.
+
+7129=Argumenty metody nemohou mít hodnotu null.
+
+7130=Vnořené rozhraní UnitOfWork není při sledování změn atributu podporováno.
+
+7131={0} je chybný typ. Typem události změny kolekce musí být přidání nebo odebrání.
+
+7132={0} je chybná třída události. Jsou podporovány pouze třídy PropertyChangeEvent a CollectionChangeEvent.
+
+7133=Při sledování změn atributů není podporováno staré potvrzení.
+
+7134=Platforma serveru {0} je po přihlášení jen pro čtení.
+
+7135=Nemůžete potvrdit a obnovit rozhraní UnitOfWork obsahující jakékoli dotazy typu Upravit vše.
+
+7136=Vnořené rozhraní UnitOfWork není pro dotaz typu Upravit vše podporováno.
+
+7137=Objekt je částečně načtený (pomocí skupiny načtení), nenačtený atribut ({0}) není upravitelný.
+
+7139=Dotazy typu Upravit vše nelze vydat v rámci rozhraní UnitOfWork obsahujícího jiné operace zápisu.
+
+7140=Typ posloupnosti {0} nemá metodu {1}.
+
+7141=Posloupnost {0} je typu DefaultSequence, který nelze použít v metodě setDefaultSequence.
+
+7142=Posloupnost {0} nelze nastavit jako výchozí, protože posloupnost s tímto názvem již byla přidána.
+
+7143=Posloupnost {0} nelze přidat, protože posloupnost s tímto názvem již byla nastavena jako výchozí.
+
+7144={0}: platforma {1} nepodporuje {2}.
+
+7145={2} se pokouší o připojení k posloupnosti {0}, ale již je připojena k {1}. Tyto dvě relace pravděpodobně sdílejí objekt DatasourcePlatform.
+
+7146=QuerySequence {1} nemá dotaz výběru.
+
+7147=Platforma {0} nemůže vytvořit výchozí posloupnost platformy - nepřepisuje metodu createPlatformDefaultSequence.
+
+7148=Metodu commitAndResume() nelze použít s jednotkou práce JTA nebo synchronizovaným rozhraním UnitOfWork.
+
+7149=Atribut složeného primárního klíče [{2}] typu [{4}] na třídě entity [{0}] by měl být stejného typu, jaký je definován v jeho třídě primárního klíče [{1}]. To znamená, že by měl být typu [{3}].
+
+7150=Neplatná specifikace složeného primárního klíče. Názvy polí primárního klíče nebo vlastností ve třídě primárního klíče [{1}] musí odpovídat názvům třídy objektu entity bean [{0}] a jejich typy se musí shodovat. Rovněž zkontrolujte, zda jste určili prvky ID pro odpovídající atributy v kódu XML anebo atributy @Id na odpovídajících polích nebo vlastnostech třídy entity.
+
+7151=Typ [{1}] pro atribut [{0}] na třídě entity [{2}] není platným typem pro výčtové mapování. Atribut musí být definován jako výčet jazyka Java.
+
+7153=Anotace mapování nelze použít na pole a vlastnosti, které mají zadaný atribut @Transient. [{0}] porušuje toto omezení.
+
+7154=Atribut [{3}] ve třídě entity [{2}] má hodnotu mappedBy [{1}], která ve vlastnické třídě entity [{0}] neexistuje. Pokud je vlastnická třída entity @MappedSuperclass, je tato hodnota neplatná a atribut by měl odkazovat na správnou podtřídu.
+
+7155=Typ [{1}] pro atribut [{0}] na třídě entity [{2}] není platným typem pro serializované mapování. Typ atributu musí implementovat serializovatelné rozhraní.
+
+7156=Nelze najít třídu s názvem [{0}]. Zkontrolujte správnost názvu/cesty ke třídě a jejich dostupnost zavaděči tříd.
+
+7157=Třída entity [{0}] musí k mapování svého atributu vztahu [{1}] používat namísto sloupce @Column sloupec @JoinColumn.
+
+7158=Došlo k chybě při sestavování dotazu @NamedQuery [{1}] z třídy entity [{0}].
+
+7159=Nelze najít klíč mapy [{0}] na třídě entity [{1}] pro mapování [{2}].
+
+7160=U vztahu @OneToMany pro název atributu [{1}] ve třídě entity [{0}] by neměly být učeny sloupce JoinColumn. Pokud není vztah @OneToMany mapován jinou entitou (tj. je na straně vlastníka a je jednosměrný), musí být zadána tabulka @JoinTable, nikoli sloupec či sloupce @JoinColumn. Pokud není zadána tabulka @JoinTable, použije se namísto ní výchozí tabulka spojení. Tabulku @JoinTable zadejte pouze, pokud je třeba přepsat výchozí konfiguraci.
+
+7161=Třída entity [{0}] nemá určený žádný primární klíč. Měla by definovat buď @Id, @EmbeddedId, nebo @IdClass. Pokud jste definovali PK pomocí některé z těchto anotací, zkontrolujte, zda jste v hierarchii tříd nezkombinovali typ přístupu (anotovaná pole i vlastnosti).
+
+7162=Třída entity [{0}] má určeno více anotací @EmbeddedId (na atributech [{1}] a [{2}]). Pro jednu entitu lze určit pouze jednu anotaci @EmbeddedId.
+
+7163=Třída entity [{0}] má @EmbdeddedId (na atributu [{1}]) a @Id (na atributu [{2}]). Na stejné entitě nelze určit oba typy ID.
+
+7164=Typ [{1}] pro atribut [{0}] na třídě entity [{2}] není platným typem pro mapování objektů LOB. Pro objekt LOB typu BLOB musí být atribut definovaný jako typ java.sql.Blob, byte[], Byte[] nebo serializovatelný typ. Pro objekt LOB typu CLOB, musí být atribut definovaný jako typ java.sql.Clob, char[], Character[] nebo řetězcový typ.
+
+7165=Typ [{1}] pro atribut [{0}] na třídě entity [{2}] není platným typem pro dočasné mapování. Atribut musí být definovaný jako java.util.Date nebo java.util.Calendar.
+
+7166=V [{1}] byl nalezen generátor tabulek, který používá jako svůj "název" vyhrazený název [{0}]. Tento název nemůže používat, protože je vyhrazený pro výchozí nastavení "názvu posloupnosti" generátoru posloupnosti.
+
+7167=V [{1}] byl nalezen generátor posloupnosti, který používá jako "název posloupnosti" vyhrazený název [{0}]. Tento název nemůže používat, protože je vyhrazený pro výchozí nastavení "názvu" generátoru tabulky.
+
+7168=Atribut [{0}] typu [{1}] na třídě entity [{2}] není platný pro vlastnost verze. Jsou podporovány následující typy: int, Integer, short, Short, long, Long, Timestamp.
+
+7169=Třída [{0}] má dvě hodnoty @GeneratedValues: pro pole [{1}] a [{2}]. Povolena je pouze jedna hodnota.
+
+7172=Došlo k chybě při vytváření instance třídy [{0}].
+
+7173=Na vlastnosti s názvem [{1}] v [{0}] byla spuštěna událost změny vlastnosti. Tato vlastnost však neexistuje.
+
+7174=Metoda getter [{1}] na třídě entity [{0}] nemá definovaný odpovídající modul nastavení.
+
+7175=Mapování [{0}] nepodporuje zamykání před aktualizací verze kaskádování.
+
+7176=Mapování [{0}] nepodporuje zamykání před aktualizací verze kaskádování, protože má vlastní dotaz.
+
+7177=Agregační deskriptor [{0}] má soukromě vlastněná mapování. Agregační deskriptory nepodporují zamykání před aktualizací verze kaskádování.
+
+7178=OracleOCIProxyConnector vyžaduje zdroj dat OracleOCIConnectionPool.
+
+7179=OracleJDBC_10_1_0_2ProxyConnectionCustomizer vyžaduje zdroj dat, který vytváří připojení OracleConnection.
+
+7180=OracleJDBC_10_1_0_2ProxyConnectionCustomizer vyžaduje Oracle JDBC verze 10.1.0.2 nebo vyšší, aby připojení OracleConnection deklarovalo metodu openProxySession.
+
+7181=OracleJDBC_10_1_0_2ProxyConnectionCustomizer vyžaduje, aby byla hodnota vlastnosti PersistenceUnitProperties.ORACLE_PROXY_TYPE buď celé číslo, nebo hodnota převoditelná na celé číslo: například OracleConnection.PROXYTYPE_USER_NAME nebo Integer.toString(OracleConnection.PROXYTYPE_USER_NAME)
+
+7182=EC - Nebyla nalezena třída ovladače [{0}]
+
+7183=Chyba při zavírání souboru persistence.xml.
+
+7184=Není určena systémová vlastnost [{0}]. Musí být nastavena na třídu, která definuje metodu "getContainerConfig()".
+
+7185=Nelze najít třídu [{0}] určenou v [{1}].
+
+7186=Nelze vyvolat metodu [{0}] na třídě [{1}] určené v [{2}].
+
+7187=[{0}] by měl definovat veřejnou statickou metodu [{1}], která nemá žádné parametry a vrací kolekci.
+
+7188=Je vyžadován nenulový seznam tříd.
+
+7189=Nelze vytvořit dočasný zavaděč tříd z aktuálního zavaděče: [{0}]
+
+7190=[{0}] se nezdařilo
+
+7191=Třída entity [{0}] nebyla nalezena pomocí zavaděče tříd [{1}].
+
+7192=ClassFileTransformer [{0}] generuje výjimku při provádění metody transform() na třídě [{1}].
+
+7193=Soubory JAR v kódu XML persistence nejsou v této verzi EclipseLink podporovány.
+
+7194=Nelze vázat: [{0}] na: [{1}].
+
+7195=Výjimka při konfiguraci EntityManagerFactory.
+
+7196=[{0}] typu [{1}] nelze přetypovat na [{2}].
+
+7197=Byl rozpoznán primární klíč s hodnotou null nebo nulovou hodnotou v klonu rozhraní UnitOfWork [{0}], primární klíč [{1}]. Nastavte vlastnost "eclipselink.id-validation" nebo IdValidation deskriptoru.
+
+7198=Při převodu z názvů tříd na třídy nebyla nalezena třída: [{0}].
+
+7199=Pro entitu {0} nebyla definována primární tabulka v souboru mapování entit: {1}. Primární tabulka je nezbytná ke zpracování vztahu entity.
+
+7200=Na vložitelné třídě [{0}] nebyl nalezen atribut [{1}]. Odkazuje se na něj v potlačení atributu pro vložený atribut [{3}] na třídě [{2}].
+
+7201=Došlo k výjimce při syntaktické analýze souboru mapování entit: {0}.
+
+7202=Název potlačení atributu {0} je neplatný - zkontrolujte, zda ve vložitelném {1} existuje atribut se stejným názvem.
+
+7203=Prvek mapování [{1}] pro třídu [{2}] má nepodporovaný typ kolekce [{0}]. Jsou podporovány pouze typy sada, seznam, mapa a kolekce.
+
+7207=Atribut [{1}] ve třídě entity [{0}] má neplatný typ pro objekt LOB typu BLOB. Atribut musí být definovaný jako typ java.sql.Blob, byte[], Byte[] nebo serializovatelný typ.
+
+7208=Atribut [{1}] ve třídě entity [{0}] má neplatný typ pro objekt LOB typu CLOB. Atribut musí být definovaný jako typ java.sql.Clob, char[], Character[] nebo řetězcový typ.
+
+7212=Atribut [{0}] z třídy entity [{1}] neurčuje dočasný typ. Dočasný typ musí být určený pro trvalá pole nebo vlastnosti typu java.util.Date a java.util.Calendar.
+
+7213=Byly určeny cyklické odkazy mappedBy (třída: [{0}], atribut: [{1}] a třída: [{2}], atribut: [{3}]. Toto není platné; vlastníkem vztahu může být pouze jedna strana. Hodnotu mappedBy proto určete pouze na nevlastnické straně vztahu.
+
+7214=Nelze určit cílovou entitu atributu vztahu [{0}] na třídě [{1}]. Pokud nepoužíváte generické hodnoty, zajistěte, aby byla cílová entita definována v mapování vztahu.
+
+7215=Nelze načíst pole s názvem [{0}] ve třídě [{1}]. Zajistěte, aby bylo v dané třídě definováno odpovídající pole s tímto názvem.
+
+7216=Ve třídě [{1}] nelze načíst metodu pro název vlastnosti [{0}]. Zajistěte, aby byla v dané třídě definována odpovídající metoda get pro tento název vlastnosti.
+
+7217=Hodnota [{0}], podle které se má provést řazení, určená na prvku [{2}] z entity [{3}], je neplatná. V cílové entitě [{1}] neexistuje žádná vlastnost ani žádné pole s tímto názvem.
+
+7218=[{0}] nepřepisuje metodu getCreateTempTableSqlPrefix. Platformy DatabasePlatform, které podporují dočasné tabulky, musí tuto metodu přepisovat.
+
+7219=[{0}] nepřepisuje metodu valueFromRowInternalWithJoin, ale jeho metoda isJoiningSupported vrací hodnotu true. Mapování cizích odkazů, které podporuje spojování, musí tuto metodu přepisovat.
+
+7220=Atribut @JoinColumns na anotovaném prvku [{0}] ze třídy entity [{1}] je neúplný. Když třída zdrojové entity používá složený primární klíč, musí být pro každý sloupec spojení určen atribut @JoinColumn pomocí atributu @JoinColumns. V každém takovém atributu @JoinColumn musí být určen prvek name i prvek referencedColumnName.
+
+7222=Na anotovaném prvku [{0}] byl určen neúplný atribut @PrimaryKeyJoinColumns. Při určení atributu @PrimaryKeyJoinColumns pro entitu, která má složený primární klíč, musí být pomocí atributu @PrimaryKeyJoinColumns určen atribut @PrimaryKeyJoinColumn pro každý sloupec spojení primárního klíče. V každém takovém atributu @PrimaryKeyJoinColumn musí být určen prvek name i prvek referencedColumnName.
+
+7223=Na anotovaném prvku [{0}] byl nalezen atribut @PrimaryKeyJoinColumns. Když entita používá jednotlivý primární klíč, měl by být určen pouze jeden (nebo žádný) atribut @PrimaryKeyJoinColumn.
+
+7224=Metoda [{1}] ve třídě modulu listener [{0}] je neplatná metoda zpětného volání.
+
+7225=Ve třídě modulu listener [{0}] nelze najít metodu [{1}].
+
+7226=Metoda [{1}] ve třídě modulu listener [{0}] má neplatný modifikátor. Metody zpětného volání nemohou být statické ani konečné.
+
+7227=Třída modulu listener [{0}] má více metod zpětného volání životního cyklu pro stejnou událost životního cyklu ([{1}] a [{2}]).
+
+7228=Metoda zpětného volání [{1}] ve třídě modulu listener [{0}] má chybný podpis. Neměla by mít žádné parametry.
+
+7229=Metoda zpětného volání [{3}] ve třídě modulu listener entity [{2}] má chybný podpis. Metoda musí přijímat jeden parametr, který musí být možné přiřadit ze třídy entity. V tomto případě nelze třídu parametru [{1}] přiřadit ze třídy entity [{0}].
+
+7231=Nelze trvale uchovat odpojený objekt [{0}]. {3}Třída> {1} Primární klíč> {2}
+
+7232=Třída entity [{0}] obsahuje více deklarací @Id, ale nedefinuje žádné prvky <id> v dokumentu instance mapování entit. Zajistěte, aby v případě, že pro danou třídu entity existuje více deklarací @Id, obsahovala příslušná definice <entity> pro každou z nich prvek <id>.
+
+7233=Metadata mapování nelze použít na vlastnosti/metody, které přijímají argumenty. Atribut [{0}] ze třídy [{1}] porušuje toto omezení. Pokud je metoda mapována s anotacemi nebo v souboru mapování XML, zajistěte, aby neměla žádné argumenty.
+
+7234=Generování DDL vyžaduje, aby transformátor tříd používaný s mapováním transformace atributu [{1}] z deskriptoru [{0}] určoval pro svoji metodu [{2}] specifický návratový typ (a nikoli objekt). Generování DDL vyžaduje tento specifický typ vrácení, aby mohl generovat správný typ pole.
+
+7235=Transformátor tříd používaný s mapováním transformace atributu [{1}] z deskriptoru [{0}] neimplementuje metodu [{2}]. Tato metoda je součástí rozhraní FieldTransformer a musí být implementována. Také nezapomeňte, že v případě použití generování DDL by měl být při implementaci její návratový typ explicitním typem (a nikoli objektem).
+
+7237=Název entity musí být jedinečný v jednotce perzistence. Název entity [{0}] se používá pro třídy entity [{1}] a [{2}].
+
+7238=Generátor tabulek určený v [{2}] s názvem == [{0}] je v konfliktu s generátorem posloupnosti se stejným názvem, který je určený v [{1}].
+
+7240=Generátor tabulek určený v [{2}] s hodnotou sloupce pk == [{0}] je v konfliktu s generátorem posloupnosti, který je určený v [{1}] s názvem posloupnosti == [{0}]. Nemohou používat stejnou hodnotu.
+
+7242=Došlo k pokusu o procházení vztahu pomocí nepřímého odkazu, který měl relaci s hodnotou null. K tomu často dochází, když je serializována entita se vztahem nepřevedeným na instanci a tímto pomalým vztahem se po serializaci prochází. Chcete-li se tomuto problému vyhnout, vytvořte před serializací instanci pomalého vztahu.
+
+7243=Chybí metadata pro třídu [{0}]. Ověřte, že třída není vyloučena z vaší jednotky perzistence pomocí nastavení <exclude-unlisted-classes>true</exclude-unlisted-classes>. Pokud tomu tak je, budete muset zahrnout třídu přímo přidáním položky <class>[{0}]</class> pro vaši jednotku perzistence.
+
+7244=Bylo rozpoznáno nekompatibilní mapování mezi [{0}] a [{1}]. K tomu obvykle dochází, když kardinalita mapování neodpovídá kardinalitě jeho zpětného ukazatele.
+
+7245=Vložitelná třída [{0}] se používá v třídách s konfliktními typy přístupu. Třída [{1}] používá přístup [{2}] a třída [{3}] používá přístup [{4}]. Při sdílení vložitelného objektu mezi třídami musí být typy přístupu těchto vkládajících tříd stejné.
+
+7246=Třída entity [{0}] má vložený atribut [{1}] typu [{2}], který NENÍ vložitelnou třídou. Pravděpodobná příčina: Chybí atribut @Embeddable nebo chybí značka <embeddable> v souboru orm.xml, pokud metadata-complete = true
+
+7247=Byl zjištěn cyklický odkaz při zpracování odvozených ID v následujících třídách entity: [{0}] 
+
+7249=Entita [{0}] používá [{1}] jako vloženou třídu ID, jejíž typ přístupu byl určen jako [{2}]. [{1}] však nedefinuje žádné [{2}]. Je pravděpodobné, že jste ve třídě ID [{1}] neposkytli dostatečná metadata.
+
+7250=[{0}] používá jako cílovou entitu v atributu vztahu [{2}] neentitu [{1}].
+
+7251=Atribut [{1}] třídy [{0}] je mapovaný na sloupec primárního klíče v databázi. Aktualizace nejsou povoleny.
+
+7252=Na cestě ke třídě pro jednotku perzistence s názvem [ {0} ] existuje více souborů mapování s názvem [{1}].
+
+7253=Na cestě ke třídě pro jednotku perzistence s názvem [{0}] neexistuje žádný soubor mapování s názvem [{1}].
+
+7254=Převodník s názvem [{1}] ve třídě [{0}] namapoval datovou hodnotu [{2}] na více hodnot objektu. Hodnota převodu musí mapovat každou datovou hodnotu pouze jednou.
+
+7255=Třída [{0}] určuje atribut @Convert na [{1}]. Tato akce je neplatná. Atribut @Convert je podporován pouze s atributy @Basic, @BasicCollection, @BasicMap a @ElementCollection. Pro mapování typu to-many, která používají mapu, můžete používat pouze atribut @MapKeyConvert.
+
+7256=Převodník s názvem [{1}] použitý s prvkem [{2}] ve třídě [{0}] nebyl nalezen v rámci jednotky perzistence. Zkontrolujte, zda jste zadali správný název převodníku.
+
+7257=Nelze vytvořit instanci datové hodnoty s typem [{2}] a hodnotou [{1}] z převodníku typu objektu s názvem [{0}].
+
+7258=Nelze vytvořit instanci hodnoty objektu s typem [{2}] a hodnotou [{1}] z převodníku typu objektu s názvem [{0}].
+
+7259=Nelze určit datový typ pro atribut [{1}] z třídy entity [{0}], který používá převodník s názvem [{2}]. Typ musí být určený pomocí datového typu v převodníku nebo by měl atribut používat generickou specifikaci.
+
+7260=Nelze určit typ objektu pro atribut [{1}] z třídy entity [{0}], který používá převodník s názvem [{2}]. Typ musí být určený pomocí typu objektu v převodníku nebo by měl atribut používat generickou specifikaci.
+
+7261=Typ [{1}] pro atribut [{0}] ve třídě entity [{2}] není platným typem pro základní mapování kolekcí. Atribut musí být typu Collection.class, List.class nebo Set.class.
+
+7262=Typ [{1}] pro atribut [{0}] na třídě entity [{2}] není platným typem pro základní mapování kolekcí. Atribut musí být typu Map.class.
+
+7263=Třída [{0}] má neúplnou specifikaci zamykání před aktualizací. Pro zásadu zamykání před aktualizací typu SELECTED_COLUMNS musí být určeny vybrané sloupce a názvy těchto sloupců nelze vynechat.
+
+7264=Třída [{0}] má neúplnou specifikaci zamykání před aktualizací. Pro zásadu zamykání před aktualizací typu VERSION_COLUMN musí být určený atribut @Version v poli nebo vlastnosti verze.
+
+7265=Anotace @Cache není u vložitelné třídy povolena.
+
+7266=Anotace @Cache na třídě [{0}] má určenou metodu expiry() i metodu expiryTimeOfDay(). V nastavení anotace @Cache může být určena jen jedna z nich.
+
+7267=Určená třída obslužné rutiny výjimek [{0}] je neplatná, třída musí existovat na cestě ke třídě a implementovat rozhraní ExceptionHandler.
+
+7268=Určená třída modulu listener pro události relace [{0}] je neplatná, třída musí existovat na cestě ke třídě a implementovat rozhraní SessionEventListener.
+
+7270=Určená hodnota velikosti výroků mezipaměti [{0}] je neplatná [{1}].
+
+7271=Určená logická hodnota [{0}] pro nastavení nativního kódu SQL je neplatná, hodnota musí být buď "true". nebo "false".
+
+7272=Určená logická hodnota [{0}] pro povolení mezipaměti příkazů SQL je neplatná, hodnota musí být buď "true", nebo "false".
+
+7273=Určená logická hodnota [{0}] pro kopírování pojmenovaných dotazů deskriptoru do relace je neplatná, hodnota musí být buď "true", nebo "false".
+
+7274=Došlo k výjimce při pokusu o vytvoření souboru protokolování [{0}]:[{1}].
+
+7275=Nelze vytvořit instanci třídy obslužné rutiny výjimek [{0}] určené ve vlastnosti eclipselink.exception-handler [{1}].
+
+7276=Nelze vytvořit instanci třídy modulu listener pro události relace [{0}] určené ve vlastnosti eclipselink.session-event-listener [{1}].
+
+7277=Nebyl zadán název souboru protokolování.
+
+7278=Určená logická hodnota [{0}] pro vlastnost perzistence [{1}] je neplatná, hodnota musí být buď "true", nebo "false".
+
+7282=Je možné, že v mapování {1} není definován typ StructConverter: {0}. Typy StructConverter lze používat pouze v přímých mapováních.
+
+7283=Pro třídu {0} byly přidány dva typy StructConverter. Pro jednu třídu lze přidat jen jeden typ StructConverter.
+
+7284=Třída [{0}] není platným porovnáním. Třída musí implementovat rozhraní Comparator.
+
+7285=Určená třída profileru [{0}] je neplatná, třída musí existovat na cestě ke třídě a implementovat rozhraní SessionProfiler.
+
+7286=Nelze vytvořit instanci třídy profileru [{0}] určené ve vlastnosti eclipselink.profiler [{1}].
+
+7287=Transformátor čtení určený pro prvek [{0}] neimplementuje povinné rozhraní AttributeTransformer.
+
+7288=Transformátor čtení určený pro prvek [{0}] má třídu i metodu. Je povinná buď třída, nebo metoda, nikoli však obě z nich.
+
+7289=Transformátor čtení určený pro prvek [{0}] nemá třídu ani metodu. Je povinná buď třída, nebo metoda, nikoli však obě z nich.
+
+7290=Transformátor zápisu určený pro sloupec [{1}] prvku [{0}] neimplementuje povinné rozhraní FieldTransformer.
+
+7291=Transformátor zápisu určený pro sloupec [{1}] prvku [{0}] má třídu i metodu. Je povinná buď třída, nebo metoda, nikoli však obě z nich.
+
+7292=Transformátor zápisu určený pro sloupec [{1}] prvku [{0}] nemá třídu ani metodu. Je povinná buď třída, nebo metoda, nikoli však obě z nich.
+
+7293=Transformátor zápisu určený pro sloupec [{0}] buď nemá sloupec, nebo sloupec nemá název.
+
+7294=Prvek proměnných typu jeden na jednoho [{1}] mapuje více entit na stejný diskriminátor [{0}]. Každá entita, která implementuje rozhraní proměnných typu jeden na jednoho, musí mít svůj vlastní jedinečný diskriminátor.
+
+7295=Třída CloneCopyPolicy určená na třídě [{0}] neurčuje metodu nebo proměnnou workingCopyMethod. Je nezbytné, aby jedna z nich byla určena.
+
+7296=Třída [{0}] má více anotací CopyPolicy. Na jednu třídu je povolena pouze jedna anotace CopyPolicyAnnotation.
+
+7297=Došlo k výjimce při reflexivním vytváření instance třídy [{0}]. To obvykle znamená, že tato třída je určena ve vašich metadatech a jazyk Java z nějakého důvodu nemůže reflexivně vytvořit její instanci s konstruktorem bez argumentů. Další informace naleznete ve zřetězené výjimce. Poznámka: K zobrazení zřetězené výjimky možná budete muset zvýšit úroveň protokolování.
+
+7298=Mapování [{2}] z vložené třídy ID [{3}] je neplatné mapování pro tuto třídu. Vložitelná třída, která se používá se specifikací vloženého ID (atribut [{0}] ze zdroje [{1}]), může obsahovat pouze základní mapování. Buď odeberte jiné než základní mapování, nebo změňte specifikaci vloženého ID na vkládaném zdroji.
+
+7299=Byly nalezeny konfliktní anotace se stejným názvem [{0}]. První [{1}] byla nalezena v rámci [{2}] a druhá [{3}] byla nalezena v rámci [{4}]. Pojmenované anotace musí být jedinečné v celé jednotce perzistence.
+
+7300=Byly nalezeny konfliktní prvky XML [{1}] se stejným názvem [{0}]. První byl nalezen v souboru mapování [{2}] a druhý v souboru mapování [{3}]. Pojmenované prvky XML musí být jedinečné v celé jednotce perzistence.
+
+7301=Byly nalezeny konfliktní anotace. První [{0}] byla nalezena v rámci [{1}] a druhá [{2}] byla nalezena v rámci [{3}]. Opravu proveďte odebráním anotace, která neplatí.
+
+7302=Byly nalezeny konfliktní prvky XML [{0}] pro prvek [{1}]. První byl nalezen v souboru mapování [{2}] a druhý v souboru mapování [{3}]. Opravu proveďte odebráním prvku XML, který neplatí.
+
+7303=Vlastnost PersistenceUnitProperties.ORACLE_PROXY_TYPE je nastavena na [{0}], vlastnost [{1}] nezbytná pro tento typ serveru proxy nebyla nalezena.
+
+7304=Vlastnost PersistenceUnitProperties.ORACLE_PROXY_TYPE je nastavena na neznámý typ [{0}], známé typy jsou [{1}], [{2}], [{3}].
+
+7305=Došlo k výjimce při zpracování souboru mapování z adresy URL: [{0}].
+
+7306=Anotovaný prvek [{0}] z třídy [{1}] má určený chybný explicitní typ přístupu. Měl by určovat typ přístupu [{2}].
+
+7307=Chybí řetězec kontextu protokolování pro kontext [{0}]. Jedná se o interní výjimku, ke které došlo při načítání zprávy protokolu pro zpracování metadat JPA, ohlaste chybu.
+
+7308=Určená hodnota [{0}] pro vlastnost perzistence [{1}] je neplatná - [{2}].
+
+7309=Atribut s názvem [{1}] z vložitelné třídy [{0}] nepředstavuje platné mapování pro použití s potlačením atributu pro atribut [{3}] na třídě [{2}].
+
+7310=Nelze určit cílovou třídu atributu kolekce prvku [{0}] na třídě [{1}]. Pokud nepoužíváte generické hodnoty, zajistěte, aby byla cílová třída definována v mapování kolekce prvku.
+
+7311=S atributem kolekce prvku [{0}] na třídě [{1}] se používá neplatná cílová třída. Jsou povoleny pouze základní typy a vložitelné třídy.
+
+7312=S atributem kolekce prvku [{1}] na třídě [{2}] se používá neplatná vložitelná třída [{0}]. Viz sekce 2.6 specifikace: "Vložitelná třída (včetně vložitelné třídy v rámci jiné vložitelné třídy) obsažená v kolekci prvku nesmí obsahovat kolekci prvku ani jiný vztah s entitou než vztah typu  many-to-one nebo one-to-one. Vložitelná třída musí být na vlastnické straně tohoto vztahu a vztah musí být mapován pomocí mapování cizího klíče." Mapování pro atribut [{3}] na vložitelné třídě to porušuje.
+
+7313=Na vložitelné třídě [{0}] nebyl nalezen atribut [{1}]. Odkazuje se na něj v potlačení přidružení pro vložený atribut [{3}] na třídě [{2}].
+
+7314=Mapování [{0}] se používá k mapování klíče v zásadě MappedKeyMapContainerPolicy a používá nepřímý odkaz. Mapování používaná pro klíče map nemohou používat nepřímý odkaz.
+
+7315=Nelze určit třídu klíče mapy atributu kolekce prvku [{0}] na třídě [{1}]. Při určení klíče převodu s kolekcí prvku ověřte, že používáte generickou definici, aby bylo možné určit typ třídy pro převodník.
+
+7316=Hodnota MapsId [{0}] z atributu mapování [{1}] je neplatná. Ve třídě IdClass [{2}] musí být definován ekvivalentní atribut s tímto názvem.
+
+7317=Pole pořadí seznamu není pro [{0}] podporováno.
+
+7318=[{0}] má nastavené pořadí seznamu, ale proměnná CollectionChangeEvent.REMOVE byla odeslána bez indexu.
+
+7319=Atribut s názvem [{1}] z vložitelné třídy [{0}] nepředstavuje platný vztah pro použití s potlačením přidružení s názvem [{2}] z [{3}]. Potlačení přidružení může být určeno pouze, když je vložitelná třída na vlastnické straně vztahu.
+
+7320=Atribut [{0}] ze třídy [{1}] (nebo zděděný z mapované supertřídy) není platným typem pro použití se specifikací sloupce pořadí. Při určení sloupce pořadí musí být atribut typu seznam.
+
+7321=Pole [{1}] z odvozeného mapování ID [{2}] ze třídy [{3}] je neplatné pole ID z třídy odkazu [{0}]. Ověřte, že existuje odpovídající mapování ID na toto pole. 
+
+7322=Název sloupce odkazů [{0}] z potlačení přidružení s názvem [{1}] na atributu [{2}] ze třídy [{3}] není platným mapovaným polem primárního klíče. Ověřte, že existuje odpovídající mapování ID na toto pole.
+
+7323=Tabulka s názvem [{1}] z [{2}] má více jedinečných omezení s názvem [{0}]. To není povoleno, názvy jedinečných omezení musí být jedinečné v rámci všech tabulek.
+
+7324=Třída entity [{1}] určuje atribut @ClassExtractor a metadata diskriminátoru. Při použití atributu @ClassExtractor by neměl být na této třídě určen atribut @DiscriminatorColumn anebo @DiscriminatorValue a na jejích podtřídách by neměla být definována žádná metadata hodnot diskriminátoru.
+
+7325=Mapování sady výsledků SQL [{0}] používané s pojmenovaným dotazem [{1}] z [{2}] není rozpoznané mapování sady výsledků SQL. Ověřte, že je název správný a existuje mapování sady výsledků SQL s tímto názvem.
+
+7326=Atribut [{0}] z třídy [{1}] mapovaný v [{2}], který používá VIRTUÁLNÍ přístup, neurčuje typ atributu. Při použití VIRTUÁLNÍHO přístupu musí být určen typ atributu. Poznámka: V případě typu one-to-one nebo many-to-one je typ atributu určen pomocí cílové entity. V případě typu variable-one-to-one je určen pomocí cílové třídy.
+
+7327=Vložitelná třída [{0}] se používá v třídách s konfliktními přístupovými metodami. Třída [{1}] používá přístupové metody [{2}] a třída [{3}] používá přístupové metody [{4}]. Při sdílení vložitelných objektů mezi třídami musí být přístupové metody těchto vkládajících tříd stejné.
+
+7328=Při použití VIRTUÁLNÍHO přístupu je třeba při vytváření rozhraní EntityManagerFactory pomocí vlastnosti EclipseLink [eclipselink.classloader] poskytnout DynamicClassLoader. To znamená použít metodu createEntityManagerFactory(String persistenceUnitName, Map properties) a přidat novou metodu DynamicClassLoader() do vlastností mapy.
+
+7329=Atribut {1} pro {0} není mapovaný.
+
+7330=Atribut {1} pro {0} odkazuje na vnořenou skupinu načtení, ale buď nepoužívá mapování pomocí ForeignReferenceMapping, nebo mapování nemá deskriptor odkazu.
+
+7331=Atribut {1} pro {0} odkazuje na vnořenou skupinu načtení, ale cílová třída nepodporuje skupiny načtení.
+
+7332=Odvozený atribut složeného primárního klíče [{2}] typu [{4}] z {1}] by měl být stejného typu jako pole ID nadřízeného prvku z [{0}]. To znamená, že by měl být typu [{3}].
+
+7334=Třída [{0}] má neúplnou specifikaci primárního klíče. Při určení sloupců primárního klíče musí být určeny názvy těchto sloupců.
+
+7335=Pro atribut @ValuePartitioning s názvem [{0}] je uvedena duplicitní hodnota logické oblasti [{1}].
+
+7336=Pro stejné pole diskriminátoru nájemce [{1}] pro třídu [{0}] je určeno více vlastností kontextu [{2}] a [{3}].
+
+7337=Mapovaný sloupec diskriminátoru nájemce [{1}] na třídě [{0}] musí být označený jako určený jen pro čtení. V JPA se to provede nastavením hodnoty insertable=false a updatable=false na sloupci, např. @Column(name="TENANT_ID", insertable=false, updatable=false).
+
+7338=Do třídy SessionBroker nelze přidat posloupnosti.
+
+7339=Alias [{0}] je používán třídami [{1}] a [{2}]. Alias deskriptoru musí být jedinečný.
+
+7340=Na cestě ke třídě existuje více souborů mapování s názvem [{0}].
+
+7341=Pro XMLMetadataSource nebyl určen žádný soubor eclipselink-orm.xml. Určete ho pomocí vlastnosti jednotky perzistence eclipselink.metadata-source.xml.file nebo eclipselink.metadata-source.xml.url
+
+7342=Určená logická hodnota [{0}] pro nastavení povolení nativních dotazů SQL je neplatná, hodnota musí být buď "true", nebo "false".
+
+7343=Bylo určeno více identifikátorů VPD (vlastnost kontextu diskriminátoru nájemce). Entita [{1}] používá [{0}] a entita [{3}] používá [{2}]. Strategie VPD s více nájemci umožňuje pouze jeden sloupec diskriminátoru tenantů pro každou entitu a jeho kontextová vlastnost musí být konzistentní napříč všemi entitami VPD s více nájemci.
+
+7344=VPD (připojení a generování DDL) není podporováno pro platformu: [{0}].
+
+7345=Soubor {0} určený pro XMLMetadataSource nebyl nalezen.
+
+7346=Nebyla poskytnuta vlastnost kontextu více nájemců [{0}]. Když je vlastnost jednotky perzistence (eclipselink.multitenant.tenants-share-emf) nastavena na hodnotu false, musí být všechny vlastnosti kontextu více nájemců poskytnuty předem. To lze provést přímo prostřednictvím definice jednotky perzistence nebo předáním mapy vlastností obsahující všechny vlastnosti kontextu více nájemců při volání vytvoření rozhraní EntityManagerFactory.
+
+7347=Třída [{0}] určuje metadata převedení úrovně typu bez určení názvu atributu pro všechna z nich. Název atributu musí být poskytnutý pro všechna metadata převedení úrovně typu, aby bylo zaručeno jejich správné použití na atribut supertřídy.
+
+7348=Vložené mapování [{1}] z [{0}] neurčuje název atributu, na který se má převedení použít. Název atributu musíte určit na anotaci Embeddable.
+
+7350=Na vložitelné třídě [{2}] nebyl nalezen název atributu převedení [{3}] z mapování [{1}] z třídy [{0}]. Zkontrolujte, zda tento atribut existuje a zda je správně pojmenován.
+
+7351=Nebyla nalezena třída převodníku [{2}] určená na atributu mapování [{1}] z třídy [{0}]. Ověřte, zda je název třídy převodníku správný a zda existuje v definici jednotky perzistence.
+
+7352=Třída převodníku [{0}] musí implementovat rozhraní JPA jakarta.persistence.AttributeConverter<X, Y>, aby byla platnou třídou převodníku.
+
+7353=Atribut mapování [{1}] ze třídy [{0}] není platným typem mapování pro specifikaci převodu.
+
+7354=Atribut mapování [{1}] z třídy [{0}] není platným typem mapování pro specifikaci převodu klíče mapy.
+
+7355=Atribut mapování [{1}] z třídy [{0}] není platným typem mapování pro specifikaci převodu pomocí názvu atributu. Název atributu by měl být určený k procházení typu vestavěného mapování.
+
+7356=Proceduru [{1}] nelze provést, protože {0} aktuálně nepodporuje více výstupních parametrů.
+
+7357=Adresa URL "[{0}]" prostředku "[{1}]" nepatří do platného kořene perzistence (dle specifikace JPA).
+

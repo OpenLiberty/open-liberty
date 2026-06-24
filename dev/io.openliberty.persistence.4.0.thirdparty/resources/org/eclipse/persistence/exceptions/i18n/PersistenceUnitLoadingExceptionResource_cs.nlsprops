@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/PersistenceUnitLoadingExceptionResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+30001=Došlo k výjimce při pokusu o načtení jednotky perzistence pro adresář: {0}
+
+30002=Došlo k výjimce při pokusu o načtení jednotky perzistence pro soubor JAR: {0}
+
+30003=Došlo k výjimce při zpracování jednotky perzistence na adrese URL: {0}
+
+30004=Došlo k výjimce při zpracování souboru persistence.xml z adresy URL: {0}
+
+30005=Došlo k výjimce při vyhledávání archivů perzistence pomocí zavaděče ClassLoader: {0}
+
+30006=Došlo k výjimce při vyhledávání entit na adrese URL: {0}
+
+30007=Došlo k výjimce při načítání třídy {0} za účelem kontroly, zda implementuje atributy @Entity, @Embeddable nebo @MappedSuperclass.
+
+30008=Vrácená cesta k souboru byla prázdná nebo měla hodnotu null.
+
+30009=Došlo k výjimce při pokusu o načtení jednotky perzistence na adrese URL: {0}
+
+30010=Došlo k výjimce při načítání souboru ORM XML: {0}
+
+30011=EclipseLink nemohl získat třídy z adresy URL: {0}. EclipseLink se pokusil načíst tuto adresu URL jako soubor JAR a adresář a nezdařilo se mu ho zpracovat.
+
+30012=EclipseLink nemohl získat informace o jednotce perzistence z adresy URL:{0}
+
+30013=Došlo k výjimce při pokusu o sestavení názvu jednotky perzistence pro jednotku perzistence [{1}] z adresy URL: {0}.
+
+30014=Jednotka perzistence určuje režim zpětného volání jako "CALLBACK", ale nezdařilo se inicializovat třídu ValidatorFactory pro ověřování Bean Validation. Podrobnosti naleznete ve vnořené výjimce. Zkontrolujte, zda je na cestě ke třídě dostupné rozhraní API ověřování Bean Validation a poskytovatel ověřování Bean Validation.
+
+30015=Došlo k výjimce při načítání třídy skupiny ověření: {0}.
+
+30016=Název relace {0} nemůže být používán jednotkou perzistence {1}, již je používán jednotkou perzistence {2}.
+
+30017=Jednotka perzistence {0} je definována na adrese URL:{1} a zároveň na adrese URL:{2}. Stejný zavaděč tříd nemůže načíst několik jednotek perzistence se stejným názvem.
+
+30018=Výjimka: Při pokusu o vytvoření instance uživatelem určené třídy ArchiveFactory: {0} došlo k {1}.
+
+30019=Voláte metodu refreshMetadata na rozhraní EntityManagerFactory pro jednotku perzistence {0}. Metadata nelze aktualizovat, protože tato továrna EntityManagerFactory byla vytvořena z objektu relace, nikoli odvozena z jednotky perzistence.
+

@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource_ru.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=Необходимо задать свойство {0}.
+
+17008=Обнаружено недопустимое свойство {0}.
+
+17009=Необходимо задать свойство {0} или {1}.
+
+17010=Запись вывода содержит неподдерживаемый тип сообщения
+
+17011=Не задана фабрика соединений.
+
+17012=InteractionSspec должно являться CciJMSInteractionSpec.
+
+17013=Запись должна являться CciJMSRecord.
+
+17014=Неизвестный тип спецификации взаимодействия
+
+17015=Ввод должен содержать один текстовый элемент.
+
+17016=Возник тайм-аут - сообщение не получено.
+
+17017=Запись ввода содержит неподдерживаемый тип сообщения.
+
+17018=Невозможно вызвать "begin()" в сеансе без транзакций.
+
+17019=Неполадка при тестировании сеанса с транзакциями: 
+
+17020=InteractionSspec должно являться AQInteractionSpec.
+
+17021=Запись должна являться AQRecord.
+
+17022=Ввод должен содержать один элемент необработанных данных.
+
+17023=Исключительная ситуация при настройке атрибутов MQQueueConnectionFactory.
+
+17024=Невозможно удалить файл: {0}
+
+17025=Для этой связи необходимо элемент группировки внешних ключей, так как существует несколько внешних ключей.
+

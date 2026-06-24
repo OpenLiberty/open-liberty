@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=等待已中断。{0}消息：[{1}]
+
+2002=ServerSession 上发生等待故障。
+
+2003=ClientSession 上发生等待故障。
+
+2004=在 ConcurrencyManager 上执行 wait() 之前已尝试信号。这通常意味着已尝试在事务启动之前{0}落实或回滚该事务，或已尝试回滚某个事务两次。
+
+2005=在 DatabaseSession 的序列连接处理程序上发生等待故障。
+
+2006=尝试在多个线程中同时通过单个连接 ({0}) 获取序列值。
+
+2007=超过锁定对象 {0} 的最大尝试次数。未能克隆该对象。
+
+2008=超过锁定对象 {0} 的最大尝试次数。未能合并事务。
+
+2009=超过锁定对象的最大尝试次数。未能构建该对象。线程 {0} 已锁定对象，但是线程 {1} 正在构建该对象。
+
+2010=锁定已转换为延迟锁定。在合并期间，线程 {0} 已请求第二次尝试转换该锁定。
+

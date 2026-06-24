@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=物件 [{0}]（類別 [{1}]）無法轉換成 [{2}]。
+
+3002=來自使用描述子 [{3}] 之對映 [{2}] 的物件 [{0}]（類別 [{1}]）無法轉換成 [{4}]。
+
+3003=不正確的日期格式：[{0}]（應為 [YYYY-MM-DD]）
+
+3004=不正確的時間格式：[{0}]（應為 [HH:MM:SS]）
+
+3005=不正確的時間戳記格式：[{0}]（應為 [YYYY-MM-DD HH:MM:SS.NNNNNNNNN]）
+
+3006=[{0}] 的長度必須是偶數，才能轉換成位元組陣列。
+
+3007=物件 [{0}]（類別 [{1}]）無法轉換成 [{2}]。  請確定類別 [{2}] 位在 CLASSPATH 上。  您可能需要使用依需要在適當類別載入器中傳遞的替代 API，或是將其設定在預設 ConversionManager 上
+
+3008=不正確的日期時間格式：[{0}]（應為 [YYYY-MM-DD''T''HH:MM:SS]）
+
+3009=無法設定 {0} 內容 [{1}] 至 [{2}]。
+

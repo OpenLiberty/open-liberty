@@ -1,0 +1,185 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=开始概要文件
+
+class=类
+
+commit_depth=（落实深度 = {0}）
+
+connected=已连接
+
+connector=连接器
+
+context=上下文：
+
+database_name=数据库名称
+
+datasource=数据源
+
+datasource_URL=数据源 URL
+
+datasource_name=数据源名称
+
+depth_reset_key=（深度 = {0}，重置键 = {1}，重置版本 = {2}）
+
+disconnected=已断开连接
+
+empty_commit_order_dependency_node=空 CommitOrderDependencyNode
+
+end_profile=结束概要文件
+
+error_printing_expression=显示表达式时出错
+
+lazy=消极
+
+local_time=当地时间
+
+login=登录
+
+longestTime=最长时间
+
+min_max=（最少连接数 = {0}，最大连接数 = {1}）
+
+mulitple_files=多个文件
+
+multiple_readers=多个阅读器
+
+name=名称：
+
+nest_level=（嵌套级别 = {0}）
+
+no_files=没有文件
+
+no_streams=没有流
+
+node=节点 ({0})
+
+non_lazy=非消极
+
+not_instantiated=未实例化
+
+number_of_objects=对象数
+
+objects_second=对象数/秒
+
+platform=平台
+
+pooled=合用
+
+profile=概要文件
+
+profiling_time=概要分析时间
+
+reader=阅读器
+
+schema=模式：
+
+sdo_classgenerator_usage_help_1of8={0} 用法：org.eclipse.persistence.sdo.helper.{0} [-options]
+
+sdo_classgenerator_usage_help_2of8=选项：
+
+sdo_classgenerator_usage_help_3of8=-help                        显示帮助消息文本
+
+sdo_classgenerator_usage_help_4of8=-sourceFile <FileName>       输入模式文件（必需）
+
+sdo_classgenerator_usage_help_5of8=-targetDirectory <DirName>   用于生成 Java 源的目录（可选）
+
+sdo_classgenerator_usage_help_6of8=-logLevel <level int>        指定日志记录级别的整数值（8=OFF，7=SEVERE，6=WARNING，5=INFO，4=CONFIG，3=FINE，2=FINER（缺省值），1=FINEST，0=ALL）。
+
+sdo_classgenerator_usage_help_7of8=-noInterfaces                不生成接口类
+
+sdo_classgenerator_usage_help_8of8=-noImpls                     不生成实现类
+
+sdo_classgenerator_usage_missing_sourcefile={0}未指定 -sourceFile 参数，此参数是必需的。
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} 未指定 -sourceFile 的值。
+
+sdo_classgenerator_usage_missing_targetdir={0} 未指定 -targetDirectory 的值。
+
+server_name=服务器名称
+
+shortestTime=最短时间
+
+staticweave_commandline_help_message_10of19=-log
+
+staticweave_commandline_help_message_11of19=指定日志记录文件。
+
+staticweave_commandline_help_message_12of19=-loglevel
+
+staticweave_commandline_help_message_13of19=指定日志记录级别的整数值（8=OFF，7=SEVERE，6=WARNING，5=INFO，4=CONFIG，3=FINE，2=FINER（缺省值），1=FINEST，0=ALL）。
+
+staticweave_commandline_help_message_14of19=此类路径必须包含在源中装入这些类时所需的所有类。
+
+staticweave_commandline_help_message_15of19=如果源和目标指向同一位置，那么将就地执行编排。就地执行编排仅适用于基于目录的源。
+
+staticweave_commandline_help_message_16of19=示例：
+
+staticweave_commandline_help_message_17of19=要织入包含在 C:oo-source.jar 中的所有实体及其包含在 C:oo-containing-persistence-xml.jar 中的持久性，
+
+staticweave_commandline_help_message_18of19=并输出到 C:oo-target.jar：
+
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:oo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:oo-source.jar C:oo-target.jar
+
+staticweave_commandline_help_message_1of19=用法：StaticWeave [选项] 源目标
+
+staticweave_commandline_help_message_2of19=选项：
+
+staticweave_commandline_help_message_3of19=-classpath classpath
+
+staticweave_commandline_help_message_4of19=设置用户类路径。在 Windows 中，使用“;”作为定界符，在 Unix 中，使用“:”作为定界符。
+
+staticweave_commandline_help_message_5of19=-persistenceinfo
+
+staticweave_commandline_help_message_6of19=显式标识 META-INF/persistence.xml 的存储位置。它必须是 META-INF/persistence.xml 的根位置。
+
+staticweave_commandline_help_message_7of19=编排 persistence.xml 中的 <jar-file> 引用的文件时，通常会使用此选项指定主 JAR 文件。
+
+staticweave_commandline_help_message_8of19=-persistencexml
+
+staticweave_commandline_help_message_9of19=标识 persistence.xml 相对于持久性单元的根的位置（如果它不在 META-INF/persistence.xml 中）
+
+staticweave_processor_dir_not_created=无法创建 {0} 目录。
+
+staticweave_processor_file_not_created=无法创建 {0} 文件。
+
+staticweave_processor_unknown_outcome=编排存储在某个目录中的类并将其输出至 JAR 通常会导致意外结果。
+
+time_object=时间/对象
+
+total_time=总时间
+
+unknown=未知
+
+user_name=用户名
+
+writer=写程序
+

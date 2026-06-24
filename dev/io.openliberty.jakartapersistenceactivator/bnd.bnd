@@ -14,15 +14,18 @@
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
 
-publish.wlp.jar.disabled: true
-
 instrument.disabled: true
+
+Import-Package: \
+	jakarta.persistence;version="[3.0,5)", \
+	jakarta.persistence.spi;version="[3.0,5)", \
+	*
 
 Private-Package: \
 	io.openliberty.jakarta.persistence.internal
 
 -buildpath: \
-	jakarta.persistence:jakarta.persistence-api;version=3.0.0,\
+	jakarta.persistence:jakarta.persistence-api;version="[3.0,5)",\
 	com.ibm.websphere.org.osgi.core,\
 	com.ibm.ws.kernel.service;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest

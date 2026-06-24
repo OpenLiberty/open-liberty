@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_ko.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=[{0}] 오브젝트 삭제를 시도했지만 ID 맵에 버전 번호가 없습니다. {3}삭제를 시도하기 전에 오브젝트를 읽지 않았을 수 있습니다. {3}클래스> {1} 기본 키> {2}
+
+5003=[{0}] 오브젝트가 마지막으로 읽혀진 후에 변경되었거나 삭제되었으므로 이를 삭제할 수 없습니다. {3}클래스> {1} 기본 키> {2}
+
+5004=[{0}] 오브젝트 업데이트를 시도했지만 ID 맵에 버전 번호가 없습니다. {3}업데이트를 시도하기 전에 오브젝트를 읽지 않았을 수 있습니다. {3}클래스> {1} 기본 키> {2}
+
+5006=[{0}] 오브젝트가 마지막으로 읽혀진 후에 변경되었거나 삭제되었으므로 이를 업데이트할 수 없습니다. {3}클래스> {1} 기본 키> {2}
+
+5007=[{0}] 오브젝트에 버전 잠금 필드에 대한 읽기 전용이 아닌 맵핑이 있어야 합니다.
+
+5008=Timestamp 잠금을 사용 중인 경우 버전 잠금 필드를 java.sql.Timestamp로 맵핑해야 함
+
+5009=[{0}] 기본 키가 있는 [{1}] 클래스의 오브젝트가 마지막으로 읽혀진 후에 삭제되었으므로 이를 언랩핑할 수 없습니다.
+
+5010=[{0}] 오브젝트가 마지막으로 읽혀진 후에 변경되었거나 삭제되었으므로 이를 병합할 수 없습니다. {2}클래스> {1}
+
+5011=하나 이상의 오브젝트가 마지막으로 읽혀진 후에 변경되었거나 삭제되었으므로 이를 업데이트할 수 없음
+

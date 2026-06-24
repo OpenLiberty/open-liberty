@@ -3,7 +3,7 @@ symbolicName=io.openliberty.persistenceContainer-4.0
 visibility=public
 singleton=true
 kind=noship
-edition=full
+edition=core
 Subsystem-Name: Jakarta Persistence 4.0 Container
 IBM-ShortName: persistenceContainer-4.0
 WLP-AlsoKnownAs: jpaContainer-4.0

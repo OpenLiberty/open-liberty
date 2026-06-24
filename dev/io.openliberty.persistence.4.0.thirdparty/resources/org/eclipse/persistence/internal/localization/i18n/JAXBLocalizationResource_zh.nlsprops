@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=正在添加名称空间解析器
+
+create_descriptors=正在创建描述符
+
+create_mappings=正将映射添加至描述符 {0}
+
+error=错误：
+
+generate_files=正在写入部署 XML 和会话配置
+
+generate_source=正在生成实现类
+
+impl_package_missing=缺少实现类包名
+
+io_exception_error=错误：意外 IOException
+
+malformed_url_error=错误：意外 MalformedURLException
+
+missing_customization=缺少输入定制文件
+
+missing_output_dir=缺少 TopLink 输出目录名
+
+missing_project_dir=缺少 TopLink 工作台项目目录名
+
+missing_schema_file=缺少输入模式文件
+
+missing_src_dir=缺少源输出目录名
+
+missing_target_package=缺少目标包名
+
+read_customization=正在读取定制文件
+
+setup_inheritance=正在设置继承
+
+start_mw_project=正在创建映射工作台项目
+
+start_orajaxb=正在调用 orajaxb
+
+start_toplink=正在调用 TopLink 生成
+
+version=版本：
+

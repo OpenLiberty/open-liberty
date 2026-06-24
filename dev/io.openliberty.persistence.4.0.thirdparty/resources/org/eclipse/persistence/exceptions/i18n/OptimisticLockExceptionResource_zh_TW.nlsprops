@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=嘗試刪除物件 [{0}]，但它在識別對映中沒有版本號碼。{3}在嘗試刪除之前，該物件可能沒有被讀取過。{3}類別> {1} 主要索引鍵> {2}
+
+5003=無法刪除物件 [{0}]，因為自前次讀取之後，其已變更或被刪除。{3}類別> {1} 主要索引鍵> {2}
+
+5004=嘗試更新物件 [{0}]，但它在識別對映中沒有版本號碼。{3}在嘗試更新之前，該物件可能沒有被讀取過。{3}類別> {1} 主要索引鍵> {2}
+
+5006=無法更新物件 [{0}]，因為自前次讀取之後，其已變更或被刪除。{3}類別> {1} 主要索引鍵> {2}
+
+5007=物件 [{0}] 對版本鎖定欄位必須有非唯讀對映。
+
+5008=使用「時間戳記鎖定」時，必須將版本鎖定欄位對映至 java.sql.Timestamp
+
+5009=無法將含主要索引鍵 [{0}] 之類別 [{1}] 的物件解除包裝，因為自前次讀取之後，其已被刪除。
+
+5010=無法合併物件 [{0}]，因為自前次讀取之後，其已變更或被刪除。{2}類別> {1}
+
+5011=無法更新一或多個物件，因為自前次讀取之後，其已變更或被刪除。
+

@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=以下 XPath 字符串无效：{0}
+
+25002=未能从以下 XPath 字符串解析整数索引：{0}
+
+25003=编组对象时发生错误
+
+25004=取消编组文档时发生错误
+
+25005=验证对象时发生错误
+
+25006=未对映射到 {0} 的 XMLDescriptor 指定缺省根元素
+
+25007=项目中找不到类 {0} 的描述符。对于 JAXB，如果使用 TypeMappingInfo[] 对 JAXBContext 进行了引导，那么必须调用反序列化方法（它接受 TypeMappingInfo 作为输入参数）。
+
+25008=在项目中找不到具有缺省根元素 {0} 的描述符
+
+25010=未对映射到 {0} 的 XMLDescriptor 模式引用
+
+25011=遇到空参数
+
+25012=解析 XML 模式时发生错误。
+
+25013=尝试设置模式时发生错误。
+
+25014=尝试实例化模式平台时发生错误。
+
+25015=尝试解析 {0} 的名称空间 URI 时发生错误。未在描述符上指定名称空间解析器。
+
+25016=在名称空间解析器中找不到前缀 {0} 的名称空间。
+
+25017=必须在 JAXBTypesafeEnumConverter 上设置 enumClass 或 enumClassName。
+
+25018=枚举类 {0} 上的 fromString 方法不存在或未能调用。
+
+25019=找不到指定的枚举类 {0}。
+
+25020=在调用“endDocument()”事件之前，不能调用方法“getResult()”。
+
+25021=类 {0} 对于 SwaRef 无效。 必须是 jakarta.activation.DataHandler。
+
+25022=无法对映像反序列化。没有任何编码器可用于 mimeType {0}。
+
+25023=取消编组映射到属性 {0} 的元素时，找不到任何描述符。
+
+25024=实例化 UnmappedContentHandler 类 {0} 时发生错误。
+
+25025=XMLUnmarshaller 上设置的 UnmappedContentHandler 类 {0} 必须实现 org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler。
+
+25026=无法更新节点 [{0}]，在高速缓存中找不到对象。
+
+25027=无法检索到 cid 为 {0} 的附件，因为没有设置任何 AttachmentUnmarshaller。
+
+25028=由于以下 xsi:type 值未知，因此对于映射 {1}，找不到任何引用描述符：{0}。
+
+25029=对于前缀 [{0}]，类 [{1}] 已尝试分配名称空间 URI [{2}]，但是其父类 [{3}] 已分配名称空间 URI [{4}]。
+
+25030=调用以下定制 NamespacePrefixMapper 上的 {0} 方法时发生错误：{1}。
+
+25031=处理以下名称空间前缀映射器时发生错误：{1}。找不到方法 {0}。
+
+25032=调用以下定制 CharacterEscapeHandler 上的 {0} 方法时发生错误：{1}。
+
+25033=处理以下 CharacterEscapeHandler 时发生错误：{1}。找不到方法 {0}。
+
+25034=调用以下定制 IDResolver 上的 {0} 方法时发生错误：{1}。
+
+25035=处理以下 IDResolver 时发生错误：{1}。找不到方法 {0}。
+
+25036=定制 IDResolver {1} 不支持多个 XML 标识 {0}。如果使用了多个标识，那么定制 IDResolver 必须是子类 org.eclipse.persistence.jaxb.IDResolver。
+
+25037=在对象图形中检测到循环。这将导致无限循环：{0}
+
+25038=DOMPlatform 不受介质类型 application/json 支持。
+
+25039=从 {0} 取消编组时发生错误
+
+25040=找不到类型为 {0} 且标识为 {1} 的对象。
+
+25041=没有为类 {1} 定义指定的属性组 {0}。
+
+25042=类 {1} 上的变量属性 {0} 的值不能为空值。
+

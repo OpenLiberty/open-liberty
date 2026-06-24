@@ -1,0 +1,51 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConcurrencyExceptionResource_fr.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+2001=L''attente a été interrompue. {0}Message : [{1}]
+
+2002=Echec de l''attente sur session de serveur.
+
+2003=Echec de l''attente sur session de client.
+
+2004=Un signal a été tenté avant wait() sur ConcurrencyManager. Cela signifie normalement qu''une tentative a été effectuée pour {0}valider ou annuler une transaction avant son démarrage, ou pour annuler une transaction deux fois.
+
+2005=Echec de l''attente sur organisation de gestionnaire de connexion pour DatabaseSession.
+
+2006=Essayez d''acquérir des valeurs de séquencement via une connexion unique ({0}) ({0}) simultanément dans plusieurs unités d''exécution.
+
+2007=Nombre max de tentatives de verrouillage de l''objet : {0} dépassé.  Echec de clonage de l''objet.
+
+2008=Nombre max de tentatives de verrouillage de l''objet : {0} dépassé.  Echec de la fusion de la transaction.
+
+2009=Nombre max de tentatives de verrouillage de l''objet dépassé.  Echec de génération de l''objet. L''unité d''exécution {0} comporte un verrou sur l''objet mais l''unité d''exécution {1} est en train de générer l''objet.
+
+2010=Le verrou a déjà été transféré vers un verrou différé.  Une seconde tentative de verrouillage a été demandée par l''unité d''exécution {0} pendant la fusion.
+

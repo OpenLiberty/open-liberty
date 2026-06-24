@@ -1,0 +1,149 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Nem található a típusazonosító ID eleme a(z) [{0}] uri azonosítójú és [{1}] nevű típushoz.
+
+45001=Hiba történt az importálás feldolgozásakor a(z) [{0}] sémahellyel és a(z) [{1}] névtérrel.
+
+45002=Hiba történt a tartalmazás feldolgozásakor a(z) [{0}] sémahellyel.
+
+45003=Nem található hivatkozott tulajdonság a(z) [{0}] uri azonosítóval és [{1}] névvel.
+
+45004=A módosítás összegzésében régi szekvencia található.
+
+45005=A(z) [{0}] nevű tulajdonág értéke csak egy DataObject lehet
+
+45006=A szekvencia nem lehet null, ha a type.isSequenced() true értékű.
+
+45007=Nem lett beállítva típus a(z) [{0}] nevű tulajdonsághoz
+
+45008=IOException kivétel történt.
+
+45009=Nem található [{0}] uri azonosítójú és [{1}] nevű típus
+
+45010=Nem található típus a(z) [{0}] felületosztályhoz. Győződjön meg róla, hogy a típus meg van határozva.  Továbbá a felület osztálybetöltőjének a segéd kontextus osztálybetöltő hierarchia tagjának kell lennie: úgy tűnik, mintha ez [{1}] lenne.
+
+45011=Nem hozható létre DataObject a(z) [{0}] uri azonosítójú és [{1}] nevű típushoz, mivel a type.isAbstract() metódus true értéket ad vissza.
+
+45012=Nem hozhat létre DataObject a(z) [{0}] felülethez, kísérlet egy DataObject létrehozására a(z) [{1}] uri azonosítójú és [{2}] nevű típushoz 
+
+45013=Nem kereshetők ki alkalmazásinformációk null argumentum esetén.
+
+45014=Nem határozható meg típus.  Típusok csak olyan DataObject objektumokhoz határozhatók meg, melyek típusa commonj.sdo.Type típusra van beállítva.
+
+45015=Nem határozható meg null nevű típus.
+
+45016=A changesummary XML fájlban lévő egyik módosított objektumból hiányzik egy ref attribútum, vagy az érték nincs megadva.
+
+45017=Hiba történt a(z) [{0}] xpath feldolgozásakor.
+
+45018=Többszörös bejegyzés hozzáadása az összetett [{1}] egyedüli beállítás esetén egy szekvenciához a(z) [{0}] pozícióban nem támogatott.
+
+45019=Egy [{0}] attribútum tulajdonság hozzáadása egy szekvenciához nem támogatott.
+
+45020=Nem található szekvencia a(z) [{0}] útvonal esetén.
+
+45021=Hiba történt egy Sequence objektum egy null dataObject példánymezővel történő példányosítására tett kísérlet során.
+
+45022=A(z) [{0}] tulajdonsághoz nincs támogatott szekvencia.
+
+45023=Nem állítható be a(z) [{0}] uri azonosítójú és [{1}] nevű típussal rendelkező tulajdonság a(z) [{2}] osztály értékére
+
+45024=Átalakítási hiba történt.
+
+45025=Nem található tulajdonság a(z) [{0}] indexnél
+
+45026=Nem hajtható végre a(z) [{0}] művelet null paraméteren.
+
+45027=Nem található osztály a(z) [{0}] uri azonosítójú és [{1}] nevű típushoz.
+
+45028=Nem állítható be típus nyitottra és adattípusra.  Hiba a(z) [{0}] uri azonosítójú és [{1}] nevű típus esetén.
+
+45029=Érvénytelen [{0}] index lett átadva a(z) [{1}] metódusnak.
+
+45030=Hiba történt a konstruktor meghívásakor egy String argumentummal a(z) [{0}] osztályhoz.
+
+45031=Nem állítható be érvénytelen [{0}] céltípus a(z) [{1}] tulajdonsághoz, mert a cél type.dataType értéke true.
+
+45032=XMLMarshalException kivétel történt a(z) [{1}] uri és [{2}] helyi név esetén.  Kivétel: [{0}]
+
+45033=Hiba történt a típusok előállításakor. Hivatkozás a(z) [{1}] névvel és [{0}] névtér URI azonosítóval rendelkező XML séma összetevőre, azonban ez soha nem lett meghatározva.  Lehetséges, hogy az XML sémából hiányzik egy importálás vagy tartalmazás a(z) [{0}] névtér URI esetén.
+
+45034=Az options paraméter értéke csak egy [{0}] uri azonosítójú [{1}] nevű típusú DataObject lehet.
+
+45035=A "type" tulajdonságnak megfelelő értéknek egy Type objektumnak kell lennie.
+
+45036=A betöltendő XML csomópontnak megfelelő egyik globális tulajdonság nem található.
+
+45037=A(z) [{0}] előtag használatban van, azonban nincs deklarálva az XML sémában.
+
+45038=Nem hajtható végre művelet a(z) [{0}] tulajdonságon, mivel az nem érhető el a(z) [{1}] útvonalról. Az útvonal érvénytelen, vagy az útvonalon legalább egy adatobjektum null.
+
+45039=Hiba történt a(z) [{0}] externalizableDelegator mező elérésekor a DataObject objektumhoz.
+
+45040=Nem hajtható végre [{0}] művelet null [{1}] paraméterrel.
+
+45041=A(z) [{1}] osztály [{0}] értéke érvénytelen a(z) [{3}] típusú [{2}] tulajdonság esetén.
+
+45100=Hiba történt a kért SDOHelperContext visszaadására tett kísérlet során.  Egy aktív WebLogic példányban az alkalmazásnév szükséges a segéd kontextus gyorsítótár kikeresésekhez.  Az alkalmazásnév nem határozható meg, mert a(z) {0} kikeresés meghiúsult.
+
+45101=Hiba történt a kért SDOHelperContext visszaadására tett kísérlet során.  Egy aktív WebLogic példányban az alkalmazásnév szükséges a segéd kontextus gyorsítótár kikeresésekhez.  Az alkalmazásnév nem határozható meg, mert a(z) {0} nem hívható meg reflektíven a következőhöz: {1}.
+
+45102=Hiba történt a kért SDOHelperContext visszaadására tett kísérlet során.  Egy aktív WebLogic példányban az alkalmazásnév szükséges a segéd kontextus gyorsítótár kikeresésekhez.  Az alkalmazásnév nem határozható meg, mert a(z) {0} esetén nem volt létrehozható/visszaadható egy ObjectName.
+
+45103=Hiba történt a kért SDOHelperContext visszaadására tett kísérlet során.  Egy aktív WebLogic példányban az alkalmazásnév szükséges a segéd kontextus gyorsítótár kikeresésekhez.  Az alkalmazásnév nem határozható meg, mert nem példányosítható egy InitialContext.
+
+45200=SDO/JAXB - Nem található OXM leíró, amely megfelel a(z) [{0}] SDO típusnak, győződjön meg róla, hogy le van képezve egy Java osztály a(z) [{1}] XML típusra.
+
+45201=SDO/JAXB - Nem található OXM leképezés, amely megfelel a(z) [{0}] SDO tulajdonságnak, győződjön meg róla, hogy le van képezve egy Java tulajdonság a(z) [{1}] XML csomópontra.
+
+45202=SDO/JAXB - Nem található SDO típus, amely megfelelne a(z) [{0}] Java osztálynak.
+
+45203=SDO/JAXB - A(z) [{0}] Java osztály leírójához be kell állítani egy sémahivatkozást.
+
+45204=SDO/JAXB - A(z) [{0}] Java osztály leírójára vonatkozó sémahivatkozáshoz be kell állítani egy sémakontextust.
+
+45205=SDO/JAXB - Nem található SDO típus, amely megfelel a(z) [{0}] Java osztálynak, győződjön meg róla, hogy van egy SDO típus, amely megfelel a(z) [{1}] XML típusnak.
+
+45206=SDO/JAXB - Hiba történt egy JAXB Unmarshaller létrehozásakor.
+
+45207=Hiba történt egy séma feloldására tett kísérlet során a biztosított SchemaResolver használatával.
+
+45208=Nem lehet leképezni a(z) {0} tulajdonságot a(z) {1} típusból. A jakarta.activation és jakarta.mail csomagok szükségesek a DataHandler típusú tulajdonságok leképezéséhez. Győződjön meg róla, hogy mindkét csomag elérhető az osztályútvonalon.
+
+45209=Kísérlet történt az ApplicationResolver példány alaphelyzetbe állítására az SDOHelperContext objektumon.  Csak egyetlen beállítás engedélyezett.
+
+45210=A rendezendő DataObject nem ugyanabból a HelperContext objektumból származik, mint az XMLHelper.
+
+45211=A típus nem határozható meg a [{0}] névvel. A név nem érvényes XML név.
+
+45212=A tulajdonság nem határozható meg a [{0}] névvel. A név nem érvényes XML név.
+

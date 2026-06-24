@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource_de.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Schließt die Zeit ein, die für die Verwaltung des Sequenznummermechanismus und die tatsächliche Festlegung der Sequenznummer für Objekte aufgebracht wurde.
+
+cache_hits=Die Häufigkeit, mit der das Objekt im Cache gefunden wurde
+
+cache_misses=Die Häufigkeit, mit der das Objekt nicht im Cache gefunden wurde.
+
+caching=Schließt die Zeit ein, die für das Hinzufügen, Suchen und Entfernen von Objekten im Cache aufgebracht wurde.
+
+change_set_not_processed=Die Anzahl der ObjectChangeSets, die verworfen wurden, weil das Objekt nicht im Cache gefunden wurde,
+
+change_set_processed=Die Anzahl der im Cache gefundenen Objektänderungssätze
+
+client_session_count=Die Anzahl der ClientSessions, die angemeldet waren.
+
+connect_call=Gesamtanzahl der getätigten Verbindungsaufrufe.
+
+connection=Für die Verwaltung von Verbindungen aufbegrachte Zeit, einschließlich Herstellen einer Verbindung zur Datenquelle, Wiederherstellen der Verbindung zur Datenquelle und Trennen der Verbindung zur Datenquelle.
+
+connection_in_used=Die Anzahl der verwendeten Verbindungen pro Pool von allen exklusiven ConnectionPools(Write, ExclusiveRead).
+
+connection_ping=Zeit, die zum Testen der Datenbankverbindung aufgebracht wurde, um festzustellen, ob sie verwendet werden kann.
+
+database_execute=Die für Aufrufe der JDBC-Anweisung aufgebrachte Zeit, einschließlich der Zeit für Aufrufe von close, executeUpdate und executeQuery
+
+deleted_object=Das Objekt muss aus der identityMap aus dem ObjectChangeSet entfernt werden.
+
+descriptor_event=Für die Ausführung von DescriptorEvent aufgebrachte Zeit.
+
+disconnect_call=Gesamtanzahl der getätigten Aufrufe zum Trennen der Verbindung.
+
+distributed_merge=Zeit, die zum Zusammenführen ferner Transaktionsänderungen in den lokalen gemeinsam genutzten Cache aufgebracht wurde. Findet statt, wenn die Cachesynchronisation verwendet wird.
+
+jts_aftercompletion=Die für die JTS-Methode afterCompletion(Object status) aufgebrachte Zeit.
+
+jts_beforecompletion=Die für die JTS-Methode beforeCompletion() aufgebrachte Zeit.
+
+logging=Für die Protokollierung von TopLink-Aktivitäten aufgebrachte Zeit.
+
+merge_time=Für die Zusammenführung von Änderungen in den gemeinsam genutzten Cache aufgebrachte Zeit.
+
+object_building=Für die Erstellung persistenter Objekte aus Datenbankzeilen aufgebrachte Zeit.
+
+optimistic_lock=Anzahl der ausgelösten Ausnahmen hinsichtlich optimistischen Sperrens.
+
+query=Für die Operation aufgebrachte Gesamtzeit: {0}
+
+query_misc=Für die Operation aufgebrachte Gesamtzeit: {0}. Dies gilt für Sonderoperationen, die nicht unter Abfragesubstantive fallen, wie das Schreiben von Stapeln.
+
+query_prepareation=Zeit für die Vorbereitung der Abfrage.
+
+rcm_message_received=Anzahl der Nachrichten, die über den Echtzeitsteuerungsmikrocode empfangen wurden.
+
+rcm_message_sent=Anzahl der Nachrichten, die über den Echtzeitsteuerungsmikrocode gesendet wurden.
+
+rcm_status=Einer der folgenden Status: [not configured, started, stopped]
+
+remote_change_set=Anzahl der von fernen Maschinen empfangenen und verarbeiteten Änderungssätze
+
+row_fetch=Zeit, die für die Erstellung von Datensatzobjekten aus dem JDBC-Ergebnissatz aufgebracht wurde. Dies schließt reguläre SQL-Aufrufe und Aufrufe gespeicherter Prozeduren ein.
+
+session_event=Für die Ausführung von SessionEvent aufgebrachte Zeit
+
+session_login_time=Zeit, während der die Sitzung angemeldet war
+
+session_name=Der Name der Sitzung
+
+sql_generation=Für die Generierung des SQL aufgebrachte Zeit. Bei TopLink-Ausdrücken die für die Konvertierung des Ausdrucks in SQL aufgebrachte Zeit.
+
+sql_prepare=In JDBC für die Vorbereitung der Anweisung aufgebrachte Zeit. Dies schließt auch die in EIS aufgebrachte Zeit für die Erstellung einer Interaction, die einer Verbindung zugeordnet ist, und die Zeit für die Erstellung von Record-Objekten für die Ein- bzw. Ausgabe ein.
+
+unitofwork_commit=Misst den Festschreibungsprozess der UnitOfWork
+
+unitofwork_commits=Anzahl der Festschreibungen der UnitOfWork
+
+unitofwork_count=Gesamtanzahl der erstellten UnitOfWork-Objekte
+
+unitofwork_register=Schließt die Zeit ein, die in registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy) aufgebracht wurde.
+
+unitofwork_rollback=Anzahl der Festschreibungen der UnitOfWork, für die ein Rollback durchgeführt wurde.
+
+wrapping=Für das Wrapping von CMP- und BMP-Beans aufgebrachte Zeit.
+

@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=必須設定 {0} 內容。
+
+17008=發現無效的 {0} 內容。
+
+17009=必須設定 {0} 或 {1} 內容。
+
+17010=輸出記錄包含不受支援的訊息類型
+
+17011=未指定 Connection Factory。
+
+17012=InteractionSspec 必須是 CciJMSInteractionSpec。
+
+17013=Record 必須是 CciJMSRecord。
+
+17014=不明的互動規格類型
+
+17015=輸入必須包含單一文字元素。
+
+17016=發生逾時 - 沒有收到訊息。
+
+17017=輸入記錄包含不受支援的訊息類型。
+
+17018=無法在非交易式階段作業上呼叫 "begin()"。
+
+17019=測試交易式階段作業時發生問題：
+
+17020=InteractionSspec 必須是 AQInteractionSpec。
+
+17021=Record 必須是 AQRecord。
+
+17022=輸入必須包含單一原始元素。
+
+17023=設定 MQQueueConnectionFactory 屬性時，發生異常狀況。
+
+17024=無法刪除檔案：{0}
+
+17025=當存在多個外部索引鍵時，此對映需要一個外部索引鍵分組元素。
+

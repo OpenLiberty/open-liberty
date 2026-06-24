@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Neplatný řetězec XPath: {0}
+
+25002=Z tohoto řetězce jazyka XPath nelze analyzovat celočíselný index: {0}
+
+25003=Došlo k chybě při zařazování objektu.
+
+25004=Došlo k chybě při vyřazování dokumentu.
+
+25005=Došlo k chybě při ověřování objektu.
+
+25006=Nebyl určen výchozí kořenový prvek pro třídu XMLDescriptor mapovanou na {0}.
+
+25007=V projektu nebyl nalezen deskriptor pro třídu {0}. Pokud byla třída JAXBContext v případě JAXB samozavedena pomocí třídy TypeMappingInfo[], musíte zavolat metodu zařazení, která přijme třídu TypeMappingInfo jako vstupní parametr.
+
+25008=V projektu nebyl nalezen deskriptor s výchozím kořenovým prvkem {0}.
+
+25010=Pro třídu XMLDescriptor mapovanou na {0} nebyl určen odkaz na schéma.
+
+25011=Byl rozpoznán argument s hodnotou null.
+
+25012=Došlo k chybě při interpretaci schématu XML.
+
+25013=Došlo k chybě při pokusu o nastavení schémat.
+
+25014=Došlo k chybě při pokusu o vytvoření instance platformy schématu.
+
+25015=Došlo k chybě při pokusu o vyřešení identifikátoru URI oboru názvů pro {0}. Na deskriptoru nebyl určen vyhodnocovací modul oboru názvů.
+
+25016=Ve vyhodnocovacím modulu oboru názvů nebyl nalezen obor názvů pro předponu {0}.
+
+25017=Na třídě JAXBTypesafeEnumConverter je třeba nastavit třídu enumClass nebo enumClassName.
+
+25018=Metoda fromString na třídě výčtu {0} neexistuje nebo ji nelze vyvolat.
+
+25019=Nelze najít určenou třídu výčtu {0}.
+
+25020=Metoda "getResult()" nesmí být volána před voláním události "endDocument()".
+
+25021=Třída {0} je neplatná pro SwaRef. Musí to být jakarta.activation.DataHandler.
+
+25022=Obrázek nelze zařadit. Pro typ mimeType {0} není k dispozici žádný kodér.
+
+25023=Při vyřazování prvku mapovaného na atribut {0} nebyl nalezen žádný deskriptor.
+
+25024=Došlo k chybě při vytváření instance třídy UnmappedContentHandler {0}.
+
+25025=Třída UnmappedContentHandler {0} nastavená na třídě XMLUnmarshaller musí implementovat třídu org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Nelze aktualizovat uzel [{0}], objekt nebyl nalezen v mezipaměti.
+
+25027=Nelze načíst přílohu s CID {0}, protože nebylo nastaveno žádné rozhraní AttachmentUnmarshaller.
+
+25028=Nebyl nalezen žádný deskriptor odkazu pro mapování {1} v důsledku neznámé hodnoty xsi:type {0}.
+
+25029=Třída [{1}] se pokusila přiřadit předponě [{0}] identifikátor URI oboru názvů [{2}], ale její nadřízená třída [{3}] již přiřadila identifikátor URI oboru názvů [{4}].
+
+25030=Došlo k chybě při vyvolání metody {0} na vlastní třídě NamespacePrefixMapper: {1}.
+
+25031=Došlo k chybě při zpracování mapovače předpon oboru názvů: {1}. Nebyla nalezena metoda {0}.
+
+25032=Došlo k chybě při vyvolání metody {0} na vlastním rozhraní CharacterEscapeHandler: {1}.
+
+25033=Došlo k chybě při zpracování rozhraní CharacterEscapeHandler: {1}. Nebyla nalezena metoda {0}.
+
+25034=Došlo k chybě při vyvolání metody {0} na vlastní třídě IDResolver: {1}.
+
+25035=Došlo k chybě při zpracování třídy IDResolver: {1}. Nebyla nalezena metoda {0}.
+
+25036=Vlastní třída IDResolver {1} nepodporuje více ID XML {0}. Při použití více ID musí být vlastní třídy IDResolver podtřídami třídy org.eclipse.persistence.jaxb.IDResolver.
+
+25037=Byl zjištěn cyklus v grafu objektu. Ten způsobí nekonečnou smyčku: {0}
+
+25038=Třída DOMPlatform není podporována s typem média application/json.
+
+25039=Došlo k chybě při vyřazování z {0}
+
+25040=Nebyl nalezen objekt typu {0} s ID {1}.
+
+25041=Určená skupina atributů {0} není definována pro třídu {1}.
+
+25042=Hodnota vlastnosti proměnné {0} na třídě {1} nemůže být null.
+

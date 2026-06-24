@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=配置错误。找不到类 [{0}]。
+
+4005=DatabaseAccessor 未连接。
+
+4006=通过 getObject() 从流中读取 BLOB 数据时发生错误。
+
+4007=未能转换对象类型，因为发生了内部错误。{0}java.sql.TYPES：[{1}]
+
+4008=当事务正在进行时，您无法注销。
+
+4009=序列表信息不完整。
+
+4011=预先分配序列号时发生错误。序列表信息不完整。
+
+4014=无法注册 SynchronizationListener。
+
+4015=已同步的 UnitOfWork 不支持 commitAndResume() 操作。
+
+4016=配置错误。未能实例化驱动程序 [{0}]。
+
+4017=配置错误。未能访问驱动程序 [{0}]。
+
+4018=尚未针对 JTS 驱动程序设置 TransactionManager。
+
+4019=获取有关数据库的信息时发生错误。请参阅嵌套异常，以获取更多详细信息。
+
+4020=找不到指定的乐观锁定字段 [{0}] 的匹配数据库字段。请注意，匹配区分大小写，因此，如果在 getter 方法上允许列名为缺省值，那么该名称将大写。
+
+4021=无法从驱动程序 [{0}] 获取连接，用户为 [{1}]，URL 为 [{2}]。请验证您是否已设置需要的驱动程序类和 URL。请检查登录、persistence.xml 或 sessions.xml 资源。jdbc.driver 属性应该设置为与数据库平台兼容的类
+
+4022=访问者或其连接已设置为空项。如果已在另一线程中释放 ClientSession 或 UnitOfWork（例如，如果发生了超时），那么会出现此情况。
+

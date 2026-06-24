@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SessionLoaderExceptionResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+9000=Számos [{0}] SessionLoaderExceptions kivétel történt:
+
+9001=Ismeretlen [{0}] címkenév a(z) [{1}] XML csomópontban.
+
+9002=A(z) [{0}] Project osztály nem tölthető be.
+
+9003=Nem dolgozható fel a(z) [{1}] értékű [{0}] XML címke.
+
+9004=A(z) [{0}] project-xml nem található az osztályútvonalon, sem a fájlrendszeren.
+
+9005=Kivétel történt a(z) [{0}]  project-xml fájl betöltésekor.
+
+9006={0} történt az XML fájl értelmezése során.  Az XML dokumentum {1}. sorában és {2}. oszlopában fordul elő.
+
+9007=Kivétel történt az XML fájl értelmezésekor.
+
+9008=Váratlan [{0}] érték a(z) [{1}] címke esetén.
+
+9009=A(z) [{0}] címke ismeretlen attribútumot tartalmaz.
+
+9010=Egy {0} történt az XML fájl értelmezése során az XML sémához képest.
+
+9011=A(z) {0} kiszolgáló platform osztály át lett helyezve, és a megfelelő alkalmazáskiszolgáló változat már nem támogatott.
+
+9012=Nem lehet betölteni a session-xml fájlt, mert az érvénytelen formátumot tartalmaz, vagy az XML formátuma nem támogatott.
+

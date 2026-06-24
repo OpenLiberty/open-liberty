@@ -1,0 +1,785 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/LoggingLocalizationResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+Current=Szál (azonosító: {3} név: {4}) verem nyomkövetés:
+
+External_transaction_controller_not_defined_by_server_platform=A DatabaseSession olyan külső tranzakcióvezérlővel rendelkezik, amit nem a ServerPlatform határozott meg. Az EclipseLink engedélyezni fogja a külső tranzakcióvezérlő felülbírálatát, azonban javasoljuk, hogy alternatív megoldásként fontolja meg az org.eclipse.persistence.platform.server.ServerPlatformBase továbbszármaztatását és a getExternalTransactionControllerClass() felülbírálatát.
+
+JDBC_driver_does_not_support_meta_data=Csatlakoztatott: ismeretlen (a JDBC illesztőprogram nem támogatja a metaadatokat.)
+
+all_registered_clones=Minden regisztrált másolat:
+
+an_error_executing_ejbSelect=Hiba történt ejbSelect végrehajtása során: {0}
+
+an_error_executing_finder=Hiba történt kereső végrehajtása során: {0}
+
+an_error_occured_executing_findByPrimaryKey=Hiba történt findByPrimaryKey végrehajtása során: {0}
+
+an_error_occured_initializing_dms_listener=Kivétel történt a DMS beágyazott figyelő és a SPY szervlet inicializálása során
+
+an_error_occured_preparing_bean=Hiba történt komponens hívásra történő előkészítése során: {0}
+
+an_error_occured_trying_to_undeploy_bean=Hiba történt komponens telepítésének visszavonására tett kísérlet során (telepítési hiba után): {0}
+
+annotation_warning_ignore_annotation=A(z) [{0}] feljegyzés figyelmen kívül hagyása a(z) [{1}] elemen, mert az osztály az egyik XML metadata-complete beállítása true.
+
+annotation_warning_ignore_private_owned=@PrivateOwned figyelmen kívül hagyása a(z) [{1}] elemen a(z) [{0}] entitás osztályon belül. A @PrivateOwned csak @OneToOne, @OneToMany és @VariableOneToOne feljegyzésekkel használható. Továbbá a privát tulajdonjog @BasicCollection és @BasicMap feljegyzésekkel van megvalósítva.
+
+annotation_warning_ignore_return_insert=A @ReturnInsert figyelmen kívül hagyása a(z) [{0}] elemen. A @ReturnInsert csak alapszintű leképezéssel támogatott.
+
+annotation_warning_ignore_return_update=A @ReturnUpdate figyelmen kívül hagyása a(z) [{0}] elemen. A @ReturnUpdate csak alapszintű leképezéssel támogatott.
+
+application_server_name_and_version=Kiszolgáló: {0}
+
+archive_not_found_in_input=Az archív ({0}) fájl nem létezett a bemeneti ({1}) könyvtárban.
+
+associate_using_third_table_not_migrated=Az Oc4j natív -DassociateUsingThirdTable=true CMP összetevője az 1:m leképezéshez relációs táblával nem került áttelepítésre. A(z) ({0}) entitás ({1}) cmr mezőjét át kell definiálnia egy-sok leképezéssé a Leképezési munkaterületen az áttelepítési folyamat után.
+
+attempted_to_open_entry_in_url_as_jar={2} történt a(z) {0} jar fájlként történő megnyitására és a bejegyzés elérésére tett kísérlet során: {1}.
+
+attempted_to_open_file_url_as_directory={2} történt a(z) {0} könyvtárként történő megnyitására és a bejegyzés elérésére tett kísérlet során: {1}.
+
+attempted_to_open_url_as_directory={1} történt a(z) {0} könyvtárként történő megnyitására tett kísérlet során.
+
+attempted_to_open_url_as_jar={1} történt a(z) {0} jar fájlként történő megnyitására tett kísérlet során.
+
+automatic_key_generation_not_supported=A WLS "automatic-key-generation" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+bacth_update_not_supported=A batch-size kötegfrissítési beállítást a(z) ({1}) entitáskomponensen ({0}) értékkel az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+broadcast_connection_already_closed=Figyelmeztetés: {0}: kísérlet már lezárt kapcsolat lezárására. A rendszer figyelmen kívül hagyja.
+
+broadcast_connection_already_closing=Figyelmeztetés: {0}: kísérlet lezárás alatt lévő kapcsolat lezárására. A rendszer figyelmen kívül hagyja.
+
+broadcast_exception_thrown_when_attempting_to_close_connection=Figyelmeztetés: {0}: a kapcsolat lezárására tett kísérlet {1} kivételt eredményezett
+
+broadcast_ignored_command_while_closing_connection=Figyelmeztetés: {0}: parancs közzétételére vonatkozó kérést a rendszer figyelmen kívül hagyja kapcsolat lezárása során.
+
+broadcast_listening_sleep_on_error=Figyelmeztetés: {0}: {1} kivétel történt. A szál {2} ezredmásodpercig várakozik, mielőtt folytatná a figyelést.
+
+broadcast_remote_command_is_null=Figyelmeztetés: {0}: a fogadott {1} üzenet RemoteCommand helyett nullértéket tartalmaz.
+
+broadcast_remote_command_wrong_type=Figyelmeztetés: {0}: a fogadott {1} üzenet a várt RemoteCommand típusú objektum helyett {2} típusú objektumot tartalmaz.
+
+call_timeout_not_migrated=A(z) {1} call-timeout érték van megadva a(z) {0} entitásban az orion-ejb-jar.xml fájlban, de nincs meghatározva megmaradó leképezés a leírófájlban, ezért nem valósul meg áttelepítés.  Ha a későbbiek során EclipseLink alapértelmezett leképezést használ az EclipseLink leképezési leíró előállításához, akkor figyeljen arra, hogy a call-timeout beállítás elvész, mert az EclipseLink alapértelmezett leképezés nem rendelkezik hozzáféréssel a natív leírófájlhoz.  Saját kezűleg vagy az EclipseLink Leképezési munkaterületének használatával alaphelyzetbe kell állítania a call-timeout beállítást az alapértelmezett leképezés előállítása után.
+
+cannot_get_nested_collection_type=A beágyazott gyűjteménytípus nem kérdezhető le.
+
+cannot_get_server_name_and_version=A kiszolgálónév és -változat a következő kivétel miatt nem kérhető le.  {0}
+
+cannot_unwrap_connection=Az alkalmazáskiszolgáló által átalakított oracle kapcsolat nem alakítható vissza a következő kivétel miatt.  {0}
+
+cannot_weave_changetracking=A(z) {0} nem fűzhető a módosításkövetéshez, mert a leképezései azt nem támogatják.
+
+cannot_weave_virtual_one_to_one=A(z) {0} osztály {1} attribútuma OneToOne vagy ManyToOne leképezést használ egy virtuális attribútumon.  Ezen leképezéstípusok befűzése nem támogatott.  A befűzés tiltásra kerül a következőre: {0}.
+
+check_exist_on_method_as_true_not_supported=A WLS "check-exists-on-method-as-true" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+class_list_created_by=Osztálylista ({0}).({1})() metódus által létrehozva.
+
+cmp_and_cmr_field=A(z) [{0}] ejb-jar.xml bejegyzése <cmp-field> és <cmr-field> bejegyzést is tartalmaz a(z) [{1}] attribútumra.  A <cmp-field> bejegyzés figyelmen kívül marad.
+
+column_size_not_migrated=A(z) ({0}) adatbázis oszlopméret nem kerül áttelepítésre. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+communication_failure_attempting_begintransaction_retry=Kommunikációs hiba észlelhető az adatbázison tranzakció létrehozásának kísérlete során.  Kísérlet a tranzakció újrapróbálására. A hiba: {0}.
+
+communication_failure_attempting_query_retry=Kommunikációs hiba egy tranzakción kívüli olvasási lekérdezés végrehajtására tett kísérlet során. Kísérlet a lekérdezés újrapróbálására. A hiba: {0}.
+
+config_factory=Konfiguráció gyár: ({0}) = ({1})
+
+connected_sdk=Csatlakoztatott: SDK
+
+connected_user_database=Csatlakoztatott: {3}{4}Felhasználó: {0}{3}{4}Adatbázis: {1}  Változat: {2}
+
+connected_user_database_driver=Csatlakoztatott: {0}{6}Felhasználó: {1}{6}Adatbázis: {2}  Változat: {3}{6}Meghajtó: {4}  Változat: {5}
+
+corrupt_object=sérült objektum: {0}
+
+corrupt_object_referenced_through_mapping=hibás objektumra történt hivatkozás leképezésen keresztül: {0}
+
+corrupted_session_announcement=SessionID: {0}  Feltérképezés-kezelő sérült munkamenet-közleményt kapott - mellőzés.
+
+create_default_dbms_tables_not_supported=A WLS "create-default-dbms-tables" natív CMP beállítását az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+data_sync_on_ejb_create_not_supported=A(z) ({0}) entitáskomponensen meghatározott data-synchronization-option="ejbCreate" adatszinkronizálási beállítást az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+dbPlatformHelper_defaultingPlatform=Nem állapítható meg platform a(z) [{0}] szállítónévhez. Alapértelmezés beállítása: [{1}]. Lehet, hogy a használt adatbázis dialektus nem felel meg a használatban lévő adatbázisnak. Adja meg a platformot kifejezetten az "eclipselink.target-database" tulajdonság használatával.
+
+dbPlatformHelper_noMappingFound=Nem tölthető be a(z) [{0}] erőforrás, amely betölti a szállítónév-adatbázisplatform leképezést. Az adatbázisplatform automatikus észlelése nem működik.
+
+dbws_no_wsdl_inline_schema=A(z) [{0}] WSDL belső séma nem olvasható.
+
+dbws_orm_metadata_read_error=A(z) [{0}] ORM metaadatok nem olvashatók.
+
+dbws_oxm_metadata_read_error=A(z) [{0}] OXM metaadatok nem olvashatók.
+
+dbws_xml_schema_read_error=A(z) [{0}] XML séma nem olvasható.
+
+ddl_generation_unknown_property_value=Ismeretlen {0} érték van megadva ([{1}]) a perzisztencia egységhez: [{2}]. Az érvényes beállítások: [{3}]
+
+default_dbms_tables_ddl_not_supported=A WLS "default-dbms-tables-ddl" natív CMP beállítását az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+default_tables_already_existed=A(z) ({0}) tábla már szerepel az adatbázisban, így nem kerül létrehozásra.
+
+delay_database_insert_until_ejb_create_not_supported=A WLS "delay-database-insert-until-ejbCreate" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+delay_database_insert_until_ejb_post_create_not_supported=A WLS "delay-database-insert-until-ejbPostCreate" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+delay_updates_until_commit_not_supported=Az Oc4j "delay-updates-until-commit" natív CMP funkcióját a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+deleted_objects=Törölt objektumok:
+
+deleting_object=Az eltávolítási művelet végrehajtásra került a következőn: {0}
+
+deprecated_property=a(z) {1} tulajdonság elavult, a(z) {0} tulajdonságot kell használni helyette.
+
+descriptor_named_query_cannot_be_added=Nem adható hozzá a leíró által megnevezett lekérdezés, melynek neve ütközik egy meglévő lekérdezéssel. Hozzáadandó lekérdezés: [{0}] neve: [{1}] argumentumai: [{2}].
+
+dir_cleaned_for_mw_files=A(z) {0} címjegyzék alatti fájlok és alkönyvtárak törlésre kerültek, hogy tiszta könyvtár legyen létrehozva az újonnan előállított EclipseLink Leképezési munkaterület projektfájlok számára
+
+do_select_before_insert_not_supported=Az Oc4j "do-select-before-insert" natív CMP funkcióját a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+drop_connection_on_error=Figyelmeztetés: Távoli parancs kapcsolat megszüntetése {0} felé {1} hibával
+
+eclipselink_version_error=Fájl: {0} nem létezik vagy sérült.
+
+ejbSelect2=EjbSelect: {0}
+
+ejb_jar_xml_not_found_in_input=Az ejb-jar.xml nincs jelen a(z) ({0}) bemeneti könyvtárban.
+
+elements={0}{1} elem
+
+enable_batch_operations_as_true_not_supported=A WLS "enable-batch-operations-as-true" natív CMP beállítását az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+entity_manager_ignores_jta_data_source=A perzisztencia egység nem használ JTA-t, ezért az EntityManager figyelmen kívül hagyja a jta adatforrást. 
+
+entity_manager_ignores_nonjta_data_source=A perzisztencia egység JTA-t használ, ezért az EntityManager figyelmen kívül hagyja a nem jta adatforrást. 
+
+entity_manager_sets_property_while_context_is_active=A(z) {0} tulajdonság az entitáskezelőben be van állítva, amikor aktív perzisztencia kontextus már létezik; csak akkor lesz feldolgozva és érvénybe léptetve, amikor új aktív perzisztencia kontextus kerül létrehozásra. Új aktív perzisztencia kontextus létrehozásához a meglévőt el kell távolítani - ezt az EntityManager clear metódusának hívásával lehet végrehajtani.
+
+entity_not_available_during_merge=Próbálkozások maximális száma elérve.  A zárolt cacheKey értéke nem található.  Osztály: [{0}] Azonosító:[{1}] Ez a szál: [{2}] Tulajdonos szál:[{3}]
+
+error_during_PersistenceManager_setup_for_bean=Hiba PersistenceManager beállítása során a komponenshez: {0}
+
+error_executing_ejbHome=Hiba történt ejbHome végrehajtása során: {0}
+
+error_executing_remote_command={0} parancs meghiúsult a következő miatt: {1}
+
+error_getting_transaction_status=Hiba a tranzakció állapot lekérése során.  {0}
+
+error_in_codegen=Hiba konkrét komponensosztály előállítása során.
+
+error_in_create=Hiba a létrehozásban.
+
+error_in_remove=Hiba az eltávolításban.
+
+error_loading_xml_file=Kivétel az ORM xml fájl betöltése során: {0}: {1}
+
+exception_loading_entity_class=Kivétel történt a perzisztencia inicializálására tett kísérlet során.  {1} történt az entitásosztály betöltésére tett kísérlet során: {0}.
+
+exception_thrown_when_attempting_to_close_connection=Figyelmeztetés: kivétel történt a kapcsolat bezárására tett kísérlet során
+
+exception_thrown_when_attempting_to_close_listening_topic_connection=Kivétel történt témakör kapcsolat bezárására tett kísérlet során: {0}
+
+exception_thrown_when_attempting_to_shutdown_cache_synch=Kivétel történt gyorsítótár szinkronizálás leállítására tett kísérlet során: {0}
+
+exception_while_weaving=A befűző kivételt észlelt a(z) {0} osztály befűzésére tett kísérlet során. A kivétel: {1}
+
+extra_cmp_field=Meg van határozva egy absztrakt beolvasó és/vagy beállító a(z) [{0}] absztrakt komponens osztályon, de a vonatkozó [{1}] cmp mező nincs deklarálva az ejb-jar.xml fájlban.
+
+extra_ejb_select=Meg van határozva egy absztrakt ejbSelect a(z) [{0}] absztrakt komponens osztályon, de a vonatkozó [{1}{2}] ejbSelect bejegyzés nincs deklarálva az ejb-jar.xml fájlban.
+
+extra_finder=Meg van határozva kereső a(z) [{0}] saját felület(ek)en, de a vonatkozó [{1}{2}] kereső bejegyzés nincs deklarálva az ejb-jar.xml fájlban.
+
+failed_command_propagation=Hiba: A(z) {0} felé parancs terjesztésére tett kísérlet meghiúsult {1} miatt
+
+failed_to_find_mbean_server=MBean kiszolgáló keresése meghiúsult: {0}
+
+failed_to_propogate_to=CacheSynchronization : Terjesztés meghiúsult {0} felé.  {1}
+
+field_group_not_supported=A WLS "field-group" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+field_type_set_to_java_lang_string=Az alapértelmezett táblalétrehozó nem találta, vagy nem tudta átalakítani a(z) ({1}) java típust a(z) ({0}) adatbázis-mező egy adatbázis-típusává. Az előállító a mező alapértelmezett java típusaként "java.lang.String" típust használ.
+
+force_update_not_supported=Az Oc4j "force-update" natív CMP funkcióját a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+identitymap_for={0}{1} a következő esetén: {2}
+
+includes=(tartalmazza: 
+
+input_and_output_dir_be_different=A bemeneti könyvtártól eltérő kimeneti könyvtárat kell meghatároznia.
+
+input_archive_format_not_supported=Az áttelepítési segédprogram .ear és .jar bemeneti archív formátumot támogatja. A(z) ({0}) bemeneti fájlformátum nem támogatott.
+
+input_at_least_either_archive_or_xml=Az -e kapcsolóval megadhatja az áttelepített archív fájl nevét, vagy az -x kapcsolóval jelezheti, hogy a bemeneti könyvtár alatti leíró xml fájlok áttelepítésre kerülnek, de ezek közül csak az egyiket szabad és kell megadnia.
+
+input_minimum_arguments=A parancssori bemeneti argumentumai között legalább a következőknek szerepelniük kell: -s, -a vagy -x, és -o.
+
+input_not_both_archive_and_xml=Az -e kapcsolóval megadhatja az archív fájl nevét, vagy az -x kapcsolóval jelezheti, hogy a bemeneti könyvtár alatti leírófájlok áttelepítésre kerülnek, de csak az egyiket szabad megadnia.
+
+input_orione_ejb_jar_augmented=A bemeneti orion-ejb-jar.xml fájl kiegészítésre került, hogy az EclipseLink az OC4J megmaradó kezelőjeként legyen megadva
+
+invalid_command_line_argument=A(z) ({0}) parancssori argumentum érvénytelen
+
+invalid_datasource_property_value=A(z) {1} nem érvényes objektum a(z) {0} tulajdonság számára átadáshoz.  Az érvényes értékek: karaktersorozat vagy a javax.sql.DataSource példányai.
+
+invalid_property_value=A(z) {1} nem érvényes objektum a(z) {0} tulajdonság számára átadáshoz.
+
+isolation_level_not_supported=Az Oc4j "isolation-level" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+jar_entry_has_been_migrated=A natív cmp leírófájl a bemeneti ({1}) EAR fájl ({0}) jar bejegyzéséből áttelepításre került.
+
+jar_entry_not_migratable=A(z) ({0}) jar bejegyzés a(z) ({1}) bemeneti EAR fájlban nem telepíthető át.
+
+jar_file_url_exception=Kivétel történt a persistence.xml értelmezése során.  A jar fájl helye nem található: {0}
+
+jaxb_metadata_warning_ignoring_java_attribute=A(z) [{0}] attribútum figyelmen kívül hagyása a(z) [{1}] osztályon, mert nem került előállításra tulajdonság hozzá.
+
+jaxb_metadata_warning_ignoring_type_on_map=Az xml-element type attribútumának figyelmen kívül hagyása, mert xml-map van beállítva a(z) [{0}] tulajdonságon.
+
+jaxb_metadata_warning_invalid_bound_type=A(z) [{1}] illesztő osztály [{0}] kötési típusa érvénytelen, és figyelmen kívül marad.
+
+jaxb_metadata_warning_invalid_java_attribute=Nem támogatott [{0}] JavaAttribute észlelhető, és figyelmen kívül marad.
+
+jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=Érvénytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] csomaghoz, és figyelmen kívül marad.
+
+jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=Érvénytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] mezőhöz/tulajdonsághoz a(z) [{2}] osztályon, és figyelmen kívül marad.
+
+jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=Érvénytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] osztályhoz, és figyelmen kívül marad.
+
+jaxb_metadata_warning_no_classes_to_process=Nincsenek feldolgozandó osztályok a(z) [{0}] csomaghoz.
+
+jmx_mbean_runtime_services_failed_toget_initial_context=Nem kérhető le InitialContext az MBean regisztrációhoz: {0}
+
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=A WebLogic változat nem támogatja az executeThreadRuntime objektumot - az osztálybetöltő használata: {0}
+
+jmx_mbean_runtime_services_identity_map_class=[{0}] azonosság-leképezés, osztály = {1}
+
+jmx_mbean_runtime_services_identity_map_empty=A(z) [{0}] azonosság-leképezés üres.
+
+jmx_mbean_runtime_services_identity_map_initialized=A(z) [{0}] azonosság-leképezés inicializálva.
+
+jmx_mbean_runtime_services_identity_map_invalidated=A(z) [{0}] azonosság-leképezés érvénytelenítve.
+
+jmx_mbean_runtime_services_identity_map_non_existent=A(z) [{0}] azonosság-leképezés nem létezik.
+
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=Nem kérhető le InitialContext az MBean regisztrációhoz: {0}
+
+jmx_mbean_runtime_services_no_classes_in_session=Nincsenek osztályok a munkamenetben.
+
+jmx_mbean_runtime_services_no_connection_pools_available=Nem érhetők el kapcsolatkészletek.
+
+jmx_mbean_runtime_services_no_identity_maps_in_session=A munkamenetben nincsenek azonosság-leképezések.
+
+jmx_mbean_runtime_services_pool_name=Készletnév = {0}
+
+jmx_mbean_runtime_services_print_cache_key_value=Kulcs [{0}] => Érték [{1}]
+
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=Több [{0}] JMX MBeanServer példány létezik, a következő indexen lévő kiszolgálót fogjuk használni: [{1}] : [{2}].
+
+jmx_mbean_runtime_services_registration_mbeanserver_print=JMX MBeanServer példány található: [{0}], komponensek száma: [{1}], tartomány: [{2}] index: [{3}].
+
+jmx_mbean_runtime_services_statement_cache_cleared=Utasítás gyorsítótár kiürítve.
+
+jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=JMX MBeanServer használatban: [{0}] kezdő index: [{1}] 
+
+jmx_mbean_runtime_services_threadpool_initialize_failed=MBean threadPoolRuntime inicializála meghiúsult: {0}
+
+jmx_unable_to_unregister_mbean=A(z) [{0}] MBean regisztrációja nem szüntethető meg, mert az MBeanServer nullértékű. Győződjön meg róla, hogy a saját ServerPlatform patformja JMX támogatással rendelkezik.
+
+jmx_unregistered_mbean=A(z) [{0}] MBean regisztrációja megszüntetve a(z) [{1}] MBeanServer kiszolgálón.
+
+jpars_could_bootstrap_persistence_context=Perzisztencia kontextus: [{0}] előbetöltése nem hajtható végre.
+
+jpars_could_not_find_class_in_persistence_unit=A(z) [{0}] típus nem található a(z) [{1}] perzisztencia egységben.
+
+jpars_could_not_find_persistence_context=Egy JPA-RS hívás perzisztencia kontextust kér: [{0}].  Az adott perzisztencia kontextus nem található.
+
+jpars_could_not_find_session_bean=Hívás került végrehajtásra egy munkamenet-komponensre a következő JNDI névvel: [{0}].  Ez a komponens nem található.
+
+jta_cannot_be_disabled_in_cmp=Tárolóvezérelt megmaradás (CMP) használata esetén a JTA nem tiltható. Az EclipseLink úgy fog működni, mintha a JTA engedélyezett lenne.
+
+jta_duplicate_ctrl_property=A JTA tranzakcióvezérlő osztály az "eclipselink.target-server" és az "eclipselink.jta.controller" tulajdonságokban egyaránt meg van határozva. Az "eclipselink.target-server" értéke kerül alkalmazásra.
+
+jta_tsr_lookup_failure=A TransactionSynchronizationRegistry példányban nem végezhető kikeresés: {0}
+
+key_identity_hash_code_object={0}Kulcs: {1}{2}Azonosság kivonatkód: {3}{2}Objektum: {4}
+
+key_object_null={0}Kulcs: {1}{2}Objektum: null
+
+key_version_identity_hash_code_object={0}Kulcs: {1}{2}Változat: {5}{2}Azonosság kivonatkód: {3}{2}Objektum: {4}
+
+locking_mode_not_valid=A(z) ({1}) zárolási mód a(z) ({0}) entitáson az orion-ejb-jar.xml fájlban nincs megfelelően meghatározva, ezért nem kerül áttelepítésre.
+
+locking_required_for_database_change_notification=A(z) {0} entitás nem használ verziózárolást, azonban több táblával vagy viszonnyal rendelkezik, és Oracle adatbázist használ; lehet, hogy a viszonyok vagy másodlagos táblák módosításai a gyorsítótárat nem érvénytelenítik.
+
+log_file_under_output_dir=Létezik egy ({0}) nevű naplófájl a(z) ({1}) kimeneti könyvtárban.
+
+mapping_not_supported_by_mw=A(z) {0} EclipseLink leképezést a leképezési munkaterület nem támogatja
+
+marshal_warning_null_document_root_element={0}: Egy hivatkozott [{1}] objektum meghatározatlan dokumentum gyökéreleme figyelmen kívül marad bármilyen gyűjtemény|objektum leképezéssel történő rendezés során.
+
+max_instance_not_supported=Az Oc4j "max-instance" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+max_tx_retries_not_supported=Az Oc4j "max-tx-retries" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+metadata_access_type=A(z) [{1}] megmaradó osztály hozzáférési típusának beállítása: [{0}].
+
+metadata_default_alias=A(z) [{0}] entitás osztály álneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_collection_catalog=A(z) [{0}] alapvető gyűjtemény/térkép leképezéshez tartozó gyűjteménytábla név a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_collection_schema=A(z) [{0}] alapvető gyűjtemény/térkép leképezéshez tartozó gyűjteménytábla név a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_collection_table_name=A(z) [{0}] alapvető gyűjtemény/térkép leképezéshez tartozó gyűjteménytábla név a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_column=A(z) [{0}] elem oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_converter_data_type=A(z) [{0}] entitásban a(z) [{1}] elemmel használt, [{2}] nevű átalakító adattípusa a következő alapértelmezett értéket kapja: [{3}].
+
+metadata_default_converter_object_type=A(z) [{0}] entitásban a(z) [{1}] elemmel használt, [{2}] nevű átalakító objektumtípusa a következő alapértelmezett értéket kapja: [{3}].
+
+metadata_default_element_collection_reference_class=A(z) [{0}] elemgyűjtemény leképezési elem célosztály (referencia) osztálya a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_entity_graph_name=A(z) [{1}] entitás osztály neve a következő alapértelmezett értéket kapja: {0}
+
+metadata_default_fk_column=A(z) [{0}] leképezési elem idegen kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_inheritance_discriminator_column=A(z) [{0}] gyökér öröklési osztályának megkülönböztető oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_inheritance_fk_column=A(z) [{0}] öröklési osztály idegen kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_inheritance_pk_column=A(z) [{0}] öröklési osztály elsődleges kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_join_catalog=A(z) [{0}] sok-sok leképezés összefésülési tábla katalógusa a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_join_schema=A(z) [{0}] sok-sok leképezés összefésülési tábla sémája a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_join_table_name=A(z) [{0}] sok-sok leképezés összefésülési tábla neve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_key_column=A(z) [{0}] alapszintű leképezés leképezési elem kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_many_to_many_reference_class=A(z) [{0}] sok-sok leképezési elem célentitás (referencia) osztálya a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_many_to_one_reference_class=A(z) [{0}] sok-egy leképezési elem célentitás (referencia) osztálya a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_map_key_attribute_name=A(z) [{0}] leképezési elem leképezési kulcs attribútumneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_one_to_many_mapping=A(z) [{0}] elem az egy-sok leképezés alapértelmezett értékét kapja.
+
+metadata_default_one_to_many_reference_class=A(z) [{0}] egy-sok leképezési elem célentitás (referencia) osztálya a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_one_to_one_mapping=A(z) [{0}] elem az egy-egy leképezés alapértelmezett értékét kapja.
+
+metadata_default_one_to_one_reference_class=A(z) [{0}] egy-egy leképezési elem célentitás (referencia) osztálya a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_order_column=A(z) [{0}] elem rendezés oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_pk_column=A(z) [{0}] leképezési elem elsődleges kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_qk_column=A(z) [{0}] változó egy-egy leképezés lekérdezési kulcsneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_secondary_catalog=A(z) [{0}] entitás másodlagos táblaneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_secondary_schema=A(z) [{0}] entitás másodlagos táblaneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_secondary_table_fk_column=A(z) [{0}] elem másodlagos tábla idegen kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_secondary_table_name=A(z) [{0}] entitás másodlagos táblaneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_secondary_table_pk_column=A(z) [{0}] elem másodlagos tábla elsődleges kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_sequence_generator_catalog=A következőn: [{0}] belül meghatározott sorozat előállító katalógus a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_sequence_generator_schema=A következőn: [{0}] belül meghatározott sorozat előállító séma a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_sequence_generator_sequence_name=A következőn: [{1}] meghatározott, a következőből: [{2}] származó, [{0}] nevű sorozat előállító sorozatneve a következő alapértelmezett értéket kapja: {0}.
+
+metadata_default_source_fk_column=A(z) [{0}] sok-sok leképezés forrás idegen kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_source_pk_column=A(z) [{0}] sok-sok leképezés forrás elsődleges kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_table_catalog=A(z) [{0}] entitás táblakatalógusa a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_table_generator_catalog=A következőn: [{0}] belül meghatározott tábla előállító katalógus a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_table_generator_name=A következőn: [{0}] belül meghatározott tábla előállító név a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_table_generator_pk_column_value=A következőn: [{1}] meghatározott, a következőből: [{2}] származó, [{0}] nevű tábla előállító pk oszlopneve a következő alapértelmezett értéket kapja: {0}.
+
+metadata_default_table_generator_schema=A következőn: [{0}] belül meghatározott tábla előállító séma a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_table_name=A(z) [{0}] entitás táblaneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_table_schema=A(z) [{0}] entitás táblasémája a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_target_fk_column=A(z) [{0}] sok-sok leképezés cél idegen kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_target_pk_column=A(z) [{0}] sok-sok leképezés cél elsődleges kulcs oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_tenant_discriminator_column=A(z) [{0}] elem bérlő megkülönböztető oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_tenant_discriminator_context_property=A(z) [{0}] elemen a(z) [{1}] bérlő megkülönböztető oszlop bérlő megkülönböztető kontextus tulajdonsága a következő alapértelmezett értéket kapja: {2}.
+
+metadata_default_tenant_table_discriminator_context_property=A(z) [{0}] entitás bérlő tábla megkülönböztető kontextus tulajdonsága a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_tenant_table_discriminator_type=A(z) [{0}] entitás bérlő tábla megkülönböztető típusa a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_value_column=A(z) [{0}] alapszintű gyűjtemény/leképezés leképezési elem érték oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_variable_one_to_one_discriminator_column=A(z) [{0}] változó egy-egy leképezés megkülönböztető oszlopneve a következő alapértelmezett értéket kapja: {1}.
+
+metadata_default_variable_one_to_one_mapping=A(z) [{0}] elem a változó egy-egy leképezés alapértelmezett értékét kapja.
+
+metadata_default_variable_one_to_one_reference_class=A(z) [{0}] változó egy-egy leképezési elem célfelület (referencia) osztálya a következő alapértelmezett értéket kapja: {1}.
+
+metadata_warning_ignore_association_override=A(z) [{2}] leképezett szülőosztály [{1}] elemén a(z) [{0}] nevű társítás felülbírálat mellőzése, mert egy ugyanilyen nevű társítás felülbírálat már meg lett adva a(z) [{3}] entitás osztályon.
+
+metadata_warning_ignore_attribute_override=A(z) [{2}] leképezett szülőosztály [{1}] elemén a(z) [{0}] nevű attribútum felülbírálat mellőzése, mert egy ugyanilyen nevű attribútum felülbírálat már meg lett adva a(z) [{3}] entitás osztályon.
+
+metadata_warning_ignore_auto_apply_converter=A(z) [{0}] entitás osztályon belüli [{1}] elemhez tartozó automatikus alkalmazás átalakító figyelmen kívül hagyása, mivel EclipseLink átalakítási metaadatok lettek megadva.
+
+metadata_warning_ignore_cacheable_false=A(z) [{0}] entitás osztály kifejezett cacheable=false beállításának figyelmen kívül hagyása, mert az ALL gyorsítótárazási típus van megadva a persistence.xml fájlban.
+
+metadata_warning_ignore_cacheable_true=A(z) [{0}] entitás osztály kifejezett cacheable=false beállításának figyelmen kívül hagyása, mert a NONE gyorsítótárazási típus van megadva a persistence.xml fájlban.
+
+metadata_warning_ignore_converts=A(z) [{0}] entitás osztályon belüli [{1}] elemen a JPA átalakítási meghatározás figyelmen kívül hagyása, mivel EclipseLink átalakítási metaadatok lettek megadva.
+
+metadata_warning_ignore_enumerated=A(z) [{0}] entitás osztályon belüli [{1}] elemen a felsorolt meghatározás figyelmen kívül hagyása, mivel EclipseLink átalakítási metaadatok lettek megadva.
+
+metadata_warning_ignore_fetch_group=A(z) [{1}] entitás [{0}] osztályán megadott lehívási csoportok figyelmen kívül hagyása, mert a befűzés nem engedélyezett, és az entitás osztály nem valósítja meg a FetchGroupTracker felületet.
+
+metadata_warning_ignore_inheritance_subclass_cache=A gyorsítótár metaadatok figyelmen kívül hagyása a(z) [{0}] öröklési alosztályon. Gyorsítótár metaadatok csak az öröklési hierarchia gyökerében adhatók meg, és nem bírálhatók felül öröklési alosztályban.
+
+metadata_warning_ignore_inheritance_subclass_cache_interceptor=A gyorsítótár elfogó metaadatok figyelmen kívül hagyása a(z) [{0}] öröklési alosztályon. Gyorsítótár elfogó metaadatok csak az öröklési hierarchia gyökerében adhatók meg, és nem bírálhatók felül öröklési alosztályban.
+
+metadata_warning_ignore_inheritance_subclass_default_redirectors=Az alapértelmezett átirányító metaadatok figyelmen kívül hagyása a(z) [{0}] öröklési alosztályon. Alapértelmezett átirányító metaadatok csak az öröklési hierarchia gyökerében adhatók meg, és nem bírálhatók felül öröklési alosztályban.
+
+metadata_warning_ignore_inheritance_subclass_read_only=A(z) [{0}] öröklési alosztályokon a csak olvasható beállítás figyelmen kívül hagyása. A csak olvasható beállítás csak az öröklési hierarchia gyökerében adható meg, és nem bírálható felül öröklési alosztályban.
+
+metadata_warning_ignore_inheritance_tenant_discriminator_column=A(z) [{0}] öröklési alosztályon a bérlő megkülönböztető oszlop beállítás figyelmen kívül hagyása. A bérlő megkülönböztető oszlop(ok) csak az öröklési hierarchia gyökerében adhatók meg, és nem írhatók felül és/vagy nem adhatók meg öröklési alosztályban.
+
+metadata_warning_ignore_inheritance_tenant_table_discriminator=A(z) [{0}] öröklési alosztályon a bérlő tábla megkülönböztető beállítás figyelmen kívül hagyása. A bérlő tábla megkülönböztető beállítás csak az öröklési hierarchia gyökerében adható meg, és nem bírálható felül és/vagy nem adható meg öröklési alosztályban.
+
+metadata_warning_ignore_is_null_allowed=Az isNullAllowed visszaállításra kerül false értékre a következőben: {0}, mert az összesítés (valószínűleg egymásba ágyazott) cél idegen kulcs leképezéssel rendelkezik
+
+metadata_warning_ignore_lazy=A késleltetett beállítás visszaállítása a(z) [{1}] entitás osztály [{0}] OneToOne vagy ManyToOne attribútumán, mivel a befűzés nem engedélyezett vagy nem történt meg.
+
+metadata_warning_ignore_lob=A(z) [{0}] entitás osztályon belüli [{1}] elemen a lob meghatározás figyelmen kívül hagyása, mivel EclipseLink átalakítási metaadatok lettek megadva.
+
+metadata_warning_ignore_mapped_superclass_additional_criteria=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a további feltételek metaadatainak figyelmen kívül hagyása, mivel az adott entitáshoz további feltétel metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_annotation=A(z) [{0}] metaadat beállítás figyelmen kívül hagyása a(z) [{2}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon, mivel az adott entitáshoz előzőleg feltérképezésre kerültek metaadatok (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_association_override=A(z) [{2}] entitáshoz tartozó [{1}] leképezett szülőosztályon a(z) [{0}] nevű társítás felülbírálat figyelmen kívül hagyása, mivel az adott entitáshoz előzőleg feltérképezésre került egy ugyanilyen nevű társítás felülbírálat (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_attribute_override=A(z) [{2}] entitáshoz tartozó [{1}] leképezett szülőosztályon a(z) [{0}] nevű attribútum felülbírálat figyelmen kívül hagyása, mivel az adott entitáshoz előzőleg feltérképezésre került egy ugyanilyen nevű attribútum felülbírálat (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_cache=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a gyorsítótár metaadatok figyelmen kívül hagyása, mivel az adott entitáshoz gyorsítótár metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_cache_interceptor=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a gyorsítótár elfogó metaadatok figyelmen kívül hagyása, mivel az adott entitáshoz gyorsítótár elfogó metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_cacheable=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a gyorsítótárazható metaadatok figyelmen kívül hagyása, mivel az adott entitáshoz gyorsítótárazható metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_change_tracking=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a módosításkövetési metaadatok figyelmen kívül hagyása, mivel az adott entitáshoz módosításkövetési metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_copy_policy=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a másolás irányelv metaadatok figyelmen kívül hagyása, mivel az adott entitáshoz másolás irányelv metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_customizer=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a személyre szabó figyelmen kívül hagyása, mivel az adott entitáshoz személyre szabó metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_default_redirectors=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon az alapértelmezett átirányító metaadatok figyelmen kívül hagyása, mivel az adott entitáshoz alapértelmezett átirányító metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_existence_checking=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a létezésellenőrzési beállítás figyelmen kívül hagyása, mivel az adott entitáshoz létezésellenőrzési metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_fetch_group=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a(z) [{2}] nevű lehívási csoport figyelmen kívül hagyása, mivel az adott entitáshoz előzőleg feltérképezésre került egy ugyanilyen nevű lehívási csoport (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_id_class=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon az azonosító osztály figyelmen kívül hagyása, mivel az adott entitáshoz egy azonosító osztály előzőleg feltérképezésre került (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_multitenant=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a több-bérlős beállítás figyelmen kívül hagyása, mivel az adott entitáshoz több-bérlős metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_optimistic_locking=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon az optimista zárolás metaadatok figyelmen kívül hagyása, mivel az adott entitáshoz optimista zárolás metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_primary_key=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon az elsődleges kulcs beállítás figyelmen kívül hagyása, mivel az adott entitáshoz elsődleges kulcs metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapped_superclass_read_only=A(z) [{0}] entitás osztályhoz tartozó [{1}] leképezett szülőosztályon a csak olvasható beállítás figyelmen kívül hagyása, mivel az adott entitáshoz csak olvasható metaadatok előzőleg feltérképezésre kerültek (magán az entitáson vagy egy másik leképezett szülőosztályon).
+
+metadata_warning_ignore_mapping_metadata=A(z) [{0}] attribútumra alkalmazott jakarta.persistence metaadatok figyelmen kívül hagyása a(z) [{1}] osztály esetén. A jakarta.persistence metaadatok figyelmen kívül maradnak az átmeneti, statikus vagy absztrakt mezők vagy tulajdonságok esetében.
+
+metadata_warning_ignore_serialized=A(z) [{0}] entitás osztályon belüli [{1}] elemen az alapértelmezett sorosítás figyelmen kívül hagyása, mivel EclipseLink átalakítási metaadatok lettek megadva.
+
+metadata_warning_ignore_temporal=A(z) [{0}] entitás osztályon belüli [{1}] elemen az átmeneti meghatározás figyelmen kívül hagyása, mivel EclipseLink átalakítási metaadatok lettek megadva.
+
+metadata_warning_ignore_version_locking=Az optimista zárolási metaadatok már meghatározásra kerültek a(z) [{0}] entitás leírójában. A(z) [{1}] elemen a verziómeghatározás figyelmen kívül hagyása.
+
+metadata_warning_integer_discriminator_could_not_be_built=A(z) [{0}] osztály discriminatorType=INTEGER beállítást ad meg, és [{1}] discriminatorValue értéket használ.  Ez az érték nem alakítható egész számmá.  Megkíséreljük ezt az értéket karaktersorozatként használni.
+
+metadata_warning_inverse_access_type_mapping_override=A(z) {2} leképezési attribútum [{1}] felülbírálata a(z) {4} leképezési attribútummal [{3}] a(z) [{0}] osztályból. A figyelmeztetés elkerülése érdekében a(z) [{1}] attribútumot átmenetinek kell jelölnie.
+
+metadata_warning_multiple_id_fields_without_id_class=A(z) [{0}] entitás osztályhoz több azonosítót adott meg, @IdClass megadása nélkül. Ennek eredményeképp elveszítheti a képességet azonosság szerinti keresésre, osztott gyorsítótár támogatásra stb. Megjegyzés: Az EntityManager használatával azonban kereshet műveleteket elsődleges kulcs mezők átadásával. Ellenkező esetben JPQL lekérdezéseket kell használnia az entitásai beolvasásához. Egyéb azonosító-beállításokért lásd: @PrimaryKey.
+
+metadata_warning_override_annotation_with_xml=A(z) [{0}] feljegyzés figyelmen kívül hagyása a következőből: [{1}], mivel egy XML elem meghatározásra került a(z) [{2}] leképezési fájlban.
+
+metadata_warning_override_named_annotation_with_xml=A(z) [{0}] feljegyzés figyelmen kívül hagyása a következőből: [{2}], mivel egy ugyanilyen nevű [{1}] XML elem meg van határozva a(z) [{3}] leképezési fájlban
+
+metadata_warning_override_named_xml_with_eclipselink_xml=A(z) [{2}] leképezési fájlban meghatározott, [{1}] nevű [{0}] elem figyelmen kívül hagyása, mivel egy ugyanilyen nevű elem már meg lett határozva a(z) [{3}] eclipselink-orm leképezési fájlban
+
+metadata_warning_override_xml_with_eclipselink_xml=A(z) [{2}] leképezési fájlban meghatározott, a következőből származó: [{1}] [{0}] elem figyelmen kívül hagyása, mivel ez az elem már meg lett határozva a(z) [{3}] eclipselink-orm leképezési fájlban
+
+metadata_warning_partitioned_not_set=A(z) {0} osztály {1} elemén @Partitioning található, nem @Partitioned.  A @Partitioned feljegyzést a particionálási irányelv beállításához kell használni, míg a @Partitioning csak az irányelvet határozza meg, de nem állítja be azt.
+
+metadata_warning_reference_column_not_found=A(z) [{1}] elemen leképezett [{0}] referencia oszlopnév nem felel meg érvényes azonosítónak vagy alapvető mezőnek/oszlopnak a leképezési referencián. A hivatkozott oszlopnév úgy kerül felhasználásra, ahogy az meg van adva.
+
+metamodel_print_type_header=A követendő [{0}] metamodell típusok kiírt listája:
+
+metamodel_print_type_value=Metamodell típus: [{0}]}
+
+metamodel_type_collection_empty=A metamodell típusok gyűjteménye üres. Lehet, hogy nem találhatók modell osztályok a Java SE és néhány Java EE tároló kezelt perzisztencia egység entitáskeresése során.  Győződjön meg róla, hogy az entitás osztályai a persistence.xml fájlban <class> elemek vagy egy globális <exclude-unlisted-classes>false</exclude-unlisted-classes> elem használatával vannak bejegyezve
+
+metamodel_type_collection_empty_during_lookup=A(z) [{1}] metamodell típusok gyűjteménye üres. Lehet, hogy nem találhatók modell osztályok a Java SE és néhány Java EE tároló kezelt perzisztencia egység entitáskeresése során.  Győződjön meg róla, hogy az entitás osztályai a persistence.xml fájlban <class> elemek vagy egy globális <exclude-unlisted-classes>false</exclude-unlisted-classes> elem használatával vannak bejegyezve.  A kikeresés a következőn: [{0}] nullértéket fog visszaadni.
+
+migration_failed=Az áttelepítés meghiúsult.
+
+migration_input_dir_not_valid=A meghatározott ({0}) bemeneti könyvtár érvénytelen
+
+migration_output_dir_not_valid=A meghatározott ({0}) kimeneti könyvtár érvénytelen
+
+migration_successful=Áttelepítés sikeres.
+
+min_instance_not_supported=Az Oc4j "min-instance" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+missing_converter=Figyelmeztetés: A(z) {0} parancs nem alakítható át hiányzó CommandConverter miatt - parancs figyelmen kívül hagyása
+
+multiple_ds_not_supported=Az EclipseLink CMP nem támogatja a több adatforrást, és ezek közül csak a(z) ({0}) nevűt fogja használni, amely az orion-ejb-jar.xml fájlban van megadva, és társítva van a corresponding ejb-jar.xml fájlban legutóbb meghatározott entitáskomponenssel.
+
+must_define_migration_output_dir=Meg kell határoznia egy kimeneti könyvtárat az áttelepítési eszközhöz
+
+mw_project_generated_and_under=Az áttelepített EclipseLink munkaterület projektfájlok a következő alatt találhatók: ({0}).
+
+named_argument_not_found_in_query_parameters=Hiányzó lekérdezési paraméter a megnevezett argumentumhoz: {0} "null" értékkel lesz helyettesítve.
+
+nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=A(z) {0} osztály már kiürítés alatt van. A lekérdezés az adatbázisba írt további módosítások nélkül kerül végrehajtásra.  Ha a lekérdezés a módosított adatok alapján feltételes, akkor a módosítások nem feltétlenül tükröződnek az eredményekben.  A helyes eredmények biztosítása érdekében a felhasználók kiadhatnak egy flush() hívást a függő módosítások befejezésekor, ezen flush() hívás előtt.
+
+new_objects=Új objektumok:
+
+no_exclusive_write_access_not_supported=Az Oc4j "no-exclusive-write-access" natív CMP funkcióját a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+no_jar_entry_migratable_in_ear=A(z) ({0}) bemeneti EAR fájl egyik jar bejegyzése sem telepíthető át.
+
+no_session_found=A(z) [{0}] nevű munkamenet nem található a session.xml fájlban [{1}]
+
+non_jpa_allowed_type_used_for_collection_using_lazy_access=A(z) [{1}] elem a(z) [{0}] entitás osztályon belül [{2}] gyűjteménytípust használ, míg a JPA specifikáció csak java.util.Collection, java.util.Set, java.util.List vagy java.util.Map típust támogat.  Ez a típus a szorgalmas betöltéssel támogatott; ezzel a gyűjteménytípussal a késleltetett betöltés használata további konfigurációt a(z) következőt: [{2}] kiterjesztő IndirectContainer megvalósítást igényel, vagy azt követeli meg, hogy a leképezés alapszintű közvetett eljárás használatára legyen beállítva, a típus pedig ValueholderInterface legyen.
+
+objectchangepolicy_turned_off=Módosításkövetés kikapcsolva a következőre: {0}
+
+oc4j_native_migration_start=OC4J-Natív CMP -> OC4J EclipseLink CMP áttelepítés INDUL......
+
+old_pessimistic_locking_not_supported=Az Oc4j "old-pessimistic-locking" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+one_to_one_join_outer_migrated=A(z) ({1}) entitáskomponens ({0}) cmr mezőjéhez meghatározott egy-egy külső csatlakozást az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+optimistic_locking_not_supported=Az Oc4j locking-mode="optimistic" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+orion_ejb_jar_xml_not_found_in_input=Az orion-ejb-jar.xml nem létezik a megadott ({0}) bemeneti könyvtár alatt.
+
+osgi_initializer=OSGi inicializáló használata: [{0}].
+
+osgi_initializer_failed=A(z) [{0}] környezetspecifikus OSGi inicializáló összeállítása meghiúsult, a következő üzenettel: [{1}].
+
+overriding_cache_isolation=A(z) {0} szülő entitás elkülönítési szintje: {1}, ami nagyobb védelmet nyújt, mint a(z) {2} alosztály a következő elkülönítéssel: {3}, így az alosztály beállításra került {1} elkülönítési szintre.
+
+ox_lowering_global_logging_from_default_info_to_warning={0} Globális naplózás csökkentése alapértelmezett INFO szintről WARNING szintre.
+
+ox_lowering_session_logging_from_default_info_to_warning={0} Munkamenet-naplózás csökkentése alapértelmezett INFO szintről WARNING szintre.
+
+ox_turn_global_logging_off={0} Globális munkamenet-naplózás kikapcsolása.
+
+ox_turn_session_logging_off={0} Munkamenet-naplózás kikapcsolása.
+
+parse_ejb_jar_with_validation_fails=Az ejb-jar.xml átadása érvényesítéssel meghiúsult, hibával: ({0}). Az áttelepítési eszköz az xml fájlt érvényesítés nélkül fogja értelmezni.
+
+persistence_unit_ignores_statments_cache_setting=Az utasítás gyorsítótár nem engedélyezhető, mert nincs konfigurálva kapcsolatkészlet.
+
+persistence_unit_processor_error_in_class_forname_weaving_disabled=A(z) [{0}] osztálybetöltő nem tudta betölteni a(z) [{1}] osztályt. A befűzés erre a munkamenetre tiltásra került. Lehet, hogy az EclipseLink nem képes lekérni egy speciális kötelező ideiglenes osztálybetöltőt a kiszolgálóról, de Ön lehetséges áthidaló megoldásként használhat statikus befűzést. 
+
+persistence_unit_processor_error_loading_class={0}: {1} történt a PersistenceLoadProcessor {2} osztály betöltésére tett kísérlete során. Az osztály figyelmen kívül marad.
+
+persistence_unit_processor_error_loading_class_weaving_disabled=A(z) [{0}] osztálybetöltő a(z) [{1}] PersistenceLoadProcessor esetén nem tudta betölteni a(z) [{2}] osztályt. A befűzés erre a munkamenetre tiltásra került. Lehet, hogy az EclipseLink nem képes lekérni egy speciális kötelező ideiglenes osztálybetöltőt a kiszolgálóról, de Ön lehetséges áthidaló megoldásként használhat statikus befűzést. 
+
+persistence_unit_processor_jboss_temp_classloader_bypassed=A(z) [{0}] PersistenceLoadProcessor ideiglenes osztálybetöltője nem érhető el.  Osztálybetöltő átkapcsolása a következőre: [{1}].  A befűzés erre a munkamenetre tiltásra került. Lehet, hogy az EclipseLink nem képes lekérni egy speciális kötelező ideiglenes osztálybetöltőt a kiszolgálóról, de Ön lehetséges áthidaló megoldásként használhat statikus befűzést. 
+
+persistence_unit_processor_npe_temp_classloader=A(z) [{1}] PersistenceLoadProcessor [{0}] osztálybetöltője NPE-t okoz loadClass során. Osztálybetöltő átkapcsolása a következőre: [{2}].  A befűzés erre a munkamenetre tiltásra került. Lehet, hogy az EclipseLink nem képes lekérni egy speciális kötelező ideiglenes osztálybetöltőt a kiszolgálóról, de Ön lehetséges áthidaló megoldásként használhat statikus befűzést. 
+
+persistence_unit_processor_null_temp_classloader=A(z) [{0}] PersistenceLoadProcessor osztálybetöltője null. A befűzés erre a munkamenetre tiltásra került. Lehet, hogy az EclipseLink nem képes lekérni egy speciális kötelező ideiglenes osztálybetöltőt a kiszolgálóról, de Ön lehetséges áthidaló megoldásként használhat statikus befűzést. 
+
+persistence_unit_processor_sap_temp_classloader_bypassed=A(z) [{0}] PersistenceLoadProcessor ideiglenes osztálybetöltője nem érhető el.  Osztálybetöltő átkapcsolása a következőre: [{1}].  A befűzés erre a munkamenetre tiltásra került. Lehet, hogy az EclipseLink nem képes lekérni egy speciális kötelező ideiglenes osztálybetöltőt a kiszolgálóról, de Ön lehetséges áthidaló megoldásként használhat statikus befűzést. 
+
+problem_adding_connection=Nem adható távoli kapcsolat a következőből: {0} hiba miatt: {1}
+
+problem_adding_remote_connection=Probléma távoli kapcsolat hozzáadása során: {0}
+
+problem_reconnect_to_jms=Nem lehet újracsatlakozni a(z) {0} nevű JMS témakörhöz hiba miatt: {1}
+
+problem_registering_mbean=Probléma MBean regisztrálása során: {0}
+
+problem_unregistering_mbean=Probléma MBean regisztrációjának megszüntetése során: {0}
+
+problem_while_registering=Probléma regisztrálás során: {0}
+
+query_has_both_join_attributes_and_partial_attributes=A(z) {1} nevű {0} összefésülési és részleges attribútumokkal is rendelkezik. Ez a két technológia nem arra lett tervezve, hogy együttműködjenek; az eredmény előre nem látható.
+
+query_has_joined_attribute_outside_fetch_group={0}: a(z) [{1}] összefésült attribútum nem került beillesztésre a lehívási csoportba. Az összefésült attribútum adatai (bár beolvasásra kerülnek az adatbázisból) figyelmen kívül maradnak. Egy új sql kerül végrehajtásra az összefésült attribútum által hivatkozott objektum beolvassára; továbbá még egy sql a teljes főobjektum beolvasására (az attribútumértéknek a lehívási csoporton kívüli beállítása miatt). Illessze be a lehívott attribútumot a lehívási csoportba, vagy távolítsa el azt.
+
+received_corrupt_announcement=Figyelmeztetés: A feltérképezés-kezelő nem tudott feldolgozni szervizközleményt {0} miatt - közlemény figyelmen kívül hagyása
+
+received_unexpected_message_type=Nem várt {0} üzenettípus fogadása a(z) {1} témakörből; figyelmen kívül hagyás
+
+register_new_for_persist=PERSIST művelet hívása a következőn: {0}.
+
+relational_descriptor_support_only=Az alapértelmezett táblaelőállító jelenleg csak relációs projektből támogatja alapértelmezett táblasémák előállítását.
+
+relationship_cacheing_not_supported=A WLS "relationship-caching" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+removeEJB_return=removeEJB visszatérés: {0}
+
+removing_unique_constraint=UNIQUE megszorítás-meghatározás eltávolítása a következőből: [{0}], mert az szintén elsődleges kulcs.
+
+resource_local_persistence_init_info_ignores_jta_data_source=A(z) {0} PersistenceUnitInfo transactionType típusa RESOURCE_LOCAL, ezért a jtaDataSource figyelmen kívül marad
+
+retreived_null_message=Null üzenet lekérve a témakörből: {0}; figyelmen kívül hagyás
+
+retreived_unknown_message_type=Ismeretlen {0} üzenettípus lekérése a(z) {1} témakörből; figyelmen kívül hagyás
+
+sdo_classgenerator_exception={2} [{0}] kivétel történt - üzenet: [{1}]
+
+sdo_error_deserialization=Jogosulatlan visszaalakítási kísérlet a(z) {0} osztállyal.
+
+sdo_error_processing_referenced_schema={0} történt a hivatkozott séma feldolgozása során {1} uri-val, schemaLocation: {2}.
+
+sdo_invalid_schemaLocation=A(z) [{0}] schemaLocation nem hozható létre importálásra [{1}] uri-val.
+
+sdo_missing_schemaLocation=A hivatkozott séma {0} uri-val nem dolgozható fel, mert nincs megadva schemaLocation attribútum.
+
+sdo_type_generation_modified_class_naming_format_to={0}: A(z) [{1}] előállított típusú java osztály neve [{2}] névre módosítva, hogy kövesse az elnevezési megállapodást.
+
+sdo_type_generation_modified_function_naming_format_to={0}: A(z) [{1}] előállított típusú java get/set metódus neve [{2}] névre módosítva, hogy kövesse az elnevezési megállapodást.
+
+sdo_type_generation_warning_class_name_violates_java_spec={0}: A(z) [{1}] előállított típus ütközik a(z) [{2}] Java specifikáció elnevezési szabályaival, ezért át kell nevezni.
+
+sdo_type_generation_warning_class_name_violates_sdo_spec={0}: A(z) [{1}] előállított típus ütközik a(z) [{2}] SDO specifikáció elnevezési szabályaival, ezért át kell nevezni.
+
+sequence_cachekey_improper_format=A WLS "key-cache-size" natív CMP beállítása a(z) ({0}) entitáson helytelenül formázott, ({1}) értékkel
+
+session_key_for_mbean_name_is_null=Az MBean regisztrációhoz használt munkamenetnév nem lehet null.
+
+session_manager_no_partition=Nincs társítva partition példány az aktuális SessionManager példánnyal.
+
+sessions_xml_path_where_session_load_from=A munkamenet információk betöltésre kerülnek a következőről: [{0}].
+
+sop_object_deserialze_failed=Az sopObject visszaalakítása meghiúsult a következőről: [{0}] ebben: [{1}]
+
+sop_object_not_found=A sorosított sopObject nem található a következőben: [{0}], [{1}]
+
+sop_object_wrong_pk=Sorosított sopObject eltávolítása a sorból, mert rossz [{0}] elsődleges kulccsal rendelkezik a következőben: [{1}], [{2}]
+
+sop_object_wrong_version=Sorosított sopObject eltávolítása a sorból, mert rossz [{0}] elsődleges verzióval rendelkezik a következőben: [{1}], [{2}]
+
+src_pm_name_first_argument=A forrás PM nevét az első bemeneti argumentumban kell megadnia: -sOc4j-native vagy -sWeblogic.
+
+stack_of_visited_objects_that_refer_to_the_corrupt_object=a sérült objektumra hivatkozó látogatott objektumokat tartalmazó verem: {0}
+
+table_existed_during_creation=Tábla létrehozás meghiúsult. Ha már létezik, akkor először meg kell szüntetni. Végrehajthatja saját kezűleg, vagy a db-table-gen attribútum beállításával az orion-ejb-jar.xml fájlban.
+
+template_orion_ejb_jar_created=Egy sablonosított orion-ejb-jar.xml fájl létrehozásra került
+
+topLink_version=EclipseLink, verzió: {0}
+
+toplink=[EL]: 
+
+toplink_cmp_bean_name_xml_deprecated=A toplink-cmp-bean_name.xml támogatása elavult. A toplink-ejb-jar.xml használatáról információkért tanulmányozza a dokumentációt
+
+toplink_config=[EL Config]: 
+
+toplink_ejb_jar_in_jar=A toplink-ejb-jar.xml fájlt a(z) ({0}) jar fájl tartalmazza, ezért erre a jar fájlra nem kerül végrehajtásra áttelepítés.
+
+toplink_ejb_jar_xml_found_in_input=A toplink-ejb-jar.xml fájl a(z) ({0}) bemeneti könyvtárban található. Az áttelepítés végrehajtásához el kell távolítania a toplink leírót a bemeneti könyvtárból.
+
+toplink_fine=[EL Fine]: 
+
+toplink_finer=[EL Finer]: 
+
+toplink_finest=[EL Finest]: 
+
+toplink_info=[EL Info]: 
+
+toplink_severe=[EL Severe]: 
+
+toplink_warning=[EL Warning]: 
+
+unit_of_work_thread_info=A(z) ({0}) munkamenet aktuális egységét egy, az aktuálistól (azonosító: {3} név: {4}) eltérő szál hozta létre (azonosító: {1} név: {2}).
+
+unit_of_work_thread_info_thread_dump=Létrehozási szál (azonosító: {0} név: {1}) verem nyomkövetés:
+
+unitofwork_identity_hashcode={0}UnitOfWork azonosság kivonatkód: {1}
+
+update_all_fields_not_supported=Az Oc4j "update-all-fields" natív CMP funkcióját a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokkumentációt.
+
+update_all_query_cannot_use_binding_on_this_platform=Az UpdateAllQuery nem használhat kötést ezen az adatbázis-platformon. Lekérdezés beállítás módosítva a végrehajtáshoz kötés nélkül.
+
+validate_db_schema_with_not_supported=A WLS "validate-db-schema-with" natív CMP beállítását az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+validate_ejb_jar=Az ejb-jar.xml érvényesítése indul, eltarthat egy ideig...
+
+validate_object_space=objektumterület érvényesítése.
+
+validity_timeout_not_supported=Az Oc4j "validity-timeout" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+verifiy_columns_read_locking_not_supported=A "Read" optimista beállítás a "verify-columns" elemhez a(z) ({0}) entitásban nem közvetlenül támogatott az EclipseLink CMP-ben. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+verifiy_rows_read_locking_not_supported=A "Read" optimista beállítás a "verify-rows" elemhez a(z) ({0}) entiásban nem közvetlenül támogatott az EclipseLink CMP-ben. A részletekért tanulmányozza az áttelepítési dokumentációt.
+
+weaver_class_not_in_project=A befűző olyanosztályt talált, amely nem része a projektnek: {0}.
+
+weaver_could_not_write=A befűző kivételt észlelt a(z) {0} osztály fájlrendszerbe történő írására tett kísérlet során.  A kivétel: {1}
+
+weaver_disable_by_system_property=A befűzés a(z) {0} rendszertulajdonság által tiltott
+
+weaver_not_overwriting=A befűző nem írja felül a(z) {0} osztályt, mert nincs felülírásra beállítva.
+
+weaver_null_project=A befűző munkamenet projektje nem lehet null
+
+weblogic_ejb_jar_xml_not_found_in_input=A weblogic-ejb-jar.xml nem létezik a megadott ({0}) bemeneti könyvtár alatt.
+
+weblogic_native_migration_start=WebLogic-Natív CMP -> OC4J EclipseLink CMP áttelepítés INDUL......
+
+weblogic_ql_not_supported=A(z) ({2}) entitás of ({1}) metódusánakhoz tartozó ({0}) WebLogic-QL nem került áttelepítésre, mivel az EclipseLink nem támogatja a WebLogic QL nyelvet.
+
+weblogic_query_not_supported=A WLS "weblogic-query" natív CMP beállítását a(z) ({0}) entitáson az EclipseLink CMP nem támogatja közvetlenül. A részletekért tanulmányozza az áttelepítési dokumentációt.
+

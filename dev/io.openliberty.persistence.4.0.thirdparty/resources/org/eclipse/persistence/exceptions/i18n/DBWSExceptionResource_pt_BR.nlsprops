@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource_pt_BR.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000=Não é possível localizar o arquivo "[{0}]"
+
+47001=Não é possível localizar o descritor [{0}] para operação [{1}] no projeto O-R
+
+47002=Não é possível localizar a consulta "[{0}]" para o descritor [{1}]
+
+47003=Não é possível localizar a consulta "[{0}]" para a sessão [{1}]
+
+47004=O tipo de parâmetro [{0}] para a operação [{1}] não existe no esquema
+
+47005=O tipo de parâmetro [{0}] para operação a [{1}], não tem mapeamento de O-X
+
+47006=O tipo de resultado [{0}] para a operação [{1}] não existe no esquema
+
+47007=O tipo de resultado [{0}] para a operação [{1}] não tem mapeamento de O-X
+
+47008=Somente consultas em formato XML simples suportam múltiplos argumentos de saída
+
+47009=Parâmetros de cursor INOUT não são suportados
+
+47010=Não é possível localizar a sessão O-R para o serviço [{0}]
+
+47011=Não é possível localizar a sessão O-X sessão para o serviço [{0}]
+
+47012=Não é possível analisar o arquivo DBWS
+

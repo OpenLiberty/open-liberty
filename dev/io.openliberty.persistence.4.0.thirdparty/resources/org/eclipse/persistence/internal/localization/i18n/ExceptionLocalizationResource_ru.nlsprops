@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource_ru.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN="in(Expression<?>... значения)" вызван с типом выражения: {0}, который не является ни литералом, ни параметром.  Это не поддерживается.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=Попытка создания запроса критерия без корневого субъекта.
+
+INCORRECT_PARAMETER_TYPE=Параметр в индексе : {0} не относится к типу: {1}.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT=Метод "multiSelect" вызван в CriteriaQuery с типом результата Простое значение.  Возможно, указан неправильный тип возврата, или следует использовать метод "select".
+
+NO_PARAMETER_WITH_INDEX=Параметр с индексом : {0} не найден в запросе: {1}.
+
+NO_PARAMETER_WITH_NAME=Параметр с именем : {0} не найден в запросе: {1}.
+
+NO_VALUE_BOUND=К параметру с именем: {0} не привязано никакое значение
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=Методу "setParameter" передан пустой параметр.  Невозможно индексировать параметры, используя значение "Null".
+
+PARAMETER_NILL_NOT_FOUND=Методу getParameterValue() передается пустой параметр
+
+add_attribute_key_was_null=При настройке AttributeGroup для подкласса типа атрибута параметр типа не должен быть пустым
+
+argument_collection_was_null=Пустая коллекция аргумента
+
+argument_keyed_named_query_with_JPA=Существует несколько запросов с именем: {0}, но при использовании EntityManagerFactory.addNamedQuery() имя должно быть уникальным
+
+attribute_is_not_map_with_managed_key=Невозможно добавить подграф ключа в EntityGroup как атрибут {0} в классе {1}, поскольку он не является объектом Map с ключом управляемого типа.
+
+bean_definition_vector_arguments_are_of_different_sizes=Аргументы вектора определения Bean-объекта имеют разные размеры
+
+bean_not_found_on_database=В базе данных не найден EJB {0}.
+
+bean_validation_constraint_violated=Произошло нарушение одного или нескольких ограничений проверки EJB при выполнении автоматической проверки EJB для события обратного вызова: {0} для класса: {1}. Дополнительные сведения приведены во вложенном сообщении о нарушениях ограничений.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=Для класса [{0}] с дескриптором [{1}] не задан аргумент CMPPolicy, поэтому не удается создать экземпляр первичного ключа для типа ИД [{2}].
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=Класс [{0}] не относится к постоянному типу - с ним не связан дескриптор.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=Для объекта [{0}] с дескриптором [{1}] не задан CMPPolicy, не удается вернуть ИД.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=Объект [{0}] не относится к постоянному типу - с ним не связан дескриптор.
+
+called_get_entity_manager_from_non_jta=getEntityManager() вызван из EntityManagerFactory без поддержки JTA.  Убедитесь, что в EntityManagerFactory настроена поддержка JTA.
+
+can_not_create_directory=Не удается создать каталог {0}.
+
+can_not_create_file=Не удалось создать файл {0}.
+
+can_not_move_directory=Не удается переместить каталоги.
+
+cannot_get_from_non_correlated_query=getCorrelationParent() вызван в блоке from-clause, который не был получен с помощью корреляции.
+
+cannot_get_unfetched_attribute=Не удается получить не выбранный атрибут [{1}] из отключенного объекта {0}.
+
+cannot_merge_removed_entity=Невозможно выполнить слияние с удаленной сущностью: {0}
+
+cannot_read_through_txn_for_unsynced_pc=Свойство задано для присоединения этого контекста сохранения состояния к активной в данный момент транзакции, но этот контекст сохранения состояния не является SYNCHRONIZED.
+
+cannot_remove_detatched_entity=Для вызова удаления {0} сущность должна быть управляемой, попробуйте снова присоединить отключенный объект и повторите попытку удаления.
+
+cannot_remove_removed_entity=Сущность уже удалена: {0}
+
+cannot_update_entity_fetch-group=Попытка добавления или удаления атрибута [{1}] в {0} - объект EntityFetchGroup является неизменяемым.
+
+cannot_use_transaction_on_unsynced_pc=Невозможно вызывать методы, требующие выполнения транзакции, так как в текущую транзакцию не был добавлен EntityManager.
+
+cant_lock_not_managed_object=Для вызова блокировки {0} сущность должна быть управляемой, попробуйте снова присоединить отключенный объект и повторите попытку блокировки.
+
+cant_persist_detatched_object=Не удается сохранить подключенный объект, возможно, существует дубликат первичного ключа: {0}.
+
+cant_refresh_not_managed_object=Невозможно обновить неуправляемый объект: {0}.
+
+create_insertion_failed=Не удалось создать вставку.
+
+criteria_no_constructor_found=Возникла исключительная ситуация при поиске конструктора в классе {0}, использующего типы критериев выбора в качестве аргументов.  Если этот CriteriaQuery не планировался в качестве запроса конструктора, убедитесь, что выбор соответствует типу возврата.
+
+directory_not_exist=Каталог {0} не существует.
+
+ejb30-default-for-unknown-property=Невозможно вернуть стандартное значение для неизвестного свойства {0}.
+
+ejb30-illegal-property-value=Свойство {0} имеет недопустимое значение {1}.
+
+ejb30-incorrect-parameter-type=Вы пытаетесь задать значение типа {1} для параметра {0} с ожидаемым типом {2} из строки запроса {3}.
+
+ejb30-wrong-argument-index=Вы пытаетесь задать параметр в позиции {0}, но он не существует в этой строке запроса {1}.
+
+ejb30-wrong-argument-name=Вы пытаетесь задать значение параметра по имени {0}, которого нет в строке запроса {1}.
+
+ejb30-wrong-lock_called_without_version_locking-index=Для сущности, у которой нет индекса блокировки версии, указан недопустимый тип режима блокировки. При отсутствии индекса блокировки версии может использоваться только тип режима PESSIMISTIC.
+
+ejb30-wrong-query-hint-value=Запрос {0}, подсказка запроса {1} имеет недопустимое значение {2}.
+
+ejb30-wrong-type-for-query-hint=Запрос {0}, подсказка запроса {1} не подходит для этого типа запросов.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=Конфликт свойств EntityManager: jakarta.persistence.driver и/или jakarta.persistence.url требует DefaultConnector, но модуль хранения использует внешний контроллер транзакций, поэтому требуется JNDIConnector.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=Конфликт свойств EntityManager: jakarta.persistence.driver и/или jakarta.persistence.url требуют DefaultConnector, но jakarta.persistence.jtaDataSource и/или jakarta.persistence.nonjtaDataSource требуют JNDIConnector.
+
+entity_no_longer_exists_in_db=В базе {0} больше нет этой сущности.
+
+error_executing_jar_process=Ошибка выполнения процесса jar
+
+error_invoking_deploy=Ошибка вызова Deploy
+
+error_loading_resources=Ошибка загрузки ресурсов {0} из пути к классам
+
+error_marshalling_arguments=Ошибка маршализации аргументов
+
+error_marshalling_return=Ошибка возврата маршализации
+
+error_parsing_resources=Ошибка анализа ресурсов {0}
+
+error_reading_jar_file=Ошибка чтения файла jar: {0} запись: {1}
+
+error_unmarshalling_arguments=Ошибка отмены маршализации аргументов
+
+error_unmarshalling_return=ошибка возврата отмены маршализации
+
+file_exists=Файл {0} уже существует.
+
+file_not_exist=Файл {0} не существует.
+
+finder_query_failed=Сбой запроса агента поиска:
+
+getpersistenceunitutil_called_on_closed_emf=Вызван getPersistenceUnitUtil() для закрытого объекта EntityManagerFactory.
+
+illegal_state_while_closing=Попытка закрытия EntityManager с состоянием транзакции, отличным от NO_TRANSACTION, COMMITTED или ROLLEDBACK.
+
+incorrect_hint=Для подсказки {0} задан неправильный тип объекта.
+
+incorrect_query_for_get_result_collection=Вызов getResultCollection() для этого запроса невозможен.  Это неправильный тип запроса.
+
+incorrect_query_for_get_result_list=Вызов getResultList() для этого запроса невозможен.  Это неправильный тип запроса.
+
+incorrect_query_for_get_single_result=Вызов getSingleResult() для этого запроса невозможен.  Это неправильный тип запроса.
+
+incorrect_spq_query_for_execute=Вызов execute() для этого запроса хранимой процедуры невозможен.  Это неправильный тип запроса.
+
+incorrect_spq_query_for_execute_update=Вызов executeUpdate() для этого запроса хранимой процедуры невозможен, так как он возвращает набор результатов, а не только количество обновлений.
+
+incorrect_spq_query_for_get_result_list=Вызов getResultList() для этого запроса хранимой процедуры невозможен, так как он не возвращает набор результатов.
+
+incorrect_spq_query_for_get_single_result=Вызов getSingleResult() для этого запроса хранимой процедуры невозможен, так как он не возвращает набор результатов.
+
+input_source_not_found=Источник не найден или пуст
+
+interface_hash_mismatch=Несоответствие хэша интерфейса
+
+invalid_lock_query=Тип блокировки может использоваться только с запросом select (который позволяет блокировать базу данных при необходимости).
+
+invalid_method_hash=Недопустимый хэш метода
+
+invalid_method_number=Недопустимый номер метода
+
+invalid_pk_class=Для данной операции поиска указан экземпляр неправильного класса PK.  Ожидаемый класс : {0}, полученный класс : {1}.
+
+jar_not_exist=Файл JAR {0} не существует.
+
+jaxb_helper_invalid_binder=Указанный Binder [{0}] не является JAXBBinder EclipseLink, следовательно, его преобразование невозможно.
+
+jaxb_helper_invalid_jaxbcontext=Указанный JAXBContext [{0}] не является JAXBContext EclipseLink, следовательно, его преобразование невозможно.
+
+jaxb_helper_invalid_marshaller=Указанный Marshaller [{0}] не является JAXBMarshaller EclipseLink, следовательно, его преобразование невозможно.
+
+jaxb_helper_invalid_target_for_binder=Указанный целевой класс [{0}] должен представлять собой JAXBBinder EclipseLink или XMLBinder EclipseLink.
+
+jaxb_helper_invalid_target_for_jaxbcontext=Указанный целевой класс [{0}] должен представлять собой JAXBContext EclipseLink или XMLContext EclipseLink.
+
+jaxb_helper_invalid_target_for_marshaller=Указанный целевой класс [{0}] должен представлять собой JAXBMarshaller EclipseLink или XMLMarshaller EclipseLink.
+
+jaxb_helper_invalid_target_for_unmarshaller=Указанный целевой класс [{0}] должен представлять собой JAXBUnmarshaller EclipseLink или XMLUnmarshaller EclipseLink.
+
+jaxb_helper_invalid_unmarshaller=Указанный Unmarshaller [{0}] не является JAXBUnmarshaller EclipseLink, следовательно, его преобразование невозможно.
+
+jmx_enabled_platform_mbean_runtime_exception=Возникла исключительная ситуация при вызове динамической служебной функции MBean JMX в {0}, раскрывающем информацию о сеансе EclipseLink. Исключительная ситуация: {1}
+
+join_trans_called_on_entity_trans=Метод joinTransaction вызван в Resource-Local EntityManager, который не удалось зарегистрировать для транзакции JTA.
+
+jpa21-ddl-create-script-target-not-specified=При создании DDL в сценарии необходимо указать целевой объект сценария с помощью свойства [ jakarta.persistence.schema-generation.scripts.create-target].
+
+jpa21-ddl-drop-script-target-not-specified=При генерировании DDL в сценарии необходимо указать целевой объект сценария drop с помощью свойства [ jakarta.persistence.schema-generation.scripts.drop target].
+
+jpa21-ddl-invalid-source-script-type=Исходный сценарий, указанный {0}, относится к недопустимому типу {0}. Допустимые типы исходных сценариев: java.io.Reader или строка с URL файла.
+
+jpa21-ddl-invalid-target-script-type=Целевой сценарий, указанный {0}, относится к недопустимому типу {0}. Допустимые типы целевых сценариев: java.io.Writer или строка с URL файла.
+
+jpa21-ddl-source-script-io-exception=В сценарии создания ddl {0} произошла ошибка ввода-вывода.
+
+jpa21-ddl-source-script-not-found=Не найден исходный сценарий: {0} для вызова generateSchema. Убедитесь, что указана правильная строка URL с протоколом "file:" или имя файла представляет собой допустимый ресурс, доступный в пути к классам.
+
+jpa21-ddl-source-script-sql-exception=При выполнении {0} из исходного сценария создания ddl: {1} произошла ошибка.
+
+jpa21_invalid_call_on_un_executed_query=Запрос должен быть выполнен до того, как будет вызван этот метод.
+
+jpa21_invalid_call_with_no_output_parameters=В запросе указан недопустимый вызов, не возвращающий выходные параметры.
+
+jpa21_invalid_call_with_no_result_sets_returned=В запросе указан недопустимый вызов, не возвращающий наборы результатов.
+
+jpa21_invalid_parameter_name=Недопустимое имя выходного параметра : {0}. {1}
+
+jpa21_invalid_parameter_position=Неправильная позиция выходного параметра : {0}. {1}.
+
+jpa_criteriaapi_alias_reused=Несколько элементов выбора используют один и тот же псевдоним.  Одинаковые имена: {0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=Обнаружен недопустимый кортеж или элемент выбора со значениями в массиве. Аргумент: {0}
+
+jpa_criteriaapi_invalid_result_index=индекс {0} недопустим для списка результатов с размером {1}.
+
+jpa_criteriaapi_invalid_result_type=Элемент {0} типа {1} недопустим для результата {2}.
+
+jpa_criteriaapi_no_corresponding_element_in_result=Элемент {0} не соответствует элементу в результате запроса.
+
+jpa_criteriaapi_null_literal_value=В CriteriaBuilder.literal() передано пустое значение.  Рекомендуется использовать nullLiteral(Class<T> resultClass).
+
+jpa_helper_invalid_entity_manager_factory=Фабрика JPA EntityManagerFactory {0} не является EclipseLink EntityManagerFactory, поэтому ее невозможно преобразовать.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=Фабрика JPA EntityManagerFactory {0} не является фабрикой EclipseLink EntityManagerFactory, поэтому ее метаданные невозможно обновить.
+
+jpa_helper_invalid_query=Запрос типа {0} не является запросом EclipseLink, поэтому его преобразование невозможно.
+
+jpa_helper_invalid_read_all_query=Запрос типа {0} не является запросом EclipseLink на чтение всех объектов, поэтому его преобразование невозможно.
+
+jpa_helper_invalid_report_query=Запрос типа {0} не является запросом EclipseLink на отчет, поэтому его преобразование невозможно.
+
+jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(entity) был вызван с объектом [{0}], не являющимся постоянным объектом.
+
+lock_called_without_version_locking=Для вызовов entityManager.lock(Object entity, LockModeType lockMode) требуется включенная блокировка версий.
+
+managed_component_not_found=Атрибут {1}, указанный в EntityGraph {0}, ссылается на подграф с именем {2}, который не найден.
+
+may_not_contain_xml_entry={0} не может содержать {1}.
+
+metamodel_class_incorrect_type_instance=Тип [{2}] не ожидал [{1}] в качестве ключевого класса [{0}].  Убедитесь, что класс [{2}] указывается в persistence.xml с помощью специального свойства <class/> или глобального свойства <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance=Не найден [{1}] для ключевого класса [{0}] в метамодели - убедитесь, что класс [{2}] указывается в файле persistence.xml с помощью специального свойства <class>{0}</class> или глобального элемента <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_class_null_type_instance_for_null_key=Не найден [{0}] для пустого параметра ключевого класса в метамодели - укажите правильный ключевой класс для метамодели [{1}] и убедитесь, что ключевой класс указывается в файле persistence.xml с помощью специального свойства <class/> или глобального элемента <exclude-unlisted-classes>false</exclude-unlisted-classes>.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=Ожидаемый единичный атрибут @Id для определяемого типа [{0}] входит в неожиданный @IdClass.
+
+metamodel_identifiable_id_attribute_type_incorrect=Ожидаемый тип атрибута ID [{2}] в существующих атрибутах id [{0}] для идентифицируемого типа [{1}], но найден типы атрибутов [{3}].
+
+metamodel_identifiable_no_id_attribute_present=В определяемом типе [{0}] нет атрибута @Id.
+
+metamodel_identifiable_no_version_attribute_present=В определяемом типе [{0}] нет атрибута @Version.
+
+metamodel_identifiable_type_has_no_idclass_attribute=В IdentifiableType [{0}] нет атрибутов @IdClass.  При этом в типе может быть один или несколько @Id или @EmbeddedId.
+
+metamodel_identifiable_version_attribute_type_incorrect=Ожидался тип [{2}] для существующего атрибута версии [{0}] в определяемом типе [{1}], но найден тип атрибута [{3}].
+
+metamodel_incompatible_persistence_config_for_getIdType=Несовместимая конфигурация хранения для получения типа ИД метамодели для ManagedType [{0}].
+
+metamodel_interface_inheritance_not_supported=Дескриптор [{0}], использующий наследование ({1}), в настоящее время не поддерживается при создании метамодели. Попробуйте воспользоваться наследованием Entity или MappedSuperclass (абстрактный класс).
+
+metamodel_managed_type_attribute_not_present=Атрибут [{0}] отсутствует в управляемом типе [{1}].
+
+metamodel_managed_type_attribute_return_type_incorrect=В существующем атрибуте [{0}] управляемого типа [{1}] ожидался тип атрибута возврата [{2}], но найден тип [{3}].
+
+metamodel_managed_type_attribute_type_incorrect=В существующем атрибуте [{0}] управляемого типа [{1}] ожидался тип атрибута [{2}], но найден тип [{3}].
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=Объявленный атрибут [{0}] из управляемого типа [{1}] отсутствует, но он объявлен в суперклассе.
+
+missing_parameter_value=В списке параметров, предоставленных в процессе выполнения запроса, не найден аргумент запроса {0}.
+
+missing_toplink_bean_definition_for=Отсутствует определение Javabean TopLink для {0}
+
+named_entity_graph_exists=NamedEntityGraph с именем {0}, найденный в {1}, уже существует в этом модуле сохранения состояния.
+
+negative_max_result=Отрицательное значение MaxResult не разрешается.
+
+negative_start_position=Отрицательное значение начальной позиции не разрешается
+
+new_object_found_during_commit=В процессе синхронизации был обнаружен новый объект через взаимосвязь, не помеченную каскадным PERSIST: {0}.
+
+no_entities_retrieved_for_get_reference=Невозможно найти сущность с ИД {0}
+
+no_entities_retrieved_for_get_single_result=getSingleResult() не извлек ни одной сущности.
+
+no_entity_graph_of_name=EntityGraph с именем {0} не существует
+
+not_an_entity=Объект {0} не является известным типом сущности.
+
+not_jar_file={0} не является файлом jar.
+
+not_usable_passed_to_entitygraph_hint=значение {1}, переданное подсказке запроса {0}, не подходит для этой подсказки запроса
+
+null_argument_get_attributegroup=Искомое имя AttributeGroup не должно быть пустым.
+
+null_jar_file_names=Пустые имена файлов jar
+
+null_not_supported_identityweakhashmap=IdentityWeakHashMap не поддерживает "null" в качестве ключа или значения.
+
+null_pk=Для этой операции поиска был указан экземпляр пустого PK, что является ошибкой.
+
+null_sqlresultsetmapping_in_query=Для ResultSetMappingQuery требуется допустимый SQLResultSetMapping
+
+null_value_for_column_result=Для ColumnResult необходимо указать имя столбца
+
+null_value_for_constructor_result=Для результата конструктора необходимо указать имя целевого класса
+
+null_value_for_entity_result=Для результата сущности необходимо указать имя класса сущности
+
+null_value_in_sqlresultsetmapping=Для SQLResultSetMapping необходимо указать имя.  Это имя используется для ссылки на SQLResultSetMapping из запроса.
+
+null_values_for_field_result=Для FieldResult необходимо указать и имя атрибута, и имя столбца
+
+only_one_root_subgraph=Без типа может отображаться только корневой подграф.  Все подграфы, представляющие производные классы, должны иметь тип.
+
+operation_not_supported=Вызов {0} в {1} не поддерживается спецификацией.
+
+operation_on_closed_entity_manager=Попытка выполнения операции в закрытом EntityManager.
+
+operation_on_closed_entity_manager_factory=Попытка выполнения операции в закрытом EntityManagerFactory.
+
+ora_pessimistic_locking_with_rownum=Режим блокировки Pessimistic с ограничением строк запрос не поддерживается.
+
+parsing_error=ошибка синтаксического анализа
+
+parsing_fatal_error=неустранимая ошибка синтаксического анализа
+
+parsing_warning=предупреждение анализа
+
+pathnode_is_primitive_node=Выражение критериев относится к простому типу и не может быть раскрыто глубже.
+
+pathnode_type_does_not_apply_to_primitive_node=Выражение критериев относится к простому типу и не может быть раскрыто глубже.  Простые выражения не поддерживают значения "type".
+
+pk_class_not_found=Не удалось загрузить класс первичного ключа {0}
+
+position_bound_param_not_found=В позиции {0} не было граничного параметра.
+
+position_param_not_found=В позиции {0} параметр не обнаружен.
+
+pu_configured_for_resource_local=Не удалось создать EntityManager с SynchronizationType, так как PersistenceUnit настроен с транзакциями, локальными для ресурсов.
+
+remove_deletion_failed=Сбой отмены удаления:
+
+rollback_because_of_rollback_only=Для транзакции выполнен "откат", так как она установлена в RollbackOnly.
+
+sdo_helper_invalid_changesummary=Указанный ChangeSummary [{0}] не является SDOChangeSummary EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_copyhelper=Указанный CopyHelper [{0}] не является SDOCopyHelper EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_datafactory=Указанный DataFactory [{0}] не является SDODataFactory EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_datahelper=Указанный DataHelper [{0}] не является SDODataHelper EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_dataobject=Указанный DataObject [{0}] не является SDODataObject EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_equalityhelper=Указанный EqualityHelper [{0}] не является SDOEqualityHelper EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_helpercontext=Указанный HelperContext [{0}] не является SDOHelperContext EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_property=Указанный Property [{0}] не является SDOProperty EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_sequence=Указанный Sequence [{0}] не является SDOSequence EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_target_for_changesummary=Указанный целевой класс [{0}] должен представлять собой класс SDOChangeSummary EclipseLink.
+
+sdo_helper_invalid_target_for_copyhelper=Указанный целевой класс [{0}] должен представлять собой класс SDOCopyHelper EclipseLink.
+
+sdo_helper_invalid_target_for_datafactory=Указанный целевой класс [{0}] должен представлять собой класс SDODataFactory EclipseLink.
+
+sdo_helper_invalid_target_for_datahelper=Указанный целевой класс [{0}] должен представлять собой класс SDODataHelper EclipseLink.
+
+sdo_helper_invalid_target_for_dataobject=Указанный целевой класс [{0}] должен представлять собой класс SDODataObject EclipseLink.
+
+sdo_helper_invalid_target_for_equalityhelper=Указанный целевой класс [{0}] должен представлять собой класс SDOEqualityHelper EclipseLink.
+
+sdo_helper_invalid_target_for_helpercontext=Указанный целевой класс [{0}] должен представлять собой класс SDOHelperContext EclipseLink.
+
+sdo_helper_invalid_target_for_property=Указанный целевой класс [{0}] должен представлять собой класс SDOProperty EclipseLink.
+
+sdo_helper_invalid_target_for_sequence=Указанный целевой класс [{0}] должен представлять собой класс SDOSequence EclipseLink.
+
+sdo_helper_invalid_target_for_type=Указанный целевой класс [{0}] должен представлять собой один из классов EclipseLink: SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType или SDOXMLHelperLoadOptionsType.
+
+sdo_helper_invalid_target_for_typehelper=Указанный целевой класс [{0}] должен представлять собой класс SDOTypeHelper EclipseLink.
+
+sdo_helper_invalid_target_for_xmlhelper=Указанный целевой класс [{0}] должен представлять собой один из классов EclipseLink: SDOXMLHelper, XMLMarshaller или XMLUnmarshaller.
+
+sdo_helper_invalid_target_for_xsdhelper=Указанный целевой класс [{0}] должен представлять собой класс SDOXSDHelper EclipseLink.
+
+sdo_helper_invalid_type=Указанный тип [{0}] не является SDOType EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_typehelper=Указанный TypeHelper [{0}] не является SDOTypeHelper EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_xmlhelper=Указанный XMLHelper [{0}] не является SDOXMLHelper EclipseLink, следовательно, его преобразование невозможно.
+
+sdo_helper_invalid_xsdhelper=Указанный XSDHelper [{0}] не является SDOXSDHelper EclipseLink, следовательно, его преобразование невозможно.
+
+subclass_sought_not_a_managed_type=искомый тип подграфа {0} не является управляемым типом для атрибута {1}.
+
+too_many_results_for_get_single_result=Метод Query.getSingleResult() вернул несколько результатов
+
+unable_to_find_named_query=NamedQuery с именем {0} не найден.
+
+unable_to_unwrap_jpa=Класс не поддерживает развертывание {0} в {1}
+
+undeclared_checked_exception=Необъявленное контролируемое исключение
+
+unexpect_argument=Неожиданный входной аргумент {0}
+
+unknown_bean_class=Неизвестный класс сущностного объекта Javabean: {0}, убедитесь, что этот класс помечен аннотацией @Entity.
+
+unknown_entitybean_name=Неизвестное имя сущностного JavaBean: {0}
+
+unsupported_classfile_version=Класс {0} скомпилирован с помощью неподдерживаемого JDK. Сообщите об этой ошибке в проект с открытым исходным кодом EclipseLink.
+
+wrap_convert_exception=При вызове {0} в классе преобразователя {1} со значением {2} возникла исключительная ситуация
+
+wrap_ejbql_exception=При создании запроса в EntityManager возникла исключительная ситуация
+

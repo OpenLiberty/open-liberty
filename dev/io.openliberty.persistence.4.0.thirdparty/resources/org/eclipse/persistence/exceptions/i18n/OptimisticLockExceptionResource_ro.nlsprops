@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=A fost făcută o încercare de ştergere a obiectului [{0}], dar nu are număr de versiune în harta identitate. {3}Este posibil să nu fi fost citită înainte de încercarea de ştergere. {3}Clasa> {1} Cheie primară> {2}
+
+5003=Obiectul [{0}] nu poate fi şters deoarece s-a modificat sau a fost şters de când a fost citit ultima dată. {3}Clasa> {1} Cheie primară> {2}
+
+5004=A fost făcută o încercare de actualizare a obiectului [{0}], dar nu are un număr de versiune în harta de identitate. {3}Este posibil să nu fi fost citită înainte dă fi fost încercată actualizarea. {3}Clasa> {1} Cheie primară> {2}
+
+5006=Obiectul [{0}] nu poate fi actualizat deoarece s-a modificat sau a fost şters de când a fost citit ultima dată. {3}Clasa> {1} Cheie primară> {2}
+
+5007=Obiectul [{0}] trebuie să aibă o mapare care să nu fie numai citire la câmpul de blocare versiune.
+
+5008=Trebuie să mapaţi câmpul de blocare versiune la java.sql.Timestamp atunci când utilizaţi Blocarea amprentă de timp
+
+5009=Obiectul din clasa [{1}] cu cheia primară [{0}] nu poate fi dezvelit deoarece a fost şters de când a fost citit ultima dată.
+
+5010=Obiectul [{0}] nu poate fi combinat deoarece a fost modificat sau şters de când a fost citit ultima dată. {2}Clasa> {1}
+
+5011=Unul sau mai multe obiecte nu pot fi actualizate deoarece s-a modificat sau a fost şters de când a fost citit ultima dată
+

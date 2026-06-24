@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource_fr.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Chaîne XPath non valide : {0}
+
+25002=Un index d''entiers n''a pas pu être analysé syntaxiquement depuis la chaîne cette chaîne XPath : {0}
+
+25003=Une erreur s''est produite lors de la génération de l''objet
+
+25004=Une erreur s''est produite lors de la déconversion de paramètres du document
+
+25005=Une erreur s''est produite lors de la validation de l''objet
+
+25006=Aucun élément racine par défaut n''a été spécifié pour l''élément XMLDescriptor mappé à {0}
+
+25007=Aucun descripteur pour la classe {0} n''a été trouvé dans le projet.  Pour JAXB, si l''élément JAXBContext a été amorcé avec TypeMappingInfo[], vous devez appeler une méthode de génération qui accepte TypeMappingInfo comme paramètre en entrée.
+
+25008=Aucun descripteur avec l''élément racine par défaut {0} n''a été trouvé dans le projet.
+
+25010=Aucune référence de schéma n''a été spécifiée pour l''élément XMLDescriptor mappé à {0}
+
+25011=Un argument nul a été détecté
+
+25012=Une erreur s''est produite lors de la résolution du schéma XML.
+
+25013=Une erreur s''est produite lors de la tentative de définition des schémas.
+
+25014=Une erreur s''est produite lors de la tentative d''instanciation de la plateforme de schéma.
+
+25015=Une erreur s''est produite lors de la tentative de résolution de l''URI espace de nom pour {0}. Aucun programme de résolution d''espace-noms n''a été spécifié sur le descripteur.
+
+25016=Aucun espace-noms pour le préfixe {0} n''a été trouvé dans le programme de résolution de l''espace-noms.
+
+25017=L''élément enumClass ou enumClassName doit être défini sur JAXBTypesafeEnumConverter.
+
+25018=La méthode fromString sur la classe enum {0} n''existe pas ou n''a pas pu être appelée.
+
+25019=La classe enum spécifiée {0} n''a pas pu être trouvée.
+
+25020=La méthode "getResult()" ne doit pas être appelée avant l''appel de l''événement "endDocument()".
+
+25021=Classe {0} non valide pour SwaRef. Doit être jakarta.activation.DataHandler.
+
+25022=Impossible de générer l''image. Aucun codeur disponible pour l''élément mimeType {0}.
+
+25023=Aucun descripteur n''a été trouvé lors de la déconversion de l''élément mappé à l''attribut {0}.
+
+25024=Une erreur s''est produite lors de l''instanciation de la classe UnmappedContentHandler {0}.
+
+25025=La classe UnmappedContentHandler {0} définie sur l''élément XMLUnmarshaller doit implémenter org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Impossible de mettre à jour le noeud [{0}], objet non trouvé dans le cache.
+
+25027=Impossible d''extraire la pièce jointe avec le CID {0} car aucun élément AttachmentUnmarshaller n''a été défini.
+
+25028=Aucun descripteur de référence n''a été trouvé pour le mappage {1} en raison d''une valeur xsi:type inconnue : {0}.
+
+25029=Pour le préfixe [{0}], la classe [{1}] a tenté d''affecter l''URI d''espace-noms [{2}], mais sa classe parente [{3}] a déjà été affectée à l''URI d''espace-noms [{4}].
+
+25030=Une erreur s''est produite lors de l''appel de la méthode {0} sur l''élément NamespacePrefixMapper personnalisé : {1}.
+
+25031=Une erreur s''est produite lors du traitement de l''associateur de préfixe d''espace-noms : {1}. La méthode {0} est introuvable.
+
+25032=Une erreur s''est produite lors de l''appel de la méthode {0} sur l''élément CharacterEscapeHandler personnalisé : {1}.
+
+25033=Une erreur s''est produite lors du traitement de l''élément CharacterEscapeHandler : {1}. La méthode {0} est introuvable.
+
+25034=Une erreur s''est produite lors de l''appel de la méthode {0} sur l''élément IDResolver personnalisé : {1}.
+
+25035=Une erreur s''est produite lors du traitement de l''élément IDResolver : {1}. La méthode {0} est introuvable.
+
+25036=L''élément IDResolver {1} personnalisé ne prend pas en charge plusieurs ID XML {0}.  Les éléments IDResolvers personnalisés doivent être les sous-classes org.eclipse.persistence.jaxb.IDResolver si plusieurs ID sont utilisés.
+
+25037=Un cycle est détecté dans l''objet graphique.  Cela va causer une boucle sans fin : {0}
+
+25038=L''élément DOMPlatform n''est pas pris en charge avec l''application de type de support/json.
+
+25039=Une erreur s''est produite lors de la déconversion depuis {0}
+
+25040=Un objet de type {0} avec l''ID {1} n''a pas été trouvé.
+
+25041=Le groupe d''attributs spécifié {0} n''est pas défini pour la classe {1}.
+
+25042=La valeur de la propriété de variable {0} sur la classe {1} ne peut pas être nulle.
+

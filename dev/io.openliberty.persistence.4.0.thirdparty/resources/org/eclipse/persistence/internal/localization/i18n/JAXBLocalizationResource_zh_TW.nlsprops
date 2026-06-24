@@ -1,0 +1,73 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/JAXBLocalizationResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+add_namespace_resolvers=正在新增名稱空間解析器
+
+create_descriptors=正在建立描述子
+
+create_mappings=正在新增對映至描述子 {0}
+
+error=錯誤：
+
+generate_files=正在寫入部署 XML 和階段作業配置
+
+generate_source=正在產生實作類別
+
+impl_package_missing=遺漏實作類別套件名稱
+
+io_exception_error=錯誤：非預期的 IOException
+
+malformed_url_error=錯誤：非預期的 MalformedURLException
+
+missing_customization=遺漏輸入自訂檔案
+
+missing_output_dir=遺漏「TopLink 輸出目錄」名稱
+
+missing_project_dir=遺漏「TopLink 工作台專案」目錄名稱
+
+missing_schema_file=遺漏「輸入綱目檔」
+
+missing_src_dir=遺漏「來源輸出目錄」名稱
+
+missing_target_package=遺漏「目標套件名稱」
+
+read_customization=正在讀取自訂檔案
+
+setup_inheritance=正在設定繼承
+
+start_mw_project=正在建立對映工作台專案
+
+start_orajaxb=正在呼叫 orajaxb
+
+start_toplink=正在呼叫 TopLink 產生
+
+version=版本：
+

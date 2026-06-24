@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource_pl.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=Właściwość {0} musi być ustawiona.
+
+17008=Napotkano niepoprawną właściwość {0}.
+
+17009=Właściwość {0} lub {1} musi być ustawiona.
+
+17010=Rekord wyjściowy zawiera nieobsługiwany typ komunikatu
+
+17011=Nie określono fabryki połączeń.
+
+17012=Interfejsem InteractionSspec musi być klasa CciJMSInteractionSpec.
+
+17013=Rekord musi być klasą CciJMSRecord.
+
+17014=Nieznany typ specyfikacji interakcji
+
+17015=Dane wejściowe muszą zawierać pojedynczy element tekstowy.
+
+17016=Nastąpiło przekroczenie limitu czasu - nie otrzymano żadnego komunikatu.
+
+17017=Rekord wejściowy zawiera nieobsługiwany typ komunikatu.
+
+17018=Nie można wywołać metody "begin()" na sekcji bez transakcji.
+
+17019=Wystąpił problem podczas testowania dla sesji z transakcjami: 
+
+17020=Interfejsem InteractionSspec musi być klasa AQInteractionSpec.
+
+17021=Rekord musi być klasą AQRecord.
+
+17022=Dane wejściowe muszą zawierać pojedynczy element surowy.
+
+17023=Wystąpił wyjątek podczas ustawiania atrybutów MQQueueConnectionFactory.
+
+17024=Nie można usunąć pliku: {0}
+
+17025=To odwzorowanie wymaga elementu grupowania klucza obcego, ponieważ istnieje wiele kluczy obcych.
+

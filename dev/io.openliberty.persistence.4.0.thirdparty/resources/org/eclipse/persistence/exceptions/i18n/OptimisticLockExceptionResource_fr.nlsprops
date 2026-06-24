@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_fr.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Une tentative a été effectuée de supprimer l''objet [{0}], mais celui-ci n''a pas de numéro de version dans la mappe d''identité. {3}Il n''a peut-être pas été lu avant la tentative de suppression. {3}Classe> {1} Clé primaire > {2}
+
+5003=L''objet [{0}] ne peut pas être supprimé car il a été modifié ou il a été supprimé depuis la dernière lecture. {3}Classe> {1} Clé primaire > {2}
+
+5004=Une tentative a été effectuée de mettre à jour l''objet [{0}], mais celui-ci n''a pas de numéro de version dans la mappe d''identité. {3}Il n''a peut-être pas été lu avant la tentative de mise à jour. {3}Classe> {1} Clé primaire > {2}
+
+5006=L''objet [{0}] ne peut pas être mis à jour car il a été modifié ou il a été supprimé depuis la dernière lecture. {3}Classe> {1} Clé primaire > {2}
+
+5007=L''objet [{0}] doit avoir un mappage non en lecture seule à la zone de verrouillage de version.
+
+5008=La zone de verrouillage de version doit être mappée à java.sql.Timestamp lors de l''utilisation du verrouillage d''horodatage
+
+5009=L''objet de classe [{1}] avec la clé primaire [{0}] ne peut pas être désencapsulé car il a été supprimé depuis sa dernière lecture.
+
+5010=L''objet [{0}] ne peut pas être fusionné car il a été modifié ou il a été supprimé depuis la dernière lecture. {2}Classe> {1}
+
+5011=Un ou plusieurs objets ne peuvent pas être mis à jour car ils ont été modifiés ou ils ont été supprimés depuis leur dernière lecture.
+

@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/RemoteCommandManagerExceptionResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+22101=Nelze získat kontext rozhraní JNDI, zkontrolujte, zda jsou správně nastaveny vlastnosti.
+
+22102=Nelze vystavit připojení v lokální službě názvů pod názvem {0}
+
+22103=Nelze vyhledat vzdálené připojení pod názvem {0} s adresou URL {1}
+
+22104=Nelze vyhledat název hostitele
+
+22105=Nelze šířit příkaz do {0}
+
+22106=Nelze vytvořit externí připojení JMS s tématem {0} a továrnou témat {1}. Zkontrolujte také, zda jsou správně nastaveny vlastnosti kontextu.
+
+22107=Nelze odebrat připojení v lokální službě názvů pod názvem {0}
+
+22108=Nelze serializovat nebo deserializovat příkaz
+
+22109=Nezdařilo se přijmout zprávu JMS od poskytovatele JMS
+
+22110=Nezdařilo se zjistit adresu IP lokálního hostitele.
+
+22111=Nezdařilo se získat rozhraní ServerPlatform. Rozhraní ServerPlatform je třeba nastavit na třídu Session nebo RemoteCommandManager.
+
+22112=Nelze vytvořit lokální připojení JMS s tématem {0} a továrnou témat {1}. Zkontrolujte také, zda jsou správně nastaveny vlastnosti kontextu.
+
+22113=Pomocí továrny {2} nelze vytvořit ID služby Oc4jJGroupsRemoteConnection {0}, téma {1}. Zkontrolujte také, zda jsou správně nastaveny vlastnosti kontextu.
+
+22114={0}: Nezdařilo se deserializovat načtenou zprávu {1}.
+
+22115={0}: Nezdařilo se zpracovat vzdálený příkaz načtený ze zprávy {1}, od {2}, typ příkazu {3}
+
+22116=Přijatá zpráva JMS má hodnotu null. Je považována za výjimku JMSException.
+
+22117=Třída RemoteCommandManager relace je zavřená nebo nebyla při zpracování příchozích zpráv inicializována.
+
+22118=Nezdařilo se vytvořit připojení JGroups pomocí konfiguračního souboru: {0}
+
+22119=Chyba při inicializaci {0}, přidejte soubor org.eclipse.persistence.corba.jar do cesty ke třídě.
+

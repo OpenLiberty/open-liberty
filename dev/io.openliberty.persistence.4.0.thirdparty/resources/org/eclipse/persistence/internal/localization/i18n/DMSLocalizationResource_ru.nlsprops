@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource_ru.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Включает время, затраченное на обслуживание механизма порядковых номеров и фактического присвоения номеров объектам
+
+cache_hits=Сколько раз объект был найден в кэше
+
+cache_misses=Сколько раз объект был найден в кэше
+
+caching=Включает время, затраченное на добавление, поиск и удаление объектов в кэше
+
+change_set_not_processed=Количество ObjectChangeSet, выброшенных из-за того, что объект НЕ был найден в кэше
+
+change_set_processed=Количество ObjectChangeSet, найденных в кэше
+
+client_session_count=Количество зарегистрированных сеансов клиента (ClientSession)
+
+connect_call=Общее количество запросов подключения
+
+connection=Время, затраченное на управление соединениями, включая подключение, повторное подключение и отключение от источника данных
+
+connection_in_used=Количество активных соединений в пуле для любого исключительного ConnectionPool(Write, ExclusiveRead)
+
+connection_ping=Время, затраченное на проверку соединения с базой данных, чтобы определить возможность его использования.
+
+database_execute=Время, затраченное на запросы к объекту типа JDBC Statement, включая время на запросы к операторам: close, executeUpdate и executeQuery
+
+deleted_object=Необходимо удалить объект из identityMap из ObjectChangeSet
+
+descriptor_event=Время, затраченное на выполнение DescriptorEvent
+
+disconnect_call=Общее количество запросов на отключение
+
+distributed_merge=Время, затраченное на объединение изменений в удаленных транзакциях в локальный общий кэш. Отображается при использовании синхронизации кэша
+
+jts_aftercompletion=Время, затраченное на метод JTS afterCompletion(Object status)
+
+jts_beforecompletion=Время, затраченное на выполнение метода JTS beforeCompletion()
+
+logging=Время, затраченное на регистрацию операций TopLink
+
+merge_time=Время, затраченное на объединение изменений в общем кэше.
+
+object_building=Время, затраченное на формирование постоянных объектов из строк базы данных
+
+optimistic_lock=Количество исключений, выброшенных в процессе оптимистической блокировки
+
+query=Общее время, затраченное на операцию: {0}
+
+query_misc=Общее время, затраченное на операцию: {0}.  Это значение относится к специальным операциям, не входящим ни в какие команды запросов, например пакетная запись.
+
+query_prepareation=Время на подготовку запроса
+
+rcm_message_received=Количество сообщений, полученных через RCM
+
+rcm_message_sent=Количество сообщений, отправленных через RCM
+
+rcm_status=Один из [не настроен, запущен, остановлен]
+
+remote_change_set=Количество наборов изменений, полученных от удаленных систем и обработанных
+
+row_fetch=Время, затраченное на создание объектов Record из набора результатов (ResultSet) jdbc. Включает регулярные вызовы SQL и вызовы хранимых процедур
+
+session_event=Время, затраченное на выполнение SessionEvent
+
+session_login_time=Время регистрации сеанса
+
+session_name=Имя сеанса
+
+sql_generation=Время на создание кода SQL. В случае исключительных ситуаций TopLink - время, затраченное на преобразование выражения в SQL
+
+sql_prepare=Время, затраченное на подготовку JDBC Statement. Также включает время, затраченное на создание EIS итерации, связанной с соединением, и создание входного и выходного объектов Record
+
+unitofwork_commit=Измеряет процесс фиксации UnitOfWork
+
+unitofwork_commits=Количество фиксаций UnitOfWork
+
+unitofwork_count=Общее число созданных объектов UnitOfWork
+
+unitofwork_register=Включает время, затраченное на выполнение методов registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy)
+
+unitofwork_rollback=Количество фиксаций UnitOfWork, для которых были выполнены откаты
+
+wrapping=Время, затраченное на обертывание объектов bean CMP и BMP
+

@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=Include timpul scurs menţinând mecanismul numărului de ordine şi setând propriu-zis numărul de ordine pe obiecte
+
+cache_hits=Numărul de dăţi când a fost găsit obiectul în cache
+
+cache_misses=Numărul de găsiri ale obiectului în cache
+
+caching=Include timpul scurs adăugând, căutând şi înlăturând obiecte din cache
+
+change_set_not_processed=Numărul de ObjectChangeSets aruncat pentru că obiectul NU a fost găsit în cache
+
+change_set_processed=Numărul de ObjectChangeSets găsit în cache
+
+client_session_count=Numărul de ClientSession logate
+
+connect_call=Numărul total de apeluri de conectare făcute
+
+connection=Timpul scurs gestionând conexiuni inclusiv conectarea, reconectarea şi deconectarea de la o sursă de date
+
+connection_in_used=Numărul de conexiuni în uz per pool pentru orice ConnectionPool(Write, ExclusiveRead) exclusiv
+
+connection_ping=Timpul consumat la testarea conexiunii la baza de date pentru a determina dacă poate fi utilizată.
+
+database_execute=Timpul scurs în apeluri la JDBC Statement, include timpul scurs în apeluri la: close, executeUpdate şi executeQuery
+
+deleted_object=Obiectul trebuie înlăturat din identityMap din ObjectChangeSet
+
+descriptor_event=Timpul scurs la executarea DescriptorEvent
+
+disconnect_call=Numărul total de apeluri de deconectare făcute
+
+distributed_merge=Timpul scurs combinând modificări de tranzacţii la distanţă în cache-ul partajat local. Apare când se foloseşte sincronizarea cache
+
+jts_aftercompletion=Timpul scurs pe metoda JTS afterCompletion(Object status)
+
+jts_beforecompletion=Timpul scurs pe metoda JTS beforeCompletion()
+
+logging=Timpul scurs înregistrând activităţi TopLink
+
+merge_time=Timpul scurs combinând modificări în cache-ul partajat.
+
+object_building=Timpul scurs construind obiecte persistente din linii de bază de date
+
+optimistic_lock=Numărul de excepţii de blocare optimiste care au fost aruncate
+
+query=Timpul total petrecut pe operaţia: {0}
+
+query_misc=Timpul total petrecut pe operaţia: {0}.  Acesta este pentru operaţii speciale care nu sunt incluse în niciun substantiv de interogare, cum ar fi scrierea batch-ului.
+
+query_prepareation=Timpul de pregătit interogarea
+
+rcm_message_received=Numărul de mesaje care au fost primite prin RCM
+
+rcm_message_sent=Numărul de mesaje care au fost trimise prin RCM
+
+rcm_status=Unul dintre [not configured, started, stopped]
+
+remote_change_set=Numărul de seturi de modificări primite de la maşini de la distanţă şi procesate
+
+row_fetch=Timpul necesar pentru a construi obiecte Record (Înregistrare) din jdbc ResultSet. Include apelurile SQL obişnuite şi apeluri de proceduri stocate
+
+session_event=Timpul petrecut pe execuţia SessionEvent
+
+session_login_time=Timpul cât a fost logată sesiunea
+
+session_name=Numele sesiunii
+
+sql_generation=Timpul petrecut generând SQL. În cazul expresiilor TopLink, timpul petrecut convertind Expresii în SQL
+
+sql_prepare=Timpul petrecut la pregătirea JDBC a Instrucţiunii. Include şi timpul petrecut în EIS creând o Interacţiune asociată cu o conexiune şi creând obiecte Record (Înregistrare) de intrare şi ieşire
+
+unitofwork_commit=Măsoară procesul de comitere al UnitOfWork
+
+unitofwork_commits=Numărul de comiteri UnitOfWork
+
+unitofwork_count=Numărul total de obiecte UnitOfWork create
+
+unitofwork_register=Include timpul petrecut în registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy)
+
+unitofwork_rollback=Numărul de comiteri UnitOfWork care au fost derulate înapoi
+
+wrapping=Timpul petrecut înfăşurând ambele bean-uri CMP şi BMP
+

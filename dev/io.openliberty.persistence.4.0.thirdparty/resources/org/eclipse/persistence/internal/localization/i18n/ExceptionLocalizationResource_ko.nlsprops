@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource_ko.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN="in(표현식<?>... 값)"이 리터럴도 아니고 매개변수도 아닌 {0} 표현식 유형과 함께 호출되었습니다. 이는 지원되지 않습니다.
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=루트와 함께 기준 조회를 작성하려고 합니다.
+
+INCORRECT_PARAMETER_TYPE={0} 색인의 매개변수가 {1} 유형이 아닙니다.
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT="multiSelect"가 기본요소 결과 유형과 함께 CriteriaQuery에서 호출되었습니다. 리턴 유형이 잘못되었거나 "select"를 대신 사용해야 합니다.
+
+NO_PARAMETER_WITH_INDEX={0} 색인이 포함된 매개변수가 {1} 조회 내에 없습니다.
+
+NO_PARAMETER_WITH_NAME=이름이 {0}인 매개변수가 {1} 조회 내에 없습니다.
+
+NO_VALUE_BOUND=이름이 {0}인 매개변수에 바인드된 값이 없습니다.
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=널 매개변수가 "setParameter"에 전달되었습니다. 매개변수를 "Null"로 색인화할 수 없습니다.
+
+PARAMETER_NILL_NOT_FOUND=getParameterValue()에 전달된 널 매개변수
+
+add_attribute_key_was_null=속성 유형의 서브클래스에 대해 AttributeGroup을 지정하는 경우 유형 매개변수가 널이 아니어야 함
+
+argument_collection_was_null=인수 콜렉션이 널임
+
+argument_keyed_named_query_with_JPA=이름이 {0}인 여러 조회가 있어야 하지만 EntityManagerFactory.addNamedQuery() 사용 시 이름이 고유해야 합니다.
+
+attribute_is_not_map_with_managed_key={1} 클래스의 {0} 속성은 관리되는 유형 키가 포함된 맵이 아니므로 EntityGroup에 키 서브그래프를 추가할 수 없습니다.
+
+bean_definition_vector_arguments_are_of_different_sizes=Bean 정의 벡터 인수들의 크기가 서로 다릅니다.
+
+bean_not_found_on_database=Bean {0}이(가) 데이터베이스에 없습니다.
+
+bean_validation_constraint_violated={1} 클래스의 콜백 이벤트 {0}에 대한 자동 Bean Validation을 실행하는 중에 하나 이상의 Bean Validation 제한조건을 위반했습니다. 세부사항은 임베디드 제한조건 위반사항을 참조하십시오.
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=[{1}] 디스크립터가 포함된 [{0}] 클래스에 CMPPolicy가 설정되어 있지 않고, [{2}] ID 유형에 대해 기본 키 인스턴스를 작성할 수 없습니다.
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=[{0}] 클래스가 지속적 유형이 아닙니다. 이는 연관된 디스크립터가 없습니다.
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=[{1}] 디스크립터가 포함된 [{0}] 오브젝트에 CMPPolicy가 설정되어 있지 않고, ID를 리턴할 수 없습니다.
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=[{0}] 오브젝트가 지속적 유형이 아닙니다. 이는 연관된 디스크립터가 없습니다.
+
+called_get_entity_manager_from_non_jta=getEntityManager()가 비JTA 사용 EntityManagerFactory에서 호출되고 있습니다. JTA가 EntityManagerFactory에서 적절히 설정되었는지 확인하십시오.
+
+can_not_create_directory={0} 디렉토리를 작성할 수 없습니다.
+
+can_not_create_file={0} 파일을 작성할 수 없습니다.
+
+can_not_move_directory=디렉토리를 옮길 수 없습니다.
+
+cannot_get_from_non_correlated_query=getCorrelationParent()이 상관을 통해 가져오지 않은 from 절에서 호출되었습니다.
+
+cannot_get_unfetched_attribute=페치되지 않은 속성 [{1}]을(를) 분리된 오브젝트 {0}에서 가져올 수 없습니다.
+
+cannot_merge_removed_entity=제거되지 않은 엔티티를 병합할 수 없음: {0}
+
+cannot_read_through_txn_for_unsynced_pc=특성이 현재 활성 트랜잭션에 이 지속성 컨텍스트를 결합하도록 설정되었지만 이는 SYNCHRONIZED 지속성 컨텍스트가 아닙니다.
+
+cannot_remove_detatched_entity=엔티티가 remove를 호출하도록 관리되어야 합니다. {0} 분리된 오브젝트 병합을 시도하고 다시 remove를 시도하십시오.
+
+cannot_remove_removed_entity=엔티티가 이미 제거됨: {0}
+
+cannot_update_entity_fetch-group=[{1}] 속성을 {0}에 추가 또는 제거를 시도하십시오. EntityFetchGroup 오브젝트는 불변입니다.
+
+cannot_use_transaction_on_unsynced_pc=EntityManager가 현재 트랜잭션에 결합되지 않은 경우 트랜잭션을 요구하는 메소드를 호출할 수 없습니다.
+
+cant_lock_not_managed_object=엔티티가 lock을 호출하도록 관리되어야 합니다. {0} 분리된 오브젝트 병합을 시도하고 다시 lock을 시도하십시오.
+
+cant_persist_detatched_object=분리된 오브젝트를 PERSIST할 수 없습니다. {0} 기본 키가 중복되었을 수 있습니다.
+
+cant_refresh_not_managed_object=관리되지 않은 오브젝트 {0}을(를) 새로 고칠 수 없습니다.
+
+create_insertion_failed=삽입 작성이 실패했습니다.
+
+criteria_no_constructor_found=선택 기준 유형을 인수로 사용하여 생성자에 대한 {0} 클래스를 검사하는 중에 예외가 발생했습니다. 이 CriteriaQuery가 생성자 조회로 계획되지 않은 경우 선택사항이 리턴 유형과 일치하는지 확인하십시오.
+
+directory_not_exist={0} 디렉토리가 없습니다.
+
+ejb30-default-for-unknown-property=알려지지 않은 특성 {0}에 대해 기본값을 리턴할 수 없습니다.
+
+ejb30-illegal-property-value={0} 특성의 {1} 값이 잘못되었습니다.
+
+ejb30-incorrect-parameter-type=조회 문자열 {3}에서 {2}의 예상되는 유형과 함께 {0} 매개변수에 대해 {1} 유형의 값을 설정하려고 시도했습니다.
+
+ejb30-wrong-argument-index=이 조회 문자열 {1}에서 존재하지 않는 매개변수를 {0} 위치에서 설정하려고 시도했습니다.
+
+ejb30-wrong-argument-name=조회 문자열 {1}에서 {0}의 이름을 사용하는 존재하지 않는 매개변수 값을 설정하려고 시도했습니다.
+
+ejb30-wrong-lock_called_without_version_locking-index=버전 잠금 색인이 없는 엔티티에 대해 설정된 잠금 모드 유형이 올바르지 않습니다. 버전 잠금 색인이 없는 경우 PESSIMISTIC 잠금 모드 유형을 사용할 수 있습니다.
+
+ejb30-wrong-query-hint-value={0} 조회, {1} 조회 힌트의 {2} 값이 잘못되었습니다.
+
+ejb30-wrong-type-for-query-hint={0} 조회, {1} 조회 힌트가 이 조회 유형에 유효하지 않습니다.
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager 특성 충돌: jakarta.persistence.driver 및/또는 jakarta.persistence.url에 DefaultConnector가 필요하지만 지속성 단위가 외부 트랜잭션 제어기를 사용하므로 JNDIConnector가 필요합니다.
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager 특성 충돌: jakarta.persistence.driver 및/또는 jakarta.persistence.url에는 DefaultConnector가 필요하지만 jakarta.persistence.jtaDataSource 및/또는 jakarta.persistence.nonjtaDataSource에는 JNDIConnector가 필요합니다.
+
+entity_no_longer_exists_in_db=엔티티가 데이터베이스에 이제 없습니다. {0}
+
+error_executing_jar_process=jar 프로세스를 실행하는 중 오류 발생
+
+error_invoking_deploy=Deploy를 호출하는 중 오류 발생
+
+error_loading_resources=클래스 경로에서 {0} 자원을 로드하는 중 오류 발생
+
+error_marshalling_arguments=인수 마샬링(marshalling) 중 오류 발생
+
+error_marshalling_return=리턴 마샬링(marshalling) 중 오류 발생
+
+error_parsing_resources={0} 자원을 구문 분석하는 중 오류 발생
+
+error_reading_jar_file=jar 파일: {0} 항목: {1}
+
+error_unmarshalling_arguments=인수 마샬링 해제(unmarshalling) 중 오류 발생
+
+error_unmarshalling_return=리턴 마샬링 해제(unmarshalling) 중 오류 발생
+
+file_exists={0} 파일이 이미 있습니다.
+
+file_not_exist={0} 파일이 없습니다.
+
+finder_query_failed=파인더 조회 실패:
+
+getpersistenceunitutil_called_on_closed_emf=getPersistenceUnitUtil()이 처리완료된 EntityManagerFactory에서 호출되었습니다.
+
+illegal_state_while_closing=트랜잭션 상태가 NO_TRANSACTION, COMMITTED 또는 ROLLEDBACK이 아닌 EntityManager를 닫으려고 합니다.
+
+incorrect_hint=힌트에 지정된 오브젝트 유형이 잘못되었습니다. {0}
+
+incorrect_query_for_get_result_collection=이 조회에서 getResultCollection()을 호출할 수 없습니다. 이는 잘못된 조회 유형입니다.
+
+incorrect_query_for_get_result_list=이 조회에서 getResultList()를 호출할 수 없습니다. 이는 잘못된 조회 유형입니다.
+
+incorrect_query_for_get_single_result=이 조회에서 getSingleResult()를 호출할 수 없습니다. 이는 잘못된 조회 유형입니다.
+
+incorrect_spq_query_for_execute=이 스토어드 프로시저 조회에서 execute()를 호출할 수 없습니다. 이는 잘못된 조회 유형입니다.
+
+incorrect_spq_query_for_execute_update=업데이트 개수 뿐만 아니라 결과 세트를 리턴하므로 이 스토어드 프로시저 조회에서 executeUpdate()를 호출할 수 없습니다.
+
+incorrect_spq_query_for_get_result_list=결과 세트를 리턴하지 않으므로 이 스토어드 프로시저 조회에서 getResultList()를 호출할 수 없습니다.
+
+incorrect_spq_query_for_get_single_result=결과 세트를 리턴하지 않으므로 이 스토어드 프로시저 조회에서 getSingleResult()를 호출할 수 없습니다.
+
+input_source_not_found=입력 소스를 찾을 수 없거나 널임
+
+interface_hash_mismatch=인터페이스 해시 불일치
+
+invalid_lock_query=잠금 유형이 선택 조회로만 사용될 수 있습니다(이를 통해 필요 시 데이터베이스가 잠길 수 있음).
+
+invalid_method_hash=올바르지 않은 메소드 해시
+
+invalid_method_number=올바르지 않은 메소드 번호
+
+invalid_pk_class=이 찾기 조작에 대해 잘못된 PK 클래스의 인스턴스를 제공했습니다. 예상되는 클래스: {0}, 수신된 클래스: {1}
+
+jar_not_exist=Jar 파일 {0}이(가) 없습니다.
+
+jaxb_helper_invalid_binder=제공된 바인더 [{0}]이(가) EclipseLink JAXBBinder가 아니므로 변환할 수 없습니다.
+
+jaxb_helper_invalid_jaxbcontext=제공된 JAXBContext [{0}]이(가) EclipseLink JAXBContext가 아니므로 변환할 수 없습니다.
+
+jaxb_helper_invalid_marshaller=제공된 Marshaller [{0}]이(가) EclipseLink JAXBMarshaller가 아니므로 변환할 수 없습니다.
+
+jaxb_helper_invalid_target_for_binder=제공된 대상 클래스 [{0}]이(가) EclipseLink JAXBBinder 또는 EclipseLink XMLBinder 중 하나여야 합니다.
+
+jaxb_helper_invalid_target_for_jaxbcontext=제공된 대상 클래스 [{0}]이(가) EclipseLink JAXBContext 또는 EclipseLink XMLContext 중 하나여야 합니다.
+
+jaxb_helper_invalid_target_for_marshaller=제공된 대상 클래스 [{0}]이(가) EclipseLink JAXBMarshaller 또는 EclipseLink XMLMarshaller 중 하나여야 합니다.
+
+jaxb_helper_invalid_target_for_unmarshaller=제공된 대상 클래스 [{0}]이(가) EclipseLink JAXBUnmarshaller 또는 EclipseLink XMLUnmarshaller 중 하나여야 합니다.
+
+jaxb_helper_invalid_unmarshaller=제공된 Unmarshaller [{0}]이(가) EclipseLink JAXBUnmarshaller가 아니므로 변환할 수 없습니다.
+
+jmx_enabled_platform_mbean_runtime_exception=EclipseLink 세션 정보를 노출하는 {0}에서 JMX MBean 런타임 서비스 함수를 호출하는 중 예외가 발생했습니다. 예외는 {1}입니다.
+
+join_trans_called_on_entity_trans=joinTransaction이 JTA 트랜잭션에 대해 등록할 수 없는 자원-로컬 EntityManager에서 호출되었습니다.
+
+jpa21-ddl-create-script-target-not-specified=스크립트에 DDL을 생성할 때 [jakarta.persistence.schema-generation.scripts.create-target] 특성을 사용하여 스크립트 작성 대상이 지정되어야 합니다.
+
+jpa21-ddl-drop-script-target-not-specified=스크립트에 DDL을 생성할 때 [jakarta.persistence.schema-generation.scripts.drop-target] 특성을 사용하여 스크립트 삭제 대상이 지정되어야 합니다.
+
+jpa21-ddl-invalid-source-script-type=소스 스크립트 제공 {0}의 {0} 유형이 올바르지 않습니다. 유효한 소스 스크립트 유형은 java.io.Reader 또는 파일 URL을 지정하는 문자열입니다.
+
+jpa21-ddl-invalid-target-script-type=대상 스크립트 제공 {0}의 {0} 유형이 올바르지 않습니다. 유효한 대상 스크립트 유형은 java.io.Writer 또는 파일 URL을 지정하는 문자열입니다.
+
+jpa21-ddl-source-script-io-exception=소스 ddl 생성 스크립트 {0}에서 IO 오류가 발생했습니다.
+
+jpa21-ddl-source-script-not-found=generateSchema 호출의 소스 스크립트 {0}을(를) 찾을 수 없습니다. "file:" 프로토콜을 사용하는 유효한 문자열 URL을 지정했는지 확인하거나 문자열 파일 이름이 클래스 경로에서 사용 가능한 유효한 자원을 나타내는지 확인하십시오.
+
+jpa21-ddl-source-script-sql-exception=소스 ddl 생성 스크립트 {1}에서 {0}을(를) 실행하는 중 오류가 발생했습니다.
+
+jpa21_invalid_call_on_un_executed_query=이 메소드를 호출하기 전에 조회를 실행해야 합니다.
+
+jpa21_invalid_call_with_no_output_parameters=OUT 매개변수를 리턴하지 않는 조회에 대한 호출이 올바르지 않습니다.
+
+jpa21_invalid_call_with_no_result_sets_returned=결과 세트를 리턴하지 않는 조회에 대한 호출이 올바르지 않습니다.
+
+jpa21_invalid_parameter_name=올바르지 않은 출력 매개변수 이름: {0}. {1}
+
+jpa21_invalid_parameter_position=올바르지 않은 출력 매개변수 위치: {0}. {1}.
+
+jpa_criteriaapi_alias_reused=둘 이상의 선택 항목이 동일한 별명 이름을 사용합니다. 사용된 중복 이름은 {0}입니다.
+
+jpa_criteriaapi_illegal_tuple_or_array_value=잘못된 튜플 또는 배열 값 지정 선택 항목을 찾았습니다. 찾은 인수: {0}
+
+jpa_criteriaapi_invalid_result_index={1} 크기의 결과 목록에 대해 {0} 색인이 올바르지 않습니다.
+
+jpa_criteriaapi_invalid_result_type={0} 요소 {1} 유형이 {2} 결과에 올바르지 않습니다.
+
+jpa_criteriaapi_no_corresponding_element_in_result={0} 요소가 조회 결과에서 요소에 해당하지 않습니다.
+
+jpa_criteriaapi_null_literal_value=널값이 CriteriaBuilder.literal()에 전달되었습니다. 대신 nullLiteral(Class<T> resultClass)을 사용하십시오.
+
+jpa_helper_invalid_entity_manager_factory=JPA EntityManagerFactory {0}이(가) EclipseLink EntityManagerFactory가 아니므로 변환할 수 없습니다.
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=JPA EntityManagerFactory {0}이(가) EclipseLink EntityManagerFactory가 아니므로 메타데이터를 새로 고칠 수 없습니다.
+
+jpa_helper_invalid_query={0} 유형의 조회가 EclipseLink 조회가 아니므로 변환할 수 없습니다.
+
+jpa_helper_invalid_read_all_query={0} 유형의 조회가 EclipseLink read all 조회가 아니므로 변환할 수 없습니다.
+
+jpa_helper_invalid_report_query={0} 유형의 조회가 EclipseLink report 조회가 아니므로 변환할 수 없습니다.
+
+jpa_persistence_util_non_persistent_class=PersistenceUtil.getIdentifier(엔티티)가 지속적 오브젝트가 아닌 [{0}] 오브젝트로 호출되었습니다.
+
+lock_called_without_version_locking=entityManager.lock(오브젝트 엔티티, LockModeType lockMode)에 대한 호출에서 버전 잠금이 사용되어야 합니다.
+
+managed_component_not_found={0} EntityGraph에 나열된 {1} 속성이 찾을 수 없는 {2} 이름의 서브그래프를 참조합니다.
+
+may_not_contain_xml_entry={0}이(가) {1}을(를) 포함하지 않을 수 있습니다.
+
+metamodel_class_incorrect_type_instance=[{2}] 유형이 [{0}] 키 클래스에 대해 예상되는 [{1}]이(가) 아닙니다. [{2}] 클래스가 특정 <class/> 특성 또는 글로벌 <exclude-unlisted-classes>false</exclude-unlisted-classes> 요소를 통해 persistence.xml에서 참조되었는지 확인하십시오.
+
+metamodel_class_null_type_instance=메타 모델에서 [{0}] 키 클래스에 대해 찾은 [{1}]이(가) 없습니다. [{2}] 클래스가 특정 <class>{0}</class> 특성 또는 글로벌 <exclude-unlisted-classes>false</exclude-unlisted-classes> 요소를 통해 persistence.xml에서 참조되었는지 확인하십시오.
+
+metamodel_class_null_type_instance_for_null_key=메타 모델에서 널 키 클래스 매개변수에 대해 찾은 [{0}]이(가) 없습니다. 메타 모델 [{1}] 클래스에 대해 올바른 키 클래스를 지정하고 키 클래스가 특정 <class/> 특성 또는 글로벌 <exclude-unlisted-classes>false</exclude-unlisted-classes> 요소를 통해 persistence.xml에서 참조되었는지 확인하십시오.
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=식별 가능한 유형 [{0}]에 대해 예상되는 단일 @Id 속성이 예상치 못한 @IdClass의 파트입니다.
+
+metamodel_identifiable_id_attribute_type_incorrect=식별 가능한 유형 [{1}]의 기존 ID 속성 [{0}]에서 ID 속성 유형 [{2}]을(를) 예상했지만 속성 유형 [{3}]을(를) 찾았습니다.
+
+metamodel_identifiable_no_id_attribute_present=@Id 속성이 식별 가능한 유형 [{0}]에 없습니다.
+
+metamodel_identifiable_no_version_attribute_present=@Version 속성이 식별 가능한 유형 [{0}]에 없습니다.
+
+metamodel_identifiable_type_has_no_idclass_attribute=@IdClass 속성이 IdentifiableType [{0}]에 없습니다. 유형에 하나 이상의 @Id 또는 @EmbeddedId가 계속 있을 수 있습니다.
+
+metamodel_identifiable_version_attribute_type_incorrect=식별 가능한 유형 [{1}]의 기존 버전 속성 [{0}]에서 에상되는 버전 속성 유형 [{2}]이지만 속성 유형 [{3}]을(를) 찾았습니다.
+
+metamodel_incompatible_persistence_config_for_getIdType=ManagedType [{0}]에 대해 메타 모델 ID 유형을 가져오는 데 지속성 구성이 호환되지 않습니다.
+
+metamodel_interface_inheritance_not_supported=({1}) 상속을 사용하는 [{0}] 디스크립터는 현재 메타 모델 생성 중에 지원되지 않습니다. 엔티티 또는 MappedSuperclass(추상 클래스) 상속을 사용하십시오.
+
+metamodel_managed_type_attribute_not_present=[{0}] 속성이 관리된 유형 [{1}]에서 나타나지 않습니다.
+
+metamodel_managed_type_attribute_return_type_incorrect=관리된 유형 [{1}]의 기존 속성 [{0}]에서 예상되는 속성 리턴 유형 [{2}]이지만 속성 리턴 유형 [{3}]을(를) 찾았습니다.
+
+metamodel_managed_type_attribute_type_incorrect=관리된 유형 [{1}]의 기존 속성 [{0}]에서 예상되는 속성 유형 [{2}]이지만 속성 유형 [{3}]을(를) 찾았습니다.
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=관리된 유형 [{1}]에서 선언된 속성 [{0}]이(가) 나타나지 않습니다. 그러나 수퍼클래스에서 선언됩니다.
+
+missing_parameter_value=조회 실행 중 제공된 매개변수의 목록에 조회 인수 {0}을(를) 찾을 수 없습니다.
+
+missing_toplink_bean_definition_for={0}에 대해 TopLink Bean 정의 누락
+
+named_entity_graph_exists={1}에서 발견된 이름이 {0}인 NamedEntityGraph가 이 지속성 단위에 이미 있습니다.
+
+negative_max_result=음수 MaxResult가 허용되지 않습니다.
+
+negative_start_position=음수 시작 위치가 허용되지 않습니다.
+
+new_object_found_during_commit=동기화 중 계단식 PERSIST로 표시되지 않은 관계를 통해 새 오브젝트를 찾았습니다. {0}
+
+no_entities_retrieved_for_get_reference=ID에 대한 엔티티를 찾을 수 없음: {0}
+
+no_entities_retrieved_for_get_single_result=getSingleResult()가 임의의 엔티티를 검색하지 않았습니다.
+
+no_entity_graph_of_name=이름이 {0}인 EntityGraph가 없습니다.
+
+not_an_entity=오브젝트: {0}이(가) 알려진 엔티티 유형이 아닙니다.
+
+not_jar_file={0}이(가) jar 파일이 아닙니다.
+
+not_usable_passed_to_entitygraph_hint=조회 힌트 {0}에 전달된 {1} 값이 이 조회 힌트에 적합하지 않습니다.
+
+null_argument_get_attributegroup=AttributeGroup의 검색 이름이 널이 아니어야 합니다.
+
+null_jar_file_names=널 jar 파일 이름
+
+null_not_supported_identityweakhashmap=IdentityWeakHashMap이 키 또는 값으로 "null"을 지원하지 않습니다.
+
+null_pk=널 PK의 인스턴스가 이 찾기 조작에 대해 잘못 제공되었습니다.
+
+null_sqlresultsetmapping_in_query=ResultSetMappingQuery에 SQLResultSetMapping이 유효하게 설정되어야 합니다.
+
+null_value_for_column_result=ColumnResult의 열 이름이 제공되어야 합니다.
+
+null_value_for_constructor_result=대상 클래스 이름이 생성자 결과에 대해 제공되어야 합니다.
+
+null_value_for_entity_result=엔티티 클래스 이름이 엔티티 결과에 대해 제공되어야 합니다.
+
+null_value_in_sqlresultsetmapping=SQLResultSetMapping의 이름이 제공되어야 합니다. 이 이름은 조회에서 SQLResultSetMapping을 참조하도록 사용됩니다.
+
+null_values_for_field_result=속성 이름 및 열 이름이 둘 다 FieldResult에 대해 제공되어야 합니다.
+
+only_one_root_subgraph=유형이 없는 루트 서브그래프만 나열될 수 있습니다. 서브클래스를 나타내는 서브그래프에 유형이 설정되어야 합니다.
+
+operation_not_supported={1}의 {0} 호출을 스펙에서 지원하지 않습니다.
+
+operation_on_closed_entity_manager=처리완료된 EntityManager에서 조작을 실행하려고 합니다.
+
+operation_on_closed_entity_manager_factory=처리완료된 EntityManagerFactory에서 조작을 실행하려고 합니다.
+
+ora_pessimistic_locking_with_rownum=조회 행 한계가 있는 비관적 잠금은 지원되지 않습니다.
+
+parsing_error=오류 구문 분석
+
+parsing_fatal_error=심각한 오류 구문 분석
+
+parsing_warning=경고 구문 분석
+
+pathnode_is_primitive_node=기준 표현식이 기본 유형이고 추가로 탐색할 수 없습니다.
+
+pathnode_type_does_not_apply_to_primitive_node=기준 표현식이 기본 유형이고 추가로 탐색할 수 없습니다. 기본 표현식이 "type"을 허용하지 않습니다.
+
+pk_class_not_found=기본 키 클래스 {0}을(를) 로드할 수 없음
+
+position_bound_param_not_found=다음 위치에서 바인드된 매개변수가 없습니다. {0}
+
+position_param_not_found=다음 위치에서 매개변수가 없습니다. {0}
+
+pu_configured_for_resource_local=PersistenceUnit이 자원-로컬 트랜잭션으로 구성되므로 SynchronizationType으로 EntityManager를 작성할 수 없습니다.
+
+remove_deletion_failed=제거 삭제 실패:
+
+rollback_because_of_rollback_only=트랜잭션이 RollbackOnly로 설정되었으므로 트랜잭션 "rolled back"입니다.
+
+sdo_helper_invalid_changesummary=제공된 ChangeSummary [{0}]이(가) EclipseLink SDOChangeSummary가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_copyhelper=제공된 CopyHelper [{0}]이(가) EclipseLink SDOCopyHelper가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_datafactory=제공된 DataFactory [{0}]이(가) EclipseLink SDODataFactory가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_datahelper=제공된 DataHelper [{0}]이(가) EclipseLink SDODataHelper가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_dataobject=제공된 DataObject [{0}]이(가) EclipseLink SDODataObject가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_equalityhelper=제공된 EqualityHelper [{0}]이(가) EclipseLink SDOEqualityHelper가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_helpercontext=제공된 HelperContext [{0}]이(가) EclipseLink SDOHelperContext가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_property=제공된 Property [{0}]이(가) EclipseLink SDOProperty가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_sequence=제공된 Sequence [{0}]이(가) EclipseLink SDOSequence가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_target_for_changesummary=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOChangeSummary 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_copyhelper=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOCopyHelper 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_datafactory=제공된 대상 클래스 [{0}]이(가) EclipseLink SDODataFactory 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_datahelper=제공된 대상 클래스 [{0}]이(가) EclipseLink SDODataHelper 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_dataobject=제공된 대상 클래스 [{0}]이(가) EclipseLink SDODataObject 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_equalityhelper=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOEqualityHelper 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_helpercontext=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOHelperContext 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_property=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOProperty 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_sequence=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOSequence 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_type=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOType, SDOTypeType, SDOPropertyType, SDOChangeSummaryType, SDODataObjectType, SDODataType, SDOOpenSequencedType, SDOObjectType, SDOWrapperType 또는 SDOXMLHelperLoadOptionsType 중 하나여야 합니다.
+
+sdo_helper_invalid_target_for_typehelper=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOTypeHelper 클래스여야 합니다.
+
+sdo_helper_invalid_target_for_xmlhelper=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOXMLHelper, EclipseLink XMLMarshaller 또는 EclipseLink XMLUnmarshaller 중 하나여야 합니다.
+
+sdo_helper_invalid_target_for_xsdhelper=제공된 대상 클래스 [{0}]이(가) EclipseLink SDOXSDHelper 클래스여야 합니다.
+
+sdo_helper_invalid_type=제공된 유형 [{0}]이(가) EclipseLink SDOType,이 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_typehelper=제공된 TypeHelper [{0}]이(가) EclipseLink SDOTypeHelper가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_xmlhelper=제공된 XMLHelper [{0}]이(가) EclipseLink SDOXMLHelper가 아니므로 변환할 수 없습니다.
+
+sdo_helper_invalid_xsdhelper=제공된 XSDHelper [{0}]이(가) EclipseLink SDOXSDHelper가 아니므로 변환할 수 없습니다.
+
+subclass_sought_not_a_managed_type=찾은 서브그래프 유형: {0}이(가) 이 속성에 대해 관리된 유형이 아닙니다. {1}
+
+too_many_results_for_get_single_result=둘 이상의 결과가 Query.getSingleResult()에서 리턴되었습니다.
+
+unable_to_find_named_query={0} 이름의 NamedQuery를 찾을 수 없습니다.
+
+unable_to_unwrap_jpa=제공자가 {1}에 {0} 언랩핑을 지원하지 않습니다.
+
+undeclared_checked_exception=선언되지 않은 확인된 예외
+
+unexpect_argument=예상치 못한 입력 인수 {0}
+
+unknown_bean_class=알려지지 않은 엔티티 Bean 클래스 {0}입니다. 이 클래스가 @Entity 어노테이션으로 표시되었는지 확인하십시오.
+
+unknown_entitybean_name=알려지지 않은 엔티티 Bean 이름: {0}
+
+unsupported_classfile_version={0} 클래스가 지원되지 않는 JDK로 컴파일되었습니다. EclipseLink 개방형 소스 프로젝트에 이 오류를 보고하십시오.
+
+wrap_convert_exception=값이 {2}인 변환기 클래스 {1}에서 {0}을(를) 호출하는 중 예외가 발생했습니다.
+
+wrap_ejbql_exception=EntityManager에서 조회를 작성하는 중 예외가 발생했습니다.
+

@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=A program ValidationException kivételt dobott a munkamenet létrehozására tett kísérlet közben: [{0}] . A probléma legvalószínűbb oka az, hogy a(z) [{1}] fájl nem érhető el az osztályútvonalon, vagy nem tartalmazza a következő nevű munkamenetet: [{0}].
+
+28002=Az EclipseLink megkísérel betölteni egy [{0}] nevű ServerSession objektumot a következőből: [{1}], és nem kap ServerSession objektumot.
+
+28003=Az EclipseLink betöltötte a(z) [{0}] munkamenetet a következőből: [{1}], és annak nincs megadva a kiszolgáló platformja, vagy egy olyan kiszolgáló platformot ad meg, amely nem külső tranzakcióvezérlőt használ.  Adjon meg egy megfelelő kiszolgáló platformot, ha a JTA használatát tervezi.
+
+28004=Hiba az EntityManager gyártó beállításában: A JavaSECMPInitializer.initializeFromMain false értéket adott vissza.
+
+28005=Kivétel történt az EntityManager gyártóban.
+
+28006=ClassNotFound: [{0}] van megadva a(z) [{1}] tulajdonságban.
+
+28007=Nem sikerült példányosítani a(z) [{1}] tulajdonságban megadott [{0}] típusú ServerPlatform objektumot.
+
+28008=A(z) {0} osztály nem volt megtalálható az annotációk feldolgozásakor.
+
+28009=Kísérlet történt egy {0} nevű munkamenet újratelepítésére annak bezárása nélkül.
+
+28010=A(z) {0} PersistenceUnitInfo tranzakciótípusa JTA, azonban nincs meghatározva hozzá egy jtaDataSource.
+
+28011=A(z) [{0}] munkamenet, amely egy perzisztencia egységhez lett összeépítve, nem volt elérhető a telepítése időpontjában.  Ez azt jelenti, hogy a munkamenet valahogy eltávolításra került a tárolóban a telepítési folyamat közepén.
+
+28012=A(z) [{0}] érték helytelen típusú a(z) [{2}] tulajdonsághoz, az értéktípusnak a következőnek kellene lennie: [{1}].
+
+28013=A(z) [{0}] perzisztencia egység nem telepíthető, érvénytelen állapotban van: [{1}].
+
+28014=Kivétel történt a(z) [{1}] értékű [{0}] tulajdonság feldolgozásakor.
+
+28015=A(z) [{1}] tulajdonságban megadott [{0}] típusú SessionLog példányosítása meghiúsult.
+
+28016=A(z) [{0}] nevű perzisztencia egység nem létezik.
+
+28017=A(z) [{0}] perzisztencia egység nem telepíthető újra, érvénytelen állapotban van: [{1}].
+
+28018=A(z) [{0}] PersistenceUnit előzetes telepítése meghiúsult.
+
+28019=A(z) [{0}] PersistenceUnit telepítése meghiúsult. Zárja be a PersistenceUnit összes gyártóját.
+
+28020=A(z) [{1}] helyről betöltött [{0}] nevű munkamenet [{2}], azonban ServerSession típusúnak kellene lennie.
+
+28021=A(z) [{0}] PersistenceUnit egy munkamenetnév megadása nélkül próbál betölteni egy munkamenetet a(z) [{1}] helyről.  Meg kell adni egy munkamenetnevet az eclipselink.session-name tulajdonság meghatározásával.
+
+28022=Az [eclipselink.weaving] tulajdonság [true] értéke helytelen, amikor a globális felkészítés null, az érték csak null, false vagy static lehet.
+
+28023=A(z) [{0}] metódus meghívása a(z) [{2}] osztályú [{1}] objektumhoz egy kivételt aktivált.
+
+28024=Nem lehet reflektíven hozzáférni a(z) [{2}] osztályú [{1}] objektum [{0}] metódusához.
+
+28025=A(z) [{0}] nevű perzisztencia egység egy [null] ideiglenes osztálybetöltőt adott vissza - az átszövés le lett tiltva a munkamenethez.  Választható áthidaló megoldásként használhat statikus átszövést.
+
+28026=Az org.eclipse.persistence.jpa.osgi.PersistenceProvider nem támogatja a tárolótelepítést (createContainerEntityManagerFactory).  Használja helyette az org.eclipse.persistence.jpa.PersistenceProvider köteget.
+
+28027=Kísérlet történt a(z) [{0}] PersistenceUnit használatára, azonban nem érhető el olyan köteg, amely támogatná ezt a perzisztencia egységet.
+
+28028=Nem sikerült példányosítani a(z) [{0}] osztálypéldányt a(z) [{1}] perzisztencia egység tulajdonsághoz. Győződjön meg róla, hogy a konstruktor helyesen van meghatározva.
+
+28029=A(z) [{0}] PersistenceUnit egyaránt megpróbálja használni a sessions.xml fájlt (megadja az eclipselink.sessions-xml tulajdonságot) és összetételként viselkedni (true értékkel adja meg az eclipselink.composite-unit tulajdonságot). Ez a két mód nem kompatibilis.
+
+28030=A(z) [{0}] PersistenceUnit true értékkel adja meg az eclipselink.composite-unit.member tulajdonságot. Ez azt jelenti, hogy nem használható önállóan, csak egy összetétel tagjaként.
+
+28031=Hiányzó kötelező tulajdonság: [{0}].
+
+28032=Ideiglenes osztálybetöltő létrehozása doPrivileged hívással meghiúsult.
+

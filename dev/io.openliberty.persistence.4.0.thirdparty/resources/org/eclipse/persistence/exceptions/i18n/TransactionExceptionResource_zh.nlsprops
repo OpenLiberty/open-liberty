@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=查找 JNDI 名称为 [{0}] 的外部事务资源时发生错误
+
+23002=获取当前的外部管理事务的状态时发生错误
+
+23003=获取当前的外部管理事务时发生错误
+
+23004=获取事务管理器时发生错误
+
+23005=绑定至外部管理事务时发生错误
+
+23006=开始新的外部管理事务时发生错误
+
+23007=落实外部管理事务时发生错误
+
+23008=回滚外部管理事务时发生错误
+
+23009=标记要回滚的外部管理事务时发生错误
+
+23010=对于此线程，没有任何外部管理事务当前处于活动状态
+
+23011=在关联的外部管理事务完成之前，UnitOfWork [{0}] 呈现为处于不活动状态。
+
+23012=没有任何事务当前处于活动状态
+
+23013=事务当前处于活动状态
+
+23014=在使用 JTA 时，无法使用 EntityTransaction。
+
+23015=无法在事务中请求多个数据源。
+
+23016=代理执行时发生异常。
+

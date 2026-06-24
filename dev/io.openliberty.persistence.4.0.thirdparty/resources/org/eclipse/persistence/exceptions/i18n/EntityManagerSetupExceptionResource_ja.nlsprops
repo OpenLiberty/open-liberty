@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=セッションの作成試行中に ValidationException がスローされました: [{0}]。 この問題の最も可能性が高い原因は、[{1}] ファイルがクラスパスにないこと、または呼び出されるセッション [{0}] が含まれていないことです。
+
+28002=EclipseLink は [{1}] から [{0}] という名前の ServerSession をロードしようとしていますが、ServerSession は取得されません。
+
+28003=EclipseLink が Session [{0}] を [{1}] からロードしましたが、サーバー・プラットフォームが指定されていないか、外部トランザクション・コントローラーを使用していないサーバー・プラットフォームが指定されています。  JTA を使用する場合は、適切なサーバー・プラットフォームを指定してください。
+
+28004=EntityManager ファクトリーのセットアップでエラーが発生しました。JavaSECMPInitializer.initializeFromMain で false が返されました。
+
+28005=EntityManager ファクトリーのセットアップで例外がスローされました。
+
+28006=ClassNotFound: [{1}] プロパティーに [{0}] が指定されています。
+
+28007=[{1}] プロパティーに指定されている型が [{0}] の ServerPlatform のインスタンス化に失敗しました。
+
+28008=アノテーションの処理中にクラス {0} が見つかりませんでした。
+
+28009={0} というセッションを閉じずに再デプロイしようとしました。
+
+28010=PersistenceUnitInfo {0} の transactionType は JTA ですが、jtaDataSource が定義されていません。
+
+28011=パーシスタンス・ユニット用に作成されたセッション [{0}] がデプロイ時に使用可能でありませんでした。  これは、何らかの形でデプロイメント・プロセスの途中にセッションがコンテナーから削除されたことを意味します。
+
+28012=値 [{0}] の型はプロパティー [{2}] には正しくありません。値の型は [{1}] でなければなりません。
+
+28013=無効な状態 [{1}] の PersistenceUnit [{0}] をデプロイできません。
+
+28014=値 [{1}] のプロパティー [{0}] の処理中に例外がスローされました。
+
+28015=[{1}] プロパティーに指定されている型が [{0}] の SessionLog のインスタンス化に失敗しました。
+
+28016=名前が [{0}] のパーシスタンス・ユニットは存在しません。
+
+28017=無効な状態 [{1}] の PersistenceUnit [{0}] を事前デプロイできません。
+
+28018=PersistenceUnit [{0}] の事前デプロイに失敗しました。
+
+28019=PersistenceUnit [{0}] のデプロイに失敗しました。 この PersistenceUnit のすべてのファクトリーを閉じてください。
+
+28020=[{1}] からロードされた名前が [{0}] のセッションが [{2}] ですが、ServerSession でなければなりません。
+
+28021=PersistenceUnit [{0}] がセッション名を指定せずに [{1}] からセッションをロードしようとしています。  eclipselink.session-name プロパティーを定義してセッション名を指定する必要があります。
+
+28022=グローバル・インスツルメンテーションがヌルの場合、プロパティー [eclipselink.weaving] の値 [true] は正しくありません。値は null、false、または static のいずれかでなければなりません。
+
+28023=クラス [{2}] のオブジェクト [{1}] でのメソッド [{0}] のメソッド起動で例外がトリガーされました。
+
+28024=クラス [{2}] の、オブジェクト [{1}] のメソッド [{0}] にリフレクティブにアクセスできません。
+
+28025=名前が [{0}] のパーシスタンス・ユニットで [null] 一時 classLoader が返されました。このセッションの織り込みが無効にされました。  オプションの回避策として、静的織り込みを使用できます。
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider では、コンテナー・デプロイメント (createContainerEntityManagerFactory) はサポートされません。  代わりに、org.eclipse.persistence.jpa.PersistenceProvider を使用してください。
+
+28027=PersistenceUnit [{0}] の使用が試行されましたが、当該パーシスタンス・ユニットを定義するバンドルが使用可能でありませんでした。
+
+28028=パーシスタンス・ユニット・プロパティー [{1}] のクラス・インスタンス [{0}] のインスタンス化に失敗しました。コンストラクターの定義が正しいかを確認してください。
+
+28029=PersistenceUnit [{0}] で sessions.xml の使用 (eclipselink.sessions-xml プロパティーの指定) と複合 (true の eclipselink.composite-unit プロパティーを指定) の両方が試みられています。 これらのモードは両立しません。
+
+28030=PersistenceUnit [{0}] で値が true の eclipselink.composite-unit.member プロパティーが指定されています。 これはスタンドアロンで使用できず、複合メンバーとしてのみ使用できることを意味します。
+
+28031=必須プロパティー [{0}] が欠落しています。
+
+28032=doPrivileged での一時クラス・ローダーの作成に失敗しました。
+

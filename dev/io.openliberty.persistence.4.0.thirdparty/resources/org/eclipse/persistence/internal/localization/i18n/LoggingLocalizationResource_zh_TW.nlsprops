@@ -1,0 +1,785 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/LoggingLocalizationResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+Current=執行緒 (ID: {3} 名稱: {4}) 堆疊追蹤:
+
+External_transaction_controller_not_defined_by_server_platform=DatabaseSession 有一個外部交易控制器不是由 ServerPlatform 所定義。EclipseLink 將允許置換外部交易控制器，但建議您考量改為將 org.eclipse.persistence.platform.server.ServerPlatformBase 子類別化，並置換 getExternalTransactionControllerClass()。
+
+JDBC_driver_does_not_support_meta_data=已連接：不明（JDBC 驅動程式不支援 meta 資料。）
+
+all_registered_clones=所有已登錄的複本：
+
+an_error_executing_ejbSelect=執行 ejbSelect 時發生錯誤：{0}
+
+an_error_executing_finder=執行搜尋器時發生錯誤：{0}
+
+an_error_occured_executing_findByPrimaryKey=執行 findByPrimaryKey 時發生錯誤：{0}
+
+an_error_occured_initializing_dms_listener=起始設定 DMS 內嵌接聽器和 SPY Servlet 時，擲出異常狀況
+
+an_error_occured_preparing_bean=準備 Bean 以進行呼叫時發生錯誤：{0}
+
+an_error_occured_trying_to_undeploy_bean=嘗試取消部署 Bean（在部署失敗之後）時發生錯誤：{0}
+
+annotation_warning_ignore_annotation=正在忽略元素 [{1}] 上的註釋 [{0}]，因為這個類別的 XML metadata-complete 設定是 true。
+
+annotation_warning_ignore_private_owned=正在忽略實體類別 [{0}] 內元素 [{1}] 上的 @PrivateOwned。@PrivateOwned 只能與 @OneToOne、@OneToMany 和 @VariableOneToOne 搭配使用。此外請注意，專用所有權隱含著 @BasicCollection 和 @BasicMap。
+
+annotation_warning_ignore_return_insert=正在忽略元素 [{0}] 上的 @ReturnInsert。只有基本對映才支援 @ReturnInsert。
+
+annotation_warning_ignore_return_update=正在忽略元素 [{0}] 上的 @ReturnUpdate。只有基本對映才支援 @ReturnUpdate。
+
+application_server_name_and_version=伺服器：{0}
+
+archive_not_found_in_input=保存檔 ({0}) 未存在於輸入目錄 ({1}) 之下。
+
+associate_using_third_table_not_migrated=使用關係表格來進行 1:m 對映的 Oc4j 原生 CMP 特性 -DassociateUsingThirdTable=true 未移轉。在移轉程序之後，您必須透過「對映工作台」，將實體 ({0}) 的 cmr 欄位 ({1}) 重新對映成一對多對映。
+
+attempted_to_open_entry_in_url_as_jar=嘗試將 {0} 開啟為 jar 及存取項目 {1} 時，擲出了 {2}。
+
+attempted_to_open_file_url_as_directory=嘗試將 {0} 開啟為目錄及存取項目 {1} 時，擲出了 {2}。
+
+attempted_to_open_url_as_directory=嘗試將 {0} 開啟為目錄時，擲出了 {1}。
+
+attempted_to_open_url_as_jar=嘗試將 {0} 開啟為 jar 時，擲出了 {1}。
+
+automatic_key_generation_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 WLS 原生 CMP 設定 "automatic-key-generation"。如需詳細資料，請參閱移轉文件。
+
+bacth_update_not_supported=在 EclipseLink CMP 中，不直接支援值為  ({0})（定義於 Entity Bean ({1}) 上）的批次更新設定 batch-size。如需詳細資料，請參閱移轉文件。
+
+broadcast_connection_already_closed=警告：{0}：嘗試關閉連線，但該連線已關閉。忽略中。
+
+broadcast_connection_already_closing=警告：{0}：嘗試關閉目前正在關閉的連線。忽略中。
+
+broadcast_exception_thrown_when_attempting_to_close_connection=警告：{0}：嘗試關閉造成異常狀況 {1} 的連線
+
+broadcast_ignored_command_while_closing_connection=警告：{0}：正在關閉連線，忽略了發佈指令要求。
+
+broadcast_listening_sleep_on_error=警告：{0}：擲出了異常狀況 {1}。在回復接聽之前，執行緒會休眠 {2} 毫秒。
+
+broadcast_remote_command_is_null=警告：{0}：收到訊息 {1}，其中含有空值而非 RemoteCommand。
+
+broadcast_remote_command_wrong_type=警告：{0}：收到的訊息 {1} 包含類型為 {2} 的物件，而非預期的類型 RemoteCommand。
+
+call_timeout_not_migrated=orion-ejb-jar.xml 中的實體 {0} 定義了 call-timeout 值 {1}，但是描述子檔案中沒有定義持續性對映，因此不會進行任何移轉。如果您之後使用 EclipseLink 預設對映來產生 EclipseLink 對映描述子，請注意，將會遺失 call-timeout 設定，因為 EclipseLink 預設對映對原生描述子檔案沒有存取權。在產生預設對映之後，您需要手動或透過「EclipseLink 對映工作台」來重設呼叫逾時。
+
+cannot_get_nested_collection_type=無法取得巢狀集合類型。
+
+cannot_get_server_name_and_version=因下列異常狀況，無法取得伺服器名稱和版本。{0}
+
+cannot_unwrap_connection=因下列異常狀況，無法解除包裝應用程式伺服器所包裝的 Oracle 連線。{0}
+
+cannot_weave_changetracking=無法編排類別 {0} 來追蹤變更，因為其對映不支援它。
+
+cannot_weave_virtual_one_to_one=類別 {0} 的屬性 {1} 在虛擬屬性上使用了 OneToOne 或 ManyToOne 對映。不支援編排這些類型的對映。將停用 {0} 的編排。
+
+check_exist_on_method_as_true_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 WLS 原生 CMP 設定 "check-exists-on-method-as-true"。如需詳細資料，請參閱移轉文件。
+
+class_list_created_by=類別清單是用 ({0}).({1})() 方法建立。
+
+cmp_and_cmr_field=[{0}] 的 ejb-jar.xml 項目同時包含了屬性 [{1}] 的 <cmp-field> 和 <cmr-field> 項目。將忽略 <cmp-field> 項目。
+
+column_size_not_migrated=未移轉資料庫直欄大小 ({0})。如需詳細資料，請參閱移轉文件。
+
+communication_failure_attempting_begintransaction_retry=嘗試在資料庫上建立交易時，偵測到通訊失敗。正在重試開始交易。錯誤是：{0}。
+
+communication_failure_attempting_query_retry=嘗試在交易之外執行讀取查詢時，偵測到通訊失敗。正在重試查詢。錯誤是：{0}。
+
+config_factory=配置 Factory：({0}) = ({1})
+
+connected_sdk=已連接：SDK
+
+connected_user_database=已連接：{3}{4}使用者：{0}{3}{4}資料庫：{1}  版本：{2}
+
+connected_user_database_driver=已連接：{0}{6}使用者：{1}{6}資料庫：{2}  版本：{3}{6}驅動程式：{4}  版本：{5}
+
+corrupt_object=毀損物件：{0}
+
+corrupt_object_referenced_through_mapping=透過對映所參照的物件已毀損: {0}
+
+corrupted_session_announcement=SessionID：{0}，探索管理程式收到毀損的階段作業公告 - 忽略中。
+
+create_default_dbms_tables_not_supported=在 EclipseLink CMP 中，不直接支援 WLS 原生 CMP 設定 "create-default-dbms-tables"。如需詳細資料，請參閱移轉文件。
+
+data_sync_on_ejb_create_not_supported=在 EclipseLink CMP 中，不直接支援 Entity Bean ({0}) 上所定義的資料同步化設定 data-synchronization-option="ejbCreate"。如需詳細資料，請參閱移轉文件。
+
+dbPlatformHelper_defaultingPlatform=無法偵測到供應商名稱 [{0}] 的平台。正在預設為 [{1}]。所用的資料庫用語可能與您使用的資料庫不符。請使用 "eclipselink.target-database" 內容，明確地提供平台。
+
+dbPlatformHelper_noMappingFound=無法載入資源 [{0}]，來載入供應商名稱至資料庫平台的對映。自動偵測資料庫平台將不會起作用。
+
+dbws_no_wsdl_inline_schema=無法讀取 [{0}] WSDL 行內綱目。
+
+dbws_orm_metadata_read_error=無法讀取 [{0}] ORM meta 資料。
+
+dbws_oxm_metadata_read_error=無法讀取 [{0}] OXM meta 資料。
+
+dbws_xml_schema_read_error=無法讀取 [{0}] XML 綱目。
+
+ddl_generation_unknown_property_value=提供了不明的 {0} 值 [{1}] 給持續性單元 [{2}]。有效選項是：[{3}]
+
+default_dbms_tables_ddl_not_supported=在 EclipseLink CMP 中，不直接支援 WLS 原生 CMP 設定 "default-dbms-tables-ddl"。如需詳細資料，請參閱移轉文件。
+
+default_tables_already_existed=表格 ({0}) 已在資料庫中，將不會加以建立。
+
+delay_database_insert_until_ejb_create_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 WLS 原生 CMP 設定 "delay-database-insert-until-ejbCreate"。如需詳細資料，請參閱移轉文件。
+
+delay_database_insert_until_ejb_post_create_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 WLS 原生 CMP 設定 "delay-database-insert-until-ejbPostCreate"。如需詳細資料，請參閱移轉文件。
+
+delay_updates_until_commit_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 特性 "delay-updates-until-commit"。如需詳細資料，請參閱移轉文件。
+
+deleted_objects=已刪除的物件：
+
+deleting_object=已對 {0} 執行移除作業
+
+deprecated_property={1} 內容已淘汰，應改用 {0} 內容。
+
+descriptor_named_query_cannot_be_added=無法新增其名稱與現有查詢衝突的描述子具名查詢。要新增的查詢 [{0}] 的名稱是 [{1}]，含有引數 [{2}]。
+
+dir_cleaned_for_mw_files=已刪除 {0} 目錄之下的檔案和子目錄，以便為新產生的「EclipseLink 對映工作台」專案檔建立全新的目錄
+
+do_select_before_insert_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 特性 "do-select-before-insert"。如需詳細資料，請參閱移轉文件。
+
+drop_connection_on_error=警告：發生錯誤 {1} 時捨棄與 {0} 的遠端指令連線
+
+eclipselink_version_error=檔案 {0} 不存在或已毀損。
+
+ejbSelect2=EjbSelect：{0}
+
+ejb_jar_xml_not_found_in_input=輸入目錄 ({0}) 之下不存在 ejb-jar.xml。
+
+elements={0}{1} 元素
+
+enable_batch_operations_as_true_not_supported=在 EclipseLink CMP 中，不直接支援 WLS 原生 CMP 設定 "enable-batch-operations-as-true"。如需詳細資料，請參閱移轉文件。
+
+entity_manager_ignores_jta_data_source=持續性單元不使用 JTA，因此 EntityManager 會忽略 jta 資料來源。
+
+entity_manager_ignores_nonjta_data_source=持續性單元使用 JTA，因此 EntityManager 會忽略非 jta 資料來源。
+
+entity_manager_sets_property_while_context_is_active=在作用中持續性環境定義已存在的情況下，將 {0} 內容設為 EntityManager，將會處理它，並且只在建立新的作用中持續性環境定義時，才會起作用。如果要建立新的作用中持續性環境定義，應移除現有的作用中持續性環境定義 - 如果要這樣做，請對 EntityManager 呼叫 clear 方法。
+
+entity_not_available_during_merge=已超出嘗試次數上限。找不到已鎖定之 cacheKey 的值。類別 [{0}] ID：[{1}] 這個執行緒：[{2}] 擁有端執行緒：[{3}]
+
+error_during_PersistenceManager_setup_for_bean=在設定 Bean 的 PersistenceManager 期間發生錯誤：{0}
+
+error_executing_ejbHome=執行 ejbHome 時發生錯誤：{0}
+
+error_executing_remote_command=由於 {1}，{0} 指令失敗
+
+error_getting_transaction_status=取得交易狀態時發生錯誤。{0}
+
+error_in_codegen=產生具體 Bean 類別期間發生錯誤。
+
+error_in_create=建立時發生錯誤。
+
+error_in_remove=移除時發生錯誤。
+
+error_loading_xml_file=載入 ORM XML 檔 {0} 時發生異常狀況：{1}
+
+exception_loading_entity_class=嘗試起始設定持續性時，發生異常狀況。嘗試載入實體類別 {0} 時，發生 {1}。
+
+exception_thrown_when_attempting_to_close_connection=警告：嘗試關閉連線時，擲出了異常狀況
+
+exception_thrown_when_attempting_to_close_listening_topic_connection=嘗試關閉接聽中的主題連線時，擲出了異常狀況：{0}
+
+exception_thrown_when_attempting_to_shutdown_cache_synch=嘗試關閉快取同步化時，擲出了異常狀況：{0}
+
+exception_while_weaving=編排器嘗試編排類別 {0} 時，遇到異常狀況。異常狀況：{1}
+
+extra_cmp_field=在 [{0}] 抽象 Bean 類別中定義了抽象 getter 及/或 setter，但是未在 ejb-jar.xml 中宣告對應的 cmp 欄位 [{1}]。
+
+extra_ejb_select=在 [{0}] 抽象 Bean 類別中定義了抽象 ejbSelect，但是未在 ejb-jar.xml 中宣告對應的 ejbSelect [{1}{2}] 項目。
+
+extra_finder=在 [{0}] Home 介面中定義了搜尋器，但是未在 ejb-jar.xml 中宣告對應的搜尋器 [{1}{2}] 項目。
+
+failed_command_propagation=錯誤：由於 {1}，嘗試將指令延伸到 {0} 失敗
+
+failed_to_find_mbean_server=找不到 MBean 伺服器：{0}
+
+failed_to_propogate_to=CacheSynchronization：無法延伸到 {0}。異常狀況：{1}
+
+field_group_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 WLS 原生 CMP 設定 "field-group"。如需詳細資料，請參閱移轉文件。
+
+field_type_set_to_java_lang_string=預設表格產生器找不到 java 類型 ({1}) 或無法將它轉換成資料庫欄位 ({0}) 的資料庫類型。產生器會使用 "java.lang.String" 作為欄位的預設 java 類型。
+
+force_update_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 特性 "force-update"。如需詳細資料，請參閱移轉文件。
+
+identitymap_for={0}{1} 用於：{2}
+
+includes=（包含：
+
+input_and_output_dir_be_different=您必須定義一個有別於輸入目錄的輸出目錄。
+
+input_archive_format_not_supported=移轉公用程式支援 .ear、.jar 和輸入保存檔格式。不支援輸入檔格式 ({0})。
+
+input_at_least_either_archive_or_xml=您可以使用 -e 來指定所移轉的保存檔名稱，或使用 -x 來指出將會移轉輸入目錄之下的描述子 xml 檔，您必須加以指定，且只能指定其中一個。
+
+input_minimum_arguments=指令行輸入引數必須至少包含 -s、-a 或 -x 以及 -o。
+
+input_not_both_archive_and_xml=您可以使用 -e 來指定保存檔名稱，或使用 -x 來指出將移轉輸入目錄之下的描述子檔案，但不能同時指定。
+
+input_orione_ejb_jar_augmented=orion-ejb-jar.xml 輸入檔已擴增為指定 EclipseLink 作為 OC4J 的持續性管理程式
+
+invalid_command_line_argument=指令行引數 ({0}) 無效
+
+invalid_datasource_property_value=對於 {0} 內容，{1} 不是要傳入的有效物件。有效值是「字串」，或 javax.sql.DataSource 的實例。
+
+invalid_property_value=對於 {0} 內容，{1} 不是要傳入的有效物件。
+
+isolation_level_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 設定 "isolation-level"。如需詳細資料，請參閱移轉文件。
+
+jar_entry_has_been_migrated=來自輸入 EAR 檔 ({1}) 之 jar 項目 ({0}) 中的原生 cmp 描述子檔案已移轉。
+
+jar_entry_not_migratable=輸入 EAR 檔 ({1}) 中的 jar 項目 ({0}) 不是可移轉的。
+
+jar_file_url_exception=剖析 persistence.xml 時發生異常狀況。找不到 Jar 檔位置：{0}
+
+jaxb_metadata_warning_ignoring_java_attribute=正在忽略類別 [{1}] 上的屬性 [{0}]，因為沒有為它產生內容。
+
+jaxb_metadata_warning_ignoring_type_on_map=正在忽略 xml-element 上所設定的類型屬性，因為內容 [{0}] 上指定了 xml-map。
+
+jaxb_metadata_warning_invalid_bound_type=配接器類別 [{1}] 的連結類型 [{0}] 無效，將忽略它。
+
+jaxb_metadata_warning_invalid_java_attribute=發現不支援的 JavaAttribute [{0}]，將忽略它。
+
+jaxb_metadata_warning_invalid_package_level_xml_java_type_adapter=指定給套件 [{1}] 的 XmlJavaTypeAdapter [{0}] 無效，將忽略它。
+
+jaxb_metadata_warning_invalid_property_level_xml_java_type_adapter=為類別 [{2}] 上的欄位/內容 [{1}] 指定的 XmlJavaTypeAdapter [{0}] 無效，將忽略它。
+
+jaxb_metadata_warning_invalid_type_level_xml_java_type_adapter=指定給類別 [{1}] 的 XmlJavaTypeAdapter [{0}] 無效，將忽略它。
+
+jaxb_metadata_warning_no_classes_to_process=套件 [{0}] 沒有類別可處理。
+
+jmx_mbean_runtime_services_failed_toget_initial_context=無法取得 InitialContext 來登錄 MBean：{0}
+
+jmx_mbean_runtime_services_get_executethreadruntime_object_failed=WebLogic 的版本不支援 executeThreadRuntime - 使用 ClassLoader：{0}
+
+jmx_mbean_runtime_services_identity_map_class=身分對映 [{0}] 類別 = {1}
+
+jmx_mbean_runtime_services_identity_map_empty=身分對映 [{0}] 是空的。
+
+jmx_mbean_runtime_services_identity_map_initialized=身分對映 [{0}] 已起始設定。
+
+jmx_mbean_runtime_services_identity_map_invalidated=身分對映 [{0}] 已失效。
+
+jmx_mbean_runtime_services_identity_map_non_existent=身分對映 [{0}] 不存在。
+
+jmx_mbean_runtime_services_mbeanserver_lookup_failed=無法取得 InitialContext 來登錄 MBean：{0}
+
+jmx_mbean_runtime_services_no_classes_in_session=階段作業中沒有類別。
+
+jmx_mbean_runtime_services_no_connection_pools_available=沒有可用的連線儲存區。
+
+jmx_mbean_runtime_services_no_identity_maps_in_session=這個階段作業中沒有身分對映。
+
+jmx_mbean_runtime_services_pool_name=儲存區名稱 = {0}
+
+jmx_mbean_runtime_services_print_cache_key_value=索引鍵 [{0}] => 值 [{1}]
+
+jmx_mbean_runtime_services_registration_encountered_multiple_mbeanserver_instances=存在多個 JMX MBeanServer 實例 [{0}]，將使用位於索引 [{1}] 的伺服器：[{2}]。
+
+jmx_mbean_runtime_services_registration_mbeanserver_print=發現 JMX MBeanServer 實例：[{0}]，Bean 數目：[{1}]，網域：[{2}]，位於索引：[{3}]。
+
+jmx_mbean_runtime_services_statement_cache_cleared=陳述式快取已清除。
+
+jmx_mbean_runtime_services_switching_to_alternate_mbeanserver=JMX MBeanServer 使用中：[{0}] 來自索引 [{1}] 
+
+jmx_mbean_runtime_services_threadpool_initialize_failed=無法起始設定 MBean threadPoolRuntime：{0}
+
+jmx_unable_to_unregister_mbean=無法取消登錄 MBean [{0}]，因為 MBeanServer 是空值。請驗證您的 ServerPlatform 已啟用 JMX。
+
+jmx_unregistered_mbean=已從 MBeanServer [{1}] 取消登錄 MBean [{0}]。
+
+jpars_could_bootstrap_persistence_context=無法引導持續性環境定義 [{0}]。
+
+jpars_could_not_find_class_in_persistence_unit=在持續性單元 [{1}] 中找不到類型 [{0}]。
+
+jpars_could_not_find_persistence_context=JPA-RS 呼叫正在要求持續性環境定義：[{0}]。找不到該持續性環境定義。
+
+jpars_could_not_find_session_bean=正在呼叫 JNDI 名稱是 [{0}] 的 Session Bean。找不到該 Bean。
+
+jta_cannot_be_disabled_in_cmp=使用「儲存器管理的持續性 (CMP)」時，不能停用 JTA。EclipseLink 將起作用，並視同 JTA 已啟用。
+
+jta_duplicate_ctrl_property=定義於 "eclipselink.target-server" 和 "eclipselink.jta.controller" 內容中的 JTA 交易控制器類別。 使用 "eclipselink.target-server" 中的值。
+
+jta_tsr_lookup_failure=無法查閱 TransactionSynchronizationRegistry 實例：{0}
+
+key_identity_hash_code_object={0}索引鍵：{1}{2}身分雜湊碼：{3}{2}物件：{4}
+
+key_object_null={0}索引鍵：{1}{2}物件：空值
+
+key_version_identity_hash_code_object={0}索引鍵：{1}{2}版本：{5}{2}身分雜湊碼：{3}{2}物件：{4}
+
+locking_mode_not_valid=在 orion-ejb-jar.xml 中，實體 ({0}) 上的鎖定模式 ({1}) 定義不明確，因此不會移轉。
+
+locking_required_for_database_change_notification=實體 {0} 沒有使用版本鎖定，但是有多個表格或關係，並且使用 Oracle 資料庫變更通知，對關係或次要表格的變更可能不會讓快取失效。
+
+log_file_under_output_dir=輸出目錄 ({1}) 之下有一個稱為 ({0}) 的日誌檔。
+
+mapping_not_supported_by_mw=對映工作台不支援 EclipseLink 對映 {0}
+
+marshal_warning_null_document_root_element={0}：在使用任何 collection|object 對映來配置期間，忽略所參照物件 [{1}] 的未定義文件根元素。
+
+max_instance_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 設定 "max-instance"。如需詳細資料，請參閱移轉文件。
+
+max_tx_retries_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 設定 "max-tx-retries"。如需詳細資料，請參閱移轉文件。
+
+metadata_access_type=持續性類別 [{1}] 的存取類型設為 [{0}]。
+
+metadata_default_alias=實體類別 [{0}] 的別名正在預設為：{1}。
+
+metadata_default_collection_catalog=基本集合/對映的對映 [{0}] 之集合表格名稱正在預設為：{1}。
+
+metadata_default_collection_schema=基本集合/對映的對映 [{0}] 之集合表格名稱正在預設為：{1}。
+
+metadata_default_collection_table_name=基本集合/對映的對映 [{0}] 之集合表格名稱正在預設為：{1}。
+
+metadata_default_column=元素 [{0}] 的直欄名稱正在預設為：{1}。
+
+metadata_default_converter_data_type=與實體 [{0}] 中的元素 [{1}] 搭配使用的轉換器（名稱是 [{2}]）的資料類型正在預設為 [{3}]。
+
+metadata_default_converter_object_type=與實體 [{0}] 中的元素 [{1}] 搭配使用的轉換器（名稱是 [{2}]）的物件類型正在預設為 [{3}]。
+
+metadata_default_element_collection_reference_class=元素集合對映元素 [{0}] 的目標類別（參照）類別正在預設為：{1}。
+
+metadata_default_entity_graph_name=類別 [{1}] 上之具名 EntityGroup 規格的名稱預設為：{0}
+
+metadata_default_fk_column=對映元素 [{0}] 的外部索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_inheritance_discriminator_column=根繼承類別 [{0}] 的鑑別器直欄名稱正在預設為：{1}。
+
+metadata_default_inheritance_fk_column=繼承類別 [{0}] 的外部索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_inheritance_pk_column=繼承類別 [{0}] 的主要索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_join_catalog=多對多對映 [{0}] 的結合表格型錄正在預設為：{1}。
+
+metadata_default_join_schema=多對多對映 [{0}] 的結合表格綱目正在預設為：{1}。
+
+metadata_default_join_table_name=多對多對映 [{0}] 的結合表格名稱正在預設為：{1}。
+
+metadata_default_key_column=基本對映的對映元素 [{0}] 的索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_many_to_many_reference_class=多對多對映元素 [{0}] 的目標實體（參照）類別正在預設為：{1}。
+
+metadata_default_many_to_one_reference_class=多對一對映元素 [{0}] 的目標實體（參照）類別正在預設為：{1}。
+
+metadata_default_map_key_attribute_name=對映元素 [{0}] 的對映索引鍵屬性名稱正在預設為：{1}。
+
+metadata_default_one_to_many_mapping=元素 [{0}] 正在預設為一對多對映。
+
+metadata_default_one_to_many_reference_class=一對多對映元素 [{0}] 的目標實體（參照）類別正在預設為：{1}。
+
+metadata_default_one_to_one_mapping=元素 [{0}] 正在預設為一對一對映。
+
+metadata_default_one_to_one_reference_class=一對一對映元素 [{0}] 的目標實體（參照）類別正在預設為：{1}。
+
+metadata_default_order_column=元素 [{0}] 的順序直欄名稱正在預設為：{1}。
+
+metadata_default_pk_column=對映元素 [{0}] 的主要索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_qk_column=可變的一對一對映 [{0}] 的查詢索引鍵名稱正在預設為：{1}。
+
+metadata_default_secondary_catalog=實體 [{0}] 的次要表格名稱正在預設為：{1}。
+
+metadata_default_secondary_schema=實體 [{0}] 的次要表格名稱正在預設為：{1}。
+
+metadata_default_secondary_table_fk_column=元素 [{0}] 的次要表格外部索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_secondary_table_name=實體 [{0}] 的次要表格名稱正在預設為：{1}。
+
+metadata_default_secondary_table_pk_column=元素 [{0}] 的次要表格主要索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_sequence_generator_catalog=[{0}] 內所定義的序列產生器型錄正在預設為：{1}。
+
+metadata_default_sequence_generator_schema=[{0}] 內所定義的序列產生器綱目正在預設為：{1}。
+
+metadata_default_sequence_generator_sequence_name=序列產生器（名稱是 [{0}]，定義在 [{2}] 中的 [{1}] 上）的序列名稱正在預設為：{0}。
+
+metadata_default_source_fk_column=多對多對映 [{0}] 的來源外部索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_source_pk_column=多對多對映 [{0}] 的來源主要索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_table_catalog=實體 [{0}] 的表格型錄正在預設為：{1}。
+
+metadata_default_table_generator_catalog=[{0}] 內所定義的表格產生器型錄正在預設為：{1}。
+
+metadata_default_table_generator_name=[{0}] 內所定義的表格產生器名稱正在預設為：{1}。
+
+metadata_default_table_generator_pk_column_value=表格產生器（名稱是 [{0}]，定義在 [{2}] 中的 [{1}] 上）的主要索引鍵直欄值正在預設為：{0}。
+
+metadata_default_table_generator_schema=[{0}] 內所定義的表格產生器綱目正在預設為：{1}。
+
+metadata_default_table_name=實體 [{0}] 的表格名稱正在預設為：{1}。
+
+metadata_default_table_schema=實體 [{0}] 的表格綱目正在預設為：{1}。
+
+metadata_default_target_fk_column=多對多對映 [{0}] 的目標外部索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_target_pk_column=多對多對映 [{0}] 的目標主要索引鍵直欄名稱正在預設為：{1}。
+
+metadata_default_tenant_discriminator_column=元素 [{0}] 的租戶鑑別器直欄名稱正在預設為：{1}。
+
+metadata_default_tenant_discriminator_context_property=元素 [{0}] 上之租戶鑑別器直欄 [{1}] 的租戶鑑別器環境定義內容正在預設為：{2}。
+
+metadata_default_tenant_table_discriminator_context_property=實體 [{0}] 的租戶表格鑑別器環境定義內容正在預設為：{1}。
+
+metadata_default_tenant_table_discriminator_type=實體 [{0}] 的租戶表格鑑別器類型正在預設為：{1}。
+
+metadata_default_value_column=基本集合/對映的對映元素 [{0}] 的值直欄名稱正在預設為：{1}。
+
+metadata_default_variable_one_to_one_discriminator_column=可變的一對一對映 [{0}] 的鑑別器直欄名稱正在預設為：{1}。
+
+metadata_default_variable_one_to_one_mapping=元素 [{0}] 正在預設為可變的一對一對映。
+
+metadata_default_variable_one_to_one_reference_class=可變的一對一對映元素 [{0}] 的目標介面（參照）類別正在預設為：{1}。
+
+metadata_warning_ignore_association_override=正在忽略關聯置換（名稱是 [{0}]，位於對映的超類別 [{2}] 的元素 [{1}] 上），因為實體類別 [{3}] 上已指定了一個同名的關聯置換。
+
+metadata_warning_ignore_attribute_override=正在忽略屬性置換（名稱是 [{0}]，位於對映的超類別 [{2}] 的元素 [{1}] 上），因為實體類別 [{3}] 上已指定了一個同名的屬性置換。
+
+metadata_warning_ignore_auto_apply_converter=正在忽略實體類別 [{0}] 內元素 [{1}] 的自動套用轉換器，因為指定了 EclipseLink 轉換 meta 資料。
+
+metadata_warning_ignore_cacheable_false=正在忽略明確設定給實體類別 [{0}] 的 cacheable=false，因為 persistence.xml 檔中指定了快取類型 ALL。
+
+metadata_warning_ignore_cacheable_true=正在忽略明確設定給實體類別 [{0}] 的 cacheable=true，因為 persistence.xml 檔中指定了快取類型 NONE。
+
+metadata_warning_ignore_converts=正在忽略實體類別 [{0}] 內元素 [{1}] 上的 JPA 轉換規格，因為指定了 EclipseLink 轉換 meta 資料。
+
+metadata_warning_ignore_enumerated=正在忽略實體類別 [{0}] 內元素 [{1}] 上的列舉規格，因為指定了 EclipseLink 轉換 meta 資料。
+
+metadata_warning_ignore_fetch_group=正在忽略實體 [{1}] 之類別 [{0}] 上指定的提取群組，因為未啟用編排，且實體類別沒有實作 FetchGroupTracker 介面。
+
+metadata_warning_ignore_inheritance_subclass_cache=正在忽略繼承子類別 [{0}] 上的快取 meta 資料。快取 meta 資料只能指定在繼承階層的根位置上，且無法在繼承子類別中置換它。
+
+metadata_warning_ignore_inheritance_subclass_cache_interceptor=正在忽略繼承子類別 [{0}] 上的快取攔截程式 meta 資料。快取攔截程式 meta 資料只能指定在繼承階層的根位置上，且無法在繼承子類別中置換它。
+
+metadata_warning_ignore_inheritance_subclass_default_redirectors=正在忽略繼承子類別 [{0}] 上的預設重新導向程式 meta 資料。預設重新導向程式 meta 資料只能指定在繼承階層的根位置上，且無法在繼承子類別中置換它。
+
+metadata_warning_ignore_inheritance_subclass_read_only=正在忽略繼承子類別 [{0}] 上的唯讀設定。唯讀設定只能指定在繼承階層的根位置上，且無法在繼承子類別中置換它。
+
+metadata_warning_ignore_inheritance_tenant_discriminator_column=正在忽略繼承子類別 [{0}] 上的租戶鑑別器直欄設定。租戶鑑別器直欄只能指定在繼承階層的根位置上，且無法在繼承子類別中置換及/或指定它。
+
+metadata_warning_ignore_inheritance_tenant_table_discriminator=正在忽略繼承子類別 [{0}] 上的租戶表格鑑別器設定。租戶表格鑑別器只能指定在繼承階層的根位置上，且無法在繼承子類別中置換及/或指定它。
+
+metadata_warning_ignore_is_null_allowed=在 {0} 中將 isNullAllowed 重設為 false，因為聚集有一個（可能是巢狀）目標外部索引鍵對映
+
+metadata_warning_ignore_lazy=正在回復實體類別 [{1}] 之 OneToOne 或 ManyToOne 屬性 [{0}] 上的延遲設定，因為未啟用或未進行編排。
+
+metadata_warning_ignore_lob=正在忽略實體類別 [{0}] 內元素 [{1}] 上的 lob 規格，因為指定了 EclipseLink 轉換 meta 資料。
+
+metadata_warning_ignore_mapped_superclass_additional_criteria=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的其他準則 meta 資料，因為先前已探索到該實體的其他準則 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_annotation=正在忽略實體類別 [{2}] 之對映超類別 [{1}] 上的 meta 資料 [{0}] 設定，因為先前已探索到該實體的 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_association_override=正在忽略實體 [{2}] 之對映超類別 [{1}] 上所定義的關聯置換（名稱是 [{0}]），因為先前已探索到該實體有一個同名的關聯置換（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_attribute_override=正在忽略實體 [{2}] 之對映超類別 [{1}] 上所定義的屬性置換（名稱是 [{0}]），因為先前已探索到該實體有一個同名的屬性置換（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_cache=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的快取 meta 資料，因為先前已探索到該實體的快取 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_cache_interceptor=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的快取攔截程式 meta 資料，因為先前已探索到該實體的快取攔截程式 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_cacheable=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的可快取 meta 資料，因為先前已探索到該實體的可快取 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_change_tracking=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的變更追蹤 meta 資料，因為先前已探索到該實體的變更追蹤 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_copy_policy=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的複製原則 meta 資料，因為先前已探索到該實體的複製原則 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_customizer=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的自訂程式，因為先前已探索到該實體的自訂程式 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_default_redirectors=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的預設重新導向程式 meta 資料，因為先前已探索到該實體的預設重新導向程式 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_existence_checking=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的存在性檢查設定，因為先前已探索到該實體的存在性檢查 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_fetch_group=正在忽略實體 [{0}] 之對映超類別 [{1}] 上的提取群組（名稱是 [{2}]），因為先前已探索到該實體有一個同名的提取群組（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_id_class=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的 ID 類別，因為先前已探索到該實體的 ID 類別（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_multitenant=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的多租戶設定，因為先前已探索到該實體的多租戶 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_optimistic_locking=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的樂觀鎖定 meta 資料，因為先前已探索到該實體的樂觀鎖定 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_primary_key=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的主要索引鍵設定，因為先前已探索到該實體的主要索引鍵 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapped_superclass_read_only=正在忽略實體類別 [{0}] 之對映超類別 [{1}] 上的唯讀設定，因為先前已探索到該實體的唯讀 meta 資料（位於實體本身或另一個對映超類別上）。
+
+metadata_warning_ignore_mapping_metadata=正在忽略從類別 [{1}] 套用至屬性 [{0}] 的 jakarta.persistence meta 資料。 在暫時性、靜態或抽象的欄位或內容上，會忽略 jakarta.persistence meta 資料。
+
+metadata_warning_ignore_serialized=正在忽略實體類別 [{0}] 內元素 [{1}] 上的預設序列化，因為指定了 EclipseLink 轉換 meta 資料。
+
+metadata_warning_ignore_temporal=正在忽略實體類別 [{0}] 內元素 [{1}] 上的時間規格，因為指定了 EclipseLink 轉換 meta 資料。
+
+metadata_warning_ignore_version_locking=樂觀鎖定 meta 資料已定義在實體 [{0}] 的描述子上。正在忽略元素 [{1}] 上的版本規格。
+
+metadata_warning_integer_discriminator_could_not_be_built=類別 [{0}] 指定了 discriminatorType=INTEGER，並使用 [{1}] 作為 discriminatorValue。無法將該值轉換為整數。將嘗試以「字串」格式使用此值。
+
+metadata_warning_inverse_access_type_mapping_override=正在以類別 [{0}] 中的 {4} 對映屬性 [{3}]，置換 {2} 對映屬性 [{1}]。如果要避免出現這個警告，您應該將屬性 [{1}] 標示為暫時性。
+
+metadata_warning_multiple_id_fields_without_id_class=您為實體類別 [{0}] 指定了多個 ID，但卻沒有指定 @IdClass。如果這樣做，您可能就無法依身分、分散式快取支援等來尋找。附註：不過您可以傳遞主要索引鍵欄位清單，以使用 EntityManager 尋找作業。不然，您必須使用 JPQL 查詢來讀取您的實體。如需取得其他 ID 選項，請參閱 @PrimaryKey。
+
+metadata_warning_override_annotation_with_xml=正在忽略 [{1}] 中的註釋 [{0}]，因為對映檔 [{2}] 中已定義 XML 元素。
+
+metadata_warning_override_named_annotation_with_xml=正在忽略 [{2}] 中的註釋 [{0}]，因為對映檔 [{3}] 中已定義一個同名 [{1}] 的 XML 元素
+
+metadata_warning_override_named_xml_with_eclipselink_xml=正在忽略對映檔 [{2}] 中所定義的元素 [{0}]（名稱是 [{1}]），因為 eclipselink-orm 對映檔 [{3}] 中已定義一個同名的元素
+
+metadata_warning_override_xml_with_eclipselink_xml=正在忽略對映檔 [{2}] 中所定義的元素 [{0}]（來自 [{1}]），因為 eclipselink-orm 對映檔 [{3}] 中已定義這個元素
+
+metadata_warning_partitioned_not_set=在類別 {0} 的元素 {1} 上發現 @Partitioning，但卻沒有 @Partitioned。@Partitioned 註釋必須用來設定分割原則，@Partitioning 只是定義原則，但沒有設定它。
+
+metadata_warning_reference_column_not_found=元素 [{1}] 上所對映的參照直欄名稱 [{0}] 沒有對應至對映參照上的有效 ID 或基本欄位/直欄。將依所提供使用參照的直欄名稱。
+
+metamodel_print_type_header=要遵循的 meta 模型 [{0}] 類型列印清單：
+
+metamodel_print_type_value=meta 模型類型：[{0}]}
+
+metamodel_type_collection_empty=meta 模型類型的集合是空的。在 Java SE 和部分 Java EE 儲存器管理的持續性單元的實體搜尋期間，可能找不到模型類別。請驗證在 persistence.xml 中，有使用 <class> 元素或 <exclude-unlisted-classes>false</exclude-unlisted-classes> 廣域元素參照您的實體類別
+
+metamodel_type_collection_empty_during_lookup=meta 模型 [{1}] 類型的集合是空的。在 Java SE 和部分 Java EE 儲存器管理的持續性單元的實體搜尋期間，可能找不到模型類別。請驗證在 persistence.xml 中，有使用 <class> 元素或 <exclude-unlisted-classes>false</exclude-unlisted-classes> 廣域元素參照您的實體類別。[{0}] 查閱會傳回空值。
+
+migration_failed=移轉失敗。
+
+migration_input_dir_not_valid=您定義的輸入目錄 ({0}) 無效
+
+migration_output_dir_not_valid=您定義的輸出目錄 ({0}) 無效
+
+migration_successful=移轉成功！
+
+min_instance_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 設定 "min-instance"。如需詳細資料，請參閱移轉文件。
+
+missing_converter=警告：無法轉換指令 {0}，因為遺漏 CommandConverter - 正在忽略指令
+
+multiple_ds_not_supported=EclipseLink CMP 不支援多個資料來源，將使用其中一個名稱是 ({0}) 的資料來源，這是指定在 orion-ejb-jar.xml 中，並且會與對應的 ejb-jar.xml 中最後一個定義的 Entity Bean 相關聯。
+
+must_define_migration_output_dir=您必須定義移轉工具的輸出目錄
+
+mw_project_generated_and_under=所移轉的「EclipseLink 工作台」專案檔位於 ({0}) 之下。
+
+named_argument_not_found_in_query_parameters=遺漏具名引數 {0} 的查詢參數，將用 "null" 取代。
+
+nested_entity_manager_flush_not_executed_pre_query_changes_may_be_pending=類別 {0} 已在清除中。將執行查詢，但不會進一步將變更寫入至資料庫。如果查詢是條件式，一旦變更資料，所做的變更可能不會反映在結果中。使用者應在這個 flush() 之前，等相依變更完成，再發出 flush() 呼叫，來確定結果是正確的。
+
+new_objects=新建物件：
+
+no_exclusive_write_access_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 特性 "no-exclusive-write-access"。如需詳細資料，請參閱移轉文件。
+
+no_jar_entry_migratable_in_ear=輸入 EAR 檔 ({0}) 中沒有 jar 項目是可移轉的。
+
+no_session_found=在 session.xml 檔 [{1}] 中找不到名稱是 [{0}] 的階段作業
+
+non_jpa_allowed_type_used_for_collection_using_lazy_access=實體類別 [{0}] 內的元素 [{1}] 使用收集類型 [{2}]，但是 JPA 規格只支援 java.util.Collection、java.util.Set、java.util.List 或 java.util.Map。積極載入才支援這種類型；當這種收集類型採取延遲載入時，還需要其他的配置和延伸 [{2}] 的 IndirectContainer 實作，或者需要將對映設定成使用基本間接，以及將類型設定成 ValueholderInterface。
+
+objectchangepolicy_turned_off=關閉了 {0} 的變更追蹤
+
+oc4j_native_migration_start=OC4J-原生 CMP -> OC4J EclipseLink CMP 移轉啟動......
+
+old_pessimistic_locking_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 設定 "old-pessimistic-locking"。如需詳細資料，請參閱移轉文件。
+
+one_to_one_join_outer_migrated=在 EclipseLink CMP 中，不直接支援定義給 Entity Bean ({1}) 之 cmr 欄位 ({0}) 的一對一外部結合。如需詳細資料，請參閱移轉文件。
+
+optimistic_locking_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 設定 locking-mode="optimistic"。如需詳細資料，請參閱移轉文件。
+
+orion_ejb_jar_xml_not_found_in_input=orion-ejb-jar.xml 不存在於您指定的輸入目錄 ({0}) 之下。
+
+osgi_initializer=使用 OSGi 起始設定程式：[{0}]。
+
+osgi_initializer_failed=環境特定 OSGi 起始設定程式 [{0}] 建構失敗，訊息：[{1}]。
+
+overriding_cache_isolation=母項實體 {0} 的隔離層次是 {1}，其保護程度高於隔離是 {3} 的子類別 {2}，因此已將子類別設定成隔離層次 {1}。
+
+ox_lowering_global_logging_from_default_info_to_warning={0} 正在將廣域記載從預設的 INFO 降低至 WARNING 層次。
+
+ox_lowering_session_logging_from_default_info_to_warning={0} 正在將階段作業記載從預設的 INFO 降低至 WARNING 層次。
+
+ox_turn_global_logging_off={0} 正在關閉廣域階段作業記載。
+
+ox_turn_session_logging_off={0} 正在關閉階段作業記載。
+
+parse_ejb_jar_with_validation_fails=剖析進行驗證的 ejb-jar.xml 時失敗，發生錯誤 ({0})。移轉工具會剖析 XML 檔，但不進行驗證。
+
+persistence_unit_ignores_statments_cache_setting=無法啟用陳述式快取，因為未配置任何連線儲存區。
+
+persistence_unit_processor_error_in_class_forname_weaving_disabled=classLoader [{0}]：無法載入類別 [{1}]。已停用這個階段作業的編排。EclipseLink 無法從伺服器取得規格規定的暫時類別載入器，您或許可以使用靜態編排作為選用的暫行解決方法。
+
+persistence_unit_processor_error_loading_class={0}：在嘗試執行 PersistenceLoadProcessor 以載入類別 {2} 時擲出了 {1}。已忽略類別。
+
+persistence_unit_processor_error_loading_class_weaving_disabled=PersistenceLoadProcessor [{1}] 的 classLoader [{0}] 無法載入類別 [{2}]。已停用這個階段作業的編排。EclipseLink 無法從伺服器取得規格規定的暫時類別載入器，您或許可以使用靜態編排作為選用的暫行解決方法。
+
+persistence_unit_processor_jboss_temp_classloader_bypassed=PersistenceLoadProcessor [{0}] 的暫時 classLoader 無法使用。正在將 classLoader 切換為 [{1}]。已停用這個階段作業的編排。EclipseLink 無法從伺服器取得規格規定的暫時類別載入器，您或許可以使用靜態編排作為選用的暫行解決方法。
+
+persistence_unit_processor_npe_temp_classloader=PersistenceLoadProcessor [{1}] 的 classLoader [{0}] 正在 loadClass 上造成 NPE。正在將 classLoader 切換為 [{2}]。已停用這個階段作業的編排。EclipseLink 無法從伺服器取得規格規定的暫時類別載入器，您或許可以使用靜態編排作為選用的暫行解決方法。
+
+persistence_unit_processor_null_temp_classloader=PersistenceLoadProcessor [{0}] 的 classLoader 是空值。已停用這個階段作業的編排。EclipseLink 無法從伺服器取得規格規定的暫時類別載入器，您或許可以使用靜態編排作為選用的暫行解決方法。
+
+persistence_unit_processor_sap_temp_classloader_bypassed=PersistenceLoadProcessor [{0}] 的暫時 classLoader 無法使用。正在將 classLoader 切換為 [{1}]。已停用這個階段作業的編排。EclipseLink 無法從伺服器取得規格規定的暫時類別載入器，您或許可以使用靜態編排作為選用的暫行解決方法。
+
+problem_adding_connection=無法從 {0} 新增遠端連線，因為錯誤：{1}
+
+problem_adding_remote_connection=新增遠端連線時發生問題：{0}
+
+problem_reconnect_to_jms=無法重新連接 JMS 主題名稱 {0}，因為錯誤：{1}
+
+problem_registering_mbean=登錄 MBean 時發生問題：{0}
+
+problem_unregistering_mbean=取消登錄 MBean 時發生問題：{0}
+
+problem_while_registering=登錄時發生問題：{0}
+
+query_has_both_join_attributes_and_partial_attributes=名稱是 {1} 的 {0} 同時具有結合屬性和局部屬性。這兩個技術並未設計成一起運作，結果可能無法預期。
+
+query_has_joined_attribute_outside_fetch_group={0}：結合的屬性 [{1}] 未包含在提取群組中。將忽略結合的屬性資料（雖然從資料庫讀取）。將執行新的 sql，以重新讀取結合的屬性所參照的物件；然後執行另一個 sql 來讀取整個主要物件（因為將值設定為提取群組之外的屬性）。請將提取的屬性包含到提取群組中，或者移除它。
+
+received_corrupt_announcement=警告：因為 {0}，探索管理程式無法處理服務公告 - 正在忽略公告
+
+received_unexpected_message_type=從主題 {1} 收到非預期的訊息類型 {0}；忽略中
+
+register_new_for_persist=對 {0} 呼叫了持續保存作業。
+
+relational_descriptor_support_only=預設表格產生器目前只支援從關聯式專案產生預設表格綱目。
+
+relationship_cacheing_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 WLS 原生 CMP 設定 "relationship-caching"。如需詳細資料，請參閱移轉文件。
+
+removeEJB_return=removeEJB 傳回：{0}
+
+removing_unique_constraint=從 [{0}] 移除 UNIQUE 限制定義，因為它也是主要索引鍵。
+
+resource_local_persistence_init_info_ignores_jta_data_source=PersistenceUnitInfo {0} 具有 transactionType RESOURCE_LOCAL，因此將忽略 jtaDataSource
+
+retreived_null_message=從主題 {0} 擷取的訊息是空值；忽略中
+
+retreived_unknown_message_type=從主題 {1} 擷取的訊息類型 {0} 不明；忽略中
+
+sdo_classgenerator_exception={2} 發生 [{0}] 異常狀況 - 訊息是 [{1}]
+
+sdo_error_deserialization=類別 {0} 的未獲授權的解除序列化嘗試。
+
+sdo_error_processing_referenced_schema=處理所參照的綱目（uri 是 {1}，schemaLocation 是 {2}）時發生 {0}。
+
+sdo_invalid_schemaLocation=無法建立 URI 是 [{1}] 的 schemaLocation [{0}] 來匯入。
+
+sdo_missing_schemaLocation=無法處理所參照的綱目（URI 是 {0}），因為未指定 schemaLocation 屬性。
+
+sdo_type_generation_modified_class_naming_format_to={0}：已將產生的類型 [{1}] Java 類別名稱變更為 [{2}]，以遵循類別命名慣例。
+
+sdo_type_generation_modified_function_naming_format_to={0}：已將產生的類型 [{1}] Java get/set 方法名稱變更為 [{2}]，以遵循類別命名慣例。
+
+sdo_type_generation_warning_class_name_violates_java_spec={0}：產生的類型 [{1}] 與 [{2}] 的 Java 規格命名規則衝突，應重新命名。
+
+sdo_type_generation_warning_class_name_violates_sdo_spec={0}：產生的類型 [{1}] 與 [{2}] 的 SDO 規格命名規則衝突，應重新命名。
+
+sequence_cachekey_improper_format=實體 ({0}) 上的 WLS 原生 CMP 設定 "key-cache-size" 值 ({1}) 格式錯誤
+
+session_key_for_mbean_name_is_null=用於 MBean 登錄的階段作業名稱不能是空值。
+
+session_manager_no_partition=現行 SessionManager 實例沒有相關聯的分割區實例。
+
+sessions_xml_path_where_session_load_from=已從 [{0}] 載入階段作業資訊。
+
+sop_object_deserialze_failed=無法從 [{1}] 中的 [{0}] 解除序列化 sopObject
+
+sop_object_not_found=在 [{1}] 的 [{0}] 中找不到已序列化的 sopObject
+
+sop_object_wrong_pk=正在將已序列化的 sopObject 從列移除，因為 [{2}] 的 [{1}] 中有一個錯誤的主要索引鍵 [{0}]
+
+sop_object_wrong_version=正在將已序列化的 sopObject 從列移除，因為 [{2}] 的 [{1}] 中有一個錯誤的版本 [{0}]
+
+src_pm_name_first_argument=您必須將第一個輸入引數中的來源 PM 名稱指定為：-sOc4j-native 或 -sWeblogic。
+
+stack_of_visited_objects_that_refer_to_the_corrupt_object=參照毀損物件的已造訪物件堆疊：{0}
+
+table_existed_during_creation=表格建立失敗。如果已存在，必須先捨棄它。您可以手動這樣做，或是在 orion-ejb-jar.xml 中設定 db-table-gen 屬性。
+
+template_orion_ejb_jar_created=已建立範本化 orion-ejb-jar.xml 檔
+
+topLink_version=EclipseLink，版本：{0}
+
+toplink=[EL]：
+
+toplink_cmp_bean_name_xml_deprecated=已淘汰 toplink-cmp-bean_name.xml 支援。請參閱 toplink-ejb-jar.xml 相關的使用說明文件
+
+toplink_config=[EL 配置]：
+
+toplink_ejb_jar_in_jar=toplink-ejb-jar.xml 已包含在 jar({0}) 檔中，因此不會對這個 jar 執行任何移轉。
+
+toplink_ejb_jar_xml_found_in_input=toplink-ejb-jar.xml 位於輸入目錄 ({0}) 之下。您必須將 toplink 描述子從輸入目錄移除，以處理移轉。
+
+toplink_fine=[EL 細微]：
+
+toplink_finer=[EL 較細微]： 
+
+toplink_finest=[EL 最細微]：
+
+toplink_info=[EL 參考資訊]：
+
+toplink_severe=[EL 嚴重]：
+
+toplink_warning=[EL 警告]：
+
+unit_of_work_thread_info=階段作業 ({0}) 中的現行工作單元是由另一個執行緒（ID：{1} 名稱：{2}）所建立，而非現行執行緒（ID：{3} 名稱：{4}）
+
+unit_of_work_thread_info_thread_dump=建立執行緒 (ID: {0} 名稱: {1}) 堆疊追蹤:
+
+unitofwork_identity_hashcode={0}UnitOfWork 身分雜湊碼：{1}
+
+update_all_fields_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 特性 "update-all-fields"。如需詳細資料，請參閱移轉文件。
+
+update_all_query_cannot_use_binding_on_this_platform=UpdateAllQuery 無法在這個資料庫平台上使用連結。已變更要執行的查詢設定，而不連結。
+
+validate_db_schema_with_not_supported=在 EclipseLink CMP 中，不直接支援 WLS 原生 CMP 設定 "validate-db-schema-with"。如需詳細資料，請參閱移轉文件。
+
+validate_ejb_jar=正在驗證 ejb-jar.xml 是否啟動，可能需要一些時間...
+
+validate_object_space=驗證物件空間。
+
+validity_timeout_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 Oc4j 原生 CMP 設定 "validity-timeout"。如需詳細資料，請參閱移轉文件。
+
+verifiy_columns_read_locking_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 中 "verify-columns" 上的樂觀設定 "Read"。如需詳細資料，請參閱移轉文件。
+
+verifiy_rows_read_locking_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 中 "verify-rows" 上的樂觀設定 "Read"。如需詳細資料，請參閱移轉文件。
+
+weaver_class_not_in_project=編排器發現一個不屬於專案的類別：{0}。
+
+weaver_could_not_write=編排器嘗試將類別 {0} 寫入至檔案系統時，遇到異常狀況。異常狀況：{1}
+
+weaver_disable_by_system_property=系統內容 {0} 停用了編排
+
+weaver_not_overwriting=編排器並沒有改寫類別 {0}，因為未將它設定成改寫。
+
+weaver_null_project=編排器階段作業的專案不能是空值
+
+weblogic_ejb_jar_xml_not_found_in_input=weblogic-ejb-jar.xml 不存在於您指定的輸入目錄 ({0}) 之下。
+
+weblogic_native_migration_start=WebLogic-原生 CMP -> OC4J EclipseLink CMP 移轉啟動......
+
+weblogic_ql_not_supported=未移轉實體 ({2}) 之方法({1}) 的 WebLogic-QL({0})，因為 EclipseLink 不支援 WebLogic QL 語言。
+
+weblogic_query_not_supported=在 EclipseLink CMP 中，不直接支援實體 ({0}) 上的 WLS 原生 CMP 設定 "weblogic-query"。如需詳細資料，請參閱移轉文件。
+

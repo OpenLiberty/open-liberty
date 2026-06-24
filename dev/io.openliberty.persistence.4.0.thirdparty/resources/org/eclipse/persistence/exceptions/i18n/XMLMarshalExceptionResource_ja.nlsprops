@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=無効な XPath ストリングです: {0}
+
+25002=整数のインデックスはこの XPath ストリング {0} から構文解析できませんでした。
+
+25003=オブジェクトのマーシャル中にエラーが発生しました
+
+25004=文書のアンマーシャル中にエラーが発生しました
+
+25005=オブジェクトの検証中にエラーが発生しました
+
+25006=デフォルトのルート・エレメントが、{0} にマップされる XMLDescriptor に指定されていませんでした。
+
+25007=クラス {0} の記述子がプロジェクトにありませんでした。  JAXB で、JAXBContext が TypeMappingInfo[] を使用してブートストラップされた場合、TypeMappingInfo を入力パラメーターとして受け入れるマーシャル・メソッドを呼び出す必要があります。
+
+25008=デフォルトのルート・エレメントが {0} の記述子がプロジェクトにありませんでした。
+
+25010=スキーマ参照が {0} にマップされる XMLDescriptor に指定されていませんでした。
+
+25011=ヌル引数が見つかりました。
+
+25012=XML スキーマの解決中にエラーが発生しました。
+
+25013=スキーマの設定を試行中にエラーが発生しました。
+
+25014=スキーマ・プラットフォームのインスタンス化を試行中にエラーが発生しました。
+
+25015={0} の名前空間 URI を解決しようとしてエラーが発生しました。 名前空間リゾルバーが記述子に指定されていませんでした。
+
+25016=プレフィックス {0} の名前空間が名前空間リゾルバーにありませんでした。
+
+25017=enumClass または enumClassName が JAXBTypesafeEnumConverter に設定される必要があります。
+
+25018=列挙型クラス {0} で fromString メソッドが存在しないか、呼び出すことができませんでした。
+
+25019=指定された列挙型クラス {0} が見つかりませんでした。
+
+25020=メソッド「getResult()」は「endDocument()」イベントを呼び出す前に呼び出さないでください。
+
+25021=クラス {0} は SwaRef で無効です。 jakarta.activation.DataHandler である必要があります。
+
+25022=画像をマーシャルできません。 mimeType {0} に使用可能なエンコーダーがありません。
+
+25023=属性 {0} にマップされたエレメントのアンマーシャルで、記述子が見つかりませんでした。
+
+25024=UnmappedContentHandler クラス {0} のインスタンス化中にエラーが発生しました。
+
+25025=XMLUnmarshaller に設定された UnmappedContentHandler クラス {0} は、org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler を実装する必要があります。
+
+25026=ノード [{0}] を更新できません。キャッシュにオブジェクトがありません。
+
+25027=AttachmentUnmarshaller が設定されていないため、cid {0} を指定した添付ファイルを検索できません。
+
+25028=不明な xsi:type 値 {0} があるため、マッピング {1} の参照記述子が見つかりません。
+
+25029=プレフィックス [{0}] にクラス [{1}] が名前空間 URI [{2}] を割り当てようとしましたが、その親クラス [{3}] が名前空間 URI [{4}] を割り当て済みです。
+
+25030=カスタム NamespacePrefixMapper {1} で {0} メソッドを呼び出し中にエラーが発生しました。
+
+25031=名前空間プレフィックス・マッパー {1} を処理中にエラーが発生しました。 メソッド {0} が見つかりませんでした。
+
+25032=カスタム CharacterEscapeHandler {1} で {0} メソッドを呼び出し中にエラーが発生しました。
+
+25033=CharacterEscapeHandler {1} の処理中にエラーが発生しました。 メソッド {0} が見つかりませんでした。
+
+25034=カスタム IDResolver {1} で {0} メソッドを呼び出し中にエラーが発生しました。
+
+25035=IDResolver {1} の処理中にエラーが発生しました。 メソッド {0} が見つかりませんでした。
+
+25036=カスタム IDResolver {1} は複数の XML ID {0} をサポートしません。  複数の ID が使用される場合、カスタム IDResolver は サブクラス org.eclipse.persistence.jaxb.IDResolver である必要があります。
+
+25037=オブジェクト・グラフでサイクルが検出されました。  これにより無限ループ {0} となります。
+
+25038=DOMPlatform はメディア・タイプ application/json でサポートされません。
+
+25039={0} からのアンマーシャル中にエラーが発生しました。
+
+25040=タイプが {0} で ID が {1} のオブジェクトが見つかりませんでした。
+
+25041=指定された属性グループ {0} がクラス {1} に定義されていません。
+
+25042=クラス {1} の変数プロパティー {0} の値はヌルにはできません。
+

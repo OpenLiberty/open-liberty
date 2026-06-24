@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource_es.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=Se ha generado una ValidationException al intentar crear la sesión: [{0}]. La causa más probable de este problema es que el archivo [{1}] no esté disponible en la classpath o que no contenga una sesión denominada: [{0}].
+
+28002=EclipseLink está intentando cargar una ServerSession denominada [{0}] desde [{1}] y no obtiene una ServerSession.
+
+28003=EclipseLink ha cargado la sesión [{0}] desde [{1}] y no tiene la plataforma de servidor especificada o especifica una plataforma de servidor que no utiliza y un controlador de transacciones externas.  Especifique la plataforma de servidor adecuada si tiene previsto utilizar JTA.
+
+28004=Se ha producido un error en la configuración de fábrica de EntityManager: JavaSECMPInitializer.initializeFromMain ha devuelto false.
+
+28005=Se ha generado una excepción en la configuración de la fábrica de EntityManager.
+
+28006=Se ha especificado ClassNotFound: [{0}] en la propiedad [{1}].
+
+28007=No se ha podido crear una instancia de la ServerPlatform de tipo [{0}] especificada en la propiedad [{1}].
+
+28008=No se ha encontrado la clase: {0} al procesar las anotaciones.
+
+28009=Se ha intentado volver a desplegar una sesión denominada {0} sin cerrarla.
+
+28010=PersistenceUnitInfo {0} tiene un JTA transactionType, pero no tiene definido un jtaDataSource.
+
+28011=La sesión, [{0}], construida para una unidad de persistencia no estaba disponible en el momento de desplegarse.  Esto significa que de alguna manera la sesión se ha eliminado del contenedor en medio del proceso de despliegue.
+
+28012=El valor [{0}] es de un tipo incorrecto para la propiedad [{2}]; el tipo de valor debe ser [{1}].
+
+28013=No se ha podido desplegar la PersistenceUnit [{0}] con un estado no válido [{1}].
+
+28014=Se ha generado una excepción al procesar la propiedad [{0}] con el valor [{1}].
+
+28015=No se ha podido crear una instancia del SessionLog de tipo [{0}] especificado en la propiedad [{1}].
+
+28016=La unidad de persistencia con el nombre [{0}] no existe.
+
+28017=No se ha podido predesplegar la PersistenceUnit [{0}] con un estado no válido [{1}].
+
+28018=El predespliegue de la PersistenceUnit [{0}] ha fallado.
+
+28019=El despliegue de la PersistenceUnit [{0}] ha fallado. Cierre todas las fábricas de esta PersistenceUnit.
+
+28020=La sesión con el nombre [{0}] cargada desde [{1}] es [{2}]; sin embargo, debe ser ServerSession.
+
+28021=La PersistenceUnit [{0}] intenta cargar una sesión desde [{1}] sin proporcionar un nombre de sesión.  Debe proporcionarse un nombre de sesión definiendo la propiedad eclipselink.session-name.
+
+28022=El valor [true] para la propiedad [eclipselink.weaving] es incorrecto cuando la instrumentación global es nula; el valor debe ser null, false o static.
+
+28023=La invocación del método [{0}] en el objeto [{1}] de la clase [{2}] ha desencadenado una excepción.
+
+28024=No se puede acceder de forma reflexiva al método [{0}] para el objeto [{1}] de la clase [{2}].
+
+28025=La unidad de persistencia con el nombre [{0}] ha devuelto un classLoader temporal [null]; el entrelazado se ha inhabilitado para esta sesión.  Puede utilizar el entrelazado estático como un método alternativo.
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider no da soporte al despliegue de contenedor (createContainerEntityManagerFactory).  Utilice org.eclipse.persistence.jpa.PersistenceProvider en su lugar.
+
+28027=Se ha intentado utilizar la PersistenceUnit [{0}], pero no hay ningún paquete disponible que defina la unidad de persistencia.
+
+28028=No se ha podido crear una instancia de la instancia de clase [{0}] para la propiedad de unidad de persistencia [{1}]; asegúrese de que el constructor se haya definido correctamente.
+
+28029=La PersistenceUnit [{0}] intenta utilizar sessions.xml (especifica la propiedad eclipselink.sessions-xml) y ser un compuesto (especifica la propiedad eclipselink.composite-unit con el valor true). Estas modalidades son incompatibles.
+
+28030=La PersistenceUnit [{0}] especifica la propiedad eclipselink.composite-unit.member con el valor true. Esto significa que no se puede utilizar de forma autónoma, sólo como un miembro compuesto.
+
+28031=Falta la propiedad necesaria [{0}].
+
+28032=No se ha podido crear el cargador de clases temporal con doPrivileged.
+

@@ -1,0 +1,57 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DBWSExceptionResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+47000="[{0}]" ファイルが見つかりません
+
+47001=O-R プロジェクトで [{1}] 操作の [{0}] 記述子が見つかりません
+
+47002=[{1}] 記述子の "[{0}]" 照会が見つかりません
+
+47003=[{1}] セッションの "[{0}]" 照会が見つかりません
+
+47004=[{1}] 操作の [{0}] パラメーター・タイプがスキーマに存在しません
+
+47005=[{1}] 操作の [{0}] パラメーター・タイプに O-X マッピングがありません
+
+47006=[{1}] 操作の [{0}] 結果タイプがスキーマに存在しません
+
+47007=[{1}] 操作の [{0}] 結果タイプに O-X マッピングがありません
+
+47008=複数の出力引数がサポートされるのは、単純 XML 形式照会のみです
+
+47009=INOUT カーソル・パラメーターはサポートされません
+
+47010=[{0}] サービスの O-R セッションが見つかりません
+
+47011=[{0}] サービスの O-X セッションが見つかりません
+
+47012=DBWS ファイルを解析できません
+

@@ -1,0 +1,223 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=A(z) {0} kontextusútvonal nem tartalmaz ObjectFactory vagy jaxb.index elemet, és külső metaadatok sem találhatók a tulajdonságok térképében, valamint nem található sessions.xml fájl, vagy az érvénytelen.
+
+50001=A(z) {0} osztály egy argumentum nélküli konstruktort vagy egy megadott gyártó metódust igényel.  Vegye figyelembe, hogy a nem statikus belső osztályoknak nincs argumentum nélküli konstruktoruk, és nem támogatottak.
+
+50002=A gyártó osztály gyártó metódus nélkül van megadva a(z) {0} osztályhoz.
+
+50003=A(z) {0} nevű gyártó metódus nincs deklarálva a(z) {1} osztályhoz.
+
+50004=Az XmlAnyAttribute érvénytelen a(z) {0} tulajdonság esetén. Egy Map típusú tulajdonsággal kell használni.
+
+50005=Csak egyetlen XmlAnyAttribute attribútummal rendelkező tulajdonság engedélyezett a(z) {0} osztályhoz.
+
+50006=Érvénytelen XmlElementRef a(z) {0} tulajdonsághoz, a(z) {1} osztályhoz. A hivatkozott elem nincs deklarálva.
+
+50007=Névütközés.  Két osztály rendelkezik a(z) {0} uri-t és {1} nevet tartalmazó XML típussal.
+
+50008=Nem támogatott {0} Node osztály.  A createBinder(Class) metódus csak az org.w3c.dom.Node osztályt támogatja.
+
+50009=A(z) {1} osztályhoz megadott {0} tulajdonság vagy mező átmeneti annotációval van megjelölve, így nem foglalható bele a propOrder annotációba.
+
+50010=A(z) {1} osztályhoz megadott {0} tulajdonságnak vagy mezőnek egy attribútumnak kell lennie, mivel egy másik tulajdonság vagy mező meg van jelölve az XmlValue annotációval.
+
+50011=A(z) {1} osztályhoz megadott {0} tulajdonság vagy mező nem jelölhető meg az XmlValue annotációval, mivel az egy másik XML kötésű osztály származtatott osztálya.
+
+50012=A(z) {1} osztályhoz megadott {0} tulajdonság vagy mező meg lett adva a propOrder elemben, azonban ez nem érvényes tulajdonság.
+
+50013=A(z) {1} osztályhoz megadott {0} tulajdonságot vagy mezőt bele kell foglalni az XmlType annotáció propOrder elemébe.
+
+50014=Az {1} osztályhoz megadott XmlValue annotációval ellátott {0} tulajdonságnak vagy mezőnek olyan típusúnak kell lennie, amely egyszerű sématípusra van leképezve.
+
+50015=Az XmlElementWrapper csak egy collection vagy array tulajdonsághoz engedélyezett, azonban a(z) [{0}] nem egy collection vagy array tulajdonság.
+
+50016=A(z) [{0}] tulajdonság rendelkezik egy XmlID annotációval, azonban a típusa nem String.
+
+50017=Érvénytelen XmlIDREF a(z) [{0}] tulajdonsághoz.  A(z) [{1}] osztálynak rendelkeznie kell egy XmlID annotációval ellátott tulajdonsággal.
+
+50018=Az XmlList csak egy collection vagy array tulajdonsághoz engedélyezett, azonban a(z) [{0}] nem egy collection vagy array tulajdonság.
+
+50019=Érvénytelen paramétertípus a külső metaadatok feldolgozásakor a tulajdonság térképen keresztül.  Az [eclipselink-oxm-xml] kulccsal társított érték csak a következők egyike lehet: [Map<String, Object>, List<Object> vagy Object].  Az objektum csak a következők egyike lehet: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource]. A [Map<String, Object>] esetében a String paraméter a csomagnév.
+
+50021=Érvénytelen paramétertípus a külső metaadatok feldolgozásakor a tulajdonság térképen keresztül.  A [Map<String, Object>] esetében a kulcs (Key) csak a csomagnevet jelölő [String] típus lehet.
+
+50022=Érvénytelen paramétertípus a külső metaadatok feldolgozásakor a tulajdonság térképen keresztül.  A [Map<String, Object>] esetében az érték (Value) csak a következők egyike lehet: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource] (a metaadatfájl azonosítója).
+
+50023=A(z) [{0}] kulcs értéke null a külső metaadatok feldolgozásakor a tulajdonság térképen keresztül.  Az érték nem lehet null, és a következők egyikének kell lennie: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource] (a metaadatfájl azonosítója).
+
+50024=Null kulcs észlelése a külső metaadatok feldolgozásakor a tulajdonság térképen keresztül.  A kulcs nem lehet null, és a csomagnevet jelölő [String] típusúnak kell lennie.
+
+50025=A külső metaadatfájlban deklarált [{0}] osztály nem tölthető be.  Győződjön meg róla, hogy az osztálynév helyes, és hogy a megfelelő ClassLoader van beállítva.
+
+50026=Kivétel történt egy JAXBContext létrehozásakor az XmlModel számára.
+
+50027=Kivétel történt a külsőleg elérhetővé tett metaadatfájl visszarendezésére tett kísérlet során.
+
+50028=A(z) [{0}] új példánya nem hozható létre.
+
+50029=Az XmlCustomizer elemhez megadott [{0}] osztály nem valósítja meg az org.eclipse.persistence.config.DescriptorCustomizer felületet.
+
+50030=Kísérlet történt több XmlID tulajdonság beállítására a(z) [{1}] osztályhoz.  A(z) [{0}] tulajdonság nem állítható be, mint XmlID, mivel a(z) [{2}] tulajdonság már be van állítva, mint XmlID.
+
+50031=Kísérlet történt több XmlValue tulajdonság beállítására a(z) [{0}] osztályhoz.  A(z) [{1}] tulajdonság nem állítható be, mint XmlValue, mivel a(z) [{2}] tulajdonság már be van állítva, mint XmlValue.
+
+50032=Kísérlet történt több XmlAnyElement tulajdonság beállítására a(z) [{0}] osztályhoz.  A(z) [{1}] tulajdonság nem állítható be, mint XmlAnyElement, mivel a(z) [{2}] tulajdonság már be van állítva, mint XmlAnyElement.
+
+50033=A(z) [{1}] tulajdonsághoz beállított [{0}] DomHandler esetén a DomHandlerConverter nem inicializálható.
+
+50034=A(z) [{0}] tulajdonság vagy mező nem jelölhető meg az XmlAttachmentRef annotációval, mivel az nem egy DataHandler.
+
+50035=Mivel a(z) [{0}] tulajdonság vagy mező mint XmlIDREF van beállítva, az XmlElements listán belül deklarált egyes XmlElement elemek céltípusának rendelkeznie kell egy XmlID tulajdonsággal.  Győződjön meg róla, hogy a(z) [{1}] XmlElement céltípusa tartalmaz egy XmlID tulajdonságot.
+
+50036=A(z) [{0}] XmlTagName QName tulajdonsággal rendelkező TypeMappingInfo elemhez be kell állítani egy nem null Type elemet.
+
+50037=A(z) [{0}] csomagot tartalmazó java-type nem engedélyezett a(z) [{1}] csomaghoz kulcsként megadott kötési fájlban.
+
+50038=Konkrét osztályokból nem hozható létre DynamicJAXBContext.  Használja az org.eclipse.persistence.jaxb.JAXBContext csomagot, vagy adja meg az org.eclipse.persistence.jaxb.JAXBContextFactory csomagot a jaxb.properties fájlban egy kontextus létrehozásához a meglévő osztályokból.
+
+50039=Hiba a DynamicJAXBContext létrehozásakor: A Node csak a Document vagy Element példánya lehet.
+
+50040=Hiba a DynamicJAXBContext létrehozásakor.
+
+50041=A(z) [{0}] felsorolási konstans nem található.
+
+50042=Hiba a DynamicJAXBContext létrehozásakor: A Session paraméter null volt.
+
+50043=Hiba a DynamicJAXBContext létrehozásakor: A Source paraméter null volt.
+
+50044=Hiba a DynamicJAXBContext létrehozásakor: Az InputStream paraméter null volt.
+
+50045=Hiba a DynamicJAXBContext létrehozásakor: A Node paraméter null volt.
+
+50046=Hiba a DynamicJAXBContext létrehozásakor: Az XJC nem tudott előállítani egy CodeModel elemet.
+
+50047=A(z) [{0}] osztály nem található.
+
+50048=A(z) [{0}] tulajdonsághoz megadott olvasási átalakító egyaránt tartalmaz osztályt és metódust. Vagy az osztály, vagy a metódus kötelező, de nem mindkettő.
+
+50049=A(z) [{0}] tulajdonsághoz megadott olvasási átalakító nem tartalmaz sem osztályt, sem metódust. Egy osztály vagy metódus megadása kötelező.
+
+50050=A(z) [{0}] tulajdonság [{1}] xml-path attribútumához megadott írási átalakító egyaránt tartalmaz osztályt és metódust. Vagy az osztály, vagy a metódus kötelező, de nem mindkettő.
+
+50051=A(z) [{0}] tulajdonság [{1}] xml-path attribútumához megadott írási átalakító nem tartalmaz sem osztályt, sem metódust. Egy osztály vagy metódus megadása kötelező.
+
+50052=A(z) [{0}] tulajdonághoz megadott írási átalakítóhoz nincs beállítva xml-path. Egy xml-path megadása kötelező.
+
+50053=Nem található a(z) [{0}] átalakítási metódus a (), (AbstractSession) vagy (Session) paraméterrel.
+
+50054=A(z) [{0}] átalakítási osztály nem található. Győződjön meg róla, hogy az osztálynév helyes, és hogy a megfelelő ClassLoader van beállítva.
+
+50055=Hiba a DynamicJAXBContext létrehozásakor: az eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) nem található a tulajdonság térképben, vagy a térkép null volt.
+
+50056=A(z) [{0}] tulajdonság tartalmaz egy XmlJoinNode deklarációt, azonban a hivatkozott [{1}] osztály nem alkalmazható az ilyen típusú viszonyhoz.
+
+50057=A(z) [{0}] osztályban lévő [{1}] tulajdonság egy [{2}] osztláyra hivatkozik, amely átmeneti minősítővel van megjelölve, ami nem engedélyezett.
+
+50058=A(z) [{0}] osztályban lévő [{1}] tulajdonság tartalmaz egy XmlJoinNode deklarációt, azonban a cél [{2}] osztály nem tartalmaz XmlID tulajdonságot vagy XmlKey tulajdonságokat.  Kötelező, hogy legyen egy XmlID/XmlKey tuladonság egy megfelelő XmlPath elemmel az egyes referencedXmlPath elemek célosztályához.
+
+50059=A(z) [{0}] osztályban lévő [{1}] tulajdonság tartalmaz egy XmlJoinNode deklarációt egy [{3}] referencedXmlPath elemmel, azonban nincs XmlID vagy XmlKey tulajdonság a(z) [{3}] XmlPath elemet tartalmazó [{2}] célosztályhoz.  Kötelező, hogy legyen egy XmlID/XmlKey tuladonság egy megfelelő XmlPath elemmel az egyes referencedXmlPath elemek célosztályához.
+
+50060=A(z) [{0}] osztályban lévő [{1}] tulajdonság tartalmaz egy XmlIDREF deklarációt, azonban a(z) [{2}] célosztály nem alkalmazható az ilyen típusú viszonyra.
+
+50061=Kivétel történt a(z) [{0}] XmlAdapterClass betöltésére tett kísérlet során. A lehetséges okok: helytelen illesztő osztálynév vagy helytelen betöltő lett beállítva.
+
+50062=Kivétel történt a(z) [{0}] XmlAdapterClass deklarált metódusainak elérésére tett kísérlet során. A lehetséges okok: A SecurityManager megtagadta a hozzáférést az illesztő osztályon belül deklarált metódusokhoz, vagy a SecuritManager megtagadta a hozzáférést az illesztő osztály csomagjához.
+
+50063=Kivétel történt a(z) [{0}] XmlAdapterClass példányosítására tett kísérlet során. Egy lehetséges ok az, hogy az illesztő osztálynak nincs argumentumok nélküli konstruktora.
+
+50064=A(z) [{0}] XmlAdapterClass nem a várt módon terjeszti ki a jakarta.xml.bind.annotation.adapters.XmlAdapter" csomagokat.  Az adapterosztálynak ki kell bővítenie a "jakarta.xml.bind.annotation.adapters.XmlAdapter" csomagot, és deklarálnia kell a "public abstract BoundType unMarshal(ValueType v)" és "public abstract ValueType marshal(BoundType v)" metódusokat.
+
+50065=Érvénytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] csomaghoz. A lehetséges okok: helytelen illesztő osztálynév vagy helytelen betöltő lett beállítva.
+
+50066=Érvénytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] osztályhoz. A lehetséges okok: helytelen illesztő osztálynév vagy helytelen betöltő lett beállítva.
+
+50067=Érvénytelen [{0}] XmlJavaTypeAdapter van megadva a(z) [{1}] mezőhöz/tulajdonsághoz a(z) [{2}] osztályon. A lehetséges okok: helytelen illesztő osztálynév vagy helytelen betöltő lett beállítva.
+
+50068=Null érték észlelése a külső metaadatok feldolgozásakor a tulajdonság térképen keresztül.  Az XML metaadatfájl azonosítója nem lehet null, és a következők egyikének kell lennie: [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node vagy org.xml.sax.InputSource].
+
+50069=A biztosított XML metaadatfájlhoz nem lett megadva csomag.  A csomag a Map<String, Object> átadásával adható meg (ahol String = csomag, Object = az XML metaadatfájl azonosítója),  vagy az xml-bindings elem package-name attribútumának beállításával az XML metaadatfájlban.
+
+50070=A(z) [{1}] osztály [{0}] tulajdonsága tartalmaz egy XmlElements deklarációt, amelyben az XmlElement/XmlJoinNodes szám nem egyenlő.  Az XmlElements deklaráción belül tartalmazott minden egyes XmlElement elemhez tartoznia kell egy megfelelő XmlJoinNodes elemnek.
+
+50071=A(z) [{1}] osztályban lévő [{0}] tulajdonság egy olyan XmlPaths deklarációt tartalmaz, amelyben egy XmlPath attribútum a(z) [{2}] útvonal gyökerében található.  Az XmlPath elemek esetében az attribútumokat be kell ágyazni az XmlPath elemben, vagyis: [foo/{2}].
+
+50072=Többször szereplő [{0}] nevű tulajdonság található a(z) [{1}] osztályban
+
+50073=A(z) [{1}] osztály [{0}] tulajdonsága több külső kötési fájlban van megadva. Az egyes tulajdonságok csak egyetlen fájlban adhatók meg.
+
+50074=Kivétel történt a(z) [{0}] XMLNameTransformer elérésekor
+
+50075=Kivétel történt a(z) [{0}] átalakításnév elérésekor a(z) [{1}] XMLNameTransformer esetén
+
+50076=A külső metaadatok nem tölthetők be a megadott helyről: [{0}]. Ez a hely csak egy érvényes URL vagy osztályútvonal hivatkozás lehet.
+
+50077=A metaadatok nem frissíthetők.  A frissítés támogatása érdekében a metaadatokat XML Node formában kell megadni.
+
+50078=A külső kötés fájlok (XJB) nem dolgozhatók fel.  Külső kötés fájlok használatához az XSD-t és az XJB-t egyaránt javax.xml.transform.Sources formában kell megadni.
+
+50079=A sémák nem dolgozhatók fel.  Ha sémaimportálásokat használ, akkor az XSD-ket mint javax.xml.transform.Source kell megadni.
+
+50080=Az XmlLocation csak org.xml.sax.Locator típusú tulajdonságokhoz engedélyezett, azonban a(z) [{0}] [{1}] típusú.
+
+50081=Kivétel történt a séma előállítása során.
+
+50082=Kísérlet történt egy {0} érték írására egy kulcs megadása nélkül.  Próbálja meg beállítani a JSON_VALUE_WRAPPER értéket a JAXBMarshaller számára
+
+50083=Hiba történt a(z) {0} AccessorFactory osztály példányosítására tett kísérlet során.
+
+50084=A megadott {0} AccessorFactory osztály érvénytelen. Meg kell valósítania a createFieldAccessor(Class, Field, boolean) és createPropertyAccessor(Class, Method, Method) metódusokat.
+
+50085=Kivétel történt a createFieldAccessor metódus meghívásakor a(z) {0} AccessorFactory esetén
+
+50086=Kivétel történt a createPropertyAccessor metódus meghívásakor a(z) {0} AccessorFactory esetén
+
+50087=Kivétel történt a(z) {0} metódus meghívásakor a(z) {1} Accessor esetén
+
+50088=A(z) {0} felsorolási érték nem érvényes egy {1} osztályú XmlEnum esetén
+
+50089=A(z) {0} Java felület nem képezhető le JAXB használatával, mivel több leképezhető szülőfelülete van. A többszörös öröklés nem támogatott.
+
+50090=Az object graph értéke érvénytelen: {0}. Az érték csak egy karaktersorozat vagy az ObjectGraph osztály egy példánya lehet.
+
+50091=A(z) {0} elemnévnek több leképezése van.
+
+50092=A(z) {1} osztályhoz csak egyetlen {0} típusú XmlElementRef tulajdonság engedélyezett.
+
+50093=A(z) {0} osztály nem egy leképezett típus a JAXBContext kontextusban.
+
+50094=Az XmlVariableNode annotációhoz megadott {0} tulajdonság nem található a(z) {1} osztályhoz.
+
+50095=A(z) {1} típusú {0} tulajdonság a(z) {2} osztályhoz nem érvényes egy XmlVariableNode annotációhoz.  Csak String vagy QName típusú tulajdonságok engedélyezettek.
+
+50096=A(z) {0} @XmlAttribute tulajdonságnak a(z) {1} típusban egy olyan típusra kell hivatkoznia, amely az XML-ben lévő szövegre van leképezve.  {2} nem képezhető le egy szövegértékre.
+

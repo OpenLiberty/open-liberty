@@ -1,0 +1,149 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Nu s-a găsit elementul ID de tip ID în tipul cu uti [{0}] şi numele [{1}] .
+
+45001=A survenit o eroare la procesarea importului cu shemaLocation [{0}] şi spaţiul nume [{1}] .
+
+45002=A survenit o eroare la procesarea includerii cu schemaLocation [{0}] .
+
+45003=O proprietate de referinţă cu uri [{0}] şi numele [{1}] a fost găsită.
+
+45004=Secvenţa veche nu a fost găsită în changesummary.
+
+45005=Valoarea proprietăţii numite [{0}] trebuie să fie un DataObject
+
+45006=Secvenţa nu poate fi nulă atunci când type.isSequenced() este true.
+
+45007=Un tip nu a fost setat pentru proprietatea cu numele [{0}]
+
+45008=A avut loc o excepţie IO.
+
+45009=Tipul nu a fost găsit cu uri [{0}] şi numele [{1}]
+
+45010=Un tip nu a putut fi găsit pentru clasa de interfeţe [{0}]. Vă rugăm să vă asiguraţi că tipul a fost definit.  În plus, classloader-ul interfeţei ar trebui să fie un număr al ierarhiei classholder contextual de ajutor: apare ca şi cum este [{1}].
+
+45011=Nu s-a putut crea un DataObject pentru tipul cu uri [{0}] şi numele [{1}] deoarece type.isAbstract() returnează true.
+
+45012=Nu s-a putut crea un DataObject pentru interfaţa [{0}], se încearcă crearea unui DataObject pentru tip cu uri [{1}] şi numele [{2}] 
+
+45013=Nu se pot căuta informaţiile de aplicaţie pentru argumentul nul.
+
+45014=Nu s-a putut defini tipul.  Tipruile pt fi definite numai pentru DataObjects cu Tip setat pe commonj.sdo.Type
+
+45015=Nu s-a putut defini tipul cu un nume nul.
+
+45016=Un obiect modificat în changesummary XML nu are un atribut ref sau valoarea nu este specificată.
+
+45017=A survenit o eroare la procesarea xpath [{0}] .
+
+45018=Adăugarea unei intrări duplicat pentru setarea singulară complexă [{1}] într-o secvenţă la poziţia [{0}] nu este suportată.
+
+45019=Adăugarea unei proprietăţi de atribut [{0}] pentru o secvenţă, nu este suportată.
+
+45020=Nu a fost găsită o secvenţă pentru calea [{0}].
+
+45021=A survenit o eroare la încercarea de instanţiere a obiectului Secvenţă cu un câmp de instanţă dataObject nul.
+
+45022=Nici o secvenţă nu este suportată pentru proprietatea [{0}].
+
+45023=Nu s-a putut seta proprietatea de tip cu uri [{0}] şi nume [{1}] pentru valoarea de clasă [{2}]
+
+45024=A survenit o eroare de conversie.
+
+45025=Nu s-a putut găsi proprietatea la indexul [{0}]
+
+45026=Nu se poate efectua operaţia [{0}] pentru parametru nul.
+
+45027=Nu se poate găsi clasa pentru tipul cu uri [{0}] şi numele [{1}].
+
+45028=Un tip nu poate fi setat pentru a deschide şi datatype.  Eroare cu tip cu uri [{0}] şi nume [{1}].
+
+45029=Index invalid [{0}] a fost transmis la metoda [{1}].
+
+45030=A survenit o eroare la invocarea constructorului cu un argument Şir în clasa [{0}].
+
+45031=Nu se poate seta tipul ţintă invalid [{0}] în proprietatea [{1}] deoarece ţinta type.dataType este true.
+
+45032=O XMLMarshalException a survenit pentru uri [{1}] şi numele local [{2}].  Excepţie: [{0}]
+
+45033=A survenit o eroare la generarea tipurilor. Componenta XML Schema cu numele [{1}] şi spaţiul nume URI [{0}] este referenţiat dar niciodată definit.  Un import sau o includere pentru spaţiul nume URI[{0}] poate să lipsească din XML Schema.
+
+45034=Valoarea parametrului de opţiuni trebuie să fie un DataObject de Tip cu uri [{0}] şi numele [{1}].
+
+45035=Valoarea ce corespunde pentru proprietatea "tip" trebuie să fie un obiect Tip.
+
+45036=O proprietate globală corespunzătoare nodului XML localizat, nu a fost găsită.
+
+45037=Prefixul [{0}] este utilizat dar nu este declarat în schema XML.
+
+45038=Nu se poate efectua operaţia pentru proprietatea [{0}] deoarece nu poate fi găsit din calea [{1}]. Calea este invalidă, sau unul sau mai multe Obiecte de date din cale sunt nule.
+
+45039=A survenit o eroare la accesarea câmpului externalizableDelegator [{0}] în DataObject.
+
+45040=Nu se poate efectua operaţia [{0}] cu parametrul nul [{1}].
+
+45041=Valoarea [{0}] de clasă [{1}] este invalidă pentru proprietatea [{2}] de tip [{3}].
+
+45100=A survenit o eroare la încercarea de returnare a SDOHelperContext cerut.  Într-o instanţă WebLogic activă, numele aplicaţiei este necesar pentru căutările în cache de context ajutor.  Numele aplicaţiei nu a putut fi determinat deoarece căutarea {0} a eşuat.
+
+45101=A survenit o eroare la încercarea de returnare a SDOHelperContext cerut.  Într-o instanţă WebLogic activă, numele aplicaţiei este necesar pentru căutările în cache de context ajutor.  Numele aplicaţiei nu a putut fi determinat deoarece {0} nu a putut fi invocat reflectiv în {1}.
+
+45102=A survenit o eroare la încercarea de returnare a SDOHelperContext cerut.  Într-o instanţă WebLogic activă, numele aplicaţiei este necesar pentru căutările în cache de context ajutor.  Numele aplicaţiei nu a putut fi determinat deoarece un ObjectName nu a putut fi creat/returnat pentru {0}.
+
+45103=A survenit o eroare la încercarea de returnare a SDOHelperContext cerut.  Într-o instanţă WebLogic activă, numele aplicaţiei este necesar pentru căutările în cache de context ajutor.  Numele aplicaţiei nu a putut fi determinat deoarece un InitialContext nu a putut fi instanţiat.
+
+45200=SDO/JAXB - Un descriptor OXM nu a putut fi găsit, care să corespundă tipului SDO [{0}], asiguraţi-vă că este mapată clasa Java la tipul XML [{1}].
+
+45201=SDO/JAXB - O mapare OXM nu a putut fi găsită, care să corespundă proprietăţii SDO [{0}], asiguraţi-vă că este mapată proprietatea Java la nodul XML [{1}].
+
+45202=SDO/JAXB - Un tip SDO nu a putut fi găsit, care să corespundă clasi Java [{0}].
+
+45203=SDO/JAXB - O referinţă de schemă trebuie setată în descriptorul pentru clasa Java [{0}].
+
+45204=SDO/JAXB - Un context de schemă trebuie setat în referinţa de schemă în descriptorul pentru clasa Java [{0}].
+
+45205=SDO/JAXB - Un tip SDO nu a putut fi găsit, care să corespundă clasei Java [{0}], asiguraţi-vă că un tip SDO corespunde tipului XML [{1}].
+
+45206=SDO/JAXB - A survenit o eroare la crearea unui JAXB Unmarshaller.
+
+45207=A survenit o eroare la încercarea de rezolvare a unei scheme utilizând SchemaResolver furnizor.
+
+45208=Nu se poate mapa proprietatea {0} din tipul {1}. Pachetele jakarta.activation și jakarta.mail sunt necesare pentru pentru maparea proprietăților de tipul DataHandler. Asiguraţi-vă că ambele sunt disponibile în calea de clase.
+
+45209=A fost făcută o încercare de resetare a instanţei ApplicationResolver în SDOHelperContext.  Numai o setare este permisă.
+
+45210=DataObject ce este marshalled nu este din acelaşi HelperContext ca şi XMLHelper.
+
+45211=Tipul nu a putut fi definit cu numele [{0}]. Numele nu este un nume valid XML.
+
+45212=Proprietatea nu a putut fi definită cu numele [{0}]. Numele nu este un nume valid XML.
+

@@ -1,0 +1,441 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ExceptionLocalizationResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+CRITERIA_NON_LITERAL_PASSED_TO_IN=对既不是文字也不是参数的表达式类型 {0} 调用了“in(Expression<?>... values)”。不支持该操作。
+
+CRITERIA_NO_ROOT_FOR_COMPOUND_QUERY=正尝试在没有根的情况下创建条件查询。
+
+INCORRECT_PARAMETER_TYPE=索引 {0} 上的参数并非 {1} 类型。
+
+MULTIPLE_SELECTIONS_PASSED_TO_QUERY_WITH_PRIMITIVE_RESULT=对带有基本结果类型的条件查询调用了“multiSelect”。返回类型不正确或应改用“select”。
+
+NO_PARAMETER_WITH_INDEX=在查询 {1} 中找不到索引为 {0} 的参数。
+
+NO_PARAMETER_WITH_NAME=在查询 {1} 中找不到名称为 {0} 的参数。
+
+NO_VALUE_BOUND=没有任何值绑定至名为 {0} 的参数
+
+NULL_PARAMETER_PASSED_TO_SET_PARAMETER=传递至“setParameter”的参数为 null。无法按“null”对参数建立索引。
+
+PARAMETER_NILL_NOT_FOUND=传递至 getParameterValue() 的参数为 null
+
+add_attribute_key_was_null=对属性类型的子类指定 AttributeGroup 时，类型参数不得为 null
+
+argument_collection_was_null=参数集合为 null
+
+argument_keyed_named_query_with_JPA=存在多个名称为 {0} 的查询，但在使用 EntityManagerFactory.addNamedQuery() 时名称必须唯一
+
+attribute_is_not_map_with_managed_key=无法将键子图作为类 {1} 中的属性 {0} 添加至 EntityGroup，因为这不是带有受管类型键的映射。
+
+bean_definition_vector_arguments_are_of_different_sizes=bean 定义矢量参数为不同大小
+
+bean_not_found_on_database=在数据库上找不到 Bean {0}。
+
+bean_validation_constraint_violated=在类 {1} 的回调事件 {0} 上执行自动 Bean 验证时，一个或多个 Bean 验证约束违例。请参阅嵌入约束违例以获取详细信息。
+
+cache_descriptor_has_no_cmppolicy_set_cannot_create_primary_key=带有描述符 [{1}] 的类 [{0}] 没有 CMPPolicy 集，我们无法为标识类型 [{2}] 创建主键实例。
+
+cache_impl_class_has_no_descriptor_is_not_a_persistent_type=类 [{0}] 不是持久类型 - 它没有关联描述符。
+
+cache_impl_object_descriptor_has_no_cmppolicy_set=带有描述符 [{1}] 的对象 [{0}] 没有 CMPPolicy 集，我们无法返回标识。
+
+cache_impl_object_has_no_descriptor_is_not_a_persistent_type=对象 [{0}] 不是持久类型 - 它没有关联描述符。
+
+called_get_entity_manager_from_non_jta=正从未启用 JTA 的 EntityManagerFactory 调用 getEntityManager()。请确保对 EntityManagerFactory 正确设置了 JTA。
+
+can_not_create_directory=无法创建目录 {0}。
+
+can_not_create_file=无法创建文件 {0}。
+
+can_not_move_directory=无法移动目录。
+
+cannot_get_from_non_correlated_query=在未通过关联获取的 from 子句上调用了 getCorrelationParent()。
+
+cannot_get_unfetched_attribute=无法从已拆离对象 {0} 获取未访存属性 [{1}]。
+
+cannot_merge_removed_entity=无法合并已移除的实体：{0}
+
+cannot_read_through_txn_for_unsynced_pc=此属性设置为将此持久性上下文连接至当前活动事务，但此上下文不是已同步持久性上下文。
+
+cannot_remove_detatched_entity=必须管理实体以调用移除：{0}，请尝试合并已拆离项并重试移除。
+
+cannot_remove_removed_entity=已移除实体：{0}
+
+cannot_update_entity_fetch-group=尝试对 {0} 添加或移除属性 [{1}] - EntityFetchGroup 对象不可变。
+
+cannot_use_transaction_on_unsynced_pc=如果 EntityManager 尚未连接至当前事务，那么无法调用需要该事务的方法。
+
+cant_lock_not_managed_object=必须管理实体以调用锁定：{0}，请尝试合并已拆离项并重试锁定。
+
+cant_persist_detatched_object=无法保存已拆离对象，可能有重复主键：{0}。
+
+cant_refresh_not_managed_object=无法刷新非受管对象：{0}。
+
+create_insertion_failed=创建插入失败。
+
+criteria_no_constructor_found=通过将选择标准类型用作自变量来为构造函数检查类 {0} 时发生了异常。如果此 CriteriaQuery 不会成为构造函数查询，请验证查询是否与返回类型匹配。
+
+directory_not_exist=目录 {0} 不存在。
+
+ejb30-default-for-unknown-property=无法返回对应未知属性 {0} 的缺省值。
+
+ejb30-illegal-property-value=属性 {0} 具有非法值 {1}。
+
+ejb30-incorrect-parameter-type=您尝试通过查询字符串 {3} 对预期类型为 {2} 的参数 {0} 设置类型为 {1} 的值。
+
+ejb30-wrong-argument-index=您尝试在查询字符串 {1} 中不存在的位置 {0} 设置参数。
+
+ejb30-wrong-argument-name=您尝试使用在查询字符串 {1} 中不存在的名称 {0} 设置参数值。
+
+ejb30-wrong-lock_called_without_version_locking-index=此锁定方式类型对没有版本锁定索引的实体无效。没有版本锁定索引时，只能使用悲观锁定方式类型。
+
+ejb30-wrong-query-hint-value=查询 {0} 查询提示 {1} 具有非法值 {2}。
+
+ejb30-wrong-type-for-query-hint=查询 {0} 查询提示 {1} 对此类型的查询无效。
+
+entity_manager_properties_conflict_default_connector_vs_external_transaction_controller=EntityManager 属性冲突：jakarta.persistence.driver 和/或 jakarta.persistence.url 需要 DefaultConnector，但持久性单元使用外部事务控制器，因此需要 JNDIConnector。
+
+entity_manager_properties_conflict_default_connector_vs_jndi_connector=EntityManager 属性冲突：jakarta.persistence.driver 和/或 jakarta.persistence.url 需要 DefaultConnector，但 jakarta.persistence.jtaDataSource 和/或 jakarta.persistence.nonjtaDataSource 需要 JNDIConnector。
+
+entity_no_longer_exists_in_db=实体在数据库 {0} 中不存在。
+
+error_executing_jar_process=执行 JAR 进程时出错
+
+error_invoking_deploy=调用部署时出错
+
+error_loading_resources=从类路径装入资源 {0} 时出错
+
+error_marshalling_arguments=对参数进行编组时出错
+
+error_marshalling_return=对返回内容进行编组时出错
+
+error_parsing_resources=解析资源 {0} 时出错
+
+error_reading_jar_file=读取 JAR 文件 {0} 条目 {1} 时出错
+
+error_unmarshalling_arguments=对参数取消编组时出错
+
+error_unmarshalling_return=对返回内容取消编组时出错
+
+file_exists=文件 {0} 已存在。
+
+file_not_exist=文件 {0} 不存在。
+
+finder_query_failed=查找程序查询失败：
+
+getpersistenceunitutil_called_on_closed_emf=对已关闭 EntityManagerFactory 调用了 getPersistenceUnitUtil()。
+
+illegal_state_while_closing=尝试关闭事务状态并非 NO_TRANSACTION、COMMITTED 或 ROLLEDBACK 的 EntityManager。
+
+incorrect_hint=对提示 {0} 指定了不正确的对象类型。
+
+incorrect_query_for_get_result_collection=不能对此查询调用 getResultCollection()。它是不正确的查询类型。
+
+incorrect_query_for_get_result_list=不能对此查询调用 getResultList()。它是不正确的查询类型。
+
+incorrect_query_for_get_single_result=不能对此查询调用 getSingleResult()。它是不正确的查询类型。
+
+incorrect_spq_query_for_execute=不能对此存储过程查询调用 execute()。它是不正确的查询类型。
+
+incorrect_spq_query_for_execute_update=不能对此存储过程查询调用 executeUpdate()，因为它返回结果集而不仅仅是更新计数。
+
+incorrect_spq_query_for_get_result_list=不能对此存储过程查询调用 getResultList()，因为它不返回结果集。
+
+incorrect_spq_query_for_get_single_result=不能对此存储过程查询调用 getSingleResult()，因为它不返回结果集。
+
+input_source_not_found=找不到输入源，或输入源为空
+
+interface_hash_mismatch=接口散列不匹配
+
+invalid_lock_query=锁定类型只能与 SELECT 查询（它允许在任何必要位置锁定数据库）配合使用。
+
+invalid_method_hash=无效方法散列
+
+invalid_method_number=无效方法编号
+
+invalid_pk_class=您对此查找操作提供了错误 PK 类的实例。预期的类：{0}，接收到的类：{1}。
+
+jar_not_exist=JAR 文件 {0} 不存在。
+
+jaxb_helper_invalid_binder=所提供绑定程序 [{0}] 不是 EclipseLink JAXBBinder，因此无法转换。
+
+jaxb_helper_invalid_jaxbcontext=所提供 JAXBContext [{0}] 不是 EclipseLink JAXBContext，因此无法转换。
+
+jaxb_helper_invalid_marshaller=所提供 Marshaller [{0}] 不是 EclipseLink JAXBMarshaller，因此无法转换。
+
+jaxb_helper_invalid_target_for_binder=所提供目标类 [{0}] 必须是 EclipseLink JAXBBinder 或 EclipseLink XMLBinder 的其中之一。
+
+jaxb_helper_invalid_target_for_jaxbcontext=所提供目标类 [{0}] 必须是 EclipseLink JAXBContext 或 EclipseLink XMLContext 的其中之一。
+
+jaxb_helper_invalid_target_for_marshaller=所提供目标类 [{0}] 必须是 EclipseLink JAXBMarshaller 或 EclipseLink XMLMarshaller 的其中之一。
+
+jaxb_helper_invalid_target_for_unmarshaller=所提供目标类 [{0}] 必须是 EclipseLink JAXBUnmarshaller 或 EclipseLink XMLUnmarshaller 的其中之一。
+
+jaxb_helper_invalid_unmarshaller=所提供 Unmarshaller [{0}] 不是 EclipseLink JAXBUnmarshaller，因此无法转换。
+
+jmx_enabled_platform_mbean_runtime_exception=对展示 EclipseLink 会话信息的 {0} 调用 JMX MBean 运行时服务函数时发生了异常，异常为：{1}
+
+join_trans_called_on_entity_trans=对资源本地 EntityManager 调用了 joinTransaction，该 EntityManager 无法针对 JTA 事务进行注册。
+
+jpa21-ddl-create-script-target-not-specified=为脚本生成 DDL 时，必须使用 [jakarta.persistence.schema-generation.scripts.create-target] 属性指定创建脚本目标。
+
+jpa21-ddl-drop-script-target-not-specified=为脚本生成 DDL 时，必须使用 [jakarta.persistence.schema-generation.scripts.drop-target] 属性指定删除脚本目标。
+
+jpa21-ddl-invalid-source-script-type=所提供的源脚本 {0} 属于无效类型 {0}。有效源脚本类型为 java.io.Reader 或用于指定文件 URL 的字符串。
+
+jpa21-ddl-invalid-target-script-type=所提供的目标脚本 {0} 属于无效类型 {0}。有效目标脚本类型为 java.io.Writer 或用于指定文件 URL 的字符串。
+
+jpa21-ddl-source-script-io-exception=源 DDL 生成脚本 {0} 发生了 IO 错误。
+
+jpa21-ddl-source-script-not-found=找不到 generateSchema 调用的源脚本 {0}。请确保您指定了有效字符串 URL，此 URL 使用“file:”协议或字符串文件名表示可通过类路径获取的有效资源。
+
+jpa21-ddl-source-script-sql-exception=从源 DDL 生成脚本 {1} 执行 {0} 时发生了错误。
+
+jpa21_invalid_call_on_un_executed_query=调用此方法前，必须执行该查询。
+
+jpa21_invalid_call_with_no_output_parameters=对不返回 OUT 参数的查询的调用无效。
+
+jpa21_invalid_call_with_no_result_sets_returned=对不返回结果集的查询的调用无效。
+
+jpa21_invalid_parameter_name=无效输出参数名：{0}。{1}
+
+jpa21_invalid_parameter_position=无效输出参数位置：{0}。{1}。
+
+jpa_criteriaapi_alias_reused=多个选择项使用相同别名。使用的重复名称包括：{0}
+
+jpa_criteriaapi_illegal_tuple_or_array_value=发现非法元组或数组值选择项。发现参数：{0}
+
+jpa_criteriaapi_invalid_result_index=索引 {0} 对大小为 {1} 的结果列表无效。
+
+jpa_criteriaapi_invalid_result_type=元素 {0} 类型 {1} 对结果 {2} 无效。
+
+jpa_criteriaapi_no_corresponding_element_in_result=元素 {0} 未对应查询结果中的元素。
+
+jpa_criteriaapi_null_literal_value=传递至 CriteriaBuilder.literal() 的值为空。请改用 nullLiteral(Class<T> resultClass)。
+
+jpa_helper_invalid_entity_manager_factory=JPA EntityManagerFactory {0} 不是 EclipseLink EntityManagerFactory，因此未能转换。
+
+jpa_helper_invalid_entity_manager_factory_for_refresh=JPA EntityManagerFactory {0} 不是 EclipseLink EntityManagerFactory，因此未能刷新其元数据。
+
+jpa_helper_invalid_query=类型为 {0} 的查询不是 EclipseLink 查询，因此无法转换。
+
+jpa_helper_invalid_read_all_query=类型为 {0} 的查询不是 EclipseLink“全部读取”查询，因此无法转换。
+
+jpa_helper_invalid_report_query=类型为 {0} 的查询不是 EclipseLink 报告查询，因此无法转换。
+
+jpa_persistence_util_non_persistent_class=调用 PersistenceUtil.getIdentifier(entity) 时指定的对象 [{0}] 不是持久对象。
+
+lock_called_without_version_locking=对 entityManager.lock(Object entity, LockModeType lockMode) 的调用需要启用版本锁定。
+
+managed_component_not_found=EntityGraph {0} 中列示的属性 {1} 引用了名为 {2} 的子图，但找不到该子图。
+
+may_not_contain_xml_entry={0} 可能未包含 {1}。
+
+metamodel_class_incorrect_type_instance=类型 [{2}] 不是键类 [{0}] 的预期 [{1}]。请验证是否在 persistence.xml 中使用特定 <class/> 属性或全局 <exclude-unlisted-classes>false</exclude-unlisted-classes> 元素引用了 [{2}] 类。
+
+metamodel_class_null_type_instance=在元模型中找不到对应键类 [{0}] 的 [{1}] - 请验证是否在 persistence.xml 中使用特定 <class>{0}</class> 属性或全局 <exclude-unlisted-classes>false</exclude-unlisted-classes> 元素引用了 [{2}] 类。
+
+metamodel_class_null_type_instance_for_null_key=在元模型中找不到对应空键类参数的 [{0}] - 请对元模型 [{1}] 类指定正确键类并验证是否在 persistence.xml 中使用特定 <class/> 属性或全局 <exclude-unlisted-classes>false</exclude-unlisted-classes> 元素引用了该键类。
+
+metamodel_identifiable_id_attribute_is_incorrect_idclass=可标识类型 [{0}] 的预期单一 @Id 属性包含在意外 @IdClass 中。
+
+metamodel_identifiable_id_attribute_type_incorrect=在可标识类型 [{1}] 上的现有标识属性 [{0}] 中需要标识属性类型 [{2}]，但找到的是属性类型 [{3}]。
+
+metamodel_identifiable_no_id_attribute_present=可标识类型 [{0}] 上没有 @Id 属性。
+
+metamodel_identifiable_no_version_attribute_present=可标识类型 [{0}] 上没有 @Version 属性。
+
+metamodel_identifiable_type_has_no_idclass_attribute=可标识类型 [{0}] 上没有 @IdClass 属性。该类型上仍然可能有一个或多个 @Id 或一个 @EmbeddedId。
+
+metamodel_identifiable_version_attribute_type_incorrect=可标识类型 [{1}] 的现有版本属性 [{0}] 上的预期版本属性类型为 [{2}]，但发现属性类型 [{3}]。
+
+metamodel_incompatible_persistence_config_for_getIdType=获取受管类型 [{0}] 的元模型标识类型时持久性配置不兼容。
+
+metamodel_interface_inheritance_not_supported=生成元模型期间，使用 ({1}) 继承的描述符 [{0}] 当前不受支持，请尝试使用 Entity 或 MappedSuperclass（抽象类）继承。
+
+metamodel_managed_type_attribute_not_present=属性 [{0}] 在受管类型 [{1}] 中不存在。
+
+metamodel_managed_type_attribute_return_type_incorrect=受管类型 [{1}] 的现有属性 [{0}] 上的预期属性返回类型为 [{2}]，但发现属性返回类型 [{3}]。
+
+metamodel_managed_type_attribute_type_incorrect=受管类型 [{1}] 的现有属性 [{0}] 上的预期属性类型为 [{2}]，但发现属性类型 [{3}]。
+
+metamodel_managed_type_declared_attribute_not_present_but_is_on_superclass=受管类型 [{1}] 中的已声明属性 [{0}] 不存在 - 但是，已对超类声明该属性。
+
+missing_parameter_value=执行查询期间，在所提供参数列表中找不到查询参数 {0}。
+
+missing_toplink_bean_definition_for=缺少 {0} 的 TopLink bean 定义
+
+named_entity_graph_exists=此持久性单元中已存在 {1} 上发现的名为 {0} 的 NamedEntityGraph。
+
+negative_max_result=不允许最大结果数为负值。
+
+negative_start_position=不允许起始位置为负值。
+
+new_object_found_during_commit=同步期间，通过未标记为级联持久存储的关系发现了新对象：{0}。
+
+no_entities_retrieved_for_get_reference=找不到对应于标识 {0} 的实体
+
+no_entities_retrieved_for_get_single_result=getSingleResult() 未检索任何实体。
+
+no_entity_graph_of_name=没有任何名称为 {0} 的 EntityGraph
+
+not_an_entity=对象 {0} 不是已知实体类型。
+
+not_jar_file={0} 不是 JAR 文件。
+
+not_usable_passed_to_entitygraph_hint=传递至查询提示 {0} 的值 {1} 不适用于此查询提示
+
+null_argument_get_attributegroup=对应 AttributeGroup 的搜索名称不得为空。
+
+null_jar_file_names=JAR 文件名称为空
+
+null_not_supported_identityweakhashmap=IdentityWeakHashMap 不支持“null”作为键或值。
+
+null_pk=错误地为此查找操作提供了空 PK 的实例。
+
+null_sqlresultsetmapping_in_query=ResultSetMappingQuery 必须具有设置为有效的 SQLResultSetMapping
+
+null_value_for_column_result=必须为 ColumnResult 提供列名
+
+null_value_for_constructor_result=必须为构造函数结果提供目标类名
+
+null_value_for_entity_result=必须为实体结果提供实体类名
+
+null_value_in_sqlresultsetmapping=必须为 SQLResultSetMapping 提供名称。此名称用于在查询中引用 SQLResultSetMapping。
+
+null_values_for_field_result=必须为 FieldResult 提供属性名和列名
+
+only_one_root_subgraph=只有根子图者才能在列示时不设置类型。表示子类的所有子图必须设置类型。
+
+operation_not_supported=该规范不支持对 {1} 调用 {0}。
+
+operation_on_closed_entity_manager=正尝试对已关闭 EntityManager 执行操作。
+
+operation_on_closed_entity_manager_factory=正尝试对已关闭 EntityManagerFactory 执行操作。
+
+ora_pessimistic_locking_with_rownum=不支持具有查询行限制的悲观锁定。
+
+parsing_error=正在解析错误
+
+parsing_fatal_error=正在解析致命错误
+
+parsing_warning=正在解析警告
+
+pathnode_is_primitive_node=条件表达式是基本类型，无法进一步导航。
+
+pathnode_type_does_not_apply_to_primitive_node=条件表达式是基本类型，无法进一步导航。基本表达式不允许“type”。
+
+pk_class_not_found=无法装入基本键类 {0}
+
+position_bound_param_not_found=位置 {0} 没有绑定参数。
+
+position_param_not_found=位置 {0} 没有参数。
+
+pu_configured_for_resource_local=无法创建带有 SynchronizationType 的 EntityManager，因为 PersistenceUnit 是使用资源本地事务配置的。
+
+remove_deletion_failed=Remove deletion failed:
+
+rollback_because_of_rollback_only=事务“已回滚”，因为事务设置为 RollbackOnly。
+
+sdo_helper_invalid_changesummary=所提供 ChangeSummary [{0}] 不是 EclipseLink SDOChangeSummary，因此无法转换。
+
+sdo_helper_invalid_copyhelper=所提供 CopyHelper [{0}] 不是 EclipseLink SDOCopyHelper，因此无法转换。
+
+sdo_helper_invalid_datafactory=所提供 DataFactory [{0}] 不是 EclipseLink SDODataFactory，因此无法转换。
+
+sdo_helper_invalid_datahelper=所提供 DataHelper [{0}] 不是 EclipseLink SDODataHelper，因此无法转换。
+
+sdo_helper_invalid_dataobject=所提供 DataObject [{0}] 不是 EclipseLink SDODataObject，因此无法转换。
+
+sdo_helper_invalid_equalityhelper=所提供 EqualityHelper [{0}] 不是 EclipseLink SDOEqualityHelper，因此无法转换。
+
+sdo_helper_invalid_helpercontext=所提供 HelperContext [{0}] 不是 EclipseLink SDOHelperContext，因此无法转换。
+
+sdo_helper_invalid_property=所提供属性 [{0}] 不是 EclipseLink SDOProperty，因此无法转换。
+
+sdo_helper_invalid_sequence=所提供序列 [{0}] 不是 EclipseLink SDOSequence，因此无法转换。
+
+sdo_helper_invalid_target_for_changesummary=所提供目标类 [{0}] 必须是 EclipseLink SDOChangeSummary 类。
+
+sdo_helper_invalid_target_for_copyhelper=所提供目标类 [{0}] 必须是 EclipseLink SDOCopyHelper 类。
+
+sdo_helper_invalid_target_for_datafactory=所提供目标类 [{0}] 必须是 EclipseLink SDODataFactory 类。
+
+sdo_helper_invalid_target_for_datahelper=所提供目标类 [{0}] 必须是 EclipseLink SDODataHelper 类。
+
+sdo_helper_invalid_target_for_dataobject=所提供目标类 [{0}] 必须是 EclipseLink SDODataObject 类。
+
+sdo_helper_invalid_target_for_equalityhelper=所提供目标类 [{0}] 必须是 EclipseLink SDOEqualityHelper 类。
+
+sdo_helper_invalid_target_for_helpercontext=所提供目标类 [{0}] 必须是 EclipseLink SDOHelperContext 类。
+
+sdo_helper_invalid_target_for_property=所提供目标类 [{0}] 必须是 EclipseLink SDOProperty 类。
+
+sdo_helper_invalid_target_for_sequence=所提供目标类 [{0}] 必须是 EclipseLink SDOSequence 类。
+
+sdo_helper_invalid_target_for_type=所提供目标类 [{0}] 必须是下列其中一项：EclipseLink SDOType、SDOTypeType、SDOPropertyType、SDOChangeSummaryType、SDODataObjectType、SDODataType、SDOOpenSequencedType、SDOObjectType、SDOWrapperType 或 SDOXMLHelperLoadOptionsType。
+
+sdo_helper_invalid_target_for_typehelper=所提供目标类 [{0}] 必须是 EclipseLink SDOTypeHelper 类。
+
+sdo_helper_invalid_target_for_xmlhelper=所提供目标类 [{0}] 必须是 EclipseLink SDOXMLHelper、EclipseLink XMLMarshaller 或 EclipseLink XMLUnmarshaller 的其中之一。
+
+sdo_helper_invalid_target_for_xsdhelper=所提供目标类 [{0}] 必须是 EclipseLink SDOXSDHelper 类。
+
+sdo_helper_invalid_type=所提供类型 [{0}] 不是 EclipseLink SDOType，因此无法转换。
+
+sdo_helper_invalid_typehelper=所提供 TypeHelper [{0}] 不是 EclipseLink SDOTypeHelper，因此无法转换。
+
+sdo_helper_invalid_xmlhelper=所提供 XMLHelper [{0}] 不是 EclipseLink SDOXMLHelper，因此无法转换。
+
+sdo_helper_invalid_xsdhelper=所提供 XSDHelper [{0}] 不是 EclipseLink SDOXSDHelper，因此无法转换。
+
+subclass_sought_not_a_managed_type=寻求的子图类型 {0} 不是以下属性的受管类型：{1}。
+
+too_many_results_for_get_single_result=从 Query.getSingleResult() 返回了多个结果
+
+unable_to_find_named_query=找不到名称为 {0} 的 NamedQuery。
+
+unable_to_unwrap_jpa=提供程序不支持从 {0} 解包至 {1}
+
+undeclared_checked_exception=未声明的已检查异常
+
+unexpect_argument=意外的输入参数 {0}
+
+unknown_bean_class=实体 bean 类 {0} 未知，请验证是否已使用 @Entity 注释标记此类。
+
+unknown_entitybean_name=未知实体 bean 名称：{0}
+
+unsupported_classfile_version=使用了不受支持的 JDK 来编译 {0} 类。请向 EclipseLink 开放式源代码项目报告此错误。
+
+wrap_convert_exception=对值为 {2} 的转换器类 {1} 调用 {0} 时发生了异常
+
+wrap_ejbql_exception=在 EntityManager 中创建查询时发生了异常
+

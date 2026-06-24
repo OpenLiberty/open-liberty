@@ -1,0 +1,149 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource_pl.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=Nie można znaleźć elementu identyfikatora typu ID dla typu o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45001=Wystąpił błąd podczas przetwarzania importu z atrybutem schemaLocation o wartości [{0}] i przestrzeni nazw [{1}].
+
+45002=Wystąpił błąd podczas przetwarzania włączenia z atrybutem schemaLocation o wartości [{0}].
+
+45003=Nie znaleziono przywoływanej właściwości o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45004=Stara sekwencja nie została znaleziona w elemencie changesummary.
+
+45005=Wartością właściwości o nazwie [{0}] musi być obiekt DataObject
+
+45006=Sekwencja nie może mieć wartości null, jeśli type.isSequenced() zwraca wartość true.
+
+45007=Nie ustawiono typu właściwości o nazwie [{0}].
+
+45008=Wystąpił wyjątek we/wy.
+
+45009=Nie znaleziono typu o identyfikatorze URI [{0}] i nazwie [{1}]
+
+45010=Nie można znaleźć typu dla klasy interfejsu [{0}]. Upewnij się, że typ został zdefiniowany.  Ponadto program ładujący klasy interfejsu powinien należeć do hierarchii programu ładującego klasy kontekstów programu pomocy. Wygląda na to, że jest to [{1}].
+
+45011=Nie można utworzyć obiektu DataObject dla typu o identyfikatorze URI [{0}] i nazwie [{1}], ponieważ type.isAbstract() zwraca wartość true.
+
+45012=Nie można utworzyć obiektu DataObject dla interfejsu [{0}]. Próba utworzenia obiektu DataObject dla typu o identyfikatorze URI [{1}] i nazwie [{2}] 
+
+45013=Nie można wyszukać informacji o aplikacji dla argumentu o wartości null.
+
+45014=Nie można zdefiniować typu.  Typy można zdefiniować tylko dla obiektów DataObject o typie ustawionym na commonj.sdo.Type
+
+45015=Nie można zdefiniować typu z nazwą o wartości null.
+
+45016=Zmodyfikowany obiekt w kodzie XML elementu changesummary nie ma atrybutu ref lub jego wartość nie jest określona.
+
+45017=Wystąpił błąd podczas przetwarzania wyrażenia XPath [{0}].
+
+45018=Dodawanie zduplikowanego wpisu dla złożonego ustawienia pojedynczego [{1}] do sekwencji na pozycji [{0}] nie jest obsługiwane.
+
+45019=Dodawanie właściwości atrybutu [{0}] do sekwencji nie jest obsługiwane.
+
+45020=Nie znaleziono sekwencji dla ścieżki [{0}].
+
+45021=Wystąpił błąd podczas próby utworzenia instancji obiektu Sequence z polem instancji obiektu dataObject o wartości null.
+
+45022=Sekwencja nie jest obsługiwana dla właściwości [{0}].
+
+45023=Nie można ustawić właściwości o typie z identyfikatorem URI [{0}] i nazwą [{1}] na wartość klasy [{2}]
+
+45024=Wystąpił błąd konwersji.
+
+45025=Nie można znaleźć właściwości na pozycji indeksu [{0}]
+
+45026=Nie można wykonać operacji [{0}] na parametrze o wartości null.
+
+45027=Nie można znaleźć klasy dla typu o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45028=Nie można ustawić typu na open ani datatype.  Błąd dla typu o identyfikatorze URI [{0}] i nazwie [{1}].
+
+45029=Niepoprawny indeks [{0}] przekazany do metody [{1}].
+
+45030=Wystąpił błąd podczas wywoływania konstruktora z argumentem typu String w klasie [{0}].
+
+45031=Nie można ustawić niepoprawnego typu docelowego [{0}] dla właściwości [{1}], ponieważ docelowy typ type.dataType ma wartość true.
+
+45032=Wystąpił wyjątek XMLMarshalException dla identyfikatora URI [{1}] i nazwy lokalnej [{2}].  Wyjątek: [{0}]
+
+45033=Wystąpił błąd podczas generowania typów. Komponent schematu XML o nazwie [{1}] i identyfikatorze URI przestrzeni nazw [{0}] jest przywoływany, ale nigdy nie został zdefiniowany.  W schemacie XML może brakować importu lub włączenia dla identyfikatora URI przestrzeni nazw [{0}].
+
+45034=Wartością parametru options musi być obiekt DataObject o typie z identyfikatorem URI [{0}] i nazwą [{1}].
+
+45035=Wartość, która odpowiada właściwości type, musi być obiektem Type.
+
+45036=Nie znaleziono globalnej właściwości odpowiadającej ładowanemu węzłowi XML.
+
+45037=Używany jest przedrostek [{0}], który nie został zadeklarowany w schemacie XML.
+
+45038=Nie można wykonać operacji na właściwości [{0}], ponieważ nie jest ona osiągalna ze ścieżki [{1}]. Ścieżka jest niepoprawna albo przynajmniej jeden obiekt danych w ścieżce ma wartość null.
+
+45039=Wystąpił błąd podczas próby uzyskania dostępu do pola externalizableDelegator [{0}] w obiekcie DataObject.
+
+45040=Nie można wykonać operacji [{0}] z parametrem [{1}] o wartości null.
+
+45041=Wartość [{0}] klasy [{1}] jest niepoprawna dla właściwości [{2}] typu [{3}].
+
+45100=Wystąpił błąd podczas próby zwrócenia żądanego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pamięci podręcznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie można określić nazwy aplikacji, ponieważ wyszukiwanie {0} się nie powiodło.
+
+45101=Wystąpił błąd podczas próby zwrócenia żądanego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pamięci podręcznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie można określić nazwy aplikacji, ponieważ nie można wywołać {0} odpowiednio na {1}.
+
+45102=Wystąpił błąd podczas próby zwrócenia żądanego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pamięci podręcznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie można określić nazwy aplikacji, ponieważ nie można utworzyć/zwrócić obiektu ObjectName dla {0}.
+
+45103=Wystąpił błąd podczas próby zwrócenia żądanego kontekstu SDOHelperContext.  W aktywnej instancji WebLogic przeszukiwanie pamięci podręcznej kontekstu programu pomocy wymaga nazwy aplikacji.  Nie można określić nazwy aplikacji, ponieważ nie można utworzyć instancji kontekstu InitialContext.
+
+45200=SDO/JAXB - nie można znaleźć deskryptora OXM odpowiadającego typowi SDO [{0}]. Upewnij się, że klasa Java jest odwzorowana na typ XML [{1}].
+
+45201=SDO/JAXB - nie można znaleźć odwzorowania OXM odpowiadającego właściwości SDO [{0}]. Upewnij się, że właściwość Java jest odwzorowana na węzeł XML [{1}].
+
+45202=SDO/JAXB - nie można znaleźć typu SDO odpowiadającego klasie Java [{0}].
+
+45203=SDO/JAXB - odwołanie do schematu musi być ustawione na deskryptor klasy Java [{0}].
+
+45204=SDO/JAXB - kontekst schematu musi być ustawiony na odwołanie do schematu w deskryptorze klasy Java [{0}].
+
+45205=SDO/JAXB - nie można znaleźć typu SDO odpowiadającego klasie Java [{0}]. Upewnij się, że typ SDO odpowiada typowi XML [{1}].
+
+45206=SDO/JAXB - wystąpił błąd podczas tworzenia obiektu JAXB Unmarshaller.
+
+45207=Wystąpił błąd podczas próby rozstrzygnięcia schematu przy użyciu udostępnionej klasy SchemaResolver.
+
+45208=Nie można odwzorować właściwości {0} z typu {1}. Pakiety jakarta.activation oraz jakarta.mail są wymagane do odwzorowania właściwości typu DataHandler. Upewnij się, że oba są dostępne w ścieżce klas.
+
+45209=Podjęto próbę zresetowania instancji ApplicationResolver w kontekście SDOHelperContext.  Dozwolony jest tylko jeden zestaw.
+
+45210=Zestawiany obiekt DataObject nie pochodzi z tego samego kontekstu HelperContext co XMLHelper.
+
+45211=Nie można zdefiniować typu przy użyciu nazwy [{0}]. Ta nazwa nie jest poprawną nazwą XML.
+
+45212=Nie można zdefiniować właściwości przy użyciu nazwy [{0}]. Ta nazwa nie jest poprawną nazwą XML.
+

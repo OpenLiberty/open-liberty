@@ -1,0 +1,223 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource_ko.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000={0} 컨텍스트 경로에 ObjectFactory 또는 jaxb.index가 없고, 특성 맵에서 외부 메타데이터를 찾을 수 없으며, sessions.xml이 발견되었거나 올바르지 않습니다.
+
+50001={0} 클래스에 0 인수 생성자나 지정된 팩토리 메소드가 필요합니다. 비정적 내부 클래스에 0 인수 생성자는 포함되지 않으며 비정적 내부 클래스가 지원되지 않음을 염두에 두십시오.
+
+50002={0} 클래스에 팩토리 메소드가 없이 지정된 팩토리 클래스입니다.
+
+50003=이름이 {0}인 팩토리 메소드가 {1} 클래스에서 선언되지 않습니다.
+
+50004=XmlAnyAttribute가 {0} 특성에서 올바르지 않습니다. 맵 유형의 특성에서 사용되어야 합니다.
+
+50005=XmlAnyAttribute가 있는 단 한 개의 특성이 {0} 클래스에서 허용되었습니다.
+
+50006={1} 클래스의 {0} 특성에 올바르지 않은 XmlElementRef가 있습니다. 참조된 요소가 선언되지 않습니다.
+
+50007=이름 충돌이 있습니다. 두 개의 클래스에 uri가 {0}이고 이름이 {1}인 XML 유형이 있습니다.
+
+50008=노드 클래스 {0}이(가) 지원되지 않습니다. createBinder(Class) 메소드만 org.w3c.dom.Node 클래스를 지원합니다.
+
+50009={1} 클래스의 특성 또는 필드 {0}에는 임시 어노테이션이 있으므로 propOrder 어노테이션에 포함될 수 없습니다.
+
+50010=다른 필드 또는 특성에 XmlValue 어노테이션이 있으므로 {1} 클래스의 특성 또는 필드 {0}은(는) 속성이어야 합니다.
+
+50011={1} 클래스의 특성 또는 필드 {0}은(는) 다른 XML-bound 클래스의 서브클래스이므로 XmlValue 어노테이션이 있을 수 없습니다.
+
+50012={1} 클래스의 특성 또는 필드 {0}은(는) propOrder에서 지정되었지만 올바른 특성이 아닙니다.
+
+50013={1} 클래스의 특성 또는 필드 {0}은(는) XmlType 어노테이션의 propOrder 요소에 포함되어야 합니다.
+
+50014=XmlValue 어노테이션이 있는 {1} 클래스의 특성 또는 필드 {0}은(는) 단순 스키마 유형으로 맵핑되는 유형이어야 합니다.
+
+50015=XmlElementWrapper는 콜렉션 또는 배열 특성에서만 허용되지만 [{0}]은(는) 콜렉션 또는 배열 특성이 아닙니다.
+
+50016=[{0}] 특성에 XmlID 어노테이션이 있지만 해당 유형은 문자열이 아닙니다.
+
+50017=[{0}] 특성에 올바르지 않은 XmlIDREF가 있습니다. [{1}] 클래스에 XmlID 어노테이션이 있는 특성이 포함되어야 합니다.
+
+50018=XmlList는 콜렉션 또는 배열 특성에서만 허용되지만 [{0}]은(는) 콜렉션 또는 배열 특성이 아닙니다.
+
+50019=특성 맵을 통해 외부 메타데이터를 처리하는 중에 올바르지 않은 매개변수 유형이 발생했습니다. [eclipselink-oxm-xml] 키와 연관된 값은 [Map<String, Object>, List<Object> 또는 Object] 중 하나여야 합니다. 오브젝트는 [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node 또는 org.xml.sax.InputSource] 중 하나여야 합니다. [Map<String, Object>]의 경우, String은 패키지 이름입니다.
+
+50021=특성 맵을 통해 외부 메타데이터를 처리하는 중에 올바르지 않은 매개변수 유형이 발생했습니다. [Map<String, Object>]의 경우, 키가 [String] 유형(패키지 이름 표시)이어야 합니다.
+
+50022=특성 맵을 통해 외부 메타데이터를 처리하는 중에 올바르지 않은 매개변수 유형이 발생했습니다. [Map<String, Object>]의 경우, 값은 [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node 또는 org.xml.sax.InputSource] 중 하나여야 합니다(메타데이터 파일에 대한 핸들).
+
+50023=특성 맵을 통해 외부 메타데이터를 처리하는 중에 [{0}] 키의 널 값이 발생했습니다. 값은 널이 아니어야 하며 [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node 또는 org.xml.sax.InputSource] 중 하나여야 합니다(메타데이터 파일에 대한 핸들).
+
+50024=특성 맵을 통해 외부 메타데이터를 처리하는 중에 널 키가 발생했습니다. 키는 널이 아니며 [String] 유형(패키지 이름 표시)이어야 합니다.
+
+50025=외부 메타데이터 파일에서 선언된 [{0}] 클래스를 로드할 수 없습니다. 클래스 이름이 올바른지 그리고 올바른 ClassLoader가 설정되었는지 확인하십시오.
+
+50026=XmlModel에 대한 JAXBContext를 작성하는 중에 예외가 발생했습니다.
+
+50027=구체화된 메타데이터 파일을 마샬링 해제하는 중에 예외가 발생했습니다.
+
+50028=[{0}]의 새 인스턴스를 작성할 수 없습니다.
+
+50029=XmlCustomizer에서 제공된 [{0}] 클래스가 org.eclipse.persistence.config.DescriptorCustomizer 인터페이스를 구현하지 않습니다.
+
+50030=[{1}] 클래스에서 둘 이상의 XmlID 특성을 설정하도록 시도했습니다. [{2}] 특성이 이미 XmlID로 설정되었기 때문에 [{0}] 특성을 XmlID로 설정할 수 없습니다.
+
+50031=[{0}] 클래스에서 둘 이상의 XmlValue 특성을 설정하도록 시도했습니다. [{2}] 특성이 이미 XmlValue로 설정되었기 때문에 [{1}] 특성을 XmlValue로 설정할 수 없습니다.
+
+50032=[{0}] 클래스에서 둘 이상의 XmlAnyElement 특성을 설정하도록 시도했습니다. [{2}] 특성이 이미 XmlAnyElement로 설정되었기 때문에 [{1}] 특성을 XmlAnyElement로 설정할 수 없습니다.
+
+50033=[{1}] 특성에 설정된 DomHandler [{0}]의 DomHandlerConverter가 초기화될 수 없습니다.
+
+50034=특성 또는 필드 [{0}]이(가) DataHandler가 아니므로 여기에 XmlAttachmentRef 어노테이션이 있을 수 없습니다.
+
+50035=특성 또는 필드 [{0}]이(가) XmlIDREF로 설정되었기 때문에, XmlElements 목록 내에서 선언된 각 XmlElement의 대상 유형에는 XmlID 특성이 있어야 합니다. XmlElement [{1}]의 대상 유형에 XmlID 특성이 포함되어 있는지 확인하십시오.
+
+50036=XmlTagName QName [{0}]이(가) 있는 TypeMappingInfo에 널이 아닌 유형이 설정되어야 합니다.
+
+50037=[{0}] 패키지가 있는 java 유형이 [{1}] 패키지에 있는 바인딩 파일에서 허용되지 않습니다.
+
+50038=구체적 클래스에서 DynamicJAXBContext를 작성할 수 없습니다. 기존 클래스에서 컨텍스트를 작성하려면 org.eclipse.persistence.jaxb.JAXBContext를 사용하거나, jaxb.properties 파일에서 org.eclipse.persistence.jaxb.JAXBContextFactory를 지정하십시오.
+
+50039=DynamicJAXBContext 작성 중 오류 발생: 노드가 문서 또는 요소의 인스턴스여야 합니다.
+
+50040=DynamicJAXBContext 작성 중 오류가 발생했습니다.
+
+50041=열거 상수 [{0}]을(를) 찾을 수 없습니다.
+
+50042=DynamicJAXBContext 작성 중 오류 발생: 세션 이름이 널입니다.
+
+50043=DynamicJAXBContext 작성 중 오류 발생: 소스가 널입니다.
+
+50044=DynamicJAXBContext 작성 중 오류 발생: InputStream이 널입니다.
+
+50045=DynamicJAXBContext 작성 중 오류 발생: 노드가 널입니다.
+
+50046=DynamicJAXBContext 작성 중 오류 발생: XJC는 CodeModel을 생성할 수 없습니다.
+
+50047=[{0}] 클래스를 찾을 수 없습니다.
+
+50048=[{0}] 특성에 대해 지정된 읽기 변환기에 클래스 및 메소드가 둘 다 있습니다. 클래스나 메소드 중 하나가 필요합니다. 둘 다 필요하지 않습니다.
+
+50049=[{0}] 특성에 대해 지정된 읽기 변환기에 클래스 및 메소드가 둘 다 없습니다. 클래스 또는 메소드가 필요합니다.
+
+50050=[{0}] 특성의 [{1}] xml 경로에 대해 지정된 쓰기 변환기에 클래스 및 메소드가 둘 다 있습니다. 클래스나 메소드 중 하나가 필요합니다. 둘 다 필요하지 않습니다.
+
+50051=[{0}] 특성의 [{1}] xml 경로에 대해 지정된 쓰기 변환기에 클래스 및 메소드가 둘 다 없습니다. 클래스 또는 메소드가 필요합니다.
+
+50052=[{0}] 특성에 대해 지정된 쓰기 변환기에 xml 경로가 설정되어 있지 않습니다. xml 경로가 필요합니다.
+
+50053=매개변수 (), (AbstractSession) 또는 (Session)이 있는 변환 메소드 [{0}]을(를) 찾을 수 없습니다.
+
+50054=[{0}] 변환 클래스를 찾을 수 없습니다. 클래스 이름이 올바른지 그리고 올바른 ClassLoader가 설정되었는지 확인하십시오.
+
+50055=DynamicJAXBContext 작성 중 오류 발생: eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE)를 특성 맵에서 찾을 수 없거나, 맵이 널입니다.
+
+50056=[{0}] 특성에 XmlJoinNode 선언이 포함되지만 참조된 클래스 [{1}]은(는) 이 관계 유형에 적용되지 않습니다.
+
+50057=[{0}] 클래스의 [{1}] 특성은 임시로 표시된 [{2}] 클래스를 참조하며 이는 허용되지 않습니다.
+
+50058=[{0}] 클래스의 [{1}] 특성에 XmlJoinNode 선언이 있지만 [{2}] 대상 클래스에는 XmlID 특성 또는 XmlKey 특성이 없습니다. 각 referencedXmlPath의 대상 클래스에 일치하는 XmlPath가 있는 XmlID/XmlKey 특성이 있어야 합니다.
+
+50059=[{0}] 클래스의 [{1}] 특성에 referencedXmlPath [{3}]이(가) 있는 XmlJoinNode 선언이 있지만, XmlPath [{3}]이(가) 있는 대상 클래스 [{2}]에 XmlID 또는 XmlKey 특성이 없습니다. 각 referencedXmlPath의 대상 클래스에 일치하는 XmlPath가 있는 XmlID/XmlKey 특성이 있어야 합니다.
+
+50060=[{0}] 클래스의 [{1}] 특성에 XmlIDREF 선언이 있지만, 대상 클래스 [{2}]은(는) 이 관계 유형에 적용할 수 없습니다.
+
+50061=XmlAdapterClass [{0}]을(를) 로드하는 중에 예외가 발생했습니다. 이는 올바르지 않은 어댑터 클래스 이름 때문이거나 잘못된 로더가 설정되었기 때문일 수 있습니다.
+
+50062=XmlAdapterClass [{0}]의 선언된 메소드에 액세스하는 중에 예외가 발생했습니다. SecurityManager가 어댑터 클래스 내에 있는 선언된 메소드에 대한 액세스를 거부했거나, SecuritManager가 어댑터 클래스의 패키지에 대한 액세스를 거부했기 때문일 수 있습니다.
+
+50063=XmlAdapterClass [{0}]을(를) 인스턴스화하는 중에 예외가 발생했습니다. 어댑터 클래스에 0 인수 생성자가 없기 때문일 수 있습니다.
+
+50064=XmlAdapterClass [{0}]이(가) 예상대로 "jakarta.xml.bind.annotation.adapters.XmlAdapter"를 확장하지 않았습니다.  어댑터 클래스는 "jakarta.xml.bind.annotation.adapters.XmlAdapter"를 확장하고 "public abstract BoundType unmarshal(ValueType v)" 및 "public abstract ValueType marshal(BoundType v)" 메소드를 선언해야 합니다.
+
+50065=올바르지 않은 XmlJavaTypeAdapter [{0}]이(가) [{1}] 패키지에 지정되었습니다. 이는 올바르지 않은 어댑터 클래스 이름 때문이거나 잘못된 로더가 설정되었기 때문일 수 있습니다.
+
+50066=올바르지 않은 XmlJavaTypeAdapter [{0}]이(가) [{1}] 클래스에 지정되었습니다. 이는 올바르지 않은 어댑터 클래스 이름 때문이거나 잘못된 로더가 설정되었기 때문일 수 있습니다.
+
+50067=올바르지 않은 XmlJavaTypeAdapter [{0}]이(가) [{2}] 클래스의 [{1}] 필드/특성에 대해 지정되었습니다. 이는 올바르지 않은 어댑터 클래스 이름 때문이거나 잘못된 로더가 설정되었기 때문일 수 있습니다.
+
+50068=특성 맵을 통해 외부 메타데이터를 처리하는 중에 널 값이 발생했습니다. XML 메타데이터 파일에 대한 핸들은 널이 아니며 [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node 또는 org.xml.sax.InputSource] 중 하나여야 합니다.
+
+50069=제공된 XML 메타데이터 파일에 대해 패키지가 지정되지 않았습니다. Map<String, Object>(여기서 String = 패키지, Object = XML 메타데이타 파일에 대한 핸들)에서 전달하거나 XML 메타데이터 파일의 xml 바인딩 요소에 패키지 이름 속성을 설정함으로써 패키지를 지정할 수 있습니다.
+
+50070=[{1}] 클래스의 [{0}] 특성에 다른 XmlElement/XmlJoinNodes 양을 포함하는 XmlElements 선언이 있습니다. XmlElements 선언 내에 포함된 각 XmlElement에 대한 해당 XmlJoinNodes가 있어야 합니다.
+
+50071=[{1}] 클래스의 [{0}] 특성은 [{2}] 경로의 루트에 속성과 함께 XmlPath를 포함하는 XmlPaths 선언이 있습니다. XmlPaths의 경우, 속성이 XmlPath 등에 중첩되어야 합니다. [foo/{2}].
+
+50072=[{0}](이)라는 중복 특성이 [{1}] 클래스에 있음
+
+50073=[{1}] 클래스의 [{0}] 특성이 다중 외부 바인딩 파일에서 지정되었습니다. 각 특성은 한 파일에서만 지정될 수 있음
+
+50074=XMLNameTransformer [{0}]에 액세스하는 중에 예외가 발생함
+
+50075=XMLNameTransformer [{1}]에서 이름 [{0}]을(를) 변환하는 중에 예외가 발생함
+
+50076=제공된 위치: [{0}]에서 외부 메타데이터를 로드할 수 없습니다. 이 위치는 올바른 URL 또는 클래스 경로 참조 중 하나여야 합니다.
+
+50077=메타데이터를 새로 고칠 수 없습니다. 새로 고치기를 지원하려면 메타데이터가 XML 노드로 제공되어야 합니다.
+
+50078=외부 바인딩 파일(XJB)을 처리할 수 없습니다. 외부 바인딩 파일을 사용하려면, XSD 및 XJB 둘 다 javax.xml.transform.Sources로 제공되어야 합니다.
+
+50079=스키마를 처리할 수 없습니다. 스키마 가져오기를 사용하는 경우, XSD는 javax.xml.transform.Source로 제공되어야 합니다.
+
+50080=XmlLocation만 org.xml.sax.Locator 유형의 특성에서 허용되지만, [{0}]은(는) [{1}] 유형에 속합니다.
+
+50081=스키마 생성 중에 예외가 발생했습니다.
+
+50082=지정된 키 없이 {0} 값 작성을 시도했습니다. JAXBMarshaller에서 JSON_VALUE_WRAPPER 설정을 시도하십시오.
+
+50083=AccessorFactory 클래스 {0}을(를) 인스턴스화하는 중에 오류가 발생함
+
+50084=지정된 AccessorFactory 클래스: {0}이(가) 올바르지 않습니다. 이는 createFieldAccessor(Class, Field, boolean) 및 createPropertyAccessor(Class, Method, Method)를 구현해야 합니다.
+
+50085=AccessorFactory {0}에서 createFieldAccessor 메소드를 호출하는 중에 예외가 발생함
+
+50086=AccessorFactory {0}에서 createPropertyAccessor 메소드를 호출하는 중에 예외가 발생함
+
+50087=액세서 {1}에서 {0} 메소드를 호출하는 중에 예외가 발생함
+
+50088=열거 값 {0}은(는) 클래스 {1}에서 XmlEnum에 대해 올바르지 않음
+
+50089=Java 인터페이스 {0}에 맵핑 가능한 다중 상위 인터페이스가 있으므로 JAXB에 의해 맵핑될 수 없습니다. 다중 상속은 지원되지 않음
+
+50090=오브젝트 그래프에 대한 값이 올바르지 않음: {0}. 이 값은 ObjectGraph의 문자열 또는 인스턴스여야 합니다.
+
+50091={0} 요소 이름에 두 개 이상의 맵핑이 있습니다.
+
+50092={1} 클래스에서 허용되는 유일한 {0} 유형의 XmlElementRef 특성입니다.
+
+50093={0} 클래스는 JAXBContext의 맵핑된 유형이 아닙니다.
+
+50094=XmlVariableNode 어노테이션에 지정된 {0} 특성을 {1} 클래스에서 찾을 수 없습니다.
+
+50095={2} 클래스에 있는 {1} 유형의 {0} 특성이 XmlVariableNode에 대해 올바르지 않습니다. String 또는 QName 유형의 특성만 허용됩니다.
+
+50096={1} 유형의 @XmlAttribute 특성 {0}은(는) XML에서 텍스트에 맵핑되는 유형을 참조해야 합니다. {2}은(는) 텍스트 값에 맵핑될 수 없습니다.
+

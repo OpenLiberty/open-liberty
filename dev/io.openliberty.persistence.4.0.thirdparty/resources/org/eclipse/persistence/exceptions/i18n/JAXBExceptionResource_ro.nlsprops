@@ -1,0 +1,223 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/JAXBExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+50000=Calea contextuală {0} nu conţine ObjectFactory sau jaxb.index, nu au fost găsite metadate externe în harta proprietăţi şi a fost găsit sessions.xml sau a fost invalid.
+
+50001=Clasa {0} necesită un constructor de argument zero sau o metodă specificată de fabrică.  Reţineţi că clasele interioare non-statice nu au constructori de argument zero şi nu sunt suportate.
+
+50002=Clasa fabrică specificată fără metoda fabrică în clasa {0}.
+
+50003=Metoda fabrică numită {0} nu este declarată în clasa {1}.
+
+50004=XmlAnyAttribute este invalid în proprietatea {0}. Trebuie utilizat cu o proprietate de tip Hartă.
+
+50005=Numai o proprietate cu XmlAnyAttribute permisă în clasa {0}.
+
+50006=XmlElementRef invalid în proprietatea {0} în clasa {1}. Elementul referenţiat nu este declarat.
+
+50007=Coliziune de nume.  Două clase au tipul XML cu uri {0} şi nume {1}.
+
+50008=Clasă Node ce nu este suportată {0}.  Metoda createBinder(Class) suportă numai clasa org.w3c.dom.Node.
+
+50009=Proprietatea sau câmpul {0} pe clasa {1} este adnotată ca fiind tranzitorie, aşa că nu poate fi inclusă în adnotarea propOrder.
+
+50010=Proprietatea sau câmpul {0} pe clasa {1} trebuie să fie un atribut deoarece un alt câmp sau altă proprietate este adnotată cu XmlValue.
+
+50011=Proprietatea sau câmpul {0} pe clasa {1} nu poate fi adnotată cu valoarea XmlValue deoarece este o subclasă a altei clase XML-bound.
+
+50012=Proprietatea sau câmpul {0} pe clasa {1} a fost specificat în propOrder, dar nu este o proprietate validă.
+
+50013=Proprietatea sau câmpul {0} din clasa {1} este necesară pentru a fi inclusă în elementul propOrder al adnotării XmlType.
+
+50014=Proprietatea sau câmpul {0} pe clasa {1} cu adnotarea XmlValue trebuie să fie de un tip care se mapează la un tip de schemă simplu.
+
+50015=XmlElementWrapper este permis numai pentru o colecţie sau o proprietate matrice, dar [{0}] nu este o colecţie sau o proprietate matrice.
+
+50016=Proprietatea [{0}] are o adnotare XmlID dar tipul său nu este Şir.
+
+50017=XmlIDREF invalid pentru proprietatea [{0}].  Clasa [{1}] este necesară pentru a avea o proprietate adnotată cu XmlID.
+
+50018=XmlList este permis numai pentru o colecţie sau o proprietate matrice, dar [{0}] nu este o colecţie sau o proprietate matrice.
+
+50019=Tip de parametru invalid întâlnit în timpul procesării metadatelor externe prin Harta de proprietăţi.  Valoarea asociată cu Cheia [eclipselink-oxm-xml] trebuie să fie una dintre [Map<String, Object>, List<Object>, sau Object].  Obiectul trebuie să fie unul dintre [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node sau org.xml.sax.InputSource], În cazul [Map<String, Object>], Şir este numele pachetului.
+
+50021=Tip de parametru invalid întâlnit în timpul procesării metadatelor externe prin Harta de proprietăţi.  Pentru [Map<String, Object>], este necesar ca Cheie să fie de tip [String] (ce indică numele pachetului).
+
+50022=Tip de parametru invalid întâlnit în timpul procesării metadatelor externe prin Harta de proprietăţi.  Pentru [Map<String, Object>], este necesar ca Valoare să fie una dintre [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node sau org.xml.sax.InputSource] (manipulare în fişierul metadate).
+
+50023=O valoare nulă pentru Cheie [{0}] a fost întâlnită în timpul procesării metadatelor externe prin Harta de proprietăţi.  Este necesar ca Valoare să nu fie nullă şi una dintre [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node sau org.xml.sax.InputSource] (manipulare în fişierul de metadate).
+
+50024=A fost întâlnită o Cheie nulă în timpul procesării metadatelor externe prin Harta de proprietăţi.  Este necesar ca Cheie să nu fie nulă şi să fie de tip [String] (ce indică numele pachetului).
+
+50025=Nu se poate încărca clasa [{0}] declarată în fişierul de metadate extern.  Vă rugăm să vă asiguraţi că numele clasei este corect şi că ClassLoader-ul corect a fost setat.
+
+50026=A survenit o excepţie în timpul încercării de creare a JAXBContext pentru XmlModel.
+
+50027=A survenit o excepţie în timpul încercării de unmarshal a fişierului de metadate extern.
+
+50028=Nu se poate crea o nouă instanţă a [{0}].
+
+50029=Clasa [{0}] furnizată în XmlCustomizer nu implementează interfaţa org.eclipse.persistence.config.DescriptorCustomizer.
+
+50030=A fost făcută o încercare de setare a mai mult de o proprietate XmlID în clasa [{1}].  Proprietatea [{0}] nu poate fi setată ca şi XmlID, deoarece proprietatea [{2}] este deja setată ca şi XmlID.
+
+50031=A fost făcută o încercare de setare a mai mult de o proprietate XmlValue în clasa [{0}].  Proprietatea [{1}] nu poate fi setată ca şi XmlValue, deoarece proprietatea [{2}] este deja setată ca şi XmlValue.
+
+50032=A fost făcută o încercare de setare a mai mult de o proprietate XmlAnyElement la clasa [{0}].  Proprietatea [{1}] nu poate fi setată ca şi XmlAnyElement, deoarece proprietatea [{2}] este deja setată ca şi XmlAnyElement.
+
+50033=DomHandlerConverter pentru DomHandler [{0}] setată pentru proprietatea [{1}] nu a putut fi iniţializată.
+
+50034=Proprietatea sau câmpul [{0}] nu pot fi adnotate cu XmlAttachmentRef deoarece nu sunt DataHandler.
+
+50035=Deoarece proprietatea sau câmpul [{0}] sunt setate ca şi XmlIDREF, tipul de ţintă al fiecărui XmlElement declarat în lista XmlElements trebuie să aibă o proprietate XmlID.  Vă rugăm să vă asiguraţi că tipul de ţintă al XmlElement [{1}] conţine o proprietate XmlID.
+
+50036=TypeMappingInfo cu XmlTagName QName [{0}] trebuie să aibă setat un Tip non-nul.
+
+50037=Tipul java cu pachetul [{0}] nu este permis în fişierul de legături cu cheie din pachetul [{1}].
+
+50038=DynamicJAXBContext nu poate fi creat fin Clasele concrete.  Vă rugăm să utilizaţi org.eclipse.persistence.jaxb.JAXBContext sau specificaţi org.eclipse.persistence.jaxb.JAXBContextFactory în fişierul dumneavoastră jaxb.properties, pentru a crea un context din Clasele existente.
+
+50039=Eroare la crearea DynamicJAXBContext: Nodul trebuie să fie o instanţă fie a Documentului, fie a Elementului.
+
+50040=Eroare la crearea DynamicJAXBContext.
+
+50041=Constanta de enumerare [{0}] nu a fost găsită.
+
+50042=Eroare la crearea DynamicJAXBContext: Numele sesiunii a fost nul.
+
+50043=Eroare la crearea DynamicJAXBContext: Sursa a fost nulă.
+
+50044=Eroare la crearea DynamicJAXBContext: InputStream a fost nul.
+
+50045=Eroare la crearea DynamicJAXBContext: Nodul a fost nul.
+
+50046=Eroare la crearea DynamicJAXBContext: XJC nu a putut genera un CodeModel.
+
+50047=Clasa [{0}] nu a fost găsită.
+
+50048=Transformatorul de citire specificat pentru proprietatea [{0}] are atât clasă cât şi metodă. Este necesară fie clasa, fie metoda, dar nu ambele.
+
+50049=Transformatoul de citire specificat pentru  proprietatea [{0}] nu are nici clasă, nici metodă. Este necesară o clasă sau o metodă.
+
+50050=Transformatorul de scriere specificat pentru xml-path [{1}] a proprietăţii [{0}] are atât clasă cât şi metodă. Este necesară fie clasa, fie metoda, dar nu ambele.
+
+50051=Transformatorul de scriere specificat pentru xml-path [{1}] a proprietăţii [{0}] nu are nici clasă, nici metodă. Este necesară o clasă sau o metodă.
+
+50052=Transformatorul de scriere specificat pentru proprietatea [{0}] nu are o xml-path setată. Este necesară o xml-path.
+
+50053=Metoda de transformare [{0}] cu parametrii (), (AbstractSession) sau (Session) nu a fost găsită.
+
+50054=Clasa de transformare [{0}] nu a fost găsită. Vă rugăm să va asiguraţi că numele clasei este corect şi că a fost setat ClassLoader-ul corect.
+
+50055=Eroare la crearea DynamicJAXBContext: eclipselink.oxm.metadata-source (JAXBContextProperties.OXM_METADATA_SOURCE) nu a fost găsit în harta de proprietăţi, sau harta a fost nulă.
+
+50056=Proprietatea [{0}] conţine o declaraţie XmlJoinNode, dar clasa de referinţă [{1}] nu este aplicabilă pentru acest tip de relaţie.
+
+50057=Proprietatea [{1}] în clasa [{0}] face referire la o clasă [{2}] ce este marcată tranzitorie, ceea ce nu este permis.
+
+50058=Proprietatea [{1}] din clasa [{0}] are o declaraţie XmlJoinNode, dar clasa ţintă [{2}] nu are o proprietate XmlID sau proprietăţi XmlKey.  Este necesar să existe o proprietate XmlID/XmlKey cu un XmlPath potrivit în clasa ţintă pentru fiecare referencedXmlPath.
+
+50059=Proprietatea [{1}] în clasa [{0}] are o declaraţie XmlJoinNode cu referencedXmlPath [{3}], dar nu există o proprietate XmlID sau XmlKey în clasa ţintă [{2}] cu XmlPath [{3}].  Este necesar să existe o proprietate XmlID/XmlKey cu o XmlPath potrivită în clasa ţintă, pentru fiecare  referencedXmlPath.
+
+50060=Proprietatea [{1}] din clasa [{0}] are o declaraţie XmlIDREF, dar clasa ţintă [{2}] nu se aplică pentru acest tip de relaţie.
+
+50061=A survenit o excepţie la încercarea de încărcare a XmlAdapterClass [{0}]. Cauzele posibile sunt un nume de clasă adaptor incorect sau a fost setat încărcătorul greşit.
+
+50062=A survenit o excepţie la încercarea de accesare a metodelor declarate de XmlAdapterClass [{0}]. Cauzele posibile sunt SecurityManager a refuzat accesul la metodele declarate în clasa adaptor, sau SecuritManager a negat accesul la pachetul de clasă adaptor.
+
+50063=A survenit p excepţie la încercarea  de instanţiere XmlAdapterClass [{0}]. O cauză posibilă este aceea că clasa adaptor nu are un constructor de argument zero.
+
+50064=XmlAdapterClass [{0}] nu extinde "jakarta.xml.bind.annotation.adapters.XmlAdapter" așa cum era așteptat.  Clasa de adaptor trebuie să extindă "jakarta.xml.bind.annotation.adapters.XmlAdapter" și să declare metode "public abstract BoundType unmarshal (ValueType v)" și "public abstract ValueType marshal (BoundType v)".
+
+50065=Un XmlJavaTypeAdapter invalid [{0}] a fost specificat pentru pachetul [{1}]. Cauzele posibile sunt un nume de clasă adaptor incorect sau a fost setat încărcătorul greşit.
+
+50066=Un XmlJavaTypeAdapter invalid [{0}] a fost specificat pentru clasa [{1}]. Cauzele posibile sunt un nume de clasă adaptor incorect sau a fost setat încărcătorul greşit.
+
+50067=Un XmlJavaTypeAdapter invalid [{0}] a fost specificat pentru câmpul/proprietatea [{1}] în clasa [{2}]. Cauzele posibile sunt un nume de clasa adaptor incorect sau a fost setat încărcătorul greşit.
+
+50068=A fost întâlnită o valoare nulă la procesarea metadatelor externe prin Harta proprietăţi.  Este necesar ca manipularea fişierului de metadate XML şi nu fie nulă şi să fie una dintre [java.io.File, java.io.InputStream, java.io.Reader, java.net.URL, javax.xml.stream.XMLEventReader, javax.xml.stream.XMLStreamReader, javax.xml.transform.Source, org.w3c.dom.Node sau org.xml.sax.InputSource].
+
+50069=Nu a fost specificat un pachet pentru fişierul de metadate XML furnizat.  Pachetul poate fi specificat prin trecerea în Map<String, Object> (where String = package, Object = handle to XML metadata file) sau prin setarea atributului nume pachet în elementul xml-bindings din fişierul de metadate XML.
+
+50070=Proprietatea [{0}] din clasa [{1}] are o declaraţie XmlElements ce conţine o cantitate inegală de XmlElement/XmlJoinNodes.  Este necesar să existe un XmlJoinNodes corespunzător pentru fiecare XmlElement conţinut în declaraţia XmlElements.
+
+50071=Proprietatea [{0}] din clasa [{1}] are o declaraţie XmlPaths ce conţine o XmlPath cu un atribut la rădăcina căii [{2}].  În cazul XmlPaths, atributele trebuiesc imbricate în XmlPath, i.e. [foo/{2}].
+
+50072=Proprietatea duplicat numită [{0}] găsită în clasa [{1}]
+
+50073=Proprietatea [{0}] din clasa [{1}] este specificată în mai multe câmpuri de legături externe. Fiecare proprietate poate fi specificată numai într-un fişier
+
+50074=A survenit o excepţie la accesarea XMLNameTransformer [{0}]
+
+50075=A survenit o excepţie la încercarea de transformare a numelui [{0}] cu XMLNameTransformer [{1}]
+
+50076=Nu se pot încărca metadatele externe din locaţia furnizată: [{0}]. Această locaţie trebuie să fie un URL valid sau o referinţă.
+
+50077=Nu se pot reîmprospăta metadatele.  Metadatele trebuiesc furnizate ca şi nod XML pentru a suporta reîmprospătarea.
+
+50078=Nu se pot procesa fişierele de legături externe (XJB).  Pentru a utiliza fişierele de legături externe, trebuiesc furnizate XSD şi XJB ca şi javax.xml.transform.Sources.
+
+50079=Nu se pot procesa schemele.  Dacă sunt utilizate importurile de scheme, XSD-urile trebuiesc furnizate ca şi javax.xml.transform.Source.
+
+50080=XmlLocation este permis numai pentru proprietăţi de tip org.xml.sax.Locator, dar [{0}] este de tip [{1}].
+
+50081=A survenit o excepţie în timpul generării schemei.
+
+50082=A fost făcută o încercare de scriere a valorii {0} fără o cheie specificată.  Încercaţi să setaţi JSON_VALUE_WRAPPER pe JAXBMarshaller
+
+50083=A apărut o eroare la încercarea de a instanţia clasa AccessorFactory {0}
+
+50084=Clasa AccessorFactory specificată: {0} este invalid. Trebuie să implementeze createFieldAccessor(Class, Field, boolean) şi createPropertyAccessor(Class, Method, Method).
+
+50085=A survenit o excepţie la invocarea metodei createFieldAccessor în AccessorFactory {0}
+
+50086=A survenit o excepţie la invocarea metodei createPropertyAccessor în AccessorFactory {0}
+
+50087=A survenit o eroare la încercarea de invocare a metodei {0} în Accesatorul {1}
+
+50088=Valoarea enumerată {0} nu este validă pentru un XmlEnum cu clasa {1}
+
+50089=Interfaţa java {0} nu poate fi mapată de JAXB deoarece are mai multe interfeţe părinte ce pot fi mapate. Moştenirea multiplă nu este suportată
+
+50090=Valoare invalidă pentru graficul obiectului: {0}. Valoarea trebuie să fie un şir sau o instanţă a ObjectGraph.
+
+50091=Numele elementului {0} are mai mult de o mapare.
+
+50092=Numai o proprietate XmlElementRef de tip {0} este permisă în clasa {1}.
+
+50093=Clasa {0} nu este un tip mapat în JAXBContext.
+
+50094=Proprietatea {0} specificată în adnotarea XmlVariableNode, nu a fost găsită în clasa {1}.
+
+50095=Proprietatea {0} de tip {1} din clasa {2} nu este validă pentru un XmlVariableNode.  Numai proprietăţile de tip Şir sau QName sunt permise.
+
+50096=Proprietatea @XmlAttribute {0} din tipul {1} trebuie să referenţieze un tip ce se mapează la text în XML.  {2} nu poate fi mapat la o valoare text.
+

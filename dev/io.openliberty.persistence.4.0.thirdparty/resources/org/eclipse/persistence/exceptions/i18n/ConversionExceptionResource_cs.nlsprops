@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource_cs.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=Objekt [{0}], třídy [{1}], nelze převést na [{2}].
+
+3002=Objekt [{0}], třídy [{1}], z mapování [{2}] pomocí deskriptoru [{3}], nelze převést na [{4}].
+
+3003=Chybný formát date: [{0}] (očekáváno [RRRR-MM-DD])
+
+3004=Chybný formát time: [{0}] (očekáváno [HH:MM:SS])
+
+3005=Chybný formát timestamp: [{0}] (očekáváno [RRRR-MM-DD HH:MM:SS.NNNNNNNNN])
+
+3006=[{0}] musí být sudé číslo, které lze převést na bajt.
+
+3007=Objekt [{0}], třídy [{1}], nelze převést na [{2}].  Ujistěte se, že třída [{2}] je na cestě CLASSPATH.  Možná budete, dle potřeby, muset použít alternativní rozhraní API pro předání v příslušném zavaděči tříd nebo provést nastavení na metodě ConversionManager
+
+3008=Chybný formát date-time: [{0}] (očekáváno [RRRR-MM-DD''T''HH:MM:SS])
+
+3009=Nezdařilo se nastavit vlastnosti {0} [{1}] -> [{2}].
+

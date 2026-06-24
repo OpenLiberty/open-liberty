@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/ConversionExceptionResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+3001=A(z) [{1}] osztályú [{0}] objektum nem alakítható át a következőre: [{2}].
+
+3002=A(z) [{3}] leíróval rendelkező [{2}] leképezésből származó [{1}] osztályú [{0}] objektum nem alakítható át a következőre: [{4}].
+
+3003=Helytelen dátumformátum: [{0}] (várt: [ÉÉÉÉ-HH-NN])
+
+3004=Helytelen időformátum: [{0}] (várt: [ÓÓ:PP:MM])
+
+3005=Helytelen időpecsét formátum: [{0}] (várt: [ÉÉÉÉ-HH-NN ÓÓ:PP:MM.NNNNNNNNN])
+
+3006=Ahhoz, hogy a(z) [{0}] egy byte tömbbé alakítható legyen, a hosszúságának párosnak kell lennie.
+
+3007=A(z) [{1}] osztályú [{0}] objektum nem alakítható át a következőre: [{2}].  Győződjön meg róla, hogy a(z) [{2}] osztály szerepel a CLASSPATH változóban.  Lehetséges, hogy szükség esetén egy másik API átadást kell használnia a megfelelő osztálybetöltőben, vagy be kell állítania azt az alapértelmezett ConversionManager objektumra
+
+3008=Helytelen dátum/idő formátum: [{0}] (várt: [ÉÉÉÉ-HH-NN''T''ÓÓ:PP:MM])
+
+3009=Nem lehet beállítani a(z) {0} tulajdonságokat: [{1}] - [{2}].
+

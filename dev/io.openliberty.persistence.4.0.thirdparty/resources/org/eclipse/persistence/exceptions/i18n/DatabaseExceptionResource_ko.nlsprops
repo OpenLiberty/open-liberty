@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DatabaseExceptionResource_ko.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+4003=구성 오류가 발생했습니다. [{0}] 클래스를 찾을 수 없습니다.
+
+4005=DatabaseAccessor가 연결되어 있지 않습니다.
+
+4006=getObject()의 스트림에서 BLOB 데이터를 읽는 중에 오류가 발생했습니다.
+
+4007=내부 오류로 인해 오브젝트 유형을 변환할 수 없습니다. {0}java.sql.TYPES: [{1}]
+
+4008=트랜잭션이 진행되는 동안 로그아웃할 수 없습니다.
+
+4009=시퀀스 테이블 정보가 완전하지 않습니다.
+
+4011=순서 번호를 사전 할당하는 중에 오류가 발생했습니다. 시퀀스 테이블 정보가 완전하지 않습니다.
+
+4014=SynchronizationListener를 등록할 수 없습니다.
+
+4015=동기화된 UnitOfWork는 commitAndResume() 조작을 지원하지 않습니다.
+
+4016=구성 오류가 발생했습니다. [{0}] 드라이버를 인스턴스화할 수 없습니다.
+
+4017=구성 오류가 발생했습니다. [{0}] 드라이버에 액세스할 수 없습니다.
+
+4018=TransactionManager가 JTS 드라이버에 대해 설정되지 않았습니다.
+
+4019=데이터베이스에 대한 정보를 얻는 중에 오류가 발생했습니다. 세부사항은 중첩 예외를 참조하십시오.
+
+4020=지정된 낙관적 잠금 필드 [{0}]에 대해 일치된 데이터베이스 필드를 찾을 수 없습니다. 일치는 대소문자를 구분하므로 getter 메소드에서 기본값에 대한 열 이름을 허용한 경우 이름은 대문자가 됩니다.
+
+4021=드라이버 [{0}], 사용자 [{1}] 및 URL [{2}](으)로부터의 연결을 수용할 수 없습니다. 예상 드라이버 클래스 및 URL을 설정했는지 확인하십시오. 사용자의 로그인과 persistence.xml 또는 sessions.xml 자원을 확인하십시오. jdbc.driver 특성은 데이터베이스 플랫폼과 호환되는 클래스로 설정되어야 함
+
+4022=액세서 또는 해당 연결이 널로 설정되었습니다. 이는 ClientSession 또는 UnitOfWork가 별도의 스레드에 해제된 경우(예: 제한시간이 발생한 경우)에 발생할 수 있습니다.
+

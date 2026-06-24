@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource_zh.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=尝试创建会话 [{0}] 时抛出了 ValidationException。此问题的最有可能原因是类路径上未提供 [{1}] 文件，或该文件没有包含名为 [{0}] 的会话。
+
+28002=EclipseLink 正在尝试从 [{1}] 装入名为 [{0}] 的 ServerSession，但是没有获得 ServerSession。
+
+28003=EclipseLink 已从 [{1}] 装入 Session [{0}]，并且它没有指定服务器平台，或者它指定没有使用的服务器平台以及外部事务控制器。如果计划使用 JTA，请指定相应的服务器平台。
+
+28004=设置 EntityManager 工厂时发生错误：JavaSECMPInitializer.initializeFromMain 返回了 false。
+
+28005=设置 EntityManager 工厂时抛出了异常。
+
+28006=找不到 [{1}] 属性中指定的类 [{0}]。
+
+28007=未能实例化 [{1}] 属性中指定的 ServerPlatform（类型为 [{0}]）。
+
+28008=处理注释时找不到类 {0}。
+
+28009=已尝试重新部署名为 {0} 的会话而不将其关闭。
+
+28010=PersistenceUnitInfo {0} 具有 transactionType JTA，但没有定义 jtaDataSource。
+
+28011=在部署持久性单元时，为该持久性单元构建的会话 [{0}] 不可用。这意味着，在部署过程中，已通过某种方式从容器中移除该会话。
+
+28012=值 [{0}] 的类型对于属性 [{2}] 不正确，值类型应该为 [{1}]。
+
+28013=无法部署处于无效状态 [{1}] 的 PersistenceUnit [{0}]。
+
+28014=处理带有值 [{1}] 的属性 [{0}] 时抛出了异常。
+
+28015=未能实例化 [{1}] 属性中指定的 SessionLog（类型为 [{0}]）。
+
+28016=名为 [{0}] 的持久性单元不存在。
+
+28017=无法预先部署处于无效状态 [{1}] 的 PersistenceUnit [{0}]。
+
+28018=预先部署 PersistenceUnit [{0}] 失败。
+
+28019=部署 PersistenceUnit [{0}] 失败。请为此 PersistenceUnit 关闭所有工厂。
+
+28020=已从 [{1}] 装入的会话（名为 [{0}]）为 [{2}]，但是它必须为 ServerSession。
+
+28021=PersistenceUnit [{0}] 尝试从 [{1}] 装入会话，但没有提供会话名称。会话名称应该通过定义 eclipselink.session-name 属性来提供。
+
+28022=当全局检测为空项时，属性 [eclipselink.weaving] 的值 [true] 不正确，值应该为 Null、false 或 static。
+
+28023=类 [{2}] 的对象 [{1}] 上方法 [{0}] 的方法调用触发了异常。
+
+28024=无法以反射方式访问类 [{2}] 的对象 [{1}] 的方法 [{0}]。
+
+28025=名为 [{0}] 的持久性单元已返回空的临时类装入器 - 已为此会话禁用编排。可使用静态编排，这是一个可选变通方法。
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider 不支持容器部署 (createContainerEntityManagerFactory)。请改为使用 org.eclipse.persistence.jpa.PersistenceProvider。
+
+28027=已尝试使用 PersistenceUnit [{0}]，但没有提供用于定义该持久性单元的任何捆绑。
+
+28028=未能针对持久性单元属性 [{1}] 实例化类实例 [{0}]，请确保构造函数已正确定义。
+
+28029=PersistenceUnit [{0}] 尝试使用 sessions.xml（指定 eclipselink.sessions-xml 属性）并且尝试作为组合体（指定带有值 true 的 eclipselink.composite-unit 属性）。这些方式不兼容。
+
+28030=PersistenceUnit [{0}] 指定带有值 true 的 eclipselink.composite-unit.member 属性。这意味着它无法单独使用，但是仅作为组合体成员。
+
+28031=缺少必需的属性 [{0}]。
+
+28032=未能使用 doPrivileged 创建临时类装入器。
+

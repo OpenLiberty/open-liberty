@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLMarshalExceptionResource_ru.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25001=Недопустимая строка XPath: {0}
+
+25002=Не удалось получить целочисленный индекс из этой строки XPath: {0}
+
+25003=Ошибка при упаковке объекта
+
+25004=Ошибка при распаковке документа
+
+25005=Ошибка при проверке объекта
+
+25006=Не задан корневой элемент по умолчанию для XMLDescriptor, связанного с {0}
+
+25007=В проекте не найден дескриптор класса {0}.  В случае JAXB, если контекст JAXBContext первоначально загружается с помощью TypeMappingInfo[], необходимо вызвать метод упаковки, принимающий входящий параметр TypeMappingInfo.
+
+25008=В проекте не найден дескриптор с корневым элементом по умолчанию {0}
+
+25010=Не задана ссылка на схему для XMLDescriptor, связанного с {0}
+
+25011=Обнаружен аргумент null
+
+25012=Ошибка при определении схемы XML.
+
+25013=Ошибка при попытке настроить схемы.
+
+25014=Ошибка при попытке создать экземпляр платформы схемы.
+
+25015=Ошибка при попытке распознать URI пространства имен для {0}. В дескрипторе не задан распознаватель пространства имен.
+
+25016=В распознавателе пространства имен не найдено пространство имен для префикса {0}.
+
+25017=В JAXBTypesafeEnumConverter необходимо задать enumClass или enumClassName.
+
+25018=Метод fromString не существует в классе перечисления {0}, либо его невозможно вызвать.
+
+25019=Класс перечисления {0} не найден.
+
+25020=Метод "getResult()" не следует вызывать до вызова события "endDocument()".
+
+25021=Класс {0} недопустим для SwaRef. Должно быть jakarta.activation.DataHandler.
+
+25022=Не удалось упаковать изображение. Кодировщик для mimeType {0} недоступен.
+
+25023=При распаковке элемента, связанного с атрибутом {0}, не найден дескриптор.
+
+25024=Ошибка при создании экземпляра класса UnmappedContentHandler {0}.
+
+25025=Класс UnmappedContentHandler {0}, заданный в XMLUnmarshaller, должен реализовывать org.eclipse.persistence.oxm.unmapped.UnmappedContentHandler.
+
+25026=Не удалось обновить узел [{0}]: объект не найден в кэше.
+
+25027=Не удалось получить вложение с cid {0}, так как не задан AttachmentUnmarshaller.
+
+25028=Не найден дескриптор ссылки для связи {1}, так как задано неизвестное значение xsi:type: {0}.
+
+25029=Класс [{1}] попытался присвоить URI пространства имен [{2}] для префикса [{0}], однако его родительский класс [{3}] уже присвоил URI пространства имен [{4}].
+
+25030=Ошибка при вызове метода {0} в пользовательском NamespacePrefixMapper: {1}.
+
+25031=Ошибка при обработке преобразователя префикса пространства имен: {1}. Метод {0} не найден.
+
+25032=Ошибка при вызове метода {0}в пользовательском CharacterEscapeHandler: {1}.
+
+25033=Ошибка при обработке CharacterEscapeHandler: {1}. Метод {0} не найден.
+
+25034=Ошибка при вызове метода {0} в пользовательском IDResolver: {1}.
+
+25035=Ошибка при обработке IDResolver: {1}. Метод {0} не найден.
+
+25036=Пользовательский IDResolver {1} не поддерживает несколько ИД XML {0}.  В случае использования нескольких ИД пользовательский IDResolver должен являться подклассом org.eclipse.persistence.jaxb.IDResolver.
+
+25037=В графе объектов обнаружен цикл.  Это приведет к возникновению бесконечного цикла: {0}
+
+25038=DOMPlatform не поддерживается с типом содержимого application/json.
+
+25039=Возникла ошибка при распаковке данных из {0}
+
+25040=Объект типа {0} с ИД {1} не найден.
+
+25041=Группа атрибутов {0} не определена для класса {1}.
+
+25042=Свойство переменной {0} в классе {1} не должно иметь значение null.
+

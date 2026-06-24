@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource_ko.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=순서 번호 메커니즘을 유지보수하고 실제로 오브젝트에서 순서 번호를 설정하는 데 걸리는 시간을 포함합니다.
+
+cache_hits=오브젝트가 캐시에서 발견된 횟수
+
+cache_misses=오브젝트가 캐시에서 발견되지 않은 횟수
+
+caching=캐시에서 오브젝트를 추가하고 검색하거나 제거하는 데 걸린 시간 포함
+
+change_set_not_processed=오브젝트가 캐시에 없으므로 버린 ObjectChangeSet의 수
+
+change_set_processed=ObjectChangeSet의 수가 캐시에 있음
+
+client_session_count=ClientSession의 수가 로그인 되었음
+
+connect_call=작성된 총 연결 호출 수
+
+connection=데이터 소스에서 연결하고 재연결하거나 연결을 끊는 등 연결을 관리하는 데 소요된 시간
+
+connection_in_used=임의의 독점 ConnectionPool(쓰기, ExclusiveRead)에 대해 풀마다 사용 중인 연결 수
+
+connection_ping=사용 가능 여부를 판별하기 위해 데이터베이스 연결을 테스트하는 데 소요된 시간입니다.
+
+database_execute=JDBC 명령문에 대한 호출에 소요된 시간이 close, executeUpdate, executeQuery에 대한 호출에 소요된 시간을 포함함
+
+deleted_object=ObjectChangeSet의 identityMap에서 오브젝트를 제거해야 함
+
+descriptor_event=DescriptorEvent를 실행하는 데 소요된 시간
+
+disconnect_call=작성된 총 연결 끊기 호출 수
+
+distributed_merge=로컬 공유 캐시에 원격 트랜잭션 변경을 병합하는 데 소요된 시간입니다. 캐시 동기화가 사용되는 경우 나타남
+
+jts_aftercompletion=JTS afterCompletion(오브젝트 상태) 메소드에 소요된 시간
+
+jts_beforecompletion=JTS beforeCompletion() 메소드에 소요된 시간
+
+logging=TopLink 활동을 로그하는 데 소요된 시간
+
+merge_time=공유 캐시에 변경을 병합하는 데 소요된 시간입니다.
+
+object_building=데이터베이스 행에서 지속적 오브젝트를 빌드하는 데 소요된 시간
+
+optimistic_lock=처리된 낙관적 잠금 예외의 수
+
+query=조작에 소요된 총 시간: {0}
+
+query_misc=조작에 소요된 총 시간: {0}  이는 임의의 조회 명사에 포함되지 않은 특수 조작용입니다(예: 일괄처리 쓰기).
+
+query_prepareation=조회 준비 시간
+
+rcm_message_received=RCM을 통해 수신된 메시지 수
+
+rcm_message_sent=RCM을 통해 전송된 메시지 수
+
+rcm_status=[구성 안됨, 시작됨, 중지됨] 중 하나
+
+remote_change_set=원격 시스템에서 수신되어 처리된 변경 세트의 수
+
+row_fetch=jdbc ResultSet에서 레코드 오브젝트를 빌드하는 데 소요된 시간입니다. 일반 SQL 호출 및 스토어드 프로시저 호출을 포함합니다.
+
+session_event=SessionEvent를 실행하는 데 소요된 시간
+
+session_login_time=세션이 로그된 시간
+
+session_name=세션 이름
+
+sql_generation=SQL을 생성하는 데 소요된 시간입니다. TopLink 표현식의 경우 SQL에 표현식을 변환하는 데 소요된 시간입니다.
+
+sql_prepare=명령문을 준비하는 JDBC에 소요된 시간입니다. 또한 연결과 연관된 상호작용을 작성하고 입력 및 출력 레코드 오브젝트를 작성하는 EIS에 소요된 시간을 포함합니다.
+
+unitofwork_commit=UnitOfWork의 커미트 프로세스 측정
+
+unitofwork_commits=UnitOfWork 커미트의 수
+
+unitofwork_count=작성된 총 UnitOfWork 오브젝트 수의 개수
+
+unitofwork_register=registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy에 소요된 시간 포함
+
+unitofwork_rollback=롤백된 UnitOfWork 커미트의 수
+
+wrapping=CMP 및 BMP Bean 둘 다 랩핑하는 데 소요된 시간
+

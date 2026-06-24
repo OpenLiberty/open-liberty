@@ -1,0 +1,443 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/DescriptorExceptionResource_fr.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+1=L''attribut [{0}] n''est pas déclaré comme type ValueHolderInterface, mais son mappage utilise l''adressage indirect.
+
+10=Aucun nom de zone n''est défini pour ce mappage.
+
+100=Une méthode a déclenché une exception.
+
+101=La méthode sous-jacente a déclenché une exception.
+
+102=La méthode [{0}] a déclenché une exception.
+
+103=Problème lors de l''extraction de la classe de la ligne [{0}], avec la méthode statique [{1}], avec le paramètre (DatabaseRow).  Une exception a été déclenchée.
+
+104=Problème lors de la création d''une nouvelle instance avec la méthode de création [{0}].  La méthode de création a déclenché une exception.
+
+105=La méthode de rappel [{0}] du descripteur sous-jacent, avec le paramètre (Session), a déclenché une exception.
+
+106=La méthode [{0}] sur l''objet génère une exception. {2}Argument : [{1}]
+
+108=Impossible de trouver une valeur dans le mappage d''indicateur de classe du descripteur parent [{0}].
+
+109=Aucune zone de verrou en écriture ne doit être définie dans ce descripteur car il s''agit d''un descripteur enfant. Il hérite de la zone de verrou en écriture de son parent.
+
+11=Les informations de clé externe de ce mappage sont définies de manière incorrecte.
+
+110=Descripteur manquant pour la classe [{0}].
+
+111=Plusieurs noms de zones de clé primaire de table doivent être entièrement qualifiés.
+
+112=Une seule table peut être ajoutée avec setTableName(String). Utilisez addTableName(String) pour ajouter plusieurs tables à un descripteur.
+
+113=Le constructeur était inaccessible.
+
+114=Problème lors de la création d''une nouvelle instance avec la méthode de création [{0}].  La méthode de création n''est pas accessible.
+
+115=Aucune valeur de conversion n''a été fournie pour l''attribut [{0}].
+
+116=Aucune valeur de conversion n''a été fournie pour la valeur [{0}] dans la zone [{1}].
+
+118=L''objet [{0}] ne doit pas comporter des mappages en lecture seule dans ses zones de verrou en écriture.
+
+119=Les mappages de l''objet [{0}] dans ses zones de verrou en écriture doivent être en lecture seule.
+
+12=Les descripteurs doivent utiliser une mappe d''identité afin d''utiliser l''option de vérification d''existence "Check Cache".
+
+120=La clé de requête [{0}] est définie dans le descripteur parent [{1}], mais pas dans le descripteur enfant [{2}].
+
+122=setExistenceCheck() avec argument [{0}] n''est pas compris.
+
+125=Le mappage de l''attribut [{0}] utilise l''adressage indirect, il doit donc être initialisé dans un nouveau ValueHolder.  Actuellement, la valeur est : [{1}].
+
+126=Aucune sous-classe ne correspond à cette classe[{0}] pour ce mappage d''agrégat avec héritage.
+
+127=La méthode get pour l''attribut [{0}] ne renvoie pas une ValueHolderInterface, mais le mappage utilise l''adressage indirect.
+
+128=La méthode get de l''attribut [{0}] renvoie une ValueHolderInterface, mais le mappage n''utilise pas l''adressage indirect.
+
+129=La méthode set pour l''attribut [{0}] ne prend pas ValueHolderInterface comme paramètre, mais le mappage utilise l''adressage indirect.
+
+13=La variable d''instance [{0}] dans l''objet [{1}] est inaccessible.
+
+130=La méthode set de l''attribut [{0}] prend ValueHolderInterface comme paramètre, mais le mappage n''utilise pas l''adressage indirect.
+
+131=La méthode get de l''attribut [{0}] doit renvoyer un vecteur (ou un type qui implémente une mappe ou une collection, si Java 2 est utilisé).
+
+133=La méthode set de l''attribut [{0}] doit prendre un vecteur comme paramètre (ou un type qui implémente une mappe ou une collection, si Java 2 est utilisé).
+
+135=La relation de clé externe de table multiple fait référence à une table inconnue [{0}].
+
+138=L''attribut [{0}] est de type [{1}] mais le mappage utilise l''adressage indirect transparent (chargement lent), ce qui implique qu''il doit être une superclasse de [{2}].
+
+139=La méthode get de l''attribut [{0}] renvoie [{1}] mais le mappage utilise l''adressage indirect transparent (chargement lent), ce qui implique qu''il doit être une superclasse de [{2}].
+
+14=Problème lors du clonage de l''objet [{0}].  la méthode clone [{1}] n''est pas accessible.
+
+140=La méthode set de l''attribut [{0}] prend [{1}] mais le mappage utilise l''adressage indirect transparent (chargement lent), ce qui implique qu''il doit être une superclasse de [{2}].
+
+141=La zone [{0}] n''est pas présente dans la table [{1}] de la base de données.
+
+142=La table [{0}] n''est pas présente dans la base de données.
+
+143=Le vecteur de tri d''insertion de table multiple spécifié, [{0}], comporte plus ou moins de tables que ce qui est spécifié dans le descripteur. {2}Toutes les tables [{1}] doivent être incluses dans le vecteur de tri d''insertion.
+
+144=L''adressage indirect transparent peut uniquement être utilisé avec CollectionMappings.
+
+145=La classe de conteneur indirecte [{0}] doit implémenter le constructeur [{1}] avec le paramètre (ValueHolderInterface).
+
+146=La classe de conteneur indirecte [{0}] n''a pas pu être instanciée avec le constructeur {1}(ValueHolderInterface).
+
+147=La règle de conteneur [{0}] doit uniquement être utilisée dans JDK 1.1.x.  Elle a été instanciée pour {1}].
+
+148=La règle de conteneur [{0}] n''est pas compatible avec l''adressage indirect transparent.
+
+149=Aucun objet NoIndirectionPolicy ne doit recevoir ce message.
+
+15=Cette classe ne définit aucun constructeur par défaut, lequel est requis par EclipseLink.
+
+150=Le mappage de l''attribut [{0}] utilise l''adressage indirect transparent de sorte que l''attribut [{0}] doit être initialisé sur un conteneur approprié.  Actuellement, la valeur est [{1}]. {2} -  Doit être une instance d''un implémenteur de collection ou de mappe.
+
+151=L''opération [{0}] n''est pas valide pour ce mappage.
+
+152=L''opération [{1}] n''est pas valide pour cette règle d''adressage indirect [{0}].
+
+153=Le descripteur de référence pour [{0}] doit être défini sur un descripteur de collection d''agrégat.
+
+154=La classe de conteneur d''adressage indirect [{0}] n''implémente pas IndirectContainer.
+
+155=Ce mappage n''inclut pas une zone de clé externe liée à la zone de clé principale [{0}].
+
+156=Le nom de structure n''est pas défini pour ce mappage.
+
+157=Les descripteurs normaux ne prennent pas en charge les extensions non relationnelles.
+
+158=La classe parent de ce descripteur a été définie sur elle-même.
+
+159=L''adressage indirect de proxy est disponible uniquement sur les machines virtuelles conformes à JDK 1.3 ou version suivante.
+
+16=La méthode de rappel de descripteur [{0}], avec le paramètre (DescriptorEvent), est inaccessible.
+
+160=L''attribut [{0}] de la classe [{1}] est saisi sous la forme [{2}], ce qui n''était pas spécifié dans la liste des interfaces fournie dans la méthode useProxyIndirection(). {4}Les interfaces valides sont : [{3}].
+
+161=La méthode [{0}] de la classe [{1}] renvoie une valeur de type [{2}], ce qui n''était pas spécifié dans la liste des interfaces fournie dans la méthode useProxyIndirection(). {4}Les interfaces valides sont : [{3}].
+
+162=La méthode [{0}] de la classe [{1}] prend un paramètre de type [{2}], ce qui n''était pas spécifié dans la liste des interfaces fournie dans la méthode useProxyIndirection().{4}Les interfaces valides sont : [{3}].
+
+163=La classe d''attributs de ce mappage ne correspond pas à la classe de collection.  [{1}] ne peut pas être affecté à [{0}].
+
+164=La méthode d''amendement [{1}], dans la classe d''amendement [{0}], n''est pas valide, n''est pas publique, ou elle est introuvable. {2}Les méthodes d''amendement de descripteur doivent être déclarées "public static void" avec (ClassDescriptor) comme seul paramètre.
+
+165=La méthode d''amendement de ce descripteur [{1}] dans la classe d''amendement [{0}] a déclenché une exception.
+
+166=Il n''y a pas de mappage pour l''attribut [{0}].
+
+167=Aucun constructeur valide n''a été trouvé pour la classe de conteneur d''adressage indirect [{0}].
+
+168=Problème lors de la création d''une nouvelle instance avec le constructeur par défaut.  La constructeur par défaut a déclenché une exception.
+
+169=Problème lors de la création d''une nouvelle instance de fabrique avec le constructeur par défaut.  La constructeur par défaut a déclenché une exception.
+
+17=Tentative d''accès à la méthode [{0}] sur l''objet [{1}].  La méthode sous-jacente est inaccessible.
+
+170=Problème (accès illégal) lors de la création d''une nouvelle instance de fabrique avec le constructeur par défaut.
+
+171=La classe de fabrique ne définit pas un constructeur par défaut public, ou le constructeur a généré une exception.
+
+172=Constructeur de fabrique introuvable.
+
+173=Le constructeur de fabrique était inaccessible.
+
+174=Problème lors de la création de la fabrique.  la méthode de création [{0}] n''est pas accessible.
+
+175=Problème lors de la fabrique avec la méthode de création [{0}].  La méthode de création a déclenché une exception.
+
+176=Problème lors de la création de la fabrique avec la méthode de création [{0}].  La méthode de création n''est pas accessible.
+
+177=Un mappage est manquant pour l''attribut : [{0}].
+
+178=Impossible de trouver le mappage pour l''attribut [{0}] dans le bean entity [{1}]. L''attribut doit être mappé.
+
+179=L''attribut, [{0}], utilise la maintenance de relation bidirectionnelle, mais il comporte un ContainerPolicy, [{1}] qui ne la prend pas en charge.  L''attribut doit être mappé avec un type de collection différent.
+
+18=Accès de méthode illégal dans un mappage de transformation avec un ValueHolder.
+
+181=La classe AttributeTransformer, [{0}], est introuvable.
+
+182=La classe FieldTransformer, [{0}], est introuvable.
+
+183=La classe, [{0}], ne peut pas être utilisée comme AttributeTransformer.
+
+184=La classe, [{0}], ne peut pas être utilisée comme FieldTransformer.
+
+185=ReturningPolicy contient une zone, [{0}], avec deux types différents : [{1}] et [{2}].
+
+186=ReturningPolicy contient une zone, [{0}], ajoutée deux fois, avec addInsertField et addInsertFieldReturnOnly.
+
+187=ReturningPolicy contient une zone, [{0}] de type [{1}], mais la même zone dans le descripteur est de type [{2}].
+
+188=ReturningPolicy contient une zone non mappée, [{0}] qui requiert un type.
+
+189=ReturningPolicy contient une zone mappée, [{0}] qui requiert un type.
+
+19=Accès illégal lors de l''appel de la méthode d''attribut sur un mappage de transformation.  La méthode sous-jacente est inaccessible.
+
+190=ReturningPolicy contient une zone, [{0}], mappée avec [{1}], mappage qui n''est pas pris en charge.
+
+191=ReturningPolicy contient une zone, [{0}], qui n''est pas prise en charge : il s''agit d''une zone de séquence, d''un indicateur de type de classe, ou d''une zone utilisée pour le verrouillage.
+
+192=ReturningPolicy contient une zone, [{0}], mais l''élément personnalisé [{1}] ne la génère pas en sortie.
+
+193=Il n''y a pas d''ensemble [{0}] personnalisé, mais ReturningPolicy contient une ou plusieurs zones à renvoyer et [{1}] ne prend pas en charge la génération d''appel lors du renvoi.
+
+194=La méthode d''extraction de classe ,[{0}], doit être une méthode statique dans la classe du descripteur.
+
+195=La classe partagée {1} ne doit pas référencer la classe isolée {0}.
+
+196=UpdateAllFields n''a pas été défini ou a été défini sur false.  Lors de l''utilisation de CMPPolicy.setForceUpdate(true), vous devez aussi appeler CMPPolicy.setUpdateAllFields(true)
+
+197=Le mappage [{0}] n''est pas de type approprié pour ce descripteur
+
+198=Pour pouvoir utiliser ObjectChangeTrackingPolicy ou AttributeChangeTrackingPolicy, {0} doit implémenter l''interface ChangeTracker.
+
+199=Pour pouvoir utiliser le groupe d''extraction, la classe de domaine ({0}) doit implémenter l''interface FetchGroupTracker.
+
+2=L''attribut [{0}] est déclaré en tant que type ValueHolderInterface, mais son mappage n''utilise pas l''adressage indirect.
+
+20=La méthode [{0}] est inaccessible.
+
+200=Tentative d''enregistrement d''un objet avec adressage indirect inactif comme nouvel objet.  L''objet a peut-être été supprimé ou retiré du cache lors d''une fusion d''un clone sérialisé.  Il s''agit d''une violation à accès concurrent, une stratégie de verrouillage peut être nécessaire.
+
+201=Il y a eu tentative de création d''un objet dans le cache de session, mais le descripteur est marqué comme isolé dans l''unité d''oeuvre, il ne devrait donc jamais être accessible à l''extérieur d''une unité d''oeuvre.
+
+202=Une erreur interne s''est produite lors de l''accès à l''objet de clé principale [{0}].
+
+203=Une erreur interne s''est produite lors de l''accès à la méthode [{1}] sur la classe [{0}].
+
+204=Tri de table d''insertion en contradiction avec les clés externes de plusieurs tables. D''après la dernière table, [{0}] devrait être inséré avant la table [{1}].
+
+205=Le classement d''insertion de table a une dépendance cyclique entre les tables [{0}] et [{1}].
+
+206=Le classement d''insertion de table a une dépendance cyclique entre les tables entre au moins deux ou trois tables.
+
+207=Le classement d''insertion de table est incorrect : la table [{0}] mappée au parent est spécifiée comme étant insérée après la table [{1}] qui est mappée à l''enfant.
+
+208=Vous essayez de définir un convertisseur avec le nom de classe [{1}] sur un mappage non direct [{0}].  Seuls les mappages directs sont autorisés à avoir des convertisseurs.  Cela se produit généralement lors d''une tentative de définition d''un convertisseur de clé sur un DirectMapMapping avec une clé non directe.
+
+209=Ce descripteur contient un mappage avec un DirectMapMapping et sans zone de clé définie.
+
+21=Problème lors de l''extraction de classe de la ligne [{0}].  La méthode statique ,[{1}], avec le paramètre (DatabaseRow), n''est pas accessible.
+
+210=[{0}] a une zone de classement de liste définie, mais l''attribut n''implémente pas de liste.
+
+211=[{0}] a une zone de classement de liste défini et le mode de validation de la zone de classement de liste est CORRECTION, ce qui implique que IndirectList puisse être affecté à l''attribut.
+
+212=La zone de classement de liste spécifiée pour [{0}] comporte une table incorrecte [{1}]. {2} doit être utilisé à la place.
+
+213={0} requiert que toutes les zones de clé externe cible appartiennent à la même table, mais plusieurs ont été détectées : {1}.
+
+214={0} indique une table de relations, laquelle n''est pas compatible avec la méthode addForeignKey(Name), ou elle utilise à la place les méthodes addSourceRelationKeyField(Name) et addTargetRelationKeyFieldName.
+
+215={0} doit comporter un RelationTableMechanism non nul.
+
+216=CacheKeyType ne peut pas être ID_VALUE pour une clé primaire composée.
+
+217=XPath non valide pour for XMLDirectMapping/XMLCompositeDirectCollectionMapping. XPath doit contenir un symbole @ pour les attributs ou se terminer par /text() pour des noeuds de texte. Par exemple For : "@name" or "name/text()"
+
+218=Une exception NullPointerException se serait produite lors de l''accès à une méthode weaved _vh_ [{0}] inexistante.  La classe n''a pas été correctement tramée. Pour les déploiements EE, consultez le classement du module dans le descripteur de déploiement application.xml et vérifiez que le module contenant l''unité de persistance précède tout autre module qui l''utilise.
+
+219=Les critères supplémentaires de [{1}] ne sont pas autorisés au sein d''une hiérarchie d''héritage utilisant des vues.
+
+22=Problème lors de la création d''une nouvelle instance.  la méthode de création [{0}] n''est pas accessible.
+
+220=Règle de partitionnement manquante pour le nom {0}].
+
+221=Zone SerializedObjectPolicy non définie.
+
+222=Une exception s''est produite lors d''une tentative d''obtention d''un instance de classe de clé primaire.
+
+23=La méthode de rappel de descripteur, [{0}], avec le paramètre (Session), est inaccessible.
+
+24=La variable d''instance [{0}] dans l''objet [{1}] est inaccessible. {3}Argument : [{2}]
+
+25=La méthode [{0}] avec l''argument [{1}] n''est pas accessible.
+
+26=Tentative d''obtention d''une valeur pour la variable d''instance [{0}] de type [{1}] depuis l''objet [{2}].  L''objet spécifié n''est pas une instance de la classe ou de l''interface qui déclare la zone sous-jacente.
+
+27=Tentative d''appel de la méthode [{0}] sur l''objet [{1}].  Le nombre de paramètres réels et formels diffère, ou une conversion de désencapsulage a échoué.
+
+28=Argument illégal lors de l''instanciation d''un proxy basé sur une méthode dans un mappage de transformation.
+
+29=Le nombre de paramètres réels et formels diffère, ou une conversion de désencapsulage a échoué.
+
+30=Le nombre de paramètres réels et formels diffère pour la méthode [{0}], ou une conversion de désencapsulage a échoué.
+
+31=Le nombre de paramètres réels et formels pour la méthode de rappel de descripteur [{0}] diffère, ou une conversion de désencapsulage a échoué.
+
+32=Tentative de définition de la valeur [{0}] pour la variable d''instance [{1}] de type [{2}] dans l''objet.  L''objet spécifié n''est pas une instance de la classe ou de l''interface qui déclare la zone sous-jacente, ou une conversion de désencapsulage a échoué.
+
+33=Tentative d''appel de [{0}] sur l''objet avec la valeur [{1}].  Le nombre de paramètres réels et formels diffère, ou une conversion de désencapsulage a échoué.
+
+34=Cette classe ne définit pas un constructeur par défaut public, ou le constructeur a généré une exception.
+
+35=Evénement non valide.
+
+36=Code événement non valide [{0}].
+
+37=Code événement de descripteur non valide [{0}].
+
+38=Echec du constructeur de mappe d''identité car une mappe d''identité non valide a été spécifiée.
+
+39=Ce descripteur n''indique pas de classe Java.
+
+40=Descripteur manquant pour [{0}].  Il n''a probablement pas été ajouté à la session.
+
+41=Un mappage non en lecture seule doit être défini pour la zone de numéro de séquence.
+
+43=Classe manquante pour la valeur de zone d''indicateur [{0}] de type [{1}].
+
+44=Zone d''indicateur de classe manquante sur la ligne de base de données [{0}].
+
+45=Mappage manquant pour la zone [{0}].
+
+46=Un mappage non en lecture seule doit être défini pour la zone de clé primaire [{0}].
+
+47=Le mappage de clé à plusieurs tables doit être spécifié lorsqu''une jointure à plusieurs tables personnalisée est utilisée.
+
+48=Plusieurs mappages inscriptibles existent pour la zone [{0}].  Un seul peut être défini comme inscriptible, tous les autres doivent être spécifiés en lecture seule.
+
+49=Aucun nom de méthode de transformation d''attribut n''est spécifié pour ce mappage.
+
+50=Aucun nom de zone n''est défini pour ce mappage.
+
+51=Aucune clé externe n''a été spécifiée pour ce mappage.
+
+52=Aucune clé de référence n''a été spécifiée pour ce mappage.
+
+53=Le nom de table de relation n''est pas défini pour ce mappage.
+
+54=Aucune clé de relation de source n''est spécifiée pour ce mappage.
+
+55=La méthode de rappel de descripteur [{0}] est introuvable.  Elle doit prendre une session ou un DescriptorEvent comme argument.
+
+56=La méthode [{0}] avec les paramètres (Record) ou (Record, Session) est introuvable.
+
+57=Constructeur inaccessible.
+
+58=La méthode [{0}] avec les paramètres () ou (Session) est introuvable.
+
+59=La variable d''instance [{0}] n''est pas définie dans la classe de domaine [{1}], ou elle n''est pas accessible.
+
+6=Nom d''attribut manquant.
+
+60=La méthode [{0}] ou [{1}] n''est pas définie dans l''objet [{2}].
+
+61=La méthode d''extraction de classe statique [{0}], avec le paramètre (Record), n''existe pas, ou n''est pas accessible.
+
+62=La méthode clone ,[{0}], sans paramètres, n''existe pas, ou n''est pas accessible.
+
+63=La méthode de création d''instance,[{0}], sans paramètres, n''existe pas, ou n''est pas accessible.
+
+64=Aucune clé externe cible n''a été spécifiée pour ce mappage.
+
+65=Aucune clé de relation cible n''a été spécifiée pour ce mappage.
+
+66=Impossible de désérialiser l''objet du tableau d''octets.
+
+67=Impossible de sérialiser l''objet dans le tableau d''octets.
+
+68=La valeur d''un agrégat dans l''objet [{0}] est nulle.  Les valeurs nulles ne sont pas autorisées pour les mappages d''agrégat sauf si "Allow Null" est spécifié.
+
+69=Une exception NullPointerException a été générée lors de l''extraction d''une valeur de la variable d''instance [{0}] dans l''objet [{1}].
+
+7=L''attribut [{0}] doit être un type qui implémente {1}.
+
+70=Une exception NullPointerException a été générée lors de l''extraction d''une valeur via la méthode [{0}] dans l''objet [{1}].
+
+71=Une exception NullPointerException the été générée lors de la définition de la valeur de la variable d''instance [{0}] dans la valeur [{1}].
+
+72=Une exception NullPointerException a été générée lors de la définition d''une valeur via la méthode [{0}] avec l''argument [{1}].
+
+73=Descripteur introuvable pour la classe parent [{0}].
+
+74=Les zones de clé primaire ne sont pas définies pour ce descripteur.
+
+75=La classe de référence n''est pas spécifiée pour ce descripteur.
+
+77=Le descripteur de référence pour [{0}] doit être défini comme étant un descripteur d''agrégat.
+
+78=La zone de référence [{0}] pour ce mappage doit exister dans la table de référence.
+
+79=La table de référence n''est pas spécifiée pour ce mappage.
+
+8=Le descripteur [{0}] a été défini pour utiliser l''héritage, mais une zone d''indicateur de classe n''a pas été définie. {2}Lors de l''utilisation d''un héritage, une zone d''indicateur de classe ou une méthode d''extraction de classe doit être définie. {2}Descripteur parent : [{1}]
+
+80=La zone de clé de relation [{0}] pour ce mappage doit exister dans la table de relation.
+
+81=La méthode [{0}] doit retourner le type de l''attribut mappé, non annulé.
+
+82=La méthode de rappel de descripteur [{0}], avec le paramètre (DescriptorEvent), n''est pas accessible.
+
+83=La méthode de rappel de descripteur [{0}], avec le paramètre (Session), n''est pas accessible.
+
+84=La méthode [{0}], avec les paramètres (Record) ou (Record, Session), n''est pas accessible.
+
+85=La méthode [{0}], avec les paramètres () ou (Session), n''est pas accessible.
+
+86=La variable d''instance [{0}] dans la classe [{1}] n''est pas accessible.
+
+87=Les méthodes [{0}], [{1}] dans l''objet [{2}] ne sont pas accessibles
+
+88=La méthode d''extraction de classe statique [{0}], avec le paramètre (Record), n''est pas accessible.
+
+89=La méthode clone [{0}], sans paramètres, n''est pas accessible.
+
+9=Aucun nom de zone direct n''est défini pour ce mappage.
+
+90=La méthode de création d''instance [{0}], sans paramètres, n''est pas accessible.
+
+91=Pour utiliser des ID générés par séquence, les propriétés "Sequence Number Name" et "Sequence Number Field Name" doivent être définies pour ce descripteur.
+
+92=La taille de la clé primaire de la cible ne correspond pas à la taille de la clé externe.
+
+93=La table [{0}] n''est pas présente dans ce descripteur.
+
+94=Un nom de table doit être défini pour les descripteurs.
+
+96=Le nombre de clés cibles ne correspond pas au nombre de clés sources.
+
+97=Problème lors du clonage de l''objet [{0}].  La méthode clone [{1}] a déclenché une exception.
+
+98=La méthode de rappel de descripteur sous-jacente [{0}], sans paramètre (DescriptorEvent), a déclenché une exception.
+
+99=La méthode [{0}] sur l''objet [{1}] a déclenché une exception.
+

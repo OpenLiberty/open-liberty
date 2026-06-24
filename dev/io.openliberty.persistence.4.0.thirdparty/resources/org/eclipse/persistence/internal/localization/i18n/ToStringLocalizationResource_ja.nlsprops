@@ -1,0 +1,185 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/ToStringLocalizationResource_ja.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+begin_profile_of=開始するプロファイル
+
+class=クラス
+
+commit_depth=(コミットの深さ = {0})
+
+connected=接続済み
+
+connector=使用されるポート番号
+
+context=コンテキスト:    
+
+database_name=データベース名
+
+datasource=データ・ソース
+
+datasource_URL=データ・ソース URL
+
+datasource_name=データ・ソース名
+
+depth_reset_key=(深さ = {0}、リセット・キー = {1}、リセット・バージョン = {2})
+
+disconnected=切断
+
+empty_commit_order_dependency_node=CommitOrderDependencyNode は空です
+
+end_profile=プロファイルの終了
+
+error_printing_expression=式の表示中のエラー
+
+lazy=遅延
+
+local_time=現地時間
+
+login=ログイン
+
+longestTime=最長時間
+
+min_max=(最小接続数 = {0}、最大接続数 = {1})
+
+mulitple_files=複数のファイル
+
+multiple_readers=複数のリーダー
+
+name=名前: 
+
+nest_level=(ネスト・レベル = {0})
+
+no_files=ファイルなし
+
+no_streams=ストリームなし
+
+node=ノード ({0})
+
+non_lazy=遅延なし
+
+not_instantiated=非インスタンス化
+
+number_of_objects=オブジェクト数
+
+objects_second=オブジェクト数/秒
+
+platform=プラットフォーム
+
+pooled=プール済み
+
+profile=プロファイル
+
+profiling_time=プロファイル作成時間
+
+reader=リーダー
+
+schema=スキーマ: 
+
+sdo_classgenerator_usage_help_1of8={0} の使用法: org.eclipse.persistence.sdo.helper.{0} [-オプション]
+
+sdo_classgenerator_usage_help_2of8=オプション:
+
+sdo_classgenerator_usage_help_3of8=-help                        ヘルプ・メッセージ・テキストを表示します
+
+sdo_classgenerator_usage_help_4of8=-sourceFile <FileName>       入力スキーマ・ファイル (必要な場合)
+
+sdo_classgenerator_usage_help_5of8=-targetDirectory <DirName>   Java ソースを生成するディレクトリー (オプション)
+
+sdo_classgenerator_usage_help_6of8=-logLevel <level int>        ロギング・レベルを整数値で指定します (8=OFF、7=SEVERE、6=WARNING、5=INFO、4=CONFIG、3=FINE、2=FINER(デフォルト)、1=FINEST、0=ALL)。
+
+sdo_classgenerator_usage_help_7of8=-noInterfaces                インターフェース・クラスを生成しません
+
+sdo_classgenerator_usage_help_8of8=-noImpls                     実装クラスを生成しません
+
+sdo_classgenerator_usage_missing_sourcefile={0} -sourceFile パラメーターが指定されていませんが、必須です。
+
+sdo_classgenerator_usage_missing_sourcefile_value={0} -sourceFile の値が指定されていませんでした。
+
+sdo_classgenerator_usage_missing_targetdir={0} -targetDirectory の値が指定されていませんでした。
+
+server_name=サーバー名
+
+shortestTime=最短時間
+
+staticweave_commandline_help_message_10of19=-log
+
+staticweave_commandline_help_message_11of19=ロギング・ファイルを指定します。
+
+staticweave_commandline_help_message_12of19=-loglevel
+
+staticweave_commandline_help_message_13of19=ロギング・レベルを整数値で指定します (8=OFF、7=SEVERE、6=WARNING、5=INFO、4=CONFIG、3=FINE、2=FINER(デフォルト)、1=FINEST、0=ALL)。
+
+staticweave_commandline_help_message_14of19=クラスパスには、ソース内のクラスをロードするのに必要なすべてのクラスを含める必要があります。
+
+staticweave_commandline_help_message_15of19=織り込みは、ソースとターゲットが同じロケーションを指している場合に所定の位置で実行されます。  所定の位置での織り込みは、ディレクトリー・ベースのソースでのみ適用可能です。
+
+staticweave_commandline_help_message_16of19=例:
+
+staticweave_commandline_help_message_17of19=C:oo-source.jar に含まれるすべてのエンティティーを、C:oo-containing-persistence-xml.jar に含まれる persistence.xml と連結して、
+
+staticweave_commandline_help_message_18of19=C:oo-target.jar に出力するには、以下のようにします。
+
+staticweave_commandline_help_message_19of19=StaticWeave -persistenceinfo C:oo-containing-persistence-xml.jar -classpath C:classpath1;C:classpath2 C:oo-source.jar C:oo-target.jar
+
+staticweave_commandline_help_message_1of19=使用法: StaticWeave [オプション] ソース ターゲット
+
+staticweave_commandline_help_message_2of19=オプション:
+
+staticweave_commandline_help_message_3of19=-classpath クラスパス
+
+staticweave_commandline_help_message_4of19=ユーザー・クラスパスを設定します。  区切り文字は、Windows では「;」を、UNIX では「:」を使用します。
+
+staticweave_commandline_help_message_5of19=-persistenceinfo
+
+staticweave_commandline_help_message_6of19=META-INF/persistence.xml の保管場所を明示的に指定します。  META-INF/persistence.xml のルートでなければなりません。
+
+staticweave_commandline_help_message_7of19=このオプションは、通常、persistence.xml 内の <jar-file> によって参照されるファイルを織り込む際に、メイン JAR を指定するために使用します。
+
+staticweave_commandline_help_message_8of19=-persistencexml
+
+staticweave_commandline_help_message_9of19=パーシスタンス・ユニットのルートと相対的な位置にある persistence.xml のロケーションを指定します (META-INF/persistence.xml 以外の場所である場合)。
+
+staticweave_processor_dir_not_created={0} ディレクトリーを作成できません。
+
+staticweave_processor_file_not_created={0} ファイルを作成できません。
+
+staticweave_processor_unknown_outcome=ディレクトリーに保管されているクラスの織り込みおよび JAR への出力は、多くの場合、予期しない結果を招きます。
+
+time_object=時間/オブジェクト
+
+total_time=合計時間
+
+unknown=不明です
+
+user_name=ユーザー名
+
+writer=ライター
+

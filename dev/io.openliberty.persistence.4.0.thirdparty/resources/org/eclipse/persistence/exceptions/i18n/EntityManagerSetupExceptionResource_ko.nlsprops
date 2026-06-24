@@ -1,0 +1,95 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EntityManagerSetupExceptionResource_ko.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+28001=세션을 작성하는 중에 ValidationException이 예외 처리(throw)됨: [{0}]. 이 문제가 발생하게 된 가장 큰 원인은 [{1}] 파일이 클래스 경로에서 사용 불가능하거나 이 파일에 [{0}](이)라는 세션이 포함되지 않기 때문일 수 있습니다.
+
+28002=EclipseLink는 [{1}]에서 [{0}](이)라는 ServerSession 로드를 시도 중이며 ServerSession을 가져오지 않습니다.
+
+28003=EclipseLink는 [{1}]에서 [{0}] 세션을 로드했으며, 서버 플랫폼이 지정되지 않도록 하거나 사용하지 않는 서버 플랫폼 및 외부 트랜잭션 제어기를 지정합니다. JTA를 사용할 계획인 경우 적합한 서버 플랫폼을 지정하십시오.
+
+28004=EntityManager 팩토리 설정에 오류 발생: JavaSECMPInitializer.initializeFromMain이 false를 리턴했습니다.
+
+28005=EntityManager 팩토리 설정에 예외가 발생했습니다.
+
+28006=ClassNotFound: [{1}] 특성에 [{0}]이(가) 지정되었습니다.
+
+28007=[{1}] 특성에 지정된 [{0}] 유형의 ServerPlatform을 인스턴스화하는 데 실패했습니다.
+
+28008=어노테이션을 처리하는 동안 클래스: {0}을(를) 찾을 수 없습니다.
+
+28009=세션을 닫지 않고 이름이 {0}인 세션 재배치를 시도했습니다.
+
+28010=PersistenceUnitInfo {0}에 transactionType JTA가 포함되지만 정의된 jtaDataSource는 없습니다.
+
+28011=지속성 단위를 위해 빌드된 [{0}] 세션은 배치될 때까지 사용할 수 없습니다. 이것은 세션이 배치 프로세스 중간에 컨테이너에서 제거되었다는 의미입니다.
+
+28012=[{0}] 값은 [{2}] 특성의 올바르지 않은 유형입니다. 값 유형은 [{1}](이)어야 합니다.
+
+28013=올바르지 않은 상태 [{1}]에서 PersistenceUnit [{0}]을(를) 배치할 수 없습니다.
+
+28014=[{1}] 값으로 [{0}] 특성을 처리하는 중에 예외가 발생했습니다.
+
+28015=[{1}] 특성에 지정된 [{0}] 유형의 SessionLog를 인스턴스화하는 데 실패했습니다.
+
+28016=이름 [{0}]이(가) 있는 지속성 단위가 존재하지 않습니다.
+
+28017=올바르지 않은 상태 [{1}]에서 PersistenceUnit [{0}]을(를) 사전 배치할 수 없습니다.
+
+28018=PersistenceUnit [{0}]의 사전 배치에 실패했습니다.
+
+28019=PersistenceUnit [{0}] 배치에 실패했습니다. 이 PersistenceUnit에 대한 모든 팩토리를 닫으십시오.
+
+28020=[{1}]에서 로드된 이름이 [{0}]인 세션은 [{2}]이지만 이는 ServerSession이어야 합니다.
+
+28021=PersistenceUnit [{0}]은(는) 세션 이름을 제공하지 않고 [{1}]에서 세션 로드를 시도합니다. eclipselink.session-name 특성을 정의하여 세션 이름을 제공해야 합니다.
+
+28022=글로벌 인스트루먼테이션이 널인 경우 [eclipselink.weaving] 특성의 [true] 값이 올바르지 않으며, 값은 null, false 또는 static이어야 합니다.
+
+28023=[{2}] 클래스의 [{1}] 오브젝트에 있는 [{0}] 메소드의 메소드 호출이 예외를 트리거했습니다.
+
+28024=[{2}] 클래스의 [{1}] 오브젝트에 대한 [{0}] 메소드에 반사적으로 액세스할 수 없습니다.
+
+28025=이름이 [{0}]인 지속성 단위가 [null] 임시 클래스 로더를 리턴함 - 위빙을 이 세션에 사용할 수 없습니다. 임시 해결책이 될 수 있는 정적 위빙을 사용할 수 있습니다.
+
+28026=org.eclipse.persistence.jpa.osgi.PersistenceProvider는 컨테이너 배치(createContainerEntityManagerFactory)를 지원하지 않습니다. 대신 org.eclipse.persistence.jpa.PersistenceProvider를 사용하십시오.
+
+28027=PersistenceUnit [{0}]을(를) 사용하는 것을 시도했으나, 지속성 단위를 정의하는 번들을 사용할 수 없습니다.
+
+28028=지속성 단위 특성 [{1}]에 대한 클래스 인스턴스 [{0}]을(를) 인스턴스화하는 데 실패했습니다. 생성자가 제대로 정의되어 있는지 확인하십시오.
+
+28029=PersistenceUnit [{0}]은(는) sessions.xml(eclipselink.sessions-xml 특성을 지정함)을 사용하고 컴포지트(true 값으로 eclipselink.composite-unit 특성을 지정함)가 되도록 시도합니다. 이 모드는 호환되지 않습니다.
+
+28030=PersistenceUnit [{0}]은(는) true 값으로 eclipselink.composite-unit.member 특성을 지정합니다. 이는 독립형으로 사용될 수 없고 컴포지트 멤버로만 사용될 수 있다는 것을 의미합니다.
+
+28031=필수 특성 [{0}]이(가) 누락되었습니다.
+
+28032=doPrivileged로 임시 클래스 로더를 작성하는 데 실패했습니다.
+

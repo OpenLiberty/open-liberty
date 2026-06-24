@@ -1,0 +1,149 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/SDOExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+45000=在 URI 為 [{0}] 且名稱為 [{1}] 的類型上，找不到類型 ID 的 ID 元素。
+
+45001=使用 schemaLocation [{0}] 和名稱空間 [{1}] 來處理 import 時，發生錯誤。
+
+45002=使用 schemaLocation [{0}] 來處理 include 時，發生錯誤。
+
+45003=找不到 URI 為 [{0}] 且名稱為 [{1}] 的參照內容。
+
+45004=在 ChangeSummary 中找不到舊序列。
+
+45005=名為 [{0}] 之內容的值必須是 DataObject
+
+45006=當 type.isSequenced() 為 true 時，序列不可以是空值。
+
+45007=在名為 [{0}] 的內容上，未設定類型。
+
+45008=發生 IO 異常狀況。
+
+45009=找不到 URI 為 [{0}] 且名稱為 [{1}] 的類型。
+
+45010=找不到介面類別 [{0}] 的類型。請確定已定義類型。此外，介面類別載入器應該是說明程式環境定義類別載入器階層的成員：看起來這好像是 [{1}]。
+
+45011=無法為 URI 為 [{0}] 且名稱為 [{1}] 的類型建立 DataObject，因為 type.isAbstract() 傳回 true。
+
+45012=無法為介面 [{0}] 建立 DataObject，正在嘗試為使用 URI 為 [{1}] 且名稱為 [{2}] 的類型建立 DataObject。
+
+45013=無法為空值引數查閱應用程式資訊。
+
+45014=無法定義類型。只能為類型設為 commonj.sdo.Type 的 DataObject 定義類型。
+
+45015=無法定義使用空值名稱的類型。
+
+45016=ChangeSummary XML 中已修改的物件遺漏 Ref 屬性，或是未指定該值。
+
+45017=處理 xpath [{0}] 時，發生錯誤。
+
+45018=不支援將複式單一設定 [{1}] 的重複項目新增至序列中的位置 [{0}]。
+
+45019=不支援將屬性內容 [{0}] 新增至序列。
+
+45020=找不到路徑 [{0}] 的序列。
+
+45021=嘗試將具有空值 dataObject 實例欄位的序列物件實例化時，發生錯誤。
+
+45022=不支援內容 [{0}] 的任何序列。
+
+45023=無法將 URI 為 [{0}] 且名稱為 [{1}] 之類型的內容設為類別 [{2}] 的值
+
+45024=發生轉換錯誤。
+
+45025=在索引 [{0}] 找不到內容
+
+45026=無法在空值參數上執行作業 [{0}]。
+
+45027=找不到 URI 為 [{0}] 且名稱為 [{1}] 之類型的類別。
+
+45028=無法將類型設為 open 和 datatype。URI 為 [{0}] 且名稱為 [{1}] 的類型發生錯誤。
+
+45029=傳遞至方法 [{1}] 的索引 [{0}] 無效。
+
+45030=在類別 [{0}] 上使用字串引數來呼叫建構子時，發生錯誤。
+
+45031=無法在內容 [{1}] 上設定無效的目標類型 [{0}]，因為目標 type.dataType 為 true。
+
+45032=URI [{1}] 和本端名稱 [{2}] 發生 XMLMarshalException。異常狀況：[{0}]
+
+45033=產生類型時，發生錯誤。已參照名稱為 [{1}] 且名稱空間 URI 為 [{0}] 的 XML 綱目元件，但從未加以定義。XML 綱目中可能遺漏名稱空間 URI [{0}] 的 import 或 include。
+
+45034=選項參數的值必須是 URI 為 [{0}] 且名稱為 [{1}] 之類型的 DataObject。
+
+45035=對應於 "type" 內容的值必須是「類型」物件。
+
+45036=找不到對應於所載入之 XML 節點的廣域內容。
+
+45037=已使用字首 [{0}]，但未宣告在 XML 綱目中。
+
+45038=無法在內容 [{0}] 上執行作業，因為無法從路徑 [{1}] 連接到該內容。路徑無效，或者路徑上有一或多個「資料物件」是空值。
+
+45039=存取 DataObject 上的 externalizableDelegator 欄位 [{0}] 時，發生錯誤。
+
+45040=無法執行具有空值參數 [{1}] 的作業 [{0}]。
+
+45041=類別 [{1}] 的值 [{0}] 對類型為 [{3}] 的內容 [{2}] 無效。
+
+45100=嘗試傳回所要求的 SDOHelperContext 時，發生錯誤。在作用中的 WebLogic 實例中，需要應用程式名稱來進行說明程式環境定義快取查閱。由於 {0} 查閱失敗，因此無法判定應用程式名稱。
+
+45101=嘗試傳回所要求的 SDOHelperContext 時，發生錯誤。在作用中的 WebLogic 實例中，需要應用程式名稱來進行說明程式環境定義快取查閱。由於無法在 {1} 上以反射方式呼叫 {0}，因此無法判定應用程式名稱。
+
+45102=嘗試傳回所要求的 SDOHelperContext 時，發生錯誤。在作用中的 WebLogic 實例中，需要應用程式名稱來進行說明程式環境定義快取查閱。由於無法為 {0} 建立/傳回 ObjectName，因此無法判定應用程式名稱。
+
+45103=嘗試傳回所要求的 SDOHelperContext 時，發生錯誤。在作用中的 WebLogic 實例中，需要應用程式名稱來進行說明程式環境定義快取查閱。由於無法將 InitialContext 實例化，因此無法判定應用程式名稱。
+
+45200=SDO/JAXB - 找不到對應於 SDO 類型 [{0}] 的 OXM 描述子，請確定 Java 類別對映至 XML 類型 [{1}]。
+
+45201=SDO/JAXB - 找不到對應於 SDO 內容 [{0}] 的 OXM 對映，請確定 Java 內容對映至 XML 節點 [{1}]。
+
+45202=SDO/JAXB - 找不到對應於 Java 類別 [{0}] 的 SDO 類型。
+
+45203=SDO/JAXB - Java 類別 [{0}] 的描述子上必須設定綱目參照。
+
+45204=SDO/JAXB - Java 類別 [{0}] 的描述子的綱目參照上必須設定綱目環境定義。
+
+45205=SDO/JAXB - 找不到對應於 Java 類別 [{0}] 的 SDO 類型，請確定 SDO 類型對應於 XML 類型 [{1}]。
+
+45206=SDO/JAXB - 建立 JAXB Unmarshaller 時發生錯誤。
+
+45207=嘗試使用所提供的 SchemaResolver 來解析綱目時，發生錯誤。
+
+45208=無法從類型 {1} 對映內容 {0}。 需要 jakarta.activation 和 jakarta.mail 套件，才能對映 DataHandler 類型的內容。 請確定這兩個套件都在類別路徑上。
+
+45209=嘗試在 SDOHelperContext 上重設 ApplicationResolver 實例。只允許設定一次。
+
+45210=所要配置的 DataObject 不是來自與 XMLHelper 相同的 HelperContext。
+
+45211=無法使用 [{0}] 名稱來定義類型。該名稱不是有效的 XML 名稱。
+
+45212=無法使用 [{0}] 名稱來定義內容。該名稱不是有效的 XML 名稱。
+

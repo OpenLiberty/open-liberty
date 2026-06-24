@@ -1,0 +1,69 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/EISExceptionResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+17007=A(z) {0} tulajdonságot be kell állítani.
+
+17008=Érvénytelen {0} tulajdonság.
+
+17009=A(z) {0} vagy a(z) {1} tulajdonságot be kell állítani.
+
+17010=A kimeneti rekord egy nem támogatott üzenettípust tartalmaz
+
+17011=Nincs megadva kapcsolatgyártó.
+
+17012=Az InteractionSspec csak egy CciJMSInteractionSpec lehet.
+
+17013=A rekord csak egy CciJMSRecord lehet.
+
+17014=Ismeretlen interakció specifikáció típus
+
+17015=A bemenetnek egyetlen szöveg elemet kell tartalmaznia.
+
+17016=Időtúllépés történt - nem kerültek fogadásra üzenetek.
+
+17017=A bemeneti rekord egy nem támogatott üzenettípust tartalmaz.
+
+17018=Nem hívható meg a "begin()" metódus egy nem-tranzakciós munkamenethez.
+
+17019=Probléma a tranzakciós munkamenet tesztelése során: 
+
+17020=Az InteractionSspec csak egy AQInteractionSpec lehet.
+
+17021=A rekord csak egy AQRecord lehet.
+
+17022=A bemenetnek egyetlen nyers elemet kell tartalmaznia.
+
+17023=Kivétel történt az MQQueueConnectionFactory attribútumok beállításakor.
+
+17024=A fájl nem törölhető: {0}
+
+17025=Ez a leképezés egy idegen kulcs csoportosítási elemet igényel, mivel több idegen kulcs létezik.
+

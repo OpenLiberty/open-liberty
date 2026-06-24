@@ -1,0 +1,63 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/TransactionExceptionResource_ro.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+23001=Eroare la blocarea resursei Tranzacţie externă sub numele JNDI [{0}]
+
+23002=Eroare la obţinerea stării de tranzacţie curentă gestionată extern
+
+23003=Eroare la obţinerea tranzacţiei curente gestionate extern
+
+23004=Eroare la obţinerea Managerului de tranzacţii
+
+23005=Eroare la legarea la tranzacţie gestionată extern
+
+23006=Eroare la legarea unei tranzacţii noi gestionate extern
+
+23007=Eroare la comiterea tranzacţiei gestionate extern
+
+23008=Eroare la derularea înapoi a tranzacţiei gestionate extern
+
+23009=Eroare la marcarea tranzacţiei gestionate extern pentru derulare înapoi
+
+23010=Nu există momentan o tranzacţie gestionată extern pentru acest fir de execuţie
+
+23011=UnitOfWork [{0}] a fost randat inactiv înainte ca tranzacţia asociată gestionată extern să se fi finalizat.
+
+23012=Nu există momentan o tranzacţie activă
+
+23013=Tranzacţia este momentan activă
+
+23014=Nu se poate utiliza o EntityTransaction câd se utilizează JTA.
+
+23015=Nu se pot trece în listă mai multe surse de date în tranzacţie.
+
+23016=Excepţie la executarea Proxy.
+

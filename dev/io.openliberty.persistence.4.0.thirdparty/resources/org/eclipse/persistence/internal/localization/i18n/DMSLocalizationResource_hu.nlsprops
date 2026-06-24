@@ -1,0 +1,113 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/internal/localization/i18n/DMSLocalizationResource_hu.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+assigning_sequence_numbers=A sorozatszám-mechanizmus fenntartásával és a sorozatszámnak objektumokon történő tényleges beállításával töltött időt tartalmazza
+
+cache_hits=Azon alkalmak száma, amikor az objektum megtalálható volt a gyorsítótárban
+
+cache_misses=Azon alkalmak száma, amikor az objektum nem volt megtalálható a gyorsítótárban
+
+caching=A gyorsítótárban objektumok hozzáadásával, kikeresésével és eltávolításával eltöltött időt tartalmazza
+
+change_set_not_processed=Az ObjectChangeSets számát a rendszer eldobja, mert az objektum NEM található a gyorsítótárban
+
+change_set_processed=Az ObjectChangeSets száma megtalálható a gyorsítótárban
+
+client_session_count=A bejelentkezett ClientSession szám
+
+connect_call=Csatlakozási hívások teljes száma
+
+connection=A csatlakozások kezelésével eltöltött idő, beleértve a csatlakozást vagy újracsatlakozást adatforráshoz, illetve a csatlakozás megszakítását
+
+connection_in_used=A kizárólagos ConnectionPool(Write, ExclusiveRead) felhasználású csatlakozások száma készletenként
+
+connection_ping=Az adatbázis-kapcsolat használhatósági tesztelésére fordított idő.
+
+database_execute=A JDBC utasítások hívására fordított idő, beleértve a close, executeUpdate és executeQuery hívásokra fordított időt
+
+deleted_object=Az ObjectChangeSet identityMap leképezésből eltávolítandó objektum
+
+descriptor_event=DescriptorEvent végrehajtására fordított idő
+
+disconnect_call=A végrehajtott megszakítási hívások teljes száma
+
+distributed_merge=A távoli tranzakciómódosításoknak a helyi megosztott gyorsítótárba történő összevonására fordított idő. A gyorsítótár szinkronizálás használatakor jelenik meg
+
+jts_aftercompletion=A JTS afterCompletion(objektumállapot) metódusra fordított idő
+
+jts_beforecompletion=A JTS beforeCompletion() metódusra fordított idő
+
+logging=A TopLink tevékenységek naplózására fordított idő
+
+merge_time=A módosításoknak a megosztott gyorsítótárban történő összevonására fordított idő.
+
+object_building=Megmaradó objektumok adatbázis-sorokból történő összeépítésére fordított idő
+
+optimistic_lock=A dobott optimista zárolás kivételek száma
+
+query=Egy műveletre fordított teljes idő: {0}
+
+query_misc=Egy műveletre fordított teljes idő: {0}.  Ez a lekérdezési főnevekben nem szereplő speciális műveletekre, például a kötegelt írásra vonatkozik.
+
+query_prepareation=A lekérdezés előkészítésére fordított idő
+
+rcm_message_received=Az RCM-en keresztül kapott üzenetek száma
+
+rcm_message_sent=Az RCM-en keresztül küldött üzenetek száma
+
+rcm_status=A következők egyike: [nincs konfigurálva, elindított, leállított]
+
+remote_change_set=A távoli gépektől kapott és feldolgozott módosításkészletek száma
+
+row_fetch=A jdbc eredményhalmazból Record objektumok összeépítéséhez igénybe vett idő. Normál SQL hívásokat és tárolt eljárás hívásokat tartalmaz
+
+session_event=SessionEvent végrehajtására fordított idő
+
+session_login_time=A munkamenet bejelentkezési ideje
+
+session_name=A munkamenet neve
+
+sql_generation=Az SQL előállítására fordított idő. TopLink kifejezések esetén a kifejezések SQL átalakítására fordtott idő
+
+sql_prepare=A JDBC-ben az utasítás előkészítésére fordított idő. Az EIS-ben egy csatlakozáshoz tartozó interakció létrehozására, valamint bemeneti és kimeneti Record objektumok létrehozására fordított időt is tartalmazza
+
+unitofwork_commit=A UnitOfWork véglegesítési folyamatát méri
+
+unitofwork_commits=UnitOfWork véglegesítések száma
+
+unitofwork_count=A létrehozott UnitOfWork objektumok teljes száma
+
+unitofwork_register=A registerExistingObject, registerNewContainerBean, registerNewContainerBeanForCMP, registerNewObject, registerObject, readIntoWorkingCopy folyamatokra fordított időt tartalmazza)
+
+unitofwork_rollback=A visszagörgetett UnitOfWork véglegesítések száma
+
+wrapping=A CMP és BMP komponensek újrakezdésére fordított idő
+

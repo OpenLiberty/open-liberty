@@ -1,0 +1,49 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/OptimisticLockExceptionResource_pl.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+5001=Podjęto próbę usunięcia obiektu [{0}], ale nie ma on numeru wersji w odwzorowaniu tożsamości. {3}Mógł nie zostać odczytany, zanim podjęto próbę usunięcia. {3}Klasa> {1} Klucz podstawowy> {2}
+
+5003=Nie można usunąć obiektu [{0}], ponieważ został zmieniony lub usunięty od czasu ostatniego odczytu. {3}Klasa> {1} Klucz podstawowy> {2}
+
+5004=Podjęto próbę zaktualizowania obiektu [{0}], ale nie ma on numeru wersji w odwzorowaniu tożsamości. {3}Mógł nie zostać odczytany, zanim podjęto próbę aktualizacji. {3}Klasa> {1} Klucz podstawowy> {2}
+
+5006=Nie można zaktualizować obiektu [{0}], ponieważ został zmieniony lub usunięty od czasu ostatniego odczytu. {3}Klasa> {1} Klucz podstawowy> {2}
+
+5007=Obiekt [{0}] musi mieć odwzorowanie inne niż tylko do odczytu na pole blokady wersji.
+
+5008=Musi odwzorowywać pole blokady wersji na java.sql.Timestamp podczas korzystania z blokowania znacznika czasu
+
+5009=Nie można rozpakować obiektu klasy [{1}] o kluczu podstawowym [{0}], ponieważ został on usunięty od czasu ostatniego odczytu.
+
+5010=Nie można scalić obiektu [{0}], ponieważ został zmieniony lub usunięty od czasu ostatniego odczytu. {2}Klasa> {1}
+
+5011=Nie można zaktualizować jednego lub wielu obiektów, ponieważ zostały zmienione lub usunięte od czasu ostatniego odczytu.
+

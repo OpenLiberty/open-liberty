@@ -1,0 +1,47 @@
+###############################################################################
+# Copyright (c) 2022 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+# 
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+###############################################################################
+# # {0} description of each insert field
+# MSG_DESCRIPTIVE_NAME_CWSJX0000=CWSJX0000I: This is a message with inserts {0}
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.explanation=Explanation text for the message
+# MSG_DESCRIPTIVE_NAME_CWSJX0000.useraction=User action text for the message
+#
+#CMVCPATHNAME org/eclipse/persistence/exceptions/i18n/XMLConversionExceptionResource_zh_TW.nlsprops
+#COMPONENTPREFIX None
+#COMPONENTNAMEFOR None - generated from open source project
+#ISMESSAGEFILE TRUE
+#NLS_ENCODING=UNICODE
+#
+# NLS_MESSAGEFORMAT_ALL
+#
+#   Strings in this file which contain replacement variables are processed by the MessageFormat
+#   class (single quote must be coded as 2 consecutive single quotes ''). Strings in this file 
+#   which do NOT contain replacement variables are NOT processed by the MessageFormat class 
+#   (single quote must be coded as one single quote '). 
+#
+# -------------------------------------------------------------------------------------------------
+25501=無法建立檔案 [{0}] 的 URL。
+
+25502=不正確的 gDay 格式：[{0}]（應為 [----DD]）
+
+25503=不正確的 gMonth 格式：[{0}]（應為 [--MM--]）
+
+25504=不正確的 gMonthDay 格式：[{0}]（應為 [--MM-DD]）
+
+25505=不正確的 gYear 格式：[{0}]（應為 [YYYY]）
+
+25506=不正確的 gYearMonth 格式：[{0}]（應為 [YYYY-MM]）
+
+25507=不正確的時間戳記日期時間格式：[{0}]（應為 [YYYY-MM-DD''T''HH:MM:SS.NNNNNNNNN]）
+
+25508=不正確的時間戳記時間格式：[{0}]（應為 [HH:MM:SS.NNNNNNNNN]）
+
