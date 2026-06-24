@@ -268,7 +268,7 @@ public abstract class QueryInfo {
      * Be careful when using this count. It changes as parameters are
      * found and/or generated.
      */
-    int qlParamCount;
+    protected int qlParamCount;
 
     /**
      * Names of named parameters in query language, ordered according to the
@@ -283,7 +283,7 @@ public abstract class QueryInfo {
      * rather than named parameters. The constant UNKNOWN represents the former
      * and the constant NO_NAMED_PARAMS represents the latter two cases.
      */
-    volatile Set<String> qlParamNames = Collections.emptySet();
+    protected volatile Set<String> qlParamNames = Collections.emptySet();
 
     /**
      * The interface that is annotated with @Repository.
@@ -501,6 +501,25 @@ public abstract class QueryInfo {
                                                       int prevNumJPQLParams,
                                                       boolean isCollection,
                                                       Annotation[] annos);
+
+    /**
+     * Appends the expression to the given partially built query.
+     *
+     * @param sort       sort criterion that has an expression
+     * @param q          string builder to which to append
+     * @param jpqlParams Map to be populated with JPQL parameter name/value for
+     *                       Constraints, Restrictions, and Sorts. Keys are the
+     *                       named parameter name or positional parameter index.
+     *                       Map values are obtained from the Constraint,
+     *                       Restriction, or Sort. The first positional parameter
+     *                       index starts at qlParamCount, which is updated by
+     *                       this method when JPQL parameters for repository
+     *                       method special parameters are added. The map is null
+     *                       when only the OrderBy annotation or keyword is used
+     */
+    protected abstract void appendExpression(Sort<?> sort,
+                                             StringBuilder q,
+                                             Map<Object, Object> jpqlParams);
 
     /**
      * Asks the Jakarta Persistence provider whether the given query uses named
@@ -993,7 +1012,7 @@ public abstract class QueryInfo {
                 order = order == null //
                                 ? new StringBuilder(100).append(" ORDER BY ") //
                                 : order.append(", ");
-                info.generateSort(order, sort, forward);
+                info.generateSort(order, sort, forward, jpqlParams);
             }
 
         if (pageReq == null ||
@@ -2452,11 +2471,11 @@ public abstract class QueryInfo {
         for (Sort<?> sort : sorts) {
             validateSort(sort);
             fwd.append(first ? " ORDER BY " : ", ");
-            generateSort(fwd, sort, true);
+            generateSort(fwd, sort, true, null);
 
             if (needsCursorQueries) {
                 prev.append(first ? " ORDER BY " : ", ");
-                generateSort(prev, sort, false);
+                generateSort(prev, sort, false, null);
             }
             first = false;
         }
@@ -2902,7 +2921,11 @@ public abstract class QueryInfo {
 
     /**
      * Generates and appends JPQL to sort based on the specified entity attribute.
-     * For most attributes, this will be of a form such as o.name or LOWER(o.name) DESC or ...
+     * For most attributes, this will be of a form such as:
+     * o.name
+     * LOWER(o.name) DESC NULLS LAST
+     * o.length * o.width * o.height
+     * ...
      *
      * @param q             builder for the JPQL query.
      * @param sort          sort criteria for a single attribute (name must already
@@ -2910,14 +2933,29 @@ public abstract class QueryInfo {
      * @param sameDirection indicate to append the Sort in the normal direction.
      *                          Otherwise reverses it (for cursor pagination in the
      *                          previous page direction).
+     * @param jpqlParams    Map to be populated with JPQL parameter name/value for
+     *                          Constraints, Restrictions, and Sorts. Keys are the
+     *                          named parameter name or positional parameter index.
+     *                          Map values are obtained from the Constraint,
+     *                          Restriction, or Sort. The first positional parameter
+     *                          index starts at qlParamCount, which is updated by
+     *                          this method when JPQL parameters for repository
+     *                          method special parameters are added. The map is null
+     *                          when only the OrderBy annotation or keyword is used.
      */
     @Trivial
-    private void generateSort(StringBuilder q, Sort<?> sort, boolean sameDirection) {
-        String propName = sort.property();
+    private void generateSort(StringBuilder q,
+                              Sort<?> sort,
+                              boolean sameDirection,
+                              Map<Object, Object> jpqlParams) {
         if (sort.ignoreCase())
             q.append("LOWER(");
 
-        appendAttributeName(propName, q);
+        String attributeName = sort.property();
+        if (attributeName == null)
+            appendExpression(sort, q, jpqlParams);
+        else
+            appendAttributeName(attributeName, q);
 
         if (sort.ignoreCase())
             q.append(")");
@@ -5918,19 +5956,21 @@ public abstract class QueryInfo {
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         while (addIt.hasNext()) {
             Sort<Object> sort = addIt.next();
-            if (sort == null) {
+            if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            } else if (hasIdClass && ID.equalsIgnoreCase(sort.property())) {
+            String attributeName = sort.property();
+            if (attributeName == null) {
+                combined.add(sort); // sort on expression instead of attribute
+            } else if (hasIdClass && ID.equalsIgnoreCase(attributeName)) {
                 // IdClass is split up so that it can be possible to create a cursor
                 // that corresponds to sort criteria
                 for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
                     name = getAttributeName(name, true);
-                    sort = name == sort.property() ? sort : createSort(name, sort);
-                    combined.add(sort);
+                    combined.add(createSort(name, sort));
                 }
             } else {
-                String name = getAttributeName(sort.property(), true);
-                sort = name == sort.property() ? sort : createSort(name, sort);
+                String name = getAttributeName(attributeName, true);
+                sort = name == attributeName ? sort : createSort(name, sort);
                 combined.add(sort);
             }
         }
@@ -5948,24 +5988,27 @@ public abstract class QueryInfo {
      */
     @Trivial
     List<Sort<Object>> supplySorts(List<Sort<Object>> combined,
-                                   @SuppressWarnings("unchecked") Sort<Object>... additional) {
+                                   @SuppressWarnings("unchecked") //
+                                   Sort<Object>... additional) {
         boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
         if (combined == null && additional.length > 0)
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort<Object> sort : additional) {
-            if (sort == null) {
+            if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            } else if (hasIdClass && ID.equalsIgnoreCase(sort.property())) {
+            String attributeName = sort.property();
+            if (attributeName == null) {
+                combined.add(sort); // sort on expression instead of attribute
+            } else if (hasIdClass && ID.equalsIgnoreCase(attributeName)) {
                 // IdClass is split up so that it can be possible to create a cursor
                 // that corresponds to sort criteria
                 for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
                     name = getAttributeName(name, true);
-                    sort = name == sort.property() ? sort : createSort(name, sort);
-                    combined.add(sort);
+                    combined.add(createSort(name, sort));
                 }
             } else {
-                String name = getAttributeName(sort.property(), true);
-                sort = name == sort.property() ? sort : createSort(name, sort);
+                String name = getAttributeName(attributeName, true);
+                sort = name == attributeName ? sort : createSort(name, sort);
                 combined.add(sort);
             }
         }
@@ -6336,22 +6379,24 @@ public abstract class QueryInfo {
      */
     @Trivial
     private void validateSort(Sort<?> sort) {
-        String propName = sort.property();
-        if (propName.charAt(propName.length() - 1) == ')') {
-            // skip for version(o) and id(o), the latter of which which could be a composite value
+        String attrName = sort.property();
+        if (attrName == null ||
+            attrName.charAt(attrName.length() - 1) == ')') {
+            // skip for expressions, "version(o)", and "id(o)", the latter of which
+            // could be a composite value
         } else {
-            Class<?> propertyClass = entityInfo.attributeTypes.get(propName);
+            Class<?> attributeType = entityInfo.attributeTypes.get(attrName);
 
             if (sort.ignoreCase() //
-                && !CharSequence.class.isAssignableFrom(propertyClass)
-                && !char.class.equals(propertyClass)
-                && !Character.class.equals(propertyClass))
+                && !CharSequence.class.isAssignableFrom(attributeType)
+                && !char.class.equals(attributeType)
+                && !Character.class.equals(attributeType))
                 throw exc(UnsupportedOperationException.class,
                           "CWWKD1026.ignore.case.not.text",
-                          propName,
+                          attrName,
                           entityInfo.getType().getName(),
                           sort,
-                          propertyClass.getName(),
+                          attributeType.getName(),
                           method.getName(),
                           repositoryInterface.getName());
         }

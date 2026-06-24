@@ -112,6 +112,14 @@ public class QueryInfo_1_0 extends QueryInfo {
 
     @Override
     @Trivial
+    protected void appendExpression(Sort<?> sort,
+                                    StringBuilder q,
+                                    Map<Object, Object> jpqlParams) {
+        throw new IllegalArgumentException(sort.toString());
+    }
+
+    @Override
+    @Trivial
     protected <T> Sort<T> createSort(String expression, OrderBy orderBy) {
         return new Sort<T>( //
                         expression, //
