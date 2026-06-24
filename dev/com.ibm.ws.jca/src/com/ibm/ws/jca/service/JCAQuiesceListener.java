@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -13,6 +13,7 @@
 package com.ibm.ws.jca.service;
 
 import java.util.Collection;
+import java.util.Iterator;
 
 import javax.resource.spi.ActivationSpec;
 
@@ -66,12 +67,27 @@ public class JCAQuiesceListener implements ServerQuiesceListener {
         for (ServiceReference<EndpointActivationService> ref : refs) {
             EndpointActivationService eas = bundleContext.getService(ref);
             try {
-                for (ActivationParams a; null != (a = eas.endpointActivationParams.poll());)
-                    try {
-                        eas.endpointDeactivation((ActivationSpec) a.activationSpec, a.messageEndpointFactory);
-                    } catch (Throwable x) {
-                        FFDCFilter.processException(x, getClass().getName(), "71", this);
+                Iterator<ActivationParams> iterator = eas.endpointActivationParams.iterator();
+                while (iterator.hasNext()) {
+                    ActivationParams a = iterator.next();
+                    // Check if this entry should be deactivated
+                    if (a.messageEndpointFactory == null || a.messageEndpointFactory.isDeactivateOnQuiesce()) {
+                        // Attempt to remove it - only one thread will succeed
+                        if (eas.endpointActivationParams.remove(a)) {
+                            // This thread successfully removed it, so deactivate it
+                            try {
+                                eas.endpointDeactivation((ActivationSpec) a.activationSpec, a.messageEndpointFactory);
+                            } catch (Throwable x) {
+                                FFDCFilter.processException(x, getClass().getName(), "71", this);
+                            }
+                        } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            // If remove() returned false, another thread already removed it, so just continue
+                            Tr.debug(this, tc, "already deactivated");
+                    } else {
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                            Tr.debug(tc, "Skipping endpoint deactivation on quiesce: " + a.messageEndpointFactory);
                     }
+                }
             } finally {
                 bundleContext.ungetService(ref);
             }

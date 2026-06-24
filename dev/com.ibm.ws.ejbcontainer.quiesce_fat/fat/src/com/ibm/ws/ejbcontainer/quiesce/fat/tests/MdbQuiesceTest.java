@@ -151,6 +151,8 @@ public class MdbQuiesceTest extends FATServletClient {
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:StartupSingletonQuiesceBnd:",
              "CWWKO0220I", // first standard quiesce listener defaultHttpEndpoint
              "CWWKO0220I", // first standard quiesce listener JMS Endpoint
+             "J2CA8804I:", // JCA deactivation
+             "J2CA8804I:", // JCA deactivation
              "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
              "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
              "CWWKE1101I", // server quiesce complete
@@ -159,12 +161,16 @@ public class MdbQuiesceTest extends FATServletClient {
              // Order varies after this point
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceDefault:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceDefault:",
+             "J2CA8804I:", // JCA deactivation
              "CNTR4014I: The message endpoint for the MdbQuiesceServer",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceServer:",
+             "J2CA8804I:", // JCA deactivation
              "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceBnd:",
+             "J2CA8804I:", // JCA deactivation
              "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceBnd:",
+             "J2CA8804I:", // JCA deactivation
              "CNTR4014I: The message endpoint for the MdbQuiesceServer",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceServer:",
              "CWWKZ0009I");
@@ -174,11 +180,11 @@ public class MdbQuiesceTest extends FATServletClient {
             // - CWWKO0220I: TCP Channel defaultHttpEndpoint has stopped listening (a normal quiesce listener)
             // - CWWKE1101I: Server quiesce complete.
             // - CWWKZ0009I: The application MdbQuiesceApp has stopped successfully.
-            List<String> actualDeactivations = mdbServer.findStringsInLogsUsingMark(".*PreDestroy:MdbQuiesceApp|CWWKE1100I|CWWKO0220I|CWWKE1101I|CNTR4014I|CWWKZ0009I.*",
+            List<String> actualDeactivations = mdbServer.findStringsInLogsUsingMark(".*PreDestroy:MdbQuiesceApp|CWWKE1100I|CWWKO0220I|CWWKE1101I|J2CA8804I|CNTR4014I|CWWKZ0009I.*",
                                                                                     mdbServer.getDefaultLogFile());
 
             // Verify all expected deactivations are present in order
-            verifyMessagesInOrder(expectedDeactivations, actualDeactivations, "Deactivation", 10);
+            verifyMessagesInOrder(expectedDeactivations, actualDeactivations, "Deactivation", 12);
 
         } finally {
             if (mdbServer.isStarted()) {
@@ -274,8 +280,10 @@ public class MdbQuiesceTest extends FATServletClient {
         }
 
         for (int i = orderLength; i < expectedMessages.size() - 1; i++) {
-            assertTrue(messageType + " message at position " + i + " does not match expected PreDestroy or CNTR4014I",
-                       expectedMessages.get(i).startsWith("PreDestroy") || expectedMessages.get(i).startsWith("CNTR4014I"));
+            assertTrue(messageType + " message at position " + i + " does not match expected PreDestroy, CNTR4014I, or J2CA8804I",
+                       (expectedMessages.get(i).startsWith("PreDestroy") ||
+                        expectedMessages.get(i).startsWith("CNTR4014I") ||
+                        expectedMessages.get(i).startsWith("J2CA8804I")));
         }
     }
 

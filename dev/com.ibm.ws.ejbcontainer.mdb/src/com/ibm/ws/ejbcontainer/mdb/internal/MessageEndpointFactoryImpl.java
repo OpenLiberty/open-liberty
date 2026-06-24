@@ -43,6 +43,7 @@ import com.ibm.ws.jca.service.WSMessageEndpointFactory;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.ws.util.ThreadContextAccessor;
 
 /**
@@ -447,6 +448,12 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         return beanMetaData.ivMessageDestinationJndiName;
     }
 
+    @Trivial
+    @Override
+    public boolean isDeactivateOnQuiesce() {
+        return beanMetaData.isDeactivateOnQuiesce();
+    }
+
     //PausableComponent Methods
 
     /*
@@ -489,8 +496,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     @Override
     public void pause() throws PauseableComponentException {
-        AbstractEJBRuntime ejbRuntime = (AbstractEJBRuntime) container.getEJBRuntime();
-        if (isBeta && ejbRuntime.isStopping() && !beanMetaData.isDeactivateOnQuiesce()) {
+        if (isBeta && FrameworkState.isStopping() && !beanMetaData.isDeactivateOnQuiesce()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
                 Tr.debug(tc, "deactivate skipped on quiesce; will deactivate on stop : " + beanMetaData.j2eeName);
             return;
