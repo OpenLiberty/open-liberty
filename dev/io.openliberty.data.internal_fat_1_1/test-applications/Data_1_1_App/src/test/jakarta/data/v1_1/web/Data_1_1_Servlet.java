@@ -45,6 +45,7 @@ import jakarta.data.constraint.Like;
 import jakarta.data.constraint.NotBetween;
 import jakarta.data.constraint.NotNull;
 import jakarta.data.exceptions.DataException;
+import jakarta.data.expression.NumericExpression;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.page.CursoredPage;
 import jakarta.data.page.Page;
@@ -2321,6 +2322,43 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Use a repository method that includes a Restriction and also has
+     * sorting by expressions.
+     */
+    @Test
+    public void testRestrictionsAndSortByExpressions() {
+
+        Restriction<Fraction> denominator8or9 = //
+                        Restrict.any(_Fraction.denominator.equalTo(8),
+                                     _Fraction.denominator.equalTo(9));
+
+        Sort<Fraction> chars8thThrough3rdFromRightAsc = //
+                        _Fraction.name.right(8).left(6).asc();
+
+        NumericExpression<Fraction, Integer> fifteenTimesInverse = //
+                        _Fraction.denominator.times(15)
+                                        .dividedBy(_Fraction.numerator);
+
+        Sort<Fraction> fifteenTimesInverseDesc = isHibernatePersistence() //
+                        ? fifteenTimesInverse.desc() //
+                        // works around EclipseLink parsing bug:
+                        : fifteenTimesInverse.abs().desc();
+
+        assertEquals(List.of("Three Eighths",
+                             "Five Eighths",
+                             "One Eighth",
+                             "Three Ninths",
+                             "Five Ninths",
+                             "One Ninth"),
+                     fractions.withNameLike("%e %",
+                                            denominator8or9,
+                                            Order.by(chars8thThrough3rdFromRightAsc,
+                                                     fifteenTimesInverseDesc))
+                                     .map(f -> f.name)
+                                     .toList());
+    }
+
+    /**
      * Use a repository method that performs a Query consisting of a SELECT
      * clause that uses the NEW keyword to specify the constructor for a
      * Java record.
@@ -2403,6 +2441,89 @@ public class Data_1_1_Servlet extends FATServlet {
                                      .sorted()
                                      .limit(15)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Request sorting of results according to a mixture of
+     * two sort expressions and one entity attribute.
+     */
+    @Test
+    public void testSortByMixtureOfExpressionsAndAttributes() {
+
+        //                                      sort1 sort2 sort3 sort4
+        assertEquals(List.of("Two Sixteenths", //   7     F Two
+                             "Two Fifteenths", //   7     T Two   3
+                             "Ten Seventeenths", // 7     T Ten   588..
+                             "Two Eighteenths", //  8     F Two   1
+                             "Two Fourteenths", //  8     F Two   142..
+                             "Ten Eighteenths", //  8     F Ten   5
+                             "Ten Fourteenths", //  8     F Ten   714..
+                             "Two Nineteenths", //  8     T Two   105..
+                             "Two Thirteenths", //  8     T Two   153..
+                             "Ten Nineteenths", //  8     T Ten   526..
+                             "Ten Thirteenths", //  8     T Ten   769..
+                             "Ten Sixteenths"), //  9     F Ten
+                     fractions.named(Like.pattern("T?? #teenths", '?', '#', '!'),
+                                     Order.by(_Fraction.numerator.times(2)
+                                                     .minus(_Fraction.name.length())
+                                                     .plus(3)
+                                                     .abs()
+                                                     .asc(),
+                                              _Fraction.reduced.asc(),
+                                              _Fraction.name.left(4).desc(),
+                                              _Fraction.decimal.navigate(_Decimal.digits)
+                                                              .navigate(_Digits.repeating)
+                                                              .asc()),
+                                     Limit.of(12)));
+    }
+
+    /**
+     * Request sorting of results according to a single sort expression.
+     */
+    @Test
+    public void testSortBySingleExpression() {
+        In<Integer> numeratorExpressions = //
+                        In.expressions(_Fraction.denominator.minus(3),
+                                       NumericLiteral.of(1),
+                                       _Fraction.name.length().dividedBy(2));
+
+        Sort<Fraction> nameLengthDesc = _Fraction.name.length().desc();
+
+        assertEquals(List.of("Seven Twelfths", // length / 2 = 7
+                             "Nine Twelfths", // 12 - 3 = 9
+                             "Six Twelfths", // length / 2 = 6
+                             "One Twelfth"), // literal of 1
+                     fractions.withNumeratorsAndDenominator(numeratorExpressions,
+                                                            12,
+                                                            nameLengthDesc));
+    }
+
+    /**
+     * Request sorting of results according to two sort expressions.
+     */
+    @Test
+    public void testSortByTwoExpressions() {
+
+        Sort<Fraction> numDenomDifferenceAsc = //
+                        _Fraction.denominator.minus(_Fraction.numerator).asc();
+        Sort<Fraction> right4Desc = _Fraction.name.upper().right(4).desc();
+
+        assertEquals(List.of("Three Fourths",
+                             "Two Thirds",
+                             "One Half",
+                             "Four Fifths",
+                             "Two Fourths",
+                             "One Third",
+                             "Three Fifths",
+                             "One Fourth",
+                             "Two Fifths",
+                             "One Fifth"),
+                     fractions.denominatoredUpTo(NotNull.instance(),
+                                                 AtMost.max(5),
+                                                 numDenomDifferenceAsc,
+                                                 right4Desc)
+                                     .map(f -> f.name)
+                                     .toList());
     }
 
     /**
