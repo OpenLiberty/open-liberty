@@ -31,6 +31,7 @@ import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebRequest;
 import com.meterware.httpunit.WebResponse;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
@@ -176,6 +177,7 @@ public class JSPTagFilesInJarTest {
      * @throws Exception if the test fails
      */
     @Test
+    @AllowedFFDC("java.security.PrivilegedActionException")
     public void testTagFileFromJarWithLoadTagFilesFromJarsDisabled() throws Exception {
         // Disable loadTagFilesFromJars in server configuration
         ServerConfiguration configuration = server.getServerConfiguration();
