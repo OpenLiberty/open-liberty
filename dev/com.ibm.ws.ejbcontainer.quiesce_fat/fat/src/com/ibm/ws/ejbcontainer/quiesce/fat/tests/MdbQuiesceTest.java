@@ -144,47 +144,71 @@ public class MdbQuiesceTest extends FATServletClient {
             // Make sure stop has completed
             assertNotNull("Server " + mdbServer.getServerName() + " FAILED to stop", mdbServer.waitForStringInLog("CWWKE0036I"));
 
-            // Expected order of deactivation messages
-            List<String> expectedDeactivations = Arrays.asList //
+            // Expected JCA deactivation messages (common + J2CA8804I)
+            List<String> expectedJcaDeactivation = Arrays.asList //
+            ("CWWKE1100I", // waiting for server quiesce
+             "CWWKO0220I", // standard quiesce listener defaultHttpEndpoint
+             "CWWKO0220I", // standard quiesce listener JMS Endpoint
+             "J2CA8804I:", // JCA deactivation
+             "J2CA8804I:", // JCA deactivation
+             "CWWKE1101I", // server quiesce complete
+             // Order varies after this point
+             "J2CA8804I:", // JCA deactivation
+             "J2CA8804I:", // JCA deactivation
+             "J2CA8804I:", // JCA deactivation
+             "J2CA8804I:", // JCA deactivation
+             "CWWKZ0009I"); // application stopped
+
+            // Expected EJB deactivation messages (common + CNTR4014I)
+            List<String> expectedEjbDeactivation = Arrays.asList //
+            ("CWWKE1100I", // waiting for server quiesce
+             "CWWKO0220I", // standard quiesce listener defaultHttpEndpoint
+             "CWWKO0220I", // standard quiesce listener JMS Endpoint
+             "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
+             "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
+             "CWWKE1101I", // server quiesce complete
+             // Order varies after this point
+             "CNTR4014I: The message endpoint for the MdbQuiesceServer",
+             "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
+             "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
+             "CNTR4014I: The message endpoint for the MdbQuiesceServer",
+             "CWWKZ0009I"); // application stopped
+
+            // Expected PreDestroy messages (common + PreDestroy:)
+            List<String> expectedPreDestroy = Arrays.asList //
             ("CWWKE1100I", // waiting for server quiesce
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:StartupSingletonQuiesceBnd:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:StartupSingletonQuiesceBnd:",
-             "CWWKO0220I", // first standard quiesce listener defaultHttpEndpoint
-             "CWWKO0220I", // first standard quiesce listener JMS Endpoint
-             "J2CA8804I:", // JCA deactivation
-             "J2CA8804I:", // JCA deactivation
-             "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
-             "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
+             "CWWKO0220I", // standard quiesce listener defaultHttpEndpoint
+             "CWWKO0220I", // standard quiesce listener JMS Endpoint
              "CWWKE1101I", // server quiesce complete
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:StartupSingletonQuiesceDefault:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:StartupSingletonQuiesceDefault:",
              // Order varies after this point
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceDefault:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceDefault:",
-             "J2CA8804I:", // JCA deactivation
-             "CNTR4014I: The message endpoint for the MdbQuiesceServer",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceServer:",
-             "J2CA8804I:", // JCA deactivation
-             "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:MdbQuiesceBnd:",
-             "J2CA8804I:", // JCA deactivation
-             "CNTR4014I: The message endpoint for the MdbQuiesceBnd",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceBnd:",
-             "J2CA8804I:", // JCA deactivation
-             "CNTR4014I: The message endpoint for the MdbQuiesceServer",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:MdbQuiesceServer:",
-             "CWWKZ0009I");
+             "CWWKZ0009I"); // application stopped
 
-            // Find all deactivation messages for MdbQuiesceApp and:
-            // - CWWKE1100I: Waiting for up to 30 seconds for the server to quiesce.
-            // - CWWKO0220I: TCP Channel defaultHttpEndpoint has stopped listening (a normal quiesce listener)
-            // - CWWKE1101I: Server quiesce complete.
-            // - CWWKZ0009I: The application MdbQuiesceApp has stopped successfully.
-            List<String> actualDeactivations = mdbServer.findStringsInLogsUsingMark(".*PreDestroy:MdbQuiesceApp|CWWKE1100I|CWWKO0220I|CWWKE1101I|J2CA8804I|CNTR4014I|CWWKZ0009I.*",
-                                                                                    mdbServer.getDefaultLogFile());
+            // Find JCA deactivation messages
+            List<String> actualJcaDeactivation = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I|CWWKE1101I|J2CA8804I|CWWKZ0009I.*",
+                                                                                       mdbServer.getDefaultLogFile());
 
-            // Verify all expected deactivations are present in order
-            verifyMessagesInOrder(expectedDeactivations, actualDeactivations, "Deactivation", 12);
+            // Find EJB deactivation messages
+            List<String> actualEjbDeactivation = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I|CWWKE1101I|CNTR4014I|CWWKZ0009I.*",
+                                                                                       mdbServer.getDefaultLogFile());
+
+            // Find PreDestroy messages
+            List<String> actualPreDestroy = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I|CWWKE1101I|PreDestroy:MdbQuiesceApp|CWWKZ0009I.*",
+                                                                                  mdbServer.getDefaultLogFile());
+
+            // Verify all three message sequences are present in order
+            verifyMessagesInOrder(expectedJcaDeactivation, actualJcaDeactivation, "JCA Deactivation", 6);
+            verifyMessagesInOrder(expectedEjbDeactivation, actualEjbDeactivation, "EJB Deactivation", 6);
+            verifyMessagesInOrder(expectedPreDestroy, actualPreDestroy, "PreDestroy", 8);
 
         } finally {
             if (mdbServer.isStarted()) {
