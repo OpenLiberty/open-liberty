@@ -82,6 +82,8 @@ public class InMemoryIdentityStorePropertyNotFoundTest extends BaseJakartaSecuri
         ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
         instance.startServer();
+
+        server.waitForLTPAConfigReady();
     }
 
     /**
