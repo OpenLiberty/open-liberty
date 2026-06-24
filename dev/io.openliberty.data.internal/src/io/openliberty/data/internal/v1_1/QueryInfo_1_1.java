@@ -338,6 +338,19 @@ public class QueryInfo_1_1 extends QueryInfo {
         return q;
     }
 
+    @Override
+    @Trivial
+    protected void appendExpression(Sort<?> sort,
+                                    StringBuilder q,
+                                    Map<Object, Object> jpqlParams) {
+        qlParamCount = generateExpression(q,
+                                          entityVar_,
+                                          sort.expression(),
+                                          qlParamCount,
+                                          qlParamNames,
+                                          jpqlParams);
+    }
+
     /**
      * Appends JQPL for a repository method parameter. Either of the form ?1 or LOWER(?1)
      *
@@ -356,6 +369,7 @@ public class QueryInfo_1_1 extends QueryInfo {
     @Trivial
     protected <T> Sort<T> createSort(String expression, OrderBy orderBy) {
         return new Sort<T>( //
+                        null, //
                         expression, //
                         !orderBy.descending(), //
                         orderBy.ignoreCase(), //
@@ -366,6 +380,7 @@ public class QueryInfo_1_1 extends QueryInfo {
     @Trivial
     protected <T> Sort<T> createSort(String expression, Sort<T> sort) {
         return new Sort<T>( //
+                        null, //
                         expression, //
                         sort.isAscending(), //
                         sort.ignoreCase(), //
@@ -768,7 +783,7 @@ public class QueryInfo_1_1 extends QueryInfo {
      * @param expression     the Expression for which to generate JPQL.
      * @param jpqlParamCount number of named or positional parameters in the
      *                           partially built query.
-     * @param jpqlParamNames names of named parameters in the partially bulit
+     * @param jpqlParamNames names of named parameters in the partially built
      *                           query. Empty if the query uses positional
      *                           parameeters or has none. If using named parameters,
      *                           this method should add any that are generated.

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.expression;
 
+import jakarta.data.Sort;
 import jakarta.data.constraint.AtLeast;
 import jakarta.data.constraint.AtMost;
 import jakarta.data.constraint.Between;
@@ -27,6 +28,9 @@ import jakarta.data.restrict.Restriction;
  */
 public interface ComparableExpression<T, V extends Comparable<?>> //
                 extends Expression<T, V> {
+    default Sort<T> asc() {
+        return Sort.asc(this);
+    }
 
     default <U extends ComparableExpression<? super T, V>> Restriction<T> //
                     between(U minExpression,
@@ -39,6 +43,10 @@ public interface ComparableExpression<T, V extends Comparable<?>> //
     default Restriction<T> between(V min, V max) {
         Constraint<V> constraint = Between.bounds(min, max);
         return BasicRestriction.of(this, constraint);
+    }
+
+    default Sort<T> desc() {
+        return Sort.desc(this);
     }
 
     default Restriction<T> greaterThan//
