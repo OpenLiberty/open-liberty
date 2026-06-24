@@ -127,9 +127,6 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
         if (!streaming) {
             return false;
         }
-        if (isMultiReadOfPostDataEnabled()) {
-            return checkBuffer();
-        }
         if (isStreamingReadReady()){
             return true;
         }
@@ -148,16 +145,8 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
                 return;
             }
             try {
-                if (isStreamingReadCompleteForCallback()) {
-                    clearStreamingReadCallback();
-                    return;
-                }
                 if (!isStreamingReadReady()){
                     context.channel().attr(NettyHttpConstants.ASYNC_READ_CALLBACK).set(successRef[0]);
-                    if (isStreamingReadCompleteForCallback()) {
-                        clearStreamingReadCallback();
-                        return;
-                    }
                     if (!isStreamingReadReady()) {
                         ReadFlowHandler.setBodyReadWanted(context, true);
                         return;
@@ -206,7 +195,13 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
     }
 
     private boolean isStreamingReadReady() throws IOException {
-        return !isStreamingReadCompleteForCallback() && isStreamingReadReadyForCallback();
+        if (isStreamingReadCompleteForCallback()) {
+            return false;
+        }
+        if (isMultiReadOfPostDataEnabled()) {
+            return checkMultiReadBufferIfAvailable();
+        }
+        return isStreamingReadReadyForCallback();
     }
 
     private boolean isStreamingReadCompleteForCallback() throws IOException {

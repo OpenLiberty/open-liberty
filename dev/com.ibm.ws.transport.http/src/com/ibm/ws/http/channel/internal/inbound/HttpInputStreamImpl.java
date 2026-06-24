@@ -218,7 +218,15 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @return
      * @throws IOException
      */
+    protected boolean checkMultiReadBufferIfAvailable() throws IOException {
+        return checkMultiReadBuffer(false);
+    }
+
     private boolean checkMultiReadBuffer() throws IOException {
+        return checkMultiReadBuffer(true);
+    }
+
+    private boolean checkMultiReadBuffer(boolean waitForInput) throws IOException {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "checkMultiReadBuffer", " firstReadCompleteforMulti [" + firstReadCompleteforMulti + "] " + this);
         }
@@ -252,7 +260,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                     Tr.debug(tc, "checkMultiReadBuffer, requires more data, checking readRemainingFromChannel.");
                 }
                 //get remaining from channel now as read needs more than the stored
-                readRemainingFromChannel();
+                readRemainingFromChannel(waitForInput);
             }
             if (postDataBuffer.size() > postDataIndex) {
                 this.buffer = postDataBuffer.get(postDataIndex);
@@ -267,7 +275,7 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 return true;
             }
         } else { // multiRead enabled and first read
-            if (getBufferFromChannel()) {
+            if (getBufferFromChannel(waitForInput)) {
                 // store the channel buffer
                 postDataBuffer.add(postDataIndex, this.buffer.duplicate());
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -294,13 +302,17 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @throws IOException
      */
     private void readRemainingFromChannel() throws IOException {
+        readRemainingFromChannel(true);
+    }
+
+    private void readRemainingFromChannel(boolean waitForInput) throws IOException {
         if (!readChannelComplete) {
 
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "readRemainingFromChannel, data not completely read during first read");
             }
             int localIx = postDataIndex;
-            while (getBufferFromChannel()) {
+            while (getBufferFromChannel(waitForInput)) {
                 postDataBuffer.add(postDataIndex, this.buffer.duplicate());
 
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -317,6 +329,9 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
                 this.buffer = null;
             }
             postDataIndex = localIx;
+            if (!waitForInput && !readChannelComplete) {
+                return;
+            }
             readChannelComplete = true;
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "readRemainingFromChannel, all buffer read and stored from channel , now read it from store");
@@ -329,10 +344,14 @@ public class HttpInputStreamImpl extends HttpInputStreamConnectWeb {
      * @throws IOException
      */
     private boolean getBufferFromChannel() throws IOException {
+        return getBufferFromChannel(true);
+    }
+
+    private boolean getBufferFromChannel(boolean waitForInput) throws IOException {
 
         try {
             if(streaming){
-                return fillFromStreamingNetty();
+                return fillFromStreamingNetty(waitForInput);
             }
             this.buffer = this.isc.getRequestBodyBuffer();
             if (null != this.buffer) {
