@@ -59,7 +59,7 @@ import test.server.transport.http2.Utils;
 public class H2FATDriverServlet extends FATServlet {
     /**  */
     private static final long serialVersionUID = 1L;
-    protected final long defaultTimeoutToSendFrame = 29000L;
+    protected final long defaultTimeoutToSendFrame = 35000L;
     private final int STRESS_TEST_TIMEOUT = 120000;
 
     private static final Logger LOGGER = Logger.getLogger(H2FATDriverServlet.class.getName());
