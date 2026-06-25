@@ -1153,8 +1153,8 @@ public class ContainerConfigConstants {
      * "@Startup" singleton beans in the application. <p>
      *
      * Since this is a custom environment property, defining the environment entry
-     * with @Resource or <env-entry> in ejb-jar.xml is not required. Providing the
-     * environment entry binding in ibm-ejb-jar-bnd.xml or in <ejb-bnd> in server.xml
+     * with `@Resource` or `<env-entry>` in ejb-jar.xml is not required. Providing the
+     * environment entry binding in ibm-ejb-jar-bnd.xml or in <ejb-jar-bnd> in server.xml
      * will override the default value of the property. <p>
      *
      * Syntax for environment entry binding in ibm-ejb-jar-bnd.xml:
@@ -1197,7 +1197,7 @@ public class ContainerConfigConstants {
      * after the server quiesce period when the server stop command is issued. Configuring
      * an application to be notified of the beginning of the quiesce period can be useful
      * to allow the application to begin shutting down before being stopped and avoid
-     * starting new work while the server is stopping. A boolean environment entry can be
+     * starting new work while the server is stopping. A Boolean environment entry can be
      * added for a singleton bean to force destruction prior to the server quiesce period. <p>
      *
      * Syntax for the environment entry is:
@@ -1216,22 +1216,21 @@ public class ContainerConfigConstants {
      * will occur at the beginning of the server quiesce period.
      *
      * Since this is a custom environment property, defining the environment entry with
+     * `@Resource` or <env-entry> in ejb-jar.xml is not required. Providing the environment
+     * entry binding in ibm-ejb-jar-bnd.xml or in <ejb-bnd> in server.xml will override
+     * the default value of the property.
      *
-     * @Resource or <env-entry> in ejb-jar.xml is not required. Providing the environment
-     *           entry binding in ibm-ejb-jar-bnd.xml or in <ejb-bnd> in server.xml will override
-     *           the default value of the property.
+     * Syntax for environment entry binding in ibm-ejb-jar-bnd.xml:
      *
-     *           Syntax for environment entry binding in ibm-ejb-jar-bnd.xml:
-     *
-     *           <pre>{@code
+     * <pre>{@code
      *    <session name="StartupSingleton" simple-binding-name="StartupSingleton">
      *        <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
      *    </session>
      * }</pre>
      *
-     *           Syntax for environment entry binding in server.xml:
+     * Syntax for environment entry binding in server.xml:
      *
-     *           <pre>{@code
+     * <pre>{@code
      *    <webApplication location="sample-application.war">
      *        <ejb-jar-bnd>
      *             <session name="StartupSingleton" simple-binding-name="StartupSingleton">
@@ -1241,16 +1240,16 @@ public class ContainerConfigConstants {
      *    </webApplication>
      * }</pre>
      *
-     *           Note: this setting is not supported in web.xml, ibm-web-bnd.xml, or web-bnd
-     *           in server.xml. <p>
+     * Note: this setting is not supported in web.xml, ibm-web-bnd.xml, or web-bnd
+     * in server.xml. <p>
      *
-     *           Note: if the singleton bean is configured for destruction during the server
-     *           quiesce period but the --force option is used on the server stop commend, then
-     *           the quiesce period will be skipped and the singleton bean will be destroyed
-     *           when the application is stopped.
+     * Note: if the singleton bean is configured for destruction during the server
+     * quiesce period but the --force option is used on the server stop commend, then
+     * the quiesce period will be skipped and the singleton bean will be destroyed
+     * when the application is stopped.
      *
-     *           <p><b>Environment Entry type:</b> Boolean
-     *           <p><b>Environment Entry values:</b> true or false (default false)
+     * <p><b>Environment Entry type:</b> Boolean
+     * <p><b>Environment Entry values:</b> true or false (default false)
      */
     public static final String destroyOnQuiesce = "io.openliberty.ejb.destroyOnQuiesce";
 }
