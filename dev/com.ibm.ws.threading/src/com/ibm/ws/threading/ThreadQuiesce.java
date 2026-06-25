@@ -23,7 +23,7 @@ public interface ThreadQuiesce {
     @Deprecated
     boolean quiesceThreads();
 
-    boolean quiesceThreads(long quiesceTimeoutMillis);
+    boolean quiesceThreads(long quiesceTimeout);
 
     int getActiveThreads();
 

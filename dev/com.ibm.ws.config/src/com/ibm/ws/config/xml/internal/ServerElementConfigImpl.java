@@ -108,4 +108,21 @@ public class ServerElementConfigImpl implements ServerElementConfig {
         }
         return BaseConfiguration.DEFAULT_QUIESCE_TIMEOUT_MILLIS;
     }
+    
+    /**
+     * Check if the quiesce timeout was explicitly configured in server.xml.
+     *
+     * @return true if the user specified a quiesceTimeout attribute, false if using the default
+     */
+    @Override
+    public boolean isQuiesceTimeoutExplicitlyConfigured() {
+        ServerXMLConfiguration config = serverXMLConfiguration;
+        if (config != null) {
+            ServerConfiguration serverConfig = config.getConfiguration();
+            if (serverConfig != null) {
+                return serverConfig.isQuiesceTimeoutExplicitlyConfigured();
+            }
+        }
+        return false;
+    }
 }

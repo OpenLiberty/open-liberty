@@ -40,4 +40,14 @@ public interface ServerElementConfig {
      * @return the quiesce timeout in milliseconds
      */
     long getQuiesceTimeoutMillis();
+    
+    /**
+     * Check if the quiesce timeout was explicitly configured in server.xml.
+     * This is useful for determining whether the timeout value should override
+     * other related timeout configurations.
+     *
+     * @return true if the user specified a quiesceTimeout attribute on the <server> element,
+     *         false if using the default value
+     */
+    boolean isQuiesceTimeoutExplicitlyConfigured();
 }
