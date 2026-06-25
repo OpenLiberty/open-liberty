@@ -182,7 +182,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_PKCE_CODE_CHALLENGE_METHOD = "pkceCodeChallengeMethod";
     public static final String CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER = "tokenRequestOriginHeader";
     public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
-    public static final String CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA = "serveProtectedResourceMetadata";
+    public static final String CFG_KEY_PROTECTED_RESOURCE_METADATA = "protectedResourceMetadata";
+    public static final String CFG_KEY_ADVERTISED_SCOPES = "advertisedScopes";
+    public static final String CFG_KEY_JWT_BUILDER_REF = "jwtBuilderRef";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -318,6 +320,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     private List<String> tokenOrderToFetchCallerClaims;
     private boolean serveProtectedResourceMetadata = false;
+    private String protectedResourceMetadataAdvertisedScopes = null;
+    private String protectedResourceMetadataJwtBuilderRef = null;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
@@ -570,7 +574,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         pkceCodeChallengeMethod = configUtils.getConfigAttribute(props, CFG_KEY_PKCE_CODE_CHALLENGE_METHOD);
         tokenRequestOriginHeader = configUtils.getConfigAttribute(props, CFG_KEY_TOKEN_REQUEST_ORIGIN_HEADER);
 
-        serveProtectedResourceMetadata = !ProductInfo.getBetaEdition() ? false : configUtils.getBooleanConfigAttribute(props, CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, serveProtectedResourceMetadata);
+        // Process protectedResourceMetadata sub-element
+        processProtectedResourceMetadata(props);
 
         // TODO - 3Q16: Check the validationEndpointUrl to make sure it is valid
         // before continuing to process this config
@@ -656,6 +661,8 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "tokenRequestOriginHeader:" + tokenRequestOriginHeader);
             Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims);
             Tr.debug(tc, "serveProtectedResourceMetadata:" + serveProtectedResourceMetadata);
+            Tr.debug(tc, "protectedResourceMetadataAdvertisedScopes:" + protectedResourceMetadataAdvertisedScopes);
+            Tr.debug(tc, "protectedResourceMetadataJwtBuilderRef:" + protectedResourceMetadataJwtBuilderRef);
         }
     }
 
@@ -702,6 +709,45 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      */
     private void logDiscoveryMessage(String key) {
         Tr.info(tc, key, getId(), getDiscoveryEndpointUrl());
+    }
+
+    /**
+     * Process the protectedResourceMetadata sub-element configuration.
+     * Because ibm:flat="true" is set on the AD, the child element properties are
+     * flattened onto the parent props map as "protectedResourceMetadata.0.{childProp}".
+     * This feature is only available in beta mode.
+     *
+     * @param props
+     *                  The configuration properties map
+     */
+    private void processProtectedResourceMetadata(Map<String, Object> props) {
+        // Beta fencing: only process if running in beta mode
+        if (!ProductInfo.getBetaEdition()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "protectedResourceMetadata sub-element is only available in beta mode");
+            }
+            return;
+        }
+
+        // With ibm:flat="true" the child properties are available directly on props
+        // under the key "protectedResourceMetadata.0.<childPropertyId>".
+        // Only process if the sub-element is present (i.e. at least one flat key was contributed).
+        final String flatAdvertisedScopesKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_ADVERTISED_SCOPES;
+        final String flatJwtBuilderRefKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_JWT_BUILDER_REF;
+        if (props.containsKey(flatAdvertisedScopesKey) || props.containsKey(flatJwtBuilderRefKey)) {
+            protectedResourceMetadataAdvertisedScopes = configUtils.getConfigAttribute(props, flatAdvertisedScopesKey);
+            protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttributeWithDefaultValue(props,
+                    flatJwtBuilderRefKey, "defaultProtectedResourceMetadataJwtBuilder");
+
+            if (protectedResourceMetadataAdvertisedScopes != null || protectedResourceMetadataJwtBuilderRef != null) {
+                serveProtectedResourceMetadata = true;
+            }
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "protectedResourceMetadata configured - advertisedScopes: " + protectedResourceMetadataAdvertisedScopes
+                        + ", jwtBuilderRef: " + protectedResourceMetadataJwtBuilderRef);
+            }
+        }
     }
 
     // @Override
@@ -1991,6 +2037,16 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public boolean getServeProtectedResourceMetadata() {
         return serveProtectedResourceMetadata;
+    }
+
+    @Override
+    public String getProtectedResourceMetadataAdvertisedScopes() {
+        return protectedResourceMetadataAdvertisedScopes;
+    }
+
+    @Override
+    public String getProtectedResourceMetadataJwtBuilderRef() {
+        return protectedResourceMetadataJwtBuilderRef;
     }
 
     @Override
