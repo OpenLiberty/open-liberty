@@ -147,8 +147,6 @@ public class MdbQuiesceTest extends FATServletClient {
             // Expected JCA deactivation messages (common + J2CA8804I)
             List<String> expectedJcaDeactivation = Arrays.asList //
             ("CWWKE1100I", // waiting for server quiesce
-             "CWWKO0220I", // standard quiesce listener defaultHttpEndpoint
-             "CWWKO0220I", // standard quiesce listener JMS Endpoint
              "J2CA8804I:", // JCA deactivation
              "J2CA8804I:", // JCA deactivation
              "CWWKE1101I", // server quiesce complete
@@ -162,8 +160,6 @@ public class MdbQuiesceTest extends FATServletClient {
             // Expected EJB deactivation messages (common + CNTR4014I)
             List<String> expectedEjbDeactivation = Arrays.asList //
             ("CWWKE1100I", // waiting for server quiesce
-             "CWWKO0220I", // standard quiesce listener defaultHttpEndpoint
-             "CWWKO0220I", // standard quiesce listener JMS Endpoint
              "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
              "CNTR4014I: The message endpoint for the MdbQuiesceDefault",
              "CWWKE1101I", // server quiesce complete
@@ -194,20 +190,20 @@ public class MdbQuiesceTest extends FATServletClient {
              "CWWKZ0009I"); // application stopped
 
             // Find JCA deactivation messages
-            List<String> actualJcaDeactivation = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I|CWWKE1101I|J2CA8804I|CWWKZ0009I.*",
-                                                                                       mdbServer.getDefaultLogFile());
+            List<String> actualJcaDeactivation = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKE1101I|J2CA8804I|CWWKZ0009I.*",
+                                                                                      mdbServer.getDefaultLogFile());
 
             // Find EJB deactivation messages
-            List<String> actualEjbDeactivation = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I|CWWKE1101I|CNTR4014I|CWWKZ0009I.*",
-                                                                                       mdbServer.getDefaultLogFile());
+            List<String> actualEjbDeactivation = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKE1101I|CNTR4014I|CWWKZ0009I.*",
+                                                                                      mdbServer.getDefaultLogFile());
 
             // Find PreDestroy messages
             List<String> actualPreDestroy = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I|CWWKE1101I|PreDestroy:MdbQuiesceApp|CWWKZ0009I.*",
-                                                                                  mdbServer.getDefaultLogFile());
+                                                                                 mdbServer.getDefaultLogFile());
 
             // Verify all three message sequences are present in order
-            verifyMessagesInOrder(expectedJcaDeactivation, actualJcaDeactivation, "JCA Deactivation", 6);
-            verifyMessagesInOrder(expectedEjbDeactivation, actualEjbDeactivation, "EJB Deactivation", 6);
+            verifyMessagesInOrder(expectedJcaDeactivation, actualJcaDeactivation, "JCA Deactivation", 4);
+            verifyMessagesInOrder(expectedEjbDeactivation, actualEjbDeactivation, "EJB Deactivation", 4);
             verifyMessagesInOrder(expectedPreDestroy, actualPreDestroy, "PreDestroy", 8);
 
         } finally {

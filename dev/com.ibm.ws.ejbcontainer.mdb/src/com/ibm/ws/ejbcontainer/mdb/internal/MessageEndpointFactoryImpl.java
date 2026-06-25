@@ -35,7 +35,6 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.ejbcontainer.mdb.BaseMessageEndpointFactory;
 import com.ibm.ws.ejbcontainer.mdb.MDBMessageEndpointFactory;
-import com.ibm.ws.ejbcontainer.runtime.AbstractEJBRuntime;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 import com.ibm.ws.jca.service.AdminObjectService;
 import com.ibm.ws.jca.service.EndpointActivationService;
@@ -43,8 +42,8 @@ import com.ibm.ws.jca.service.WSMessageEndpointFactory;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentException;
 import com.ibm.ws.kernel.productinfo.ProductInfo;
-import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 import com.ibm.ws.util.ThreadContextAccessor;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * This class implements the MDB MessageEndpointFactory interface and is used
@@ -451,6 +450,9 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     @Trivial
     @Override
     public boolean isDeactivateOnQuiesce() {
+        if (!isBeta) {
+            return true;
+        }
         return beanMetaData.isDeactivateOnQuiesce();
     }
 
