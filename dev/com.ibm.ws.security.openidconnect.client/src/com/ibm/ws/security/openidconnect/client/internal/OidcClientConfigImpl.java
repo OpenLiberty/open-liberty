@@ -320,7 +320,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     private List<String> tokenOrderToFetchCallerClaims;
     private boolean serveProtectedResourceMetadata = false;
-    private String protectedResourceMetadataAdvertisedScopes = null;
+    private List<String> protectedResourceMetadataAdvertisedScopes = null;
     private String protectedResourceMetadataJwtBuilderRef = null;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
@@ -735,7 +735,9 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         final String flatAdvertisedScopesKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_ADVERTISED_SCOPES;
         final String flatJwtBuilderRefKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_JWT_BUILDER_REF;
         if (props.containsKey(flatAdvertisedScopesKey) || props.containsKey(flatJwtBuilderRefKey)) {
-            protectedResourceMetadataAdvertisedScopes = configUtils.getConfigAttribute(props, flatAdvertisedScopesKey);
+            String advertisedScopes = configUtils.getConfigAttribute(props, flatAdvertisedScopesKey);
+            protectedResourceMetadataAdvertisedScopes = advertisedScopes == null ? null : Arrays.asList(advertisedScopes.split(","));
+
             protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttributeWithDefaultValue(props,
                     flatJwtBuilderRefKey, "defaultProtectedResourceMetadataJwtBuilder");
 
@@ -2040,7 +2042,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     @Override
-    public String getProtectedResourceMetadataAdvertisedScopes() {
+    public List<String> getProtectedResourceMetadataAdvertisedScopes() {
         return protectedResourceMetadataAdvertisedScopes;
     }
 

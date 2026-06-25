@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -855,7 +856,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             oidcClientConfig.modify(props);
 
             // Verify: advertisedScopes and jwtBuilderRef should be set
-            assertEquals("advertisedScopes should be " + advertisedScopes, advertisedScopes,
+            assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile", "email"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
             assertEquals("jwtBuilderRef should be " + jwtBuilderRef, jwtBuilderRef,
                     oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
@@ -894,7 +895,7 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             oidcClientConfig.modify(props);
 
             // Verify: advertisedScopes should be set, jwtBuilderRef should be default
-            assertEquals("advertisedScopes should be " + advertisedScopes, advertisedScopes,
+            assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
             assertEquals("jwtBuilderRef should be default", "defaultProtectedResourceMetadataJwtBuilder",
                     oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());

@@ -12,6 +12,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.clients.common;
 
+import java.util.List;
+
 import com.ibm.ws.security.common.structures.SingleTableCache;
 
 public interface OidcClientConfig extends ConvergedClientConfig {
@@ -98,10 +100,9 @@ public interface OidcClientConfig extends ConvergedClientConfig {
     /**
      * Get the advertised scopes for the protected resource metadata.
      *
-     * @return A comma-separated list of scopes, or null if not configured
+     * @return A list of scopes, or null if not configured
      */
-    //List of strings instead of string
-    public String getProtectedResourceMetadataAdvertisedScopes();
+    public List<String> getProtectedResourceMetadataAdvertisedScopes();
 
     /**
      * Get the JWT builder reference for the protected resource metadata.
