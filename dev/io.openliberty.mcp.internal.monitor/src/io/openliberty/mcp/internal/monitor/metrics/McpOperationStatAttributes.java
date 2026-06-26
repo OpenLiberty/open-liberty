@@ -11,6 +11,8 @@ package io.openliberty.mcp.internal.monitor.metrics;
 
 import static io.openliberty.mcp.internal.monitor.metrics.JmxHelper.escapeJmxValue;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.ibm.websphere.ras.Tr;
@@ -34,20 +36,19 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * @see Builder
  */
 public record McpOperationStatAttributes(
-    String mcpMethodName,
-    String errorType,
-    String genAiPromptName,
-    String genAiToolName,
-    String rpcResponseStatusCode,
-    String genAiOperationName,
-    String jsonrpcProtocolVersion,
-    String mcpProtocolVersion,
-    String networkProtocolName,
-    String networkProtocolVersion,
-    String networkTransport,
-    String mcpResourceUri,
-    String mcpOperationStat_ID
-) {
+                                         String mcpMethodName,
+                                         String errorType,
+                                         String genAiPromptName,
+                                         String genAiToolName,
+                                         String rpcResponseStatusCode,
+                                         String genAiOperationName,
+                                         String jsonrpcProtocolVersion,
+                                         String mcpProtocolVersion,
+                                         String networkProtocolName,
+                                         String networkProtocolVersion,
+                                         String networkTransport,
+                                         String mcpResourceUri,
+                                         String mcpOperationStat_ID) {
 
     private static final TraceComponent tc = Tr.register(McpOperationStatAttributes.class);
 
@@ -58,7 +59,7 @@ public record McpOperationStatAttributes(
         if (mcpMethodName == null) {
             throw new IllegalStateException("Invalid MCP Stats attributes: mcpMethodName is required");
         }
-        
+
         // Compute the JMX-safe identifier if not provided
         if (mcpOperationStat_ID == null) {
             mcpOperationStat_ID = resolveKeyID(mcpMethodName, genAiToolName, errorType, genAiPromptName,
@@ -87,58 +88,58 @@ public record McpOperationStatAttributes(
         StringBuilder sb = new StringBuilder();
         sb.append("\""); // starting quote
         sb.append("mcpMethod:").append(escapeJmxValue(mcpMethodName));
-        
+
         /*
          * Optional fields - only append if not null
          */
         if (genAiToolName != null) {
             sb.append(";genAiTool:").append(escapeJmxValue(genAiToolName));
         }
-        
+
         if (errorType != null) {
             sb.append(";errorType:").append(escapeJmxValue(errorType));
         }
-        
+
         if (genAiPromptName != null) {
             sb.append(";genAiPrompt:").append(escapeJmxValue(genAiPromptName));
         }
-        
+
         if (rpcResponseStatusCode != null) {
             sb.append(";rpcStatus:").append(escapeJmxValue(rpcResponseStatusCode));
         }
-        
+
         if (genAiOperationName != null) {
             sb.append(";genAiOp:").append(escapeJmxValue(genAiOperationName));
         }
-        
+
         if (jsonrpcProtocolVersion != null) {
             sb.append(";jsonrpcVer:").append(escapeJmxValue(jsonrpcProtocolVersion));
         }
-        
+
         if (mcpProtocolVersion != null) {
             sb.append(";mcpVer:").append(escapeJmxValue(mcpProtocolVersion));
         }
-        
+
         if (networkProtocolName != null) {
             sb.append(";netProto:").append(escapeJmxValue(networkProtocolName));
         }
-        
+
         if (networkProtocolVersion != null) {
             sb.append(";netProtoVer:").append(escapeJmxValue(networkProtocolVersion));
         }
-        
+
         if (networkTransport != null) {
             sb.append(";netTransport:").append(escapeJmxValue(networkTransport));
         }
-        
+
         if (mcpResourceUri != null) {
             sb.append(";resourceUri:").append(escapeJmxValue(mcpResourceUri));
         }
-        
+
         sb.append("\""); // ending quote
         return sb.toString();
     }
-    
+
     /**
      * Returns the JMX-safe identifier for this MCP operation.
      * This is an alias for the record accessor method for backward compatibility.
@@ -147,6 +148,66 @@ public record McpOperationStatAttributes(
      */
     public String getMcpOperationStatID() {
         return mcpOperationStat_ID;
+    }
+
+    /**
+     * Converts the attributes to a Map suitable for creating JMX ObjectName properties.
+     * Only non-null attributes are included in the map.
+     *
+     * @return a LinkedHashMap of attribute key-value pairs
+     */
+    public Map<String, String> toAttributeMap() {
+        Map<String, String> attributes = new LinkedHashMap<>();
+
+        // Always include the method name
+        attributes.put("mcpMethod", mcpMethodName);
+
+        // Add optional attributes only if they are not null
+        if (genAiToolName != null) {
+            attributes.put("genAiTool", genAiToolName);
+        }
+
+        if (errorType != null) {
+            attributes.put("errorType", errorType);
+        }
+
+        if (genAiPromptName != null) {
+            attributes.put("genAiPrompt", genAiPromptName);
+        }
+
+        if (rpcResponseStatusCode != null) {
+            attributes.put("rpcStatus", rpcResponseStatusCode);
+        }
+
+        if (genAiOperationName != null) {
+            attributes.put("genAiOp", genAiOperationName);
+        }
+
+        if (jsonrpcProtocolVersion != null) {
+            attributes.put("jsonrpcVer", jsonrpcProtocolVersion);
+        }
+
+        if (mcpProtocolVersion != null) {
+            attributes.put("mcpVer", mcpProtocolVersion);
+        }
+
+        if (networkProtocolName != null) {
+            attributes.put("netProto", networkProtocolName);
+        }
+
+        if (networkProtocolVersion != null) {
+            attributes.put("netProtoVer", networkProtocolVersion);
+        }
+
+        if (networkTransport != null) {
+            attributes.put("netTransport", networkTransport);
+        }
+
+        if (mcpResourceUri != null) {
+            attributes.put("resourceUri", mcpResourceUri);
+        }
+
+        return attributes;
     }
 
     public static Builder builder() {
@@ -192,25 +253,25 @@ public record McpOperationStatAttributes(
          * builder. Returns an empty Optional if the required fields are not filled.
          *
          * @return Optional containing the {@link McpOperationStatAttributes} instance if valid,
-         *         or empty Optional if validation fails
+         * or empty Optional if validation fails
          */
         @FFDCIgnore(value = { IllegalStateException.class })
         public Optional<McpOperationStatAttributes> build() {
             try {
                 return Optional.of(new McpOperationStatAttributes(
-                    mcpMethodName,
-                    errorType,
-                    genAiPromptName,
-                    genAiToolName,
-                    rpcResponseStatusCode,
-                    genAiOperationName,
-                    jsonrpcProtocolVersion,
-                    mcpProtocolVersion,
-                    networkProtocolName,
-                    networkProtocolVersion,
-                    networkTransport,
-                    mcpResourceUri,
-                    null //  constructor computes the ID
+                                                                  mcpMethodName,
+                                                                  errorType,
+                                                                  genAiPromptName,
+                                                                  genAiToolName,
+                                                                  rpcResponseStatusCode,
+                                                                  genAiOperationName,
+                                                                  jsonrpcProtocolVersion,
+                                                                  mcpProtocolVersion,
+                                                                  networkProtocolName,
+                                                                  networkProtocolVersion,
+                                                                  networkTransport,
+                                                                  mcpResourceUri,
+                                                                  null //  constructor computes the ID
                 ));
             } catch (IllegalStateException ise) {
                 //do nothing
@@ -298,5 +359,3 @@ public record McpOperationStatAttributes(
 
     }
 }
-
-// Made with Bob

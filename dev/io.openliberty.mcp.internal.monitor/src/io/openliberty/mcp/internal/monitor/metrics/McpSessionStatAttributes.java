@@ -11,6 +11,8 @@ package io.openliberty.mcp.internal.monitor.metrics;
 
 import static io.openliberty.mcp.internal.monitor.metrics.JmxHelper.escapeJmxValue;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import com.ibm.websphere.ras.Tr;
@@ -32,14 +34,13 @@ import com.ibm.ws.ffdc.annotation.FFDCIgnore;
  * @see Builder
  */
 public record McpSessionStatAttributes(
-    String errorType,
-    String jsonrpcProtocolVersion,
-    String mcpProtocolVersion,
-    String networkProtocolName,
-    String networkProtocolVersion,
-    String networkTransport,
-    String mcpSessionStat_ID
-) {
+                                       String errorType,
+                                       String jsonrpcProtocolVersion,
+                                       String mcpProtocolVersion,
+                                       String networkProtocolName,
+                                       String networkProtocolVersion,
+                                       String networkTransport,
+                                       String mcpSessionStat_ID) {
 
     private static final TraceComponent tc = Tr.register(McpSessionStatAttributes.class);
 
@@ -50,7 +51,7 @@ public record McpSessionStatAttributes(
         // Compute the JMX-safe identifier if not provided
         if (mcpSessionStat_ID == null) {
             mcpSessionStat_ID = resolveKeyID(errorType, jsonrpcProtocolVersion, mcpProtocolVersion,
-                                            networkProtocolName, networkProtocolVersion, networkTransport);
+                                             networkProtocolName, networkProtocolVersion, networkTransport);
         }
     }
 
@@ -70,41 +71,41 @@ public record McpSessionStatAttributes(
                                        String networkProtocolName, String networkProtocolVersion, String networkTransport) {
         StringBuilder sb = new StringBuilder();
         sb.append("\""); // starting quote
-        
+
         // Start with a base identifier to ensure we always have something
         sb.append("session");
-        
+
         /*
          * Optional fields - only append if not null
          */
         if (errorType != null) {
             sb.append(";errorType:").append(escapeJmxValue(errorType));
         }
-        
+
         if (jsonrpcProtocolVersion != null) {
             sb.append(";jsonrpcVer:").append(escapeJmxValue(jsonrpcProtocolVersion));
         }
-        
+
         if (mcpProtocolVersion != null) {
             sb.append(";mcpVer:").append(escapeJmxValue(mcpProtocolVersion));
         }
-        
+
         if (networkProtocolName != null) {
             sb.append(";netProto:").append(escapeJmxValue(networkProtocolName));
         }
-        
+
         if (networkProtocolVersion != null) {
             sb.append(";netProtoVer:").append(escapeJmxValue(networkProtocolVersion));
         }
-        
+
         if (networkTransport != null) {
             sb.append(";netTransport:").append(escapeJmxValue(networkTransport));
         }
-        
+
         sb.append("\""); // ending quote
         return sb.toString();
     }
-    
+
     /**
      * Returns the JMX-safe identifier for this MCP session.
      * This is an alias for the record accessor method for backward compatibility.
@@ -113,6 +114,46 @@ public record McpSessionStatAttributes(
      */
     public String getMcpSessionStatID() {
         return mcpSessionStat_ID;
+    }
+
+    /**
+     * Converts the attributes to a Map suitable for creating JMX ObjectName properties.
+     * Only non-null attributes are included in the map.
+     *
+     * @return a LinkedHashMap of attribute key-value pairs
+     */
+    public Map<String, String> toAttributeMap() {
+        Map<String, String> attributes = new LinkedHashMap<>();
+
+        // Add a base identifier for sessions
+        attributes.put("session", "true");
+
+        // Add optional attributes only if they are not null
+        if (errorType != null) {
+            attributes.put("errorType", errorType);
+        }
+
+        if (jsonrpcProtocolVersion != null) {
+            attributes.put("jsonrpcVer", jsonrpcProtocolVersion);
+        }
+
+        if (mcpProtocolVersion != null) {
+            attributes.put("mcpVer", mcpProtocolVersion);
+        }
+
+        if (networkProtocolName != null) {
+            attributes.put("netProto", networkProtocolName);
+        }
+
+        if (networkProtocolVersion != null) {
+            attributes.put("netProtoVer", networkProtocolVersion);
+        }
+
+        if (networkTransport != null) {
+            attributes.put("netTransport", networkTransport);
+        }
+
+        return attributes;
     }
 
     public static Builder builder() {
@@ -151,19 +192,19 @@ public record McpSessionStatAttributes(
          * builder. Returns an empty Optional if the required fields are not filled.
          *
          * @return Optional containing the {@link McpSessionStatAttributes} instance if valid,
-         *         or empty Optional if validation fails
+         * or empty Optional if validation fails
          */
         @FFDCIgnore(value = { IllegalStateException.class })
         public Optional<McpSessionStatAttributes> build() {
             try {
                 return Optional.of(new McpSessionStatAttributes(
-                    errorType,
-                    jsonrpcProtocolVersion,
-                    mcpProtocolVersion,
-                    networkProtocolName,
-                    networkProtocolVersion,
-                    networkTransport,
-                    null // Let the compact constructor compute the ID
+                                                                errorType,
+                                                                jsonrpcProtocolVersion,
+                                                                mcpProtocolVersion,
+                                                                networkProtocolName,
+                                                                networkProtocolVersion,
+                                                                networkTransport,
+                                                                null // Let the compact constructor compute the ID
                 ));
             } catch (IllegalStateException ise) {
                 //do nothing
@@ -218,5 +259,3 @@ public record McpSessionStatAttributes(
 
     }
 }
-
-// Made with Bob
