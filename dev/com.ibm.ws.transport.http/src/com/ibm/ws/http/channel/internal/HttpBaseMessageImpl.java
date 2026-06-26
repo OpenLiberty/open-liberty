@@ -797,7 +797,7 @@ public abstract class HttpBaseMessageImpl extends GenericMessageImpl implements 
         }
 
         try {
-            long length = GenericUtils.asLongValue(value);
+            long length = GenericUtils.asLongValue(value, false);
             // PK24115 - don't allow -1 to be set explicitly
             if (0 > length) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
