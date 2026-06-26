@@ -3207,58 +3207,65 @@ public class DataSourceTestServlet extends FATServlet {
         // At this point, the transaction is in-doubt.
         // We won't be able to access the data until the transaction manager recovers
         // the transaction and resolves it.
-        //
-        // A connection configured with TRANSACTION_SERIALIZABLE is necessary in
-        // order to allow the recovery to kick in before using the connection.
 
         System.out.println("attempting to access data (only possible after recovery)");
-        Connection con = ds4u_8.getConnection();
 
-        int isolation = con.getTransactionIsolation();
-        if (isolation != Connection.TRANSACTION_SERIALIZABLE)
-            throw new Exception("The isolation-level of the resource-ref is not honored, instead: " + isolation);
+        // Verify the isolation-level resource-ref attribute is honored by ds4u_8
+        Connection verifyIsolation = ds4u_8.getConnection();
         try {
-            ResultSet result;
-            PreparedStatement pstmt = con.prepareStatement("select name, population, county from cities where name = ?");
-
-            /*
-             * Poll for results once a second for up to 2 minutes.
-             * Most databases will have XA recovery done by this point
-             *
-             */
-            List<String> cities = new ArrayList<>();
-            for (int count = 0; cities.size() < numPrepares && count < 120; Thread.sleep(1000)) {
-                if (!cities.contains("Edina")) {
-                    pstmt.setString(1, "Edina");
-                    result = pstmt.executeQuery();
-                    if (result.next())
-                        cities.add(0, "Edina");
-                }
-
-                if (!cities.contains("St. Louis Park")) {
-                    pstmt.setString(1, "St. Louis Park");
-                    result = pstmt.executeQuery();
-                    if (result.next())
-                        cities.add(1, "St. Louis Park");
-                }
-
-                if (numPrepares == 3 && !cities.contains("Moorhead")) {
-                    pstmt.setString(1, "Moorhead");
-                    result = pstmt.executeQuery();
-                    if (result.next())
-                        cities.add(2, "Moorhead");
-                }
-                count++;
-                System.out.println("Attempt " + count + " to retrieve recovered XA data. Current status: " + cities);
-            }
-
-            if (cities.size() < numPrepares)
-                throw new Exception("Missing entry in database. Results: " + cities);
-            else
-                System.out.println("successfully accessed the data");
+            int isolation = verifyIsolation.getTransactionIsolation();
+            if (isolation != Connection.TRANSACTION_SERIALIZABLE)
+                throw new Exception("The isolation-level of the resource-ref is not honored, instead: " + isolation);
         } finally {
-            con.close();
+            verifyIsolation.close();
         }
+
+        /*
+         * Poll for results once a second for up to 2 minutes.
+         * A new READ_COMMITTED connection is obtained on each attempt so that Oracle's
+         * SERIALIZABLE snapshot issues (ORA-08177) do not prevent reading recovered data.
+         * READ_COMMITTED always sees committed data, which is what we need here.
+         */
+        List<String> cities = new ArrayList<>();
+        for (int count = 0; cities.size() < numPrepares && count < 120; Thread.sleep(1000)) {
+            Connection con = ds4u_2.getConnection();
+            try {
+                PreparedStatement pstmt = con.prepareStatement("select name, population, county from cities where name = ?");
+                try {
+                    if (!cities.contains("Edina")) {
+                        pstmt.setString(1, "Edina");
+                        ResultSet result = pstmt.executeQuery();
+                        if (result.next())
+                            cities.add(0, "Edina");
+                    }
+
+                    if (!cities.contains("St. Louis Park")) {
+                        pstmt.setString(1, "St. Louis Park");
+                        ResultSet result = pstmt.executeQuery();
+                        if (result.next())
+                            cities.add(1, "St. Louis Park");
+                    }
+
+                    if (numPrepares == 3 && !cities.contains("Moorhead")) {
+                        pstmt.setString(1, "Moorhead");
+                        ResultSet result = pstmt.executeQuery();
+                        if (result.next())
+                            cities.add(2, "Moorhead");
+                    }
+                } finally {
+                    pstmt.close();
+                }
+            } finally {
+                con.close();
+            }
+            count++;
+            System.out.println("Attempt " + count + " to retrieve recovered XA data. Current status: " + cities);
+        }
+
+        if (cities.size() < numPrepares)
+            throw new Exception("Missing entry in database. Results: " + cities);
+        else
+            System.out.println("successfully accessed the data");
     }
 
     /**
