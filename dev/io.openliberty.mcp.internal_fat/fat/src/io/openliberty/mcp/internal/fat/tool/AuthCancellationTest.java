@@ -173,7 +173,7 @@ public class AuthCancellationTest extends FATServletClient {
         client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
                                         """;
 
         String responseA = futureA.get(10, TimeUnit.SECONDS);

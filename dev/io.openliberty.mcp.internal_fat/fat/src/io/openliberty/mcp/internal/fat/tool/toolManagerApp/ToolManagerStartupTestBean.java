@@ -104,6 +104,16 @@ public class ToolManagerStartupTestBean {
                    .register();
     }
 
+    @SuppressWarnings("unused")
+    private void createDefaultValueTool(@Observes Startup startup) {
+        toolManager.newTool("tool-with-defaultvalue")
+                   .addArgument("year", "current year", false, String.class, "2025")
+                   .setTitle("ToolArg Int Default Value")
+                   .setDescription("Test tool defaults to default value when argument not provided")
+                   .setHandler(a -> ToolResponse.success((String) a.args().get("year")))
+                   .register();
+    }
+
     private static record PojoInput(String foo, int bar) {};
 
     private static record PojoOutput(String baz, List<Boolean> qux) {}

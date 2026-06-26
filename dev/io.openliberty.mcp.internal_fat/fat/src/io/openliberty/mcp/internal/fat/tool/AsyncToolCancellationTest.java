@@ -117,8 +117,67 @@ public class AsyncToolCancellationTest extends FATServletClient {
         String response = future.get(10, TimeUnit.SECONDS);
 
         String expectedResponseString = """
-                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"An internal server error occurred while running the tool.", "type":"text"}],"isError":true}}
+                        {"id":"2","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testOperationCancellationExceptionNotLoggedAsError() throws Exception {
+        final String latchName = "testOperationCancellationExceptionNotLoggedAsError";
+
+        Callable<String> threadCallingTool = () -> {
+            try {
+                String request = """
+                                  {
+                                  "jsonrpc": "2.0",
+                                  "id": "3",
+                                  "method": "tools/call",
+                                  "params": {
+                                    "name": "asyncCancellationTool",
+                                    "arguments": {
+                                      "latchName": "testOperationCancellationExceptionNotLoggedAsError"
+                                    }
+                                  }
+                                }
+                                """;
+
+                return client.callMCPwithBasicAuth(request, "BobTheAdmin", "testpassword");
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        };
+
+        Future<String> future = executor.submit(threadCallingTool);
+
+        String cancellationRequestNotification = """
+                          {
+                          "jsonrpc": "2.0",
+                          "method": "notifications/cancelled",
+                          "params": {
+                            "requestId": "3",
+                            "reason": "no longer needed"
+                          }
+                        }
+                        """;
+
+        toolStatus.awaitStarted(latchName);
+        client.callMCPNotificationWithBasicAuth(cancellationRequestNotification, "BobTheAdmin", "testpassword");
+
+        String response = future.get(10, TimeUnit.SECONDS);
+
+        // Verify the response indicates cancellation
+        String expectedResponseString = """
+                        {"id":"3","jsonrpc":"2.0","result":{"content":[{"text":"Operation was cancelled", "type":"text"}],"isError":true}}
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+
+        // Verify that the internal server error message (CWMCM0010E) was NOT logged
+        // This error message is only logged for non-business exceptions, and OperationCancellationException
+        // should be handled specially without logging
+        String errorLog = server.waitForStringInLog("CWMCM0010E.*asyncCancellationTool", 2000);
+        if (errorLog != null) {
+            throw new AssertionError("OperationCancellationException should not be logged as an error. Found: " + errorLog);
+        }
     }
 }

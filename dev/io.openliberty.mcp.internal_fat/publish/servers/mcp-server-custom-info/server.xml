@@ -1,0 +1,29 @@
+<server description="MCP Server with Multiple Apps - Partial and Custom ServerInfo">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcpServer-1.0</feature>
+  </featureManager>
+ 
+  
+	<application location="partialServerInfoTest.war">
+	    <mcpServer>
+	        <!-- Only provide name, leave other fields empty/unset to test null handling -->
+	        <info name="partial-server" />
+	    </mcpServer>
+	</application>
+
+	<application location="fullyCustomServerInfoTest.war">
+	    <mcpServer>
+	        <!-- Provide all custom fields to test full configuration -->
+	        <info name="my-custom-server"
+	              title="My Custom MCP Server"
+	              version="2.5.0"
+	              description="My custom description" />
+	    </mcpServer>
+	</application>
+
+  <include location="../fatTestPorts.xml" />
+  
+</server>

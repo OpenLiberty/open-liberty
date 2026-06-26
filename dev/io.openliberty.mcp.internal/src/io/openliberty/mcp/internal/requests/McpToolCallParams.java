@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -22,10 +21,9 @@ import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.mcp.annotations.ToolArg;
+import io.openliberty.mcp.internal.ConverterRegistry;
 import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
-import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import jakarta.json.JsonObject;
@@ -71,13 +69,13 @@ public class McpToolCallParams {
         this.arguments = arguments;
     }
 
-    public Map<String, Object> getArguments(Jsonb jsonb) {
+    public Map<String, Object> getArguments(Jsonb jsonb, ConverterRegistry converterRegistry) {
         if (parsedArguments != null) {
             return parsedArguments;
         }
 
         JsonObject safeArguments = (this.arguments != null) ? this.arguments : JsonValue.EMPTY_JSON_OBJECT;
-        parsedArguments = parseArguments(safeArguments, jsonb);
+        parsedArguments = parseArguments(safeArguments, jsonb, converterRegistry);
         return parsedArguments;
     }
 
@@ -90,7 +88,7 @@ public class McpToolCallParams {
     }
 
     @FFDCIgnore(NumberFormatException.class)
-    private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb) {
+    private Map<String, Object> parseArguments(JsonObject requestArguments, Jsonb jsonb, ConverterRegistry converterRegistry) {
 
         List<ToolArgument> metadatas = metadata.arguments();
         Map<String, Object> result = new HashMap<>();
@@ -114,7 +112,7 @@ public class McpToolCallParams {
                 }
             } else if (!argMetadata.required()) {
                 //Argument is optional and not provided, resolve the default value
-                result.put(argName, DefaultValueResolver.resolveDefaultValue(argMetadata));
+                result.put(argName, DefaultValueResolver.resolveDefaultValue(name, argMetadata, converterRegistry));
             } else {
                 // Required argument was not provided in the request
                 hasMissingArgs = true;
@@ -135,39 +133,6 @@ public class McpToolCallParams {
             throw new ToolCallException(data);
         }
         return result;
-    }
-
-    /**
-     * Converts a tool argument's default value, specified in {@link ToolArg#defaultValue()}, from a string to a Java object matching the tool argument's type.
-     *
-     * @param toolMetadata the metadata for the tool containing the tool argument
-     * @param argMetadata the metadata for the tool argument, which includes the default value and type
-     * @return the default value as a Java object matching the type of the tool argument
-     * @throws IllegalArgumentException if the default value cannot be converted to the target type or there is no converter for the target type.
-     */
-    @SuppressWarnings("unchecked")
-    public static Object convertDefaultValueToArgType(ToolMetadata toolMetadata, ToolArgument argMetadata) {
-        String defaultValue = argMetadata.defaultValue();
-        Type type = TypeUtility.box(argMetadata.type());
-        DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(type);
-
-        if (converter != null) {
-            try {
-                return converter.convert(defaultValue);
-            } catch (Exception e) {
-                throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0020E.defaultvalue.conversion.error", toolMetadata.name(), argMetadata.name(), argMetadata.type(),
-                                                                    defaultValue, e),
-                                                   e);
-            }
-        }
-
-        if (type instanceof Class clazz) {
-            if (clazz.isEnum()) {
-                return Enum.valueOf(clazz.asSubclass(Enum.class), defaultValue);
-            }
-        }
-
-        throw new IllegalArgumentException(Tr.formatMessage(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", toolMetadata.name(), argMetadata.name(), argMetadata.type()));
     }
 
     /**

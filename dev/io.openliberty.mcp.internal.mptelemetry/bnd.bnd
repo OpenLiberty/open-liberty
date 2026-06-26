@@ -1,0 +1,53 @@
+#*******************************************************************************
+# Copyright (c) 2025, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Model Context Protocol Microprofile Telemetry
+Bundle-SymbolicName: io.openliberty.mcp.internal.mptelemetry
+Bundle-Description: Open Liberty Model Context Protocol Microprofile Telemetry, version ${bVersion}
+
+javac.source: 17
+javac.target: 17
+
+WS-TraceGroup: MCP
+
+Private-Package: \
+	io.openliberty.mcp.internal.mptelemetry,\
+	io.openliberty.mcp.internal.mptelemetry.*,\
+	io.opentelemetry.semconv.incubating
+
+Import-Package: \
+	!io.opentelemetry.semconv.incubating.*,\
+	io.opentelemetry.api.common;version="[1.2,3)",\
+	io.openliberty.microprofile.telemetry.internal.common.resources,\
+	*
+	
+
+-dsannotations-inherit: true
+-dsannotations: \
+	io.openliberty.mcp.internal.mptelemetry.MPTelemetryMcpMetricsAdapterImpl
+	
+-buildpath: \
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	io.openliberty.microprofile.telemetry.internal.common;version=latest,\
+	io.openliberty.io.opentelemetry.2.0;version=latest,\
+	io.openliberty.mcp.internal;version=latest,\
+	io.openliberty.mcp.internal.monitor;version=latest,\
+	io.opentelemetry.semconv:opentelemetry-semconv-incubating;version='1.40.0.alpha',\
+
+-testpath: \
+	../build.sharedResources/lib/junit/old/junit.jar;version=file
+
+# opentelemetry-semconv-incubating must come before io.openliberty.io.opentelemetry in buildpath order

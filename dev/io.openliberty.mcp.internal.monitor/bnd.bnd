@@ -1,0 +1,50 @@
+#*******************************************************************************
+# Copyright (c) 2025, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+Bundle-Name: Model Context Protocol Monitor
+Bundle-SymbolicName: io.openliberty.mcp.internal.monitor
+Bundle-Description: Open Liberty Model Context Protocol Monitor, version ${bVersion}
+
+javac.source: 17
+javac.target: 17
+
+WS-TraceGroup: MCP
+
+Import-Package: \
+	*
+
+Export-Package: \
+	io.openliberty.mcp.internal.monitor.metrics
+
+Private-Package: \
+	io.openliberty.mcp.monitor,\
+	io.openliberty.mcp.internal.monitor
+
+-dsannotations: \
+  io.openliberty.mcp.internal.monitor.metrics.MetricsManager,\
+  io.openliberty.mcp.internal.monitor.McpMonitorAppStateListener
+
+Liberty-Monitoring-Components: io.openliberty.mcp.internal.monitor.McpStatsMonitorImpl
+
+-buildpath: \
+	io.openliberty.jakarta.servlet.6.0;version=latest,\
+	com.ibm.ws.monitor;version=latest,\
+	com.ibm.websphere.org.osgi.core;version=latest,\
+	com.ibm.websphere.org.osgi.service.component;version=latest,\
+	com.ibm.wsspi.org.osgi.service.component.annotations;version=latest,\
+	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
+	com.ibm.ws.logging.core;version=latest,\
+	com.ibm.ws.kernel.service;version=latest,\
+	com.ibm.ws.container.service;version=latest,\
+	io.openliberty.mcp;version=latest,\
+	io.openliberty.mcp.internal;version=latest
+-testpath: com.ibm.ws.componenttest.2.0

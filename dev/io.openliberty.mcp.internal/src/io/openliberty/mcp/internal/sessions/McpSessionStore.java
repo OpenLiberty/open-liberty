@@ -12,31 +12,33 @@ package io.openliberty.mcp.internal.sessions;
 import java.security.Principal;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.config.McpConfig;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
+import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 
 /**
  * Manages active MCP sessions for the server.
  * <p>
  * Each session is uniquely identified by a UUID and has an associated {@link McpSession}
  */
-@ApplicationScoped
 public class McpSessionStore {
 
-    @Inject
-    McpRequestTracker requestTracker;
+    private McpRequestTracker requestTracker;
 
-    @Inject
-    McpConfig mcpConfig;
+    private McpConfig mcpConfig;
 
-    private static final Duration SESSION_TIMEOUT = Duration.ofMinutes(10);
-    private final ConcurrentMap<String, McpSession> sessions = new ConcurrentHashMap<>();
+    private final ConcurrentMap<McpSessionId, McpSession> sessions = new ConcurrentHashMap<>();
+
+    public McpSessionStore(McpRequestTracker requestTracker, McpConfig mcpConfig) {
+        this.requestTracker = requestTracker;
+        this.mcpConfig = mcpConfig;
+    }
 
     public boolean isStateless() {
         return mcpConfig.stateless();
@@ -47,14 +49,16 @@ public class McpSessionStore {
      *
      * @return the newly generated session ID
      */
-    public String createSession(Principal userId) {
+    public McpSessionId createSession(Principal userId, McpSessionMetrics metrics) {
 
         if (isStateless()) {
             return null;
         }
 
-        String sessionId = UUID.randomUUID().toString();
-        sessions.put(sessionId, new McpSession(sessionId, userId));
+        McpSessionId sessionId = new McpSessionId(UUID.randomUUID().toString());
+        McpSession mcpSession = new McpSession(sessionId, userId, metrics);
+        sessions.put(sessionId, mcpSession);
+        metrics.setMcpSession(mcpSession);
         return sessionId;
     }
 
@@ -66,7 +70,7 @@ public class McpSessionStore {
      * @param sessionId the ID of the session
      * @return the corresponding {@link McpSession}, or {@code null} if not found
      */
-    public McpSession getSession(String sessionId) {
+    public McpSession getSession(McpSessionId sessionId) {
         if (isStateless()) {
             return null;
         }
@@ -82,7 +86,7 @@ public class McpSessionStore {
      * Checks if the session ID is valid and not expired.
      * Also removes any expired sessions as a side effect.
      */
-    public boolean isValid(String sessionId) {
+    public boolean isValid(McpSessionId sessionId) {
         cleanupOldSessions();
         return sessionId != null && sessions.containsKey(sessionId);
     }
@@ -90,11 +94,17 @@ public class McpSessionStore {
     /**
      * Deletes the session associated with the given session ID.
      */
-    public void deleteSession(String sessionId) {
+    public void deleteSession(McpSessionId sessionId) {
         McpSession session = sessions.remove(sessionId);
 
         if (session != null) {
             requestTracker.cancelSessionRequests(session.getSessionId());
+
+            // Record session end metrics
+            McpSessionMetrics metrics = session.getMetrics();
+            if (metrics != null) {
+                McpSessionMetrics.sessionEnded(metrics);
+            }
         }
     }
 
@@ -102,7 +112,43 @@ public class McpSessionStore {
      * Removes any sessions that have expired based on the session timeout duration.
      */
     public void cleanupOldSessions() {
+        Duration sessionTimeout = mcpConfig.sessionTimeout();
         Instant now = Instant.now();
-        sessions.entrySet().removeIf(entry -> Duration.between(entry.getValue().getLastAccessed(), now).compareTo(SESSION_TIMEOUT) > 0);
+
+        // Collect expired session IDs
+        List<McpSessionId> expiredSessionIds = new ArrayList<>();
+        for (var entry : sessions.entrySet()) {
+            boolean expired = Duration.between(entry.getValue().getLastAccessed(), now)
+                                      .compareTo(sessionTimeout) > 0;
+            if (expired) {
+                expiredSessionIds.add(entry.getKey());
+            }
+        }
+
+        // Remove expired sessions and record metrics
+        for (McpSessionId sessionId : expiredSessionIds) {
+            McpSession session = sessions.remove(sessionId);
+            if (session != null) {
+                McpSessionMetrics metrics = session.getMetrics();
+                if (metrics != null) {
+                    metrics.setErrorType("timeout");
+                    McpSessionMetrics.sessionEnded(metrics);
+                }
+            }
+        }
+    }
+
+    /**
+     * Ends all active sessions and records their metrics.
+     * Called during application shutdown.
+     */
+    public void endAllSessions() {
+        for (McpSession session : sessions.values()) {
+            McpSessionMetrics metrics = session.getMetrics();
+            if (metrics != null) {
+                McpSessionMetrics.sessionEnded(metrics);
+            }
+        }
+        sessions.clear();
     }
 }

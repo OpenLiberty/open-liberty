@@ -1,0 +1,37 @@
+<server description="Sample Liberty server">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>
+    <feature>cdi-4.0</feature>
+    <feature>mcpServer-1.0</feature>
+    <feature>openidConnectClient-1.0</feature>
+    <feature>appSecurity-5.0</feature>
+  </featureManager>
+
+  <application location="oidcTests.war">
+  	<mcpServer stateless="true"/>
+  </application>
+  
+  <include location="../fatTestPorts.xml" />
+  
+   <openidConnectClient
+        id="liberty-mcp-server-conf-client"
+        clientId="${oidc.clientId}"
+        clientSecret="${oidc.clientSecret}"
+        jwkEndpointUrl="${oidc.jwkEndpointUrl}"
+        issuerIdentifier="${oidc.issuerIdentifier}"
+        audiences="${oidc.audiences}"
+        signatureAlgorithm="RS256"
+        inboundPropagation="required"
+        groupIdentifier="groups"
+        authnSessionDisabled="true"
+        httpsRequired="false"
+        disableLtpaCookie="true"
+        tokenReuse="true">
+   </openidConnectClient>
+
+ <ssl id="defaultSSLConfig" trustDefaultCerts="true" />
+ 
+ <keyStore password="keypass" />
+  
+</server>

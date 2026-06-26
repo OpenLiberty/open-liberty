@@ -24,30 +24,35 @@ import io.openliberty.mcp.internal.requests.CancellationImpl;
 import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.messaging.Cancellation;
-import jakarta.enterprise.context.ApplicationScoped;
-import jakarta.inject.Inject;
 
 /**
- * This is a connection tracker bean. It keeps track of ongoing tool call requests
+ * This is a connection tracker, keeping track of ongoing tool call requests for a single module
+ * The current Module instance can be retrieved from McpRequestTrackers
+ *
+ * @see McpRequestTrackers
+ * @see McpCdiExtensionMetadata getBeanClasses()
  */
 
-@ApplicationScoped
 public class McpRequestTracker {
 
     private static final TraceComponent tc = Tr.register(McpRequestTracker.class);
 
     private ConcurrentMap<ExecutionRequestId, CancellationImpl> ongoingRequests = new ConcurrentHashMap<>();
-    private final ConcurrentMap<String, Set<ExecutionRequestId>> sessionToRequestIds = new ConcurrentHashMap<>();
+    private final ConcurrentMap<McpSessionId, Set<ExecutionRequestId>> sessionToRequestIds = new ConcurrentHashMap<>();
 
-    @Inject
-    McpConfig mcpConfig;
+    private McpConfig mcpConfig;
 
-    public McpRequestTracker() {
+    public McpRequestTracker(McpConfig mcpConfig) {
         this.ongoingRequests = new ConcurrentHashMap<>();
+        this.mcpConfig = mcpConfig;
     }
 
     public void deregisterOngoingRequest(ExecutionRequestId id) {
         ongoingRequests.remove(id);
+        Set<ExecutionRequestId> sessionRequests = sessionToRequestIds.get(id.sessionId());
+        if (sessionRequests != null) {
+            sessionRequests.remove(id);
+        }
     }
 
     public void registerOngoingRequest(ExecutionRequestId requestId, CancellationImpl cancellation) {
@@ -56,6 +61,7 @@ public class McpRequestTracker {
             throw new JSONRPCException(JSONRPCErrorCode.INVALID_PARAMS,
                                        Tr.formatMessage(tc, "invalid.request.params", requestId.id()));
         }
+        sessionToRequestIds.computeIfAbsent(requestId.sessionId(), k -> ConcurrentHashMap.newKeySet()).add(requestId);
     }
 
     public boolean isOngoingRequest(ExecutionRequestId id) {
@@ -77,7 +83,7 @@ public class McpRequestTracker {
             return;
         }
 
-        Set<ExecutionRequestId> requests = sessionToRequestIds.remove(sessionId.value());
+        Set<ExecutionRequestId> requests = sessionToRequestIds.remove(sessionId);
         if (requests == null) {
             return;
         }

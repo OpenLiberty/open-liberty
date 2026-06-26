@@ -10,8 +10,8 @@
 package io.openliberty.mcp.internal.schemas;
 
 import java.lang.reflect.Type;
-import java.util.HashMap;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 
 import io.openliberty.mcp.internal.McpCdiExtension;
 import io.openliberty.mcp.internal.ToolMetadata.ToolMethodArgument;
@@ -26,7 +26,7 @@ import jakarta.json.JsonObject;
  */
 public class SchemaRegistry {
 
-    private HashMap<SchemaKey, JsonObject> schemaCache = new HashMap<>();
+    private ConcurrentHashMap<SchemaKey, JsonObject> schemaCache = new ConcurrentHashMap<>();
 
     private SchemaCreationBlueprintRegistry blueprintRegistry = new SchemaCreationBlueprintRegistry();
 

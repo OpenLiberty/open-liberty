@@ -85,9 +85,11 @@ public class ConformanceTests extends FATServletClient {
     public McpClient client = new McpClient(server, "/conformanceTests");
     private final static Logger logger = Logger.getLogger(ConformanceTests.class.getName());
 
+    @SuppressWarnings("resource")
     @ClassRule
     public static GenericContainer<?> container = new GenericContainer<>(DOCKER_REGISTRY).withCommand("tail", "-f", "/dev/null")
                                                                                          .withAccessToHost(true)
+                                                                                         .withStartupAttempts(3)
                                                                                          .withWorkingDirectory(CONTAINER_WORKING_DIR)
                                                                                          .withCopyFileToContainer(SRC_PACKAGE_JSON, CONTAINER_PACKAGE_JSON)
                                                                                          .withCopyFileToContainer(SRC_PACKAGE_LOCK_JSON, CONTAINER_PACKAGE_LOCK_JSON)
@@ -98,6 +100,8 @@ public class ConformanceTests extends FATServletClient {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "conformanceTests.war").addPackage(ConformanceTools.class.getPackage());
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
         server.startServer();
+        Testcontainers.exposeHostPorts(server.getHttpDefaultPort());
+
         assertNotNull(server.waitForStringInLog("MCP server endpoint: .*/mcp$")); // regex matches string that ends with /mcp e.g. "MCP server endpoint: http://macbookpro.home:8010/toolTest/mcp"
         setupContainer();
     }
@@ -105,7 +109,6 @@ public class ConformanceTests extends FATServletClient {
     private static void setupContainer() throws IOException, InterruptedException {
         final int localServerPort = server.getHttpDefaultPort();
         MCP_SERVER_URL_FROM_CONTAINER = "http://host.testcontainers.internal:" + localServerPort + "/conformanceTests/mcp";
-        Testcontainers.exposeHostPorts(localServerPort);
 
         if (artifactoryConfigIsPresent()) {
             String credentials = artUser + ":" + artToken;

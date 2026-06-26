@@ -42,7 +42,7 @@ import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.ToolRegistry;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
-import io.openliberty.mcp.tools.ToolManager;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
 import io.openliberty.mcp.tools.ToolManager.ToolDefinition;
@@ -58,7 +58,7 @@ import jakarta.json.bind.JsonbBuilder;
  */
 public class ToolManagerTest {
 
-    private ToolManager toolManager;
+    private ToolRegistry toolManager;
     private SchemaRegistry schemaRegistry;
     private Jsonb jsonb;
 
@@ -67,6 +67,7 @@ public class ToolManagerTest {
         schemaRegistry = new SchemaRegistry();
         jsonb = JsonbBuilder.create();
         toolManager = new ToolRegistry(schemaRegistry, jsonb);
+        toolManager.setConverterRegistry(TestUtils.createTestConverterRegistry());
     }
 
     @Test
@@ -180,7 +181,7 @@ public class ToolManagerTest {
 
         var newTool = toolManager.getTool("schemas");
 
-        ToolMetadata newToolMetadata = (ToolMetadata) newTool;
+        ToolMetadata newToolMetadata = newTool;
         String expectedInputSchema = """
                         {
                             "type": "object",
@@ -211,7 +212,7 @@ public class ToolManagerTest {
                    .register();
 
         var newTool = toolManager.getTool("class-schemas");
-        ToolMetadata newToolMetadata = (ToolMetadata) newTool;
+        ToolMetadata newToolMetadata = newTool;
 
         String expectedOutputSchema = """
                         {

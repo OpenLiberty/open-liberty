@@ -12,6 +12,7 @@ package io.openliberty.mcp.internal.tools;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
+import io.openliberty.mcp.messaging.Cancellation.OperationCancellationException;
 import io.openliberty.mcp.tools.ToolResponse;
 
 /**
@@ -35,12 +36,18 @@ public class ToolResponses {
     /**
      * Create a ToolResponse for a non-business exception.
      * The response will indicate an internal server error and the exception details will be logged.
+     * Special handling for OperationCancellationException: returns a cancellation error response without logging.
      *
      * @param t the non-business exception
      * @param toolName the name of the tool
      * @return the tool response
      */
     public static ToolResponse createNonBusinessErrorResponse(Throwable t, String toolName) {
+        // Handle OperationCancellationException specially - return error response but don't log
+        if (t instanceof OperationCancellationException) {
+            return ToolResponse.error("Operation was cancelled");
+        }
+
         Tr.error(tc,
                  "CWMCM0010E.internal.server.error.detailed",
                  toolName,

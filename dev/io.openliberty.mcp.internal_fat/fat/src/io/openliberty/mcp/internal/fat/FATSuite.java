@@ -22,9 +22,11 @@ import componenttest.rules.repeater.EERepeatActions;
 import componenttest.rules.repeater.RepeatTests;
 import io.openliberty.mcp.internal.fat.conformance.tests.ConformanceTests;
 import io.openliberty.mcp.internal.fat.introspector.IntrospectorMultiAppTest;
+import io.openliberty.mcp.internal.fat.isolation.MultiAppIsolationTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.AsyncToolLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
+import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionSchemaTest;
 import io.openliberty.mcp.internal.fat.protocol.ProtocolVersionTest;
@@ -40,23 +42,35 @@ import io.openliberty.mcp.internal.fat.security.NoClassAnnotationTests;
 import io.openliberty.mcp.internal.fat.security.NoClassAnnotationTestsStateless;
 import io.openliberty.mcp.internal.fat.security.PermitAllTests;
 import io.openliberty.mcp.internal.fat.security.PermitAllTestsStateless;
+import io.openliberty.mcp.internal.fat.serverinfo.CustomServerInfoTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatefulModeTest;
 import io.openliberty.mcp.internal.fat.statelessMode.StatelessModeTest;
+import io.openliberty.mcp.internal.fat.timeout.ConfigurableAsyncTimeoutTest;
+import io.openliberty.mcp.internal.fat.timeout.InvalidAsyncTimeoutTest;
+import io.openliberty.mcp.internal.fat.tool.AsyncToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolsErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.AsyncToolsTest;
 import io.openliberty.mcp.internal.fat.tool.AuthCancellationTest;
 import io.openliberty.mcp.internal.fat.tool.CancellationTest;
 import io.openliberty.mcp.internal.fat.tool.ConfigurableMcpPathTest;
+import io.openliberty.mcp.internal.fat.tool.ConfigurableSessionTelemetryTest;
+import io.openliberty.mcp.internal.fat.tool.DefaultValueTest;
 import io.openliberty.mcp.internal.fat.tool.DeploymentProblemTest;
+import io.openliberty.mcp.internal.fat.tool.DualConfigurableMcpPathTest;
 import io.openliberty.mcp.internal.fat.tool.DynamicMcpPathUpdateTest;
 import io.openliberty.mcp.internal.fat.tool.EncoderTest;
 import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
+import io.openliberty.mcp.internal.fat.tool.MpMetricsOperationsTest;
+import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
+import io.openliberty.mcp.internal.fat.tool.TelemetryOperationsTest;
+import io.openliberty.mcp.internal.fat.tool.TelemetrySessionsTest;
+import io.openliberty.mcp.internal.fat.tool.ToolCallEventTraceTest;
 import io.openliberty.mcp.internal.fat.tool.ToolErrorHandlingTest;
 import io.openliberty.mcp.internal.fat.tool.ToolManagerTest;
 import io.openliberty.mcp.internal.fat.tool.ToolTest;
@@ -66,7 +80,9 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
  */
 @RunWith(Suite.class)
 @SuiteClasses({
+
                 AsyncToolsTest.class,
+                AsyncToolCallEventTraceTest.class,
                 AsyncToolCancellationTest.class,
                 AsyncToolsErrorHandlingTest.class,
                 AsyncToolLifecycleTest.class,
@@ -74,23 +90,40 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 BeanLifecycleTest.class,
                 CancellationTest.class,
                 ConfigurableMcpPathTest.class,
+                ConfigurableSessionTelemetryTest.class,
+                ConfigurableAsyncTimeoutTest.class,
+                CustomServerInfoTest.class,
+                DefaultValueTest.class,
                 DeploymentProblemTest.class,
+                DualConfigurableMcpPathTest.class,
                 DynamicMcpPathUpdateTest.class,
                 EncoderTest.class,
+                ToolCallEventTraceTest.class,
                 ExceptionLoggingTest.class,
                 HttpTest.class,
                 GenericToolTest.class,
                 InactiveCdiTest.class,
                 IntrospectorMultiAppTest.class,
-//                LocaleTest.class, // Commented out test until message translation is updated
+                InvalidAsyncTimeoutTest.class,
+                // LocaleTest.class, // Commented out test until message translation is updated
                 LifecycleTest.class,
+                McpMonitorTest.class,
                 McpUrlPathTest.class,
+                MultiAppIsolationTest.class,
+                MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
                 NoParamNameTest.class,
+                // TestContainer Tests
+                ConformanceTests.class,
+
+                CustomServerInfoTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
                 StatelessModeTest.class,
+                TelemetryOperationsTest.class,
+                TelemetrySessionsTest.class,
+                MpMetricsOperationsTest.class,
                 ToolErrorHandlingTest.class,
                 ToolManagerTest.class,
                 ToolTest.class,
@@ -108,9 +141,8 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 PermitAllTestsStateless.class,
                 DenyAllTestsStateless.class,
                 NoClassAnnotationTestsStateless.class,
-                AdminsRoleAllowedTestsStateless.class,
-                // Conformance Tests
-                ConformanceTests.class
+                AdminsRoleAllowedTestsStateless.class
+
 })
 
 public class FATSuite extends TestContainerSuite {
