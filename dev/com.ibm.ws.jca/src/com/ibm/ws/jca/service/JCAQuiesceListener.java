@@ -66,6 +66,9 @@ public class JCAQuiesceListener implements ServerQuiesceListener {
         }
         for (ServiceReference<EndpointActivationService> ref : refs) {
             EndpointActivationService eas = bundleContext.getService(ref);
+            if (eas == null) {
+                continue;
+            }
             try {
                 Iterator<ActivationParams> iterator = eas.endpointActivationParams.iterator();
                 while (iterator.hasNext()) {

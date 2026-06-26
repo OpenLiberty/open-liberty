@@ -122,11 +122,13 @@ public class OSGiEJBApplicationMetaData extends EJBApplicationMetaData implement
         super.stopping();
 
         // Unregister the quiesce listener service
-        if (quiesceRegistration != null) {
-            quiesceRegistration.unregister();
-            quiesceRegistration = null;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "unregistered quiesce listener : " + this);
+        synchronized (this) {
+            if (quiesceRegistration != null) {
+                quiesceRegistration.unregister();
+                quiesceRegistration = null;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "unregistered quiesce listener : " + this);
+            }
         }
     }
 
@@ -137,21 +139,31 @@ public class OSGiEJBApplicationMetaData extends EJBApplicationMetaData implement
      */
     @Override
     public void serverStopping() {
-        if (quiesceSingletons != null) {
-            List<EJSHome> reverse = new ArrayList<EJSHome>(quiesceSingletons);
-            for (int i = reverse.size(); --i >= 0;) {
-                EJSHome home = reverse.get(i);
-                home.destroy();
-                quiesceSingletons.remove(home);
+        List<EJSHome> reverse;
+
+        synchronized (this) {
+            // Unregister the quiesce listener service
+            if (quiesceRegistration != null) {
+                quiesceRegistration.unregister();
+                quiesceRegistration = null;
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "unregistered quiesce listener : " + this);
+            }
+
+            // Remove the registered Singleton beans
+            if (quiesceSingletons != null) {
+                reverse = new ArrayList<EJSHome>(quiesceSingletons);
+                quiesceSingletons = null;
+            } else {
+                reverse = null;
             }
         }
 
-        // Unregister the quiesce listener service
-        if (quiesceRegistration != null) {
-            quiesceRegistration.unregister();
-            quiesceRegistration = null;
-            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-                Tr.debug(tc, "unregistered quiesce listener : " + this);
+        // Destroy the Singleton beans in the reverse order they were created
+        if (reverse != null) {
+            for (int i = reverse.size(); --i >= 0;) {
+                reverse.get(i).destroy();
+            }
         }
     }
 
