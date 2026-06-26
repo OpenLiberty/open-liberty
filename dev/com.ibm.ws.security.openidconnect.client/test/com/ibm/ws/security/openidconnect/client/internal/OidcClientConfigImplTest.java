@@ -978,6 +978,69 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         }
     }
 
+    /**
+     * Test that advertisedScopes values separated by ", " (comma + space) are trimmed correctly.
+     * e.g. "a, b, c" should produce ["a", "b", "c"], not ["a", " b", " c"].
+     */
+    @Test
+    public void testProtectedResourceMetadata_BetaMode_AdvertisedScopesWithSpaces_TrimsValues() {
+        try {
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            // Scopes separated by ", " (comma followed by space)
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "a, b, c");
+
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            assertEquals("advertisedScopes values separated by \", \" should be trimmed",
+                    Arrays.asList("a", "b", "c"),
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that a trailing comma in advertisedScopes produces an empty string as the last element.
+     * e.g. "a,b,c," should produce ["a", "b", "c", ""] reflecting Java's split() default behaviour.
+     */
+    @Test
+    public void testProtectedResourceMetadata_BetaMode_AdvertisedScopesWithTrailingComma_ProducesExpectedList() {
+        try {
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            // Scopes with a trailing comma
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "a,b,c,");
+
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            // Java's split(",") drops trailing empty strings by default, so "a,b,c," -> ["a","b","c"]
+            assertEquals("advertisedScopes with a trailing comma should produce list without trailing empty element",
+                    Arrays.asList("a", "b", "c"),
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
     public Map<String, Object> createProps(boolean value) {
         final Map<String, Object> props = new Hashtable<String, Object>();
 

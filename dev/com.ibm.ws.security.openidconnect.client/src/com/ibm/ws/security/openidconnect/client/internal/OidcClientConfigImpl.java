@@ -736,7 +736,10 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         final String flatJwtBuilderRefKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_JWT_BUILDER_REF;
         if (props.containsKey(flatAdvertisedScopesKey) || props.containsKey(flatJwtBuilderRefKey)) {
             String advertisedScopes = configUtils.getConfigAttribute(props, flatAdvertisedScopesKey);
-            protectedResourceMetadataAdvertisedScopes = advertisedScopes == null ? null : Arrays.asList(advertisedScopes.split(","));
+            protectedResourceMetadataAdvertisedScopes = advertisedScopes == null ? null
+                    : Arrays.stream(advertisedScopes.split(","))
+                            .map(String::trim)
+                            .collect(java.util.stream.Collectors.toList());
 
             protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttributeWithDefaultValue(props,
                     flatJwtBuilderRefKey, "defaultProtectedResourceMetadataJwtBuilder");
