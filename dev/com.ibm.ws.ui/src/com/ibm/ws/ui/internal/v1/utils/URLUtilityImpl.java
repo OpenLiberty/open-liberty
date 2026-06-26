@@ -30,8 +30,6 @@ import javax.net.ssl.HttpsURLConnection;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
-import com.ibm.ws.ui.internal.rest.HTTPConstants;
-import com.ibm.ws.ui.internal.rest.exceptions.RESTException;
 import com.ibm.ws.ui.internal.v1.pojo.Bookmark;
 
 /**
@@ -69,16 +67,10 @@ public class URLUtilityImpl implements URLUtility {
 
     /** {@inheritDoc} */
     @Override
-    @FFDCIgnore({IOException.class, SecurityException.class})
-    public Map<String, Object> analyzeURL(final URL url) throws RESTException {
-        // SECURITY: Validate URL to prevent SSRF attacks
-        try {
-            URLValidator.validateURL(url);
-        } catch (SecurityException e) {
-            Tr.warning(tc, "CWWKX1056W: URL validation failed: " + e.getMessage());
-            throw new RESTException(403, "text/plain", "URL validation failed: " + e.getMessage());
-        }
-
+    @FFDCIgnore(IOException.class)
+    public Map<String, Object> analyzeURL(final URL url) {
+        // URL has already been validated by URLUtils.getURLParameter() before reaching here.
+        // Redirects are disabled to prevent redirect-based SSRF.
         boolean couldReachURL = true;
         URLConnection connection = null;
         InputStream cis = null;
