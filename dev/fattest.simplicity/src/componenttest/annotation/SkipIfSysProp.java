@@ -72,6 +72,7 @@ public @interface SkipIfSysProp {
     public static final String DB_DB2 = "fat.bucket.db.type=DB2";
     public static final String DB_Derby = "fat.bucket.db.type=Derby";
     public static final String DB_DerbyClient = "fat.bucket.db.type=DerbyClient";
+    public static final String DB_H2 = "fat.bucket.db.type=H2";
     public static final String DB_Informix = "fat.bucket.db.type=Informix";
     public static final String DB_Oracle = "fat.bucket.db.type=Oracle";
     public static final String DB_Postgres = "fat.bucket.db.type=Postgres";

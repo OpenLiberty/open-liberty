@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2019, 2020 IBM Corporation and others.
+    Copyright (c) 2019, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -48,18 +48,18 @@
     <jdbcDriver id="FATJDBCDriver1" fat.modify="true">
       <library filesetRef="FATfileset1"/>
     </jdbcDriver>
-    <fileset id="FATfileset1" dir="${shared.resource.dir}/derby" includes="${env.DB_DRIVER}"/>    
+    <fileset id="FATfileset1" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
 
 	<!-- Test: nested Library + nested fileset -->
     <jdbcDriver id="FATJDBCDriver2" libraryRef="FATLib2" fat.modify="true"/>
     <library id="FATLib2">
-      <fileset dir="${shared.resource.dir}/derby" includes="${env.DB_DRIVER}"/>
+      <fileset dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
     </library>
 
 	<!-- Test: jdbcDriver -> library -> fileset -->
     <jdbcDriver id="FATJDBCDriver3" libraryRef="FATLib3" fat.modify="true"/>
     <library id="FATLib3" filesetRef="FATfileset3"/>
-    <fileset id="FATfileset3" dir="${shared.resource.dir}/derby" includes="${env.DB_DRIVER}"/>
+    <fileset id="FATfileset3" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
     
     <!-- Derby-only JDBC driver -->
     <jdbcDriver id="Derby" libraryRef="DerbyLib"/>
@@ -85,68 +85,68 @@
 
 <!-- ### Datasources using different jdbcDriver configurations ### -->
     <dataSource id="dsfatboot" jndiName="jdbc/dsfatboot" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="dsfatboot1" jndiName="jdbc/dsfatboot1" fat.modify="true" jdbcDriverRef="FATJDBCDriver1" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
     <dataSource id="dsfatboot2" jndiName="jdbc/dsfatboot2" fat.modify="true" jdbcDriverRef="FATJDBCDriver2" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="dsfatboot3" jndiName="jdbc/dsfatboot3" fat.modify="true" jdbcDriverRef="FATJDBCDriver3" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
     <!-- Test: nested jdbcDriver -> library -> fileset -->
     <dataSource id="dsfatboot4" jndiName="jdbc/dsfatboot4" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver libraryRef="FATLib4"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-    </dataSource>    
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
     <library id="FATLib4" filesetRef="FATfileset4"/>
-    <fileset id="FATfileset4" dir="${shared.resource.dir}/derby" includes="${env.DB_DRIVER}"/>
+    <fileset id="FATfileset4" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
     
     <!-- Test: nested jdbcDriver + nested library -->
     <dataSource id="dsfatboot5" jndiName="jdbc/dsfatboot5" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver id="FATJDBCDriver5">
         <library id="FATLib5" filesetRef="FATfileset5"/>
       </jdbcDriver>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-    </dataSource>        
-    <fileset id="FATfileset5" dir="${shared.resource.dir}/derby" includes="${env.DB_DRIVER}"/>    
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
+    <fileset id="FATfileset5" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
 
 	<!-- Test: nested jdbcDriver + nested library + nested fileset -->
     <dataSource id="dsfatboot6" jndiName="jdbc/dsfatboot6" fat.modify="true" type="javax.sql.ConnectionPoolDataSource" transactional="false">
       <jdbcDriver id="FATJDBCDriver6">
         <library id="FATLib6">
-          <fileset id="FATfileset6" dir="${shared.resource.dir}/derby" includes="${env.DB_DRIVER}"/>    
+          <fileset id="FATfileset6" dir="${shared.resource.dir}/h2Java8" includes="${env.DB_DRIVER}"/>
         </library>
       </jdbcDriver>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
-    </dataSource>        
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
+    </dataSource>
 
 <!-- ### Datasources using different connection properties ###  -->
     <dataSource id="dsfat0" jndiName="jdbc/dsfat0" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.DataSource" connectionSharing="MatchOriginalRequest">
       <connectionManager/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
      </dataSource>
 
     <dataSource id="dsfat1" jndiName="jdbc/dsfat1" fat.modify="true" jdbcDriverRef="FATJDBCDriver" connectionManagerRef="conMgr1" connectionSharing="MatchCurrentState" transactional="true">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="dsfat2" jndiName="jdbc/dsfat2" fat.modify="true" jdbcDriverRef="FATJDBCDriver" connectionManagerRef="conMgr2" type="javax.sql.XADataSource" isolationLevel="TRANSACTION_READ_COMMITTED" recoveryAuthDataRef="recoveryAuth">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="dsfat3" jndiName="jdbc/dsfat3" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource" transactional="false">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create"/>
+      <properties.h2 url="${env.DB_URL}"/>
     </dataSource>
 
     <dataSource jndiName="jdbc/dsfat4" fat.modify="true" jdbcDriverRef="FATJDBCDriver" type="javax.sql.XADataSource" transactional="true" connectionSharing="MatchCurrentState" recoveryAuthDataRef="recoveryAuth">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
     <!-- This is a Derby-only data source -->
@@ -169,22 +169,22 @@
     </dataSource>
 
     <dataSource id="dsfat20" fat.modify="true" jndiName="jdbc/dsfat20" jdbcDriverRef="FATJDBCDriver" connectionManagerRef="conMgr6" type="javax.sql.XADataSource" isolationLevel="TRANSACTION_READ_COMMITTED" recoveryAuthDataRef="recoveryAuth">
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
     <dataSource id="dsfat21" fat.modify="true" jndiName="jdbc/dsfat21" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource">
       <connectionManager reapTime="0"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
     
     <dataSource id="dsfat22" fat.modify="true" jndiName="jdbc/dsfat22" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource">
       <connectionManager agedTimeout="0" connectionTimeout="-1" maxPoolSize="2"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
    
     <dataSource id="dsfat23" fat.modify="true" jndiName="jdbc/dsfat23" jdbcDriverRef="FATJDBCDriver" type="javax.sql.ConnectionPoolDataSource">
       <connectionManager maxIdleTime="0"/>
-      <properties.derby.embedded databaseName="${shared.resource.dir}/data/jdbcfat" createDatabase="create" user="dbuser1" password="{xor}Oz0vKDtu"/>
+      <properties.h2 url="${env.DB_URL}" user="dbuser1" password="{xor}Oz0vKDtu"/>
     </dataSource>
 
     <dataSource id="dsfatmca" jndiName="jdbc/dsfatmca" jdbcDriverRef="Derby" connectionManagerRef="conMgr5mca" jaasLoginContextEntryRef="myJAASLoginEntry" type="javax.sql.DataSource" connectionSharing="MatchOriginalRequest">
@@ -226,18 +226,29 @@
       <classloader privateLibraryRef="DerbyLib"/>
     </application>
 
+    <!-- H2 library for applications using the rotated database -->
+    <library id="H2Lib">
+      <fileset dir="${shared.resource.dir}/h2Java8"/>
+    </library>
+
 <!-- ### Permissions ### -->
 	<!-- General permissions -->
 	<javaPermission className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
 	
 	<!-- JDBC permissions -->
-    <javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}anonymous/${env.ANON_DRIVER}" className="java.security.AllPermission"/>
-    <javaPermission codebase="${shared.resource.dir}AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
-	<javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
-	
+	<javaPermission codebase="${shared.resource.dir}derby/derby.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}derby/derbyclient.jar" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}anonymous/${env.ANON_DRIVER}" className="java.security.AllPermission"/>
+	<javaPermission codebase="${shared.resource.dir}AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
+<javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
+<javaPermission codebase="${shared.resource.dir}h2Java8/h2.jar" className="java.security.AllPermission"/>
+
+	<!-- H2 in-file database directory: allow read/write of the directory itself and read/write/delete of files inside -->
+	<javaPermission className="java.io.FilePermission" name="${h2.db.dir}" actions="read,write"/>
+	<javaPermission className="java.io.FilePermission" name="${h2.db.dir}/*" actions="read,write,delete"/>
+	<javaPermission className="java.io.FilePermission" name="${h2.db.dir}/-" actions="read,write,delete"/>
+
 	<!-- Login module permission-->
     <javaPermission codebase="${shared.resource.dir}/loginmodule/TestLoginModule.jar" className="java.security.AllPermission"/>
     

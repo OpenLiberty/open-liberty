@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,10 +15,14 @@ package com.ibm.ws.jdbc.fat.tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -56,11 +60,13 @@ import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_client;
 import com.ibm.websphere.simplicity.config.dsprops.Properties_derby_embedded;
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.annotation.AllowedFFDC;
 import componenttest.annotation.ExpectedFFDC;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.custom.junit.runner.Mode;
 import componenttest.custom.junit.runner.Mode.TestMode;
+import componenttest.topology.database.H2Database;
 import componenttest.topology.database.container.DatabaseContainerFactory;
 import componenttest.topology.database.container.DatabaseContainerType;
 import componenttest.topology.database.container.DatabaseContainerUtil;
@@ -85,8 +91,12 @@ public class ConfigTest extends FATServletClient {
     public static LibertyServer server;
 
     //Test container
+    private static final H2Database h2Database = H2Database.create("dbuser1", "dbpwd1")
+                    .withUser("dbuser2", "dbpwd2")
+                    .withDatabaseName("jdbcfat");
+
     @ClassRule
-    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.create();
+    public static final JdbcDatabaseContainer<?> testContainer = DatabaseContainerFactory.createH2(Optional.of(h2Database));
 
     //List of apps tested by this test suite
     private static final Set<String> appNames = new HashSet<String>(Arrays.asList(dsdfat, jdbcapp));
@@ -138,6 +148,9 @@ public class ConfigTest extends FATServletClient {
         server.addEnvVar("ANON_DRIVER", type.getAnonymousDriverName());
         server.addEnvVar("DB_USER", testContainer.getUsername());
         server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+        String h2DbDir = Paths.get("results", "h2").toAbsolutePath().toString();
+        server.addEnvVar("H2_DB_DIR", h2DbDir);
+        server.addBootstrapProperties(Collections.singletonMap("h2.db.dir", h2DbDir));
 
         //Setup server DataSource properties (use database specific properties in order to run testTrace() )
         DatabaseContainerUtil.setupDataSourceDatabaseProperties(server, testContainer);
@@ -1041,7 +1054,7 @@ public class ConfigTest extends FATServletClient {
      * Update data source configuration to add, modify and remove validationTimeout while the server is running.
      */
     @Test
-    @ExpectedFFDC({ "javax.resource.ResourceException" })
+    @AllowedFFDC({ "javax.resource.ResourceException", "java.sql.SQLNonTransientConnectionException" })
     public void testConfigChangeForValidationTimeout() throws Throwable {
         String method = "testConfigChangeForValidationTimeout";
         Log.info(c, method, "Executing " + method);
@@ -1408,6 +1421,7 @@ public class ConfigTest extends FATServletClient {
                 server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
                 server.addEnvVar("DB_USER", testContainer.getUsername());
                 server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+                server.addEnvVar("DB_URL", testContainer.getJdbcUrl());
             } finally {
                 server.startServer();
             }
@@ -1570,6 +1584,7 @@ public class ConfigTest extends FATServletClient {
                     server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
                     server.addEnvVar("DB_USER", testContainer.getUsername());
                     server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+                    server.addEnvVar("DB_URL", testContainer.getJdbcUrl());
                 } finally {
                     server.startServer();
                 }
@@ -1643,6 +1658,7 @@ public class ConfigTest extends FATServletClient {
                 server.addEnvVar("ANON_DRIVER", "driver" + DatabaseContainerType.valueOf(testContainer).ordinal() + ".jar");
                 server.addEnvVar("DB_USER", testContainer.getUsername());
                 server.addEnvVar("DB_PASSWORD", testContainer.getPassword());
+                server.addEnvVar("DB_URL", testContainer.getJdbcUrl());
             } finally {
                 server.startServer();
             }

@@ -35,6 +35,7 @@ task copyAnonymousDrivers(type: Copy) {
   rename 'ojdbc8.*.jar', 'driver3.jar'
   rename 'postgresql.*.jar', 'driver4.jar'
   rename 'mssql-jdbc.*.jar', 'driver5.jar'
+  rename 'h2-.*.jar', 'driver6.jar'
 }
 
 //Automatically discovered derby jar
@@ -55,6 +56,7 @@ task copyDB2(type: Copy) {
 
  addRequiredLibraries {
   //Database drivers
+  dependsOn addH2Java8
   dependsOn addDerby
   dependsOn copyAnonymousDrivers
   dependsOn copyAutomaticDerby

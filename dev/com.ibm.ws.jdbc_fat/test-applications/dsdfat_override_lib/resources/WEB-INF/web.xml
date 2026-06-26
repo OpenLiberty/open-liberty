@@ -16,8 +16,7 @@
   
   <data-source>
     <name>java:app/jdbc/xmlDSOverride</name>
-    <class-name>org.apache.derby.jdbc.EmbeddedXADataSource40</class-name>
-    <database-name>memory:dsdfat_override_lib</database-name>
-    <property><name>createDatabase</name><value>create</value></property>
+    <class-name>org.h2.jdbcx.JdbcDataSource</class-name>
+    <url>${env.DB_URL}</url>
   </data-source>
 </web-app>
