@@ -53,7 +53,7 @@ import static org.junit.Assume.assumeThat;
 
 @RunWith(FATRunner.class)
 @Mode(Mode.TestMode.LITE)
-@SkipIfSysProp({SkipIfSysProp.OS_ZOS, SkipIfSysProp.OS_IBMI, SkipIfSysProp.OS_ISERIES})
+@SkipIfSysProp({SkipIfSysProp.OS_IBMI, SkipIfSysProp.OS_ISERIES})
 public class FIPS1403SecurityUtilityTests {
 
     private static final Class<?> thisClass = FIPS1403SecurityUtilityTests.class;

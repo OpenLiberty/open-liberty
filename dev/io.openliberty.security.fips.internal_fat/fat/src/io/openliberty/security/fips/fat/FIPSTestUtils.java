@@ -45,65 +45,60 @@ public class FIPSTestUtils {
     /**
      * IBM SDK 8 and Semeru Runtimes >=11 support FIPS, Any other Vendor and Version combination is not supported
      * So check the java information of the server to determine whether to run the actual tests
-     *
+     * <p>
      * If JAVA_HOME for a server is updated via setting JAVA_HOME in a .env file, then the systems JAVA_HOME is what will be picked up
-     *
-     *
+     * <p>
+     * <p>
      * There is a Semeru JDK 8 that does not support fips, so ensure that if running is skipped
      *
      * @param javaInfo
      * @return
      */
-    public static boolean validFIPS140_3Environment(JavaInfo javaInfo){
+    public static boolean validFIPS140_3Environment(JavaInfo javaInfo) {
         boolean validEnv = true;
-        // s390 for Linux is not supported with FIPS mode, so until it is, we should skip the platform, once Java FIPS support is available for s390x we can remove this check
-        if (System.getProperty("os.arch").contains("s390")){
-           validEnv = false;
-           Log.warning(FIPSTestUtils.class, "s390 architecture is not currently supported for either z/OS or Linux");
-        } else {
-            if (javaInfo.majorVersion() == 8) {
-                String dir = javaInfo.javaHome();
-                if (!dir.endsWith("jre")) {
-                    dir = dir + "/jre";
-                }
-                Set<String> dirs = Stream.of(new File(dir))
-                        .filter(file -> !file.isDirectory())
-                        .map(File::getName)
-                        .collect(Collectors.toSet());
-                if (!dirs.contains("fips140-3")) {
-                    validEnv = false;
-                    Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");
-                }
-            } else {
-                String javaSecurityPath = javaInfo.javaHome() + "/conf/security/java.security";
-                Path path = Paths.get(javaSecurityPath);
 
-                try (BufferedReader reader = Files.newBufferedReader(path)) {
-                    String line;
-                    boolean fipsCompatible = false;
-                    while ((line = reader.readLine()) != null) {
-                        if (line.contains("OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced")) {
-                            fipsCompatible = true;
-                        }
+        if (javaInfo.majorVersion() == 8) {
+            String dir = javaInfo.javaHome();
+            if (!dir.endsWith("jre")) {
+                dir = dir + "/jre";
+            }
+            Set<String> dirs = Stream.of(new File(dir))
+                    .filter(file -> !file.isDirectory())
+                    .map(File::getName)
+                    .collect(Collectors.toSet());
+            if (!dirs.contains("fips140-3")) {
+                validEnv = false;
+                Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");
+            }
+        } else {
+            String javaSecurityPath = javaInfo.javaHome() + "/conf/security/java.security";
+            Path path = Paths.get(javaSecurityPath);
+
+            try (BufferedReader reader = Files.newBufferedReader(path)) {
+                String line;
+                boolean fipsCompatible = false;
+                while ((line = reader.readLine()) != null) {
+                    if (line.contains("OpenJCEPlusFIPS.FIPS140-3-Strongly-Enforced")) {
+                        fipsCompatible = true;
                     }
-                    if (!fipsCompatible) {
-                        validEnv = fipsCompatible;
-                        Log.warning(FIPSTestUtils.class, "Java install is not FIPS compatible");
-                    }
-                } catch (IOException e) {
-                    validEnv = false;
-                    Log.warning(FIPSTestUtils.class, "unable to read java.security file, skipping the tests");
                 }
+                if (!fipsCompatible) {
+                    validEnv = fipsCompatible;
+                    Log.warning(FIPSTestUtils.class, "Java install is not FIPS compatible");
+                }
+            } catch (IOException e) {
+                validEnv = false;
+                Log.warning(FIPSTestUtils.class, "unable to read java.security file, skipping the tests");
             }
         }
         return validEnv;
     }
 
-    public static void checkServerLogForFipsEnablementMessage(LibertyServer server, String expectedProvider){
+    public static void checkServerLogForFipsEnablementMessage(LibertyServer server, String expectedProvider) {
         assertNotNull("Expected FIPS 140-3 enabled message to be found in Server logs, but was not found.", server.waitForStringInLog("CWWKS5903I:.*" + expectedProvider));
     }
 
-    public static void checkClientLogForFipsEnablementMessage(LibertyClient client, String expectedProvider){
+    public static void checkClientLogForFipsEnablementMessage(LibertyClient client, String expectedProvider) {
         // Check the copied logs as they are reliable
         assertNotNull("Expected FIPS 140-3 enabled message to be found in Client logs, but was not found.", client.waitForStringInCopiedLog("CWWKS5903I:.*" + expectedProvider));
     }
