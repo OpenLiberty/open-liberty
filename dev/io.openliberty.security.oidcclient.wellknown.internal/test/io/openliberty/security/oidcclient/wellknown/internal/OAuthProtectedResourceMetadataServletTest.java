@@ -21,7 +21,6 @@ import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourc
 import io.openliberty.security.oidcclient.wellknown.common.ProtectedResourceMetadataResolver;
 
 /**
- * /**
  * Unit tests for {@link OAuthProtectedResourceMetadataHandlerBase}.
  */
 public class OAuthProtectedResourceMetadataServletTest {
