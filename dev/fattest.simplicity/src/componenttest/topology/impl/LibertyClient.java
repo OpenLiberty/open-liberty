@@ -689,7 +689,7 @@ public class LibertyClient {
                 Properties clientEnv = getClientEnv();
                 Properties defaultEnv = getDefaultEnv();
                 Map<String, String> opts = getJvmOptionsAsMap();
-                if (clientEnv.containsKey("ENABLE_FIPS140_3") || defaultEnv.containsKey("ENABLE_FIPS140_3") || opts.containsKey("-Xenablefips140-3")
+                if (clientEnv.containsKey("ENABLE_FIPS140_3") || defaultEnv.containsKey("ENABLE_FIPS140_3") || useEnvVars.containsKey("ENABLE_FIPS140_3") || opts.containsKey("-Xenablefips140-3")
                     || opts.containsKey("-Dsemeru.fips")) {
                     Log.info(c, method, "Test has defined its own settings for FIPS140-3");
                 } else {
