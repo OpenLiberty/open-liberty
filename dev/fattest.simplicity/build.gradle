@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2025 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  * 
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 import org.apache.tools.ant.filters.ReplaceTokens
 
@@ -85,11 +82,13 @@ task assembleBinaryDependencies() {
 configurations {
     arquillianFeature
     arquillianJakartaFeature21
+    arquillianJakartaFeature30
 }
 
 dependencies {
     arquillianFeature 'io.openliberty.arquillian:arquillian-liberty-support:1.0.8:feature@zip'
     arquillianJakartaFeature21 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:2.1.1:feature@zip'
+    arquillianJakartaFeature30 'io.openliberty.arquillian:arquillian-liberty-support-jakarta:3.0.0:feature@zip'
 }
 
 task extractArquillianSupportFeature(type:Sync) {
@@ -121,10 +120,27 @@ task extractArquillianSupportJakartaFeature21(type:Sync) {
     }
 }
 
+task extractArquillianSupportJakartaFeature30(type:Sync) {
+    configurations.arquillianJakartaFeature30.each {
+        from(zipTree(it))
+    }
+    rename { String mfFile ->
+        mfFile.replace("arquillian-liberty-support.mf", "arquillian-liberty-support-jakarta-3.0.mf")
+    }
+    into('build/arquillian-jakarta-feature-extract-3.0')
+
+    doLast {
+        // Update the feature manifest to mark it as a test feature
+        file('build/arquillian-jakarta-feature-extract-3.0/extension/lib/features/arquillian-liberty-support-jakarta-3.0.mf')
+            .append('IBM-Test-Feature: true\n')
+    }
+}
+
 jar { // NOTE: this is called by fat.gradle:autoFVT
     dependsOn assembleBootstrap
     dependsOn extractArquillianSupportFeature
     dependsOn extractArquillianSupportJakartaFeature21
+    dependsOn extractArquillianSupportJakartaFeature30
     finalizedBy assembleBinaryDependencies
 }
 
@@ -145,6 +161,8 @@ task publishArquillianSupportFeature(type:Copy) {
     from('build/arquillian-feature-extract/extension')
     dependsOn extractArquillianSupportJakartaFeature21
     from('build/arquillian-jakarta-feature-extract-2.1/extension')
+    dependsOn extractArquillianSupportJakartaFeature30
+    from('build/arquillian-jakarta-feature-extract-3.0/extension')
 
     into(buildImage.file('wlp'))
 }

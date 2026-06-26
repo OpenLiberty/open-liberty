@@ -1,14 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- 
-    Copyright (c) 2024, 2025 IBM Corporation and others. All rights reserved.
+    Copyright (c) 2024, 2026 IBM Corporation and others. All rights reserved.
     This program and the accompanying materials are made available under the 
     terms of the Eclipse Public License 2.0 which accompanies this distribution, 
-    and is available at 
-        http://www.eclipse.org/legal/epl-2.0/
-    
+    and is available at http://www.eclipse.org/legal/epl-2.0/
+
     SPDX-License-Identifier: EPL-2.0 
-    Contributors: 
-        IBM Corporation - initial API and implementation
 -->
 <!-- NOTE: This pom is used for Standalone Testing -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -60,6 +57,13 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>org.jboss.shrinkwrap.resolver</groupId>
+                <artifactId>shrinkwrap-resolver-bom</artifactId>
+                <version>3.3.0</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -90,20 +94,10 @@
         </dependency>
         <!-- TEST DEPENDENCIES -->
         <dependency>
-            <groupId>io.openliberty.arquillian</groupId>
-            <artifactId>arquillian-liberty-managed-jakarta-junit5</artifactId>
-            <version>${arquillian.wlp.version}</version>
-            <type>pom</type>
-            <scope>test</scope>
-        </dependency>
-        <!-- Test dependencies needed by Liberty Arquillian Plugin for Junit5 -->
-        <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.jboss.arquillian.junit5</groupId>
-            <artifactId>arquillian-junit5-container</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>jakarta.tck</groupId>
@@ -113,6 +107,14 @@
         <dependency>
             <groupId>org.jboss.shrinkwrap.resolver</groupId>
             <artifactId>shrinkwrap-resolver-impl-maven</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>io.openliberty.arquillian</groupId>
+            <artifactId>arquillian-liberty-managed-jakarta-junit5</artifactId>
+            <version>${arquillian.wlp.managed}</version>
+            <type>pom</type>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
