@@ -17,14 +17,8 @@ Export-Package: \
 	com.ibm.ws.kernel.boot.archive.internal
 
 Private-Package: \
-	org.apache.commons.compress.archivers, \
-	org.apache.commons.compress.archivers.zip, \
-	org.apache.commons.compress.archivers.tar, \
-	org.apache.commons.compress.compressors.bzip2, \
-	org.apache.commons.compress.compressors.deflate64, \
-	org.apache.commons.compress.compressors, \
-	org.apache.commons.compress.compressors.lzw, \
-	org.apache.commons.compress.utils, \
+    org.apache.commons.compress.*, \
+    !org.apache.commons.compress.compressors.zstandard, \
 	org.apache.commons.codec, \
 	org.apache.commons.io, \
 	org.apache.commons.io.file.attribute, \

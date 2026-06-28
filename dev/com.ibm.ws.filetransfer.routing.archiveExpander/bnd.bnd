@@ -20,7 +20,8 @@ Export-Package: \
   com.ibm.ws.filetransfer.routing.archiveExpander 
 
 Private-Package: \
- org.apache.commons.compress.archivers.zip, \
+ org.apache.commons.compress.*, \
+ !org.apache.commons.compress.compressors.zstandard, \
  org.apache.commons.io.build, \
  org.apache.commons.io.file.attribute
 
@@ -51,11 +52,7 @@ Import-Package: \
  @\${repo;com.ibm.ws.org.apache.commons.io}!/org/apache/commons/io/function/IOTriFunction*, \
  @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveEntry*, \
  @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveInputStream*, \
- @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/bzip2/BZip2CompressorInputStream*, \
- @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/bzip2/BZip2Constants*, \
- @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/deflate64/Deflate64CompressorInputStream*, \
- @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/lzw/LZWInputStream*, \
- @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/compressors/CompressorInputStream*, \
+ @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/**/*.class, \
  @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/ArchiveOutputStream*, \
  @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/archivers/EntryStreamOffsets*, \
  @\${repo;com.ibm.ws.org.apache.commons.compress}!/org/apache/commons/compress/utils/BitInputStream*, \

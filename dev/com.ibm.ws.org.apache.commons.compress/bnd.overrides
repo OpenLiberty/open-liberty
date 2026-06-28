@@ -1,7 +1,8 @@
 -include= ~../cnf/resources/bnd/rejar.props
-bVersion=1.0
+bVersion=1.28
 
 Bundle-SymbolicName: com.ibm.ws.org.apache.commons.compress
 
 Include-Resource: \
-    @\${repo;org.apache.commons:commons-compress;1.26.0}!/!META-INF/maven/*
+    @\${repo;org.apache.commons:commons-compress;1.28.0}!/!META-INF/maven/*
+

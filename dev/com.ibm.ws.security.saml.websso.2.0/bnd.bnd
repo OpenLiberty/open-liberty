@@ -195,7 +195,7 @@ instrument.classesExcludes: com/ibm/ws/security/saml/sso20/internal/resources/Sa
 	com.ibm.ws.security.authorization;version=latest,\
 	com.ibm.ws.adaptable.module;version=latest,\
 	com.ibm.ws.container.service.compat;version=latest,\
-	commons-io:commons-io;version='2.6',\
+	commons-io:commons-io;version='2.20.0',\
 	com.ibm.ws.logging;version=latest,\
 	com.ibm.ws.crypto.passwordutil;version=latest,\
 	com.ibm.ws.org.slf4j.jdk14;version=latest,\
