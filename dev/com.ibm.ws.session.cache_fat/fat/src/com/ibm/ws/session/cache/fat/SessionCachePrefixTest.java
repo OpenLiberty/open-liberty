@@ -56,7 +56,7 @@ public class SessionCachePrefixTest extends FATServletClient {
 
     @BeforeClass
     public static void setUp() throws Exception {
-        app = new SessionCacheApp(server, true, "session.cache.web", "session.cache.web.listener1");
+        app = new SessionCacheApp(server, true, "session.cache.web");
 
         String hazelcastConfigFile = "hazelcast-localhost-only-multicastDisabled.xml";
         String configLocation = new File(server.getUserDir() + "/shared/resources/hazelcast/" + hazelcastConfigFile).getAbsolutePath();
