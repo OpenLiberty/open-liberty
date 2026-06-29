@@ -154,8 +154,16 @@ public class LogStashWithBinaryLoggingTest extends LogstashCollectorTest {
         Log.info(c, "serverStart", "--->  Starting Server.. ");
         clearContainerOutput();
         server.startServer();
+
         // Wait for CWWKT0016I in Logstash container output
         waitForStringInContainerOutput("CWWKT0016I");
+
+        Log.info(c, "serverStart", "---> Wait for logstash collector to connect to logstash server ");
+        // TRAS0218I: The logstash collector is connected to the logstash server.
+        // Binary logging has no messages.log, so check container output instead.
+        // This ensures the server is fully up and connected before any test runs,
+        // preventing false failures from setConfig() or container output checks.
+        assertNotNull("Cannot find TRAS0218I from Logstash output", waitForStringInContainerOutput("TRAS0218I"));
     }
 
     /*

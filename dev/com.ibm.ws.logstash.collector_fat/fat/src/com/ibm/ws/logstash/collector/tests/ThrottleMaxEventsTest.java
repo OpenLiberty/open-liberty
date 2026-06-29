@@ -173,6 +173,12 @@ public class ThrottleMaxEventsTest extends LogstashCollectorTest {
 
         // Wait for CWWKT0016I in Logstash container output
         waitForStringInContainerOutput("CWWKT0016I");
+
+        Log.info(c, "serverStart", "---> Wait for logstash collector to connect to logstash server ");
+        // TRAS0218I: The logstash collector is connected to the logstash server.
+        // This ensures the server is fully up and connected before any test runs,
+        // preventing false failures from setConfig() or container output checks.
+        assertNotNull("Cannot find TRAS0218I from messages.log", server.waitForStringInLog("TRAS0218I", 60000));
     }
 
     private boolean waitForEventsToProcess(int numMsg, int numTrace, int numAccessLog, long startTime, long timeout) throws JSONException {
