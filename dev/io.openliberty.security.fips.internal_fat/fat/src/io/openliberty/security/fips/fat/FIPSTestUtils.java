@@ -63,7 +63,7 @@ public class FIPSTestUtils {
                 dir = dir + "/jre";
             }
             Set<String> dirs = Stream.of(new File(dir))
-                    .filter(file -> !file.isDirectory())
+                    .filter(File::isDirectory)
                     .map(File::getName)
                     .collect(Collectors.toSet());
             if (!dirs.contains("fips140-3")) {
