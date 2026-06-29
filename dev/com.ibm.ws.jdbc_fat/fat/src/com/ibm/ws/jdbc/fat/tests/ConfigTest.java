@@ -15,7 +15,6 @@ package com.ibm.ws.jdbc.fat.tests;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;

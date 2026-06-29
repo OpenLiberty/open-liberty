@@ -12,7 +12,6 @@
  *******************************************************************************/
 package com.ibm.ws.jdbc.fat.tests;
 
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.Optional;

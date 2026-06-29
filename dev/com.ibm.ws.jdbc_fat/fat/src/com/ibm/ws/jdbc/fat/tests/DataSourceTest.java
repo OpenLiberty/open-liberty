@@ -19,7 +19,6 @@ import static componenttest.annotation.SkipIfSysProp.DB_SQLServer;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.List;
