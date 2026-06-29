@@ -352,6 +352,7 @@ public class DataSourceTest extends FATServletClient {
 
     @Test
     @AllowedFFDC({ "com.ibm.ws.rsadapter.exceptions.DataStoreAdapterException", "javax.transaction.xa.XAException" })
+    // TODO remove once H2 XAResource is fixed to behave correctly for two-phase commit
     @OnlyIfSysProp(DB_Not_Default)
     public void testXARecovery() throws Exception {
         runTest();
