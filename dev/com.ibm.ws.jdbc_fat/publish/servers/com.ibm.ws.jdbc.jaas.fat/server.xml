@@ -241,8 +241,8 @@
 	<javaPermission codebase="${shared.resource.dir}jdbc/${env.DB_DRIVER}" className="java.security.AllPermission"/>
 	<javaPermission codebase="${shared.resource.dir}anonymous/${env.ANON_DRIVER}" className="java.security.AllPermission"/>
 	<javaPermission codebase="${shared.resource.dir}AutomaticDerbyLibrary/derby.jar" className="java.security.AllPermission"/>
-<javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
-<javaPermission codebase="${shared.resource.dir}h2Java8/h2.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}db2/jcc.jar" className="java.security.AllPermission"/>
+    <javaPermission codebase="${shared.resource.dir}h2Java8/h2.jar" className="java.security.AllPermission"/>
 
 	<!-- H2 in-file database directory: allow read/write of the directory itself and read/write/delete of files inside -->
 	<javaPermission className="java.io.FilePermission" name="${h2.db.dir}" actions="read,write"/>
