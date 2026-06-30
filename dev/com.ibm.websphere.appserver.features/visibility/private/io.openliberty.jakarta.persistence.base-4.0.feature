@@ -7,5 +7,5 @@ IBM-Process-Types: server, \
   io.openliberty.jsonpInternal-2.2
 -bundles=io.openliberty.org.eclipse.persistence-4.0; location:=lib/
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel

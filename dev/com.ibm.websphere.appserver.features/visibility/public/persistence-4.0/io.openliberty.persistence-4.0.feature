@@ -231,7 +231,7 @@ Subsystem-Name: Jakarta Persistence 4.0
 -bundles=io.openliberty.persistence.4.0.thirdparty; location:=dev/api/third-party/; mavenCoordinates="org.eclipse.persistence:eclipselink:5.0.0", \
  com.ibm.ws.jpa.container.eclipselink
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel
 WLP-InstantOn-Enabled: true
 WLP-Platform: jakartaee-12.0

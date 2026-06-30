@@ -9,5 +9,5 @@ IBM-Process-Types: server, \
 -bundles=io.openliberty.jakarta.persistence.api.4.0
 -jars=io.openliberty.jakarta.persistence.4.0; location:=dev/api/spec/; mavenCoordinates="jakarta.persistence:jakarta.persistence-api:4.0.0"
 kind=noship
-edition=core
+edition=full
 WLP-Activation-Type: parallel
