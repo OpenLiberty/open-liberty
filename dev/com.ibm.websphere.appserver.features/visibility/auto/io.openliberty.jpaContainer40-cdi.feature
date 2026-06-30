@@ -4,7 +4,7 @@ visibility=private
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-Provision-Capability: \
-  osgi.identity; filter:="(|(osgi.identity=io.openliberty.cdi-4.1)(osgi.identity=io.openliberty.cdi-5.0))", \
+  osgi.identity; filter:="(|(osgi.identity=io.openliberty.cdi-5.0)(osgi.identity=io.openliberty.cdi-6.0))", \
   osgi.identity; filter:="(&(osgi.identity=io.openliberty.persistenceContainer-4.0))"
 -bundles=com.ibm.ws.jpa.container.v40.cdi
 IBM-Install-Policy: when-satisfied

@@ -27,6 +27,10 @@ Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=21))"
 
 
 Import-Package: \
+	jakarta.persistence;consumer=persistenceService;version="[4.0,5)", \
+	jakarta.persistence.criteria;consumer=persistenceService;version="[4.0,5)", \
+	jakarta.persistence.metamodel;consumer=persistenceService;version="[4.0,5)", \
+	jakarta.persistence.spi;consumer=persistenceService;version="[4.0,5)", \
 	*
 
 Private-Package: \

@@ -25,6 +25,12 @@ WS-TraceGroup: JPA
 Private-Package: \
   com.ibm.ws.jpa.container.v40.*
 
+Import-Package: \
+  jakarta.persistence;consumer=persistenceService;version="[4.0,5)", \
+  jakarta.persistence.criteria;consumer=persistenceService;version="[4.0,5)", \
+  jakarta.persistence.sql;consumer=persistenceService;version="[4.0,5)", \
+  *
+
 -dsannotations: \
   com.ibm.ws.jpa.container.v40.JPAPCtxtAttributeAccessorV40, \
   com.ibm.ws.jpa.container.v40.internal.JPA40Runtime

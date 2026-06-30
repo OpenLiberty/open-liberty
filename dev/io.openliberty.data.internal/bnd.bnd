@@ -57,6 +57,8 @@ Import-Package: \
   !jakarta.validation, \
   !jakarta.validation.*, \
   jakarta.annotation;version="[2.1,4)", \
+  jakarta.persistence;version="[3.2,5)", \
+  jakarta.persistence.*;version="[3.2,5)", \
   *
 
 Private-Package: \
@@ -102,7 +104,8 @@ instrument.classesExcludes: io/openliberty/data/internal/resources/*.class
 	io.openliberty.jakarta.cdi.4.0,\
 	io.openliberty.jakarta.data.1.1,\
 	io.openliberty.jakarta.interceptor.2.1,\
-	io.openliberty.jakarta.persistence.3.2,\
+	io.openliberty.jakarta.persistence.3.2;version=latest,\
+	io.openliberty.jakarta.persistence.4.0;version=latest,\
 	io.openliberty.jakarta.transaction.2.0,\
 	io.openliberty.jakarta.validation.3.0,\
 	com.ibm.ws.jdbc
