@@ -37,7 +37,7 @@ define([ 'dojo/Deferred', '../_topicUtil' ], function(Deferred, topicUtil) {
     start: function() {
       console.log("Attempting to start the push notification mechanism. This relies on websockets, which may not be enabled on the Admin Center server");
       connectionAttempt = new Deferred();
-      var websocket = createWebSocket(createNotifyURL());
+      websocket = createWebSocket(createNotifyURL());
       // IE9 fix
       if (websocket !== null && websocket !== undefined) {
         console.log('Created WebSocket for URL: ' + websocket.url, websocket);
