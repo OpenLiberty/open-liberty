@@ -24,6 +24,7 @@ src: \
 	test-applications/testResourceAdaptor.jar/src, \
 	test-applications/traceTestLib.jar/src, \
 	test-applications/traceTestWar.war/src, \
+	test-applications/testBadClass.jar/src, \
 	test-resourceadapters/testDummyRA/src, \
 	test-bundles/userApiBundle/src
 
@@ -39,5 +40,6 @@ tested.features:
 	com.ibm.websphere.javaee.annotation.1.3, \
 	com.ibm.websphere.javaee.jms.2.0, \
 	com.ibm.ws.classloading.configuration, \
-	com.ibm.websphere.org.osgi.core
+	com.ibm.websphere.org.osgi.core, \
+	fattest.simplicity;version=latest
 

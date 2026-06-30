@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2017 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -19,9 +19,9 @@ import javax.xml.bind.annotation.XmlAttribute;
 
 /**
  * Represents an explicitly installed application
- * 
+ *
  * @author Tim Burns
- * 
+ *
  */
 public class ClassloaderElement extends ConfigElement {
 
@@ -32,6 +32,8 @@ public class ClassloaderElement extends ConfigElement {
     private Set<String> privateLibraryRefs;
 
     private String apiTypeVisibility;
+
+    private String delegation;
 
     public Set<String> getCommonLibraryRefs() {
         if (this.commonLibraryRefs == null) {
@@ -75,6 +77,15 @@ public class ClassloaderElement extends ConfigElement {
         return this.apiTypeVisibility;
     }
 
+    @XmlAttribute(name = "delegation")
+    public void setDelegation(String delegation) {
+        this.delegation = delegation;
+    }
+
+    public String getDelegation() {
+        return this.delegation;
+    }
+
     @Override
     public String toString() {
         StringBuffer buf = new StringBuffer("ClassLoaderElement{");
@@ -85,6 +96,8 @@ public class ClassloaderElement extends ConfigElement {
             for (String ref : this.privateLibraryRefs)
                 buf.append("libraryRefs=\"" + ref + "\" ");
         buf.append("apiTypeVisibility=\"" + (apiTypeVisibility == null ? "" : apiTypeVisibility) + "\" ");
+        if (delegation != null)
+            buf.append("delegation=\"" + delegation + "\" ");
         buf.append("}");
 
         return buf.toString();

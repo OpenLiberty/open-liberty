@@ -12,7 +12,9 @@
  *******************************************************************************/
 package io.openliberty.classloading.classpath.fat;
 
+import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
+import org.jboss.shrinkwrap.api.asset.ByteArrayAsset;
 import org.jboss.shrinkwrap.api.exporter.ZipExporter;
 import org.jboss.shrinkwrap.api.spec.EnterpriseArchive;
 import org.jboss.shrinkwrap.api.spec.JavaArchive;
@@ -31,6 +33,10 @@ import io.openliberty.classloading.classpath.test.lib17.Lib17;
 import io.openliberty.classloading.classpath.test.lib2.Lib2;
 import io.openliberty.classloading.classpath.test.rar1.TestResourceAdapter;
 import io.openliberty.classloading.libs.util.CodeSourceUtil;
+import io.openliberty.classloading.trace.fat.AppClassLoaderTraceTest;
+import io.openliberty.classloading.trace.fat.GatewayClassLoaderTraceTest;
+import io.openliberty.classloading.trace.fat.LibraryClassLoadingTraceTest;
+import io.openliberty.classloading.trace.fat.ClassLoaderToStringTraceTest;
 import io.openliberty.classloading.trace.lib.TestLibraryClass;
 import io.openliberty.classloading.trace.war.TraceTestServlet;
 import junit.framework.AssertionFailedError;
@@ -43,8 +49,10 @@ import test.bundle.api2.c.API_C2;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    io.openliberty.classloading.trace.fat.LibraryClassLoadingTraceTest.class,
-    io.openliberty.classloading.trace.fat.ClassLoaderToStringTraceTest.class
+    LibraryClassLoadingTraceTest.class,
+    ClassLoaderToStringTraceTest.class,
+    AppClassLoaderTraceTest.class,
+    GatewayClassLoaderTraceTest.class
 })
 public class FATSuite {
 
@@ -62,6 +70,12 @@ public class FATSuite {
     public static final String TEST_LIB2 = "testLib2";
     public static final String TEST_LIB12 = "testLib12";
     public static final String TEST_LIB17 = "testLib17";
+
+    // Bad-class (corrupt bytecode) archive name
+    public static final String TEST_BAD_CLASS = "testBadClass";
+
+    // Fully-qualified class name of the corrupt class entry in testBadClass.jar
+    public static final String BAD_CLASS_NAME = "io.openliberty.classloading.classpath.test.badclass.BadClass";
 
 
     // RAR inner jar archive names
@@ -105,6 +119,9 @@ public class FATSuite {
     // RAR archives
     static final ResourceAdapterArchive TEST_RAR1_RAR;
 
+    // Corrupt-bytecode archive for CLASS FAIL trace testing
+    static final JavaArchive TEST_BAD_CLASS_JAR;
+
     // Trace test archives
     static final JavaArchive TRACE_TEST_LIB_JAR;
     static final WebArchive TRACE_TEST_WAR;
@@ -137,6 +154,15 @@ public class FATSuite {
             ShrinkHelper.addDirectory(TEST_RAR1_RAR, "test-applications/" + TEST_RAR1_RAR.getName() + "/resources/");
 
 
+            // Build the corrupt-bytecode JAR: create an empty JAR and inject a
+            // class entry whose bytes are intentionally invalid so that
+            // AppClassLoader.defineClass() throws ClassFormatError, causing
+            // the "CLASS FAIL" trace line to be emitted.
+            byte[] corruptBytes = "THIS_IS_NOT_A_VALID_CLASS_FILE".getBytes("UTF-8");
+            String badClassEntry = BAD_CLASS_NAME.replace('.', '/') + ".class";
+            TEST_BAD_CLASS_JAR = ShrinkWrap.create(JavaArchive.class, TEST_BAD_CLASS + ".jar")
+                            .add(new ByteArrayAsset(corruptBytes), ArchivePaths.create(badClassEntry));
+
             // Build trace test archives
             TRACE_TEST_LIB_JAR = ShrinkHelper.buildJavaArchive(TRACE_TEST_LIB + ".jar",
                                                                TestLibraryClass.class.getPackage().getName());
@@ -158,6 +184,8 @@ public class FATSuite {
                             .addAsModule(TEST_EJB1_JAR)                 // EJB module for enterprise testing
 
                             .addAsLibrary(TEST_LIB2_JAR)                // Library in lib/ directory
+
+                            .addAsLibrary(TEST_BAD_CLASS_JAR)           // Corrupt-bytecode JAR for CLASS FAIL testing
 
                             .addAsModule(TEST_RAR1_RAR);                // Resource adapter for comprehensive testing
 
