@@ -59,11 +59,12 @@ public class FIPSTestUtils {
 
         if (javaInfo.majorVersion() == 8) {
             String dir = javaInfo.javaHome();
-            if (!dir.endsWith("jre")) {
+            // z/OS Java 8 path does not include JRE
+            if (!System.getProperty("os.name").equalsIgnoreCase("z/OS") && !dir.endsWith("jre")) {
                 dir = dir + "/jre";
             }
-            Set<String> dirs = Stream.of(new File(dir))
-                    .filter(file -> !file.isDirectory())
+            Set<String> dirs = Stream.of(new File(dir).listFiles())
+                    .filter(File::isDirectory)
                     .map(File::getName)
                     .collect(Collectors.toSet());
             if (!dirs.contains("fips140-3")) {
