@@ -107,6 +107,16 @@ define([ 'dojo/Deferred', '../_topicUtil' ], function(Deferred, topicUtil) {
     var i;
     for (i = 0; i < updates.length; i++) {
       var update = updates[i];
+      // Ensure getTopic() can resolve appOnServer / appOnCluster topics.
+      // The WS payload may carry flat ids; reconstruct the nested form expected by _topicUtil.
+      if (update.type === 'appOnServer' && update.serverId && !update.server) {
+        update.server = { id: update.serverId };
+      }
+      if ((update.type === 'appOnCluster' || update.type === 'appsOnCluster' ||
+           update.type === 'serversOnCluster' || update.type === 'appInstancesByCluster') &&
+           update.clusterId && !update.cluster) {
+        update.cluster = { id: update.clusterId };
+      }
       topicUtil.publish(topicUtil.getTopic(update), update);
     }
   }
