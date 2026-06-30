@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2025 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,9 +22,8 @@ import componenttest.app.FATServlet;
 
 @SuppressWarnings("serial")
 @DataSourceDefinition(name = "java:comp/env/jdbc/annoDS",
-                      className = "org.apache.derby.jdbc.EmbeddedXADataSource40",
-                      databaseName = "memory:dsdfat_global_lib",
-                      properties = { "createDatabase=create" })
+                      className = "org.h2.jdbcx.JdbcDataSource",
+                      url = "${env.DB_URL}")
 public class DSDGlobalLibTestServlet extends FATServlet {
 
     @Resource(lookup = "java:comp/env/jdbc/annoDS")
