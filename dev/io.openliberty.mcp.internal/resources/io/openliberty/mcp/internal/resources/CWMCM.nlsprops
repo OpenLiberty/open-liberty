@@ -65,6 +65,13 @@ CWMCM0007E.invalid.arguments=CWMCM0007E: The {0} MCP Tool has a parameter of typ
 CWMCM0007E.invalid.arguments.explanation=One or more parameters were not annotated as tool arguments and are not recognized special argument types.
 CWMCM0007E.invalid.arguments.useraction=Check whether you have the correct class imported for your argument, or you meant to include @ToolArg.
 
+# Used for server logging
+# do not translate MCP
+# {0} = The MCP server endpoint URL
+CWMCM0008I.mcp.endpoint.url=CWMCM0008I: MCP server endpoint: {0}
+CWMCM0008I.mcp.endpoint.url.explanation=The MCP server endpoint URL for this application module is now available at the specified URL.
+CWMCM0008I.mcp.endpoint.url.useraction=No action is required.
+
 # Used as part of a response to a client
 # {0} = Request id
 invalid.request.params=A request with the {0} ID is in progress.
