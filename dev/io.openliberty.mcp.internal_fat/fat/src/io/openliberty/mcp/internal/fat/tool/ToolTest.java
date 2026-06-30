@@ -2665,4 +2665,71 @@ public class ToolTest extends FATServletClient {
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
 
+    @Test
+    public void testMcpRequest() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "checkMcpRequest"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"OK"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testMcpRequestHasSessionId() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "readSessionIdReversed"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String reverseSessionId = new StringBuilder(client.getSessionId()).reverse().toString();
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"%s"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """.formatted(reverseSessionId);
+
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
 }

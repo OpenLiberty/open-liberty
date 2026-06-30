@@ -168,7 +168,7 @@ public class McpClient extends ExternalResource {
                               "elicitation": {}
                             },
                             "clientInfo": {
-                              "name": "FAT Test Client",
+                              "name": "fat-test-client",
                               "title": "FAT Test Client",
                               "version": "1.0.0"
                             }

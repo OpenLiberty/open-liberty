@@ -9,6 +9,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
@@ -16,9 +20,11 @@ import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
+import org.mcpjava.server.ImplementationInfo;
 import org.mcpjava.server.McpRequest;
 import org.mcpjava.server.Role;
 import org.mcpjava.server.content.Annotations;
@@ -571,6 +577,51 @@ public class BasicTools {
         BigDecimal timestamp = (BigDecimal) request.metadata().get("timestamp");
         String result = "You have called this tool from " + location + " at timestamp " + timestamp.toString();
         return result;
+    }
+
+    @Tool
+    public String checkMcpRequest(McpRequest request) {
+        return wrapErrors(() -> {
+            // Note: expected caps matches McpClient.before()
+            Map<String, Object> expectedCaps = Map.of("roots", Map.of("listChanged", true),
+                                                      "sampling", Map.of(),
+                                                      "elicitation", Map.of());
+            assertEquals("capabilities", expectedCaps, request.rawClientCapabilities());
+
+            assertEquals("protocolVersion", "2025-11-25", request.protocolVersion());
+
+            ImplementationInfo clientInfo = request.clientInfo();
+            assertEquals("icons", List.of(), clientInfo.icons());
+            assertEquals("name", "fat-test-client", clientInfo.name());
+            assertEquals("title", "FAT Test Client", clientInfo.title());
+            assertEquals("version", "1.0.0", clientInfo.version());
+            assertEquals("description", Optional.empty(), clientInfo.description());
+            assertEquals("websiteUrl", Optional.empty(), clientInfo.websiteUrl());
+
+            return "OK";
+        });
+    }
+
+    @Tool
+    public String readSessionIdReversed(McpRequest request) {
+        return request.sessionId()
+                      .map(s -> new StringBuilder(s).reverse().toString())
+                      .orElse("No Session ID");
+    }
+
+    /**
+     * Run a callable and translate any exceptions or assertion errors into a String
+     */
+    private String wrapErrors(Callable<String> runnable) {
+        try {
+            return runnable.call();
+        } catch (Exception | AssertionError e) {
+            StringWriter writer = new StringWriter();
+            try (var pw = new PrintWriter(writer)) {
+                e.printStackTrace(pw);
+            }
+            return writer.toString();
+        }
     }
 
 }
