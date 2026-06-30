@@ -17,7 +17,7 @@ import componenttest.annotation.MinimumJavaLevel;
 
 //All the tests extend this class. Therefore adding the annotations to set the min and max java level here.
 @MinimumJavaLevel(javaLevel = 17)
-@MaximumJavaLevel(javaLevel = 26) //https://docs.spring.io/spring-boot/4.0/system-requirements.html
+@MaximumJavaLevel(javaLevel = 27) //https://docs.spring.io/spring-boot/4.1/system-requirements.html (Spring Boot docs show Java 26 support. Doing early testing with Java 27 since it is not released yet)
 public class JavaLevel {
 
 }
