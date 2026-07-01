@@ -18,9 +18,9 @@ publish.wlp.jar.disabled: true
 test.project: true
 
 -includeresource: \
-  @\${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.21.5;EXACT}!/!META-INF/maven/*,\
-  @\${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.21.5;EXACT}!/!META-INF/maven/*,\
-  @\${repo;com.fasterxml.jackson.module:jackson-module-jaxb-annotations;2.21.5;EXACT}!/!META-INF/maven/*
+  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.21.5;EXACT}!/!META-INF/maven/*,\
+  @${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.21.5;EXACT}!/!META-INF/maven/*,\
+  @${repo;com.fasterxml.jackson.module:jackson-module-jaxb-annotations;2.21.5;EXACT}!/!META-INF/maven/*
   
 Export-Package: \
   com.fasterxml.jackson.*;version=2.21.5
