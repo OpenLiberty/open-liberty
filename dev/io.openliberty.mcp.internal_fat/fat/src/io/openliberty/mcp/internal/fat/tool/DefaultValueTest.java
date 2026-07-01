@@ -234,6 +234,6 @@ public class DefaultValueTest extends FATServletClient {
 
     @Test
     public void testMcpEndpointMessageCodeIsLogged() throws Exception {
-        assertNotNull("Expected CWMCM0008I message code to appear in the log", server.waitForStringInLog(Pattern.quote("CWMCM0008I:")));
+        assertNotNull("Expected CWMCM0008I message with full MCP URL to appear in the log", server.waitForStringInLog("CWMCM0008I: MCP server endpoint: .*/defaultValueTest/mcp$"));
     }
 }
