@@ -167,16 +167,14 @@ public class NettyFrameworkImpl implements ServerQuiesceListener, NettyFramework
         AutoScalingEventExecutorChooserFactory scaler = createThreadScaler(config);
         childGroup = new MultiThreadIoEventLoopGroup(maxThreads, null, scaler, factory);
         outboundConnections = new DefaultChannelGroup(childGroup.next());
-        
+
         if (metricsWindow > 0) {
             scheduledExecutorService.scheduleAtFixedRate(() -> {
                 StringBuilder sb = new StringBuilder("Getting metrics from MultiThreadIoEventLoopGroup with active threads " + ((MultiThreadIoEventLoopGroup)childGroup).activeExecutorCount() + " : ");
                 for (AutoScalingUtilizationMetric metric : ((MultiThreadIoEventLoopGroup)childGroup).executorUtilizations()) {
                     sb.append("Thread@" + Integer.toHexString(metric.executor().hashCode()) + " -> " + String.format("%.2f", metric.utilization()*100.0) + "%, ");
                 }
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, sb.toString());
-                }
+                Tr.info(tc, sb.toString());
             }, metricsWindow, metricsWindow, TimeUnit.MILLISECONDS);
         }
     }
