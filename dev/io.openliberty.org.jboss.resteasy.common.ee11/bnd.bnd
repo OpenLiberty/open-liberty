@@ -73,7 +73,7 @@ Export-Package: \
   org.jboss.resteasy.client.exception;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.cache;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.engines;version=${resteasy-version}, \
-  org.jboss.resteasy.client.jaxrs.i18n;version=${resteasy-version}, \
+  org.jboss.resteasy.client.jaxrs.i18n;uses:="jakarta.ws.rs.client,jakarta.ws.rs.core";version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.extractors;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.invocation;version=${resteasy-version}, \
   org.jboss.resteasy.client.jaxrs.internal.proxy.processors.webtarget;version=${resteasy-version}, \
@@ -102,7 +102,7 @@ Export-Package: \
   org.jboss.resteasy.plugins.server.servlet;version=${resteasy-version}, \
   org.jboss.resteasy.plugins.server;version=${resteasy-version}, \
   org.jboss.resteasy.plugins.touri;version=${resteasy-version}, \
-  org.jboss.resteasy.resteasy_jaxrs.i18n;version=${resteasy-version}, \
+  org.jboss.resteasy.resteasy_jaxrs.i18n;uses:="jakarta.validation,jakarta.ws.rs.core,org.jboss.resteasy.annotations,org.jboss.resteasy.api.validation";version=${resteasy-version}, \
   org.jboss.resteasy.specimpl;version=${resteasy-version}, \
   org.jboss.resteasy.spi.concurrent;version=${resteasy-version}, \
   org.jboss.resteasy.spi.interception;version=${resteasy-version}, \
