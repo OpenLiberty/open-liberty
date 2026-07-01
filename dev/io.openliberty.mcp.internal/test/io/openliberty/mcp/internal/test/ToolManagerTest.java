@@ -51,7 +51,6 @@ import io.openliberty.mcp.tools.ToolManager.ToolInfo;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 
 /**
  *
@@ -65,7 +64,7 @@ public class ToolManagerTest {
     @Before
     public void setup() {
         schemaRegistry = new SchemaRegistry();
-        jsonb = JsonbBuilder.create();
+        jsonb = TestUtils.createJsonb();
         toolManager = new ToolRegistry(schemaRegistry, jsonb);
         toolManager.setConverterRegistry(TestUtils.createTestConverterRegistry());
     }

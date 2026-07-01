@@ -23,10 +23,8 @@ import org.mcpjava.server.Icon.Theme;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import io.openliberty.mcp.internal.requests.IconImpl;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 import jakarta.json.bind.JsonbException;
 
 /**
@@ -41,9 +39,7 @@ public class IconImplTest {
 
     @BeforeClass
     public static void setup() {
-        JsonbConfig config = new JsonbConfig();
-        config.withAdapters(new IconImpl.Adapter());
-        jsonb = JsonbBuilder.create(config);
+        jsonb = TestUtils.createJsonb();
     }
 
     @AfterClass

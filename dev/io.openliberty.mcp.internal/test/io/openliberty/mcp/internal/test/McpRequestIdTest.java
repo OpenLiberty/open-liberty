@@ -22,14 +22,11 @@ import org.junit.Test;
 import org.skyscreamer.jsonassert.JSONAssert;
 
 import io.openliberty.mcp.internal.requests.McpRequest;
-import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
-import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.requests.RequestId;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.Json;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 
 /**
  * Unit tests for the overidden .equals method for {@link RequestId}
@@ -39,10 +36,7 @@ public class McpRequestIdTest {
 
     @BeforeClass
     public static void setup() {
-        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
-                                                   .withDeserializers(new McpRequestIdDeserializer());
-
-        jsonb = JsonbBuilder.create(jsonbConfig);
+        jsonb = TestUtils.createJsonb();
     }
 
     @Test

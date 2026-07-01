@@ -28,10 +28,8 @@ import org.mcpjava.server.content.AudioContent;
 import org.mcpjava.server.content.ImageContent;
 import org.mcpjava.server.content.TextContent;
 
-import io.openliberty.mcp.internal.content.RoleAdapter;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 
 public class ToolContents {
 
@@ -229,8 +227,7 @@ public class ToolContents {
     // Role Enum Serialization Test
     @Test
     public void testRoleEnumSerialization() {
-        JsonbConfig config = new JsonbConfig().withAdapters(new RoleAdapter());
-        Jsonb jsonb = JsonbBuilder.create(config);
+        Jsonb jsonb = TestUtils.createJsonb();
 
         Role role = Role.ASSISTANT;
         String roleEnumJSON = jsonb.toJson(role);

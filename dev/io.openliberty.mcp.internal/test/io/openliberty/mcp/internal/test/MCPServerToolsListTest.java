@@ -26,7 +26,6 @@ import io.openliberty.mcp.internal.ToolMetadata;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 
 /**
  *
@@ -41,7 +40,7 @@ public class MCPServerToolsListTest {
     @Before
     public void setup() throws Exception {
         SchemaRegistry.set(new SchemaRegistry());
-        jsonb = JsonbBuilder.create();
+        jsonb = TestUtils.createJsonb();
     }
 
     private List<ToolDescription> generateResponse(ToolMetadata tm) {

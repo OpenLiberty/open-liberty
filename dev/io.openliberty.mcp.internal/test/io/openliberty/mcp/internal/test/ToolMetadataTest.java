@@ -39,7 +39,6 @@ import io.openliberty.mcp.internal.testutils.TestUtils;
 import io.openliberty.mcp.internal.typeimpl.ParameterizedTypeImpl;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
 
 /**
  *
@@ -53,7 +52,7 @@ public class ToolMetadataTest {
     @Before
     public void setup() throws Exception {
         SchemaRegistry.set(new SchemaRegistry());
-        jsonb = JsonbBuilder.create();
+        jsonb = TestUtils.createJsonb();
     }
 
     @Tool(name = "addGenericToGenericArray", title = "adds generic to generic Array", description = "adds person to Generic Array, returns nothing")

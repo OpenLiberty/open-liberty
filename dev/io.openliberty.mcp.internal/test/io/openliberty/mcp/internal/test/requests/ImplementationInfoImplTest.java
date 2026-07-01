@@ -24,11 +24,9 @@ import org.mcpjava.server.ImplementationInfo;
 import org.skyscreamer.jsonassert.JSONAssert;
 import org.skyscreamer.jsonassert.JSONCompareMode;
 
-import io.openliberty.mcp.internal.requests.IconImpl;
 import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
+import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.Jsonb;
-import jakarta.json.bind.JsonbBuilder;
-import jakarta.json.bind.JsonbConfig;
 
 public class ImplementationInfoImplTest {
 
@@ -38,10 +36,7 @@ public class ImplementationInfoImplTest {
 
     @BeforeClass
     public static void setup() {
-        JsonbConfig config = new JsonbConfig();
-        config.withAdapters(new IconImpl.Adapter(),
-                            new ImplementationInfoImpl.Adapter());
-        jsonb = JsonbBuilder.create(config);
+        jsonb = TestUtils.createJsonb();
     }
 
     @AfterClass
