@@ -21,12 +21,16 @@ import java.util.Base64;
 import java.util.Map;
 import java.util.Optional;
 
+import org.hamcrest.Matchers;
 import org.junit.Test;
 import org.mcpjava.server.Role;
 import org.mcpjava.server.content.Annotations;
 import org.mcpjava.server.content.AudioContent;
 import org.mcpjava.server.content.ImageContent;
 import org.mcpjava.server.content.TextContent;
+import org.mcpjava.server.tools.ToolResponse;
+import org.skyscreamer.jsonassert.JSONAssert;
+import org.skyscreamer.jsonassert.JSONCompareMode;
 
 import io.openliberty.mcp.internal.testutils.TestUtils;
 import jakarta.json.bind.Jsonb;
@@ -38,6 +42,8 @@ public class ToolContents {
     public static final byte[] TEST_IMAGE_DATA = Base64.getDecoder().decode("iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8DwHwAFBQIAX8jx0gAAAABJRU5ErkJggg==");
     /** Minimal wav header */
     public static final byte[] TEST_AUDIO_DATA = Base64.getDecoder().decode("UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAAB9AAACABAAZGF0YQAAAAA=");
+
+    private static Jsonb jsonb = TestUtils.createJsonb();
 
     // Text Content
     @Test
@@ -61,7 +67,7 @@ public class ToolContents {
 
     @Test
     public void testTextContentWithMetaAndAnnotation() {
-        Map<String, Object> meta = Map.of();
+        Map<String, Object> meta = Map.of("a", "b");
         Annotations annotations = Annotations.builder()
                                              .setAudience(Role.USER)
                                              .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
@@ -74,6 +80,33 @@ public class ToolContents {
         assertEquals("Hello world", content.text());
         assertEquals(meta, content.metadata());
         assertEquals(Optional.of(annotations), content.annotations());
+    }
+
+    @Test
+    public void testTextContentPutMetadata() {
+        var textContent = TextContent.builder("hello")
+                                     .putMetadata("a", "b")
+                                     .build();
+        assertEquals("hello", textContent.text());
+        assertThat(textContent.metadata(), Matchers.hasEntry("a", "b"));
+    }
+
+    @Test
+    public void testTextContentSerialization() {
+        var textContent = TextContent.builder("hello")
+                                     .putMetadata("a", "b")
+                                     .build();
+        JSONAssert.assertEquals("""
+                        {
+                            "type": "text",
+                            "text": "hello",
+                            "_meta": {
+                                "a": "b"
+                            }
+                        }
+                        """,
+                                jsonb.toJson(textContent),
+                                JSONCompareMode.STRICT);
     }
 
     @Test(expected = NullPointerException.class)
@@ -235,6 +268,28 @@ public class ToolContents {
 
         Role assistantRole = jsonb.fromJson("\"assistant\"", Role.class);
         assertEquals(Role.ASSISTANT, assistantRole);
+    }
+
+    @Test
+    public void testToolResponseSerialization() {
+        var toolResponse = ToolResponse.builder()
+                                       .addTextContent("OK")
+                                       .build();
+
+        JSONAssert.assertEquals("""
+                        {
+                          "content": [
+                            {
+                                "type": "text",
+                                "text": "OK",
+                            }
+                          ],
+                          "isError": false
+                        }
+                        """,
+                                jsonb.toJson(toolResponse),
+                                JSONCompareMode.STRICT);
+
     }
 
 }
