@@ -17,6 +17,8 @@ import java.net.URI;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.annotation.WebServlet;
 import javax.websocket.ClientEndpoint;
 import javax.websocket.CloseReason;
@@ -36,13 +38,12 @@ import componenttest.app.FATServlet;
 public class WebSocketTestServlet extends FATServlet {
 
     @Test
-    public void testWebSocketCDIMethodParameterInjection() throws Exception {
+    public void testWebSocketCDIMethodParameterInjection(HttpServletRequest httpRequest, HttpServletResponse httpResponse) throws Exception {
         // Get the WebSocket URL
-        String host = System.getProperty("liberty.test.hostname", "localhost");
-        String port = System.getProperty("liberty.test.port", "8010");
-        String contextRoot = System.getProperty("liberty.test.context.root", "webSocketCDIApp");
+        String host = httpRequest.getLocalAddr();
+        int port = httpRequest.getLocalPort();
         
-        String wsUrl = "ws://" + host + ":" + port + "/" + contextRoot + "/testWebSocket";
+        String wsUrl = "ws://" + host + ":" + port + "/webSocketCDIApp/testWebSocket";
         System.out.println("Connecting to WebSocket at: " + wsUrl);
         
         TestClient client = new TestClient();
