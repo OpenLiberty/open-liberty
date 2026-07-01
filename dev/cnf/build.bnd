@@ -53,6 +53,10 @@ javac.args.release: source
 # With bnd 5.2.0 The importing of java.* packages need to be disabled to maintain legacy behavior.
 -noimportjava: true
 
+# In bnd 7.1.0 new META-INF/services processing was enabled by default to 
+# generate META-INF/services files.  Switch to the old behavior.
+-metainf-services: none 
+
 instrument.disabled: ${if;${test.project};true;false}
 instrument.classesIncludes: **/*.class
 instrument.classesExcludes:

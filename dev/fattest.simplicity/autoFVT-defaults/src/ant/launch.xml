@@ -1,5 +1,5 @@
 <!--
-    Copyright (c) 2017, 2025 IBM Corporation and others.
+    Copyright (c) 2017, 2026 IBM Corporation and others.
     All rights reserved. This program and the accompanying materials
     are made available under the terms of the Eclipse Public License 2.0
     which accompanies this distribution, and is available at
@@ -265,7 +265,7 @@
 		     which is why we can't just use the 6.4.1 version everywhere.  Right now on the build systems we use
                      Java 17 to build and run with Java 21 to run the FATs, but people can build and run with Java 21 for
                      Open Liberty and run into this problem. -->
-		<condition property="bnd.transform.jar.to.exclude" value="biz.aQute.bnd.transform-6.4.1.jar" else="biz.aQute.bnd.transform-7.0.0.jar">
+		<condition property="bnd.transform.jar.to.exclude" value="biz.aQute.bnd.transform-6.4.1.jar" else="biz.aQute.bnd.transform-7.4.0.jar">
 			<and>
 				<istrue value="${is.java15.orHigher}"/>
 			</and>
