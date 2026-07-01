@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2021 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -459,20 +459,26 @@ public class BasicRegistry implements UserRegistry {
     }
 
     /**
-     * Convert the "command line" style pattern into a regular expression.
-     * The conversion is as follows:
+     * Converts a glob-style search pattern into a regular expression for use with
+     * {@link String#matches(String)}. The only supported wildcard is {@code *},
+     * which matches any sequence of characters. All other characters are treated as
+     * literals. Character translations applied:
      * <ul>
-     * <li>* -> .*</li>
-     * <li>? -> .</li>
-     * <li>( -> \(</li>
-     * <li>) -> \)</li>
-     * <li>{ -> \{</li>
-     * <li>} -> \}</li>
-     * <li>\ -> \\</li>
+     * <li>{@code *}  &rarr; {@code .*}</li>
+     * <li>{@code \}  &rarr; {@code \\}</li>
+     * <li>{@code (}  &rarr; {@code \(},  {@code )} &rarr; {@code \)}</li>
+     * <li>{@code {}  &rarr; {@code \{},  {@code }} &rarr; {@code \}}</li>
+     * <li>{@code [}  &rarr; {@code \[},  {@code ]} &rarr; {@code \]}</li>
+     * <li>{@code |}  &rarr; {@code \|},  {@code ^} &rarr; {@code \^},  {@code $} &rarr; {@code \$}</li>
+     * <li>{@code ?}  &rarr; {@code \?},  {@code +} &rarr; {@code \+}</li>
      * </ul>
+     * {@code .} is intentionally not escaped; callers such as {@code getUsers("user.*")}
+     * rely on it as the regex any-character wildcard. Note that backslashes in the incoming
+     * pattern are treated as literals (they are doubled), so {@code \.} cannot be used to
+     * request a literal {@code .}.
      *
-     * @param pattern
-     * @return regular expression
+     * @param pattern the glob-style pattern to convert
+     * @return the equivalent regular expression string
      */
     private String convertToRegex(String pattern) {
 
@@ -485,13 +491,30 @@ public class BasicRegistry implements UserRegistry {
         }
 
         /*
-         * Replace any * with .* and escape any characters that might have special meaning
-         * in a regular expression.
+         * Convert the glob wildcard and escape all regex metacharacters so that only
+         * '*' retains special meaning.
+         *
+         * Ordering matters: '*' is rewritten first, then existing backslashes are
+         * doubled so they become literals. All other metacharacter escaping follows
+         * the doubling step so the backslashes inserted below are not themselves
+         * doubled. '.' is left unescaped intentionally — see Javadoc above.
+         *
+         * '| ^ $ ? + [ ]' are escaped here rather than by individual callers because
+         * this method doubles any backslash it finds in the incoming pattern. A caller
+         * that pre-escaped '\|' would have that backslash doubled to '\\|', leaving
+         * '|' active as a regex operator. Escaping these characters after the doubling
+         * step avoids that problem.
          */
         pattern = pattern.replace("*", ".*");
         pattern = pattern.replace("\\", "\\\\");
         pattern = pattern.replace("(", "\\(").replace(")", "\\)");
         pattern = pattern.replace("{", "\\{").replace("}", "\\}");
+        pattern = pattern.replace("[", "\\[").replace("]", "\\]");
+        pattern = pattern.replace("|", "\\|");
+        pattern = pattern.replace("^", "\\^");
+        pattern = pattern.replace("$", "\\$");
+        pattern = pattern.replace("?", "\\?");
+        pattern = pattern.replace("+", "\\+");
 
         /*
          * Add the ignore case control back on if we removed it.

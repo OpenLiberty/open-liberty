@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011,2018 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -334,6 +334,91 @@ public class BasicRegistryTest {
             public String certificateMapperId() {
                 return null;
             }
+            @Override
+            public String CertificateMapper_target() {
+                return null;
+            }
+        };
+        BasicRegistry reg = new BasicRegistry();
+        reg.activate(brc);
+        return reg;
+    }
+
+    private static User testUser(final String name) {
+        return new User() {
+            @Override
+            public String name() {
+                return name;
+            }
+
+            @Override
+            public SerializableProtectedString password() {
+                return new SerializableProtectedString("pwd".toCharArray());
+            }
+        };
+    }
+
+    private static Group testGroup(final String name) {
+        return new Group() {
+            @Override
+            public String name() {
+                return name;
+            }
+
+            @Override
+            public Member[] member() {
+                return new Member[] {};
+            }
+        };
+    }
+
+    /**
+     * Registry whose user and group names contain or sit next to regular expression metacharacters.
+     */
+    private BasicRegistry metacharBasicRegistry(final boolean ignoreCase) {
+        final User[] users = new User[] {
+                                                                                  testUser("admin"), testUser("adminx"), testUser("reader"), testUser("jo.hn"),
+                                                                                  testUser("[x"), testUser("a+b")
+        };
+        final Group[] groups = new Group[] {
+                                                                                     testGroup("admins"), testGroup("grp.one"), testGroup("[g")
+        };
+        BasicRegistryConfig brc = new BasicRegistryConfig() {
+            @Override
+            public String realm() {
+                return "metachar";
+            }
+
+            @Override
+            public boolean ignoreCaseForAuthentication() {
+                return ignoreCase;
+            }
+
+            @Override
+            public User[] user() {
+                return users;
+            }
+
+            @Override
+            public Group[] group() {
+                return groups;
+            }
+
+            @Override
+            public String config_id() {
+                return "metachar";
+            }
+
+            @Override
+            public String certificateMapMode() {
+                return null;
+            }
+
+            @Override
+            public String certificateMapperId() {
+                return null;
+            }
+
             @Override
             public String CertificateMapper_target() {
                 return null;
@@ -1026,6 +1111,120 @@ public class BasicRegistryTest {
         assertEquals(2, groups.size());
         assertTrue(groups.contains("group1"));
         assertTrue(groups.contains("my group 2"));
+    }
+
+    // ------------------------------------------------------------------
+    // Regular expression metacharacters other than '.' must be treated as literals.
+    // '*' is the glob wildcard and '.' is intentionally left as the regex any-character
+    // wildcard because existing callers use patterns such as "user.*" and ".*".
+    // ------------------------------------------------------------------
+
+    private static void assertUsers(BasicRegistry reg, String pattern, String... expected) throws Exception {
+        List<String> actual = reg.getUsers(pattern, 0).getList();
+        assertEquals("Unexpected users for pattern '" + pattern + "': " + actual, expected.length, actual.size());
+        for (String name : expected) {
+            assertTrue("Expected '" + name + "' for pattern '" + pattern + "' but got " + actual, actual.contains(name));
+        }
+    }
+
+    private static void assertGroups(BasicRegistry reg, String pattern, String... expected) throws Exception {
+        List<String> actual = reg.getGroups(pattern, 0).getList();
+        assertEquals("Unexpected groups for pattern '" + pattern + "': " + actual, expected.length, actual.size());
+        for (String name : expected) {
+            assertTrue("Expected '" + name + "' for pattern '" + pattern + "' but got " + actual, actual.contains(name));
+        }
+    }
+
+    @Test
+    public void getUsers_characterClassIsLiteral() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertUsers(reg, "[a-c]dmin");
+        assertUsers(reg, "[x", "[x");
+    }
+
+    @Test
+    public void getUsers_alternationIsLiteral() throws Exception {
+        assertUsers(metacharBasicRegistry(false), "admin|reader");
+    }
+
+    @Test
+    public void getUsers_quantifiersAreLiteral() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertUsers(reg, "adm+n");
+        assertUsers(reg, "admi?n");
+        assertUsers(reg, "a+b", "a+b");
+    }
+
+    @Test
+    public void getUsers_anchorsAreLiteral() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertUsers(reg, "^admin$");
+        assertUsers(reg, "^admin");
+        assertUsers(reg, "admin$");
+    }
+
+    @Test
+    public void getUsers_unbalancedMetacharactersDoNotThrow() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertUsers(reg, "[basicregistry-regex-injection");
+        assertUsers(reg, "(admin");
+        assertUsers(reg, "admin)");
+        assertUsers(reg, "admin{1");
+        assertUsers(reg, "\\Eadmin");
+    }
+
+    @Test
+    public void getUsers_wildcardStillWorks() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertUsers(reg, "admin", "admin");
+        assertUsers(reg, "admin*", "admin", "adminx");
+        assertUsers(reg, "*min", "admin");
+        assertUsers(reg, "a*i*n", "admin");
+        assertUsers(reg, "*", "admin", "adminx", "reader", "jo.hn", "[x", "a+b");
+    }
+
+    /**
+     * Existing behavior that callers rely on: '.' is the regex any-character wildcard.
+     */
+    @Test
+    public void getUsers_dotRemainsRegexWildcard() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertUsers(reg, "ad.in", "admin");
+        assertUsers(reg, "jo.hn", "jo.hn");
+        assertUsers(reg, "admin.*", "adminx"); // "*" becomes ".*", so "admin.*" needs at least one more character
+        assertUsers(reg, ".*", "admin", "adminx", "reader", "jo.hn", "[x", "a+b");
+    }
+
+    @Test
+    public void getUsers_wildcardCombinedWithMetacharacters() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertUsers(reg, "[*", "[x");
+        assertUsers(reg, "a+*", "a+b");
+    }
+
+    @Test
+    public void getUsers_ignoreCaseStillWorksWithMetacharacters() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(true);
+        assertUsers(reg, "ADMIN", "admin");
+        assertUsers(reg, "ADMIN*", "admin", "adminx");
+        assertUsers(reg, "JO.HN", "jo.hn");
+        assertUsers(reg, "[A-C]DMIN");
+    }
+
+    @Test
+    public void getGroups_metacharactersAreLiteral() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertGroups(reg, "[g", "[g");
+        assertGroups(reg, "[a-z]dmins");
+        assertGroups(reg, "admins|grp.one");
+    }
+
+    @Test
+    public void getGroups_wildcardStillWorks() throws Exception {
+        BasicRegistry reg = metacharBasicRegistry(false);
+        assertGroups(reg, "admin*", "admins");
+        assertGroups(reg, "*", "admins", "grp.one", "[g");
+        assertGroups(reg, "grp.*", "grp.one");
     }
 
 }
