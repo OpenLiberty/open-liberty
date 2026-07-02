@@ -529,6 +529,350 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Obtain cursored pages for queries with sort criteria that includes
+     * expressions.
+     */
+    @Test
+    public void testExpressionAsCursorElement() {
+        // pages | # | denominator | proximity to 10 | 2nd char | name
+        // 1       1            18                 0          e   Ten Eighteenths
+        // 1       2            18                 1          l   Eleven Eighteenths
+        // 1       3            18                 1          i   Nine Eighteenths
+        // 1       4            18                 2          w   Twelve Eighteenths
+        // 1       5            18                 2          i   Eight Eighteenths
+        // 1       6            18                 3          h   Thirteen Eighteenths
+        // 1       7            18                 3          e   Seven Eighteenths
+        // 1       8            18                 4          o   Fourteen Eighteenths
+        // 1       9            18                 4          i   Six Eighteenths
+        // 1      10            18                 5          i   Fifteen Eighteenths
+        // 2      11            18                 5          i   Five Eighteenths
+        // 2      12            18                 6          o   Four Eighteenths
+        // 2      13            18                 6          i   Sixteen Eighteenths
+        // 2      14            18                 7          h   Three Eighteenths
+        // 2      15            18                 7          e   Seventeen Eighteenths
+        // 2      16            18                 8          w   Two Eighteenths
+        // 2      17            18                 9          n   One Eighteenth
+        // 2 3    18            19                 0          e   Ten Nineteenths
+        // 2 3    19            19                 1          l   Eleven Nineteenths
+        // 2 3    20            19                 1          i   Nine Nineteenths
+        //   3    21            19                 2          w   Twelve Nineteenths
+        //   3    22            19                 2          i   Eight Nineteenths
+        //   3    23            19                 3          h   Thirteen Nineteenths
+        //        24            19                 3          e   Seven Nineteenths
+        //        25            19                 4          o   Fourteen Nineteenths
+        //        26            19                 4          i   Six Nineteenths
+        //        27            19                 5          i   Fifteen Nineteenths
+        //        28            19                 5          i   Five Nineteenths
+        //        29            19                 6          o   Four Nineteenths
+        //        30            19                 6          i   Sixteen Nineteenths
+        //        31            19                 7          h   Three Eighteenths
+        //        32            19                 7          e   Seventeen Nineteenths
+        //        33            19                 8          w   Two Nineteenths
+        //        34            19                 8          i   Eighteen Nineteenths
+        //        35            19                 9          n   One Nineteenths
+
+        Order<Fraction> order = Order // also @OrderBy(_Fraction.DENOMINATOR) on method
+                        .by(_Fraction.numerator.subtractedFrom(10).abs().asc(),
+                            _Fraction.name.left(2).right(1).desc(), // 2nd char of name
+                            _Fraction.name.asc());
+
+        String pattern = "% _i__teenth%"; // Eighteenth(s), Nineteenth(s)
+
+        CursoredPage<Fraction> page1 = fractions.namedLike(pattern,
+                                                           order,
+                                                           PageRequest.ofSize(10));
+
+        assertEquals(List.of("Ten Eighteenths",
+                             "Eleven Eighteenths",
+                             "Nine Eighteenths",
+                             "Twelve Eighteenths",
+                             "Eight Eighteenths",
+                             "Thirteen Eighteenths",
+                             "Seven Eighteenths",
+                             "Fourteen Eighteenths",
+                             "Six Eighteenths",
+                             "Fifteen Eighteenths"),
+                     page1.stream()
+                                     .map(f -> f.name)
+                                     .toList());
+
+        assertEquals(true,
+                     page1.hasNext());
+        assertEquals(true,
+                     page1.hasTotals());
+        assertEquals(35L,
+                     page1.totalElements());
+        assertEquals(4L,
+                     page1.totalPages());
+
+        Fraction lastOnPage = page1.content().get(page1.numberOfElements() - 1);
+        Cursor lastOnPageCursor = Cursor.forKey(lastOnPage.denominator,
+                                                Math.abs(10 - lastOnPage.numerator),
+                                                lastOnPage.name.substring(1, 2),
+                                                lastOnPage.name);
+        PageRequest page2Req = PageRequest.ofSize(10).afterCursor(lastOnPageCursor);
+
+        CursoredPage<Fraction> page2 = fractions.namedLike(pattern,
+                                                           order,
+                                                           page2Req);
+
+        assertEquals(List.of("Five Eighteenths",
+                             "Four Eighteenths",
+                             "Sixteen Eighteenths",
+                             "Three Eighteenths",
+                             "Seventeen Eighteenths",
+                             "Two Eighteenths",
+                             "One Eighteenth",
+                             "Ten Nineteenths",
+                             "Eleven Nineteenths",
+                             "Nine Nineteenths"),
+                     page2.stream()
+                                     .map(f -> f.name)
+                                     .toList());
+
+        assertEquals(true,
+                     page2.hasNext());
+        assertEquals(true,
+                     page2.hasPrevious());
+        assertEquals(true,
+                     page2.hasTotals());
+        assertEquals(35L,
+                     page2.totalElements());
+        assertEquals(4L,
+                     page2.totalPages());
+
+        Cursor sevenNineteenthsCursor = Cursor //
+                        .forKey(19, 3, "e", "Seven Nineteenths");
+        PageRequest page3Req = PageRequest.ofSize(6)
+                        .beforeCursor(sevenNineteenthsCursor);
+
+        CursoredPage<Fraction> page3 = fractions.namedLike(pattern,
+                                                           order,
+                                                           page3Req);
+
+        assertEquals(true,
+                     page3.hasNext());
+        assertEquals(true,
+                     page3.hasPrevious());
+        assertEquals(true,
+                     page3.hasTotals());
+        assertEquals(35L,
+                     page3.totalElements());
+
+        assertEquals(List.of("Ten Nineteenths",
+                             "Eleven Nineteenths",
+                             "Nine Nineteenths",
+                             "Twelve Nineteenths",
+                             "Eight Nineteenths",
+                             "Thirteen Nineteenths"),
+                     page3.stream()
+                                     .map(f -> f.name)
+                                     .toList());
+    }
+
+    /**
+     * Obtain cursored pages for queries with sort criteria that includes
+     * expressions. The repository method also includes a Restriction
+     * with expressions of its own.
+     */
+    @Test
+    public void testExpressionsInCursorElementAndRestrictions() {
+        //             desc     asc      desc   asc
+        // pages | # | type | n * (d-1) | num / denom
+        // 1       1      T           3     1 /  4
+        // 1       2      T           4     1 /  5
+        // 1       3      T           7     1 /  8
+        // 1       4      T           8     2 /  5
+        // 1       5      T           9     1 / 10
+        // 1       6      T          21     3 /  8
+        // 1       7      T          27     3 / 10
+        // 1       8      T          35     5 /  8
+        // 1       9      T          63     7 / 10
+        // 1      10      T         105     7 / 16
+        // 1      11      T         135     9 / 16
+        // 2      12      R           5     1 /  6
+        // 2      13      R           6     1 /  7
+        // 2      14      R           8     1 /  9
+        // 2      15      R          10     1 / 11
+        // 2      16      R          12     2 /  7
+        // 2      17      R          16     2 /  9
+        // 2      18      R          18     3 /  7
+        // 2      19      R          20     2 / 11
+        //        20      R          24     4 /  7
+        //        21      R          30     3 / 11
+        //        22      R          32     4 /  9
+        //        23      R          36     3 / 13
+        //        24      R          40     5 /  9
+        // 3      25      R          40     4 / 11
+        // 3      26      R          48     4 / 13
+        // 3      27      R          50     5 / 11
+        // 3      28      R          55     5 / 12
+        // 3      29      R          60     6 / 11
+        // 4      30      R          60     5 / 13
+        // 4      31      R          65     5 / 14
+        // 4      32      R          70     7 / 11
+        // 4      33      R          72     6 / 13
+        // 4      34      R          77     7 / 12
+        // 4      35      R          80     8 / 11
+        // 4      36      R          98     7 / 15
+        // 4      37      R         108     9 / 13
+        // 4      38      R         112     8 / 15
+        //        39      R         112     7 / 17
+        //        40      R         117     9 / 14
+        //        41      R         128     8 / 17
+        //        42      R         162     9 / 19
+
+        Between<Integer> denominator3to10MoreThanNumerator = Between
+                        .bounds(_Fraction.numerator.plus(3),
+                                _Fraction.numerator.plus(10));
+
+        Restriction<Fraction> filter = Restrict
+                        .all(_Fraction.numerator.lessThanEqual(9),
+                             _Fraction.name.length().notEqualTo(17));
+
+        Order<Fraction> order = Order //
+                        .by(_Fraction.decimal_type.desc(),
+                            _Fraction.numerator
+                                            .times(_Fraction.denominator.minus(1))
+                                            .asc(),
+                            _Fraction.numerator.desc());
+
+        Cursor sevenSeventeenthsCursor = Cursor.forKey(Decimal.Type.REPEATING,
+                                                       7 * (17 - 1),
+                                                       7);
+        PageRequest page4Req = PageRequest.beforeCursor(sevenSeventeenthsCursor,
+                                                        4,
+                                                        9,
+                                                        true);
+
+        CursoredPage<Fraction> page4 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       page4Req);
+
+        assertEquals(List.of("5/13",
+                             "5/14",
+                             "7/11",
+                             "6/13",
+                             "7/12",
+                             "8/11",
+                             "7/15",
+                             "9/13",
+                             "8/15"),
+                     page4.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(true,
+                     page4.hasNext());
+        assertEquals(true,
+                     page4.hasPrevious());
+        assertEquals(true,
+                     page4.hasTotals());
+        // TODO implement count queries when restriction is present
+        //assertEquals(42L,
+        //             page4.totalElements());
+
+        Fraction firstOnPage = page4.content().get(0);
+        Cursor firstOnPageCursor = Cursor
+                        .forKey(firstOnPage.decimal.type(),
+                                firstOnPage.numerator * (firstOnPage.denominator - 1),
+                                firstOnPage.numerator);
+        PageRequest page3Req = PageRequest.ofSize(5).beforeCursor(firstOnPageCursor);
+
+        CursoredPage<Fraction> page3 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       page3Req);
+
+        assertEquals(List.of("4/11",
+                             "4/13",
+                             "5/11",
+                             "5/12",
+                             "6/11"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(true,
+                     page3.hasNext());
+        assertEquals(true,
+                     page3.hasPrevious());
+        assertEquals(true,
+                     page3.hasTotals());
+        // TODO implement count queries when restriction is present
+        //assertEquals(42L,
+        //             page3.totalElements());
+
+        CursoredPage<Fraction> page1 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       PageRequest.ofSize(11));
+
+        assertEquals(true,
+                     page1.hasNext());
+        assertEquals(true,
+                     page1.hasTotals());
+        // TODO implement count queries when restriction is present
+        //assertEquals(42L,
+        //             page1.totalElements());
+        //assertEquals(4L,
+        //             page1.totalPages());
+
+        assertEquals(List.of("1/4",
+                             "1/5",
+                             "1/8",
+                             "2/5",
+                             "1/10",
+                             "3/8",
+                             "3/10",
+                             "5/8",
+                             "7/10",
+                             "7/16",
+                             "9/16"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        Fraction lastOnPage = page1.content().get(page1.numberOfElements() - 1);
+        Cursor lastOnPageCursor = Cursor
+                        .forKey(lastOnPage.decimal.type(),
+                                lastOnPage.numerator * (lastOnPage.denominator - 1),
+                                lastOnPage.numerator);
+        PageRequest page2Req = PageRequest.afterCursor(lastOnPageCursor, 2, 8, false);
+
+        CursoredPage<Fraction> page2 = fractions
+                        .fetchCursored(denominator3to10MoreThanNumerator,
+                                       true, // reduced
+                                       filter,
+                                       order,
+                                       page2Req);
+
+        assertEquals(List.of("1/6",
+                             "1/7",
+                             "1/9",
+                             "1/11",
+                             "2/7",
+                             "2/9",
+                             "3/7",
+                             "2/11"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(8,
+                     page2.numberOfElements());
+        assertEquals(false,
+                     page2.hasTotals());
+    }
+
+    /**
      * Tests a Find method with the First annotation specifying a value
      * larger than 1.
      */
