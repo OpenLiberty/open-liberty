@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -198,7 +198,7 @@ public class PasswordUtil {
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
      *
      * @param decoded_string   the string to be encoded.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @return The encoded string.
      * @throws InvalidPasswordEncodingException    If the decoded_string is null or invalid. Or the encoded_string is null.
      * @throws UnsupportedCryptoAlgorithmException If the algorithm is not supported.
@@ -234,7 +234,7 @@ public class PasswordUtil {
      * Note that this method is only avaiable for the Liberty profile.
      *
      * @param decoded_string   the string to be encoded.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @param properties       the properties for the encryption.
      * @return The encoded string.
      * @throws InvalidPasswordEncodingException    If the decoded_string is null or invalid. Or the encoded_string is null.
@@ -353,7 +353,7 @@ public class PasswordUtil {
 
     /**
      * Determine if the provided algorithm string is valid.
-     * The valid values are xor, aes, or hash.
+     * The valid values are xor, aes, aes-128, aes-256, or hash.
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
      *
      * @param crypto_algorithm the string of algorithm.
@@ -379,7 +379,7 @@ public class PasswordUtil {
 
     /**
      * Determine if the provided algorithm tag is valid. the algorithm tag consists of "{<algorithm>}" such as "{xor}".
-     * The valid values are {xor}, {aes}, or {hash}.
+     * The valid values are {xor}, {aes}, {aes-128}, {aes-256}, or {hash}.
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
      *
      * @param tag the string of algorithm tag to be examined.
@@ -464,7 +464,7 @@ public class PasswordUtil {
      * is already applied, it will be removed and replaced with the new algorithm.
      *
      * @param decoded_string   the string to be encoded, or the encoded string. If the string contains an "{}", it is treated as a crypto algorithm tag and not as a decoded string.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @return The encoded string. Null if there is any failure during encoding, or invalid or null decoded_string
      */
     public static String passwordEncode(String decoded_string, String crypto_algorithm) {
@@ -684,7 +684,7 @@ public class PasswordUtil {
      * Encode the provided string by using the specified encoding algorithm and properties
      *
      * @param decoded_string   the string to be encoded.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @param properties       the properties for the encryption.
      * @return The encoded string. null if there is any failure during encoding, or invalid or null decoded_string
      */
