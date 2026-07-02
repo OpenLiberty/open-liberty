@@ -9,12 +9,23 @@
  *******************************************************************************/
 package com.ibm.ws.security.oauth.protectedresource.metadata.fat;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+
+import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
+import com.ibm.json.java.JSONArray;
+import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.simplicity.log.Log;
-import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
+import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
+import com.meterware.httpunit.GetMethodWebRequest;
+import com.meterware.httpunit.WebConversation;
+import com.meterware.httpunit.WebRequest;
+import com.meterware.httpunit.WebResponse;
 
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -28,25 +39,21 @@ import componenttest.topology.impl.LibertyServer;
  * for protected resources, including the resource URL and authorization
  * server identifiers.
  * </p>
- *
- * <p>
- * The tests use helper methods from {@link OAuthProtectedResourceMetadataTests}
- * to perform HTTP requests and validate responses.
- * </p>
  */
 @RunWith(FATRunner.class)
-public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourceMetadataTests {
+public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
 
     private static final Class<?> thisClass = OAuthProtectedResourceMetadataFATTest.class;
+
+    private static final String PROTECTED_RESOURCE_METADATA_PATH = "/.well-known/oauth-protected-resource";
 
     @Server("com.ibm.ws.security.oauth.oidc_fat.common.metadataServer")
     public static LibertyServer testServer;
 
-    private static TestSettings testSettings;
-    private static String serverHttpsString;
+    private static String serverHttpString;
 
-    private static final String PROTECTED_RESOURCE_PATH = "/formlogin/SimpleServlet";
-    private static final String EXPECTED_ISSUER = "https://localhost:${bvt.prop.security_1_HTTP_default.secure}/oidc/endpoint/OidcConfigSample";
+    private static final String PROTECTED_RESOURCE_PATH = "/myApp/protected";
+    private static final String PROTECTED_RESOURCE_SUBPATH = "/myApp/protected/subPath";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -55,19 +62,16 @@ public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourc
 
         testServer.startServer();
 
-        // Wait for the OIDC client configuration to be processed
-        // CWWKS1700I: OpenID Connect client {0} configuration successfully processed.
-        testServer.waitForStringInLog("CWWKS1700I.*OidcConfigSample");
+        serverHttpString = "http://" + testServer.getHostname() + ":" + testServer.getHttpDefaultPort();
 
-        // Construct HTTPS URL manually
-        String hostname = "localhost";
-        int httpsPort = testServer.getHttpDefaultSecurePort();
-        serverHttpsString = "https://" + hostname + ":" + httpsPort;
+        Log.info(thisClass, methodName, "Server started successfully at: " + serverHttpString);
+    }
 
-        testSettings = new TestSettings();
-        testSettings.setTestURL(serverHttpsString);
-
-        Log.info(thisClass, methodName, "Server started successfully at: " + serverHttpsString);
+    @AfterClass
+    public static void tearDown() throws Exception {
+        if (testServer != null && testServer.isStarted()) {
+            testServer.stopServer();
+        }
     }
 
     /**
@@ -76,11 +80,13 @@ public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourc
      */
     @Test
     public void testMetadataEndpointIsAccessible() throws Exception {
-        testMetadataEndpointAccessible(
-            serverHttpsString,
-            PROTECTED_RESOURCE_PATH,
-            testSettings
-        );
+        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_PATH);
+
+        assertEquals("Unexpected value for 'resource' field",
+                serverHttpString + PROTECTED_RESOURCE_PATH, json.get("resource"));
+        assertNotNull("Response did not contain 'authorization_servers' field", json.get("authorization_servers"));
+        assertTrue("'authorization_servers' should be a non-empty array",
+                ((JSONArray) json.get("authorization_servers")).size() > 0);
     }
 
     /**
@@ -89,11 +95,10 @@ public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourc
      */
     @Test
     public void testMetadataContainsCorrectResourceUrl() throws Exception {
-        testMetadataContainsResource(
-            serverHttpsString,
-            PROTECTED_RESOURCE_PATH,
-            testSettings
-        );
+        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_PATH);
+
+        assertEquals("Unexpected value for 'resource' field",
+                serverHttpString + PROTECTED_RESOURCE_PATH, json.get("resource"));
     }
 
     /**
@@ -102,17 +107,13 @@ public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourc
      */
     @Test
     public void testMetadataContainsAuthorizationServerIdentifier() throws Exception {
-        String expectedIssuer = EXPECTED_ISSUER.replace(
-            "${bvt.prop.security_1_HTTP_default.secure}",
-            String.valueOf(testServer.getHttpDefaultSecurePort())
-        );
+        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_PATH);
+        JSONArray authorizationServers = (JSONArray) json.get("authorization_servers");
+        String expectedIssuer = buildExpectedIssuer();
 
-        testMetadataContainsAuthorizationServer(
-            serverHttpsString,
-            PROTECTED_RESOURCE_PATH,
-            expectedIssuer,
-            testSettings
-        );
+        assertNotNull("Response did not contain 'authorization_servers' field", authorizationServers);
+        assertTrue("Expected 'authorization_servers' to contain '" + expectedIssuer + "' but was: " + authorizationServers,
+                authorizationServers.contains(expectedIssuer));
     }
 
     /**
@@ -121,11 +122,11 @@ public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourc
      */
     @Test
     public void testUnknownResourceReturns404() throws Exception {
-        testMetadataEndpointReturns404ForUnknownResource(
-            serverHttpsString,
-            "/nonexistent/path",
-            testSettings
-        );
+        String metadataUrl = buildMetadataUrl("/nonexistent/path");
+        WebResponse response = getResponseAllowingErrorStatus(metadataUrl);
+
+        assertEquals("Expected unknown protected resource metadata endpoint to return 404", 404,
+                response.getResponseCode());
     }
 
     /**
@@ -134,10 +135,23 @@ public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourc
      */
     @Test
     public void testBasePathWithoutResourceReturns404() throws Exception {
-        testMetadataEndpointBasePathReturns404(
-            serverHttpsString,
-            testSettings
-        );
+        String metadataUrl = serverHttpString + PROTECTED_RESOURCE_METADATA_PATH;
+        WebResponse response = getResponseAllowingErrorStatus(metadataUrl);
+
+        assertEquals("Expected base protected resource metadata endpoint to return 404", 404,
+                response.getResponseCode());
+    }
+
+    /**
+     * Test that a sub-path URL that is contained within a "contains" auth filter
+     * pattern also returns metadata.
+     */
+    @Test
+    public void testSubPathUnderContainsFilterReturnsMetadata() throws Exception {
+        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_SUBPATH);
+
+        assertEquals("Unexpected value for 'resource' field",
+                serverHttpString + PROTECTED_RESOURCE_SUBPATH, json.get("resource"));
     }
 
     /**
@@ -146,12 +160,59 @@ public class OAuthProtectedResourceMetadataFATTest extends OAuthProtectedResourc
      */
     @Test
     public void testMetadataReturnsJsonContentType() throws Exception {
-        testMetadataEndpointReturnsJsonContentType(
-            serverHttpsString,
-            PROTECTED_RESOURCE_PATH,
-            testSettings
-        );
+        String metadataUrl = buildMetadataUrl(PROTECTED_RESOURCE_PATH);
+        WebResponse response = getResponse(metadataUrl);
+
+        assertEquals("Expected metadata endpoint to return 200", 200, response.getResponseCode());
+        assertTrue("Expected Content-Type to contain application/json but was: " + response.getContentType(),
+                response.getContentType().contains("application/json"));
+    }
+
+    /**
+     * GETs the metadata endpoint for the given protected resource path, asserts HTTP 200,
+     * and returns the parsed JSON response body.
+     */
+    private static JSONObject getMetadataJson(String protectedResourcePath) throws Exception {
+        String metadataUrl = buildMetadataUrl(protectedResourcePath);
+        Log.info(thisClass, "getMetadataJson", "GET " + metadataUrl);
+        WebResponse response = getResponse(metadataUrl);
+        assertEquals("Expected metadata endpoint to return 200", 200, response.getResponseCode());
+        return JSONObject.parse(response.getText());
+    }
+
+    /**
+     * Builds the full metadata endpoint URL for a given protected resource path.
+     */
+    private static String buildMetadataUrl(String protectedResourcePath) {
+        String normalized;
+        if (protectedResourcePath == null || protectedResourcePath.isEmpty() || "/".equals(protectedResourcePath)) {
+            normalized = "/";
+        } else if (protectedResourcePath.startsWith("/")) {
+            normalized = protectedResourcePath;
+        } else {
+            normalized = "/" + protectedResourcePath;
+        }
+        return serverHttpString + PROTECTED_RESOURCE_METADATA_PATH + normalized;
+    }
+
+    /**
+     * Builds the expected issuer URL from the running server's hostname and port.
+     */
+    private static String buildExpectedIssuer() {
+        return "http://" + testServer.getHostname() + ":" + testServer.getHttpDefaultPort()
+                + "/oidc/endpoint/OidcConfigSample";
+    }
+
+    private static WebResponse getResponse(String url) throws Exception {
+        WebConversation wc = new WebConversation();
+        WebRequest request = new GetMethodWebRequest(url);
+        return wc.getResponse(request);
+    }
+
+    private static WebResponse getResponseAllowingErrorStatus(String url) throws Exception {
+        WebConversation wc = new WebConversation();
+        wc.setExceptionsThrownOnErrorStatus(false);
+        WebRequest request = new GetMethodWebRequest(url);
+        return wc.getResponse(request);
     }
 }
-
-// Made with Bob

@@ -15,6 +15,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver;
 import io.openliberty.security.oidcclient.wellknown.common.HttpRequestAdapter;
 import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
 import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
@@ -33,6 +34,15 @@ import io.openliberty.security.oidcclient.wellknown.common.ServletUtils;
 public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
+
+    // Set by OAuthProtectedResourceMetadataServletService (a DS @Component) when the
+    // feature activates, so that the servlet instance (created by the web container)
+    // can access the DS-managed resolver without needing its own @Reference injection.
+    static volatile OAuthProtectedResourceMetadataResolver resolver = null;
+
+    public static void setResolver(OAuthProtectedResourceMetadataResolver resolver) {
+        OAuthProtectedResourceMetadataServlet.resolver = resolver;
+    }
 
     /**
      * Handles a metadata discovery request for a protected resource path beneath the servlet
@@ -72,18 +82,21 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
     }
 
     /**
-     * Resolves the metadata JSON for the supplied protected resource path.
-     * <p>
-     * Subclasses override this method to bridge from the servlet layer to the runtime OIDC
-     * client configuration and metadata generation logic.
-     * </p>
+     * Resolves the metadata JSON for the supplied protected resource path by delegating to
+     * the DS-managed {@link OAuthProtectedResourceMetadataResolver} wired in via
+     * {@link #setResolver(OAuthProtectedResourceMetadataResolver)}.
      *
      * @param request               the current HTTP request
      * @param protectedResourcePath the normalized protected resource path, beginning with {@code /}
      * @return the metadata JSON to return, or {@code null} if the path has no metadata
      */
     protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
-        return null;
+        OAuthProtectedResourceMetadataResolver r = resolver;
+        if (r == null) {
+            return null;
+        }
+        String resourceUrl = buildResourceUrl(request, protectedResourcePath);
+        return r.resolveMetadataJson(request, protectedResourcePath, resourceUrl);
     }
 
     /**

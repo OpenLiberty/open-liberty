@@ -15,8 +15,9 @@ bVersion=1.0
 
 Web-ContextPath: /.well-known/oauth-protected-resource
 
+Include-Resource: WEB-INF=resources/WEB-INF
+
 Import-Package: \
-  io.openliberty.security.oidcclient.wellknown.common, \
   javax.servlet, \
   javax.servlet.http, \
   *

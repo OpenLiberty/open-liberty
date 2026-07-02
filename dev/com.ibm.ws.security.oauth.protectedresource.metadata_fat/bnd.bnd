@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 #
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion=1.0
@@ -20,9 +17,17 @@ fat.project: true
 publish.wlp.jar.disabled: true
 
 tested.features:\
+    openidConnectClient-1.0, \
+    appSecurity-2.0, \
+    distributedMap-1.0, \
+    federatedRegistry-1.0, \
+    jndi-1.0, \
+    json-1.0, \
+    jsp-2.2, \
+    ldapRegistry-3.0, \
     oauth-2.0, \
-    servlet-4.0, \
-    appSecurity-3.0
+    servlet-3.1, \
+    ssl-1.0
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\
@@ -31,4 +36,5 @@ tested.features:\
     com.ibm.ws.logging;version=latest,\
     com.ibm.websphere.security;version=latest,\
     net.sourceforge.htmlunit:htmlunit;version=2.44.0,\
-    com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest
+    com.ibm.ws.com.meterware.httpunit.1.6.2;version=latest,\
+    com.ibm.json4j;version=latest

@@ -13,11 +13,7 @@
 
 package com.ibm.ws.security.authentication.filter.internal;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -30,10 +26,9 @@ import org.osgi.service.component.annotations.Modified;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
-import com.ibm.ws.security.authentication.filter.IAuthenticationFilter;
 
 @Component(configurationPid = "com.ibm.ws.security.authentication.filter", service = { AuthenticationFilter.class }, configurationPolicy = ConfigurationPolicy.REQUIRE, property = { "service.vendor=IBM" })
-public class AuthenticationFilterImpl implements AuthenticationFilter, IAuthenticationFilter {
+public class AuthenticationFilterImpl implements AuthenticationFilter {
     public static final TraceComponent tc = Tr.register(AuthenticationFilterImpl.class);
     protected AuthFilterConfig authFilterConfig = null;
     protected CommonFilter commonFilter = null;
@@ -93,28 +88,4 @@ public class AuthenticationFilterImpl implements AuthenticationFilter, IAuthenti
         return null;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String getAuthFilterId() {
-        return authFilterConfig != null ? authFilterConfig.getId() : null;
-    }
-
-    @Override
-    public List<String> getRequestUrlPatterns() {
-        if (authFilterConfig == null || authFilterConfig.getRequestUrls() == null) {
-            return Collections.emptyList();
-        }
-
-        List<String> urlPatterns = new ArrayList<String>();
-
-        for (Properties requestUrl : authFilterConfig.getRequestUrls()) {
-            String urlPattern = requestUrl.getProperty(AuthFilterConfig.KEY_URL_PATTERN);
-
-            if (urlPattern != null && !urlPattern.trim().isEmpty()) {
-                urlPatterns.add(urlPattern);
-            }
-        }
-
-        return urlPatterns;
-    }
 }

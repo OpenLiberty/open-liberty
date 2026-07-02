@@ -11,13 +11,21 @@ package com.ibm.ws.security.openidconnect.client.internal;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
 import java.util.HashMap;
 import java.util.List;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.jmock.Expectations;
+import org.jmock.Mockery;
+import org.jmock.integration.junit4.JUnit4Mockery;
+import org.jmock.lib.legacy.ClassImposteriser;
+import org.junit.After;
 import org.junit.Test;
 
 import com.ibm.json.java.JSONObject;
@@ -26,57 +34,198 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcSessionCache;
 
 public class OAuthProtectedResourceMetadataResolverTest {
 
-    @Test
-    public void normalizePathAddsLeadingSlash() {
-        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+    private final Mockery mock = new JUnit4Mockery() {
+        {
+            setImposteriser(ClassImposteriser.INSTANCE);
+        }
+    };
 
-        assertEquals("/mcp", resolver.normalizePath("mcp"));
+    private final OidcClientImpl mockOidcClient = mock.mock(OidcClientImpl.class, "oidcClient");
+    private final HttpServletRequest mockRequest = mock.mock(HttpServletRequest.class, "request");
+    private final OidcClientConfigImpl mockConfig = mock.mock(OidcClientConfigImpl.class, "oidcClientConfig");
+
+    @After
+    public void tearDown() {
+        mock.assertIsSatisfied();
+    }
+
+    // ---- resolveMetadataJson ------------------------------------------------
+
+    @Test
+    public void resolveMetadataJsonReturnsNullWhenOidcClientIsNull() {
+        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        // oidcClient field left null — no setOidcClient call
+
+        String result = resolver.resolveMetadataJson(mockRequest, "/myApp/protected", "https://localhost:9443/myApp/protected");
+
+        assertNull("Expected null when oidcClient is not set", result);
     }
 
     @Test
-    public void normalizePathReturnsRootForEmptyValues() {
+    public void resolveMetadataJsonReturnsNullWhenNoProviderMatches() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        resolver.setOidcClient(mockOidcClient);
 
-        assertEquals("/", resolver.normalizePath(null));
-        assertEquals("/", resolver.normalizePath(""));
-        assertEquals("/", resolver.normalizePath("/"));
+        mock.checking(new Expectations() {
+            {
+                allowing(mockRequest).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected")));
+                allowing(mockRequest).getContextPath();
+                will(returnValue(""));
+                oneOf(mockOidcClient).getOidcProviderByAuthFilter(with(any(HttpServletRequest.class)));
+                will(returnValue(null));
+            }
+        });
+
+        String result = resolver.resolveMetadataJson(mockRequest, "/myApp/protected", "https://localhost:9443/myApp/protected");
+
+        assertNull("Expected null when no OIDC provider matches", result);
     }
 
     @Test
-    public void matchesResourceReturnsFalseForNullConfiguredPath() {
+    public void resolveMetadataJsonReturnsNullWhenConfigNotFound() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        resolver.setOidcClient(mockOidcClient);
 
-        assertFalse(resolver.matchesResource(null, "/mcp"));
+        mock.checking(new Expectations() {
+            {
+                allowing(mockRequest).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected")));
+                allowing(mockRequest).getContextPath();
+                will(returnValue(""));
+                oneOf(mockOidcClient).getOidcProviderByAuthFilter(with(any(HttpServletRequest.class)));
+                will(returnValue("providerA"));
+                oneOf(mockOidcClient).getOidcClientConfig(mockRequest, "providerA");
+                will(returnValue(null));
+            }
+        });
+
+        String result = resolver.resolveMetadataJson(mockRequest, "/myApp/protected", "https://localhost:9443/myApp/protected");
+
+        assertNull("Expected null when config lookup returns null", result);
     }
 
     @Test
-    public void matchesResourceReturnsTrueForSameNormalizedPath() {
+    public void resolveMetadataJsonReturnsJsonWhenProviderAndConfigMatch() throws Exception {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        resolver.setOidcClient(mockOidcClient);
 
-        assertTrue(resolver.matchesResource("/mcp", "/mcp"));
+        mock.checking(new Expectations() {
+            {
+                allowing(mockRequest).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected")));
+                allowing(mockRequest).getContextPath();
+                will(returnValue(""));
+                oneOf(mockOidcClient).getOidcProviderByAuthFilter(with(any(HttpServletRequest.class)));
+                will(returnValue("providerA"));
+                oneOf(mockOidcClient).getOidcClientConfig(mockRequest, "providerA");
+                will(returnValue(mockConfig));
+                allowing(mockConfig).getIssuerIdentifier();
+                will(returnValue("https://issuer.example.com"));
+                allowing(mockConfig).getId();
+                will(returnValue("providerA"));
+            }
+        });
+
+        String result = resolver.resolveMetadataJson(mockRequest, "/myApp/protected", "https://localhost:9443/myApp/protected");
+
+        assertNotNull("Expected non-null JSON result", result);
+        JSONObject json = JSONObject.parse(result);
+        assertEquals("https://localhost:9443/myApp/protected", json.get("resource"));
+        assertNotNull("Expected authorization_servers in result", json.get("authorization_servers"));
+    }
+
+    // ---- getAuthorizationServer ---------------------------------------------
+
+    @Test
+    public void getAuthorizationServerReturnsNullWhenIssuerIsNull() {
+        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        TestOidcClientConfig config = new TestOidcClientConfig(null);
+
+        assertNull(resolver.getAuthorizationServer(config));
     }
 
     @Test
-    public void matchesResourceAddsLeadingSlashBeforeComparing() {
+    public void getAuthorizationServerReturnsNullWhenIssuerIsBlank() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        TestOidcClientConfig config = new TestOidcClientConfig("   ");
 
-        assertTrue(resolver.matchesResource("mcp", "/mcp"));
+        assertNull(resolver.getAuthorizationServer(config));
     }
 
     @Test
-    public void matchesResourceReturnsFalseForDifferentPath() {
+    public void getAuthorizationServerReturnsIssuerWhenPresent() {
         OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+        TestOidcClientConfig config = new TestOidcClientConfig("https://issuer.example.com");
 
-        assertFalse(resolver.matchesResource("/mcp", "/other"));
+        assertEquals("https://issuer.example.com", resolver.getAuthorizationServer(config));
+    }
+
+    // ---- ProtectedResourceRequestWrapper ------------------------------------
+
+    @Test
+    public void wrapperGetRequestURIReturnsProtectedResourcePath() {
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
+                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+
+        assertEquals("/myApp/protected", wrapper.getRequestURI());
     }
 
     @Test
-    public void matchesResourceDoesNotTreatStarAsWildcard() {
-        OAuthProtectedResourceMetadataResolver resolver = new OAuthProtectedResourceMetadataResolver();
+    public void wrapperGetRequestURLStripsWellKnownPrefix() {
+        mock.checking(new Expectations() {
+            {
+                oneOf(mockRequest).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected")));
+            }
+        });
 
-        assertFalse(resolver.matchesResource("/mcp/*", "/mcp"));
-        assertFalse(resolver.matchesResource("/mcp/*", "/mcp/tool"));
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
+                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+
+        assertEquals("https://localhost:9443/myApp/protected", wrapper.getRequestURL().toString());
     }
+
+    @Test
+    public void wrapperGetRequestURLReturnsOriginalWhenNoWellKnownPrefix() {
+        mock.checking(new Expectations() {
+            {
+                oneOf(mockRequest).getRequestURL();
+                will(returnValue(new StringBuffer("https://localhost:9443/myApp/protected")));
+            }
+        });
+
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
+                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+
+        assertEquals("https://localhost:9443/myApp/protected", wrapper.getRequestURL().toString());
+    }
+
+    @Test
+    public void wrapperGetServletPathReturnsProtectedResourcePath() {
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
+                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+
+        assertEquals("/myApp/protected", wrapper.getServletPath());
+    }
+
+    @Test
+    public void wrapperGetContextPathReturnsEmpty() {
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
+                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+
+        assertEquals("", wrapper.getContextPath());
+    }
+
+    @Test
+    public void wrapperGetPathInfoReturnsNull() {
+        OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper wrapper =
+                new OAuthProtectedResourceMetadataResolver.ProtectedResourceRequestWrapper(mockRequest, "/myApp/protected");
+
+        assertNull(wrapper.getPathInfo());
+    }
+
+    // ---- createMetadataJson (existing) --------------------------------------
 
     @Test
     public void createMetadataJsonUsesIssuerIdentifierWhenPresent() {

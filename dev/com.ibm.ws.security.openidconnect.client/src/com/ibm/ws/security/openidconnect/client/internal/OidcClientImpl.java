@@ -674,6 +674,20 @@ public class OidcClientImpl implements OidcClient, UnprotectedResourceService {
         return provider;
     }
 
+    /**
+     * Finds the first OIDC provider whose auth filter accepts the given request.
+     * Unlike {@link #getOidcProvider(HttpServletRequest)}, this method does not
+     * attempt to read provider hint parameters or headers, so it is safe to call
+     * with a synthetic {@link HttpServletRequestWrapper} that is not an
+     * {@code IExtendedRequest}.
+     *
+     * @param req a request whose URL has been rewritten to represent the protected resource
+     * @return the matching provider ID, or {@code null} if none matched
+     */
+    String getOidcProviderByAuthFilter(HttpServletRequest req) {
+        return selectByAuthFilter(req);
+    }
+
     private String selectByAuthFilter(HttpServletRequest req) {
         Iterator<OidcClientConfig> oidcClientConfigs = oidcClientConfigRef.getServices();
 

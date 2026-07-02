@@ -9,33 +9,27 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
-import java.util.Iterator;
-import java.util.List;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletRequestWrapper;
 
-import org.osgi.framework.ServiceReference;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
-import org.osgi.service.component.annotations.ReferenceCardinality;
-import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.security.authentication.filter.AuthenticationFilter;
-import com.ibm.ws.security.authentication.filter.IAuthenticationFilter;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
-import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceMap;
-import com.ibm.wsspi.kernel.service.utils.ConcurrentServiceReferenceSet;
-import com.ibm.wsspi.kernel.service.utils.ServiceAndServiceReferencePair;
+import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 
 /**
- * Resolves OAuth 2.0 protected resource metadata for configured OIDC clients.
+ * Gets the OAuth 2.0 protected resource metadata for a given protected resource path.
  * <p>
- * This component owns the runtime/config integration for the protected resource metadata endpoint.
- * The well-known web bundle delegates request handling to this service so the endpoint remains part
- * of the {@code oidcConnectClient} feature while still using a dedicated web context path.
+ * This component owns the runtime and configuration integration for the protected resource
+ * metadata endpoint. The well-known web bundle delegates request handling to this service
+ * so that the endpoint remains part of the {@code openidConnectClient} feature while still
+ * using a dedicated web context path.
  * </p>
  */
 @Component(name = "com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver", configurationPolicy = ConfigurationPolicy.IGNORE, service = OAuthProtectedResourceMetadataResolver.class, property = { "service.vendor=IBM" })
@@ -43,161 +37,61 @@ public class OAuthProtectedResourceMetadataResolver {
 
     private static final TraceComponent tc = Tr.register(OAuthProtectedResourceMetadataResolver.class);
 
-    private final ConcurrentServiceReferenceSet<OidcClientConfig> oidcClientConfigRef = new ConcurrentServiceReferenceSet<OidcClientConfig>("oidcClientConfigService");
+    private static final String WELL_KNOWN_PREFIX = "/.well-known/oauth-protected-resource";
 
-    private static final String KEY_AUTH_FILTER = "authFilter";
+    private volatile OidcClientImpl oidcClient;
 
-    private final ConcurrentServiceReferenceMap<String, AuthenticationFilter> authFilterServiceRef = new ConcurrentServiceReferenceMap<String, AuthenticationFilter>(KEY_AUTH_FILTER);
-
-    /**
-     * Binds an OIDC client configuration service so it can participate in protected resource
-     * metadata resolution.
-     *
-     * @param reference
-     *                      service reference for a registered {@link OidcClientConfig}
-     */
-    @Reference(name = "oidcClientConfigService", service = OidcClientConfig.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
-    protected void setOidcClientConfigService(ServiceReference<OidcClientConfig> reference) {
-        oidcClientConfigRef.addReference(reference);
+    @Reference(service = OidcClient.class)
+    protected void setOidcClient(OidcClient oidcClient) {
+        this.oidcClient = (OidcClientImpl) oidcClient;
     }
 
-    @Reference(name = "authFilter", service = AuthenticationFilter.class, policy = ReferencePolicy.DYNAMIC, cardinality = ReferenceCardinality.MULTIPLE)
-    protected void setAuthFilter(ServiceReference<AuthenticationFilter> reference) {
-        authFilterServiceRef.putReference((String) reference.getProperty("id"), reference);
-    }
-
-    protected void unsetAuthFilter(ServiceReference<AuthenticationFilter> reference) {
-        authFilterServiceRef.removeReference((String) reference.getProperty("id"), reference);
+    protected void unsetOidcClient(OidcClient oidcClient) {
+        if (this.oidcClient == oidcClient) {
+            this.oidcClient = null;
+        }
     }
 
     /**
-     * Unbinds an OIDC client configuration service when it is no longer available.
+     * Returns the OAuth 2.0 protected resource metadata JSON for the given request and
+     * protected resource path, or {@code null} if no OIDC client configuration matches.
      *
-     * @param reference
-     *                      service reference for the removed {@link OidcClientConfig}
+     * @param request               the incoming metadata endpoint HTTP request
+     * @param protectedResourcePath normalized protected resource path, e.g. {@code /myApp/protected}
+     * @param absoluteResourceUrl   absolute protected resource URL to include in the metadata document,
+     *                                  e.g. {@code https://localhost:9443/myApp/protected}
+     * @return serialized JSON metadata document, or {@code null} if no match
      */
-    protected void unsetOidcClientConfigService(ServiceReference<OidcClientConfig> reference) {
-        oidcClientConfigRef.removeReference(reference);
-    }
-
-    /**
-     * Resolves metadata JSON for the supplied protected resource.
-     *
-     * @param protectedResourcePath
-     *                                  normalized request path used for matching configured authFilter
-     *                                  request URL patterns, for example {@code /myApp/protected}
-     * @param absoluteResourceUrl
-     *                                  absolute protected resource identifier to return in the metadata
-     *                                  document, for example {@code https://localhost:9443/myApp/protected}
-     * @return metadata JSON, or {@code null} if no matching protected resource exists
-     */
-    public String resolveMetadataJson(String protectedResourcePath, String absoluteResourceUrl) {
-        OidcClientConfig matchingConfig = getMatchingConfig(protectedResourcePath);
-        if (matchingConfig == null) {
+    public String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath, String absoluteResourceUrl) {
+        OidcClientImpl client = oidcClient;
+        if (client == null) {
             return null;
         }
-        return createMetadataJson(matchingConfig, absoluteResourceUrl);
+
+        // Adapt the metadata request to look like a direct request to the protected resource
+        // so that the auth filter can match it against the configured URL patterns.
+        // We use getOidcProviderByAuthFilter rather than getOidcProvider to avoid the
+        // IExtendedRequest cast that happens in the provider-hint code path.
+        HttpServletRequest resourceRequest = new ProtectedResourceRequestWrapper(request, protectedResourcePath);
+
+        String providerId = client.getOidcProviderByAuthFilter(resourceRequest);
+        if (providerId == null) {
+            return null;
+        }
+
+        OidcClientConfig config = client.getOidcClientConfig(request, providerId);
+        if (config == null) {
+            return null;
+        }
+
+        return createMetadataJson(config, absoluteResourceUrl);
     }
 
     /**
-     * Finds the first registered OIDC client configuration that applies to the requested
-     * protected resource path.
+     * Creates the OAuth 2.0 protected resource metadata JSON document.
      *
-     * @param protectedResourcePath
-     *                                  normalized protected resource path beginning with {@code /}
-     * @return the matching OIDC client configuration, or {@code null} if none match
-     */
-    OidcClientConfig getMatchingConfig(String protectedResourcePath) {
-        Iterator<ServiceAndServiceReferencePair<OidcClientConfig>> servicesWithRefs = oidcClientConfigRef.getServicesWithReferences();
-        while (servicesWithRefs.hasNext()) {
-            ServiceAndServiceReferencePair<OidcClientConfig> configServiceAndRef = servicesWithRefs.next();
-            OidcClientConfig config = configServiceAndRef.getService();
-            if (matches(config, protectedResourcePath)) {
-                return config;
-            }
-        }
-        return null;
-    }
-
-    /**
-     * Determines whether the supplied OIDC client configuration protects the requested resource
-     * path by checking the request URL patterns from the configured authentication filter.
-     *
-     * @param config
-     *                                  OIDC client configuration to evaluate
-     * @param protectedResourcePath
-     *                                  normalized protected resource path beginning with {@code /}
-     * @return {@code true} if the configuration's authFilter matches the requested path
-     */
-    boolean matches(OidcClientConfig config, String protectedResourcePath) {
-        String authFilterId = config.getAuthFilterId();
-
-        if (authFilterId == null || authFilterId.trim().isEmpty()) {
-            return false;
-        }
-
-        AuthenticationFilter authFilter = authFilterServiceRef.getService(authFilterId);
-
-        if (!(authFilter instanceof IAuthenticationFilter)) {
-            return false;
-        }
-
-        IAuthenticationFilter internalFilter = (IAuthenticationFilter) authFilter;
-
-        List<String> requestUrlPatterns = internalFilter.getRequestUrlPatterns();
-
-        if (requestUrlPatterns.isEmpty()) {
-            return false;
-        }
-
-        for (String requestUrlPattern : requestUrlPatterns) {
-            if (matchesResource(requestUrlPattern, protectedResourcePath)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * ...
-     * <p>
-     * This uses exact string matching, consistent with the authFilter's EqualCondition behavior.
-     * Wildcards are NOT supported in authFilter URL patterns.
-     * </p>
-     * ...
-     */
-    boolean matchesResource(String configuredPath, String protectedResourcePath) {
-        if (configuredPath == null || configuredPath.isEmpty()) {
-            return false;
-        }
-        String normalizedConfigPath = normalizePath(configuredPath);
-        return normalizedConfigPath.equals(protectedResourcePath);
-    }
-
-    /**
-     * Normalizes a path into the canonical form used for protected resource matching.
-     *
-     * @param path
-     *                 raw configured or requested path
-     * @return {@code "/"} for null, empty, or root paths; otherwise the path with a leading
-     *         {@code /}
-     */
-    String normalizePath(String path) {
-        if (path == null || path.isEmpty() || "/".equals(path)) {
-            return "/";
-        }
-        return path.startsWith("/") ? path : "/" + path;
-    }
-
-    /**
-     * Creates the OAuth 2.0 protected resource metadata JSON document for the supplied OIDC
-     * client configuration and protected resource path.
-     *
-     * @param config
-     *                                  matching OIDC client configuration
-     * @param protectedResourcePath
-     *                                  normalized protected resource path beginning with {@code /}
+     * @param config             matching OIDC client configuration
+     * @param absoluteResourceUrl absolute protected resource URL
      * @return serialized JSON metadata document
      */
     String createMetadataJson(OidcClientConfig config, String absoluteResourceUrl) {
@@ -220,26 +114,64 @@ public class OAuthProtectedResourceMetadataResolver {
     }
 
     /**
-     * Determines the best authorization server URL to publish for the supplied OIDC client
-     * configuration.
-     * <p>
-     * The resolver prefers the issuer identifier, then falls back to the discovery endpoint URL,
-     * and finally to the authorization endpoint URL.
-     * </p>
+     * Returns the authorization server identifier from the OIDC client configuration.
+     * Prefers the issuer identifier.
      *
-     * @param config
-     *                   matching OIDC client configuration
-     * @return authorization server URL, or {@code null} if none can be determined
+     * @param config matching OIDC client configuration
+     * @return authorization server URL, or {@code null} if none is configured
      */
     String getAuthorizationServer(OidcClientConfig config) {
         String issuer = config.getIssuerIdentifier();
-
         if (issuer != null && !issuer.trim().isEmpty()) {
             return issuer;
         }
-
         return null;
     }
-}
 
-// Made with Bob
+    /**
+     * Wraps an incoming metadata endpoint request so that it appears to target the protected
+     * resource directly. This strips the {@code /.well-known/oauth-protected-resource} prefix
+     * from the URI and URL so that {@link OidcClient#getOidcProvider} can match the request
+     * against configured auth filters as if it were a real request to the protected resource.
+     */
+    static class ProtectedResourceRequestWrapper extends HttpServletRequestWrapper {
+
+        private final String protectedResourcePath;
+
+        ProtectedResourceRequestWrapper(HttpServletRequest request, String protectedResourcePath) {
+            super(request);
+            this.protectedResourcePath = protectedResourcePath;
+        }
+
+        @Override
+        public String getRequestURI() {
+            return getContextPath() + protectedResourcePath;
+        }
+
+        @Override
+        public StringBuffer getRequestURL() {
+            // Replace everything from the well-known prefix onwards with the protected resource path
+            String originalUrl = super.getRequestURL().toString();
+            int wellKnownIndex = originalUrl.indexOf(WELL_KNOWN_PREFIX);
+            if (wellKnownIndex >= 0) {
+                return new StringBuffer(originalUrl.substring(0, wellKnownIndex) + protectedResourcePath);
+            }
+            return new StringBuffer(originalUrl);
+        }
+
+        @Override
+        public String getServletPath() {
+            return protectedResourcePath;
+        }
+
+        @Override
+        public String getContextPath() {
+            return "";
+        }
+
+        @Override
+        public String getPathInfo() {
+            return null;
+        }
+    }
+}

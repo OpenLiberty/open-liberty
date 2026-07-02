@@ -9,57 +9,40 @@
  *******************************************************************************/
 package io.openliberty.security.oidcclient.wellknown.internal;
 
-import javax.servlet.http.HttpServletRequest;
-
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.ConfigurationPolicy;
+import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver;
 
 /**
- * Declarative Services component that registers the non-Jakarta protected resource metadata
- * servlet with the web container.
+ * Declarative Services component that wires the DS-managed
+ * {@link OAuthProtectedResourceMetadataResolver} into
+ * {@link OAuthProtectedResourceMetadataServlet} via a static reference.
  * <p>
- * This class is the runtime integration point for the servlet bundle. It delegates protected
- * resource metadata lookup to
- * {@link com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver}
- * so the web layer remains thin and the OIDC runtime owns config matching and metadata generation.
+ * The servlet is registered by the web container from {@code web.xml}. Because the web
+ * container creates the servlet instance independently of DS, the resolver is bridged
+ * through a static field — the same pattern used by {@code OidcRedirectServlet}.
  * </p>
  */
-@Component(name = "io.openliberty.security.oidcclient.wellknown.internal.OAuthProtectedResourceMetadataServletService", service = {}, property = { "service.vendor=IBM" })
-public class OAuthProtectedResourceMetadataServletService extends OAuthProtectedResourceMetadataServlet {
-
-    private static final long serialVersionUID = 1L;
-
-    private volatile OAuthProtectedResourceMetadataResolver metadataResolver;
+@Component(name = "io.openliberty.security.oidcclient.wellknown.internal.OAuthProtectedResourceMetadataServletService",
+           configurationPolicy = ConfigurationPolicy.IGNORE,
+           service = {},
+           property = { "service.vendor=IBM" })
+public class OAuthProtectedResourceMetadataServletService {
 
     @Reference
-    protected void setMetadataResolver(OAuthProtectedResourceMetadataResolver metadataResolver) {
-        this.metadataResolver = metadataResolver;
+    protected void setResolver(OAuthProtectedResourceMetadataResolver resolver) {
+        OAuthProtectedResourceMetadataServlet.setResolver(resolver);
     }
 
-    protected void unsetMetadataResolver(OAuthProtectedResourceMetadataResolver metadataResolver) {
-        if (this.metadataResolver == metadataResolver) {
-            this.metadataResolver = null;
-        }
+    protected void unsetResolver(OAuthProtectedResourceMetadataResolver resolver) {
+        OAuthProtectedResourceMetadataServlet.setResolver(null);
     }
 
-    /**
-     * Resolves metadata for the requested protected resource path.
-     *
-     * @param request the current HTTP request
-     * @param protectedResourcePath the normalized protected resource path
-     * @return the metadata JSON to return, or {@code null} when the path is unknown
-     */
-    @Override
-    protected String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath) {
-        OAuthProtectedResourceMetadataResolver resolver = metadataResolver;
-
-        if (resolver == null) {
-            return null;
-        }
-
-        String resourceUrl = buildResourceUrl(request, protectedResourcePath);
-        return resolver.resolveMetadataJson(protectedResourcePath, resourceUrl);
+    @Deactivate
+    protected void deactivate() {
+        OAuthProtectedResourceMetadataServlet.setResolver(null);
     }
 }

@@ -4,26 +4,11 @@
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
- * SPDX-License-Identifier: EPL-2.0
  *
- * Contributors:
- *     IBM Corporation - initial API and implementation
+ * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 
-repositories {
-  if (isUsingArtifactory) {
-    maven {
-      credentials {
-        username = userProps.getProperty("artifactory.download.user")
-        password = userProps.getProperty("artifactory.download.token")
-      }
-      url = "https://" + gradle.userProps.getProperty("artifactory.download.server") + "/artifactory/wasliberty-maven-remote"
-    }
-  } else {
-    mavenCentral()
-  }
-}
+apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),
@@ -38,35 +23,10 @@ addRequiredLibraries.dependsOn addJakartaTransformer
 /*
  * Configure any auto FVT artifacts.
  */
-autoFVT.dependsOn ':com.ibm.ws.security.oauth.oidc_fat.common:assemble'
 autoFVT.doLast {
-  
-  /*
-   * Copy server settings from common project.
-   */
-  def servers = [
-    'com.ibm.ws.security.oauth.oidc_fat.common.metadataServer'
-  ]
-  
-  servers.each { server ->
-    // Copy server settings files from common project
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/imports')
-      include 'fatTestPorts.xml'
-      include 'goodSSLSettings.xml'
-      include 'formlogin_1.xml'
-    }
-    
-    // Copy test applications from common project
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/oauthclient.ear')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/dropins')
-      rename 'oauthclient.ear', 'com.ibm.oauth.test.client.ear'
-    }
-    copy {
-      from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').buildDir, 'test-application/formlogin.war')
-      into new File(autoFvtDir, 'publish/servers/' + server + '/test-apps')
-    }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.oauth.oidc_fat.common.metadataServer/imports')
+    include 'fatTestPorts.xml'
   }
 }
