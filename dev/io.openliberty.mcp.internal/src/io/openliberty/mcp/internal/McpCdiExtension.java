@@ -14,6 +14,7 @@ import static io.openliberty.mcp.internal.encoders.EncoderRegistry.DEFAULT_ENCOD
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -156,8 +157,7 @@ public class McpCdiExtension implements Extension {
             error |= reportOnInvalidToolNames(afterDeploymentValidation, toolRegistry) |
                      reportOnDuplicateTools(afterDeploymentValidation, toolRegistry) |
                      reportOnToolArgEdgeCases(afterDeploymentValidation, toolRegistry) |
-                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry) |
-                     reportOnInvalidSpecialArguments(afterDeploymentValidation, toolRegistry);
+                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry);
         }
 
         if (error) {
@@ -349,44 +349,20 @@ public class McpCdiExtension implements Extension {
                 continue;
             }
             MethodMetadata methodMetadata = tool.methodMetadata().get();
-            Map<SpecialArgumentType.Resolution, Integer> resultCountMap = new HashMap<>();
+            Map<SpecialArgumentType, Integer> argCountMap = new EnumMap<>(SpecialArgumentType.class);
             for (SpecialArgumentMetadata specialArgument : methodMetadata.specialArguments()) {
-                SpecialArgumentType.Resolution specialArgumentTypeResolution = specialArgument.typeResolution();
-                if (specialArgumentTypeResolution.specialArgsType() == SpecialArgumentType.UNSUPPORTED) {
-                    continue;
-                }
-                resultCountMap.merge(specialArgumentTypeResolution, 1, Integer::sum);
-
+                SpecialArgumentType specialArgumentType = specialArgument.type();
+                argCountMap.merge(specialArgumentType, 1, Integer::sum);
             }
-            resultCountMap.forEach((k, v) -> {
-                if (v > 1) {
+            argCountMap.forEach((type, count) -> {
+                if (count > 1) {
                     error.set(true);
                     Tr.error(tc, "CWMCM0006E.duplicate.special.arguments", tool.getToolQualifiedName(),
-                             k.actualClass().getSimpleName());
-
+                             type.getTypeClass().getSimpleName());
                 }
-
             });
         }
         return error.get();
-
-    }
-
-    private boolean reportOnInvalidSpecialArguments(AfterDeploymentValidation afterDeploymentValidation, ToolRegistry tools) {
-        boolean error = false;
-        for (ToolMetadata tool : tools.getAllTools()) {
-            if (tool.methodMetadata().isEmpty()) {
-                continue;
-            }
-            for (SpecialArgumentMetadata specialArgument : tool.methodMetadata().get().specialArguments()) {
-                if (specialArgument.typeResolution().specialArgsType() == SpecialArgumentType.UNSUPPORTED) {
-                    error = true;
-                    Tr.error(tc, "CWMCM0007E.invalid.arguments", tool.getToolQualifiedName(),
-                             specialArgument.typeResolution());
-                }
-            }
-        }
-        return error;
     }
 
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method, BeanManager beanManager) {

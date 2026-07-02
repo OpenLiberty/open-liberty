@@ -1880,6 +1880,33 @@
                                             "properties": {},
                                             "required": []
                                         }
+                                    },
+                                    {
+                                        "name": "unannotatedArgTool",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "name": {
+                                                    "type": "string"
+                                                },
+                                                "count": {
+                                                    "type": "integer"
+                                                }
+                                            },
+                                            "required": ["name", "count"]
+                                        }
+                                    },
+                                    {
+                                        "name": "echoNoParamName",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {
+                                                "input": {
+                                                    "type": "string"
+                                                }
+                                            },
+                                            "required": ["input"]
+                                        }
                                     }
                                 ]
                             },

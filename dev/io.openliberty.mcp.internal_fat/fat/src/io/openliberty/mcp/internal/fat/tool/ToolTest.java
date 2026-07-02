@@ -2978,4 +2978,75 @@ public class ToolTest extends FATServletClient {
         JSONAssert.assertEquals(expectedFragment, response, false);
     }
 
+    @Test
+    public void testUnannotatedToolArgs() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "fred",
+                              "count": 3
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"hello hello hello fred of FAT Test Client"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testNoParamNameTool() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echoNoParamName",
+                            "arguments": {
+                              "input": "test1"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"test1"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
 }

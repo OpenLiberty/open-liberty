@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -7,19 +7,21 @@
  *
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
-package io.openliberty.mcp.internal.fat.tool.deploymentErrorApps;
+package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 
 import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+
 import jakarta.enterprise.context.ApplicationScoped;
 
+/**
+ * More basic tools for ToolTest, compiled without parameter names included
+ */
 @ApplicationScoped
-public class InvalidSpecialArgsErrorTest {
+public class BasicToolsNoParamNames {
 
-    ///////////////////
-    //// Invalid Special Argument Tool
-    @Tool(name = "invalidSpecialArgumentTool")
-    public void invalidSpecialArgumentTool(InvalidSpecialVariable invalidArgs) {}
-
-    public record InvalidSpecialVariable() {}
-
+    @Tool
+    public String echoNoParamName(@ToolArg(name = "input") String input) {
+        return input;
+    }
 }
