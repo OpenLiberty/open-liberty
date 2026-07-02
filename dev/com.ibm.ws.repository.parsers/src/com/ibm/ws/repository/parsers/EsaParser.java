@@ -81,6 +81,7 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
     /**  */
     private static final String OSGI_EE_NAMESPACE_ID = "osgi.ee";
 
+    private static final VersionRange JAVA_25_RANGE = VersionRange.parseVersionRange("[1.2,25]");
     private static final VersionRange JAVA_21_RANGE = VersionRange.parseVersionRange("[1.2,21]");
     private static final VersionRange JAVA_17_RANGE = VersionRange.parseVersionRange("[1.2,17]");
     private static final VersionRange JAVA_11_RANGE = VersionRange.parseVersionRange("[1.2,11]");
@@ -434,6 +435,7 @@ public class EsaParser extends ParserBase implements Parser<EsaResourceWritable>
         matchingEnvs.put("Java 11", JAVA_11_RANGE);
         matchingEnvs.put("Java 17", JAVA_17_RANGE);
         matchingEnvs.put("Java 21", JAVA_21_RANGE);
+        matchingEnvs.put("Java 25", JAVA_25_RANGE);
 
         StringBuilder message = new StringBuilder();
 
