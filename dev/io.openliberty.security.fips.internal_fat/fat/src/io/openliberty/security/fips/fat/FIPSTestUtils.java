@@ -63,10 +63,13 @@ public class FIPSTestUtils {
             if (!System.getProperty("os.name").equalsIgnoreCase("z/OS") && !dir.endsWith("jre")) {
                 dir = dir + "/jre";
             }
+            Log.warning(FIPSTestUtils.class, "Checking Directory "+ dir + "for FIPS directory");
             Set<String> dirs = Stream.of(new File(dir).listFiles())
                     .filter(File::isDirectory)
                     .map(File::getName)
                     .collect(Collectors.toSet());
+
+            Log.warning(FIPSTestUtils.class, dir + "contains " +dirs.size() + "directories: " + dirs.toString());
             if (!dirs.contains("fips140-3")) {
                 validEnv = false;
                 Log.warning(FIPSTestUtils.class, "Java 8 install does not support FIPS140-3");

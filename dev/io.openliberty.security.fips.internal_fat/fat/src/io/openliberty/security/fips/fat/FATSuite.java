@@ -21,7 +21,7 @@ import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-        AlwaysPassesTest.class,
+        //AlwaysPassesTest.class,
         FIPS1403ServerTest.class,
         FIPS1403ClientTest.class,
         FIPS1403SecurityUtilityTests.class
