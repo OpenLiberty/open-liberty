@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2022 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -19,11 +19,12 @@ import org.junit.runners.Suite.SuiteClasses;
 import componenttest.custom.junit.runner.AlwaysPassesTest;
 
 /**
- * Tests specific to cdi-1.2
+ * Tests specific to cdi-1.2+ and its integration with third party libraries
  */
 @RunWith(Suite.class)
 @SuiteClasses({
-                HibernateSearchTest.class,
+                HibernateSearchTestJavax.class,
+                HibernateSearchTestJakarta.class,
                 ThirdPartyTests.class,
                 HibernateCDICompatibilityTest.class,
                 AlwaysPassesTest.class
