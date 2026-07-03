@@ -817,6 +817,24 @@ public class HttpRequestMessageImplTest {
             getRequest().setHeader("Host", "[ipv6]:443");
             assertEquals("http://[ipv6]:443/index.html", getRequest().getRequestURLAsString());
 
+            // Test parse authority RFC-3986-compliant
+
+            // '?' before '@' — Must also terminate the authority.
+            try {
+                getRequest().setRequestURL("http://x?@localhost/hello");
+                fail("Expected exception: '?' must terminate authority before '@'");
+            } catch (Exception e) {
+            
+            }
+
+            // '#' before '@' — Must also terminate the authority.
+            try {
+                getRequest().setRequestURL("http://x#@localhost/probe/hello");
+                fail("Expected exception: '#' must terminate authority before '@'");
+            } catch (Exception e) {
+             
+            }
+
             // *****************************************************************
             // Test the query string APIs
             // *****************************************************************
@@ -1819,6 +1837,45 @@ public class HttpRequestMessageImplTest {
         // Guard condition: !isBodyAllowed && isBodyExpected -> true for TRACE + CL
         assertTrue("Smuggling guard condition must fire for TRACE with Content-Length",
                    !getRequest().getMethodValue().isBodyAllowed() && getRequest().isBodyExpected());
+    }
+    
+    /**
+     * Tests that RFC 3986 §3.2 authority terminators ('?', '#') are honoured
+     * before a '@' character, preventing a crafted request-target such as
+     * {@code http://x?@trusted/path} from smuggling "trusted" as the URL host.
+     */
+    @Test
+    public void testAuthorityTerminators() {
+        // '?' before '@' — authority must terminate at '?', not at '@'.
+        // A URL like "http://x?@localhost/probe/hello" would be split by an
+        // RFC-3986-compliant parser as: authority="x", query starts at '?'.
+        // The residual string after authority extraction is "?@localhost/probe/hello"
+        // which begins with '?' (empty path), so parseURI must throw.
+        try {
+            getRequest().setRequestURL("http://x?@localhost/probe/hello");
+            fail("Expected exception: '?' must terminate authority before '@'");
+        } catch (Exception e) {
+            // correct: authority terminated at '?', residual URI is invalid
+        }
+
+        // '#' before '@' — fragment delimiter must also terminate the authority.
+        try {
+            getRequest().setRequestURL("http://x#@localhost/probe/hello");
+            fail("Expected exception: '#' must terminate authority before '@'");
+        } catch (Exception e) {
+            // correct: authority terminated at '#', residual URI is invalid
+        }
+
+        // Regression guard: a well-formed URL whose query string follows the path
+        // must still be parsed correctly.
+        getRequest().setRequestURL("http://host/path?query=1");
+        assertEquals("host", getRequest().getURLHost());
+        assertEquals("/path", getRequest().getRequestURI());
+        assertEquals("query=1", getRequest().getQueryString());
+
+        // Regression guard: a legitimate userinfo@ in the authority must still work.
+        getRequest().setRequestURL("http://user@host/index.html");
+        assertEquals("host", getRequest().getURLHost());
     }
 
     /**
