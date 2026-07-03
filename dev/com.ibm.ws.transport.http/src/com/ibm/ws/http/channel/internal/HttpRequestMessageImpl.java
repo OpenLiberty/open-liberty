@@ -1182,7 +1182,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
         int uri_end = data.length;
         for (int i = start; i < data.length; i++) {
             // look for the query string marker
-            if ('?' == data[i]) {
+            if ('?' == data[i] || '#' == data[i]) {
                 uri_end = i;
                 break;
             }
