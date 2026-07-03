@@ -18,12 +18,15 @@ import java.lang.reflect.TypeVariable;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Set;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
+import org.mcpjava.server.MetaField;
 import org.mcpjava.server.content.ContentBlock;
 import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
@@ -80,7 +83,8 @@ public record ToolMetadata(String name,
                            Function<ToolArguments, CompletionStage<ToolResponse>> asyncHandler,
                            Optional<MethodMetadata> methodMetadata,
                            SecurityRequirement securityRequirement,
-                           Instant createdAt) implements ToolManager.ToolInfo {
+                           Instant createdAt,
+                           Map<String, Object> metadata) implements ToolManager.ToolInfo {
 
     public static final String MISSING_TOOL_ARG_NAME = "<<<MISSING TOOL_ARG NAME>>>";
 
@@ -164,6 +168,8 @@ public record ToolMetadata(String name,
 
         Optional<ToolAnnotations> annotations = readAnnotations(annotation.annotations());
 
+        Map<String, Object> metaMap = getMetaMapFromAnnotations(method, jsonb);
+
         MethodMetadata methodMetadata = new MethodMetadata(name,
                                                            bean,
                                                            method.getJavaMember(),
@@ -193,7 +199,8 @@ public record ToolMetadata(String name,
                                 asyncHandler,
                                 Optional.of(methodMetadata),
                                 SecurityRequirement.createFrom(method),
-                                Instant.now());
+                                Instant.now(),
+                                metaMap);
     }
 
     /**
@@ -379,6 +386,42 @@ public record ToolMetadata(String name,
      */
     public static String getToolQualifiedName(Bean<?> bean, AnnotatedMethod<?> method) {
         return bean.getBeanClass() + "." + method.getJavaMember().getName();
+    }
+
+    private static Map<String, Object> getMetaMapFromAnnotations(AnnotatedMethod<?> method, Jsonb jsonb) {
+        Set<MetaField> metaFields = method.getAnnotations(MetaField.class);
+        if (metaFields.isEmpty()) {
+            return Map.of();
+        }
+
+        Map<String, Object> result = new HashMap<>();
+        for (MetaField metaField : method.getAnnotations(MetaField.class)) {
+            result.put(getKey(metaField), getValue(metaField, jsonb));
+        }
+
+        return result;
+    }
+
+    /**
+     * @param metaField
+     * @return
+     */
+    private static String getKey(MetaField metaField) {
+        // validate metaField.name
+        if (!metaField.prefix().isEmpty()) {
+            // validate prefix
+            return metaField.prefix() + metaField.name();
+        }
+        return metaField.name();
+    }
+
+    private static Object getValue(MetaField metaField, Jsonb jsonb) {
+        return switch (metaField.type()) {
+            case BOOLEAN -> Boolean.valueOf(metaField.value());
+            case INT -> Integer.valueOf(metaField.value());
+            case STRING -> metaField.value();
+            case JSON -> jsonb.fromJson(metaField.value(), Object.class);
+        };
     }
 
     /**

@@ -33,6 +33,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
 import io.openliberty.mcp.internal.security.SecurityRequirement.SecurityAnnotation;
+import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
 import io.openliberty.mcp.tools.ToolManager;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.json.JsonObject;
@@ -133,7 +134,7 @@ public class ToolRegistry implements ToolManager {
         return converterRegistry;
     }
 
-    public class ToolDefinitionImpl implements ToolDefinition {
+    public class ToolDefinitionImpl extends MetaCarrierBuilderImpl<ToolDefinitionImpl> implements ToolDefinition {
 
         private final String name;
         private String title;
@@ -279,7 +280,8 @@ public class ToolRegistry implements ToolManager {
                                                     asyncHandler,
                                                     Optional.empty(), // Method metadata
                                                     securityRequirement,
-                                                    Instant.now());
+                                                    Instant.now(),
+                                                    metadata);
 
             addTool(newTool);
 

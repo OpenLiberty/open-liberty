@@ -10,11 +10,12 @@
 package io.openliberty.mcp.internal.fat.tool.toolManagerApp;
 
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.CompletableFuture;
 
+import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolResponse;
 
-import org.mcpjava.server.tools.Tool;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolManager;
 import io.openliberty.mcp.tools.ToolManager.ToolAnnotations;
@@ -72,6 +73,11 @@ public class ToolManagerStartupTestBean {
                    .setDescription("Test tool with arguments")
                    .setAnnotations(new ToolAnnotations("Anno Title", true, false, false, false))
                    .setHandler(a -> ToolResponse.ofText("OK"))
+                   .putMetadata("hasArgs", true)
+                   .putMetadata("hasStructuredOutput", false)
+                   .putMetadata("argCount", 3)
+                   .putMetadata("foo", Map.of("foo", List.of("bar", "baz"),
+                                              "qux", 7))
                    .register();
 
         JsonObject inputSchema = Json.createObjectBuilder()
