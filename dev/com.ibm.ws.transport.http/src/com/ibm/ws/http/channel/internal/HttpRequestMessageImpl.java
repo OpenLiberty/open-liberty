@@ -1230,7 +1230,7 @@ public class HttpRequestMessageImpl extends HttpBaseMessageImpl implements HttpR
             if ('@' == data[i]) {
                 // Note: we're just cutting off the userinfo section for now
                 host_start = i + 1;
-            } else if ('/' == data[i]) {
+            } else if ('/' == data[i] || '*' == data[i] || '#' == data[i]) {
                 slash_start = i;
                 break;
             }
