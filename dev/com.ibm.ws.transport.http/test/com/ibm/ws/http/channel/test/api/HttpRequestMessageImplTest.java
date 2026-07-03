@@ -824,7 +824,7 @@ public class HttpRequestMessageImplTest {
                 getRequest().setRequestURL("http://x?@localhost/hello");
                 fail("Expected exception: '?' must terminate authority before '@'");
             } catch (Exception e) {
-            
+             // verify '#' terminates the authority before '@'
             }
 
             // '#' before '@' — Must terminate the authority.
@@ -832,7 +832,7 @@ public class HttpRequestMessageImplTest {
                 getRequest().setRequestURL("http://x#@localhost/probe/hello");
                 fail("Expected exception: '#' must terminate authority before '@'");
             } catch (Exception e) {
-             
+              // verify '@' terminates the authority before '@'
             }
 
             // *****************************************************************
@@ -1746,7 +1746,6 @@ public class HttpRequestMessageImplTest {
             }
         }
     }
-
     /**
      * Tests that MethodValues.isBodyAllowed() correctly reflects the RFC 9110 rule:
      * TRACE must not have a body; all other standard methods allow one.
