@@ -33,7 +33,6 @@ import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
-import io.openliberty.mcp.internal.content.RoleAdapter;
 import io.openliberty.mcp.internal.content.TextContentImpl;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
@@ -90,7 +89,7 @@ public class McpCdiExtension implements Extension {
     private static Jsonb createJsonb() {
         JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer(), new TextContentImpl.Serializer(), new ToolResponseImpl.Serializer())
                                                    .withDeserializers(new McpRequestIdDeserializer())
-                                                   .withAdapters(new RoleAdapter(),
+                                                   .withAdapters(EnumAdapters.ROLE_ADAPTER,
                                                                  new ImplementationInfoImpl.Adapter(),
                                                                  new IconImpl.Adapter());
 

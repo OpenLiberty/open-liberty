@@ -9,6 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
+import static io.openliberty.mcp.internal.EnumAdapters.THEME_ADAPTER;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -114,7 +116,7 @@ public record IconImpl(String src, String mimeTypeValue, List<String> sizes, The
             return new IconImpl(to.src,
                                 to.mimeType,
                                 to.sizes,
-                                to.theme == null ? null : Theme.valueOf(to.theme.toUpperCase()));
+                                to.theme == null ? null : THEME_ADAPTER.adaptFromJson(to.theme));
         }
 
         @Override
@@ -124,7 +126,7 @@ public record IconImpl(String src, String mimeTypeValue, List<String> sizes, The
             result.src = obj.src;
             result.mimeType = obj.mimeTypeValue;
             result.sizes = obj.sizes;
-            result.theme = obj.themeValue == null ? null : obj.themeValue.name().toLowerCase();
+            result.theme = obj.themeValue == null ? null : THEME_ADAPTER.adaptToJson(obj.themeValue);
             return result;
         }
 
