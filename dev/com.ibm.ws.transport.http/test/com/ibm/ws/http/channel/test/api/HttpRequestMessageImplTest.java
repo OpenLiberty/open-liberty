@@ -817,9 +817,9 @@ public class HttpRequestMessageImplTest {
             getRequest().setHeader("Host", "[ipv6]:443");
             assertEquals("http://[ipv6]:443/index.html", getRequest().getRequestURLAsString());
 
-            // Test parse authority RFC-3986-compliant
+            // Test parse authority RFC-3986-compliant - CVE
 
-            // '?' before '@' — Must also terminate the authority.
+            // '?' before '@' — Must terminate the authority.
             try {
                 getRequest().setRequestURL("http://x?@localhost/hello");
                 fail("Expected exception: '?' must terminate authority before '@'");
@@ -827,7 +827,7 @@ public class HttpRequestMessageImplTest {
             
             }
 
-            // '#' before '@' — Must also terminate the authority.
+            // '#' before '@' — Must terminate the authority.
             try {
                 getRequest().setRequestURL("http://x#@localhost/probe/hello");
                 fail("Expected exception: '#' must terminate authority before '@'");
