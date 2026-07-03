@@ -95,7 +95,7 @@ public class McpServletInitializer implements ServletContainerInitializer {
         filterReg.setAsyncSupported(true);
 
         String fullMcpUrl = virtualHost.getUrlString(context.getContextPath() + path, false);
-        Tr.info(tc, "MCP server endpoint: " + fullMcpUrl);
+        Tr.info(tc, "CWMCM0008I.mcp.endpoint.url", fullMcpUrl);
     }
 
     private String getApplicationName(ComponentMetaData componentMetaData) {
