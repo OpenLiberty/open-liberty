@@ -30,7 +30,10 @@
         <file name="${shared.resource.dir}/hazelcast/hazelcast.jar"/>
     </library>
 
-	<!-- Perms needed because the application uses Hazelcast directly   -->
+ <!-- Grant Hazelcast library permission to read its own system properties -->
+ <javaPermission codebase="${shared.resource.dir}/hazelcast/*" className="java.util.PropertyPermission" actions="read" name="hazelcast.*"/>
+
+ <!-- Perms needed because the application uses Hazelcast directly   -->
 	<javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.management.internal"/>
