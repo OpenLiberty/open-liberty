@@ -52,7 +52,7 @@ import componenttest.topology.utils.FATServletClient;
 public class HibernateSearchTestJakarta extends FATServletClient {
 
     public static final String HIBERNATE_SEARCH_APP_NAME = "hibernateSearchTest";
-    public static final String SERVER_NAME = "cdi20HibernateSearchServer";
+    public static final String SERVER_NAME = "cdi20HibernateSearchJakartaServer";
 
     @Server(SERVER_NAME)
     @TestServlet(servlet = HibernateSearchTestServlet.class, contextRoot = HIBERNATE_SEARCH_APP_NAME)
@@ -92,11 +92,6 @@ public class HibernateSearchTestJakarta extends FATServletClient {
                                                    .addAsResource("com/ibm/ws/cdi/thirdparty/apps/hibernateSearchWar/jpaorm.xml", "META-INF/jpaorm.xml");
 
         ShrinkHelper.exportAppToServer(server, hibernateSearchTest, DeployOptions.SERVER_ONLY);
-
-        //Update the server.xml file to point to the new jakarta jars. This must be done after LibertyServerFactory.getLibertyServer() as the xml files in publish are unchanged.
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            server.swapInServerXMLFromPublish("jakarta.xml");
-        }
 
         server.startServer();
     }

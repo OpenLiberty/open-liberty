@@ -78,11 +78,6 @@ public class HibernateSearchTestJavax extends FATServletClient {
 
         ShrinkHelper.exportAppToServer(server, hibernateSearchTest, DeployOptions.SERVER_ONLY);
 
-        //Update the server.xml file to point to the new jakarta jars. This must be done after LibertyServerFactory.getLibertyServer() as the xml files in publish are unchanged.
-        if (JakartaEEAction.isEE9OrLaterActive()) {
-            server.swapInServerXMLFromPublish("jakarta.xml");
-        }
-
         server.startServer();
     }
 
