@@ -558,11 +558,11 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
         EJBRemoteRuntime remoteRuntime = ejbRemoteRuntimeServiceRef.getService();
         if (!local) {
             if (remoteRuntime != null) {
-                if (remoteRuntime.isRemoteEjbAdapterAvailable()) {
+                BeanMetaData bmd = hr.getBeanMetaData();
 
+                if (remoteRuntime.isRemoteEjbAdapterAvailable()) {
                     HomeRecordImpl hrImpl = HomeRecordImpl.cast(hr);
                     if (hrImpl.remoteBindingData == null) {
-                        BeanMetaData bmd = hr.getBeanMetaData();
                         EJBModuleMetaDataImpl mmd = bmd._moduleMetaData;
                         EJBApplicationMetaData amd = mmd.getEJBApplicationMetaData();
                         String appLogicalName = amd.isStandaloneModule() ? null : amd.getLogicalName();
@@ -570,9 +570,13 @@ public class NameSpaceBinderImpl implements NameSpaceBinder<EJBBinding> {
                     }
 
                     remoteRuntime.bind(hrImpl.remoteBindingData, interfaceIndex, interfaceName);
+
+                    String corbaBindingName = remoteRuntime.getCorbaBindingName(hrImpl.remoteBindingData, interfaceName);
+                    if (corbaBindingName != null) {
+                        sendBindingMessage(interfaceName, corbaBindingName, bmd);
+                    }
                 } else {
                     //UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W=CNTR0341W: Unable to bind the {0} interface of the {1} bean in the {2} module of the {3} application to the {4} name location. The ORB service is unavailable.
-                    BeanMetaData bmd = hr.getBeanMetaData();
                     String bindingName = bmd.enterpriseBeanName + '!' + interfaceName;
                     Tr.warning(tc, "UNABLE_TO_BIND_REMOTE_BINDING_CNTR0341W",
                                new Object[] { interfaceName, bmd.j2eeName.getComponent(), bmd.j2eeName.getModule(), bmd.j2eeName.getApplication(), bindingName });
