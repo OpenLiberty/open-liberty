@@ -389,19 +389,6 @@ public class Http2LiteModeTests extends FATServletClient {
     }
 
     /**
-     * Test Coverage: Connect to server via the insecure port and send out a header frame that exceeds token limit size.
-     * Start H2 connection
-     * Send headers with extra long value
-     * Test Outcome: The HTTP/2 stream should receive a go away after exceeding the limit token size.
-     *
-     * @throws Exception
-     */
-    @Test
-    public void testHeaderTokenSizeExceeded() throws Exception {
-        runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
-    }
-
-    /**
      * Test Coverage: Connect to server via the insecure port and send out a header frame that exceeds header size limit.
      * Start H2 connection
      * Send a lot of headers for a stream
@@ -411,6 +398,30 @@ public class Http2LiteModeTests extends FATServletClient {
      */
     @Test
     public void testHeaderSizeExceeded() throws Exception {
+        runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send a HEADERS frame containing a header whose name is 101 characters
+     * (one over the configured limitFieldSize of 100).
+     * Test Outcome: The server must reject the request with a GOAWAY COMPRESSION_ERROR.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHeaderNameLengthExceedsLimit() throws Exception {
+        runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
+    }
+
+    /**
+     * Test Coverage: Send a HEADERS frame containing a header whose value is 101 characters
+     * (one over the configured limitFieldSize of 100).
+     * Test Outcome: The server must reject the request with a GOAWAY COMPRESSION_ERROR.
+     *
+     * @throws Exception
+     */
+    @Test
+    public void testHeaderValueLengthExceedsLimit() throws Exception {
         runTest(Http2FullModeTests.continuationServletPath, testName.getMethodName());
     }
 

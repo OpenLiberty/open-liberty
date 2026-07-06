@@ -20,6 +20,7 @@ import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.genericbnf.internal.GenericConstants;
 import com.ibm.ws.http.channel.h2internal.H2ConnectionSettings;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
+import com.ibm.ws.http.channel.h2internal.exceptions.HeaderSizeExceededException;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.ByteFormatType;
 import com.ibm.ws.http.channel.h2internal.hpack.HpackConstants.LiteralIndexType;
 import com.ibm.ws.http.channel.h2internal.huffman.HuffmanDecoder;
@@ -300,8 +301,8 @@ public class H2Headers {
             //is valid for the integer representation decoder.
             int fragmentLength = IntegerRepresentation.decode(buffer, ByteFormatType.HUFFMAN);
 
-            if (fragmentLength > limitTokenSize) {
-                throw new CompressionException("Stream headers exceed limits configured for the server.");
+            if (fragmentLength < 0 || fragmentLength > limitTokenSize) {
+                throw new HeaderSizeExceededException("Stream headers exceed limits configured for the server.");
             }
 
             byte[] bytes = new byte[fragmentLength];
@@ -315,7 +316,7 @@ public class H2Headers {
             decodedResult = new String(bytes, HpackConstants.HPACK_CHAR_SET);
 
         } catch (Exception e) {
-            if (e instanceof CompressionException) { // Rethrow compression exception as is
+            if (e instanceof HeaderSizeExceededException) { // Rethrow HeaderSizeExceededException exception as is
                 throw e;
             }
             throw new CompressionException("Received an invalid header block fragment");

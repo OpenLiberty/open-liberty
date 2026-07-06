@@ -30,6 +30,7 @@ import com.ibm.ws.http.channel.h2internal.Constants.Direction;
 import com.ibm.ws.http.channel.h2internal.exceptions.CompressionException;
 import com.ibm.ws.http.channel.h2internal.exceptions.EnhanceYourCalmException;
 import com.ibm.ws.http.channel.h2internal.exceptions.FlowControlException;
+import com.ibm.ws.http.channel.h2internal.exceptions.HeaderSizeExceededException;
 import com.ibm.ws.http.channel.h2internal.exceptions.Http2Exception;
 import com.ibm.ws.http.channel.h2internal.exceptions.ProtocolException;
 import com.ibm.ws.http.channel.h2internal.exceptions.RefusedStreamException;
@@ -2235,6 +2236,11 @@ public class H2StreamProcessor {
                                                       processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings(), limitTokenSize));
                 } catch (Http2Exception e) {
                     buf.release();
+                    if (e instanceof HeaderSizeExceededException) {
+                        CompressionException comp = new CompressionException("Headers on stream: " + myID + " exceed limits configured for the server.");
+                        comp.setConnectionError(true);
+                        throw comp;
+                    }
                     throw e;
                 }
                 if (current == null) {
