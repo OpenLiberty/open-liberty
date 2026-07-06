@@ -264,12 +264,17 @@ public class PasswordUtil {
 
         String current_crypto_algorithm = getCryptoAlgorithm(decoded_string);
 
-        if ((current_crypto_algorithm != null && current_crypto_algorithm.startsWith(crypto_algorithm)) || isHashed(decoded_string)) {
-            // don't accept encoded password
+        if ((current_crypto_algorithm != null && isValidCryptoAlgorithm(current_crypto_algorithm)
+             && current_crypto_algorithm.startsWith(crypto_algorithm)) || isHashed(decoded_string)) {
+            // don't accept already-encoded password
             throw new InvalidPasswordEncodingException();
-        } else if (current_crypto_algorithm != null) {
+        } else if (current_crypto_algorithm != null && isValidCryptoAlgorithm(current_crypto_algorithm)) {
+            // password is encoded with a different valid algorithm — decode it first, then re-encode
             decoded_string = passwordDecode(decoded_string);
         }
+        // If current_crypto_algorithm is non-null but NOT a valid crypto algorithm, the input string
+        // merely starts with a {something} pattern (e.g. a vault-generated password like "{abc}def").
+        // In that case we treat the entire string as literal plaintext and fall through to encode it.
         if (properties == null || !properties.containsKey(PROPERTY_NO_TRIM) || !"true".equalsIgnoreCase(properties.get(PROPERTY_NO_TRIM))) {
             decoded_string = decoded_string.trim();
         }

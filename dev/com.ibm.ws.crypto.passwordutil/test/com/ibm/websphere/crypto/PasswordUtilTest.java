@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009, 2025 IBM Corporation and others.
+ * Copyright (c) 2009, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -145,6 +145,59 @@ public class PasswordUtilTest {
         } catch (Throwable t) {
             outputMgr.failWithThrowable("testUtil", t);
         }
+    }
+
+    /**
+     * TS022437211 - Passwords that begin with a {something} pattern (e.g. vault/PIM-generated
+     * passphrases like "{abc}def" or "{redacted}***{/redacted}") must be treated as literal
+     * plaintext and encoded successfully rather than misinterpreted as pre-encoded ciphertext.
+     *
+     * Before the fix, encode() would either:
+     *   (a) silently return a truncated/empty result (XOR case observed by Keith), or
+     *   (b) throw NullPointerException from decoded_string.trim() after passwordDecode() returned null.
+     */
+    @Test
+    public void testEncodePasswordStartingWithCurlyBracePattern() throws Exception {
+        // Simple {something}value pattern — must encode to a valid {xor}... string and round-trip correctly
+        String plain1 = "{abc}def";
+        String encoded1 = PasswordUtil.encode(plain1, "xor");
+        assertTrue("Encoded password should start with {xor}: " + encoded1, encoded1.startsWith("{xor}"));
+        assertEquals("Round-trip decode must return the original plaintext", plain1, PasswordUtil.decode(encoded1));
+
+        // Pattern that triggered NPE in the customer's environment: {redacted}...{/redacted}
+        String plain2 = "{redacted}************{/redacted}";
+        String encoded2 = PasswordUtil.encode(plain2, "xor");
+        assertTrue("Encoded password should start with {xor}: " + encoded2, encoded2.startsWith("{xor}"));
+        assertEquals("Round-trip decode must return the original plaintext", plain2, PasswordUtil.decode(encoded2));
+
+        // Same patterns encoded with AES
+        String encoded3 = PasswordUtil.encode(plain1, "aes");
+        assertTrue("Encoded password should start with {aes}: " + encoded3, encoded3.startsWith("{aes}"));
+        assertEquals("Round-trip AES decode must return the original plaintext", plain1, PasswordUtil.decode(encoded3));
+
+        // Verify that a genuinely already-encoded password still correctly throws InvalidPasswordEncodingException
+        try {
+            PasswordUtil.encode("{xor}CDo9Hgw=", "xor");
+            fail("Should have thrown InvalidPasswordEncodingException for an already-xor-encoded password");
+        } catch (InvalidPasswordEncodingException e) {
+            // expected
+        }
+    }
+
+    /**
+     * TS022437211 - Verify that encode() with an explicit crypto key also handles passwords
+     * starting with {something} correctly (three-argument overload used by the customer).
+     */
+    @Test
+    public void testEncodeWithKeyPasswordStartingWithCurlyBracePattern() throws Exception {
+        String cryptoKey = "MyCustomEncryptionKey123!";
+
+        // Reproduces the exact customer scenario from the support case
+        String plain = "{mySecretPassword123}";
+        String encoded = PasswordUtil.encode(plain, "xor", cryptoKey);
+        assertFalse("Encoded result must not be just {xor} with empty payload: " + encoded, "{xor}".equals(encoded));
+        assertTrue("Encoded password should start with {xor}: " + encoded, encoded.startsWith("{xor}"));
+        assertEquals("Round-trip decode must return the original plaintext", plain, PasswordUtil.decode(encoded));
     }
 
     @Test
