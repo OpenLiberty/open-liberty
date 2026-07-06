@@ -118,6 +118,11 @@ public interface AppTracker {
     void addAppName(String appName);
 
     /**
+     * @return returns whether configadmin is ready
+     */
+    boolean isConfigAdminReady();
+
+    /**
      * @return appNames found by Config Admin
      */
     Set<String> getAllConfigAppNames();

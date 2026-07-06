@@ -81,6 +81,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     protected final ReadWriteLock lock = new ReentrantReadWriteLock();
 
     /**
+     * Flag indicating whether ConfigAdmin has been set and initialized.
+     * Volatile ensures visibility across threads.
+     */
+    private volatile boolean configAdminReady = false;
+
+    /**
      * Tracks the state of starting/started applications.
      */
     protected final Map<String, ApplicationState> appStateMap = new HashMap<String, ApplicationState>();
@@ -132,16 +138,35 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
                     Tr.debug(tc, "configAdmin could not find any configured apps");
             }
 
+            // Set flag after successful population
+            configAdminReady = true;
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "ConfigAdmin is ready with " + configAdminMap.size() + " apps");
+
         } catch (IOException e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "configadmin had an issue collecting configured applications due to an IO exception.");
+            // Set flag even on error to avoid infinite wait
+            configAdminReady = true;
             e.printStackTrace();
         } catch (InvalidSyntaxException e) {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "configadmin had an issue collecting configured applications due to invalid syntax.");
+            // Set flag even on error to avoid infinite wait
+            configAdminReady = true;
             e.printStackTrace();
         }
 
+    }
+
+    /**
+     * Checks if ConfigAdmin has been set and initialized.
+     *
+     * @return true if ConfigAdmin is ready, false otherwise
+     */
+    public boolean isConfigAdminReady() {
+        return configAdminReady;
     }
 
     protected void unsetConfigAdmin(ConfigurationAdmin configAdmin) {

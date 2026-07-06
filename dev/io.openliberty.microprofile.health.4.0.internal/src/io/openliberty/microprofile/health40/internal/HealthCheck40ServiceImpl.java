@@ -47,7 +47,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.wsspi.wab.configure.WABConfiguration;
@@ -733,6 +732,39 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      * Retrieve the current set of visible apps.
      */
     private Set<String> validateApplicationSet() throws NullPointerException {
+        // Co-authored by bob
+        // Wait for ConfigAdmin to be ready (with timeout)
+        int maxWaitMs = 10000; // 10 seconds
+        int waitedMs = 0;
+        int sleepIntervalMs = 100; // Check every 100ms
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "validateApplicationSet: Waiting for ConfigAdmin to be ready");
+
+        while (!appTracker.isConfigAdminReady() && waitedMs < maxWaitMs) {
+            try {
+                Thread.sleep(sleepIntervalMs);
+                waitedMs += sleepIntervalMs;
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && waitedMs % 1000 == 0)
+                    Tr.debug(tc, "validateApplicationSet: Still waiting for ConfigAdmin... (" + waitedMs + "ms)");
+
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                    Tr.debug(tc, "validateApplicationSet: Interrupted while waiting for ConfigAdmin");
+                break;
+            }
+        }
+
+        if (!appTracker.isConfigAdminReady()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "validateApplicationSet: ConfigAdmin not ready after " + maxWaitMs + "ms, proceeding anyway");
+        } else {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "validateApplicationSet: ConfigAdmin is ready after " + waitedMs + "ms");
+        }
+
         Set<String> apps = appTracker.getAllAppNames();
         Set<String> configApps = appTracker.getAllConfigAppNames();
 
