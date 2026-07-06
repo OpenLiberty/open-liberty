@@ -144,6 +144,14 @@ public interface Fractions {
      int exclusiveMax,
      Restriction<Fraction> filter);
 
+    @Find
+    CursoredPage<Fraction> fetchCursored //
+    (@By(_Fraction.DENOMINATOR) Between<Integer> denominatorRange,
+     @By(_Fraction.REDUCED) @Is(EqualTo.class) boolean isReduced,
+     Restriction<Fraction> filter,
+     Order<Fraction> order,
+     PageRequest pageReq);
+
     @First
     @NativeQuery("""
                     SELECT *
