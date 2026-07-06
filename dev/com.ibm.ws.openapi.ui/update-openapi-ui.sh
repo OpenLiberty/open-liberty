@@ -32,7 +32,7 @@ if [[ "${npm%.*}" -lt 8 ]]; then
 fi
 
 # Check script is run from com.ibm.ws.openapi.ui directory
-if ! pwd | grep -q -E 'open-liberty/dev/com.ibm.ws.openapi.ui$' ; then
+if ! pwd | grep -q -E 'dev/com.ibm.ws.openapi.ui$' ; then
     echo "This script must be executed from the open-liberty/dev/com.ibm.ws.openapi.ui directory."
     exit 1
 fi
