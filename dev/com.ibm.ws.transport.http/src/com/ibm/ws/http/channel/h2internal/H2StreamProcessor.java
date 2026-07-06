@@ -2232,7 +2232,7 @@ public class H2StreamProcessor {
                 isFirstHeaderBlock = buf.position() < firstBlockLength;
                 try {
                     current = (H2Headers.decodeHeader(buf, this.muxLink.getReadTable(), isFirstHeader && isFirstHeaderBlock,
-                                                      processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings()));
+                                                      processTrailerHeaders && !isPush, this.muxLink.getLocalConnectionSettings(), limitTokenSize));
                 } catch (Http2Exception e) {
                     buf.release();
                     throw e;

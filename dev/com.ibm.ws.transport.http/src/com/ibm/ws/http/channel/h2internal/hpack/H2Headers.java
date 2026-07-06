@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2023 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -41,8 +41,8 @@ public class H2Headers {
      * @return H2HeaderField
      * @throws CompressionException
      */
-    public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table) throws CompressionException {
-        return decodeHeader(buffer, table, true, false, null);
+    public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table, int limitTokenSize) throws CompressionException {
+        return decodeHeader(buffer, table, true, false, null, limitTokenSize);
     }
 
     /**
@@ -56,7 +56,7 @@ public class H2Headers {
      * @throws CompressionException if invalid header names or values are found
      */
     public static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table, boolean isFirstHeader,
-                                             boolean isTrailerBlock, H2ConnectionSettings settings) throws CompressionException {
+                                             boolean isTrailerBlock, H2ConnectionSettings settings, int limitTokenSize) throws CompressionException {
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.entry(tc, "decodeHeader");
@@ -147,7 +147,7 @@ public class H2Headers {
                     Tr.debug(tc, "Indexing decode type: INCREMENTAL");
                 }
 
-                header = decodeHeader(buffer, table, ByteFormatType.INCREMENTAL);
+                header = decodeHeader(buffer, table, ByteFormatType.INCREMENTAL, limitTokenSize);
 
             } else if (maskedByte >= HpackConstants.MASK_2F) {
                 if (!isFirstHeader) {
@@ -173,7 +173,7 @@ public class H2Headers {
                     Tr.debug(tc, "Indexing decode type: NEVERINDEX");
                 }
 
-                header = decodeHeader(buffer, table, ByteFormatType.NEVERINDEX);
+                header = decodeHeader(buffer, table, ByteFormatType.NEVERINDEX, limitTokenSize);
 
             }
 
@@ -187,7 +187,7 @@ public class H2Headers {
                     Tr.debug(tc, "Indexing decode type: NOINDEXING");
                 }
 
-                header = decodeHeader(buffer, table, ByteFormatType.NOINDEXING);
+                header = decodeHeader(buffer, table, ByteFormatType.NOINDEXING, limitTokenSize);
 
             }
 
@@ -207,7 +207,7 @@ public class H2Headers {
 
     }
 
-    private static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table, ByteFormatType type) throws CompressionException {
+    private static H2HeaderField decodeHeader(WsByteBuffer buffer, H2HeaderTable table, ByteFormatType type, int limitTokenSize) throws CompressionException {
         //Four possible table operations: Indexed, Incremental, Not Indexed, Never Indexed
         //Indexed case is considered in the <HeaderBlock> decode.
 
@@ -235,7 +235,7 @@ public class H2Headers {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "Decoding header name.");
             }
-            decodedName = decodeFragment(buffer);
+            decodedName = decodeFragment(buffer, limitTokenSize);
 
             if (decodedName.trim().isEmpty()) {
                 throw new CompressionException("Header field names must not be empty.");
@@ -252,7 +252,7 @@ public class H2Headers {
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Decoding header value.");
         }
-        decodedValue = decodeFragment(buffer);
+        decodedValue = decodeFragment(buffer, limitTokenSize);
 
         //Create header and Index it if applicable
         header = new H2HeaderField(decodedName, decodedValue);
@@ -278,10 +278,11 @@ public class H2Headers {
      * +---+---------------------------+
      *
      * @param buffer Contains all bytes that will be decoded into this <HeaderField>
+     * @param limitFieldSize Limit on individual token length when decoding fragment
      * @return String representation of the fragment. Stored as either the key or value of this <HeaderField>
      * @throws CompressionException
      */
-    private static String decodeFragment(WsByteBuffer buffer) throws CompressionException {
+    private static String decodeFragment(WsByteBuffer buffer, int limitTokenSize) throws CompressionException {
         String decodedResult = null;
 
         try {
@@ -299,6 +300,10 @@ public class H2Headers {
             //is valid for the integer representation decoder.
             int fragmentLength = IntegerRepresentation.decode(buffer, ByteFormatType.HUFFMAN);
 
+            if (fragmentLength > limitTokenSize) {
+                throw new CompressionException("Stream headers exceed limits configured for the server.");
+            }
+
             byte[] bytes = new byte[fragmentLength];
             //Transfer bytes from the buffer into byte array.
             buffer.get(bytes);
@@ -310,6 +315,9 @@ public class H2Headers {
             decodedResult = new String(bytes, HpackConstants.HPACK_CHAR_SET);
 
         } catch (Exception e) {
+            if (e instanceof CompressionException) { // Rethrow compression exception as is
+                throw e;
+            }
             throw new CompressionException("Received an invalid header block fragment");
         }
 
