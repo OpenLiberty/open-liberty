@@ -1,5 +1,3 @@
-dev/com.ibm.ws.ui.tool.explore/resources/WEB-CONTENT/jsExplore/resources/_notifications/pushNotifications.js
-
 /*******************************************************************************
  * Copyright (c) 2015 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
