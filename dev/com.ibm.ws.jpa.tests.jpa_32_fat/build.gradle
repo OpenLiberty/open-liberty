@@ -14,7 +14,7 @@
 apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 
 ext {
-  hibernateVersion = '7.3.3.Final'
+  hibernateVersion = '7.4.4.Final'
 }
 
 configurations {
@@ -41,6 +41,22 @@ dependencies {
   hibernateJPA32 "org.hibernate.orm:hibernate-core:${hibernateVersion}", withoutJakartaAPI
   hibernateJPA32 "org.hibernate.orm:hibernate-community-dialects:${hibernateVersion}", withoutJakartaAPI
   hibernateJPA32 "org.hibernate.orm:hibernate-scan-jandex:${hibernateVersion}", withoutJakartaAPI
+  hibernateJPA32("org.hibernate.orm:hibernate-jcache:${hibernateVersion}") {
+    exclude group: 'org.hibernate.orm', module: 'hibernate-core'
+    exclude group: 'org.jboss.logging', module: 'jboss-logging'
+  }
+  hibernateJPA32("org.ehcache:ehcache:3.10.8:jakarta") {
+    transitive = false
+  }
+  hibernateJPA32("javax.cache:cache-api:1.1.1") {
+    transitive = false
+  }
+  hibernateJPA32("org.slf4j:slf4j-api:1.7.36") {
+    transitive = false
+  }
+  hibernateJPA32("org.slf4j:slf4j-simple:1.7.36") {
+    transitive = false
+  }
 }
 
 task addJPAFATTools (type: Copy) {
