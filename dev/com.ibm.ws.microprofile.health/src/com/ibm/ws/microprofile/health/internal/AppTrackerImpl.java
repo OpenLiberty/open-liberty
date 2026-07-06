@@ -45,6 +45,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -101,7 +103,7 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             Tr.debug(tc, "AppTrackerImpl is deactivated");
     }
 
-    @Reference(name = "configAdmin")
+    @Reference(name = "configAdmin", cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.STATIC)
     protected void setConfigAdmin(ConfigurationAdmin configAdmin) {
         this.configAdmin = configAdmin;
 
