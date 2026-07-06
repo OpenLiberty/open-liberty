@@ -71,6 +71,11 @@ define([ ], function() {
      * @return {Object} Returns an Object with an added and removed field or null if the array contents are the same
      */
     compareTwoLists: function(cachedList, nowList) {
+      // Guard against undefined inputs (e.g. stale cache after WS session)
+      if (!cachedList || !nowList) {
+       return null;
+      }
+ 
       var addedRemoved = { added: [], removed: [] };
 
       // First, find things that were 'added'
@@ -105,6 +110,11 @@ define([ ], function() {
      *                  or null if the IDs of the elements in the arrays of objects are the same.
      */
     compareTwoListsById: function(cachedList, nowList) {
+      // Guard against undefined inputs (e.g. stale cache after WS session)
+      if (!cachedList || !nowList) {
+       return null;
+      }
+ 
       var addedRemoved = { added: [], removed: [] };
 
       // First, find things that were 'added'
