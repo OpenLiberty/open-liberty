@@ -29,6 +29,8 @@
             <property name="hibernate.cache.use_second_level_cache" value="true"/>
             <property name="hibernate.cache.region.factory_class" value="org.hibernate.cache.jcache.internal.JCacheRegionFactory"/>
             <property name="hibernate.javax.cache.missing_cache_strategy" value="create"/>
+            <!-- ORA-43853: disable SecureFiles LOB syntax for non-ASSM tablespaces (e.g. SYSTEM) -->
+            <property name="hibernate.dialect.oracle.value_lob_enabled" value="false"/>
         </properties>
     </persistence-unit>
 </persistence>
