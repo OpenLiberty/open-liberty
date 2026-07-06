@@ -21,7 +21,7 @@ public final class ServletUtils {
     /**
      * Builds the absolute protected resource URL from the current metadata request.
      * <p>
-     * For example, if the metadata request is:
+     * For example, if the metadata request URL is:
      * </p>
      *
      * <pre>
@@ -36,17 +36,18 @@ public final class ServletUtils {
      * https://localhost:9443/myApp/protected
      * </pre>
      *
-     * @param request               current request adapter
+     * @param scheme                the request scheme, e.g. {@code http} or {@code https}
+     * @param serverName            the server host name or IP address
+     * @param serverPort            the server port number
      * @param protectedResourcePath normalized protected resource path, such as {@code /myApp/protected}
      * @return absolute protected resource URL
      */
-    public static String buildResourceUrl(HttpRequestAdapter request, String protectedResourcePath) {
+    public static String buildResourceUrl(String scheme, String serverName, int serverPort, String protectedResourcePath) {
         StringBuilder resourceUrl = new StringBuilder();
 
-        resourceUrl.append(request.getScheme()).append("://").append(request.getServerName());
+        resourceUrl.append(scheme).append("://").append(serverName);
 
-        int serverPort = request.getServerPort();
-        if (serverPort > 0 && !isDefaultPort(request.getScheme(), serverPort)) {
+        if (serverPort > 0 && !isDefaultPort(scheme, serverPort)) {
             resourceUrl.append(':').append(serverPort);
         }
 

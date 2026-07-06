@@ -13,6 +13,15 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.cert.X509Certificate;
+
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSession;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,9 +60,12 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     public static LibertyServer testServer;
 
     private static String serverHttpString;
+    private static String serverHttpsString;
 
     private static final String PROTECTED_RESOURCE_PATH = "/myApp/protected";
     private static final String PROTECTED_RESOURCE_SUBPATH = "/myApp/protected/subPath";
+    private static final String METADATA_DISABLED_PATH = "/myApp/metadataDisabled";
+    private static final String WITH_SCOPES_PATH = "/myApp/withScopes";
 
     @BeforeClass
     public static void setUp() throws Exception {
@@ -61,10 +73,16 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         Log.info(thisClass, methodName, "Starting server: " + testServer.getServerName());
 
         testServer.startServer();
+        // Wait for the wellknown servlet to finish initializing before running tests.
+        // CWWKF0011I ("server ready") can fire before the servlet init() completes.
+        testServer.waitForStringInLog("SRVE0242I.*OAuthProtectedResourceMetadataServlet.*Initialization successful");
 
         serverHttpString = "http://" + testServer.getHostname() + ":" + testServer.getHttpDefaultPort();
+        serverHttpsString = "https://" + testServer.getHostname() + ":" + testServer.getHttpDefaultSecurePort();
 
-        Log.info(thisClass, methodName, "Server started successfully at: " + serverHttpString);
+        setupTrustAll();
+
+        Log.info(thisClass, methodName, "Server started successfully. HTTP: " + serverHttpString + "  HTTPS: " + serverHttpsString);
     }
 
     @AfterClass
@@ -74,13 +92,17 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         }
     }
 
+    // -------------------------------------------------------------------------
+    // HTTP tests
+    // -------------------------------------------------------------------------
+
     /**
-     * Test that the metadata endpoint is accessible and returns valid JSON
+     * Test that the metadata endpoint is accessible over HTTP and returns valid JSON
      * with the expected structure (resource and authorization_servers fields).
      */
     @Test
     public void testMetadataEndpointIsAccessible() throws Exception {
-        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_PATH);
+        JSONObject json = getMetadataJson(serverHttpString, PROTECTED_RESOURCE_PATH);
 
         assertEquals("Unexpected value for 'resource' field",
                 serverHttpString + PROTECTED_RESOURCE_PATH, json.get("resource"));
@@ -90,26 +112,26 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     }
 
     /**
-     * Test that the metadata response contains the correct resource URL
+     * Test that the HTTP metadata response contains the correct resource URL
      * as an absolute URL including protocol, host, port, and path.
      */
     @Test
     public void testMetadataContainsCorrectResourceUrl() throws Exception {
-        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_PATH);
+        JSONObject json = getMetadataJson(serverHttpString, PROTECTED_RESOURCE_PATH);
 
         assertEquals("Unexpected value for 'resource' field",
                 serverHttpString + PROTECTED_RESOURCE_PATH, json.get("resource"));
     }
 
     /**
-     * Test that the metadata response contains the expected authorization
+     * Test that the HTTP metadata response contains the expected authorization
      * server identifier in the authorization_servers array.
      */
     @Test
     public void testMetadataContainsAuthorizationServerIdentifier() throws Exception {
-        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_PATH);
+        JSONObject json = getMetadataJson(serverHttpString, PROTECTED_RESOURCE_PATH);
         JSONArray authorizationServers = (JSONArray) json.get("authorization_servers");
-        String expectedIssuer = buildExpectedIssuer();
+        String expectedIssuer = buildExpectedHttpIssuer();
 
         assertNotNull("Response did not contain 'authorization_servers' field", authorizationServers);
         assertTrue("Expected 'authorization_servers' to contain '" + expectedIssuer + "' but was: " + authorizationServers,
@@ -118,11 +140,11 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
 
     /**
      * Test that requesting metadata for an unknown/unconfigured resource
-     * path returns HTTP 404 Not Found.
+     * path over HTTP returns HTTP 404 Not Found.
      */
     @Test
     public void testUnknownResourceReturns404() throws Exception {
-        String metadataUrl = buildMetadataUrl("/nonexistent/path");
+        String metadataUrl = buildMetadataUrl(serverHttpString, "/nonexistent/path");
         WebResponse response = getResponseAllowingErrorStatus(metadataUrl);
 
         assertEquals("Expected unknown protected resource metadata endpoint to return 404", 404,
@@ -131,7 +153,7 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
 
     /**
      * Test that requesting the base metadata endpoint without a resource
-     * path returns HTTP 404 Not Found.
+     * path over HTTP returns HTTP 404 Not Found.
      */
     @Test
     public void testBasePathWithoutResourceReturns404() throws Exception {
@@ -144,23 +166,23 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
 
     /**
      * Test that a sub-path URL that is contained within a "contains" auth filter
-     * pattern also returns metadata.
+     * pattern also returns metadata over HTTP.
      */
     @Test
     public void testSubPathUnderContainsFilterReturnsMetadata() throws Exception {
-        JSONObject json = getMetadataJson(PROTECTED_RESOURCE_SUBPATH);
+        JSONObject json = getMetadataJson(serverHttpString, PROTECTED_RESOURCE_SUBPATH);
 
         assertEquals("Unexpected value for 'resource' field",
                 serverHttpString + PROTECTED_RESOURCE_SUBPATH, json.get("resource"));
     }
 
     /**
-     * Test that the metadata endpoint returns the correct Content-Type
+     * Test that the HTTP metadata endpoint returns the correct Content-Type
      * header (application/json).
      */
     @Test
     public void testMetadataReturnsJsonContentType() throws Exception {
-        String metadataUrl = buildMetadataUrl(PROTECTED_RESOURCE_PATH);
+        String metadataUrl = buildMetadataUrl(serverHttpString, PROTECTED_RESOURCE_PATH);
         WebResponse response = getResponse(metadataUrl);
 
         assertEquals("Expected metadata endpoint to return 200", 200, response.getResponseCode());
@@ -169,11 +191,167 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     }
 
     /**
-     * GETs the metadata endpoint for the given protected resource path, asserts HTTP 200,
-     * and returns the parsed JSON response body.
+     * Test that requesting metadata for a resource whose OIDC client config does not have
+     * serveProtectedResourceMetadata enabled returns 404, even though the auth filter matches.
      */
-    private static JSONObject getMetadataJson(String protectedResourcePath) throws Exception {
-        String metadataUrl = buildMetadataUrl(protectedResourcePath);
+    @Test
+    public void testMetadataDisabledReturns404() throws Exception {
+        String metadataUrl = buildMetadataUrl(serverHttpString, METADATA_DISABLED_PATH);
+        WebResponse response = getResponseAllowingErrorStatus(metadataUrl);
+
+        assertEquals("Expected 404 when serveProtectedResourceMetadata is not enabled", 404,
+                response.getResponseCode());
+    }
+
+    /**
+     * Test that the metadata response includes scopes_supported matching the advertisedScopes
+     * configured in the protectedResourceMetadata sub-element.
+     */
+    @Test
+    public void testMetadataContainsConfiguredScopes() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpString, WITH_SCOPES_PATH);
+
+        JSONArray scopesSupported = (JSONArray) json.get("scopes_supported");
+        assertNotNull("Response did not contain 'scopes_supported' field", scopesSupported);
+        assertTrue("Expected 'scopes_supported' to contain 'openid'", scopesSupported.contains("openid"));
+        assertTrue("Expected 'scopes_supported' to contain 'profile'", scopesSupported.contains("profile"));
+        assertTrue("Expected 'scopes_supported' to contain 'email'", scopesSupported.contains("email"));
+        assertEquals("Expected exactly 3 scopes in 'scopes_supported'", 3, scopesSupported.size());
+    }
+
+    // -------------------------------------------------------------------------
+    // HTTPS tests
+    // -------------------------------------------------------------------------
+
+    /**
+     * Test that the metadata endpoint is accessible over HTTPS and returns valid JSON
+     * with the expected structure (resource and authorization_servers fields).
+     */
+    @Test
+    public void testMetadataEndpointIsAccessibleHttps() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpsString, PROTECTED_RESOURCE_PATH);
+
+        assertEquals("Unexpected value for 'resource' field",
+                serverHttpsString + PROTECTED_RESOURCE_PATH, json.get("resource"));
+        assertNotNull("Response did not contain 'authorization_servers' field", json.get("authorization_servers"));
+        assertTrue("'authorization_servers' should be a non-empty array",
+                ((JSONArray) json.get("authorization_servers")).size() > 0);
+    }
+
+    /**
+     * Test that the HTTPS metadata response contains the correct resource URL
+     * as an absolute URL including protocol, host, port, and path.
+     */
+    @Test
+    public void testMetadataContainsCorrectResourceUrlHttps() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpsString, PROTECTED_RESOURCE_PATH);
+
+        assertEquals("Unexpected value for 'resource' field",
+                serverHttpsString + PROTECTED_RESOURCE_PATH, json.get("resource"));
+    }
+
+    /**
+     * Test that the HTTPS metadata response contains the expected authorization
+     * server identifier in the authorization_servers array.
+     */
+    @Test
+    public void testMetadataContainsAuthorizationServerIdentifierHttps() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpsString, PROTECTED_RESOURCE_PATH);
+        JSONArray authorizationServers = (JSONArray) json.get("authorization_servers");
+        String expectedIssuer = buildExpectedHttpsIssuer();
+
+        assertNotNull("Response did not contain 'authorization_servers' field", authorizationServers);
+        assertTrue("Expected 'authorization_servers' to contain '" + expectedIssuer + "' but was: " + authorizationServers,
+                authorizationServers.contains(expectedIssuer));
+    }
+
+    /**
+     * Test that requesting metadata for an unknown/unconfigured resource
+     * path over HTTPS returns HTTP 404 Not Found.
+     */
+    @Test
+    public void testUnknownResourceReturns404Https() throws Exception {
+        String metadataUrl = buildMetadataUrl(serverHttpsString, "/nonexistent/path");
+        WebResponse response = getResponseAllowingErrorStatus(metadataUrl);
+
+        assertEquals("Expected unknown protected resource metadata endpoint to return 404", 404,
+                response.getResponseCode());
+    }
+
+    /**
+     * Test that requesting the base metadata endpoint without a resource
+     * path over HTTPS returns HTTP 404 Not Found.
+     */
+    @Test
+    public void testBasePathWithoutResourceReturns404Https() throws Exception {
+        String metadataUrl = serverHttpsString + PROTECTED_RESOURCE_METADATA_PATH;
+        WebResponse response = getResponseAllowingErrorStatus(metadataUrl);
+
+        assertEquals("Expected base protected resource metadata endpoint to return 404", 404,
+                response.getResponseCode());
+    }
+
+    /**
+     * Test that a sub-path URL that is contained within a "contains" auth filter
+     * pattern also returns metadata over HTTPS.
+     */
+    @Test
+    public void testSubPathUnderContainsFilterReturnsMetadataHttps() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpsString, PROTECTED_RESOURCE_SUBPATH);
+
+        assertEquals("Unexpected value for 'resource' field",
+                serverHttpsString + PROTECTED_RESOURCE_SUBPATH, json.get("resource"));
+    }
+
+    /**
+     * Test that the HTTPS metadata endpoint returns the correct Content-Type
+     * header (application/json).
+     */
+    @Test
+    public void testMetadataReturnsJsonContentTypeHttps() throws Exception {
+        String metadataUrl = buildMetadataUrl(serverHttpsString, PROTECTED_RESOURCE_PATH);
+        WebResponse response = getResponse(metadataUrl);
+
+        assertEquals("Expected metadata endpoint to return 200", 200, response.getResponseCode());
+        assertTrue("Expected Content-Type to contain application/json but was: " + response.getContentType(),
+                response.getContentType().contains("application/json"));
+    }
+
+    /**
+     * Test that requesting metadata over HTTPS for a resource whose OIDC client config does not
+     * have serveProtectedResourceMetadata enabled returns 404, even though the auth filter matches.
+     */
+    @Test
+    public void testMetadataDisabledReturns404Https() throws Exception {
+        String metadataUrl = buildMetadataUrl(serverHttpsString, METADATA_DISABLED_PATH);
+        WebResponse response = getResponseAllowingErrorStatus(metadataUrl);
+
+        assertEquals("Expected 404 when serveProtectedResourceMetadata is not enabled (HTTPS)", 404,
+                response.getResponseCode());
+    }
+
+    /**
+     * Test that the HTTPS metadata response includes scopes_supported matching the advertisedScopes
+     * configured in the protectedResourceMetadata sub-element.
+     */
+    @Test
+    public void testMetadataContainsConfiguredScopesHttps() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpsString, WITH_SCOPES_PATH);
+
+        JSONArray scopesSupported = (JSONArray) json.get("scopes_supported");
+        assertNotNull("Response did not contain 'scopes_supported' field", scopesSupported);
+        assertTrue("Expected 'scopes_supported' to contain 'openid'", scopesSupported.contains("openid"));
+        assertTrue("Expected 'scopes_supported' to contain 'profile'", scopesSupported.contains("profile"));
+        assertTrue("Expected 'scopes_supported' to contain 'email'", scopesSupported.contains("email"));
+        assertEquals("Expected exactly 3 scopes in 'scopes_supported'", 3, scopesSupported.size());
+    }
+
+    /**
+     * GETs the metadata endpoint for the given base URL and protected resource path,
+     * asserts HTTP 200, and returns the parsed JSON response body.
+     */
+    private static JSONObject getMetadataJson(String baseUrl, String protectedResourcePath) throws Exception {
+        String metadataUrl = buildMetadataUrl(baseUrl, protectedResourcePath);
         Log.info(thisClass, "getMetadataJson", "GET " + metadataUrl);
         WebResponse response = getResponse(metadataUrl);
         assertEquals("Expected metadata endpoint to return 200", 200, response.getResponseCode());
@@ -181,9 +359,9 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     }
 
     /**
-     * Builds the full metadata endpoint URL for a given protected resource path.
+     * Builds the full metadata endpoint URL for a given base URL and protected resource path.
      */
-    private static String buildMetadataUrl(String protectedResourcePath) {
+    private static String buildMetadataUrl(String baseUrl, String protectedResourcePath) {
         String normalized;
         if (protectedResourcePath == null || protectedResourcePath.isEmpty() || "/".equals(protectedResourcePath)) {
             normalized = "/";
@@ -192,15 +370,53 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         } else {
             normalized = "/" + protectedResourcePath;
         }
-        return serverHttpString + PROTECTED_RESOURCE_METADATA_PATH + normalized;
+        return baseUrl + PROTECTED_RESOURCE_METADATA_PATH + normalized;
     }
 
     /**
-     * Builds the expected issuer URL from the running server's hostname and port.
+     * Builds the expected HTTP issuer URL from the running server's hostname and port.
      */
-    private static String buildExpectedIssuer() {
+    private static String buildExpectedHttpIssuer() {
         return "http://" + testServer.getHostname() + ":" + testServer.getHttpDefaultPort()
                 + "/oidc/endpoint/OidcConfigSample";
+    }
+
+    /**
+     * Builds the expected HTTPS issuer URL from the running server's hostname and secure port.
+     */
+    private static String buildExpectedHttpsIssuer() {
+        return "https://" + testServer.getHostname() + ":" + testServer.getHttpDefaultSecurePort()
+                + "/oidc/endpoint/OidcConfigSampleHttps";
+    }
+
+    /**
+     * Installs a trust-all SSL context so the FAT client accepts the server's self-signed cert.
+     */
+    private static void setupTrustAll() throws Exception {
+        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
+            @Override
+            public X509Certificate[] getAcceptedIssuers() {
+                return null;
+            }
+
+            @Override
+            public void checkClientTrusted(X509Certificate[] certs, String authType) {
+            }
+
+            @Override
+            public void checkServerTrusted(X509Certificate[] certs, String authType) {
+            }
+        } };
+
+        SSLContext sc = SSLContext.getInstance("TLS");
+        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
+            @Override
+            public boolean verify(String hostname, SSLSession session) {
+                return true;
+            }
+        });
     }
 
     private static WebResponse getResponse(String url) throws Exception {

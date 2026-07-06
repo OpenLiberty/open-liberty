@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
@@ -84,6 +86,10 @@ public class OAuthProtectedResourceMetadataResolver {
             return null;
         }
 
+        if (!config.getServeProtectedResourceMetadata()) {
+            return null;
+        }
+
         return createMetadataJson(config, absoluteResourceUrl);
     }
 
@@ -104,6 +110,13 @@ public class OAuthProtectedResourceMetadataResolver {
             JSONArray authorizationServers = new JSONArray();
             authorizationServers.add(authorizationServer);
             metadata.put("authorization_servers", authorizationServers);
+        }
+
+        List<String> advertisedScopes = config.getProtectedResourceMetadataAdvertisedScopes();
+        if (advertisedScopes != null && !advertisedScopes.isEmpty()) {
+            JSONArray scopesSupported = new JSONArray();
+            scopesSupported.addAll(advertisedScopes);
+            metadata.put("scopes_supported", scopesSupported);
         }
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

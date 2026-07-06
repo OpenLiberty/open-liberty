@@ -29,4 +29,9 @@ autoFVT.doLast {
     into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.oauth.oidc_fat.common.metadataServer/imports')
     include 'fatTestPorts.xml'
   }
+  copy {
+    from new File(project(':com.ibm.ws.security.oauth.oidc_fat.common').projectDir, 'publish/files/serversettings')
+    into new File(autoFvtDir, 'publish/servers/com.ibm.ws.security.oauth.oidc_fat.common.metadataServerNonBeta/imports')
+    include 'fatTestPorts.xml'
+  }
 }

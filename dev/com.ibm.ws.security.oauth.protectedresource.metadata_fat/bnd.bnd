@@ -19,15 +19,33 @@ publish.wlp.jar.disabled: true
 tested.features:\
     openidConnectClient-1.0, \
     appSecurity-2.0, \
+    appSecurity-3.0, \
+    appSecurity-4.0, \
+    appSecurity-5.0, \
+    appSecurity-6.0, \
+    cdi-3.0, \
+    cdi-4.0, \
+    cdi-4.1, \
     distributedMap-1.0, \
+    expressionlanguage-4.0, \
+    expressionlanguage-5.0, \
+    expressionlanguage-6.0, \
     federatedRegistry-1.0, \
     jndi-1.0, \
     json-1.0, \
+    jsonp-2.1, \
     jsp-2.2, \
     ldapRegistry-3.0, \
     oauth-2.0, \
+    pages-3.0, \
+    pages-3.1, \
+    pages-4.0, \
     servlet-3.1, \
-    ssl-1.0
+    servlet-5.0, \
+    servlet-6.0, \
+    servlet-6.1, \
+    ssl-1.0, \
+    transportsecurity-1.0
 
 -buildpath: \
     com.ibm.websphere.javaee.servlet.3.1;version=latest,\

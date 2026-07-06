@@ -120,6 +120,10 @@ public class OAuthProtectedResourceMetadataResolverTest {
                 will(returnValue("providerA"));
                 oneOf(mockOidcClient).getOidcClientConfig(mockRequest, "providerA");
                 will(returnValue(mockConfig));
+                allowing(mockConfig).getServeProtectedResourceMetadata();
+                will(returnValue(true));
+                allowing(mockConfig).getProtectedResourceMetadataAdvertisedScopes();
+                will(returnValue(null));
                 allowing(mockConfig).getIssuerIdentifier();
                 will(returnValue("https://issuer.example.com"));
                 allowing(mockConfig).getId();
@@ -798,6 +802,17 @@ public class OAuthProtectedResourceMetadataResolverTest {
         public java.util.List<String> getTokenOrderToFetchCallerClaims() {
             return null;
         }
+
+        @Override
+        public boolean getServeProtectedResourceMetadata() {
+            return false;
+        }
+
+        @Override
+        public java.util.List<String> getProtectedResourceMetadataAdvertisedScopes() {
+            return null;
+        }
+
     }
 }
 

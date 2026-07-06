@@ -10,168 +10,48 @@
 package io.openliberty.security.oidcclient.wellknown.internal;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
-import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
-import io.openliberty.security.oidcclient.wellknown.common.ProtectedResourceMetadataResolver;
-
 /**
- * Unit tests for {@link OAuthProtectedResourceMetadataHandlerBase}.
+ * Unit tests for path normalization in {@link OAuthProtectedResourceMetadataServlet}.
  */
 public class OAuthProtectedResourceMetadataServletTest {
 
-    private static final String METADATA_JSON = "{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}";
+    private final OAuthProtectedResourceMetadataServlet servlet = new OAuthProtectedResourceMetadataServlet();
 
     @Test
-    public void returnsNotFoundWhenResolverReturnsNull() {
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                return null;
-            }
-        });
-
-        MetadataResponse response = handler.handle("/unknown");
-
-        assertFalse(response.isFound());
-        assertNull(response.getContentType());
-        assertNull(response.getCharacterEncoding());
-        assertNull(response.getBody());
+    public void toProtectedResourcePath_nullIsNormalizedToRoot() {
+        assertEquals("/", servlet.toProtectedResourcePath(null));
     }
 
     @Test
-    public void returnsMetadataJsonWhenResolverReturnsMetadata() {
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                return METADATA_JSON;
-            }
-        });
-
-        MetadataResponse response = handler.handle("/mcp");
-
-        assertTrue(response.isFound());
-        assertEquals("application/json", response.getContentType());
-        assertEquals("UTF-8", response.getCharacterEncoding());
-        assertEquals(METADATA_JSON, response.getBody());
+    public void toProtectedResourcePath_emptyIsNormalizedToRoot() {
+        assertEquals("/", servlet.toProtectedResourcePath(""));
     }
 
     @Test
-    public void normalizesMissingLeadingSlashBeforeLookup() {
-        final String[] resolvedPath = new String[1];
-
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                resolvedPath[0] = protectedResourcePath;
-                return METADATA_JSON;
-            }
-        });
-
-        MetadataResponse response = handler.handle("mcp");
-
-        assertEquals("/mcp", resolvedPath[0]);
-        assertTrue(response.isFound());
-        assertEquals(METADATA_JSON, response.getBody());
+    public void toProtectedResourcePath_slashIsNormalizedToRoot() {
+        assertEquals("/", servlet.toProtectedResourcePath("/"));
     }
 
     @Test
-    public void handlesNullPathInfoAsRootPath() {
-        final String[] resolvedPath = new String[1];
-
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                resolvedPath[0] = protectedResourcePath;
-                return METADATA_JSON;
-            }
-        });
-
-        MetadataResponse response = handler.handle(null);
-
-        assertEquals("/", resolvedPath[0]);
-        assertTrue(response.isFound());
-        assertEquals(METADATA_JSON, response.getBody());
+    public void toProtectedResourcePath_leadingSlashIsPreserved() {
+        assertEquals("/myApp/protected", servlet.toProtectedResourcePath("/myApp/protected"));
     }
 
     @Test
-    public void handlesEmptyPathInfoAsRootPath() {
-        final String[] resolvedPath = new String[1];
-
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                resolvedPath[0] = protectedResourcePath;
-                return METADATA_JSON;
-            }
-        });
-
-        MetadataResponse response = handler.handle("");
-
-        assertEquals("/", resolvedPath[0]);
-        assertTrue(response.isFound());
-        assertEquals(METADATA_JSON, response.getBody());
+    public void toProtectedResourcePath_missingLeadingSlashIsPrefixed() {
+        assertEquals("/mcp", servlet.toProtectedResourcePath("mcp"));
     }
 
     @Test
-    public void handlesSlashPathInfoAsRootPath() {
-        final String[] resolvedPath = new String[1];
-
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                resolvedPath[0] = protectedResourcePath;
-                return METADATA_JSON;
-            }
-        });
-
-        MetadataResponse response = handler.handle("/");
-
-        assertEquals("/", resolvedPath[0]);
-        assertTrue(response.isFound());
-        assertEquals(METADATA_JSON, response.getBody());
+    public void toProtectedResourcePath_nestedPathIsPreserved() {
+        assertEquals("/app/api/v1", servlet.toProtectedResourcePath("/app/api/v1"));
     }
 
     @Test
-    public void preservesNestedProtectedResourcePath() {
-        final String[] resolvedPath = new String[1];
-
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                resolvedPath[0] = protectedResourcePath;
-                return METADATA_JSON;
-            }
-        });
-
-        MetadataResponse response = handler.handle("/app/api/v1");
-
-        assertEquals("/app/api/v1", resolvedPath[0]);
-        assertTrue(response.isFound());
-        assertEquals(METADATA_JSON, response.getBody());
-    }
-
-    @Test
-    public void preservesTrailingSlashInProtectedResourcePath() {
-        final String[] resolvedPath = new String[1];
-
-        OAuthProtectedResourceMetadataHandlerBase handler = new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-            @Override
-            public String resolveMetadataJson(String protectedResourcePath) {
-                resolvedPath[0] = protectedResourcePath;
-                return METADATA_JSON;
-            }
-        });
-
-        MetadataResponse response = handler.handle("/mcp/");
-
-        assertEquals("/mcp/", resolvedPath[0]);
-        assertTrue(response.isFound());
-        assertEquals(METADATA_JSON, response.getBody());
+    public void toProtectedResourcePath_trailingSlashIsPreserved() {
+        assertEquals("/mcp/", servlet.toProtectedResourcePath("/mcp/"));
     }
 }

@@ -10,72 +10,40 @@
 package io.openliberty.security.oidcclient.wellknown.internal.jakarta;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import io.openliberty.security.oidcclient.wellknown.common.MetadataResponse;
-import io.openliberty.security.oidcclient.wellknown.common.OAuthProtectedResourceMetadataHandlerBase;
-import io.openliberty.security.oidcclient.wellknown.common.ProtectedResourceMetadataResolver;
+import io.openliberty.security.oidcclient.wellknown.internal.OAuthProtectedResourceMetadataServlet;
 
-
+/**
+ * Unit tests for path normalization in {@link OAuthProtectedResourceMetadataServlet} (Jakarta variant).
+ */
 public class OAuthProtectedResourceMetadataServletTest {
 
+    private final OAuthProtectedResourceMetadataServlet servlet = new OAuthProtectedResourceMetadataServlet();
+
     @Test
-    public void returnsNotFoundWhenProtectedResourceIsUnknown() {
-        OAuthProtectedResourceMetadataHandlerBase handler =
-                new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-                    @Override
-                    public String resolveMetadataJson(String protectedResourcePath) {
-                        return null;
-                    }
-                });
-
-        MetadataResponse response = handler.handle("/unknown");
-
-        assertFalse(response.isFound());
-        assertNull(response.getContentType());
-        assertNull(response.getCharacterEncoding());
-        assertNull(response.getBody());
+    public void toProtectedResourcePath_nullIsNormalizedToRoot() {
+        assertEquals("/", servlet.toProtectedResourcePath(null));
     }
 
     @Test
-    public void returnsMetadataJsonForKnownEnabledProtectedResource() {
-        OAuthProtectedResourceMetadataHandlerBase handler =
-                new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-                    @Override
-                    public String resolveMetadataJson(String protectedResourcePath) {
-                        return "{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}";
-                    }
-                });
-
-        MetadataResponse response = handler.handle("/mcp");
-
-        assertTrue(response.isFound());
-        assertEquals("application/json", response.getContentType());
-        assertEquals("UTF-8", response.getCharacterEncoding());
-        assertEquals("{\"resource\":\"https://example.com/mcp\",\"authorization_servers\":[\"https://example.com/as\"]}", response.getBody());
+    public void toProtectedResourcePath_emptyIsNormalizedToRoot() {
+        assertEquals("/", servlet.toProtectedResourcePath(""));
     }
 
     @Test
-    public void normalizesMissingLeadingSlashBeforeLookup() {
-        final String[] resolvedPath = new String[1];
+    public void toProtectedResourcePath_slashIsNormalizedToRoot() {
+        assertEquals("/", servlet.toProtectedResourcePath("/"));
+    }
 
-        OAuthProtectedResourceMetadataHandlerBase handler =
-                new OAuthProtectedResourceMetadataHandlerBase(new ProtectedResourceMetadataResolver() {
-                    @Override
-                    public String resolveMetadataJson(String protectedResourcePath) {
-                        resolvedPath[0] = protectedResourcePath;
-                        return "{}";
-                    }
-                });
+    @Test
+    public void toProtectedResourcePath_leadingSlashIsPreserved() {
+        assertEquals("/myApp/protected", servlet.toProtectedResourcePath("/myApp/protected"));
+    }
 
-        MetadataResponse response = handler.handle("mcp");
-
-        assertEquals("/mcp", resolvedPath[0]);
-        assertTrue(response.isFound());
-        assertEquals("{}", response.getBody());
+    @Test
+    public void toProtectedResourcePath_missingLeadingSlashIsPrefixed() {
+        assertEquals("/mcp", servlet.toProtectedResourcePath("mcp"));
     }
 }

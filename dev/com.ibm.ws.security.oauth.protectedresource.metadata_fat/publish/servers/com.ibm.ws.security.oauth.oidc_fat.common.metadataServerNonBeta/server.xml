@@ -1,0 +1,45 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+
+    SPDX-License-Identifier: EPL-2.0
+ -->
+<server>
+    <featureManager>
+        <feature>openidConnectClient-1.0</feature>
+        <feature>servlet-3.1</feature>
+        <feature>appSecurity-2.0</feature>
+        <feature>ssl-1.0</feature>
+    </featureManager>
+
+    <!-- Port configuration copied from common project during the build. -->
+    <include location="imports/fatTestPorts.xml" />
+
+    <keyStore id="defaultKeyStore" password="Liberty" />
+
+    <!--
+        OIDC client with protectedResourceMetadata configured. In non-beta mode the
+        protectedResourceMetadata sub-element is ignored, so the endpoint must return 404.
+    -->
+    <openidConnectClient
+        id="OidcConfigWithScopes"
+        clientId="client01"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilter1">
+        <protectedResourceMetadata advertisedScopes="openid,profile,email" />
+    </openidConnectClient>
+
+    <authFilter id="authFilter1">
+        <requestUrl
+            id="requestUrl1"
+            urlPattern="/myApp/protected"
+            matchType="equals" />
+    </authFilter>
+
+</server>

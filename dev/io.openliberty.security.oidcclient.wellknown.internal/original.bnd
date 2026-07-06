@@ -14,6 +14,3 @@ Bundle-SymbolicName: io.openliberty.security.oidcclient.wellknown.internal
 Private-Package: \
   io.openliberty.security.oidcclient.wellknown.common, \
   io.openliberty.security.oidcclient.wellknown.internal
-
--dsannotations: \
-  io.openliberty.security.oidcclient.wellknown.internal.OAuthProtectedResourceMetadataServletService
