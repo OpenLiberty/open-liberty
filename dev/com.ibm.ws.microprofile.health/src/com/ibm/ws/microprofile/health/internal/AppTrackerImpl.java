@@ -29,6 +29,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -76,6 +78,12 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     protected final HashMap<String, Set<String>> appModules = new HashMap<String, Set<String>>();
 
     /**
+     * Latch to signal when ConfigAdmin has been set and initialized.
+     * Initialized with count of 1, will be released when ConfigAdmin is ready.
+     */
+    private final CountDownLatch configAdminLatch = new CountDownLatch(1);
+
+    /**
      * Lock for accessing application/deferred task information.
      */
     protected final ReadWriteLock lock = new ReentrantReadWriteLock();
@@ -104,6 +112,9 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
     @Reference(name = "configAdmin")
     protected void setConfigAdmin(ConfigurationAdmin configAdmin) {
         this.configAdmin = configAdmin;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "setConfigAdmin before entry to listConfigurations: filterString=(service.factoryPid=com.ibm.ws.app.manager)");
 
         try {
             Configuration[] configuredApps = configAdmin.listConfigurations("(service.factoryPid=com.ibm.ws.app.manager)");
@@ -140,8 +151,45 @@ public class AppTrackerImpl implements AppTracker, ApplicationStateListener {
             if (tc.isDebugEnabled())
                 Tr.debug(tc, "configadmin had an issue collecting configured applications due to invalid syntax.");
             e.printStackTrace();
+        } finally {
+            // Always release the latch, even if there was an error
+            // This prevents infinite waiting
+            configAdminLatch.countDown();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "ConfigAdmin latch released. ConfigAdminMap size: " + configAdminMap.size());
         }
 
+    }
+
+    /**
+     * Co-authored by Bob
+     * Waits for ConfigAdmin to be set and initialized.
+     *
+     * @param timeoutMs maximum time to wait in milliseconds
+     * @return true if ConfigAdmin became ready within the timeout, false otherwise
+     */
+    public boolean waitForConfigAdmin(long timeoutMs) {
+        try {
+            boolean ready = configAdminLatch.await(timeoutMs, TimeUnit.MILLISECONDS);
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                if (ready) {
+                    Tr.debug(tc, "ConfigAdmin is ready");
+                } else {
+                    Tr.debug(tc, "ConfigAdmin not ready after " + timeoutMs + "ms timeout");
+                }
+            }
+
+            return ready;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "Interrupted while waiting for ConfigAdmin", e);
+
+            return false;
+        }
     }
 
     protected void unsetConfigAdmin(ConfigurationAdmin configAdmin) {

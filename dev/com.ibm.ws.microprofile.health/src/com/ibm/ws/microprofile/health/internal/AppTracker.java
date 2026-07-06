@@ -122,4 +122,11 @@ public interface AppTracker {
      */
     Set<String> getAllConfigAppNames();
 
+    /**
+     * 
+     * @param timeoutMs
+     * @return return true if configadmin is ready
+     */
+    boolean waitForConfigAdmin(long timeoutMs);
+
 }

@@ -47,7 +47,6 @@ import org.osgi.service.component.annotations.Reference;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.microprofile.health.internal.AppTracker;
 import com.ibm.ws.microprofile.health.services.HealthCheckBeanCallException;
 import com.ibm.wsspi.wab.configure.WABConfiguration;
@@ -733,8 +732,27 @@ public class HealthCheck40ServiceImpl implements HealthCheck40Service {
      * Retrieve the current set of visible apps.
      */
     private Set<String> validateApplicationSet() throws NullPointerException {
+        // Wait for ConfigAdmin with timeout
+        long startTime = System.currentTimeMillis();
+        boolean ready = appTracker.waitForConfigAdmin(10000); // 10 seconds
+        long waitTime = System.currentTimeMillis() - startTime;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            if (ready) {
+                Tr.debug(tc, "validateApplicationSet: ConfigAdmin ready after " + waitTime + "ms");
+            } else {
+                Tr.debug(tc, "validateApplicationSet: ConfigAdmin not ready after timeout, proceeding anyway");
+            }
+        }
+
         Set<String> apps = appTracker.getAllAppNames();
         Set<String> configApps = appTracker.getAllConfigAppNames();
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "validateApplicationSet: apps from ASL: " + apps);
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "validateApplicationSet: apps from configAdmin: " + configApps);
 
         Iterator<String> configAppsIt = configApps.iterator();
 
