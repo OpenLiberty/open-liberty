@@ -184,6 +184,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     public static final String CFG_KEY_TOKEN_ORDER_TOFETCH_CALLER_CLAIMS = "tokenOrderToFetchCallerClaims";
     public static final String CFG_KEY_PROTECTED_RESOURCE_METADATA = "protectedResourceMetadata";
     public static final String CFG_KEY_ADVERTISED_SCOPES = "advertisedScopes";
+    public static final String CFG_KEY_JWT_BUILDER_REF = "jwtBuilderRef";
 
     public static final String OPDISCOVERY_AUTHZ_EP_URL = "authorization_endpoint";
     public static final String OPDISCOVERY_TOKEN_EP_URL = "token_endpoint";
@@ -320,6 +321,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private List<String> tokenOrderToFetchCallerClaims;
     private boolean serveProtectedResourceMetadata = false;
     private List<String> protectedResourceMetadataAdvertisedScopes = null;
+    private String protectedResourceMetadataJwtBuilderRef = null;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
@@ -660,6 +662,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
             Tr.debug(tc, "tokenOrderToFetchCallerClaims:" + tokenOrderToFetchCallerClaims);
             Tr.debug(tc, "serveProtectedResourceMetadata:" + serveProtectedResourceMetadata);
             Tr.debug(tc, "protectedResourceMetadataAdvertisedScopes:" + protectedResourceMetadataAdvertisedScopes);
+            Tr.debug(tc, "protectedResourceMetadataJwtBuilderRef:" + protectedResourceMetadataJwtBuilderRef);
         }
     }
 
@@ -716,11 +719,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      *
      * <p>Sub-element presence is detected via the Liberty config sentinel key
      * {@code protectedResourceMetadata.0.config.referenceType}, which is always injected
-     * when the sub-element is present, even when it is empty. We cannot rely on the child
-     * property keys ({@code advertisedScopes}, {@code jwtBuilderRef}) for presence detection
-     * because {@code jwtBuilderRef} is an {@code ibm:type="pid"} reference: if no matching
-     * jwtBuilder service exists, the config framework logs CWWKG0033W and does not inject
-     * the flat key, so both child keys can be absent even when the element is written.
+     * when the sub-element is present, even when it is empty. We cannot rely solely on
+     * the child property keys ({@code advertisedScopes}, {@code jwtBuilderRef}) for presence
+     * detection because {@code jwtBuilderRef} is an {@code ibm:type="pid"} reference: if no
+     * matching jwtBuilder service exists, the config framework does not inject the flat key,
+     * so both child keys can be absent even when the element is configured.
      *
      * @param props the configuration properties map
      */
@@ -738,6 +741,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
         // the sub-element exists, regardless of whether any optional child ADs were set.
         final String flatReferenceTypeKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0.config.referenceType";
         final String flatAdvertisedScopesKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_ADVERTISED_SCOPES;
+        final String flatJwtBuilderRefKey = CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + CFG_KEY_JWT_BUILDER_REF;
         if (props.containsKey(flatReferenceTypeKey)) {
             // Sub-element is present: enable the metadata endpoint unconditionally.
             serveProtectedResourceMetadata = true;
@@ -748,8 +752,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
                             .map(String::trim)
                             .collect(java.util.stream.Collectors.toList());
 
+            protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttribute(props, flatJwtBuilderRefKey);
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "protectedResourceMetadata configured - advertisedScopes: " + protectedResourceMetadataAdvertisedScopes);
+                Tr.debug(tc, "protectedResourceMetadata configured - advertisedScopes: " + protectedResourceMetadataAdvertisedScopes
+                        + ", jwtBuilderRef: " + protectedResourceMetadataJwtBuilderRef);
             }
         }
     }
@@ -2050,7 +2057,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
     @Override
     public String getProtectedResourceMetadataJwtBuilderRef() {
-        return null;
+        return protectedResourceMetadataJwtBuilderRef;
     }
 
     @Override
