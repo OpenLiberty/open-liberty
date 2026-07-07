@@ -30,7 +30,8 @@ dependencies {
                'org.skyscreamer:jsonassert:2.0-rc1'
   requiredLibs project(':io.openliberty.io.opentelemetry.2.1')
   noParamNamesCompileOnly project(':io.openliberty.mcp'),
-                              project(path: ':io.openliberty.jakarta', configuration: 'cdi40')
+                          project(path: ':io.openliberty.jakarta', configuration: 'cdi40'),
+                          project(':io.openliberty.org.mcp-java.mcp-server-api')
   implementation sourceSets.noParamNames.output  
 }
 

@@ -14,9 +14,12 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
+
+import org.mcpjava.server.ImplementationInfo;
 
 import io.openliberty.mcp.internal.McpRequestTracker;
 import io.openliberty.mcp.internal.config.McpConfig;
@@ -47,19 +50,19 @@ public class McpSessionStore {
     /**
      * Creates a new MCP session with a unique session ID and stores it mapping to a userId which can also be null if not authentication was used to create the session.
      *
-     * @return the newly generated session ID
+     * @return the newly generated session
      */
-    public McpSessionId createSession(Principal userId, McpSessionMetrics metrics) {
+    public McpSession createSession(Principal userId, McpSessionMetrics metrics, ImplementationInfo clientInfo, Map<String, Object> clientCapabilies) {
 
         if (isStateless()) {
             return null;
         }
 
         McpSessionId sessionId = new McpSessionId(UUID.randomUUID().toString());
-        McpSession mcpSession = new McpSession(sessionId, userId, metrics);
+        McpSession mcpSession = new McpSession(sessionId, userId, metrics, clientInfo, clientCapabilies);
         sessions.put(sessionId, mcpSession);
         metrics.setMcpSession(mcpSession);
-        return sessionId;
+        return mcpSession;
     }
 
     /**

@@ -11,6 +11,9 @@ package io.openliberty.mcp.internal.sessions;
 
 import java.security.Principal;
 import java.time.Instant;
+import java.util.Map;
+
+import org.mcpjava.server.ImplementationInfo;
 
 import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 
@@ -25,13 +28,17 @@ public class McpSession {
     private final Instant created;
     private Instant lastAccessed;
     private McpSessionMetrics metrics;
+    private final ImplementationInfo clientInfo;
+    private final Map<String, Object> clientCapabilities;
 
-    public McpSession(McpSessionId sessionId, Principal userId, McpSessionMetrics metrics) {
+    public McpSession(McpSessionId sessionId, Principal userId, McpSessionMetrics metrics, ImplementationInfo clientInfo, Map<String, Object> clientCapabilities) {
         this.sessionId = sessionId;
         this.userId = userId;
         this.created = Instant.now();
         this.lastAccessed = this.created;
         this.metrics = metrics;
+        this.clientInfo = clientInfo;
+        this.clientCapabilities = clientCapabilities;
     }
 
     /**
@@ -60,6 +67,14 @@ public class McpSession {
 
     public McpSessionMetrics getMetrics() {
         return metrics;
+    }
+
+    public ImplementationInfo getClientInfo() {
+        return clientInfo;
+    }
+
+    public Map<String, Object> getClientCapabilities() {
+        return clientCapabilities;
     }
 
 }

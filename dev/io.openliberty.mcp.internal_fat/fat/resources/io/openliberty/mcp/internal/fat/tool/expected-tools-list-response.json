@@ -1776,6 +1776,22 @@
                                                 "input"
                                             ]
                                         }
+                                    },
+                                    {
+                                        "name": "checkMcpRequest",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        }
+                                    },
+                                    {
+                                        "name": "readSessionIdReversed",
+                                        "inputSchema": {
+                                            "type": "object",
+                                            "properties": {},
+                                            "required": []
+                                        }
                                     }
                                 ]
                             },

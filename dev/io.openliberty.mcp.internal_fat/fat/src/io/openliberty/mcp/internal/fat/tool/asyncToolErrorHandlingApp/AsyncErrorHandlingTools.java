@@ -15,8 +15,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.tools.ToolCallException;
 import jakarta.annotation.Resource;

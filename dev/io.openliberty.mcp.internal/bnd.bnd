@@ -26,6 +26,7 @@ Export-Package: \
 	io.openliberty.mcp.internal.monitoring,\
 	io.openliberty.mcp.internal.metrics,\
 	io.openliberty.mcp.internal.requests,\
+    io.openliberty.mcp.internal.spi,\
 	io.openliberty.mcp.internal
 
 Private-Package: \
@@ -51,6 +52,7 @@ Bundle-Localization: \
  io.openliberty.mcp.internal.introspection.McpIntrospector
  
 -buildpath: \
+	io.openliberty.org.mcp-java.mcp-server-api;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\

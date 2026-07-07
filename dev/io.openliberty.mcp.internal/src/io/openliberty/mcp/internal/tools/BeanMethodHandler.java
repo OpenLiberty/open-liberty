@@ -12,29 +12,24 @@ package io.openliberty.mcp.internal.tools;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.lang.reflect.TypeVariable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
+
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+import org.mcpjava.server.tools.ToolResponse;
 
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.McpServlet.ToolArgumentsImpl;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
-import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
-import io.openliberty.mcp.messaging.Encoder;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
-import io.openliberty.mcp.tools.ToolResponse;
-import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.spi.CreationalContext;
 import jakarta.enterprise.inject.spi.Bean;
 import jakarta.enterprise.inject.spi.BeanManager;
@@ -105,8 +100,7 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
         for (SpecialArgumentMetadata specArg : method.specialArguments()) {
             argsArray[specArg.index()] = switch (specArg.typeResolution().specialArgsType()) {
                 case CANCELLATION -> t.cancellation();
-                case META -> t.meta();
-                case REQUEST_ID -> t.requestId();
+                case REQUEST -> t.request();
                 default -> throw new RuntimeException("Unknown arg"); //TODO FIX - possibly we can guarantee this is validated earlier
             };
         }
@@ -117,72 +111,66 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
         // Map method response to a ToolResponse
         if (result instanceof ToolResponse response) {
             return response;
-        } else if (result instanceof List<?> list && !list.isEmpty() && list.stream().allMatch(item -> item instanceof Content)) {
+        } else if (result instanceof List<?> list && !list.isEmpty() && list.stream().allMatch(item -> item instanceof ContentBlock)) {
             @SuppressWarnings("unchecked")
-            List<Content> contents = (List<Content>) list;
-            return ToolResponse.success(contents);
-        } else if (result instanceof Content content) {
-            return ToolResponse.success(content);
+            List<ContentBlock> contents = (List<ContentBlock>) list;
+            var builder = ToolResponse.builder();
+            contents.forEach(builder::addContent);
+            return builder.build();
+        } else if (result instanceof ContentBlock content) {
+            return ToolResponse.builder().addContent(content).build();
         } else if (result instanceof String s) {
-            return ToolResponse.success(s);
+            return ToolResponse.ofText(s);
         } else if (method.isStructuredContent()) {
-            return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(result))), result, null);
+            return ToolResponse.builder()
+                               .addContent(TextContent.of(jsonb.toJson(result)))
+                               .setStructuredContent(result)
+                               .build();
         } else {
             ToolArgumentsImpl toolArgumentsImpl = (ToolArgumentsImpl) toolArgs;
             return encodeResult(result, toolArgumentsImpl.encoderRegistry());
         }
     }
 
-    private ToolResponse encodeResult(Object result, EncoderRegistry encoderRegistry) {
+    private <T, E> ToolResponse encodeResult(T result, EncoderRegistry encoderRegistry) {
         if (result == null) {
-            return ToolResponse.success(Objects.toString(result));
+            return ToolResponse.ofText(Objects.toString(result));
         }
-        Class<?> resultType = result.getClass();
-        if (result instanceof List<?> list && !list.isEmpty()) {
-            resultType = list.get(0).getClass();
-        }
-        Optional<Encoder<?, ?>> encoder = encoderRegistry.findEncoder(resultType);
 
-        if (encoder.isPresent()) {
-            return encodeResultWithEncoder(result, encoder.get(), jsonb);
-        } else {
-            return ToolResponse.success(Objects.toString(result));
-        }
-    }
+        var response = encoderRegistry.findToolResponseEncoder(result)
+                                      .map(e -> e.encode(result))
+                                      .orElse(null);
 
-    @SuppressWarnings("unchecked")
-    public ToolResponse encodeResultWithEncoder(Object result, Encoder<?, ?> encoder, Jsonb jsonb) {
-        try {
-            if (encoder instanceof ToolResponseEncoder) {
-                ToolResponse response = ((ToolResponseEncoder<Object>) encoder).encode(result);
-                return response;
-            } else if (encoder instanceof ContentEncoder) {
-                if (result instanceof Iterable) {
-                    return encodeIterableWithElementEncoder((Iterable<?>) result, (ContentEncoder<Object>) encoder);
-                }
-                Content content = ((ContentEncoder<Object>) encoder).encode(result);
-                return ToolResponse.success(content);
+        if (response == null) {
+            if (result instanceof List<?> resultList) {
+                var responseBuilder = ToolResponse.builder();
+                resultList.stream()
+                          .map(o -> encodeAsContent(o, encoderRegistry))
+                          .forEach(responseBuilder::addContent);
+                response = responseBuilder.build();
             } else {
-                // Should not occur, we only discover ToolResponseEncoders and ContentEncoders
-                throw new IllegalStateException(encoder.getClass().getName() + " is not a ToolResponseEncoder or a ContentEncoder");
+                ContentBlock content = encodeAsContent(result, encoderRegistry);
+                response = ToolResponse.builder().addContent(content).build();
             }
-        } catch (Exception e) {
-            // Report encoding exception
-            Tr.error(tc, "CWMCM0019E.error.encoding.element", encoder.getClass().getName(), method.name(), e);
-            throw new JSONRPCException(JSONRPCErrorCode.INTERNAL_ERROR, null);
         }
+
+        return response;
     }
 
-    private ToolResponse encodeIterableWithElementEncoder(Iterable<?> iterable, ContentEncoder<Object> encoder) {
-        List<Content> encodedElements = new ArrayList<>();
-        for (Object element : iterable) {
-            if (element == null) {
-                continue;
-            }
-            Content content = encoder.encode(element);
-            encodedElements.add(content);
-        }
-        return ToolResponse.success(encodedElements);
+    /**
+     * @param o
+     * @param encoderRegistry
+     * @return
+     */
+    private <T> ContentBlock encodeAsContent(T o, EncoderRegistry encoderRegistry) {
+        return encoderRegistry.findContentEncoder(o)
+                              .map(encoder -> encoder.encode(o))
+                              .orElseGet(() -> TextContent.of(Objects.toString(o)));
+    }
+
+    public ToolResponse encode(ContentEncoder<?> encoder) {
+        return null;
+
     }
 
     protected boolean isBusinessException(Throwable t) {

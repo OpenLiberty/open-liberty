@@ -24,7 +24,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import io.openliberty.mcp.annotations.Tool.Annotations;
+import org.mcpjava.server.tools.Tool.Annotations;
 
 /**
  * A single property extracted from a non-record class

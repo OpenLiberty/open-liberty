@@ -25,7 +25,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.openliberty.mcp.annotations.Tool;
+import org.mcpjava.server.tools.ToolResponse;
+
 import io.openliberty.mcp.features.FeatureManager;
 import io.openliberty.mcp.tools.ToolManager.ToolInfo;
 

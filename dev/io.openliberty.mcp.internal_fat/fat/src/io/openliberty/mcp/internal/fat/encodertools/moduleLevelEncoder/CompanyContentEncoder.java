@@ -9,9 +9,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.encodertools.moduleLevelEncoder;
 
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
 import jakarta.json.bind.JsonbBuilder;
@@ -26,16 +27,16 @@ public class CompanyContentEncoder implements ContentEncoder<Company> {
     private static final Jsonb jsonb = JsonbBuilder.create();
 
     @Override
-    public boolean supports(Class<?> runtimeType) {
-        return Company.class.isAssignableFrom(runtimeType);
+    public Class<Company> getType() {
+        return Company.class;
     }
 
     @Override
-    public Content encode(Company company) {
+    public ContentBlock encode(Company company) {
         Company encoded = new Company(
                                       company.employees(),
                                       company.industry(),
                                       company.name() + " (encoded by War1)");
-        return new TextContent(jsonb.toJson(encoded));
+        return TextContent.of(jsonb.toJson(encoded));
     }
 }

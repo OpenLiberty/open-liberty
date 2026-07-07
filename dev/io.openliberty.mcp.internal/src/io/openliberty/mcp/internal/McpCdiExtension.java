@@ -22,6 +22,9 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.tools.Tool;
+
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
@@ -29,20 +32,21 @@ import com.ibm.ws.cdi.CDIService;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.content.ContentEncoder;
 import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
+import io.openliberty.mcp.internal.content.TextContentImpl;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
+import io.openliberty.mcp.internal.requests.IconImpl;
+import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
 import io.openliberty.mcp.internal.requests.McpRequestIdDeserializer;
 import io.openliberty.mcp.internal.requests.McpRequestIdSerializer;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.tools.BeanMethodHandler.MethodMetadata;
-import io.openliberty.mcp.messaging.Encoder;
+import io.openliberty.mcp.internal.tools.ToolResponseImpl;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.annotation.Priority;
@@ -71,7 +75,8 @@ public class McpCdiExtension implements Extension {
     private static final TraceComponent tc = Tr.register(McpCdiExtension.class);
     private static final ServiceCaller<CDIService> CDI_SERVICE = new ServiceCaller<>(McpCdiExtension.class, CDIService.class);
 
-    private final List<Bean<?>> encoderBeans = new ArrayList<>();
+    private final List<Bean<?>> toolResponseEncoderBeans = new ArrayList<>();
+    private final List<Bean<?>> contentEncoderBeans = new ArrayList<>();
     private final Map<Bean<?>, Integer> encoderPriorities = new HashMap<>();
     private final Map<Bean<?>, Type> converterBeans = new HashMap<>();
     private ConcurrentHashMap<J2EEName, Map<String, ArrayList<String>>> duplicateToolsMap = new ConcurrentHashMap<>();
@@ -82,8 +87,11 @@ public class McpCdiExtension implements Extension {
     private ModuleContext moduleContext;
 
     private static Jsonb createJsonb() {
-        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer())
-                                                   .withDeserializers(new McpRequestIdDeserializer());
+        JsonbConfig jsonbConfig = new JsonbConfig().withSerializers(new McpRequestIdSerializer(), new TextContentImpl.Serializer(), new ToolResponseImpl.Serializer())
+                                                   .withDeserializers(new McpRequestIdDeserializer())
+                                                   .withAdapters(EnumAdapters.ROLE_ADAPTER,
+                                                                 new ImplementationInfoImpl.Adapter(),
+                                                                 new IconImpl.Adapter());
 
         return JsonbBuilder.create(jsonbConfig);
     }
@@ -112,9 +120,18 @@ public class McpCdiExtension implements Extension {
     void discoverEncoderBeans(@Observes ProcessManagedBean<?> processManagedBean) {
         AnnotatedType<?> type = processManagedBean.getAnnotatedBeanClass();
 
-        if (Encoder.class.isAssignableFrom(type.getJavaClass())) {
+        if (ToolResponseEncoder.class.isAssignableFrom(type.getJavaClass())) {
             Bean<?> bean = processManagedBean.getBean();
-            encoderBeans.add(bean);
+            toolResponseEncoderBeans.add(bean);
+
+            Priority priority = type.getAnnotation(Priority.class);
+            int priorityValue = priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
+            encoderPriorities.put(bean, priorityValue);
+        }
+
+        if (ContentEncoder.class.isAssignableFrom(type.getJavaClass())) {
+            Bean<?> bean = processManagedBean.getBean();
+            contentEncoderBeans.add(bean);
 
             Priority priority = type.getAnnotation(Priority.class);
             int priorityValue = priority != null ? priority.value() : DEFAULT_ENCODER_PRIORITY;
@@ -176,20 +193,24 @@ public class McpCdiExtension implements Extension {
         Map<J2EEName, Map<Object, Integer>> encoderInstancePrioritiesByModule = new HashMap<>();
 
         // Collect and classify all encoder beans
-        for (Bean<?> bean : encoderBeans) {
+        for (Bean<?> bean : toolResponseEncoderBeans) {
             J2EEName module = getModuleForBeanOrNull(bean);
-            Object encoder = beanManager.getReference(bean, bean.getBeanClass(), context);
+            ToolResponseEncoder<?> encoder = (ToolResponseEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
             int priority = encoderPriorities.getOrDefault(bean, DEFAULT_ENCODER_PRIORITY);
 
-            if (encoder instanceof ToolResponseEncoder<?> tre) {
-                toolEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(tre);
-                encoderInstancePrioritiesByModule.computeIfAbsent(module, k -> new HashMap<>()).put(encoder, priority);
-            } else if (encoder instanceof ContentEncoder<?> ce) {
-                contentEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(ce);
-                encoderInstancePrioritiesByModule.computeIfAbsent(module, k -> new HashMap<>()).put(encoder, priority);
-            }
+            toolEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(encoder);
+            encoderInstancePrioritiesByModule.computeIfAbsent(module, k -> new HashMap<>()).put(encoder, priority);
 
             traceRegistration("encoder", bean, module);
+        }
+
+        for (Bean<?> bean : contentEncoderBeans) {
+            J2EEName module = getModuleForBeanOrNull(bean);
+            ContentEncoder<?> encoder = (ContentEncoder<?>) beanManager.getReference(bean, bean.getBeanClass(), context);
+            int priority = encoderPriorities.getOrDefault(bean, DEFAULT_ENCODER_PRIORITY);
+
+            contentEncoders.computeIfAbsent(module, k -> new ArrayList<>()).add(encoder);
+            encoderInstancePrioritiesByModule.computeIfAbsent(module, k -> new HashMap<>()).put(encoder, priority);
         }
 
         // Register encoders (global and module-specific)

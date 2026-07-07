@@ -9,9 +9,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.encodertools.moduleLevelEncoder;
 
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+
 import io.openliberty.mcp.internal.fat.encodertools.sharedEncoders.Person;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.json.bind.Jsonb;
@@ -27,13 +28,13 @@ public class PersonContentEncoder implements ContentEncoder<Person> {
     private static final Jsonb jsonb = JsonbBuilder.create();
 
     @Override
-    public boolean supports(Class<?> runtimeType) {
-        return Person.class.isAssignableFrom(runtimeType);
+    public Class<Person> getType() {
+        return Person.class;
     }
 
     @Override
-    public Content encode(Person person) {
+    public ContentBlock encode(Person person) {
         Person encodedPerson = new Person(person.fistName(), "Encoded by PersonContentEncoder", person.age());
-        return new TextContent(jsonb.toJson(encodedPerson));
+        return TextContent.of(jsonb.toJson(encodedPerson));
     }
 }

@@ -11,14 +11,12 @@ package io.openliberty.mcp.internal;
 
 import java.lang.reflect.Type;
 
-import io.openliberty.mcp.messaging.Cancellation;
-import io.openliberty.mcp.meta.Meta;
-import io.openliberty.mcp.request.RequestId;
+import org.mcpjava.server.Cancellation;
+import org.mcpjava.server.McpRequest;
 
 public enum SpecialArgumentType {
     CANCELLATION(Cancellation.class),
-    META(Meta.class),
-    REQUEST_ID(RequestId.class),
+    REQUEST(McpRequest.class),
     UNSUPPORTED(Object.class);
 
     private final Class<?> typeClass;

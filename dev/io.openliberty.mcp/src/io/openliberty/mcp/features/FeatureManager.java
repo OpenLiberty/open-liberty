@@ -25,10 +25,10 @@ import java.time.Instant;
 import java.util.concurrent.CompletionStage;
 import java.util.function.Function;
 
+import org.mcpjava.server.Cancellation;
+import org.mcpjava.server.McpRequest;
+
 import io.openliberty.mcp.features.FeatureManager.FeatureInfo;
-import io.openliberty.mcp.messaging.Cancellation;
-import io.openliberty.mcp.meta.Meta;
-import io.openliberty.mcp.request.RequestId;
 
 /**
  *
@@ -121,7 +121,7 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 
     interface RequestFeatureArguments extends FeatureArguments {
 
-        RequestId requestId();
+        McpRequest request();
 
 // Not yet implemented:
 //        Progress progress();
@@ -145,8 +145,6 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 //
 //        RawMessage rawMessage();
 //
-        Meta meta();
-
     }
 
 }

@@ -12,7 +12,7 @@ package io.openliberty.mcp.internal.responses;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
-import io.openliberty.mcp.request.RequestId;
+import io.openliberty.mcp.internal.requests.RequestId;
 
 /**
  *

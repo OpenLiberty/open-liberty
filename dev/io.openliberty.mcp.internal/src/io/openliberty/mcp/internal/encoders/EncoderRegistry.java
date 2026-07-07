@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.messaging.Encoder;
+import org.mcpjava.server.ContentEncoder;
+
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 
 public class EncoderRegistry {
@@ -59,33 +59,38 @@ public class EncoderRegistry {
         contentEncoders.sort(Comparator.<ContentEncoder<?>> comparingInt(encoder -> encoderPriorities.getOrDefault(encoder, DEFAULT_ENCODER_PRIORITY)).reversed());
     }
 
-    public Optional<Encoder<?, ?>> findEncoder(Class<?> returnType) {
+    public <T> Optional<ToolResponseEncoder<? super T>> findToolResponseEncoder(T result) {
         // Check local encoders first
-        Optional<Encoder<?, ?>> encoder = findEncoderLocally(returnType);
+        Class<?> clazz = result.getClass();
+        for (var encoder : toolResponseEncoders) {
+            if (encoder.supports(clazz)) {
+                return Optional.of((ToolResponseEncoder<? super T>) encoder);
+            }
+        }
 
         // Fallback to global if not found and we have a global registry
-        if (encoder.isEmpty() && globalRegistry != null) {
-            encoder = globalRegistry.findEncoder(returnType);
+        if (globalRegistry != null) {
+            return globalRegistry.findToolResponseEncoder(result);
+        } else {
+            return Optional.empty();
         }
-
-        return encoder;
     }
 
-    /**
-     * Search for encoder in this registry's local encoders only (no fallback)
-     */
-    private Optional<Encoder<?, ?>> findEncoderLocally(Class<?> returnType) {
-        for (ToolResponseEncoder<?> encoder : toolResponseEncoders) {
-            if (encoder.supports(returnType)) {
-                return Optional.of(encoder);
+    public <T> Optional<ContentEncoder<? super T>> findContentEncoder(T result) {
+        // Check local encoders first
+        for (var encoder : contentEncoders) {
+            if (encoder.getType().isInstance(result)) {
+                return Optional.of((ContentEncoder<? super T>) encoder);
             }
         }
-        for (ContentEncoder<?> encoder : contentEncoders) {
-            if (encoder.supports(returnType)) {
-                return Optional.of(encoder);
-            }
+
+        // Fallback to global if not found and we have a global registry
+        if (globalRegistry != null) {
+            return globalRegistry.findContentEncoder(result);
+        } else {
+            return Optional.empty();
         }
-        return Optional.empty();
+
     }
 
 }
