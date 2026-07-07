@@ -104,4 +104,11 @@ public interface OidcClientConfig extends ConvergedClientConfig {
      */
     public List<String> getProtectedResourceMetadataAdvertisedScopes();
 
+    /**
+     * Get the JWT builder reference for the protected resource metadata.
+     *
+     * @return The JWT builder reference ID, or null if not configured
+     */
+    public String getProtectedResourceMetadataJwtBuilderRef();
+
 }

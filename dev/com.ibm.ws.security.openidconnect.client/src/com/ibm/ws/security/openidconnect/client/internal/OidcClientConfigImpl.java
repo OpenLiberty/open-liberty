@@ -2049,6 +2049,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     }
 
     @Override
+    public String getProtectedResourceMetadataJwtBuilderRef() {
+        return null;
+    }
+
+    @Override
     public List<String> getTokenOrderToFetchCallerClaims() {
         return tokenOrderToFetchCallerClaims;
     }

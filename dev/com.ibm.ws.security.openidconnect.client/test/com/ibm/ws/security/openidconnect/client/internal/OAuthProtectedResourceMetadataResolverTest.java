@@ -813,6 +813,11 @@ public class OAuthProtectedResourceMetadataResolverTest {
             return null;
         }
 
+        @Override
+        public String getProtectedResourceMetadataJwtBuilderRef() {
+            return null;
+        }
+
     }
 }
 
