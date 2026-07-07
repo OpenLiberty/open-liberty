@@ -9,9 +9,11 @@
  *******************************************************************************/
 package io.openliberty.jpa.persistence.tests.models;
 
+import jakarta.persistence.Cacheable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 
+@Cacheable
 @Entity
 public class PersistenceUnitEntity {
     @Id
