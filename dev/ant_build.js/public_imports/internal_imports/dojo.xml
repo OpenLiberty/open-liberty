@@ -17,13 +17,13 @@
 
     <!-- Static DOJO resources -->
     <property name="dojo.home" location="${basedir}/../ant_build.js/lib/dojo" />
-    <property name="dojo.version" value="1.17.3" />
+    <property name="dojo.version" value="1.14.9" />
     <property name="dojo.src" location="${dojo.home}/dojo-${dojo.version}" />
     <property name="dojo.src.zip" value="${dojo.src}.zip" />
     <property name="dojo.closure.jar" value="${dojo.src}/util/closureCompiler/compiler.jar" />
     <property name="dojo.shrinksafe.jar" value="${dojo.src}/util/shrinksafe/shrinksafe.jar" />
     <property name="dojo.shrinksafejs.jar" value="${dojo.src}/util/shrinksafe/js.jar" />
-    <property name="idx.version" value="1.5.2.6_4" />
+    <property name="idx.version" value="1.5.2.6_3" />
     <property name="idx.src" location="${dojo.home}/idx-${idx.version}" />
     <property name="idx.src.zip" value="${idx.src}.zip" />
     <property name="gridx.version" value="1.3.9" />
