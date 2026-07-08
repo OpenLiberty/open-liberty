@@ -322,6 +322,7 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     private boolean serveProtectedResourceMetadata = false;
     private List<String> protectedResourceMetadataAdvertisedScopes = null;
     private String protectedResourceMetadataJwtBuilderRef = null;
+    private String protectedResourceMetadataJwtBuilderId = null;
 
     private final OidcSessionCache oidcSessionCache = new InMemoryOidcSessionCache();
 
@@ -758,9 +759,28 @@ public class OidcClientConfigImpl implements OidcClientConfig {
 
             protectedResourceMetadataJwtBuilderRef = configUtils.getConfigAttribute(props, flatJwtBuilderRefKey);
 
+            // Resolve the user-facing id for the JWT builder (needed for jwks_uri derivation).
+            // ibm:type="pid" attributes store the OSGi PID (e.g. "com.ibm.ws.security.jwt.builder_0"),
+            // not the user-assigned id. Use ConfigAdmin to look up the human-readable "id" property.
+            if (protectedResourceMetadataJwtBuilderRef != null) {
+                try {
+                    org.osgi.service.cm.Configuration jwtBuilderConfig = configAdminRef.getService().getConfiguration(protectedResourceMetadataJwtBuilderRef, null);
+                    if (jwtBuilderConfig != null) {
+                        java.util.Dictionary<String, Object> jwtBuilderProps = jwtBuilderConfig.getProperties();
+                        if (jwtBuilderProps != null) {
+                            protectedResourceMetadataJwtBuilderId = (String) jwtBuilderProps.get("id");
+                        }
+                    }
+                } catch (Exception e) {
+                    if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, "Could not resolve jwtBuilder id from PID [" + protectedResourceMetadataJwtBuilderRef + "]: " + e.getMessage());
+                    }
+                }
+            }
+
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                 Tr.debug(tc, "protectedResourceMetadata configured - advertisedScopes: " + protectedResourceMetadataAdvertisedScopes
-                        + ", jwtBuilderRef: " + protectedResourceMetadataJwtBuilderRef);
+                        + ", jwtBuilderRef: " + protectedResourceMetadataJwtBuilderRef + ", jwtBuilderId: " + protectedResourceMetadataJwtBuilderId);
             }
         }
     }
@@ -2062,6 +2082,11 @@ public class OidcClientConfigImpl implements OidcClientConfig {
     @Override
     public String getProtectedResourceMetadataJwtBuilderRef() {
         return protectedResourceMetadataJwtBuilderRef;
+    }
+
+    @Override
+    public String getProtectedResourceMetadataJwtBuilderId() {
+        return protectedResourceMetadataJwtBuilderId;
     }
 
     @Override

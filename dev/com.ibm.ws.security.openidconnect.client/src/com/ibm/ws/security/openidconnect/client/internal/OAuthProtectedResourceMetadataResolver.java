@@ -14,6 +14,9 @@ import java.util.List;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
 
+import com.ibm.websphere.security.jwt.JwtBuilder;
+import com.ibm.websphere.security.jwt.JwtToken;
+
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.ConfigurationPolicy;
 import org.osgi.service.component.annotations.Reference;
@@ -43,6 +46,10 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
 
     @Reference
     private OidcClientImpl oidcClientImpl;
+    static final String JWK_API_PATH_PREFIX = "/jwt/ibm/api/";
+    static final String JWK_API_PATH_SUFFIX = "/jwk";
+
+    private volatile OidcClientImpl oidcClient;
 
     /**
      * Test hook: allows unit tests to inject a mock {@link OidcClientImpl} without DS.
@@ -88,18 +95,19 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
             return null;
         }
 
-        return createMetadataJson(config, absoluteResourceUrl);
+        return createMetadataJson(config, absoluteResourceUrl, request);
     }
 
     /**
      * Creates the OAuth 2.0 protected resource metadata JSON document.
      * Package-scoped for unit testing.
      *
-     * @param config             matching OIDC client configuration
+     * @param config              matching OIDC client configuration
      * @param absoluteResourceUrl absolute protected resource URL
+     * @param request             the incoming HTTP request (used to derive {@code jwks_uri})
      * @return serialized JSON metadata document
      */
-    String createMetadataJson(OidcClientConfig config, String absoluteResourceUrl) {
+    String createMetadataJson(OidcClientConfig config, String absoluteResourceUrl, HttpServletRequest request) {
         JSONObject metadata = new JSONObject();
 
         metadata.put("resource", absoluteResourceUrl);
@@ -125,11 +133,84 @@ public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedRes
             metadata.put("scopes_supported", scopesSupported);
         }
 
+        // jwtBuilderRef holds the OSGi PID (from ibm:type="pid"); jwtBuilderId is the user-facing id.
+        // JwtBuilder.create() requires the user-facing id; jwks_uri is also built from it.
+        String jwtBuilderId = config.getProtectedResourceMetadataJwtBuilderId();
+        if (jwtBuilderId != null && !jwtBuilderId.trim().isEmpty()) {
+            String jwksUri = buildJwksUri(request, jwtBuilderId);
+            metadata.put("jwks_uri", jwksUri);
+            JSONArray bearerMethods = new JSONArray();
+            bearerMethods.add("header");
+            metadata.put("bearer_methods_supported", bearerMethods);
+            String signedJwt = createSignedMetadata(jwtBuilderId, absoluteResourceUrl, authorizationServer, jwksUri, advertisedScopes);
+            if (signedJwt != null) {
+                metadata.put("signed_metadata", signedJwt);
+            }
+        }
+
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Resolved OAuth protected resource metadata for resource [" + absoluteResourceUrl + "] using client [" + config.getId() + "]");
         }
 
         return metadata.toString();
+    }
+
+    /**
+     * Builds the JWK endpoint URI for the given JWT builder reference, derived from the
+     * incoming request's scheme, host, and port.
+     * <p>
+     * The port segment is omitted for standard ports (80 for {@code http}, 443 for
+     * {@code https}), consistent with {@code ServletUtils.buildResourceUrl}.
+     * </p>
+     *
+     * @param request       the incoming HTTP request
+     * @param jwtBuilderRef the JWT builder ID
+     * @return the absolute JWK URI, e.g. {@code https://localhost:9443/jwt/ibm/api/myBuilder/jwk}
+     */
+    String buildJwksUri(HttpServletRequest request, String jwtBuilderRef) {
+        String scheme = request.getScheme();
+        String serverName = request.getServerName();
+        int serverPort = request.getServerPort();
+        boolean standardPort = ("http".equals(scheme) && serverPort == 80) || ("https".equals(scheme) && serverPort == 443);
+        String portSegment = standardPort ? "" : ":" + serverPort;
+        return scheme + "://" + serverName + portSegment + JWK_API_PATH_PREFIX + jwtBuilderRef + JWK_API_PATH_SUFFIX;
+    }
+
+    /**
+     * Builds a compact JWS (signed JWT) whose payload mirrors the assembled protected
+     * resource metadata claims, as required by RFC 9728 §4.
+     *
+     * @param jwtBuilderRef       the JWT builder configuration ID to use for signing
+     * @param resourceUrl         the absolute protected resource URL ({@code resource} claim)
+     * @param authorizationServer the authorization server identifier, or {@code null}
+     * @param jwksUri             the JWK endpoint URI for this resource server
+     * @param scopesSupported     the list of advertised scopes, or {@code null}
+     * @return compact JWS string, or {@code null} if signing fails or {@code jwtBuilderRef} is blank
+     */
+    String createSignedMetadata(String jwtBuilderRef, String resourceUrl, String authorizationServer, String jwksUri, List<String> scopesSupported) {
+        if (jwtBuilderRef == null || jwtBuilderRef.trim().isEmpty()) {
+            return null;
+        }
+        try {
+            JwtBuilder builder = JwtBuilder.create(jwtBuilderRef);
+            builder.claim("resource", resourceUrl);
+            builder.claim("iss", resourceUrl);
+            if (authorizationServer != null) {
+                builder.claim("authorization_servers", new String[] { authorizationServer });
+            }
+            if (jwksUri != null) {
+                builder.claim("jwks_uri", jwksUri);
+            }
+            builder.claim("bearer_methods_supported", new String[] { "header" });
+            if (scopesSupported != null && !scopesSupported.isEmpty()) {
+                builder.claim("scopes_supported", scopesSupported.toArray(new String[0]));
+            }
+            JwtToken jwtToken = builder.buildJwt();
+            return jwtToken.compact();
+        } catch (Exception e) {
+            Tr.warning(tc, "PRMD_SIGNED_METADATA_BUILD_FAILURE", new Object[] { jwtBuilderRef, e.getMessage() });
+            return null;
+        }
     }
 
     /**

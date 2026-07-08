@@ -14,6 +14,7 @@
         <feature>appSecurity-2.0</feature>
         <feature>jsp-2.3</feature>
         <feature>ssl-1.0</feature>
+        <feature>jwt-1.0</feature>
     </featureManager>
 
     <!-- Port configuration copied from common project during the build. -->
@@ -211,6 +212,116 @@
         <requestUrl
             id="requestUrl8"
             urlPattern="https://localhost:${bvt.prop.HTTP_default.secure}/myApp/withScopes"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client with jwtBuilderRef — tests that signed_metadata, jwks_uri, and
+        bearer_methods_supported are included in the metadata response (HTTP).
+    -->
+    <openidConnectClient
+        id="OidcConfigWithSigning"
+        clientId="client09"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilterSigning">
+        <protectedResourceMetadata advertisedScopes="openid,profile,email" jwtBuilderRef="metadataJwtBuilder"/>
+    </openidConnectClient>
+
+    <!-- JWT builder used by OidcConfigWithSigning to produce signed_metadata JWTs. -->
+    <jwtBuilder id="metadataJwtBuilder" jwkEnabled="true"/>
+
+    <!--
+        RS512, jwkEnabled=true, 4096-bit key.
+        Exercises: larger RSA digest, ephemeral JWK key pair (not from keystore), non-default key size.
+    -->
+    <jwtBuilder id="metadataJwtBuilderRs512Jwk" signatureAlgorithm="RS512" jwkEnabled="true" jwkSigningKeySize="4096"/>
+
+    <!--
+        ES256, jwkEnabled=true.
+        Exercises: elliptic-curve signing — entirely different key type and JWK representation
+        (kty=EC, crv=P-256) rather than RSA (kty=RSA). EC keys are much shorter so this also
+        checks that the signature-verification path handles non-RSA JWKs correctly.
+    -->
+    <jwtBuilder id="metadataJwtBuilderEs256Jwk" signatureAlgorithm="ES256" jwkEnabled="true"/>
+
+    <!--
+        RS384, jwkEnabled=true, 2048-bit key, short JWK rotation window (60 minutes — the minimum).
+        Exercises: a third RSA digest variant, confirmed ephemeral key, and the jwkRotationTime
+        config field being wired through to the JWKProvider.
+    -->
+    <jwtBuilder id="metadataJwtBuilderRs384JwkRotation" signatureAlgorithm="RS384" jwkEnabled="true"
+                jwkSigningKeySize="2048" jwkRotationTime="60m"/>
+
+    <authFilter id="authFilterSigning">
+        <requestUrl
+            id="requestUrlSigning"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigning"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client for RS512/4096-bit JWK signing test.
+    -->
+    <openidConnectClient
+        id="OidcConfigWithSigningRs512Jwk"
+        clientId="client10"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilterSigningRs512Jwk">
+        <protectedResourceMetadata advertisedScopes="openid,profile" jwtBuilderRef="metadataJwtBuilderRs512Jwk"/>
+    </openidConnectClient>
+
+    <authFilter id="authFilterSigningRs512Jwk">
+        <requestUrl
+            id="requestUrlSigningRs512Jwk"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningRs512Jwk"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client for ES256 JWK signing test.
+    -->
+    <openidConnectClient
+        id="OidcConfigWithSigningEs256Jwk"
+        clientId="client11"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilterSigningEs256Jwk">
+        <protectedResourceMetadata jwtBuilderRef="metadataJwtBuilderEs256Jwk"/>
+    </openidConnectClient>
+
+    <authFilter id="authFilterSigningEs256Jwk">
+        <requestUrl
+            id="requestUrlSigningEs256Jwk"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningEs256Jwk"
+            matchType="equals" />
+    </authFilter>
+
+    <!--
+        OIDC client for RS384/2048-bit/short-rotation JWK signing test.
+    -->
+    <openidConnectClient
+        id="OidcConfigWithSigningRs384JwkRotation"
+        clientId="client12"
+        clientSecret="{xor}LDo8LTorbm1saw=="
+        issuerIdentifier="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample"
+        authorizationEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/authorize"
+        tokenEndpointUrl="http://localhost:${bvt.prop.HTTP_default}/oidc/endpoint/OidcConfigSample/token"
+        authFilterRef="authFilterSigningRs384JwkRotation">
+        <protectedResourceMetadata advertisedScopes="openid" jwtBuilderRef="metadataJwtBuilderRs384JwkRotation"/>
+    </openidConnectClient>
+
+    <authFilter id="authFilterSigningRs384JwkRotation">
+        <requestUrl
+            id="requestUrlSigningRs384JwkRotation"
+            urlPattern="http://localhost:${bvt.prop.HTTP_default}/myApp/withSigningRs384JwkRotation"
             matchType="equals" />
     </authFilter>
 

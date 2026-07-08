@@ -10,9 +10,16 @@
 package com.ibm.ws.security.oauth.protectedresource.metadata.fat;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.PublicKey;
+import java.util.Base64;
+import java.util.List;
+
+import org.jose4j.jwk.PublicJsonWebKey;
+import org.jose4j.jws.JsonWebSignature;
 import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -23,8 +30,6 @@ import com.ibm.websphere.simplicity.log.Log;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.CommonTest;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.Constants;
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.TestSettings;
-import java.util.List;
-
 import com.ibm.ws.security.oauth_oidc.fat.commonTest.ValidationData.validationData;
 import com.meterware.httpunit.WebConversation;
 import com.meterware.httpunit.WebResponse;
@@ -55,7 +60,10 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
     private static final String PROTECTED_RESOURCE_SUBPATH = "/myApp/protected/subPath";
     private static final String METADATA_DISABLED_PATH = "/myApp/metadataDisabled";
     private static final String WITH_SCOPES_PATH = "/myApp/withScopes";
-
+    private static final String SIGNED_PATH = "/myApp/withSigning";
+    private static final String SIGNED_RS512_JWK_PATH = "/myApp/withSigningRs512Jwk";
+    private static final String SIGNED_ES256_JWK_PATH = "/myApp/withSigningEs256Jwk";
+    private static final String SIGNED_RS384_JWK_ROTATION_PATH = "/myApp/withSigningRs384JwkRotation";
     @BeforeClass
     public static void setUp() throws Exception {
         String methodName = "setUp";
@@ -301,6 +309,268 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         assertTrue("Expected 'scopes_supported' to contain 'profile'", scopesSupported.contains("profile"));
         assertTrue("Expected 'scopes_supported' to contain 'email'", scopesSupported.contains("email"));
         assertEquals("Expected exactly 3 scopes in 'scopes_supported'", 3, scopesSupported.size());
+    }
+
+    /**
+     * Test that when jwtBuilderRef is configured, the metadata response includes
+     * signed_metadata (a compact JWS), jwks_uri, and bearer_methods_supported.
+     * Decodes the JWT payload and validates resource, iss, and jwks_uri claims.
+     */
+    @Test
+    public void testMetadataContainsSignedMetadataJwt() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpString, SIGNED_PATH);
+
+        // Top-level jwks_uri must be present and point to the JWT builder's JWK endpoint
+        String topLevelJwksUri = (String) json.get("jwks_uri");
+        assertNotNull("Response did not contain top-level 'jwks_uri' field", topLevelJwksUri);
+        assertTrue("'jwks_uri' should contain '/jwt/ibm/api/metadataJwtBuilder/jwk' but was: " + topLevelJwksUri,
+                topLevelJwksUri.contains("/jwt/ibm/api/metadataJwtBuilder/jwk"));
+
+        // Top-level bearer_methods_supported must be ["header"]
+        JSONArray bearerMethods = (JSONArray) json.get("bearer_methods_supported");
+        assertNotNull("Response did not contain 'bearer_methods_supported' field", bearerMethods);
+        assertTrue("'bearer_methods_supported' should contain 'header'", bearerMethods.contains("header"));
+
+        // signed_metadata must be present and be a 3-part compact JWS
+        String signedMetadata = (String) json.get("signed_metadata");
+        assertNotNull("Response did not contain 'signed_metadata' field", signedMetadata);
+
+        String[] parts = signedMetadata.split("\\.");
+        assertEquals("signed_metadata should be a 3-part compact JWS (header.payload.signature)", 3, parts.length);
+
+        // Decode the JWT payload (base64url, possibly unpadded)
+        String payloadB64 = parts[1];
+        int padNeeded = (4 - payloadB64.length() % 4) % 4;
+        for (int i = 0; i < padNeeded; i++) {
+            payloadB64 += "=";
+        }
+        byte[] payloadBytes = Base64.getUrlDecoder().decode(payloadB64);
+        JSONObject payload = JSONObject.parse(new String(payloadBytes, "UTF-8"));
+
+        String expectedResource = serverHttpString + SIGNED_PATH;
+
+        // JWT resource claim must equal the protected resource URL
+        assertEquals("JWT payload 'resource' claim mismatch", expectedResource, payload.get("resource"));
+
+        // RFC 9728 §4: iss MUST equal resource
+        assertEquals("JWT payload 'iss' claim must equal 'resource' (RFC 9728 §4)",
+                payload.get("resource"), payload.get("iss"));
+
+        // JWT jwks_uri claim must match the top-level jwks_uri
+        assertEquals("JWT payload 'jwks_uri' claim should match top-level 'jwks_uri'",
+                topLevelJwksUri, payload.get("jwks_uri"));
+    }
+
+    /**
+     * Test that a jwtBuilder with RS512 / 4096-bit ephemeral JWK produces valid
+     * signed_metadata and a matching, verifiable JWK Set entry.
+     * <p>
+     * Confirms: {@code alg=RS512} in the JWT header, {@code kty=RSA} with a 4096-bit
+     * modulus in the JWK, and that the signature verifies against the published key.
+     * </p>
+     */
+    @Test
+    public void testSignedMetadataRs512JwkSignatureVerifies() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpString, SIGNED_RS512_JWK_PATH);
+
+        String jwksUri = (String) json.get("jwks_uri");
+        assertNotNull("Response must contain 'jwks_uri'", jwksUri);
+        assertTrue("jwks_uri must reference 'metadataJwtBuilderRs512Jwk'",
+                jwksUri.contains("/jwt/ibm/api/metadataJwtBuilderRs512Jwk/jwk"));
+
+        String signedMetadata = (String) json.get("signed_metadata");
+        assertNotNull("Response must contain 'signed_metadata'", signedMetadata);
+
+        // Verify the JWT header declares RS512
+        JSONObject header = decodeJwtHeader(signedMetadata);
+        assertEquals("JWT header 'alg' must be RS512", "RS512", header.get("alg"));
+
+        // Verify the JWK Set and the cryptographic signature
+        JSONObject jwkSet = getJsonFromUrl(jwksUri);
+        JSONArray keys = (JSONArray) jwkSet.get("keys");
+        assertNotNull("JWK Set must contain a 'keys' array", keys);
+        JSONObject key = (JSONObject) keys.iterator().next();
+        assertEquals("JWK key type must be RSA", "RSA", key.get("kty"));
+
+        // 4096-bit RSA modulus encodes to 512 bytes → 683 base64url chars (unpadded)
+        String n = (String) key.get("n");
+        assertNotNull("RSA JWK must contain modulus 'n'", n);
+        assertTrue("4096-bit RSA modulus must be at least 600 base64url chars, was: " + n.length(),
+                n.length() >= 600);
+
+        verifySignatureAgainstJwk(signedMetadata, jwkSet);
+    }
+
+    /**
+     * Test that a jwtBuilder with ES256 (ECDSA / P-256) produces valid
+     * signed_metadata and a matching, verifiable JWK Set entry.
+     * <p>
+     * Confirms: {@code alg=ES256} in the JWT header, {@code kty=EC} and
+     * {@code crv=P-256} in the JWK — proving the EC code path is exercised end-to-end.
+     * </p>
+     */
+    @Test
+    public void testSignedMetadataEs256JwkSignatureVerifies() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpString, SIGNED_ES256_JWK_PATH);
+
+        String jwksUri = (String) json.get("jwks_uri");
+        assertNotNull("Response must contain 'jwks_uri'", jwksUri);
+        assertTrue("jwks_uri must reference 'metadataJwtBuilderEs256Jwk'",
+                jwksUri.contains("/jwt/ibm/api/metadataJwtBuilderEs256Jwk/jwk"));
+
+        String signedMetadata = (String) json.get("signed_metadata");
+        assertNotNull("Response must contain 'signed_metadata'", signedMetadata);
+
+        // Verify the JWT header declares ES256
+        JSONObject header = decodeJwtHeader(signedMetadata);
+        assertEquals("JWT header 'alg' must be ES256", "ES256", header.get("alg"));
+
+        // Verify the JWK entry is EC / P-256
+        JSONObject jwkSet = getJsonFromUrl(jwksUri);
+        JSONArray keys = (JSONArray) jwkSet.get("keys");
+        assertNotNull("JWK Set must contain a 'keys' array", keys);
+        JSONObject key = (JSONObject) keys.iterator().next();
+        assertEquals("JWK key type must be EC", "EC", key.get("kty"));
+        assertEquals("JWK curve must be P-256", "P-256", key.get("crv"));
+
+        verifySignatureAgainstJwk(signedMetadata, jwkSet);
+    }
+
+    /**
+     * Test that a jwtBuilder with RS384 / 2048-bit key and a 60-minute JWK rotation
+     * window produces valid signed_metadata and a matching, verifiable JWK Set entry.
+     * <p>
+     * Confirms: {@code alg=RS384} in the JWT header and that the signature verifies,
+     * exercising the third RSA digest variant and the short-rotation code path.
+     * </p>
+     */
+    @Test
+    public void testSignedMetadataRs384JwkRotationSignatureVerifies() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpString, SIGNED_RS384_JWK_ROTATION_PATH);
+
+        String jwksUri = (String) json.get("jwks_uri");
+        assertNotNull("Response must contain 'jwks_uri'", jwksUri);
+        assertTrue("jwks_uri must reference 'metadataJwtBuilderRs384JwkRotation'",
+                jwksUri.contains("/jwt/ibm/api/metadataJwtBuilderRs384JwkRotation/jwk"));
+
+        String signedMetadata = (String) json.get("signed_metadata");
+        assertNotNull("Response must contain 'signed_metadata'", signedMetadata);
+
+        // Verify the JWT header declares RS384
+        JSONObject header = decodeJwtHeader(signedMetadata);
+        assertEquals("JWT header 'alg' must be RS384", "RS384", header.get("alg"));
+
+        verifySignatureAgainstJwk(signedMetadata, getJsonFromUrl(jwksUri));
+    }
+
+    /**
+     * Test that when no {@code jwtBuilderRef} is configured, the metadata response does
+     * not include {@code signed_metadata}, {@code jwks_uri}, or {@code bearer_methods_supported},
+     * but does include the base fields {@code resource} and {@code authorization_servers}.
+     * Uses the {@code /myApp/withScopes} path whose OIDC client has
+     * {@code <protectedResourceMetadata advertisedScopes="openid,profile,email"/>} but no
+     * {@code jwtBuilderRef}.
+     */
+    @Test
+    public void testNoSigningFieldsWhenJwtBuilderRefIsAbsent() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpString, WITH_SCOPES_PATH);
+
+        assertNotNull("Response must contain 'resource' field", json.get("resource"));
+        assertNotNull("Response must contain 'authorization_servers' field", json.get("authorization_servers"));
+        assertNotNull("Response must contain 'scopes_supported' field", json.get("scopes_supported"));
+
+        assertFalse("'signed_metadata' must be absent when jwtBuilderRef is not configured",
+                json.containsKey("signed_metadata"));
+        assertFalse("'jwks_uri' must be absent when jwtBuilderRef is not configured",
+                json.containsKey("jwks_uri"));
+        assertFalse("'bearer_methods_supported' must be absent when jwtBuilderRef is not configured",
+                json.containsKey("bearer_methods_supported"));
+    }
+
+    /**
+     * Test that the signed_metadata JWT signature can be cryptographically verified
+     * against the public key published at the jwks_uri endpoint.
+     * <p>
+     * Fetches the JWK Set from the top-level {@code jwks_uri}, finds the key whose
+     * {@code kid} matches the JWT header, reconstructs the public key, and confirms
+     * the RS256 signature is valid.
+     * </p>
+     */
+    @Test
+    public void testSignedMetadataJwtSignatureVerifiesAgainstJwksUri() throws Exception {
+        JSONObject json = getMetadataJson(serverHttpString, SIGNED_PATH);
+
+        String jwksUri = (String) json.get("jwks_uri");
+        assertNotNull("Response did not contain 'jwks_uri' field", jwksUri);
+
+        String signedMetadata = (String) json.get("signed_metadata");
+        assertNotNull("Response did not contain 'signed_metadata' field", signedMetadata);
+
+        JSONObject jwkSet = getJsonFromUrl(jwksUri);
+        verifySignatureAgainstJwk(signedMetadata, jwkSet);
+    }
+
+    /**
+     * Finds the JWK whose {@code kid} matches the JWT header, reconstructs the public key,
+     * and asserts that the RS256 signature on the compact JWS is valid.
+     */
+    private static void verifySignatureAgainstJwk(String compactJws, JSONObject jwkSet) throws Exception {
+        JSONObject header = decodeJwtHeader(compactJws);
+
+        String kid = (String) header.get("kid");
+        assertNotNull("JWT header must contain a 'kid' claim", kid);
+
+        JSONArray keys = (JSONArray) jwkSet.get("keys");
+        assertNotNull("JWK Set must contain a 'keys' array", keys);
+        assertTrue("JWK Set must contain at least one key", keys.size() > 0);
+
+        // Find the JWK entry whose kid matches the JWT header.
+        JSONObject matchedKey = null;
+        for (Object entry : keys) {
+            JSONObject key = (JSONObject) entry;
+            if (kid.equals(key.get("kid"))) {
+                matchedKey = key;
+                break;
+            }
+        }
+        assertNotNull("JWT kid '" + kid + "' must match a key in the JWK Set", matchedKey);
+        Log.info(thisClass, "verifySignatureAgainstJwk",
+                "Matched JWK key: kid=" + matchedKey.get("kid") + ", kty=" + matchedKey.get("kty"));
+
+        // Reconstruct the public key from the JWK and verify the JWT signature.
+        PublicJsonWebKey publicJwk = PublicJsonWebKey.Factory.newPublicJwk(matchedKey.toString());
+        PublicKey publicKey = publicJwk.getPublicKey();
+
+        JsonWebSignature jws = new JsonWebSignature();
+        jws.setCompactSerialization(compactJws);
+        jws.setKey(publicKey);
+        assertTrue("JWT signature must be valid against the published JWK", jws.verifySignature());
+
+        Log.info(thisClass, "verifySignatureAgainstJwk",
+                "JWT signature verified successfully against kid=" + kid);
+    }
+
+    /**
+     * Fetches and parses a JSON object from the given URL, asserting HTTP 200.
+     */
+    private JSONObject getJsonFromUrl(String url) throws Exception {
+        Log.info(thisClass, "getJsonFromUrl", "GET " + url);
+        WebResponse response = getSuccessResponse(url);
+        assertEquals("Expected 200 from " + url, 200, response.getResponseCode());
+        return JSONObject.parse(response.getText());
+    }
+
+    /**
+     * Decodes the JWT header (first part of the compact JWS) and returns it as a JSONObject.
+     */
+    private static JSONObject decodeJwtHeader(String compactJws) throws Exception {
+        String headerB64 = compactJws.split("\\.")[0];
+        int padNeeded = (4 - headerB64.length() % 4) % 4;
+        for (int i = 0; i < padNeeded; i++) {
+            headerB64 += "=";
+        }
+        byte[] headerBytes = Base64.getUrlDecoder().decode(headerB64);
+        return JSONObject.parse(new String(headerBytes, "UTF-8"));
     }
 
     /**

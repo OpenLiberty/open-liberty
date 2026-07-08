@@ -848,21 +848,30 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, advertisedScopes);
             props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_JWT_BUILDER_REF, jwtBuilderRef);
 
+            final Configuration jwtBuilderConfig = mock.mock(Configuration.class, "jwtBuilderConfig");
+            final Map<String, Object> jwtBuilderProps = new Hashtable<String, Object>();
+            jwtBuilderProps.put("id", jwtBuilderRef);
             mock.checking(new Expectations() {
                 {
                     one(configAdmin).getConfiguration(authFilterId, null);
                     will(returnValue(config));
                     one(config).getProperties();
                     will(returnValue(adminProps));
+                    one(configAdmin).getConfiguration(jwtBuilderRef, null);
+                    will(returnValue(jwtBuilderConfig));
+                    one(jwtBuilderConfig).getProperties();
+                    will(returnValue(jwtBuilderProps));
                 }
             });
             oidcClientConfig.modify(props);
 
-            // Verify: advertisedScopes and jwtBuilderRef should be set
+            // Verify: advertisedScopes, jwtBuilderRef, and jwtBuilderId should be set
             assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile", "email"),
                     oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
             assertEquals("jwtBuilderRef should be " + jwtBuilderRef, jwtBuilderRef,
                     oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertEquals("jwtBuilderId should be " + jwtBuilderRef, jwtBuilderRef,
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderId());
             assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
