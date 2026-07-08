@@ -64,6 +64,8 @@ WS-TraceGroup: METRICS
 
 -buildpath: \
     org.eclipse.osgi;version=latest,\
+    com.ibm.ws.kernel.metatype.helper;version=latest,\
+    com.ibm.ws.artifact;version=latest.\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.ws.app.manager.wab.jakarta;version=latest,\
 	com.ibm.ws.container.service;version=latest,\
