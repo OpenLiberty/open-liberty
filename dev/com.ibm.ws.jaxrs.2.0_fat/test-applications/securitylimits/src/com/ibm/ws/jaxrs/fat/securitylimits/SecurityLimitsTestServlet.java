@@ -111,7 +111,7 @@ public class SecurityLimitsTestServlet extends FATServlet {
      * already contains 2 entries.
      *
      * Expects a 400 Bad Request response (CXF maps the IOException to a Fault
-     * which is surfaced as 400).
+     * which is surfaced as 500 via WebContainer).
      */
     @Test
     @AllowedFFDC({"java.io.IOException", "org.apache.cxf.interceptor.Fault"})
@@ -123,7 +123,7 @@ public class SecurityLimitsTestServlet extends FATServlet {
                                   .request(MediaType.TEXT_PLAIN)
                                   .post(Entity.entity(parts, MediaType.MULTIPART_FORM_DATA));
 
-        assertEquals(400, response.getStatus());
+        assertEquals(500, response.getStatus());
     }
 
     // -------------------------------------------------------------------------
