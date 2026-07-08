@@ -180,7 +180,7 @@ public class InstallFeatureTest extends FeatureUtilityToolTest {
             // add the liberty server as the maven central mirror
             writeToProps(minifiedRoot + "/etc/featureUtility.properties",
                     "mavenCentralMirror.url",
-                    String.format("http://%s:%s/staticWebApp/Archive-3.0/",
+                    String.format("http://%s:%s/staticWebApp/",
                             server.getHostname(),
                             server.getHttpDefaultPort()));
 
