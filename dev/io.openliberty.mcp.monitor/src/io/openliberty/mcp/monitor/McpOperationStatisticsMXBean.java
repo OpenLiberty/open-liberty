@@ -24,13 +24,13 @@ import com.ibm.websphere.monitor.jmx.StatisticsMeter;
  * The values are intended to be consumed through JMX by administrators,
  * monitoring tools, and applications that need to observe MCP server behavior.
  */
-public interface McpOperationStatsMXBean {
+public interface McpOperationStatisticsMXBean {
 
     /**
      * Returns the MCP JSON-RPC method name associated with this operation.
-     * This value is always present as it is a required attribute.
      *
-     * @return the MCP method name, for example {@code tools/call}
+     * @return the MCP method name, for example {@code tools/call}, or
+     * {@code null} if the method name is not available.
      */
     String getMcpMethodName();
 

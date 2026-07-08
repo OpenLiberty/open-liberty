@@ -8,7 +8,7 @@
  * SPDX-License-Identifier: EPL-2.0
  *******************************************************************************/
 /**
- *
+ * MXBean interfaces for monitoring MCP operation and session statistics.
  */
 @com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "MCP")
 @org.osgi.annotation.versioning.Version("1.0")

@@ -26,6 +26,7 @@ import io.openliberty.mcp.internal.fat.isolation.MultiAppIsolationTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.AsyncToolLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.BeanLifecycleTest;
 import io.openliberty.mcp.internal.fat.lifecycle.tests.LifecycleTest;
+import io.openliberty.mcp.internal.fat.monitor.McpMonitorMXBeanAccessTest;
 import io.openliberty.mcp.internal.fat.monitor.McpMonitorTest;
 import io.openliberty.mcp.internal.fat.oidc.tests.OidcTests;
 import io.openliberty.mcp.internal.fat.protocol.HttpTest;
@@ -108,6 +109,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 InvalidAsyncTimeoutTest.class,
                 // LocaleTest.class, // Commented out test until message translation is updated
                 LifecycleTest.class,
+                McpMonitorMXBeanAccessTest.class,
                 McpMonitorTest.class,
                 McpUrlPathTest.class,
                 MultiAppIsolationTest.class,
