@@ -7537,6 +7537,10 @@ public class LibertyServer implements LogMonitorClient {
             // Server is still running when rc == 0
             isStarted = true;
 
+            if (isJava2SecurityEnabled() && checkpointInfo == null) {
+                startedWithJavaSecurity = true;
+            }
+
             //Setup the server logs assuming the default setting.
             messageAbsPath = logsRoot + messageFileName;
             consoleAbsPath = logsRoot + consoleFileName;
