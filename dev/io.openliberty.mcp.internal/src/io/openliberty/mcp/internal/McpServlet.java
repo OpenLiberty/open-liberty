@@ -52,6 +52,7 @@ import io.openliberty.mcp.internal.requests.McpRequest;
 import io.openliberty.mcp.internal.requests.McpRequestImpl;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import io.openliberty.mcp.internal.requests.McpToolListParams;
+import io.openliberty.mcp.internal.requests.ProgressImpl;
 import io.openliberty.mcp.internal.requests.RequestId;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
@@ -438,12 +439,14 @@ public class McpServlet extends HttpServlet {
         return new ToolArgumentsImpl(args,
                                      new CancellationImpl(),
                                      new McpRequestImpl(request, transport, transport.getSession(), params.getMeta()),
+                                     new ProgressImpl(),
                                      encoderRegistries.getCurrent());
     }
 
     public record ToolArgumentsImpl(Map<String, Object> args,
                                     Cancellation cancellation,
                                     org.mcpjava.server.McpRequest request,
+                                    org.mcpjava.server.progress.Progress progress,
                                     EncoderRegistry encoderRegistry) implements ToolArguments {}
 
     /**

@@ -13,10 +13,12 @@ import java.lang.reflect.Type;
 
 import org.mcpjava.server.Cancellation;
 import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.progress.Progress;
 
 public enum SpecialArgumentType {
     CANCELLATION(Cancellation.class),
     REQUEST(McpRequest.class),
+    PROGRESS(Progress.class),
     UNSUPPORTED(Object.class);
 
     private final Class<?> typeClass;
