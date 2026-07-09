@@ -100,18 +100,14 @@ task validateNLS {
       // The script will fail if the new EclipseLink binaries include changes to the translation files. If that is the case, you must manually
       // change the translation files in the resources directory so it can be translated by the translation team.
       // Note: if you're running into issues where the tool is showing changes in the translation files when there aren't, try running .././gradlew clean or deleting the build directory
-      println "NLS files have changed. New files are in: ${projectDir}/build/resources.new"
-      println "To update, run: cp -r ${projectDir}/build/resources.new/* ${projectDir}/resources/"
       throw new GradleException("The current NLS files (" + ant.properties['resource.existing.count'] + " files, checksum: " + ant.properties['resource.existing.checksum']
         + ") have changed (" + ant.properties['resource.new.count'] + " files, checksum: " + ant.properties['resource.new.checksum'] + ") since the last build - please update the NLS resources and notify the ID team that new translation may be required. To find what changed you need to diff ${projectDir}/build/resources.new to ${projectDir}/build/resources.existing.")
     }
-    // Don't delete so we can copy the new files: delete existingResourceDir, newResourcesDir
+    delete existingResourceDir, newResourcesDir
   }
 }
 
 // Validate the NLS messages before the jar is published, but after the jar is created
-// Disabled for persistence 4.0 - EclipseLink 5.0.0 uses different NLS structure than 3.0.4
-// and the ConvertRBtoNLSProps tool is not compatible with the new format
-// publishWLPJars {
-//   dependsOn validateNLS
-// }
+publishWLPJars {
+  dependsOn validateNLS
+}

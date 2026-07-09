@@ -4,10 +4,10 @@ visibility=private
 IBM-App-ForceRestart: install, \
  uninstall
 IBM-Provision-Capability: \
-  osgi.identity; filter:="(|(osgi.identity=io.openliberty.cdi-5.0)(osgi.identity=io.openliberty.cdi-6.0))", \
-  osgi.identity; filter:="(&(osgi.identity=io.openliberty.persistenceContainer-4.0))"
--bundles=com.ibm.ws.jpa.container.v40.cdi
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.cdi-5.0))", \
+  osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.persistenceContainer-4.0))"
+-bundles=io.openliberty.jpa.container.4.0.cdi
 IBM-Install-Policy: when-satisfied
-kind=ga
-edition=core
+kind=noship
+edition=full
 WLP-Activation-Type: parallel

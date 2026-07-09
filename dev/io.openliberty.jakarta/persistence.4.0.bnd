@@ -38,4 +38,4 @@ Private-Package: io.openliberty.jakarta.persistence.internal
   @\${repo;jakarta.persistence:jakarta.persistence-api;4.0.0.M2;EXACT}!/!(META-INF/maven/*|module-info.class)
 
 -maven-dependencies: \
-  dep1;groupId=jakarta.persistence;artifactId=jakarta.persistence-api;version=4.0.0.M2;scope=runtime
+  dep1;groupId=jakarta.persistence;artifactId=jakarta.persistence-api;version=4.0.0-M2;scope=runtime
