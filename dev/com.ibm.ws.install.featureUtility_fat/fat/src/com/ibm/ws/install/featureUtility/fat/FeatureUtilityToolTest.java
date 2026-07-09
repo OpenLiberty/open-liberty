@@ -509,7 +509,7 @@ public abstract class FeatureUtilityToolTest {
 	String output = po.getStdout();
 
 	    if (errorCode != null) {
-		assertTrue(String.format("Should contain %s", errorCode), output.contains(errorCode));
+		assertTrue(String.format("Should contain %s. Error output: %s", errorCode, output), output.contains(errorCode));
 	    }
 	    if (filesList != null) {
 		assertFilesExist(filesList);
