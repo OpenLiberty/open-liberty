@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2011, 2014 IBM Corporation and others.
+ * Copyright (c) 2011, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -23,9 +23,6 @@ import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.NonPersistentCache;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 
-/**
- *
- */
 class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<ApplicationMetaData> {
 
     private final String appName;
@@ -39,7 +36,7 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
         this.appMetaData = new ApplicationMetaDataImpl(j2eeName);
         this.appContainer = appContainer;
         this.configHelper = configHelper;
-        /* get jandex configuration from overlay cache */
+
         ApplicationInfoForContainer applicationInformation = null;
         try {
             NonPersistentCache cache = appContainer.adapt(NonPersistentCache.class);
@@ -66,8 +63,8 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
     }
 
     @Override
-    public boolean getUseJandexExtendedPath() {
-        return applicationInformation != null ? applicationInformation.getUseJandexExtendedPath() : false;
+    public boolean getEnableWebInfJandex() {
+        return applicationInformation != null ? applicationInformation.getEnableWebInfJandex() : false;
     }
 
     @Override
@@ -85,11 +82,6 @@ class ApplicationInfoImpl implements ExtendedApplicationInfo, MetaDataGetter<App
         return configHelper;
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see com.ibm.ws.container.service.app.deploy.ApplicationInfo#getDeploymentName()
-     */
     @Override
     public String getDeploymentName() {
         if (appMetaData.getJ2EEName() == null)

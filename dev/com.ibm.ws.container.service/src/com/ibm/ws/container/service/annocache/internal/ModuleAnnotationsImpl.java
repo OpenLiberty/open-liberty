@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -357,15 +357,15 @@ public class ModuleAnnotationsImpl extends AnnotationsImpl implements ModuleAnno
     }
 
     /**
-     * Override: Retrieve the 'useJandexExtendedPath' setting from
+     * Override: Retrieve the 'enableWebInfoJandex' setting from
      * the application information.
      *
      * @return True or false telling if jandex indexes are to
-     *         be read from the extended location.
+     *         be read from WEB-INF/classes.
      */
     @Override
-    public boolean getJandexUseExtendedPath() {
-        return getAppInfo().getUseJandexExtendedPath();
+    public boolean getEnableWebInfJandex() {
+        return getAppInfo().getEnableWebInfJandex();
     }
 
     private ModuleClassesContainerInfo getModuleClassesContainerInfo() {

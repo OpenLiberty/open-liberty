@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2025 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -186,6 +186,15 @@ public final class ApplicationConfig {
         return true;
     }
 
+    /**
+     * Tell if jandex is enabled. That is usually supplied by a "useJandex" attribute
+     * on the application element or the application manager element.
+     *
+     * Look for the value from the application element, then on the application
+     * manager element.
+     * 
+     * @return True or false telling if jandex use is enabled. The default is false.
+     */
     public boolean getUseJandex() {
         // First try to get the value from the application configuration
         // which overrides the value on the application manager configuration.
@@ -200,18 +209,34 @@ public final class ApplicationConfig {
         return _applicationManager.getUseJandex();
     }
 
-    public boolean getUseJandexExtendedPath() {
+    /**
+     * Tell if jandex index files are to be read from
+     * <code>WEB-INF/classes/META-INF/jandex.idx</code> when processing
+     * a web module. That is usually supplied by a "enableWebInfJandex"
+     * attribute on the application element or the application manager element.
+     * 
+     * Look for the value from the application element, then on the application
+     * manager element.
+     * 
+     * The initial implementation read jandex index files for web modules from
+     * <code>META-INF/jandex.idx</code>. However, the industry standard is to
+     * read the index files relative to the web module class path.
+     * 
+     * @return True or false telling if jandex index files are to be
+     *     read from the <code>WEB-INF</code> location. The default is false.
+     */
+    public boolean getEnableWebInfJandex() {
         // First try to get the value from the application configuration
         // which overrides the value on the application manager configuration.
         if (_config != null) {
-            Object result = _config.get(AppManagerConstants.USE_JANDEX_EXTENDED_PATH);
+            Object result = _config.get(AppManagerConstants.ENABLE_WEB_INF_JANDEX);
             if (result instanceof Boolean) {
                 return (Boolean) result;
             }
         }
 
         // If that fails, try to get the value from the application manager
-        return _applicationManager.getUseJandexExtendedPath();
+        return _applicationManager.getEnableWebInfJandex();
     }
 
     public String[] getStartAfter() {

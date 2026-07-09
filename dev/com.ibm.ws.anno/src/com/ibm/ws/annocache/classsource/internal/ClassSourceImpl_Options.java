@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018,2026 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -57,27 +57,27 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     
     //
 
-    private static final boolean HAS_JANDEX_USE_EXTENDED_PATH_OVERRIDE =
-        AnnotationCacheServiceImpl_Logging.hasProperty(JANDEX_USE_EXTENDED_PATH_PROPERTY_NAME);
+    private static final boolean HAS_ENABLE_WEB_INF_JANDEX_OVERRIDE =
+        AnnotationCacheServiceImpl_Logging.hasProperty(ENABLE_WEB_INF_JANDEX_PROPERTY_NAME);
 
     @Trivial
-    public static boolean getHasJandexUseExtendedPathOverride() {
-        return HAS_JANDEX_USE_EXTENDED_PATH_OVERRIDE;
+    public static boolean getHasJandexEnableWebInfOverride() {
+        return HAS_ENABLE_WEB_INF_JANDEX_OVERRIDE;
     }
 
-    private static final Boolean USE_JANDEX_EXTENDED_PATH_OVERRIDE;
+    private static final Boolean JANDEX_ENABLE_WEB_INF_OVERRIDE;
 
     static {
         String override = AnnotationCacheServiceImpl_Logging.getProperty(
             AnnotationCacheServiceImpl_Logging.ANNO_LOGGER,
             CLASS_NAME, "<static init>",
-            JANDEX_USE_EXTENDED_PATH_PROPERTY_NAME, null);
-        USE_JANDEX_EXTENDED_PATH_OVERRIDE = ( override == null ? null : Boolean.valueOf(override) );
+            ENABLE_WEB_INF_JANDEX_PROPERTY_NAME, null);
+        JANDEX_ENABLE_WEB_INF_OVERRIDE = ( override == null ? null : Boolean.valueOf(override) );
     }
 
     @Trivial
-    public static Boolean getJandexUseExtendedPathOverride() {
-        return USE_JANDEX_EXTENDED_PATH_OVERRIDE;
+    public static Boolean getJandexEnableWebInfOverride() {
+        return JANDEX_ENABLE_WEB_INF_OVERRIDE;
     }
 
     //
@@ -115,12 +115,12 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
             this.jandexPath = JANDEX_PATH_DEFAULT_VALUE;
         }
         
-        if ( getHasJandexUseExtendedPathOverride() ) {
-            this.isSetJandexUseExtendedPath = true;
-            this.jandexUseExtendedPath = getJandexUseExtendedPathOverride();
+        if ( getHasJandexEnableWebInfOverride() ) {
+            this.isSetJandexEnableWebInf = true;
+            this.jandexEnableWebInf = getJandexEnableWebInfOverride();
         } else {
-            this.isSetJandexUseExtendedPath = false;
-            this.jandexUseExtendedPath = JANDEX_USE_EXTENDED_PATH_DEFAULT_VALUE;
+            this.isSetJandexEnableWebInf = false;
+            this.jandexEnableWebInf = ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
         }        
         
         if ( getHasScanThreadsOverride() ) {
@@ -140,7 +140,7 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
             "(" +
                 " UseJandex " + useJandex + " - " + USE_JANDEX_OVERRIDE + ", " +
                 " JandexPath " + ('"' + jandexPath + '"' + (isSetJandexPath ? "[Set]" : "[Unset]")) + ", " +
-                " UseExtendedPath " + jandexUseExtendedPath + " - " + USE_JANDEX_EXTENDED_PATH_OVERRIDE + ", " +
+                " JandexEnableWebInf " + jandexEnableWebInf + " - " + JANDEX_ENABLE_WEB_INF_OVERRIDE + ", " +
                 " ScanThreads " + (Integer.toString(scanThreads)+ (isSetScanThreads ? "[Set]" : "[Unset]")) +
             ")";
     }
@@ -220,35 +220,41 @@ public class ClassSourceImpl_Options implements ClassSource_Options {
     //
     
     @Override
-    public boolean getJandexUseExtendedPathDefault() {
-        return JANDEX_USE_EXTENDED_PATH_DEFAULT_VALUE;
+    public boolean getJandexEnableWebInfDefault() {
+        return ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
     }
 
-    private boolean isSetJandexUseExtendedPath;
-    private boolean jandexUseExtendedPath = JANDEX_USE_EXTENDED_PATH_DEFAULT_VALUE;
+    private boolean isSetJandexEnableWebInf;
+    private boolean jandexEnableWebInf = ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
 
     @Override
     @Trivial
-    public boolean getIsSetJandexUseExtendedPath() {
-        return isSetJandexUseExtendedPath;
+    public boolean getIsSetEnableWebInfJandex() {
+        return isSetJandexEnableWebInf;
     }
 
     @Override
     @Trivial    
-    public boolean getJandexUseExtendedPath() {
-        return jandexUseExtendedPath;
+    public boolean getEnableWebInfJandex() {
+        return jandexEnableWebInf;
     }
 
     @Override
-    public void setJandexUseExtendedPath(boolean jandexUseExtendedPath) {
-        this.jandexUseExtendedPath = jandexUseExtendedPath;
-        this.isSetJandexUseExtendedPath = true;
+    public void setEnableWebInfJandex(boolean jandexEnableWebInf) {
+        this.jandexEnableWebInf = jandexEnableWebInf;
+        this.isSetJandexEnableWebInf = true;
     }
 
     @Override
-    public void unsetJandexUseExtendedPath() {
-        this.jandexUseExtendedPath = JANDEX_USE_EXTENDED_PATH_DEFAULT_VALUE;
-        this.isSetJandexUseExtendedPath = false;
+    public void unsetEnableWebInfJandex() {
+        this.jandexEnableWebInf = ENABLE_WEB_INF_JANDEX_DEFAULT_VALUE;
+        this.isSetJandexEnableWebInf = false;
+    }
+
+    @Override
+    @Trivial    
+    public String getJandexWebInfPath() {
+        return ClassSource_Options.JANDEX_PATH_WEB_INF;
     }
     
     //

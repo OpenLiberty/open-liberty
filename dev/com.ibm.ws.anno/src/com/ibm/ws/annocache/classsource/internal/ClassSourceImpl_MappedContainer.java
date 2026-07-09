@@ -431,13 +431,13 @@ public class ClassSourceImpl_MappedContainer
     //
 
     @Override
-    public boolean getJandexUseExtendedPath() {
-        return getOptions().getJandexUseExtendedPath();
+    public boolean getJandexEnableWebInf() {
+        return getOptions().getEnableWebInfJandex();
     }
 
     @Override
-    public String getJandexExtendedPath() {
-        return getRawJandexPath();
+    public String getJandexWebInfPath() {
+        return getOptions().getJandexWebInfPath();
     }
     
     //

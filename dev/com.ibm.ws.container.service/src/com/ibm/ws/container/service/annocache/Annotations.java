@@ -212,18 +212,18 @@ public interface Annotations {
      * @return True or false telling if the extended jandex location
      *     is to be used.
      */
-    boolean getJandexUseExtendedPath();
+    boolean getEnableWebInfJandex();
 
     /**
-     * Set if extended jandex paths are to be used.
+     * Set if the WEB-INF jandex path is to be used.
      * 
      * This is specifically to enable locating the jandex index under
      * "WEB-INF/classes/META-INF/classes".
      * 
-     * @param useJandexExtendedPath True or false telling if the
+     * @param enableWebInfJandex True or false telling if the
      *     extended jandex location is to be used.
      */
-    void setJandexUseExtendedPath(boolean useJandexExtendedPath);
+    void setEnableWebInfJandex(boolean enableWebInfJandex);
 
     //
 

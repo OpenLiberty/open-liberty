@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018, 2025 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -566,16 +566,16 @@ public abstract class AnnotationsImpl implements Annotations {
         this.useJandex = useJandex;
     }
 
-    private boolean jandexUseExtendedPath;
+    private boolean enableWebInfJandex;
     
     @Override
-    public boolean getJandexUseExtendedPath() {
-        return jandexUseExtendedPath;
+    public boolean getEnableWebInfJandex() {
+        return enableWebInfJandex;
     }
 
     @Override
-    public void setJandexUseExtendedPath(boolean jandexUseExtendedPath) {
-        this.jandexUseExtendedPath = jandexUseExtendedPath;
+    public void setEnableWebInfJandex(boolean jandexEnableWebInf) {
+        this.enableWebInfJandex = jandexEnableWebInf;
     }    
     
     protected ClassSource_Options createOptions() {
@@ -585,24 +585,35 @@ public abstract class AnnotationsImpl implements Annotations {
         }
 
         ClassSource_Options options = classSourceFactory.createOptions();
+        
+        // TODO:
+        //
+        // 'useJandex' and 'enableWebInfJandex' may be overridden by system properties.
+        //
+        // The override is applied within the options constructor. That location
+        // is problematic, leading to the convoluted initialization steps, below.
+        // That is, after creating the options, if they have not been overridden
+        // during the initial construction, assign the externally supplied value.
+        //
+        // By default, the values must be explicitly set on the annotations object.
+        //
+        // The subclass, 'ModuleAnnotationsImpl', obtains the values from the
+        // application information.
+
         if ( !options.getIsSetUseJandex() ) {
             options.setUseJandex( getUseJandex() );
         } else {
-            // TODO: *Maybe*, NLS enable this.
-            //       The override is an unpublished system property.  This message should
-            //       never appear except during internal testing.
+            // NLS not done: INFO message for internal property used for testing.
             Tr.info(tc, "Application jandex setting [ " + getUseJandex() + " ]" +
                         " overridden by property setting [ " + options.getUseJandex() + " ]");
         }
 
-        if ( !options.getIsSetJandexUseExtendedPath() ) {
-            options.setJandexUseExtendedPath( getJandexUseExtendedPath() );
+        if ( !options.getIsSetEnableWebInfJandex() ) {
+            options.setEnableWebInfJandex( getEnableWebInfJandex() );
         } else {
-            // TODO: *Maybe*, NLS enable this.
-            //       The override is an unpublished system property.  This message should
-            //       never appear except during internal testing.
-            Tr.info(tc, "Application jandex extend path enablement [ " + getJandexUseExtendedPath() + " ]" +
-                        " overridden by property setting [ " + options.getJandexUseExtendedPath() + " ]");
+            // NLS not done: INFO message for internal property used for testing.
+            Tr.info(tc, "Application jandex WEB-INF enablement [ " + getEnableWebInfJandex() + " ]" +
+                        " overridden by property setting [ " + options.getEnableWebInfJandex() + " ]");
         }        
 
         return options;

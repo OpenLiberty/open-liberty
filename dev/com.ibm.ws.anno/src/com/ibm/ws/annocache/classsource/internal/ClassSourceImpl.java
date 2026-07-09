@@ -343,53 +343,26 @@ public abstract class ClassSourceImpl implements ClassSource {
      * @return The path to the jandex index.
      */
     public String getJandexPath() {
-        return getRawJandexPath();
-    }
-
-    /**
-     * Answer the raw jandex index path.
-     *
-     * Default to answer the jandex index path provided
-     * by the class source options.
-     * 
-     * This provides direct access to the options value
-     * when {@link #getJandexPath()} modifies that value.
-     *
-     * @return The unmodified jandex index path.
-     */    
-    public String getRawJandexPath() {
         return getOptions().getJandexPath();
     }
-    
+
     /**
-     * Tell if the jandex extended path is to be used.
-     * 
-     * This default implementation always answers false.
-     * 
-     * This API is provided to enable the mapped container
-     * class source to provide extended jandex paths.
+     * Tell if the jandex WEB-INF path is to be used.
      * 
      * @return True or false telling if the jandex extended
-     *     path is to be used.  This implementation always
-     *     answers false. 
+     *     path is to be used.
      */    
-    public boolean getJandexUseExtendedPath() {
-        return false;
+    public boolean getJandexEnableWebInf() {
+        return getOptions().getIsSetEnableWebInfJandex();
     }
 
     /**
-     * Answer the jandex extended path.
+     * Answer the jandex WEB-INF path.
      * 
-     * This default implementation always answers null.
-     * 
-     * This API is provided to enable the mapped container class
-     * source to provide an extended jandex index path.
-     * 
-     * @return The jandex extended path.  This implementation
-     *     always answers null. 
+     * @return The jandex WEB-INF path.
      */
-    public String getJandexExtendedPath() {
-        return null;
+    public String getJandexWebInfPath() {
+        return getOptions().getJandexWebInfPath();
     }
     
     // Sparse Jandex Index Methods ...
@@ -417,10 +390,10 @@ public abstract class ClassSourceImpl implements ClassSource {
         SparseIndex jandexIndex = getSparseJandexIndex(jandexPath);
 
         if ( jandexIndex == null ) {
-            if ( getJandexUseExtendedPath() ) {
-                jandexPath = getJandexExtendedPath();                
+            if ( getJandexEnableWebInf() ) {
+                jandexPath = getJandexWebInfPath();                
                 if ( logger.isLoggable(Level.FINER) ) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Extended path [ " + jandexPath + " ]");
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "WEB-INF path [ " + jandexPath + " ]");
                 }                        
                 jandexIndex = getSparseJandexIndex(jandexPath);
             } else {
@@ -832,10 +805,10 @@ public abstract class ClassSourceImpl implements ClassSource {
         Index jandexIndex = getJandexIndex(jandexPath);
 
         if ( jandexIndex == null ) {
-            if ( getJandexUseExtendedPath() ) {
-                jandexPath = getJandexExtendedPath();                
+            if ( getJandexEnableWebInf() ) {
+                jandexPath = getJandexWebInfPath();                
                 if ( logger.isLoggable(Level.FINER) ) {
-                    logger.logp(Level.FINER, CLASS_NAME, methodName, "Extended path [ " + jandexPath + " ]");
+                    logger.logp(Level.FINER, CLASS_NAME, methodName, "WEB-INF path [ " + jandexPath + " ]");
                 }                        
                 jandexIndex = getJandexIndex(jandexPath);
             } else {
@@ -1023,8 +996,8 @@ public abstract class ClassSourceImpl implements ClassSource {
 
                 checkUnusedJandex( getJandexPath() );
 
-                if ( getJandexUseExtendedPath() ) {
-                    checkUnusedJandex( getJandexExtendedPath() );
+                if ( getJandexEnableWebInf() ) {
+                    checkUnusedJandex( getJandexWebInfPath() );
                 }
             }
 
