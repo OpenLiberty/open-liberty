@@ -187,6 +187,8 @@ public class TransactionContextImpl implements ThreadContext {
      * @throws ClassNotFoundException
      */
     private void readObject(java.io.ObjectInputStream in) throws IOException, ClassNotFoundException {
+        suspendedUOW = new ThreadLocal<UOWToken>();//Reinitialize transient field.
+
         GetField fields = in.readFields();
 
         Object type = fields.get(TYPE, null);
