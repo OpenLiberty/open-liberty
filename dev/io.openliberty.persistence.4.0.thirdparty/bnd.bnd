@@ -121,14 +121,8 @@ DynamicImport-Package: \
  jakarta.xml.bind.helpers, \
  jakarta.xml.bind.util
 
-Private-Package: io.openliberty.persistence.internal.helper
-
 Include-Resource: \
-  @${repo;io.openliberty.persistence.3.2.thirdparty}!/!(META-INF/MANIFEST.MF|OSGI-INF/*),\
-  org/eclipse/persistence/mappings=${bin}/org/eclipse/persistence/mappings,\
-  org/eclipse/persistence/queries=${bin}/org/eclipse/persistence/queries,\
-  org/eclipse/persistence/internal/helper=${bin}/org/eclipse/persistence/internal/helper,\
-  org/eclipse/persistence/platform/database=${bin}/org/eclipse/persistence/platform/database
+  @${repo;io.openliberty.persistence.3.2.thirdparty}!/!(META-INF/MANIFEST.MF|OSGI-INF/*)
 
 publish.wlp.jar.suffix: dev/api/third-party
 
