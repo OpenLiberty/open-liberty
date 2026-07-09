@@ -229,7 +229,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
         Collection<Fileset> filesets = sharedLib.getFilesets();
         if (filesets == null) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                Tr.debug(tc, "No file sets founds", null);
+                Tr.debug(tc, "No file sets found in shared library", null);
             }
             return;
         }
@@ -247,7 +247,12 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
             }
         }
 
-        // Parse version from micrometer-registry-prometheus JAR
+        /*
+         * Parse version from micrometer-core and identify if
+         * micrometer-registry-prometheus or if
+         * micrometer-registry-prometheus-simpleclient is used (if 1.13.x+)
+         *
+         */
         boolean foundPre1_13 = false;
         boolean found1_13OrAbove = false;
 
@@ -272,6 +277,10 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
                         }
                     } catch (NumberFormatException e) {
                         // Skip if version parsing fails
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, String.format("The version parsed is in an unexpected fomat for the file: %s ",
+                                    fileName));
+                        }
                     }
                 }
             }
