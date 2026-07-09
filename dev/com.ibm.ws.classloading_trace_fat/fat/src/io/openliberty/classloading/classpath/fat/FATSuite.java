@@ -43,7 +43,8 @@ import test.bundle.api2.c.API_C2;
 
 @RunWith(Suite.class)
 @SuiteClasses({
-    io.openliberty.classloading.trace.fat.LibraryClassLoadingTraceTest.class
+    io.openliberty.classloading.trace.fat.LibraryClassLoadingTraceTest.class,
+    io.openliberty.classloading.trace.fat.ClassLoaderToStringTraceTest.class
 })
 public class FATSuite {
 

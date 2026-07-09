@@ -262,4 +262,26 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         return bundle;
     }
 
+    @Override
+    @Trivial
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GatewayClassLoader@");
+        sb.append(Integer.toHexString(this.hashCode()));
+        
+        if (config.getApiTypeVisibility() != null) {
+            sb.append(":apis=").append(config.getApiTypeVisibility());
+        }
+        if (config.getDelegateToSystem()) {
+            sb.append(":delegateToSystem=true");
+        }
+        
+        if (bundle != null) {
+            sb.append(" [bundle=").append(bundle.getSymbolicName());
+            sb.append(":").append(bundle.getVersion()).append("]");
+        }
+        
+        return sb.toString();
+    }
+
 }
