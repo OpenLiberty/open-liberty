@@ -56,22 +56,22 @@ public class JandexAppTrueAppMgrTrueTest extends JandexAppTest {
     //
 
     @Test
-    public void trueTrue_testServletIsRunning() throws Exception {
+    public void trueTrue_testServletIsRunning_webinf() throws Exception {
         super.testServletIsRunning();
     }
 
     @Test
-    public void trueTrue_testServletisRunning31() throws Exception {
+    public void trueTrue_testServletisRunning31_webinf() throws Exception {
         super.testServletIsRunning31();
     }
 
     @Test
-    public void trueTrue_testServletVersions() throws Exception {
+    public void trueTrue_testServletVersions_webinf() throws Exception {
         super.testServletVersions();
     }
 
     @Test
-    public void trueTrue_testJandex() throws Exception {
+    public void trueTrue_testJandex_webinf() throws Exception {
         super.testJandex(JandexAppTest.DO_EXPECT_JANDEX);
     }
 }
