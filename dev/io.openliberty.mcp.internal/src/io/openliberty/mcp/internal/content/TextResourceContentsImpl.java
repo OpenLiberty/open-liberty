@@ -16,10 +16,15 @@ import java.util.Optional;
 import org.mcpjava.server.resources.TextResourceContents;
 
 import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jakarta.json.bind.serializer.JsonbSerializer;
+import jakarta.json.bind.serializer.SerializationContext;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  * Record implementation of TextResourceContents
  */
+@JsonbTypeSerializer(TextResourceContentsImpl.Serializer.class)
 public record TextResourceContentsImpl(String uri,
                                        String text,
                                        String mimeTypeValue,
@@ -59,6 +64,21 @@ public record TextResourceContentsImpl(String uri,
         @Override
         public TextResourceContents build() {
             return new TextResourceContentsImpl(uri, text, mimeType, Map.copyOf(metadata));
+        }
+    }
+
+    public static class Serializer implements JsonbSerializer<TextResourceContentsImpl> {
+
+        @Override
+        public void serialize(TextResourceContentsImpl obj, JsonGenerator json, SerializationContext ctx) {
+            json.writeStartObject();
+            json.write("uri", obj.uri());
+            json.write("text", obj.text());
+            obj.mimeType().ifPresent(m -> json.write("mimeType", m));
+            if (!obj.metadata().isEmpty()) {
+                ctx.serialize("_meta", obj.metadata(), json);
+            }
+            json.writeEnd();
         }
     }
 }

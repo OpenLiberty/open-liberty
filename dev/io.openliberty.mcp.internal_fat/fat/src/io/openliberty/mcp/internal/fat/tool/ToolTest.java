@@ -2732,4 +2732,164 @@ public class ToolTest extends FATServletClient {
         JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
     }
 
+    @Test
+    public void testResourceLinkTool() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "resourceLinkTool",
+                            "arguments": {
+                              "name": "readme",
+                              "uri": "file:///readme.md"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource_link",
+                                "name": "readme",
+                                "uri": "file:///readme.md",
+                                "title": "Resource: readme",
+                                "mimeType": "text/plain"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testResourceLinkToolWithAnnotation() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "resourceLinkToolWithAnnotation",
+                            "arguments": {
+                              "name": "readme",
+                              "uri": "file:///readme.md"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONAssert.assertEquals("""
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource_link",
+                                "name": "readme",
+                                "uri": "file:///readme.md",
+                                "annotations": {
+                                  "audience": ["user"],
+                                  "lastModified": "2025-08-26T08:40:00Z",
+                                  "priority": null
+                                }
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testEmbeddedTextResourceTool() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "embeddedTextResourceTool",
+                            "arguments": {
+                              "text": "Hello world",
+                              "uri": "file:///readme.md"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONAssert.assertEquals("""
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource",
+                                "resource": {
+                                  "uri": "file:///readme.md",
+                                  "text": "Hello world",
+                                  "mimeType": "text/plain"
+                                }
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testEmbeddedBlobResourceTool() throws Exception {
+        String imageData64 = TestConstants.TEST_IMAGE_DATA_64;
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "embeddedBlobResourceTool",
+                            "arguments": {
+                              "imageData": "%s",
+                              "uri": "file:///image.png"
+                            }
+                          }
+                        }
+                        """.formatted(imageData64);
+
+        String response = client.callMCP(request);
+        JSONAssert.assertEquals("""
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource",
+                                "resource": {
+                                  "uri": "file:///image.png",
+                                  "blob": "%s",
+                                  "mimeType": "image/png"
+                                }
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """.formatted(imageData64), response, JSONCompareMode.STRICT);
+    }
+
 }

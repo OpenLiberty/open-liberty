@@ -19,10 +19,15 @@ import org.mcpjava.server.resources.ResourceContents;
 import org.mcpjava.server.resources.TextResourceContents;
 
 import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jakarta.json.bind.serializer.JsonbSerializer;
+import jakarta.json.bind.serializer.SerializationContext;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  * Record implementation of {@link EmbeddedResource}
  */
+@JsonbTypeSerializer(EmbeddedResourceImpl.Serializer.class)
 public record EmbeddedResourceImpl(ResourceContents resource, Annotations annotationsValue, Map<String, Object> metadata) implements EmbeddedResource {
 
     @Override
@@ -99,6 +104,21 @@ public record EmbeddedResourceImpl(ResourceContents resource, Annotations annota
         @Override
         public EmbeddedResource build() {
             return new EmbeddedResourceImpl(contentBuilder.build(), annotations, Map.copyOf(metadata));
+        }
+    }
+
+    public static class Serializer implements JsonbSerializer<EmbeddedResourceImpl> {
+
+        @Override
+        public void serialize(EmbeddedResourceImpl obj, JsonGenerator json, SerializationContext ctx) {
+            json.writeStartObject();
+            json.write("type", "resource");
+            ctx.serialize("resource", obj.resource(), json);
+            obj.annotations().ifPresent(a -> ctx.serialize("annotations", a, json));
+            if (!obj.metadata().isEmpty()) {
+                ctx.serialize("_meta", obj.metadata(), json);
+            }
+            json.writeEnd();
         }
     }
 

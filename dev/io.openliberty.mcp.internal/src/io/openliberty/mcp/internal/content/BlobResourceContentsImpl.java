@@ -9,6 +9,7 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.content;
 
+import java.util.Base64;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -16,10 +17,15 @@ import java.util.Optional;
 import org.mcpjava.server.resources.BlobResourceContents;
 
 import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jakarta.json.bind.serializer.JsonbSerializer;
+import jakarta.json.bind.serializer.SerializationContext;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  * Record implementation of BlobResourceContents
  */
+@JsonbTypeSerializer(BlobResourceContentsImpl.Serializer.class)
 public record BlobResourceContentsImpl(String uri,
                                        byte[] blob,
                                        String mimeTypeValue,
@@ -59,6 +65,21 @@ public record BlobResourceContentsImpl(String uri,
         @Override
         public BlobResourceContents build() {
             return new BlobResourceContentsImpl(uri, blob, mimeType, Map.copyOf(metadata));
+        }
+    }
+
+    public static class Serializer implements JsonbSerializer<BlobResourceContentsImpl> {
+
+        @Override
+        public void serialize(BlobResourceContentsImpl obj, JsonGenerator json, SerializationContext ctx) {
+            json.writeStartObject();
+            json.write("uri", obj.uri());
+            json.write("blob", Base64.getEncoder().encodeToString(obj.blob()));
+            obj.mimeType().ifPresent(m -> json.write("mimeType", m));
+            if (!obj.metadata().isEmpty()) {
+                ctx.serialize("_meta", obj.metadata(), json);
+            }
+            json.writeEnd();
         }
     }
 }
