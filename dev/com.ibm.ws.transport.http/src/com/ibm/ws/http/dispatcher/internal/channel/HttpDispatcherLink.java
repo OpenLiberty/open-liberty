@@ -1073,16 +1073,7 @@ public class HttpDispatcherLink extends InboundApplicationLink implements HttpIn
      */
     @Override
     public String getRequestedHost() {
-        // Get the requested host: this takes into consideration whether or not we should trust the
-        // contents of Host and $WS* headers..
-        if (useTrustedHeaders()) {
-            // If the plugin provided a header, prefer that..
-            String pluginHost = request.getHeader(HttpHeaderKeys.HDR_$WSSN);
-            if (pluginHost != null)
-                return pluginHost;
-        }
-
-        // find the HostName according to HTTP 1.1 spec
+        // Get the requested host: find the HostName according to HTTP 1.1 spec
         String host = request.getVirtualHost();
 
         if (host == null) // unlikely.

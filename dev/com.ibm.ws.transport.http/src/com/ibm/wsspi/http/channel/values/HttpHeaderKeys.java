@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -479,7 +479,7 @@ public class HttpHeaderKeys extends HeaderKeys {
 
     /** private headers defined as sensitive */
     private static final HashSet<String> sensitiveHeaderList = new HashSet<String>(Arrays.asList(HDR_$WSCC.getName(), HDR_$WSRA.getName(), HDR_$WSRH.getName(),
-                                                                                                 HDR_$WSAT.getName(), HDR_$WSRU.getName()));
+                                                                                                 HDR_$WSAT.getName(), HDR_$WSRU.getName(), HDR_$WSSP.getName()));
 
     /**
      * @param headerName
