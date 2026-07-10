@@ -65,6 +65,7 @@ import io.openliberty.mcp.internal.fat.tool.ExceptionLoggingTest;
 import io.openliberty.mcp.internal.fat.tool.GenericToolTest;
 import io.openliberty.mcp.internal.fat.tool.InactiveCdiTest;
 import io.openliberty.mcp.internal.fat.tool.McpUrlPathTest;
+import io.openliberty.mcp.internal.fat.tool.MetaKeyValidationTest;
 import io.openliberty.mcp.internal.fat.tool.MpMetricsOperationsTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
@@ -110,6 +111,7 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 LifecycleTest.class,
                 McpMonitorTest.class,
                 McpUrlPathTest.class,
+                MetaKeyValidationTest.class,
                 MultiAppIsolationTest.class,
                 MultiModuleToolTestToolManager.class,
                 NonRequiredArgsToolsTest.class,
@@ -117,7 +119,6 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 // TestContainer Tests
                 ConformanceTests.class,
                 OidcTests.class,
-
                 CustomServerInfoTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,

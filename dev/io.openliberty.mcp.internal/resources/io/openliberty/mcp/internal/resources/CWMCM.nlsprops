@@ -285,3 +285,32 @@ CWMCM0034W.converter.missing.type.parameter.useraction=Change the class declarat
 CWMCM0035W.converter.generic.type=CWMCM0035W: The {0} DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type.
 CWMCM0035W.converter.generic.type.explanation=A DefaultValueConverter implementation class was registered with a generic type parameter such as T instead of a concrete type.
 CWMCM0035W.converter.generic.type.useraction=Change the class declaration to implement the DefaultValueConverter interface with a concrete type parameter. For example: MyConverterClass implements DefaultValueConverter<MyType>.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+CWMCM0037E.invalid.meta.key.name=CWMCM0037E: The "{0}" _meta key is not valid. The name segment must begin and end with an alphanumeric character and may only contain alphanumerics, hyphens, underscores, or dots in between.
+CWMCM0037E.invalid.meta.key.name.explanation=The name segment of the _meta key does not follow the MCP specification rules. The name segment is the part after the optional prefix slash, or the whole key when no prefix is present.
+CWMCM0037E.invalid.meta.key.name.useraction=Ensure that the name segment of the _meta key begins and ends with an alphanumeric character.
+
+# Used as exception message
+# do not translate _meta
+# {0} = The invalid _meta key
+CWMCM0038E.empty.meta.key.prefix=CWMCM0038E: The "{0}" _meta key has an empty prefix before '/'.
+CWMCM0038E.empty.meta.key.prefix.explanation=The _meta key contains a '/' but has no prefix labels before it. The prefix must be one or more dot-separated labels.
+CWMCM0038E.empty.meta.key.prefix.useraction=Add a valid prefix before the '/', or remove the '/' if no prefix is needed.
+
+# Used as exception message
+# do not translate _meta, MCP
+# {0} = The invalid _meta key
+# {1} = The invalid prefix label (a user-supplied value, not translated)
+CWMCM0039E.invalid.meta.key.label=CWMCM0039E: The "{0}" _meta key has an invalid prefix label "{1}". Labels must start with a letter, end with a letter or digit, and may only contain letters, digits, or hyphens in between.
+CWMCM0039E.invalid.meta.key.label.explanation=The prefix segment of the _meta key contains a label that does not follow the MCP specification rules.
+CWMCM0039E.invalid.meta.key.label.useraction=Ensure that each label in the _meta key prefix starts with a letter, ends with a letter or digit, and contains only letters, digits, or hyphens in between.
+
+# Used as exception message
+# do not translate _meta, modelcontextprotocol, MCP
+# {0} = The reserved _meta key
+CWMCM0040E.reserved.meta.key=CWMCM0040E: The "{0}" _meta key uses a reserved prefix. Any prefix whose second label is "mcp" or "modelcontextprotocol" is reserved for MCP use.
+CWMCM0040E.reserved.meta.key.explanation=The _meta key prefix is reserved by the MCP specification. Prefixes whose second label is "mcp" or "modelcontextprotocol" (case-insensitive) may not be used by implementations.
+CWMCM0040E.reserved.meta.key.useraction=Use a prefix whose second label is not "mcp" or "modelcontextprotocol". For example, "com.example/" is valid but "com.mcp/" is not.
