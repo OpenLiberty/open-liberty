@@ -235,16 +235,7 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
         }
 
         for (Fileset fileset : filesets) {
-            Collection<File> files = fileset.getFileset();
-            if (files == null) {
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(tc, "No files found in fileset: " + fileset, null);
-                }
-                continue;
-            }
-            for (File file : files) {
-                allFiles.add(file);
-            }
+            allFiles.addAll(fileset.getFileset());
         }
 
         /*
