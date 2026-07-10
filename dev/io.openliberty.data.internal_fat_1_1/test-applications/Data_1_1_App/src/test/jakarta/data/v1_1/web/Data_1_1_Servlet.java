@@ -1084,7 +1084,9 @@ public class Data_1_1_Servlet extends FATServlet {
     // connections after Oracle's distributed_lock_timeout (default 60s), which
     // surfaces as a DataException. EclipseLink connections are not classified as
     // distributed transactions, so ORA-02049 never fires and no DataException is raised.
-    @SkipIfSysProp(SkipIfSysProp.DB_Oracle)
+    // SQL Server ignores ATTENTION tokens while waiting for a lock, so the query timeout
+    // never fires and the test hangs indefinitely.
+    @SkipIfSysProp({ SkipIfSysProp.DB_Oracle, SkipIfSysProp.DB_SQLServer })
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
@@ -1545,6 +1547,8 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use a NativeQuery method that performs SQL INSERT, UPDATE, and DELETE
      * statements.
      */
+    // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testNativeQueryExecutesStatements() {
         // Populate with 14/23.
@@ -1615,6 +1619,8 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use a NativeQuery method that selects multiple entities as a list.
      * Also covers a NativeQuery that has no parameters.
      */
+    // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testNativeQueryReturnsListOfEntities() {
         assertEquals(List.of("1/2",
@@ -1674,6 +1680,8 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use a NativeQuery method that selects the result of a count operation
      * as a single value.
      */
+    // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testNativeQuerySelectsCount() {
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
@@ -1973,7 +1981,9 @@ public class Data_1_1_Servlet extends FATServlet {
     // connections after Oracle's distributed_lock_timeout (default 60s), which
     // surfaces as a DataException. EclipseLink connections are not classified as
     // distributed transactions, so ORA-02049 never fires and no DataException is raised.
-    @SkipIfSysProp(SkipIfSysProp.DB_Oracle)
+    // SQL Server ignores ATTENTION tokens while waiting for a lock, so the query timeout
+    // never fires and the test hangs indefinitely.
+    @SkipIfSysProp({ SkipIfSysProp.DB_Oracle, SkipIfSysProp.DB_SQLServer })
     @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
                    "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
@@ -2483,6 +2493,8 @@ public class Data_1_1_Servlet extends FATServlet {
      * Request sorting of results according to a mixture of
      * two sort expressions and one entity attribute.
      */
+    // EclipseLink generates NULLS FIRST in ORDER BY which SQL Server does not support
+    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testSortByMixtureOfExpressionsAndAttributes() {
 
