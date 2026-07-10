@@ -2553,14 +2553,13 @@ public class Data_1_1_Servlet extends FATServlet {
                                                      .minus(_Fraction.name.length())
                                                      .plus(3)
                                                      .abs()
-                                                     .asc()
-                                                     .nullsFirst(),  //For Oracle returning "" as null
-                                              _Fraction.reduced.asc().nullsFirst(),
-                                              _Fraction.name.left(4).desc().nullsFirst(),
+                                                     .asc(),  
+                                              _Fraction.reduced.asc(),
+                                              _Fraction.name.left(4).desc(),
                                               _Fraction.decimal.navigate(_Decimal.digits)
                                                               .navigate(_Digits.repeating)
                                                               .asc()
-                                                              .nullsFirst()),
+                                                              .nullsFirst()), //For Oracle returning "" as null
                                      Limit.of(12)));
     }
 
