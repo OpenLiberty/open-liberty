@@ -5200,7 +5200,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
             throw new IllegalHttpBodyException("Illegal chunk length digit: " + ch);
         }
         if (length > 0x07FFFFFF){
-            throw new IllegalHttpBodyException("Chunk size overflow" );
+            throw new MessageTooLargeException("Chunk size overflow" );
         }
         length <<= 4;
         length += mod;
@@ -5274,7 +5274,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, "Client sent a chunk size that exceeds the maximum allowed value");
                     }
-                    throw new IllegalHttpBodyException("Chunk size exceeds maximum allowed value");
+                    throw new MessageTooLargeException("Chunk size exceeds maximum allowed value");
                 }
                 length = convertCharToLength(ch, length);
             }
