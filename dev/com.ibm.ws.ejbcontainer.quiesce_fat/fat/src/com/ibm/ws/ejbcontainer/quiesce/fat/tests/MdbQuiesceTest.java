@@ -175,8 +175,7 @@ public class MdbQuiesceTest extends FATServletClient {
             ("CWWKE1100I", // waiting for server quiesce
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:StartupSingletonQuiesceBnd:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:StartupSingletonQuiesceBnd:",
-             "CWWKO0220I", // standard quiesce listener defaultHttpEndpoint
-             "CWWKO0220I", // standard quiesce listener JMS Endpoint
+             "CWWKO0220I: TCP Channel defaultHttpEndpoint", // standard quiesce listener defaultHttpEndpoint
              "CWWKE1101I", // server quiesce complete
              "PreDestroy:MdbQuiesceApp:MdbQuiesceWeb:StartupSingletonQuiesceDefault:",
              "PreDestroy:MdbQuiesceApp:MdbQuiesceEjb:StartupSingletonQuiesceDefault:",
@@ -198,13 +197,13 @@ public class MdbQuiesceTest extends FATServletClient {
                                                                                       mdbServer.getDefaultLogFile());
 
             // Find PreDestroy messages
-            List<String> actualPreDestroy = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I|CWWKE1101I|PreDestroy:MdbQuiesceApp|CWWKZ0009I.*",
+            List<String> actualPreDestroy = mdbServer.findStringsInLogsUsingMark(".*CWWKE1100I|CWWKO0220I:.*defaultHttpEndpoint|CWWKE1101I|PreDestroy:MdbQuiesceApp|CWWKZ0009I.*",
                                                                                  mdbServer.getDefaultLogFile());
 
             // Verify all three message sequences are present in order
             verifyMessagesInOrder(expectedJcaDeactivation, actualJcaDeactivation, "JCA Deactivation", 4);
             verifyMessagesInOrder(expectedEjbDeactivation, actualEjbDeactivation, "EJB Deactivation", 4);
-            verifyMessagesInOrder(expectedPreDestroy, actualPreDestroy, "PreDestroy", 8);
+            verifyMessagesInOrder(expectedPreDestroy, actualPreDestroy, "PreDestroy", 7);
 
         } finally {
             if (mdbServer.isStarted()) {
