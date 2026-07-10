@@ -1085,7 +1085,9 @@ public class Data_1_1_Servlet extends FATServlet {
     // surfaces as a DataException. EclipseLink connections are not classified as
     // distributed transactions, so ORA-02049 never fires and no DataException is raised.
     @SkipIfSysProp(SkipIfSysProp.DB_Oracle)
-    @AllowedFFDC("javax.transaction.xa.XAException") // due to query timeout
+    @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
+                   "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                   "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
     @Test
     public void testLockModeAndQueryTimeoutAsQueryOptions() throws Exception {
         // Populate with 18/23.
@@ -1972,7 +1974,9 @@ public class Data_1_1_Servlet extends FATServlet {
     // surfaces as a DataException. EclipseLink connections are not classified as
     // distributed transactions, so ORA-02049 never fires and no DataException is raised.
     @SkipIfSysProp(SkipIfSysProp.DB_Oracle)
-    @AllowedFFDC("javax.transaction.xa.XAException") // due to query timeout
+    @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
+                   "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                   "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
     @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
         // Derby ignores query timeout and the lock timeout ends up applying instead
