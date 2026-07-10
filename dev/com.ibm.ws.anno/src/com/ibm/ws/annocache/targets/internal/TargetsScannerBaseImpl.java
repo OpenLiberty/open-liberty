@@ -417,12 +417,14 @@ public class TargetsScannerBaseImpl {
 
         if ( logger.isLoggable(Level.FINER) ) {
             logger.logp(Level.FINER, CLASS_NAME, methodName,
-                "Cache coverage for module {0} in application {1}:" +
-                " {2} of {3} module locations were read from cache;" +
-                " {4} of {5} module classes were read from cache.",
-                new Object[] { modName, appName,
-                    cacheSourceCount, sourceCount,
-                    cacheClassCount, classCount });
+                "Scan results: Application {0} module {1}:" +
+                " Overall: {2} locations with {3} classes;" +
+                " Jandex: {4} locations with {5} classes; " +
+                " Internal Cache: {6} locations with {7} classes",
+                new Object[] { appName, modName,
+                    sourceCount, classCount,
+                    jandexSourceCount, jandexClassCount,
+                    cacheSourceCount, cacheClassCount } );
         }
     }
 
