@@ -121,6 +121,36 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Indicates if testing with the Oracle database.
+     *
+     * @return true if testing with the Oracle database.
+     */
+    static final boolean isOracle() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("ojdbc");
+    }
+
+    /**
+     * Indicates if testing with the PostgreSQL database.
+     *
+     * @return true if testing with the PostgreSQL database.
+     */
+    static final boolean isPostgres() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("postgre");
+    }
+
+    /**
+     * Indicates if testing with the SQL Server database.
+     *
+     * @return true if testing with the SQL Server database.
+     */
+    static final boolean isSQLServer() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("mssql");
+    }
+
+    /**
      * Indicates if testing with the Hibernate Persistence provider
      * rather than EclipseLink.
      *
@@ -342,7 +372,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // EclipseLink does not have
         // CAST (value AS DOUBLE) for postgres and oracle
         // https://github.com/eclipse-ee4j/eclipselink/issues/2776
-        if (!isHibernatePersistence())
+        if (!isHibernatePersistence() && (isPostgres() || isOracle()))
             return;
 
         Restriction<Fraction> within22to34Hundreths = _Fraction.numerator
@@ -1547,10 +1577,12 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use a NativeQuery method that performs SQL INSERT, UPDATE, and DELETE
      * statements.
      */
-    // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
-    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testNativeQueryExecutesStatements() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
         // Populate with 14/23.
         // Ensure deletion in the finally block.
         fractions.create(14,
@@ -1619,10 +1651,12 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use a NativeQuery method that selects multiple entities as a list.
      * Also covers a NativeQuery that has no parameters.
      */
-    // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
-    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testNativeQueryReturnsListOfEntities() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
         assertEquals(List.of("1/2",
                              "1/3",
                              "1/4", "2/4",
@@ -1680,10 +1714,12 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use a NativeQuery method that selects the result of a count operation
      * as a single value.
      */
-    // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
-    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testNativeQuerySelectsCount() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
                      fractions.numReducedWithDenominatorOf(18, true));
     }
@@ -2493,10 +2529,11 @@ public class Data_1_1_Servlet extends FATServlet {
      * Request sorting of results according to a mixture of
      * two sort expressions and one entity attribute.
      */
-    // EclipseLink generates NULLS FIRST in ORDER BY which SQL Server does not support
-    @SkipIfSysProp(SkipIfSysProp.DB_SQLServer)
     @Test
     public void testSortByMixtureOfExpressionsAndAttributes() {
+        // EclipseLink generates NULLS FIRST in ORDER BY which SQL Server does not support
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
 
         //                                      sort1 sort2 sort3 sort4
         assertEquals(List.of("Two Sixteenths", //   7     F Two
