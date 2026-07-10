@@ -203,7 +203,7 @@ public class MdbQuiesceTest extends FATServletClient {
             // Verify all three message sequences are present in order
             verifyMessagesInOrder(expectedJcaDeactivation, actualJcaDeactivation, "JCA Deactivation", 4);
             verifyMessagesInOrder(expectedEjbDeactivation, actualEjbDeactivation, "EJB Deactivation", 4);
-            verifyMessagesInOrder(expectedPreDestroy, actualPreDestroy, "PreDestroy", 8);
+            verifyMessagesInOrder(expectedPreDestroy, actualPreDestroy, "PreDestroy", 7);
 
         } finally {
             if (mdbServer.isStarted()) {
