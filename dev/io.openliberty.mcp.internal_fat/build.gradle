@@ -31,7 +31,7 @@ dependencies {
   requiredLibs project(':io.openliberty.io.opentelemetry.2.1')
   noParamNamesCompileOnly project(':io.openliberty.mcp'),
                           project(path: ':io.openliberty.jakarta', configuration: 'cdi40'),
-                          project(':io.openliberty.org.mcp-java.mcp-server-api')
+                          project(':io.openliberty.org.mcpjava.mcp-server-api')
   implementation sourceSets.noParamNames.output  
 }
 

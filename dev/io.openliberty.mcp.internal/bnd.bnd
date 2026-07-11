@@ -52,7 +52,6 @@ Bundle-Localization: \
  io.openliberty.mcp.internal.introspection.McpIntrospector
  
 -buildpath: \
-	io.openliberty.org.mcp-java.mcp-server-api;version=latest,\
 	com.ibm.websphere.org.osgi.core;version=latest,\
 	com.ibm.websphere.org.osgi.service.cm;version=latest,\
 	com.ibm.ws.org.osgi.annotation.versioning;version=latest,\
@@ -65,6 +64,7 @@ Bundle-Localization: \
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.mcp;version=latest,\
+	io.openliberty.org.mcpjava.mcp-server-api;version=latest,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\
