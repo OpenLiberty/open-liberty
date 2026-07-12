@@ -156,8 +156,8 @@ public interface Fractions {
     @NativeQuery("""
                     SELECT *
                       FROM Fraction
-                     WHERE val >= ? AND val <= ?
-                     ORDER BY val
+                     WHERE VAL >= ? AND VAL <= ?
+                     ORDER BY VAL
                     """)
     Optional<Fraction> firstValueWithin(double minValue, double maxValue);
 

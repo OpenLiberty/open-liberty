@@ -65,6 +65,7 @@ import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
 import componenttest.app.FATServlet;
+import componenttest.annotation.SkipIfSysProp;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
 
@@ -117,6 +118,36 @@ public class Data_1_1_Servlet extends FATServlet {
     static final boolean isDerby() {
         String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
         return jdbcJarName.startsWith("derby");
+    }
+
+    /**
+     * Indicates if testing with the Oracle database.
+     *
+     * @return true if testing with the Oracle database.
+     */
+    static final boolean isOracle() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("ojdbc");
+    }
+
+    /**
+     * Indicates if testing with the PostgreSQL database.
+     *
+     * @return true if testing with the PostgreSQL database.
+     */
+    static final boolean isPostgres() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("postgre");
+    }
+
+    /**
+     * Indicates if testing with the SQL Server database.
+     *
+     * @return true if testing with the SQL Server database.
+     */
+    static final boolean isSQLServer() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("mssql");
     }
 
     /**
@@ -338,6 +369,12 @@ public class Data_1_1_Servlet extends FATServlet {
     @Test
     public void testCastIntegerToDouble() {
 
+        // EclipseLink does not have
+        // CAST (value AS DOUBLE) for postgres and oracle
+        // https://github.com/eclipse-ee4j/eclipselink/issues/2776
+        if (!isHibernatePersistence() && (isPostgres() || isOracle()))
+            return;
+
         Restriction<Fraction> within22to34Hundreths = _Fraction.numerator
                         .asDouble()
                         .dividedBy(_Fraction.denominator.asDouble())
@@ -509,23 +546,34 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use the QueryOptions annotation on a Find method to supply a load graph
      * that overrides loading of an ElementCollection to make it eager rather
      * than lazily loaded.
+     * 
+     * Applies scaling due to Oracle stripping trailing 0s
      */
     @Test
     public void testEntityGraphAsQueryOption() {
         assertEquals(List.of(BigDecimal.valueOf(300, 3), // nearest tenth
                              BigDecimal.valueOf(310, 3), // nearest hundreth
                              BigDecimal.valueOf(313, 3)), // nearest thousandth
-                     fractions.of(5, 16).orElseThrow().rounded);
+                     fractions.of(5, 16).orElseThrow().rounded
+                                        .stream()
+                                        .map(bd -> bd.setScale(3))
+                                        .toList());
 
         assertEquals(List.of(BigDecimal.valueOf(900, 3), // nearest tenth
                              BigDecimal.valueOf(860, 3), // nearest hundreth
                              BigDecimal.valueOf(857, 3)), // nearest thousandth
-                     fractions.of(6, 7).orElseThrow().rounded);
+                     fractions.of(6, 7).orElseThrow().rounded
+                                       .stream()
+                                       .map(bd -> bd.setScale(3))
+                                       .toList());
 
         assertEquals(List.of(BigDecimal.valueOf(600, 3), // nearest tenth
                              BigDecimal.valueOf(620, 3), // nearest hundreth
                              BigDecimal.valueOf(615, 3)), // nearest thousandth
-                     fractions.of(8, 13).orElseThrow().rounded);
+                     fractions.of(8, 13).orElseThrow().rounded
+                                        .stream()
+                                        .map(bd -> bd.setScale(3))
+                                        .toList());
     }
 
     /**
@@ -1405,7 +1453,17 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use the QueryOptions annotation to establish pessimistic locking and
      * a query timeout on a repository method annotated JakartaQuery.
      */
-    @AllowedFFDC("javax.transaction.xa.XAException") // due to query timeout
+    // Oracle does not support a query timeout on a statement that is blocked waiting
+    // for a lock. Hibernate only passes accidentally because ORA-02049 fires on its
+    // connections after Oracle's distributed_lock_timeout (default 60s), which
+    // surfaces as a DataException. EclipseLink connections are not classified as
+    // distributed transactions, so ORA-02049 never fires and no DataException is raised.
+    // SQL Server ignores ATTENTION tokens while waiting for a lock, so the query timeout
+    // never fires and the test hangs indefinitely.
+    @SkipIfSysProp({ SkipIfSysProp.DB_Oracle, SkipIfSysProp.DB_SQLServer })
+    @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
+                   "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                   "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
     @Test
     public void testLockModeAndQueryTimeoutAsQueryOptions() throws Exception {
         // Populate with 18/23.
@@ -1865,6 +1923,10 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryExecutesStatements() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
         // Populate with 14/23.
         // Ensure deletion in the finally block.
         fractions.create(14,
@@ -1881,7 +1943,7 @@ public class Data_1_1_Servlet extends FATServlet {
         try {
             assertEquals(BigDecimal.valueOf(6090L, 4),
                          fractions.roundedUp(14, 23)
-                                         .orElseThrow());
+                                         .orElseThrow().setScale(4));
 
             System.out.println("Update 14/23");
 
@@ -1935,6 +1997,10 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQueryReturnsListOfEntities() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
         assertEquals(List.of("1/2",
                              "1/3",
                              "1/4", "2/4",
@@ -1994,6 +2060,10 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testNativeQuerySelectsCount() {
+        // Native query uses lowercase column names; EclipseLink creates them uppercase and SQL Server binary collation is case-sensitive
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
+
         assertEquals(6L, // 1/18, 5/18, 7/18, 11/18, 13/18, 17/18
                      fractions.numReducedWithDenominatorOf(18, true));
     }
@@ -2200,6 +2270,8 @@ public class Data_1_1_Servlet extends FATServlet {
      * Supply plus and divide expressions to a restriction that is
      * supplied to a repository method.
      */
+    // Oracle doesn't do integer division, it always returns a floating point number
+    @SkipIfSysProp(SkipIfSysProp.DB_Oracle) 
     @Test
     public void testPlusAndDivide() {
 
@@ -2284,7 +2356,17 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use the QueryOptions annotation to establish a query timeout on a
      * repository method annotated NativeQuery.
      */
-    @AllowedFFDC("javax.transaction.xa.XAException") // due to query timeout
+    // Oracle does not support a query timeout on a statement that is blocked waiting
+    // for a lock. Hibernate only passes accidentally because ORA-02049 fires on its
+    // connections after Oracle's distributed_lock_timeout (default 60s), which
+    // surfaces as a DataException. EclipseLink connections are not classified as
+    // distributed transactions, so ORA-02049 never fires and no DataException is raised.
+    // SQL Server ignores ATTENTION tokens while waiting for a lock, so the query timeout
+    // never fires and the test hangs indefinitely.
+    @SkipIfSysProp({ SkipIfSysProp.DB_Oracle, SkipIfSysProp.DB_SQLServer })
+    @AllowedFFDC({ "javax.transaction.xa.XAException", // due to query timeout
+                   "jakarta.transaction.RollbackException", // Postgres logs warnings; Hibernate reads them after timeout rolls back the transaction
+                   "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
     @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
         // Derby ignores query timeout and the lock timeout ends up applying instead
@@ -2793,6 +2875,9 @@ public class Data_1_1_Servlet extends FATServlet {
      */
     @Test
     public void testSortByMixtureOfExpressionsAndAttributes() {
+        // EclipseLink generates NULLS FIRST in ORDER BY which SQL Server does not support
+        if (!isHibernatePersistence() && isSQLServer())
+            return;
 
         //                                      sort1 sort2 sort3 sort4
         assertEquals(List.of("Two Sixteenths", //   7     F Two
@@ -2812,12 +2897,13 @@ public class Data_1_1_Servlet extends FATServlet {
                                                      .minus(_Fraction.name.length())
                                                      .plus(3)
                                                      .abs()
-                                                     .asc(),
+                                                     .asc(),  
                                               _Fraction.reduced.asc(),
                                               _Fraction.name.left(4).desc(),
                                               _Fraction.decimal.navigate(_Decimal.digits)
                                                               .navigate(_Digits.repeating)
-                                                              .asc()),
+                                                              .asc()
+                                                              .nullsFirst()), //For Oracle returning "" as null
                                      Limit.of(12)));
     }
 
