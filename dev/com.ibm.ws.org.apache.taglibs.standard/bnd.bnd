@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2021, 2025 IBM Corporation and others.
+# Copyright (c) 2021, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -19,6 +19,7 @@ Fragment-Host: com.ibm.ws.jsp
 Import-Package: \
    !org.apache.xml.*,\
    !org.apache.xerces*, \
+   !org.apache.commons.lang3, \
    *
 
 Export-Package: \
@@ -28,8 +29,7 @@ Export-Package: \
 
 Include-Resource: \
    @\${repo;com.ibm.ws.javax.j2ee:jsp.tld.standard;1.2}!/META-INF/*.tld,\
-   @\${repo;com.ibm.ws.org.apache:xalan;2.7.2}!/!(META-INF/*|org/apache/xalan/xsltc/*|java_cup/*|trax/*|org/apache/bcel/*|org/apache/regexp/*)
-
+   @\${repo;com.ibm.ws.org.apache:xalan;2.7.3}!/!META-INF
 
 -buildpath: \
   com.ibm.ws.javax.j2ee:jsp.tld.standard;version=1.2
