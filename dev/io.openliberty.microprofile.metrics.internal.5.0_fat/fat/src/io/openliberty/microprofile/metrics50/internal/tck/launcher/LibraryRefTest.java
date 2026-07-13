@@ -53,8 +53,8 @@ public class LibraryRefTest {
     @Server("MicrometerPrometheus")
     public static LibertyServer serverMicrometerPrometheus;
 
-    @Server("MicrometerPrometheusv11512")
-    public static LibertyServer serverMicrometerPrometheusv11512;
+    @Server("MicrometerPrometheusv11512SimpleClient")
+    public static LibertyServer serverMicrometerPrometheusv11512SimpleClient;
 
     @Server("MicrometerUseless")
     public static LibertyServer serverMicrometerUseless;
@@ -158,6 +158,7 @@ public class LibraryRefTest {
      * The <library> referenced contains Micrometer Core, Prometheus registry, and its dependencies
      *
      * Note: see build.gradle
+     * Note2: This is using v1.9.3 core with v1.9.3 Prometheus registry
      */
     @Test
     public void externalPrometheusMicrometer() throws Exception {
@@ -240,7 +241,7 @@ public class LibraryRefTest {
     @Test
     public void externalPrometheusMicrometerv11512SimpleClient() throws Exception {
 
-        server = serverMicrometerPrometheusv11512;
+        server = serverMicrometerPrometheusv11512SimpleClient;
 
         String installRoot = server.getInstallRoot();
         String prometheusSimpleClientLibPath = installRoot + "/usr/shared/resources/prometheusSimpleClientLib";

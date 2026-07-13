@@ -24,11 +24,11 @@ configurations {
 	  prometheusSimpleClientRegistry
 	  micrometerCorev1512
 	  micrometerCommons
-	  simpleClient2Common
-	  simpleClient2TracerCommon
-	  simpleClient2TracerOtelAgent
-	  simpleClient2TracerOtel
-	  simpleClient2
+	  SimpleClientv11512Common
+	  SimpleClientv11512TracerCommon
+	  SimpleClientv11512TracerOtelAgent
+	  SimpleClientv11512TracerOtel
+	  SimpleClientv11512
 }
 	
 dependencies {
@@ -44,11 +44,11 @@ dependencies {
   prometheusSimpleClientRegistry 'io.micrometer:micrometer-registry-prometheus-simpleclient:1.15.12'
   micrometerCorev1512 'io.micrometer:micrometer-core:1.15.12'
   micrometerCommons 'io.micrometer:micrometer-commons:1.15.12'
-  simpleClient2Common 'io.prometheus:simpleclient_common:0.16.0'
-  simpleClient2TracerCommon 'io.prometheus:simpleclient_tracer_common:0.16.0'
-  simpleClient2TracerOtelAgent 'io.prometheus:simpleclient_tracer_otel_agent:0.16.0'
-  simpleClient2TracerOtel 'io.prometheus:simpleclient_tracer_otel:0.16.0'
-  simpleClient2 'io.prometheus:simpleclient:0.16.0'
+  SimpleClientv11512Common 'io.prometheus:simpleclient_common:0.16.0'
+  SimpleClientv11512TracerCommon 'io.prometheus:simpleclient_tracer_common:0.16.0'
+  SimpleClientv11512TracerOtelAgent 'io.prometheus:simpleclient_tracer_otel_agent:0.16.0'
+  SimpleClientv11512TracerOtel 'io.prometheus:simpleclient_tracer_otel:0.16.0'
+  SimpleClientv11512 'io.prometheus:simpleclient:0.16.0'
 }
 
 task copyPrometheus(type: Copy) {
@@ -128,33 +128,33 @@ task copyMicrometerCommons(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/micrometercorev1512/')
 }
 
-task copySimpleClient2Common(type: Copy) {
+task copySimpleClientv11512Common(type: Copy) {
   shouldRunAfter jar
-  from configurations.simpleClient2Common
+  from configurations.SimpleClientv11512Common
   into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
 }
 
-task copySimpleClient2TracerCommon(type: Copy) {
+task copySimpleClientv11512TracerCommon(type: Copy) {
   shouldRunAfter jar
-  from configurations.simpleClient2TracerCommon
+  from configurations.SimpleClientv11512TracerCommon
   into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
 }
 
-task copySimpleClient2TracerOtelAgent(type: Copy) {
+task copySimpleClientv11512TracerOtelAgent(type: Copy) {
   shouldRunAfter jar
-  from configurations.simpleClient2TracerOtelAgent
+  from configurations.SimpleClientv11512TracerOtelAgent
   into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
 }
 
-task copySimpleClient2TracerOtel(type: Copy) {
+task copySimpleClientv11512TracerOtel(type: Copy) {
   shouldRunAfter jar
-  from configurations.simpleClient2TracerOtel
+  from configurations.SimpleClientv11512TracerOtel
   into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
 }
 
-task copySimpleClient2(type: Copy) {
+task copySimpleClientv11512(type: Copy) {
   shouldRunAfter jar
-  from configurations.simpleClient2
+  from configurations.SimpleClientv11512
   into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
 }
 
@@ -172,9 +172,9 @@ task copySimpleClient2(type: Copy) {
   dependsOn copyPrometheusSimpleClientRegistry
   dependsOn copyMicrometerCorev1512
   dependsOn copyMicrometerCommons
-  dependsOn copySimpleClient2Common
-  dependsOn copySimpleClient2TracerCommon
-  dependsOn copySimpleClient2TracerOtelAgent
-  dependsOn copySimpleClient2TracerOtel
-  dependsOn copySimpleClient2
+  dependsOn copySimpleClientv11512Common
+  dependsOn copySimpleClientv11512TracerCommon
+  dependsOn copySimpleClientv11512TracerOtelAgent
+  dependsOn copySimpleClientv11512TracerOtel
+  dependsOn copySimpleClientv11512
 }

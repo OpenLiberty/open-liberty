@@ -57,7 +57,7 @@ public class LibraryRefTest {
 	@Server("MicrometerPrometheus")
 	public static LibertyServer serverMicrometerPrometheus;
 
-	@Server("MicrometerPrometheusv11512")
+	@Server("MicrometerPrometheusv11512SimpleClient")
 	public static LibertyServer serverMicrometerPrometheusv11512;
 
 	@Server("MicrometerUseless")
@@ -172,7 +172,8 @@ public class LibraryRefTest {
 	 * <library> referenced contains Micrometer Core, Prometheus registry, and
 	 * its dependencies
 	 *
-	 * Note: see build.gradle
+	 * Note: see build.gradle Note2: This is using v1.9.3 core with v1.9.3
+	 * Prometheus registry
 	 */
 	@Test
 	public void externalPrometheusMicrometer() throws Exception {
@@ -267,15 +268,18 @@ public class LibraryRefTest {
 	}
 
 	/*
-	 * This externalPrometheusMicrometerv11512SimpleClient is configured to use external Micrometer Libraries (micrometer 1.15.12).
-	 * Configured via the libraryRef attribute of mpMetrics.
-	 * The <library> referenced contains micrometer-core 1.15.12, micrometer-commons 1.15.12,
-	 * micrometer-registry-prometheus-simpleclient 1.15.12, and simpleclient 0.16.0 dependencies.
+	 * This externalPrometheusMicrometerv11512SimpleClient is configured to use
+	 * external Micrometer Libraries (micrometer 1.15.12). Configured via the
+	 * libraryRef attribute of mpMetrics. The <library> referenced contains
+	 * micrometer-core 1.15.12, micrometer-commons 1.15.12,
+	 * micrometer-registry-prometheus-simpleclient 1.15.12, and simpleclient
+	 * 0.16.0 dependencies.
 	 *
 	 * Note: see build.gradle
 	 */
 	@Test
-	public void externalPrometheusMicrometerv11512SimpleClient() throws Exception {
+	public void externalPrometheusMicrometerv11512SimpleClient()
+			throws Exception {
 
 		server = serverMicrometerPrometheusv11512;
 
@@ -294,7 +298,8 @@ public class LibraryRefTest {
 
 			if (f.isDirectory()) {
 				for (File ff : f.listFiles()) {
-					Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
+					Log.info(c,
+							"externalPrometheusMicrometerv11512SimpleClient",
 							"Prom lib files found: " + ff.getName());
 				}
 			} else {
@@ -305,7 +310,8 @@ public class LibraryRefTest {
 			File f2 = new File(micrometerPath);
 			if (f2.isDirectory()) {
 				for (File ff : f2.listFiles()) {
-					Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
+					Log.info(c,
+							"externalPrometheusMicrometerv11512SimpleClient",
 							"Micrometer lib files found: " + ff.getName());
 				}
 			} else {
@@ -346,7 +352,8 @@ public class LibraryRefTest {
 		String exceptionString = null;
 		try {
 			String output = getHttpsServlet("/metrics");
-			Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", output);
+			Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
+					output);
 			Assert.assertNotNull(
 					"Results of /metrics output should not have been null",
 					output);
@@ -360,7 +367,8 @@ public class LibraryRefTest {
 
 		} catch (ConnectException exception) {
 			exceptionString = exception.toString();
-			Log.error(c, "externalPrometheusMicrometerv11512SimpleClient", exception);
+			Log.error(c, "externalPrometheusMicrometerv11512SimpleClient",
+					exception);
 		}
 		Assert.assertNull("Was not expecting ConnectException",
 				exceptionString);
