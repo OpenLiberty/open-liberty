@@ -24,6 +24,9 @@
         <AD name="%virtualHost.allowFromEndpoint" description="%virtualHost.allowFromEndpoint.desc"
             ibm:reference="com.ibm.ws.http" ibm:type="pid"
             id="allowFromEndpointRef" required="false" type="String" cardinality="2147483647" />
+
+        <AD name="%virtualHost.forceIncludeAlias" description="%virtualHost.forceIncludeAlias.desc"
+            id="forceIncludeAlias" required="false" type="String" cardinality="2147483647" />
     </OCD>
     
     <Designate factoryPid="com.ibm.ws.http.virtualhost">

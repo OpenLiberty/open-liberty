@@ -81,10 +81,13 @@ public class PluginMergeToolImpl implements PluginMergeTool {
 
 
     private boolean isXdOnly = true;
+    // enable debug by adding "-Dcom.ibm.ws.pluginmerge.debug=true" to $IBM_JAVA_OPTIONS
     private boolean debug = false;
     private int seqNum = 0;
     private final boolean failOver = true; /* 654526 */
+    // enable precedence by adding "-Dcom.ibm.ws.pluginmerge.precedence=true" to $IBM_JAVA_OPTIONS
     private static boolean precedence = false;
+    // example of enabling debug and precedence: export IBM_JAVA_OPTIONS="-Dcom.ibm.ws.pluginmerge.debug=true -Dcom.ibm.ws.pluginmerge.precedence=true"
     private Element mergeConfigNode;
     private static Element mergeConfigNode2; //PI07230
     private PluginInfo[] plugins;
@@ -500,6 +503,7 @@ public class PluginMergeToolImpl implements PluginMergeTool {
 
         matchUriAppVhost = Boolean.getBoolean("com.ibm.ws.pluginmerge.match.appname");
         debug = Boolean.getBoolean("com.ibm.ws.pluginmerge.debug");
+        precedence = Boolean.getBoolean("com.ibm.ws.pluginmerge.precedence");
 
         //looping through files to see if debug was in the string
         for (int j = 0; j < args.length; j++) {

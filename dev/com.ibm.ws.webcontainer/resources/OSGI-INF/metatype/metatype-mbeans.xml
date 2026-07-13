@@ -82,6 +82,9 @@
                 id="outboundInterfacesList" required="false" type="String" />
         <AD name="%plugin.outboundBindStrict.name" description="%plugin.outboundBindStrict.desc"
                 id="outboundBindStrict" required="false" type="Boolean" default="false" />
+        
+        <AD name="%plugin.useSimplifiedGeneration.name" description="%plugin.useSimplifiedGeneration.desc"
+                id="useSimplifiedGeneration" required="false" default="false" type="Boolean" />
     </OCD>
 
     <Designate pid="com.ibm.ws.generatePluginConfig">
