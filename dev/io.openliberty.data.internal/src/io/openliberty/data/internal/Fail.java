@@ -356,14 +356,16 @@ public class Fail {
     }
 
     /**
-     * Raise a new MappingException for the error where some operations are not
-     * available because a Sort expression was used to request a cursored page.
+     * Raise a new UnsupportedOperationException for the error where some
+     * operations are not available because a Sort expression was used
+     * to request a cursored page.
      *
      * @param info query information for the repository method
      * @param sort the sort criterion
-     * @throws the MappingException
+     * @throws the UnsupportedOperationException
      */
-    static MappingException incompatibleSort(QueryInfo info, Sort<?> sort) {
+    static UnsupportedOperationException incompatibleSort(QueryInfo info,
+                                                          Sort<?> sort) {
         String attrName = sort.property();
         throw exc(MappingException.class,
                   "CWWKD1123.sort.incompat.with.cursor",
