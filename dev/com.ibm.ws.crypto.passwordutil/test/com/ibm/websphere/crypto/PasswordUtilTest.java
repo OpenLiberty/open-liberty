@@ -182,6 +182,20 @@ public class PasswordUtilTest {
         } catch (InvalidPasswordEncodingException e) {
             // expected
         }
+
+        // Reviewer-suggested patterns — all 5 must encode and round-trip correctly as literal plaintext.
+        //
+        // "{}"   — getCryptoAlgorithm returns "" → isEmpty() guard → isValidCurrentAlgorithm=false → plaintext
+        // "{}a"  — same as above
+        // "{a}"  — getCryptoAlgorithm returns "a" → not a valid algorithm → plaintext
+        // "{a}b" — getCryptoAlgorithm returns "a" → not a valid algorithm → plaintext
+        // "a{}"  — does not start with '{' → getCryptoAlgorithm returns null → plaintext
+        String[] reviewerPatterns = new String[] { "{}", "{}a", "{a}", "{a}b", "a{}" };
+        for (String plain : reviewerPatterns) {
+            String encoded = PasswordUtil.encode(plain, "xor");
+            assertTrue("Pattern '" + plain + "' should encode to {xor}...: " + encoded, encoded.startsWith("{xor}"));
+            assertEquals("Pattern '" + plain + "' must round-trip correctly", plain, PasswordUtil.decode(encoded));
+        }
     }
 
     /**
