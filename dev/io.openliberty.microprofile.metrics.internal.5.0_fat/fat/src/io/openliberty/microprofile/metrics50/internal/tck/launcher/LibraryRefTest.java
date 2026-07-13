@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -52,6 +52,9 @@ public class LibraryRefTest {
 
     @Server("MicrometerPrometheus")
     public static LibertyServer serverMicrometerPrometheus;
+
+    @Server("MicrometerPrometheusv11512")
+    public static LibertyServer serverMicrometerPrometheusv11512;
 
     @Server("MicrometerUseless")
     public static LibertyServer serverMicrometerUseless;
@@ -222,6 +225,84 @@ public class LibraryRefTest {
         } catch (ConnectException exception) {
             exceptionString = exception.toString();
             Log.error(c, "externalPrometheusMicrometer", exception);
+        }
+        Assert.assertNull("Was not expecting ConnectException", exceptionString);
+    }
+
+    /*
+     * This externalPrometheusMicrometerv11512SimpleClient is configured to use external Micrometer Libraries (micrometer 1.15.12).
+     * Configured via the libraryRef attribute of mpMetrics.
+     * The <library> referenced contains micrometer-core 1.15.12, micrometer-commons 1.15.12,
+     * micrometer-registry-prometheus-simpleclient 1.15.12, and simpleclient 0.16.0 dependencies.
+     *
+     * Note: see build.gradle
+     */
+    @Test
+    public void externalPrometheusMicrometerv11512SimpleClient() throws Exception {
+
+        server = serverMicrometerPrometheusv11512;
+
+        String installRoot = server.getInstallRoot();
+        String prometheusSimpleClientLibPath = installRoot + "/usr/shared/resources/prometheusSimpleClientLib";
+        String micrometerPath = installRoot + "/usr/shared/resources/micrometercore2";
+
+        Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Prom library directory: " + prometheusSimpleClientLibPath);
+        Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Micrometer library directory: " + micrometerPath);
+        try {
+            File f = new File(prometheusSimpleClientLibPath);
+
+            if (f.isDirectory()) {
+                for (File ff : f.listFiles()) {
+                    Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Prom lib files found: " + ff.getName());
+                }
+            } else {
+                Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Not a directory: " + prometheusSimpleClientLibPath);
+            }
+
+            File f2 = new File(micrometerPath);
+            if (f2.isDirectory()) {
+                for (File ff : f2.listFiles()) {
+                    Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Micrometer lib files found: " + ff.getName());
+                }
+            } else {
+                Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Not a directory: " + micrometerPath);
+            }
+
+        } catch (Exception e) {
+            Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Encountered exception while trying to list files of shared library " + e);
+        }
+
+        server.startServer();
+        server.waitForDefaultHTTPEndpointSSLStart();
+
+        //CWMMC0014I emits that metrics is using libraryRef
+        Assert.assertNotNull("CWMMC0014I Not found", server.waitForStringInLogUsingMark("CWMMC0014I"));
+
+        //CWWKF0011I server ready
+        Assert.assertNotNull("CWWKF0011I Not found", server.waitForStringInLogUsingMark("CWWKF0011I"));
+
+        server.resetLogMarks();
+
+        Assert.assertNotNull("CWWKO0219I Not found", server.waitForDefaultHTTPEndpointSSLStart());
+
+        //Check SR implementation log that Prometheus Registry created
+        //Note that SR makes THIS explicit log for Prometheus, other meter registries are logged differently following a template
+        String line = server.waitForStringInTrace("Prometheus MeterRegistry created");
+        Assert.assertNotNull("Expected \"Prometheus MeterRegistry created\"", line);
+
+        String exceptionString = null;
+        try {
+            String output = getHttpsServlet("/metrics");
+            Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", output);
+            Assert.assertNotNull("Results of /metrics output should not have been null", output);
+
+            //just do simple check for jvm.uptime metric
+            boolean containsMetrics = output.contains("jvm_uptime_seconds{mp_scope=\"base\",");
+            Assert.assertTrue("Expected to see the always present base metric jvm.uptime from /metrics output", containsMetrics);
+
+        } catch (ConnectException exception) {
+            exceptionString = exception.toString();
+            Log.error(c, "externalPrometheusMicrometerv11512SimpleClient", exception);
         }
         Assert.assertNull("Was not expecting ConnectException", exceptionString);
     }

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -20,6 +20,15 @@ configurations {
 	  simpleClientTracerOtelAgent
 	  simpleClientTracerOtel
 	  simpleClient
+	  // 1.15.12 configurations
+	  prometheusSimpleClientRegistry
+	  micrometerCorev1512
+	  micrometerCommons
+	  simpleClient2Common
+	  simpleClient2TracerCommon
+	  simpleClient2TracerOtelAgent
+	  simpleClient2TracerOtel
+	  simpleClient2
 }
 	
 dependencies {
@@ -31,6 +40,15 @@ dependencies {
   simpleClientTracerOtelAgent 'io.prometheus:simpleclient_tracer_otel_agent:0.15.0'
   simpleClientTracerOtel 'io.prometheus:simpleclient_tracer_otel:0.15.0'
   simpleClient 'io.prometheus:simpleclient:0.15.0'
+  // 1.15.12 dependencies
+  prometheusSimpleClientRegistry 'io.micrometer:micrometer-registry-prometheus-simpleclient:1.15.12'
+  micrometerCorev1512 'io.micrometer:micrometer-core:1.15.12'
+  micrometerCommons 'io.micrometer:micrometer-commons:1.15.12'
+  simpleClient2Common 'io.prometheus:simpleclient_common:0.16.0'
+  simpleClient2TracerCommon 'io.prometheus:simpleclient_tracer_common:0.16.0'
+  simpleClient2TracerOtelAgent 'io.prometheus:simpleclient_tracer_otel_agent:0.16.0'
+  simpleClient2TracerOtel 'io.prometheus:simpleclient_tracer_otel:0.16.0'
+  simpleClient2 'io.prometheus:simpleclient:0.16.0'
 }
 
 task copyPrometheus(type: Copy) {
@@ -86,6 +104,60 @@ task copySimpleClient(type: Copy) {
   into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
 }
 
+task copyHdrHistogramPrometheusSimpleClient(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hdrHistogram
+  into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
+}
+
+task copyPrometheusSimpleClientRegistry(type: Copy) {
+  shouldRunAfter jar
+  from configurations.prometheusSimpleClientRegistry
+  into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
+}
+
+task copyMicrometerCorev1512(type: Copy) {
+  shouldRunAfter jar
+  from configurations.micrometerCorev1512
+  into new File(autoFvtDir, 'publish/shared/resources/micrometercorev1512/')
+}
+
+task copyMicrometerCommons(type: Copy) {
+  shouldRunAfter jar
+  from configurations.micrometerCommons
+  into new File(autoFvtDir, 'publish/shared/resources/micrometercorev1512/')
+}
+
+task copySimpleClient2Common(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClient2Common
+  into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
+}
+
+task copySimpleClient2TracerCommon(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClient2TracerCommon
+  into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
+}
+
+task copySimpleClient2TracerOtelAgent(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClient2TracerOtelAgent
+  into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
+}
+
+task copySimpleClient2TracerOtel(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClient2TracerOtel
+  into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
+}
+
+task copySimpleClient2(type: Copy) {
+  shouldRunAfter jar
+  from configurations.simpleClient2
+  into new File(autoFvtDir, 'publish/shared/resources/prometheusSimpleClientLib/')
+}
+
  addRequiredLibraries {
   dependsOn copyMicrometerCore
   dependsOn copyPrometheus
@@ -96,4 +168,13 @@ task copySimpleClient(type: Copy) {
   dependsOn copySimpleClientTracerOtelAgent
   dependsOn copySimpleClientTracerOtel
   dependsOn copySimpleClient
+  dependsOn copyHdrHistogramPrometheusSimpleClient
+  dependsOn copyPrometheusSimpleClientRegistry
+  dependsOn copyMicrometerCorev1512
+  dependsOn copyMicrometerCommons
+  dependsOn copySimpleClient2Common
+  dependsOn copySimpleClient2TracerCommon
+  dependsOn copySimpleClient2TracerOtelAgent
+  dependsOn copySimpleClient2TracerOtel
+  dependsOn copySimpleClient2
 }
