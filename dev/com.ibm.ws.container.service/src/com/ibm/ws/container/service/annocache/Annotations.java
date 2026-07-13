@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,7 +15,6 @@ package com.ibm.ws.container.service.annocache;
 import java.util.Collection;
 import java.util.Set;
 
-import com.ibm.ws.container.service.annocache.SpecificAnnotations;
 import com.ibm.wsspi.adaptable.module.Container;
 import com.ibm.wsspi.adaptable.module.UnableToAdaptException;
 import com.ibm.wsspi.annocache.classsource.ClassSource_Aggregate;
@@ -203,6 +202,28 @@ public interface Annotations {
      */
     void setUseJandex(boolean useJandex);
 
+    // TODO: This cannot be easily added:
+    //
+    // JPA has "com/ibm/ws/eba/jpa/annocache/scanning/AnnotationsImpl.java".
+    // Changing the Annotations API is problematic for ensuring that
+    // all implementers are updated.
+    //
+    // Temporarily, the API is present only on:
+    // com/ibm/ws/container/service/annocache/internal/AnnotationsImpl.java
+    //
+    // Integration steps are:
+    // (1) Initial implementation places the API on open-liberty AnnotationsIMpl.
+    // (2) Add the API to JPA AnnotationsImpl.
+    // (3) Switch the open-liberty implementation, moving the API to
+    //     the interface.
+    // (4) Add '@Override' to the JPA AnnotationsImpl.
+    //
+    // The current implementation is:
+    // com.ibm.ws.container.service.annocache.internal.AnnotationsImpl.getEnableWebInfJandex()
+    //
+    // The current use is from:
+    // com.ibm.ws.container.service.annocache.internal.AnnotationsImpl.createOptions()
+
     /**
      * Tell if extended jandex paths are to be used.
      * 
@@ -212,7 +233,7 @@ public interface Annotations {
      * @return True or false telling if the extended jandex location
      *     is to be used.
      */
-    boolean getEnableWebInfJandex();
+    // boolean getEnableWebInfJandex();
 
     /**
      * Set if the WEB-INF jandex path is to be used.
@@ -223,7 +244,7 @@ public interface Annotations {
      * @param enableWebInfJandex True or false telling if the
      *     extended jandex location is to be used.
      */
-    void setEnableWebInfJandex(boolean enableWebInfJandex);
+    // void setEnableWebInfJandex(boolean enableWebInfJandex);
 
     //
 

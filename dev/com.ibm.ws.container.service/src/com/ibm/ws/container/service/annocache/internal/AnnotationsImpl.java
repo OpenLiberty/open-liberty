@@ -568,12 +568,17 @@ public abstract class AnnotationsImpl implements Annotations {
 
     private boolean enableWebInfJandex;
     
-    @Override
+    // TODO: '@Override' is temporarily removed, until the API
+    // is added to the Annotations interface.
+    // Search for 'getEnableWebInfJandex' in:
+    // com/ibm/ws/container/service/annocache/Annotations.java
+
+    // @Override
     public boolean getEnableWebInfJandex() {
         return enableWebInfJandex;
     }
 
-    @Override
+    // @Override
     public void setEnableWebInfJandex(boolean jandexEnableWebInf) {
         this.enableWebInfJandex = jandexEnableWebInf;
     }    
@@ -1065,6 +1070,7 @@ public abstract class AnnotationsImpl implements Annotations {
         }
     }
 
+    @Override
     public InfoStore getInfoStore() {
         synchronized( infoStoreLock ) {
             if ( !isSetInfoStore ) {
