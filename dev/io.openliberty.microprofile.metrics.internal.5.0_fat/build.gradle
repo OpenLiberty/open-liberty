@@ -21,6 +21,7 @@ configurations {
 	  simpleClientTracerOtel
 	  simpleClient
 	  // 1.15.12 configurations
+	  prometheusRegistry1512
 	  prometheusSimpleClientRegistry
 	  micrometerCorev1512
 	  micrometerCommons
@@ -41,6 +42,7 @@ dependencies {
   simpleClientTracerOtel 'io.prometheus:simpleclient_tracer_otel:0.15.0'
   simpleClient 'io.prometheus:simpleclient:0.15.0'
   // 1.15.12 dependencies
+  prometheusRegistry1512 'io.micrometer:micrometer-registry-prometheus:1.15.12'
   prometheusSimpleClientRegistry 'io.micrometer:micrometer-registry-prometheus-simpleclient:1.15.12'
   micrometerCorev1512 'io.micrometer:micrometer-core:1.15.12'
   micrometerCommons 'io.micrometer:micrometer-commons:1.15.12'
@@ -102,6 +104,18 @@ task copySimpleClient(type: Copy) {
   shouldRunAfter jar
   from configurations.simpleClient
   into new File(autoFvtDir, 'publish/shared/resources/prometheuslib/')
+}
+
+task copyHdrHistogramPrometheuslib1512(type: Copy) {
+  shouldRunAfter jar
+  from configurations.hdrHistogram
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib1512/')
+}
+
+task copyPrometheusRegistry1512(type: Copy) {
+  shouldRunAfter jar
+  from configurations.prometheusRegistry1512
+  into new File(autoFvtDir, 'publish/shared/resources/prometheuslib1512/')
 }
 
 task copyHdrHistogramPrometheusSimpleClient(type: Copy) {
@@ -168,6 +182,8 @@ task copySimpleClientv11512(type: Copy) {
   dependsOn copySimpleClientTracerOtelAgent
   dependsOn copySimpleClientTracerOtel
   dependsOn copySimpleClient
+  dependsOn copyHdrHistogramPrometheuslib1512
+  dependsOn copyPrometheusRegistry1512
   dependsOn copyHdrHistogramPrometheusSimpleClient
   dependsOn copyPrometheusSimpleClientRegistry
   dependsOn copyMicrometerCorev1512

@@ -110,6 +110,7 @@ io.micrometer:micrometer-commons:1.15.12
 io.micrometer:micrometer-core:1.15.12
 io.micrometer:micrometer-core:1.9.3
 io.micrometer:micrometer-registry-prometheus-simpleclient:1.15.12
+io.micrometer:micrometer-registry-prometheus:1.15.12
 io.micrometer:micrometer-registry-prometheus:1.9.3
 io.netty:netty-buffer:4.2.15.Final
 io.netty:netty-codec-base:4.2.15.Final
