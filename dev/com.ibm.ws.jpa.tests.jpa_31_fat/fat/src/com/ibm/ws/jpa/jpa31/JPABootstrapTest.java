@@ -26,6 +26,8 @@ import org.testcontainers.containers.JdbcDatabaseContainer;
 import com.ibm.websphere.simplicity.ShrinkHelper;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
+
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.annotation.TestServlet;
@@ -47,6 +49,7 @@ import jpabootstrap.web.TestJPABootstrapServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
+@MaximumJavaLevel(javaLevel = 25) 
 @SkipForRepeat("JPA32_HIBERNATE")
 public class JPABootstrapTest extends FATServletClient {
     public static final String APP_NAME = "jpabootstrap";

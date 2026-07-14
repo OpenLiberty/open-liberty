@@ -32,6 +32,7 @@ import com.ibm.websphere.simplicity.config.ServerConfiguration;
 import com.ibm.ws.jpa.FATSuite;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.TestServlet;
 import componenttest.annotation.TestServlets;
@@ -52,6 +53,7 @@ import jpabootstrap.web.TestJPABootstrapServlet;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25)  // Hibernate ByteBuddy limitation
 public class JPABootstrapTest extends FATServletClient {
     public static final String APP_NAME = "jpabootstrap";
     public static final String SERVLET = "TestJPABootstrap";
