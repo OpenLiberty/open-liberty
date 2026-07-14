@@ -23,6 +23,8 @@ import java.util.logging.Logger;
 
 import org.w3c.dom.Node;
 
+import com.ibm.websphere.ras.annotation.Trivial;
+
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.PropertyUtils;
 
@@ -30,6 +32,7 @@ import org.apache.cxf.common.util.PropertyUtils;
 /**
  * Holder for utility methods relating to messages.
  */
+@Trivial // Liberty Change
 public final class MessageUtils {
 
     private static final Logger LOG = LogUtils.getL7dLogger(MessageUtils.class);
