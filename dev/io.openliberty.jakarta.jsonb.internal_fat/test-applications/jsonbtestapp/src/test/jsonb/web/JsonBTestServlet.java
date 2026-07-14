@@ -524,6 +524,26 @@ public class JsonBTestServlet extends FATServlet {
 
         //assertEquals("{\"year\":\"2026\"}", json2026);
         //assertEquals("{\"year\":\"2025\"}", json2025);
+
+        // Current behavior for writing to JSON is:
+        assertEquals("{\"year\":{\"leap\":false,\"value\":2026}}", json2026);
+        assertEquals("{\"year\":{\"leap\":false,\"value\":2025}}", json2025);
+
+        // Current behavior for reading from JSON is:
+        // jakarta.json.bind.JsonbException: Cannot create instance of a class: class java.time.Year, No default constructor found.
+        // at org.eclipse.yasson.internal.deserializer.DefaultObjectInstanceCreator.<init>(DefaultObjectInstanceCreator.java:44)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.createObjectDeserializer(DeserializationModelCreator.java:251)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.deserializerChainInternal(DeserializationModelCreator.java:193)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.deserializerChain(DeserializationModelCreator.java:135)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.createNewChain(DeserializationModelCreator.java:488)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.typeProcessor(DeserializationModelCreator.java:477)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.typeProcessor(DeserializationModelCreator.java:430)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.memberTypeProcessor(DeserializationModelCreator.java:423)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.createObjectDeserializer(DeserializationModelCreator.java:222)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.deserializerChainInternal(DeserializationModelCreator.java:193)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.deserializerChain(DeserializationModelCreator.java:135)
+        // at org.eclipse.yasson.internal.deserializer.DeserializationModelCreator.deserializerChain(DeserializationModelCreator.java:123)
+        // at org.eclipse.yasson.internal.DeserializationContextImpl.deserializeItem(DeserializationContextImpl.java:137)
     }
 
     public static class TestYear {
