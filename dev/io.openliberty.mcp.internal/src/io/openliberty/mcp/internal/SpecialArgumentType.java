@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -13,10 +13,12 @@ import java.lang.reflect.Type;
 
 import org.mcpjava.server.Cancellation;
 import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.progress.Progress;
 
 public enum SpecialArgumentType {
     CANCELLATION(Cancellation.class),
     REQUEST(McpRequest.class),
+    PROGRESS(Progress.class),
     UNSUPPORTED(Object.class);
 
     private final Class<?> typeClass;

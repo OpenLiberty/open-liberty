@@ -27,6 +27,7 @@ import java.util.function.Function;
 
 import org.mcpjava.server.Cancellation;
 import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.progress.Progress;
 
 import io.openliberty.mcp.features.FeatureManager.FeatureInfo;
 
@@ -123,8 +124,7 @@ public interface FeatureManager<INFO extends FeatureInfo> extends Iterable<INFO>
 
         McpRequest request();
 
-// Not yet implemented:
-//        Progress progress();
+        Progress progress();
 
         Cancellation cancellation();
 
