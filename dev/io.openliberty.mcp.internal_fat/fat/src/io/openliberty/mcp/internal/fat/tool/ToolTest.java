@@ -54,6 +54,7 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.tool.progressApp.ProgressTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
 import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
@@ -88,13 +89,20 @@ public class ToolTest extends FATServletClient {
     @Rule
     public McpClient client = new McpClient(server, "/toolTest");
 
+    @Rule
+    public McpClient progressClient = new McpClient(server, "/progressTest");
+
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "toolTest.war")
                                    .addPackage(BasicTools.class.getPackage())
                                    .addClass(TestConstants.class);
 
+        WebArchive progressWar = ShrinkWrap.create(WebArchive.class, "progressTest.war")
+                                           .addPackage(ProgressTools.class.getPackage());
+
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, progressWar, SERVER_ONLY);
 
         server.startServer();
 
@@ -2890,6 +2898,84 @@ public class ToolTest extends FATServletClient {
                           }
                         }
                         """.formatted(imageData64), response, JSONCompareMode.STRICT);
+    }
+
+    /**
+     * Verifies that a {@code @Tool} method with a {@link org.mcpjava.server.progress.Progress}
+     * parameter is invoked successfully and that the no-op {@code ProgressImpl} reports no
+     * progress token (i.e. {@code progress.token().isPresent() == false}).
+     */
+    @Test
+    public void testProgressInjectedWithNoToken() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "1",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "progressTool",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = progressClient.callMCP(request);
+
+        // The tool returns "progressTokenPresent=false,input=hello" when no progress
+        // token is present, confirming the no-op ProgressImpl was injected.
+        String expectedResponse = """
+                        {
+                          "id": "1",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "progressTokenPresent=false,input=hello"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    /**
+     * Verifies that {@code progressTool} can be listed via {@code tools/list},
+     * confirming that the tool with a {@link org.mcpjava.server.progress.Progress}
+     * parameter is registered correctly without deployment errors.
+     */
+    @Test
+    public void testProgressToolIsListed() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/list",
+                          "params": {}
+                        }
+                        """;
+
+        String response = progressClient.callMCP(request);
+
+        // Verify the tool was registered (name is present in the tools list)
+        String expectedFragment = """
+                        {
+                          "result": {
+                            "tools": [
+                              {
+                                "name": "progressTool"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedFragment, response, false);
     }
 
 }

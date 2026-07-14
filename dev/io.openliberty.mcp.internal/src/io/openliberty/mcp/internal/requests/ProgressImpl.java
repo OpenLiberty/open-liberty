@@ -22,6 +22,11 @@ import org.mcpjava.server.progress.ProgressToken;
  * {@link IllegalStateException} if invoked.
  */
 public class ProgressImpl implements Progress {
+    public static final ProgressImpl NO_OP = new ProgressImpl();
+
+    private ProgressImpl() {
+        // Singleton - hide constructor
+    }
 
     @Override
     public Optional<ProgressToken> token() {

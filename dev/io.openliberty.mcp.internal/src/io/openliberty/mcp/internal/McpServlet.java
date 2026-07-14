@@ -439,7 +439,7 @@ public class McpServlet extends HttpServlet {
         return new ToolArgumentsImpl(args,
                                      new CancellationImpl(),
                                      new McpRequestImpl(request, transport, transport.getSession(), params.getMeta()),
-                                     new ProgressImpl(),
+                                     ProgressImpl.NO_OP,
                                      encoderRegistries.getCurrent());
     }
 

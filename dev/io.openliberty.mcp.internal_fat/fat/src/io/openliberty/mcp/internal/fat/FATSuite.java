@@ -69,7 +69,6 @@ import io.openliberty.mcp.internal.fat.tool.MpMetricsOperationsTest;
 import io.openliberty.mcp.internal.fat.tool.MultiModuleToolTestToolManager;
 import io.openliberty.mcp.internal.fat.tool.NoParamNameTest;
 import io.openliberty.mcp.internal.fat.tool.NonRequiredArgsToolsTest;
-import io.openliberty.mcp.internal.fat.tool.ProgressTest;
 import io.openliberty.mcp.internal.fat.tool.TelemetryOperationsTest;
 import io.openliberty.mcp.internal.fat.tool.TelemetrySessionsTest;
 import io.openliberty.mcp.internal.fat.tool.ToolCallEventTraceTest;
@@ -120,7 +119,6 @@ import io.openliberty.mcp.internal.fat.tool.ToolTest;
                 OidcTests.class,
 
                 CustomServerInfoTest.class,
-                ProgressTest.class,
                 ProtocolVersionTest.class,
                 ProtocolVersionSchemaTest.class,
                 StatefulModeTest.class,
