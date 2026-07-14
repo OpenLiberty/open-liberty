@@ -263,13 +263,33 @@ public class PasswordUtil {
         }
 
         String current_crypto_algorithm = getCryptoAlgorithm(decoded_string);
+        // Exclude empty algorithm ("{}prefix") from isValidCurrentAlgorithm — an empty tag is not
+        // a real encoding, so a password like "{}testtest" must be treated as literal plaintext
+        // and encoded in full, preserving the {} characters in the round-trip.
+        boolean isValidCurrentAlgorithm = current_crypto_algorithm != null
+                                          && !current_crypto_algorithm.isEmpty()
+                                          && isValidCryptoAlgorithm(current_crypto_algorithm);
 
-        if ((current_crypto_algorithm != null && current_crypto_algorithm.startsWith(crypto_algorithm)) || isHashed(decoded_string)) {
-            // don't accept encoded password
+        if (isHashed(decoded_string)) {
+            // Reject already-hashed passwords
             throw new InvalidPasswordEncodingException();
-        } else if (current_crypto_algorithm != null) {
+        }
+
+        if (isValidCurrentAlgorithm && current_crypto_algorithm.startsWith(crypto_algorithm)) {
+            // Reject passwords already encoded with the target algorithm
+            throw new InvalidPasswordEncodingException();
+        }
+
+        if (isValidCurrentAlgorithm) {
+            // password is encoded with a different valid algorithm — decode it first, then re-encode
             decoded_string = passwordDecode(decoded_string);
         }
+        // If current_crypto_algorithm is non-null but isValidCurrentAlgorithm is false, the input
+        // string merely starts with a {something} pattern (e.g. a vault-generated password like
+        // "{abc}def"). In that case we treat the entire string as literal plaintext and fall through
+        // to encode it. Note: {custom} and {custom:alias} are recognised by isValidCryptoAlgorithm()
+        // when the CustomPasswordEncryption OSGi service is active, so they correctly take the
+        // decode-then-re-encode path above.
         if (properties == null || !properties.containsKey(PROPERTY_NO_TRIM) || !"true".equalsIgnoreCase(properties.get(PROPERTY_NO_TRIM))) {
             decoded_string = decoded_string.trim();
         }
