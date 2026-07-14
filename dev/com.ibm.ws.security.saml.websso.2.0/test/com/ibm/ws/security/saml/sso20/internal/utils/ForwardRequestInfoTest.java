@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024,2025 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -130,10 +130,15 @@ public class ForwardRequestInfoTest {
             }
         });
 
+        // Nonce is now generated in redirectRequest() and stored on the instance.
+        // Pre-set it here to simulate what redirectRequest() does before calling
+        // handleFragmentCookiesAndNonce() directly.
         forwardRequest.setCspHeader("script-src 'self' 'nonce-%NONCE%' ; object-src 'self'; frame-src 'self'");
+        forwardRequest.setNonce("testNonce1234567890123456789012");
         String js = forwardRequest.handleFragmentCookiesAndNonce(response);
         assertNotNull(js);
-        assertTrue(js.contains("nonce="));
+        assertTrue("Script block must contain the pre-set nonce attribute", js.contains("nonce="));
+        assertTrue("Nonce value must match the pre-set value", js.contains("testNonce1234567890123456789012"));
     }
 
     @Test
@@ -164,6 +169,121 @@ public class ForwardRequestInfoTest {
         String js = forwardRequest.handleFragmentCookiesAndNonce(response);
         assertNotNull(js);
         assertFalse(js.contains("nonce="));
+    }
+
+    // -----------------------------------------------------------------------
+    // buildRedirectHtml() — CSP inline event handler fix tests
+    // -----------------------------------------------------------------------
+
+    /**
+     * The &lt;BODY&gt; tag must NOT carry an onload attribute.
+     * The former code emitted &lt;BODY onload="document.forms[0].submit()"&gt;;
+     * the fix moves form submission to a &lt;SCRIPT&gt; block so that CSP nonces
+     * can cover it (inline event handlers are not covered by nonces).
+     */
+    @Test
+    public void testBuildRedirectHtml_bodyTagHasNoOnloadAttribute() throws Exception {
+        ForwardRequestInfo fri = new ForwardRequestInfo("https://idp.example.com/saml/acs");
+        fri.bNeedFragment = false; // isolate this test from the cookie/nonce script path
+        fri.setParameter("SAMLResponse", new String[] { "dummyValue" });
+
+        String html = fri.buildRedirectHtml(response);
+        assertFalse("BODY tag must not carry an onload attribute after the CSP fix",
+                    html.toLowerCase().contains("onload="));
+    }
+
+    /**
+     * The form-submit &lt;SCRIPT&gt; block must appear after &lt;/FORM&gt;,
+     * and it must invoke document.forms[0].submit().
+     */
+    @Test
+    public void testBuildRedirectHtml_formSubmitScriptAppearsAfterFormEndTag() throws Exception {
+        ForwardRequestInfo fri = new ForwardRequestInfo("https://idp.example.com/saml/acs");
+        fri.bNeedFragment = false;
+        fri.setParameter("SAMLResponse", new String[] { "dummyValue" });
+
+        String html = fri.buildRedirectHtml(response);
+        int formEnd = html.indexOf("</FORM>");
+        int scriptPos = html.toLowerCase().indexOf("document.forms[0].submit()");
+        assertTrue("</FORM> tag must be present in the generated HTML", formEnd >= 0);
+        assertTrue("document.forms[0].submit() call must be present", scriptPos >= 0);
+        assertTrue("form-submit script must appear after </FORM>", scriptPos > formEnd);
+    }
+
+    /**
+     * When a CSP header with a nonce placeholder is configured, both the cookie
+     * &lt;SCRIPT&gt; block and the form-submit &lt;SCRIPT&gt; block must share
+     * the same nonce value generated once per redirect.
+     */
+    @Test
+    public void testBuildRedirectHtml_bothScriptBlocksShareSameNonce() throws Exception {
+        mockery.checking(new Expectations() {{
+            // handleFragmentCookiesAndNonce sets the Content-Security-Policy header
+            one(response).addHeader(with(equal("Content-Security-Policy")), with(any(String.class)));
+        }});
+
+        ForwardRequestInfo fri = new ForwardRequestInfo("https://idp.example.com/saml/acs");
+        fri.bNeedFragment = true; // ensure handleFragmentCookiesAndNonce runs so both blocks share the nonce
+        fri.setCspHeader("script-src 'self' 'nonce-%NONCE%'");
+        fri.setParameter("SAMLResponse", new String[] { "dummyValue" });
+
+        String html = fri.buildRedirectHtml(response);
+        // Find all nonce="<value>" occurrences
+        java.util.regex.Pattern noncePattern = java.util.regex.Pattern.compile("nonce=\"([^\"]+)\"");
+        java.util.regex.Matcher m = noncePattern.matcher(html);
+        String firstNonce = null;
+        boolean allMatch = true;
+        int count = 0;
+        while (m.find()) {
+            count++;
+            if (firstNonce == null) {
+                firstNonce = m.group(1);
+            } else if (!firstNonce.equals(m.group(1))) {
+                allMatch = false;
+            }
+        }
+        assertTrue("At least one nonce attribute must be present in the generated HTML", count > 0);
+        assertNotNull("Nonce value must not be null", firstNonce);
+        assertTrue("All nonce attributes in the page must share the same value", allMatch);
+    }
+
+    /**
+     * When the CSP header does not contain the %NONCE% placeholder, no nonce
+     * should be generated and the form-submit &lt;SCRIPT&gt; block must have no
+     * nonce attribute.
+     */
+    @Test
+    public void testBuildRedirectHtml_noNonceWhenCspHasNoPlaceholder() throws Exception {
+        mockery.checking(new Expectations() {{
+            one(response).addHeader(with(equal("Content-Security-Policy")), with(any(String.class)));
+        }});
+
+        ForwardRequestInfo fri = new ForwardRequestInfo("https://idp.example.com/saml/acs");
+        fri.bNeedFragment = true;
+        fri.setCspHeader("script-src 'self'"); // no %NONCE% placeholder
+        fri.setParameter("SAMLResponse", new String[] { "dummyValue" });
+
+        String html = fri.buildRedirectHtml(response);
+        assertFalse("No nonce attribute must appear when CSP has no %NONCE% placeholder",
+                    html.contains("nonce="));
+    }
+
+    /**
+     * When no CSP header is configured (null), the fix must still generate the
+     * page without any onload attribute on &lt;BODY&gt;.
+     */
+    @Test
+    public void testBuildRedirectHtml_bodyHasNoOnloadWhenCspHeaderIsNull() throws Exception {
+        ForwardRequestInfo fri = new ForwardRequestInfo("https://idp.example.com/saml/acs");
+        fri.bNeedFragment = false;
+        // cspHeader deliberately left null
+        fri.setParameter("SAMLResponse", new String[] { "dummyValue" });
+
+        String html = fri.buildRedirectHtml(response);
+        assertFalse("BODY tag must not carry an onload attribute when no CSP header is configured",
+                    html.toLowerCase().contains("onload="));
+        assertTrue("form-submit script call must still be present even without a CSP header",
+                   html.contains("document.forms[0].submit()"));
     }
 
 }
