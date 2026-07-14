@@ -48,7 +48,7 @@
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.reflect.ReflectPermission" name="suppressAccessChecks"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.AdminPermission" actions="context" name="*"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="org.osgi.framework.ServicePermission" actions="get" name="*"/>
-    <javaPermission className="java.util.PropertyPermission" actions="read,write" name="*"/>
+    <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.util.PropertyPermission" actions="read,write" name="*"/>
     <javaPermission codebase="${shared.resource.dir}/infinispan/*" className="java.security.AllPermission"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanPermission" actions="queryNames"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="javax.management.MBeanServerPermission" name="createMBeanServer"/>
