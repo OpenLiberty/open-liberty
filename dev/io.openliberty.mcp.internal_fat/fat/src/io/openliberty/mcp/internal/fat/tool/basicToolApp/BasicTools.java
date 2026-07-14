@@ -30,7 +30,9 @@ import org.mcpjava.server.Role;
 import org.mcpjava.server.content.Annotations;
 import org.mcpjava.server.content.AudioContent;
 import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.EmbeddedResource;
 import org.mcpjava.server.content.ImageContent;
+import org.mcpjava.server.content.ResourceLink;
 import org.mcpjava.server.content.TextContent;
 import org.mcpjava.server.tools.Tool;
 import org.mcpjava.server.tools.ToolArg;
@@ -154,6 +156,44 @@ public class BasicTools {
         return AudioContent.builder(audioData, "audio/mpeg")
                            .setAnnotations(annotations)
                            .build();
+    }
+
+    @Tool(name = "resourceLinkTool", title = "Resource Link Tool", description = "Returns a resource link content object")
+    public ResourceLink resourceLinkTool(@ToolArg(name = "name", description = "Resource name") String name,
+                                         @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        return ResourceLink.builder(name, uri)
+                           .setTitle("Resource: " + name)
+                           .setMimeType("text/plain")
+                           .build();
+    }
+
+    @Tool(name = "resourceLinkToolWithAnnotation", title = "Resource Link Tool With Annotation", description = "Returns a resource link content object with annotation")
+    public ResourceLink resourceLinkToolWithAnnotation(@ToolArg(name = "name", description = "Resource name") String name,
+                                                       @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.USER)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .build();
+        return ResourceLink.builder(name, uri)
+                           .setAnnotations(annotations)
+                           .build();
+    }
+
+    @Tool(name = "embeddedTextResourceTool", title = "Embedded Text Resource Tool", description = "Returns an embedded text resource content object")
+    public EmbeddedResource embeddedTextResourceTool(@ToolArg(name = "text", description = "Text content") String text,
+                                                     @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        return EmbeddedResource.builder(text, uri)
+                               .setMimeType("text/plain")
+                               .build();
+    }
+
+    @Tool(name = "embeddedBlobResourceTool", title = "Embedded Blob Resource Tool", description = "Returns an embedded blob resource content object")
+    public EmbeddedResource embeddedBlobResourceTool(@ToolArg(name = "imageData", description = "Base64-encoded image data") String imageData64,
+                                                     @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        byte[] imageData = Base64.getDecoder().decode(imageData64);
+        return EmbeddedResource.builder(imageData, uri)
+                               .setMimeType("image/png")
+                               .build();
     }
 
     //tool name is not present -> use method name

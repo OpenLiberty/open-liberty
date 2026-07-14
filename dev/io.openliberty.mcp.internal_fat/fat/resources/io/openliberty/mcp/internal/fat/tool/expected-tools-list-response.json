@@ -709,6 +709,94 @@
                                       "title": "Audio Content Tool With Content Annotation"
                                     },
                                     {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "description": "Resource name",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "name",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "resourceLinkTool",
+                                      "description": "Returns a resource link content object",
+                                      "title": "Resource Link Tool"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "name": {
+                                            "description": "Resource name",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "name",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "resourceLinkToolWithAnnotation",
+                                      "description": "Returns a resource link content object with annotation",
+                                      "title": "Resource Link Tool With Annotation"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "text": {
+                                            "description": "Text content",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "text",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "embeddedTextResourceTool",
+                                      "description": "Returns an embedded text resource content object",
+                                      "title": "Embedded Text Resource Tool"
+                                    },
+                                    {
+                                      "inputSchema": {
+                                        "type": "object",
+                                        "properties": {
+                                          "imageData": {
+                                            "description": "Base64-encoded image data",
+                                            "type": "string"
+                                          },
+                                          "uri": {
+                                            "description": "Resource URI",
+                                            "type": "string"
+                                          }
+                                        },
+                                        "required": [
+                                          "imageData",
+                                          "uri"
+                                        ]
+                                      },
+                                      "name": "embeddedBlobResourceTool",
+                                      "description": "Returns an embedded blob resource content object",
+                                      "title": "Embedded Blob Resource Tool"
+                                    },
+                                    {
                                         "outputSchema": {
                                             "type": "object",
                                             "properties": {

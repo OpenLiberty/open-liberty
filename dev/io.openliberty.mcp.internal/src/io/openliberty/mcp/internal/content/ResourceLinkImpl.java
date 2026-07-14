@@ -18,10 +18,15 @@ import org.mcpjava.server.content.Annotations;
 import org.mcpjava.server.content.ResourceLink;
 
 import io.openliberty.mcp.internal.spi.MetaCarrierBuilderImpl;
+import jakarta.json.bind.annotation.JsonbTypeSerializer;
+import jakarta.json.bind.serializer.JsonbSerializer;
+import jakarta.json.bind.serializer.SerializationContext;
+import jakarta.json.stream.JsonGenerator;
 
 /**
  * Record implementation of {@link ResourceLink}
  */
+@JsonbTypeSerializer(ResourceLinkImpl.Serializer.class)
 public record ResourceLinkImpl(String name,
                                String uri,
                                String titleValue,
@@ -108,6 +113,30 @@ public record ResourceLinkImpl(String name,
         @Override
         public ResourceLink build() {
             return new ResourceLinkImpl(name, uri, title, description, mimeType, annotations, size, Map.copyOf(metadata));
+        }
+    }
+
+    public static class Serializer implements JsonbSerializer<ResourceLinkImpl> {
+
+        @Override
+        public void serialize(ResourceLinkImpl obj, JsonGenerator json, SerializationContext ctx) {
+            json.writeStartObject();
+            json.write("type", "resource_link");
+            json.write("name", obj.name());
+            json.write("uri", obj.uri());
+            if (obj.title() != null) {
+                json.write("title", obj.title());
+            }
+            obj.description().ifPresent(d -> json.write("description", d));
+            obj.mimeType().ifPresent(m -> json.write("mimeType", m));
+            if (obj.size().isPresent()) {
+                json.write("size", obj.size().getAsLong());
+            }
+            obj.annotations().ifPresent(a -> ctx.serialize("annotations", a, json));
+            if (!obj.metadata().isEmpty()) {
+                ctx.serialize("_meta", obj.metadata(), json);
+            }
+            json.writeEnd();
         }
     }
 
