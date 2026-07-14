@@ -13,7 +13,7 @@ apply from: '../wlp-gradle/subprojects/maven-central-mirror.gradle'
 dependencies {
   requiredLibs project(':com.ibm.ws.security.fat.common'),
                project(':com.ibm.ws.security.oauth.oidc_fat.common'),
-               project(':com.ibm.ws.com.meterware.httpunit.1.6.2'),
+               project(':com.ibm.ws.com.meterware.httpunit.1.7'),
                'jtidy:jtidy:4aug2000r7-dev',
                'rhino:js:1.6R5'
 }

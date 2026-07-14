@@ -23,7 +23,6 @@ import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
-import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
 
 /**
  * Gets the OAuth 2.0 protected resource metadata for a given protected resource path.
@@ -34,24 +33,21 @@ import com.ibm.ws.webcontainer.security.openidconnect.OidcClient;
  * using a dedicated web context path.
  * </p>
  */
-@Component(name = "com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver", configurationPolicy = ConfigurationPolicy.IGNORE, service = OAuthProtectedResourceMetadataResolver.class, property = { "service.vendor=IBM" })
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = OAuthProtectedResourceMetadataResolver.class)
 public class OAuthProtectedResourceMetadataResolver {
 
     private static final TraceComponent tc = Tr.register(OAuthProtectedResourceMetadataResolver.class);
 
     private static final String WELL_KNOWN_PREFIX = "/.well-known/oauth-protected-resource";
 
-    private volatile OidcClientImpl oidcClient;
+    @Reference
+    private OidcClientImpl oidcClientImpl;
 
-    @Reference(service = OidcClient.class)
-    protected void setOidcClient(OidcClient oidcClient) {
-        this.oidcClient = (OidcClientImpl) oidcClient;
-    }
-
-    protected void unsetOidcClient(OidcClient oidcClient) {
-        if (this.oidcClient == oidcClient) {
-            this.oidcClient = null;
-        }
+    /**
+     * Test hook: allows unit tests to inject a mock {@link OidcClientImpl} without DS.
+     */
+    void setOidcClient(OidcClientImpl client) {
+        this.oidcClientImpl = client;
     }
 
     /**
@@ -65,7 +61,7 @@ public class OAuthProtectedResourceMetadataResolver {
      * @return serialized JSON metadata document, or {@code null} if no match
      */
     public String resolveMetadataJson(HttpServletRequest request, String protectedResourcePath, String absoluteResourceUrl) {
-        OidcClientImpl client = oidcClient;
+        OidcClientImpl client = oidcClientImpl;
         if (client == null) {
             return null;
         }

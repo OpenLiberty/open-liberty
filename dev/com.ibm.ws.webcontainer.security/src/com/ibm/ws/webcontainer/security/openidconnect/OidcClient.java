@@ -56,4 +56,13 @@ public interface OidcClient {
     boolean anyClientIsBeforeSso();
 
     void logoutIfSessionInvalidated(HttpServletRequest req);
+
+    /**
+     * Returns the OIDC provider ID whose auth filter matches the given request,
+     * or {@code null} if no configured auth filter matches.
+     *
+     * @param req the incoming HTTP request
+     * @return matching provider ID, or {@code null}
+     */
+    String getOidcProviderByAuthFilter(HttpServletRequest req);
 }

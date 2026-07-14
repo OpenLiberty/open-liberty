@@ -55,7 +55,8 @@ Service-Component: \
   com.ibm.ws.security.openidconnect.client; \
     implementation:=com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl; \
     provide:='com.ibm.ws.webcontainer.security.openidconnect.OidcClient,\
-              com.ibm.ws.webcontainer.security.UnprotectedResourceService'; \
+              com.ibm.ws.webcontainer.security.UnprotectedResourceService,\
+              com.ibm.ws.security.openidconnect.client.internal.OidcClientImpl'; \
     immediate:=true; \
     activate:=activate; \
     modified:=modify; \

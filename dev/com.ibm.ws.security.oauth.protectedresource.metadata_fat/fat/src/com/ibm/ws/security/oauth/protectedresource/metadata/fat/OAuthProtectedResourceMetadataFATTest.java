@@ -13,12 +13,11 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.HttpsURLConnection;
 import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSession;
 import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
@@ -80,7 +79,10 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         serverHttpString = "http://" + testServer.getHostname() + ":" + testServer.getHttpDefaultPort();
         serverHttpsString = "https://" + testServer.getHostname() + ":" + testServer.getHttpDefaultSecurePort();
 
-        setupTrustAll();
+        // Install a trust-all SSL context once for the JVM so HTTPS requests in all tests
+        // accept the server's self-signed cert. Setting it here (not per-WebConversation) means
+        // it is set exactly once and does not have side-effects across test method boundaries.
+        installTrustAll();
 
         Log.info(thisClass, methodName, "Server started successfully. HTTP: " + serverHttpString + "  HTTPS: " + serverHttpsString);
     }
@@ -134,6 +136,7 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         String expectedIssuer = buildExpectedHttpIssuer();
 
         assertNotNull("Response did not contain 'authorization_servers' field", authorizationServers);
+        assertEquals("Expected exactly one entry in 'authorization_servers'", 1, authorizationServers.size());
         assertTrue("Expected 'authorization_servers' to contain '" + expectedIssuer + "' but was: " + authorizationServers,
                 authorizationServers.contains(expectedIssuer));
     }
@@ -261,6 +264,7 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
         String expectedIssuer = buildExpectedHttpsIssuer();
 
         assertNotNull("Response did not contain 'authorization_servers' field", authorizationServers);
+        assertEquals("Expected exactly one entry in 'authorization_servers'", 1, authorizationServers.size());
         assertTrue("Expected 'authorization_servers' to contain '" + expectedIssuer + "' but was: " + authorizationServers,
                 authorizationServers.contains(expectedIssuer));
     }
@@ -377,46 +381,32 @@ public class OAuthProtectedResourceMetadataFATTest extends CommonTest {
      * Builds the expected HTTP issuer URL from the running server's hostname and port.
      */
     private static String buildExpectedHttpIssuer() {
-        return "http://" + testServer.getHostname() + ":" + testServer.getHttpDefaultPort()
+        return "http://localhost:" + testServer.getHttpDefaultPort()
                 + "/oidc/endpoint/OidcConfigSample";
     }
 
     /**
-     * Builds the expected HTTPS issuer URL from the running server's hostname and secure port.
+     * Builds the expected HTTPS issuer URL from the running server's secure port.
      */
     private static String buildExpectedHttpsIssuer() {
-        return "https://" + testServer.getHostname() + ":" + testServer.getHttpDefaultSecurePort()
+        return "https://localhost:" + testServer.getHttpDefaultSecurePort()
                 + "/oidc/endpoint/OidcConfigSampleHttps";
     }
 
     /**
-     * Installs a trust-all SSL context so the FAT client accepts the server's self-signed cert.
+     * Installs a trust-all SSL context on the JVM's default HttpsURLConnection factory.
+     * Called once from @BeforeClass — not per-request — so there are no cross-test side effects.
      */
-    private static void setupTrustAll() throws Exception {
-        TrustManager[] trustAllCerts = new TrustManager[] { new X509TrustManager() {
-            @Override
-            public X509Certificate[] getAcceptedIssuers() {
-                return null;
-            }
-
-            @Override
-            public void checkClientTrusted(X509Certificate[] certs, String authType) {
-            }
-
-            @Override
-            public void checkServerTrusted(X509Certificate[] certs, String authType) {
-            }
+    private static void installTrustAll() throws Exception {
+        TrustManager[] trustAll = new TrustManager[] { new X509TrustManager() {
+            @Override public X509Certificate[] getAcceptedIssuers() { return null; }
+            @Override public void checkClientTrusted(X509Certificate[] c, String a) {}
+            @Override public void checkServerTrusted(X509Certificate[] c, String a) {}
         } };
-
         SSLContext sc = SSLContext.getInstance("TLS");
-        sc.init(null, trustAllCerts, new java.security.SecureRandom());
+        sc.init(null, trustAll, new SecureRandom());
         HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
-        HttpsURLConnection.setDefaultHostnameVerifier(new HostnameVerifier() {
-            @Override
-            public boolean verify(String hostname, SSLSession session) {
-                return true;
-            }
-        });
+        HttpsURLConnection.setDefaultHostnameVerifier((hostname, session) -> true);
     }
 
     private static WebResponse getResponse(String url) throws Exception {
