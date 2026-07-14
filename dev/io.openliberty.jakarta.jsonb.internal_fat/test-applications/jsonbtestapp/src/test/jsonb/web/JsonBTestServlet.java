@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -21,6 +21,10 @@ import static org.junit.Assert.fail;
 
 import java.lang.reflect.Type;
 import java.net.URI;
+import java.time.Month;
+import java.time.MonthDay;
+import java.time.Year;
+import java.time.YearMonth;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.LinkedHashMap;
@@ -36,6 +40,7 @@ import jakarta.json.bind.JsonbConfig;
 import jakarta.json.bind.JsonbException;
 import jakarta.json.bind.adapter.JsonbAdapter;
 import jakarta.json.bind.annotation.JsonbCreator;
+import jakarta.json.bind.annotation.JsonbDateFormat;
 import jakarta.json.bind.annotation.JsonbNillable;
 import jakarta.json.bind.annotation.JsonbProperty;
 import jakarta.json.bind.annotation.JsonbSubtype;
@@ -240,6 +245,41 @@ public class JsonBTestServlet extends FATServlet {
                                         0,
                                         ZoneId.of((String) map.get("zone")));
             }
+        }
+    }
+
+    /**
+     * Write MonthDay values to JSON and read them back in as Java objects.
+     */
+    @Test
+    public void testMonthDay() {
+        TestMonthDay taxDeadline = new TestMonthDay();
+        taxDeadline.setMonthDay(MonthDay.of(Month.APRIL, 15));
+        String jsonTaxDeadline = jsonb.toJson(taxDeadline);
+
+        TestMonthDay independenceDay = new TestMonthDay();
+        independenceDay.setMonthDay(MonthDay.of(7, 4));
+        String jsonIndependenceDay = jsonb.toJson(independenceDay);
+
+        taxDeadline = jsonb.fromJson(jsonTaxDeadline, TestMonthDay.class);
+        independenceDay = jsonb.fromJson(jsonIndependenceDay, TestMonthDay.class);
+
+        assertEquals(MonthDay.of(4, 15), taxDeadline.monthDay);
+        assertEquals(MonthDay.of(Month.JULY, 4), independenceDay.monthDay);
+
+        assertEquals("{\"monthDay\":\"--04-15\"}", jsonTaxDeadline);
+        assertEquals("{\"monthDay\":\"--07-04\"}", jsonIndependenceDay);
+    }
+
+    public static class TestMonthDay {
+        private MonthDay monthDay;
+
+        public MonthDay getMonthDay() {
+            return monthDay;
+        }
+
+        public void setMonthDay(MonthDay value) {
+            monthDay = value;
         }
     }
 
@@ -459,6 +499,109 @@ public class JsonBTestServlet extends FATServlet {
 
         public void setName(String name) {
             this.name = name;
+        }
+    }
+
+    /**
+     * Write Year values to JSON and read them back in as Java objects.
+     */
+    @Test
+    public void testYear() {
+        TestYear year2026 = new TestYear();
+        year2026.setYear(Year.of(2026));
+        String json2026 = jsonb.toJson(year2026);
+
+        TestYear year2025 = new TestYear();
+        year2025.setYear(Year.of(2025));
+        String json2025 = jsonb.toJson(year2025);
+
+        // TODO See jsonb-api 397 regarding whether this behavior will be added
+        //year2026 = jsonb.fromJson(json2026, TestYear.class);
+        //year2025 = jsonb.fromJson(json2025, TestYear.class);
+
+        //assertEquals(Year.of(2026), year2026.year);
+        //assertEquals(Year.of(2025), year2025.year);
+
+        //assertEquals("{\"year\":\"2026\"}", json2026);
+        //assertEquals("{\"year\":\"2025\"}", json2025);
+    }
+
+    public static class TestYear {
+        private Year year;
+
+        public Year getYear() {
+            return year;
+        }
+
+        public void setYear(Year value) {
+            year = value;
+        }
+    }
+
+    /**
+     * Write YearMonth values to JSON and read them back in as Java objects.
+     */
+    @Test
+    public void testYearMonth() {
+        TestYearMonth july2026 = new TestYearMonth();
+        july2026.setYearMonth(YearMonth.of(2026, Month.JULY));
+        String jsonJuly2026 = jsonb.toJson(july2026);
+
+        TestYearMonth dec2026 = new TestYearMonth();
+        dec2026.setYearMonth(YearMonth.of(2026, 12));
+        String jsonDec2026 = jsonb.toJson(dec2026);
+
+        TestYearMonth jan2025 = new TestYearMonth();
+        jan2025.setYearMonth(YearMonth.of(2025, Month.JANUARY));
+        String jsonJan2025 = jsonb.toJson(jan2025);
+
+        TestYearMonth feb0051 = new TestYearMonth();
+        feb0051.setYearMonth(YearMonth.of(51, Month.FEBRUARY));
+        String jsonFeb0051 = jsonb.toJson(feb0051);
+
+        TestYearMonth aug7654321 = new TestYearMonth();
+        aug7654321.setYearMonth(YearMonth.of(7654321, Month.AUGUST));
+        String jsonAug7654321 = jsonb.toJson(aug7654321);
+
+        TestYearMonth dec0005bc = new TestYearMonth();
+        dec0005bc.setYearMonth(YearMonth.of(-5, Month.DECEMBER));
+        String jsonDec0005bc = jsonb.toJson(dec0005bc);
+
+        july2026 = jsonb.fromJson(jsonJuly2026, TestYearMonth.class);
+        dec2026 = jsonb.fromJson(jsonDec2026, TestYearMonth.class);
+        jan2025 = jsonb.fromJson(jsonJan2025, TestYearMonth.class);
+        feb0051 = jsonb.fromJson(jsonFeb0051, TestYearMonth.class);
+        aug7654321 = jsonb.fromJson(jsonAug7654321, TestYearMonth.class);
+        dec0005bc = jsonb.fromJson(jsonDec0005bc, TestYearMonth.class);
+
+        assertEquals(YearMonth.of(2026, Month.DECEMBER), dec2026.yearMonth);
+        assertEquals(YearMonth.of(2026, 7), july2026.yearMonth);
+        assertEquals(YearMonth.of(2025, 1), jan2025.yearMonth);
+        assertEquals(YearMonth.of(51, 2), feb0051.yearMonth);
+        assertEquals(YearMonth.of(7654321, 8), aug7654321.yearMonth);
+        assertEquals(YearMonth.of(-5, 12), dec0005bc.yearMonth);
+
+        assertEquals("{\"yearMonth\":\"2026-12\"}", jsonDec2026);
+        assertEquals("{\"yearMonth\":\"2026-07\"}", jsonJuly2026);
+        assertEquals("{\"yearMonth\":\"2025-01\"}", jsonJan2025);
+        assertEquals("{\"yearMonth\":\"0051-02\"}", jsonFeb0051);
+        assertEquals("{\"yearMonth\":\"+7654321-08\"}", jsonAug7654321);
+        assertEquals("{\"yearMonth\":\"-0005-12\"}", jsonDec0005bc);
+    }
+
+    public static class TestYearMonth {
+        // Without this annotation, year within the common era is written,
+        // so a value like -5 (which represents 6 BCE) is written as 0006.
+        // And 0006 is read back in as 6.
+        @JsonbDateFormat("uuuu-MM")
+        private YearMonth yearMonth;
+
+        public YearMonth getYearMonth() {
+            return yearMonth;
+        }
+
+        public void setYearMonth(YearMonth value) {
+            yearMonth = value;
         }
     }
 }
