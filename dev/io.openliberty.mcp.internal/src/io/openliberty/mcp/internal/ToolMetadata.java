@@ -86,7 +86,7 @@ public record ToolMetadata(String name,
 
     public record ToolMethodArgument(AnnotatedParameter<?> parameter, ToolArgument argument) {}
 
-    public record SpecialArgumentMetadata(SpecialArgumentType.Resolution typeResolution, int index) {}
+    public record SpecialArgumentMetadata(SpecialArgumentType type, int index) {}
 
     public ToolMetadata {
         arguments = ((arguments == null) ? Collections.emptyList() : arguments);
@@ -252,31 +252,35 @@ public record ToolMetadata(String name,
      * ToolArg.defaultValue is set, or
      * the argument return type is optional
      */
-    private static boolean isArgumentRequired(boolean requiredArgAnnotation, String defaultValue, Type argumentType) {
-        if (!defaultValue.isEmpty()) {
+    private static boolean isArgumentRequired(ToolArg argAnnotation, Type argumentType) {
+        if (argAnnotation != null && !argAnnotation.defaultValue().isEmpty()) {
             return false;
         }
         if (DefaultValueResolver.isOptionalType(argumentType)) {
             return false;
         }
-        return requiredArgAnnotation;
-
+        return argAnnotation != null ? argAnnotation.required() : true;
     }
 
     private static void addArgumentMetadata(AnnotatedParameter<?> param, Type argumentType, List<ToolMethodArgument> result) {
-        ToolArg argAnnotation = param.getAnnotation(ToolArg.class);
 
-        if (argAnnotation != null) {
-            String argName = resolveArgumentName(param, argAnnotation);
-            boolean required = isArgumentRequired(argAnnotation.required(), argAnnotation.defaultValue(), param.getBaseType());
-            result.add(new ToolMethodArgument(param,
-                                              new ToolArgument(argName,
-                                                               argAnnotation.description(),
-                                                               required,
-                                                               argumentType,
-                                                               argAnnotation.defaultValue())));
+        if (SpecialArgumentType.fromClass(argumentType).isPresent()) {
+            // This parameter is a special argument
+            return;
         }
 
+        ToolArg argAnnotation = param.getAnnotation(ToolArg.class);
+        String argName = resolveArgumentName(param, argAnnotation);
+        String description = argAnnotation != null ? argAnnotation.description() : "";
+        boolean required = isArgumentRequired(argAnnotation, param.getBaseType());
+        String defaultValue = argAnnotation != null ? argAnnotation.defaultValue() : "";
+
+        result.add(new ToolMethodArgument(param,
+                                          new ToolArgument(argName,
+                                                           description,
+                                                           required,
+                                                           argumentType,
+                                                           defaultValue)));
     }
 
     private static boolean hasUnresolvableTypeVariables(Type baseType, Map<TypeVariable<?>, Type> genericMap) {
@@ -315,10 +319,12 @@ public record ToolMetadata(String name,
     }
 
     private static String resolveArgumentName(AnnotatedParameter<?> param, ToolArg argAnnotation) {
-        String argAnnotationName = argAnnotation.name();
+        if (argAnnotation != null) {
+            String argAnnotationName = argAnnotation.name();
 
-        if (!argAnnotationName.equals(ToolArg.ELEMENT_NAME)) {
-            return argAnnotationName;
+            if (!argAnnotationName.equals(ToolArg.ELEMENT_NAME)) {
+                return argAnnotationName;
+            }
         }
 
         if (param.getJavaParameter().isNamePresent()) {
@@ -332,11 +338,9 @@ public record ToolMetadata(String name,
     private static List<SpecialArgumentMetadata> getSpecialArgumentList(AnnotatedMethod<?> method) {
         List<SpecialArgumentMetadata> result = new ArrayList<>();
         for (AnnotatedParameter<?> p : method.getParameters()) {
-            ToolArg pInfo = p.getAnnotation(ToolArg.class);
-            if (pInfo == null) {
-                SpecialArgumentMetadata pData = new SpecialArgumentMetadata(SpecialArgumentType.fromClass(p.getBaseType()), p.getPosition());
-                result.add(pData);
-            }
+            SpecialArgumentType.fromClass(p.getBaseType()).ifPresent(type -> {
+                result.add(new SpecialArgumentMetadata(type, p.getPosition()));
+            });
         }
         return Collections.unmodifiableList(result);
     }

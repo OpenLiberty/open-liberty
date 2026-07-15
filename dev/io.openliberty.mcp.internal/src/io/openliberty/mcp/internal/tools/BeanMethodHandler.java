@@ -98,11 +98,10 @@ public abstract class BeanMethodHandler<RESPONSE> implements Function<ToolArgume
         }
 
         for (SpecialArgumentMetadata specArg : method.specialArguments()) {
-            argsArray[specArg.index()] = switch (specArg.typeResolution().specialArgsType()) {
+            argsArray[specArg.index()] = switch (specArg.type()) {
                 case CANCELLATION -> t.cancellation();
                 case REQUEST -> t.request();
                 case PROGRESS -> t.progress();
-                default -> throw new RuntimeException("Unknown arg"); //TODO FIX - possibly we can guarantee this is validated earlier
             };
         }
         return argsArray;

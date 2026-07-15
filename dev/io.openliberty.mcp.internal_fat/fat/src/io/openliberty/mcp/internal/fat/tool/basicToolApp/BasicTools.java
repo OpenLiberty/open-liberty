@@ -649,6 +649,17 @@ public class BasicTools {
                       .orElse("No Session ID");
     }
 
+    @Tool
+    public String unannotatedArgTool(String name, int count, McpRequest req) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            result.append("hello ");
+        }
+        result.append(name);
+        result.append(" of ").append(req.clientInfo().title());
+        return result.toString();
+    }
+
     /**
      * Run a callable and translate any exceptions or assertion errors into a String
      */
