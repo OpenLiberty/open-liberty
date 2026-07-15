@@ -64,7 +64,7 @@ public class InboundSecurityTest extends JCAFATTest implements RarTests {
         server.waitForStringInLog("CWWKE0002I");
         server.waitForStringInLog("CWWKZ0001I:.*fvtapp"); // Wait for application start.
         server.waitForStringInLog("CWWKF0011I");
-        server.waitForStringInLog("CWWKS4104A"); // Wait for Ltpa keys to be generated
+        server.waitForLTPAKeysCreated(); // Wait for Ltpa keys to be generated
     }
 
     public static void serverTearDown(ServerMode mode, LibertyServer server) throws Exception {

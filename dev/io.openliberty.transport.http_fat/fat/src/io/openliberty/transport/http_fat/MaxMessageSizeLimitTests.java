@@ -63,8 +63,7 @@ public class MaxMessageSizeLimitTests {
 
         // Go through logs and check if Netty is being used.
         // Wait for the TCP Channel to finish loading and get the TCP Channel started message.
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint has been started and is now listening for requests on host *  (IPv6) port 8010.
-        String tcpChannelMessage = server.waitForStringInLog("CWWKO0219I: TCP Channel defaultHttpEndpoint");
+        String tcpChannelMessage = server.waitForDefaultHTTPEndpointStart();
         LOG.info("Endpoint: " + tcpChannelMessage);
 
         runningNetty = tcpChannelMessage.contains(NETTY_TCP_CLASS_NAME);

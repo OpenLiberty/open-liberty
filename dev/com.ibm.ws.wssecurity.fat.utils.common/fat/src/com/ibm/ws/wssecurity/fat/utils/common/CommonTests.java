@@ -284,7 +284,7 @@ public class CommonTests {
             portNumberSecure = "" + server.getHttpDefaultSecurePort();
             server.waitForStringInLog("port " + portNumberSecure);
 
-            assertNotNull("SSL Service is not ready.", server.waitForStringInLog("CWWKO0219I.*ssl"));
+            server.waitForDefaultHTTPEndpointSSLStart();
             clientHttpsUrl = "https://localhost:" + portNumberSecure + uniqueUrl;
 
             Log.info(thisClass, thisMethod, "****portNumberSecure is:"

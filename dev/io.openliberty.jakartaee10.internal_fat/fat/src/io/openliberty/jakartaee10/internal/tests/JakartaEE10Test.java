@@ -152,7 +152,7 @@ public class JakartaEE10Test extends FATServletClient {
             server.setServerStartTimeout(15 * 60 * 1000L); // 15 minutes
         }
         server.startServer(consoleName + ".log");
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

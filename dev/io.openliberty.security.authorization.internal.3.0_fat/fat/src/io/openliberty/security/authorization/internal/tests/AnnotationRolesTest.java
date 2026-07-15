@@ -84,6 +84,7 @@ public class AnnotationRolesTest extends AbstractRolesTest {
         if (!server.isStarted()) {
             ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY);
             server.startServer();
+            server.waitForLTPAConfigReady();
         } else {
             server.setMarkToEndOfLog();
             ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
@@ -127,6 +128,7 @@ public class AnnotationRolesTest extends AbstractRolesTest {
         if (!server.isStarted()) {
             ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY);
             server.startServer();
+            server.waitForLTPAConfigReady();
         } else {
             server.setMarkToEndOfLog();
             ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);
@@ -170,6 +172,7 @@ public class AnnotationRolesTest extends AbstractRolesTest {
         if (!server.isStarted()) {
             ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY);
             server.startServer();
+            server.waitForLTPAConfigReady();
         } else {
             server.setMarkToEndOfLog();
             ShrinkHelper.exportAppToServer(server, war, DeployOptions.SERVER_ONLY, DeployOptions.DISABLE_VALIDATION);

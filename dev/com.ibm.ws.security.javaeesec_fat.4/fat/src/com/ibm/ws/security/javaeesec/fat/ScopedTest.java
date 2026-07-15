@@ -78,7 +78,7 @@ public class ScopedTest extends JavaEESecTestBase {
         /*
          * Wait for the SSL endpoint to start.
          */
-        myServer.waitForSSLStart();
+        myServer.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass

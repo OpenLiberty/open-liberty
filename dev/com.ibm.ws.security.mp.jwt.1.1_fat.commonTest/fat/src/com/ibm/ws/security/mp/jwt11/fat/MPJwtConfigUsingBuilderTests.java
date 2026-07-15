@@ -1466,6 +1466,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MPJwtConfigUsingBuilderTests_FromHeader_AllowOnlyRS256_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_FROM_HEADER_allow_RS256.xml");
@@ -1479,6 +1480,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MPJwtConfigUsingBuilderTests_FromHeader_AllowOnlyRS384_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_FROM_HEADER_allow_RS384.xml");
@@ -1492,6 +1494,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MPJwtConfigUsingBuilderTests_FromHeader_AllowOnlyRS512_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_FROM_HEADER_allow_RS512.xml");
@@ -1556,6 +1559,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MPJwtConfigUsingBuilderTests_FromHeader_AllowAllRSAlgs_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_FROM_HEADER_allow_RSAlgs.xml");
@@ -1583,6 +1587,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
     @Mode(TestMode.LITE)
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MPJwtConfigUsingBuilderTests_FromHeader_AllowMixedAlgs_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_FROM_HEADER_allow_HS256RS384ES512.xml");
@@ -1595,6 +1600,7 @@ public class MPJwtConfigUsingBuilderTests extends MPJwt11MPConfigTests {
      * @throws Exception
      */
     @ExpectedFFDC({ "org.jose4j.jwt.consumer.InvalidJwtSignatureException" })
+    @SkipJavaSemeruWithFipsEnabledRule
     @Test
     public void MPJwtConfigUsingBuilderTests_FromHeader_tokenWithMatchAndMisMatchSigAlgs() throws Exception {
         resourceServer.reconfigureServerUsingExpandedConfiguration(_testName, "rs_server_sigAlg_FROM_HEADER.xml");

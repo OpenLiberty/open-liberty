@@ -26,6 +26,7 @@ import java.util.stream.Stream;
 import com.ibm.websphere.ras.annotation.Sensitive;
 
 import jakarta.data.Limit;
+import jakarta.data.Sort;
 import jakarta.data.exceptions.EmptyResultException;
 import jakarta.data.exceptions.MappingException;
 import jakarta.data.exceptions.NonUniqueResultException;
@@ -355,6 +356,26 @@ public class Fail {
     }
 
     /**
+     * Raise a new MappingException for the error where some operations are not
+     * available because a Sort expression was used to request a cursored page.
+     *
+     * @param info query information for the repository method
+     * @param sort the sort criterion
+     * @throws the MappingException
+     */
+    static MappingException incompatibleSort(QueryInfo info, Sort<?> sort) {
+        String attrName = sort.property();
+        throw exc(MappingException.class,
+                  "CWWKD1123.sort.incompat.with.cursor",
+                  info.method.getName(),
+                  info.repositoryInterface.getName(),
+                  attrName == null ? info.getExpression(sort) : attrName,
+                  "Cursor.forKey",
+                  info.entityInfo.getType().getName(),
+                  info.entityInfo.attributeTypes.keySet());
+    }
+
+    /**
      * Raises UnsupportedOperationException for a repository method that is not
      * valid as a life cycle method because it has no method parameters or more
      * than 1 method parameter.
@@ -419,20 +440,21 @@ public class Fail {
      * annotations that conflict with each other or with the type of the repository
      * method parameter.
      *
-     * @param info       query information for the repository method.
-     * @param errorCode  constant from DataVersionCompatibility that classifies
-     *                       the error.
-     * @param paramIndex index (0-based) of repository method parameter.
-     * @param paramType  Java class of the repository method parameter.
-     * @param paramAnnos annotations on the repository method parameter.
+     * @param info                    query information for the repository method
+     * @param conflictsWithConstraint indicates if he parameter annotation conflicts
+     *                                    with the type of Constraint
+     * @param paramIndex              index (0-based) of repository method parameter
+     * @param paramType               Java class of the repository method parameter
+     * @param paramAnnos              annotations on the repository method parameter
      * @throws the UnsupportedOperationException
      */
-    static UnsupportedOperationException methodParamAnnoConflict(QueryInfo info,
-                                                                 int errorCode,
-                                                                 int paramIndex,
-                                                                 Class<?> paramType,
-                                                                 Annotation[] paramAnnos) {
-        if (errorCode == QueryInfo.PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT)
+    public static UnsupportedOperationException //
+                    methodParamAnnoConflict(QueryInfo info,
+                                            boolean conflictsWithConstraint,
+                                            int paramIndex,
+                                            Class<?> paramType,
+                                            Annotation[] paramAnnos) {
+        if (conflictsWithConstraint)
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1117.anno.constraint.conflict",
                       paramIndex + 1, // switch to 1-based
@@ -440,15 +462,13 @@ public class Fail {
                       info.repositoryInterface.getName(),
                       Arrays.toString(paramAnnos),
                       paramType.getClass().getName());
-        else if (errorCode == QueryInfo.PARAM_ANNOS_CONFLICT)
+        else
             throw exc(UnsupportedOperationException.class,
                       "CWWKD1118.param.anno.conflict",
                       paramIndex + 1, // switch to 1-based
                       info.method.getName(),
                       info.repositoryInterface.getName(),
                       Arrays.toString(paramAnnos));
-        else // internal error
-            throw new IllegalArgumentException("errorCode: " + errorCode);
     }
 
     /**
@@ -601,7 +621,7 @@ public class Fail {
                                                            int methodNPCount) {
         String firstNamedParam = null;
         StringBuilder allNamedParams = new StringBuilder().append('(');
-        for (String name : info.jpqlParamNames) {
+        for (String name : info.qlParamNames) {
             if (firstNamedParam == null)
                 firstNamedParam = name;
             else

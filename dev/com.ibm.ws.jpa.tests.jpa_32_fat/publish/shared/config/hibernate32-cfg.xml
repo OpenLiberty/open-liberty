@@ -28,20 +28,24 @@
     <javaPermission className="java.lang.RuntimePermission" name="getenv.TURN_OFF_LR_LOOP_ENTRY_BRANCH_OPT"/>
 
     <!-- START: Hibernate permissions -->
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/cache-api-1.1.1.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/ehcache-3.10.8-jakarta.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-jcache-7.4.4.Final.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/slf4j-api-1.7.36.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/slf4j-simple-1.7.36.jar"/>
     <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/antlr4-runtime-4.13.2.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/angus-activation-2.0.2.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/angus-activation-2.0.3.jar"/>
     <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/antlr4-runtime-4.13.2.jar"/>
     <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/byte-buddy-1.18.8.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/classmate-1.7.0.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-community-dialects-7.3.3.Final.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-core-7.3.3.Final.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-community-dialects-7.4.4.Final.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-core-7.4.4.Final.jar"/>
     <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-models-1.1.1.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-scan-jandex-7.3.3.Final.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/hibernate-scan-jandex-7.4.4.Final.jar"/>
     <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/istack-commons-runtime-4.1.2.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/jandex-3.3.0.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/jaxb-core-4.0.6.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/jaxb-runtime-4.0.6.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/jandex-3.3.2.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/jaxb-core-4.0.7.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/jaxb-runtime-4.0.7.jar"/>
     <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/jboss-logging-3.6.1.Final.jar"/>
-    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/txw2-4.0.6.jar"/>
+    <javaPermission className="java.security.AllPermission" codebase="${shared.resource.dir}/jpa_fat_jpa32_hibernate/txw2-4.0.7.jar"/>
     <!-- END: Hibernate permissions -->	
 </server>

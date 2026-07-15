@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2012, 2022 IBM Corporation and others.
+ * Copyright (c) 2012, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -41,7 +41,9 @@ import com.ibm.ws.jca.service.EndpointActivationService;
 import com.ibm.ws.jca.service.WSMessageEndpointFactory;
 import com.ibm.ws.kernel.launch.service.PauseableComponent;
 import com.ibm.ws.kernel.launch.service.PauseableComponentException;
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.util.ThreadContextAccessor;
+import com.ibm.wsspi.kernel.service.utils.FrameworkState;
 
 /**
  * This class implements the MDB MessageEndpointFactory interface and is used
@@ -68,6 +70,7 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
     private static final long serialVersionUID = 5888307461965940506L;
     private static final TraceComponent tc = Tr.register(MessageEndpointFactoryImpl.class);
     private static final ThreadContextAccessor threadContextAccessor = AccessController.doPrivileged(ThreadContextAccessor.getPrivilegedAction());
+    private static final boolean isBeta = ProductInfo.getBetaEdition();
 
     /**
      * Returned by endpoint activation service when this endpoint is
@@ -444,6 +447,15 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
         return beanMetaData.ivMessageDestinationJndiName;
     }
 
+    @Trivial
+    @Override
+    public boolean isDeactivateOnQuiesce() {
+        if (!isBeta) {
+            return true;
+        }
+        return beanMetaData.isDeactivateOnQuiesce();
+    }
+
     //PausableComponent Methods
 
     /*
@@ -486,6 +498,12 @@ public class MessageEndpointFactoryImpl extends BaseMessageEndpointFactory imple
      */
     @Override
     public void pause() throws PauseableComponentException {
+        if (isBeta && FrameworkState.isStopping() && !beanMetaData.isDeactivateOnQuiesce()) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "deactivate skipped on quiesce; will deactivate on stop : " + beanMetaData.j2eeName);
+            return;
+        }
+
         try {
             if (ivState == ACTIVE_STATE) {
                 deactivateEndpoint();

@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2024 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -152,6 +152,8 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     private transient int numberOfHeaders = 0;
     /** Flag on whether to perform header validation or not */
     private transient boolean bHeaderValidation = true;
+    /** Flag on whether to reject obsolete line folding in parsed headers */
+    private transient boolean rejectHeaderLineFolding = false;
     /** Flag on whether to perform character validation in the header or not */
     private transient static boolean bCharacterValidation = true; //PI45266
     /** Flag on whether to use the channel is configured to use the remote Ip, Forwarded/X-Forwarded headers */
@@ -696,6 +698,7 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
         msg.init(this.useDirectBuffer, this.outgoingHdrBufferSize, this.incomingBufferSize, this.byteCacheSize);
         msg.setDebugContext(this.debugContext);
         msg.setHeaderValidation(this.bHeaderValidation);
+        msg.setRejectHeaderLineFolding(this.rejectHeaderLineFolding);
         msg.setLimitOfTokenSize(this.limitTokenSize);
         msg.setLimitOnNumberOfHeaders(this.limitNumHeaders);
     }
@@ -2913,6 +2916,15 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
     }
 
     /**
+     * Set whether parsed headers should reject obsolete line folding.
+     *
+     * @param flag
+     */
+    final protected void setRejectHeaderLineFolding(boolean flag) {
+        this.rejectHeaderLineFolding = flag;
+    }
+
+    /**
      * Check the input header value for validity, starting at the offset and
      * continuing for the input length of characters.
      *
@@ -3743,6 +3755,9 @@ public abstract class BNFHeadersImpl implements BNFHeaders, Externalizable {
                 // line feed found
                 this.numCRLFs++;
             } else if (BNFHeaders.SPACE == b || BNFHeaders.TAB == b) {
+                if (this.rejectHeaderLineFolding) {
+                    throw new MalformedMessageException("Obsolete line folding is not allowed in HTTP headers");
+                }
                 // Check for multi-line header values
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                     Tr.debug(tc, "Multiline header follows");

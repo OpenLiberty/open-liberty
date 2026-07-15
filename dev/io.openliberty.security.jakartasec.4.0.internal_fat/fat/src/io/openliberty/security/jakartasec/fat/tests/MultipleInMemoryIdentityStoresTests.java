@@ -83,6 +83,8 @@ public class MultipleInMemoryIdentityStoresTests extends BaseJakartaSecurity40Te
         ShrinkHelper.exportDropinAppToServer(server, app, DeployOptions.SERVER_ONLY);
 
         instance.startServer();
+
+        server.waitForLTPAConfigReady();
     }
 
     /**

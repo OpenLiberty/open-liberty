@@ -67,6 +67,7 @@ public class HttpChannelConfig {
     private int incomingHdrBuffSize = 8192;
     /** Size of buffers to use while reading incoming bodies. */
     private int incomingBodyBuffSize = 32768;
+    private int websocketBufferSize = 65536;
     /** Time to wait for additional requests on a socket (milliseconds). */
     private int persistTimeout = 30000;
     /** Time to wait for a read to complete (milliseconds). */
@@ -343,6 +344,10 @@ public class HttpChannelConfig {
                 props.put(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE, value);
                 continue;
             }
+            if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_WEBSOCKET_BUFFER_SIZE)) {
+                props.put(HttpConfigConstants.PROPNAME_WEBSOCKET_BUFFER_SIZE, value);
+                continue;
+            }
             if (key.equalsIgnoreCase(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE)) {
                 props.put(HttpConfigConstants.PROPNAME_BYTE_CACHE_SIZE, value);
                 continue;
@@ -582,6 +587,7 @@ public class HttpChannelConfig {
         parseOutgoingBufferSize(props.get(HttpConfigConstants.PROPNAME_OUTGOING_HDR_BUFFSIZE));
         parseIncomingHdrBufferSize(props.get(HttpConfigConstants.PROPNAME_INCOMING_HDR_BUFFSIZE));
         parseIncomingBodyBufferSize(props.get(HttpConfigConstants.PROPNAME_INCOMING_BODY_BUFFSIZE));
+        parseWebSocketBufferSize(props.get(HttpConfigConstants.PROPNAME_WEBSOCKET_BUFFER_SIZE));
         parsePersistTimeout(props.get(HttpConfigConstants.PROPNAME_PERSIST_TIMEOUT));
         parseReadTimeout(props.get(HttpConfigConstants.PROPNAME_READ_TIMEOUT));
         parseWriteTimeout(props.get(HttpConfigConstants.PROPNAME_WRITE_TIMEOUT));
@@ -829,6 +835,27 @@ public class HttpChannelConfig {
             }
         }
 
+    }
+
+    protected void parseWebSocketBufferSize(Object option) {
+        if (Objects.nonNull(option)) {
+            try {
+                this.websocketBufferSize = rangeLimit(convertInteger(option), -1, Integer.MAX_VALUE);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: WebSocket buffer size is " + getWebSocketBufferSize());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseWebSocketBufferSize", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid WebSocket buffer size; " + option);
+                }
+            }
+        }
+
+    }
+
+    public int getWebSocketBufferSize() {
+        return this.websocketBufferSize;
     }
 
     /**

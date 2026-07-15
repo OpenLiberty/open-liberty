@@ -1241,14 +1241,8 @@ public class WCResponseHeadersTest {
         server.waitForConfigUpdateInLogUsingMark(Collections.singleton(APP_NAME_SECURE_APP), true, "CWWKT0016I:.*SameSiteSecurityTest.*");
 
         // Wait for LTPA key to be available to avoid CWWKS4000E
-        // CWWKS4105I: LTPA configuration is ready after x seconds
-        assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      server.waitForStringInLogUsingMark("CWWKS4105I.*"));
-
-        // CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl has been started and is now listening for
-        // requests on host * (IPv6) port 8020.
-        assertNotNull("CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl message was not found",
-                      server.waitForStringInLogUsingMark("CWWKO0219I:.*defaultHttpEndpoint-ssl"));
+        server.waitForLTPAConfigReady();
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         configuration = server.getServerConfiguration();
         Log.info(ME, testName, "Updated server configuration: " + configuration);

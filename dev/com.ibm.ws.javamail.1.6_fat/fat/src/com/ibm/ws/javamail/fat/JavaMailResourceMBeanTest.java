@@ -94,8 +94,7 @@ public class JavaMailResourceMBeanTest {
                       server.waitForStringInLog("CWWKT0016I.*IBMJMXConnectorREST"));
 
         Log.info(logClass, methodName, "Waiting for 'CWWKO0219I.*ssl'");
-        assertNotNull("'CWWKO0219I.*ssl' was not received on server",
-                      server.waitForStringInLog("CWWKO0219I.*ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         Log.info(logClass, methodName, "Waiting for 'CWWKS0008I'");
         assertNotNull("Security service did not report it was ready",

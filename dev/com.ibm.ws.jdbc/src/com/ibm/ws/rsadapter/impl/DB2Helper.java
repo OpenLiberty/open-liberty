@@ -262,13 +262,14 @@ public class DB2Helper extends DatabaseHelper {
      */
     boolean isAuthException(SQLException x) {
         int ec = x.getErrorCode();
+        String msg = x.getMessage();
         return x instanceof SQLInvalidAuthorizationSpecException
                || "28000".equals(x.getSQLState()) // Authorization name is invalid
                || -1403 == ec // The username and/or password supplied is incorrect.
                || -4214 == ec
                || -30082 == ec // CONNECTION FAILED FOR SECURITY REASON
                // [ibm][db2][jcc][t4][2013][11249] Connection authorization failure occurred.  Reason: User ID or Password invalid.
-               || (x.getMessage() != null && x.getMessage().indexOf("[2013]") > 0);
+               || (msg != null && msg.indexOf("[2013]") > 0);
     }
 
     @Override

@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2014, 2022 IBM Corporation and others.
+ * Copyright (c) 2014, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -27,21 +27,31 @@ public interface EJBRemoteRuntime {
      * Allocates a remote binding data object for an EJB. This can be used by
      * the remote runtime to store data for subsequent calls to {@link #bind} and {@link #unbind}.
      *
-     * @param bmd the bean metadata
-     * @param appLogicalName the application logical name, or null if standalone
+     * @param bmd               the bean metadata
+     * @param appLogicalName    the application logical name, or null if standalone
      * @param moduleLogicalName the module logical name
      * @return the binding data
      */
     Object createBindingData(BeanMetaData bmd, String appLogicalName, String moduleLogicalName);
 
     /**
+     * Returns the full corbaname URL for the specified binding, suitable for
+     * logging as the CORBA Naming Service location of a remote EJB interface.
+     * Returns null if no suitable IIOP endpoint is available.
+     *
+     * @param bindingData   the binding data returned by {@link #createBindingData}
+     * @param interfaceName the interface name
+     * @return the corbaname URL, e.g. "corbaname::<host>:<port>#ejb/global/<app>/<module>/<bean>!<interface>"
+     */
+    String getCorbaBindingName(Object bindingData, String interfaceName);
+
+    /**
      * Notification that an EJB should be made available remotely under the
      * specified interface name.
      *
-     * @param bindingData the binding data returned by {@link #createBindingData}
+     * @param bindingData    the binding data returned by {@link #createBindingData}
      * @param interfaceIndex the interface index
-     * @param interfaceName the interface name
-     * @return binding data
+     * @param interfaceName  the interface name
      */
     void bind(Object bindingData, int interfaceIndex, String interfaceName);
 
@@ -49,7 +59,7 @@ public interface EJBRemoteRuntime {
      * Notification that a system EJB should be made available remotely under
      * the specified binding name.
      *
-     * @param bmd the bean metadata
+     * @param bmd             the bean metadata
      * @param homeBindingName the home binding name (e.g., "ejb/test/MyBean")
      * @return the binding data, which can be passed to {@link #unbindAll}
      */
@@ -58,7 +68,7 @@ public interface EJBRemoteRuntime {
     /**
      * Notification that an EJB should no longer be available remotely.
      *
-     * @param bindingData the binding data returned by {@link #createBindingData}
+     * @param bindingData    the binding data returned by {@link #createBindingData}
      * @param interfaceNames the interface names
      */
     void unbindAll(Object bindingData);

@@ -19,6 +19,8 @@
 
 package org.jboss.resteasy.cdi;
 
+import static org.jboss.resteasy.spi.util.Utils.*;
+
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Member;
@@ -27,7 +29,9 @@ import java.lang.reflect.Modifier;
 import java.lang.reflect.Type;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -91,7 +95,7 @@ public class ResteasyCdiExtension implements Extension {
         return active;
     }
 
-    private final Map<Class<?>, Type> sessionBeanInterface = new HashMap<>();
+    private final Map<Class<?>, Collection<Type>> sessionBeanInterface = new HashMap<>(); // Liberty Change - support multiple interfaces due to @Local
     private boolean generateClientBean = true;
     private boolean addContextProducers = true;
     private boolean noApplicationFound = true;
@@ -258,21 +262,54 @@ public class ResteasyCdiExtension implements Extension {
     }
 
     private void addSessionBeanInterface(Bean<?> bean) {
-        for (Type type : bean.getTypes()) {
-            if ((type instanceof Class<?>) && ((Class<?>) type).isInterface()) {
-                Class<?> clazz = (Class<?>) type;
-                final Class<?> beanClass = bean.getBeanClass();
-                if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) { // Liberty Change
-                    sessionBeanInterface.put(bean.getBeanClass(), type);
-                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass)); // Liberty Change
-                    return;
+        // Liberty Change Start - lookup @Local interfaces and check them for JAX-RS annotations
+        final Class<?> beanClass = bean.getBeanClass();
+        Class<?>[] localInterfaces = getLocalInterfaces(beanClass);
+        Set<Type> interfaces = new HashSet<>(); // Use Set to avoid duplicates
+        
+        if (localInterfaces != null && localInterfaces.length > 0) {
+            for (Class<?> clazz : localInterfaces) {
+                if (Utils.hasEndpointMethod(clazz)) {
+                    interfaces.add(clazz);
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(clazz, beanClass));
                 }
             }
         }
-        LogMessages.LOGGER.debug(Messages.MESSAGES.noLookupInterface(bean.getBeanClass()));
+        // Liberty Change End
+
+        for (Type type : bean.getTypes()) {
+            if ((type instanceof Class<?>) && ((Class<?>) type).isInterface()) {
+                Class<?> clazz = (Class<?>) type;
+                if (Utils.isJaxrsAnnotatedClass(beanClass) || Utils.hasEndpointMethod(clazz)) { // Liberty Change
+                    interfaces.add(type); // Set will automatically prevent duplicates
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass)); // Liberty Change
+                }
+            }
+        }
+
+        // Liberty Change Start
+        if (!interfaces.isEmpty()) {
+            // Always add the bean class itself as a lookup type
+            // This is critical for EJBs where the bean class might not be in bean.getTypes()
+            interfaces.add(beanClass);
+            LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(beanClass, beanClass));
+            
+            // Add all non-interface types from bean.getTypes() as potential lookup types
+            // This is needed for EJBs where other types in the bean's type closure might be injectable
+            for (Type type : bean.getTypes()) {
+                if (!(type instanceof Class<?> && ((Class<?>) type).isInterface())) {
+                    interfaces.add(type);
+                    LogMessages.LOGGER.debug(Messages.MESSAGES.typeWillBeUsedForLookup(type, beanClass));
+                }
+            }
+            sessionBeanInterface.put(bean.getBeanClass(), interfaces);
+        } else {
+            LogMessages.LOGGER.debug(Messages.MESSAGES.noLookupInterface(beanClass));
+        }
+        // Liberty Change End
     }
 
-    public Map<Class<?>, Type> getSessionBeanInterface() {
+    public Map<Class<?>, Collection<Type>> getSessionBeanInterface() { // Liberty Change
         return sessionBeanInterface;
     }
 

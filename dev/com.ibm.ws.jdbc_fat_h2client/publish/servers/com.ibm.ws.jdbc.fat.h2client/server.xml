@@ -1,0 +1,61 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+    
+    SPDX-License-Identifier: EPL-2.0
+   
+    Contributors:
+        IBM Corporation - initial API and implementation
+ -->
+<server>
+
+  <featureManager>
+    <feature>componenttest-2.0</feature>
+    <feature>jdbc-4.3</feature>
+    <feature>jndi-1.0</feature>
+    <feature>servlet-6.1</feature>
+  </featureManager>
+
+  <include location="../fatTestPorts.xml"/>
+
+  <!-- h2TcpPort is overridden at runtime via server.addEnvVar() in H2ClientTest.setUp() -->
+  <variable name="h2TcpPort" defaultValue="9092"/>
+
+  <application location="H2ClientTestApp.war">
+    <classloader commonLibraryRef="H2Lib"/>
+  </application>
+
+  <library id="H2Lib">
+    <file name="${shared.resource.dir}/h2/h2.jar"/>
+  </library>
+
+  <javaPermission codeBase="${shared.resource.dir}/h2/h2.jar"
+                  className="java.security.AllPermission"/>
+
+  <dataSource jndiName="jdbc/H2ConnectionPoolDataSource"
+              type="javax.sql.ConnectionPoolDataSource">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 url="jdbc:h2:tcp://localhost:${h2TcpPort}/mem:testdb"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/H2DataSource"
+              type="javax.sql.DataSource">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 url="jdbc:h2:tcp://localhost:${h2TcpPort}/mem:testdb"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/H2Driver"
+              type="java.sql.Driver">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 url="jdbc:h2:tcp://localhost:${h2TcpPort}/mem:testdb"/>
+  </dataSource>
+
+  <dataSource jndiName="jdbc/H2XADataSource">
+    <jdbcDriver libraryRef="H2Lib"/>
+    <properties.h2 url="jdbc:h2:tcp://localhost:${h2TcpPort}/mem:testdb"/>
+  </dataSource>
+
+</server>

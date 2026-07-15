@@ -1,0 +1,43 @@
+#*******************************************************************************
+# Copyright (c) 2024, 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+#
+# Contributors:
+#     IBM Corporation - initial API and implementation
+#*******************************************************************************
+-include= ~../cnf/resources/bnd/bundle.props
+bVersion=1.0
+
+src: \
+	fat/src, \
+	test-applications/testEjb1.jar/src, \
+	test-applications/testLib1.jar/src, \
+	test-applications/testLib2.jar/src, \
+	test-applications/testLib12.jar/src, \
+	test-applications/testLib17.jar/src, \
+	test-applications/testRar1.rar/src, \
+	test-applications/testResourceAdaptor.jar/src, \
+	test-applications/traceTestLib.jar/src, \
+	test-applications/traceTestWar.war/src, \
+	test-resourceadapters/testDummyRA/src, \
+	test-bundles/userApiBundle/src
+
+fat.project: true
+-sub: *.bnd
+
+tested.features:
+
+-buildpath: \
+	com.ibm.websphere.javaee.servlet.4.0, \
+	com.ibm.websphere.javaee.ejb.3.2, \
+	com.ibm.websphere.javaee.connector.1.7, \
+	com.ibm.websphere.javaee.annotation.1.3, \
+	com.ibm.websphere.javaee.jms.2.0, \
+	com.ibm.ws.classloading.configuration, \
+	com.ibm.websphere.org.osgi.core
+

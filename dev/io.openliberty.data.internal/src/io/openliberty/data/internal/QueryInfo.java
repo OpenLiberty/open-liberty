@@ -47,6 +47,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -115,6 +116,13 @@ public abstract class QueryInfo {
                     Collections.emptyMap();
 
     /**
+     * Constant for qlParamNames that indicates we have determined that the
+     * a native query has no named parameters.
+     */
+    private static final Set<String> NO_NAMED_PARAMS = //
+                    Collections.unmodifiableSet(new HashSet<>(0));
+
+    /**
      * Indicates the repository method has no Sort, Sort[], or Order parameters
      * for dynamic sort criteria and also does not define any static sort criteria.
      */
@@ -135,22 +143,15 @@ public abstract class QueryInfo {
     private static final int[] NONE_STATIC_SORT_ONLY = new int[0];
 
     /**
-     * Error condition returned by inspectMethodParam indicating that an annotation
-     * of the method parameter conflicts with the constraint type of the method
-     * parameter.
-     */
-    protected static final int PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT = -1;
-
-    /**
-     * Error condition returned by inspectMethodParam indicating that two or more
-     * annotations on the method parameter conflict with each other.
-     */
-    protected static final int PARAM_ANNOS_CONFLICT = -2;
-
-    /**
      * The implicit entity identifier variable defined by Jakarta Persistence.
      */
     private static final String THIS = "this";
+
+    /**
+     * Constant for qlParamNames that indicates it has not yet been determined
+     * whether a query has named parameters.
+     */
+    private static final Set<String> UNKNOWN = Collections.emptySet();
 
     /**
      * Information about the type of entity to which the query pertains.
@@ -212,20 +213,6 @@ public abstract class QueryInfo {
     String jpqlDelete;
 
     /**
-     * Names of named parameters in query language, ordered according to the
-     * position in which each appears as a repository method parameter.
-     * Repository method parameters identify the name with the
-     * <code>Param</code> annotation if present, or otherwise by the
-     * name of the parameter (if the -parameters compiler option is enabled).
-     * This set also includes names of named parameters that are used in
-     * generated restrictions, such as those added for cursor pagination.
-     * The empty set value is used when the field has not been initialized yet
-     * or the query has no parameters or has positional parameters (?1, ?2, ...)
-     * rather than named parameters.
-     */
-    Set<String> jpqlParamNames = Collections.emptySet();
-
-    /**
      * Value from the First annotation, or findFirst#By, or 1 for findFirstBy,
      * otherwise 0.
      */
@@ -268,7 +255,22 @@ public abstract class QueryInfo {
      * Be careful when using this count. It changes as parameters are
      * found and/or generated.
      */
-    int qlParamCount;
+    protected int qlParamCount;
+
+    /**
+     * Names of named parameters in query language, ordered according to the
+     * position in which each appears as a repository method parameter.
+     * Repository method parameters indicate a named parameter name with the
+     * <code>Param</code> annotation if present, or otherwise by the name of
+     * the method parameter (if the -parameters compiler option is enabled).
+     * This set also includes names of named parameters that are used in
+     * generated restrictions, such as those added for cursor pagination.
+     * The empty set value is used when the field has not been initialized yet
+     * or the query has no parameters or has positional parameters (?1, ?2, ...)
+     * rather than named parameters. The constant UNKNOWN represents the former
+     * and the constant NO_NAMED_PARAMS represents the latter two cases.
+     */
+    protected volatile Set<String> qlParamNames = Collections.emptySet();
 
     /**
      * The interface that is annotated with @Repository.
@@ -486,6 +488,37 @@ public abstract class QueryInfo {
                                                       int prevNumJPQLParams,
                                                       boolean isCollection,
                                                       Annotation[] annos);
+
+    /**
+     * Asks the Jakarta Persistence provider whether the given query uses named
+     * parameters. The API for this is optional, but supported by Hibernate.
+     * If the API is not supported, assume named parameters are not permitted.
+     *
+     * @param query the query
+     * @return named parameter names if any; otherwise null
+     */
+    @FFDCIgnore(IllegalStateException.class) // not supported by provider
+    private Set<String> checkForNamedParameters(jakarta.persistence.Query query) {
+        Set<String> paramNames = null;
+        try {
+            Set<jakarta.persistence.Parameter<?>> p = query.getParameters();
+            if (!p.isEmpty() && p.iterator().next().getPosition() == null) {
+                Parameter[] params = method.getParameters();
+                if (params[0].isNamePresent()) {
+                    paramNames = new LinkedHashSet<>();
+                    for (int i = 0; i < specialParamsStartAt; i++)
+                        paramNames.add(params[i].getName());
+                }
+            }
+        } catch (IllegalStateException x) {
+            // not supported by Persistence provider for native queries
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(this, tc, "not supported by provider", x.getMessage());
+        }
+
+        qlParamNames = paramNames == null ? NO_NAMED_PARAMS : paramNames;
+        return paramNames;
+    }
 
     /**
      * Compute the zero-based offset to use as a starting point for a Limit range.
@@ -827,28 +860,33 @@ public abstract class QueryInfo {
      * Construct a copy of this QueryInfo, but with different JPQL and
      * possibly different sorts.
      *
-     * @param source        QueryInfo from which to copy.
-     * @param constraints   map of method parameter index (0-based) to deferred
-     *                          Constraint at the position. Empty if none.
-     * @param restriction   Restriction value that was supplied to the repository method.
-     *                          Otherwise null.
-     * @param jpqlParams    Map to be populated with JPQL parameter names and values
-     *                          for Constraints and Restrictions. Map keys are the
-     *                          named parameter name or positional parameter index.
-     *                          Map values are obtained from the Constraints or
-     *                          Restrictions. The first positional parameter index
-     *                          starts at qlParamCount, which is updated by this
-     *                          method when JPQL parameters for repository method
-     *                          special parameters are added.
-     * @param pageReq       PageRequest, if supplied to the repository method.
-     * @param sortsOverride If present, sorts to use instead of the sorts from source.
-     *                          A value is supplied when the repostiory method has
-     *                          Order or Sort parameters. Otherwise null.
+     * @param source          QueryInfo from which to copy.
+     * @param constraints     map of method parameter index (0-based) to deferred
+     *                            Constraint at the position. Empty if none.
+     * @param restriction     Restriction value that was supplied to the repository method.
+     *                            Otherwise null.
+     * @param reqJPQLParams   map of JPQL parameter name/index to value to be
+     *                            populated for special parameters (Constraints and
+     *                            Restrictions) that are always required. Map values
+     *                            are obtained from the Constraint or Restriction.
+     *                            The first positional parameter index starts at
+     *                            qlParamCount, which is updated by this method when
+     *                            JPQL parameters for Constraints and Restrictions
+     *                            are added.
+     * @param orderJPQLParams map of JPQL parameter name/index to be populated for
+     *                            expressions found in Order/Sort and for controlling
+     *                            cursor pagination. The map is null when only the
+     *                            OrderBy annotation or keyword is used
+     * @param pageReq         PageRequest, if supplied to the repository method.
+     * @param sortsOverride   If present, sorts to use instead of the sorts from source.
+     *                            A value is supplied when the repostiory method has
+     *                            Order or Sort parameters. Otherwise null.
      * @return the new query information.
      */
     private QueryInfo copy(Map<Integer, Object> constraints,
                            Object restriction,
-                           Map<Object, Object> jpqlParams,
+                           Map<Object, Object> reqJPQLParams,
+                           Map<Object, Object> orderJPQLParams,
                            PageRequest pageReq,
                            List<Sort<Object>> sortsOverride) {
         DataVersionCompatibility compat = entityInfo.factory.provider.compat;
@@ -880,9 +918,9 @@ public abstract class QueryInfo {
             info.jpqlCount = jpqlCount;
             info.jpqlDelete = jpqlDelete;
             info.qlParamCount = qlParamCount;
-            info.jpqlParamNames = jpqlParamNames.isEmpty() //
-                            ? jpqlParamNames //
-                            : new LinkedHashSet<>(jpqlParamNames);
+            info.qlParamNames = qlParamNames.isEmpty() //
+                            ? qlParamNames //
+                            : new LinkedHashSet<>(qlParamNames);
             info.restrictAt = restrictAt;
             info.specialParamsStartAt = specialParamsStartAt;
 
@@ -900,12 +938,7 @@ public abstract class QueryInfo {
 
                 q.append(info.hasWhere ? "AND " : "WHERE ");
                 info.hasWhere = true;
-
-                info.qlParamCount = generateRestrictions(q,
-                                                         restriction,
-                                                         info.qlParamCount,
-                                                         info.jpqlParamNames,
-                                                         jpqlParams);
+                info.generateRestrictions(q, restriction, reqJPQLParams);
 
                 if (info.restrictAt >= 0 && info.restrictAt < len) {
                     int newPosition = q.length();
@@ -920,16 +953,12 @@ public abstract class QueryInfo {
             boolean countPages = Page.class.equals(multiType) ||
                                  CursoredPage.class.equals(multiType);
 
-            q = info.initQueryByParameters(countPages, constraints, jpqlParams);
+            q = info.initQueryByParameters(countPages, constraints, reqJPQLParams);
 
             if (restriction != null) {
                 q.append(info.hasWhere ? " AND " : " WHERE ");
                 info.hasWhere = true;
-                info.qlParamCount = generateRestrictions(q,
-                                                         restriction,
-                                                         info.qlParamCount,
-                                                         info.jpqlParamNames,
-                                                         jpqlParams);
+                info.generateRestrictions(q, restriction, reqJPQLParams);
             }
 
             // If there are no overrides from Order/Sort parameters, keep the
@@ -947,7 +976,7 @@ public abstract class QueryInfo {
                 order = order == null //
                                 ? new StringBuilder(100).append(" ORDER BY ") //
                                 : order.append(", ");
-                info.generateSort(order, sort, forward);
+                info.generateSort(order, sort, forward, orderJPQLParams);
             }
 
         if (pageReq == null ||
@@ -962,7 +991,8 @@ public abstract class QueryInfo {
             info.ql = null;
             info.generateCursorQueries(q,
                                        forward ? order : null,
-                                       forward ? null : order);
+                                       forward ? null : order,
+                                       orderJPQLParams);
         }
 
         return info;
@@ -1086,16 +1116,19 @@ public abstract class QueryInfo {
         boolean requiresNewQuery = restriction != null ||
                                    !deferredConstraints.isEmpty();
 
-        // Map of named parameter name or positional parameter index to value
+        // Maps of named parameter name or positional parameter index to value
         // for values corresponding to repository method special parameters.
-        // The first positional parameter index to add starts at qlParamCount,
-        // which is updated as entries for additional JPQL parameters are added.
-        Map<Object, Object> addedJPQLParams = null;
+        // JPQL parameters for Restrictions and Constraints are always required:
+        Map<Object, Object> requiredJPQLParams = null;
+        // JPQL parameters for expressions (omitted from count) in Order/Sort
+        // and for controlling cursor pagination:
+        Map<Object, Object> orderJPQLParams = null;
 
         QueryInfo queryInfo = requiresNewQuery //
                         ? copy(deferredConstraints, //
                                restriction, //
-                               addedJPQLParams = new LinkedHashMap<>(), //
+                               requiredJPQLParams = new LinkedHashMap<>(), //
+                               orderJPQLParams = new LinkedHashMap<>(), //
                                null, //
                                null) //
                         : this;
@@ -1109,7 +1142,11 @@ public abstract class QueryInfo {
         if (trace && tc.isDebugEnabled())
             Tr.debug(this, tc, "created query " + query);
 
-        setParameters(query, args, deferredConstraints, addedJPQLParams);
+        setParameters(query,
+                      args,
+                      deferredConstraints,
+                      requiredJPQLParams,
+                      orderJPQLParams);
         return query;
     }
 
@@ -1608,16 +1645,19 @@ public abstract class QueryInfo {
             requiresNewQuery = true;
         }
 
-        // Map of named parameter name or positional parameter index to value
-        // for values corresponding to repository method special parameters.
-        // The first positional parameter index to add starts at qlParamCount,
-        // which is updated as entries for additional JPQL parameters are added.
-        Map<Object, Object> addedJPQLParams = null;
+        // Maps of named parameter name or positional parameter index to value
+        // for values corresponding to special parameters and cursor pagination.
+        // JPQL parameters for Restrictions and Constraints are always required:
+        Map<Object, Object> requiredJPQLParams = null;
+        // JPQL parameters for expressions (omitted from count) in Order/Sort
+        // and for controlling cursor pagination:
+        Map<Object, Object> orderJPQLParams = null;
 
         QueryInfo queryInfo = requiresNewQuery //
                         ? copy(deferredConstraints, //
                                qc.restriction(), //
-                               addedJPQLParams = new LinkedHashMap<>(), //
+                               requiredJPQLParams = new LinkedHashMap<>(), //
+                               orderJPQLParams = new LinkedHashMap<>(), //
                                qc.pageRequest(), //
                                qc.sorts()) //
                         : this;
@@ -1627,7 +1667,8 @@ public abstract class QueryInfo {
                                             txStatus,
                                             args,
                                             deferredConstraints,
-                                            addedJPQLParams);
+                                            requiredJPQLParams,
+                                            orderJPQLParams);
 
         if (isOptional) {
             returnValue = returnValue == null
@@ -1661,9 +1702,10 @@ public abstract class QueryInfo {
      * @param args                method parameters.
      * @param deferredConstraints map of method parameter index to non-Literal
      *                                Constraints that are supplied at execution time.
-     * @param addedJPQLParams     map of JPQL parameter names/indices and values that
-     *                                are added due to repository special parameters.
-     *                                Null indicates none are added.
+     * @param requiredJPQLParams  map of JPQL parameter name/index to value for
+     *                                Constraints/Restrictions. Null indicates none
+     * @param orderJPQLParams     map of JPQL parameter name/index to value for
+     *                                expressions in Order/Sort. Null indicates none
      * @return results, before wrapping in an Optional or CompletionStage.
      * @throws Exception if an error occurs.
      */
@@ -1673,14 +1715,18 @@ public abstract class QueryInfo {
                         int txStatus,
                         Object[] args,
                         Map<Integer, Object> deferredConstraints,
-                        Map<Object, Object> addedJPQLParams) throws Exception {
+                        Map<Object, Object> requiredJPQLParams,
+                        Map<Object, Object> orderJPQLParams) throws Exception {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         if (trace && tc.isEntryEnabled())
             Tr.entry(this, tc, "find",
                      "non-literal Constraints at: " + deferredConstraints.keySet(),
-                     "added JPQL params: " + (addedJPQLParams == null //
+                     "required JPQL params: " + (requiredJPQLParams == null //
                                      ? null //
-                                     : addedJPQLParams.keySet()));
+                                     : requiredJPQLParams.keySet()),
+                     "order JPQL params: " + (orderJPQLParams == null //
+                                     ? null //
+                                     : orderJPQLParams.keySet()));
 
         Limit limit = qc.limit();
         int max = qc.maxResults();
@@ -1694,7 +1740,8 @@ public abstract class QueryInfo {
                             pageReq, //
                             args, //
                             deferredConstraints, //
-                            addedJPQLParams);
+                            requiredJPQLParams, //
+                            orderJPQLParams);
         } else if (Page.class.equals(multiType)) {
             PageRequest req = limit == null ? pageReq : toPageRequest(limit);
             returnValue = new PageImpl<>(//
@@ -1703,7 +1750,8 @@ public abstract class QueryInfo {
                             req, //
                             args, //
                             deferredConstraints, //
-                            addedJPQLParams);
+                            requiredJPQLParams, //
+                            orderJPQLParams);
         } else if (pageReq != null &&
                    !PageRequest.Mode.OFFSET.equals(pageReq.mode())) {
             throw Fail.pageModeIncompatible(this, pageReq);
@@ -1716,7 +1764,11 @@ public abstract class QueryInfo {
             TypedQuery<?> query = ehCreateTypedQuery(entityHandler,
                                                      ql,
                                                      Object.class);
-            setParameters(query, args, deferredConstraints, addedJPQLParams);
+            setParameters(query,
+                          args,
+                          deferredConstraints,
+                          requiredJPQLParams,
+                          orderJPQLParams);
 
             if (type == FIND_AND_DELETE)
                 query.setLockMode(LockModeType.PESSIMISTIC_WRITE);
@@ -2149,27 +2201,17 @@ public abstract class QueryInfo {
     /**
      * Appends JPQL to the partially built query to represent a Constraint.
      *
-     * @param q              partially built query to which to append JPQL
-     *                           representing the Constraint.
-     * @param constraint     the Constraint for which to generate JPQL.
-     * @param jpqlParamCount number of named or positional parameters identified
-     *                           up to this point for the JPQL.
-     * @param jpqlParamNames names of named parameters in the partially built
-     *                           query. Empty if the query uses positional
-     *                           parameters or has none. If using named parameters,
-     *                           this method should add any that are generated.
-     * @param jpqlParams     list for this method to populate with the name of
-     *                           named parameters or index of positional parameters,
-     *                           mapped to value, for each value obtained from the
-     *                           processed Restriction(s).
-     * @return the new count of named or positional parameters, including any that
-     *         were generated for the Constraint.
+     * @param q          partially built query to which to append JPQL
+     *                       representing the Constraint.
+     * @param constraint the Constraint for which to generate JPQL.
+     * @param jpqlParams list for this method to populate with the name of
+     *                       named parameters or index of positional parameters,
+     *                       mapped to value, for each value obtained from the
+     *                       processed Restriction(s).
      */
-    protected abstract int generateConstraint(StringBuilder q,
-                                              Object constraint,
-                                              int jpqlParamCount,
-                                              Set<String> jpqlParamNames,
-                                              Map<Object, Object> jpqlParams);
+    protected abstract void generateConstraint(StringBuilder q,
+                                               Object constraint,
+                                               Map<Object, Object> jpqlParams);
 
     /**
      * Generates a query to select the COUNT of all entities matching the
@@ -2202,18 +2244,27 @@ public abstract class QueryInfo {
      * _ OR (o.lastName = ?5 AND o.firstName > ?6)
      * _ OR (o.lastName = ?5 AND o.firstName = ?6 AND o.ssn > ?7) )
      *
-     * @param q    query up to the WHERE clause, if present
-     * @param fwd  ORDER BY clause in forward page direction.
-     *                 Null if forward page direction is not needed.
-     * @param prev ORDER BY clause in previous page direction.
-     *                 Null if previous page direction is not needed.
+     * @param q               query up to the WHERE clause, if present
+     * @param fwd             ORDER BY clause in forward page direction.
+     *                            Null if forward page direction is not needed.
+     * @param prev            ORDER BY clause in previous page direction.
+     *                            Null if previous page direction is not needed.
+     * @param orderJPQLParams map of JPQL parameter name/value for Order/Sort
+     *                            into which to also add mappings for expression
+     *                            values for controlling cursor pagination.
+     *                            Map values are obtained from the Sort expression.
+     *                            The map is null when only the OrderBy annotation
+     *                            or keyword is used
      */
     private void generateCursorQueries(StringBuilder q,
                                        StringBuilder fwd,
-                                       StringBuilder prev) {
+                                       StringBuilder prev,
+                                       Map<Object, Object> orderJPQLParams) {
         int numSorts = sorts.size();
-        boolean positionalParams = jpqlParamNames.isEmpty();
+        int totalParamCount = qlParamCount + numSorts;
+        boolean positionalParams = qlParamNames.isEmpty();
         String[] paramNames = positionalParams ? null : new String[numSorts];
+        List<String> elementExpressions = new ArrayList<>(numSorts * 5);
         StringBuilder a = fwd == null //
                         ? null //
                         : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
@@ -2221,6 +2272,23 @@ public abstract class QueryInfo {
                         ? null //
                         : new StringBuilder(200).append(hasWhere ? " AND (" : " WHERE (");
         for (int i = 0; i < numSorts; i++) {
+            // Compute the representation of each cursor element
+            Sort<?> sort = sorts.get(i);
+            StringBuilder expression = new StringBuilder();
+            if (sort.property() == null) {
+                if (sort.ignoreCase())
+                    expression.append('(');
+                totalParamCount = generateExpression(expression,
+                                                     getExpression(sort),
+                                                     totalParamCount,
+                                                     orderJPQLParams);
+                if (sort.ignoreCase())
+                    expression.append(')');
+            } else {
+                appendAttributeName(sort.property(), expression);
+            }
+            elementExpressions.add(expression.toString());
+
             if (!positionalParams)
                 paramNames[i] = generateNamedParameterName("cursor",
                                                            qlParamCount + i + 1);
@@ -2229,14 +2297,13 @@ public abstract class QueryInfo {
             if (b != null)
                 b.append(i == 0 ? "(" : " OR (");
             for (int s = 0; s <= i; s++) {
-                Sort<?> sort = sorts.get(s);
+                sort = sorts.get(s);
                 boolean asc = sort.isAscending();
                 boolean lower = sort.ignoreCase();
-                String name = sort.property();
                 if (a != null)
                     if (lower) {
                         a.append(s == 0 ? "LOWER(" : " AND LOWER(");
-                        appendAttributeName(name, a);
+                        a.append(elementExpressions.get(s));
                         a.append(')');
                         a.append(s < i ? '=' : (asc ? '>' : '<'));
                         a.append("LOWER(");
@@ -2247,7 +2314,7 @@ public abstract class QueryInfo {
                         a.append(')');
                     } else {
                         a.append(s == 0 ? "" : " AND ");
-                        appendAttributeName(name, a);
+                        a.append(elementExpressions.get(s));
                         a.append(s < i ? '=' : (asc ? '>' : '<'));
                         if (positionalParams)
                             a.append('?').append(qlParamCount + s + 1);
@@ -2257,7 +2324,7 @@ public abstract class QueryInfo {
                 if (b != null)
                     if (lower) {
                         b.append(s == 0 ? "LOWER(" : " AND LOWER(");
-                        appendAttributeName(name, b);
+                        b.append(elementExpressions.get(s));
                         b.append(')');
                         b.append(s < i ? '=' : (asc ? '<' : '>'));
                         b.append("LOWER(");
@@ -2268,7 +2335,7 @@ public abstract class QueryInfo {
                         b.append(')');
                     } else {
                         b.append(s == 0 ? "" : " AND ");
-                        appendAttributeName(name, b);
+                        b.append(elementExpressions.get(s));
                         b.append(s < i ? '=' : (asc ? '<' : '>'));
                         if (positionalParams)
                             b.append('?').append(qlParamCount + s + 1);
@@ -2287,7 +2354,9 @@ public abstract class QueryInfo {
             jpqlBeforeCursor = new StringBuilder(q).append(b).append(')').append(prev).toString();
 
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
-            Tr.debug(this, tc, "forward & previous cursor queries", jpqlAfterCursor, jpqlBeforeCursor);
+            Tr.debug(this, tc, "forward & previous cursor queries",
+                     jpqlAfterCursor,
+                     jpqlBeforeCursor);
     }
 
     /**
@@ -2366,14 +2435,39 @@ public abstract class QueryInfo {
     }
 
     /**
+     * Appends JPQL to the partially built query to represent an Expression
+     * parameter of a Constraint or Restriction.
+     *
+     * Unlike other generate methods, this one does NOT update the qlParamCount,
+     * instead returning the new value so that the caller can decide whether or
+     * not to update it. This is done so that parameters added for expressions
+     * generated for cursor-based pagination do not interfere.
+     *
+     * @param q              partially built query ending with the WHERE clause.
+     * @param expression     the Expression for which to generate JPQL.
+     * @param jpqlParamCount number of named or positional parameters in the
+     *                           partially built query.
+     * @param xprParams      list for this method to populate with the name of
+     *                           named parameters or index of positional parameters,
+     *                           mapped to value, for values (if any) obtained from
+     *                           the Expression.
+     * @return the new count of named or positional parameters, including any that
+     *         were generated for the Expression.
+     */
+    protected abstract int generateExpression(StringBuilder q,
+                                              Object expression,
+                                              int jpqlParamCount,
+                                              Map<Object, Object> xprParams);
+
+    /**
      * Generates the name of a named parameter with the given prefix and number
-     * which is not already in use (as represented by jpqlParamNames). This method
+     * which is not already in use (as represented by qlParamNames). This method
      * ensures a unique name by appending the _ character after the number until
      * the name is found to be unique. For example, a prefix of {@code cursor}
      * and number of {@code 2} might result in generated parameter name
      * {@code :cursor2} or {@code :cursor2_} or {@code :cursor2__} or so forth
      * depending on whether the prior names are already used in the query.
-     * This method updates the jpqlParamNames field to include the generated name,
+     * This method updates the qlParamNames field to include the generated name,
      * but does not add to the qlParamCount.
      *
      * @param prefix text to include at the beginning of the generated name.
@@ -2383,7 +2477,7 @@ public abstract class QueryInfo {
     @Trivial
     private String generateNamedParameterName(String prefix, int num) {
         String paramName = prefix + num;
-        while (!jpqlParamNames.add(paramName))
+        while (!qlParamNames.add(paramName))
             paramName += '_';
         return paramName;
     }
@@ -2406,17 +2500,17 @@ public abstract class QueryInfo {
         for (Sort<?> sort : sorts) {
             validateSort(sort);
             fwd.append(first ? " ORDER BY " : ", ");
-            generateSort(fwd, sort, true);
+            generateSort(fwd, sort, true, null);
 
             if (needsCursorQueries) {
                 prev.append(first ? " ORDER BY " : ", ");
-                generateSort(prev, sort, false);
+                generateSort(prev, sort, false, null);
             }
             first = false;
         }
 
         if (needsCursorQueries) {
-            generateCursorQueries(q, fwd, prev);
+            generateCursorQueries(q, fwd, prev, null);
             q.append(fwd);
         }
     }
@@ -2504,29 +2598,21 @@ public abstract class QueryInfo {
 
         // p is the repository method parameter number (0-based)
         // qp is the JPQL query parameter number (1-based)
-        int numJPQLParams = 0;
+        qlParamCount = 0;
         for (int p = 0; p < numConstraints; p++) {
-            numPreviousJPQLParams[p] = numJPQLParams;
+            numPreviousJPQLParams[p] = qlParamCount;
 
             Object constraint = constraints.get(p);
             if (constraint == null) {
-                numJPQLParams = inspectMethodParam(p,
-                                                   paramTypes[p],
-                                                   annosForAllParams[p],
-                                                   attrNames,
-                                                   attrConstraints,
-                                                   updateOps,
-                                                   numJPQLParams);
-                if (numJPQLParams < 0)
-                    Fail.methodParamAnnoConflict(this, numJPQLParams, p,
-                                                 paramTypes[p], annosForAllParams[p]);
+                inspectMethodParam(p,
+                                   paramTypes[p],
+                                   annosForAllParams[p],
+                                   attrNames,
+                                   attrConstraints,
+                                   updateOps);
             } else {
                 constraintJPQL[p] = new StringBuilder(50);
-                numJPQLParams = generateConstraint(constraintJPQL[p],
-                                                   constraint,
-                                                   numJPQLParams,
-                                                   jpqlParamNames,
-                                                   jpqlParams);
+                generateConstraint(constraintJPQL[p], constraint, jpqlParams);
             }
 
             // Determine the entity attribute name, first from @By or an assignment
@@ -2552,7 +2638,7 @@ public abstract class QueryInfo {
             attrNames[p] = getAttributeName(name, true);
         }
 
-        numPreviousJPQLParams[numConstraints] = numJPQLParams;
+        numPreviousJPQLParams[numConstraints] = qlParamCount;
 
         // Write new JPQL, starting with SELECT or UPDATE
         if (q == null && type == FIND) { // SELECT
@@ -2667,8 +2753,6 @@ public abstract class QueryInfo {
                 boolean isCollection = entityInfo.collectionElementTypes //
                                 .containsKey(name);
 
-                qlParamCount += numPreviousJPQLParams[p + 1] - numPreviousJPQLParams[p];
-
                 if (constraintJPQL[p] == null) {
                     appendConstraint(q,
                                      o_,
@@ -2704,27 +2788,16 @@ public abstract class QueryInfo {
      * Appends JPQL to the partially built query to implement a Restriction
      * parameter of a repository method.
      *
-     * @param q              partially built query ending with the WHERE clause.
-     * @param restriction    value of Restriction parameter. Otherwise null.
-     * @param jpqlParamCount number of named or positional parameters in the
-     *                           partially built query.
-     * @param jpqlParamNames names of named parameters in the partially bulit
-     *                           query. Empty if the query uses positional
-     *                           parameeters or has none. If using named parameters,
-     *                           this method should add any that are generated for
-     *                           the restriction part of the query.
-     * @param jpqlParams     list for this method to populate with the name of
-     *                           named parameters or index of positional parameters,
-     *                           mapped to value, for each value obtained from the
-     *                           processed Restriction(s).
-     * @return the new count of named or positional parameters, including any that
-     *         were generated for the Restriction(s).
+     * @param q           partially built query ending with the WHERE clause.
+     * @param restriction value of Restriction parameter. Otherwise null.
+     * @param jpqlParams  list for this method to populate with the name of
+     *                        named parameters or index of positional parameters,
+     *                        mapped to value, for each value obtained from the
+     *                        processed Restriction(s).
      */
-    protected abstract int generateRestrictions(StringBuilder q,
-                                                Object restriction,
-                                                int jpqlParamCount,
-                                                Set<String> jpqlParamNames,
-                                                Map<Object, Object> jpqlParams);
+    protected abstract void generateRestrictions(StringBuilder q,
+                                                 Object restriction,
+                                                 Map<Object, Object> jpqlParams);
 
     /**
      * Generates the SELECT clause of the JPQL.
@@ -2856,7 +2929,11 @@ public abstract class QueryInfo {
 
     /**
      * Generates and appends JPQL to sort based on the specified entity attribute.
-     * For most attributes, this will be of a form such as o.name or LOWER(o.name) DESC or ...
+     * For most attributes, this will be of a form such as:
+     * o.name
+     * LOWER(o.name) DESC NULLS LAST
+     * o.length * o.width * o.height
+     * ...
      *
      * @param q             builder for the JPQL query.
      * @param sort          sort criteria for a single attribute (name must already
@@ -2864,14 +2941,33 @@ public abstract class QueryInfo {
      * @param sameDirection indicate to append the Sort in the normal direction.
      *                          Otherwise reverses it (for cursor pagination in the
      *                          previous page direction).
+     * @param jpqlParams    Map to be populated with JPQL parameter name/value for
+     *                          Constraints, Restrictions, and Sorts. Keys are the
+     *                          named parameter name or positional parameter index.
+     *                          Map values are obtained from the Constraint,
+     *                          Restriction, or Sort. The first positional parameter
+     *                          index starts at qlParamCount, which is updated by
+     *                          this method when JPQL parameters for repository
+     *                          method special parameters are added. The map is null
+     *                          when only the OrderBy annotation or keyword is used.
      */
     @Trivial
-    private void generateSort(StringBuilder q, Sort<?> sort, boolean sameDirection) {
-        String propName = sort.property();
+    private void generateSort(StringBuilder q,
+                              Sort<?> sort,
+                              boolean sameDirection,
+                              Map<Object, Object> jpqlParams) {
         if (sort.ignoreCase())
             q.append("LOWER(");
 
-        appendAttributeName(propName, q);
+        String attributeName = sort.property();
+        if (attributeName == null)
+            // TODO do the extra JPQL parameters interfere with the count query?
+            qlParamCount = generateExpression(q,
+                                              getExpression(sort),
+                                              qlParamCount,
+                                              jpqlParams);
+        else
+            appendAttributeName(attributeName, q);
 
         if (sort.ignoreCase())
             q.append(")");
@@ -3122,6 +3218,16 @@ public abstract class QueryInfo {
     public final EntityInfo getEntityInfo() {
         return entityInfo;
     }
+
+    /**
+     * Returns the expression() field of the Sort criterion.
+     * Null if the Sort does not have an expression, which is
+     * always the case prior to Data 1.1.
+     *
+     * @param sort sort criterion that has an expression
+     * @return jakarta.data.expression.ComparableExpression (or subtype) or null
+     */
+    protected abstract Object getExpression(Sort<?> sort);
 
     /**
      * Looks for mutually exclusive annotations (Delete, Find, Query, ...)
@@ -3644,8 +3750,29 @@ public abstract class QueryInfo {
                           repositoryInterface.getName(),
                           params[specialParamsStartAt].getName(),
                           Util.names(specialParamTypes));
+            } else { // positional or named parameter
+                Param param = params[i].getAnnotation(Param.class);
+                String paramName = null;
+                if (param == null) {
+                    if (!qlParamNames.isEmpty() && params[i].isNamePresent())
+                        // name of parameter (if using -parameters)
+                        paramName = params[i].getName();
+                    // else positional parameter
+                } else {
+                    // @Param annotation
+                    paramName = param.value();
+                }
+                if (paramName != null) {
+                    if (qlParamNames.isEmpty())
+                        qlParamNames = new LinkedHashSet<>();
+                    if (!qlParamNames.add(paramName))
+                        Fail.namedParamConflict(this, paramName, params[i]);
+                }
             }
         }
+        int namedParamCount = qlParamNames.size();
+        if (namedParamCount > 0 && namedParamCount < specialParamsStartAt)
+            throw Fail.mixedQLParamTypes(this, namedParamCount);
 
         qlParamCount = specialParamsStartAt;
 
@@ -3693,7 +3820,7 @@ public abstract class QueryInfo {
         qlParamCount = specialParamsStartAt;
 
         // for collecting names of named parameters:
-        LinkedHashSet<String> qlParamNames = new LinkedHashSet<>();
+        LinkedHashSet<String> jpqlParamNames = new LinkedHashSet<>();
 
         // indices at which the query needs to be modified, along with the
         // type of modification needed
@@ -3720,7 +3847,7 @@ public abstract class QueryInfo {
                                   false,
                                   addsToWHERE,
                                   entityInfos,
-                                  qlParamNames);
+                                  jpqlParamNames);
         } else if ((firstChar == 'U' || firstChar == 'u') &&
                    startAt + 13 < length &&
                    jpql.regionMatches(true, startAt + 1, "PDATE", 0, 5) &&
@@ -3748,7 +3875,7 @@ public abstract class QueryInfo {
                                   false,
                                   addsToWHERE,
                                   entityInfos,
-                                  qlParamNames);
+                                  jpqlParamNames);
 
             if (entityInfo == null || entityInfo.recordClass != null)
                 modifyAt.put(entityNameStartAt, QueryEdit.REPLACE_RECORD_ENTITY);
@@ -3772,7 +3899,7 @@ public abstract class QueryInfo {
                                   select0 >= 0,
                                   addsToWHERE,
                                   entityInfos,
-                                  qlParamNames);
+                                  jpqlParamNames);
         }
 
         if (entityInfo == null)
@@ -3784,7 +3911,7 @@ public abstract class QueryInfo {
             ql = replaceQuery(jpql, modifyAt);
 
         // Validation of method parameters vs parameters in the query
-        int qlParamNameCount = qlParamNames.size();
+        int qlParamNameCount = jpqlParamNames.size();
         boolean hasExtraParam = false;
         for (int i = 0; i < specialParamsStartAt; i++) {
             Param param = params[i].getAnnotation(Param.class);
@@ -3797,10 +3924,10 @@ public abstract class QueryInfo {
                 paramName = params[i].getName();
             }
             if (paramName != null) {
-                if (jpqlParamNames.isEmpty())
-                    jpqlParamNames = new LinkedHashSet<>();
-                boolean isDuplicate = !jpqlParamNames.add(paramName);
-                if (qlParamNames.contains(paramName)) {
+                if (qlParamNames.isEmpty())
+                    qlParamNames = new LinkedHashSet<>();
+                boolean isDuplicate = !qlParamNames.add(paramName);
+                if (jpqlParamNames.contains(paramName)) {
                     if (isDuplicate) // duplicate of a valid name
                         throw Fail.namedParamConflict(this, paramName, params[i]);
                 } else {
@@ -3814,19 +3941,19 @@ public abstract class QueryInfo {
             if (SORT_PARAM_TYPES.contains(params[i].getType()))
                 initDynamicSortPosition(i);
 
-        int paramNamesCount = jpqlParamNames.size();
+        int paramNamesCount = qlParamNames.size();
         if (hasExtraParam || qlParamNameCount != paramNamesCount) {
             // Does the method supply all named parameters that the query needs?
-            LinkedHashSet<String> lacking = new LinkedHashSet<>(qlParamNames);
-            lacking.removeAll(jpqlParamNames);
+            LinkedHashSet<String> lacking = new LinkedHashSet<>(jpqlParamNames);
+            lacking.removeAll(qlParamNames);
             if (!lacking.isEmpty())
                 throw Fail.methodLacksNamedParams(this, lacking);
 
             // Does the method supply any named parameters not needed by the query?
-            Set<String> extras = new LinkedHashSet<>(jpqlParamNames);
-            extras.removeAll(qlParamNames);
+            Set<String> extras = new LinkedHashSet<>(qlParamNames);
+            extras.removeAll(jpqlParamNames);
             if (!extras.isEmpty())
-                throw Fail.unusedNamedParamsOnMethod(this, extras, qlParamNames);
+                throw Fail.unusedNamedParamsOnMethod(this, extras, jpqlParamNames);
         }
 
         // Does the method supply a mixture of named and positional parameters?
@@ -4141,29 +4268,25 @@ public abstract class QueryInfo {
      * Find/Delete/Update method to determine its meaning. Based on the meaning,
      * updates one or more of (attrNames, constraints, updateOps) at position p.
      *
-     * @param p                 repository method parameter index (0-based).
-     * @param paramType         class of the repository method parameter at index p.
-     *                              When generating the query upfront, this is from
-     *                              the repository method signature. When generating
-     *                              the query at invocation time and a Constraint
-     *                              subtype is supplied, this is the class of the
-     *                              supplied instance.
-     * @param paramAnnos        annotations on the repository method parameter at
-     *                              index p.
-     * @param attrNames         the implementer can update this at position p to
-     *                              supply the entity attribute name from the value
-     *                              of an assignment annotation.
-     * @param constraints       the implementer can update this at position p to
-     *                              supply the constraint type indicated by the
-     *                              Is annotation or by a Constraint-typed method
-     *                              parameter.
-     * @param updateOps         the implementer can update this at position p to
-     *                              supply the update operation indicated by an
-     *                              assignment annotation.
-     * @param prevNumJPQLParams count of JQPL query parameters required for
-     *                              repository method parameters up to, but not
-     *                              including, the current repository method
-     *                              parameter being inspected.
+     * @param p           repository method parameter index (0-based).
+     * @param paramType   class of the repository method parameter at index p.
+     *                        When generating the query upfront, this is from
+     *                        the repository method signature. When generating
+     *                        the query at invocation time and a Constraint
+     *                        subtype is supplied, this is the class of the
+     *                        supplied instance.
+     * @param paramAnnos  annotations on the repository method parameter at
+     *                        index p.
+     * @param attrNames   the implementer can update this at position p to
+     *                        supply the entity attribute name from the value
+     *                        of an assignment annotation.
+     * @param constraints the implementer can update this at position p to
+     *                        supply the constraint type indicated by the
+     *                        Is annotation or by a Constraint-typed method
+     *                        parameter.
+     * @param updateOps   the implementer can update this at position p to
+     *                        supply the update operation indicated by an
+     *                        assignment annotation.
      * @return count of JPQL query parameters required for repository method
      *         parameters up to and including the current one. Otherwise returns
      *         an error code: PARAM_ANNO_CONFLICTS_WITH_CONSTRAINT or
@@ -4174,8 +4297,7 @@ public abstract class QueryInfo {
                                               Annotation[] paramAnnos,
                                               String[] attrNames,
                                               AttributeConstraint[] constraints,
-                                              char[] updateOps,
-                                              int prevNumJPQLParams);
+                                              char[] updateOps);
 
     /**
      * Write information about this instance to the introspection file for
@@ -4248,7 +4370,7 @@ public abstract class QueryInfo {
         Util.printlnIndented(jpqlDelete, writer, qlIndent);
 
         writer.println(indent + QL + " parameter count: " + qlParamCount);
-        writer.println(indent + "JPQL parameter names: " + jpqlParamNames);
+        writer.println(indent + QL + " parameter names: " + qlParamNames);
 
         writer.println(indent + "maximum results: " + maxResults);
         writer.println(indent + "restrictions can be added at: " + restrictAt);
@@ -4545,7 +4667,7 @@ public abstract class QueryInfo {
             if (mightHaveUpdateCount) {
                 query = ehCreateNativeStatement(entityHandler);
 
-                setParameters(query, args, Collections.emptyMap(), null);
+                setParameters(query, args, Collections.emptyMap(), null, null);
 
                 returnValue = toReturnValue(query.executeUpdate(),
                                             singleType);
@@ -4570,7 +4692,7 @@ public abstract class QueryInfo {
                     query.setFirstResult(startAt);
                 }
 
-                setParameters(query, args, Collections.emptyMap(), null);
+                setParameters(query, args, Collections.emptyMap(), null, null);
 
                 returnValue = getQueryResults(entityHandler, qc, query, txStatus);
             }
@@ -4816,7 +4938,7 @@ public abstract class QueryInfo {
      *                               parentheses so that conditions can be added
      *                               to it (for cursor pagination or Restriction).
      * @param entityInfos        map of entity name to entity information.
-     * @param qlParamNames       list to populate with the names of named parameters.
+     * @param jpqlParamNames     list to populate with the names of named parameters.
      * @return indices at which the query needs to be modified, along with the type
      *         of modification needed
      */
@@ -4826,7 +4948,7 @@ public abstract class QueryInfo {
                                boolean startsWithSelect,
                                boolean encloseWhereClause,
                                Map<String, CompletableFuture<EntityInfo>> entityInfos,
-                               LinkedHashSet<String> qlParamNames) {
+                               LinkedHashSet<String> jpqlParamNames) {
         TreeMap<Integer, QueryEdit> modifyAt = new TreeMap<>();
 
         int length = ql.length();
@@ -4879,7 +5001,7 @@ public abstract class QueryInfo {
                 } else {
                     isLiteral = true;
                     if (paramName != null) {
-                        qlParamNames.add(paramName.toString());
+                        jpqlParamNames.add(paramName.toString());
                         paramName = null;
                     }
                 }
@@ -5036,7 +5158,7 @@ public abstract class QueryInfo {
                 if (depth == 0 && !isLiteral && ch == ',' && numPossibleConstructorArgs > 0)
                     numPossibleConstructorArgs++;
                 if (paramName != null) {
-                    qlParamNames.add(paramName.toString());
+                    jpqlParamNames.add(paramName.toString());
                     paramName = null;
                 }
             }
@@ -5048,7 +5170,7 @@ public abstract class QueryInfo {
         }
 
         if (paramName != null)
-            qlParamNames.add(paramName.toString());
+            jpqlParamNames.add(paramName.toString());
 
         if (countPages && countReplacesFirstSelectAt >= 0) {
             modifyAt.put(countReplacesFirstSelectAt,
@@ -5695,38 +5817,47 @@ public abstract class QueryInfo {
      * @param args                repository method arguments
      * @param deferredConstraints map of method parameter index to non-Literal
      *                                Constraints that are supplied at execution time.
-     * @param addedJPQLParams     map of JPQL parameter names/indices and values
-     *                                for repository method special parameters.
+     * @param requiredJPQLParams  map of JPQL parameter name/index to value for
+     *                                special parameters that are always required
+     *                                (Constraints/Restrictions). Null indicates none
+     * @param orderJPQLParams     map of JPQL parameter name/index to value for
+     *                                expressions in Order/Sort and values needed to
+     *                                control cursor pagination. Null indicates none
      */
     @Trivial // avoid logging customer data
     void setParameters(jakarta.persistence.Query query,
                        Object[] args,
                        Map<Integer, Object> deferredConstraints,
-                       Map<Object, Object> addedJPQLParams) {
+                       Map<Object, Object> requiredJPQLParams,
+                       Map<Object, Object> orderJPQLParams) {
         final boolean trace = TraceComponent.isAnyTracingEnabled();
         final int numArgs = args == null ? 0 : args.length;
 
+        // delayed discovery of named parameters for native query
+        if (type == NATIVE && specialParamsStartAt > 0 && qlParamNames == UNKNOWN)
+            checkForNamedParameters(query);
+
         if (trace && tc.isDebugEnabled()) {
-            Object addedLoggable = loggable(addedJPQLParams);
+            Object req = loggable(requiredJPQLParams);
+            Object ord = loggable(orderJPQLParams);
             Tr.debug(this, tc, "setParameters",
                      numArgs + " method args",
                      "first special param at 0-based index " + specialParamsStartAt,
-                     jpqlParamNames,
-                     addedLoggable == addedJPQLParams //
-                                     ? addedLoggable //
-                                     : addedJPQLParams.keySet());
+                     qlParamNames,
+                     req == requiredJPQLParams ? req : requiredJPQLParams.keySet(),
+                     ord == orderJPQLParams ? ord : orderJPQLParams.keySet());
         }
 
-        if (jpqlParamNames.isEmpty()) { // positional parameters
+        if (qlParamNames.isEmpty()) { // positional parameters
             int paramNum = 1;
             for (int a = 0; a < specialParamsStartAt; a++) {
                 Object value;
-                while (addedJPQLParams != null &&
-                       (value = addedJPQLParams.getOrDefault(paramNum, NONE)) != NONE) {
+                while (requiredJPQLParams != null &&
+                       (value = requiredJPQLParams.getOrDefault(paramNum, NONE)) != NONE) {
                     // Positional parameter generated at execution time from an
                     // Expression within a Restriction or Constraint
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "[X] set ?" + paramNum + ' ' + loggable(value));
+                        Tr.debug(this, tc, "[r] set ?" + paramNum + ' ' + loggable(value));
                     query.setParameter(paramNum++, value);
                 }
                 if (deferredConstraints.containsKey(a))
@@ -5737,43 +5868,65 @@ public abstract class QueryInfo {
                 Object[] constraintValues = toConstraintValues(value);
                 if (constraintValues == null) { // Normal positional parameter
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "[M] set ?" + paramNum + ' ' + loggable(value));
+                        Tr.debug(this, tc, "[q] set ?" + paramNum + ' ' + loggable(value));
                     query.setParameter(paramNum++, value);
                 } else { // Literal Expression from a Constraint
                     for (Object cvalue : constraintValues) {
                         if (trace && tc.isDebugEnabled())
-                            Tr.debug(this, tc, "[L] set ?" + paramNum + ' ' + loggable(cvalue));
+                            Tr.debug(this, tc, "[c] set ?" + paramNum + ' ' + loggable(cvalue));
                         query.setParameter(paramNum++, cvalue);
                     }
                 }
             }
-            // Additional generated positional parameters (might be for cursor pagination)
-            for (Object value; addedJPQLParams != null &&
-                               (value = addedJPQLParams.getOrDefault(paramNum, NONE)) != NONE;) {
+
+            // Additional generated positional parameters
+            for (Object value; requiredJPQLParams != null &&
+                               (value = requiredJPQLParams.getOrDefault(paramNum, NONE)) != NONE;) {
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "[a] set ?" + paramNum + ' ' + loggable(value));
+                    Tr.debug(this, tc, "[r] set ?" + paramNum + ' ' + loggable(value));
+                query.setParameter(paramNum++, value);
+            }
+
+            // Generated positional parameters for expressions in Order/Sort
+            // and values needed to control cursor pagination
+            for (Object value; orderJPQLParams != null &&
+                               (value = orderJPQLParams.getOrDefault(paramNum, NONE)) != NONE;) {
+                if (trace && tc.isDebugEnabled())
+                    Tr.debug(this, tc, "[o] set ?" + paramNum + ' ' + loggable(value));
                 query.setParameter(paramNum++, value);
             }
         } else { // named parameters
             // Named parameters are only available when the repository uses a
             // query annotation to supply the query directly in query language.
             // In this case, Constraint typed parameters will not be allowed.
-            Iterator<String> paramNames = jpqlParamNames.iterator();
+            Iterator<String> paramNames = qlParamNames.iterator();
             for (int a = 0; a < specialParamsStartAt; a++) {
                 if (!paramNames.hasNext())
                     throw Fail.extraMethodParams(this, a + 1, specialParamsStartAt + 1);
                 String paramName = paramNames.next();
                 if (trace && tc.isDebugEnabled())
-                    Tr.debug(this, tc, "[m] set :" + paramName + ' ' + loggable(args[a]));
+                    Tr.debug(this, tc, "[q] set :" + paramName + ' ' + loggable(args[a]));
                 query.setParameter(paramName, args[a]);
             }
-            // Additional generated positional parameters (might be for cursor pagination)
-            if (addedJPQLParams != null)
-                for (Entry<Object, Object> entry : addedJPQLParams.entrySet()) {
+
+            // Additional generated named parameters
+            if (requiredJPQLParams != null)
+                for (Entry<Object, Object> entry : requiredJPQLParams.entrySet()) {
                     String paramName = (String) entry.getKey();
                     Object value = entry.getValue();
                     if (trace && tc.isDebugEnabled())
-                        Tr.debug(this, tc, "[a] set :" + paramName + ' ' + loggable(value));
+                        Tr.debug(this, tc, "[r] set :" + paramName + ' ' + loggable(value));
+                    query.setParameter(paramName, value);
+                }
+
+            // Generated named parameters for expressions in Order/Sort
+            // and values needed to control cursor pagination
+            if (orderJPQLParams != null)
+                for (Entry<Object, Object> entry : orderJPQLParams.entrySet()) {
+                    String paramName = (String) entry.getKey();
+                    Object value = entry.getValue();
+                    if (trace && tc.isDebugEnabled())
+                        Tr.debug(this, tc, "[o] set :" + paramName + ' ' + loggable(value));
                     query.setParameter(paramName, value);
                 }
         }
@@ -5847,19 +6000,21 @@ public abstract class QueryInfo {
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         while (addIt.hasNext()) {
             Sort<Object> sort = addIt.next();
-            if (sort == null) {
+            if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            } else if (hasIdClass && ID.equalsIgnoreCase(sort.property())) {
+            String attributeName = sort.property();
+            if (attributeName == null) {
+                combined.add(sort); // sort on expression instead of attribute
+            } else if (hasIdClass && ID.equalsIgnoreCase(attributeName)) {
                 // IdClass is split up so that it can be possible to create a cursor
                 // that corresponds to sort criteria
                 for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
                     name = getAttributeName(name, true);
-                    sort = name == sort.property() ? sort : createSort(name, sort);
-                    combined.add(sort);
+                    combined.add(createSort(name, sort));
                 }
             } else {
-                String name = getAttributeName(sort.property(), true);
-                sort = name == sort.property() ? sort : createSort(name, sort);
+                String name = getAttributeName(attributeName, true);
+                sort = name == attributeName ? sort : createSort(name, sort);
                 combined.add(sort);
             }
         }
@@ -5877,24 +6032,27 @@ public abstract class QueryInfo {
      */
     @Trivial
     List<Sort<Object>> supplySorts(List<Sort<Object>> combined,
-                                   @SuppressWarnings("unchecked") Sort<Object>... additional) {
+                                   @SuppressWarnings("unchecked") //
+                                   Sort<Object>... additional) {
         boolean hasIdClass = entityInfo.idClassAttributeAccessors != null;
         if (combined == null && additional.length > 0)
             combined = sorts == null ? new ArrayList<>() : new ArrayList<>(sorts);
         for (Sort<Object> sort : additional) {
-            if (sort == null) {
+            if (sort == null)
                 throw new IllegalArgumentException("Sort: null");
-            } else if (hasIdClass && ID.equalsIgnoreCase(sort.property())) {
+            String attributeName = sort.property();
+            if (attributeName == null) {
+                combined.add(sort); // sort on expression instead of attribute
+            } else if (hasIdClass && ID.equalsIgnoreCase(attributeName)) {
                 // IdClass is split up so that it can be possible to create a cursor
                 // that corresponds to sort criteria
                 for (String name : entityInfo.idClassAttributeAccessors.keySet()) {
                     name = getAttributeName(name, true);
-                    sort = name == sort.property() ? sort : createSort(name, sort);
-                    combined.add(sort);
+                    combined.add(createSort(name, sort));
                 }
             } else {
-                String name = getAttributeName(sort.property(), true);
-                sort = name == sort.property() ? sort : createSort(name, sort);
+                String name = getAttributeName(attributeName, true);
+                sort = name == attributeName ? sort : createSort(name, sort);
                 combined.add(sort);
             }
         }
@@ -6063,7 +6221,7 @@ public abstract class QueryInfo {
         if (ql != null)
             b.append(ql);
         if (qlParamCount > 0)
-            b.append(" [").append(qlParamCount).append(jpqlParamNames.isEmpty() ? //
+            b.append(" [").append(qlParamCount).append(qlParamNames.isEmpty() ? //
                             " positional params]" : //
                             " named params]");
         return b.toString();
@@ -6265,22 +6423,24 @@ public abstract class QueryInfo {
      */
     @Trivial
     private void validateSort(Sort<?> sort) {
-        String propName = sort.property();
-        if (propName.charAt(propName.length() - 1) == ')') {
-            // skip for version(o) and id(o), the latter of which which could be a composite value
+        String attrName = sort.property();
+        if (attrName == null ||
+            attrName.charAt(attrName.length() - 1) == ')') {
+            // skip for expressions, "version(o)", and "id(o)", the latter of which
+            // could be a composite value
         } else {
-            Class<?> propertyClass = entityInfo.attributeTypes.get(propName);
+            Class<?> attributeType = entityInfo.attributeTypes.get(attrName);
 
             if (sort.ignoreCase() //
-                && !CharSequence.class.isAssignableFrom(propertyClass)
-                && !char.class.equals(propertyClass)
-                && !Character.class.equals(propertyClass))
+                && !CharSequence.class.isAssignableFrom(attributeType)
+                && !char.class.equals(attributeType)
+                && !Character.class.equals(attributeType))
                 throw exc(UnsupportedOperationException.class,
                           "CWWKD1026.ignore.case.not.text",
-                          propName,
+                          attrName,
                           entityInfo.getType().getName(),
                           sort,
-                          propertyClass.getName(),
+                          attributeType.getName(),
                           method.getName(),
                           repositoryInterface.getName());
         }

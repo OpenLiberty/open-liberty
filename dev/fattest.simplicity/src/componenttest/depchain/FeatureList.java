@@ -1,14 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2017, 2022 IBM Corporation and others.
+ * Copyright (c) 2017, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
  *
  * SPDX-License-Identifier: EPL-2.0
- *
- * Contributors:
- *     IBM Corporation - initial API and implementation
  *******************************************************************************/
 package componenttest.depchain;
 
@@ -19,6 +16,7 @@ import java.util.concurrent.TimeUnit;
 
 import com.ibm.websphere.simplicity.log.Log;
 
+import componenttest.topology.impl.JavaInfo;
 import componenttest.topology.impl.LibertyServer;
 
 public class FeatureList {
@@ -42,9 +40,11 @@ public class FeatureList {
         // If fatFeatureList.xml doesn't exist already, generate it
         Log.info(c, m, FAT_FEATURE_LIST + " not found.  Need to generate.");
         String featureListJar = findRunnableJar(server.getInstallRoot());
-        Process featureListProc = new ProcessBuilder("java", "-jar", featureListJar, featureList.getAbsolutePath())
-                        .redirectErrorStream(true)
-                        .start();
+        ProcessBuilder builder = new ProcessBuilder("java", "-jar", featureListJar, featureList.getAbsolutePath())
+                        .redirectErrorStream(true);
+        server.setLibPathForJava8onZOS(JavaInfo.forServer(server), builder.environment());
+        Process featureListProc = builder.start();
+
         boolean completed = featureListProc.waitFor(TIMEOUT_MINUTES, TimeUnit.MINUTES);
         if (!completed) {
             Exception e = new Exception("Generating " + FAT_FEATURE_LIST + " timed out after " + TIMEOUT_MINUTES + " minutes. Aborting process.");

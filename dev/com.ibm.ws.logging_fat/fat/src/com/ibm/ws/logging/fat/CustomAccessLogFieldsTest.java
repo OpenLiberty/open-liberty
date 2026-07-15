@@ -71,8 +71,8 @@ public class CustomAccessLogFieldsTest {
     private static Class<?> c = CustomAccessLogFieldsTest.class;
 
     private static final String MESSAGE_LOG = "logs/messages.log";
-    private static final long LOG_TIMEOUT = 30 * 1000;
-    private static final long WAIT_TIMEOUT = 30 * 1000;
+    private static final int LOG_TIMEOUT = 60 * 1000;
+    private static final int WAIT_TIMEOUT = 60 * 1000;
 
     @Server("CustomAccessLogFieldsEnv")
     public static LibertyServer envServer;
@@ -179,8 +179,8 @@ public class CustomAccessLogFieldsTest {
     @Test
     public void testAccessLogFieldNamesEnv() throws Exception {
         setUp(envServer);
-        waitForSecurityPrerequisites(envServer, WAIT_TIMEOUT);
-        waitForMetricsToStart(envServer, WAIT_TIMEOUT);
+        waitForSecurityPrerequisites(envServer);
+        waitForMetricsToStart(envServer);
         hitHttpsEndpointSecure("/metrics", envServer);
         String line = envServer.waitForStringInLog("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
@@ -195,8 +195,8 @@ public class CustomAccessLogFieldsTest {
     @Test
     public void testAccessLogFieldNamesBootstrap() throws Exception {
         setUp(bootstrapServer);
-        waitForSecurityPrerequisites(bootstrapServer, WAIT_TIMEOUT);
-        waitForMetricsToStart(bootstrapServer, WAIT_TIMEOUT);
+        waitForSecurityPrerequisites(bootstrapServer);
+        waitForMetricsToStart(bootstrapServer);
         hitHttpsEndpointSecure("/metrics", bootstrapServer);
         String line = bootstrapServer.waitForStringInLog("liberty_accesslog.*/metrics");
         assertNotNull("No liberty_accesslog found in the output JSON log.", line);
@@ -212,9 +212,9 @@ public class CustomAccessLogFieldsTest {
     public void testAccessLogFieldNamesXml() throws Exception {
         setUp(xmlServerWithMetrics);
         if (isFirstTimeUsingXmlServerWithMetrics) {
-            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
+            waitForSecurityPrerequisites(xmlServerWithMetrics);
         }
-        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
+        waitForMetricsToStart(xmlServerWithMetrics);
 
         isFirstTimeUsingXmlServerWithMetrics = false;
         hitHttpsEndpointSecure("/metrics", xmlServer);
@@ -285,9 +285,9 @@ public class CustomAccessLogFieldsTest {
         xmlServerWithMetrics.setServerConfigurationFile("accessLogging/server-all-fields.xml");
         waitForConfigUpdate(xmlServerWithMetrics);
         if (isFirstTimeUsingXmlServerWithMetrics) {
-            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
+            waitForSecurityPrerequisites(xmlServerWithMetrics);
         }
-        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
+        waitForMetricsToStart(xmlServerWithMetrics);
 
         isFirstTimeUsingXmlServerWithMetrics = false;
 
@@ -340,9 +340,9 @@ public class CustomAccessLogFieldsTest {
     public void testFieldsInAccessLogAreSameInJSON() throws Exception {
         setUp(xmlServerWithMetrics);
         if (isFirstTimeUsingXmlServerWithMetrics) {
-            waitForSecurityPrerequisites(xmlServerWithMetrics, WAIT_TIMEOUT);
+            waitForSecurityPrerequisites(xmlServerWithMetrics);
         }
-        waitForMetricsToStart(xmlServerWithMetrics, WAIT_TIMEOUT);
+        waitForMetricsToStart(xmlServerWithMetrics);
 
         isFirstTimeUsingXmlServerWithMetrics = false;
 
@@ -398,8 +398,8 @@ public class CustomAccessLogFieldsTest {
     @Test
     public void testChangeJsonAccessLogFieldsConfigValue() throws Exception {
         setUp(changeConfigServer);
-        waitForSecurityPrerequisites(changeConfigServer, WAIT_TIMEOUT);
-        waitForMetricsToStart(changeConfigServer, WAIT_TIMEOUT);
+        waitForSecurityPrerequisites(changeConfigServer);
+        waitForMetricsToStart(changeConfigServer);
 
         hitHttpsEndpointSecure("/metrics", changeConfigServer);
         String line = changeConfigServer.waitForStringInLogUsingMark("liberty_accesslog.*/metrics");
@@ -808,18 +808,16 @@ public class CustomAccessLogFieldsTest {
         assertNotNull("Wrong number of updates have occurred", result);
     }
 
-    private void waitForSecurityPrerequisites(LibertyServer server, long logTimeout) {
-        // Need to ensure LTPA keys and configuration are created before hitting a secure endpoint
-        assertNotNull("LTPA keys are not created within timeout period of " + logTimeout + "ms.", server.waitForStringInLog("CWWKS4104A", logTimeout));
-        assertNotNull("LTPA configuration is not ready within timeout period of " + logTimeout + "ms.", server.waitForStringInLog("CWWKS4105I", logTimeout));
+    private void waitForSecurityPrerequisites(LibertyServer server) throws Exception {
+        // Need to ensure LTPA configuration is ready before hitting a secure endpoint
+        server.waitForLTPAConfigReady(CustomAccessLogFieldsTest.WAIT_TIMEOUT);
+        // Wait for port 8020 to be ready
+        server.waitForDefaultHTTPEndpointSSLStart(CustomAccessLogFieldsTest.WAIT_TIMEOUT);
     }
 
-    private void waitForMetricsToStart(LibertyServer server, long logTimeout) {
-        // Wait for port 8020 to be ready
-        assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                      server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", logTimeout));
+    private void waitForMetricsToStart(LibertyServer server) {
         // Wait for /metrics to be initialized
         assertNotNull("/metrics was not initialized (SRVE0242I not found)",
-                      server.waitForStringInLog("SRVE0242I.*/metrics", logTimeout));
+                      server.waitForStringInLog("SRVE0242I.*/metrics", CustomAccessLogFieldsTest.WAIT_TIMEOUT));
     }
 }

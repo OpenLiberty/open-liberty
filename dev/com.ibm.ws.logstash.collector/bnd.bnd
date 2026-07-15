@@ -38,8 +38,8 @@ Import-Package: \
         com.ibm.ws.collector, \
         com.ibm.ws.lumberjack, \
         com.ibm.ws.logging.data, \
-        com.ibm.ws.container.service.app.deploy;resolution:=optional, \
-        com.ibm.ws.container.service.state;resolution:=optional, \
+        com.ibm.ws.container.service.app.deploy, \
+        com.ibm.ws.container.service.state, \
         *
 
 Private-Package: \

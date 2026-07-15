@@ -44,7 +44,7 @@ public class JmsWebAppTests40 extends JmsAbstractTests {
         return "/testName/";
     }
 
-    @ExpectedFFDC({ "jakarta.servlet.ServletException", "java.lang.RuntimeException" })
+    @ExpectedFFDC("jakarta.servlet.ServletException")
     @Test
     @SkipJavaSemeruWithFipsEnabledRule
     public void testJmsWebApplicationWithTransaction() throws Exception {

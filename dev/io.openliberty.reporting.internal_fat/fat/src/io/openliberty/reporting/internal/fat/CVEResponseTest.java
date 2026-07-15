@@ -120,7 +120,7 @@ public class CVEResponseTest extends FATServletClient {
     @Test
     public void testConnectionAndDataRecorded() throws Exception {
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
         copyTrustStore(server, testServer);
         testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true",
                                                "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
@@ -189,7 +189,7 @@ public class CVEResponseTest extends FATServletClient {
     @Test
     public void testResponse() throws Exception {
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
         copyTrustStore(server, testServer);
         testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true",
                                                "-Djavax.net.ssl.trustStore=" + testServer.getServerRoot() + "/resources/security/key.p12",
@@ -225,7 +225,7 @@ public class CVEResponseTest extends FATServletClient {
         features.add("ssl-1.0");
         server.updateServerConfiguration(config);
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
         copyTrustStore(server, testServer);
         Process createKeyStore = Runtime.getRuntime().exec(getCertGenerationCommand(testServer.getServerRoot() + "/" + STORE_PATH + "/" + NEW_KEYSTORE_FILENAME, STORE_PASSWORD));
         createKeyStore.waitFor();
@@ -253,7 +253,7 @@ public class CVEResponseTest extends FATServletClient {
     @Test
     public void testTrustWithInvalidCertificate() throws Exception {
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
         testServer.setJvmOptions(Arrays.asList("-Dcom.ibm.ws.beta.edition=true", "-Dcve.insight.enabled=true"));
         testServer.startServer();
         List<String> warnings = Arrays.asList("CWWKF1702W", "CWWKF1705W");
@@ -277,7 +277,7 @@ public class CVEResponseTest extends FATServletClient {
         features.add("transportSecurity-1.0");
         server.updateServerConfiguration(config);
         server.startServer();
-        server.waitForSSLStart();
+        server.waitForDefaultHTTPEndpointSSLStart();
         copyTrustStore(server, testServer);
         Process createKeyStore = Runtime.getRuntime().exec(getCertGenerationCommand(testServer.getServerRoot() + "/" + STORE_PATH + "/" + NEW_KEYSTORE_FILENAME, STORE_PASSWORD));
         createKeyStore.waitFor();

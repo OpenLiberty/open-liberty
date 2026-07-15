@@ -82,25 +82,26 @@ module.exports = {
       },
       {
         test: /\.m?jsx?$/,
-        include: [
-          path.resolve(__dirname, 'src/'),
-          path.resolve(__dirname, 'node_modules/swagger-ui/dist/'),
-        ],
-        loader: "babel-loader",
-        options: {
-          sourceType: "unambiguous", // babel-preset-env breaks on swagger UI without this
-          presets: [
-            [
+        exclude: {
+          and: [/node_modules/],
+          not: [
+            /swagger-ui\/dist/
+          ]
+        },
+        use: {
+          loader: "babel-loader",
+          options: {
+            sourceType: "unambiguous", // babel-preset-env breaks on swagger UI without this
+            presets: [
               '@babel/preset-env',
-              {
-                useBuiltIns: 'usage',
-                corejs: '3.19'
-              }
+              ['@babel/preset-react', {development: false}],
             ],
-            '@babel/preset-react'
-          ],
-          retainLines: true,
-          cacheDirectory: true,
+            plugins: [
+              ["polyfill-corejs3", { "method": "usage-global", "version": "3.49" }]
+            ],
+            retainLines: true,
+            cacheDirectory: true,
+          },
         },
       },
     ]

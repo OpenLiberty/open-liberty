@@ -313,10 +313,10 @@ public class CommonTest {
 
     }
 
-    public static void serverUpdate(LibertyServer myServer) {
+    public static void serverUpdate(LibertyServer myServer) throws Exception {
         assertNotNull("FeatureManager did not report update was complete", myServer.waitForStringInLog("CWWKF0008I"));
         assertNotNull("Application did not start", myServer.waitForStringInLog("CWWKZ0001I"));
-        assertNotNull("LTPA configuration did not report it was ready", myServer.waitForStringInLog("CWWKS4105I"));
+        myServer.waitForLTPAConfigReady();
     }
 
     public void successfulServletResponse(String response, BasicAuthClient myClient, String user, boolean isEmployee, boolean isManager) {

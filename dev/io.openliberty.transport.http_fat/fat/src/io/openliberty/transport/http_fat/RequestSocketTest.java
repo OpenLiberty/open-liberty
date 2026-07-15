@@ -55,8 +55,7 @@ public class RequestSocketTest extends FATServletClient {
         server.installSystemFeature("webcontainerlibertyinternals");
         server.startServer();
         server.resetLogMarks();
-        assertNotNull("defaultHttpEndpoint-ssl was not started",
-                      server.waitForStringInLog("CWWKO0219I:(.*)defaultHttpEndpoint-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     /**

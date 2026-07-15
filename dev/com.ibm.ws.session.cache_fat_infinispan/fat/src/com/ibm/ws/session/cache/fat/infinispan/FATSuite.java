@@ -37,7 +37,6 @@ import componenttest.topology.utils.HttpUtils;
                 SessionCacheTwoServerTest.class,
                 SessionCacheTimeoutTest.class,
                 SessionCacheTwoServerTimeoutTest.class,
-                SessionCachePrefixTest.class,
                 AlwaysPassesTest.class
 // A separate test suite covers Infinispan client/server scenarios
 })

@@ -1502,6 +1502,7 @@ public class InstallKernelMap implements Map {
                     throw new InstallException(Messages.INSTALL_KERNEL_MESSAGES.getLogMessage("ERROR_FAILED_TO_CONNECT_REPOS"));
                 }
             }
+
         } catch (InstallException e) {
             throw new RuntimeException(e);
         }

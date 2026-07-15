@@ -45,7 +45,7 @@ public class RolesAllowedTest {
         try {
             server.startServer();
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
-            assertNotNull("LTPA configuration should report it is ready", server.waitForStringInLog("CWWKS4105I"));
+            assertNotNull("LTPA configuration should report it is ready", server.waitForLTPAConfigReady(true));
         } catch (Exception e) {
             System.out.println(e.toString());
         }

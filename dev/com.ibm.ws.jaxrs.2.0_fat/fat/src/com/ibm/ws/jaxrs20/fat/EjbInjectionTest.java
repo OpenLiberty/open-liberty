@@ -41,7 +41,8 @@ public class EjbInjectionTest extends FATServletClient {
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.ejbs",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.interfaces",
                                                        "com.ibm.ws.jaxrs.fat.ejbinjection.interfaces.annotated",
-                                                       "com.ibm.ws.jaxrs.fat.ejbinjection.servlet");
+                                                       "com.ibm.ws.jaxrs.fat.ejbinjection.servlet",
+                                                       "com.ibm.ws.jaxrs.fat.ejbinjection.singleton");
 
         // Make sure we don't fail because we try to start an
         // already started server

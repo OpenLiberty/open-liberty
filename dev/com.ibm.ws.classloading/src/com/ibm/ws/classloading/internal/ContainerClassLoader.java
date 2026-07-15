@@ -1985,6 +1985,29 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
         nativeLibraryContainers.add(new ContainerUniversalContainer(container, hook));
     }
 
+    // Method to get the list of container names
+    protected List<String> getContainerNames() {
+        List<String> names = new ArrayList<>();
+        if (smartClassPath != null) {
+            Collection<Collection<URL>> classPath = smartClassPath.getClassPath();
+            for (Collection<URL> containerURLs : classPath) {
+                for (URL url : containerURLs) {
+                    String path = url.getPath();
+                    // Note: Only the container names should be captured to keep the logs concise
+                    if (!path.endsWith(".overlay/")) {
+                        int lastSlash = path.lastIndexOf('/');
+                        if (lastSlash >= 0 && lastSlash < path.length() - 1) {
+                            names.add(path.substring(lastSlash + 1));
+                        } else {
+                            names.add(path);
+                        }
+                    }
+                }
+            }
+        }
+        return names;
+    }
+
     /**
      * Check that a file is an archive
      *
@@ -2185,6 +2208,27 @@ abstract class ContainerClassLoader extends LibertyLoader implements Keyed<Class
             }
         }
     }
+
+
+    @Override
+    @Trivial
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getClass().getSimpleName());
+        sb.append("@");
+        sb.append(Integer.toHexString(this.hashCode()));
+        
+        Collection<Collection<URL>> classPath = smartClassPath.getClassPath();
+        int totalURLs = classPath.stream().mapToInt(Collection::size).sum();
+        sb.append(" [classpath-entries=").append(totalURLs).append("]");
+ 
+        if (!nativeLibraryContainers.isEmpty()) {
+            sb.append(" [native-libs=").append(nativeLibraryContainers.size()).append("]");
+        }
+        
+        return sb.toString();
+    }
+
 
     @Trivial
     Collection<Collection<URL>> getClassPath() {

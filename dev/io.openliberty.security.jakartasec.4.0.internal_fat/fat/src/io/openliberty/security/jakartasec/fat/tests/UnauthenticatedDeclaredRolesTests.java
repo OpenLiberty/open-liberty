@@ -60,7 +60,7 @@ public class UnauthenticatedDeclaredRolesTests extends FATServletClient {
         ShrinkHelper.exportDropinAppToServer(server, app, ShrinkHelper.DeployOptions.SERVER_ONLY);
         server.startServer();
 
-        server.waitForStringInLog("CWWKS4105I");
+        server.waitForLTPAConfigReady();
         Log.info(c, "setUp", "Server started successfully");
     }
 

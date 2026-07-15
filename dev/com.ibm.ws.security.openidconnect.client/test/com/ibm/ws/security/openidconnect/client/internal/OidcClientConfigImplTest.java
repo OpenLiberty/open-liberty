@@ -18,6 +18,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Map;
@@ -824,49 +825,26 @@ public class OidcClientConfigImplTest extends CommonTestClass {
         }
     }
 
-    @Test
-    public void testServeProtectedResourceMetadata_defaultValue() {
-        try {
-            // Test that the default value is false
-            assertFalse("serveProtectedResourceMetadata should default to false", oidcClientConfig.getServeProtectedResourceMetadata());
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
     /**
-     * Test that serveProtectedResourceMetadata is FALSE when IN beta mode,
-     * but configuration does not specify the property (default behaviour).
+     * Test that protectedResourceMetadata sub-element is properly processed
+     * when configured with both advertisedScopes and jwtBuilderRef in beta mode.
+     * With ibm:flat="true" the child properties are present directly on props as
+     * "protectedResourceMetadata.0.{childProp}".
      */
     @Test
-    public void testServeProtectedResourceMetadata_BetaMode_NotConfigured_ReturnsFalse() {
+    public void testProtectedResourceMetadata_BetaMode_WithBothFields_ReturnsConfiguredValues() {
         try {
-            // Simulate running in beta mode
-            System.setProperty(BETA_EDITION_PROPERTY, "true");
-
-            // Verify: serveProtectedResourceMetadata should be false (default even in beta mode)
-            assertFalse("serveProtectedResourceMetadata should be false by default even in beta mode when not configured",
-                    oidcClientConfig.getServeProtectedResourceMetadata());
-        } catch (Throwable t) {
-            outputMgr.failWithThrowable(testName.getMethodName(), t);
-        }
-    }
-
-    /**
-     * Test that serveProtectedResourceMetadata is TRUE when IN beta mode,
-     * and configuration explicitly sets it to true.
-     *
-     * This verifies that the beta feature works correctly when enabled.
-     */
-    @Test
-    public void testServeProtectedResourceMetadata_BetaMode_ConfiguredTrue_ReturnsTrue() {
-        try {
-
             // Simulate running in beta mode
             System.setProperty(BETA_EDITION_PROPERTY, "true");
 
             final Map<String, Object> props = createProps(false);
-            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, true);
+            final String advertisedScopes = "openid,profile,email";
+            final String jwtBuilderRef = "myCustomJwtBuilder";
+
+            // ibm:flat=true flattens child properties directly onto the parent props map
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, advertisedScopes);
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_JWT_BUILDER_REF, jwtBuilderRef);
+
             mock.checking(new Expectations() {
                 {
                     one(configAdmin).getConfiguration(authFilterId, null);
@@ -877,8 +855,12 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             });
             oidcClientConfig.modify(props);
 
-            // Verify: serveProtectedResourceMetadata should be true (respects configuration in beta mode)
-            assertTrue("serveProtectedResourceMetadata should be true when in beta mode and configured to true",
+            // Verify: advertisedScopes and jwtBuilderRef should be set
+            assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile", "email"),
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+            assertEquals("jwtBuilderRef should be " + jwtBuilderRef, jwtBuilderRef,
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
@@ -886,17 +868,22 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     }
 
     /**
-     * Test that serveProtectedResourceMetadata is FALSE when IN beta mode,
-     * but configuration explicitly sets it to false.
+     * Test that protectedResourceMetadata sub-element uses default jwtBuilderRef
+     * when only advertisedScopes is configured in beta mode.
+     * With ibm:flat="true" the child properties are present directly on props.
      */
     @Test
-    public void testServeProtectedResourceMetadata_BetaMode_ConfiguredFalse_ReturnsFalse() {
+    public void testProtectedResourceMetadata_BetaMode_OnlyAdvertisedScopes_UsesDefaultJwtBuilderRef() {
         try {
             // Simulate running in beta mode
             System.setProperty(BETA_EDITION_PROPERTY, "true");
 
             final Map<String, Object> props = createProps(false);
-            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, false);
+            final String advertisedScopes = "openid,profile";
+
+            // Only advertisedScopes is present; jwtBuilderRef is absent so the default is used
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, advertisedScopes);
+
             mock.checking(new Expectations() {
                 {
                     one(configAdmin).getConfiguration(authFilterId, null);
@@ -907,29 +894,34 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             });
             oidcClientConfig.modify(props);
 
-            // Verify: serveProtectedResourceMetadata should be false (respects configuration)
-            assertFalse("serveProtectedResourceMetadata should be false when in beta mode and configured to false",
+            // Verify: advertisedScopes should be set, jwtBuilderRef should be default
+            assertEquals("advertisedScopes should match configured scopes", Arrays.asList("openid", "profile"),
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+            assertEquals("jwtBuilderRef should be default", "defaultProtectedResourceMetadataJwtBuilder",
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertTrue("serveProtectedResourceMetadata should be true when sub-element is configured in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
-
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }
     }
 
     /**
-     * Test that serveProtectedResourceMetadata is FALSE when NOT in beta mode,
-     * even when configuration explicitly sets it to true.
-     *
-     * This verifies beta fencing.
+     * Test that protectedResourceMetadata sub-element is ignored when NOT in beta mode,
+     * even when flat properties are present on props.
      */
     @Test
-    public void testServeProtectedResourceMetadata_NotBetaMode_ConfiguredTrue_ReturnsFalse() {
+    public void testProtectedResourceMetadata_NotBetaMode_ConfiguredButIgnored_ReturnsNull() {
         try {
             // Simulate NOT running in beta mode
             System.clearProperty(BETA_EDITION_PROPERTY);
 
             final Map<String, Object> props = createProps(false);
-            props.put(OidcClientConfigImpl.CFG_KEY_SERVE_PROTECTED_RESOURCE_METADATA, true);
+
+            // Put flat properties onto props — they must be ignored due to beta fencing
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "openid,profile");
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_JWT_BUILDER_REF, "myJwtBuilder");
+
             mock.checking(new Expectations() {
                 {
                     one(configAdmin).getConfiguration(authFilterId, null);
@@ -940,9 +932,110 @@ public class OidcClientConfigImplTest extends CommonTestClass {
             });
             oidcClientConfig.modify(props);
 
-            // Verify: serveProtectedResourceMetadata should be false
-            assertFalse("serveProtectedResourceMetadata should be false when not in beta mode, even if configured to true",
+            // Verify: both fields should be null because beta fencing prevents processing
+            assertEquals("advertisedScopes should be null when not in beta mode", null,
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+            assertEquals("jwtBuilderRef should be null when not in beta mode", null,
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertFalse("serveProtectedResourceMetadata should be false when not in beta mode",
                     oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that protectedResourceMetadata fields are null when sub-element is not configured in beta mode.
+     */
+    @Test
+    public void testProtectedResourceMetadata_BetaMode_NotConfigured_ReturnsNull() {
+        try {
+            // Simulate running in beta mode
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            // No protectedResourceMetadata flat keys present
+
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            // Verify: both fields should be null
+            assertEquals("advertisedScopes should be null when not configured", null,
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+            assertEquals("jwtBuilderRef should be null when not configured", null,
+                    oidcClientConfig.getProtectedResourceMetadataJwtBuilderRef());
+            assertFalse("serveProtectedResourceMetadata should be false when sub-element is not configured",
+                    oidcClientConfig.getServeProtectedResourceMetadata());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that advertisedScopes values separated by ", " (comma + space) are trimmed correctly.
+     * e.g. "a, b, c" should produce ["a", "b", "c"], not ["a", " b", " c"].
+     */
+    @Test
+    public void testProtectedResourceMetadata_BetaMode_AdvertisedScopesWithSpaces_TrimsValues() {
+        try {
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            // Scopes separated by ", " (comma followed by space)
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "a, b, c");
+
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            assertEquals("advertisedScopes values separated by \", \" should be trimmed",
+                    Arrays.asList("a", "b", "c"),
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
+        } catch (Throwable t) {
+            outputMgr.failWithThrowable(testName.getMethodName(), t);
+        }
+    }
+
+    /**
+     * Test that a trailing comma in advertisedScopes produces an empty string as the last element.
+     * e.g. "a,b,c," should produce ["a", "b", "c", ""] reflecting Java's split() default behaviour.
+     */
+    @Test
+    public void testProtectedResourceMetadata_BetaMode_AdvertisedScopesWithTrailingComma_ProducesExpectedList() {
+        try {
+            System.setProperty(BETA_EDITION_PROPERTY, "true");
+
+            final Map<String, Object> props = createProps(false);
+            // Scopes with a trailing comma
+            props.put(OidcClientConfigImpl.CFG_KEY_PROTECTED_RESOURCE_METADATA + ".0." + OidcClientConfigImpl.CFG_KEY_ADVERTISED_SCOPES, "a,b,c,");
+
+            mock.checking(new Expectations() {
+                {
+                    one(configAdmin).getConfiguration(authFilterId, null);
+                    will(returnValue(config));
+                    one(config).getProperties();
+                    will(returnValue(adminProps));
+                }
+            });
+            oidcClientConfig.modify(props);
+
+            // Java's split(",") drops trailing empty strings by default, so "a,b,c," -> ["a","b","c"]
+            assertEquals("advertisedScopes with a trailing comma should produce list without trailing empty element",
+                    Arrays.asList("a", "b", "c"),
+                    oidcClientConfig.getProtectedResourceMetadataAdvertisedScopes());
         } catch (Throwable t) {
             outputMgr.failWithThrowable(testName.getMethodName(), t);
         }

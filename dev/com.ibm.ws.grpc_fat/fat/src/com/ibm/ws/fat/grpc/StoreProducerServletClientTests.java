@@ -69,11 +69,11 @@ public class StoreProducerServletClientTests extends FATServletClient {
 
         storeServer.startServer(c.getSimpleName() + ".log");
         Log.info(c, "setUp", "Check if in store server ssl started");
-        assertNotNull("CWWKO0219I.*ssl not received", storeServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        storeServer.waitForDefaultHTTPEndpointSSLStart();
 
         producerServer.useSecondaryHTTPPort(); // sets httpSecondaryPort and httpSecondarySecurePort
         producerServer.startServer(c.getSimpleName() + ".log");
-        assertNotNull("CWWKO0219I.*ssl not received", producerServer.waitForStringInLog("CWWKO0219I.*ssl"));
+        producerServer.waitForDefaultHTTPEndpointSSLStart();
 
         Log.info(c, "setUp", "Check if Store.war started");
         assertNotNull(storeServer.waitForStringInLog("CWWKZ0001I: Application StoreApp started"));

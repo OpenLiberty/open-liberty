@@ -48,7 +48,7 @@ public class TransportSecurityUsingDispatchClientCertTest extends AbstractJaxWsT
 
         server.startServer("TransportSecurityUsingDispatchClientCertTest.log");
 
-        assertNotNull("Wait for the SSL port to open", server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
         server.setMarkToEndOfLog();
     }
 

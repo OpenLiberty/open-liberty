@@ -167,12 +167,12 @@ public class EJBInWarServiceSecurityTest {
         }
     }
 
-    private void checkAppsReady() {
+    private void checkAppsReady() throws Exception {
         Assert.assertNotNull("The application EJBInWarServiceSecurity did not appear to have started",
                              server.waitForStringInLog("CWWKZ0001I.*EJBInWarServiceSecurity"));
         Assert.assertNotNull("Security service did not report it was ready", server.waitForStringInLog("CWWKS0008I"));
 
-        server.waitForStringInLog("CWWKO0219I:.*-ssl");
+        server.waitForDefaultHTTPEndpointStart();
 
     }
 

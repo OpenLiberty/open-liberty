@@ -70,7 +70,7 @@ public class DefaultPKCS12ExistsSSLTest extends CommonSSLTest {
         // Requires info trace
         server.addInstalledAppForValidation("basicauth");
         assertNotNull("SSL TCP Channel did not start in time.",
-                      server.waitForStringInLog("CWWKO0219I.*ssl"));
+                      server.waitForDefaultHTTPEndpointSSLStart());
         assertNotNull("Need to wait for 'smarter planet' message (server is ready).",
                       server.waitForStringInLog("CWWKF0011I"));
 

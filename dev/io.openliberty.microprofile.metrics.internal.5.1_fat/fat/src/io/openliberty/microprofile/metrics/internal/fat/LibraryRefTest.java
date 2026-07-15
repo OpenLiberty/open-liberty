@@ -129,7 +129,7 @@ public class LibraryRefTest {
 	public void nonExistentLibrary() throws Exception {
 		server = serverNonExistentLibrary;
 		server.startServer();
-		server.waitForSSLStart();
+		server.waitForDefaultHTTPEndpointSSLStart();
 
 		// CWWKG0033W The value [<value>] specified for the reference attribute
 		// [libraryRef] was not found in the configuration.
@@ -147,7 +147,7 @@ public class LibraryRefTest {
 	public void noMicrometerCore() throws Exception {
 		server = serverNoMicrometerCore;
 		server.startServer();
-		server.waitForSSLStart();
+		server.waitForDefaultHTTPEndpointSSLStart();
 		// CWMMC0014I emits that metrics is using libraryRef
 		Assert.assertNotNull("CWMMC0014I Not found",
 				server.waitForStringInLogUsingMark("CWMMC0014I"));
@@ -217,7 +217,7 @@ public class LibraryRefTest {
 		}
 
 		server.startServer();
-		server.waitForSSLStart();
+		server.waitForDefaultHTTPEndpointSSLStart();
 
 		// CWMMC0014I emits that metrics is using libraryRef
 		Assert.assertNotNull("CWMMC0014I Not found",
@@ -230,8 +230,7 @@ public class LibraryRefTest {
 		server.resetLogMarks();
 
 		Assert.assertNotNull("CWWKO0219I Not found",
-				server.waitForStringInLogUsingMark(
-						"CWWKO0219I: TCP Channel defaultHttpEndpoint-ssl"));
+				server.waitForDefaultHTTPEndpointSSLStart(true));
 
 		// Check SR implementation log that Promethues Registry created
 		// Note that SR makes THIS explicit log for Prometheus, other meter
@@ -278,7 +277,7 @@ public class LibraryRefTest {
 	public void externalMicrometerUselessJar() throws Exception {
 		server = serverMicrometerUseless;
 		server.startServer();
-		server.waitForSSLStart();
+		server.waitForDefaultHTTPEndpointSSLStart();
 
 		// CWMMC0014I emits that metrics is using libraryRef
 		Assert.assertNotNull("CWMMC0014I Not found",

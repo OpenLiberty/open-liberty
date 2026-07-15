@@ -84,7 +84,7 @@ public class AsyncConfigTests extends AbstractTest {
 
         // verify the appSecurity-2.0 feature is ready
         assertNotNull("Security service did not report it was ready", server.waitForStringInLogUsingMark("CWWKS0008I"));
-        assertNotNull("LTPA configuration did not report it was ready", server.waitForStringInLogUsingMark("CWWKS4105I"));
+        server.waitForLTPAConfigReady();
         server.setMarkToEndOfLog();
 
         //#################### InitTxRecoveryLogApp.ear (Automatically initializes transaction recovery logs)

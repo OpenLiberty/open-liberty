@@ -27,7 +27,6 @@ import componenttest.annotation.TestServlet;
 import componenttest.custom.junit.runner.FATRunner;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
-import io.openliberty.jaxrs.client.fat.simpleSSL.multi.servlet.SimpleSSLMultipleServersClientTestServlet;
 import io.openliberty.jaxrs.client.fat.simpleSSL.multi.servlet.defaultconfig.SimpleSSLDefaultConfigMultipleServersClientTestServlet;
 
 @RunWith(FATRunner.class)
@@ -52,7 +51,7 @@ public class SimpleSSLMultipleServersDefaultLibertySSLConfigTest extends FATServ
         // already started server
         try {
             server.startServer("server.log", true);
-            server.waitForSSLStart();
+            server.waitForDefaultHTTPEndpointSSLStart();
             assertNotNull("The server did not start", server.waitForStringInLog("CWWKF0011I"));
             assertNotNull("FeatureManager did not report update was complete", server.waitForStringInLog("CWWKF0008I"));
 
@@ -66,7 +65,7 @@ public class SimpleSSLMultipleServersDefaultLibertySSLConfigTest extends FATServ
              */
             server2.useSecondaryHTTPPort();
             server2.startServer("server.log", true);
-            server2.waitForSSLStart();
+            server2.waitForDefaultHTTPEndpointSSLStart();
             assertNotNull("The server did not start", server2.waitForStringInLog("CWWKF0011I"));
             assertNotNull("FeatureManager did not report update was complete", server2.waitForStringInLog("CWWKF0008I"));
         } catch (Exception e) {

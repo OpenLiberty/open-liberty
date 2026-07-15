@@ -147,7 +147,7 @@ public class Server2ServerTests extends AbstractTest {
         if (isSecureActive) {
             // verify the appSecurity-2.0 feature is ready
             assertNotNull("Security service did not report it was ready", remoteServer.waitForStringInLogUsingMark("CWWKS0008I"));
-            assertNotNull("LTPA configuration did not report it was ready", remoteServer.waitForStringInLogUsingMark("CWWKS4105I"));
+            remoteServer.waitForLTPAConfigReady();
             assertNotNull("ORB did not report it was ready", remoteServer.waitForStringInLogUsingMark("CWWKI0001I"));
         }
 
@@ -156,7 +156,7 @@ public class Server2ServerTests extends AbstractTest {
         if (isSecureActive) {
             // verify the appSecurity-2.0 feature is ready
             assertNotNull("Security service did not report it was ready", clientServer.waitForStringInLogUsingMark("CWWKS0008I"));
-            assertNotNull("LTPA configuration did not report it was ready", clientServer.waitForStringInLogUsingMark("CWWKS4105I"));
+            clientServer.waitForLTPAConfigReady();
             assertNotNull("ORB did not report it was ready", clientServer.waitForStringInLogUsingMark("CWWKI0001I"));
         }
     }

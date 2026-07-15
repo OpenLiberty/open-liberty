@@ -72,8 +72,7 @@ public class FormLoginReadListenerTest {
         server.startServer(FormLoginReadListenerTest.class.getSimpleName() + ".log");
 
         // CWWKS4105I: LTPA configuration is ready after x seconds
-        assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      server.waitForStringInLogUsingMark("CWWKS4105I.*"));
+        server.waitForLTPAConfigReady();
 
         if (FATSuite.isWindows) {
             FATSuite.setDynamicTrace(server, "*=info=enabled");

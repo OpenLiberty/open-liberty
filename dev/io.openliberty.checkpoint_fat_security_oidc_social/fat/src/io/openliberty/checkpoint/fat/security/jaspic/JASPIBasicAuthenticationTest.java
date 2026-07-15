@@ -80,8 +80,6 @@ public class JASPIBasicAuthenticationTest extends JASPITestBase {
 
     private DefaultHttpClient httpclient;
 
-    private static final String TCP_CHANNEL_STARTED = "CWWKO0219I:.*defaultHttpEndpoint-ssl";
-
     @ClassRule
     public static RepeatTests r = RepeatTests.withoutModification()
                     .andWith(FeatureReplacementAction.EE9_FEATURES()
@@ -117,7 +115,7 @@ public class JASPIBasicAuthenticationTest extends JASPITestBase {
 
         server.setCheckpoint(CheckpointPhase.AFTER_APP_START);
         server.startServer();
-        assertNotNull("Expected CWWKO0219I message not found", server.waitForStringInLog(TCP_CHANNEL_STARTED));
+        server.waitForDefaultHTTPEndpointSSLStart();
         server.addInstalledAppForValidation(DEFAULT_APP);
         verifyServerStartedWithJaspiFeature(server);
         urlBase = "http://" + server.getHostname() + ":" + server.getHttpDefaultPort();

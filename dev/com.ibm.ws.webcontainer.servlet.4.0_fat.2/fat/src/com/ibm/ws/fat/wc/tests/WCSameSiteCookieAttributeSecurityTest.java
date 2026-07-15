@@ -91,9 +91,7 @@ public class WCSameSiteCookieAttributeSecurityTest {
         boolean headerFound = false;
         String expectedResponse = "Welcome to the SameSiteSecurityServlet!";
 
-        // CWWKS4105I: LTPA configuration is ready after x seconds
-        assertNotNull("CWWKS4105I LTPA configuration message not found.",
-                      sameSiteSecurityServer.waitForStringInLogUsingMark("CWWKS4105I.*"));
+        sameSiteSecurityServer.waitForLTPAConfigReady();
 
         String url = "http://" + sameSiteSecurityServer.getHostname() + ":" + sameSiteSecurityServer.getHttpDefaultPort() + "/" + APP_NAME_SAMESITE_SECURITY
                      + "/SameSiteSecurityServlet";

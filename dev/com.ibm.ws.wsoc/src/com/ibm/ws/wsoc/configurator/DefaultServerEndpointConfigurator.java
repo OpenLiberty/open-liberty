@@ -36,6 +36,9 @@ import com.ibm.ws.wsoc.ServiceManager;
 import com.ibm.ws.wsoc.WebSocketContainerManager;
 import com.ibm.ws.wsoc.injection.InjectionProvider;
 import com.ibm.ws.wsoc.injection.InjectionProvider12;
+import com.ibm.ws.managedobject.ManagedObject;
+import com.ibm.ws.managedobject.ManagedObjectFactory;
+import com.ibm.ws.managedobject.ManagedObjectService;
 import com.ibm.wsspi.injectionengine.ComponentNameSpaceConfiguration;
 import com.ibm.wsspi.injectionengine.InjectionException;
 import com.ibm.wsspi.injectionengine.InjectionTarget;
@@ -166,8 +169,16 @@ public class DefaultServerEndpointConfigurator extends ServerEndpointConfig.Conf
         }
     }
 
+    /*
+     * The process for getting an EndpointInstance:
+     * 1) Try getting the EI from CDI. (requires it to be a CDI bean, e.g. if it has a CDI scope annotation).
+     * 2) Try getting the EI from the ManagedObjectFactory. If CDI is enabled this will end up going via CDI; the bean for CDI injecting into non-CDI beans.
+     * 3) If the ManagedObjectFactory says it doesn't do injection (if CDI is not enabled), call attemptNonCDIInjection which asks InjectionEngine to handle it.
+     * 4) If anything went wrong at all in 2/3, create an object ourselves and call attemptNonCDIInjection on it. (2 and 3 are newer code, 4 is a fall back to the original behaviour as a guard against regression).
+     */
     @Override
     public <T> T getEndpointInstance(Class<T> endpointClass) throws InstantiationException {
+    
         try {
             InjectionProvider12 ip12 = ServiceManager.getInjectionProvider12();
             if (ip12 != null) {
@@ -190,12 +201,21 @@ public class DefaultServerEndpointConfigurator extends ServerEndpointConfig.Conf
             }
 
             if (tc.isDebugEnabled()) {
-                Tr.debug(tc, "Did not create the bean using the CDI service.  Will create the instance without CDI.");
+                Tr.debug(tc, "Did not create the bean using the CDI service.  Will create the instance using managed object factory.");
             }
 
-            T ep = endpointClass.newInstance();
+            T ep = createManagedObjectInstance(endpointClass);
 
-            attemptNonCDIInjection(ep);
+            //Keep the original code path as a final fallback
+            if (ep == null) {
+
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(tc, "Did not create the bean using the CDI service.  Will create the instance without CDI.");
+                }
+
+                endpointClass.newInstance();
+                attemptNonCDIInjection(ep);
+            }
 
             return ep;
 
@@ -219,6 +239,51 @@ public class DefaultServerEndpointConfigurator extends ServerEndpointConfig.Conf
                 ip.releaseCC(key, map);
             }
         }
+    }
+
+    /**
+     * Creates a managed object instance for the given class using the ManagedObjectService.
+     *
+     * @param <T> the type of the class
+     * @param clazz the class to create a managed object for
+     * @return the actual object instance created by the ManagedObjectFactory
+     */
+    public <T> T createManagedObjectInstance(Class<T> clazz) {
+        try { 
+        // 1) Get the ManagedObjectService from the ServiceManager
+            ManagedObjectService managedObjectService = ServiceManager.getManagedObjectService();
+
+            ComponentMetaData cmd = ComponentMetaDataAccessorImpl.getComponentMetaDataAccessor().getComponentMetaData();
+            if (cmd != null && managedObjectService != null) {
+                final ModuleMetaData mmd = cmd.getModuleMetaData();
+
+                if (managedObjectService == null) {
+                    throw new IllegalStateException("ManagedObjectService is not available");
+                }
+
+                // 2) Get the ManagedObjectFactory for the class
+                ManagedObjectFactory<T> factory = managedObjectService.createManagedObjectFactory(mmd, clazz, true);
+
+                // 3) Use the factory to create a ManagedObject
+                ManagedObject<T> managedObject = factory.createManagedObject();
+                
+                // 4) if the factory didn't hadnle injection, do it ourselves.
+                T actualObject = managedObject.getObject();;
+                if (! factory.managesInjectionAndInterceptors() && actualObject != null) {
+                    attemptNonCDIInjection(actualObject);
+                }
+
+                // 5) Return the actual Object
+                return actualObject;
+            }
+        } catch (Exception e) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "Couldn't create object instance from ManagedObjectFactory for : " + clazz.getName() + ", but ignore the FFDC: " + e.toString());
+            }
+        }
+
+        //allow for fallback
+        return null;
     }
 
 }

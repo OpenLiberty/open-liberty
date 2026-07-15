@@ -63,8 +63,7 @@ public class JAXRSClientSSLTestNoLibertySSLFeature extends JAXRSClientSSLTestNoL
                       server.waitForStringInLog("CWWKF0011I"));
 
         // wait for LTPA key to be available to avoid CWWKS4000E
-        assertNotNull("CWWKS4105I.* not received on server",
-                      server.waitForStringInLog("CWWKS4105I.*"));
+        server.waitForLTPAConfigReady();
     }
 
     @AfterClass

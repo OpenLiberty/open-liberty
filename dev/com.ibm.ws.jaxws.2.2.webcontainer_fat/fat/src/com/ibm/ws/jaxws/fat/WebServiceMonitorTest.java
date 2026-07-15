@@ -122,7 +122,7 @@ public class WebServiceMonitorTest {
         //Check to see if Rest service is up
         server.waitForStringInLog("CWWKX0103I.*");
         //Wait till LTPA configuration is ready
-        server.waitForStringInLog("CWWKS4105I.*");
+        server.waitForLTPAConfigReady();
 
         ClientConnector cc = new ClientConnector(server.getServerRoot(), server.getHostname(), server.getHttpDefaultSecurePort());
         mbsc = cc.getMBeanServer();

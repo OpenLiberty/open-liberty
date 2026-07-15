@@ -318,8 +318,7 @@ public class TestEnableDisableFeaturesTest {
             // server
             waitForSecurityPrerequisites(serverEDF6, 60000);
         } else {
-            Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                    serverEDF6.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
+            serverEDF6.waitForDefaultHTTPEndpointSSLStart(60000);
         }
         serverEDF6FirstUse = false;
 
@@ -346,8 +345,7 @@ public class TestEnableDisableFeaturesTest {
             // server
             waitForSecurityPrerequisites(serverEDF6, 60000);
         } else {
-            Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                    serverEDF6.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", 60000));
+            serverEDF6.waitForDefaultHTTPEndpointSSLStart(60000);
         }
         serverEDF6FirstUse = false;
 
@@ -447,17 +445,11 @@ public class TestEnableDisableFeaturesTest {
                 new String[] { "vendor_connectionpool", "vendor_servlet", "{servlet=\"testJDBCApp\"}" });
     }
 
-    private void waitForSecurityPrerequisites(LibertyServer server, int timeout) {
-        // Need to ensure LTPA keys and configuration are created before hitting a
-        // secure endpoint
-        Assert.assertNotNull("LTPA keys are not created within timeout period of " + timeout + "ms.",
-                server.waitForStringInLog("CWWKS4104A", timeout));
-        Assert.assertNotNull("LTPA configuration is not ready within timeout period of " + timeout + "ms.",
-                server.waitForStringInLog("CWWKS4105I", timeout));
-
+    private void waitForSecurityPrerequisites(LibertyServer server, int timeout) throws Exception {
+        // Need to ensure LTPA configuration is ready before hitting a secure endpoint
+        server.waitForLTPAConfigReady(timeout);
         // Ensure defaultHttpEndpoint-ssl TCP Channel is started
-        Assert.assertNotNull("TCP Channel defaultHttpEndpoint-ssl has not started (CWWKO0219I not found)",
-                server.waitForStringInLog("CWWKO0219I.*defaultHttpEndpoint-ssl", timeout));
+        server.waitForDefaultHTTPEndpointSSLStart(timeout);
     }
 
     private String getHttpServlet(String servletPath, LibertyServer server) throws Exception {

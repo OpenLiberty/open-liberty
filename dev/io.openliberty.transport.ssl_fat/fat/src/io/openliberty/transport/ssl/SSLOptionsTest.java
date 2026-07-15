@@ -83,8 +83,7 @@ public class SSLOptionsTest{
 
         server.startServer(SSLOptionsTest.class.getSimpleName() + ".log");
         // Wait for SSL endpoint to start
-        assertNotNull("We need to wait for the SSL port to open",
-                      server.waitForStringInLog("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
     }
 
     @AfterClass
@@ -125,7 +124,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
         if(server.findStringsInLogsUsingMark("CWWKG0018I", server.getDefaultLogFile()).size() == 0) { // Server configuration was updated so need to wait for ssl port
             assertNotNull("We need to wait for the SSL port to open after config update",
-                      server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl"));
+                      server.waitForDefaultHTTPEndpointSSLStart(true));
         }
         
     }
@@ -159,8 +158,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        assertNotNull("We need to wait for the SSL port to open",
-                      server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
 
         // Hit the servlet on the SSL port
         hitServerWithBadHandshake();
@@ -193,7 +191,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         assertNotNull("We need to wait for the SSL port to start (again)",
-                      server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl"));
+                      server.waitForDefaultHTTPEndpointSSLStart(true));
         saveCnt = server.findStringsInLogs("CWWKO0801E").size();
 
         // Hit the servlet on the SSL port
@@ -209,7 +207,7 @@ public class SSLOptionsTest{
 
         // Requires info trace
         assertNotNull("We need to wait for the SSL port to start (again)",
-                      server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl"));
+                      server.waitForDefaultHTTPEndpointSSLStart(true));
 
         // Hit the servlet on the SSL port
         server.setMarkToEndOfLog();
@@ -233,8 +231,7 @@ public class SSLOptionsTest{
         server.waitForConfigUpdateInLogUsingMark(null);
 
         // Requires info trace
-        assertNotNull("We need to wait for the SSL port to open",
-                      server.waitForStringInLogUsingMark("CWWKO0219I:.*-ssl"));
+        server.waitForDefaultHTTPEndpointSSLStart();
         server.setMarkToEndOfLog();
 
         // Hit the servlet on the SSL port
