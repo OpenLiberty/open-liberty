@@ -162,27 +162,10 @@ public class ConfigAdminHealthCheckTest {
         
         log("testMatchingAppNamesDropinsTest", "ConfigAdmin binding detected, now checking app detection.");
 
-        // Now hit the health endpoint to trigger the check
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        getJSONPayload(conReady);
-
-        // Check if the app was detected by ConfigAdmin
-        String configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp", 5000);
-
-        // If not found, it might be the race condition - check for the "could not find" message
-        if (configAdminLine == null) {
-            String notFoundLine = server1.waitForStringInTrace("configAdmin could not find any configured apps", 1000);
-            if (notFoundLine != null) {
-                // Race condition detected - ConfigAdmin was queried before app registered
-                // Hit the endpoint again to trigger a re-check
-                log("testMatchingAppNamesDropinsTest", "Race condition detected, retrying health endpoint.");
-                conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-                getJSONPayload(conReady);
-                
-                // Wait for the app detection after retry
-                configAdminLine = server1.waitForStringInTrace(" configAdminAppName = ConfigAdminDropinsCheckApp", 5000);
-            }
-        }
+        // Use helper method to check for ConfigAdmin detection with retry logic
+        String configAdminLine = checkConfigAdminDetectionWithRetry(server1, READY_ENDPOINT, 
+                                                                     " configAdminAppName = ConfigAdminDropinsCheckApp",
+                                                                     "testMatchingAppNamesDropinsTest");
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
 
@@ -340,30 +323,58 @@ public class ConfigAdminHealthCheckTest {
         
         log("testMultiWarDetectionDropinsTest", "ConfigAdmin binding detected, now checking app detection.");
 
-        // Now hit the health endpoint to trigger the check
-        HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-        getJSONPayload(conReady);
-
-        // Check if the app was detected by ConfigAdmin
-        String configAdminLine = server1.waitForStringInTrace("configAdminAppName = MultiWarApps", 5000);
-
-        // If not found, it might be the race condition - check for the "could not find" message
-        if (configAdminLine == null) {
-            String notFoundLine = server1.waitForStringInTrace("configAdmin could not find any configured apps", 1000);
-            if (notFoundLine != null) {
-                // Race condition detected - ConfigAdmin was queried before app registered
-                // Hit the endpoint again to trigger a re-check
-                log("testMultiWarDetectionDropinsTest", "Race condition detected, retrying health endpoint.");
-                conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server1, READY_ENDPOINT);
-                getJSONPayload(conReady);
-                
-                // Wait for the app detection after retry
-                configAdminLine = server1.waitForStringInTrace("configAdminAppName = MultiWarApps", 5000);
-            }
-        }
+        // Use helper method to check for ConfigAdmin detection with retry logic
+        String configAdminLine = checkConfigAdminDetectionWithRetry(server1, READY_ENDPOINT, 
+                                                                     "configAdminAppName = MultiWarApps",
+                                                                     "testMultiWarDetectionDropinsTest");
 
         assertNotNull("App was not detected by ConfigAdmin.", configAdminLine);
 
+    }
+
+    /**
+     * Co-authored-by-AI: IBM Bob 1.0.6
+     * Helper method to check for ConfigAdmin app detection with retry logic for race condition.
+     * 
+     * This method implements a retry mechanism to handle the race condition where ConfigAdmin
+     * might be queried before the application has been registered in its internal state.
+     * Uses a loop-based approach with up to 3 attempts to ensure robustness.
+     * 
+     * @param server The Liberty server instance
+     * @param endpoint The health endpoint to hit (e.g., READY_ENDPOINT)
+     * @param appNamePattern The trace pattern to search for (e.g., "configAdminAppName = MyApp")
+     * @param testMethodName The name of the calling test method for logging
+     * @return The trace line if found, null otherwise
+     * @throws Exception if there's an error hitting the endpoint
+     */
+    private String checkConfigAdminDetectionWithRetry(LibertyServer server, String endpoint, 
+                                                       String appNamePattern, String testMethodName) throws Exception {
+        String configAdminLine = null;
+        String notFoundLine = null;
+        int maxAttempts = 3;
+
+        for (int attempt = 1; attempt <= maxAttempts && configAdminLine == null; attempt++) {
+            log(testMethodName, "Attempt " + attempt + " - checking ConfigAdmin status.");
+            
+            // Hit health endpoint to trigger ConfigAdmin query
+            HttpURLConnection conReady = HttpUtils.getHttpConnectionWithAnyResponseCode(server, endpoint);
+            getJSONPayload(conReady);
+            
+            // Wait for success message
+            configAdminLine = server.waitForStringInTrace(appNamePattern, 3000);
+            
+            if (configAdminLine == null) {
+                // Check if we got the "not found" message
+                notFoundLine = server.waitForStringInTrace("configAdmin could not find any configured apps", 1000);
+                
+                if (notFoundLine != null && attempt < maxAttempts) {
+                    log(testMethodName, 
+                        "ConfigAdmin query returned no apps (race condition). Will retry.");
+                }
+            }
+        }
+
+        return configAdminLine;
     }
 
     /**
