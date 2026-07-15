@@ -165,8 +165,19 @@ public class TCPUtils {
                 }
 
                 if (config.isInbound()) {
-                    Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-                            new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
+                    // Allow the caller to suppress CWWKO0219I by setting
+                    // SUPPRESS_CHANNEL_STARTED_MSG=true on the channel before startInbound.
+                    // The HTTP Netty transport (NettyChain) uses this so it can emit the
+                    // message only after a duplicate-port check.  All other transports
+                    // (SIP, JMS, etc.) leave the attribute unset and get the normal message.
+                    Boolean suppress = channel.attr(ConfigConstants.SUPPRESS_CHANNEL_STARTED_MSG).get();
+                    if (!Boolean.TRUE.equals(suppress)) {
+                        Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+                                new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
+                    } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                        Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+                                 new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
+                    }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
                         Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,

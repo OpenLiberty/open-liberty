@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2025 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -9,6 +9,8 @@
  *******************************************************************************/
 package com.ibm.ws.http.netty;
 
+import java.net.Inet6Address;
+import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -38,6 +40,7 @@ import io.openliberty.netty.internal.ConfigConstants;
 import io.openliberty.netty.internal.NettyFramework;
 import io.openliberty.netty.internal.ServerBootstrapExtended;
 import io.openliberty.netty.internal.exception.NettyException;
+import io.openliberty.netty.internal.tcp.TCPMessageConstants;
 
 /**
  *
@@ -45,6 +48,17 @@ import io.openliberty.netty.internal.exception.NettyException;
 public class NettyChain extends HttpChain {
 
     private static final TraceComponent tc = Tr.register(NettyChain.class, HttpMessages.HTTP_TRACE_NAME, HttpMessages.HTTP_BUNDLE);
+
+    /**
+     * Separate TraceComponent registered under the TCP trace group so that
+     * CWWKO0221E (BIND_ERROR) is emitted with the same message source as the
+     * legacy TCPPort / TCPUtils, matching the observable behaviour the operator
+     * expects when a duplicate port is detected.
+     */
+    private static final TraceComponent tcpTc = Tr.register(NettyChain.class,
+                                                             new String[] { TCPMessageConstants.TCP_TRACE_NAME, TCPMessageConstants.NETTY_TRACE_NAME },
+                                                             TCPMessageConstants.TCP_BUNDLE,
+                                                             NettyChain.class.getName() + ".tcp");
 
     private NettyFramework nettyFramework;
     private ServerBootstrapExtended bootstrap;
@@ -261,11 +275,27 @@ public class NettyChain extends HttpChain {
                 bootstrap.childOption(ChannelOption.ALLOW_HALF_CLOSURE, true);
                 bootstrap.childHandler(httpPipeline);
 
+                // Register bind intent BEFORE the async startInbound call.
+                // This call is made on the DS activation thread, which processes
+                // endpoints sequentially, so the first endpoint to be activated
+                // for a given port is reliably recorded as the owner here —
+                // regardless of which async bind callback fires first later.
+                VirtualHostMap.registerBindIntent(owner, currentConfig.configPort, isHttps);
+
                 serverChannel = nettyFramework.startInbound(bootstrap, info.getHost(), info.getPort(), this::channelFutureHandler);
 
-                VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
-                String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
-                postEvent(topic, currentConfig, null);
+                // Suppress CWWKO0219I in TCPUtils for this channel.  NettyChain emits
+                // it itself in channelFutureHandler after the duplicate-port check, so
+                // that channels rejected as duplicates never see a spurious "started"
+                // message.  startInbound returns the channel synchronously before the
+                // async bind fires, so this attribute is always set in time.
+                if (serverChannel != null) {
+                    serverChannel.attr(ConfigConstants.SUPPRESS_CHANNEL_STARTED_MSG).set(Boolean.TRUE);
+                }
+
+                // Originally the ENDPOINT_STARTED notifications
+                // were at this point.  This logic is moved to channelFutureHandler()
+                // so as to better detect duplicate port use due to the async nature of Netty bind().
 
             } catch (Exception e) {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -296,11 +326,51 @@ public class NettyChain extends HttpChain {
         }
         synchronized (this) {
             if (future.isSuccess()) {
-                state.set(ChainState.STARTED);
-                EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
-                info = endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
-                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                    Tr.debug(this, tc, "Channel is now active and listening on port " + getActivePort());
+                // Detect the dual-stack duplicate-port case: on z/OS and other
+                // dual-stack systems the OS allows an IPv6-wildcard bind and an
+                // IPv4-specific bind on the same port to both succeed. Liberty
+                // must detect the conflict here and reject the duplicate, matching
+                // the legacy CFW behaviour (CWWKO0221E / CWWKO0220I).
+                if (VirtualHostMap.isPortRegistered(owner, currentConfig.getConfigPort(), isHttps)) {
+                    Tr.error(tcpTc, TCPMessageConstants.BIND_ERROR,
+                             new Object[] { endpointName,
+                                            currentConfig.configHost,
+                                            String.valueOf(currentConfig.getConfigPort()),
+                                            "Port " + currentConfig.getConfigPort() + " is already in use by another httpEndpoint" });
+                    // Closing the channel triggers the TCPUtils closeFuture listener,
+                    // which emits CWWKO0220I (TCP_CHANNEL_STOPPED).
+                    nettyFramework.stop(future.channel());
+                    handleStartupError(
+                        new NettyException(
+                            new Exception("Port " + currentConfig.getConfigPort() + " is already in use by another httpEndpoint")),
+                        currentConfig);
+                    if (currentConfig != null) {
+                        // Clear this endpoint's bind intent so the port is not
+                        // permanently blocked if the owner later stops and a
+                        // reconfiguration attempt is made.
+                        VirtualHostMap.clearBindIntent(owner, currentConfig.getConfigPort(), isHttps);
+                        currentConfig.clearActivePort();
+                    }
+                    state.set(ChainState.STOPPED);
+                } else {
+                    state.set(ChainState.STARTED);
+                    EndPointInfo info = endpointMgr.getEndPoint(this.endpointName);
+                    info = endpointMgr.defineEndPoint(this.endpointName, currentConfig.configHost, currentConfig.configPort);
+                    // Emit CWWKO0219I here (not in TCPUtils) so it is suppressed for
+                    // duplicate channels that will be rejected moments later.
+                    Tr.info(tcpTc, TCPMessageConstants.TCP_CHANNEL_STARTED,
+                            new Object[] { endpointName, buildHostLogString(future.channel(), currentConfig.configHost),
+                                           String.valueOf(currentConfig.getConfigPort()) });
+                    // Notify virtual hosts and fire the endpoint-started event only after the
+                    // bind has actually succeeded, matching the behavior of the legacy CFW stack
+                    // (which fires these in HttpChain.chainStarted()).
+                    VirtualHostMap.notifyStarted(owner, () -> currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
+                    String topic = owner.getEventTopic() + HttpServiceConstants.ENDPOINT_STARTED;
+                    postEvent(topic, currentConfig, null);
+                    // Register chain for quiesce only after a clean successful bind.
+                    // Calling this on a channel that was stopped (duplicate-port case above)
+                    // produces a spurious warning from NettyFrameworkImpl.
+                    nettyFramework.registerEndpointQuiesce(future.channel(), QuiesceStrategy.NO_OP.getTask());
                 }
             } else {
                 if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
@@ -309,14 +379,13 @@ public class NettyChain extends HttpChain {
                 handleStartupError(new NettyException(future.cause()), currentConfig);
 
                 if (currentConfig != null) {
+                    // OS-level bind failure: clear the intent so the port can be retried.
+                    VirtualHostMap.clearBindIntent(owner, currentConfig.getConfigPort(), isHttps);
                     VirtualHostMap.notifyStopped(owner, currentConfig.getResolvedHost(), currentConfig.getConfigPort(), isHttps);
                     currentConfig.clearActivePort();
                 }
                 state.set(ChainState.STOPPED);
             }
-            //Register chain for quiesce, NO_OP is passed as the task as there is no special 
-            //quiesce action required at this time
-            nettyFramework.registerEndpointQuiesce(future.channel(), QuiesceStrategy.NO_OP.getTask());
             notifyAll();
         }
     }
@@ -350,6 +419,30 @@ public class NettyChain extends HttpChain {
 
     public String getActiveHost() {
         return (currentConfig != null) ? currentConfig.configHost : null;
+    }
+
+    /**
+     * Builds the host log string for CWWKO0219I, matching the format produced by
+     * {@code TCPUtils.open()} before the duplicate-port check was moved here.
+     * <p>
+     * Examples: {@code "*  (IPv6)"}, {@code "zrock005.pok.ibm.com  (IPv4: 9.57.4.5)"}
+     *
+     * @param channel    the bound server channel
+     * @param configHost the configured host string (may be {@code "*"})
+     * @return formatted host string for the log message
+     */
+    private static String buildHostLogString(Channel channel, String configHost) {
+        java.net.SocketAddress addr = channel.localAddress();
+        if (addr instanceof InetSocketAddress) {
+            InetSocketAddress inetAddr = (InetSocketAddress) addr;
+            String ipvType = (inetAddr.getAddress() instanceof Inet6Address) ? "IPv6" : "IPv4";
+            if ("*".equals(configHost)) {
+                return "*  (" + ipvType + ")";
+            } else {
+                return configHost + "  (" + ipvType + ": " + inetAddr.getAddress().getHostAddress() + ")";
+            }
+        }
+        return configHost;
     }
 
     /**

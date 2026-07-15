@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -68,6 +69,22 @@ public class VirtualHostMap {
 
     private static volatile VirtualHostConfig defaultHost = null;
     private static volatile AlternateHostSelector alternateHostSelector = null;
+
+    /**
+     * Tracks the intended "owner" of each port in the Netty transport, recorded
+     * at the moment startNettyChannel() issues the async bind — before the OS
+     * result is known.  On a dual-stack system the OS allows both an IPv6-wildcard
+     * bind and an IPv4-specific bind on the same port to succeed simultaneously.
+     * The first endpoint to register its bind intent here is the "winner"; any
+     * subsequent endpoint that successfully binds the same port is a duplicate
+     * and must be rejected.
+     * <p>
+     * Using insertion-ordered LinkedHashMap guarded by VirtualHostMap's class
+     * lock so that "first caller wins" is deterministic regardless of async
+     * callback order.
+     */
+    private static final Map<Integer, HttpEndpointImpl> pendingHttpPorts = new LinkedHashMap<>();
+    private static final Map<Integer, HttpEndpointImpl> pendingHttpsPorts = new LinkedHashMap<>();
 
     /**
      * Simple interface to allow deferred retrieval of host/port information
@@ -180,17 +197,79 @@ public class VirtualHostMap {
      * @param isHttps          True if this is an SSL port
      * @see HttpChain#chainStarted(com.ibm.websphere.channelfw.ChainData)
      */
-    public static synchronized void notifyStarted(HttpEndpointImpl endpoint, Supplier<String> hostNameResolver, int port, boolean isHttps) {
+    public static synchronized void notifyStarted(HttpEndpointImpl endpoint,
+                                                  Supplier<String> hostNameResolver,
+                                                  int port, boolean isHttps) {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Notify endpoint started: " + endpoint, hostNameResolver, port, isHttps, defaultHost, alternateHostSelector);
         }
+
         if (alternateHostSelector == null) {
             if (defaultHost != null) {
                 defaultHost.listenerStarted(endpoint, hostNameResolver, port, isHttps);
             }
-
         } else {
             alternateHostSelector.alternateNotifyStarted(endpoint, hostNameResolver, port, isHttps);
+        }
+    }
+
+    /**
+     * Records that {@code endpoint} intends to bind {@code port} in the Netty transport.
+     * The <em>first</em> endpoint to call this for a given port is the designated winner;
+     * all later callers are potential duplicates.
+     * <p>
+     * Must be called from {@code NettyChain.startNettyChannel()} — on the same DS thread
+     * that activates endpoints sequentially — so that the registration order is stable
+     * and matches the order in which OSGi DS started the endpoints.
+     *
+     * @param endpoint the endpoint about to issue an async bind
+     * @param port     the port number it will bind
+     * @param isHttps  true if this is the HTTPS port
+     */
+    public static synchronized void registerBindIntent(HttpEndpointImpl endpoint, int port, boolean isHttps) {
+        Map<Integer, HttpEndpointImpl> portMap = isHttps ? pendingHttpsPorts : pendingHttpPorts;
+        // putIfAbsent: only the first caller for a given port becomes the owner.
+        portMap.putIfAbsent(port, endpoint);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "registerBindIntent: port=" + port + " https=" + isHttps
+                         + " endpoint=" + endpoint + " owner=" + portMap.get(port));
+        }
+    }
+
+    /**
+     * Returns true if {@code self} is NOT the designated winner for {@code port}.
+     * <p>
+     * Used by the Netty transport in {@code channelFutureHandler} to detect a
+     * dual-stack duplicate-port condition: the OS allows both an IPv6-wildcard bind
+     * and an IPv4-specific bind on the same port to succeed simultaneously.  The
+     * first endpoint to call {@link #registerBindIntent} is the winner; the second
+     * endpoint to successfully bind must be rejected.
+     *
+     * @param self    the endpoint asking (the one that just got a successful bind callback)
+     * @param port    the port number that was bound
+     * @param isHttps true if this is the HTTPS port
+     * @return true if another endpoint was registered first for this port (i.e. self is a duplicate)
+     */
+    public static synchronized boolean isPortRegistered(HttpEndpointImpl self, int port, boolean isHttps) {
+        Map<Integer, HttpEndpointImpl> portMap = isHttps ? pendingHttpsPorts : pendingHttpPorts;
+        HttpEndpointImpl owner = portMap.get(port);
+        // The port is "registered" (duplicate) only if someone other than self got here first.
+        return owner != null && owner != self;
+    }
+
+    /**
+     * Removes the bind-intent registration for {@code endpoint} on {@code port}, allowing
+     * the port to be reused after a stop or failed start.
+     *
+     * @param endpoint the endpoint whose intent to remove
+     * @param port     the port number
+     * @param isHttps  true if this is the HTTPS port
+     */
+    public static synchronized void clearBindIntent(HttpEndpointImpl endpoint, int port, boolean isHttps) {
+        Map<Integer, HttpEndpointImpl> portMap = isHttps ? pendingHttpsPorts : pendingHttpPorts;
+        portMap.remove(port, endpoint);
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "clearBindIntent: port=" + port + " https=" + isHttps + " endpoint=" + endpoint);
         }
     }
 
@@ -209,6 +288,10 @@ public class VirtualHostMap {
         if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
             Tr.event(tc, "Notify endpoint stopped: " + endpoint, resolvedHostName, port, isHttps, defaultHost, alternateHostSelector);
         }
+
+        // Clear the bind-intent so the port can be reused after reconfiguration.
+        clearBindIntent(endpoint, port, isHttps);
+
         if (alternateHostSelector == null) {
             if (defaultHost != null) {
                 defaultHost.listenerStopped(endpoint, resolvedHostName, port, isHttps);
