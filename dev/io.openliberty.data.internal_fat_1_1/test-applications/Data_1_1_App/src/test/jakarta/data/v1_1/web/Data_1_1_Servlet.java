@@ -1214,7 +1214,7 @@ public class Data_1_1_Servlet extends FATServlet {
 
         PageRequest page2Req = PageRequest.ofSize(5)
                         .afterCursor(threeFifths)
-                        .page(2)
+                        .pageNumber(2)
                         .withoutTotal();
 
         CursoredPage<Fraction> page2 = fractions.namedLike("%fths",

@@ -58,11 +58,13 @@ public record CursoredPageRecord<T>(
              totalElements, //
              pageRequest, //
              last ? null : PageRequest.afterCursor(cursors.get(cursors.size() - 1),
-                                                   1L + pageRequest.page(),
+                                                   1L + pageRequest.pageNumber(),
                                                    pageRequest.size(),
                                                    pageRequest.requestTotal()), //
              first ? null : PageRequest.beforeCursor(cursors.get(0),
-                                                     pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
+                                                     pageRequest.pageNumber() == 1 //
+                                                                     ? 1 //
+                                                                     : pageRequest.page() - 1,
                                                      pageRequest.size(),
                                                      pageRequest.requestTotal()));
     }
