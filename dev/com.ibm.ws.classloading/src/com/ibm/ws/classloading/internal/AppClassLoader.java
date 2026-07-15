@@ -526,11 +526,20 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         try {
             clazz = defineClass(name, bytes, 0, bytes.length, pd);
         } finally {
-            final TraceComponent cltc;
-            if (TraceComponent.isAnyTracingEnabled() && (cltc = getClassLoadingTraceComponent(packageName)).isDebugEnabled()) {
-                String loc = byteResourceInformation.getContainerURL().toString();
-                String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";
-                Tr.debug(cltc, String.format("%s: [%s] [%s] [%s]", message, getKey(), loc, name));
+            if (TraceComponent.isAnyTracingEnabled()) {
+                // Resolve which TraceComponent is active: the class-level tc responds to
+                // com.ibm.ws.classloading.internal.*=all; the per-package cltc responds to
+                // com.ibm.ws.class.load.<packageName>=all for finer-grained filtering.
+                // Prefer tc so that the standard classloading trace spec always works,
+                // but fall through to cltc for users who have enabled package-specific tracing.
+                final TraceComponent traceActive = tc.isDebugEnabled()
+                        ? tc : getClassLoadingTraceComponent(packageName);
+                if (traceActive.isDebugEnabled()) {
+                    String loc = byteResourceInformation.getContainerURL().toString();
+                    String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";
+                    Tr.debug(traceActive, String.format("%s: class=[%s]; classloader=[%s]; location=[%s]; codeSource=[%s]",
+                            message, name, toShortString(), loc, getCodeSourceString(clazz)));
+                }
             }
         }
         byteResourceInformation.storeInClassCache(clazz, bytes);
@@ -643,6 +652,17 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         throw toThrow;
     }
+    
+    @Trivial
+    private static String getCodeSourceString(Class<?> clazz) {
+        if (clazz == null) {
+            return "unknown";
+        }
+        ProtectionDomain pd = clazz.getProtectionDomain();
+        return (pd.getCodeSource() != null)
+                ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown";
+    }
+
 
     @Trivial
     Class<?> generateClass(String name) throws ClassNotFoundException {
@@ -965,12 +985,9 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         return sb.toString();
     }
-
-    /**
-     * Build the toString representation once at construction time.
-     * This avoids repeated calculation of container names and string concatenation.
-     */
-    private String buildToString() {
+    
+    @Trivial
+    private String toShortString() {
         StringBuilder sb = new StringBuilder();
         
         // Get the classloader type
@@ -988,7 +1005,17 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         // Get the delegation
         sb.append(":");
         sb.append(isParentFirst() ? "PF" : "PL");
-        
+        return sb.toString();
+    }
+
+    /**
+     * Build the toString representation once at construction time.
+     * This avoids repeated calculation of container names and string concatenation.
+     */
+    @Trivial
+    private String buildToString() {
+        StringBuilder sb = new StringBuilder(toShortString());
+    
         // Get the API
         if (apiAccess.getApiTypeVisibility() != null) {
             sb.append(":apis=").append(apiAccess.getApiTypeVisibility());
