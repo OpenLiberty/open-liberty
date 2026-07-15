@@ -249,7 +249,7 @@ public class LibraryRefTest {
 
         String installRoot = server.getInstallRoot();
         String prometheusSimpleClientLibPath = installRoot + "/usr/shared/resources/prometheusSimpleClientLib";
-        String micrometerPath = installRoot + "/usr/shared/resources/micrometercore2";
+        String micrometerPath = installRoot + "/usr/shared/resources/micrometercorev1512";
 
         Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Prom library directory: " + prometheusSimpleClientLibPath);
         Log.info(c, "externalPrometheusMicrometerv11512SimpleClient", "Micrometer library directory: " + micrometerPath);

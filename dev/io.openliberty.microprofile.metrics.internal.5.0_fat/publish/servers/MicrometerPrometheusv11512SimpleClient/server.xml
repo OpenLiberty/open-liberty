@@ -27,7 +27,7 @@
     <mpMetrics authentication="true" libraryRef="micrometerLibs"/>
 
     <library id="micrometerLibs">
-    	<fileset dir="${shared.resource.dir}/micrometercore2" includes="*.jar" />
+		<fileset dir="${shared.resource.dir}/micrometercorev1512" includes="*.jar" />
 		<fileset dir="${shared.resource.dir}/prometheusSimpleClientLib" includes="*.jar" />
 	</library>
 
