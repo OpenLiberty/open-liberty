@@ -23,12 +23,15 @@ public interface CurrentTime<T> extends TemporalExpression<T, LocalTime> {
 
     @SuppressWarnings("unchecked")
     static <T> CurrentTime<T> now() {
-        return (CurrentTime<T>) CurrentTimeImpl.INSTANCE;
+        return (CurrentTime<T>) CurrentTimeInstance.instance;
     }
 }
 
-class CurrentTimeImpl<T> implements CurrentTime<T> {
-    static final CurrentTime<?> INSTANCE = new CurrentTimeImpl<>();
+class CurrentTimeInstance implements CurrentTime<Object> {
+    static final CurrentTime<?> instance = new CurrentTimeInstance();
+
+    private CurrentTimeInstance() {
+    }
 
     @Override
     public String toString() {
