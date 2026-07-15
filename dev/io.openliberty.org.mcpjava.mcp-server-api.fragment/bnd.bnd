@@ -14,9 +14,9 @@ bVersion=1.0
 # This fragment includes the services file that connects the API bundle to the implementation
 # This means the API bundle itself doesn't have to know anything about the implementation
 Bundle-Name: Model Context Protocol SPI fragment
-Bundle-SymbolicName: io.openliberty.org.mcp-java.mcp-server-api.fragment; singleton:=true
+Bundle-SymbolicName: io.openliberty.org.mcpjava.mcp-server-api.fragment; singleton:=true
 Bundle-Description: Model Context Protocol SPI fragment, version ${bVersion}
-Fragment-Host: io.openliberty.org.mcp-java.mcp-server-api
+Fragment-Host: io.openliberty.org.mcpjava.mcp-server-api
 
 javac.source: 17
 javac.target: 17
@@ -29,5 +29,5 @@ Include-Resource: \
 Import-Package: io.openliberty.mcp.internal.spi
 
 -buildpath: \
-  io.openliberty.org.mcp-java.mcp-server-api;version=latest,\
+  io.openliberty.org.mcpjava.mcp-server-api;version=latest,\
   io.openliberty.mcp.internal;version=latest

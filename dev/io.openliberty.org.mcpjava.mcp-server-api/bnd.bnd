@@ -11,7 +11,7 @@
 
 bVersion=1.0
 
-Bundle-SymbolicName: io.openliberty.org.mcp-java.mcp-server-api; singleton:=true
+Bundle-SymbolicName: io.openliberty.org.mcpjava.mcp-server-api; singleton:=true
 
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
@@ -24,10 +24,10 @@ Export-Package: \
   org.mcpjava.server.*;version="1.0"
 
 Include-Resource: \
-  @${repo;org.mcp-java:mcp-server-api;1.0.0.Beta3}
+  @${repo;org.mcpjava:mcp-server-api;1.0.0}
 
 -maven-dependencies: \
-   dep1;groupId=org.mcp-java;artifactId=java:mcp-server-api;version=1.0.0.Beta3;scope=runtime
+   dep1;groupId=org.mcpjava;artifactId=mcp-server-api;version=1.0.0;scope=runtime
 
 -buildpath: \
-  org.mcp-java:mcp-server-api
+  org.mcpjava:mcp-server-api
