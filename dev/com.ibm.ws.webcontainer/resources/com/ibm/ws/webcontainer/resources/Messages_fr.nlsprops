@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Modifiez la logique de l'application 
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: Le sendRedirect relatif au URL dans la demande ne peut pas \u00eatre converti en un URL valide.
 sendRedirect.cannot.convert.relative.url.explanation=Le site relatif URL indiqu\u00e9 peut contenir des caract\u00e8res ou des index de travers\u00e9e de chemin non valides.
 sendRedirect.cannot.convert.relative.url.useraction=V\u00e9rifier l'emplacement sendRedirect URL dans l'application avant d'appeler la m\u00e9thode response.sendRedirect( )
+
+invalid.accept.language.length=CWWWC0013E: La valeur de l'en-t\u00eate \u00ab Accept-Language \u00bb de la requ\u00eate HTTP est trop longue.
+invalid.accept.language.length.explanation=Le client envoie un en-t\u00eate \u00ab Accept-Language \u00bb trop long.
+invalid.accept.language.length.useraction=Le client doit envoyer un en-t\u00eate \u00ab Accept-Language \u00bb dont la valeur ne d\u00e9passe pas 4 096 octets.

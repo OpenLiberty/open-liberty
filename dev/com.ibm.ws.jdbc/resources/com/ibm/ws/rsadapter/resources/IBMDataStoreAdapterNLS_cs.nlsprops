@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=Ov\u011b\u0159te, \u017ee je zadan\u00e1 hodnota pro p
 8069_HELPER_INIT_ERR=DSRA8069E: Zdroje dat {0} nem\u016f\u017ee inicializovat implementaci DataStoreHelper {1} kv\u016fli chyb\u011b: {2}
 8069_HELPER_INIT_ERR.explanation=Nakonfigurovan\u00e1 t\u0159\u00edda DataStoreHelper byla bu\u010f nep\u0159\u00edstupn\u00e1, chyb\u011bl ve\u0159ejn\u00fd konstruktor s jedn\u00edm parametrem java.util.Properties, nebo p\u0159i vyvol\u00e1n\u00ed byla vyvol\u00e1na chyba.
 8069_HELPER_INIT_ERR.useraction=Prozkoumejte z\u0159et\u011bzenou v\u00fdjimku a pokuste se ur\u010dit p\u0159\u00ed\u010dinu.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: Datab\u00e1ze \u201e H2 \u201c ( URL ) pro \u201e DataSource \u201c ( {0} ) obsahuje parametr PASSWORD. Z bezpe\u010dnostn\u00edch d\u016fvod\u016f pou\u017eijte atribut \u201epassword\u201c u prvku \u201e properties.h2 \u201c nebo m\u00edsto toho nakonfigurujte soubor \u201e containerAuthData \u201c.
+8070_H2_URL_PASSWORD.explanation=Vkl\u00e1d\u00e1n\u00ed hesel do adres URL datab\u00e1z\u00ed p\u0159edstavuje bezpe\u010dnostn\u00ed riziko, proto\u017ee heslo by mohlo b\u00fdt odhaleno v protokolech, trasink\u00e1ch nebo v\u00fdpisech konfigurace. Datab\u00e1zov\u00fd ovlada\u010d H2 podporuje bezpe\u010dn\u00e9 alternativy pro konfiguraci hesel.
+8070_H2_URL_PASSWORD.useraction=Odstra\u0148te parametr PASSWORD z H2 URL a m\u00edsto toho zadejte heslo pomoc\u00ed atributu password v prvku properties.h2 nebo v konfiguraci containerAuthData.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Nelze z\u00edskat {0} ze zdroje dat.

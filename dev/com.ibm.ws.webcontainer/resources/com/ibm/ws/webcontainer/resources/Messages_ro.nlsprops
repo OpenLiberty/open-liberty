@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Modifica\u021bi logica aplica\u021bie
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: sendRedirect relativ URL din cerere nu poate fi convertit \u00eentr-un URL valabil.
 sendRedirect.cannot.convert.relative.url.explanation=Adresa relativ\u0103 URL furnizat\u0103 ar putea con\u021bine caractere sau indexuri de traversare a c\u0103ii invalide.
 sendRedirect.cannot.convert.relative.url.useraction=Verifica\u021bi loca\u021bia sendRedirect URL \u00een aplica\u021bie \u00eenainte de a apela metoda response.sendRedirect( )
+
+invalid.accept.language.length=CWWWC0013E: Valoarea antetului \u201eAccept-Language\u201d din cererea de tip \u201e HTTP \u201d este prea lung\u0103.
+invalid.accept.language.length.explanation=Clientul trimite un antet \u201eAccept-Language\u201d prea lung.
+invalid.accept.language.length.useraction=Clientul trebuie s\u0103 trimit\u0103 un antet \u201eAccept-Language\u201d cu o lungime a valorii de cel mult 4096 de octe\u021bi.

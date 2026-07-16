@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=Modifique la l\u00f3gica de la aplica
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: El sendRedirect relativo URL en la aplicaci\u00f3n no se puede convertir en un URL v\u00e1lido.
 sendRedirect.cannot.convert.relative.url.explanation=La direcci\u00f3n relativa URL indicada puede contener caracteres o \u00edndices de recorrido no v\u00e1lidos.
 sendRedirect.cannot.convert.relative.url.useraction=Verifique la ubicaci\u00f3n sendRedirect URL en la aplicaci\u00f3n antes de llamar al m\u00e9todo response.sendRedirect( )
+
+invalid.accept.language.length=CWWWC0013E: El valor del encabezado \u00abAccept-Language\u00bb de la solicitud HTTP es demasiado largo.
+invalid.accept.language.length.explanation=El cliente env\u00eda un encabezado \u00abAccept-Language\u00bb demasiado largo.
+invalid.accept.language.length.useraction=El cliente debe enviar un encabezado \u00abAccept-Language\u00bb con un valor de longitud igual o inferior a 4096 bytes.

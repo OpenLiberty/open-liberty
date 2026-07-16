@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -367,6 +367,11 @@ PROP_SET_ERROR.useraction=Ellen\u0151rizze, hogy a megadott \u00e9rt\u00e9k a tu
 8069_HELPER_INIT_ERR=DSRA8069E: A(z) {0} adatforr\u00e1s nem tudja inicializ\u00e1lni a(z) {1} DataStoreHelper megval\u00f3s\u00edt\u00e1st egy hiba k\u00f6vetkezt\u00e9ben: {2}
 8069_HELPER_INIT_ERR.explanation=A be\u00e1ll\u00edtott DataStoreHelper oszt\u00e1ly vagy nem volt el\u00e9rhet\u0151 \u00e9s hi\u00e1nyzott egy nyilv\u00e1nos konstruktor egyetlen java.util.Properties param\u00e9terrel, vagy hiba t\u00f6rt\u00e9nt a megh\u00edv\u00e1sakor.
 8069_HELPER_INIT_ERR.useraction=Az ok meg\u00e1llap\u00edt\u00e1sa \u00e9rdek\u00e9ben vizsg\u00e1lja meg a l\u00e1ncolt kiv\u00e9telt.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: A H2 adatb\u00e1zis ( URL ) a DataSource webhelyhez ( {0} ) tartozik, \u00e9s tartalmaz egy PASSWORD param\u00e9tert. Biztons\u00e1gi okokb\u00f3l haszn\u00e1lja az \u201e properties.h2 \u201d elem \u201epassword\u201d attrib\u00fatum\u00e1t, vagy helyette \u00e1ll\u00edtsa be a \u201e containerAuthData \u201d be\u00e1ll\u00edt\u00e1st.
+8070_H2_URL_PASSWORD.explanation=A jelszavak adatb\u00e1zis-URL-ekbe val\u00f3 be\u00e1gyaz\u00e1sa biztons\u00e1gi kock\u00e1zatot jelent, mivel a jelsz\u00f3 napl\u00f3bejegyz\u00e9sekben, nyomk\u00f6vet\u00e9si adatokban vagy konfigur\u00e1ci\u00f3s ment\u00e9sekben nyilv\u00e1noss\u00e1gra ker\u00fclhet. Az \u201e H2 \u201d adatb\u00e1zis-illeszt\u0151program biztons\u00e1gos alternat\u00edv\u00e1kat t\u00e1mogat a jelsz\u00f3 be\u00e1ll\u00edt\u00e1s\u00e1hoz.
+8070_H2_URL_PASSWORD.useraction=T\u00e1vol\u00edtsa el a PASSWORD param\u00e9tert az H2 URL f\u00e1jlb\u00f3l, \u00e9s helyette adja meg a jelsz\u00f3t az properties.h2 elem password attrib\u00fatum\u00e1val vagy a containerAuthData konfigur\u00e1ci\u00f3val.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: A(z) {0} nem k\u00e9rhet\u0151 le a DataSource-b\u00f3l.

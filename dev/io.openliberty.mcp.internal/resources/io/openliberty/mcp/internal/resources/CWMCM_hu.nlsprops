@@ -271,3 +271,17 @@ CWMCM0032E.duplicate.argument.name.useraction=Adjon minden eszk\u00f6zargumentum
 CWMCM0033A.forbidden.error=CWMCM0033A: Tiltott k\u00e9r\u00e9s. M\u00f3dszer= {0} RequestURI={1 } RequestQuery={2 }, Kiv\u00e9tel: {3}
 CWMCM0033A.forbidden.error.explanation=K\u00e9r\u00e9s \u00e9rkezett, de a felhaszn\u00e1l\u00f3 nem rendelkezik a k\u00e9r\u00e9s v\u00e9grehajt\u00e1s\u00e1hoz sz\u00fcks\u00e9ges jogosults\u00e1ggal.
 CWMCM0033A.forbidden.error.useraction=Gy\u0151z\u0151dj\u00f6n meg arr\u00f3l, hogy a k\u00e9r\u00e9st egy felhatalmazott felhaszn\u00e1l\u00f3 kezdem\u00e9nyezi.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: A ` {0} ` DefaultValueConverter implement\u00e1ci\u00f3j\u00e1nak meg kell adnia egy t\u00edpusparam\u00e9tert.
+CWMCM0034W.converter.missing.type.parameter.explanation=Egy \u201e DefaultValueConverter \u201d implement\u00e1ci\u00f3s oszt\u00e1lyt regisztr\u00e1ltak, de hi\u00e1nyzik bel\u0151le egy t\u00edpusparam\u00e9ter, ez\u00e9rt nem lehet azonos\u00edtani azt a t\u00edpust, amelyre konvert\u00e1l.
+CWMCM0034W.converter.missing.type.parameter.useraction=M\u00f3dos\u00edtsd az oszt\u00e1lydeklar\u00e1ci\u00f3t \u00fagy, hogy az a \u201e DefaultValueConverter \u201d interf\u00e9szt egy konkr\u00e9t t\u00edpusparam\u00e9terrel val\u00f3s\u00edtsa meg. P\u00e9ld\u00e1ul: az ` MyConverterClass ` oszt\u00e1ly megval\u00f3s\u00edtja az ` DefaultValueConverter<MyType> ` interf\u00e9szt.
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: Az {0} DefaultValueConverter megval\u00f3s\u00edt\u00e1s a konkr\u00e9t t\u00edpus helyett generikus t\u00edpusparam\u00e9terre konvert\u00e1l.
+CWMCM0035W.converter.generic.type.explanation=Egy \u201e DefaultValueConverter \u201d implement\u00e1ci\u00f3s oszt\u00e1lyt konkr\u00e9t t\u00edpus helyett egy T-hez hasonl\u00f3 generikus t\u00edpusparam\u00e9terrel regisztr\u00e1ltak.
+CWMCM0035W.converter.generic.type.useraction=M\u00f3dos\u00edtsd az oszt\u00e1lydeklar\u00e1ci\u00f3t \u00fagy, hogy az a \u201e DefaultValueConverter \u201d interf\u00e9szt egy konkr\u00e9t t\u00edpusparam\u00e9terrel val\u00f3s\u00edtsa meg. P\u00e9ld\u00e1ul: az ` MyConverterClass ` oszt\u00e1ly megval\u00f3s\u00edtja az ` DefaultValueConverter<MyType> ` interf\u00e9szt.

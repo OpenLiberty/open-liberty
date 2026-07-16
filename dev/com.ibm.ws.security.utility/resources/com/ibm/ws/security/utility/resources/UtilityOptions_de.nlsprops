@@ -54,7 +54,7 @@ encode.desc=\tKodieren Sie den angegebenen Text.\n\n\tWenn Ihr Kennwort Sonderze
 encode.usage.options=\t{0} kodieren [Optionen] textToEncode
 encode.option-key.1.text=\ \ \ \ textToEncode
 encode.option-desc.1.text=\tWenn keine Argumente angegeben werden, wechselt das Werkzeug in den interaktiven modus; andernfalls wird der angegebene Text kodiert.\n\tText mit Leerzeichen muss vollst\u00e4ndig in Anf\u00fchrungszeichen gesetzt werden, wenn er als Argument angegeben wird.
-encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|aes-128|hash{1}]
 encode.option-desc.encoding=\tGeben Sie an, wie das Kennwort verschl\u00fcsselt werden soll. Unterst\u00fctzte Kodierungen sind xor, aes, aes-128, und Hash. Die Standardcodierung ist xor. Aes verschl\u00fcsselt mit einem aes-256 Bit-Schl\u00fcssel.\n\taes-128 kann f\u00fcr die Kompatibilit\u00e4t mit Serverversionen vor 25.0.0.2 verwendet werden. {2}
 encode.option-key.key=\ \ \ \ --key=[Schl\u00fcssel]
 encode.option-desc.key=\tGibt einen bei der Codierung mit AES zu verwendenden Schl\u00fcssel an. Diese Zeichenfolge wird\nzur Ableitung eines AES-Verschl\u00fcsselungsschl\u00fcssels verwendet, der zum\nVerschl\u00fcsseln und Entschl\u00fcsseln des Passworts dient. Der Schl\u00fcssel kann dem Server \u00fcbermittelt werden, indem\ndie Variable \u201e wlp.password.encryption.key \u201c definiert wird, deren Wert der\nSchl\u00fcssel ist. Ab Version 26.0.0.3 wird kein Standardschl\u00fcssel mehr verwendet. Geben Sie stattdessen\neines der folgenden Argumente an: --key, --base64Key, --aesConfigFile, oder --keyring.

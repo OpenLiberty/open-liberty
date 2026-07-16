@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=Verifique se o valor especificado \u00e9 v\u00e1lido p
 8069_HELPER_INIT_ERR=DSRA8069E: A origem de dados {0} n\u00e3o consegue inicializar a implementa\u00e7\u00e3o do DataStoreHelper {1} devido a um erro: {2}
 8069_HELPER_INIT_ERR.explanation=A classe DataStoreHelper configurada estava inacess\u00edvel, n\u00e3o tinha um construtor p\u00fablico com um \u00fanico par\u00e2metro java.util.Properties, ou gerou um erro quando chamada.
 8069_HELPER_INIT_ERR.useraction=Inspecione a exce\u00e7\u00e3o encadeada para determinar a causa.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: O banco de dados H2 URL para DataSource {0} cont\u00e9m um par\u00e2metro PASSWORD. Por motivos de seguran\u00e7a, use o atributo \u201cpassword\u201d no elemento \u201c properties.h2 \u201d ou configure \u201c containerAuthData \u201d em vez disso.
+8070_H2_URL_PASSWORD.explanation=Incorporar senhas nas URLs do banco de dados representa um risco \u00e0 seguran\u00e7a, pois a senha pode ficar exposta em logs, rastreamentos ou dumps de configura\u00e7\u00e3o. O driver de banco de dados do H2 oferece alternativas seguras para a configura\u00e7\u00e3o de senhas.
+8070_H2_URL_PASSWORD.useraction=Remova o par\u00e2metro PASSWORD do H2 URL e, em vez disso, especifique a senha usando o atributo password no elemento properties.h2 ou na configura\u00e7\u00e3o containerAuthData.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Imposs\u00edvel obter {0} de DataSource.

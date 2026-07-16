@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=Verifica\u0163i c\u0103 valoarea care este specificat\
 8069_HELPER_INIT_ERR=DSRA8069E: DataSource {0} nu poate ini\u0163ializa implementarea DataStoreHelper {1} din cauza unei erori: {2}
 8069_HELPER_INIT_ERR.explanation=Clasa DataStoreHelper configurat\u0103 a fost inaccesibil\u0103, i-a lipsit un constructor public cu un singur parametru java.util.Properties sau a ridicat o eroare c\u00e2nd a fost invocat\u0103.
 8069_HELPER_INIT_ERR.useraction=Inspecta\u0163i excep\u0163ia \u00eenl\u0103n\u0163uit\u0103 pentru a determina cauza.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: Baza de date \u201e H2 \u201d ( URL ) pentru \u201e DataSource \u201d ( {0} ) con\u021bine un parametru numit PASSWORD. Din motive de securitate, utiliza\u021bi atributul \u201epassword\u201d al elementului \u201e properties.h2 \u201d sau configura\u021bi \u00een schimb \u201e containerAuthData \u201d.
+8070_H2_URL_PASSWORD.explanation=Includerea parolelor \u00een adresele URL ale bazelor de date reprezint\u0103 un risc de securitate, deoarece parola ar putea fi expus\u0103 \u00een jurnale, \u00eenregistr\u0103ri de urm\u0103rire sau fi\u0219iere de configurare. Driverul de baz\u0103 de date \u201e H2 \u201d accept\u0103 alternative sigure pentru configurarea parolei.
+8070_H2_URL_PASSWORD.useraction=Elimina\u021bi parametrul PASSWORD din H2 URL \u0219i specifica\u021bi parola folosind atributul \u201epassword\u201d al elementului properties.h2 sau configura\u021bia containerAuthData.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: Nu poate s\u0103 ob\u0163in\u0103 {0} de la DataSource.
