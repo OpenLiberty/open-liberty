@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -661,7 +661,7 @@ public class RequestUtils {
                 }
             }
             // 724365(PM53930) Start
-            if (maxParamPerRequest != -1 && ++totalSize >= maxParamPerRequest) {
+            if (maxParamPerRequest != -1 && ++totalSize > maxParamPerRequest) {
                 // possibly 10000 big enough, will never be here 
                 logger.logp(Level.SEVERE, CLASS_NAME, "parseQueryString",
                             MessageFormat.format(nls.getString("Exceeding.maximum.parameters"), new Object[] { maxParamPerRequest, totalSize }));
