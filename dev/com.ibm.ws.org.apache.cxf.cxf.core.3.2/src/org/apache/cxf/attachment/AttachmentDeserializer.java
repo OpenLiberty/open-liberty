@@ -16,12 +16,14 @@
  * specific language governing permissions and limitations
  * under the License.
  */
-
+// https://github.com/apache/cxf/blob/cfe9f430ee617552eb743140cb78cc5df4c4eb83/core/src/main/java/org/apache/cxf/attachment/AttachmentDeserializer.java - 3.5.5
 package org.apache.cxf.attachment;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.PushbackInputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -33,8 +35,7 @@ import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.activation.DataSource;
-
+import javax.activation.DataSource; // Liberty Change
 import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.common.util.SystemPropertyAction;
@@ -47,17 +48,28 @@ import org.apache.cxf.message.MessageUtils;
 
 public class AttachmentDeserializer {
     public static final String ATTACHMENT_PART_HEADERS = AttachmentDeserializer.class.getName() + ".headers";
+
+    /**
+     * Allowed value is any instance of {@link File} or {@link String}.
+     */
     public static final String ATTACHMENT_DIRECTORY = "attachment-directory";
 
+    /**
+     * The memory threshold of attachments. Allowed value is any instance of {@link Number} or {@link String}.
+     * The default is {@link AttachmentDeserializer#THRESHOLD}.
+     */
     public static final String ATTACHMENT_MEMORY_THRESHOLD = "attachment-memory-threshold";
 
+    /**
+     * The maximum size of the attachment. Allowed value is any of {@link Number} or {@link String}.
+     */
     public static final String ATTACHMENT_MAX_SIZE = "attachment-max-size";
 
     /**
      * The maximum number of attachments permitted in a message. The default is 50.
      */
-    public static final String ATTACHMENT_MAX_COUNT = "attachment-max-count"; // Liberty Change CVE-2019-12406
-    
+    public static final String ATTACHMENT_MAX_COUNT = "attachment-max-count";
+
     // Liberty Change Start - CXF #3159
     /**
      * The maximum number of attachment headers permitted in a message. The default is 500.
@@ -78,8 +90,6 @@ public class AttachmentDeserializer {
 
     private static final Pattern CONTENT_TYPE_BOUNDARY_PATTERN = Pattern.compile("boundary=\"?([^\";]*)");
 
-    // TODO: Is there a better way to detect boundaries in the message content?
-    // It seems constricting to assume the boundary will start with ----=_Part_
     private static final Pattern INPUT_STREAM_BOUNDARY_PATTERN =
             Pattern.compile("^--(\\S*)$", Pattern.MULTILINE);
 
@@ -90,21 +100,19 @@ public class AttachmentDeserializer {
     private boolean lazyLoading = true;
 
     private PushbackInputStream stream;
-    private int createCount; 
+    private int createCount;
     private int closedCount;
     private boolean closed;
 
     private byte[] boundary;
-
-    private String contentType;
 
     private LazyAttachmentCollection attachments;
 
     private Message message;
 
     private InputStream body;
-    
-    private Set<DelegatingInputStream> loaded = new HashSet<DelegatingInputStream>();
+
+    private Set<DelegatingInputStream> loaded = new HashSet<>();
     private List<String> supportedTypes;
 
     private int maxHeaderLength = DEFAULT_MAX_HEADER_SIZE;
@@ -121,18 +129,17 @@ public class AttachmentDeserializer {
         // Get the maximum Header length from configuration
         maxHeaderLength = MessageUtils.getContextualInteger(message, ATTACHMENT_MAX_HEADER_SIZE,
                                                             DEFAULT_MAX_HEADER_SIZE);
+
         // Liberty Change Start - CXF #3159
         // Get the maximum headers count
         maxHeadersCount = MessageUtils.getContextualInteger(message, ATTACHMENT_HEADERS_MAX_COUNT,
                                                             DEFAULT_ATTACHMENT_HEADERS_MAX_COUNT);
         // Liberty Change End
     }
-    
+
     public void initializeAttachments() throws IOException {
         initializeRootMessage();
 
-        // Liberty Change Start
-        // CVE-2019-12406: Apache CXF does not restrict the number of message attachments
         Object maxCountProperty = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_COUNT);
         int maxCount = 50;
         if (maxCountProperty != null) {
@@ -144,12 +151,11 @@ public class AttachmentDeserializer {
         }
 
         attachments = new LazyAttachmentCollection(this, maxCount);
-        // Liberty Change End
         message.setAttachments(attachments);
     }
 
     protected void initializeRootMessage() throws IOException {
-        contentType = (String) message.get(Message.CONTENT_TYPE);
+        String contentType = (String) message.get(Message.CONTENT_TYPE);
 
         if (contentType == null) {
             throw new IllegalStateException("Content-Type can not be empty!");
@@ -161,14 +167,14 @@ public class AttachmentDeserializer {
 
         if (AttachmentUtil.isTypeSupported(contentType.toLowerCase(), supportedTypes)) {
             String boundaryString = findBoundaryFromContentType(contentType);
-            if (null == boundaryString) {                
+            if (null == boundaryString) {
                 boundaryString = findBoundaryFromInputStream();
             }
             // If a boundary still wasn't found, throw an exception
             if (null == boundaryString) {
                 throw new IOException("Couldn't determine the boundary from the message!");
             }
-            boundary = boundaryString.getBytes("utf-8");
+            boundary = boundaryString.getBytes(StandardCharsets.UTF_8);
 
             stream = new PushbackInputStream(message.getContent(InputStream.class), PUSHBACK_AMOUNT);
             if (!readTillFirstBoundary(stream, boundary)) {
@@ -197,7 +203,7 @@ public class AttachmentDeserializer {
         }
     }
 
-    private String findBoundaryFromContentType(String ct) throws IOException {
+    private String findBoundaryFromContentType(String ct) {
         // Use regex to get the boundary and return null if it's not found
         Matcher m = CONTENT_TYPE_BOUNDARY_PATTERN.matcher(ct);
         return m.find() ? "--" + m.group(1) : null;
@@ -207,7 +213,7 @@ public class AttachmentDeserializer {
         InputStream is = message.getContent(InputStream.class);
         //boundary should definitely be in the first 2K;
         PushbackInputStream in = new PushbackInputStream(is, 4096);
-        byte buf[] = new byte[2048];
+        byte[] buf = new byte[2048];
         int i = in.read(buf);
         int len = i;
         while (i > 0 && len < buf.length) {
@@ -226,7 +232,7 @@ public class AttachmentDeserializer {
         Matcher m = INPUT_STREAM_BOUNDARY_PATTERN.matcher(msg);
         return m.find() ? "--" + m.group(1) : null;
     }
-    
+
     public AttachmentImpl readNext() throws IOException {
         // Cache any mime parts that are currently being streamed
         cacheStreamedAttachments();
@@ -251,7 +257,7 @@ public class AttachmentDeserializer {
             cache((DelegatingInputStream) body);
         }
 
-        List<Attachment> atts = new ArrayList<Attachment>(attachments.getLoadedAttachments());
+        List<Attachment> atts = new ArrayList<>(attachments.getLoadedAttachments());
         for (Attachment a : atts) {
             DataSource s = a.getDataHandler().getDataSource();
             if (s instanceof AttachmentDataSource) {
@@ -287,31 +293,34 @@ public class AttachmentDeserializer {
      *
      * @param pushbackInStream
      * @param boundary
-     * @throws MessagingException
+     * @throws IOException
      */
-    private static boolean readTillFirstBoundary(PushbackInputStream pbs, byte[] bp) throws IOException {
+    private static boolean readTillFirstBoundary(PushbackInputStream pushbackInStream,
+        byte[] boundary) throws IOException {
 
         // work around a bug in PushBackInputStream where the buffer isn't
         // initialized
         // and available always returns 0.
-        int value = pbs.read();
-        pbs.unread(value);
+        int value = pushbackInStream.read();
+        pushbackInStream.unread(value);
         while (value != -1) {
-            value = pbs.read();
-            if ((byte) value == bp[0]) {
+            value = pushbackInStream.read();
+            if ((byte) value == boundary[0]) {
                 int boundaryIndex = 0;
-                while (value != -1 && (boundaryIndex < bp.length) && ((byte) value == bp[boundaryIndex])) {
+                while (value != -1 
+                    && boundaryIndex < boundary.length 
+                    && (byte)value == boundary[boundaryIndex]) {
 
-                    value = pbs.read();
+                    value = pushbackInStream.read();
                     if (value == -1) {
                         throw new IOException("Unexpected End while searching for first Mime Boundary");
                     }
                     boundaryIndex++;
                 }
-                if (boundaryIndex == bp.length) {
+                if (boundaryIndex == boundary.length) {
                     // boundary found, read the newline
                     if (value == 13) {
-                        pbs.read();
+                        pushbackInStream.read();
                     }
                     return true;
                 }
@@ -373,13 +382,13 @@ public class AttachmentDeserializer {
         stream.unread(v);
         return true;
     }
-    
-    
+
+
 
     private Map<String, List<String>> loadPartHeaders(InputStream in, int maxHeaderLength, int maxHeadersCount) throws IOException { // Liberty Change - CXF #3159
         StringBuilder buffer = new StringBuilder(128);
         StringBuilder b = new StringBuilder(128);
-        Map<String, List<String>> heads = new TreeMap<String, List<String>>(String.CASE_INSENSITIVE_ORDER);
+        Map<String, List<String>> heads = new TreeMap<>(String.CASE_INSENSITIVE_ORDER);
 
         // loop until we hit the end or a null line
         while (readLine(in, b)) {
@@ -445,7 +454,7 @@ public class AttachmentDeserializer {
             return;
         }
         int separator = line.indexOf(":");
-        String name = null;
+        final String name;
         String value = "";
         if (separator == -1) {
             name = line.toString().trim();
@@ -463,18 +472,14 @@ public class AttachmentDeserializer {
             }
             value = line.substring(separator);
         }
-    
+
         // Liberty Change Start - CXF #3159
         if (heads.size() >= maxHeadersCount) {
             throw new IOException("The attachment contains more headers than are permitted");
         }
         // Liberty Change End
-    
-        List<String> v = heads.get(name);
-        if (v == null) {
-            v = new ArrayList<String>(1);
-            heads.put(name, v);
-        }
+
+        List<String> v = heads.computeIfAbsent(name, k -> new ArrayList<>(1));
         v.add(value);
     }
 
