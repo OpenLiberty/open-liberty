@@ -817,7 +817,7 @@ public class HttpRequestMessageImplTest {
             getRequest().setHeader("Host", "[ipv6]:443");
             assertEquals("http://[ipv6]:443/index.html", getRequest().getRequestURLAsString());
 
-            // Test parse authority RFC-3986-compliant - CVE
+            // Test parse authority RFC-3986-compliant
 
             // '?' before '@' — Must terminate the authority.
             try {

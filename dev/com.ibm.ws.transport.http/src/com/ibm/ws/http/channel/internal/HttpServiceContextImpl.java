@@ -5325,7 +5325,7 @@ public abstract class HttpServiceContextImpl implements HttpServiceContext, FFDC
                     setSavedChunkLength(HeaderStorage.NOTSET);
                     this.savedChunkDigitCount = 0;  //reset on successful parse
 
-                    // Hardening To check if the chunk size is greater than than message size
+                    // Verify chunk size does not exceed the configured message size limit
                     long msgSizeLimit = getHttpConfig().getMessageSizeLimit();
                     if (msgSizeLimit != HttpConfigConstants.UNLIMITED && length > msgSizeLimit) {
                         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

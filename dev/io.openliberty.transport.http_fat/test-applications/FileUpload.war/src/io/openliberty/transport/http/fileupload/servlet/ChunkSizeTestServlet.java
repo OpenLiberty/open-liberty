@@ -61,7 +61,7 @@ public class ChunkSizeTestServlet extends HttpServlet {
                 }
             }
         } else {
-            // Non-body-reading path: used to test smuggling 
+            // Non-body-reading path: used to verify connection handling on malformed request
             response.setStatus(200);
             response.getWriter().println("OK");
         }

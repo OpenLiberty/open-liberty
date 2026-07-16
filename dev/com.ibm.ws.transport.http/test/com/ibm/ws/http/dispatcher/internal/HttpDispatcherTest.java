@@ -137,7 +137,7 @@ public class HttpDispatcherTest {
         // the trusted header origin was passed in as null, which should get defaulted to '*'
         Assert.assertTrue("Private headers should be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsprHeader));
         Assert.assertFalse("Sensitive private headers should not be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsraHeader));
-        Assert.assertFalse("$WSSP should be treated as a sensitive private header", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
+        Assert.assertFalse("$WSSP header should follow restricted header access rules", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
 
         String missing = "missing context";
         map = buildMap(true, missing, "*", "*");
@@ -156,7 +156,7 @@ public class HttpDispatcherTest {
         // both private header lists have been set to "*"; all private headers are allowed
         Assert.assertTrue("Private headers should be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsprHeader));
         Assert.assertTrue("Sensitive private headers should be enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsraHeader));
-        Assert.assertTrue("$WSSP should be enabled when sensitive private headers are enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
+        Assert.assertTrue("$WSSP header should be accessible when restricted headers are enabled", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
 
         d1.deactivate(map, 0);
         // the static instance value should be set to the newly activated dispatcher instance.
@@ -167,13 +167,13 @@ public class HttpDispatcherTest {
         Assert.assertFalse("Do not show welcome page when there is no dispatcher", HttpDispatcher.isWelcomePageEnabled());
         Assert.assertTrue("Trust private headers by default", HttpDispatcher.usePrivateHeaders(testAddr, wsprHeader));
         Assert.assertFalse("Don't trust sensitive private headers by default", HttpDispatcher.usePrivateHeaders(testAddr, wsraHeader));
-        Assert.assertFalse("Don't trust $WSSP by default", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
+        Assert.assertFalse("$WSSP header should use restricted header defaults", HttpDispatcher.usePrivateHeaders(testAddr, wsspHeader));
     }
 
     @Test
-    public void testWSSPIsSensitivePrivateHeader() throws Exception {
-        Assert.assertTrue("$WSSP should still be recognized as a WAS private header", HttpHeaderKeys.isWasPrivateHeader(wsspHeader));
-        Assert.assertTrue("$WSSP should be treated as a sensitive WAS private header", HttpHeaderKeys.isSensitivePrivateHeader(wsspHeader));
+    public void testWSSPHeaderClassification() throws Exception {
+        Assert.assertTrue("$WSSP should be recognized as a WAS private header", HttpHeaderKeys.isWasPrivateHeader(wsspHeader));
+        Assert.assertTrue("$WSSP should be classified under the restricted WAS private header set", HttpHeaderKeys.isSensitivePrivateHeader(wsspHeader));
     }
 
     @Test

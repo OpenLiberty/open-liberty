@@ -17,9 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Requests to this server should never hit
- * Any response containing "SENTINEL-HIT" means a 
- * request that shouldn't be dispatched was dispatched — the test must fail.
+ * Test utility servlet - Requests to this servelet should never hit
+ * Used to verify request isolation in multi-request scenarios.
  */
 @WebServlet("/SentinelServlet")
 public class SentinelServlet extends HttpServlet {

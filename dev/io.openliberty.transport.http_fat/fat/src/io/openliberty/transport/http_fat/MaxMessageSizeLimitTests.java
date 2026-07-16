@@ -206,8 +206,8 @@ public class MaxMessageSizeLimitTests {
     }
 
     /**
-     * Verify that a chunked POST where the chunk-size field contains more
-     * than 8 hex digits is rejected with HTTP 400 when the application
+     * Verify that a chunked POST with an out-of-bounds chunk-size field is
+     * rejected with HTTP 400 when the application
      * reads the request body.
     */
     @Test
@@ -217,7 +217,7 @@ public class MaxMessageSizeLimitTests {
             socket.setSoTimeout(5000);
             OutputStream out = socket.getOutputStream();
 
-            String pipedPayload = "GET /FileUpload/SentinelServlet HTTP/1.1\r\n" +
+            String subsequentRequest = "GET /FileUpload/SentinelServlet HTTP/1.1\r\n" +
                     "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
                     "\r\n";
 
@@ -229,7 +229,7 @@ public class MaxMessageSizeLimitTests {
                     "100000000\r\n" +
                     "AAAA\r\n" +
                     "0\r\n\r\n" +
-                    pipedPayload;
+                    subsequentRequest;
 
             out.write(payload.getBytes(StandardCharsets.US_ASCII));
             out.flush();
@@ -237,7 +237,7 @@ public class MaxMessageSizeLimitTests {
             String responseStr = drainResponse(socket);
             LOG.info("[testChunkedRequestBodyRead_OversizeChunkIsRejected] Response: " + responseStr.substring(0, Math.min(300, responseStr.length())));
 
-            assertFalse("SENTINEL-HIT must not appear — piped request must not be dispatched",
+            assertFalse("SENTINEL-HIT must not appear — subsequent request must not be processed",
                     responseStr.contains("SENTINEL-HIT"));
             assertEquals("Expected exactly 1 HTTP response", 1, countOccurrences(responseStr, "HTTP/1.1"));
             assertTrue("Expected HTTP 400 for overflow chunk-size", responseStr.contains("HTTP/1.1 400"));
@@ -245,9 +245,9 @@ public class MaxMessageSizeLimitTests {
     }
 
     /**
-     * Verify that a chunked POST where the chunk-size field contains more
-     * than 8 hex digits is rejected with HTTP 400 when the application
-     * does not read the request body (Liberty purges on close).
+     * Verify that a chunked POST with an out-of-bounds chunk-size field is
+     * rejected with HTTP 400 when the application
+     * does not read the request body.
     */
     @Test
     public void testChunkedRequestBodyNotRead_OversizeChunkIsRejected() throws Exception {
@@ -255,7 +255,7 @@ public class MaxMessageSizeLimitTests {
             socket.setSoTimeout(5000);
             OutputStream out = socket.getOutputStream();
 
-            String pipedPayload = "GET /FileUpload/SentinelServlet HTTP/1.1\r\n" +
+            String subsequentRequest = "GET /FileUpload/SentinelServlet HTTP/1.1\r\n" +
                     "Host: " + server.getHostname() + ":" + server.getHttpDefaultPort() + "\r\n" +
                     "\r\n";
 
@@ -267,7 +267,7 @@ public class MaxMessageSizeLimitTests {
                     "100000000\r\n" +
                     "AAAA\r\n" +
                     "0\r\n\r\n" +
-                    pipedPayload;
+                    subsequentRequest;
 
             out.write(payload.getBytes(StandardCharsets.US_ASCII));
             out.flush();
@@ -275,7 +275,7 @@ public class MaxMessageSizeLimitTests {
             String responseStr = drainResponse(socket);
             LOG.info("[testChunkedRequestBodyNotRead_OversizeChunkIsRejected] Response: " + responseStr.substring(0, Math.min(300, responseStr.length())));
 
-            assertFalse("SENTINEL-HIT must not appear — piped request must not be dispatched",
+            assertFalse("SENTINEL-HIT must not appear — subsequent request must not be processed",
                     responseStr.contains("SENTINEL-HIT"));
             // Connection must be closed — only 1 response allowed (the ChunkSizeTestServlet 200 or
             // no response)
