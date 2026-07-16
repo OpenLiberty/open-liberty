@@ -64,8 +64,8 @@ import jakarta.transaction.UserTransaction;
 import org.junit.Test;
 
 import componenttest.annotation.AllowedFFDC;
-import componenttest.app.FATServlet;
 import componenttest.annotation.SkipIfSysProp;
+import componenttest.app.FATServlet;
 import test.jakarta.data.v1_1.web.Fraction.Decimal;
 import test.jakarta.data.v1_1.web.Fraction.Decimal.Type;
 
@@ -546,7 +546,7 @@ public class Data_1_1_Servlet extends FATServlet {
      * Use the QueryOptions annotation on a Find method to supply a load graph
      * that overrides loading of an ElementCollection to make it eager rather
      * than lazily loaded.
-     * 
+     *
      * Applies scaling due to Oracle stripping trailing 0s
      */
     @Test
@@ -555,25 +555,25 @@ public class Data_1_1_Servlet extends FATServlet {
                              BigDecimal.valueOf(310, 3), // nearest hundreth
                              BigDecimal.valueOf(313, 3)), // nearest thousandth
                      fractions.of(5, 16).orElseThrow().rounded
-                                        .stream()
-                                        .map(bd -> bd.setScale(3))
-                                        .toList());
+                                     .stream()
+                                     .map(bd -> bd.setScale(3))
+                                     .toList());
 
         assertEquals(List.of(BigDecimal.valueOf(900, 3), // nearest tenth
                              BigDecimal.valueOf(860, 3), // nearest hundreth
                              BigDecimal.valueOf(857, 3)), // nearest thousandth
                      fractions.of(6, 7).orElseThrow().rounded
-                                       .stream()
-                                       .map(bd -> bd.setScale(3))
-                                       .toList());
+                                     .stream()
+                                     .map(bd -> bd.setScale(3))
+                                     .toList());
 
         assertEquals(List.of(BigDecimal.valueOf(600, 3), // nearest tenth
                              BigDecimal.valueOf(620, 3), // nearest hundreth
                              BigDecimal.valueOf(615, 3)), // nearest thousandth
                      fractions.of(8, 13).orElseThrow().rounded
-                                        .stream()
-                                        .map(bd -> bd.setScale(3))
-                                        .toList());
+                                     .stream()
+                                     .map(bd -> bd.setScale(3))
+                                     .toList());
     }
 
     /**
@@ -1214,7 +1214,7 @@ public class Data_1_1_Servlet extends FATServlet {
 
         PageRequest page2Req = PageRequest.ofSize(5)
                         .afterCursor(threeFifths)
-                        .page(2)
+                        .pageNumber(2)
                         .withoutTotal();
 
         CursoredPage<Fraction> page2 = fractions.namedLike("%fths",
@@ -1447,6 +1447,44 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.named(Like.pattern("T% _i_ths"),
                                      Order.by(Sort.desc(_Fraction.NAME)),
                                      Limit.of(4)));
+    }
+
+    /**
+     * Tests a Limit that has an offset from the first result.
+     */
+    @Test
+    public void testLimitAfterOffset() {
+
+        assertEquals(List.of("Thirteen Sixteenths",
+                             "Thirteen Twentieths",
+                             "Three Eighteenths",
+                             "Three Eighths",
+                             "Three Elevenths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(5, 15))); // results 16..20
+
+        assertEquals(List.of("Three Fifteenths",
+                             "Three Fifths",
+                             "Three Fourteenths",
+                             "Three Fourths",
+                             "Three Nineteenths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(5, 20))); // results 21..25
+
+        assertEquals(List.of("Ten Eighteenths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(1, 0))); // first result
+
+        assertEquals(List.of("Two Thirds",
+                             "Two Thirteenths",
+                             "Two Twelfths",
+                             "Two Twentieths"),
+                     fractions.named(Like.pattern("T%"),
+                                     Order.by(Sort.asc(_Fraction.NAME)),
+                                     Limit.of(5, 56))); // results 57..61
     }
 
     /**
@@ -1943,7 +1981,8 @@ public class Data_1_1_Servlet extends FATServlet {
         try {
             assertEquals(BigDecimal.valueOf(6090L, 4),
                          fractions.roundedUp(14, 23)
-                                         .orElseThrow().setScale(4));
+                                         .orElseThrow()
+                                         .setScale(4));
 
             System.out.println("Update 14/23");
 
@@ -2271,7 +2310,7 @@ public class Data_1_1_Servlet extends FATServlet {
      * supplied to a repository method.
      */
     // Oracle doesn't do integer division, it always returns a floating point number
-    @SkipIfSysProp(SkipIfSysProp.DB_Oracle) 
+    @SkipIfSysProp(SkipIfSysProp.DB_Oracle)
     @Test
     public void testPlusAndDivide() {
 
@@ -2897,7 +2936,7 @@ public class Data_1_1_Servlet extends FATServlet {
                                                      .minus(_Fraction.name.length())
                                                      .plus(3)
                                                      .abs()
-                                                     .asc(),  
+                                                     .asc(),
                                               _Fraction.reduced.asc(),
                                               _Fraction.name.left(4).desc(),
                                               _Fraction.decimal.navigate(_Decimal.digits)

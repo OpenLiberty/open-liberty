@@ -45,7 +45,8 @@ public record PageRecord<T>(PageRequest pageRequest,
         this(req, //
              content, //
              total, //
-             content.size() == req.size() && (total < 0 || req.page() * req.size() < total));
+             content.size() == req.size() && //
+                    (total < 0 || req.pageNumber() * req.size() < total));
     }
 
     @Override
@@ -60,7 +61,7 @@ public record PageRecord<T>(PageRequest pageRequest,
 
     @Override
     public boolean hasPrevious() {
-        return pageRequest.page() > 1;
+        return pageRequest.pageNumber() > 1;
     }
 
     @Override
@@ -76,7 +77,9 @@ public record PageRecord<T>(PageRequest pageRequest,
     @Override
     public PageRequest nextPageRequest() {
         if (hasNext())
-            return PageRequest.ofPage(pageRequest.page() + 1L, pageRequest.size(), pageRequest.requestTotal());
+            return PageRequest.ofPage(pageRequest.pageNumber() + 1L,
+                                      pageRequest.size(),
+                                      pageRequest.requestTotal());
         else
             throw new NoSuchElementException();
     }
@@ -89,7 +92,9 @@ public record PageRecord<T>(PageRequest pageRequest,
     @Override
     public PageRequest previousPageRequest() {
         if (hasPrevious())
-            return PageRequest.ofPage(pageRequest.page() - 1L, pageRequest.size(), pageRequest.requestTotal());
+            return PageRequest.ofPage(pageRequest.pageNumber() - 1L,
+                                      pageRequest.size(),
+                                      pageRequest.requestTotal());
         else
             throw new NoSuchElementException();
     }

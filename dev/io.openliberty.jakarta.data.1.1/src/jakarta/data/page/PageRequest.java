@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2022,2025 IBM Corporation and others.
+ * Copyright (c) 2022,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -15,8 +15,11 @@ package jakarta.data.page;
 import java.util.List;
 import java.util.Optional;
 
+import jakarta.data.messages.Messages;
+
 /**
- * Method signatures are copied from jakarta.data.repository.PageRequest from the Jakarta Data repo.
+ * Method signatures are copied from jakarta.data.page.PageRequest
+ * from the Jakarta Data repo.
  */
 public interface PageRequest {
     public static enum Mode {
@@ -63,9 +66,30 @@ public interface PageRequest {
 
     public Mode mode();
 
-    public long page();
+    public default long page() {
+        return pageNumber();
+    }
 
-    public PageRequest page(long pageNum);
+    public long pageNumber();
+
+    public PageRequest pageNumber(long pageNum);
+
+    public default PageRequest pageOffset(long offset) {
+        if (mode() != Mode.OFFSET)
+            throw new IllegalStateException(Messages.get("014.mode.disallows.offset",
+                                                         mode()));
+
+        if (offset < 0)
+            throw new IllegalArgumentException(Messages.get("004.arg.negative",
+                                                            "offset"));
+
+        if (offset == Long.MAX_VALUE)
+            throw new IllegalArgumentException(Messages.get("013.arg.invalid",
+                                                            "offset",
+                                                            offset));
+
+        return pageNumber(offset + 1);
+    }
 
     public boolean requestTotal();
 
