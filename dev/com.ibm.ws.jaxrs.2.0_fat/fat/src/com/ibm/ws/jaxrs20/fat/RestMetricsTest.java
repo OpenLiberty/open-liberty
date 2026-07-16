@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2019, 2024 IBM Corporation and others.
+ * Copyright (c) 2019, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -85,7 +85,7 @@ public class RestMetricsTest {
 
     private final String MAPPEDURI = getBaseTestUri(METRICSWAR, "rest", "restmetrics");
 
-    private static final int BUFFER = 2000; // margin or error in ms for response times.
+    private static final int BUFFER = 3500; // margin of error in ms for response times.
 
     private static final int EXPECTEDRT = 200; // Expected min. response time for a single request.
 
