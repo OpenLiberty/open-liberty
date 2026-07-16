@@ -370,9 +370,9 @@ public class Data_1_1_Servlet extends FATServlet {
     public void testCastIntegerToDouble() {
 
         // EclipseLink does not have
-        // CAST (value AS DOUBLE) for postgres and oracle
+        // CAST (value AS DOUBLE) for postgres and oracle and sqlserver
         // https://github.com/eclipse-ee4j/eclipselink/issues/2776
-        if (!isHibernatePersistence() && (isPostgres() || isOracle()))
+        if (!isHibernatePersistence() && (isPostgres() || isOracle() || isSQLServer()))
             return;
 
         Restriction<Fraction> within22to34Hundreths = _Fraction.numerator
