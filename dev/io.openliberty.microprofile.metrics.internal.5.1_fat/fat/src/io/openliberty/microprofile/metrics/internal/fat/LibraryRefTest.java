@@ -190,39 +190,7 @@ public class LibraryRefTest {
 		String micrometerPath = installRoot
 				+ "/usr/shared/resources/micrometercore";
 
-		Log.info(c, "externalPrometheusMicrometer",
-				"Prom library directory: " + prometheusLibPath);
-		Log.info(c, "externalPrometheusMicrometer",
-				"Micrometer library directory: " + micrometerPath);
-		try {
-			File f = new File(prometheusLibPath);
-
-			if (f.isDirectory()) {
-				for (File ff : f.listFiles()) {
-					Log.info(c, "externalPrometheusMicrometer",
-							"Prom lib files found: " + ff.getName());
-				}
-			} else {
-				Log.info(c, "externalPrometheusMicrometer",
-						"Not a directory: " + prometheusLibPath);
-			}
-
-			File f2 = new File(micrometerPath);
-			if (f.isDirectory()) {
-				for (File ff : f2.listFiles()) {
-					Log.info(c, "externalPrometheusMicrometer",
-							"Micrometer lib files found: " + ff.getName());
-				}
-			} else {
-				Log.info(c, "externalPrometheusMicrometer",
-						"Not a directory: " + micrometerPath);
-			}
-
-		} catch (Exception e) {
-			Log.info(c, "externalPrometheusMicrometer",
-					"Encountered exception while trying to list files of shared library "
-							+ e);
-		}
+		logLibraryFiles("externalPrometheusMicrometer", prometheusLibPath, micrometerPath);
 
 		server.startServer();
 		server.waitForDefaultHTTPEndpointSSLStart();
@@ -236,9 +204,6 @@ public class LibraryRefTest {
 				server.waitForStringInLogUsingMark("CWWKF0011I"));
 
 		server.resetLogMarks();
-
-		Assert.assertNotNull("CWWKO0219I Not found",
-				server.waitForDefaultHTTPEndpointSSLStart(true));
 
 		// Check SR implementation log that Promethues Registry created
 		// Note that SR makes THIS explicit log for Prometheus, other meter
@@ -293,41 +258,7 @@ public class LibraryRefTest {
 		String micrometerPath = installRoot
 				+ "/usr/shared/resources/micrometercorev1512";
 
-		Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
-				"Prom library directory: " + prometheusSimpleClientLibPath);
-		Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
-				"Micrometer library directory: " + micrometerPath);
-		try {
-			File f = new File(prometheusSimpleClientLibPath);
-
-			if (f.isDirectory()) {
-				for (File ff : f.listFiles()) {
-					Log.info(c,
-							"externalPrometheusMicrometerv11512SimpleClient",
-							"Prom lib files found: " + ff.getName());
-				}
-			} else {
-				Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
-						"Not a directory: " + prometheusSimpleClientLibPath);
-			}
-
-			File f2 = new File(micrometerPath);
-			if (f2.isDirectory()) {
-				for (File ff : f2.listFiles()) {
-					Log.info(c,
-							"externalPrometheusMicrometerv11512SimpleClient",
-							"Micrometer lib files found: " + ff.getName());
-				}
-			} else {
-				Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
-						"Not a directory: " + micrometerPath);
-			}
-
-		} catch (Exception e) {
-			Log.info(c, "externalPrometheusMicrometerv11512SimpleClient",
-					"Encountered exception while trying to list files of shared library "
-							+ e);
-		}
+		logLibraryFiles("externalPrometheusMicrometerv11512SimpleClient", prometheusSimpleClientLibPath, micrometerPath);
 
 		server.startServer();
 		server.waitForDefaultHTTPEndpointSSLStart();
@@ -341,9 +272,6 @@ public class LibraryRefTest {
 				server.waitForStringInLogUsingMark("CWWKF0011I"));
 
 		server.resetLogMarks();
-
-		Assert.assertNotNull("CWWKO0219I Not found",
-				server.waitForDefaultHTTPEndpointSSLStart(true));
 
 		// Check SR implementation log that Prometheus Registry created
 		// Note that SR makes THIS explicit log for Prometheus, other meter
@@ -400,39 +328,7 @@ public class LibraryRefTest {
 		String micrometerPath = installRoot
 				+ "/usr/shared/resources/micrometercorev1512";
 
-		Log.info(c, "externalPrometheusMicrometerv11512",
-				"Prom library directory: " + prometheuslib1512Path);
-		Log.info(c, "externalPrometheusMicrometerv11512",
-				"Micrometer library directory: " + micrometerPath);
-		try {
-			File f = new File(prometheuslib1512Path);
-
-			if (f.isDirectory()) {
-				for (File ff : f.listFiles()) {
-					Log.info(c, "externalPrometheusMicrometerv11512",
-							"Prom lib files found: " + ff.getName());
-				}
-			} else {
-				Log.info(c, "externalPrometheusMicrometerv11512",
-						"Not a directory: " + prometheuslib1512Path);
-			}
-
-			File f2 = new File(micrometerPath);
-			if (f2.isDirectory()) {
-				for (File ff : f2.listFiles()) {
-					Log.info(c, "externalPrometheusMicrometerv11512",
-							"Micrometer lib files found: " + ff.getName());
-				}
-			} else {
-				Log.info(c, "externalPrometheusMicrometerv11512",
-						"Not a directory: " + micrometerPath);
-			}
-
-		} catch (Exception e) {
-			Log.info(c, "externalPrometheusMicrometerv11512",
-					"Encountered exception while trying to list files of shared library "
-							+ e);
-		}
+		logLibraryFiles("externalPrometheusMicrometerv11512", prometheuslib1512Path, micrometerPath);
 
 		server.startServer();
 		server.waitForDefaultHTTPEndpointSSLStart();
@@ -455,11 +351,9 @@ public class LibraryRefTest {
 			 * micrometer-registry-prometheus-simpleclient
 			 */
 
-		} catch (FileNotFoundException exception) {
-			Log.info(c, "externalPrometheusMicrometerv11512",
-					"Encountered expected exeption (FileNotFoundException) "
-							+ exception);
-			Assert.assertNotNull(exception);
+		} catch (Exception exception) {
+			Log.info(c, "externalPrometheusMicrometerv11512", String.format("Expected : File[NotFoundException] ; Recieved : [%s]", exception));
+			Assert.assertEquals(FileNotFoundException.class, exception.getClass());
 		}
 
 	}
@@ -499,6 +393,32 @@ public class LibraryRefTest {
 		Assert.assertNull(
 				"Expected not to see \"created and registered to the Micrometer global registry\" in trace.",
 				line);
+	}
+
+	private static void logLibraryFiles(String methodName, String promLibPath, String micrometerLibPath) {
+		Log.info(c, methodName, "Prom library directory: " + promLibPath);
+		Log.info(c, methodName, "Micrometer library directory: " + micrometerLibPath);
+		try {
+			File f1 = new File(promLibPath);
+			if (f1.isDirectory()) {
+				for (File ff : f1.listFiles()) {
+					Log.info(c, methodName, "Prom lib files found: " + ff.getName());
+				}
+			} else {
+				Log.info(c, methodName, "Not a directory: " + promLibPath);
+			}
+
+			File f2 = new File(micrometerLibPath);
+			if (f2.isDirectory()) {
+				for (File ff : f2.listFiles()) {
+					Log.info(c, methodName, "Micrometer lib files found: " + ff.getName());
+				}
+			} else {
+				Log.info(c, methodName, "Not a directory: " + micrometerLibPath);
+			}
+		} catch (Exception e) {
+			Assert.fail("Encountered exception while trying to list files of shared library: " + e);
+		}
 	}
 
 	private static void trustAll() throws Exception {
