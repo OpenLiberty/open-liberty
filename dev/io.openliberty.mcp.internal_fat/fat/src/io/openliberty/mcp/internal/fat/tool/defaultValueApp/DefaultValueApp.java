@@ -12,8 +12,8 @@ package io.openliberty.mcp.internal.fat.tool.defaultValueApp;
 import java.util.logging.Logger;
 
 import io.openliberty.mcp.annotations.DefaultValueConverter;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import jakarta.annotation.PreDestroy;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;

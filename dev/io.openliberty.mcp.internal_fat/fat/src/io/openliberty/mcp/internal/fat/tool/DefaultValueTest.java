@@ -232,4 +232,9 @@ public class DefaultValueTest extends FATServletClient {
         assertNotNull(server.waitForStringInLog(Pattern.quote("CWMCM0035W: The class io.openliberty.mcp.internal.fat.tool.defaultValueApp.DefaultValueApp$InvalidGenericConverter DefaultValueConverter implementation converts to a generic type parameter instead of a concrete type.")));
     }
 
+    @Test
+    public void testMcpEndpointMessageCodeIsLogged() throws Exception {
+        assertNotNull("Expected CWMCM0008I message with full MCP URL to appear in the log",
+                      server.waitForStringInLog("CWMCM0008I: The MCP server endpoint: .*/defaultValueTest/mcp$"));
+    }
 }

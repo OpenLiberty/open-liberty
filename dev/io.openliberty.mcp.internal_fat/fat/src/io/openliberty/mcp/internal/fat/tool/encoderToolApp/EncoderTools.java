@@ -10,15 +10,15 @@
 package io.openliberty.mcp.internal.fat.tool.encoderToolApp;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
-import io.openliberty.mcp.tools.ToolResponse;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+import org.mcpjava.server.tools.ToolResponse;
+
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
@@ -55,14 +55,14 @@ public class EncoderTools {
     public static class PersonContentEncoder implements ContentEncoder<Person> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return Person.class.isAssignableFrom(runtimeType);
+        public Class<Person> getType() {
+            return Person.class;
         }
 
         @Override
-        public Content encode(Person person) {
+        public ContentBlock encode(Person person) {
             Person encodedPerson = new Person(person.fistName, "Encoded by PersonContentEncoder", person.age);
-            return new TextContent(jsonb.toJson(encodedPerson));
+            return TextContent.of(jsonb.toJson(encodedPerson));
         }
     }
 
@@ -92,14 +92,14 @@ public class EncoderTools {
     public static class HigerPriorityEncoder implements ContentEncoder<PriorityOrderTestType> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return PriorityOrderTestType.class.isAssignableFrom(runtimeType);
+        public Class<PriorityOrderTestType> getType() {
+            return PriorityOrderTestType.class;
         }
 
         @Override
-        public Content encode(PriorityOrderTestType value) {
+        public ContentBlock encode(PriorityOrderTestType value) {
             PriorityOrderTestType encodedValue = new PriorityOrderTestType("Hello from HigerPriorityEncoder");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
     }
 
@@ -108,14 +108,14 @@ public class EncoderTools {
     public static class LowerPriorityEncoder implements ContentEncoder<PriorityOrderTestType> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return PriorityOrderTestType.class.isAssignableFrom(runtimeType);
+        public Class<PriorityOrderTestType> getType() {
+            return PriorityOrderTestType.class;
         }
 
         @Override
-        public Content encode(PriorityOrderTestType value) {
+        public ContentBlock encode(PriorityOrderTestType value) {
             PriorityOrderTestType encodedValue = new PriorityOrderTestType("Hello from LowerPriorityEncoder");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
 
     }
@@ -147,16 +147,10 @@ public class EncoderTools {
         public ToolResponse encode(DatabaseQueryResult result) {
 
             if (!result.isSuccessfull) {
-                return ToolResponse.error("Database Query failed with error: " + result.errorMessage);
+                return ToolResponse.ofError("Database Query failed with error: " + result.errorMessage);
             }
 
-            List<Content> queryResultContents = new ArrayList<>();
-
-            if (result.rowCount > 0) {
-                queryResultContents.add(new TextContent(jsonb.toJson(result.rows)));
-            }
-
-            return ToolResponse.success(queryResultContents);
+            return ToolResponse.ofText(jsonb.toJson(result.rows));
         }
     }
 
@@ -180,14 +174,14 @@ public class EncoderTools {
     public static class DependantBeanEncoder implements ContentEncoder<DependentBeanAnnotationTestType> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return DependentBeanAnnotationTestType.class.isAssignableFrom(runtimeType);
+        public Class<DependentBeanAnnotationTestType> getType() {
+            return DependentBeanAnnotationTestType.class;
         }
 
         @Override
-        public Content encode(DependentBeanAnnotationTestType value) {
+        public ContentBlock encode(DependentBeanAnnotationTestType value) {
             DependentBeanAnnotationTestType encodedValue = new DependentBeanAnnotationTestType(value.hello + " from DependantBeanEncoder");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
     }
 
@@ -206,14 +200,14 @@ public class EncoderTools {
     public static class SingletonBeanEncoder implements ContentEncoder<SingletonBeanAnnotationTestType> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return SingletonBeanAnnotationTestType.class.isAssignableFrom(runtimeType);
+        public Class<SingletonBeanAnnotationTestType> getType() {
+            return SingletonBeanAnnotationTestType.class;
         }
 
         @Override
-        public Content encode(SingletonBeanAnnotationTestType value) {
+        public ContentBlock encode(SingletonBeanAnnotationTestType value) {
             SingletonBeanAnnotationTestType encodedValue = new SingletonBeanAnnotationTestType(value.hello + " from SingletonBeanEncoder");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
     }
 
@@ -232,14 +226,14 @@ public class EncoderTools {
     public static class RequestScopedBeanEncoder implements ContentEncoder<RequestScopedBeanAnnotationTestType> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return RequestScopedBeanAnnotationTestType.class.isAssignableFrom(runtimeType);
+        public Class<RequestScopedBeanAnnotationTestType> getType() {
+            return RequestScopedBeanAnnotationTestType.class;
         }
 
         @Override
-        public Content encode(RequestScopedBeanAnnotationTestType value) {
+        public ContentBlock encode(RequestScopedBeanAnnotationTestType value) {
             RequestScopedBeanAnnotationTestType encodedValue = new RequestScopedBeanAnnotationTestType(value.hello + " from RequestScopedBeanEncoder");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
     }
 
@@ -261,14 +255,14 @@ public class EncoderTools {
         private static final long serialVersionUID = 1L;
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return SessionScopedBeanAnnotationTestType.class.isAssignableFrom(runtimeType);
+        public Class<SessionScopedBeanAnnotationTestType> getType() {
+            return SessionScopedBeanAnnotationTestType.class;
         }
 
         @Override
-        public Content encode(SessionScopedBeanAnnotationTestType value) {
+        public ContentBlock encode(SessionScopedBeanAnnotationTestType value) {
             SessionScopedBeanAnnotationTestType encodedValue = new SessionScopedBeanAnnotationTestType(value.hello + " from SessionScopedBeanEncoder");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
     }
 
@@ -298,15 +292,14 @@ public class EncoderTools {
         @Override
         public ToolResponse encode(HttpEndpointResponse response) {
             if (!response.isSuccessfull) {
-                return ToolResponse.error("Endpoint request failed with error: " + response.errorMessage);
+                return ToolResponse.ofError("Endpoint request failed with error: " + response.errorMessage);
             }
 
             HttpEndpointResponse encodedResponse = new HttpEndpointResponse(response.isSuccessfull,
                                                                             response.statusCode,
                                                                             "Encoded by RestResponseToolResponseEncoder",
                                                                             null);
-            Content content = new TextContent(jsonb.toJson(encodedResponse));
-            return ToolResponse.success(content);
+            return ToolResponse.ofText(jsonb.toJson(encodedResponse));
         }
     }
 
@@ -314,18 +307,18 @@ public class EncoderTools {
     public static class RestResponseContentEncoder implements ContentEncoder<HttpEndpointResponse> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return HttpEndpointResponse.class.isAssignableFrom(runtimeType);
+        public Class<HttpEndpointResponse> getType() {
+            return HttpEndpointResponse.class;
         }
 
         @Override
-        public Content encode(HttpEndpointResponse response) {
+        public ContentBlock encode(HttpEndpointResponse response) {
 
             HttpEndpointResponse encodedResponse = new HttpEndpointResponse(response.isSuccessfull,
                                                                             response.statusCode,
                                                                             "Encoded by RestResponseContentEncoder",
                                                                             null);
-            return new TextContent(jsonb.toJson(encodedResponse));
+            return TextContent.of(jsonb.toJson(encodedResponse));
         }
     }
 
@@ -356,14 +349,14 @@ public class EncoderTools {
     public static class SubclassEncoderNoPriority extends BaseEncoderWithPriority implements ContentEncoder<InheritanceTestType> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return InheritanceTestType.class.isAssignableFrom(runtimeType);
+        public Class<InheritanceTestType> getType() {
+            return InheritanceTestType.class;
         }
 
         @Override
-        public Content encode(InheritanceTestType value) {
+        public ContentBlock encode(InheritanceTestType value) {
             InheritanceTestType encodedValue = new InheritanceTestType("Encoded by SubclassEncoderNoPriority (should be priority 0, not inherited 400)");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
     }
 
@@ -378,14 +371,14 @@ public class EncoderTools {
     public static class SubclassEncoderWithOwnPriority extends BaseEncoderWithPriority implements ContentEncoder<InheritanceTestType> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return InheritanceTestType.class.isAssignableFrom(runtimeType);
+        public Class<InheritanceTestType> getType() {
+            return InheritanceTestType.class;
         }
 
         @Override
-        public Content encode(InheritanceTestType value) {
+        public ContentBlock encode(InheritanceTestType value) {
             InheritanceTestType encodedValue = new InheritanceTestType("Encoded by BaseEncoderWithPriority (priority 50)");
-            return new TextContent(jsonb.toJson(encodedValue));
+            return TextContent.of(jsonb.toJson(encodedValue));
         }
     }
 
@@ -418,7 +411,7 @@ public class EncoderTools {
         public ToolResponse encode(CdiBasePriorityTestType value) {
             CdiBasePriorityTestType encodedValue = new CdiBasePriorityTestType("Encoded by CdiBaseEncoderWithHighestPriority (priority 400)");
 
-            return ToolResponse.success(new TextContent(jsonb.toJson(encodedValue)));
+            return ToolResponse.ofText(jsonb.toJson(encodedValue));
         }
     }
 
@@ -434,7 +427,7 @@ public class EncoderTools {
         public ToolResponse encode(CdiBasePriorityTestType value) {
             CdiBasePriorityTestType encodedValue = new CdiBasePriorityTestType("Encoded by CdiSubclassEncoderWithLowerPriority (priority 50)");
 
-            return ToolResponse.success(new TextContent(jsonb.toJson(encodedValue)));
+            return ToolResponse.ofText(jsonb.toJson(encodedValue));
         }
     }
 

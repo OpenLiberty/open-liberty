@@ -13,11 +13,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.CompletionStage;
 
+import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+import org.mcpjava.server.tools.ToolResponse;
+
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.meta.Meta;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -47,7 +48,7 @@ public class InvalidToolReturnsTest {
                                                                                                                                          description = "List of people") List<String> employeeNameList,
                                                                                                                                 @ToolArg(name = "person",
                                                                                                                                          description = "Person object") Optional<String> personName,
-                                                                                                                                Meta meta) {
+                                                                                                                                McpRequest request) {
         return null;
     }
 

@@ -21,9 +21,10 @@
  *******************************************************************************/
 package io.openliberty.mcp.tools;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.messaging.Encoder;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolResponse;
+
 import jakarta.annotation.Priority;
 
 /**
@@ -41,6 +42,20 @@ import jakarta.annotation.Priority;
  * @see ToolResponse
  * @see Tool
  */
-public interface ToolResponseEncoder<TYPE> extends Encoder<TYPE, ToolResponse> {
+public interface ToolResponseEncoder<TYPE> {
 
+    /**
+     *
+     * @param runtimeType The runtime class of an object that should be encoded, must not be {@code null}
+     * @return {@code true} if this encoder can encode the provided type, {@code false} otherwise
+     */
+    boolean supports(Class<?> runtimeType);
+
+    /**
+     * Encodes the given business object into the target type
+     *
+     * @param value
+     * @return the encoded value
+     */
+    ToolResponse encode(TYPE value);
 }

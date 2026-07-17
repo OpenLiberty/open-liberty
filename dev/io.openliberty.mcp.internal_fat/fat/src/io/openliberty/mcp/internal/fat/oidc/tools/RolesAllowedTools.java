@@ -9,7 +9,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.oidc.tools;
 
-import io.openliberty.mcp.annotations.Tool;
+import org.mcpjava.server.tools.Tool;
+
 import jakarta.annotation.security.RolesAllowed;
 import jakarta.enterprise.context.ApplicationScoped;
 

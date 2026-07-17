@@ -9,10 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.encodertools.defaultEncoderTest1;
 
-import io.openliberty.mcp.annotations.Tool;
+import org.mcpjava.server.tools.ToolResponse;
+
+import org.mcpjava.server.tools.Tool;
 import io.openliberty.mcp.internal.fat.encodertools.sharedEncoders.Person;
 import io.openliberty.mcp.tools.ToolManager;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
 import jakarta.enterprise.event.Startup;
@@ -31,7 +32,7 @@ public class DefaultEncoderModule {
 
     void startup(@Observes Startup startup) {
         toolManager.newTool("apiTool")
-                   .setHandler(a -> ToolResponse.success("DefaultEncoderModule"))
+                   .setHandler(a -> ToolResponse.ofText("DefaultEncoderModule"))
                    .register();
     }
 

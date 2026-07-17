@@ -10,9 +10,6 @@
 package io.openliberty.mcp.internal.fat.monitor;
 
 import static com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions.SERVER_ONLY;
-import static javax.management.Query.attr;
-import static javax.management.Query.match;
-import static javax.management.Query.value;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -22,8 +19,6 @@ import java.util.Set;
 
 import javax.management.MBeanServerConnection;
 import javax.management.ObjectName;
-import javax.management.Query;
-import javax.management.QueryExp;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -146,19 +141,21 @@ public class McpMonitorTest {
      * @throws AssertionError if more than one matching MBean is found
      */
     private ObjectName findOperationMBean(String methodName, String toolName) throws Exception {
-        ObjectName namePattern = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION + ",*");
-
-        QueryExp query = match(attr("McpMethodName"), value(methodName));
+        // Build query pattern with individual properties instead of a single name property
+        StringBuilder pattern = new StringBuilder(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_OPERATION);
+        pattern.append(",mcpMethod=").append(methodName);
         if (toolName != null) {
-            query = Query.and(query, match(attr("GenAiToolName"), value(toolName)));
+            pattern.append(",genAiTool=").append(toolName);
         }
+        pattern.append(",*");
 
-        Set<ObjectName> mbeans = mbeanServer.queryNames(namePattern, query);
+        ObjectName namePattern = new ObjectName(pattern.toString());
+        Set<ObjectName> mbeans = mbeanServer.queryNames(namePattern, null);
 
         return switch (mbeans.size()) {
             case 0 -> null;
             case 1 -> mbeans.iterator().next();
-            default -> throw new AssertionError("More than one session mbean found");
+            default -> throw new AssertionError("More than one operation mbean found for " + methodName + (toolName != null ? "/" + toolName : ""));
         };
     }
 
@@ -256,7 +253,8 @@ public class McpMonitorTest {
      * @throws AssertionError if more than one matching MBean is found
      */
     private ObjectName findSessionMBean() throws Exception {
-        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_SESSION + ",*");
+        // Session MBeans now have individual properties including session=true
+        ObjectName query = new ObjectName(MBEAN_DOMAIN + ":type=" + MBEAN_TYPE_SESSION + ",session=true,*");
         Set<ObjectName> mbeans = mbeanServer.queryNames(query, null);
 
         return switch (mbeans.size()) {
@@ -280,9 +278,23 @@ public class McpMonitorTest {
         String actualErrorType = (String) mbeanServer.getAttribute(mbean, "ErrorType");
         assertEquals("ErrorType attribute should match", expectedErrorType, actualErrorType);
 
-        // Verify protocol versions exist
+        // Verify the MBean name contains protocol information as individual properties
+        String mbeanName = mbean.toString();
+
+        // Check for JSON-RPC protocol version (should be "2.0")
+        // The format is "jsonrpcVer=2.0" as a property
+        boolean foundJsonRpcVersion = mbeanName.contains("jsonrpcVer=2.0");
+        assertTrue("MBean name should contain jsonrpcVer=2.0 as a property, but was: " + mbeanName,
+                   foundJsonRpcVersion);
+
         String jsonrpcVersion = (String) mbeanServer.getAttribute(mbean, "JsonrpcProtocolVersion");
         assertEquals("JsonrpcProtocolVersion is wrong", "2.0", jsonrpcVersion);
+
+        // Check for MCP protocol version (should be present)
+        // The format is "mcpVer=" as a property
+        boolean foundMcpVersion = mbeanName.contains("mcpVer=");
+        assertTrue("MBean name should contain mcpVer= as a property, but was: " + mbeanName,
+                   foundMcpVersion);
 
         String mcpVersion = (String) mbeanServer.getAttribute(mbean, "McpProtocolVersion");
         assertEquals("McpProtocolVersion is wrong", TestConstants.VALUE_MCP_PROTOCOL_VERSION, mcpVersion);
@@ -431,21 +443,21 @@ public class McpMonitorTest {
         ObjectName mbean = findOperationMBean("tools/call", "echo");
         assertNotNull("Operation MBean should exist", mbean);
 
-        // Verify the MBean name contains protocol information
+        // Verify the MBean name contains protocol information as individual properties
         String mbeanName = mbean.toString();
 
         // Check for JSON-RPC protocol version (should be "2.0")
-        // The format is "jsonrpcVer:2.0" within the name property
-        boolean foundJsonRpcVersion = mbeanName.contains("jsonrpcVer:2.0");
-        assertTrue("MBean name should contain jsonrpcVer:2.0, but was: " + mbeanName,
+        // The format is "jsonrpcVer=2.0" as a property
+        boolean foundJsonRpcVersion = mbeanName.contains("jsonrpcVer=2.0");
+        assertTrue("MBean name should contain jsonrpcVer=2.0 as a property, but was: " + mbeanName,
                    foundJsonRpcVersion);
 
         assertEquals("2.0", mbeanServer.getAttribute(mbean, "JsonrpcProtocolVersion"));
 
         // Check for MCP protocol version (should be present)
-        // The format is "mcpVer:" within the name property
-        boolean foundMcpVersion = mbeanName.contains("mcpVer:");
-        assertTrue("MBean name should contain mcpVer:, but was: " + mbeanName,
+        // The format is "mcpVer=" as a property
+        boolean foundMcpVersion = mbeanName.contains("mcpVer=");
+        assertTrue("MBean name should contain mcpVer= as a property, but was: " + mbeanName,
                    foundMcpVersion);
 
         assertEquals("2025-11-25", mbeanServer.getAttribute(mbean, "McpProtocolVersion"));

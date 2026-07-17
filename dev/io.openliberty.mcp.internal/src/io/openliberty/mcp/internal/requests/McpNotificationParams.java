@@ -9,7 +9,6 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.requests;
 
-import io.openliberty.mcp.request.RequestId;
 import jakarta.json.bind.annotation.JsonbNillable;
 
 @JsonbNillable(value = false)

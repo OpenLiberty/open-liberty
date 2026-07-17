@@ -166,7 +166,8 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
             }
 
             McpOperationStatistics mcpMetricStats = new McpOperationStatistics(statAttri);
-            mcpOperationStatsCollection.put(statId, mcpMetricStats);
+            // Use attribute-based put method
+            mcpOperationStatsCollection.put(statId, statAttri.toAttributeMap(), mcpMetricStats);
 
             //Shut down by monitor-1.0 filter attribute
             if (mcpOperationStatsCollection.get(statId) == null) {
@@ -208,7 +209,8 @@ public class McpStatsMonitorImpl extends StatisticActions implements McpStatsMon
             }
 
             McpSessionStatistics mcpMetricStats = new McpSessionStatistics(statAttri);
-            mcpSessionStatsCollection.put(statId, mcpMetricStats);
+            // Use attribute-based put method
+            mcpSessionStatsCollection.put(statId, statAttri.toAttributeMap(), mcpMetricStats);
 
             //Shut down by monitor-1.0 filter attribute
             if (mcpSessionStatsCollection.get(statId) == null) {

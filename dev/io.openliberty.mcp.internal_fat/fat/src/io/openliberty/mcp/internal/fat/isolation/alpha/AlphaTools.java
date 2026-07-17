@@ -12,9 +12,10 @@ package io.openliberty.mcp.internal.fat.isolation.alpha;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.tools.ToolResponse;
+import org.mcpjava.server.tools.ToolResponse;
+
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.tools.ToolResponseEncoder;
 import jakarta.enterprise.context.ApplicationScoped;
 
@@ -46,7 +47,7 @@ public class AlphaTools {
 
         @Override
         public ToolResponse encode(LocalDate value) {
-            return ToolResponse.success("encoded by AlphaToolResponseEncoder: " + value);
+            return ToolResponse.ofText("encoded by AlphaToolResponseEncoder: " + value);
         }
     }
 

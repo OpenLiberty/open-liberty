@@ -9,13 +9,14 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.encodertools.ejbjarEncoder;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+import org.mcpjava.server.tools.ToolResponse;
+
+import org.mcpjava.server.tools.Tool;
 import io.openliberty.mcp.internal.fat.encodertools.sharedEncoders.Person;
 import io.openliberty.mcp.tools.ToolManager;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.annotation.Priority;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.event.Observes;
@@ -39,7 +40,7 @@ public class EarToolBean {
 
     void startup(@Observes Startup startup) {
         toolManager.newTool("ejbJarApiTool")
-                   .setHandler(a -> ToolResponse.success("From EarToolBean"))
+                   .setHandler(a -> ToolResponse.ofText("From EarToolBean"))
                    .register();
     }
 
@@ -49,14 +50,14 @@ public class EarToolBean {
     public static class PersonContentEncoder implements ContentEncoder<Person> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return Person.class.isAssignableFrom(runtimeType);
+        public Class<Person> getType() {
+            return Person.class;
         }
 
         @Override
-        public Content encode(Person person) {
+        public ContentBlock encode(Person person) {
             Person encodedPerson = new Person(person.fistName(), "Encoded by PersonContentEncoder in EarToolBean", person.age());
-            return new TextContent(jsonb.toJson(encodedPerson));
+            return TextContent.of(jsonb.toJson(encodedPerson));
         }
     }
 }

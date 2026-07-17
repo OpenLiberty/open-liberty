@@ -12,8 +12,8 @@ package io.openliberty.mcp.internal.fat.observability.telemetry;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.tools.ToolCallException;
 import jakarta.enterprise.context.ApplicationScoped;

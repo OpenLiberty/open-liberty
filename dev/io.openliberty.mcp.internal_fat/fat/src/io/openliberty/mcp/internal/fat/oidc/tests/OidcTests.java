@@ -14,7 +14,9 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URLEncoder;
@@ -24,9 +26,17 @@ import java.net.http.HttpRequest.Builder;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodyHandlers;
 import java.nio.charset.StandardCharsets;
+import java.security.KeyPair;
+import java.security.KeyStore;
+import java.security.SecureRandom;
+import java.security.cert.Certificate;
 import java.time.Duration;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.TrustManagerFactory;
 
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
@@ -36,17 +46,21 @@ import org.junit.ClassRule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.skyscreamer.jsonassert.JSONAssert;
+import org.testcontainers.DockerClientFactory;
 import org.testcontainers.containers.Container;
 import org.testcontainers.containers.GenericContainer;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.images.builder.Transferable;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.config.OpenidConnectClient;
+import com.ibm.websphere.simplicity.config.SSL;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
 import componenttest.annotation.Server;
 import componenttest.containers.SimpleLogConsumer;
 import componenttest.custom.junit.runner.FATRunner;
+import componenttest.security.utils.SSLUtils;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import io.openliberty.mcp.internal.fat.oidc.tools.RolesAllowedTools;
@@ -69,6 +83,12 @@ public class OidcTests extends FATServletClient {
     private static String keycloakConfidentialClientSecret = null;
     private static String keycloakPublicClientUUID = null;
 
+    // Don't use these values directly, use the corresponding methods instead
+    private static KeyStore keycloakKeystore = null;
+    private static KeyStore keycloakTruststore = null;
+    private static SSLContext keycloakSslContext = null;
+    private static HttpClient keycloakHttpClient = null;
+
     // Container config
     private static final String KEYCLOAK_TAG = "26.6.2";
     private static final String KEYCLOAK_REGISTRY = "quay.io/keycloak/keycloak:" + KEYCLOAK_TAG;
@@ -81,11 +101,14 @@ public class OidcTests extends FATServletClient {
     @SuppressWarnings("resource")
     @ClassRule
 
-    public static GenericContainer<?> keycloakContainer = new GenericContainer<>(KEYCLOAK_REGISTRY).withExposedPorts(8080)
+    public static GenericContainer<?> keycloakContainer = new GenericContainer<>(KEYCLOAK_REGISTRY).withExposedPorts(8080, 8443)
                                                                                                    .withStartupAttempts(3)
+                                                                                                   .withCopyToContainer(getKeycloakKeystore(), "/keystore.p12")
                                                                                                    .withEnv("KEYCLOAK_ADMIN", "admin")
                                                                                                    .withEnv("KEYCLOAK_ADMIN_PASSWORD", "admin")
-                                                                                                   .withCommand("start-dev")
+                                                                                                   .withCommand("start-dev",
+                                                                                                                "--https-key-store-file=/keystore.p12",
+                                                                                                                "--https-key-store-password=password")
                                                                                                    .withLogConsumer(new SimpleLogConsumer(OidcTests.class, "keycloak-container"))
                                                                                                    .waitingFor(Wait.forLogMessage(".*Listening on:.*", 1)
                                                                                                                    .withStartupTimeout(Duration.ofMinutes(2)));
@@ -111,7 +134,6 @@ public class OidcTests extends FATServletClient {
     public void testProctectedToolCallWithoutAccessTokenFailsWith401Unauthorized() throws Exception {
         testUnauthroizedToolCallAssertion("adminTool");
         testUnauthroizedToolCallAssertion("userTool");
-
     }
 
     private void testUnauthroizedToolCallAssertion(String toolName) throws Exception {
@@ -243,7 +265,7 @@ public class OidcTests extends FATServletClient {
     private String getAccessToken(String username, String password) throws Exception {
         Pattern accessTokenPattern = Pattern.compile("\"access_token\"\\s*:\\s*\"([^\"]+)\"");
 
-        String tokenEndpoint = "http://localhost:" + keycloakContainer.getMappedPort(8080)
+        String tokenEndpoint = getKeycloakBaseUrl()
                                + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/token";
 
         String formData = String.join("&",
@@ -257,8 +279,7 @@ public class OidcTests extends FATServletClient {
                                             .header("Content-Type", "application/x-www-form-urlencoded")
                                             .POST(HttpRequest.BodyPublishers.ofString(formData));
 
-        HttpResponse<String> response = HttpClient.newHttpClient()
-                                                  .send(requestBuilder.build(), BodyHandlers.ofString());
+        HttpResponse<String> response = getKeycloakHttpClient().send(requestBuilder.build(), BodyHandlers.ofString());
 
         if (response.statusCode() != 200) {
             throw new RuntimeException("Failed to get access token. Status: " + response.statusCode()
@@ -424,17 +445,40 @@ public class OidcTests extends FATServletClient {
 
     }
 
+    /**
+     * Return the base URL for the keycloak server, for use making API calls.
+     * <p>
+     * API calls should be made using {@link #getKeycloakHttpClient()}
+     *
+     * @return the keycloak server URL
+     */
+    private static String getKeycloakBaseUrl() {
+        return "https://" + keycloakContainer.getHost() + ":" + keycloakContainer.getMappedPort(8443);
+    }
+
     private static void updateOidcConfigAttributes() throws CloneNotSupportedException, Exception {
+        // Create the trust store for keycloak
+        writeKeycloakTrustStore("keycloakTrustStore.p12");
+        server.copyFileToLibertyServerRoot("keycloakTrustStore.p12");
+
         // Update the Liberty server configuration with dynamic Keycloak values
-        String keycloakBaseUrl = "http://localhost:" + keycloakContainer.getMappedPort(8080);
         ServerConfiguration config = server.getServerConfiguration().clone();
+
+        var ks = new com.ibm.websphere.simplicity.config.KeyStore();
+        ks.setLocation("keycloakTrustStore.p12");
+        ks.setId("keycloak-trust");
+        config.getKeyStores().add(ks);
+
+        SSL ssl = config.getSSLById("defaultSSLConfig");
+        ssl.setTrustStoreRef("keycloak-trust");
+
         OpenidConnectClient openidConnectClient = config.getOpenidConnectClients().get(0);
 
         // Update with dynamically created Keycloak client credentials
         openidConnectClient.setClientId(LIBERTY_MCP_SERVER_CLIENT_ID);
         openidConnectClient.setClientSecret(keycloakConfidentialClientSecret);
-        openidConnectClient.setJwkEndpointUrl(keycloakBaseUrl + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/certs");
-        openidConnectClient.setIssuerIdentifier(keycloakBaseUrl + "/realms/" + KEYCLOAK_REALM);
+        openidConnectClient.setJwkEndpointUrl(getKeycloakBaseUrl() + "/realms/" + KEYCLOAK_REALM + "/protocol/openid-connect/certs");
+        openidConnectClient.setIssuerIdentifier(getKeycloakBaseUrl() + "/realms/" + KEYCLOAK_REALM);
         openidConnectClient.setAudiences(LIBERTY_MCP_SERVER_CLIENT_ID);
 
         updateConfigDynamically(server, config);
@@ -482,6 +526,103 @@ public class OidcTests extends FATServletClient {
                                        "\nStderr: " + result.getStderr());
         }
         return result.getStdout();
+    }
+
+    /**
+     * Generates a keystore for keycloak, and a keystore for clients who trust keycloak
+     */
+    private static void createKeyStores() {
+        if (keycloakKeystore != null && keycloakTruststore != null) {
+            return;
+        }
+        try {
+            KeyPair keypair = SSLUtils.generateKeyPair();
+            String hostname = DockerClientFactory.instance().dockerHostIpAddress();
+            Certificate cert = SSLUtils.selfSign(keypair, "dn=" + hostname, List.of(hostname));
+
+            KeyStore keystore = KeyStore.getInstance("pkcs12");
+            keystore.load(null, null); // Initialize empty keystore
+            keystore.setKeyEntry("key", keypair.getPrivate(), "password".toCharArray(), new Certificate[] { cert });
+
+            KeyStore truststore = KeyStore.getInstance("pkcs12");
+            truststore.load(null, null); // Initialize empty keystore
+            truststore.setCertificateEntry("cert", cert);
+
+            keycloakKeystore = keystore;
+            keycloakTruststore = truststore;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to generate keystores", e);
+        }
+    }
+
+    /**
+     * Create an SSL Context that trusts the keycloak HTTPS certificate
+     */
+    private static SSLContext getKeycloakSslContext() {
+        if (keycloakSslContext != null) {
+            return keycloakSslContext;
+        }
+        try {
+            createKeyStores();
+            SSLContext sslContext = SSLContext.getInstance("TLS");
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("PKIX");
+            tmf.init(keycloakTruststore);
+            sslContext.init(null, tmf.getTrustManagers(), new SecureRandom());
+            keycloakSslContext = sslContext;
+            return keycloakSslContext;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create ssl context", e);
+        }
+    }
+
+    /**
+     * Get the keystore that keycloak should use for HTTPS, ready to be added to the container
+     *
+     * @return the keystore
+     */
+    private static Transferable getKeycloakKeystore() {
+        createKeyStores();
+        try {
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+            keycloakKeystore.store(baos, "password".toCharArray());
+            return Transferable.of(baos.toByteArray());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    /**
+     * Get an HttpClient that's configured to trust keycloak's HTTPS certificate
+     *
+     * @return the HttpClient
+     */
+    private static HttpClient getKeycloakHttpClient() {
+        if (keycloakHttpClient != null) {
+            return keycloakHttpClient;
+        }
+
+        keycloakHttpClient = HttpClient.newBuilder()
+                                       .sslContext(getKeycloakSslContext()) // Trust the keycloak HTTPS certificate
+                                       .build();
+        return keycloakHttpClient;
+    }
+
+    /**
+     * Write the keycloak trust store out as a file
+     * <p>
+     * The file will be stored under {@link LibertyServer#pathToAutoFVTTestFiles} so that it's in
+     * the right place for {@link LibertyServer#copyFileToLibertyServerRoot(String)} to copy it from.
+     *
+     * @param path the output file path, relative to {@link LibertyServer#pathToAutoFVTTestFiles}
+     */
+    private static void writeKeycloakTrustStore(String path) {
+        createKeyStores();
+        File file = new File(server.pathToAutoFVTTestFiles + path);
+        try (FileOutputStream os = new FileOutputStream(file)) {
+            keycloakTruststore.store(os, null);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
 }

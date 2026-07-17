@@ -26,6 +26,7 @@ Export-Package: \
 	io.openliberty.mcp.internal.monitoring,\
 	io.openliberty.mcp.internal.metrics,\
 	io.openliberty.mcp.internal.requests,\
+    io.openliberty.mcp.internal.spi,\
 	io.openliberty.mcp.internal
 
 Private-Package: \
@@ -63,6 +64,7 @@ Bundle-Localization: \
 	io.openliberty.jakarta.servlet.6.0;version=latest,\
 	io.openliberty.jakarta.cdi.4.0;version=latest,\
 	io.openliberty.mcp;version=latest,\
+	io.openliberty.org.mcpjava.mcp-server-api;version=latest,\
 	io.openliberty.jakarta.jsonb.3.0;version=latest,\
 	io.openliberty.jakarta.jsonp.2.1;version=latest,\
 	io.openliberty.jakarta.annotation.2.1;version=latest,\

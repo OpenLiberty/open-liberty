@@ -12,11 +12,12 @@ package io.openliberty.mcp.internal.fat.isolation.beta;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ContentEncoder;
-import io.openliberty.mcp.content.TextContent;
+import org.mcpjava.server.ContentEncoder;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import jakarta.enterprise.context.ApplicationScoped;
 
 /**
@@ -41,13 +42,13 @@ public class BetaTools {
     public static class BetaContentEncoder implements ContentEncoder<LocalDateTime> {
 
         @Override
-        public boolean supports(Class<?> runtimeType) {
-            return LocalDateTime.class.isAssignableFrom(runtimeType);
+        public Class<LocalDateTime> getType() {
+            return LocalDateTime.class;
         }
 
         @Override
-        public Content encode(LocalDateTime value) {
-            return new TextContent("encoded by BetaContentEncoder: " + value);
+        public ContentBlock encode(LocalDateTime value) {
+            return TextContent.of("encoded by BetaContentEncoder: " + value);
         }
     }
 

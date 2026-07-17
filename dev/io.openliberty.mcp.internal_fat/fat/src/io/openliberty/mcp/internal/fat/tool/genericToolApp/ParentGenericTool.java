@@ -12,8 +12,8 @@ package io.openliberty.mcp.internal.fat.tool.genericToolApp;
 import java.util.List;
 
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 
 /**
  *

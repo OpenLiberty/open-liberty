@@ -21,7 +21,8 @@
  *******************************************************************************/
 package io.openliberty.mcp.tools;
 
-import io.openliberty.mcp.annotations.Tool;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolResponse;
 
 /**
  * Indicates a business logic error in a {@link Tool} method.

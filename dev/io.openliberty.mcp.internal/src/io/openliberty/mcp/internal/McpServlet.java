@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionException;
 import java.util.concurrent.CompletionStage;
@@ -26,12 +25,15 @@ import java.util.function.Function;
 
 import javax.security.sasl.AuthenticationException;
 
+import org.mcpjava.server.Cancellation;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.TextContent;
+import org.mcpjava.server.tools.ToolResponse;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
 
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.TextContent;
 import io.openliberty.mcp.internal.Capabilities.ServerCapabilities;
 import io.openliberty.mcp.internal.config.McpConfig;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
@@ -40,7 +42,6 @@ import io.openliberty.mcp.internal.exceptions.jsonrpc.HttpResponseException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCErrorCode;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.JSONRPCException;
 import io.openliberty.mcp.internal.exceptions.jsonrpc.McpResponseException;
-import io.openliberty.mcp.internal.meta.MetaImpl;
 import io.openliberty.mcp.internal.metrics.McpOperationMetrics;
 import io.openliberty.mcp.internal.metrics.McpSessionMetrics;
 import io.openliberty.mcp.internal.requests.CancellationImpl;
@@ -48,21 +49,21 @@ import io.openliberty.mcp.internal.requests.ExecutionRequestId;
 import io.openliberty.mcp.internal.requests.McpInitializeParams;
 import io.openliberty.mcp.internal.requests.McpNotificationParams;
 import io.openliberty.mcp.internal.requests.McpRequest;
+import io.openliberty.mcp.internal.requests.McpRequestImpl;
 import io.openliberty.mcp.internal.requests.McpToolCallParams;
 import io.openliberty.mcp.internal.requests.McpToolListParams;
+import io.openliberty.mcp.internal.requests.ProgressImpl;
+import io.openliberty.mcp.internal.requests.RequestId;
 import io.openliberty.mcp.internal.responses.McpInitializeResult;
 import io.openliberty.mcp.internal.responses.McpInitializeResult.ServerInfo;
 import io.openliberty.mcp.internal.security.Authorizer;
 import io.openliberty.mcp.internal.sessions.McpSession;
 import io.openliberty.mcp.internal.sessions.McpSessionId;
 import io.openliberty.mcp.internal.sessions.McpSessionStores;
+import io.openliberty.mcp.internal.tools.ToolResponseImpl;
 import io.openliberty.mcp.internal.tools.ToolResponses;
-import io.openliberty.mcp.messaging.Cancellation;
-import io.openliberty.mcp.meta.Meta;
-import io.openliberty.mcp.request.RequestId;
 import io.openliberty.mcp.tools.ToolCallException;
 import io.openliberty.mcp.tools.ToolManager.ToolArguments;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.BeanManager;
 import jakarta.inject.Inject;
 import jakarta.json.bind.Jsonb;
@@ -269,7 +270,7 @@ public class McpServlet extends HttpServlet {
             Authorizer.requireAuthorized(transport, params.getMetadata());
 
             if (params.getMetadata().returnsCompletionStage()) {
-                ToolArguments toolArgs = createToolArguments(request, params);
+                ToolArguments toolArgs = createToolArguments(request, params, transport);
                 callToolAndSendResponseAsync(transport, requestId, params, toolArgs, metrics);
             } else {
                 callToolAndSendResponseSync(transport, requestId, request, params, metrics);
@@ -291,7 +292,7 @@ public class McpServlet extends HttpServlet {
                                              McpToolCallParams params,
                                              McpOperationMetrics metrics) {
 
-        ToolArguments toolArgs = createToolArguments(mcpRequest, params);
+        ToolArguments toolArgs = createToolArguments(mcpRequest, params, transport);
         if (requestId != null) {
             requestTrackers.getCurrent().registerOngoingRequest(requestId, (CancellationImpl) toolArgs.cancellation());
         }
@@ -420,31 +421,33 @@ public class McpServlet extends HttpServlet {
             return response;
         }
 
-        if (response.structuredContent() == null) {
+        if (response.structuredContent().isEmpty()) {
             return response;
         }
 
-        List<? extends Content> responseContent = response.content() != null ? response.content() : List.of(new TextContent(jsonb.toJson(response.structuredContent())));
+        List<ContentBlock> responseContent = response.content() != null ? response.content() : List.of(TextContent.of(jsonb.toJson(response.structuredContent().get())));
 
-        return new ToolResponse(response.isError(), responseContent, null, response._meta());
+        return new ToolResponseImpl(responseContent, response.isError(), null, response.metadata());
     }
 
     /**
      * @return
      */
-    private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params) {
+    private ToolArguments createToolArguments(McpRequest request, McpToolCallParams params, McpTransport transport) {
         Map<String, Object> args = params.getArguments(jsonb, converterRegistries.getCurrent());
-        Meta meta = new MetaImpl(params.getMeta(), jsonb);
-        RequestId requestId = request.id();
 
-        return new ToolArgumentsImpl(args, new CancellationImpl(), meta, encoderRegistries.getCurrent(), requestId);
+        return new ToolArgumentsImpl(args,
+                                     new CancellationImpl(),
+                                     new McpRequestImpl(request, transport, transport.getSession(), params.getMeta()),
+                                     ProgressImpl.NO_OP,
+                                     encoderRegistries.getCurrent());
     }
 
     public record ToolArgumentsImpl(Map<String, Object> args,
                                     Cancellation cancellation,
-                                    Meta meta,
-                                    EncoderRegistry encoderRegistry,
-                                    RequestId requestId) implements ToolArguments {}
+                                    org.mcpjava.server.McpRequest request,
+                                    org.mcpjava.server.progress.Progress progress,
+                                    EncoderRegistry encoderRegistry) implements ToolArguments {}
 
     /**
      * Sends a tool response and ends metrics recording based on the response's error status.
@@ -580,15 +583,15 @@ public class McpServlet extends HttpServlet {
         traceEvent("Client initializing: " + params.getClientInfo(), params.getCapabilities());
         Principal userId = transport.getUser();
 
-        McpSessionId sessionId = sessionStores.getCurrent().createSession(userId, sessionMetrics);
+        McpSession session = sessionStores.getCurrent().createSession(userId, sessionMetrics, params.getClientInfo(), params.getCapabilities());
         sessionMetrics.setTransport(transport);
 
         ServerCapabilities caps = ServerCapabilities.of(new Capabilities.Tools(false));
         ServerInfo info = mcpConfig.serverInfo();
         McpInitializeResult result = new McpInitializeResult(version, caps, info, null);
 
-        if (sessionId != null) {
-            transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, sessionId.value());
+        if (session != null) {
+            transport.setResponseHeader(McpTransport.MCP_SESSION_ID_HEADER, session.getSessionId().value());
         }
         sendSuccessResponseAndEndMetrics(transport, result, operationMetrics);
     }
@@ -623,7 +626,7 @@ public class McpServlet extends HttpServlet {
         }
 
         ExecutionRequestId requestId = new ExecutionRequestId(mcpReqId, sessionId, userId);
-        Optional<String> reason = Optional.ofNullable(notificationParams.getReason());
+        String reason = notificationParams.getReason();
 
         traceEvent("Cancellation requested for " + requestId);
 
@@ -682,12 +685,12 @@ public class McpServlet extends HttpServlet {
      * if no content is available
      */
     private Object extractToolResponseValue(ToolResponse response) {
-        if (response.structuredContent() != null) {
-            return response.structuredContent();
+        if (response.structuredContent().isPresent()) {
+            return response.structuredContent().get();
         }
-        if (response.content() != null && !response.content().isEmpty()) {
+        if (!response.content().isEmpty()) {
             // Extract text from TextContent objects
-            List<? extends Content> contentList = response.content();
+            List<ContentBlock> contentList = response.content();
             if (contentList.size() == 1 && contentList.get(0) instanceof TextContent textContent) {
                 return textContent.text();
             }
