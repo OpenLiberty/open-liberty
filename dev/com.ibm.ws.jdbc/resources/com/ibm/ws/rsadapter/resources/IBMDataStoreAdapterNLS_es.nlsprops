@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2001, 2023 IBM Corporation and others.
+# Copyright (c) 2001, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -366,6 +366,11 @@ PROP_SET_ERROR.useraction=Compruebe que el valor especificado es v\u00e1lido par
 8069_HELPER_INIT_ERR=DSRA8069E: DataSource {0} no puede inicializar la implementaci\u00f3n de DataStoreHelper {1} debido a un error: {2}
 8069_HELPER_INIT_ERR.explanation=No se pod\u00eda acceder a la clase DataStoreHelper configurada, le faltaba un constructor p\u00fablico con un solo par\u00e1metro java.util.Properties o gener\u00f3 un error cuando se invoc\u00f3.
 8069_HELPER_INIT_ERR.useraction=Examine la excepci\u00f3n adjunta para determinar la causa.
+
+# {0}        The DataSource id
+8070_H2_URL_PASSWORD=DSRA8070E: La base de datos \u00ab H2 \u00bb ( URL ) de \u00ab DataSource \u00bb ( {0} ) contiene un par\u00e1metro llamado \u00abPASSWORD\u00bb. Por motivos de seguridad, utiliza el atributo \u00abpassword\u00bb en el elemento \u00ab properties.h2 \u00bb o, en su lugar, configura \u00ab containerAuthData \u00bb.
+8070_H2_URL_PASSWORD.explanation=Incluir contrase\u00f1as en las URL de las bases de datos supone un riesgo para la seguridad, ya que la contrase\u00f1a podr\u00eda quedar expuesta en los registros, los rastros o los volcados de configuraci\u00f3n. El controlador de base de datos \u00ab H2 \u00bb admite alternativas seguras para la configuraci\u00f3n de contrase\u00f1as.
+8070_H2_URL_PASSWORD.useraction=Elimina el par\u00e1metro PASSWORD de H2URL y, en su lugar, especifica la contrase\u00f1a mediante el atributo \u00abpassword\u00bb del elemento properties.h2 o la configuraci\u00f3n containerAuthData.
 
 # {0}        Type of Connection: XAConnection or PooledConnection.
 JAVAX_CONN_ERR=DSRA8100E: No se ha podido obtener {0} de DataSource.

@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -159,9 +159,9 @@ morethanoneonopen.annotation=CWWKH0036E: P\u0159i implementaci aplikace WebSocke
 morethanoneonopen.annotation.explanation=Anotovan\u00fd koncov\u00fd bod serveru je neplatn\u00fd, proto\u017ee ve t\u0159\u00edd\u011b anotovan\u00e9ho koncov\u00e9ho bodu je definov\u00e1na v\u00edce ne\u017e jedna metoda @OnOpen. Aplikace WebSocket nebyla \u00fasp\u011b\u0161n\u011b naimplementov\u00e1na.
 morethanoneonopen.annotation.useraction=Opravte t\u0159\u00eddu anotovan\u00e9ho koncov\u00e9ho bodu serveru tak, aby m\u011bla nadefinovanou pouze jednu metodu @OnOpen. Po vy\u0159e\u0161en\u00ed probl\u00e9mu naimplementujte aplikaci znovu.
 
-invalid.message.toobig=CWWKH0037E: Neplatn\u00e1 p\u0159\u00edchoz\u00ed zpr\u00e1va WebSocket ve t\u0159\u00edd\u011b koncov\u00e9ho bodu serveru {0}. Velikost p\u0159\u00edchoz\u00ed zpr\u00e1vy je {1}, co\u017e je v\u011bt\u0161\u00ed ne\u017e hodnota parametru maxMessageSize {2} definovan\u00e1 v metod\u011b anotace @OnMessage {3}.
-invalid.message.toobig.explanation=Zpr\u00e1va WebSocket nem\u016f\u017ee p\u0159ekro\u010dit velikost maxMessageSize definovanou v anotaci @OnMessage.
-invalid.message.toobig.useraction=Zkontrolujte klienta, aby pos\u00edlal zpr\u00e1vy WebSocket men\u0161\u00ed ne\u017e hodnota parametru maxMessageSize definovan\u00e1 v anotaci @OnMessage, nebo hodnotu parametru maxMessageSize v anotaci @OnMessage zvy\u0161te a znovu naimplementujte aplikaci.
+invalid.message.toobig=CWWKH0037E: P\u0159\u00edchoz\u00ed zpr\u00e1va o velikosti {0} bajt\u016f p\u0159ekra\u010duje maxim\u00e1ln\u00ed povolenou velikost {1} bajt\u016f ve t\u0159\u00edd\u011b {2} pro metodu {3}.
+invalid.message.toobig.explanation=Zpr\u00e1va p\u0159ekro\u010dila nastaven\u00fd limit velikosti. Tento probl\u00e9m m\u016f\u017ee b\u00fdt zp\u016fsoben hodnotou anotace ` @OnMessage ` ( maxMessageSize ), velikost\u00ed vyrovn\u00e1vac\u00ed pam\u011bti relace ( maxTextMessageBufferSize nebo maxBinaryMessageBufferSize ) nebo v\u00fdchoz\u00edm limitem v p\u0159\u00edpad\u011b, \u017ee pro dan\u00fd typ zpr\u00e1vy neexistuje \u017e\u00e1dn\u00fd handler.
+invalid.message.toobig.useraction=Bu\u010f zmen\u0161ete velikost zpr\u00e1vy klienta, zvy\u0161te hodnotu anotace ` @OnMessage ` ( maxMessageSize ), zv\u011bt\u0161ete velikost vyrovn\u00e1vac\u00ed pam\u011bti relace pomoc\u00ed ` setMaxTextMessageBufferSize( ` nebo ` setMaxBinaryMessageBufferSize( `), pou\u017eijte konfigura\u010dn\u00ed volbu ` HTTP ` ( websocketBufferSize, ) nebo p\u0159idejte pro dan\u00fd typ zpr\u00e1vy vhodnou obslu\u017enou funkci ` @OnMessage `.
 
 maxidletimeout.closesession=CWWKH0038E: Relace WebSocket je ji\u017e {0} sekund neaktivn\u00ed. Zav\u00edr\u00e1m p\u0159ipojen\u00ed.
 maxidletimeout.closesession.explanation=\u010casov\u00fd limit relace WebSocket vypr\u0161el. Relace WebSocket nejsou aktivn\u00ed, nejsou-li odesl\u00e1ny ani p\u0159ijaty \u017e\u00e1dn\u00e9 zpr\u00e1vy za uplynul\u00fd po\u010det sekund, kter\u00fd je ur\u010den nastaven\u00edm maxIdleTimeout.

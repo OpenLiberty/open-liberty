@@ -271,3 +271,17 @@ CWMCM0032E.duplicate.argument.name.useraction=D\u00ea a cada argumento da ferram
 CWMCM0033A.forbidden.error=CWMCM0033A: Solicita\u00e7\u00e3o proibida. M\u00e9todo= {0} RequestURI={1 } RequestQuery={2 }, Exce\u00e7\u00e3o: {3}
 CWMCM0033A.forbidden.error.explanation=Foi feita uma solicita\u00e7\u00e3o, mas o usu\u00e1rio n\u00e3o est\u00e1 autorizado a faz\u00ea-la.
 CWMCM0033A.forbidden.error.useraction=Certifique-se de que um usu\u00e1rio autorizado est\u00e1 fazendo a solicita\u00e7\u00e3o.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: A implementa\u00e7\u00e3o de ` {0} ` DefaultValueConverter deve especificar um par\u00e2metro de tipo.
+CWMCM0034W.converter.missing.type.parameter.explanation=Uma classe de implementa\u00e7\u00e3o de ` DefaultValueConverter ` foi registrada, mas est\u00e1 faltando um par\u00e2metro de tipo; portanto, o tipo para o qual ela converte n\u00e3o pode ser detectado.
+CWMCM0034W.converter.missing.type.parameter.useraction=Altere a declara\u00e7\u00e3o da classe para implementar a interface ` DefaultValueConverter ` com um par\u00e2metro de tipo concreto. Por exemplo: MyConverterClass implementa DefaultValueConverter<MyType>.
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: A implementa\u00e7\u00e3o de ` {0} ` em ` DefaultValueConverter ` converte para um par\u00e2metro de tipo gen\u00e9rico, em vez de um tipo concreto.
+CWMCM0035W.converter.generic.type.explanation=Uma classe de implementa\u00e7\u00e3o de ` DefaultValueConverter ` foi registrada com um par\u00e2metro de tipo gen\u00e9rico, como `T`, em vez de um tipo concreto.
+CWMCM0035W.converter.generic.type.useraction=Altere a declara\u00e7\u00e3o da classe para implementar a interface ` DefaultValueConverter ` com um par\u00e2metro de tipo concreto. Por exemplo: MyConverterClass implementa DefaultValueConverter<MyType>.

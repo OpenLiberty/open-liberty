@@ -54,7 +54,7 @@ encode.desc=\tCodifica el texto proporcionado.\n\n\tSi su contrase\u00f1a incluy
 encode.usage.options=\t{0} codificar [opciones] textToEncode
 encode.option-key.1.text=\ \ \ \ textToEncode
 encode.option-desc.1.text=\tSi no se especifica ning\u00fan argumento, la herramienta entrar\u00e1 en modo interactivo de lo contrario, se codificar\u00e1 el texto proporcionado.\n\tEl texto con espacios debe entrecomillarse completamente si se especifica como argumento.
-encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|hash{1}]
+encode.option-key.encoding=\ \ \ \ --encoding=[xor|aes|aes-128|hash{1}]
 encode.option-desc.encoding=\tEspecifica c\u00f3mo codificar la contrase\u00f1a. Las codificaciones admitidas son xor, aes, aes-128, y hash. La codificaci\u00f3n por omisi\u00f3n es xor. Aes cifra utilizando una clave de aes-256 bits.\n\taes-128 puede utilizarse para la compatibilidad con versiones del servidor anteriores a 25.0.0.2. {2}
 encode.option-key.key=\ \ \ \ --key=[clave]
 encode.option-desc.key=\tEspecifique una clave que se utilizar\u00e1 al codificar mediante AES. Esta cadena se\nutilizar\u00e1 para generar una clave de cifrado AES, que se emplea para cifrar y\ndescifrar la contrase\u00f1a. La clave se puede proporcionar al servidor definiendo\nla variable ` wlp.password.encryption.key `, cuyo valor es la\nclave. A partir de la versi\u00f3n 26.0.0.3, ya no se utiliza una clave predeterminada. En su lugar,\nespecifique uno de los siguientes argumentos: --key, --base64Key, --aesConfigFile, o --keyring.
