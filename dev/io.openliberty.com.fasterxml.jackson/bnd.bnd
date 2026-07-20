@@ -8,7 +8,7 @@
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=2.21.2
+bVersion=2.21.5
 
 Bundle-Name: FasterXML Jackson Processor
 Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson
@@ -17,12 +17,12 @@ Bundle-Description: Provides Jackson Processor as a bundle
 Multi-Release: true
 
 -includeresource: \
-  @\${repo;com.fasterxml.jackson.core:jackson-core;2.21.2;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE,\
+  @\${repo;com.fasterxml.jackson.core:jackson-core;2.21.5;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE,\
   @\${repo;com.fasterxml.jackson.core:jackson-annotations;2.21;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE,\
-  @\${repo;com.fasterxml.jackson.core:jackson-databind;2.21.2;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE,\
-  @\${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.21.2;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE,\
+  @\${repo;com.fasterxml.jackson.core:jackson-databind;2.21.5;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE,\
+  @\${repo;com.fasterxml.jackson.dataformat:jackson-dataformat-yaml;2.21.5;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE,\
   @\${repo;org.yaml:snakeyaml;2.6;EXACT}!/!(*/)?module-info.class;onduplicate:=MERGE
 
 Export-Package: \
-  com.fasterxml.jackson.*;version=2.21.2,\
+  com.fasterxml.jackson.*;version=2.21.5,\
   org.yaml.snakeyaml.*;version=2.6
