@@ -105,11 +105,11 @@ public record CursoredPageRecord<T>(
 
     @Override
     public PageRequest nextPageRequest() {
-        if (cursors.isEmpty())
+        if (nextPageRequest == null)
+            throw new NoSuchElementException();
+        else if (cursors.isEmpty())
             throw new UnsupportedOperationException(Messages //
                             .get("015.cursor.uncomputable"));
-        else if (nextPageRequest == null)
-            throw new NoSuchElementException();
         else
             return nextPageRequest;
     }
@@ -121,11 +121,11 @@ public record CursoredPageRecord<T>(
 
     @Override
     public PageRequest previousPageRequest() {
-        if (cursors.isEmpty())
+        if (previousPageRequest == null)
+            throw new NoSuchElementException();
+        else if (cursors.isEmpty())
             throw new UnsupportedOperationException(Messages //
                             .get("015.cursor.uncomputable"));
-        else if (previousPageRequest == null)
-            throw new NoSuchElementException();
         else
             return previousPageRequest;
     }
