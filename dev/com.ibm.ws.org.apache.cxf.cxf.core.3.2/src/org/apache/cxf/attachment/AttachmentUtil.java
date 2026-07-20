@@ -244,17 +244,29 @@ public final class AttachmentUtil {
             bos.setThreshold(AttachmentDeserializer.THRESHOLD);
         }
 
-        // Liberty change begin
+        // Liberty Change Start - CXF #3188
         Object maxSize = getAttachmentProperty(message, AttachmentDeserializer.ATTACHMENT_MAX_SIZE);
-
-        //Liberty Change End
-        if (maxSize != null) {
-            if (maxSize instanceof Long) {
-                bos.setMaxSize((Long) maxSize);
-            } else {
-                bos.setMaxSize(Long.parseLong((String)maxSize));
-            }
+        if (maxSize == null) {
+            maxSize = AttachmentDeserializer.DEFAULT_ATTACHMENT_MAX_SIZE;
         }
+        if (maxSize instanceof Number) {
+            long size = ((Number) maxSize).longValue();
+            if (size >= 0) {
+                bos.setMaxSize(size);
+            } else {
+                LOG.warning("The max size value is set to unlimited.");
+            }
+        } else if (maxSize instanceof String) {
+            try {
+                bos.setMaxSize(Long.parseLong((String) maxSize));
+            } catch (NumberFormatException e) {
+                throw new IOException("Provided max size String is not a number", e);
+            }
+        } else {
+            throw new IOException("The value set as " + AttachmentDeserializer.ATTACHMENT_MAX_SIZE
+                    + " should be either an instance of Number or String");
+        }
+        //Liberty Change End
     }
 
     public static String createContentID(String ns) throws UnsupportedEncodingException {

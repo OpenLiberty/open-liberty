@@ -43,6 +43,7 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
+import java.util.logging.Logger;
 
 import javax.activation.CommandInfo;
 import javax.activation.CommandMap;
@@ -53,6 +54,7 @@ import javax.activation.FileDataSource;
 import javax.activation.MailcapCommandMap;
 import javax.activation.URLDataSource;
 
+import org.apache.cxf.common.logging.LogUtils;
 import org.apache.cxf.common.util.StringUtils;
 import org.apache.cxf.common.util.SystemPropertyAction; // Liberty Change
 import org.apache.cxf.helpers.HttpHeaderHelper;
@@ -71,6 +73,8 @@ public final class AttachmentUtil {
     // Liberty Change - End
 
     public static final String BODY_ATTACHMENT_ID = "root.message@cxf.apache.org";
+    
+    private static final Logger LOG = LogUtils.getL7dLogger(AttachmentUtil.class); // Liberty Change
 
     private static volatile int counter;
     private static final String ATT_UUID = UUID.randomUUID().toString();
@@ -192,13 +196,28 @@ public final class AttachmentUtil {
         }
 
         Object maxSize = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_SIZE);
-        if (maxSize != null) {
-            if (maxSize instanceof Long) {
-                bos.setMaxSize((Long) maxSize);
-            } else {
-                bos.setMaxSize(Long.parseLong((String)maxSize));
-            }
+        // Liberty Change Start - CXF #3188
+        if (maxSize == null) {
+            maxSize = AttachmentDeserializer.DEFAULT_ATTACHMENT_MAX_SIZE;
         }
+        if (maxSize instanceof Number) {
+            long size = ((Number) maxSize).longValue();
+            if (size >= 0) {
+                bos.setMaxSize(size);
+            } else {
+                LOG.warning("The max size value is set to unlimited.");
+            }
+        } else if (maxSize instanceof String) {
+            try {
+                bos.setMaxSize(Long.parseLong((String) maxSize));
+            } catch (NumberFormatException e) {
+                throw new IOException("Provided max size String is not a number", e);
+            }
+        } else {
+            throw new IOException("The value set as " + AttachmentDeserializer.ATTACHMENT_MAX_SIZE
+                    + " should be either an instance of Number or String");
+        }
+        // Liberty Change End
     }
 
     public static String createContentID(String ns) throws UnsupportedEncodingException {

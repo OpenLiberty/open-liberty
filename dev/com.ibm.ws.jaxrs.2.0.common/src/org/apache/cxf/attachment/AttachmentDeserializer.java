@@ -52,11 +52,14 @@ public class AttachmentDeserializer {
     public static final String ATTACHMENT_MEMORY_THRESHOLD = "attachment-memory-threshold";
 
     public static final String ATTACHMENT_MAX_SIZE = "attachment-max-size";
+    public static final long DEFAULT_ATTACHMENT_MAX_SIZE =
+                    SystemPropertyAction.getInteger("org.apache.cxf.attachment-max-size", 50 * 1024 * 1024 /* 50 Mb */); // Liberty Change - CXF #3188
 
     /**
      * The maximum number of attachments permitted in a message. The default is 50.
      */
     public static final String ATTACHMENT_MAX_COUNT = "attachment-max-count"; // Liberty Change CVE-2019-12406
+    public static final int DEFAULT_ATTACHMENT_MAX_COUNT = 50; // Liberty Change - CXF #3311
     
     // Liberty Change Start - CXF #3159
     /**
@@ -134,7 +137,7 @@ public class AttachmentDeserializer {
         // Liberty Change Start
         // CVE-2019-12406: Apache CXF does not restrict the number of message attachments
         Object maxCountProperty = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_MAX_COUNT);
-        int maxCount = 50;
+        int maxCount = DEFAULT_ATTACHMENT_MAX_COUNT; // Liberty Change - CXF #3311
         if (maxCountProperty != null) {
             if (maxCountProperty instanceof Integer) {
                 maxCount = (Integer)maxCountProperty;
