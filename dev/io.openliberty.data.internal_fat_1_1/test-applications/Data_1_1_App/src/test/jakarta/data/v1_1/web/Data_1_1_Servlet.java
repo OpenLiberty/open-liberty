@@ -111,6 +111,16 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Indicates if testing with the DB2 database.
+     *
+     * @return true if testing with the DB2 database.
+     */
+    static final boolean isDB2() {
+        String jdbcJarName = System.getenv().getOrDefault("DB_DRIVER", "UNKNOWN");
+        return jdbcJarName.startsWith("jcc");
+    }
+
+    /**
      * Indicates if testing with the Derby database.
      *
      * @return true if testing with the Derby database.
@@ -1504,6 +1514,10 @@ public class Data_1_1_Servlet extends FATServlet {
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
     @Test
     public void testLockModeAndQueryTimeoutAsQueryOptions() throws Exception {
+        // Hibernate does not honor the query timeout on native queries with DB2.
+        if (isDB2() && isHibernatePersistence())
+            return;
+
         // Populate with 18/23.
         // Ensure deletion in the finally block.
         fractions.supply(List.of(Fraction.of(18, 23)));
@@ -2408,8 +2422,9 @@ public class Data_1_1_Servlet extends FATServlet {
                    "jakarta.resource.ResourceException" }) // caused by the above during connection re-association
     @Test
     public void testQueryTimeoutAsQueryOptionOnNativeQuery() throws Exception {
-        // Derby ignores query timeout and the lock timeout ends up applying instead
-        if (isDerby())
+        // Derby ignores query timeout and the lock timeout ends up applying instead.
+        // Hibernate does not honor the query timeout on native queries with DB2.
+        if (isDerby() || (isDB2() && isHibernatePersistence()))
             return;
 
         CountDownLatch locked = new CountDownLatch(1);
