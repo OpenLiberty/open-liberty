@@ -56,6 +56,7 @@ public class JDBC41Test extends FATServletClient {
         server.stopServer("J2CA0081E.*slowDS", // expected by testNetworkTimeoutSimple
                           "J2CA0026E.*RollbackException", // from testTransactionTimeoutAbort when transaction times out before enlist
                           "J2CA0027E", // expected by testTransactionTimeoutAbort - XAds removed because it does not appear on the same line as the message ID in every language
+                          "J2CA0030E", // from testTransactionTimeoutAbort when transaction times out before enlist
                           "DSRA0302E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA0304E.*XAException*", // expected by testTransactionTimeoutAbort
                           "DSRA9400E.*addSync", // from testTransactionTimeoutAbort when transaction times out before enlist

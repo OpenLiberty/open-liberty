@@ -1550,6 +1550,7 @@ public class BasicTestServlet extends FATDatabaseServlet {
     @Test
     @SkipIfDataSourceProperties({ SYBASE, INFORMIX_JDBC }) // no 4.1 sybase or ifx driver
     @AllowedFFDC({
+                   "java.sql.SQLException", // wraps RollbackException when transaction times out before enlist
                    "javax.resource.ResourceException", // times out before enlistment
                    "javax.transaction.RollbackException", // times out before enlistment
                    "javax.transaction.xa.XAException", "java.lang.NullPointerException", "oracle.jdbc.xa.OracleXAException",
