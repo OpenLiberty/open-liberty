@@ -208,38 +208,38 @@ err.unsupported.jmx.operation.useraction=Do not run unsupported operation.
 
 # webService and webServiceClient config messages
 
-info.no.attributes.webservice=CWWKW0062I: The webService configuration element is enabled, but no configuration attributes are present.
-info.no.attributes.webservice.explanation=The webService configuration element was added to the server.xml but does not contain any attributes. No configuration will be applied.
-info.no.attributes.webservice.useraction=Add one or more configuration attributes to the webService element or remove it from the server.xml.
+info.no.attributes.webservice=CWWKW0062I: The webService configuration element is enabled, but has no configuration attributes.
+info.no.attributes.webservice.explanation=The webService configuration element was added to the server.xml file, but it does not contain any configuration attributes. Without attributes, no webService configuration options take effect and the server uses default behavior.
+info.no.attributes.webservice.useraction=Add one or more configuration attributes to the webService element, or remove the webService element from the server.xml file.
 
-info.no.attributes.webserviceclient=CWWKW0063I: The webServiceClient configuration element is enabled, but no configuration attributes are present.
-info.no.attributes.webserviceclient.explanation=The webServiceClient configuration element was added to the server.xml but does not contain any attributes. No configuration will be applied.
-info.no.attributes.webserviceclient.useraction=Add one or more configuration attributes to the webServiceClient element or remove it from the server.xml.
-
-#{0}=serviceName value
-info.ignore.unexpected.elements.client.named=CWWKW0064I: The ignoreUnexpectedElements attribute is enabled on JAX-WS client {0}. Unknown elements found in incoming SOAP responses for this client will be ignored.
-info.ignore.unexpected.elements.client.named.explanation=The webServiceClient configuration with serviceName {0} has ignoreUnexpectedElements set to true. JAXB will ignore unknown elements when unmarshalling incoming SOAP responses.
-info.ignore.unexpected.elements.client.named.useraction=No action required. To disable this behavior, set ignoreUnexpectedElements to false in the webServiceClient configuration.
-
-#{0}=portName value
-info.ignore.unexpected.elements.provider.named=CWWKW0065I: The ignoreUnexpectedElements attribute is enabled on JAX-WS provider {0}. Unknown elements found in incoming SOAP messages for this provider will be ignored.
-info.ignore.unexpected.elements.provider.named.explanation=The webService configuration with portName {0} has ignoreUnexpectedElements set to true. JAXB will ignore unknown elements when unmarshalling incoming SOAP requests.
-info.ignore.unexpected.elements.provider.named.useraction=No action required. To disable this behavior, set ignoreUnexpectedElements to false in the webService configuration.
-
-info.ignore.unexpected.elements.global=CWWKW0066I: The ignoreUnexpectedElements attribute is enabled. Unknown elements found during unmarshalling will be ignored.
-info.ignore.unexpected.elements.global.explanation=A global webServiceClient or webService configuration has ignoreUnexpectedElements set to true. JAXB will ignore unknown elements during unmarshalling.
-info.ignore.unexpected.elements.global.useraction=No action required. To disable this behavior, set ignoreUnexpectedElements to false in the configuration.
-
-info.schema.validation.global=CWWKW0067I: The enableSchemaValidation attribute is set to true. JAXB schema validation will be enabled during the unmarshalling of SOAP messages.
-info.schema.validation.global.explanation=A global webServiceClient or webService configuration has enableSchemaValidation set to true. JAXB will perform full schema validation when unmarshalling incoming SOAP messages.
-info.schema.validation.global.useraction=No action required. To disable schema validation, set enableSchemaValidation to false in the configuration.
+info.no.attributes.webserviceclient=CWWKW0063I: The webServiceClient configuration element is enabled, but has no configuration attributes.
+info.no.attributes.webserviceclient.explanation=The webServiceClient configuration element was added to the server.xml file, but it does not contain any configuration attributes. Without attributes, no webServiceClient configuration options take effect and the server uses default behavior.
+info.no.attributes.webserviceclient.useraction=Add one or more configuration attributes to the webServiceClient element, or remove the webServiceClient element from the server.xml file.
 
 #{0}=serviceName value
-info.schema.validation.client.named=CWWKW0068I: The enableSchemaValidation attribute is enabled on JAX-WS client {0}. JAXB schema validation will be enabled during the unmarshalling of SOAP messages.
-info.schema.validation.client.named.explanation=The webServiceClient configuration with serviceName {0} has enableSchemaValidation set to true. JAXB will perform full schema validation when unmarshalling incoming SOAP responses for this client.
-info.schema.validation.client.named.useraction=No action required. To disable schema validation, set enableSchemaValidation to false in the webServiceClient configuration.
+info.ignore.unexpected.elements.client.named=CWWKW0064I: The ignoreUnexpectedElements attribute is enabled on the {0} JAX-WS client. Unknown elements that are found in incoming SOAP responses for this client are ignored.
+info.ignore.unexpected.elements.client.named.explanation=The webServiceClient configuration with the {0} serviceName has the ignoreUnexpectedElements attribute set to true. When JAXB unmarshals incoming SOAP responses, JAXB ignores unknown elements.
+info.ignore.unexpected.elements.client.named.useraction=No action is required. To disable this behavior, set ignoreUnexpectedElements to false in the webServiceClient configuration.
 
 #{0}=portName value
-info.schema.validation.provider.named=CWWKW0069I: The enableSchemaValidation attribute is enabled on JAX-WS provider {0}. JAXB schema validation will be enabled during the unmarshalling of SOAP messages.
-info.schema.validation.provider.named.explanation=The webService configuration with portName {0} has enableSchemaValidation set to true. JAXB will perform full schema validation when unmarshalling incoming SOAP requests for this provider.
-info.schema.validation.provider.named.useraction=No action required. To disable schema validation, set enableSchemaValidation to false in the webService configuration.git ls-files '**/.classpath' '**/.settings/**' | xargs git checkout --
+info.ignore.unexpected.elements.provider.named=CWWKW0065I: The ignoreUnexpectedElements attribute is enabled on the {0} JAX-WS provider. Unknown elements that are found in incoming SOAP requests for this provider are ignored.
+info.ignore.unexpected.elements.provider.named.explanation=The webService configuration with the {0} portName has the ignoreUnexpectedElements attribute set to true. When JAXB unmarshals incoming SOAP requests, JAXB ignores unknown elements.
+info.ignore.unexpected.elements.provider.named.useraction=No action is required. To disable this behavior, set ignoreUnexpectedElements to false in the webService configuration.
+
+info.ignore.unexpected.elements.global=CWWKW0066I: The ignoreUnexpectedElements attribute is enabled. Unknown elements that are found during unmarshalling are ignored.
+info.ignore.unexpected.elements.global.explanation=A global webServiceClient or webService configuration has the ignoreUnexpectedElements attribute set to true. When JAXB unmarshals incoming SOAP messages, JAXB ignores unknown elements.
+info.ignore.unexpected.elements.global.useraction=No action is required. To disable this behavior, set ignoreUnexpectedElements to false in the configuration.
+
+info.schema.validation.global=CWWKW0067I: The enableSchemaValidation attribute is set to true. Incoming SOAP messages are validated against the schema before they are processed.
+info.schema.validation.global.explanation=A global webServiceClient or webService configuration has enableSchemaValidation set to true. When JAXB unmarshals incoming SOAP messages, JAXB performs full schema validation.
+info.schema.validation.global.useraction=No action is required. To disable schema validation, set enableSchemaValidation to false in the configuration.
+
+#{0}=serviceName value
+info.schema.validation.client.named=CWWKW0068I: The enableSchemaValidation attribute is enabled on the {0} JAX-WS client. Incoming SOAP responses for this client are validated against the schema before they are processed.
+info.schema.validation.client.named.explanation=The webServiceClient configuration with the {0} serviceName has enableSchemaValidation set to true. When JAXB unmarshals incoming SOAP responses for this client, JAXB performs full schema validation.
+info.schema.validation.client.named.useraction=No action is required. To disable schema validation, set enableSchemaValidation to false in the webServiceClient configuration.
+
+#{0}=portName value
+info.schema.validation.provider.named=CWWKW0069I: The enableSchemaValidation attribute is enabled on the {0} JAX-WS provider. Incoming SOAP requests for this provider are validated against the schema before they are processed.
+info.schema.validation.provider.named.explanation=The webService configuration with the {0} portName has enableSchemaValidation set to true. When JAXB unmarshals incoming SOAP requests for this provider, JAXB performs full schema validation.
+info.schema.validation.provider.named.useraction=No action is required. To disable schema validation, set enableSchemaValidation to false in the webService configuration.
