@@ -40,6 +40,7 @@ import com.ibm.ws.jpa.jpa31.AbstractFATSuite;
 import com.ibm.ws.testtooling.vehicle.web.JPAFATServletClient;
 
 import componenttest.annotation.MinimumJavaLevel;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.annotation.SkipForRepeat;
 import componenttest.custom.junit.runner.FATRunner;
@@ -55,6 +56,7 @@ import junit.framework.Assert;
 @RunWith(FATRunner.class)
 @Mode(TestMode.LITE)
 @MinimumJavaLevel(javaLevel = 11)
+@MaximumJavaLevel(javaLevel = 25) 
 @SkipForRepeat("JPA32_HIBERNATE")
 public class AsmServiceTest extends JPAFATServletClient {
     private final static String CONTEXT_ROOT = "eclAsmService";
