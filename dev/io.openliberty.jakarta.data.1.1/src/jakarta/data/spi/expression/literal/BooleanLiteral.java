@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.BooleanExpression;
 
 /**
@@ -20,7 +21,12 @@ import jakarta.data.expression.BooleanExpression;
 public interface BooleanLiteral //
                 extends ComparableLiteral<Boolean>, BooleanExpression<Object> {
 
+    @Nonnull
     static BooleanLiteral of(boolean value) {
         return new BooleanLiteralRecord(value);
     }
+
+    @Override
+    @Nonnull
+    String toString();
 }

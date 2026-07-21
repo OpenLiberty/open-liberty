@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.restrict;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.constraint.Constraint;
 import jakarta.data.expression.Expression;
 
@@ -20,12 +21,15 @@ import jakarta.data.expression.Expression;
  */
 public interface BasicRestriction<T, V> extends Restriction<T> {
 
+    @Nonnull
     Constraint<V> constraint();
 
+    @Nonnull
     Expression<T, V> expression();
 
-    static <T, V> Restriction<T> of(Expression<T, V> expression,
-                                    Constraint<V> constraint) {
+    @Nonnull
+    static <T, V> Restriction<T> of(@Nonnull Expression<T, V> expression,
+                                    @Nonnull Constraint<V> constraint) {
 
         return new BasicRestrictionRecord<>(expression, constraint);
     }

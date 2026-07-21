@@ -12,14 +12,15 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.literal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record ComparableLiteralRecord<V extends Comparable<?>>(
-                Class<? extends V> type,
-                V value)
+                @Nonnull Class<? extends V> type,
+                @Nonnull V value)
                 implements ComparableLiteral<V> {
 
     ComparableLiteralRecord {
@@ -27,6 +28,7 @@ record ComparableLiteralRecord<V extends Comparable<?>>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         if (value instanceof Enum e)
             return e.getClass().getName() + '.' + e.name();

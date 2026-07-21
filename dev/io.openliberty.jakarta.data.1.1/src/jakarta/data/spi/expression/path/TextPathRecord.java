@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,13 +12,14 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.path;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.metamodel.TextAttribute;
 
 record TextPathRecord<T, U>(
-                NavigableExpression<T, U> expression,
-                TextAttribute<U> attribute)
+                @Nonnull NavigableExpression<T, U> expression,
+                @Nonnull TextAttribute<U> attribute)
                 implements TextPath<T, U> {
 
     TextPathRecord {
@@ -27,6 +28,7 @@ record TextPathRecord<T, U>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         String exp = expression.toString();
         String name = attribute.name();

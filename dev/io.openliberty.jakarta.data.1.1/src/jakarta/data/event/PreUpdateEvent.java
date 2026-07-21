@@ -12,9 +12,11 @@
  *******************************************************************************/
 package jakarta.data.event;
 
+import jakarta.annotation.Nonnull;
+
 public class PreUpdateEvent<E> extends LifecycleEvent<E> {
 
-    public PreUpdateEvent(E entity) {
+    public PreUpdateEvent(@Nonnull E entity) {
         super(entity);
     }
 }

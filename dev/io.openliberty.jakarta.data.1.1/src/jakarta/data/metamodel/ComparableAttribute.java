@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.Sort;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
@@ -25,10 +26,11 @@ public interface ComparableAttribute<T, V extends Comparable<?>> //
                 SortableAttribute<T>, //
                 ComparableExpression<T, V> {
 
+    @Nonnull
     static <T, V extends Comparable<?>> ComparableAttribute<T, V> //
-                    of(Class<T> entityClass,
-                       String name,
-                       Class<V> attributeType) {
+                    of(@Nonnull Class<T> entityClass,
+                       @Nonnull String name,
+                       @Nonnull Class<V> attributeType) {
 
         Messages.requireNonNull(entityClass, "entityClass");
         Messages.requireNonNull(name, "name");

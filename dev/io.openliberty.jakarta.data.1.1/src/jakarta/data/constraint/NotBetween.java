@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.spi.expression.literal.ComparableLiteral;
 
@@ -20,33 +21,39 @@ import jakarta.data.spi.expression.literal.ComparableLiteral;
  */
 public interface NotBetween<V extends Comparable<?>> extends Constraint<V> {
 
-    static <V extends Comparable<?>> NotBetween<V> bounds(V lower,
-                                                          V upper) {
+    @Nonnull
+    static <V extends Comparable<?>> NotBetween<V> bounds(@Nonnull V lower,
+                                                          @Nonnull V upper) {
         return new NotBetweenRecord<>( //
                         ComparableLiteral.of(lower), //
                         ComparableLiteral.of(upper));
     }
 
-    static <V extends Comparable<?>> NotBetween<V> bounds(V lower,
-                                                          ComparableExpression<?, V> upper) {
+    @Nonnull
+    static <V extends Comparable<?>> NotBetween<V> bounds(@Nonnull V lower,
+                                                          @Nonnull ComparableExpression<?, V> upper) {
         return new NotBetweenRecord<>( //
                         ComparableLiteral.of(lower), //
                         upper);
     }
 
-    static <V extends Comparable<?>> NotBetween<V> bounds(ComparableExpression<?, V> lower,
-                                                          V upper) {
+    @Nonnull
+    static <V extends Comparable<?>> NotBetween<V> bounds(@Nonnull ComparableExpression<?, V> lower,
+                                                          @Nonnull V upper) {
         return new NotBetweenRecord<>( //
                         lower, //
                         ComparableLiteral.of(upper));
     }
 
-    static <V extends Comparable<?>> NotBetween<V> bounds(ComparableExpression<?, V> lower,
-                                                          ComparableExpression<?, V> upper) {
+    @Nonnull
+    static <V extends Comparable<?>> NotBetween<V> bounds(@Nonnull ComparableExpression<?, V> lower,
+                                                          @Nonnull ComparableExpression<?, V> upper) {
         return new NotBetweenRecord<>(lower, upper);
     }
 
+    @Nonnull
     ComparableExpression<?, V> lowerBound();
 
+    @Nonnull
     ComparableExpression<?, V> upperBound();
 }

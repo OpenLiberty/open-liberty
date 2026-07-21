@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.Sort;
 import jakarta.data.messages.Messages;
 
@@ -20,17 +21,20 @@ import jakarta.data.messages.Messages;
  */
 public interface SortableAttribute<T> extends Attribute<T> {
 
+    @Nonnull
     default Sort<T> asc() {
         return Sort.asc(name());
     }
 
+    @Nonnull
     default Sort<T> desc() {
         return Sort.desc(name());
     }
 
-    static <T, V> SortableAttribute<T> of(Class<T> entityClass,
-                                          String name,
-                                          Class<V> attributeType) {
+    @Nonnull
+    static <T, V> SortableAttribute<T> of(@Nonnull Class<T> entityClass,
+                                          @Nonnull String name,
+                                          @Nonnull Class<V> attributeType) {
         Messages.requireNonNull(entityClass, "entityClass");
         Messages.requireNonNull(name, "name");
         Messages.requireNonNull(attributeType, "attributeType");

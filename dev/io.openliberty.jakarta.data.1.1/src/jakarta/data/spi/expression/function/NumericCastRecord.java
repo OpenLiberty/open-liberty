@@ -12,12 +12,13 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.function;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NumericExpression;
 import jakarta.data.messages.Messages;
 
 record NumericCastRecord<T, N extends Number & Comparable<N>>(
-                NumericExpression<T, ?> expression,
-                Class<N> type)
+                @Nonnull NumericExpression<T, ?> expression,
+                @Nonnull Class<N> type)
                 implements NumericCast<T, N> {
 
     NumericCastRecord {

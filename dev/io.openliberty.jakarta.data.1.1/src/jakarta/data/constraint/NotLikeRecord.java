@@ -12,22 +12,25 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.TextExpression;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record NotLikeRecord(
-                TextExpression<?> pattern,
+                @Nonnull TextExpression<?> pattern,
                 char escape)
                 implements NotLike {
 
     @Override
+    @Nonnull
     public Like negate() {
         return new LikeRecord(pattern, escape);
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "NOT LIKE " + pattern + " ESCAPE '" + escape + "'";
     }

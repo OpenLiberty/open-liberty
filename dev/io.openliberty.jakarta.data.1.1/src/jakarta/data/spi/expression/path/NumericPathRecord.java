@@ -12,13 +12,14 @@
  *******************************************************************************/
 package jakarta.data.spi.expression.path;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.metamodel.NumericAttribute;
 
 record NumericPathRecord<T, U, N extends Number & Comparable<N>>(
-                NavigableExpression<T, U> expression,
-                NumericAttribute<U, N> attribute)
+                @Nonnull NavigableExpression<T, U> expression,
+                @Nonnull NumericAttribute<U, N> attribute)
                 implements NumericPath<T, U, N> {
 
     NumericPathRecord {
@@ -27,6 +28,7 @@ record NumericPathRecord<T, U, N extends Number & Comparable<N>>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         String exp = expression.toString();
         String name = attribute.name();
@@ -40,6 +42,7 @@ record NumericPathRecord<T, U, N extends Number & Comparable<N>>(
     }
 
     @Override
+    @Nonnull
     public Class<? extends N> type() {
         return attribute.type();
     }

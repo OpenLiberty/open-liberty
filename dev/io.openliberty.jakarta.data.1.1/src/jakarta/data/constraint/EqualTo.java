@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.Expression;
 import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.Literal;
@@ -21,15 +22,18 @@ import jakarta.data.spi.expression.literal.Literal;
  */
 public interface EqualTo<V> extends Constraint<V> {
 
+    @Nonnull
     Expression<?, V> expression();
 
-    static <V> EqualTo<V> expression(Expression<?, V> expression) {
+    @Nonnull
+    static <V> EqualTo<V> expression(@Nonnull Expression<?, V> expression) {
         Messages.requireNonNull(expression, "expression");
 
         return new EqualToRecord<>(expression);
     }
 
-    static <V> EqualTo<V> value(V value) {
+    @Nonnull
+    static <V> EqualTo<V> value(@Nonnull V value) {
         Messages.requireNonNull(value, "value");
 
         return new EqualToRecord<>(Literal.of(value));

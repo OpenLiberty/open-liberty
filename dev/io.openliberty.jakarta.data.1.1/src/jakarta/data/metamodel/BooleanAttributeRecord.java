@@ -12,16 +12,19 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record BooleanAttributeRecord<T>(
-                Class<T> declaringType,
-                String name,
-                Class<Boolean> type)
+                @Nonnull Class<T> declaringType,
+                @Nonnull String name,
+                @Nonnull Class<Boolean> type)
                 implements BooleanAttribute<T> {
 
     @Override
+    @Nonnull
     public String toString() {
         return declaringType.getSimpleName().toLowerCase() + '.' + name;
     }

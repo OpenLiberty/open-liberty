@@ -12,18 +12,20 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import java.time.temporal.Temporal;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record TemporalAttributeRecord<T, V extends Temporal & Comparable<? extends Temporal>>(
-                Class<T> declaringType,
-                String name,
-                Class<V> type)
+                @Nonnull Class<T> declaringType,
+                @Nonnull String name,
+                @Nonnull Class<V> type)
                 implements TemporalAttribute<T, V> {
 
     @Override
+    @Nonnull
     public String toString() {
         return declaringType.getSimpleName().toLowerCase() + '.' + name;
     }

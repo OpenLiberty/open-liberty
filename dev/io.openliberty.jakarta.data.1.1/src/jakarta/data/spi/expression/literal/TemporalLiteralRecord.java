@@ -20,14 +20,15 @@ import java.time.Year;
 import java.time.ZoneOffset;
 import java.time.temporal.Temporal;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.messages.Messages;
 
 /**
  * Method signatures are copied from Jakarta Data.
  */
 record TemporalLiteralRecord<V extends Temporal & Comparable<? extends Temporal>>(
-                Class<V> type,
-                V value)
+                @Nonnull Class<V> type,
+                @Nonnull V value)
                 implements TemporalLiteral<V> {
 
     TemporalLiteralRecord {
@@ -36,6 +37,7 @@ record TemporalLiteralRecord<V extends Temporal & Comparable<? extends Temporal>
     }
 
     @Override
+    @Nonnull
     public String toString() {
         Temporal temporal;
         if (value instanceof Instant i)

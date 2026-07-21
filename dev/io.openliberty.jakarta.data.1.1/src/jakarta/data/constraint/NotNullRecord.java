@@ -12,6 +12,8 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
@@ -20,11 +22,13 @@ record NotNullRecord<V>() implements NotNull<V> {
     static final NotNullRecord<?> INSTANCE = new NotNullRecord<>();
 
     @Override
+    @Nonnull
     public Null<V> negate() {
         return Null.instance();
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "IS NOT NULL";
     }
