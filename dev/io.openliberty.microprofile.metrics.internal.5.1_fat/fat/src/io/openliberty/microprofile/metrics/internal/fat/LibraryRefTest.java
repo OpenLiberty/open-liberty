@@ -350,6 +350,7 @@ public class LibraryRefTest {
 			 * micrometer-registry-prometheus ONLY
 			 * micrometer-registry-prometheus-simpleclient
 			 */
+			Assert.fail("MP Metrics should not be running after a CWMMC0006E");
 
 		} catch (Exception exception) {
 			Log.info(c, "externalPrometheusMicrometerv11512", String.format("Expected : File[NotFoundException] ; Recieved : [%s]", exception));
