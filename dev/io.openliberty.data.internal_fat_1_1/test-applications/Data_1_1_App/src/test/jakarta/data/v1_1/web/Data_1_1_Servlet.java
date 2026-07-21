@@ -2847,7 +2847,7 @@ public class Data_1_1_Servlet extends FATServlet {
         Method alter = sectors.getClass().getMethod("alter", Sector.class);
         RolesAllowed rolesForMethod = alter.getAnnotation(RolesAllowed.class);
         assertNotNull("Repository bean method " + alter +
-                      " lacks the RollsAllowed annotation",
+                      " lacks the RolesAllowed annotation",
                       rolesForMethod);
 
         assertEquals(List.of("operator"),
