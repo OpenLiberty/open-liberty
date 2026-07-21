@@ -2914,6 +2914,7 @@ public class Data_1_1_Servlet extends FATServlet {
         // The Weld proxy for the bean does not include class-level annotations.
         // Jakarta Security would need to define these annotations as interceptor
         // bindings to have them to apply to CDI beans.
+        // TODO add test based on changes made during EE 12
 
         for (Annotation anno : sectors.getClass().getAnnotations())
             if (RolesAllowed.class.getPackageName()
