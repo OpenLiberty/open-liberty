@@ -158,7 +158,7 @@ public class LibertyWebServiceClientInInterceptor extends AbstractPhaseIntercept
         }
         
         // As long as property is non-null:
-        // Enable enhanced schema validation if true, or disable it along with default validation if false
+        // Enable enhanced schema validation if true, or disable it along with default validation if false 
         if ( enableSchemaValidation != null) {
             if ((boolean) enableSchemaValidation == true) {
                 // enable Schema Validation
