@@ -1,0 +1,20 @@
+###############################################################################
+# Copyright (c) 2026 IBM Corporation and others.
+# All rights reserved. This program and the accompanying materials
+# are made available under the terms of the Eclipse Public License 2.0
+# which accompanies this distribution, and is available at
+# http://www.eclipse.org/legal/epl-2.0/
+#
+# SPDX-License-Identifier: EPL-2.0
+###############################################################################
+#CMVCPATHNAME N/A
+#COMPONENTPREFIX CWMCM
+#COMPONENTNAMEFOR CWMCM MCP Monitor
+#NLS_ENCODING=UNICODE
+#NLS_MESSAGEFORMAT_NONE
+#ISMESSAGEFILE true
+
+mcp.session.count.description=N\u00famero total de sesiones del MCP
+mcp.session.duration.description=Duraci\u00f3n de la sesi\u00f3n del MCP
+mcp.operation.count.description=N\u00famero total de llamadas de una herramienta MCP
+mcp.operation.duration.description=Duraci\u00f3n de las operaciones de la herramienta MCP

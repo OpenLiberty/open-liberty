@@ -1,5 +1,5 @@
 ###############################################################################
-# Copyright (c) 2002, 2024 IBM Corporation and others.
+# Copyright 2002, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -159,9 +159,9 @@ morethanoneonopen.annotation=CWWKH0036E: Une exception s''est produite lors du d
 morethanoneonopen.annotation.explanation=La classe ServerEndpoint annot\u00e9e n'est pas valide car plus d'une m\u00e9thode @OnOpen a \u00e9t\u00e9 d\u00e9finie dans cette classe. Le d\u00e9ploiement de l'application WebSocket n'a pas abouti.
 morethanoneonopen.annotation.useraction=Corrigez la classe ServerEndpoint annot\u00e9e en d\u00e9finissant une seule m\u00e9thode @OnOpen. Apr\u00e8s avoir r\u00e9solu le probl\u00e8me, d\u00e9ployez \u00e0 nouveau l'application.
 
-invalid.message.toobig=CWWKH0037E: Message WebSocket entrant non valide dans la classe ServerEndpoint {0}. La taille du message entrant est {1}, ce qui d\u00e9passe la valeur maxMessageSize {2} d\u00e9finie dans la m\u00e9thode d''annotation @OnMessage{3}.
-invalid.message.toobig.explanation=Le message WebSocket ne peut pas d\u00e9passer la taille maxMessageSize d\u00e9finie dans l'annotation @OnMessage.
-invalid.message.toobig.useraction=V\u00e9rifiez que le client envoie un message WebSocket plus petit que la valeur maxMessageSize d\u00e9finie dans @OnMessage ou augmentez la valeur de maxMessageSize dans @OnMessage et d\u00e9ployez \u00e0 nouveau l'application.
+invalid.message.toobig=CWWKH0037E: Un message entrant d''une taille de {0} octets d\u00e9passe la taille maximale autoris\u00e9e de {1} octets dans la classe {2} pour la m\u00e9thode {3}.
+invalid.message.toobig.explanation=Le message a d\u00e9pass\u00e9 la limite de taille configur\u00e9e. Ce probl\u00e8me peut \u00eatre d\u00fb \u00e0 la valeur de l'annotation @OnMessage maxMessageSize, \u00e0 la taille du tampon de session ( maxTextMessageBufferSize ou maxBinaryMessageBufferSize ), ou \u00e0 la limite par d\u00e9faut lorsqu'il n'existe aucun gestionnaire pour ce type de message.
+invalid.message.toobig.useraction=Vous pouvez soit r\u00e9duire la taille des messages client, soit augmenter la valeur de l'annotation ` @OnMessage ` ( maxMessageSize ), soit augmenter la taille du tampon de session \u00e0 l'aide de setMaxTextMessageBufferSize( ) ou setMaxBinaryMessageBufferSize( ), soit utiliser l'option de configuration ` HTTP ` ( websocketBufferSize, ), soit ajouter un gestionnaire ` @OnMessage ` adapt\u00e9 au type de message.
 
 maxidletimeout.closesession=CWWKH0038E: La session WebSocket est inactive depuis {0} secondes. Fermeture de la connexion.
 maxidletimeout.closesession.explanation=Le d\u00e9lai d'attente de la session WebSocket a expir\u00e9. Les sessions WebSocket deviennent inactives lorsque des messages ne sont pas envoy\u00e9s ou re\u00e7us au cours du nombre de secondes sp\u00e9cifi\u00e9 par le param\u00e8tre maxIdleTimeout.

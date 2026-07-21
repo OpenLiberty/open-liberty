@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 1997, 2025 IBM Corporation and others.
+ * Copyright (c) 1997, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -198,7 +198,7 @@ public class PasswordUtil {
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
      *
      * @param decoded_string   the string to be encoded.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @return The encoded string.
      * @throws InvalidPasswordEncodingException    If the decoded_string is null or invalid. Or the encoded_string is null.
      * @throws UnsupportedCryptoAlgorithmException If the algorithm is not supported.
@@ -234,7 +234,7 @@ public class PasswordUtil {
      * Note that this method is only avaiable for the Liberty profile.
      *
      * @param decoded_string   the string to be encoded.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @param properties       the properties for the encryption.
      * @return The encoded string.
      * @throws InvalidPasswordEncodingException    If the decoded_string is null or invalid. Or the encoded_string is null.
@@ -263,13 +263,33 @@ public class PasswordUtil {
         }
 
         String current_crypto_algorithm = getCryptoAlgorithm(decoded_string);
+        // Exclude empty algorithm ("{}prefix") from isValidCurrentAlgorithm — an empty tag is not
+        // a real encoding, so a password like "{}testtest" must be treated as literal plaintext
+        // and encoded in full, preserving the {} characters in the round-trip.
+        boolean isValidCurrentAlgorithm = current_crypto_algorithm != null
+                                          && !current_crypto_algorithm.isEmpty()
+                                          && isValidCryptoAlgorithm(current_crypto_algorithm);
 
-        if ((current_crypto_algorithm != null && current_crypto_algorithm.startsWith(crypto_algorithm)) || isHashed(decoded_string)) {
-            // don't accept encoded password
+        if (isHashed(decoded_string)) {
+            // Reject already-hashed passwords
             throw new InvalidPasswordEncodingException();
-        } else if (current_crypto_algorithm != null) {
+        }
+
+        if (isValidCurrentAlgorithm && current_crypto_algorithm.startsWith(crypto_algorithm)) {
+            // Reject passwords already encoded with the target algorithm
+            throw new InvalidPasswordEncodingException();
+        }
+
+        if (isValidCurrentAlgorithm) {
+            // password is encoded with a different valid algorithm — decode it first, then re-encode
             decoded_string = passwordDecode(decoded_string);
         }
+        // If current_crypto_algorithm is non-null but isValidCurrentAlgorithm is false, the input
+        // string merely starts with a {something} pattern (e.g. a vault-generated password like
+        // "{abc}def"). In that case we treat the entire string as literal plaintext and fall through
+        // to encode it. Note: {custom} and {custom:alias} are recognised by isValidCryptoAlgorithm()
+        // when the CustomPasswordEncryption OSGi service is active, so they correctly take the
+        // decode-then-re-encode path above.
         if (properties == null || !properties.containsKey(PROPERTY_NO_TRIM) || !"true".equalsIgnoreCase(properties.get(PROPERTY_NO_TRIM))) {
             decoded_string = decoded_string.trim();
         }
@@ -353,7 +373,7 @@ public class PasswordUtil {
 
     /**
      * Determine if the provided algorithm string is valid.
-     * The valid values are xor, aes, or hash.
+     * The valid values are xor, aes, aes-128, aes-256, or hash.
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
      *
      * @param crypto_algorithm the string of algorithm.
@@ -379,7 +399,7 @@ public class PasswordUtil {
 
     /**
      * Determine if the provided algorithm tag is valid. the algorithm tag consists of "{<algorithm>}" such as "{xor}".
-     * The valid values are {xor}, {aes}, or {hash}.
+     * The valid values are {xor}, {aes}, {aes-128}, {aes-256}, or {hash}.
      * Use securityUtility encode --listCustom command line utility to see if any additional custom encryptions are supported.
      *
      * @param tag the string of algorithm tag to be examined.
@@ -464,7 +484,7 @@ public class PasswordUtil {
      * is already applied, it will be removed and replaced with the new algorithm.
      *
      * @param decoded_string   the string to be encoded, or the encoded string. If the string contains an "{}", it is treated as a crypto algorithm tag and not as a decoded string.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @return The encoded string. Null if there is any failure during encoding, or invalid or null decoded_string
      */
     public static String passwordEncode(String decoded_string, String crypto_algorithm) {
@@ -684,7 +704,7 @@ public class PasswordUtil {
      * Encode the provided string by using the specified encoding algorithm and properties
      *
      * @param decoded_string   the string to be encoded.
-     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, or hash.
+     * @param crypto_algorithm the algorithm to be used for encoding. The supported values are xor, aes, aes-128, aes-256, or hash.
      * @param properties       the properties for the encryption.
      * @return The encoded string. null if there is any failure during encoding, or invalid or null decoded_string
      */

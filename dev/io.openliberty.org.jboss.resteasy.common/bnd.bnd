@@ -141,6 +141,7 @@ Import-Package: \
   !org.jboss.resteasy.plugins.providers.jaxb, \
   !org.jboss.resteasy.plugins.providers.validator, \
   !sun.misc, \
+  org.jboss.logging;version="[3.4,3.5)", \
   *
 
 DynamicImport-Package: \

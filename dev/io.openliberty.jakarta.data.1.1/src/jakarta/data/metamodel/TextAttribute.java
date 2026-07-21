@@ -12,7 +12,6 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
-import jakarta.data.Sort;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.messages.Messages;
 
@@ -20,14 +19,6 @@ import jakarta.data.messages.Messages;
  * Method signatures are copied from Jakarta Data.
  */
 public interface TextAttribute<T> extends ComparableAttribute<T, String>, TextExpression<T> {
-
-    default Sort<T> ascIgnoreCase() {
-        return Sort.ascIgnoreCase(name());
-    }
-
-    default Sort<T> descIgnoreCase() {
-        return Sort.descIgnoreCase(name());
-    }
 
     static <T> TextAttribute<T> of(Class<T> entityClass,
                                    String name) {

@@ -230,28 +230,48 @@ public class McpServerApplicationTracker {
      * be found
      *
      * @param appName The name of the application defined in the server.xml under `<application name="appName" location="app.war">`
-     * @param moduleName The name of the module defined in the server.xml under `<mcpServer moduleName="myModule" path="/mcp"`
+     * @param moduleName The name of the module from runtime (may include .war suffix for EAR deployments)
      * @return the McpServerConfigProps for the given application. If no `<mcpServer>` property was set in the server.xml
      * or if a configuration for particular module could not be found, returns {@link McpServerConfigProps.DEFAULT_CONFIG}
      */
     public McpServerConfigProps getConfigForModule(String appName, String moduleName) {
         List<McpServerConfigProps> configProps = appNameToMcpConfigProps.get(appName);
+
         if (configProps == null || configProps.isEmpty()) {
             return DEFAULT_CONFIG;
         }
+
+        String normalizedModuleName = normalizeModuleName(moduleName);
         McpServerConfigProps result = null;
+
         for (McpServerConfigProps configProp : configProps) {
-            //Exact module name match
-            if (moduleName != null && moduleName.equals(configProp.moduleName())) {
-                result = configProp;
-                break;
+            String configuredModuleName = normalizeModuleName(configProp.moduleName());
+
+            if (normalizedModuleName != null && normalizedModuleName.equals(configuredModuleName)) {
+                return configProp;
             }
-            //no module name specified - use default for all modules
+
+            // no module name specified - use default for all modules
             if (configProp.moduleName() == null) {
                 result = configProp;
             }
         }
+
         return result != null ? result : DEFAULT_CONFIG;
+    }
+
+    /**
+     * Normalizes module names before comparing server.xml configuration with runtime metadata.
+     *
+     * For WAR modules inside an EAR, Liberty runtime metadata can report the module using the archive
+     * name, for example `war1.war`, while the configured mcpServer moduleName is `war1`.
+     */
+    private String normalizeModuleName(String moduleName) {
+        if (moduleName != null && moduleName.endsWith(".war")) {
+            return moduleName.substring(0, moduleName.length() - ".war".length());
+        }
+
+        return moduleName;
     }
 
 }

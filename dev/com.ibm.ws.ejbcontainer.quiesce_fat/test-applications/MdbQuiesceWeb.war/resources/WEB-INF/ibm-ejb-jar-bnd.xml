@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ejb-jar-bnd xmlns="http://websphere.ibm.com/xml/ns/javaee"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://websphere.ibm.com/xml/ns/javaee http://websphere.ibm.com/xml/ns/javaee/ibm-ejb-jar-bnd_1_0.xsd"
+             version="1.0">
+
+    <message-driven name="MdbQuiesceBnd">
+        <env-entry name="io.openliberty.ejb.deactivateOnQuiesce" value="false"/>
+    </message-driven>
+
+    <session name="StartupSingletonQuiesceBnd">
+        <env-entry name="io.openliberty.ejb.destroyOnQuiesce" value="true"/>
+    </session>
+
+</ejb-jar-bnd>

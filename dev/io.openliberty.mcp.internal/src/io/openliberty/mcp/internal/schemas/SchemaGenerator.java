@@ -34,6 +34,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import io.openliberty.mcp.internal.schemas.SchemaCreationBlueprintGenerator.FieldInfo;
 import io.openliberty.mcp.internal.schemas.blueprints.ClassSchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.ListSchemaCreationBlueprint;
@@ -43,7 +45,6 @@ import io.openliberty.mcp.internal.schemas.blueprints.SchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.TypeVariableSchemaCreationBlueprint;
 import io.openliberty.mcp.internal.schemas.blueprints.WildcardSchemaCreationBlueprint;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.AnnotatedMethod;
 import jakarta.json.Json;
 import jakarta.json.JsonArrayBuilder;

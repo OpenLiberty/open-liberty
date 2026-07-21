@@ -16,8 +16,6 @@ import java.util.EnumSet;
 import java.util.List;
 import java.util.regex.Pattern;
 
-import io.openliberty.mcp.internal.requests.BuiltinDefaultValueConverters;
-import io.openliberty.mcp.internal.requests.DefaultValueConverter;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.tools.ToolManager.ToolArgument;
 
@@ -57,7 +55,7 @@ public class ToolValidation {
 
     public record ToolArgumentValidationError(ToolArgumentErrorType type, Throwable exception) {};
 
-    public static Collection<ToolArgumentValidationError> validateToolArgument(ToolArgument argMetadata) {
+    public static Collection<ToolArgumentValidationError> validateToolArgument(ToolArgument argMetadata, ConverterRegistry converterRegistry) {
         List<ToolArgumentValidationError> results = new ArrayList<>();
         // Check name
         if (argMetadata.name().isBlank()) {
@@ -68,20 +66,15 @@ public class ToolValidation {
 
         // Check default value
         if (argMetadata.defaultValue() != null && !argMetadata.defaultValue().isEmpty()) {
-            Type typeWrapperClass = TypeUtility.box(argMetadata.type());
-            DefaultValueConverter<?> converter = BuiltinDefaultValueConverters.CONVERTERS.get(typeWrapperClass);
-            if (converter != null) {
+            Type boxedType = TypeUtility.box(argMetadata.type());
+            converterRegistry.getConverter(boxedType).ifPresentOrElse(converter -> {
                 try {
                     converter.convert(argMetadata.defaultValue());
                 } catch (Exception e) {
                     results.add(new ToolArgumentValidationError(ToolArgumentErrorType.CONVERSION_ERROR, e));
                 }
-            } else {
-                results.add(new ToolArgumentValidationError(ToolArgumentErrorType.NO_CONVERTER, null));
-            }
+            }, () -> results.add(new ToolArgumentValidationError(ToolArgumentErrorType.NO_CONVERTER, null)));
         }
-
         return results;
     }
-
 }

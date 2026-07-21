@@ -28,8 +28,9 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Retention;
 import java.lang.annotation.Target;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import io.openliberty.mcp.tools.ToolCallException;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.util.Nonbinding;
 import jakarta.interceptor.InterceptorBinding;
 

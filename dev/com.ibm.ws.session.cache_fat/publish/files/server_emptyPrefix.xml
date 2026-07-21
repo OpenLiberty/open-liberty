@@ -28,10 +28,17 @@
 
     <bell libraryRef="HazelcastLib" service="javax.cache.spi.CachingProvider"/>
     
+    <!-- Grant Hazelcast library permission to read its own system properties -->
+    <!-- Needed for missing doPriv in JCache 1.1 API (see https://github.com/jsr107/jsr107spec/issues/398) -->
+    <javaPermission codebase="${shared.resource.dir}/hazelcast/*" className="java.util.PropertyPermission" actions="read,write" name="*"/>
+    <!-- Needed for hazelcast JVM shutdown hook -->
+    <javaPermission codebase="${shared.resource.dir}/hazelcast/*" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.net.www.protocol.wsjar"/>
+    <javaPermission codebase="${shared.resource.dir}/hazelcast/hazelcast.jar" className="java.security.AllPermission"/>
+    
     <!-- Empty string prefix should behave like default (no prefix) -->
     <httpSessionCache cacheNamePrefix=""/>
 
-	<!-- Perms needed because the application uses Hazelcast directly   -->
+ <!-- Perms needed because the application uses Hazelcast directly   -->
 	<javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.io.FilePermission" actions="read" name="${shared.resource.dir}/hazelcast/*"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.sun.management"/>
     <javaPermission codebase="${server.config.dir}/dropins/sessionCacheApp.war" className="java.lang.RuntimePermission" name="accessClassInPackage.com.sun.management.internal"/>

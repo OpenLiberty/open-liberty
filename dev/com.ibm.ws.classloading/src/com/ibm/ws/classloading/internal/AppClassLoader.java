@@ -169,6 +169,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     private final ClassGenerator generator;
     private final ConcurrentHashMap<String, ProtectionDomain> protectionDomains = new ConcurrentHashMap<String, ProtectionDomain>();
     private final LibraryPrecedence libraryPrecedence;
+    private final String toStringCache;
 
     AppClassLoader(ClassLoader parent, ClassLoaderConfiguration config, List<Container> containers, DeclaredApiAccess access, ClassRedefiner redefiner, ClassGenerator generator, GlobalClassloadingConfiguration globalConfig, List<ClassFileTransformer> systemTransformers) {
         super(containers, parent, redefiner, globalConfig);
@@ -199,6 +200,12 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         this.beforeAppDelegateLoaders = tmpBeforeApp.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(tmpBeforeApp);
         this.afterAppDelegateLoaders = tmpAfterApp.isEmpty() ? Collections.emptyList() : Collections.unmodifiableList(tmpAfterApp);
         this.generator = generator;
+        
+        this.toStringCache = buildToString();
+        
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Created AppClassLoader: " + this);
+        }
     }
 
     /** Provides the before delegate loaders so the {@link ShadowClassLoader} can mimic the structure. */
@@ -374,6 +381,10 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
     @Override
     @FFDCIgnore(ClassNotFoundException.class)
     protected final Class<?> findClass(String name, DelegatePolicy delegatePolicy, boolean returnNull) throws ClassNotFoundException {
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+            Tr.debug(tc, "Finding class " + name + " in classloader: " + this);
+        }
+        
         String resourceName = Util.convertClassNameToResourceName(name);
         ByteResourceInformation byteResInfo = findClassBytes(name, resourceName);
         if (byteResInfo == null) {
@@ -515,11 +526,20 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
         try {
             clazz = defineClass(name, bytes, 0, bytes.length, pd);
         } finally {
-            final TraceComponent cltc;
-            if (TraceComponent.isAnyTracingEnabled() && (cltc = getClassLoadingTraceComponent(packageName)).isDebugEnabled()) {
-                String loc = byteResourceInformation.getContainerURL().toString();
-                String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";
-                Tr.debug(cltc, String.format("%s: [%s] [%s] [%s]", message, getKey(), loc, name));
+            if (TraceComponent.isAnyTracingEnabled()) {
+                // Resolve which TraceComponent is active: the class-level tc responds to
+                // com.ibm.ws.classloading.internal.*=all; the per-package cltc responds to
+                // com.ibm.ws.class.load.<packageName>=all for finer-grained filtering.
+                // Prefer tc so that the standard classloading trace spec always works,
+                // but fall through to cltc for users who have enabled package-specific tracing.
+                final TraceComponent traceActive = tc.isDebugEnabled()
+                        ? tc : getClassLoadingTraceComponent(packageName);
+                if (traceActive.isDebugEnabled()) {
+                    String loc = byteResourceInformation.getContainerURL().toString();
+                    String message = clazz == null ? "CLASS FAIL" : "CLASS LOAD";
+                    Tr.debug(traceActive, String.format("%s: class=[%s]; classloader=[%s]; location=[%s]; codeSource=[%s]",
+                            message, name, toShortString(), loc, getCodeSourceString(clazz)));
+                }
             }
         }
         byteResourceInformation.storeInClassCache(clazz, bytes);
@@ -632,6 +652,17 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         throw toThrow;
     }
+    
+    @Trivial
+    private static String getCodeSourceString(Class<?> clazz) {
+        if (clazz == null) {
+            return "unknown";
+        }
+        ProtectionDomain pd = clazz.getProtectionDomain();
+        return (pd.getCodeSource() != null)
+                ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown";
+    }
+
 
     @Trivial
     Class<?> generateClass(String name) throws ClassNotFoundException {
@@ -926,6 +957,7 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
     public String toDiagString() {
         StringBuilder sb = new StringBuilder();
+        sb.append(this.toString()).append(LS);
         sb.append(config).append(LS);
 
         sb.append("    API Visibility: ");
@@ -953,8 +985,63 @@ public class AppClassLoader extends ContainerClassLoader implements SpringLoader
 
         return sb.toString();
     }
+    
+    @Trivial
+    private String toShortString() {
+        StringBuilder sb = new StringBuilder();
+        
+        // Get the classloader type
+        sb.append(getClass().getSimpleName());
+        sb.append("@");
+        sb.append(Integer.toHexString(this.hashCode()));
+        
+        // Get the application
+        if (config.getId() != null) {
+            ClassLoaderIdentity id = config.getId();
+            sb.append(":").append(id.getDomain());
+            sb.append(":").append(id.getId());
+        }
+        
+        // Get the delegation
+        sb.append(":");
+        sb.append(isParentFirst() ? "PF" : "PL");
+        return sb.toString();
+    }
+
+    /**
+     * Build the toString representation once at construction time.
+     * This avoids repeated calculation of container names and string concatenation.
+     */
+    @Trivial
+    private String buildToString() {
+        StringBuilder sb = new StringBuilder(toShortString());
+    
+        // Get the API
+        if (apiAccess.getApiTypeVisibility() != null) {
+            sb.append(":apis=").append(apiAccess.getApiTypeVisibility());
+        }
+        
+        // Get the container listing
+        List<String> containerNames = getContainerNames();
+        if (!containerNames.isEmpty()) {
+            sb.append(":containers=[");
+            for (int i = 0; i < containerNames.size(); i++) {
+                if (i > 0) sb.append(", ");
+                sb.append(containerNames.get(i));
+            }
+            sb.append("]");
+        }
+        
+        return sb.toString();
+    }
 
     @Override
+    @Trivial
+    public String toString() {
+        return toStringCache;
+    }
+
+
     public Class<?> publicDefineClass(String name, byte[] b, ProtectionDomain protectionDomain) {
         return defineClass(name, b, 0, b.length, protectionDomain);
     }

@@ -14,9 +14,6 @@ package com.ibm.ws.install.internal;
 
 import java.util.HashMap;
 
-import org.fusesource.jansi.Ansi;
-import org.fusesource.jansi.AnsiConsole;
-
 public class ProgressBar {
     private static ProgressBar progressBar;
 
@@ -25,7 +22,16 @@ public class ProgressBar {
     private static final StringBuilder res = new StringBuilder();;
     private static final int MAX_EQUALS = 20;
     private static final int MAX_LINE_LENGTH = ("[] 100.00%").length() + MAX_EQUALS;
+    
+    // ANSI escape codes for terminal control
+    private static final String ANSI_CURSOR_UP = "\033[1A";
+    private static final String ANSI_ERASE_LINE = "\033[2K";
+    private static final String ANSI_RESET = "\033[0m";
+    private static final String ANSI_RED = "\033[31m";
+    private static final String ANSI_GREEN = "\033[32m";
     private static final String ANSI_GREEN_BLINKING = "\033[32;5m";
+    
+    private static boolean ansiSupported = true;
 
     private static double counter;
 
@@ -41,8 +47,26 @@ public class ProgressBar {
         initMap();
         counter = 0;
         InstallLogUtils.activateProgressBar();
-        AnsiConsole.systemInstall();
+        detectAnsiSupport();
         System.out.println();
+    }
+    
+    /**
+     * Detect if ANSI escape codes are supported in the current terminal.
+     * Disables ANSI on Windows unless running in a modern terminal.
+     */
+    private void detectAnsiSupport() {
+        String os = System.getProperty("os.name", "").toLowerCase();
+        String term = System.getenv("TERM");
+        
+        // Disable ANSI on older Windows terminals
+        if (os.contains("win")) {
+            // Windows 10+ with modern terminal support
+            String wtSession = System.getenv("WT_SESSION");
+            if (wtSession == null && (term == null || !term.contains("xterm"))) {
+                ansiSupported = false;
+            }
+        }
     }
 
     // TODO auto scaling with method map
@@ -88,12 +112,13 @@ public class ProgressBar {
     }
 
     public void clearProgress() {
-        System.out.print(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
+        if (ansiSupported) {
+            System.out.print(ANSI_CURSOR_UP + ANSI_ERASE_LINE + ANSI_RESET);
+        }
         System.out.flush();
     }
 
     public void display() {
-
         String equals = progress(counter);
 
         StringBuilder dashes = new StringBuilder();
@@ -101,11 +126,19 @@ public class ProgressBar {
             dashes.append("-");
         }
 
-        String data = String.format("%s<%s%s> %4.2f%%%s", Ansi.ansi().fg(Ansi.Color.RED),
-                                    Ansi.ansi().a(ANSI_GREEN_BLINKING).a(equals).reset(), Ansi.ansi().fg(Ansi.Color.RED).a(dashes.toString()),
-                                    (double) Math.round(counter), Ansi.ansi().reset());
-        System.out.println(Ansi.ansi().a(data).reset());
-
+        String data;
+        if (ansiSupported) {
+            data = String.format("%s<%s%s> %.0f%%%s",
+                ANSI_RED,
+                ANSI_GREEN_BLINKING + equals + ANSI_RESET + ANSI_RED,
+                dashes.toString(),
+                counter,
+                ANSI_RESET);
+        } else {
+            // Fallback for terminals without ANSI support
+            data = String.format("<%s%s> %.0f%%", equals, dashes.toString(), counter);
+        }
+        System.out.println(data);
     }
 
     private static String progress(double pct) {
@@ -118,17 +151,17 @@ public class ProgressBar {
     }
 
     public void finish() {
-        System.out.println(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
-        // clear newline on current line
-        System.out.print(Ansi.ansi().cursorUp(1).eraseLine().reset()); // Erase line content
+        if (ansiSupported) {
+            System.out.println(ANSI_CURSOR_UP + ANSI_ERASE_LINE + ANSI_RESET);
+            // clear newline on current line
+            System.out.print(ANSI_CURSOR_UP + ANSI_ERASE_LINE + ANSI_RESET);
+        }
         System.out.flush();
         InstallLogUtils.deactivateProgressBar();
-        AnsiConsole.systemUninstall();
     }
 
     public void finishWithError() {
         InstallLogUtils.deactivateProgressBar();
-        AnsiConsole.systemUninstall();
     }
 
     /**

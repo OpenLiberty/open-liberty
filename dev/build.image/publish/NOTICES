@@ -3,7 +3,6 @@ Copyright 1999-2026 IBM Corporation and others
 This product includes software developed at
 Open Liberty (https://openliberty.io/).
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
 TABLE OF CONTENTS
 
 THIS IBM NOTICES FILE CONSISTS OF THE FOLLOWING SECTIONS:
@@ -656,6 +655,7 @@ Angus Activation Registries [angus-activation] (Copyright 2018 Oracle and/or its
 Angus Activation Registries [angus-activation] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2021-2023 Oracle and/or its affiliates) (Eclipse Foundation)
 Codemodel Core [codemodel] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Codemodel Core [codemodel] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+Codemodel Core [codemodel] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 Codemodel Core [codemodel] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2018 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
 DTD Parser [dtd-parser] (Copyright 1998-2021 Oracle and/or its affiliates) (Copyright 2017-2018 Oracle and) (Copyright 2017-2018 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -670,22 +670,24 @@ JAX-WS RI Runtime (jaxws-rt) [jaxws-rt] (Copyright 2017 Oracle and/or its affili
 JAX-WS RI Tools (jaxws-tools) [jaxws-tools] (Copyright 2017 Oracle and/or its affiliates) (Copyright 2018-2021 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020-2022 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020-2023 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 JAXB Core [jaxb-core] (Copyright 2018 Oracle and/or its affiliates) (Copyright 2020-2023 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB JXC [jaxb-jxc] (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB JXC [jaxb-jxc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB JXC [jaxb-jxc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 JAXB JXC [jaxb-jxc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB Runtime [jaxb-runtime] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-JAXB Runtime [jaxb-runtime] (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB Runtime [jaxb-runtime] (Copyright 2018 Oracle)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+JAXB XJC [jaxb-xjc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 JAXB XJC [jaxb-xjc] (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-JAXB XJC [jaxb-xjc] (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2022 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates)
 Jakarta Activation API [jakarta.activation-api] (Copyright 1997-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
@@ -729,28 +731,31 @@ Protocol Buffers [Core] [protobuf-java] (Copyright 2008 Google Inc)
 Protocol Buffers [Lite] [protobuf-javalite] (Copyright 2008 Google Inc)
 RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 RNGOM [rngom] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2004 Kohsuke Kawaguchi) (Copyright 2005-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 RelaxNG Datatype [relaxng-datatype] (Copyright 2001-2002 SourceForge ISO-RELAX Project) (Copyright 2001-2003 Thai Open Source Software Center Ltd) (Copyright 2013-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2005-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Oracle Corporation)
 TXW2 Runtime [txw2] (Copyright 2005-2019 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2005-2020 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2005-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+TXW2 Runtime [txw2] (Copyright 2005-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2005-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 TXW2 Runtime [txw2] (Copyright 2018 Oracle)
 XSOM [xsom] (Copyright 2010-2018 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 XSOM [xsom] (Copyright 2010-2021 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
 XSOM [xsom] (Copyright 2010-2022 Oracle and/or its affiliates)
 XSOM [xsom] (Copyright 2010-2023 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
-XSOM [xsom] (Copyright 2010-2024 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Eclipse Foundation)
+XSOM [xsom] (Copyright 2010-2024 Oracle and/or its affiliates) (Copyright 2018 Oracle and/or its affiliates) (Copyright 2026 Contributors to the Eclipse Foundation) (Eclipse Foundation)
 asm (Copyright 2000-2011 INRIA) (OW2)
 asm (Copyright (c) 2000-2011 INRIA\
 asm-analysis (OW2)
 asm-commons (OW2)
 asm-tree (OW2)
-asm-util (Copyright 2000-2011 INRIA) (OW2)
+asm-util (OW2)
 dojo (Copyright 2003-2004 Lawrence E. Rosen) (Copyright 2005-2017 JS Foundation) (Copyright 2005-2017 The JS Foundation)
 highlight.js (Copyright 2006 Ivan Sagalaev)
 ieee754 (Copyright 2008 Fair Oaks Labs, Inc)
@@ -841,6 +846,7 @@ COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1
 The Program includes some or all of the following that IBM obtained
 under the COMMON DEVELOPMENT AND DISTRIBUTION LICENSE V1:
 
+JavaBeans Activation Framework (JAF) [activation] http://java.sun.com/products/javabeans/jaf/index.jsp
 activation (https://github.com/javaee/activation/tree/JAF-1_2_0)
 connector (https://mvnrepository.com/artifact/javax.resource/connector-api)
 el (https://github.com/javaee/uel-ri)
@@ -882,7 +888,6 @@ Java EE Security API [javax.security.enterprise-api] https://repo.maven.apache.o
 Java Servlet API [javax.servlet-api] https://glassfish.dev.java.net
 Java Servlet API [javax.servlet-api] https://javaee.github.io/servlet-spec/
 Java(TM) EE Interceptors 1.2 API [jboss-interceptors-api_1.2_spec] http://www.jboss.org
-JavaBeans Activation Framework (JAF) [activation] http://java.sun.com/products/javabeans/jaf/index.jsp
 JavaBeans Activation Framework [javax.activation] https://repo.maven.apache.org/maven2/com/sun/activation/javax.activation/1.2.0
 JavaMail API [javax.mail] http://www.oracle.com
 JavaMail API jar [javax.mail-api] https://repo.maven.apache.org/maven2/javax/mail/javax.mail-api/1.5.6
@@ -1014,7 +1019,6 @@ javax.ws.rs-api https://www.eclipse.org/org/foundation/
 jboss-jakarta-ejb-api_spec [jboss-ejb-api_3.2_spec] https://github.com/eclipse-ee4j/ejb-api
 org.eclipse.persistence.jpa (https://github.com/jakartaee/persistence)
 org.eclipse.yasson [yasson] https://projects.eclipse.org/projects/ee4j.yasson
-
 
 
 END OF ECLIPSE PUBLIC LICENSE, VERSION 2 NOTICES AND INFORMATION

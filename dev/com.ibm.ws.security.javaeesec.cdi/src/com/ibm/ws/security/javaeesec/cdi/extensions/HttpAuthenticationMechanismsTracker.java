@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.ibm.websphere.csi.J2EEName;
 import com.ibm.websphere.ras.Tr;
@@ -34,12 +35,14 @@ public class HttpAuthenticationMechanismsTracker {
 
     private static final TraceComponent tc = Tr.register(HttpAuthenticationMechanismsTracker.class);
 
-    private final Map<String, Map<String, ModuleProperties>> moduleMapsPerApplication = new HashMap<String, Map<String, ModuleProperties>>();
+    private final Map<String, Map<String, ModuleProperties>> moduleMapsPerApplication = new ConcurrentHashMap<String, Map<String, ModuleProperties>>();
 
     public void initialize(String applicationName) {
         if (applicationName != null) {
-            moduleMapsPerApplication.remove(applicationName);
-            moduleMapsPerApplication.put(applicationName, createInitializedWebModuleMap());
+            // atomic operation required on concurrent hash map as multiple CDI extensions
+            //   can now use initialize and use moduleMapsPerApplication without
+            //   that the initialize comes first
+            moduleMapsPerApplication.computeIfAbsent(applicationName, key -> createInitializedWebModuleMap());
         }
     }
 
@@ -104,11 +107,21 @@ public class HttpAuthenticationMechanismsTracker {
     }
 
     public Map<String, ModuleProperties> getModuleMap(String applicationName) {
+        if (applicationName == null) {
+            return null;
+        }
         return moduleMapsPerApplication.get(applicationName);
     }
 
     public void addAuthMech(String applicationName, Class<?> annotatedClass, Class<?> implClass, Set<Annotation> annotations, Properties props) {
+        // make sure moduleMap is initialized
+        //   (handles race condition with usage happening before initialization
+        //   given concurrent CDI extension processing
+        if (moduleMapsPerApplication.get(applicationName) == null) {
+            initialize(applicationName);
+        }
         Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
+
         String moduleName = getModuleFromClass(annotatedClass, moduleMap);
 
         if (moduleMap.containsKey(moduleName)) {
@@ -173,6 +186,10 @@ public class HttpAuthenticationMechanismsTracker {
     }
 
     public Class<?> getExistingAuthMechClass(String applicationName, Class<?> authMechToExist) {
+        // a legitimate condition, short circuit logic to check the module map
+        if (applicationName == null) {
+            return null;
+        }
         Map<Class<?>, Properties> authMechs = null;
         Map<String, ModuleProperties> moduleMap = moduleMapsPerApplication.get(applicationName);
         if (moduleMap != null) {

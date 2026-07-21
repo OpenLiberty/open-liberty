@@ -118,6 +118,7 @@ import componenttest.custom.junit.runner.RepeatTestFilter;
 import componenttest.depchain.FeatureDependencyProcessor;
 import componenttest.exception.TopologyException;
 import componenttest.rules.repeater.FeatureReplacementAction;
+import componenttest.rules.repeater.FeatureUtilities;
 import componenttest.rules.repeater.JakartaEE11Action;
 import componenttest.rules.repeater.JakartaEEAction;
 import componenttest.rules.repeater.RepeatTestAction;
@@ -1943,6 +1944,25 @@ public class LibertyServer implements LogMonitorClient {
         return args;
     }
 
+    public void setLibPathForJava8onZOS(JavaInfo serverJava, Map useEnvVars) {
+        // With Java 8 on z/OS things don't work the same so you need to set the LIBPATH.
+        // This only needs to be done when the Java used to run the test is not Java 8 and
+        // the server Java version is Java 8.
+        // When we drop Java 8 support this logic can be removed.
+        if (FeatureUtilities.isZOS() && javaInfo.majorVersion() != 8 && serverJava.majorVersion() == 8) {
+            String java8LibPath = machineJava + "/lib/s390x/j9vm:" +
+                                  machineJava + "/lib/s390x:" +
+                                  machineJava + "/lib";
+
+            String existingLibPath = System.getenv().get("LIBPATH");
+            if (existingLibPath != null && !existingLibPath.isEmpty()) {
+                useEnvVars.put("LIBPATH", java8LibPath + ":" + existingLibPath);
+            } else {
+                useEnvVars.put("LIBPATH", java8LibPath);
+            }
+        }
+    }
+
     public ProgramOutput startServerWithArgs(boolean preClean, boolean cleanStart,
                                              boolean useValidateApps, boolean expectStartFailure,
                                              String serverCmd, List<String> args,
@@ -2030,6 +2050,8 @@ public class LibertyServer implements LogMonitorClient {
 
         //Need to ensure JAVA_HOME is set correctly - can't rely on user's environment to be set to the same Java as the build/runtime environment
         useEnvVars.setProperty("JAVA_HOME", machineJava);
+        JavaInfo info = JavaInfo.forServer(this);
+        setLibPathForJava8onZOS(info, useEnvVars);
         if (customUserDir)
             useEnvVars.setProperty("WLP_USER_DIR", userDir);
 
@@ -2045,7 +2067,6 @@ public class LibertyServer implements LogMonitorClient {
         // The fix is thus to ensure we use the pseudorandom entropy pool (/dev/urandom) (which is also valid for Windows/zOS).
         JVM_ARGS += " -Djava.security.egd=file:/dev/urandom";
 
-        JavaInfo info = JavaInfo.forServer(this);
         // Debug for a highly intermittent problems on j9/semeru JVMs.
         if (info.VENDOR == Vendor.IBM || info.VENDOR == Vendor.OPENJ9) {
             JVM_ARGS += " -Xdump:system+java+snap:events=systhrow,filter=\"java/lang/NoSuchMethodError#com/ibm/ws/classloading/internal/AppClassLoader.<init>*\",msg_filter=\"*getPrivateLibraries*\",request=exclusive+prepwalk";
@@ -3481,6 +3502,8 @@ public class LibertyServer implements LogMonitorClient {
             //Need to ensure JAVA_HOME is set correctly - can't rely on user's environment to be set to the same Java as the build/runtime environment
             Properties useEnvVars = new Properties();
             useEnvVars.setProperty("JAVA_HOME", machineJava);
+            setLibPathForJava8onZOS(JavaInfo.forServer(this), useEnvVars);
+
             if (customUserDir)
                 useEnvVars.setProperty("WLP_USER_DIR", userDir);
             Log.finer(c, method, "Using additional env props: " + useEnvVars);
@@ -3634,6 +3657,8 @@ public class LibertyServer implements LogMonitorClient {
 
             Properties useEnvVars = new Properties();
             useEnvVars.setProperty("JAVA_HOME", machineJava);
+            setLibPathForJava8onZOS(JavaInfo.forServer(this), useEnvVars);
+
             if (customUserDir) {
                 useEnvVars.setProperty("WLP_USER_DIR", userDir);
             }
@@ -4345,6 +4370,8 @@ public class LibertyServer implements LogMonitorClient {
                     }
 
                     if (tool != null) {
+                        setLibPathForJava8onZOS(JavaInfo.forServer(this), useEnvVars);
+
                         String cmd = machineJava + "/bin/" + tool;
                         Log.info(c, "runJextract", "Running " + tool + " on file: " + filename);
                         String[] parms = new String[] { filename, outputFilename };
@@ -7510,6 +7537,10 @@ public class LibertyServer implements LogMonitorClient {
             // Server is still running when rc == 0
             isStarted = true;
 
+            if (isJava2SecurityEnabled() && checkpointInfo == null) {
+                startedWithJavaSecurity = true;
+            }
+
             //Setup the server logs assuming the default setting.
             messageAbsPath = logsRoot + messageFileName;
             consoleAbsPath = logsRoot + consoleFileName;
@@ -7768,9 +7799,10 @@ public class LibertyServer implements LogMonitorClient {
         parms[0] = command;
         parms[1] = serverToUse;
 
-        Properties useEnvVars = null;
+        Properties useEnvVars = new Properties();
+        useEnvVars.setProperty("JAVA_HOME", machineJava);
+        setLibPathForJava8onZOS(JavaInfo.forServer(this), useEnvVars);
         if (customUserDir) {
-            useEnvVars = new Properties();
             useEnvVars.setProperty("WLP_USER_DIR", userDir);
         }
 
@@ -7804,14 +7836,17 @@ public class LibertyServer implements LogMonitorClient {
         parms[0] = command;
         parms[1] = serverToUse;
 
-        Properties _envVars = null;
+        Properties _envVars = new Properties();
         if (envVars != null) {
-            _envVars = new Properties();
             _envVars.putAll(envVars);
         }
 
+        if (!_envVars.contains("JAVA_HOME")) {
+            _envVars.setProperty("JAVA_HOME", machineJava);
+        }
+        setLibPathForJava8onZOS(JavaInfo.forServer(this), _envVars);
+
         if (customUserDir) {
-            _envVars = new Properties();
             _envVars.setProperty("WLP_USER_DIR", userDir);
         }
 
@@ -7836,6 +7871,7 @@ public class LibertyServer implements LogMonitorClient {
 
         Properties useEnvVars = new Properties();
         useEnvVars.setProperty("JAVA_HOME", machineJava);
+        setLibPathForJava8onZOS(JavaInfo.forServer(this), useEnvVars);
         if (customUserDir)
             useEnvVars.setProperty("WLP_USER_DIR", userDir);
         Log.info(c, method, "Using additional env props: " + useEnvVars);
@@ -7886,6 +7922,7 @@ public class LibertyServer implements LogMonitorClient {
 
         Properties useEnvVars = new Properties();
         useEnvVars.setProperty("JAVA_HOME", machineJava);
+        setLibPathForJava8onZOS(JavaInfo.forServer(this), useEnvVars);
         if (customUserDir)
             useEnvVars.setProperty("WLP_USER_DIR", userDir);
         Log.info(c, method, "Using additional env props: " + useEnvVars);

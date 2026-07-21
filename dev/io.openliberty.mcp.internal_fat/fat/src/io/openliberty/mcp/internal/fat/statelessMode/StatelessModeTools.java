@@ -9,11 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.statelessMode;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.content.TextContent;
+import org.mcpjava.server.tools.ToolResponse;
+
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
 import io.openliberty.mcp.internal.fat.utils.ToolStatus;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 
@@ -34,6 +34,6 @@ public class StatelessModeTools {
         toolStatus.awaitShouldEnd(latchName); // Wait for the test to release the latch
 
         // Return echoed text wrapped in ToolResponse
-        return ToolResponse.success(new TextContent(input));
+        return ToolResponse.ofText(input);
     }
 }

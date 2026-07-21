@@ -58,17 +58,23 @@ public record CursoredPageRecord<T>(
              totalElements, //
              pageRequest, //
              last ? null : PageRequest.afterCursor(cursors.get(cursors.size() - 1),
-                                                   1L + pageRequest.page(),
+                                                   1L + pageRequest.pageNumber(),
                                                    pageRequest.size(),
                                                    pageRequest.requestTotal()), //
              first ? null : PageRequest.beforeCursor(cursors.get(0),
-                                                     pageRequest.page() == 1 ? 1 : pageRequest.page() - 1,
+                                                     pageRequest.pageNumber() == 1 //
+                                                                     ? 1 //
+                                                                     : pageRequest.page() - 1,
                                                      pageRequest.size(),
                                                      pageRequest.requestTotal()));
     }
 
     @Override
     public Cursor cursor(int i) {
+        if (cursors.isEmpty())
+            throw new UnsupportedOperationException(Messages //
+                            .get("015.cursor.uncomputable"));
+
         return cursors.get(i);
     }
 
@@ -99,7 +105,10 @@ public record CursoredPageRecord<T>(
 
     @Override
     public PageRequest nextPageRequest() {
-        if (nextPageRequest == null)
+        if (cursors.isEmpty())
+            throw new UnsupportedOperationException(Messages //
+                            .get("015.cursor.uncomputable"));
+        else if (nextPageRequest == null)
             throw new NoSuchElementException();
         else
             return nextPageRequest;
@@ -112,7 +121,10 @@ public record CursoredPageRecord<T>(
 
     @Override
     public PageRequest previousPageRequest() {
-        if (previousPageRequest == null)
+        if (cursors.isEmpty())
+            throw new UnsupportedOperationException(Messages //
+                            .get("015.cursor.uncomputable"));
+        else if (previousPageRequest == null)
             throw new NoSuchElementException();
         else
             return previousPageRequest;

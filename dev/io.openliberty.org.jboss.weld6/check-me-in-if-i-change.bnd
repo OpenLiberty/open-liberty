@@ -98,7 +98,7 @@ Export-Package: \
  org.jboss.weld.interceptor;version="6.0.2.Final";uses:="jakarta.interceptor",\
  org.jboss.weld.proxy;version="6.0.2.Final";uses:="jakarta.enterprise.inject.spi",\
  org.jboss.weld.lite.extension.translator;version="6.0.2.Final";uses:="jakarta.annotation,jakarta.enterprise.event,jakarta.enterprise.inject.build.compatible.spi,jakarta.enterprise.inject.spi,jakarta.enterprise.lang.model,jakarta.enterprise.lang.model.declarations",\
- org.jboss.weld.lite.extension.translator.logging;version="6.0.2.Final";uses:="org.jboss.logging,org.jboss.weld.exceptions",\
+ org.jboss.weld.lite.extension.translator.logging;version="6.0.2.Final";uses:="org.jboss.weld.exceptions",\
  org.jboss.weld.lite.extension.translator.util;version="6.0.2.Final",\
  org.jboss.weld.lite.extension.translator.util.reflection;version="6.0.2.Final",\
  org.jboss.weld.module.ejb;version="6.0.2.Final";uses:="jakarta.enterprise.context.spi,jakarta.interceptor,org.jboss.weld.bean,org.jboss.weld.bean.proxy,org.jboss.weld.context.ejb,org.jboss.weld.manager,org.jboss.weld.module",\
@@ -110,7 +110,7 @@ Export-Package: \
  org.jboss.weld.module.web.context.beanstore.http;version="6.0.2.Final";uses:="jakarta.servlet.http,org.jboss.weld.bootstrap.api,org.jboss.weld.context.api,org.jboss.weld.contexts.beanstore,org.jboss.weld.serialization.spi",\
  org.jboss.weld.module.web.context.http;version="6.0.2.Final";uses:="jakarta.enterprise.context,jakarta.servlet.http,org.jboss.weld.bootstrap.api,org.jboss.weld.context.http,org.jboss.weld.contexts,org.jboss.weld.contexts.beanstore",\
  org.jboss.weld.module.web.el;version="6.0.2.Final";uses:="jakarta.el,org.jboss.weld.manager,org.jboss.weld.module.web.util.el",\
- org.jboss.weld.module.web.logging;version="6.0.2.Final";uses:="org.jboss.logging,org.jboss.weld.exceptions,org.jboss.weld.logging,org.jboss.weld.module.web.servlet",\
+ org.jboss.weld.module.web.logging;version="6.0.2.Final";uses:="org.jboss.weld.exceptions,org.jboss.weld.logging,org.jboss.weld.module.web.servlet",\
  org.jboss.weld.module.web.servlet;version="6.0.2.Final";uses:="jakarta.servlet,jakarta.servlet.http,org.jboss.weld.bootstrap.api,org.jboss.weld.context.http,org.jboss.weld.manager,org.jboss.weld.resources.spi,org.jboss.weld.servlet.api.helpers,org.jboss.weld.servlet.spi,org.jboss.weld.util",\
  org.jboss.weld.module.web.util.el;version="6.0.2.Final";uses:="jakarta.el",\
  org.jboss.weld.module.web.util.servlet;version="6.0.2.Final";uses:="jakarta.servlet,org.jboss.weld.manager,org.jboss.weld.servlet.spi",\
@@ -132,7 +132,7 @@ Export-Package: \
  org.jboss.weld.injection;version="6.0.2.Final";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.inject.spi,jakarta.enterprise.inject.spi.configurator,org.jboss.weld.bootstrap.api,org.jboss.weld.injection.spi,org.jboss.weld.manager",\
  org.jboss.weld.interceptor.proxy;version="6.0.2.Final";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.inject.spi,jakarta.interceptor,org.jboss.weld.bean.proxy,org.jboss.weld.interceptor,org.jboss.weld.interceptor.spi.metadata,org.jboss.weld.interceptor.spi.model,org.jboss.weld.manager,org.jboss.weld.util",\
  org.jboss.weld.interceptor.util.proxy;version="6.0.2.Final";uses:="org.jboss.weld.bean.proxy",\
- org.jboss.weld.logging;version="6.0.2.Final";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.inject.spi,javax.naming,org.jboss.logging,org.jboss.weld.contexts,org.jboss.weld.exceptions",\
+ org.jboss.weld.logging;version="6.0.2.Final";uses:="jakarta.enterprise.context.spi,jakarta.enterprise.inject.spi,javax.naming,org.jboss.weld.contexts,org.jboss.weld.exceptions",\
  org.jboss.weld.manager;version="6.0.2.Final";uses:="jakarta.el,jakarta.enterprise.context.spi,jakarta.enterprise.event,jakarta.enterprise.inject,jakarta.enterprise.inject.spi,jakarta.enterprise.inject.spi.configurator,org.jboss.weld.bean,org.jboss.weld.bean.proxy,org.jboss.weld.bootstrap.api,org.jboss.weld.bootstrap.spi,org.jboss.weld.construction.api,org.jboss.weld.contexts,org.jboss.weld.ejb.spi,org.jboss.weld.event,org.jboss.weld.events,org.jboss.weld.inject,org.jboss.weld.interceptor.spi.model,org.jboss.weld.manager.api,org.jboss.weld.serialization.spi",\
  org.jboss.weld.module;version="6.0.2.Final";uses:="jakarta.el,jakarta.enterprise.context.spi,jakarta.enterprise.inject.spi,org.jboss.weld.bean,org.jboss.weld.bean.builtin,org.jboss.weld.bootstrap,org.jboss.weld.bootstrap.api,org.jboss.weld.bootstrap.spi,org.jboss.weld.ejb.spi,org.jboss.weld.event,org.jboss.weld.manager",\
  org.jboss.weld.security;version="6.0.2.Final";uses:="org.jboss.weld.security.spi",\

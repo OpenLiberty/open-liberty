@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -22,6 +22,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -33,6 +34,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @CheckpointTest
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 26) //https://docs.spring.io/spring-boot/4.1/system-requirements.html (Early Semeru java 27 runtime is not available to test yet)
 public class BasicSpringBootTests40 extends FATServletClient {
 
     @Server("checkpointSpringBoot40")
@@ -55,7 +57,7 @@ public class BasicSpringBootTests40 extends FATServletClient {
                                  assertNotNull("Spring-managed lifecycle beans not stopped",
                                                server.waitForStringInLogUsingMark("Stopping Spring-managed lifecycle beans before JVM checkpoint", 0));
                              });
-        server.startServer("BasicSpringBootTests.log");
+        server.startServer("BasicSpringBootTests40.log");
         assertNotNull("Spring-managed lifecycle beans not restarted after JVM restore",
                       server.waitForStringInLogUsingMark("Restarting Spring-managed lifecycle beans after JVM restore"));
         // make sure the web app URL is logged on restore side

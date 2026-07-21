@@ -92,6 +92,8 @@ public class MultipleAppsInMemoryIdStoresTests extends BaseJakartaSecurity40Test
         ShrinkHelper.exportDropinAppToServer(server, multiapp2, DeployOptions.SERVER_ONLY);
 
         instance.startServer();
+
+        server.waitForLTPAConfigReady();
     }
 
     /**

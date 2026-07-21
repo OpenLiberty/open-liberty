@@ -9,28 +9,38 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.tool.basicToolApp;
 
+import static org.junit.Assert.assertEquals;
+
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.math.BigDecimal;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
+import java.util.Base64;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionStage;
+
+import org.mcpjava.server.ImplementationInfo;
+import org.mcpjava.server.McpRequest;
+import org.mcpjava.server.Role;
+import org.mcpjava.server.content.Annotations;
+import org.mcpjava.server.content.AudioContent;
+import org.mcpjava.server.content.ContentBlock;
+import org.mcpjava.server.content.EmbeddedResource;
+import org.mcpjava.server.content.ImageContent;
+import org.mcpjava.server.content.ResourceLink;
+import org.mcpjava.server.content.TextContent;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.annotations.Schema;
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.Tool.Annotations;
-import io.openliberty.mcp.annotations.ToolArg;
-import io.openliberty.mcp.content.AudioContent;
-import io.openliberty.mcp.content.Content;
-import io.openliberty.mcp.content.ImageContent;
-import io.openliberty.mcp.content.Role;
-import io.openliberty.mcp.content.TextContent;
-import io.openliberty.mcp.meta.Meta;
-import io.openliberty.mcp.meta.MetaKey;
-import io.openliberty.mcp.request.RequestId;
-import io.openliberty.mcp.tools.ToolResponse;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
+import io.openliberty.mcp.tools.ToolCallException;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.enterprise.context.Dependent;
 import jakarta.json.Json;
@@ -67,86 +77,123 @@ public class BasicTools {
 
     @Tool(name = "mixedContentTool", title = "Mixed Content Tool", description = "Returns Text, Audio or Image Content")
     public ToolResponse mixedContentTool(@ToolArg(name = "input", description = "input to echo") String input) {
-        TextContent text = new TextContent("Echo: " + input);
+        TextContent text = TextContent.of("Echo: " + input);
 
-        ImageContent image = new ImageContent(
-                                              "base64-encoded-image",
-                                              "image/png");
+        ImageContent image = ImageContent.of("base64-encoded-image".getBytes(), "image/png");
 
-        AudioContent audio = new AudioContent(
-                                              "base64-encoded-audio",
-                                              "audio/mpeg");
+        AudioContent audio = AudioContent.of("base64-encoded-audio".getBytes(), "audio/mpeg");
 
-        return ToolResponse.success(List.of(text, image, audio));
+        return ToolResponse.builder()
+                           .addContent(text)
+                           .addContent(image)
+                           .addContent(audio)
+                           .build();
 
     }
 
     @Tool(name = "mixedContentListTool", title = "Mixed Content List Tool", description = "Returns Text, Audio or Image Content List")
-    public List<Content> mixedContentListTool(@ToolArg(name = "input", description = "input to echo") String input) {
-        return List.of(
-                       new TextContent("Echo: " + input),
-
-                       new ImageContent(
-                                        "base64-encoded-image",
-                                        "image/png"),
-
-                       new AudioContent(
-                                        "base64-encoded-audio",
-                                        "audio/mpeg"));
+    public List<ContentBlock> mixedContentListTool(@ToolArg(name = "input", description = "input to echo") String input) {
+        return List.of(TextContent.of("Echo: " + input),
+                       ImageContent.of(TestConstants.TEST_IMAGE_DATA, "image/png"),
+                       AudioContent.of(TestConstants.TEST_AUDIO_DATA, "audio/mpeg"));
     }
 
     @Tool(name = "textContentTool", title = "Text Content Tool", description = "Returns text content object")
     public TextContent textContentTool(@ToolArg(name = "input", description = "input string to echo back as content") String input) {
-        return new TextContent("Echo: " + input);
+        return TextContent.of("Echo: " + input);
     }
 
     @Tool(name = "textContentToolWithContentAnnotation", title = "Text Content Tool With Content Annotation", description = "Returns text content object with annotation")
     public TextContent textContentToolWithContentAnnotation(@ToolArg(name = "input", description = "input string to echo back as content") String input) {
-        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT,
-                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                               .format(DateTimeFormatter.ISO_INSTANT),
-                                                                  0.5);
-        return new TextContent("Echo: " + input, null, annotations);
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.ASSISTANT)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .setPriority(0.5)
+                                             .build();
+
+        return TextContent.builder("Echo: " + input)
+                          .setAnnotations(annotations)
+                          .build();
     }
 
     @Tool(name = "imageContentTool", title = "Image Content Tool", description = "Returns image content object")
-    public ImageContent imageContentTool(@ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
-        return new ImageContent(
-                                imageData,
-                                "image/png");
+    public ImageContent imageContentTool(@ToolArg(name = "imageData", description = "Base64-encoded image") String imageData64) {
+        byte[] imageData = Base64.getDecoder().decode(imageData64);
+        return ImageContent.of(
+                               imageData,
+                               "image/png");
     }
 
     @Tool(name = "imageContentToolWithContentAnnotation", title = "Image Content Tool With Content Annotation", description = "Returns image content object with annotation")
     public ImageContent imageContentToolWithContentAnnotation(@ToolArg(name = "imageData", description = "Base64-encoded image") String imageData) {
-        Content.Annotations annotations = new Content.Annotations(Role.USER,
-                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                               .format(DateTimeFormatter.ISO_INSTANT),
-                                                                  0.8);
-        return new ImageContent(
-                                imageData,
-                                "image/png",
-                                null,
-                                annotations);
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.USER)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .setPriority(0.8)
+                                             .build();
+
+        return ImageContent.builder(Base64.getDecoder().decode(imageData), "image/png")
+                           .setAnnotations(annotations)
+                           .build();
     }
 
     @Tool(name = "audioContentTool", title = "Audio Content Tool", description = "Returns audio content object")
-    public AudioContent audioContentTool(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
-        return new AudioContent(
-                                audioData,
-                                "audio/mpeg");
+    public AudioContent audioContentTool(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData64) {
+        byte[] audioData = Base64.getDecoder().decode(audioData64);
+        return AudioContent.of(
+                               audioData,
+                               "audio/mpeg");
     }
 
     @Tool(name = "audioContentToolWithContentAnnotation", title = "Audio Content Tool With Content Annotation", description = "Returns audio content object with annotation")
-    public AudioContent audioContentToolWithContentAnnotation(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData) {
-        Content.Annotations annotations = new Content.Annotations(Role.ASSISTANT,
-                                                                  ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC)
-                                                                               .format(DateTimeFormatter.ISO_INSTANT),
-                                                                  0.3);
-        return new AudioContent(
-                                audioData,
-                                "audio/mpeg",
-                                null,
-                                annotations);
+    public AudioContent audioContentToolWithContentAnnotation(@ToolArg(name = "audioData", description = "Base64-encoded audio") String audioData64) {
+        org.mcpjava.server.content.Annotations annotations = Annotations.builder()
+                                                                        .setAudience(Role.ASSISTANT)
+                                                                        .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                                                        .setPriority(0.3)
+                                                                        .build();
+        byte[] audioData = Base64.getDecoder().decode(audioData64);
+        return AudioContent.builder(audioData, "audio/mpeg")
+                           .setAnnotations(annotations)
+                           .build();
+    }
+
+    @Tool(name = "resourceLinkTool", title = "Resource Link Tool", description = "Returns a resource link content object")
+    public ResourceLink resourceLinkTool(@ToolArg(name = "name", description = "Resource name") String name,
+                                         @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        return ResourceLink.builder(name, uri)
+                           .setTitle("Resource: " + name)
+                           .setMimeType("text/plain")
+                           .build();
+    }
+
+    @Tool(name = "resourceLinkToolWithAnnotation", title = "Resource Link Tool With Annotation", description = "Returns a resource link content object with annotation")
+    public ResourceLink resourceLinkToolWithAnnotation(@ToolArg(name = "name", description = "Resource name") String name,
+                                                       @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        Annotations annotations = Annotations.builder()
+                                             .setAudience(Role.USER)
+                                             .setLastModified(ZonedDateTime.of(2025, 8, 26, 8, 40, 0, 0, ZoneOffset.UTC).toInstant())
+                                             .build();
+        return ResourceLink.builder(name, uri)
+                           .setAnnotations(annotations)
+                           .build();
+    }
+
+    @Tool(name = "embeddedTextResourceTool", title = "Embedded Text Resource Tool", description = "Returns an embedded text resource content object")
+    public EmbeddedResource embeddedTextResourceTool(@ToolArg(name = "text", description = "Text content") String text,
+                                                     @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        return EmbeddedResource.builder(text, uri)
+                               .setMimeType("text/plain")
+                               .build();
+    }
+
+    @Tool(name = "embeddedBlobResourceTool", title = "Embedded Blob Resource Tool", description = "Returns an embedded blob resource content object")
+    public EmbeddedResource embeddedBlobResourceTool(@ToolArg(name = "imageData", description = "Base64-encoded image data") String imageData64,
+                                                     @ToolArg(name = "uri", description = "Resource URI") String uri) {
+        byte[] imageData = Base64.getDecoder().decode(imageData64);
+        return EmbeddedResource.builder(imageData, uri)
+                               .setMimeType("image/png")
+                               .build();
     }
 
     //tool name is not present -> use method name
@@ -170,8 +217,8 @@ public class BasicTools {
     }
 
     @Tool(name = "echoRequestId", title = "Echo RequestId", description = "Returns the incoming request ID")
-    public String echoRequestId(RequestId id, @ToolArg(name = "input") String input) {
-        return id.toString() + ": " + input;
+    public String echoRequestId(McpRequest request, @ToolArg(name = "input") String input) {
+        return request.id() + ": " + input;
     }
 
     @Tool(name = "privateEcho", title = "Echoes the input", description = "Returns the input unchanged")
@@ -281,31 +328,31 @@ public class BasicTools {
     /////////
 
     @Tool(name = "readOnlyTool", title = "Read Only Tool", description = "A tool that is read-only",
-          annotations = @Annotations(readOnlyHint = true))
+          annotations = @Tool.Annotations(readOnlyHint = true))
     public String readOnlyTool(@ToolArg(name = "input", description = "input string") String input) {
         return input;
     }
 
     @Tool(name = "destructiveTool", title = "Destructive Tool", description = "A tool that performs a destructive operation",
-          annotations = @Annotations(readOnlyHint = false, destructiveHint = true, idempotentHint = false, openWorldHint = false, title = "Destructive Tool"))
+          annotations = @Tool.Annotations(readOnlyHint = false, destructiveHint = true, idempotentHint = false, openWorldHint = false, title = "Destructive Tool"))
     public String destructiveTool(@ToolArg(name = "input", description = "input string") String input) {
         return input;
     }
 
     @Tool(name = "openWorldTool", title = "Open to World Tool", description = "A tool in an open world context",
-          annotations = @Annotations(readOnlyHint = false, destructiveHint = true, idempotentHint = false, openWorldHint = true, title = "Open to World Tool"))
+          annotations = @Tool.Annotations(readOnlyHint = false, destructiveHint = true, idempotentHint = false, openWorldHint = true, title = "Open to World Tool"))
     public String openWorldTool(@ToolArg(name = "input", description = "input string") String input) {
         return input;
     }
 
     @Tool(name = "idempotentTool", title = "Idempotent Tool", description = "A tool with idempotent context",
-          annotations = @Annotations(idempotentHint = true, title = "Idempotent Tool"))
+          annotations = @Tool.Annotations(idempotentHint = true, title = "Idempotent Tool"))
     public String idempotentTool(@ToolArg(name = "input", description = "input string") String input) {
         return input;
     }
 
     @Tool(name = "missingTitle", title = "", description = "A tool that does not have a title",
-          annotations = @Annotations(readOnlyHint = false, destructiveHint = true, idempotentHint = false, openWorldHint = true))
+          annotations = @Tool.Annotations(readOnlyHint = false, destructiveHint = true, idempotentHint = false, openWorldHint = true))
     public String missingTitle(@ToolArg(name = "input", description = "input string") String input) {
         return input;
     }
@@ -323,7 +370,7 @@ public class BasicTools {
         return new City(name, "England", 8000, false);
     }
 
-    public record City(String name, String country, int population, boolean isCapital) {};
+    public static record City(String name, String country, int population, boolean isCapital) {};
 
     // Test ToolArg.required is always true by default, check that it works when it is set to true
     @Tool(name = "testToolArgIsNotRequired", title = "ToolArgNotRequired", description = "ToolArgNotRequired")
@@ -355,22 +402,6 @@ public class BasicTools {
     @Tool(name = "testToolArgObjectNotRequired", title = "ToolArgObjectNotRequired", description = "ToolArgNotRequired")
     public City testToolArgObjectNotRequired(@ToolArg(name = "value", description = "City object value", required = false) City value) {
         return value;
-    }
-
-    @Tool(name = "testToolArgStringDefaultValue", title = "ToolArg String Default Value", description = "Test tool defaults to default value when argument not provided")
-    public String testToolArgStringDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet) {
-        return planet;
-    }
-
-    @Tool(name = "testToolArgIntDefaultValue", title = "ToolArg Int Default Value", description = "Test tool defaults to default value when argument not provided")
-    public int testToolArgIntDefaultValue(@ToolArg(name = "year", description = "current year", required = false, defaultValue = "2025") int year) {
-        return year;
-    }
-
-    @Tool(name = "testMultipleToolArgsOneDefaultValue", title = "testMultipleToolArgsOneDefaultValue", description = "MultipleToolArgsOneDefaultValue")
-    public String testMultipleToolArgsOneDefaultValue(@ToolArg(name = "planet", description = "planet you live in", required = false, defaultValue = "Jupiter") String planet,
-                                                      @ToolArg(name = "year", description = "current year") int year) {
-        return "Planet " + planet + " was created in the year " + year;
     }
 
     /////////////////////////////////////////////
@@ -472,13 +503,14 @@ public class BasicTools {
         Person personInstance = person.get();
         employeeList.add(personInstance);
         Jsonb jsonb = JsonbBuilder.create();
-        Map<MetaKey, Object> _meta = new HashMap<>();
-        _meta.put(MetaKey.from("timestamp"), 1762860699);
-        _meta.put(MetaKey.from("api.ibmtest.org/location"), "Hursley");
-        _meta.put(MetaKey.from("api.libertytest.org/person"), personInstance);
         ListWrapper returnObj = new ListWrapper(employeeList);
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(returnObj))), returnObj, _meta);
-
+        return ToolResponse.builder()
+                           .addContent(TextContent.of(jsonb.toJson(returnObj)))
+                           .setStructuredContent(returnObj)
+                           .putMetadata("timestamp", 1762860699)
+                           .putMetadata("api.ibmtest.org/location", "Hursley")
+                           .putMetadata("api.libertytest.org/person", personInstance)
+                           .build();
     }
 
     @Tool(name = "addPersonToListToolResponseWithMetaRequest", title = "adds person to people list", description = "adds person to people list", structuredContent = true)
@@ -487,29 +519,26 @@ public class BasicTools {
                                                                                                                                    description = "List of people") List<Person> employeeList,
                                                                                                                           @ToolArg(name = "person",
                                                                                                                                    description = "Person object") Optional<Person> person,
-                                                                                                                          Meta meta) {
+                                                                                                                          McpRequest request) {
         Person personInstance = person.get();
         employeeList.add(personInstance);
         Jsonb jsonb = JsonbBuilder.create();
-        JsonObject jo = meta.asJsonObject();
 
-        Map<MetaKey, Object> _meta = new HashMap<>();
-        jo.forEach((key, value) -> {
-            MetaKey metaKey = MetaKey.from(key);
-            meta.getValue(metaKey);
-            _meta.put(metaKey, value);
-        });
+        Map<String, Object> _meta = request.metadata();
         ListWrapper returnObj = new ListWrapper(employeeList);
-        return new ToolResponse(false, List.of(new TextContent(jsonb.toJson(returnObj))), returnObj, _meta);
+        return ToolResponse.builder()
+                           .setMetadata(_meta)
+                           .addContent(TextContent.of(jsonb.toJson(returnObj)))
+                           .setStructuredContent(returnObj)
+                           .build();
     }
 
     @Tool(name = "simpleMetaRequest", title = "return string made from args and metadata", description = "return string made from args and metadata", structuredContent = false)
     public String simpleMetaRequest(@ToolArg(name = "name", description = "name of person") String name,
-                                    Meta meta) {
-        Jsonb jsonb = JsonbBuilder.create();
+                                    McpRequest request) {
 
-        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
-        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"));
+        String location = (String) request.metadata().get("api.ibmtest.org/location");
+        BigDecimal timestamp = (BigDecimal) request.metadata().get("timestamp");
         String result = "Hello " + name + " you have called this tool from " + location + " at timestamp " + timestamp.toString();
         return result;
     }
@@ -522,6 +551,58 @@ public class BasicTools {
         return "ID: " + userId + ", Name: 仮名, role: user";
     }
 
+    //////////
+    // Error Testing Tools
+    //////////
+
+    @Tool(name = "businessErrorTool", title = "Business Error Tool", description = "Sync tool that throws ToolCallException for testing error metrics")
+    public String businessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("bad-value".equals(input) || "bad".equals(input)) {
+            throw new ToolCallException("Invalid business input: " + input);
+        }
+        return "Success: " + input;
+    }
+
+    @Tool(name = "nonBusinessErrorTool", title = "Non-Business Error Tool", description = "Sync tool that throws generic exception for testing error metrics")
+    public String nonBusinessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("trigger-error".equals(input) || "error".equals(input)) {
+            throw new RuntimeException("Non-business error occurred");
+        }
+        return "Success: " + input;
+    }
+
+    @Tool(name = "asyncBusinessErrorTool", title = "Async Business Error Tool", description = "Async tool that throws ToolCallException for testing async error metrics")
+    public CompletionStage<String> asyncBusinessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("bad-value".equals(input) || "bad".equals(input)) {
+            throw new ToolCallException("Async invalid business input: " + input);
+        }
+        return CompletableFuture.completedFuture("Async success: " + input);
+    }
+
+    @Tool(name = "asyncNonBusinessErrorTool", title = "Async Non-Business Error Tool", description = "Async tool that throws generic exception for testing async error metrics")
+    public CompletionStage<String> asyncNonBusinessErrorTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("trigger-error".equals(input) || "error".equals(input)) {
+            throw new RuntimeException("Async non-business error occurred");
+        }
+        return CompletableFuture.completedFuture("Async success: " + input);
+    }
+
+    @Tool(name = "failedStageTool", title = "Failed Stage Tool", description = "Synchronous tool that throws an exception for testing error metrics")
+    public String failedStageTool(@ToolArg(name = "input", description = "input value") String input) throws ToolCallException {
+        if ("fail".equals(input) || "error".equals(input)) {
+            throw new ToolCallException("Failed stage error");
+        }
+        return "Success: " + input;
+    }
+
+    @Tool(name = "asyncFailedStageTool", title = "Async Failed Stage Tool", description = "Async tool that returns failed CompletionStage for testing async error metrics")
+    public CompletionStage<String> asyncFailedStageTool(@ToolArg(name = "input", description = "input value") String input) {
+        if ("trigger-error".equals(input) || "error".equals(input)) {
+            return CompletableFuture.failedStage(new ToolCallException("Async failed stage error"));
+        }
+        return CompletableFuture.completedFuture("Async success: " + input);
+    }
+
     @Tool(name = "testNonLatinStringStructuredContent", title = "Not Latin String Structured Content Response",
           description = "A tool to return a string with structuredContent set. The response should successully return non-latin characters",
           structuredContent = true)
@@ -530,13 +611,68 @@ public class BasicTools {
     }
 
     @Tool(name = "noArgsRequest", title = "call tool without propviding arguments in params", description = "return string made from args and metadata", structuredContent = false)
-    public String noArgsRequest(Meta meta) {
-        Jsonb jsonb = JsonbBuilder.create();
+    public String noArgsRequest(McpRequest request) {
 
-        String location = (String) meta.getValue(MetaKey.from("api.ibmtest.org/location"));
-        BigDecimal timestamp = (BigDecimal) meta.getValue(MetaKey.from("timestamp"));
+        String location = (String) request.metadata().get("api.ibmtest.org/location");
+        BigDecimal timestamp = (BigDecimal) request.metadata().get("timestamp");
         String result = "You have called this tool from " + location + " at timestamp " + timestamp.toString();
         return result;
+    }
+
+    @Tool
+    public String checkMcpRequest(McpRequest request) {
+        return wrapErrors(() -> {
+            // Note: expected caps matches McpClient.before()
+            Map<String, Object> expectedCaps = Map.of("roots", Map.of("listChanged", true),
+                                                      "sampling", Map.of(),
+                                                      "elicitation", Map.of());
+            assertEquals("capabilities", expectedCaps, request.rawClientCapabilities());
+
+            assertEquals("protocolVersion", "2025-11-25", request.protocolVersion());
+
+            ImplementationInfo clientInfo = request.clientInfo();
+            assertEquals("icons", List.of(), clientInfo.icons());
+            assertEquals("name", "fat-test-client", clientInfo.name());
+            assertEquals("title", "FAT Test Client", clientInfo.title());
+            assertEquals("version", "1.0.0", clientInfo.version());
+            assertEquals("description", Optional.empty(), clientInfo.description());
+            assertEquals("websiteUrl", Optional.empty(), clientInfo.websiteUrl());
+
+            return "OK";
+        });
+    }
+
+    @Tool
+    public String readSessionIdReversed(McpRequest request) {
+        return request.sessionId()
+                      .map(s -> new StringBuilder(s).reverse().toString())
+                      .orElse("No Session ID");
+    }
+
+    @Tool
+    public String unannotatedArgTool(String name, int count, McpRequest req) {
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < count; i++) {
+            result.append("hello ");
+        }
+        result.append(name);
+        result.append(" of ").append(req.clientInfo().title());
+        return result.toString();
+    }
+
+    /**
+     * Run a callable and translate any exceptions or assertion errors into a String
+     */
+    private String wrapErrors(Callable<String> runnable) {
+        try {
+            return runnable.call();
+        } catch (Exception | AssertionError e) {
+            StringWriter writer = new StringWriter();
+            try (var pw = new PrintWriter(writer)) {
+                e.printStackTrace(pw);
+            }
+            return writer.toString();
+        }
     }
 
 }

@@ -14,6 +14,7 @@ package com.ibm.ws.classloading.internal;
 
 import java.io.IOException;
 import java.net.URL;
+import java.security.ProtectionDomain;
 import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Enumeration;
@@ -27,6 +28,8 @@ import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleReference;
 import org.osgi.framework.wiring.BundleWiring;
 
+import com.ibm.websphere.ras.Tr;
+import com.ibm.websphere.ras.TraceComponent;
 import com.ibm.websphere.ras.annotation.Trivial;
 import com.ibm.ws.classloading.configuration.GlobalClassloadingConfiguration.JVMPackages;
 import com.ibm.ws.ffdc.annotation.FFDCIgnore;
@@ -41,6 +44,7 @@ import com.ibm.wsspi.kernel.service.utils.CompositeEnumeration;
  *  the classloader hierarchy looking for the Bundle classloader.
  */
 class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, BundleReference, NoClassNotFoundLoader {
+    private static final TraceComponent tc = Tr.register(GatewayClassLoader.class);
 
     private static class Delegation {
         // This is only used to place a non-class loader class on the call stack which is loaded from a bundle.
@@ -194,7 +198,6 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     }
 
     @FFDCIgnore(ClassNotFoundException.class)
-    @Trivial
     private Class<?> loadClassImpl(String className, boolean throwException) throws ClassNotFoundException {
         // The resolve parameter is a legacy parameter that is effectively
         // never used as of JDK 1.1 (see footnote 1 of section 5.3.2 of the 2nd
@@ -202,30 +205,45 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
         // is java.lang.ClassLoader.loadClass(String), and that method always
         // passes false, so we ignore the parameter.
 
+        Class<?> result = null;
         if (cl != null) {
             if (config.getDelegateToSystem()) {
                 try {
                     // first check the bundle loader
-                    return Delegation.loadClass(className, cl);
+                    result = Delegation.loadClass(className, cl);
                 } catch (ClassNotFoundException perfectlyNormal) {
                     // second check the system classloader
-                    return jvmPackages.loadClass(className, throwException);
+                    result = jvmPackages.loadClass(className, throwException);
                 }
             } else {
-                return Delegation.loadClass(className, cl);
+                result = Delegation.loadClass(className, cl);
+            }
+        } else {
+            result = Delegation.loadClass(className, bLoader);
+            if (result == null) {
+                if (config.getDelegateToSystem()) {
+                    result = jvmPackages.loadClass(className, throwException);
+                } else if (throwException) {
+                    throw new ClassNotFoundException(className);
+                }
             }
         }
-        Class<?> result = Delegation.loadClass(className, bLoader);
-        if (result != null) {
-            return result;
+
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() && result != null) {
+            ClassLoader classLoader = result.getClassLoader();
+            Tr.debug(tc, String.format("CLASS LOAD: class=[%s]; classloader=[%s]; codeSource=[%s]",
+                                       className,
+                                       classLoader != null ? classLoader.toString() : "bootstrap",
+                                       getCodeSourceString(result)));
         }
-        if (config.getDelegateToSystem()) {
-            return jvmPackages.loadClass(className, throwException);
-        }
-        if (throwException) {
-            throw new ClassNotFoundException(className);
-        }
-        return null;
+        return result;
+    }
+
+    @Trivial
+    private static String getCodeSourceString(Class<?> clazz) {
+        ProtectionDomain pd = clazz.getProtectionDomain();
+        return (pd.getCodeSource() != null)
+                ? String.valueOf(pd.getCodeSource().getLocation()) : "unknown";
     }
 
 
@@ -260,6 +278,28 @@ class GatewayClassLoader extends ClassLoader implements DeclaredApiAccess, Bundl
     @Override
     public Bundle getBundle() {
         return bundle;
+    }
+
+    @Override
+    @Trivial
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("GatewayClassLoader@");
+        sb.append(Integer.toHexString(this.hashCode()));
+        
+        if (config.getApiTypeVisibility() != null) {
+            sb.append(":apis=").append(config.getApiTypeVisibility());
+        }
+        if (config.getDelegateToSystem()) {
+            sb.append(":delegateToSystem=true");
+        }
+        
+        if (bundle != null) {
+            sb.append(":bundle=[").append(bundle.getSymbolicName());
+            sb.append(":").append(bundle.getVersion()).append("]");
+        }
+        
+        return sb.toString();
     }
 
 }

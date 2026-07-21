@@ -23,6 +23,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.namespace.QName;
 import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.ws.BindingProvider;
 import javax.xml.ws.Dispatch;
 import javax.xml.ws.Service;
 import javax.xml.ws.WebServiceRef;
@@ -40,7 +41,7 @@ public class LoggingTestServlet extends HttpServlet {
 
     private static Logger log = Logger.getLogger(LoggingTestServlet.class.getName());
 
-    @WebServiceRef(name = "services/PeopleService", wsdlLocation = "http://localhost:8010/helloApp/PeopleService?wsdl")
+    @WebServiceRef(name = "services/PeopleService", value = PeopleService.class)
     PeopleService serviceWithREF;
 
     public LoggingTestServlet() {
@@ -82,6 +83,9 @@ public class LoggingTestServlet extends HttpServlet {
                 break;
             case "wsref":
                 People billRef = serviceWithREF.getBillPort();
+                ((BindingProvider) billRef).getRequestContext().put(
+                    BindingProvider.ENDPOINT_ADDRESS_PROPERTY,
+                    "http://" + req.getLocalAddr() + ":" + req.getLocalPort() + "/helloApp/PeopleService");
                 result = billRef.hello("World");
                 break;
         }

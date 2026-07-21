@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.data.Sort;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
 
@@ -34,5 +35,15 @@ public interface ComparableAttribute<T, V extends Comparable<?>> //
         Messages.requireNonNull(attributeType, "attributeType");
 
         return new ComparableAttributeRecord<>(entityClass, name, attributeType);
+    }
+
+    @Override
+    default Sort<T> asc() {
+        return Sort.asc(this);
+    }
+
+    @Override
+    default Sort<T> desc() {
+        return Sort.desc(this);
     }
 }

@@ -28,6 +28,7 @@ import org.junit.rules.TestName;
 import org.junit.runner.RunWith;
 
 import componenttest.annotation.CheckpointTest;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -38,6 +39,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @CheckpointTest
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 26) //https://docs.spring.io/spring-boot/4.1/system-requirements.html (Early Semeru java 27 runtime is not available to test yet)
 public class WarDeployDataTests40 extends FATServletClient {
     private static final String APP_NAME = "io.openliberty.checkpoint.springboot.fat40.data.app-1.0.0.war";
     @Rule

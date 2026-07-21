@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation and others.
+ * Copyright (c) 2023, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -29,6 +29,7 @@ import com.ibm.websphere.simplicity.ProgramOutput;
 
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.ExpectedFFDC;
+import componenttest.annotation.MaximumJavaLevel;
 import componenttest.annotation.MinimumJavaLevel;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
@@ -40,6 +41,7 @@ import io.openliberty.checkpoint.spi.CheckpointPhase;
 @RunWith(FATRunner.class)
 @CheckpointTest
 @MinimumJavaLevel(javaLevel = 17)
+@MaximumJavaLevel(javaLevel = 25) //https://docs.spring.io/spring-boot/3.5/system-requirements.html
 public class BasicSpringBootFailStart extends FATServletClient {
 
     @Server("checkpointSpringBoot")
@@ -73,7 +75,7 @@ public class BasicSpringBootFailStart extends FATServletClient {
     @Test
     @ExpectedFFDC("io.openliberty.checkpoint.internal.criu.CheckpointFailedException")
     public void testFailAppStart() throws Exception {
-        ProgramOutput output = server.startServer(testName + ".log");
+        ProgramOutput output = server.startServer("BasicSpringBootFailStart.log");
         int retureCode = output.getReturnCode();
         assertEquals("Wrong return code for failed checkpoint.", 72, retureCode);
     }

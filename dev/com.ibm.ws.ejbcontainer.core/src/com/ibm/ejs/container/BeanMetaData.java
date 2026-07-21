@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 1998, 2025 IBM Corporation and others.
+ * Copyright (c) 1998, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.StringTokenizer;
-import javax.naming.NamingException;
 
 import javax.ejb.TimedObject;
 import javax.naming.Context;
@@ -296,6 +295,13 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
     public Class<?> pKeyClass;
 
     public boolean m_syncToOSThreadValue; // LI2775-107.2 WS18354.02
+
+    /**
+     * Destroy or deactivate the bean during quiesce phase of server shutdown.
+     * Applicable to singleton and message-driven beans. Null if not specified
+     * in ibm-*-bnd.xml or server.xml. If set, overrides env-entry in ejb-jar.xml.
+     */
+    public Boolean quiesce;
 
     /**
      * The set of persistence reference names on which this bean has declared a
@@ -1622,6 +1628,7 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
                                               "Synch AfterBegin            = " + ivAfterBegin, // F743-25855
                                               "Synch BeforeCompletion      = " + ivBeforeCompletion, // F743-25855
                                               "Synch AfterCompletion       = " + ivAfterCompletion, // F743-25855
+                                              "Quiesce                     = " + quiesce,
                                               "Application Classloader     = " + classLoader,
                                               "Context class loader        = " + (classLoader == ivContextClassLoader ? "(same)" : ivContextClassLoader)
             };
@@ -2621,8 +2628,55 @@ public class BeanMetaData extends com.ibm.ws.runtime.metadata.MetaDataImpl imple
         return constructor;
     }
 
-    public boolean isSyncToOSThreadEnabled(){
+    @Override
+    public boolean isSyncToOSThreadEnabled() {
         return m_syncToOSThreadValue;
+    }
+
+    /**
+     * Determines if a message-driven bean should be deactivated during server quiesce. <p>
+     *
+     * Based on env-entry property: io.openliberty.ejb.deactivateOnQuiesce.
+     * The value may be specified in ejb-jar.xml, ibm-ejb-jar-bnd.xml, or server.xml; all
+     * using the env-entry element. ibm-ejb-jar-bnd.xml overrides ejb-jar.xml, and server.xml
+     * overrides both. <p>
+     *
+     * Default is true.
+     *
+     * @return true if the bean should be deactivated during quiesce, false otherwise
+     */
+    public boolean isDeactivateOnQuiesce() {
+        if (quiesce != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "isDeactivateOnQuiesce = " + quiesce + "(configured)");
+            return quiesce;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isDeactivateOnQuiesce = true (default)");
+        return true;
+    }
+
+    /**
+     * Determines if a singleton bean should be destroyed during server quiesce. <p>
+     *
+     * Based on env-entry property: io.openliberty.ejb.destroyOnQuiesce.
+     * The value may be specified in ejb-jar.xml, ibm-ejb-jar-bnd.xml, or server.xml; all
+     * using the env-entry element. ibm-ejb-jar-bnd.xml overrides ejb-jar.xml, and server.xml
+     * overrides both. <p>
+     *
+     * Default is false.
+     *
+     * @return true if the bean should be destroyed during quiesce, false otherwise
+     */
+    public boolean isDestroyOnQuiesce() {
+        if (quiesce != null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+                Tr.debug(tc, "isDestroyOnQuiesce = " + quiesce + "(configured)");
+            return quiesce;
+        }
+        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled())
+            Tr.debug(tc, "isDeactivateOnQuiesce = false (default)");
+        return false;
     }
 
 } // BeanMetaData

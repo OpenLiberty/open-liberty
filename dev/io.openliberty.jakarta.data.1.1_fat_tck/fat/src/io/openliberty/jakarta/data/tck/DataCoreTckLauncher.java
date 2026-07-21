@@ -32,7 +32,7 @@ import componenttest.topology.utils.tck.TCKResultsInfo.Type;
 import componenttest.topology.utils.tck.TCKRunner;
 
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 21)
+@MinimumJavaLevel(javaLevel = 17)
 public class DataCoreTckLauncher {
 
     @Server("io.openliberty.jakarta.data.1.1.core")

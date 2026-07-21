@@ -54,7 +54,9 @@ import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpRequest;
 import io.openliberty.mcp.internal.fat.tool.basicToolApp.BasicTools;
+import io.openliberty.mcp.internal.fat.tool.progressApp.ProgressTools;
 import io.openliberty.mcp.internal.fat.utils.McpClient;
+import io.openliberty.mcp.internal.fat.utils.TestConstants;
 
 /**
  *
@@ -87,12 +89,20 @@ public class ToolTest extends FATServletClient {
     @Rule
     public McpClient client = new McpClient(server, "/toolTest");
 
+    @Rule
+    public McpClient progressClient = new McpClient(server, "/progressTest");
+
     @BeforeClass
     public static void setup() throws Exception {
         WebArchive war = ShrinkWrap.create(WebArchive.class, "toolTest.war")
-                                   .addPackage(BasicTools.class.getPackage());
+                                   .addPackage(BasicTools.class.getPackage())
+                                   .addClass(TestConstants.class);
+
+        WebArchive progressWar = ShrinkWrap.create(WebArchive.class, "progressTest.war")
+                                           .addPackage(ProgressTools.class.getPackage());
 
         ShrinkHelper.exportDropinAppToServer(server, war, SERVER_ONLY);
+        ShrinkHelper.exportDropinAppToServer(server, progressWar, SERVER_ONLY);
 
         server.startServer();
 
@@ -435,7 +445,7 @@ public class ToolTest extends FATServletClient {
                             "content": [
                               {
                                 "annotations": {
-                                  "audience": "assistant",
+                                  "audience": ["assistant"],
                                   "lastModified": "2025-08-26T08:40:00Z",
                                   "priority": 0.5
                                 },
@@ -461,7 +471,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "imageContentTool",
                             "arguments": {
-                              "imageData": "base64-encoded-image"
+                              "imageData": "aGkJ"
                             }
                           }
                         }
@@ -476,7 +486,7 @@ public class ToolTest extends FATServletClient {
                             "result": {
                               "content": [
                                 {
-                                  "data": "base64-encoded-image",
+                                  "data": "aGkJ",
                                   "mimeType": "image/png",
                                   "type": "image"
                                 }
@@ -499,7 +509,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "imageContentToolWithContentAnnotation",
                             "arguments": {
-                              "imageData": "base64-encoded-image"
+                              "imageData": "aGkK"
                             }
                           }
                         }
@@ -515,11 +525,11 @@ public class ToolTest extends FATServletClient {
                               "content": [
                                 {
                                   "annotations": {
-                                    "audience": "user",
+                                    "audience": ["user"],
                                     "lastModified": "2025-08-26T08:40:00Z",
                                     "priority": 0.8
                                   },
-                                  "data": "base64-encoded-image",
+                                  "data": "aGkK",
                                   "mimeType": "image/png",
                                   "type": "image"
                                 }
@@ -542,7 +552,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "audioContentTool",
                             "arguments": {
-                              "audioData": "base64-encoded-audio"
+                              "audioData": "aGkK"
                             }
                           }
                         }
@@ -556,7 +566,7 @@ public class ToolTest extends FATServletClient {
                            "result": {
                              "content": [
                                {
-                                 "data": "base64-encoded-audio",
+                                 "data": "aGkK",
                                  "mimeType": "audio/mpeg",
                                  "type": "audio"
                                }
@@ -579,7 +589,7 @@ public class ToolTest extends FATServletClient {
                           "params": {
                             "name": "audioContentToolWithContentAnnotation",
                             "arguments": {
-                              "audioData": "base64-encoded-audio"
+                              "audioData": "aGkK"
                             }
                           }
                         }
@@ -594,11 +604,11 @@ public class ToolTest extends FATServletClient {
                             "content": [
                               {
                                 "annotations": {
-                                  "audience": "assistant",
+                                  "audience": ["assistant"],
                                   "lastModified": "2025-08-26T08:40:00Z",
                                   "priority": 0.3
                                 },
-                                "data": "base64-encoded-audio",
+                                "data": "aGkK",
                                 "mimeType": "audio/mpeg",
                                 "type": "audio"
                               }
@@ -628,6 +638,7 @@ public class ToolTest extends FATServletClient {
                         """;
         String response = client.callMCP(request);
 
+        // Note: base64 encoding of literal strings "base64-encoded-image" and "base64-encoded-audio"
         String expectedResponseString = """
                         {
                           "id": 1,
@@ -635,8 +646,8 @@ public class ToolTest extends FATServletClient {
                           "result": {
                             "content": [
                               { "text": "Echo: Hello", "type": "text" },
-                              { "data": "base64-encoded-image", "mimeType": "image/png", "type": "image" },
-                              { "data": "base64-encoded-audio", "mimeType": "audio/mpeg", "type": "audio" }
+                              { "data": "YmFzZTY0LWVuY29kZWQtaW1hZ2U=", "mimeType": "image/png", "type": "image" },
+                              { "data": "YmFzZTY0LWVuY29kZWQtYXVkaW8=", "mimeType": "audio/mpeg", "type": "audio" }
                             ],
                             "isError": false
                           }
@@ -669,13 +680,13 @@ public class ToolTest extends FATServletClient {
                           "result": {
                             "content": [
                               { "text": "Echo: Hello", "type": "text" },
-                              { "data": "base64-encoded-image", "mimeType": "image/png", "type": "image" },
-                              { "data": "base64-encoded-audio", "mimeType": "audio/mpeg", "type": "audio" }
+                              { "data": "%s", "mimeType": "image/png", "type": "image" },
+                              { "data": "%s", "mimeType": "audio/mpeg", "type": "audio" }
                             ],
                             "isError": false
                           }
                         }
-                         """;
+                         """.formatted(TestConstants.TEST_IMAGE_DATA_64, TestConstants.TEST_AUDIO_DATA_64);
 
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
@@ -783,71 +794,6 @@ public class ToolTest extends FATServletClient {
         String response = client.callMCP(request);
         String expectedResponseString = """
                         {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Planet Earth was created in the year 0"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testToolCallWithToolArgStringDefaultValue() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolArgStringDefaultValue",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Jupiter"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testToolCallWithToolArgIntDefaultValue() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testToolArgIntDefaultValue",
-                            "arguments": {}
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "2025"}], "isError": false}}
-                        """;
-        JSONAssert.assertEquals(expectedResponseString, response, true);
-    }
-
-    @Test
-    public void testToolCallWithTwoToolArgsWithOneDefaultValue() throws Exception {
-        String request = """
-                          {
-                          "jsonrpc": "2.0",
-                          "id": 2,
-                          "method": "tools/call",
-                          "params": {
-                            "name": "testMultipleToolArgsOneDefaultValue",
-                            "arguments": {
-                              "year": "2000"
-                            }
-                          }
-                        }
-                        """;
-
-        String response = client.callMCP(request);
-        String expectedResponseString = """
-                        {"id":2,"jsonrpc":"2.0","result":{"content":[{"type":"text","text": "Planet Jupiter was created in the year 2000"}], "isError": false}}
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
@@ -2725,6 +2671,382 @@ public class ToolTest extends FATServletClient {
                         }
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    @Test
+    public void testMcpRequest() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "checkMcpRequest"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"OK"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testMcpRequestHasSessionId() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "readSessionIdReversed"
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String reverseSessionId = new StringBuilder(client.getSessionId()).reverse().toString();
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"%s"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """.formatted(reverseSessionId);
+
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testResourceLinkTool() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "resourceLinkTool",
+                            "arguments": {
+                              "name": "readme",
+                              "uri": "file:///readme.md"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource_link",
+                                "name": "readme",
+                                "uri": "file:///readme.md",
+                                "title": "Resource: readme",
+                                "mimeType": "text/plain"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testResourceLinkToolWithAnnotation() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "resourceLinkToolWithAnnotation",
+                            "arguments": {
+                              "name": "readme",
+                              "uri": "file:///readme.md"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONAssert.assertEquals("""
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource_link",
+                                "name": "readme",
+                                "uri": "file:///readme.md",
+                                "annotations": {
+                                  "audience": ["user"],
+                                  "lastModified": "2025-08-26T08:40:00Z",
+                                  "priority": null
+                                }
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testEmbeddedTextResourceTool() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "embeddedTextResourceTool",
+                            "arguments": {
+                              "text": "Hello world",
+                              "uri": "file:///readme.md"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        JSONAssert.assertEquals("""
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource",
+                                "resource": {
+                                  "uri": "file:///readme.md",
+                                  "text": "Hello world",
+                                  "mimeType": "text/plain"
+                                }
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testEmbeddedBlobResourceTool() throws Exception {
+        String imageData64 = TestConstants.TEST_IMAGE_DATA_64;
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "embeddedBlobResourceTool",
+                            "arguments": {
+                              "imageData": "%s",
+                              "uri": "file:///image.png"
+                            }
+                          }
+                        }
+                        """.formatted(imageData64);
+
+        String response = client.callMCP(request);
+        JSONAssert.assertEquals("""
+                        {
+                          "id": "2",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "resource",
+                                "resource": {
+                                  "uri": "file:///image.png",
+                                  "blob": "%s",
+                                  "mimeType": "image/png"
+                                }
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """.formatted(imageData64), response, JSONCompareMode.STRICT);
+    }
+
+    /**
+     * Verifies that a {@code @Tool} method with a {@link org.mcpjava.server.progress.Progress}
+     * parameter is invoked successfully and that the no-op {@code ProgressImpl} reports no
+     * progress token (i.e. {@code progress.token().isPresent() == false}).
+     */
+    @Test
+    public void testProgressInjectedWithNoToken() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "1",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "progressTool",
+                            "arguments": {
+                              "input": "hello"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = progressClient.callMCP(request);
+
+        // The tool returns "progressTokenPresent=false,input=hello" when no progress
+        // token is present, confirming the no-op ProgressImpl was injected.
+        String expectedResponse = """
+                        {
+                          "id": "1",
+                          "jsonrpc": "2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type": "text",
+                                "text": "progressTokenPresent=false,input=hello"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedResponse, response, true);
+    }
+
+    /**
+     * Verifies that {@code progressTool} can be listed via {@code tools/list},
+     * confirming that the tool with a {@link org.mcpjava.server.progress.Progress}
+     * parameter is registered correctly without deployment errors.
+     */
+    @Test
+    public void testProgressToolIsListed() throws Exception {
+        String request = """
+                        {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/list",
+                          "params": {}
+                        }
+                        """;
+
+        String response = progressClient.callMCP(request);
+
+        // Verify the tool was registered (name is present in the tools list)
+        String expectedFragment = """
+                        {
+                          "result": {
+                            "tools": [
+                              {
+                                "name": "progressTool"
+                              }
+                            ]
+                          }
+                        }
+                        """;
+
+        JSONAssert.assertEquals(expectedFragment, response, false);
+    }
+
+    @Test
+    public void testUnannotatedToolArgs() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "unannotatedArgTool",
+                            "arguments": {
+                              "name": "fred",
+                              "count": 3
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"hello hello hello fred of FAT Test Client"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
+    }
+
+    @Test
+    public void testNoParamNameTool() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "echoNoParamName",
+                            "arguments": {
+                              "input": "test1"
+                            }
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponse = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"test1"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponse, response, JSONCompareMode.STRICT);
     }
 
 }

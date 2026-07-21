@@ -410,7 +410,7 @@ public class PathUtils {
                     pathChanged = true;
                     // ./.. is really ..
                     segments.remove(j);
-                } else if (!q.equals("..") && !isSymbol(q)) {
+                } else if (!q.equals("..") && !containsSymbol(q)) {
                     pathChanged = true;
                     segments.remove(i);
                     segments.remove(j);

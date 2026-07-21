@@ -9,8 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.fat.noparamtool;
 
-import io.openliberty.mcp.annotations.Tool;
-import io.openliberty.mcp.annotations.ToolArg;
+import org.mcpjava.server.tools.Tool;
+import org.mcpjava.server.tools.ToolArg;
+
 import jakarta.enterprise.context.ApplicationScoped;
 
 @ApplicationScoped
@@ -18,6 +19,11 @@ public class NoParamTools {
 
     @Tool(name = "missingToolArgNameTool", title = "missing ToolArgName Tool", description = "ToolArgName is missing so app wont start")
     public String missingToolArgNameTool(@ToolArg(description = "input to echo") String input) {
+        return input;
+    }
+
+    @Tool
+    public String missingToolArgAnnotation(String input) {
         return input;
     }
 }

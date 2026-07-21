@@ -1,5 +1,5 @@
 #*******************************************************************************
-# Copyright (c) 2025 IBM Corporation and others.
+# Copyright (c) 2025, 2026 IBM Corporation and others.
 # All rights reserved. This program and the accompanying materials
 # are made available under the terms of the Eclipse Public License 2.0
 # which accompanies this distribution, and is available at
@@ -17,10 +17,11 @@ src: \
   test-applications/Data_1_1_App/src,\
   fat/src
 
-javac.source: 21
-javac.target: 21
+# Once EE 11 toleration is removed, these should be changed back to 21
+javac.source: 17
+javac.target: 17
 
-fat.minimum.java.level: 21
+fat.minimum.java.level: 17
 fat.project: true
 
 tested.features: databaseRotation

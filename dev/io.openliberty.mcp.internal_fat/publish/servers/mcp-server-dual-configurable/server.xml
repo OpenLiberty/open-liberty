@@ -1,0 +1,18 @@
+<server description="Dual Configurable Mcp Path Liberty server">
+
+  <featureManager>
+    <feature>servlet-6.0</feature>    
+    <feature>cdi-4.0</feature>
+    <feature>mcpServer-1.0</feature>
+  </featureManager>
+  
+  <application location="dualConfigurableMcpPathTests.ear">
+  	<mcpServer path="/custom-mcp" moduleName="war1"/>
+  	<mcpServer path="/custom-mcp-for-war-2" moduleName="war2"/>
+  	
+  </application>
+
+  <include location="../fatTestPorts.xml" />
+  
+</server>
+

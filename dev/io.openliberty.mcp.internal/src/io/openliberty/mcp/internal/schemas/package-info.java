@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,5 +14,5 @@
  * <p>
  * Main entry point is {@link io.openliberty.mcp.internal.schemas.SchemaRegistry}.
  */
-@com.ibm.websphere.ras.annotation.TraceOptions(traceGroup = "MCP")
+@com.ibm.websphere.ras.annotation.TraceOptions(messageBundle = "io.openliberty.mcp.internal.resources.CWMCM", traceGroup = "MCP")
 package io.openliberty.mcp.internal.schemas;

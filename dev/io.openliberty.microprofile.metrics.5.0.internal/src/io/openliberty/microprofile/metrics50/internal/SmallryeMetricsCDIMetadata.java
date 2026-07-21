@@ -1,10 +1,10 @@
 /*******************************************************************************
- * Copyright (c) 2022, 2023 IBM Corporation and others.
+ * Copyright (c) 2022, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-2.0/
- * 
+ *
  * SPDX-License-Identifier: EPL-2.0
  *
  * Contributors:
@@ -18,6 +18,7 @@ import java.security.CodeSource;
 import java.security.ProtectionDomain;
 import java.security.cert.Certificate;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,7 @@ import com.ibm.ws.kernel.provisioning.ContentBasedLocalBundleRepository;
 import com.ibm.wsspi.classloading.ClassLoaderConfiguration;
 import com.ibm.wsspi.classloading.ClassLoaderIdentity;
 import com.ibm.wsspi.classloading.ClassLoadingService;
+import com.ibm.wsspi.config.Fileset;
 import com.ibm.wsspi.library.Library;
 
 import io.openliberty.cdi.spi.CDIExtensionMetadata;
@@ -72,6 +74,15 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
             + "$Responder";
     private static final String APPLICATION_NAME_RESOLVER_CLASSNAME = "io.smallrye.metrics.setup.ApplicationNameResolver";
 
+    /*
+     * As of Micrometer version 1.13.x and up the Micrometer Prometheus Registry
+     * will package it as `io.micrometer.prometheusmetrics.*` on top of downstream
+     * dependency behaviour changes (i.e. Prometheus Java Client). However, we will
+     * use their back-wards compatible Micrometer Prometheus Registry Simple Client
+     * which retains the old naming convention and subsequent behaviour. Context:
+     * MPR at 1.13.x and up switches from Prometheus Simple client to Prometheus
+     * Java Client v1.x which alters scrape and quantiles + bucket co-existence.
+     */
     private static final String FQ_PROMETHEUSCONFIG_PATH = "io.micrometer.prometheus.PrometheusConfig";
 
     private ClassLoadingService classLoadingService;
@@ -107,6 +118,8 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
     @Activate
     protected void activate(ComponentContext context, Map<String, Object> properties) throws Exception {
         File smallRyeMetricsJarFile;
+        boolean isSharedLibAvailable = (sharedLib != null);
+
         try {
             smallRyeMetricsJarFile = resolveSmallRyeMetricsJar();
         } catch (FileNotFoundException e) {
@@ -116,8 +129,6 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
 
         List<File> classPath = new ArrayList<File>();
         classPath.add(smallRyeMetricsJarFile);
-
-        boolean isSharedLibAvailable = (sharedLib != null);
 
         /*
          * No Library Reference detected. Will use default embedded Micrometer
@@ -204,6 +215,88 @@ public class SmallryeMetricsCDIMetadata implements CDIExtensionMetadata {
     protected void setSharedLib(Library ref) throws Exception {
         sharedLib = ref;
         Tr.audit(tc, "libraryRefConfigured.info.CWMMC0014I", sharedLib.id());
+        validateSharedLibraryJars(sharedLib);
+    }
+
+    /**
+     * Checks on Micrometer core version and if Promethues Registry is used. If
+     * v1.13+ is in effect, we expect Promtheus registry simple client to be used.
+     *
+     * @param sharedLib
+     */
+    private void validateSharedLibraryJars(Library sharedLib) {
+        List<File> allFiles = new ArrayList<File>();
+        Collection<Fileset> filesets = sharedLib.getFilesets();
+        if (filesets == null) {
+            if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                Tr.debug(tc, "No file sets found in shared library", null);
+            }
+            return;
+        }
+
+        for (Fileset fileset : filesets) {
+            allFiles.addAll(fileset.getFileset());
+        }
+
+        /*
+         * Parse version from micrometer-core and identify if
+         * micrometer-registry-prometheus or if
+         * micrometer-registry-prometheus-simpleclient is used (if 1.13.x+)
+         *
+         */
+        boolean foundPre1_13 = false;
+        boolean found1_13OrAbove = false;
+
+        for (File file : allFiles) {
+            String fileName = file.getName();
+            if (fileName.startsWith("micrometer-core-") && fileName.endsWith(".jar")) {
+
+                String versionString = fileName.substring("micrometer-core-".length(), fileName.length() - 4);
+                // Parse major and minor version
+                String[] versionParts = versionString.split("\\.");
+                if (versionParts.length >= 2) {
+                    try {
+                        int major = Integer.parseInt(versionParts[0]);
+                        int minor = Integer.parseInt(versionParts[1]);
+
+                        if (major == 1 && minor >= 9 && minor <= 12) {
+                            foundPre1_13 = true;
+                        } else if (major == 1 && minor >= 13) {
+                            found1_13OrAbove = true;
+                        } else if (major > 1) {
+                            found1_13OrAbove = true;
+                        }
+                    } catch (NumberFormatException e) {
+                        // Skip if version parsing fails
+                        if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                            Tr.debug(tc, String.format("The version parsed is in an unexpected fomat for the file: %s ",
+                                    fileName));
+                        }
+                    }
+                }
+            }
+
+            /*
+             * Check if micrometer-registry-prometheus is used when using v1.13+
+             */
+            if (fileName.startsWith("micrometer-registry-prometheus-")
+                    && !fileName.startsWith("micrometer-registry-prometheus-simpleclient-") && found1_13OrAbove) {
+
+                // Use generic error - Requires trace to be used.
+                Tr.error(tc, "internal.error.CWMMC0006E", null);
+
+                if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
+                    Tr.debug(tc, String.format(
+                            "Error: The runtime has detected that micrometer-core v1.13+[%s] has been used with micrometer-registry-prometheus."
+                                    + "At v1.13+ the micrometer-registry-prometheus-simpleclient must be used backwards compatability."));
+                }
+
+                // MUST indicate failure of activation.
+                isSuccessfulActivation = false;
+
+            }
+        }
+
     }
 
     protected void unsetSharedLib(Library ref) {

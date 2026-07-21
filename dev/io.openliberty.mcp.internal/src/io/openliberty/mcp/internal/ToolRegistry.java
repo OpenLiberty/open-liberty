@@ -25,6 +25,8 @@ import java.util.concurrent.CompletionStage;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import org.mcpjava.server.tools.ToolResponse;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
 
@@ -32,7 +34,6 @@ import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.security.SecurityRequirement;
 import io.openliberty.mcp.internal.security.SecurityRequirement.SecurityAnnotation;
 import io.openliberty.mcp.tools.ToolManager;
-import io.openliberty.mcp.tools.ToolResponse;
 import jakarta.enterprise.inject.spi.CDI;
 import jakarta.json.JsonObject;
 import jakarta.json.bind.Jsonb;
@@ -46,7 +47,7 @@ public class ToolRegistry implements ToolManager {
         if (staticInstance != null) {
             return staticInstance;
         }
-        return CDI.current().select(McpCdiExtension.class).get().getToolRegistry();
+        return CDI.current().select(McpCdiExtension.class).get().getCurrentToolRegistry();
     }
 
     /**
@@ -59,6 +60,7 @@ public class ToolRegistry implements ToolManager {
     }
 
     private final SchemaRegistry schemaRegistry;
+    private ConverterRegistry converterRegistry;
     private final Jsonb jsonb;
 
     private final ToolStore toolStore = new ToolStore();
@@ -121,6 +123,14 @@ public class ToolRegistry implements ToolManager {
     @Override
     public ToolDefinition newTool(String name) {
         return new ToolDefinitionImpl(name);
+    }
+
+    public void setConverterRegistry(ConverterRegistry converterRegistry) {
+        this.converterRegistry = converterRegistry;
+    }
+
+    public ConverterRegistry getConverterRegistry() {
+        return converterRegistry;
     }
 
     public class ToolDefinitionImpl implements ToolDefinition {
@@ -193,7 +203,7 @@ public class ToolRegistry implements ToolManager {
                 String message = Tr.formatMessage(tc, "CWMCM0032E.duplicate.argument.name", this.name, arg.name());
                 throw new IllegalArgumentException(message);
             }
-            for (var error : ToolValidation.validateToolArgument(arg)) {
+            for (var error : ToolValidation.validateToolArgument(arg, converterRegistry)) {
                 switch (error.type()) {
                     case NAME_BLANK -> {
                         String message = Tr.formatMessage(tc, "CWMCM0030E.blank.arguments", this.name);

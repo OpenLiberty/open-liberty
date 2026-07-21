@@ -22,6 +22,7 @@ import io.openliberty.classloading.classpath.test.lib17.Lib17;
 import io.openliberty.classloading.classpath.test.lib2.Lib2;
 import io.openliberty.classloading.classpath.test.rar1.RarLib1;
 import io.openliberty.classloading.classpath.test.rar1.RarLib2;
+import io.openliberty.classloading.classpath.test.badclass.BadClass;
 import io.openliberty.classloading.trace.lib.TestLibraryClass;
 import test.bundle.api1.a.API_A1;
 import test.bundle.api1.b.API_B1;
@@ -141,6 +142,25 @@ public class TraceTestServlet extends FATServlet {
         String lib17Message = lib17.getMessage();
         if (lib17Message == null || !lib17Message.contains("Lib17")) {
             throw new RuntimeException("Failed to load Lib17 from TEST_RAR1_RAR");
+        }
+    }
+
+    /**
+     * Test method that attempts to load a class whose bytes are intentionally
+     * corrupt (not a valid class file). AppClassLoader.defineClass() will throw
+     * ClassFormatError, which triggers the "CLASS FAIL" trace line.
+     *
+     * The ClassFormatError is caught and swallowed here so the servlet returns
+     * HTTP 200 and the FAT test can inspect the trace.
+     */
+    public void testLoadBadClass() {
+        try {
+            BadClass badClass = new BadClass();
+            String msg = badClass.getMessage();
+            // If this succeeds the test jar was not properly corrupted; do nothing.
+        } catch (ClassFormatError expected) {
+            // Expected: corrupted bytes cause ClassFormatError
+            // A "CLASS FAIL" trace line should have been emitted.
         }
     }
 }

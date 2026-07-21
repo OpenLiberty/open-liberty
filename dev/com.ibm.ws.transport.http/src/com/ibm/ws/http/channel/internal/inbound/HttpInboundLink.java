@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004, 2025 IBM Corporation and others.
+ * Copyright (c) 2004, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -514,6 +514,9 @@ public class HttpInboundLink extends InboundProtocolLink implements InterChannel
         if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
             Tr.debug(tc, "Discrimination will be called");
         }
+
+        int webSocketBufferSize = getChannel().getHttpConfig().getWebSocketBufferSize();
+        getVirtualConnection().getStateMap().put("com.ibm.ws.http.channel.internal.inbound.HttpInboundLink.websocketBufferSize", webSocketBufferSize);
 
         // 363633 - on z/OS we need store store some information for Proxy use
         if (getChannel().getHttpConfig().runningOnZOS()) {

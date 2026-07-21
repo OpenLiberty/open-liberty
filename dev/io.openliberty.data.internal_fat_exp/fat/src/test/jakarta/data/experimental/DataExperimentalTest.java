@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2024 IBM Corporation and others.
+ * Copyright (c) 2024, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -35,7 +35,7 @@ import test.jakarta.data.experimental.web.DataExperimentalServlet;
  * added in a future version.
  */
 @RunWith(FATRunner.class)
-@MinimumJavaLevel(javaLevel = 21)
+@MinimumJavaLevel(javaLevel = 17)
 public class DataExperimentalTest extends FATServletClient {
 
     @Server("io.openliberty.data.internal.fat.exp")

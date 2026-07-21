@@ -1647,3 +1647,7 @@ read.write.failed.isReady.false.useraction=\u00c4ndern Sie die Anwendungslogik, 
 sendRedirect.cannot.convert.relative.url=CWWWC0012E: Die sendRedirect relative URL in der Anwendung kann nicht in eine g\u00fcltige URL umgewandelt werden.
 sendRedirect.cannot.convert.relative.url.explanation=Die angegebene relative URL k\u00f6nnte ung\u00fcltige Pfad\u00fcberquerungszeichen oder Indizes enthalten.
 sendRedirect.cannot.convert.relative.url.useraction=\u00dcberpr\u00fcfen Sie den Ort sendRedirect URL in der Anwendung, bevor Sie die Methode response.sendRedirect( ) aufrufen
+
+invalid.accept.language.length=CWWWC0013E: Der Wert des \u201eAccept-Language\u201c-Headers in der Anfrage \u201e HTTP \u201c ist zu lang.
+invalid.accept.language.length.explanation=Der Client sendet einen \u201eAccept-Language\u201c-Header, der zu lang ist.
+invalid.accept.language.length.useraction=Der Client muss einen \u201eAccept-Language\u201c-Header mit einer Wertl\u00e4nge von h\u00f6chstens 4096 Byte senden.

@@ -271,3 +271,17 @@ CWMCM0032E.duplicate.argument.name.useraction=Donnez un nom diff\u00e9rent \u00e
 CWMCM0033A.forbidden.error=CWMCM0033A: Demande interdite. M\u00e9thode = {0} RequestURI={1 } RequestQuery={2 }, Exception : {3}
 CWMCM0033A.forbidden.error.explanation=Une demande a \u00e9t\u00e9 faite, mais l'utilisateur n'est pas autoris\u00e9 \u00e0 la faire.
 CWMCM0033A.forbidden.error.useraction=Assurez-vous qu'un utilisateur autoris\u00e9 effectue la demande.
+
+# Used for server logging
+# do not translate MCP
+# {0} = The DefaultValueConverter implementation class
+CWMCM0034W.converter.missing.type.parameter=CWMCM0034W: L'impl\u00e9mentation de ` {0} ` DefaultValueConverter doit sp\u00e9cifier un param\u00e8tre de type.
+CWMCM0034W.converter.missing.type.parameter.explanation=Une classe d'impl\u00e9mentation de ` DefaultValueConverter ` a \u00e9t\u00e9 enregistr\u00e9e, mais il lui manque un param\u00e8tre de type; par cons\u00e9quent, le type vers lequel elle effectue la conversion ne peut pas \u00eatre d\u00e9tect\u00e9.
+CWMCM0034W.converter.missing.type.parameter.useraction=Modifiez la d\u00e9claration de la classe afin qu'elle impl\u00e9mente l'interface ` DefaultValueConverter ` avec un param\u00e8tre de type concret. Par exemple : la classe ` MyConverterClass ` impl\u00e9mente l'interface ` DefaultValueConverter<MyType> `.
+
+# Used for server logging
+# do not translate MCP, DefaultValueConverter, TypeVariable
+# {0} = The DefaultValueConverter implementation class
+CWMCM0035W.converter.generic.type=CWMCM0035W: L'impl\u00e9mentation de ` {0} ` DefaultValueConverter effectue la conversion vers un param\u00e8tre de type g\u00e9n\u00e9rique plut\u00f4t que vers un type concret.
+CWMCM0035W.converter.generic.type.explanation=Une classe d'impl\u00e9mentation de ` DefaultValueConverter ` a \u00e9t\u00e9 enregistr\u00e9e avec un param\u00e8tre de type g\u00e9n\u00e9rique, tel que `T`, au lieu d'un type concret.
+CWMCM0035W.converter.generic.type.useraction=Modifiez la d\u00e9claration de la classe afin qu'elle impl\u00e9mente l'interface ` DefaultValueConverter ` avec un param\u00e8tre de type concret. Par exemple : la classe ` MyConverterClass ` impl\u00e9mente l'interface ` DefaultValueConverter<MyType> `.

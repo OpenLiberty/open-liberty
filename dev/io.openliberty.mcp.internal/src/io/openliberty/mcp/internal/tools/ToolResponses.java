@@ -9,10 +9,11 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.tools;
 
+import org.mcpjava.server.Cancellation.OperationCancelledException;
+import org.mcpjava.server.tools.ToolResponse;
+
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
-
-import io.openliberty.mcp.tools.ToolResponse;
 
 /**
  *
@@ -29,23 +30,29 @@ public class ToolResponses {
      */
     public static ToolResponse createBusinessErrorResponse(Throwable t) {
         String msg = t.getMessage() != null ? t.getMessage() : t.getClass().getSimpleName();
-        return ToolResponse.error(msg);
+        return ToolResponse.ofError(msg);
     }
 
     /**
      * Create a ToolResponse for a non-business exception.
      * The response will indicate an internal server error and the exception details will be logged.
+     * Special handling for OperationCancelledException: returns a cancellation error response without logging.
      *
      * @param t the non-business exception
      * @param toolName the name of the tool
      * @return the tool response
      */
     public static ToolResponse createNonBusinessErrorResponse(Throwable t, String toolName) {
+        // Handle OperationCancelledException specially - return error response but don't log
+        if (t instanceof OperationCancelledException) {
+            return ToolResponse.ofError("Operation was cancelled");
+        }
+
         Tr.error(tc,
                  "CWMCM0010E.internal.server.error.detailed",
                  toolName,
                  t);
-        return ToolResponse.error(Tr.formatMessage(tc, "internal.server.error"));
+        return ToolResponse.ofError(Tr.formatMessage(tc, "internal.server.error"));
     }
 
 }

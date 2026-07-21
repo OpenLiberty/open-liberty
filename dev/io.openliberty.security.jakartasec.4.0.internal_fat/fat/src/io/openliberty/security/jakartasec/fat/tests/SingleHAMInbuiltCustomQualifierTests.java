@@ -75,6 +75,8 @@ public class SingleHAMInbuiltCustomQualifierTests extends BaseJakartaSecurity40T
         ShrinkHelper.exportDropinAppToServer(server, multipleHamApp, DeployOptions.SERVER_ONLY);
 
         instance.startServer();
+
+        server.waitForLTPAConfigReady();
     }
 
     /*

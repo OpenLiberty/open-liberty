@@ -63,7 +63,7 @@ public class FeatureUtilities {
      * @return True or false telling if the current operating
      *         system is Z/OS.
      */
-    public boolean isZOS() {
+    public static boolean isZOS() {
         return isZOS;
     }
 

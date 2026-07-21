@@ -68,7 +68,7 @@ encode.option-desc.1.text=\
 \tmode; otherwise, the provided text will be encoded.\n\
 \tText with spaces must be fully quoted if specified as an argument.
 encode.option-key.encoding=\
-\ \ \ \ --encoding=[xor|aes|hash{1}]
+\ \ \ \ --encoding=[xor|aes|aes-128|hash{1}]
 encode.option-desc.encoding=\
 \tSpecify how to encode the password. Supported encodings are xor, aes, aes-128,\n\
 \tand hash. The default encoding is xor. Aes encrypts by using an aes-256 bit key.\n\
