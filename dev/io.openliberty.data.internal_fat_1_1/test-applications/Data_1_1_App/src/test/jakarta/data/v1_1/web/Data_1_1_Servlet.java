@@ -16,6 +16,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.LocalDate;
@@ -34,6 +36,9 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import jakarta.annotation.Resource;
+import jakarta.annotation.security.DenyAll;
+import jakarta.annotation.security.PermitAll;
+import jakarta.annotation.security.RolesAllowed;
 import jakarta.data.Limit;
 import jakarta.data.Order;
 import jakarta.data.Sort;
@@ -84,6 +89,9 @@ public class Data_1_1_Servlet extends FATServlet {
 
     @Inject
     Fractions fractions;
+
+    @Inject
+    Sectors sectors; // has security roles that will eventually be enforced
 
     @Inject
     StatefulFractionRepository statefulFractionRepo;
@@ -2836,6 +2844,100 @@ public class Data_1_1_Servlet extends FATServlet {
                                                      fifteenTimesInverseDesc))
                                      .map(f -> f.name)
                                      .toList());
+    }
+
+    /**
+     * Annotations from the jakarta.annotation.security package that are
+     * found on a repository interface methods are automatically copied to the
+     * respective method on the repository bean instance/proxy.
+     * Data PR 1507 would like to add class level annotations as well, but
+     * Weld does not preserve them on bean proxies/interceptor proxies.
+     * This test case enforces that the current behavior is not regressed.
+     */
+    @Test
+    public void testSecurityAnnotationsTransferedToBeanMethods() throws Exception {
+
+        // repository bean method: alter(Sector)
+
+        Method alter = sectors.getClass().getMethod("alter", Sector.class);
+        RolesAllowed rolesForMethod = alter.getAnnotation(RolesAllowed.class);
+        assertNotNull("Repository bean method " + alter +
+                      " lacks the RolesAllowed annotation",
+                      rolesForMethod);
+
+        assertEquals(List.of("operator"),
+                     List.of(rolesForMethod.value()));
+
+        for (Annotation anno : alter.getAnnotations())
+            if (RolesAllowed.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !RolesAllowed.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: byLabel(String)
+
+        Method byLabel = sectors.getClass().getMethod("byLabel", String.class);
+        assertNotNull(byLabel.getAnnotation(PermitAll.class));
+
+        for (Annotation anno : byLabel.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !PermitAll.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: create(Sector)
+
+        Method create = sectors.getClass().getMethod("create", Sector.class);
+
+        for (Annotation anno : create.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: destroy(Sector)
+
+        Method destroy = sectors.getClass().getMethod("destroy", Sector.class);
+
+        for (Annotation anno : destroy.getAnnotations())
+            if (PermitAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean method: eraseEverything()
+
+        Method eraseEverything = sectors.getClass().getMethod("eraseEverything");
+        assertNotNull(eraseEverything.getAnnotation(DenyAll.class));
+
+        for (Annotation anno : eraseEverything.getAnnotations())
+            if (DenyAll.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !DenyAll.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean method: " +
+                     anno);
+
+        // repository bean class
+
+        RolesAllowed rolesForClass = //
+                        sectors.getClass().getAnnotation(RolesAllowed.class);
+        // The Weld proxy for the bean does not include class-level annotations.
+        // Jakarta Security would need to define these annotations as interceptor
+        // bindings to have them to apply to CDI beans.
+        // TODO add test based on changes made during EE 12
+
+        for (Annotation anno : sectors.getClass().getAnnotations())
+            if (RolesAllowed.class.getPackageName()
+                            .equals(anno.annotationType().getPackageName())
+                &&
+                !RolesAllowed.class.equals(anno.annotationType()))
+                fail("Unexpected security annotation on repository bean: " + anno);
+
     }
 
     /**
