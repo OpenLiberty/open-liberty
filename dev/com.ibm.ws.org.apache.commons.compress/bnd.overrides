@@ -5,3 +5,28 @@ Bundle-SymbolicName: com.ibm.ws.org.apache.commons.compress
 
 Include-Resource: \
     @${repo;org.apache.commons:commons-compress;1.26.0}!/!META-INF/maven/*
+
+# Removed the following optional resolution imports since the packages have a hyphen
+# in the name which is not valid for OSGi
+#
+# org.apache.commons.commons-codec;resolution:=optional,\
+# org.apache.commons.commons-io;resolution:=optional
+#
+# When moving to Commons Compress 1.26.2 or later this all can be removed since they
+# fixed the problem in that release.
+
+Import-Package: \
+    org.tukaani.xz;resolution:=optional,\
+    org.brotli.dec;resolution:=optional,\
+    com.github.luben.zstd;resolution:=optional,\
+    org.objectweb.asm;resolution:=optional,\
+    javax.crypto;resolution:=optional,\
+    javax.crypto.spec;resolution:=optional,\
+    org.apache.commons.lang3.reflect;resolution:=optional,\
+    org.apache.commons.codec,\
+    org.apache.commons.codec.digest,\
+    org.apache.commons.io,\
+    org.apache.commons.io.build,\
+    org.apache.commons.io.file.attribute,\
+    org.apache.commons.io.input,\
+    org.apache.commons.io.output

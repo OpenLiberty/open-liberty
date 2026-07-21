@@ -6,9 +6,6 @@
 # http://www.eclipse.org/legal/epl-2.0/
 #
 # SPDX-License-Identifier: EPL-2.0
-#
-# Contributors:
-#     IBM Corporation - initial API and implementation
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
 bVersion: 1.0
@@ -25,24 +22,31 @@ Bundle-Name: FAT Testcontainer Bundle
 Bundle-SymbolicName: io.openliberty.org.testcontainers
 Bundle-Description: FAT Testcontainer Bundle; version=${bVersion}
 
-#Notice: com.sun.jna.*;version="5.8.0"
-# Will cause many bnd build warnings as many of it's packages contain
-# binary files instead of class files. This is expected and necessary
 Export-Package:\
     com.github.*;version="${dockerJavaVersion}",\
-    com.sun.jna.*;version="5.8.0",\
+    com.sun.jna;version="5.8.0",\
+    com.sun.jna.ptr;version="5.8.0",\
+    com.sun.jna.win32;version="5.8.0",\
     org.apache.commons.codec.*;version="1.16.1",\
     org.apache.commons.compress.*;version="1.26.0",\
     org.apache.commons.io.*;version="2.19.0",\
     org.rnorth.*;version="1.0.8",\
     org.testcontainers.*;version="${testContainerVersion}";-split-package:=merge-last
 
-
+#Notice: com/sun/jna/**
+# Will cause many bnd build warnings as many of its packages contain
+# binary files instead of class files. This is expected and necessary.
+# Cannot export the packages since they have hyphens in the name which
+# isn't osgi compatible.
+#
 #Ensure that /META-INF/service folder from testcontainers core project is included in bundle.
 # This will ensure that the other docker container strategies are accessible at runtime.
 Include-Resource:\
+    @${repo;net.java.dev.jna:jna;5.8.0;EXACT}!/com/sun/jna/**,\
     @${repo;org.testcontainers:testcontainers;${testContainerVersion};EXACT}!/META-INF/**,\
     openliberty=resources/openliberty
+
+-removeheaders.pp: Private-Package
 
 publish.wlp.jar.disabled: true
 
