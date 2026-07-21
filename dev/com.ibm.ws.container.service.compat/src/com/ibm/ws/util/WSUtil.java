@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2010, 2021 IBM Corporation and others.
+ * Copyright (c) 2010, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -27,6 +27,7 @@ public class WSUtil {
     // rewrote method to improve perf (251221)    
     @SuppressWarnings("unchecked")
     public static String resolveURI(String uriToResolve) {
+
         //Not much to resolve in this case
         if (uriToResolve == null) {
             return null;
@@ -166,5 +167,66 @@ public class WSUtil {
             return resolvedURI.toString() + qstring;
         }
 
+    }
+
+    /**
+     * Resolves a URI and returns the result truncated at the first semicolon,
+     * while validating that the full original URI does not attempt to escape
+     * the root context.
+     *
+     * The method ensures that:
+     * - The full original URI is validated (throws exception if it escapes root)
+     * - The returned value matches what the web container will use (truncated at ';')
+     *
+     * @param uri The URI to resolve and truncate
+     * @return The resolved URI truncated at the first semicolon (if any)
+     * @throws IllegalArgumentException if the URI attempts to escape the root context
+     *
+     */
+    public static String resolveAndTruncateURI(String uri) throws IllegalArgumentException {
+        if ( TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled() ) {
+            Tr.debug(tc, "resolveAndTruncateURI ", uri); 
+        }
+
+        // Handle null case
+        if (uri == null) {
+            return null;
+        }
+
+        // Find semicolon and query string positions
+        int semiIndex = uri.indexOf(';');
+        int qIndex = uri.indexOf('?');
+
+        // no semicolon in URI Path Elements - just call original resolveURI()
+        if (semiIndex == -1 || (qIndex != -1 && semiIndex > qIndex)) {
+            return resolveURI(uri);
+        }
+
+        // If the semicolon is in the last path element we can simply truncate and call the original resolveURI
+        // Check if there's a '/' or '\' after the semicolon (but before any query string)
+        int slashAfterSemi = uri.indexOf('/', semiIndex);
+        int backslashAfterSemi = uri.indexOf('\\', semiIndex);
+
+        // Check if slash/backslash appears before query string (if query string exists)
+        boolean hasPathAfterSemi = (slashAfterSemi != -1 && (qIndex == -1 || slashAfterSemi < qIndex)) ||
+                                   (backslashAfterSemi != -1 && (qIndex == -1 || backslashAfterSemi < qIndex));
+
+        if (!hasPathAfterSemi) {
+            // Semicolon is in last element - safe to just truncate and resolve once
+            // No path elements after semicolon means nothing that could escape root
+            String truncated = uri.substring(0, semiIndex);
+            return resolveURI(truncated);
+        }
+
+        // Need to validate the full URI but return a truncated and resolved result
+        // path element parameters in the middle of the URI are not common, double resolveURI should be tolerable
+
+        // Validate the full URI (may throw IllegalArgumentException)
+        // This preserves the existing exception-throwing behavior for URIs that escape root
+        resolveURI(uri);
+
+        // This returns what the web container will actually use
+        String truncated = uri.substring(0, semiIndex);
+        return resolveURI(truncated);
     }
 }
