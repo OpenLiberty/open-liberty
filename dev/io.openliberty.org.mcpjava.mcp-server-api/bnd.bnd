@@ -13,8 +13,6 @@ bVersion=1.0
 
 Bundle-SymbolicName: io.openliberty.org.mcpjava.mcp-server-api; singleton:=true
 
-publish.wlp.jar.suffix: dev/api/stable
-
 Require-Capability: osgi.ee; filter:="(&(osgi.ee=JavaSE)(version=17))"
 
 javac.source: 17
