@@ -44,7 +44,7 @@ public class GatewayClassLoaderTraceTest extends FATServletClient {
     private static final String TRACE_CLASS_LOAD_PRFIX  = "CLASS LOAD:";
     private static final String FIELD_CLASS = "class=[";
     private static final String FIELD_CLASSLOADER = "classloader=[";
-    private static final String FIELD_CODESOURCE = "codeSource=[";
+    private static final String FIELD_LOCATION= "location=[";
 
     // Classloader type that appear inside classloader=[...]
     private static final String GATEWAY_CL = "GatewayClassLoader";
@@ -97,14 +97,14 @@ public class GatewayClassLoaderTraceTest extends FATServletClient {
      * Verifies a {@code CLASS LOAD} trace line produced by {@code GatewayClassLoader} when it
      * resolves a class from an OSGi bundle.
      * The format is:
-     * {@code CLASS LOAD: class=[<name>]; classloader=[<ClassLoaderName@hex>:...]; codeSource=[<url>]}
+     * {@code CLASS LOAD: class=[<name>]; classloader=[<ClassLoaderName@hex>:...]; location=[<url>]}
      *
      * @param traceLine   the raw trace line containing the {@code CLASS LOAD:} prefix
      * @param className   the expected binary class name
      * @param classLoader substring expected inside {@code classloader=[...]} (e.g. "GatewayClassLoader")
-     * @param codeSource  substring expected inside {@code codeSource=[...]} (e.g. "test.bundle.api.jar")
+     * @param location  substring expected inside {@code location=[...]} (e.g. "test.bundle.api.jar")
      */
-    private void checkTrace(String traceLine, String className, String classLoader, String codeSource) {
+    private void checkTrace(String traceLine, String className, String classLoader, String location) {
         assertNotNull("Expected CLASS LOAD trace for " + className + " not found", traceLine);
 
         String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_LOAD_PRFIX) + TRACE_CLASS_LOAD_PRFIX.length());
@@ -120,10 +120,10 @@ public class GatewayClassLoaderTraceTest extends FATServletClient {
         assertTrue("Second element of the trace " + traceElements[1] + " should identify as " + classLoader,
                    traceElements[1].contains(classLoader));
 
-        assertTrue("Third element of the trace should contain the string " + FIELD_CODESOURCE,
-                   traceElements[2].contains(FIELD_CODESOURCE));
-        assertTrue("Third element of the trace " + traceElements[2] + " should reference the code source "+ codeSource ,
-                   traceElements[2].contains(codeSource));
+        assertTrue("Third element of the trace should contain the string " + FIELD_LOCATION,
+                   traceElements[2].contains(FIELD_LOCATION));
+        assertTrue("Third element of the trace " + traceElements[2] + " should reference the location "+ location ,
+                   traceElements[2].contains(location));
     }
 
     /**
@@ -133,7 +133,7 @@ public class GatewayClassLoaderTraceTest extends FATServletClient {
      * <p>The servlet triggers a load of {@code API_A1} from the {@code test.bundle.api1.a}
      * package, which is exported by the {@code test.bundle.api} OSGi bundle installed in
      * {@link #setUp()}.  The test waits for the matching trace line and validates that the
-     * {@code class}, {@code classloader}, and {@code codeSource} fields all reference the
+     * {@code class}, {@code classloader}, and {@code location} fields all reference the
      * expected class name and bundle JAR.
      */
     @Test
@@ -149,7 +149,7 @@ public class GatewayClassLoaderTraceTest extends FATServletClient {
         //Trace looks as follows:
         //CLASS LOAD: class=[test.bundle.api1.a.API_A1];
         //           classloader=[org.eclipse.osgi.internal.loader.EquinoxClassLoader@38832d62[test.bundle.api:1.0.116.202607101434(id=155)]];
-        //           codeSource=[file:<path>/wlp/lib/test.bundle.api.jar]
+        //           location=[file:<path>/wlp/lib/test.bundle.api.jar]
         checkTrace(traceLine, className, EQUINOX_CL, sourceLoc);
     }
 
