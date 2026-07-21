@@ -12,12 +12,12 @@
  *******************************************************************************/
 package jakarta.data;
 
+import jakarta.annotation.Nonnull;
+import jakarta.annotation.Nullable;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.expression.TextExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.metamodel.Attribute;
-import jakarta.annotation.Nonnull;
-import jakarta.annotation.Nullable;
 
 /**
  * Method signatures copied from jakarta.data.Sort from the Jakarta Data repo.
@@ -61,8 +61,7 @@ public record Sort<T>(
     }
 
     @Nonnull
-    public static <T, V extends Comparable<?>> Sort<T>
-            asc(@Nonnull ComparableExpression<T, V> expression) {
+    public static <T, V extends Comparable<?>> Sort<T> asc(@Nonnull ComparableExpression<T, V> expression) {
         return new Sort<>(expression, null, true, false, Nulls.UNSPECIFIED);
     }
 
@@ -92,8 +91,7 @@ public record Sort<T>(
     }
 
     @Nonnull
-    public static <T, V extends Comparable<?>> Sort<T>
-            desc(@Nonnull ComparableExpression<T, V> expression) {
+    public static <T, V extends Comparable<?>> Sort<T> desc(@Nonnull ComparableExpression<T, V> expression) {
         return new Sort<>(expression, null, false, false, Nulls.UNSPECIFIED);
     }
 
@@ -122,13 +120,8 @@ public record Sort<T>(
         return new Sort<>(expression, null, false, true, Nulls.UNSPECIFIED);
     }
 
-
-    @Nonnull
+    @Nullable
     public ComparableExpression<T, ? extends Comparable<?>> expression() {
-        if ( expression == null ) {
-            throw new IllegalStateException(
-                    Messages.get("013.no-expression"));
-        }
         return expression;
     }
 
