@@ -23,7 +23,7 @@ import com.ibm.wsspi.tcpchannel.TCPWriteCompletedCallback;
 import com.ibm.wsspi.tcpchannel.TCPWriteRequestContext;
 
 /**
- *
+ * This class is currently unused, consider to remove this in a future cleanup.
  */
 public class H2TCPWriteCallback implements TCPWriteCompletedCallback {
 
@@ -33,7 +33,7 @@ public class H2TCPWriteCallback implements TCPWriteCompletedCallback {
     private static final String CLASS_NAME = H2TCPWriteCallback.class.getName();
     private static final Logger LOGGER = Logger.getLogger(CLASS_NAME);
 
-    public H2TCPWriteCallback(H2Connection connection) {
+    public H2TCPWriteCallback(H2Connection connection, Socket socket) {
         h2connection = connection;
         this.socket = socket;
     }
