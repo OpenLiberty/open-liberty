@@ -433,7 +433,7 @@ public class CryptoUtils {
         } else {
             // Running beta exception, issue message if we haven't already issued one for this class
             if (!issuedBetaMessage) {
-                Tr.info(tc, "BETA: A beta method has been invoked for the class CryptoUtils for the first time.");
+                Tr.debug(tc, "BETA: A beta method has been invoked for the class CryptoUtils for the first time.");
                 issuedBetaMessage = true;
             }
             return true;
