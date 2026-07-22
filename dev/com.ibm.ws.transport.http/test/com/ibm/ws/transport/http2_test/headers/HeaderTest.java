@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2018 IBM Corporation and others.
+ * Copyright (c) 2018, 2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -555,7 +555,7 @@ public class HeaderTest {
         //Test Decode process - Literal not indexed
         buffer.flip();
         try {
-            decodedHeader = H2Headers.decodeHeader(buffer, readTable);
+            decodedHeader = H2Headers.decodeHeader(buffer, readTable, Integer.MAX_VALUE);
         } catch (CompressionException e) {
             e.printStackTrace();
         }
@@ -572,7 +572,7 @@ public class HeaderTest {
         try {
             while (buffer.hasRemaining()) {
 
-                headers.add(H2Headers.decodeHeader(buffer, table));
+                headers.add(H2Headers.decodeHeader(buffer, table, Integer.MAX_VALUE));
 
             }
         } catch (CompressionException e) {

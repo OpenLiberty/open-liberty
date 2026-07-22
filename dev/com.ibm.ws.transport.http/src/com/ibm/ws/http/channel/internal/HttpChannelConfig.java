@@ -163,6 +163,9 @@ public class HttpChannelConfig {
     private int http2ResetFramesWindow = 30000;
     private int http2MaxStreamsRefused = 100;
     private long http2MaxHeaderBlockSize = 512000;
+    private int http2MaxLowWindowStreams = 20;
+    private int http2LowWindowLimit = 16384;
+    private long http2MaxQueuedBytes = 2 * 1024 * 1024; // 2 MB
     /** Identifies if the channel has been configured to use X-Forwarded-* and Forwarded headers */
     protected boolean useRemoteIpOptions = false;
     /** Regex to be used to verify that proxies in forwarded headers are known to user */
@@ -640,6 +643,9 @@ public class HttpChannelConfig {
         parseH2ResetFramesWindow(props.get(HttpConfigConstants.PROPNAME_H2_RESET_FRAMES_WINDOW));
         parseH2MaxStreamsRefused(props.get(HttpConfigConstants.PROPNAME_H2_MAX_STREAMS_REFUSED));
         parseH2MaxHeaderBlockSize(props.get(HttpConfigConstants.PROPNAME_H2_MAX_HEADER_BLOCK_SIZE));
+        parseH2MaxLowWindowStreams(props);
+        parseH2LowWindowLimit(props);
+        parseH2MaxQueuedBytes(props);
         parseCookiesSameSitePartitioned(props);
         initSameSiteCookiesPatterns();
         parseHeaders(props);
@@ -1009,6 +1015,60 @@ public class HttpChannelConfig {
                 FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxStreamsRefused", "1");
                 if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
                     Tr.event(tc, "Config: Invalid HTTP/2 Max Streams Refused; " + option);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxLowWindowStreams(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_LOW_WINDOW_STREAMS);
+        if (null != value) {
+            try {
+                this.http2MaxLowWindowStreams = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Low Window Streams " + getH2MaxLowWindowStreams());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxLowWindowStreams", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Low Window Streams; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2LowWindowLimit(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_LOW_WINDOW_LIMIT);
+        if (null != value) {
+            try {
+                this.http2LowWindowLimit = convertInteger(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Low Window Limit " + getH2LowWindowLimit());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2LowWindowLimit", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Low Window Limit; " + value);
+
+                }
+            }
+        }
+    }
+
+    private void parseH2MaxQueuedBytes(Map<Object, Object> props) {
+        Object value = props.get(HttpConfigConstants.PROPNAME_H2_MAX_QUEUED_BYTES);
+        if (null != value) {
+            try {
+                this.http2MaxQueuedBytes = convertLong(value);
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: HTTP/2 Max Queued Bytes " + getH2MaxQueuedBytes());
+                }
+            } catch (NumberFormatException nfe) {
+                FFDCFilter.processException(nfe, getClass().getName() + ".parseH2MaxQueuedBytes", "1");
+                if (TraceComponent.isAnyTracingEnabled() && tc.isEventEnabled()) {
+                    Tr.event(tc, "Config: Invalid HTTP/2 Max Queued Bytes; " + value);
 
                 }
             }
@@ -2482,6 +2542,18 @@ public class HttpChannelConfig {
 
     public long getH2MaxHeaderBlockSize() {
         return http2MaxHeaderBlockSize;
+    }
+
+    public int getH2MaxLowWindowStreams() {
+        return http2MaxLowWindowStreams;
+    }
+
+    public int getH2LowWindowLimit() {
+        return http2LowWindowLimit;
+    }
+
+    public long getH2MaxQueuedBytes() {
+        return http2MaxQueuedBytes;
     }
 
     /**

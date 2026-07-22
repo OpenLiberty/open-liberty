@@ -1,0 +1,36 @@
+<!--
+    Copyright (c) 2026 IBM Corporation and others.
+    All rights reserved. This program and the accompanying materials
+    are made available under the terms of the Eclipse Public License 2.0
+    which accompanies this distribution, and is available at
+    http://www.eclipse.org/legal/epl-2.0/
+      
+    SPDX-License-Identifier: EPL-2.0
+-->
+<server>
+    <featureManager>
+    	<feature>jsp-2.3</feature>
+        <feature>servlet-4.0</feature>
+        <feature>timedexit-1.0</feature>
+    </featureManager>
+    
+    <!-- use the shared/common keystore pwd: Liberty, expires 1/4/2099 -->
+    <!-- keystore is in build.sharedResources and is copied into wlp image before tests are run -->
+    <keyStore id="defaultKeyStore" password="Liberty" type="PKCS12" location="${shared.resource.dir}/security/key.p12"/>
+
+    <javaPermission className="java.net.SocketPermission" actions="accept,connect,listen,resolve" name="*"/>
+    
+    <!-- FAT framework expects to start with the usual port  -->
+    <httpEndpoint id="defaultHttpEndpoint"
+                  host="*"
+                  httpPort="${bvt.prop.HTTP_secondary}"
+                  httpsPort="${bvt.prop.HTTP_secondary.secure}">
+        <tcpOptions soReuseAddr="true" />
+    </httpEndpoint>
+
+    <httpOptions
+        writeTimeout="10"
+        id="defaultHttpOptions"
+    />
+
+</server>
