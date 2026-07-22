@@ -174,9 +174,6 @@ public class TCPUtils {
                     if (!Boolean.TRUE.equals(suppress)) {
                         Tr.info(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
                                 new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
-                    } else if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
-                        Tr.debug(tc, TCPMessageConstants.TCP_CHANNEL_STARTED,
-                                 new Object[] { config.getExternalName(), hostLogString, String.valueOf(inetPort) });
                     }
                 } else {
                     if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {
