@@ -60,7 +60,6 @@ public class AppClassLoaderTraceTest extends FATServletClient {
     private static final String FIELD_CLASS = "class=[";
     private static final String FIELD_CLASSLOADER = "classloader=[";
     private static final String FIELD_LOCATION = "location=[";
-    private static final String FIELD_CODESOURCE = "codeSource=[";
 
     // Classloader type that appear inside classloader=[...]
     private static final String APP_CL = "AppClassLoader";
@@ -109,16 +108,15 @@ public class AppClassLoaderTraceTest extends FATServletClient {
     /**
      * Verifies a CLASS LOAD trace line produced when a class is successfully defined.
      * The format is:
-     * {@code CLASS LOAD: class=[<name>]; classloader=[<ClassLoaderName@hex>:<domain>:<app>:PF|PL]; location=[<url>]; codeSource=[<url>]}
+     * {@code CLASS LOAD: class=[<name>]; classloader=[<ClassLoaderName@hex>:<domain>:<app>:PF|PL]; location=[<url>]}
      *
      * @param traceLine      the raw trace line containing the CLASS LOAD prefix
      * @param className      the expected binary class name
      * @param classLoader    substring expected inside {@code classloader=[...]} (e.g. "AppClassLoader")
      * @param location       substring expected inside {@code location=[...]}
-     * @param codeSource     substring expected inside {@code codeSource=[...]}
      * @param delegationMode the delegation mode expected in the classloader field (e.g. "PF" or "PL")
      */
-    private void checkTrace(String traceLine, String className, String classLoader, String location, String codeSource, String delegationMode) {
+    private void checkTrace(String traceLine, String className, String classLoader, String location, String delegationMode) {
         assertNotNull("Expected CLASS LOAD trace for " + className + " not found", traceLine);
 
         String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_LOAD_PRFIX) + TRACE_CLASS_LOAD_PRFIX.length());
@@ -137,17 +135,12 @@ public class AppClassLoaderTraceTest extends FATServletClient {
                    traceElements[2].contains(FIELD_LOCATION));
         assertTrue("Third element of the trace " + traceElements[2] + " should reference the location "+ location,
                    traceElements[2].contains(location));
-
-        assertTrue("Fourth element of the trace should contain the string " + FIELD_CODESOURCE,
-                   traceElements[3].contains(FIELD_CODESOURCE));
-        assertTrue("Fourth element of the trace " + traceElements[3] + " should reference the code source "+ codeSource ,
-                   traceElements[3].contains(codeSource));
     }
 
     /**
      * Verifies a CLASS FAIL trace line produced when defineClass() throws ClassFormatError.
      * The format is:
-     * {@code CLASS FAIL: class=[<name>]; classloader=[<ClassLoaderName@hex>:PF|PL]; location=[<url>]; codeSource=[unknown]}
+     * {@code CLASS FAIL: class=[<name>]; classloader=[<ClassLoaderName@hex>:PF|PL]; location=[<url>]}
      *
      * @param traceLine   the raw trace line containing the CLASS FAIL prefix
      * @param className   the expected binary class name
@@ -174,12 +167,6 @@ public class AppClassLoaderTraceTest extends FATServletClient {
                    traceElements[2].contains(FIELD_LOCATION));
         assertTrue("Third element of the CLASS FAIL trace " + traceElements[2] + " should reference the location " + location,
                    traceElements[2].contains(location));
-
-        assertTrue("Fourth element of the CLASS FAIL trace should contain the string " + FIELD_CODESOURCE,
-                   traceElements[3].contains(FIELD_CODESOURCE));
-        // codeSource is "unknown" when defineClass() throws error, because the Class object is null
-        assertTrue("Fourth element of the CLASS FAIL trace " + traceElements[3] + " should contain 'unknown' codeSource",
-                   traceElements[3].contains("unknown"));
     }
 
     private void checkClassLoaderField(String traceElement, String classLoader, String delegationMode) {
@@ -203,7 +190,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
      *
      * <p>The servlet triggers the load of {@code EjbLib1}; the test then waits for the
      * corresponding trace line and validates that the {@code class}, {@code classloader},
-     * {@code location}, and {@code codeSource} fields all point to the EJB JAR and that
+     * {@code location} fields all point to the EJB JAR and that
      * the delegation mode is parent-first ({@code PF}).
      */
     @Test
@@ -219,10 +206,9 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //Trace looks as follows
         //CLASS LOAD: class=[io.openliberty.classloading.classpath.test.ejb1.EjbLib1],
         //            classloader=[AppClassLoader@<hex>:PF],
-        //            location=[file:<path-to-testEjb1>/testEjb1.jar],
-        //            codeSource=[file:<path-to-testEjb1>/testEjb1.jar]
+        //            location=[file:<path-to-testEjb1>/testEjb1.jar]
         System.out.println("TRACE = " + traceLine);
-        checkTrace(traceLine, className, APP_CL, sourceLoc, sourceLoc, PF);
+        checkTrace(traceLine, className, APP_CL, sourceLoc, PF);
     }
 
     /**
@@ -232,7 +218,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
      *
      * <p>Two distinct class names are checked — the library implementation class
      * ({@code Lib1}) and the API class ({@code API_A1}) — confirming that both the
-     * {@code location} and {@code codeSource} fields reference {@code testLib1.jar} and that
+     * {@code location} fields reference {@code testLib1.jar} and that
      * the delegation mode is parent-first ({@code PF}).
      */
     @Test
@@ -248,9 +234,8 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //Trace looks as follows
         //CLASS LOAD: class=[io.openliberty.classloading.classpath.test.lib1.Lib1],
         //            classloader=[AppClassLoader@<hex>:PF],
-        //            location=[file:<path>/testLib1.jar],
-        //            codeSource=[file:<path>/testLib1.jar]
-        checkTrace(traceLine1, className1, APP_CL, sourceLoc1, sourceLoc1, PF);
+        //            location=[file:<path>/testLib1.jar]
+        checkTrace(traceLine1, className1, APP_CL, sourceLoc1, PF);
 
 
         String className2 = "test.bundle.api1.a.API_A1";
@@ -260,9 +245,8 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //Trace looks as follows
         //CLASS LOAD: class=[test.bundle.api1.a.API_A1],
         //            classloader=[AppClassLoader@<hex>:PF],
-        //            location=[file:<path>.jar],
-        //            codeSource=[file:<path>/testLib1.jar]
-        checkTrace(traceLine2, className2, APP_CL, sourceLoc2, sourceLoc2, PF);
+        //            location=[file:<path>.jar]
+        checkTrace(traceLine2, className2, APP_CL, sourceLoc2, PF);
     }
 
     /**
@@ -270,7 +254,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
      * is loaded from a RAR module ({@code testRar1.rar}).
      *
      * <p>The servlet triggers the load of {@code RarLib1}; the test waits for the matching
-     * trace line and confirms that the {@code location} and {@code codeSource} fields reference
+     * trace line and confirms that the {@code location} fields reference
      * {@code testRar1.rar} and that the delegation mode is parent-first ({@code PF}).
      */
     @Test
@@ -286,9 +270,8 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //Trace looks as follows
         //CLASS LOAD: class=[io.openliberty.classloading.classpath.test.rar1.RarLib1],
         //            classloader=[AppClassLoader@<hex>:PF],
-        //            location=[file:<path>/testRar1.rar/testResourceAdaptor.jar],
-        //            codeSource=[file:<path>/testRar1.rar/testResourceAdaptor.jar]
-        checkTrace(traceLine, className, APP_CL, sourceLoc, sourceLoc, PF);
+        //            location=[file:<path>/testRar1.rar/testResourceAdaptor.jar]
+        checkTrace(traceLine, className, APP_CL, sourceLoc, PF);
     }
 
 
@@ -338,9 +321,9 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         for (int i = 0; i < traceLines.size(); i++) {
             String trace = traceLines.get(i);
             if (trace.contains(className1) ) {
-                checkTrace(trace, className1, APP_CL, "testEjb1.jar", "testEjb1.jar", PF);
+                checkTrace(trace, className1, APP_CL, "testEjb1.jar", PF);
             } else {
-                checkTrace(trace, className2, APP_CL, "testEjb1.jar", "testEjb1.jar", PF);
+                checkTrace(trace, className2, APP_CL, "testEjb1.jar", PF);
             }
         }
     }
@@ -395,8 +378,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
      * deliberately invalid bytes.  The expected trace line is:
      * <pre>
      * CLASS FAIL: class=[io.openliberty.classloading.classpath.test.badclass.BadClass],
-     *             classloader=[...AppClassLoader@...], location=[...testBadClass.jar],
-     *             codeSource=[unknown]
+     *             classloader=[...AppClassLoader@...], location=[...testBadClass.jar]
      * </pre>
      */
     @Test
@@ -412,8 +394,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         // Trace looks as follows:
         // CLASS FAIL: class=[io.openliberty.classloading.classpath.test.badclass.BadClass],
         //             classloader=[AppClassLoader@<hex>:PF],
-        //             location=[file:<path>/testBadClass.jar],
-        //             codeSource=[unknown]
+        //             location=[file:<path>/testBadClass.jar]
         checkFailTrace(traceLine, BAD_CLASS_NAME, APP_CL, TEST_BAD_CLASS + ".jar");
     }
 
@@ -463,8 +444,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         // Trace looks as follows:
         // CLASS FAIL: class=[io.openliberty.classloading.classpath.test.badclass.BadClass],
         //             classloader=[AppClassLoader@<hex>:PF],
-        //             location=[file:<path>/testBadClass.jar],
-        //             codeSource=[unknown]
+        //             location=[file:<path>/testBadClass.jar]
         checkFailTrace(traceLine, BAD_CLASS_NAME, APP_CL, TEST_BAD_CLASS + ".jar");
     }
 
@@ -503,8 +483,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //Trace looks as follows
         //CLASS LOAD: class=[io.openliberty.classloading.classpath.test.lib1.Lib1],
         //            classloader=[ParentLastClassLoader@<hex>:PL],
-        //            location=[file:<path>/testLib1.jar],
-        //            codeSource=[file:<path>/testLib1.jar]
-        checkTrace(traceLine, className, PL_CL, "testLib1.jar", "testLib1.jar", PL);
+        //            location=[file:<path>/testLib1.jar]
+        checkTrace(traceLine, className, PL_CL, "testLib1.jar", PL);
     }
 }
