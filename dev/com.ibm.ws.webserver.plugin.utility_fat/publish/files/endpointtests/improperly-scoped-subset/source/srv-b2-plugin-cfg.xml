@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- plugin-cfg for server-b2 (group-B, port 9082) -->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Error" Name="/logs/http_plugin.log"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="/plugins"/>
+   <VirtualHostGroup Name="default_host">
+      <VirtualHost Name="server-b1.example.com:9082"/>
+      <VirtualHost Name="server-b2.example.com:9082"/>
+      <VirtualHost Name="*:9091"/>
+      <VirtualHost Name="*:9082"/>
+   </VirtualHostGroup>
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="groupB_server2_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60" ServerIOTimeoutRetry="-1">
+      <Server CloneID="CLONE_B2" ConnectTimeout="5" LoadBalanceWeight="20" MaxConnections="-1" Name="node_b2" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="server-b2.example.com" Port="9082" Protocol="https"/>
+      </Server>
+      <PrimaryServers>
+         <Server Name="node_b2"/>
+      </PrimaryServers>
+   </ServerCluster>
+   <UriGroup Name="default_host_groupB_server2_Cluster_URIs">
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/app-beta/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/mgmt/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/api/*"/>
+   </UriGroup>
+   <Route ServerCluster="groupB_server2_Cluster" UriGroup="default_host_groupB_server2_Cluster_URIs" VirtualHostGroup="default_host"/>
+</Config>
