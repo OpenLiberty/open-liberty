@@ -11,7 +11,9 @@ package io.openliberty.mcp.internal.test.requests;
 
 import static org.junit.Assert.assertEquals;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -84,6 +86,37 @@ public class ImplementationInfoImplTest {
         assertEquals("An example client", info.description().get());
         assertEquals("http://example.com", info.websiteUrl().get());
         assertEquals(List.of(createIcon(32, 32, Theme.LIGHT), createIcon(32, 32, Theme.DARK)), info.icons());
+    }
+
+    @Test
+    public void testImplementationInfoDeserializationMinimal() throws JSONException {
+        JSONObject infoJson = new JSONObject().put("name", "example-client")
+                                              .put("version", "1.0");
+
+        ImplementationInfo info = jsonb.fromJson(infoJson.toString(), ImplementationInfoImpl.class);
+
+        assertEquals("example-client", info.name());
+        assertEquals("example-client", info.title());
+        assertEquals("1.0", info.version());
+        assertEquals(Optional.empty(), info.description());
+        assertEquals(Optional.empty(), info.websiteUrl());
+        assertEquals(Collections.emptyList(), info.icons());
+    }
+
+    @Test
+    public void testImplementationInfoDeserializationInvalidIcons() throws JSONException {
+        JSONObject infoJson = new JSONObject().put("name", "example-client")
+                                              .put("version", "1.0")
+                                              .put("icons", List.of(new JSONObject().put("wibble", "foo")));
+
+        ImplementationInfo info = jsonb.fromJson(infoJson.toString(), ImplementationInfoImpl.class);
+
+        assertEquals("example-client", info.name());
+        assertEquals("example-client", info.title());
+        assertEquals("1.0", info.version());
+        assertEquals(Optional.empty(), info.description());
+        assertEquals(Optional.empty(), info.websiteUrl());
+        assertEquals(Collections.emptyList(), info.icons());
     }
 
     public Icon createIcon(int width, int height, Theme theme) {
