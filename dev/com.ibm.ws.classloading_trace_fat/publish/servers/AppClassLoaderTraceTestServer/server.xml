@@ -9,17 +9,22 @@
         <feature>jca-1.7</feature>
     </featureManager>
 
-    <!-- Enable detailed classloading trace -->
-    <logging traceSpecification="*=info:com.ibm.ws.classloading.*=all:com.ibm.ws.classloading.internal.*=all"
-             traceFormat="BASIC"
-             maxFileSize="100"
-             maxFiles="10"/>
-             
+    <!--
+        testLib3.jar is placed in ${server.config.dir}/lib by the FAT setUp and wired
+        as a commonLibraryRef. It is NOT bundled inside the EAR, so lib3.properties is
+        absent from the EAR's own lib/ classpath. Any lookup for lib3.properties therefore
+        falls through to findResourceCommonLibraryClassLoaders(afterApp) in
+        AppClassLoader.findResourceInternal, emitting the "by common library loader" trace.
+    -->
+    <library id="testLib3">
+        <fileset dir="${server.config.dir}/lib" includes="testLib3.jar"/>
+    </library>
 
     <!-- Test EAR application with multiple modules -->
-    <enterpriseApplication id="traceTestEar" 
-                          location="traceTestEar.ear" 
+    <enterpriseApplication id="traceTestEar"
+                          location="traceTestEar.ear"
                           name="traceTestEar">
+        <classloader commonLibraryRef="testLib3"/>
     </enterpriseApplication>
 
 </server>

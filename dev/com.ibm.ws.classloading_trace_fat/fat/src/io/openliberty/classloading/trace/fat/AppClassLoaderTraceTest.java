@@ -14,8 +14,20 @@ package io.openliberty.classloading.trace.fat;
 
 import static io.openliberty.classloading.classpath.fat.FATSuite.BAD_CLASS_NAME;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_BAD_CLASS;
+import static io.openliberty.classloading.classpath.fat.FATSuite.TEST_LIB3_JAR;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TRACE_TEST_APP;
 import static io.openliberty.classloading.classpath.fat.FATSuite.TRACE_TEST_EAR;
+import static io.openliberty.classloading.classpath.util.TestUtils.APP_CL;
+import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_EAR;
+import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_SHARED_LIB;
+import static io.openliberty.classloading.classpath.util.TestUtils.DOMAIN_WEB_MODULE;
+import static io.openliberty.classloading.classpath.util.TestUtils.TRACE_CLASS_FAIL_PREFIX;
+import static io.openliberty.classloading.classpath.util.TestUtils.TRACE_CLASS_LOAD_PRFIX;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkClassFailTrace;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkClassLoadTrace;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkDelegationPath;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkResourceTrace;
+import static io.openliberty.classloading.classpath.util.TestUtils.checkResourcesTrace;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
@@ -32,8 +44,6 @@ import org.junit.runner.RunWith;
 
 import com.ibm.websphere.simplicity.ShrinkHelper;
 import com.ibm.websphere.simplicity.ShrinkHelper.DeployOptions;
-import com.ibm.websphere.simplicity.config.ClassloaderElement;
-import com.ibm.websphere.simplicity.config.EnterpriseApplication;
 import com.ibm.websphere.simplicity.config.Logging;
 import com.ibm.websphere.simplicity.config.ServerConfiguration;
 
@@ -52,35 +62,17 @@ public class AppClassLoaderTraceTest extends FATServletClient {
 
     private static final String SERVER_NAME = "AppClassLoaderTraceTestServer";
 
-    // Trace message prefix
-    private static final String TRACE_CLASS_LOAD_PRFIX = "CLASS LOAD:";
-    private static final String TRACE_CLASS_FAIL_PREFIX = "CLASS FAIL:";
-
-    // Field tokens present in every trace line
-    private static final String FIELD_CLASS = "class=[";
-    private static final String FIELD_CLASSLOADER = "classloader=[";
-    private static final String FIELD_LOCATION = "location=[";
-
-    // Classloader type that appear inside classloader=[...]
-    private static final String APP_CL = "AppClassLoader";
-    private static final String PL_CL = "ParentLastClassLoader";
-
-    private static final String PF = "PF"; //Parent first delegation
-
-    private static final String PL = "PL"; //Parent Last delegation
-
     @Server(SERVER_NAME)
     public static LibertyServer server;
 
     private static final List<String> testsRequiringConfigUpdate = Arrays.asList("testPackageSpecificClassLoadingTrace",
                                                                                      "testPackageSpecificAndBroaderClassLoadingTraceEnabledTogether",
-                                                                                     "testPackageSpecificTraceForClassFailScenario",
-                                                                                     "testAppClassLoaderTraceForParentLastDelegation");
+                                                                                     "testPackageSpecificTraceForClassFailScenario");
 
     @BeforeClass
     public static void setUp() throws Exception {
+        ShrinkHelper.exportToServer(server, "lib", TEST_LIB3_JAR, DeployOptions.SERVER_ONLY);
         ShrinkHelper.exportAppToServer(server, TRACE_TEST_EAR, DeployOptions.SERVER_ONLY);
-
     }
 
     @Before
@@ -103,85 +95,6 @@ public class AppClassLoaderTraceTest extends FATServletClient {
                 server.restoreServerConfiguration();
             }
         }
-    }
-
-    /**
-     * Verifies a CLASS LOAD trace line produced when a class is successfully defined.
-     * The format is:
-     * {@code CLASS LOAD: class=[<name>]; classloader=[<ClassLoaderName@hex>:<domain>:<app>:PF|PL]; location=[<url>]}
-     *
-     * @param traceLine      the raw trace line containing the CLASS LOAD prefix
-     * @param className      the expected binary class name
-     * @param classLoader    substring expected inside {@code classloader=[...]} (e.g. "AppClassLoader")
-     * @param location       substring expected inside {@code location=[...]}
-     * @param delegationMode the delegation mode expected in the classloader field (e.g. "PF" or "PL")
-     */
-    private void checkTrace(String traceLine, String className, String classLoader, String location, String delegationMode) {
-        assertNotNull("Expected CLASS LOAD trace for " + className + " not found", traceLine);
-
-        String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_LOAD_PRFIX) + TRACE_CLASS_LOAD_PRFIX.length());
-        String[] traceElements = traceMsg.split(";");
-
-        assertTrue("First element of the trace should contain the string " + FIELD_CLASS,
-                   traceElements[0].contains(FIELD_CLASS));
-        assertTrue("First element of the trace " + traceElements[0] + " should contain class name: " + className,
-                   traceElements[0].contains(className));
-
-        assertTrue("Second element of the trace should contain the string " + FIELD_CLASSLOADER,
-                   traceElements[1].contains(FIELD_CLASSLOADER));
-        checkClassLoaderField(traceElements[1], classLoader, delegationMode);
-
-        assertTrue("Third element of the trace should contain the string " + FIELD_LOCATION,
-                   traceElements[2].contains(FIELD_LOCATION));
-        assertTrue("Third element of the trace " + traceElements[2] + " should reference the location "+ location,
-                   traceElements[2].contains(location));
-    }
-
-    /**
-     * Verifies a CLASS FAIL trace line produced when defineClass() throws ClassFormatError.
-     * The format is:
-     * {@code CLASS FAIL: class=[<name>]; classloader=[<ClassLoaderName@hex>:PF|PL]; location=[<url>]}
-     *
-     * @param traceLine   the raw trace line containing the CLASS FAIL prefix
-     * @param className   the expected binary class name
-     * @param classLoader substring expected inside {@code classloader=[...]}  (e.g. "AppClassLoader")
-     * @param location    substring expected inside {@code location=[...]}
-     */
-    private void checkFailTrace(String traceLine, String className, String classLoader, String location) {
-        assertNotNull("Expected CLASS FAIL trace for " + className + " not found", traceLine);
-
-        String traceMsg = traceLine.substring(traceLine.indexOf(TRACE_CLASS_FAIL_PREFIX) + TRACE_CLASS_FAIL_PREFIX.length());
-        String[] traceElements = traceMsg.split(";");
-
-        assertTrue("First element of the CLASS FAIL trace should contain the string " + FIELD_CLASS,
-                   traceElements[0].contains(FIELD_CLASS));
-        assertTrue("First element of the CLASS FAIL trace " + traceElements[0] + " should contain class name: " + className,
-                   traceElements[0].contains(className));
-
-        assertTrue("Second element of the CLASS FAIL trace should contain the string " + FIELD_CLASSLOADER,
-                   traceElements[1].contains(FIELD_CLASSLOADER));
-        assertTrue("Second element of the CLASS FAIL trace " + traceElements[1] + " should identify " + classLoader,
-                   traceElements[1].contains(classLoader));
-
-        assertTrue("Third element of the CLASS FAIL trace should contain the string " + FIELD_LOCATION,
-                   traceElements[2].contains(FIELD_LOCATION));
-        assertTrue("Third element of the CLASS FAIL trace " + traceElements[2] + " should reference the location " + location,
-                   traceElements[2].contains(location));
-    }
-
-    private void checkClassLoaderField(String traceElement, String classLoader, String delegationMode) {
-        String domain = "EARApplication";
-        String app = "traceTestEar";
-        String[] classLoaderString = traceElement.split(":");
-
-        assertTrue("First element of the classLoaderString " + traceElement+ " should identify as " + classLoader,
-                   classLoaderString[0].contains(classLoader));
-        assertTrue("Second element of the classLoaderString " + traceElement + " should have the domain " + domain,
-                   classLoaderString[1].contains(domain));
-        assertTrue("Third element of the classLoaderString " + traceElement + " should have the app " + app,
-                   classLoaderString[2].contains(app));
-        assertTrue("Fourth element of the classLoaderString " + traceElement + " should have the delegation mode " + delegationMode,
-                   classLoaderString[3].contains(delegationMode));
     }
 
     /**
@@ -208,7 +121,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //            classloader=[AppClassLoader@<hex>:PF],
         //            location=[file:<path-to-testEjb1>/testEjb1.jar]
         System.out.println("TRACE = " + traceLine);
-        checkTrace(traceLine, className, APP_CL, sourceLoc, PF);
+        checkClassLoadTrace(traceLine, className, APP_CL, sourceLoc);
     }
 
     /**
@@ -235,7 +148,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //CLASS LOAD: class=[io.openliberty.classloading.classpath.test.lib1.Lib1],
         //            classloader=[AppClassLoader@<hex>:PF],
         //            location=[file:<path>/testLib1.jar]
-        checkTrace(traceLine1, className1, APP_CL, sourceLoc1, PF);
+        checkClassLoadTrace(traceLine1, className1, APP_CL, sourceLoc1);
 
 
         String className2 = "test.bundle.api1.a.API_A1";
@@ -246,7 +159,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //CLASS LOAD: class=[test.bundle.api1.a.API_A1],
         //            classloader=[AppClassLoader@<hex>:PF],
         //            location=[file:<path>.jar]
-        checkTrace(traceLine2, className2, APP_CL, sourceLoc2, PF);
+        checkClassLoadTrace(traceLine2, className2, APP_CL, sourceLoc2);
     }
 
     /**
@@ -271,7 +184,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         //CLASS LOAD: class=[io.openliberty.classloading.classpath.test.rar1.RarLib1],
         //            classloader=[AppClassLoader@<hex>:PF],
         //            location=[file:<path>/testRar1.rar/testResourceAdaptor.jar]
-        checkTrace(traceLine, className, APP_CL, sourceLoc, PF);
+        checkClassLoadTrace(traceLine, className, APP_CL, sourceLoc);
     }
 
 
@@ -321,9 +234,9 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         for (int i = 0; i < traceLines.size(); i++) {
             String trace = traceLines.get(i);
             if (trace.contains(className1) ) {
-                checkTrace(trace, className1, APP_CL, "testEjb1.jar", PF);
+                checkClassLoadTrace(trace, className1, APP_CL, "testEjb1.jar");
             } else {
-                checkTrace(trace, className2, APP_CL, "testEjb1.jar", PF);
+                checkClassLoadTrace(trace, className2, APP_CL, "testEjb1.jar");
             }
         }
     }
@@ -395,7 +308,7 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         // CLASS FAIL: class=[io.openliberty.classloading.classpath.test.badclass.BadClass],
         //             classloader=[AppClassLoader@<hex>:PF],
         //             location=[file:<path>/testBadClass.jar]
-        checkFailTrace(traceLine, BAD_CLASS_NAME, APP_CL, TEST_BAD_CLASS + ".jar");
+        checkClassFailTrace(traceLine, BAD_CLASS_NAME, APP_CL, TEST_BAD_CLASS + ".jar");
     }
 
     /**
@@ -445,45 +358,144 @@ public class AppClassLoaderTraceTest extends FATServletClient {
         // CLASS FAIL: class=[io.openliberty.classloading.classpath.test.badclass.BadClass],
         //             classloader=[AppClassLoader@<hex>:PF],
         //             location=[file:<path>/testBadClass.jar]
-        checkFailTrace(traceLine, BAD_CLASS_NAME, APP_CL, TEST_BAD_CLASS + ".jar");
+        checkClassFailTrace(traceLine, BAD_CLASS_NAME, APP_CL, TEST_BAD_CLASS + ".jar");
     }
 
     /**
-     * Verifies that when the EAR application's classloader is configured with
-     * {@code delegation="parentLast"} in {@code server.xml}, the {@code CLASS LOAD}
-     * trace line reflects parent-last ({@code PL}) delegation.
+     * Verifies that {@code AppClassLoader} emits the expected trace lines when
+     * {@code getResource()} finds or does not find a resource.
      *
-     * <p>The test saves the current server configuration, injects a
-     * {@code <classloader delegation="parentLast"/>} element into the
-     * {@code <enterpriseApplication>} stanza, starts the server, triggers a class
-     * load from {@code testLib1.jar}, and asserts that the {@code classloader=[...]}
-     * field in the trace contains {@code PL}.  The original configuration is
-     * restored by {@link #afterTest()}.
+     * <p>The servlet runs in the WAR module; {@code lib1.properties} lives in {@code testLib1.jar}
+     * which is on the EAR classloader's classpath.  The WAR classloader delegates parent-first to
+     * the EAR classloader, which finds the resource on its local classpath and emits:
+     * <pre>
+     * Resource=[...lib1.properties] found at location=[jar:file:.../testLib1.jar!/...]
+     *   on the local classpath; classloader=[AppClassLoader@&lt;EAR&gt;];
+     *   delegation path=[AppClassLoader@&lt;WAR&gt; -> AppClassLoader@&lt;EAR&gt;]
+     * </pre>
+     *
+     * <p>Not-found trace (emitted by the WAR classloader after both loaders fail):
+     * <pre>
+     * Resource=[...NoSuchResource.txt] not found; classloader=[AppClassLoader@&lt;WAR&gt;]
+     * </pre>
      */
     @Test
-    public void testAppClassLoaderTraceForParentLastDelegation() throws Exception {
-        ServerConfiguration config = server.getServerConfiguration();
+    public void testGetResourceTrace() throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
 
-        // Locate the traceTestEar application and add a parent-last classloader element
-        EnterpriseApplication app = config.getEnterpriseApplications().getBy("name", "traceTestEar");
-        ClassloaderElement cl = new ClassloaderElement();
-        cl.setDelegation("parentLast");
-        app.getClassloaders().add(cl);
-
-        server.updateServerConfiguration(config);
-        server.startServer(testName.getMethodName() + ".log");
+        // FOUND — lib1.properties is in testLib1.jar on the EAR classloader's local classpath;
+        // the WAR classloader delegates parent-first to the EAR classloader which finds it.
+        // GatewayClassLoader won't find it so no ambiguity with other loaders.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourceFound");
+        String foundTraceLine = server.waitForStringInTrace(
+                "Resource=\\[.*lib1\\.properties.*on the local classpath; classloader=\\[" + APP_CL);
+        checkResourceTrace(foundTraceLine, "lib1.properties", APP_CL, true);
+        // WAR delegates parent-first to EAR; EAR finds lib1.properties on its local classpath.
+        // Path: WebModule -> EARApplication
+        checkDelegationPath(foundTraceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR);
 
         server.setMarkToEndOfLog(server.getDefaultTraceFile());
 
-        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testLoadLib1Classes");
+        // NOT FOUND — both GatewayClassLoader and AppClassLoader emit a not-found trace;
+        // anchor on APP_CL to match only the AppClassLoader line.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourceNotFound");
+        String notFoundTraceLine = server.waitForStringInTrace(
+                "Resource=\\[.*NoSuchResource\\.txt.*\\] not found; classloader=\\[" + APP_CL);
+        checkResourceTrace(notFoundTraceLine, "NoSuchResource.txt", APP_CL, false);
+    }
 
-        String className = "io.openliberty.classloading.classpath.test.lib1.Lib1";
-        String traceLine = server.waitForStringInTrace(TRACE_CLASS_LOAD_PRFIX + ".*" + className);
+    /**
+     * Verifies that {@code AppClassLoader} emits the expected trace lines when
+     * {@code getResources()} finds or does not find resources.
+     *
+     * <p>The servlet runs in the WAR module; {@code META-INF/MANIFEST.MF} is present in the EAR
+     * lib JARs on the EAR classloader's classpath.  The WAR classloader delegates parent-first to
+     * the EAR classloader, which finds the resources on its local classpath and emits:
+     * <pre>
+     * Resources=[META-INF/MANIFEST.MF] found at locations=[jar:file:.../testLib1.jar!/META-INF/MANIFEST.MF, ...]
+     *   on the local classpath; classloader=[AppClassLoader@&lt;EAR&gt;];
+     *   delegation path=[AppClassLoader@&lt;WAR&gt; -> AppClassLoader@&lt;EAR&gt;]
+     * </pre>
+     *
+     * <p>Not-found trace (emitted by the WAR classloader after both loaders fail):
+     * <pre>
+     * Resources=[...NoSuchResource.txt] not found by classloader=[AppClassLoader@&lt;WAR&gt;]
+     * </pre>
+     */
+    @Test
+    public void testGetResourcesTrace() throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
 
-        //Trace looks as follows
-        //CLASS LOAD: class=[io.openliberty.classloading.classpath.test.lib1.Lib1],
-        //            classloader=[ParentLastClassLoader@<hex>:PL],
-        //            location=[file:<path>/testLib1.jar]
-        checkTrace(traceLine, className, PL_CL, "testLib1.jar", PL);
+        // FOUND — META-INF/MANIFEST.MF is in the EAR lib JARs; anchor on AppClassLoader to
+        // match the EAR local-classpath line and avoid the GatewayClassLoader line.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourcesFound");
+        String foundTraceLine = server.waitForStringInTrace(
+                "Resources=\\[META-INF/MANIFEST\\.MF\\].*on the local classpath; classloader=\\[" + APP_CL);
+        checkResourcesTrace(foundTraceLine, "META-INF/MANIFEST.MF", APP_CL, true);
+        // WAR delegates parent-first to EAR; EAR finds MANIFEST.MF on its local classpath.
+        // Path: WebModule -> EARApplication
+        checkDelegationPath(foundTraceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR);
+
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+
+        // NOT FOUND — both GatewayClassLoader and AppClassLoader emit a not-found trace;
+        // anchor on APP_CL to match only the AppClassLoader line.
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetResourcesNotFound");
+        String notFoundTraceLine = server.waitForStringInTrace(
+                "Resources=\\[.*NoSuchResource\\.txt.*\\] not found.*classloader=\\[" + APP_CL);
+        checkResourcesTrace(notFoundTraceLine, "NoSuchResource.txt", APP_CL, false);
+    }
+
+    /**
+     * Verifies that {@code AppClassLoader} emits the {@code "by common library loader"} trace
+     * when {@code getResource()} resolves {@code lib3.properties} through the {@code testLib3}
+     * {@code afterApp} delegate.
+     *
+     * <p>{@code lib3.properties} is absent from the EAR's local classpath, so
+     * {@code findResourceInternal} falls through to
+     * {@code findResourceCommonLibraryClassLoaders(afterApp)}, which finds it in
+     * {@code testLib3.jar} and emits the trace.
+     */
+    @Test
+    public void testGetResourceFoundViaCommonLibrary() throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetCommonLibResourceFound");
+
+        // Format: Resource=[...lib3.properties...] found at location=[...] by common library loader; classloader=[AppClassLoader@...]
+        String traceLine = server.waitForStringInTrace(
+                "Resource=\\[.*lib3\\.properties.*\\] found at location=.*by common library loader.*" + APP_CL);
+        assertNotNull("Expected 'by common library loader' trace for lib3.properties was not found", traceLine);
+
+        checkResourceTrace(traceLine, "lib3.properties", APP_CL, true);
+
+        // lib3.properties is absent from both WAR and EAR local classpaths.
+        // EAR's afterApp delegate (testLib3 Shared Library) finds it.
+        // The trace is emitted by the EAR's findResourceCommonLibraryClassLoaders with path=WAR -> EAR,
+        // then " -> " + testLib3 CL is appended — giving: WebModule -> EARApplication -> Shared Library
+        checkDelegationPath(traceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR, DOMAIN_SHARED_LIB);
+    }
+
+    /**
+     * Verifies that {@code AppClassLoader} emits the {@code "by common library loader"} trace
+     * when {@code getResources()} resolves {@code lib3.properties} through the {@code testLib3}
+     * {@code afterApp} delegate.
+     */
+    @Test
+    public void testGetResourcesFoundViaCommonLibrary() throws Exception {
+        server.setMarkToEndOfLog(server.getDefaultTraceFile());
+
+        runTest(server, TRACE_TEST_APP + "/TraceTestServlet", "testGetCommonLibResourcesFound");
+
+        // Format: Resources=[...lib3.properties...] found at locations=[...] by common library loader; classloader=[AppClassLoader@...]
+        String traceLine = server.waitForStringInTrace(
+                "Resources=\\[.*lib3\\.properties.*\\] found at locations=.*by common library loader.*" + APP_CL);
+        assertNotNull("Expected 'by common library loader' resources trace for lib3.properties was not found", traceLine);
+
+        checkResourcesTrace(traceLine, "lib3.properties", APP_CL, true);
+
+        // Same three-hop path as the getResource() case.
+        // Path: WebModule -> EARApplication -> Shared Library
+        checkDelegationPath(traceLine, DOMAIN_WEB_MODULE, DOMAIN_EAR, DOMAIN_SHARED_LIB);
     }
 }
