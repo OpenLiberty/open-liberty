@@ -14,6 +14,8 @@ package jakarta.data.restrict;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
@@ -29,6 +31,7 @@ class Unrestricted<T> implements CompositeRestriction<T> {
     }
 
     @Override
+    @Nonnull
     public CompositeRestriction<T> negate() {
         @SuppressWarnings("unchecked")
         CompositeRestriction<T> r = (CompositeRestriction<T>) Unmatchable.INSTANCE;
@@ -36,16 +39,19 @@ class Unrestricted<T> implements CompositeRestriction<T> {
     }
 
     @Override
+    @Nonnull
     public List<Restriction<? super T>> restrictions() {
         return List.of();
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "UNRESTRICTED";
     }
 
     @Override
+    @Nonnull
     public Type type() {
         return Type.ALL;
     }

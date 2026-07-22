@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,13 +14,14 @@ package jakarta.data.spi.expression.function;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 
 record TextFunctionExpressionRecord<T>(
-                String name,
-                List<ComparableExpression<? super T, ?>> arguments)
+                @Nonnull String name,
+                @Nonnull List<ComparableExpression<? super T, ?>> arguments)
                 implements TextFunctionExpression<T> {
 
     TextFunctionExpressionRecord {
@@ -39,6 +40,7 @@ record TextFunctionExpressionRecord<T>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         StringBuilder s = new StringBuilder(name.length() +
                                             arguments.size() * 80 +

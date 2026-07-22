@@ -15,14 +15,15 @@ package jakarta.data.spi.expression.function;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NumericExpression;
 import jakarta.data.messages.Messages;
 import jakarta.data.spi.expression.literal.NumericLiteral;
 
 record NumericOperatorExpressionRecord<T, N extends Number & Comparable<N>>(
-                Operator operator,
-                NumericExpression<? super T, N> left,
-                NumericExpression<? super T, N> right)
+                @Nonnull Operator operator,
+                @Nonnull NumericExpression<? super T, N> left,
+                @Nonnull NumericExpression<? super T, N> right)
                 implements NumericOperatorExpression<T, N> {
 
     NumericOperatorExpressionRecord {
@@ -39,6 +40,7 @@ record NumericOperatorExpressionRecord<T, N extends Number & Comparable<N>>(
     }
 
     @Override
+    @Nonnull
     public String toString() {
         char op = switch (operator) {
             case PLUS -> '+';
@@ -71,7 +73,7 @@ record NumericOperatorExpressionRecord<T, N extends Number & Comparable<N>>(
         return expression.toString();
     }
 
-    private static boolean zero(Object number) {
+    private static boolean zero(@Nonnull Object number) {
         if (number instanceof Integer i)
             return i == 0;
         if (number instanceof Long l)
@@ -94,6 +96,7 @@ record NumericOperatorExpressionRecord<T, N extends Number & Comparable<N>>(
     }
 
     @Override
+    @Nonnull
     public Class<? extends N> type() {
         return left.type();
     }

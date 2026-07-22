@@ -70,10 +70,12 @@ Import-Package: \
   !jakarta.persistence.query,\
   !jakarta.persistence.spi,\
   !jakarta.persistence.sql,\
+  jakarta.annotation;version="[3.0,4)",\
   com.ibm.websphere.ras,com.ibm.websphere.ras.annotation,\
   com.ibm.ws.ras.instrument.annotation;version="[1.0,2)"
 
 #TODO remove persistence and the above import packages
 -buildpath: \
+  io.openliberty.jakarta.annotation.3.0,\
   io.openliberty.jakarta.persistence.3.2,\
   com.ibm.ws.org.osgi.annotation.versioning;version=latest

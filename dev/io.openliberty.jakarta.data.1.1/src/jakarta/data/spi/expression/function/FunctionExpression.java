@@ -14,6 +14,7 @@ package jakarta.data.spi.expression.function;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.Expression;
 
 /**
@@ -21,7 +22,9 @@ import jakarta.data.expression.Expression;
  */
 public interface FunctionExpression<T, V> extends Expression<T, V> {
 
+    @Nonnull
     List<? extends Expression<? super T, ?>> arguments();
 
+    @Nonnull
     String name();
 }

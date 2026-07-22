@@ -14,13 +14,14 @@ package jakarta.data.spi.expression.function;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.messages.Messages;
 
 record NumericFunctionExpressionRecord<T, N extends Number & Comparable<N>>(
-                String name,
-                Class<? extends N> returnType,
-                List<ComparableExpression<? super T, ?>> arguments)
+                @Nonnull String name,
+                @Nonnull Class<? extends N> returnType,
+                @Nonnull List<ComparableExpression<? super T, ?>> arguments)
                 implements NumericFunctionExpression<T, N> {
 
     NumericFunctionExpressionRecord {

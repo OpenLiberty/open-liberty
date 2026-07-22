@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import java.util.List;
 
 import jakarta.data.expression.Expression;
@@ -19,14 +20,16 @@ import jakarta.data.expression.Expression;
 /**
  * Method signatures are copied from Jakarta Data.
  */
-record InRecord<V>(List<Expression<?, V>> expressions) implements In<V> {
+record InRecord<V>(@Nonnull List<Expression<?, V>> expressions) implements In<V> {
 
     @Override
+    @Nonnull
     public NotIn<V> negate() {
         return new NotInRecord<>(expressions);
     }
 
     @Override
+    @Nonnull
     public String toString() {
         return "IN " + expressions;
     }

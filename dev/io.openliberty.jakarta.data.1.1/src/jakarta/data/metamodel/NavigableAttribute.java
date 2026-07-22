@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NavigableExpression;
 import jakarta.data.messages.Messages;
 
@@ -21,9 +22,10 @@ import jakarta.data.messages.Messages;
 public interface NavigableAttribute<T, U> //
                 extends Attribute<T>, NavigableExpression<T, U> {
 
-    static <T, U> NavigableAttribute<T, U> of(Class<T> entityClass,
-                                              String name,
-                                              Class<U> attributeType) {
+    @Nonnull
+    static <T, U> NavigableAttribute<T, U> of(@Nonnull Class<T> entityClass,
+                                              @Nonnull String name,
+                                              @Nonnull Class<U> attributeType) {
 
         Messages.requireNonNull(entityClass, "entityClass");
         Messages.requireNonNull(name, "name");
@@ -33,6 +35,7 @@ public interface NavigableAttribute<T, U> //
     }
 
     @Override
+    @Nonnull
     Class<U> type();
 
 }

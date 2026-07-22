@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.metamodel;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.NumericExpression;
 import jakarta.data.messages.Messages;
 
@@ -21,8 +22,9 @@ import jakarta.data.messages.Messages;
 public interface NumericAttribute<T, N extends Number & Comparable<N>> //
                 extends ComparableAttribute<T, N>, NumericExpression<T, N> {
 
+    @Nonnull
     static <T, N extends Number & Comparable<N>> NumericAttribute<T, N> //
-                    of(Class<T> entityClass, String name, Class<N> attributeType) {
+                    of(@Nonnull Class<T> entityClass, @Nonnull String name, @Nonnull Class<N> attributeType) {
 
         Messages.requireNonNull(entityClass, "entityClass");
         Messages.requireNonNull(name, "name");

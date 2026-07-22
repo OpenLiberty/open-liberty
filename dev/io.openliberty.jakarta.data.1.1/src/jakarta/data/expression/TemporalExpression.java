@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.expression;
 
+import jakarta.annotation.Nonnull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -28,14 +29,17 @@ public interface TemporalExpression//
 /*           */ <T, V extends Temporal & Comparable<? extends Temporal>> //
                 extends ComparableExpression<T, V> {
 
+    @Nonnull
     static TemporalExpression<Object, LocalDate> localDate() {
         return CurrentDate.now();
     }
 
+    @Nonnull
     static TemporalExpression<Object, LocalDateTime> localDateTime() {
         return CurrentDateTime.now();
     }
 
+    @Nonnull
     static TemporalExpression<Object, LocalTime> localTime() {
         return CurrentTime.now();
     }

@@ -12,6 +12,7 @@
  *******************************************************************************/
 package jakarta.data.constraint;
 
+import jakarta.annotation.Nonnull;
 import jakarta.data.expression.ComparableExpression;
 import jakarta.data.spi.expression.literal.ComparableLiteral;
 
@@ -20,13 +21,16 @@ import jakarta.data.spi.expression.literal.ComparableLiteral;
  */
 public interface AtMost<V extends Comparable<?>> extends Constraint<V> {
 
+    @Nonnull
     ComparableExpression<?, V> bound();
 
-    static <V extends Comparable<?>> AtMost<V> max(ComparableExpression<?, V> maximum) {
+    @Nonnull
+    static <V extends Comparable<?>> AtMost<V> max(@Nonnull ComparableExpression<?, V> maximum) {
         return new AtMostRecord<>(maximum);
     }
 
-    static <V extends Comparable<?>> AtMost<V> max(V maximum) {
+    @Nonnull
+    static <V extends Comparable<?>> AtMost<V> max(@Nonnull V maximum) {
         return new AtMostRecord<>(ComparableLiteral.of(maximum));
     }
 

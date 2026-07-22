@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2025 IBM Corporation and others.
+ * Copyright (c) 2025,2026 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License 2.0
  * which accompanies this distribution, and is available at
@@ -14,6 +14,8 @@ package jakarta.data.restrict;
 
 import java.util.List;
 
+import jakarta.annotation.Nonnull;
+
 /**
  * Method signatures are copied from Jakarta Data.
  */
@@ -23,6 +25,7 @@ public interface CompositeRestriction<T> extends Restriction<T> {
         ALL,
         ANY;
 
+        @Nonnull
         String asQueryLanguage() {
             return this == ALL ? "AND" : "OR";
         }
@@ -30,7 +33,9 @@ public interface CompositeRestriction<T> extends Restriction<T> {
 
     boolean isNegated();
 
+    @Nonnull
     List<Restriction<? super T>> restrictions();
 
+    @Nonnull
     Type type();
 }
