@@ -5,6 +5,9 @@ IBM-Provision-Capability: \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=com.ibm.websphere.appserver.monitor-1.0))", \
   osgi.identity; filter:="(&(type=osgi.subsystem.feature)(osgi.identity=io.openliberty.mcpServer-1.0))"
 IBM-Install-Policy: when-satisfied
--bundles=io.openliberty.mcp.internal.monitor
+IBM-API-Package: \
+ io.openliberty.mcp.monitor; type="ibm-api"
+-bundles=io.openliberty.mcp.monitor; location:="dev/api/ibm/,lib/", \
+ io.openliberty.mcp.internal.monitor
 kind=beta
 edition=core
