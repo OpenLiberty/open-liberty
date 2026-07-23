@@ -64,6 +64,8 @@ import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 // Liberty Change - Backport https://github.com/apache/cxf/pull/960
 public final class AttachmentUtil {
     // Liberty Change - Start
@@ -168,12 +170,12 @@ public final class AttachmentUtil {
         return COMMAND_MAP;
     }
 
-    public static boolean isMtomEnabled(Message message) {
+    public static boolean isMtomEnabled(@Sensitive Message message) { // Liberty Change
         Object prop = message.getContextualProperty(Message.MTOM_ENABLED);
         return MessageUtils.isTrue(prop);
     }
 
-    public static void setStreamedAttachmentProperties(Message message, CachedOutputStream bos)
+    public static void setStreamedAttachmentProperties(@Sensitive Message message, CachedOutputStream bos) // Liberty Change
         throws IOException {
         Object directory = message.getContextualProperty(AttachmentDeserializer.ATTACHMENT_DIRECTORY);
         if (directory != null) {

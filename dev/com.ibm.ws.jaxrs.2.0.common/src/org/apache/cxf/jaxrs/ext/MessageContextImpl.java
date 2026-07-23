@@ -65,10 +65,12 @@ import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageImpl;
 import org.apache.cxf.message.MessageUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class MessageContextImpl implements MessageContext {
 
     private Message m;
-    public MessageContextImpl(Message m) {
+    public MessageContextImpl(@Sensitive Message m) { // Liberty Change
         this.m = m;
     }
     

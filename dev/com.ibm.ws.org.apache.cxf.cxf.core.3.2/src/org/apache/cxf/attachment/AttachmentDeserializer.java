@@ -46,6 +46,8 @@ import org.apache.cxf.message.Attachment;
 import org.apache.cxf.message.Message;
 import org.apache.cxf.message.MessageUtils;
 
+import com.ibm.websphere.ras.annotation.Sensitive;
+
 public class AttachmentDeserializer {
     public static final String ATTACHMENT_PART_HEADERS = AttachmentDeserializer.class.getName() + ".headers";
 
@@ -120,11 +122,11 @@ public class AttachmentDeserializer {
     private int maxHeaderLength = DEFAULT_MAX_HEADER_SIZE;
     private int maxHeadersCount = DEFAULT_ATTACHMENT_HEADERS_MAX_COUNT; // Liberty Change - CXF #3159
 
-    public AttachmentDeserializer(Message message) {
+    public AttachmentDeserializer(@Sensitive Message message) { // Liberty Change
         this(message, Collections.singletonList("multipart/related"));
     }
 
-    public AttachmentDeserializer(Message message, List<String> supportedTypes) {
+    public AttachmentDeserializer(@Sensitive Message message, List<String> supportedTypes) { // Liberty Change
         this.message = message;
         this.supportedTypes = supportedTypes;
 
