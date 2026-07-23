@@ -495,11 +495,12 @@ public abstract class QueryInfo {
      *
      * @param restrictions represented as a WHERE clause, or otherwise as an
      *                         AND clause to append to the query's WHERE clause
+     * @return the new count query that is assigned to jpqlCount
      */
-    private void appendCountRestrictions(String restrictions) {
+    private String appendCountRestrictions(String restrictions) {
         int countLen = jpqlCount.length() + 1 + restrictions.length();
 
-        jpqlCount = new StringBuilder(countLen) //
+        return jpqlCount = new StringBuilder(countLen) //
                         .append(jpqlCount) //
                         .append(' ') //
                         .append(restrictions) //
