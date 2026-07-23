@@ -215,6 +215,7 @@ public class FileService extends StandardMBean implements FileServiceMXBean, Eve
             }
 
             BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/security"));
+            BlockList.add(normalizePath(wsLocation.resolveString(WsLocationConstants.SYMBOL_SERVER_OUTPUT_DIR)+ "resources/collective"));
         }
 
         //START DEBUG
