@@ -42,7 +42,7 @@ public class HttpAuthenticationMechanismsTracker {
             // atomic operation required on concurrent hash map as multiple CDI extensions
             //   can now use initialize and use moduleMapsPerApplication without
             //   that the initialize comes first
-            moduleMapsPerApplication.computeIfAbsent(applicationName, key -> createInitializedWebModuleMap());
+            moduleMapsPerApplication.compute(applicationName, (key, value) -> createInitializedWebModuleMap());
         }
     }
 
