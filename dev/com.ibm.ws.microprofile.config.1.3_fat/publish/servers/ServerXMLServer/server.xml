@@ -3,6 +3,11 @@
 	<include location="../fatTestPorts.xml" />
 
 	<variable name="testVar" value="testValue" />
+	<variable name="serverXMLEnvKey" value="${mpEnvKey}" />
+	<variable name="serverXMLEnvKeyWithPrefix" value="${env.mpEnvKey}" />
+	
+	<jndiEntry jndiName="serverXMLEnvKeyJNDI" value="${mpEnvKey}" />
+	<jndiEntry jndiName="serverXMLEnvKeyWithPrefixJNDI" value="${env.mpEnvKey}" />
 
 	<featureManager>
 		<feature>osgiconsole-1.0</feature>
@@ -10,6 +15,7 @@
 		<feature>servlet-4.0</feature>
 		<feature>componentTest-1.0</feature>
 		<feature>mpConfig-1.4</feature>
+		<feature>jndi-1.0</feature>
 	</featureManager>
 
 	<application location="serverXMLApp.war">
@@ -41,6 +47,8 @@
 			<property name="serverXMLKey1" value="serverXMLValue1" />
 		</appProperties>
 	</webApplication>
+	
+	<mpConfig serverConfigValueExpansion="true"/>
 	
 	<application location="mapEnvVarApp.war"/>
 </server>
