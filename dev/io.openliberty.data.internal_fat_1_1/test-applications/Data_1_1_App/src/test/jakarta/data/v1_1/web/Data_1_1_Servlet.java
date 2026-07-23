@@ -759,26 +759,25 @@ public class Data_1_1_Servlet extends FATServlet {
         //        20      R          24     4 /  7
         //        21      R          30     3 / 11
         //        22      R          32     4 /  9
-        //        23      R          36     3 / 13
-        //        24      R          40     5 /  9
-        // 3      25      R          40     4 / 11
-        // 3      26      R          48     4 / 13
-        // 3      27      R          50     5 / 11
-        // 3      28      R          55     5 / 12
-        // 3      29      R          60     6 / 11
-        // 4      30      R          60     5 / 13
-        // 4      31      R          65     5 / 14
-        // 4      32      R          70     7 / 11
-        // 4      33      R          72     6 / 13
-        // 4      34      R          77     7 / 12
-        // 4      35      R          80     8 / 11
-        // 4      36      R          98     7 / 15
-        // 4      37      R         108     9 / 13
-        // 4      38      R         112     8 / 15
-        //        39      R         112     7 / 17
-        //        40      R         117     9 / 14
-        //        41      R         128     8 / 17
-        //        42      R         162     9 / 19
+        //        23      R          40     5 /  9
+        // 3      24      R          40     4 / 11
+        // 3      25      R          48     4 / 13
+        // 3      26      R          50     5 / 11
+        // 3      27      R          55     5 / 12
+        // 3      28      R          60     6 / 11
+        // 4      29      R          60     5 / 13
+        // 4      30      R          65     5 / 14
+        // 4      31      R          70     7 / 11
+        // 4      32      R          72     6 / 13
+        // 4      33      R          77     7 / 12
+        // 4      34      R          80     8 / 11
+        // 4      35      R          98     7 / 15
+        // 4      36      R         108     9 / 13
+        // 4      37      R         112     8 / 15
+        //        38      R         112     7 / 17
+        //        39      R         117     9 / 14
+        //        40      R         128     8 / 17
+        //        41      R         162     9 / 19
 
         Between<Integer> denominator3to10MoreThanNumerator = Between
                         .bounds(_Fraction.numerator.plus(3),
@@ -829,9 +828,8 @@ public class Data_1_1_Servlet extends FATServlet {
                      page4.hasPrevious());
         assertEquals(true,
                      page4.hasTotals());
-        // TODO implement count queries when restriction is present
-        //assertEquals(42L,
-        //             page4.totalElements());
+        assertEquals(41L,
+                     page4.totalElements());
 
         Fraction firstOnPage = page4.content().get(0);
         Cursor firstOnPageCursor = Cursor
@@ -862,9 +860,8 @@ public class Data_1_1_Servlet extends FATServlet {
                      page3.hasPrevious());
         assertEquals(true,
                      page3.hasTotals());
-        // TODO implement count queries when restriction is present
-        //assertEquals(42L,
-        //             page3.totalElements());
+        assertEquals(41L,
+                     page3.totalElements());
 
         CursoredPage<Fraction> page1 = fractions
                         .fetchCursored(denominator3to10MoreThanNumerator,
@@ -877,11 +874,10 @@ public class Data_1_1_Servlet extends FATServlet {
                      page1.hasNext());
         assertEquals(true,
                      page1.hasTotals());
-        // TODO implement count queries when restriction is present
-        //assertEquals(42L,
-        //             page1.totalElements());
-        //assertEquals(4L,
-        //             page1.totalPages());
+        assertEquals(41L,
+                     page1.totalElements());
+        assertEquals(4L,
+                     page1.totalPages());
 
         assertEquals(List.of("1/4",
                              "1/5",
@@ -2258,6 +2254,53 @@ public class Data_1_1_Servlet extends FATServlet {
                                                  Sort.asc(_Fraction.NUMERATOR)) //
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    /**
+     * Request offset pagination from a repository method that accepts a
+     * Restriction parameter. Verify the total count of elements and pages
+     * takes into account the given Restriction value.
+     */
+    @Test
+    public void testOffsetPageCountWithRestrictions() {
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page1 = fractions //
+                        .fetchOffsetPage(12,
+                                         _Fraction.reduced.isTrue(),
+                                         PageRequest.ofSize(9),
+                                         _Fraction.name.asc());
+        assertEquals(45,
+                     page1.totalElements());
+        assertEquals(5,
+                     page1.totalPages());
+
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page3 = fractions //
+                        .fetchOffsetPage(12,
+                                         _Fraction.reduced.isTrue(),
+                                         PageRequest.ofSize(9).pageNumber(3),
+                                         _Fraction.name.asc());
+        assertEquals(45,
+                     page3.totalElements());
+        assertEquals(5,
+                     page3.totalPages());
+
+        Restriction<Fraction> restriction = Restrict //
+                        .any(_Fraction.reduced.isTrue(),
+                             _Fraction.numerator.equalTo(3),
+                             _Fraction.name.length().equalTo(10));
+
+        @SuppressWarnings("unchecked")
+        Page<Fraction> page2 = fractions //
+                        .fetchOffsetPage(12,
+                                         restriction,
+                                         PageRequest.ofSize(8).pageNumber(2),
+                                         _Fraction.numerator.asc(),
+                                         _Fraction.denominator.desc());
+        assertEquals(52,
+                     page2.totalElements());
+        assertEquals(7,
+                     page2.totalPages());
     }
 
     /**
