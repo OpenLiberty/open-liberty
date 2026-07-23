@@ -15,6 +15,7 @@ import com.ibm.ws.http.netty.NettyHttpChannelConfig;
 import com.ibm.ws.http.netty.NettyHttpConstants.ProtocolName;
 import com.ibm.ws.http.netty.pipeline.CRLFValidationHandler;
 import com.ibm.ws.http.netty.pipeline.HttpPipelineInitializer;
+import com.ibm.ws.http.netty.pipeline.inbound.HttpDispatcherHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.LibertyHttpRequestHandler;
 import com.ibm.ws.http.netty.pipeline.inbound.read.ReadFlowHandler;
 
@@ -68,7 +69,7 @@ public class LibertyNettyALPNHandler extends ApplicationProtocolNegotiationHandl
             if (ctx.pipeline().get(TimeoutHandler.class) == null) {
                 TimeoutHandler h = new TimeoutHandler(httpConfig);
 
-                ctx.pipeline().addAfter(HttpPipelineInitializer.NETTY_HTTP_SERVER_CODEC, TimeoutHandler.NAME, h);
+                ctx.pipeline().addBefore(HttpDispatcherHandler.NAME, TimeoutHandler.NAME, h);
                 h.markProtocol(ctx.pipeline(), ProtocolName.HTTP2);
 
             }

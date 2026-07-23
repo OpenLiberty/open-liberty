@@ -196,7 +196,7 @@ public class HttpInputStreamEE7 extends HttpInputStreamImpl {
 
     private boolean isStreamingReadReady() throws IOException {
         if (isStreamingReadCompleteForCallback()) {
-            return false;
+            return true;
         }
         if (isMultiReadOfPostDataEnabled()) {
             return checkMultiReadBufferIfAvailable();
