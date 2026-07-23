@@ -1,6 +1,6 @@
 - stepName: OLS SHA
   workType: Jenkins
-  projectName: getOLSCommitSHA
+  projectName: getGitCommitSHA
   timeoutInMinutes: 120
   properties:
     commitsAPI: "https://github.ibm.com/api/v3/repos/${git.laos.clone.repository.username}/open-liberty-service/commits/${git.laos.clone.checkout.branch}"
