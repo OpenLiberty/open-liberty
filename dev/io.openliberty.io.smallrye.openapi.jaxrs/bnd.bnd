@@ -20,7 +20,7 @@ src: src
 -dsannotations-inherit: true
 
 Include-Resource: \
-    @\${repo;io.smallrye:smallrye-open-api-jaxrs}!/META-INF/services/*
+    @${repo;io.smallrye:smallrye-open-api-jaxrs}!/META-INF/services/*
 
 Service-Component: \
     io.smallrye.openapi.runtime.scanner.spi.AnnotationScanner; \
