@@ -8,7 +8,7 @@
 # SPDX-License-Identifier: EPL-2.0
 #*******************************************************************************
 -include= ~../cnf/resources/bnd/bundle.props
-bVersion=2.15.2
+bVersion=2.21.5
 
 Bundle-Name: FasterXML Jackson JaxRS Providers
 Bundle-SymbolicName: io.openliberty.com.fasterxml.jackson.jaxrs
@@ -18,9 +18,9 @@ publish.wlp.jar.disabled: true
 test.project: true
 
 -includeresource: \
-  @\${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.21.2;EXACT}!/!META-INF/maven/*,\
-  @\${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.21.2;EXACT}!/!META-INF/maven/*,\
-  @\${repo;com.fasterxml.jackson.module:jackson-module-jaxb-annotations;2.21.2;EXACT}!/!META-INF/maven/*
+  @\${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-base;2.21.5;EXACT}!/!META-INF/maven/*,\
+  @\${repo;com.fasterxml.jackson.jaxrs:jackson-jaxrs-json-provider;2.21.5;EXACT}!/!META-INF/maven/*,\
+  @\${repo;com.fasterxml.jackson.module:jackson-module-jaxb-annotations;2.21.5;EXACT}!/!META-INF/maven/*
   
 Export-Package: \
-  com.fasterxml.jackson.*;version=2.21.2
+  com.fasterxml.jackson.*;version=2.21.5

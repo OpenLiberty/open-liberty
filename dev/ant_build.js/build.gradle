@@ -51,8 +51,8 @@ configurations {
 
 dependencies {
     library "com.fasterxml.jackson.core:jackson-annotations:2.21"
-    library "com.fasterxml.jackson.core:jackson-core:2.21.2"
-    library "com.fasterxml.jackson.core:jackson-databind:2.21.2"
+    library "com.fasterxml.jackson.core:jackson-core:2.21.5"
+    library "com.fasterxml.jackson.core:jackson-databind:2.21.5"
     library "com.google.javascript:closure-compiler:v20160315"
     library "com.github.mwiede:jsch:2.27.0"
     library "com.sun.xml.bind:jaxb-impl:2.3.9"
@@ -107,8 +107,8 @@ dependencies {
 def dependencyToPath = [
   "com.ibm.ws.componenttest:infra.buildtasks-core:7.0.2": "lib/buildtasks/infra.buildtasks-core_7.0.2.jar",
   "com.fasterxml.jackson.core:jackson-annotations:2.21": "lib/buildtasks/jackson-annotations-2.21.jar",
-  "com.fasterxml.jackson.core:jackson-core:2.21.2": "lib/buildtasks/jackson-core-2.21.2.jar",
-  "com.fasterxml.jackson.core:jackson-databind:2.21.2": "lib/buildtasks/jackson-databind-2.21.2.jar",
+  "com.fasterxml.jackson.core:jackson-core:2.21.5": "lib/buildtasks/jackson-core-2.21.5.jar",
+  "com.fasterxml.jackson.core:jackson-databind:2.21.5": "lib/buildtasks/jackson-databind-2.21.5.jar",
   "com.github.mwiede:jsch:2.27.0": "lib/buildtasks/jsch-2.27.0.jar",
   "com.sun.xml.bind:jaxb-impl:2.3.9": "lib/buildtasks/jaxb-impl-2.3.9.jar",
   "javax.xml.bind:activation:1.0.2": "lib/buildtasks/jaxb-activation.jar",
@@ -178,7 +178,7 @@ def copyDependency(File file, Map dependencyToPath) {
         }
     } catch (Exception e) {
         String gav = "${groupDir.getName()}:${nameDir.getName()}:${versionDir.getName()}"
-        throw Exception("Error: Could not locate $gav in dependencyToPath variable in ant_build.js/build.gradle.")
+        throw new Exception("Error: Could not locate $gav in dependencyToPath variable in ant_build.js/build.gradle.")
     }
 }
 
