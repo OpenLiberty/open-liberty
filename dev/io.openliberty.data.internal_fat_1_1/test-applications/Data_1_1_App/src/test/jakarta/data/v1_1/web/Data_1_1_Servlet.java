@@ -504,6 +504,44 @@ public class Data_1_1_Servlet extends FATServlet {
     }
 
     /**
+     * Request cursor pagination from a repository method that accepts a
+     * Restriction parameter, but specify the unrestricted restriction.
+     * Verify the total count of elements and pages is computed correctly.
+     */
+    @Test
+    public void testCursoredPageCountWithEmptyRestriction() {
+
+        Between<Integer> denominators5to10 = Between.bounds(5, 10);
+
+        Order<Fraction> order = Order.by(_Fraction.denominator.asc(),
+                                         _Fraction.numerator.asc());
+
+        Cursor fourSeventhsCursor = Cursor.forKey(7, 4);
+        PageRequest page3Req = PageRequest.ofSize(5)
+                        .pageNumber(3)
+                        .afterCursor(fourSeventhsCursor);
+
+        CursoredPage<Fraction> page3 = fractions
+                        .fetchCursored(denominators5to10,
+                                       true, // reduced
+                                       Restrict.unrestricted(),
+                                       order,
+                                       page3Req);
+
+        assertEquals(26L,
+                     page3.totalElements());
+
+        assertEquals(List.of("5/7",
+                             "6/7",
+                             "1/8",
+                             "3/8",
+                             "5/8"),
+                     page3.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+    }
+
+    /**
      * Use a stateful repository to find an entity. Use a detach operation to
      * make the entity unmanaged. Make updates to the entity. After committing,
      * verify that updates made after the detach operation are not written to
@@ -2419,6 +2457,61 @@ public class Data_1_1_Servlet extends FATServlet {
                      fractions.where(restriction)
                                      .map(f -> f.name)
                                      .collect(Collectors.toList()));
+    }
+
+    @Test
+    public void testQueryByMethodNameWithRestriction() {
+        Page<Fraction> page1 = fractions//
+                        .findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+                        (List.of(12, 20, 16),
+                         3,
+                         17,
+                         _Fraction.denominator.desc(),
+                         _Fraction.reduced.isTrue(),
+                         PageRequest.ofSize(6));
+
+        assertEquals(List.of("3/20",
+                             "3/16",
+                             "5/16",
+                             "5/12",
+                             "7/20",
+                             "7/16"),
+                     page1.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(16L,
+                     page1.totalElements());
+        assertEquals(3L,
+                     page1.totalPages());
+
+        assertEquals(true,
+                     page1.hasNext());
+
+        Page<Fraction> page2 = fractions//
+                        .findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+                        (List.of(12, 20, 16),
+                         3,
+                         17,
+                         _Fraction.denominator.desc(),
+                         _Fraction.reduced.isTrue(),
+                         page1.nextPageRequest());
+
+        assertEquals(List.of("7/12",
+                             "9/20",
+                             "9/16",
+                             "11/20",
+                             "11/16",
+                             "11/12"),
+                     page2.stream()
+                                     .map(f -> f.numerator + "/" + f.denominator)
+                                     .toList());
+
+        assertEquals(16L,
+                     page2.totalElements());
+        assertEquals(3L,
+                     page2.totalPages());
+
     }
 
     /**

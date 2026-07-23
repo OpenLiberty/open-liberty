@@ -160,6 +160,14 @@ public interface Fractions {
      PageRequest pageReq,
      Sort<Fraction>... sorts);
 
+    Page<Fraction> findPageByDenominatorInAndNumeratorBetweenOrderByNumerator //
+    (List<Integer> denominators,
+     int minNumerator,
+     int maxNumerator,
+     Sort<Fraction> sort,
+     Restriction<Fraction> filter,
+     PageRequest pageReq);
+
     @First
     @NativeQuery("""
                     SELECT *
