@@ -63,6 +63,7 @@ import io.openliberty.microprofile.health.internal_fat.shared.HealthActions;
                 MPHealthTest.class,
                 MPHealthTestFileBased.class,
                 MPHealthTestFileBasedConfig.class,
+                MPHealthTestFileBasedEnableEndpoints.class,
                 MPTelemetryJaxRsIntegrationTest.class,
                 OpenAPIConfigTest.class
 })
