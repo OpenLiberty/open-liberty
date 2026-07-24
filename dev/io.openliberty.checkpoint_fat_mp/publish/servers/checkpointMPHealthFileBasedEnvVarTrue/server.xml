@@ -20,8 +20,8 @@
         <feature>componenttest-1.0</feature>
     </featureManager>
     
-    <!-- Basic mpHealth config - ENV vars will be set during restore -->
-    <mpHealth />
+    <!-- File-based health checks enabled - enableEndpoints will be set via ENV var at restore -->
+    <mpHealth startupCheckInterval="1s" checkInterval="5s" />
     
     <include location="../fatTestPorts.xml" />
 </server>
