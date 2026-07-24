@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>io.openliberty.security.oidcclient.wellknown.internal.jakarta</name>
+	<name>com.ibm.ws.security.oidc.client_fat.protectedResourceMetadata</name>
 	<comment></comment>
 	<projects>
 	</projects>
@@ -10,19 +10,13 @@
 			<arguments>
 			</arguments>
 		</buildCommand>
-		<buildCommand>
-			<name>bndtools.core.bndbuilder</name>
-			<arguments>
-			</arguments>
-		</buildCommand>
 	</buildSpec>
 	<natures>
 		<nature>org.eclipse.jdt.core.javanature</nature>
-		<nature>bndtools.core.bndnature</nature>
 	</natures>
 	<filteredResources>
 		<filter>
-			<id>1783162483454</id>
+			<id>1783162483428</id>
 			<name></name>
 			<type>30</type>
 			<matcher>

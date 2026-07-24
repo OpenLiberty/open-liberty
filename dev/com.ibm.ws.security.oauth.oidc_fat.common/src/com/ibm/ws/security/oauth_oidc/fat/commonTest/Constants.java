@@ -108,6 +108,7 @@ public class Constants extends com.ibm.ws.security.fat.common.Constants {
     public static final String PERFORM_LOGIN = "performLogin";
     public static final String PERFORM_ISAM_LOGIN = "performIsamLogin";
     public static final String INVOKE_PROTECTED_RESOURCE = "invokeProtectedResource";
+    public static final String INVOKE_PROTECTED_RESOURCE_METADATA_ENDPOINT = "invokeProtectedResourceMetadataEndpoint";
     public static final String INVOKE_RS_PROTECTED_RESOURCE = "invokeRsProtectedResource";
     public static final String INVOKE_INTROSPECTION_ENDPOINT = "invokeIntrospectionEndpoint";
     public static final String INVOKE_USERINFO_ENDPOINT = "invokeUserinfoEndpoint";

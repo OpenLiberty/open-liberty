@@ -728,6 +728,10 @@ public class OidcClientConfigImpl implements OidcClientConfig {
      * @param props the configuration properties map
      */
     private void processProtectedResourceMetadata(Map<String, Object> props) {
+        serveProtectedResourceMetadata = false;
+        protectedResourceMetadataAdvertisedScopes = null;
+        protectedResourceMetadataJwtBuilderRef = null;
+
         // Beta fencing: only process if running in beta mode
         if (!ProductInfo.getBetaEdition()) {
             if (TraceComponent.isAnyTracingEnabled() && tc.isDebugEnabled()) {

@@ -22,6 +22,7 @@ import com.ibm.json.java.JSONArray;
 import com.ibm.json.java.JSONObject;
 import com.ibm.websphere.ras.Tr;
 import com.ibm.websphere.ras.TraceComponent;
+import com.ibm.ws.security.openidconnect.client.OAuthProtectedResourceMetadataService;
 import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
 
 /**
@@ -33,8 +34,8 @@ import com.ibm.ws.security.openidconnect.clients.common.OidcClientConfig;
  * using a dedicated web context path.
  * </p>
  */
-@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = OAuthProtectedResourceMetadataResolver.class)
-public class OAuthProtectedResourceMetadataResolver {
+@Component(configurationPolicy = ConfigurationPolicy.IGNORE, service = OAuthProtectedResourceMetadataService.class)
+public class OAuthProtectedResourceMetadataResolver implements OAuthProtectedResourceMetadataService {
 
     private static final TraceComponent tc = Tr.register(OAuthProtectedResourceMetadataResolver.class);
 
@@ -67,17 +68,18 @@ public class OAuthProtectedResourceMetadataResolver {
         }
 
         // Adapt the metadata request to look like a direct request to the protected resource
-        // so that the auth filter can match it against the configured URL patterns.
-        // We use getOidcProviderByAuthFilter rather than getOidcProvider to avoid the
-        // IExtendedRequest cast that happens in the provider-hint code path.
+        // so that the standard OIDC provider-selection flow can evaluate auth filters against
+        // the configured URL patterns.
         HttpServletRequest resourceRequest = new ProtectedResourceRequestWrapper(request, protectedResourcePath);
 
-        String providerId = client.getOidcProviderByAuthFilter(resourceRequest);
+        String providerId = client.getOidcProvider(resourceRequest);
+
         if (providerId == null) {
             return null;
         }
 
         OidcClientConfig config = client.getOidcClientConfig(request, providerId);
+
         if (config == null) {
             return null;
         }
@@ -104,8 +106,15 @@ public class OAuthProtectedResourceMetadataResolver {
         String authorizationServer = getAuthorizationServer(config);
         if (authorizationServer != null) {
             JSONArray authorizationServers = new JSONArray();
-            authorizationServers.add(authorizationServer);
-            metadata.put("authorization_servers", authorizationServers);
+            for (String issuer : authorizationServer.split(",")) {
+                String trimmedIssuer = issuer.trim();
+                if (!trimmedIssuer.isEmpty()) {
+                    authorizationServers.add(trimmedIssuer);
+                }
+            }
+            if (!authorizationServers.isEmpty()) {
+                metadata.put("authorization_servers", authorizationServers);
+            }
         }
 
         List<String> advertisedScopes = config.getProtectedResourceMetadataAdvertisedScopes();
@@ -133,6 +142,11 @@ public class OAuthProtectedResourceMetadataResolver {
         String issuer = config.getIssuerIdentifier();
         if (issuer != null && !issuer.trim().isEmpty()) {
             return issuer;
+        }
+        String validationEndpoint = config.getValidationEndpointUrl();
+        if (validationEndpoint != null) {
+            int lastSlashIndex = validationEndpoint.lastIndexOf("/");
+            return validationEndpoint.substring(0, lastSlashIndex);
         }
         return null;
     }

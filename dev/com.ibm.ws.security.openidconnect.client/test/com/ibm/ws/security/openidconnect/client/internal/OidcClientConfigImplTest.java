@@ -1052,8 +1052,8 @@ public class OidcClientConfigImplTest extends CommonTestClass {
     }
 
     /**
-     * Test that a trailing comma in advertisedScopes produces an empty string as the last element.
-     * e.g. "a,b,c," should produce ["a", "b", "c", ""] reflecting Java's split() default behaviour.
+     * Test that a trailing comma in advertisedScopes does not produce a trailing empty element.
+     * e.g. "a,b,c," should produce ["a", "b", "c"] reflecting Java's split() default behaviour.
      */
     @Test
     public void testProtectedResourceMetadata_BetaMode_AdvertisedScopesWithTrailingComma_ProducesExpectedList() {

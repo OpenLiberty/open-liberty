@@ -15,8 +15,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.ibm.ws.kernel.productinfo.ProductInfo;
 import com.ibm.ws.kernel.service.util.ServiceCaller;
-import com.ibm.ws.security.openidconnect.client.internal.OAuthProtectedResourceMetadataResolver;
+import com.ibm.ws.security.openidconnect.client.OAuthProtectedResourceMetadataService;
 import io.openliberty.security.oidcclient.wellknown.common.ServletUtils;
 
 /**
@@ -32,8 +33,8 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
 
     private static final long serialVersionUID = 1L;
 
-    private static final ServiceCaller<OAuthProtectedResourceMetadataResolver> resolverCaller =
-            new ServiceCaller<>(OAuthProtectedResourceMetadataServlet.class, OAuthProtectedResourceMetadataResolver.class);
+    private static final ServiceCaller<OAuthProtectedResourceMetadataService> resolverCaller =
+            new ServiceCaller<>(OAuthProtectedResourceMetadataServlet.class, OAuthProtectedResourceMetadataService.class);
 
     /**
      * Handles a metadata discovery request for a protected resource path beneath the servlet
@@ -45,6 +46,11 @@ public class OAuthProtectedResourceMetadataServlet extends HttpServlet {
      */
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        if (!ProductInfo.getBetaEdition()) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND);
+            return;
+        }
+
         /*
          * getPathInfo() strips the servlet context root (/.well-known/oauth-protected-resource),
          * leaving just the path to the protected resource, e.g. for a request to

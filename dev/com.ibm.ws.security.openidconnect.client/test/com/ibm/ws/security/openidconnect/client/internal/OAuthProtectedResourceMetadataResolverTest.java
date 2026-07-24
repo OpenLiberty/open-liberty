@@ -9,10 +9,12 @@
  *******************************************************************************/
 package com.ibm.ws.security.openidconnect.client.internal;
 
+import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.security.GeneralSecurityException;
 import java.security.Key;
@@ -72,7 +74,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
                 will(returnValue(new StringBuffer("https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected")));
                 allowing(mockRequest).getContextPath();
                 will(returnValue(""));
-                oneOf(mockOidcClient).getOidcProviderByAuthFilter(with(any(HttpServletRequest.class)));
+                oneOf(mockOidcClient).getOidcProvider(with(any(HttpServletRequest.class)));
                 will(returnValue(null));
             }
         });
@@ -93,7 +95,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
                 will(returnValue(new StringBuffer("https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected")));
                 allowing(mockRequest).getContextPath();
                 will(returnValue(""));
-                oneOf(mockOidcClient).getOidcProviderByAuthFilter(with(any(HttpServletRequest.class)));
+                oneOf(mockOidcClient).getOidcProvider(with(any(HttpServletRequest.class)));
                 will(returnValue("providerA"));
                 oneOf(mockOidcClient).getOidcClientConfig(mockRequest, "providerA");
                 will(returnValue(null));
@@ -116,7 +118,7 @@ public class OAuthProtectedResourceMetadataResolverTest {
                 will(returnValue(new StringBuffer("https://localhost:9443/.well-known/oauth-protected-resource/myApp/protected")));
                 allowing(mockRequest).getContextPath();
                 will(returnValue(""));
-                oneOf(mockOidcClient).getOidcProviderByAuthFilter(with(any(HttpServletRequest.class)));
+                oneOf(mockOidcClient).getOidcProvider(with(any(HttpServletRequest.class)));
                 will(returnValue("providerA"));
                 oneOf(mockOidcClient).getOidcClientConfig(mockRequest, "providerA");
                 will(returnValue(mockConfig));
