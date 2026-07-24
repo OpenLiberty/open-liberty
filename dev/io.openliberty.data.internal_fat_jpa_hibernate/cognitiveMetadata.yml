@@ -4,3 +4,4 @@
 # description: Uncomment this field and add a description to give some notes about this bucket.
 # triageNotes: Uncomment this field if there are some short notes you would like Pipeline Monitors to see when triaging this bucket.
 functionalArea: Jakarta Data
+description: Migrated from derby to h2
