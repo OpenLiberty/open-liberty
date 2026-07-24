@@ -279,11 +279,14 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
 
     @After
     public void tearDown() throws Exception {
-        if (currentServer != null && currentServer.isStarted()) {
-            currentServer.stopServer("CWMMH0052W", "CWMMH0053W", "CWMMH0054W");
-        }
-        if (currentServer != null) {
-            currentServer.restoreServerConfiguration();
+        try {
+            if (currentServer != null && currentServer.isStarted()) {
+                currentServer.stopServer("CWMMH0052W", "CWMMH0053W", "CWMMH0054W");
+            }
+        } finally {
+            if (currentServer != null) {
+                currentServer.restoreServerConfiguration();
+            }
         }
     }
 
