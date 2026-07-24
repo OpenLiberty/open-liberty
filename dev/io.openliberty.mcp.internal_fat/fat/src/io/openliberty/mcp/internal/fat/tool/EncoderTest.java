@@ -531,4 +531,81 @@ public class EncoderTest extends FATServletClient {
                         """;
         JSONAssert.assertEquals(expectedResponseString, response, true);
     }
+
+    /**
+     * Tests that a ToolResponseEncoder registered for interface IShape is selected
+     * when the tool return type is a concrete class (Shape) that directly implements IShape.
+     * The encoder output reflects the runtime class name of the returned instance.
+     */
+    @Test
+    public void testGetTypeExactMatch() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testGetTypeExactMatch",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"encoded by ShapeEncoder: Shape"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
+
+    /**
+     * Tests that a ToolResponseEncoder registered for interface IShape is selected
+     * when the tool return type is a different implementing record (Circle).
+     * This validates the getType().isAssignableFrom(runtimeClass) dispatch semantics.
+     * The encoder output reflects the concrete runtime class name (Circle).
+     */
+    @Test
+    public void testGetTypeSubtypeMatch() throws Exception {
+        String request = """
+                          {
+                          "jsonrpc": "2.0",
+                          "id": "2",
+                          "method": "tools/call",
+                          "params": {
+                            "name": "testGetTypeSubtypeMatch",
+                            "arguments": {}
+                          }
+                        }
+                        """;
+
+        String response = client.callMCP(request);
+        String expectedResponseString = """
+                        {
+                          "id":"2",
+                          "jsonrpc":"2.0",
+                          "result": {
+                            "content": [
+                              {
+                                "type":"text",
+                                "text":"encoded by ShapeEncoder: Circle"
+                              }
+                            ],
+                            "isError": false
+                          }
+                        }
+                        """;
+        JSONAssert.assertEquals(expectedResponseString, response, true);
+    }
 }

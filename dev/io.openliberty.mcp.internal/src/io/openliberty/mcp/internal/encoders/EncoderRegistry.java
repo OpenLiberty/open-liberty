@@ -63,7 +63,7 @@ public class EncoderRegistry {
         // Check local encoders first
         Class<?> clazz = result.getClass();
         for (var encoder : toolResponseEncoders) {
-            if (encoder.supports(clazz)) {
+            if (encoder.getType().isAssignableFrom(clazz)) {
                 return Optional.of((ToolResponseEncoder<? super T>) encoder);
             }
         }

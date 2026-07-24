@@ -45,11 +45,11 @@ import jakarta.annotation.Priority;
 public interface ToolResponseEncoder<TYPE> {
 
     /**
+     * Returns the type handled by this encoder.
      *
-     * @param runtimeType The runtime class of an object that should be encoded, must not be {@code null}
-     * @return {@code true} if this encoder can encode the provided type, {@code false} otherwise
+     * @return the class of objects this encoder can encode, must not be {@code null}
      */
-    boolean supports(Class<?> runtimeType);
+    Class<TYPE> getType();
 
     /**
      * Encodes the given business object into the target type
