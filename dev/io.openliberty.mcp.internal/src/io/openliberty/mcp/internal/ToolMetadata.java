@@ -34,6 +34,7 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.WrapBusinessError;
+import io.openliberty.mcp.internal.ToolValidation.ToolValidationError;
 import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
 import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
@@ -84,7 +85,8 @@ public record ToolMetadata(String name,
                            Optional<MethodMetadata> methodMetadata,
                            SecurityRequirement securityRequirement,
                            Instant createdAt,
-                           Map<String, Object> metadata) implements ToolManager.ToolInfo {
+                           Map<String, Object> metadata,
+                           List<ToolValidationError> validationErrors) implements ToolManager.ToolInfo {
 
     public static final String MISSING_TOOL_ARG_NAME = "<<<MISSING TOOL_ARG NAME>>>";
 
@@ -113,6 +115,7 @@ public record ToolMetadata(String name,
      * @return the created tool metadata
      */
     public static ToolMetadata createFrom(Tool annotation, Bean<?> bean, AnnotatedMethod<?> method, BeanManager bm, Jsonb jsonb) {
+        List<ToolValidationError> validationErrors = new ArrayList<>();
         String name = annotation.name().equals(Tool.ELEMENT_NAME) ? method.getJavaMember().getName() : annotation.name();
         String title = annotation.title().isEmpty() ? null : annotation.title();
         String description = annotation.description().isEmpty() ? null : annotation.description();
@@ -168,7 +171,7 @@ public record ToolMetadata(String name,
 
         Optional<ToolAnnotations> annotations = readAnnotations(annotation.annotations());
 
-        Map<String, Object> metaMap = getMetaMapFromAnnotations(method, jsonb);
+        Map<String, Object> metaMap = getMetaMapFromAnnotations(bean, method, jsonb, validationErrors);
 
         MethodMetadata methodMetadata = new MethodMetadata(name,
                                                            bean,
@@ -200,7 +203,8 @@ public record ToolMetadata(String name,
                                 Optional.of(methodMetadata),
                                 SecurityRequirement.createFrom(method),
                                 Instant.now(),
-                                metaMap);
+                                metaMap,
+                                validationErrors.isEmpty() ? Collections.emptyList() : validationErrors);
     }
 
     /**
@@ -385,10 +389,10 @@ public record ToolMetadata(String name,
      * Used for error reporting cases, such as Generic args
      */
     public static String getToolQualifiedName(Bean<?> bean, AnnotatedMethod<?> method) {
-        return bean.getBeanClass() + "." + method.getJavaMember().getName();
+        return bean.getBeanClass().getName() + "." + method.getJavaMember().getName();
     }
 
-    private static Map<String, Object> getMetaMapFromAnnotations(AnnotatedMethod<?> method, Jsonb jsonb) {
+    private static Map<String, Object> getMetaMapFromAnnotations(Bean<?> bean, AnnotatedMethod<?> method, Jsonb jsonb, List<ToolValidationError> validationErrors) {
         Set<MetaField> metaFields = method.getAnnotations(MetaField.class);
         if (metaFields.isEmpty()) {
             return Map.of();
@@ -396,32 +400,41 @@ public record ToolMetadata(String name,
 
         Map<String, Object> result = new HashMap<>();
         for (MetaField metaField : method.getAnnotations(MetaField.class)) {
-            result.put(getKey(metaField), getValue(metaField, jsonb));
+            String prefix = metaField.prefix();
+            if (!prefix.isEmpty()) {
+                if (!prefix.endsWith("/")) {
+                    prefix = prefix + "/";
+                }
+                if (!ToolValidation.isValidMetaPrefix(prefix)) {
+                    validationErrors.add(new ToolValidationError("CWMCM0040E.invalid.metadata.prefix", prefix, getToolQualifiedName(bean, method)));
+                    continue;
+                }
+            }
+            String name = metaField.name();
+            if (!ToolValidation.isValidMetaName(name)) {
+                validationErrors.add(new ToolValidationError("CWMCM0041E.invalid.metadata.name", name, getToolQualifiedName(bean, method)));
+                continue;
+            }
+            String key = prefix.isEmpty() ? name : prefix + name;
+            Object value = getValue(metaField, key, jsonb, bean, method, validationErrors);
+            result.put(key, value);
         }
 
         return result;
     }
 
-    /**
-     * @param metaField
-     * @return
-     */
-    private static String getKey(MetaField metaField) {
-        // validate metaField.name
-        if (!metaField.prefix().isEmpty()) {
-            // validate prefix
-            return metaField.prefix() + metaField.name();
+    private static Object getValue(MetaField metaField, String key, Jsonb jsonb, Bean<?> bean, AnnotatedMethod<?> method, List<ToolValidationError> validationErrors) {
+        try {
+            return switch (metaField.type()) {
+                case BOOLEAN -> Boolean.valueOf(metaField.value());
+                case INT -> Integer.valueOf(metaField.value());
+                case STRING -> metaField.value();
+                case JSON -> jsonb.fromJson(metaField.value(), Object.class);
+            };
+        } catch (Exception e) {
+            validationErrors.add(new ToolValidationError("CWMCM0042E.metadata.value.conversion.error", key, getToolQualifiedName(bean, method), metaField.type(), e.toString()));
+            return null;
         }
-        return metaField.name();
-    }
-
-    private static Object getValue(MetaField metaField, Jsonb jsonb) {
-        return switch (metaField.type()) {
-            case BOOLEAN -> Boolean.valueOf(metaField.value());
-            case INT -> Integer.valueOf(metaField.value());
-            case STRING -> metaField.value();
-            case JSON -> jsonb.fromJson(metaField.value(), Object.class);
-        };
     }
 
     /**

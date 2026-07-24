@@ -157,7 +157,8 @@ public class McpCdiExtension implements Extension {
             error |= reportOnInvalidToolNames(afterDeploymentValidation, toolRegistry) |
                      reportOnDuplicateTools(afterDeploymentValidation, toolRegistry) |
                      reportOnToolArgEdgeCases(afterDeploymentValidation, toolRegistry) |
-                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry);
+                     reportOnDuplicateSpecialArguments(afterDeploymentValidation, toolRegistry) |
+                     reportOnDeferredValidationErrors(toolRegistry);
         }
 
         if (error) {
@@ -363,6 +364,17 @@ public class McpCdiExtension implements Extension {
             });
         }
         return error.get();
+    }
+
+    private boolean reportOnDeferredValidationErrors(ToolRegistry tools) {
+        boolean anyErrors = false;
+        for (ToolMetadata tool : tools.getAllTools()) {
+            for (var error : tool.validationErrors()) {
+                anyErrors = true;
+                Tr.error(tc, error.messageKey(), error.objects());
+            }
+        }
+        return anyErrors;
     }
 
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method, BeanManager beanManager) {

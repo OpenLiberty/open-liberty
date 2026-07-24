@@ -281,7 +281,8 @@ public class ToolRegistry implements ToolManager {
                                                     Optional.empty(), // Method metadata
                                                     securityRequirement,
                                                     Instant.now(),
-                                                    metadata);
+                                                    metadata,
+                                                    Collections.emptyList()); // Validation errors
 
             addTool(newTool);
 
