@@ -35,8 +35,6 @@ import org.mcpjava.server.tools.ToolResponse;
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.annotations.WrapBusinessError;
 import io.openliberty.mcp.internal.ToolValidation.ToolValidationError;
-import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
-import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.requests.DefaultValueResolver;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
@@ -131,7 +129,7 @@ public record ToolMetadata(String name,
             Type javaType = bean.getBeanClass();
             genericMap = TypeUtility.generateGenericMap(javaType);
         }
-        List<ToolMethodArgument> methodArguments = getArguments(method, genericMap);
+        List<ToolMethodArgument> methodArguments = getArguments(bean, method, genericMap, validationErrors);
 
         WrapBusinessError wrapAnnotation = method.getAnnotation(WrapBusinessError.class);
         List<Class<? extends Throwable>> businessExceptions = (wrapAnnotation != null) ? List.of(wrapAnnotation.value()) : Collections.emptyList();
@@ -166,7 +164,7 @@ public record ToolMetadata(String name,
 
         if (outputSchema != null && !(method.isAnnotationPresent(Schema.class) && method.getAnnotation(Schema.class).value() != Schema.UNSET)
             && !checkConcreteType(outputSchema).equals("object")) {
-            throw new UnsupportedTypeException(unwrappedOutputType);
+            validationErrors.add(new ToolValidationError("CWMCM0025E.unsupported.output", unwrappedOutputType, ToolMetadata.getToolQualifiedName(bean, method)));
         }
 
         Optional<ToolAnnotations> annotations = readAnnotations(annotation.annotations());
@@ -233,15 +231,17 @@ public record ToolMetadata(String name,
         return nameArray;
     }
 
-    public static List<ToolMethodArgument> getArguments(AnnotatedMethod<?> method, Map<TypeVariable<?>, Type> genericMap) {
+    public static List<ToolMethodArgument> getArguments(Bean<?> bean, AnnotatedMethod<?> method, Map<TypeVariable<?>, Type> genericMap,
+                                                        List<ToolValidationError> validationErrors) {
         List<ToolMethodArgument> result = new ArrayList<>();
-        ArrayList<String> genericParams = new ArrayList<>();
         for (AnnotatedParameter<?> param : method.getParameters()) {
             if (TypeUtility.hasGenericParams(param.getBaseType())) {
                 Type baseType = param.getBaseType();
                 boolean unresolvedGenericParam = hasUnresolvableTypeVariables(baseType, genericMap);
                 if (unresolvedGenericParam) {
-                    genericParams.add(param.getJavaParameter().getName());
+                    validationErrors.add(new ToolValidationError("CWMCM0018E.generic.arguments",
+                                                                 ToolMetadata.getToolQualifiedName(bean, method),
+                                                                 resolveArgumentName(param, param.getAnnotation(ToolArg.class))));
                 } else {
                     Type argType = TypeUtility.createResolvedType(param.getBaseType(), genericMap);
                     addArgumentMetadata(param, argType, result);
@@ -249,9 +249,6 @@ public record ToolMetadata(String name,
             } else {
                 addArgumentMetadata(param, param.getBaseType(), result);
             }
-        }
-        if (!genericParams.isEmpty()) {
-            throw new GenericArgumentException(genericParams);
         }
         return result.isEmpty() ? Collections.emptyList() : result;
     }

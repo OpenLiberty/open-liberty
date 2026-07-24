@@ -9,6 +9,9 @@
  *******************************************************************************/
 package io.openliberty.mcp.internal.test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.not;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
@@ -33,7 +36,6 @@ import org.mcpjava.server.tools.ToolResponse;
 
 import io.openliberty.mcp.annotations.Schema;
 import io.openliberty.mcp.internal.ToolMetadata;
-import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.schemas.SchemaRegistry;
 import io.openliberty.mcp.internal.schemas.TypeUtility;
 import io.openliberty.mcp.internal.testutils.TestUtils;
@@ -81,10 +83,10 @@ public class ToolMetadataTest {
         return null;
     }
 
-    @Test(expected = UnsupportedTypeException.class)
+    @Test
     public void testAsyncToolWithOutputSchema() {
         ToolMetadata metadata = TestUtils.findTool(ToolMetadataTest.class, "asyncToolWithOutputSchema");
-
+        assertThat("Expected validation error", metadata.validationErrors(), not(empty()));
     }
 
     @Tool(structuredContent = true)

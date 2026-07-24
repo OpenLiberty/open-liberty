@@ -37,8 +37,6 @@ import io.openliberty.mcp.internal.ToolMetadata.SpecialArgumentMetadata;
 import io.openliberty.mcp.internal.content.TextContentImpl;
 import io.openliberty.mcp.internal.encoders.EncoderRegistries;
 import io.openliberty.mcp.internal.encoders.EncoderRegistry;
-import io.openliberty.mcp.internal.exceptions.GenericArgumentException;
-import io.openliberty.mcp.internal.exceptions.UnsupportedTypeException;
 import io.openliberty.mcp.internal.moduleScope.ModuleContext;
 import io.openliberty.mcp.internal.requests.IconImpl;
 import io.openliberty.mcp.internal.requests.ImplementationInfoImpl;
@@ -378,28 +376,20 @@ public class McpCdiExtension implements Extension {
     }
 
     private void registerTool(Tool tool, Bean<?> bean, AnnotatedMethod<?> method, BeanManager beanManager) {
-        try {
-            ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
-            J2EEName module = getModuleForBean(bean);
-            List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(module, key -> new HashMap<>())
-                                                           .computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
-            duplicatesList.add(toolmd.getToolQualifiedName());
-            if (duplicatesList.size() <= 1) {
-                toolRegistries.getForModule(module).addTool(toolmd);
-                if (TraceComponent.isAnyTracingEnabled()) {
-                    if (tc.isDebugEnabled()) {
-                        Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
-                    } else if (tc.isEventEnabled()) {
-                        Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
-                    }
+        ToolMetadata toolmd = ToolMetadata.createFrom(tool, bean, method, beanManager, jsonb);
+        J2EEName module = getModuleForBean(bean);
+        List<String> duplicatesList = duplicateToolsMap.computeIfAbsent(module, key -> new HashMap<>())
+                                                       .computeIfAbsent(toolmd.name(), key -> new ArrayList<>());
+        duplicatesList.add(toolmd.getToolQualifiedName());
+        if (duplicatesList.size() <= 1) {
+            toolRegistries.getForModule(module).addTool(toolmd);
+            if (TraceComponent.isAnyTracingEnabled()) {
+                if (tc.isDebugEnabled()) {
+                    Tr.debug(this, tc, "Registered tool: " + toolmd.name(), toolmd);
+                } else if (tc.isEventEnabled()) {
+                    Tr.event(this, tc, "Registered tool: " + toolmd.name(), method);
                 }
             }
-        } catch (GenericArgumentException e) {
-            for (String argument : e.getArguments()) {
-                Tr.error(tc, "CWMCM0018E.generic.arguments", ToolMetadata.getToolQualifiedName(bean, method), argument);
-            }
-        } catch (UnsupportedTypeException e) {
-            Tr.error(tc, "CWMCM0025E.unsupported.output", e.getType(), ToolMetadata.getToolQualifiedName(bean, method));
         }
     }
 

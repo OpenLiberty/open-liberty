@@ -83,7 +83,8 @@ public class TestUtils {
         List<ToolMetadata> tools = Arrays.stream(cls.getDeclaredMethods())
                                          .filter(m -> m.isAnnotationPresent(Tool.class))
                                          .filter(m -> m.getName().equals(name))
-                                         .map(m -> ToolMetadata.createFrom(m.getAnnotation(Tool.class), null, new MockAnnotatedMethod<>(m), null, TestUtils.createJsonb()))
+                                         .map(m -> ToolMetadata.createFrom(m.getAnnotation(Tool.class), MockBean.of(cls), new MockAnnotatedMethod<>(m), null,
+                                                                           TestUtils.createJsonb()))
                                          .collect(Collectors.toList());
         if (tools.size() != 1) {
             throw new RuntimeException("Found " + tools.size() + " tools with name " + name);
