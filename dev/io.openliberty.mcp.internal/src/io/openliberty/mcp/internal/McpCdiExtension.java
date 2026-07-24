@@ -299,7 +299,7 @@ public class McpCdiExtension implements Extension {
                         case NAME_MISSING -> Tr.error(tc, "CWMCM0003E.missing.tool.argument.name", tool.getToolQualifiedName());
                         case NO_CONVERTER -> Tr.error(tc, "CWMCM0017E.missing.toolarg.defaultvalue.converter", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type());
                         case CONVERSION_ERROR -> Tr.error(tc, "CWMCM0020E.defaultvalue.conversion.error", tool.getToolQualifiedName(), argMetadata.name(), argMetadata.type(),
-                                                          argMetadata.defaultValue(), error.exception());
+                                                          argMetadata.defaultValue(), error.exception().toString());
                     }
                     foundErrors = true;
                 }
