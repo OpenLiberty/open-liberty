@@ -21,7 +21,7 @@
     </featureManager>
     
     <!-- File-based health checks enabled with endpoints disabled -->
-    <mpHealth startupCheckInterval="1s" checkInterval="5s" enableEndpoints="false" />
+    <mpHealth startupCheckInterval="1s" checkInterval="1s" enableEndpoints="false" />
     
     <include location="../fatTestPorts.xml" />
 </server>

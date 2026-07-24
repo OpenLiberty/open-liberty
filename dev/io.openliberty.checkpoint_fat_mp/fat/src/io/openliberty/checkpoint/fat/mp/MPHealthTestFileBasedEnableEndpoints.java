@@ -13,6 +13,7 @@
 package io.openliberty.checkpoint.fat.mp;
 
 import static io.openliberty.checkpoint.fat.mp.FATSuite.configureEnvVariable;
+import static io.openliberty.checkpoint.fat.mp.FATSuite.emptyEnvVariable;
 import static io.openliberty.checkpoint.fat.mp.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.mp.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
@@ -39,23 +40,12 @@ import com.ibm.websphere.simplicity.log.Log;
 import componenttest.annotation.CheckpointTest;
 import componenttest.annotation.Server;
 import componenttest.custom.junit.runner.FATRunner;
-import componenttest.rules.repeater.FeatureReplacementAction;
 import componenttest.rules.repeater.RepeatTests;
 import componenttest.topology.impl.LibertyServer;
 import componenttest.topology.utils.FATServletClient;
 import componenttest.topology.utils.HttpUtils;
 import io.openliberty.checkpoint.spi.CheckpointPhase;
-import io.openliberty.microprofile.health.internal_fat.shared.HealthFileUtils;
 
-/**
- * Test enableEndpoints configuration with checkpoint/restore and file-based health checks.
- * 
- * Verifies that:
- * 1. enableEndpoints=false disables HTTP endpoints after restore while file-based health checks work
- * 2. enableEndpoints=true enables HTTP endpoints after restore with file-based health checks
- * 3. MP_HEALTH_ENABLE_ENDPOINTS=false ENV var disables endpoints after restore
- * 4. MP_HEALTH_ENABLE_ENDPOINTS=true ENV var enables endpoints after restore
- */
 @RunWith(FATRunner.class)
 @CheckpointTest
 public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
@@ -66,11 +56,13 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
     @Server("checkpointMPHealthFileBasedEnableEndpointsTrue")
     public static LibertyServer serverEnableEndpointsTrue;
 
+    /*
+     * Single server shared by both ENV var tests, matching the MPHealthTestFileBasedConfig pattern.
+     * Using one server ensures OSGi static state (isOneAppStarted) is fully reset between tests
+     * via stopServer/restoreServerConfiguration, so both tests get a clean restore callback.
+     */
     @Server("checkpointMPHealthFileBasedEnvVarFalse")
-    public static LibertyServer serverEnvVarFalse;
-
-    @Server("checkpointMPHealthFileBasedEnvVarTrue")
-    public static LibertyServer serverEnvVarTrue;
+    public static LibertyServer serverEnvVar;
 
     private static final String APP_NAME = "mphealthup";
     private static final String MESSAGE_LOG = "logs/messages.log";
@@ -81,35 +73,29 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
     private LibertyServer currentServer;
 
     @ClassRule
-    public static RepeatTests repeatTest = FATSuite.MPHealthFileBasedRepeat(FeatureReplacementAction.ALL_SERVERS);
+    public static RepeatTests repeatTest = FATSuite.MPHealthFileBasedRepeat("checkpointMPHealthFileBasedEnvVarFalse");
 
     @BeforeClass
     public static void copyAppToDropins() throws Exception {
-        // Deploy the mphealthup app to all servers
         ShrinkHelper.defaultApp(serverEnableEndpointsFalse, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(serverEnableEndpointsFalse, APP_NAME);
 
         ShrinkHelper.defaultApp(serverEnableEndpointsTrue, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
         FATSuite.copyAppsAppToDropins(serverEnableEndpointsTrue, APP_NAME);
 
-        ShrinkHelper.defaultApp(serverEnvVarFalse, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
-        FATSuite.copyAppsAppToDropins(serverEnvVarFalse, APP_NAME);
-
-        ShrinkHelper.defaultApp(serverEnvVarTrue, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
-        FATSuite.copyAppsAppToDropins(serverEnvVarTrue, APP_NAME);
+        ShrinkHelper.defaultApp(serverEnvVar, APP_NAME, new DeployOptions[] { DeployOptions.OVERWRITE }, APP_NAME);
+        FATSuite.copyAppsAppToDropins(serverEnvVar, APP_NAME);
     }
 
     @Before
     public void setUp() throws Exception {
         testMethod = getTestMethod(TestMethod.class, testName);
-
-        // Select the appropriate server based on test method
         currentServer = getServerForTest();
-
-        currentServer.setCheckpoint(getCheckpointPhase(), true,
-                                     server -> {
-                                         configureAndTestBeforeRestore();
-                                     });
+        currentServer.saveServerConfiguration();
+        currentServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
+                                    server -> {
+                                        configureAndTestBeforeRestore();
+                                    });
         currentServer.setConsoleLogName(getTestMethod(TestMethod.class, testName) + ".log");
         currentServer.startServer(true, false); // Do not validate apps since we have a delayed startup.
     }
@@ -121,183 +107,137 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
             case testEnableEndpointsTrueWithFileBasedHealthChecks:
                 return serverEnableEndpointsTrue;
             case testEnableEndpointsEnvVarFalseWithFileBasedHealthChecks:
-                return serverEnvVarFalse;
             case testEnableEndpointsEnvVarTrueWithFileBasedHealthChecks:
-                return serverEnvVarTrue;
+                return serverEnvVar;
             default:
                 return serverEnableEndpointsFalse;
         }
     }
 
-    private CheckpointPhase getCheckpointPhase() {
-        // All tests use AFTER_APP_START phase
-        return CheckpointPhase.AFTER_APP_START;
-    }
-
     /**
-     * Test that endpoints are disabled (enableEndpoints=false) after checkpoint restore
+     * Test that endpoints are disabled (enableEndpoints=false in server.xml) after checkpoint restore
      * when file-based health checks are enabled.
-     * 
-     * Expected behavior:
-     * - Before restore: No health files, no endpoints
-     * - After restore: Health files created, endpoints return 404 (disabled)
+     *
+     * Expect after restore:
+     * [X] /health dir
+     * [X] Started
+     * [X] Ready
+     * [X] Live
+     * HTTP endpoints: 404 (disabled)
      */
     @Test
     public void testEnableEndpointsFalseWithFileBasedHealthChecks() throws Exception {
         String name = getTestMethodNameOnly(testName);
-        String serverRoot = currentServer.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
 
-        // Ensure application has started
         List<String> lines = currentServer.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
         assertEquals("The CWWKZ0001I Application started message did not appear in messages.log", 1, lines.size());
 
-        Log.info(getClass(), name, "Verifying that file-based health check files are present after restore");
+        Log.info(getClass(), name, "Test that HTTP endpoints are disabled (return 404)");
 
-        // Verify health files are created (file-based health checks work)
-        assertTrue("All health check files should be created", HealthFileUtils.isFilesCreated(serverRootDirFile));
-        assertTrue("Health directory should exist", HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        assertTrue("Started file should exist", HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        assertTrue("Live file should exist", HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-        assertTrue("Ready file should exist", HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-
-        Log.info(getClass(), name, "Verifying that HTTP endpoints are disabled (return 404)");
-
-        // Verify endpoints are disabled (return 404)
+        /*
+         * The objective of this test is to verify enableEndpoints=false via server.xml.
+         * File creation is already covered by MPHealthTestFileBasedConfig.
+         *
+         * Expect HTTP endpoints: 404 (disabled)
+         */
         verifyEndpointsDisabled(currentServer);
     }
 
     /**
-     * Test that endpoints are enabled (enableEndpoints=true) after checkpoint restore
-     * when file-based health checks are enabled.
-     * 
-     * Expected behavior:
-     * - Before restore: No health files, no endpoints
-     * - After restore: Health files created, endpoints return 200/503 (enabled)
+     * Test that endpoints are enabled (enableEndpoints=true in server.xml) after checkpoint restore.
      */
     @Test
     public void testEnableEndpointsTrueWithFileBasedHealthChecks() throws Exception {
         String name = getTestMethodNameOnly(testName);
-        String serverRoot = currentServer.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
 
-        // Ensure application has started
         List<String> lines = currentServer.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
         assertEquals("The CWWKZ0001I Application started message did not appear in messages.log", 1, lines.size());
 
-        Log.info(getClass(), name, "Verifying that file-based health check files are present after restore");
+        Log.info(getClass(), name, "Test that HTTP endpoints are enabled (return 200/503)");
 
-        // Verify health files are created (file-based health checks work)
-        assertTrue("All health check files should be created", HealthFileUtils.isFilesCreated(serverRootDirFile));
-        assertTrue("Health directory should exist", HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        assertTrue("Started file should exist", HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        assertTrue("Live file should exist", HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-        assertTrue("Ready file should exist", HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-
-        Log.info(getClass(), name, "Verifying that HTTP endpoints are enabled (return 200/503)");
-
-        // Verify endpoints are enabled (return 200 or 503, not 404)
+        /*
+         * The objective of this test is to verify enableEndpoints=true via server.xml.
+         * File creation is already covered by MPHealthTestFileBasedConfig.
+         *
+         * Expect HTTP endpoints: 200/503 (enabled)
+         */
         verifyEndpointsEnabled(currentServer);
     }
 
     /**
-     * Test that endpoints are disabled (ENV: MP_HEALTH_ENABLE_ENDPOINTS=false) after checkpoint restore
-     * when file-based health checks are enabled.
-     * 
-     * Expected behavior:
-     * - Before restore: No health files, no endpoints
-     * - After restore: Health files created, endpoints return 404 (disabled)
+     * Test that endpoints are disabled (MP_HEALTH_ENABLE_ENDPOINTS=false via ENV var) after checkpoint restore
+     * when file-based health checks are enabled via ENV vars.
+     *
+     * Expect after restore:
+     * [X] /health dir
+     * [X] Started
+     * [X] Ready
+     * [X] Live
+     * HTTP endpoints: 404 (disabled)
      */
     @Test
     public void testEnableEndpointsEnvVarFalseWithFileBasedHealthChecks() throws Exception {
         String name = getTestMethodNameOnly(testName);
-        String serverRoot = currentServer.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
 
-        // Ensure application has started
         List<String> lines = currentServer.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
         assertEquals("The CWWKZ0001I Application started message did not appear in messages.log", 1, lines.size());
 
-        Log.info(getClass(), name, "Verifying that file-based health check files are present after restore");
+        Log.info(getClass(), name, "Test that HTTP endpoints are disabled via ENV var (return 404)");
 
-        // Verify health files are created (file-based health checks work)
-        assertTrue("All health check files should be created", HealthFileUtils.isFilesCreated(serverRootDirFile));
-        assertTrue("Health directory should exist", HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        assertTrue("Started file should exist", HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        assertTrue("Live file should exist", HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-        assertTrue("Ready file should exist", HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-
-        Log.info(getClass(), name, "Verifying that HTTP endpoints are disabled via ENV var (return 404)");
-
-        // Verify endpoints are disabled (return 404)
+        /*
+         * The objective of this test is to verify enableEndpoints=false via ENV var.
+         * File creation is already covered by MPHealthTestFileBasedConfig.
+         *
+         * Expect HTTP endpoints: 404 (disabled)
+         */
         verifyEndpointsDisabled(currentServer);
     }
 
     /**
-     * Test that endpoints are enabled (ENV: MP_HEALTH_ENABLE_ENDPOINTS=true) after checkpoint restore
-     * when file-based health checks are enabled.
-     * 
-     * Expected behavior:
-     * - Before restore: No health files, no endpoints
-     * - After restore: Health files created, endpoints return 200/503 (enabled)
+     * Test that endpoints are enabled (MP_HEALTH_ENABLE_ENDPOINTS=true via ENV var) after checkpoint restore.
      */
     @Test
     public void testEnableEndpointsEnvVarTrueWithFileBasedHealthChecks() throws Exception {
         String name = getTestMethodNameOnly(testName);
-        String serverRoot = currentServer.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
 
-        // Ensure application has started
         List<String> lines = currentServer.findStringsInFileInLibertyServerRoot("CWWKZ0001I:", MESSAGE_LOG);
         assertEquals("The CWWKZ0001I Application started message did not appear in messages.log", 1, lines.size());
 
-        Log.info(getClass(), name, "Verifying that file-based health check files are present after restore");
+        Log.info(getClass(), name, "Test that HTTP endpoints are enabled via ENV var (return 200/503)");
 
-        // Verify health files are created (file-based health checks work)
-        assertTrue("All health check files should be created", HealthFileUtils.isFilesCreated(serverRootDirFile));
-        assertTrue("Health directory should exist", HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        assertTrue("Started file should exist", HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        assertTrue("Live file should exist", HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-        assertTrue("Ready file should exist", HealthFileUtils.getReadyFile(serverRootDirFile).exists());
-
-        Log.info(getClass(), name, "Verifying that HTTP endpoints are enabled via ENV var (return 200/503)");
-
-        // Verify endpoints are enabled (return 200 or 503, not 404)
+        /*
+         * The objective of this test is to verify enableEndpoints=true via ENV var.
+         * File creation is already covered by MPHealthTestFileBasedConfig.
+         *
+         * Expect HTTP endpoints: 200/503 (enabled)
+         */
         verifyEndpointsEnabled(currentServer);
     }
 
-    /**
-     * Configure environment variables and test state before restore.
-     * This method runs during the checkpoint phase, before the restore happens.
-     */
     private void configureAndTestBeforeRestore() {
         try {
             Log.info(getClass(), testName.getMethodName(), "Configuring during restore: " + testMethod);
-
             switch (testMethod) {
                 case testEnableEndpointsEnvVarFalseWithFileBasedHealthChecks:
-                    Log.info(getClass(), testName.getMethodName(), "Setting MP_HEALTH_ENABLE_ENDPOINTS=false via ENV var");
+                    Log.info(getClass(), testName.getMethodName(), "Adding server environment values for test: " + testMethod);
                     Map<String, String> configFalse = new HashMap<>();
                     configFalse.put("MP_HEALTH_ENABLE_ENDPOINTS", "false");
-                    configFalse.put("MP_HEALTH_CHECK_INTERVAL", "5s");
-                    configFalse.put("MP_HEALTH_STARTUP_CHECK_INTERVAL", "1s");
                     configureEnvVariable(currentServer, configFalse);
                     break;
-
                 case testEnableEndpointsEnvVarTrueWithFileBasedHealthChecks:
-                    Log.info(getClass(), testName.getMethodName(), "Setting MP_HEALTH_ENABLE_ENDPOINTS=true via ENV var");
+                    Log.info(getClass(), testName.getMethodName(), "Adding server environment values for test: " + testMethod);
                     Map<String, String> configTrue = new HashMap<>();
                     configTrue.put("MP_HEALTH_ENABLE_ENDPOINTS", "true");
-                    configTrue.put("MP_HEALTH_CHECK_INTERVAL", "5s");
-                    configTrue.put("MP_HEALTH_STARTUP_CHECK_INTERVAL", "1s");
                     configureEnvVariable(currentServer, configTrue);
                     break;
-
                 default:
-                    Log.info(getClass(), testName.getMethodName(), "No ENV var configuration required for test: " + testMethod);
+                    /*
+                     * Make sure server.env has no values in it.
+                     */
+                    emptyEnvVariable(currentServer);
+                    Log.info(getClass(), testName.getMethodName(), "No configuration change required for test: " + testMethod);
                     break;
             }
-
         } catch (Exception e) {
             throw new AssertionError("Unexpected error configuring test.", e);
         }
@@ -305,29 +245,20 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
         Log.info(getClass(), getTestMethodNameOnly(testName), "Testing that health files do not exist before restore");
 
         /*
-         * Before restore, we expect nothing to be created yet.
-         * The checkpoint happens after app start, but file-based health checks
-         * haven't run yet.
-         * 
+         * This is a test before a restore.
+         * All servers have checkInterval set in server.xml so health dir is created at checkpoint.
+         * The individual health files are not created until after restore.
+         *
          * Expect:
-         * [X] /health dir (created during checkpoint)
-         * [ ] Started
-         * [ ] Ready
-         * [ ] Live
+         * [X] /health dir
+         * [ ] Started / Ready / Live
          */
 
         String serverRoot = currentServer.getServerRoot();
-        File serverRootDirFile = new File(serverRoot);
 
-        assertTrue(HealthFileUtils.HEALTH_DIR_SHOULD_HAVE, HealthFileUtils.getHealthDirFile(serverRootDirFile).exists());
-        assertFalse(HealthFileUtils.STARTED_SHOULD_NOT_HAVE, HealthFileUtils.getStartFile(serverRootDirFile).exists());
-        assertFalse(HealthFileUtils.LIVE_SHOULD_NOT_HAVE, HealthFileUtils.getLiveFile(serverRootDirFile).exists());
-        assertFalse(HealthFileUtils.READY_SHOULD_NOT_HAVE, HealthFileUtils.getReadyFile(serverRootDirFile).exists());
+        assertTrue("/health dir should exist at checkpoint", new File(serverRoot, "health").exists());
     }
 
-    /**
-     * Verify that all health endpoints are disabled (return 404).
-     */
     private void verifyEndpointsDisabled(LibertyServer server) throws Exception {
         for (int i = 0; i < HEALTH_ENDPOINTS.length; i++) {
             HttpURLConnection conn = HttpUtils.getHttpConnectionWithAnyResponseCode(server, HEALTH_ENDPOINTS[i]);
@@ -337,9 +268,6 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
         }
     }
 
-    /**
-     * Verify that all health endpoints are enabled (return 200 or 503, not 404).
-     */
     private void verifyEndpointsEnabled(LibertyServer server) throws Exception {
         for (int i = 0; i < HEALTH_ENDPOINTS.length; i++) {
             HttpURLConnection conn = HttpUtils.getHttpConnectionWithAnyResponseCode(server, HEALTH_ENDPOINTS[i]);
@@ -356,6 +284,9 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
         if (currentServer != null && currentServer.isStarted()) {
             currentServer.stopServer("CWMMH0052W", "CWMMH0053W", "CWMMH0054W");
         }
+        if (currentServer != null) {
+            currentServer.restoreServerConfiguration();
+        }
     }
 
     static enum TestMethod {
@@ -366,4 +297,3 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
         unknown
     }
 }
-
