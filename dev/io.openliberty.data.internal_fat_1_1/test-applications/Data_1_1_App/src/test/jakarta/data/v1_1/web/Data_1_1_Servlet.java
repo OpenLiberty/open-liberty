@@ -2459,6 +2459,11 @@ public class Data_1_1_Servlet extends FATServlet {
                                      .collect(Collectors.toList()));
     }
 
+    /**
+     * Request offset pagination from a query by method name that accepts a
+     * Restriction parameter, and specify a restriction.
+     * Verify the total count of elements and pages is computed correctly.
+     */
     @Test
     public void testQueryByMethodNameWithRestriction() {
         Page<Fraction> page1 = fractions//
