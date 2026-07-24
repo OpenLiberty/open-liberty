@@ -25,5 +25,3 @@
     
     <include location="../fatTestPorts.xml" />
 </server>
-
-<!-- Made with Bob -->
