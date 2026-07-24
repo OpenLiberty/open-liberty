@@ -17,7 +17,6 @@ import static io.openliberty.checkpoint.fat.mp.FATSuite.emptyEnvVariable;
 import static io.openliberty.checkpoint.fat.mp.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.mp.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -69,7 +68,6 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
     private static final String[] HEALTH_ENDPOINTS = { "/health", "/health/ready", "/health/live", "/health/started" };
     private static final String[] ENDPOINT_NAMES = { "Health", "Ready", "Live", "Started" };
 
-    public TestMethod testMethod;
     private LibertyServer currentServer;
 
     @ClassRule
@@ -89,18 +87,18 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
 
     @Before
     public void setUp() throws Exception {
-        testMethod = getTestMethod(TestMethod.class, testName);
-        currentServer = getServerForTest();
+        TestMethod testMethod = getTestMethod(TestMethod.class, testName);
+        currentServer = getServerForTest(testMethod);
         currentServer.saveServerConfiguration();
         currentServer.setCheckpoint(CheckpointPhase.AFTER_APP_START, true,
                                     server -> {
-                                        configureAndTestBeforeRestore();
+                                        configureAndTestBeforeRestore(testMethod);
                                     });
         currentServer.setConsoleLogName(getTestMethod(TestMethod.class, testName) + ".log");
         currentServer.startServer(true, false); // Do not validate apps since we have a delayed startup.
     }
 
-    private LibertyServer getServerForTest() {
+    private LibertyServer getServerForTest(TestMethod testMethod) {
         switch (testMethod) {
             case testEnableEndpointsFalseWithFileBasedHealthChecks:
                 return serverEnableEndpointsFalse;
@@ -214,7 +212,7 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
         verifyEndpointsEnabled(currentServer);
     }
 
-    private void configureAndTestBeforeRestore() {
+    private void configureAndTestBeforeRestore(TestMethod testMethod) {
         try {
             Log.info(getClass(), testName.getMethodName(), "Configuring during restore: " + testMethod);
             switch (testMethod) {
