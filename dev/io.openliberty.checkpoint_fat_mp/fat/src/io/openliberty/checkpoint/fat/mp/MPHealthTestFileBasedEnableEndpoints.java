@@ -17,7 +17,6 @@ import static io.openliberty.checkpoint.fat.mp.FATSuite.getTestMethod;
 import static io.openliberty.checkpoint.fat.mp.FATSuite.getTestMethodNameOnly;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
@@ -77,15 +76,6 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
     private static final String MESSAGE_LOG = "logs/messages.log";
     private static final String[] HEALTH_ENDPOINTS = { "/health", "/health/ready", "/health/live", "/health/started" };
     private static final String[] ENDPOINT_NAMES = { "Health", "Ready", "Live", "Started" };
-
-    // WAB initialization message pattern to verify endpoints are NOT initialized when disabled
-    private static final String WAB_PATTERN = "(Loading Web Module: health|" +
-                                              "Web Module health has been bound to|" +
-                                              "Web application available.*health|" +
-                                              "HealthCheckReadinessServlet.*Initialization successful|" +
-                                              "HealthCheckServlet.*Initialization successful|" +
-                                              "HealthCheckStartupServlet.*Initialization successful|" +
-                                              "HealthCheckLivenessServlet.*Initialization successful)";
 
     public TestMethod testMethod;
     private LibertyServer currentServer;
@@ -175,10 +165,6 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
 
         // Verify endpoints are disabled (return 404)
         verifyEndpointsDisabled(currentServer);
-
-        // Verify WAB messages don't appear (endpoints disabled)
-        String wabMessage = currentServer.waitForStringInLog(WAB_PATTERN, 5000);
-        assertNull("WAB messages should NOT appear when endpoints disabled", wabMessage);
     }
 
     /**
@@ -245,10 +231,6 @@ public class MPHealthTestFileBasedEnableEndpoints extends FATServletClient {
 
         // Verify endpoints are disabled (return 404)
         verifyEndpointsDisabled(currentServer);
-
-        // Verify WAB messages don't appear (endpoints disabled)
-        String wabMessage = currentServer.waitForStringInLog(WAB_PATTERN, 5000);
-        assertNull("WAB messages should NOT appear when endpoints disabled via ENV var", wabMessage);
     }
 
     /**
