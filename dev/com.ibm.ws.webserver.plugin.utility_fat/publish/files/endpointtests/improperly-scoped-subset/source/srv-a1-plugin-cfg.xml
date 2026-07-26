@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- plugin-cfg for server-a1 (group-A, port 9081) -->
+<Config ASDisableNagle="false" AcceptAllContent="false" AppServerPortPreference="HostHeader" ChunkedResponse="false" FIPSEnable="false" IISDisableNagle="false" IISPluginPriority="High" IgnoreDNSFailures="false" RefreshInterval="60" ResponseChunkSize="64" SSLConsolidate="false" TrustedProxyEnable="false" VHostMatchingCompat="false">
+   <Log LogLevel="Error" Name="/logs/http_plugin.log"/>
+   <Property Name="ESIEnable" Value="true"/>
+   <Property Name="ESIMaxCacheSize" Value="1024"/>
+   <Property Name="ESIInvalidationMonitor" Value="false"/>
+   <Property Name="ESIEnableToPassCookies" Value="false"/>
+   <Property Name="PluginInstallRoot" Value="/plugins"/>
+   <VirtualHostGroup Name="default_host">
+      <VirtualHost Name="server-a1.example.com:9081"/>
+      <VirtualHost Name="*:9091"/>
+      <VirtualHost Name="*:9081"/>
+      <VirtualHost Name="server-a2.example.com:9081"/>
+   </VirtualHostGroup>
+   <ServerCluster CloneSeparatorChange="false" GetDWLMTable="false" IgnoreAffinityRequests="true" LoadBalance="Round Robin" Name="groupA_server1_Cluster" PostBufferSize="0" PostSizeLimit="-1" RemoveSpecialHeaders="true" RetryInterval="60" ServerIOTimeoutRetry="-1">
+      <Server CloneID="CLONE_A1" ConnectTimeout="5" LoadBalanceWeight="20" MaxConnections="-1" Name="node_a1" ServerIOTimeout="900" WaitForContinue="false">
+         <Transport Hostname="server-a1.example.com" Port="9081" Protocol="https"/>
+      </Server>
+      <PrimaryServers>
+         <Server Name="node_a1"/>
+      </PrimaryServers>
+   </ServerCluster>
+   <UriGroup Name="default_host_groupA_server1_Cluster_URIs">
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/app-alpha/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/mgmt/*"/>
+      <Uri AffinityCookie="JSESSIONID" AffinityURLIdentifier="jsessionid" Name="/api/*"/>
+   </UriGroup>
+   <Route ServerCluster="groupA_server1_Cluster" UriGroup="default_host_groupA_server1_Cluster_URIs" VirtualHostGroup="default_host"/>
+</Config>
